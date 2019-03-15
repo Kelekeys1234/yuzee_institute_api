@@ -6,33 +6,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.freshfuture.app.bean.Faculty;
-import com.seeka.freshfuture.app.dao.IFacultyDAO;
+import com.seeka.freshfuture.app.bean.SearchKeywords;
+import com.seeka.freshfuture.app.dao.ISearchKeywordsDAO;
 
 @Service
 @Transactional
-public class FacultyService implements IFacultyService {
+public class SerachKeywordsService implements ISearchKeywordsService {
 	
 	@Autowired
-	IFacultyDAO dao;
+	ISearchKeywordsDAO dao;
 	
 	@Override
-	public void save(Faculty obj) {
+	public void save(SearchKeywords obj) {
 		dao.save(obj);
 	}
 	
 	@Override
-	public void update(Faculty obj) {
+	public void update(SearchKeywords obj) {
 		dao.update(obj);
 	}
 	
 	@Override
-	public Faculty get(Integer id) {
-		return dao.get(id);
-	}
-	
-	@Override
-	public List<Faculty> getAll(){
+	public List<SearchKeywords> getAll(){
 		return dao.getAll();
 	}
 	

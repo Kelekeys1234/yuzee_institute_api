@@ -6,33 +6,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.freshfuture.app.bean.Faculty;
-import com.seeka.freshfuture.app.dao.IFacultyDAO;
+import com.seeka.freshfuture.app.bean.Course;
+import com.seeka.freshfuture.app.dao.ICourseDAO;
 
 @Service
 @Transactional
-public class FacultyService implements IFacultyService {
+public class CourseService implements ICourseService {
 	
 	@Autowired
-	IFacultyDAO dao;
+	ICourseDAO dao;
 	
 	@Override
-	public void save(Faculty obj) {
+	public void save(Course obj) {
 		dao.save(obj);
 	}
 	
 	@Override
-	public void update(Faculty obj) {
+	public void update(Course obj) {
 		dao.update(obj);
 	}
 	
 	@Override
-	public Faculty get(Integer id) {
+	public Course get(Integer id) {
 		return dao.get(id);
 	}
 	
 	@Override
-	public List<Faculty> getAll(){
+	public List<Course> getAll(){
 		return dao.getAll();
 	}
 	

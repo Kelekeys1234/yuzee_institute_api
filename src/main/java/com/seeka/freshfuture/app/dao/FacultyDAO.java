@@ -8,40 +8,40 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.freshfuture.app.bean.CourseType;
+import com.seeka.freshfuture.app.bean.Faculty;
+import com.seeka.freshfuture.app.bean.Institute;
 
 @Repository
-public class CourseTypeDAO implements ICourseTypeDAO{
+public class FacultyDAO implements IFacultyDAO{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
 	
 	
 	@Override
-	public void save(CourseType obj) {	
+	public void save(Faculty obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}
 	
 	@Override
-	public void update(CourseType obj) {	
+	public void update(Faculty obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.update(obj);	   					
 	}
 	
 	@Override
-	public CourseType get(Integer id) {	
+	public Faculty get(Integer id) {	
 		Session session = sessionFactory.getCurrentSession();		
-		CourseType obj = session.get(CourseType.class, id);
+		Faculty obj = session.get(Faculty.class, id);
 		return obj;
 	}
 	
 	@Override
-	public List<CourseType> getAll() {
+	public List<Faculty> getAll() {
 		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(CourseType.class);
+		Criteria crit = session.createCriteria(Institute.class);
 		return crit.list();
-	}
- 
+	} 
 	
 }

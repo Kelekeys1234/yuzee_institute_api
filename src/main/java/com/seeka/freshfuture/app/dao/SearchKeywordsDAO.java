@@ -8,40 +8,34 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.freshfuture.app.bean.CourseType;
+import com.seeka.freshfuture.app.bean.SearchKeywords;
 
 @Repository
-public class CourseTypeDAO implements ICourseTypeDAO{
+public class SearchKeywordsDAO implements ISearchKeywordsDAO{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
 	
 	
 	@Override
-	public void save(CourseType obj) {	
+	public void save(SearchKeywords obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}
 	
 	@Override
-	public void update(CourseType obj) {	
+	public void update(SearchKeywords obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.update(obj);	   					
 	}
 	
 	@Override
-	public CourseType get(Integer id) {	
+	public List<SearchKeywords> getAll() {
 		Session session = sessionFactory.getCurrentSession();		
-		CourseType obj = session.get(CourseType.class, id);
-		return obj;
-	}
-	
-	@Override
-	public List<CourseType> getAll() {
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(CourseType.class);
+		Criteria crit = session.createCriteria(SearchKeywords.class);
 		return crit.list();
 	}
- 
+	
+	 
 	
 }
