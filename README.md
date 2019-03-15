@@ -12,7 +12,7 @@ Please read [Build a Microservices Architecture for Seeka Fresh Future Identity 
 				   Building Tool:[maven 3.39](https://maven.apache.org/download.cgi)
 				   IDE:[Eclipse-photon] (https://www.eclipse.org/photon/)
 
-> [Seeka] has Identity APIs that reduce development time with instant-on, scalable user infrastructure.
+> [Seeka] has Institute APIs that reduce development time with instant-on, scalable user infrastructure.
 
 * [Getting Started](#getting-started)
 
