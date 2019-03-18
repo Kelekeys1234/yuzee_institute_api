@@ -178,12 +178,13 @@ public class Institute implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getInstType() {
-		return instType;
+	 
+	public InstituteType getInstituteTypeObj() {
+		return instituteTypeObj;
 	}
 
-	public void setInstType(Integer instType) {
-		this.instType = instType;
+	public void setInstituteTypeObj(InstituteType instituteTypeObj) {
+		this.instituteTypeObj = instituteTypeObj;
 	}
 
 	public String getInstName() {
