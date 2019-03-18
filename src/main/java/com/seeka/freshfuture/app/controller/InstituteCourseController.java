@@ -12,7 +12,6 @@ public class InstituteCourseController {
 
 	@Autowired
 	IInstituteService instituteService;
-
-	  
-
+	
 }
+         

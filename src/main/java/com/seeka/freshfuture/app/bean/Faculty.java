@@ -11,15 +11,18 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="faculty")
-public class Faculty implements Serializable{
-	
-	private Integer id;
-	
+public class Faculty implements Serializable{	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Column(name="course_type")
 	private String courseType; //course type
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Integer id;
 	public Integer getId() {
 		return id;
 	}
