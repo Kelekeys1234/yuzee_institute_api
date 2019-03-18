@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -25,8 +27,9 @@ public class Institute implements Serializable{
 	@Column(name="institute_name")
 	private String instName; //Institute Name
 	
-	@Column(name="country_id")
-	private Integer countryId; //Country Detail
+	@ManyToOne
+	@JoinColumn(name = "country_id")
+	private Country countryObj; //Country Detail 
 	
 	@Column(name="city_id")
 	private Integer cityId; //City Detail
@@ -191,12 +194,12 @@ public class Institute implements Serializable{
 		this.instName = instName;
 	}
 
-	public Integer getCountryId() {
-		return countryId;
+	public Country getCountryObj() {
+		return countryObj;
 	}
 
-	public void setCountryId(Integer countryId) {
-		this.countryId = countryId;
+	public void setCountryObj(Country countryObj) {
+		this.countryObj = countryObj;
 	}
 
 	public Integer getCityId() {

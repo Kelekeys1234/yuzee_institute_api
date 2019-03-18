@@ -17,7 +17,6 @@ public class InstituteDAO implements IInstituteDAO{
 	@Autowired
 	private SessionFactory sessionFactory;
 	
-	
 	@Override
 	public void save(Institute obj) {	
 		Session session = sessionFactory.getCurrentSession();		
@@ -41,7 +40,14 @@ public class InstituteDAO implements IInstituteDAO{
 	public List<Institute> getAllInstituteByCountry(Integer countryId) {
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(Institute.class);
-		crit.add(Restrictions.eq("countryId",countryId));
+		crit.add(Restrictions.eq("countryObj.id",countryId));
+		return crit.list();
+	}
+	
+	@Override
+	public List<Institute> getAll() {
+		Session session = sessionFactory.getCurrentSession();		
+		Criteria crit = session.createCriteria(Institute.class); 
 		return crit.list();
 	}
 	

@@ -36,4 +36,8 @@ public class InstituteService implements IInstituteService {
 		return dao.getAllInstituteByCountry(countryId);
 	}
 	
+	@Override
+	public List<Institute> getAll(){
+		return dao.getAll();
+	}
 }

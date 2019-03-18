@@ -32,7 +32,7 @@ public class CityController {
     	response.put("cityList",cityList);
     	return ResponseEntity.accepted().body(response);
 	}
-	@RequestMapping(value = "/getall/{countryId}", method=RequestMethod.GET)
+	@RequestMapping(value = "/getallcitiesbycountry/{countryId}", method=RequestMethod.GET)
 	public ResponseEntity<?>  getAllCitiesByCountry(@PathVariable Integer countryId) throws Exception {
 		Map<String,Object> response = new HashMap<String, Object>();
 		List<City> cityList = cityService.getAllCitiesByCountry(countryId);

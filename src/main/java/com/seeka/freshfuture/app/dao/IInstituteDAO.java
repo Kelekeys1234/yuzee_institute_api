@@ -10,4 +10,5 @@ public interface IInstituteDAO {
 	public void update(Institute obj);
 	public Institute get(Integer id);
 	public List<Institute> getAllInstituteByCountry(Integer countryId);	
+	public List<Institute> getAll();	
 }

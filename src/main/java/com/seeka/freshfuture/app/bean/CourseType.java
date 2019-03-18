@@ -13,6 +13,8 @@ import javax.persistence.Table;
 @Table(name="course_type")
 public class CourseType implements Serializable{
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(name="type_txt")
@@ -25,8 +27,7 @@ public class CourseType implements Serializable{
 	private String typeKey; // type key
 	
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	
 	public Integer getId() {
 		return id;
 	}
