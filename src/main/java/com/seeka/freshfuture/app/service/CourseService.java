@@ -34,6 +34,6 @@ public class CourseService implements ICourseService {
 	@Override
 	public List<Course> getAll(){
 		return dao.getAll();
-	}
+	} 
 	
 }

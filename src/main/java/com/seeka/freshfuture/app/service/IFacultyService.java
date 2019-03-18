@@ -10,4 +10,5 @@ public interface IFacultyService {
 	public void update(Faculty obj);
 	public Faculty get(Integer id);
 	public List<Faculty> getAll();
+	public List<Faculty> getFacultyByCountryIdAndCourseTypeId(Integer countryID,Integer courseTypeId);
 }

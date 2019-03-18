@@ -31,7 +31,7 @@ public class CountryController {
 		response.put("message","Success.!");
     	response.put("list",countryList);
     	return ResponseEntity.accepted().body(response);
-	}
+	} 
 	
 	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> get(@PathVariable Integer id) throws Exception {
@@ -52,6 +52,16 @@ public class CountryController {
 		response.put("message","Success");
 		response.put("countryObj", countryObj);
 		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/getalluniversitycountries", method=RequestMethod.GET)
+	public ResponseEntity<?>  getAllUniversityCountries() {
+		Map<String,Object> response = new HashMap<String, Object>();
+		List<Country> countryList = countryService.getAllUniversityCountries();
+		response.put("status", 1);
+		response.put("message","Success.!");
+    	response.put("list",countryList);
+    	return ResponseEntity.accepted().body(response);
 	}
 	
 }

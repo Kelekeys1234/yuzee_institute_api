@@ -21,8 +21,11 @@ public class Faculty implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name="course_type")
-	private String courseType; //course type
+	@Column(name="course_type_id")
+	private CourseType courseTypeObj; //Course Type ID
+	
+	@Column(name="name")
+	private String name; //Faculty Name
 		
 	public Integer getId() {
 		return id;
@@ -32,15 +35,22 @@ public class Faculty implements Serializable{
 		this.id = id;
 	}
 
-	public String getCourseType() {
-		return courseType;
+	
+	public String getName() {
+		return name;
 	}
 
-	public void setCourseType(String courseType) {
-		this.courseType = courseType;
+	public void setName(String name) {
+		this.name = name;
 	}
-	
-	
-	
 
+	public CourseType getCourseTypeObj() {
+		return courseTypeObj;
+	}
+
+	public void setCourseTypeObj(CourseType courseTypeObj) {
+		this.courseTypeObj = courseTypeObj;
+	}
+ 
+	
 }

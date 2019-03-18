@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.freshfuture.app.bean.Country;
 import com.seeka.freshfuture.app.bean.CourseType;
 import com.seeka.freshfuture.app.bean.Faculty;
 import com.seeka.freshfuture.app.bean.Institute;
@@ -36,26 +35,29 @@ public class InstituteMasterController {
 	
 	@Autowired
 	IInstituteService instituteService;
-
-	@RequestMapping(value = "/getsearchpagefiltervalues", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getSearchPageFilterValues() throws Exception {
-		
+	
+	
+	@RequestMapping(value = "/getcoursetype/{countryid}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getCourseTypeByCountry(@PathVariable Integer countryid) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
-		
-        List<CourseType> courseTypeList = courseTypeService.getAll();
-        
-        List<Country> countryList = countryService.getAll();
-        
-        List<Faculty> facultyList = facultyService.getAll();
-        
+        List<CourseType> courseTypeList = courseTypeService.getCourseTypeByCountryId(countryid);
         response.put("status", 1);
 		response.put("message","Success.!");
-		response.put("courseTypeList",courseTypeList);
-		response.put("facultyList",facultyList);
-		response.put("countryList",countryList);
+		response.put("courseTypeList",courseTypeList); 
 		return ResponseEntity.accepted().body(response);
 		
 	}
+	
+	@RequestMapping(value = "/getfaculty/{countryid}/{coursetypeid}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getFacultyeByCountryAndCourseType(@PathVariable Integer countryid,@PathVariable Integer coursetypeid) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<Faculty> facultyList = facultyService.getFacultyByCountryIdAndCourseTypeId(countryid, coursetypeid);
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("facultyList",facultyList);
+		return ResponseEntity.accepted().body(response);
+	}
+	
 	
 	@RequestMapping(value = "/get", method=RequestMethod.GET)
 	public ResponseEntity<?>  getAll() {

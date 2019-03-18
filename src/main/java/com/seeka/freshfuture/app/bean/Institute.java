@@ -22,7 +22,7 @@ public class Institute implements Serializable{
 	private Integer id;
 	
 	@Column(name="institute_type")
-	private Integer instType; //Institute Type
+	private InstituteType instituteTypeObj; //Institute Type
 	
 	@Column(name="institute_name")
 	private String instName; //Institute Name

@@ -36,4 +36,9 @@ public class CourseTypeService implements ICourseTypeService {
 		return dao.getAll();
 	}
 	
+	@Override
+	public List<CourseType> getCourseTypeByCountryId(Integer countryID){
+		return dao.getCourseTypeByCountryId(countryID);
+	}
+	
 }

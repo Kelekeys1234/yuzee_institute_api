@@ -36,4 +36,9 @@ public class FacultyService implements IFacultyService {
 		return dao.getAll();
 	}
 	
+	@Override
+	public List<Faculty> getFacultyByCountryIdAndCourseTypeId(Integer countryID,Integer courseTypeId){
+		return dao.getFacultyByCountryIdAndCourseTypeId(countryID,courseTypeId);
+	}
+	
 }

@@ -9,5 +9,5 @@ public interface ICourseService {
 	public void save(Course obj);
 	public void update(Course obj);
 	public Course get(Integer id);
-	public List<Course> getAll();
+	public List<Course> getAll(); 
 }

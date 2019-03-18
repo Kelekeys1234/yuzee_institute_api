@@ -18,36 +18,21 @@ public class CourseType implements Serializable{
 	private Integer id;
 	
 	@Column(name="type_txt")
-	private String typeText; //type text
+	private String name; //type text
 	
 	@Column(name="type_desc")
-	private String typeDescription; //type description
+	private String description; //type description
 	
 	@Column(name="type_key")
 	private String typeKey; // type key
-	
-
+	 
 	
 	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
 		this.id = id;
-	}
-	
-	public String getTypeText() {
-		return typeText;
-	}
-	public void setTypeText(String typeText) {
-		this.typeText = typeText;
-	}
-	
-	public String getTypeDescription() {
-		return typeDescription;
-	}
-	public void setTypeDescription(String typeDescription) {
-		this.typeDescription = typeDescription;
-	}
+	} 
 	
 	public String getTypeKey() {
 		return typeKey;
@@ -55,9 +40,17 @@ public class CourseType implements Serializable{
 	public void setTypeKey(String typeKey) {
 		this.typeKey = typeKey;
 	}
-	
-	
-	
-	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	} 
 
 }

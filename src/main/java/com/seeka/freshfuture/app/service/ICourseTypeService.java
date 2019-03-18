@@ -10,4 +10,5 @@ public interface ICourseTypeService {
 	public void update(CourseType obj);
 	public CourseType get(Integer id);
 	public List<CourseType> getAll();
+	public List<CourseType> getCourseTypeByCountryId(Integer countryID);
 }

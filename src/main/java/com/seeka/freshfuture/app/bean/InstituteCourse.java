@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,16 +23,19 @@ public class InstituteCourse implements Serializable{
 	private Integer id;
 	
 	@Column(name="course_id")
-	private Integer courseId; //Course Details
+	private Course courseObj; //Course Details
 	
-	@Column(name="institute_id")
-	private Integer instId; //Institute Details
+	@ManyToOne
+	@JoinColumn(name="institute_id")
+	private Institute instituteObj; //Institute Details
 	
-	@Column(name="country_id")
-	private Integer countryId; //Country Detail
+	@ManyToOne
+	@JoinColumn(name="country_id")
+	private Country countryObj; //Country Detail
 	
-	@Column(name="city_id")
-	private Integer cityId; //City Detail
+	@ManyToOne
+	@JoinColumn(name="city_id")
+	private City cityObj; //City Detail
 	
 	@Column(name="world_ranking")
 	private Integer worldRanking; //World Ranking
@@ -88,36 +93,36 @@ public class InstituteCourse implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getCourseId() {
-		return courseId;
+	public Course getCourseObj() {
+		return courseObj;
 	}
 
-	public void setCourseId(Integer courseId) {
-		this.courseId = courseId;
+	public void setCourseObj(Course courseObj) {
+		this.courseObj = courseObj;
 	}
 
-	public Integer getInstId() {
-		return instId;
+	public Institute getInstituteObj() {
+		return instituteObj;
 	}
 
-	public void setInstId(Integer instId) {
-		this.instId = instId;
+	public void setInstituteObj(Institute instituteObj) {
+		this.instituteObj = instituteObj;
 	}
 
-	public Integer getCountryId() {
-		return countryId;
+	public Country getCountryObj() {
+		return countryObj;
 	}
 
-	public void setCountryId(Integer countryId) {
-		this.countryId = countryId;
+	public void setCountryObj(Country countryObj) {
+		this.countryObj = countryObj;
 	}
 
-	public Integer getCityId() {
-		return cityId;
+	public City getCityObj() {
+		return cityObj;
 	}
 
-	public void setCityId(Integer cityId) {
-		this.cityId = cityId;
+	public void setCityObj(City cityObj) {
+		this.cityObj = cityObj;
 	}
 
 	public Integer getWorldRanking() {
@@ -247,5 +252,5 @@ public class InstituteCourse implements Serializable{
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-	  
+ 
 }
