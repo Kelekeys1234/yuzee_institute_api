@@ -25,14 +25,17 @@ public class Course extends RecordModifier implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 		
-	@Column(name="institute_id")
-	private Integer instituteId;//InstituteId
+	@ManyToOne
+	@JoinColumn(name="institute_id")
+	private Institute instituteObj;//InstituteId
 	
-	@Column(name="country_id")
-	private Integer countryId;//CountryId
+	@ManyToOne
+	@JoinColumn(name="country_id")
+	private Country countryObj;//CountryId
 	
-	@Column(name="city_id")
-	private Integer cityId;//CityId
+	@ManyToOne
+	@JoinColumn(name="city_id")
+	private City cityObj;//CityId
 	
 	@ManyToOne
 	@JoinColumn(name = "faculty_id")
@@ -88,28 +91,28 @@ public class Course extends RecordModifier implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getInstituteId() {
-		return instituteId;
+	public Institute getInstituteObj() {
+		return instituteObj;
 	}
 
-	public void setInstituteId(Integer instituteId) {
-		this.instituteId = instituteId;
+	public void setInstituteObj(Institute instituteObj) {
+		this.instituteObj = instituteObj;
 	}
 
-	public Integer getCountryId() {
-		return countryId;
+	public Country getCountryObj() {
+		return countryObj;
 	}
 
-	public void setCountryId(Integer countryId) {
-		this.countryId = countryId;
+	public void setCountryObj(Country countryObj) {
+		this.countryObj = countryObj;
 	}
 
-	public Integer getCityId() {
-		return cityId;
+	public City getCityObj() {
+		return cityObj;
 	}
 
-	public void setCityId(Integer cityId) {
-		this.cityId = cityId;
+	public void setCityObj(City cityObj) {
+		this.cityObj = cityObj;
 	}
 
 	public Faculty getFacultyObj() {
@@ -231,7 +234,7 @@ public class Course extends RecordModifier implements Serializable{
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
-    
-	
+
+	 
   
 }

@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,8 +23,9 @@ public class Faculty extends RecordModifier implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name="level_id")
-	private Integer levelId; // levelId
+	@ManyToOne
+	@JoinColumn(name="level_id")
+	private Level levelObj; // levelId
 	
 	@Column(name="name")
 	private String name; //Faculty Name
@@ -39,14 +42,14 @@ public class Faculty extends RecordModifier implements Serializable{
 
 	public void setId(Integer id) {
 		this.id = id;
+	} 
+
+	public Level getLevelObj() {
+		return levelObj;
 	}
 
-	public Integer getLevelId() {
-		return levelId;
-	}
-
-	public void setLevelId(Integer levelId) {
-		this.levelId = levelId;
+	public void setLevelObj(Level levelObj) {
+		this.levelObj = levelObj;
 	}
 
 	public String getName() {
