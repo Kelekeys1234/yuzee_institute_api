@@ -62,7 +62,7 @@ public class CityController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	@RequestMapping(value = "/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<?> saveCity(@RequestBody City obj) throws Exception {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
