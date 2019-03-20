@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.seeka</groupId>
-	<artifactId>freshfuture</artifactId>
+	<artifactId>seekaapp</artifactId>
 	<version>0.0.1</version>
-	<name>freshfuture</name>
-	<description>Spring Boot Microservices for Institute Module</description>
+	<name>seekaapp</name>
+	<description>Institute Micro Services of Seeka App</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
