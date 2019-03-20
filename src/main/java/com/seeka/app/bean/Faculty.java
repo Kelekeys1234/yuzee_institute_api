@@ -1,6 +1,7 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.google.gson.Gson;
 
 @Entity
 @Table(name="faculty")
@@ -76,6 +79,30 @@ public class Faculty extends RecordModifier implements Serializable{
 		this.isActive = isActive;
 	}
     
+	public static void main(String[] args) {
+		   
+	    Faculty obj = new Faculty();
+	    Level levlObj = new Level();
+	    levlObj.setId(1);
+	    
+	    obj.setLevelObj(levlObj);
+		obj.setName("Engineering");
+		obj.setDescription("description");
+		obj.setIsActive(true);
+		obj.setCreatedOn(new Date());
+		obj.setUpdatedOn(new Date());
+		obj.setDeletedOn(new Date());
+		obj.setCreatedBy("Own");
+		obj.setUpdatedBy("Own");
+		obj.setIsDeleted(true);					
+		Gson gson = new Gson();
+		
+		String value = gson.toJson(obj);
+		
+		 System.out.println(value);
+		 
+		System.out.println(new Date().getTime());
+	}
 		
 	
 }

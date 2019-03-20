@@ -46,7 +46,7 @@ public class InstituteMasterController {
 	@RequestMapping(value = "/getfaculty/{countryid}/{coursetypeid}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getFacultyeByCountryAndCourseType(@PathVariable Integer countryid,@PathVariable Integer coursetypeid) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
-		List<Faculty> facultyList = facultyService.getFacultyByCountryIdAndCourseTypeId(countryid, coursetypeid);
+		List<Faculty> facultyList = facultyService.getFacultyByCountryIdAndLevelId(countryid, coursetypeid);
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("facultyList",facultyList);

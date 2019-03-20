@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="institute_details")
-public class InstituteDetails extends RecordModifier implements Serializable{
+public class InstituteDetails /*extends RecordModifier*/ implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

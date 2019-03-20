@@ -25,7 +25,8 @@ public class Institute extends RecordModifier implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name="institute_type_id")
+	@ManyToOne
+	@JoinColumn(name="institute_type_id")
 	private InstituteType instituteTypeObj; //Institute Type
 					
 	@ManyToOne

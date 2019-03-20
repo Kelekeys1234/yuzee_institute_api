@@ -75,7 +75,7 @@ public class CourseDAO implements ICourseDAO{
 		    Session session=sessionFactory.getCurrentSession();
 		    Query query=session.createQuery(sqlQuery).setProperties(paramMap);
 		    List<Course> list=query.list();
-		    list.stream().forEach((p)->{System.out.println(p.getName());});    
+		   // list.stream().forEach((p)->{System.out.println(p.getName());});    
 		    return list;
 	    }catch(Exception e){
 	        e.printStackTrace();
