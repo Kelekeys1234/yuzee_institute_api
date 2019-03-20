@@ -1,6 +1,7 @@
 package com.seeka.app.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -10,8 +11,10 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.google.gson.Gson;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.Level;
 
 @Repository
 public class FacultyDAO implements IFacultyDAO{
@@ -66,4 +69,28 @@ public class FacultyDAO implements IFacultyDAO{
 		return faculties;
 	}
 	
+		public static void main(String[] args) {
+	   
+	    Faculty obj = new Faculty();
+	    Level levlObj = new Level();
+	    levlObj.setId(1);
+	    
+	    obj.setLevelObj(levlObj);
+		obj.setName("Engineering");
+		obj.setDescription("description");
+		obj.setIsActive(true);
+		obj.setCreatedOn(new Date());
+		obj.setUpdatedOn(new Date());
+		obj.setDeletedOn(new Date());
+		obj.setCreatedBy("Own");
+		obj.setUpdatedBy("Own");
+		obj.setIsDeleted(true);					
+		Gson gson = new Gson();
+		
+		String value = gson.toJson(obj);
+		
+		 System.out.println(value);
+		 
+		System.out.println(new Date().getTime());
+	}
 }
