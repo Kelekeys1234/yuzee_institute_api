@@ -1,6 +1,7 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.google.gson.Gson;
 
 @Entity
 @Table(name="institute")
@@ -69,6 +73,9 @@ public class Institute extends RecordModifier implements Serializable{
 	
 	@Column(name="is_active")
 	private Boolean isActive; // Is Active
+	
+	@Transient
+	private InstituteDetails instituteDetailsObj;
 
 	public Integer getId() {
 		return id;
@@ -205,9 +212,70 @@ public class Institute extends RecordModifier implements Serializable{
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
-	
 
+	public InstituteDetails getInstituteDetailsObj() {
+		return instituteDetailsObj;
+	}
+
+	public void setInstituteDetailsObj(InstituteDetails instituteDetailsObj) {
+		this.instituteDetailsObj = instituteDetailsObj;
+	} 
 	
-    		 
+	
+	public static void main(String[] args) {
+		
+		Country countryObj = new Country();
+		countryObj.setId(257);
+
+		InstituteType instituteTypeObj = new InstituteType();
+		instituteTypeObj.setId(1);
+		
+		Institute institute = new Institute();
+		institute.setName("Name of the University");
+		institute.setCityId(4);
+		institute.setCountryObj(countryObj);
+		institute.setAddress("Address of the University");
+		institute.setDescription("Description about the university");
+		institute.setCreatedBy("Name of the record Creator");
+		institute.setUpdatedBy("Name of the record Creator");
+		institute.setCreatedOn(new Date());
+		institute.setUpdatedOn(new Date());
+		institute.setDeletedOn(new Date());
+		institute.setIsDeleted(false);	
+		
+		
+		institute.setInsImageCount(10);
+		institute.setInstituteTypeObj(instituteTypeObj);
+		institute.setInterEmail("internationalemail@email.com");
+		institute.setInterPhoneNumber("+91-9884512528");
+		institute.setIsActive(true);
+		institute.setLatitude("91.084754875");
+		institute.setLongitude("-78.074574556");
+		institute.setTotalNoOfStudent(2456);
+		institute.setWebsite("www.websiteoftheuniversity.com");
+		institute.setWorldRanking(590);
+		
+		InstituteDetails instituteDetails = new InstituteDetails();
+		instituteDetails.setAboutUsInfo("About us information about the universities");
+		instituteDetails.setAverageCostOfLiving("25000AUD");
+		instituteDetails.setClimate2("Climate of the university");
+		instituteDetails.setClosingHour("05:00PM");
+		instituteDetails.setCourseStart("Course Start");
+		instituteDetails.setEnglishPartners("University English Parameters");
+		instituteDetails.setEnrolmentLink("www.universityenrolmentlink.com");
+		instituteDetails.setOpeningHour("9:30AM");
+		instituteDetails.setTutionFeesPaymentPlan("University Payment Plan");
+		instituteDetails.setType("Type of university");
+		instituteDetails.setWhatsappNo("+91-9884512528");
+		instituteDetails.setYoutubeLink("www.youtubelinkofuniversity.com");
+		
+		institute.setInstituteDetailsObj(instituteDetails);
+		
+		Gson gson = new Gson();
+		
+		System.out.println(gson.toJson(institute));
+		
+		
+	}
 	
 }

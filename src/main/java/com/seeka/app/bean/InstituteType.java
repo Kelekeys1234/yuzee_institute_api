@@ -1,6 +1,7 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.google.gson.Gson;
 
 @Entity
 @Table(name="institute_type")
@@ -71,7 +74,24 @@ public class InstituteType extends RecordModifier implements Serializable{
 		this.isActive = isActive;
 	}
     
-	
+	public static void main(String[] args) {
+		InstituteType instituteTypeObj = new InstituteType();
+		instituteTypeObj.setDescription("University");
+		instituteTypeObj.setName("University");
+		instituteTypeObj.setIsActive(true);
+		instituteTypeObj.setType("Type of institute");
+		instituteTypeObj.setCreatedBy("Name of the record Creator");
+		instituteTypeObj.setUpdatedBy("Name of the record Creator");
+		instituteTypeObj.setCreatedOn(new Date());
+		instituteTypeObj.setUpdatedOn(new Date());
+		instituteTypeObj.setDeletedOn(new Date());
+		instituteTypeObj.setIsDeleted(false);
+		
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(instituteTypeObj));
+		
+		System.out.println(new Date().getTime());
+	}
 	
 	
 	

@@ -32,8 +32,10 @@ public class InstituteDetailsDAO implements IInstituteDetailsDAO{
 	@Override
 	public InstituteDetails get(Integer id) {	
 		Session session = sessionFactory.getCurrentSession();		
-		InstituteDetails obj = session.get(InstituteDetails.class, id);
-		return obj;
+		Criteria crit = session.createCriteria(InstituteDetails.class);
+		crit.add(Restrictions.eq("instituteObj.id",id));
+		List<InstituteDetails> list = crit.list();
+		return list !=null && !list.isEmpty()?list.get(0):null;
 	}
 	
 	@Override

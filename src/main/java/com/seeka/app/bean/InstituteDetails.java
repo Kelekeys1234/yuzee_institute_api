@@ -61,12 +61,6 @@ public class InstituteDetails extends RecordModifier implements Serializable{
 	@Column(name="english_partners")
 	private String englishPartners; //English Partners
 	
-	@Column(name="description")
-	private String description; //Description
-	  
-	@Column(name="is_active")
-	private Boolean isActive; // Is Active
-
 	public Integer getId() {
 		return id;
 	}
@@ -178,24 +172,6 @@ public class InstituteDetails extends RecordModifier implements Serializable{
 	public void setEnglishPartners(String englishPartners) {
 		this.englishPartners = englishPartners;
 	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
-	
-	
  
 	
 }
