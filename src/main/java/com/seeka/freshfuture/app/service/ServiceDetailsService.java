@@ -6,38 +6,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.freshfuture.app.bean.Institute;
-import com.seeka.freshfuture.app.dao.IInstituteDAO;
+import com.seeka.freshfuture.app.bean.ServiceDetails;
+import com.seeka.freshfuture.app.dao.IServiceDetailsDAO;
 
 @Service
 @Transactional
-public class InstituteService implements IInstituteService {
+public class ServiceDetailsService implements IServiceDetailsService {
 	
 	@Autowired
-	IInstituteDAO dao;
+	IServiceDetailsDAO dao;
 	
 	@Override
-	public void save(Institute obj) {
+	public void save(ServiceDetails obj) {
 		dao.save(obj);
 	}
 	
 	@Override
-	public void update(Institute obj) {
+	public void update(ServiceDetails obj) {
 		dao.update(obj);
 	}
 	
 	@Override
-	public Institute get(Integer id) {
+	public ServiceDetails get(Integer id) {
 		return dao.get(id);
 	}
 	
 	@Override
-	public List<Institute> getAllInstituteByCountry(Integer countryId){
+	public List<ServiceDetails> getAllInstituteByCountry(Integer countryId){
 		return dao.getAllInstituteByCountry(countryId);
 	}
 	
 	@Override
-	public List<Institute> getAll(){
+	public List<ServiceDetails> getAll(){
 		return dao.getAll();
 	}
 

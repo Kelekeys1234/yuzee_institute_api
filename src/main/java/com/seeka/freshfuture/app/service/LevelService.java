@@ -6,38 +6,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.freshfuture.app.bean.CourseType;
-import com.seeka.freshfuture.app.dao.ICourseTypeDAO;
+import com.seeka.freshfuture.app.bean.Level;
+import com.seeka.freshfuture.app.dao.ILevelDAO;
 
 @Service
 @Transactional
-public class CourseTypeService implements ICourseTypeService {
+public class LevelService implements ILevelService {
 	
 	@Autowired
-	ICourseTypeDAO dao;
+	ILevelDAO dao;
 	
 	@Override
-	public void save(CourseType obj) {
+	public void save(Level obj) {
 		dao.save(obj);
 	}
 	
 	@Override
-	public void update(CourseType obj) {
+	public void update(Level obj) {
 		dao.update(obj);
 	}
 	
 	@Override
-	public CourseType get(Integer id) {
+	public Level get(Integer id) {
 		return dao.get(id);
 	}
 	
 	@Override
-	public List<CourseType> getAll(){
+	public List<Level> getAll(){
 		return dao.getAll();
 	}
 	
 	@Override
-	public List<CourseType> getCourseTypeByCountryId(Integer countryID){
+	public List<Level> getCourseTypeByCountryId(Integer countryID){
 		return dao.getCourseTypeByCountryId(countryID);
 	}
 	

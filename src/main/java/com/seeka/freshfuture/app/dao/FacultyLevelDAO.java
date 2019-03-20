@@ -9,44 +9,45 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import com.seeka.freshfuture.app.bean.Faculty;
+
+import com.seeka.freshfuture.app.bean.FacultyLevel;
 import com.seeka.freshfuture.app.bean.Institute;
 
 @Repository
-public class FacultyDAO implements IFacultyDAO{
+public class FacultyLevelDAO implements IFacultyLevelDAO{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
 	
 	
 	@Override
-	public void save(Faculty obj) {	
+	public void save(FacultyLevel obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}
 	
 	@Override
-	public void update(Faculty obj) {	
+	public void update(FacultyLevel obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.update(obj);	   					
 	}
 	
 	@Override
-	public Faculty get(Integer id) {	
+	public FacultyLevel get(Integer id) {	
 		Session session = sessionFactory.getCurrentSession();		
-		Faculty obj = session.get(Faculty.class, id);
+		FacultyLevel obj = session.get(FacultyLevel.class, id);
 		return obj;
 	}
 	
 	@Override
-	public List<Faculty> getAll() {
+	public List<FacultyLevel> getAll() {
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(Institute.class);
 		return crit.list();
 	} 
 	
 	@Override
-	public List<Faculty> getFacultyByCountryIdAndCourseTypeId(Integer countryID,Integer courseTypeId) {
+	public List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(Integer countryID,Integer courseTypeId) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
 				"select distinct f.id, f.name as facultyName from faculty f with(nolock) "
@@ -54,12 +55,12 @@ public class FacultyDAO implements IFacultyDAO{
 				+ "where ic.country_id = :countryId and f.course_type_id = :courseTypeId")
 				.setParameter("countryId", countryID).setParameter("courseTypeId", courseTypeId);
 		List<Object[]> rows = query.list();
-		List<Faculty> faculties = new ArrayList<Faculty>();
-		Faculty obj = null;
+		List<FacultyLevel> faculties = new ArrayList<FacultyLevel>();
+		FacultyLevel obj = null;
 		for(Object[] row : rows){
-			obj = new Faculty();
+			obj = new FacultyLevel();
 			obj.setId(Integer.parseInt(row[0].toString()));
-			obj.setName(row[1].toString());
+			/*obj.setName(row[1].toString());*/
 			faculties.add(obj);
 		}
 		return faculties;

@@ -1,6 +1,7 @@
 package com.seeka.freshfuture.app.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,21 +14,71 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="course")
-public class Course implements Serializable{
+public class Course extends RecordModifier implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+		
+	@Column(name="institute_id")
+	private Integer instituteId;//InstituteId
 	
-	@Column(name="course_title")
-	private String courseTitle; //Course Title
+	@Column(name="country_id")
+	private Integer countryId;//CountryId
 	
-	@Column(name="course_desc")
-	private String courseDesc; //Course description
+	@Column(name="city_id")
+	private Integer cityId;//CityId
 	
 	@ManyToOne
 	@JoinColumn(name = "faculty_id")
 	private Faculty facultyObj; //Faculty Object
+	
+	@Column(name="name")
+	private String name; // name
+	
+	@Column(name="world_ranking")
+	private Integer worldRanking; // World Ranking
+	
+	@Column(name="stars")
+	private Integer stars; // Stars
+	
+	@Column(name="recognition")
+	private String recognition; // Recognition
+	
+	@Column(name="recognition_type")
+	private String recognitionType; // Recognition Type
+	
+	@Column(name="duration")
+	private String duration; // Duration
+	
+	@Column(name="duration_time")
+	private String durationTime; // Duration Time
+	
+	@Column(name="website")
+	private String website; // Website
+	
+	@Column(name="course_lang")
+	private String courseLanguage; // Course Language
+	
+	@Column(name="abbreviation")
+	private String abbreviation; // Abbreviation
+	
+	@Column(name="rec_date")
+	private Date recordedDate; // Recorded Date
+	
+	@Column(name="remarks")
+	private String remarks; // Abbreviation
+	
+	@Column(name="description")
+	private String description; // Description
+	
+	@Column(name="is_active")
+	private	Boolean isActive;
 
 	public Integer getId() {
 		return id;
@@ -37,20 +88,28 @@ public class Course implements Serializable{
 		this.id = id;
 	}
 
-	public String getCourseTitle() {
-		return courseTitle;
+	public Integer getInstituteId() {
+		return instituteId;
 	}
 
-	public void setCourseTitle(String courseTitle) {
-		this.courseTitle = courseTitle;
+	public void setInstituteId(Integer instituteId) {
+		this.instituteId = instituteId;
 	}
 
-	public String getCourseDesc() {
-		return courseDesc;
+	public Integer getCountryId() {
+		return countryId;
 	}
 
-	public void setCourseDesc(String courseDesc) {
-		this.courseDesc = courseDesc;
+	public void setCountryId(Integer countryId) {
+		this.countryId = countryId;
+	}
+
+	public Integer getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(Integer cityId) {
+		this.cityId = cityId;
 	}
 
 	public Faculty getFacultyObj() {
@@ -60,5 +119,119 @@ public class Course implements Serializable{
 	public void setFacultyObj(Faculty facultyObj) {
 		this.facultyObj = facultyObj;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Integer getWorldRanking() {
+		return worldRanking;
+	}
+
+	public void setWorldRanking(Integer worldRanking) {
+		this.worldRanking = worldRanking;
+	}
+
+	public Integer getStars() {
+		return stars;
+	}
+
+	public void setStars(Integer stars) {
+		this.stars = stars;
+	}
+
+	public String getRecognition() {
+		return recognition;
+	}
+
+	public void setRecognition(String recognition) {
+		this.recognition = recognition;
+	}
+
+	public String getRecognitionType() {
+		return recognitionType;
+	}
+
+	public void setRecognitionType(String recognitionType) {
+		this.recognitionType = recognitionType;
+	}
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
+
+	public String getDurationTime() {
+		return durationTime;
+	}
+
+	public void setDurationTime(String durationTime) {
+		this.durationTime = durationTime;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public String getCourseLanguage() {
+		return courseLanguage;
+	}
+
+	public void setCourseLanguage(String courseLanguage) {
+		this.courseLanguage = courseLanguage;
+	}
+
+	public String getAbbreviation() {
+		return abbreviation;
+	}
+
+	public void setAbbreviation(String abbreviation) {
+		this.abbreviation = abbreviation;
+	}
+
+	public Date getRecordedDate() {
+		return recordedDate;
+	}
+
+	public void setRecordedDate(Date recordedDate) {
+		this.recordedDate = recordedDate;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+    
+	
   
 }

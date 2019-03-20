@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.freshfuture.app.bean.CourseType;
 import com.seeka.freshfuture.app.bean.Faculty;
 import com.seeka.freshfuture.app.bean.Institute;
 import com.seeka.freshfuture.app.dto.ErrorDto;
 import com.seeka.freshfuture.app.service.ICountryService;
-import com.seeka.freshfuture.app.service.ICourseTypeService;
 import com.seeka.freshfuture.app.service.IFacultyService;
 import com.seeka.freshfuture.app.service.IInstituteService;
 
@@ -26,10 +24,7 @@ public class InstituteMasterController {
 
 	@Autowired
 	IFacultyService facultyService;
-	
-	@Autowired
-	ICourseTypeService courseTypeService;
-	
+			
 	@Autowired
 	ICountryService countryService;
 	
@@ -40,10 +35,10 @@ public class InstituteMasterController {
 	@RequestMapping(value = "/getcoursetype/{countryid}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getCourseTypeByCountry(@PathVariable Integer countryid) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
-        List<CourseType> courseTypeList = courseTypeService.getCourseTypeByCountryId(countryid);
+      /*  List<CourseType> courseTypeList = courseTypeService.getCourseTypeByCountryId(countryid);*/
         response.put("status", 1);
 		response.put("message","Success.!");
-		response.put("courseTypeList",courseTypeList); 
+	/*	response.put("courseTypeList",courseTypeList); */
 		return ResponseEntity.accepted().body(response);
 		
 	}

@@ -10,24 +10,23 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="institute_type")
-public class InstituteType extends RecordModifier implements Serializable{
-	
+@Table(name="faculty_level")
+public class FacultyLevel extends RecordModifier implements Serializable{	
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	private Integer id;	
 	
-	@Column(name="name")
-	private String name; // Name
+	@Column(name="institute_level_id")
+	private Integer instituteLevelId; // Institute LevelId
 	
-	@Column(name="type")
-	private String type; //Institute Type
-	
-	@Column(name="description")
-	private String description; //Type description
-	
+	@Column(name="faculty_id")
+	private Integer facultyId; // FacultyId
+			
 	@Column(name="is_active")
 	private	Boolean isActive; // Is Active
 
@@ -39,28 +38,20 @@ public class InstituteType extends RecordModifier implements Serializable{
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public Integer getInstituteLevelId() {
+		return instituteLevelId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setInstituteLevelId(Integer instituteLevelId) {
+		this.instituteLevelId = instituteLevelId;
 	}
 
-	public String getType() {
-		return type;
+	public Integer getFacultyId() {
+		return facultyId;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
+	public void setFacultyId(Integer facultyId) {
+		this.facultyId = facultyId;
 	}
 
 	public Boolean getIsActive() {
@@ -71,6 +62,7 @@ public class InstituteType extends RecordModifier implements Serializable{
 		this.isActive = isActive;
 	}
     
+	
 	
 	
 	

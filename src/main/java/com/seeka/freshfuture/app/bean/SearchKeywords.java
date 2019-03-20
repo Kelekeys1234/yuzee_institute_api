@@ -9,6 +9,13 @@ import javax.persistence.Id;
 
 public class SearchKeywords implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(name="keyword")
@@ -17,8 +24,6 @@ public class SearchKeywords implements Serializable {
 	@Column(name="k_desc")
 	private String keywordDescription; // keyword description
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Integer getId() {
 		return id;
 	}
