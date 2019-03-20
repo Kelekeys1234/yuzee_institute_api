@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,6 +59,16 @@ public class CityController {
 		response.put("status", 1);
 		response.put("message","Success");
 		response.put("cityObj", cityObj);
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public ResponseEntity<?> saveCity(@RequestBody City obj) throws Exception {
+		ErrorDto errorDto = null;
+		Map<String, Object> response = new HashMap<String, Object>();
+	    cityService.save(obj);		
+		response.put("status", 1);
+		response.put("message","Success");		
 		return ResponseEntity.accepted().body(response);
 	}
 	
