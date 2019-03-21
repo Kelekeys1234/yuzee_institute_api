@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +26,7 @@ public class FacultyLevel extends RecordModifier implements Serializable{
 	private Integer id;	
 	
 	@ManyToOne
-	@JoinColumn(name="institute_level_id")
+	@JoinColumn(name="institute_id")
 	private Institute instituteObj; // Institute LevelId
 	
 	@Column(name="faculty_id")
