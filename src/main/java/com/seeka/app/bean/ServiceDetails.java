@@ -1,16 +1,21 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.google.gson.Gson;
+
 @Entity
-@Table(name="institute_service")
+@Table(name="service")
 public class ServiceDetails extends RecordModifier implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -18,9 +23,10 @@ public class ServiceDetails extends RecordModifier implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-						
-	@Column(name="institute_type_id")
-	private Integer instituteTypeId; //Institute type Id
+	
+	@ManyToOne
+	@JoinColumn(name="institute_type_id")
+	private InstituteType instituteTypeId; //Institute type Id
 	
 	@Column(name="name")
 	private String name; //Name
@@ -39,11 +45,11 @@ public class ServiceDetails extends RecordModifier implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getInstituteTypeId() {
+	public InstituteType getInstituteTypeId() {
 		return instituteTypeId;
 	}
 
-	public void setInstituteTypeId(Integer instituteTypeId) {
+	public void setInstituteTypeId(InstituteType instituteTypeId) {
 		this.instituteTypeId = instituteTypeId;
 	}
 
@@ -72,6 +78,31 @@ public class ServiceDetails extends RecordModifier implements Serializable{
 	}
 
 	
+	public static void main(String[] args) {
+		
+		ServiceDetails obj = new ServiceDetails();
+		   
+		InstituteType insobj = new InstituteType();
+		insobj.setId(1);
+		
+	    obj.setInstituteTypeId(insobj);
+		obj.setName("service");
+		obj.setDescription("description");
+		obj.setIsActive(true);
+		obj.setCreatedOn(new Date());
+		obj.setUpdatedOn(new Date());
+		obj.setDeletedOn(new Date());
+		obj.setCreatedBy("Own");
+		obj.setUpdatedBy("Own");
+		obj.setIsDeleted(false);					
+		Gson gson = new Gson();
+		
+		String value = gson.toJson(obj);
+		
+		 System.out.println(value);
+		 
+		System.out.println(new Date().getTime());
+	}
 
 	
 
