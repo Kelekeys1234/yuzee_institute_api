@@ -31,4 +31,8 @@ public class SerachKeywordsService implements ISearchKeywordsService {
 		return dao.getAll();
 	}
 	
+	@Override
+	public List<SearchKeywords> searchByKeyword(String keyword){
+		return dao.searchByKeyword(keyword);
+	}
 }

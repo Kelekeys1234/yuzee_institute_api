@@ -64,5 +64,27 @@ public class LevelDAO implements ILevelDAO{
 		return courseTypes;
 	}
  
+	@Override
+	public List<Level> getLevelByCountryId(Integer countryId) {
+		Session session = sessionFactory.getCurrentSession();	
+		Query query = session.createSQLQuery(
+				"select distinct le.id, le.name as name,le.level_key as levelkey from level le with(nolock) inner join institute_level il with(nolock) on il.level_id = le.id "
+				+ "inner join country c with(nolock) on c.id = il.country_id "
+				+ "where il.country_id = :countryId")
+				.setParameter("countryId", countryId);
+				
+		List<Object[]> rows = query.list();
+		
+		List<Level> level = new ArrayList<>();
+		
+		for(Object[] row : rows){
+			Level obj = new Level();
+			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setName(row[1].toString());
+			obj.setLevelKey(row[2].toString());
+			level.add(obj);
+		}
+		return level;
+	}
 	
 }

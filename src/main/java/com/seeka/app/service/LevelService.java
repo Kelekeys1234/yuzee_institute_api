@@ -2,6 +2,8 @@ package com.seeka.app.service;
 
 import java.util.List;
 
+import javax.persistence.ManyToOne;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,4 +43,8 @@ public class LevelService implements ILevelService {
 		return dao.getCourseTypeByCountryId(countryID);
 	}
 	
+	@Override
+	public List<Level> getLevelByCountryId(Integer countryId){
+		return dao.getLevelByCountryId(countryId);
+	}
 }

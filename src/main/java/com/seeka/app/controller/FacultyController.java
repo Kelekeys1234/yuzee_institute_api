@@ -17,7 +17,6 @@ import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.service.IFacultyLevelService;
 import com.seeka.app.service.IFacultyService;
 
-
 @RestController
 @RequestMapping("/faculty")
 public class FacultyController {

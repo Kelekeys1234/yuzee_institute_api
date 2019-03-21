@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -22,15 +24,17 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 		
 	@Column(name="institute_id")
 	private Integer instituteId; // InstituteId
-	
-	@Column(name="country_id")
-	private Integer countryId; // CountryId
+		
+	@ManyToOne
+	@JoinColumn(name="country_id")
+	private Country countryId; // CountryId
 	
 	@Column(name="city_id")
 	private Integer cityId; // CityId
 	
-	@Column(name="level_id")
-	private Integer levelId; // LevelId
+	@ManyToOne
+	@JoinColumn(name="level_id")
+	private Level levelId; // LevelId
 		
 	@Column(name="is_active")
 	private	Boolean isActive; // Is Active
@@ -51,11 +55,11 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 		this.instituteId = instituteId;
 	}
 
-	public Integer getCountryId() {
+	public Country getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(Integer countryId) {
+	public void setCountryId(Country countryId) {
 		this.countryId = countryId;
 	}
 
@@ -67,11 +71,11 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 		this.cityId = cityId;
 	}
 
-	public Integer getLevelId() {
+	public Level getLevelId() {
 		return levelId;
 	}
 
-	public void setLevelId(Integer levelId) {
+	public void setLevelId(Level levelId) {
 		this.levelId = levelId;
 	}
 
@@ -82,10 +86,8 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
-    
-	
 
-	
-	
+	   	
+		
 	
 }
