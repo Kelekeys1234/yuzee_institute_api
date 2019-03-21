@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.InstituteDetails;
+import com.seeka.app.bean.ServiceDetails;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
+import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteService;
@@ -34,6 +37,9 @@ public class CourseController {
 	
 	@Autowired
 	ICourseService courseService;
+	
+	@Autowired
+	ICoursePricingService coursePricingService;
 	
 	
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -72,7 +78,15 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	
+	@RequestMapping(value = "pricing/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public ResponseEntity<?> saveService(@RequestBody CoursePricing obj) throws Exception {
+		ErrorDto errorDto = null;
+		Map<String, Object> response = new HashMap<String, Object>();
+		coursePricingService.save(obj);		
+		response.put("status", 1);
+		response.put("message","Success");		
+		return ResponseEntity.accepted().body(response);
+	}
 	
 }
          
