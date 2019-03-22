@@ -27,14 +27,14 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 		
 	@ManyToOne
 	@JoinColumn(name="country_id")
-	private Country countryId; // CountryId
+	private Country countryObj; // CountryId
 	
 	@Column(name="city_id")
 	private Integer cityId; // CityId
 	
 	@ManyToOne
 	@JoinColumn(name="level_id")
-	private Level levelId; // LevelId
+	private Level levelObj; // LevelId
 		
 	@Column(name="is_active")
 	private	Boolean isActive; // Is Active
@@ -53,14 +53,14 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 
 	public void setInstituteId(Integer instituteId) {
 		this.instituteId = instituteId;
+	} 
+
+	public Country getCountryObj() {
+		return countryObj;
 	}
 
-	public Country getCountryId() {
-		return countryId;
-	}
-
-	public void setCountryId(Country countryId) {
-		this.countryId = countryId;
+	public void setCountryObj(Country countryObj) {
+		this.countryObj = countryObj;
 	}
 
 	public Integer getCityId() {
@@ -69,14 +69,14 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 
 	public void setCityId(Integer cityId) {
 		this.cityId = cityId;
+	} 
+
+	public Level getLevelObj() {
+		return levelObj;
 	}
 
-	public Level getLevelId() {
-		return levelId;
-	}
-
-	public void setLevelId(Level levelId) {
-		this.levelId = levelId;
+	public void setLevelObj(Level levelObj) {
+		this.levelObj = levelObj;
 	}
 
 	public Boolean getIsActive() {

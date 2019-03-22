@@ -1,5 +1,6 @@
 package com.seeka.app.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +67,8 @@ public class CountryController {
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<?> saveCity(@RequestBody Country obj) throws Exception {
-		
 		Map<String, Object> response = new HashMap<String, Object>();
+		obj.setCreatedOn(new Date());
 		countryService.save(obj);		
 		response.put("status", 1);
 		response.put("message","Success");		

@@ -17,13 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.CoursePricing;
+import com.seeka.app.bean.Faculty;
+import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.InstituteDetails;
+import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.service.ICourseDetailsService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
+import com.seeka.app.service.IFacultyLevelService;
+import com.seeka.app.service.IFacultyService;
 import com.seeka.app.service.IInstituteDetailsService;
+import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
 
 @RestController
@@ -45,12 +51,19 @@ public class CourseController {
 	@Autowired
 	ICoursePricingService coursePricingService;
 	
+	@Autowired
+	IFacultyService facultyService;
+	
+	@Autowired
+	IInstituteLevelService instituteLevelService;
+	
+	@Autowired
+	IFacultyLevelService facultyLevelService;
+	
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody CourseDetails courseDetailsObj) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
-		
-		
 		if(null == courseDetailsObj.getCourseObj()) {
 			ErrorDto errorDto = new ErrorDto();
 			errorDto.setCode("400");
@@ -59,15 +72,27 @@ public class CourseController {
 			response.put("error", errorDto);
 			return ResponseEntity.badRequest().body(response);
 		}
-		
 		Course course = courseDetailsObj.getCourseObj();
-		
 		courseService.save(course);
 		
+		courseDetailsObj.setCourseId(course.getId());
+		courseDetailsService.save(courseDetailsObj);
 		
-		courseDetailsObj.setCourseObj(course);
+		Faculty faculty = facultyService.get(course.getFacultyObj().getId());
 		
-		courseDetailsService.save(courseDetailsObj);;
+		InstituteLevel instituteLevel = new InstituteLevel();
+		instituteLevel.setCityId(course.getCityObj().getId());
+		instituteLevel.setCountryObj(course.getCountryObj());
+		instituteLevel.setInstituteId(course.getInstituteObj().getId());
+		instituteLevel.setIsActive(true);
+		instituteLevel.setLevelObj(faculty.getLevelObj());
+		instituteLevelService.save(instituteLevel);
+		
+		FacultyLevel facultyLevel = new FacultyLevel();
+		facultyLevel.setFacultyId(faculty.getId());
+		facultyLevel.setInstituteObj(course.getInstituteObj());
+		facultyLevel.setIsActive(true);
+		facultyLevelService.save(facultyLevel);
 		
 		response.put("status", 1);
 		response.put("message","Success.!");
@@ -114,7 +139,6 @@ public class CourseController {
 	
 	@RequestMapping(value = "pricing/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<?> saveService(@RequestBody CoursePricing obj) throws Exception {
-		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
 		coursePricingService.save(obj);		
 		response.put("status", 1);

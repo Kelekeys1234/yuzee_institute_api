@@ -4,26 +4,18 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="institute_details")
-public class InstituteDetails /*extends RecordModifier*/ implements Serializable{
+public class InstituteDetails implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
-			
-	@ManyToOne
-	@JoinColumn(name="institute_id")
-	private Institute instituteObj; //Institute Details
+	@Column(name="institute_id")
+	private Integer instituteId; //Institute Details
 	
 	@Column(name="type")
 	private String type; //Type
@@ -61,20 +53,12 @@ public class InstituteDetails /*extends RecordModifier*/ implements Serializable
 	@Column(name="english_partners")
 	private String englishPartners; //English Partners
 	
-	public Integer getId() {
-		return id;
+	public Integer getInstituteId() {
+		return instituteId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Institute getInstituteObj() {
-		return instituteObj;
-	}
-
-	public void setInstituteObj(Institute instituteObj) {
-		this.instituteObj = instituteObj;
+	public void setInstituteId(Integer instituteId) {
+		this.instituteId = instituteId;
 	}
 
 	public String getType() {

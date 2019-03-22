@@ -1,5 +1,6 @@
 package com.seeka.app.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Institute;
+import com.seeka.app.dto.InstituteSearchResultDto;
 
 @Repository
 public class InstituteDAO implements IInstituteDAO{
@@ -61,7 +63,7 @@ public class InstituteDAO implements IInstituteDAO{
 		return users !=null && !users.isEmpty()?users.get(0):null;
 	}*/
 	
-	private void retrieveEmployee() {
+	/*private void retrieveEmployee() {
 		
 	    try{
 		    String sqlQuery="select e from Employee e inner join e.addList";
@@ -72,7 +74,27 @@ public class InstituteDAO implements IInstituteDAO{
 	    }catch(Exception e){
 	        e.printStackTrace();
 	    }
-	}
+	}*/
+	
+	
+	@Override
+	public List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey) {
+		Session session = sessionFactory.getCurrentSession();	
+		Query query = session.createSQLQuery(
+				"select i.id,i.name,c.name as countryName,ci.name as cityName from institute i with(nolock) inner join country c with(nolock) on c.id = i.country_id "
+				+ "inner join city ci with(nolock) on ci.id = i.city_id  where i.name like '%"+searchKey+"%'");
+		List<Object[]> rows = query.list();
+		List<InstituteSearchResultDto> instituteList = new ArrayList<InstituteSearchResultDto>();
+		InstituteSearchResultDto obj = null;
+		for(Object[] row : rows){
+			obj = new InstituteSearchResultDto();
+			obj.setInstituteId(Integer.parseInt(row[0].toString()));
+			obj.setInstituteName(row[1].toString());
+			obj.setLocation(row[2].toString()+", "+row[3].toString());
+			instituteList.add(obj);
+		}
+		return instituteList;
+	} 
 	
 
 }

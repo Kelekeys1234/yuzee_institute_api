@@ -9,12 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.google.gson.Gson;
 
 @Entity
 @Table(name="course_details")
-public class CourseDetails extends RecordModifier implements Serializable{
+public class CourseDetails implements Serializable{
 	
 	/**
 	 * 
@@ -22,9 +23,8 @@ public class CourseDetails extends RecordModifier implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@OneToOne
-	@JoinColumn(name="id")
-	private Course courseObj;
+	@Column(name="course_id")
+	private Integer courseId;
 		
 	@Column(name="wr_range")
 	private Integer worldRange;//World Range
@@ -41,15 +41,16 @@ public class CourseDetails extends RecordModifier implements Serializable{
 	@Column(name="description")
 	private String description; // Description
 	
-	@Column(name="is_active")
-	private	Boolean isActive;
+	@Transient
+	private Course courseObj;
  
-	public Course getCourseObj() {
-		return courseObj;
+	 
+	public Integer getCourseId() {
+		return courseId;
 	}
 
-	public void setCourseObj(Course courseObj) {
-		this.courseObj = courseObj;
+	public void setCourseId(Integer courseId) {
+		this.courseId = courseId;
 	}
 
 	public Integer getWorldRange() {
@@ -90,14 +91,14 @@ public class CourseDetails extends RecordModifier implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	} 
+	 
+	public Course getCourseObj() {
+		return courseObj;
 	}
 
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
+	public void setCourseObj(Course courseObj) {
+		this.courseObj = courseObj;
 	}
 
 	public static void main(String[] args) {
@@ -115,7 +116,7 @@ public class CourseDetails extends RecordModifier implements Serializable{
 		facultyObj.setId(1);
 		
 		Institute instituteObj = new Institute();
-		instituteObj.setId(1);
+		instituteObj.setId(3);
 		
 		course.setAbbreviation("AU,INDIAN,ECOMMERCE");
 		course.setCityObj(cityObj);
@@ -142,8 +143,6 @@ public class CourseDetails extends RecordModifier implements Serializable{
 		courseDetails.setAvailbilty("24/7");
 		courseDetails.setCourseObj(course);
 		courseDetails.setDescription("Course Detail Description");
-		courseDetails.setIsActive(true);
-		courseDetails.setIsDeleted(false);
 		courseDetails.setPartFull(1);
 		courseDetails.setStudyMode(1);
 		courseDetails.setWorldRange(1);

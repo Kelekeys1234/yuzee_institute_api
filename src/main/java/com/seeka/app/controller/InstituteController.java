@@ -1,6 +1,8 @@
 package com.seeka.app.controller;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -11,12 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.dto.ErrorDto;
+import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IInstituteTypeService;
@@ -48,10 +52,11 @@ public class InstituteController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody Institute instituteObj) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
+		instituteObj.setCreatedOn(new Date());
 		instituteService.save(instituteObj);
 		if(null != instituteObj.getInstituteDetailsObj()) {
 			InstituteDetails instituteDetails = instituteObj.getInstituteDetailsObj();
-			instituteDetails.setInstituteObj(instituteObj);
+			instituteDetails.setInstituteId(instituteObj.getId());
 			instituteDetailsService.save(instituteDetails);
 		}
         response.put("status", 1);
@@ -84,6 +89,14 @@ public class InstituteController {
 	}
 	
 	
-	
+	@RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> search(@Valid @RequestParam("searchkey") String searchkey) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<InstituteSearchResultDto> instituteList = instituteService.getInstitueBySearchKey(searchkey);
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("instituteList",instituteList);
+		return ResponseEntity.accepted().body(response);
+	}
 }
          

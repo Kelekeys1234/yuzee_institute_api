@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.dao.IInstituteDAO;
+import com.seeka.app.dto.InstituteSearchResultDto;
 
 @Service
 @Transactional
@@ -39,6 +40,11 @@ public class InstituteService implements IInstituteService {
 	@Override
 	public List<Institute> getAll(){
 		return dao.getAll();
+	}
+	
+	@Override
+	public List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey){
+		return dao.getInstitueBySearchKey(searchKey);
 	}
 
 	

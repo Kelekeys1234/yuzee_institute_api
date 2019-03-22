@@ -33,7 +33,7 @@ public class InstituteDetailsDAO implements IInstituteDetailsDAO{
 	public InstituteDetails get(Integer id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(InstituteDetails.class);
-		crit.add(Restrictions.eq("instituteObj.id",id));
+		crit.add(Restrictions.eq("instituteId",id));
 		List<InstituteDetails> list = crit.list();
 		return list !=null && !list.isEmpty()?list.get(0):null;
 	}
