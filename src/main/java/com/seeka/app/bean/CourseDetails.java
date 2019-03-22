@@ -1,13 +1,16 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.google.gson.Gson;
 
 @Entity
 @Table(name="course_details")
@@ -19,8 +22,9 @@ public class CourseDetails extends RecordModifier implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	@OneToOne
+	@JoinColumn(name="id")
+	private Course courseObj;
 		
 	@Column(name="wr_range")
 	private Integer worldRange;//World Range
@@ -39,13 +43,13 @@ public class CourseDetails extends RecordModifier implements Serializable{
 	
 	@Column(name="is_active")
 	private	Boolean isActive;
-
-	public Integer getId() {
-		return id;
+ 
+	public Course getCourseObj() {
+		return courseObj;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setCourseObj(Course courseObj) {
+		this.courseObj = courseObj;
 	}
 
 	public Integer getWorldRange() {
@@ -96,7 +100,60 @@ public class CourseDetails extends RecordModifier implements Serializable{
 		this.isActive = isActive;
 	}
 
-	
+	public static void main(String[] args) {
+		
+		CourseDetails courseDetails = new CourseDetails();
+		Course course = new Course();
+		
+		City cityObj = new City();
+		cityObj.setId(4);
+		
+		Country countryObj = new Country();
+		countryObj.setId(257);
+		
+		Faculty facultyObj = new Faculty();
+		facultyObj.setId(1);
+		
+		Institute instituteObj = new Institute();
+		instituteObj.setId(1);
+		
+		course.setAbbreviation("AU,INDIAN,ECOMMERCE");
+		course.setCityObj(cityObj);
+		course.setCountryObj(countryObj);
+		course.setCourseLanguage("English");
+		course.setDescription("Information about the course");
+		course.setCreatedBy("Ulaga");
+		course.setDuration("4 Years");
+		course.setDurationTime("May - Sep");
+		course.setFacultyObj(facultyObj);
+		
+		course.setInstituteObj(instituteObj);
+		course.setIsActive(true);
+		course.setIsDeleted(false);
+		course.setName("Computer Science and Engineering");
+		course.setRecognition("Recognition");
+		course.setRecognitionType("Recognition Type");
+		course.setRecordedDate(new Date());
+		course.setRemarks("Course Remarks");
+		course.setStars(4);
+		course.setWebsite("www.coursewebsite.com");
+		course.setWorldRanking(250);
+		
+		courseDetails.setAvailbilty("24/7");
+		courseDetails.setCourseObj(course);
+		courseDetails.setDescription("Course Detail Description");
+		courseDetails.setIsActive(true);
+		courseDetails.setIsDeleted(false);
+		courseDetails.setPartFull(1);
+		courseDetails.setStudyMode(1);
+		courseDetails.setWorldRange(1);
+		
+		Gson gson = new Gson();
+		
+		System.out.println(gson.toJson(courseDetails));
+		
+		System.out.println(new Date().getTime());
+	}
     
 	
   

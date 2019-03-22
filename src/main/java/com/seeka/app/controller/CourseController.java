@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
+import com.seeka.app.service.ICourseDetailsService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteService;
@@ -34,6 +36,39 @@ public class CourseController {
 	
 	@Autowired
 	ICourseService courseService;
+	
+	@Autowired
+	ICourseDetailsService courseDetailsService;
+	
+	
+	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> save(@Valid @RequestBody CourseDetails courseDetailsObj) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		
+		
+		if(null == courseDetailsObj.getCourseObj()) {
+			ErrorDto errorDto = new ErrorDto();
+			errorDto.setCode("400");
+			errorDto.setMessage("Invalid course.!");
+			response.put("status", 0);
+			response.put("error", errorDto);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		Course course = courseDetailsObj.getCourseObj();
+		
+		courseService.save(course);
+		
+		
+		courseDetailsObj.setCourseObj(course);
+		
+		courseDetailsService.save(courseDetailsObj);;
+		
+		response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("courseDetailsObj",courseDetailsObj);
+		return ResponseEntity.accepted().body(response);
+	}
 	
 	
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
