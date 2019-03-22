@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,8 +34,9 @@ public class Institute extends RecordModifier implements Serializable{
 	@JoinColumn(name = "country_id")
 	private Country countryObj; //Country Detail 
 	
-	@Column(name="city_id")
-	private Integer cityId; //City Detail
+	@ManyToOne
+	@JoinColumn(name="city_id")
+	private City cityObj; //City Detail
 	
 	@Column(name="world_ranking")
 	private Integer worldRanking; //World Ranking
@@ -100,14 +102,14 @@ public class Institute extends RecordModifier implements Serializable{
 
 	public void setCountryObj(Country countryObj) {
 		this.countryObj = countryObj;
+	} 
+
+	public City getCityObj() {
+		return cityObj;
 	}
 
-	public Integer getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(Integer cityId) {
-		this.cityId = cityId;
+	public void setCityObj(City cityObj) {
+		this.cityObj = cityObj;
 	}
 
 	public Integer getWorldRanking() {
@@ -231,9 +233,13 @@ public class Institute extends RecordModifier implements Serializable{
 		InstituteType instituteTypeObj = new InstituteType();
 		instituteTypeObj.setId(1);
 		
+		City cityObj = new City();
+		cityObj.setId(3);
+		
+		
 		Institute institute = new Institute();
 		institute.setName("Name of the University");
-		institute.setCityId(4);
+		institute.setCityObj(cityObj);
 		institute.setCountryObj(countryObj);
 		institute.setAddress("Address of the University");
 		institute.setDescription("Description about the university");
