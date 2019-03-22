@@ -1,13 +1,18 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.google.gson.Gson;
 
 @Entity
 @Table(name="course_pricing")
@@ -21,9 +26,9 @@ public class CoursePricing extends RecordModifier implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-		
-	@Column(name="course_id")
-	private Integer course_id;//CourseId
+	@ManyToOne
+	@JoinColumn(name="course_id")
+	private Course course_id;//CourseId
 		
 	@Column(name="pricing_name")
 	private String pricingName; // Pricing Name
@@ -57,11 +62,11 @@ public class CoursePricing extends RecordModifier implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getCourse_id() {
+	public Course getCourse_id() {
 		return course_id;
 	}
 
-	public void setCourse_id(Integer course_id) {
+	public void setCourse_id(Course course_id) {
 		this.course_id = course_id;
 	}
 
@@ -129,7 +134,38 @@ public class CoursePricing extends RecordModifier implements Serializable{
 		this.isActive = isActive;
 	}
 	
-	
+	public static void main(String[] args) {
+		   
+		CoursePricing obj = new CoursePricing();
+		
+		Course couObj = new Course();
+		couObj.setId(1);
+	    
+	   
+		obj.setCourse_id(couObj);
+		obj.setPricingName("International Fees");
+		obj.setAmount(31084.00);
+		obj.setCurrency("USD");
+		obj.setCurrencyTime("Years");
+		obj.setCostSavings(200.00);
+		obj.setCostRange(5000.00);
+		obj.setRemarks("Remarks");
+		obj.setIsActive(true);
+		obj.setCreatedOn(new Date());
+		obj.setUpdatedOn(new Date());
+		obj.setDeletedOn(new Date());
+		obj.setCreatedBy("Own");
+		obj.setUpdatedBy("Own");
+		obj.setIsDeleted(false);					
+		Gson gson = new Gson();
+		
+		String value = gson.toJson(obj);
+		
+		 System.out.println(value);
+		 
+		System.out.println(new Date().getTime());
+	}
+
     
 	
   

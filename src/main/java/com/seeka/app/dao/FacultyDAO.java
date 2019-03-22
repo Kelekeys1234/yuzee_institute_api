@@ -1,8 +1,10 @@
 package com.seeka.app.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +48,12 @@ public class FacultyDAO implements IFacultyDAO{
 	
 	@Override
 	public List<Faculty> getFacultyByCountryIdAndLevelId(Integer countryID,Integer levelId) {
-		/*Session session = sessionFactory.getCurrentSession();	
+		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
-				"select distinct f.id, f.name as facultyName from faculty f with(nolock) "
-				+ "inner join course c with(nolock) on c.faculty_id = f.id inner join institute_course ic with(nolock) on ic.course_id = c.id "
-				+ "where ic.country_id = :countryId and f.course_type_id = :courseTypeId")
-				.setParameter("countryId", countryID).setParameter("courseTypeId", levelId);
+				"select distinct f.id, f.name as facultyName,f.level_id as levelid from faculty f with(nolock) "
+				+ "inner join institute_level il with(nolock) on il.level_id = f.level_id "
+				+ "where il.country_id = :countryId and f.level_id = :levelId")
+				.setParameter("countryId", countryID).setParameter("levelId", levelId);
 		List<Object[]> rows = query.list();
 		List<Faculty> faculties = new ArrayList<Faculty>();
 		Faculty obj = null;
@@ -61,11 +63,8 @@ public class FacultyDAO implements IFacultyDAO{
 			obj.setName(row[1].toString());
 			faculties.add(obj);
 		}
-		return faculties;*/
+		return faculties;
 		
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(Faculty.class);
-		//crit.add(Restrictions.eq("countryObj.id",countryId));
-		return crit.list();
+		
 	} 
 }

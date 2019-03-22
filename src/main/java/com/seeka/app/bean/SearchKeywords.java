@@ -3,10 +3,16 @@ package com.seeka.app.bean;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
+import com.google.gson.Gson;
+
+@Entity
+@Table(name="search_keywords")
 public class SearchKeywords implements Serializable {
 	
 	/**
@@ -48,6 +54,20 @@ public class SearchKeywords implements Serializable {
 		this.keywordDescription = keywordDescription;
 	}
 	
-	
+public static void main(String[] args) {
+		
+        System.out.println("Hello World!");  
+        
+        SearchKeywords searchKeywordObj = new SearchKeywords();
+        searchKeywordObj.setKeyword("Mechanical");
+        searchKeywordObj.setKeywordDescription("Mechanical");
+        
+        
+		Gson gson = new Gson();
+		
+		String value = gson.toJson(searchKeywordObj);
+		System.out.println(value);
+		
+    }
 
 }

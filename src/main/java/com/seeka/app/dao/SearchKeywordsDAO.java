@@ -3,6 +3,7 @@ package com.seeka.app.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,11 @@ public class SearchKeywordsDAO implements ISearchKeywordsDAO{
 		return crit.list();
 	}
 	
-	 
+	@Override
+	public List<SearchKeywords> searchByKeyword(String keyword){
+		Session session = sessionFactory.getCurrentSession();		
+		Query query = session.createSQLQuery("SELECT sk.keyword FROM search_keywords sk WHERE sk.keyword LIKE CONCAT('%',:keyword,'%')");
+		return query.list();
+	}
 	
 }

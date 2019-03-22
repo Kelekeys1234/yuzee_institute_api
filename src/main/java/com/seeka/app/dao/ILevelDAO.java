@@ -11,4 +11,5 @@ public interface ILevelDAO {
 	public Level get(Integer id);
 	public List<Level> getAll();
 	public List<Level> getCourseTypeByCountryId(Integer countryID);
+	public List<Level> getLevelByCountryId(Integer countryId);
 }
