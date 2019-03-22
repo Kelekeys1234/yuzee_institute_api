@@ -9,5 +9,5 @@ public interface ISearchKeywordsService {
 	public void save(SearchKeywords obj);
 	public void update(SearchKeywords obj);
 	public List<SearchKeywords> getAll();
-	public List<SearchKeywords> searchByKeyword(String keyword);
+	public List<SearchKeywords> searchCourseKeyword(String keyword);
 }

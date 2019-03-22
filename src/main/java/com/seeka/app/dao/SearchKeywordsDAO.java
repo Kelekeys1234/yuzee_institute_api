@@ -38,9 +38,9 @@ public class SearchKeywordsDAO implements ISearchKeywordsDAO{
 	}
 	
 	@Override
-	public List<SearchKeywords> searchByKeyword(String keyword){
+	public List<SearchKeywords> searchCourseKeyword(String keyword){
 		Session session = sessionFactory.getCurrentSession();		
-		Query query = session.createSQLQuery("SELECT sk.keyword FROM search_keywords sk WHERE sk.keyword LIKE CONCAT('%',:keyword,'%')");
+		Query query = session.createSQLQuery("SELECT sk.keyword FROM search_keywords sk WHERE sk.keyword LIKE '%"+keyword+"%'");
 		return query.list();
 	}
 	

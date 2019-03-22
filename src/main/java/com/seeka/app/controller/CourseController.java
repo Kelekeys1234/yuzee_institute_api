@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.InstituteDetails;
+import com.seeka.app.bean.SearchKeywords;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.service.ICourseDetailsService;
@@ -25,6 +27,7 @@ import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteService;
+import com.seeka.app.service.ISearchKeywordsService;
 
 @RestController
 @RequestMapping("/course")
@@ -45,6 +48,8 @@ public class CourseController {
 	@Autowired
 	ICoursePricingService coursePricingService;
 	
+	@Autowired
+	ISearchKeywordsService searchKeywordsService;
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody CourseDetails courseDetailsObj) throws Exception {
@@ -112,12 +117,21 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "pricing/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	@RequestMapping(value = "/pricing/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<?> saveService(@RequestBody CoursePricing obj) throws Exception {
-		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
 		coursePricingService.save(obj);		
 		response.put("status", 1);
+		response.put("message","Success");		
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/search/coursekeyword", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> searchCourseKeyword(@RequestParam(value = "keyword") String keyword) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<SearchKeywords> searchkeywordList  = searchKeywordsService.searchCourseKeyword(keyword);		
+		response.put("status", 1);
+		response.put("searchkeywordList", searchkeywordList);
 		response.put("message","Success");		
 		return ResponseEntity.accepted().body(response);
 	}

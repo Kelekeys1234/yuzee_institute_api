@@ -32,7 +32,7 @@ public class SerachKeywordsService implements ISearchKeywordsService {
 	}
 	
 	@Override
-	public List<SearchKeywords> searchByKeyword(String keyword){
-		return dao.searchByKeyword(keyword);
+	public List<SearchKeywords> searchCourseKeyword(String keyword){
+		return dao.searchCourseKeyword(keyword);
 	}
 }

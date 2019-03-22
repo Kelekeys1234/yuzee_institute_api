@@ -31,10 +31,10 @@ public class LevelController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "/getlevel/{countryId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getLevelByCountry(@PathVariable Integer countryId) throws Exception {
+	@RequestMapping(value = "/getlevel/{countryid}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getLevelByCountry(@PathVariable Integer countryid) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
-        List<Level> levelList = levelService.getLevelByCountryId(countryId);
+        List<Level> levelList = levelService.getLevelByCountryId(countryid);
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("levelList",levelList); 
