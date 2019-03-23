@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Course;
@@ -111,6 +112,17 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
+	@RequestMapping(value = "/searchbycoursename", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> search(@Valid @RequestParam("searchkey") String searchkey) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		CourseSearchDto courseSearchDto = new CourseSearchDto();
+		courseSearchDto.setSearchKey(searchkey);
+		List<Course> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("courseList",courseList);
+		return ResponseEntity.accepted().body(response);
+	}
 	
 	@RequestMapping(value = "/get/{courseid}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> get(@Valid @PathVariable Integer courseid ) throws Exception {
@@ -137,7 +149,7 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "pricing/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	@RequestMapping(value = "/pricing/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<?> saveService(@RequestBody CoursePricing obj) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		coursePricingService.save(obj);		

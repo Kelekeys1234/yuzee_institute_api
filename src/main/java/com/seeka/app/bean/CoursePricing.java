@@ -26,6 +26,8 @@ public class CoursePricing extends RecordModifier implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	
+	
 	@ManyToOne
 	@JoinColumn(name="course_id")
 	private Course course_id;//CourseId
