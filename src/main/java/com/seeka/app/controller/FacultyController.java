@@ -47,7 +47,7 @@ public class FacultyController {
 	}
 	
 	@RequestMapping(value = "/get/{countryid}/{levelid}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getFacultyeByCountryAndCourseType(@PathVariable Integer countryid,@PathVariable Integer levelid) throws Exception {
+	public ResponseEntity<?> getFacultyeByCountryAndLevelId(@PathVariable Integer countryid,@PathVariable Integer levelid) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		List<Faculty> facultyList = facultyService.getFacultyByCountryIdAndLevelId(countryid, levelid);
         response.put("status", 1);

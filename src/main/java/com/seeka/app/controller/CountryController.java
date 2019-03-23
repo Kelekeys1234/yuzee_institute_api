@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Country;
+import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.service.ICountryService;
 
@@ -58,10 +59,10 @@ public class CountryController {
 	@RequestMapping(value = "/getalluniversitycountries", method=RequestMethod.GET)
 	public ResponseEntity<?>  getAllUniversityCountries() {
 		Map<String,Object> response = new HashMap<String, Object>();
-		List<Country> countryList = countryService.getAllUniversityCountries();
+		List<CountryDto> countryList = countryService.getAllUniversityCountries();
 		response.put("status", 1);
 		response.put("message","Success.!");
-    	response.put("list",countryList);
+    	response.put("countryList",countryList);
     	return ResponseEntity.accepted().body(response);
 	}
 	

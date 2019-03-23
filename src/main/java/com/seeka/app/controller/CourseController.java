@@ -21,6 +21,7 @@ import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.InstituteDetails;
+import com.seeka.app.bean.SearchKeywords;
 import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
@@ -32,6 +33,7 @@ import com.seeka.app.service.IFacultyService;
 import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
+import com.seeka.app.service.ISearchKeywordsService;
 
 @RestController
 @RequestMapping("/course")
@@ -51,6 +53,9 @@ public class CourseController {
 	
 	@Autowired
 	ICoursePricingService coursePricingService;
+	
+	@Autowired
+	ISearchKeywordsService searchKeywordsService;
 	
 	@Autowired
 	IFacultyService facultyService;
@@ -154,6 +159,16 @@ public class CourseController {
 		Map<String, Object> response = new HashMap<String, Object>();
 		coursePricingService.save(obj);		
 		response.put("status", 1);
+		response.put("message","Success");		
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/search/coursekeyword", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> searchCourseKeyword(@RequestParam(value = "keyword") String keyword) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<SearchKeywords> searchkeywordList  = searchKeywordsService.searchCourseKeyword(keyword);		
+		response.put("status", 1);
+		response.put("searchkeywordList", searchkeywordList);
 		response.put("message","Success");		
 		return ResponseEntity.accepted().body(response);
 	}

@@ -30,7 +30,7 @@ public class CoursePricing extends RecordModifier implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name="course_id")
-	private Course course_id;//CourseId
+	private Course courseObj;//CourseId
 		
 	@Column(name="pricing_name")
 	private String pricingName; // Pricing Name
@@ -63,13 +63,13 @@ public class CoursePricing extends RecordModifier implements Serializable{
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
-	public Course getCourse_id() {
-		return course_id;
+	
+	public Course getCourseObj() {
+		return courseObj;
 	}
 
-	public void setCourse_id(Course course_id) {
-		this.course_id = course_id;
+	public void setCourseObj(Course courseObj) {
+		this.courseObj = courseObj;
 	}
 
 	public String getPricingName() {
@@ -144,7 +144,7 @@ public class CoursePricing extends RecordModifier implements Serializable{
 		couObj.setId(1);
 	    
 	   
-		obj.setCourse_id(couObj);
+		obj.setCourseObj(couObj);
 		obj.setPricingName("International Fees");
 		obj.setAmount(31084.00);
 		obj.setCurrency("USD");

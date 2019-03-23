@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Article;
-import com.seeka.app.bean.City;
 import com.seeka.app.bean.SearchKeywords;
-import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.service.IArticleService;
 import com.seeka.app.service.ISearchKeywordsService;
 
@@ -40,8 +38,7 @@ public class ArticleController {
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> saveCity(@RequestBody SearchKeywords searchKeyword) throws Exception {
-		ErrorDto errorDto = null;
+	public ResponseEntity<?> saveCity(@RequestBody SearchKeywords searchKeyword) throws Exception {		
 		Map<String, Object> response = new HashMap<String, Object>();
 		searchService.save(searchKeyword);		
 		response.put("status", 1);
