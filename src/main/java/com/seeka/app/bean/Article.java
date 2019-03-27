@@ -78,6 +78,7 @@ public class Article implements Serializable{
 	}
 	@Column(name="imagePath")
 	public String getImagePath() {
+		imagePath = "https://www.seoclerk.com/pics/645213-1jFXX81544832051.jpg";
 		return imagePath;
 	}
 	public void setImagePath(String imagePath) {

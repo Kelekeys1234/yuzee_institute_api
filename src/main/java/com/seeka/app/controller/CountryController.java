@@ -56,7 +56,7 @@ public class CountryController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "/getalluniversitycountries", method=RequestMethod.GET)
+	@RequestMapping(value = "/getallinstitutecountries", method=RequestMethod.GET)
 	public ResponseEntity<?>  getAllUniversityCountries() {
 		Map<String,Object> response = new HashMap<String, Object>();
 		List<CountryDto> countryList = countryService.getAllUniversityCountries();
