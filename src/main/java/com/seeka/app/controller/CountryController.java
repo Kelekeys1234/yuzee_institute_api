@@ -76,4 +76,14 @@ public class CountryController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
+	@RequestMapping(value = "/discover", method=RequestMethod.GET)
+	public ResponseEntity<?>  getDiscoverPage() {
+		Map<String,Object> response = new HashMap<String, Object>();
+		List<CountryDto> countryList = countryService.getAllCountries();
+		response.put("status", 1);
+		response.put("message","Success.!");
+    	response.put("countryList",countryList);
+    	return ResponseEntity.accepted().body(response);
+	}
+	
 }
