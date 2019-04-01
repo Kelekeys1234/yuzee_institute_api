@@ -1,9 +1,13 @@
 package com.seeka.app.controller;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.bean.City;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.service.ICityService;
+import com.seeka.app.util.NumbeoWebServiceClient;
 
 
 @RestController
@@ -64,11 +69,55 @@ public class CityController {
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<?> saveCity(@RequestBody City obj) throws Exception {
-		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
 	    cityService.save(obj);		
 		response.put("status", 1);
 		response.put("message","Success");		
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	
+	@RequestMapping(value = "/update/pricing", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> updateCityPricing() throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<City> list = cityService.getAll();
+		for (City city : list) {
+			NumbeoWebServiceClient.getCityPricing(city.getName(), city.getId());
+		}
+		response.put("status", 1);
+		response.put("message","Success");		
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/pricing/{cityid}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getCityPricingByCityID(@PathVariable Integer cityid) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		
+		File file = new File(NumbeoWebServiceClient.fileDirectory+cityid+".json");
+	
+		if(null != file && file.exists()) {
+			//Already file there on the directory.			
+		}else {	
+			
+			City city = cityService.get(cityid);			
+			NumbeoWebServiceClient.getCityPricing(city.getName(), city.getId());
+			file = new File(NumbeoWebServiceClient.fileDirectory+cityid+".json");			
+		}
+		JSONObject jsonObject = new JSONObject();
+		if(null != file && file.exists()) {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String st;		
+			String responseStr = "";
+			 while ((st = br.readLine()) != null) {
+				 responseStr += st;
+				 System.out.println(responseStr); 
+			 }
+			br.close();			 
+			jsonObject = new JSONObject(responseStr);
+		}
+		response.put("status", 1);
+		response.put("message","Success");
+		response.put("cityPricing",jsonObject.toString());
 		return ResponseEntity.accepted().body(response);
 	}
 	
