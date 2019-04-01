@@ -36,4 +36,9 @@ public class CoursePricingService implements ICoursePricingService {
 		return dao.getAll();
 	} 
 	
+	@Override
+	public CoursePricing getPricingByCourseId(Integer courseId) {
+		return dao.getPricingByCourseId(courseId);
+	}
+
 }

@@ -123,8 +123,12 @@ public class CourseController {
 		CourseResponseDto responseObj = null;
 		for (Course courseObj : courseList) {
 			try {
+				CoursePricing coursePricing = coursePricingService.getPricingByCourseId(courseObj.getId());
+				if(null == coursePricing) {
+					continue;
+				}
 				responseObj = new CourseResponseDto();
-				responseObj.setCost("25000AUD");
+				responseObj.setCost(coursePricing.getCostRange()+" "+coursePricing.getCurrency());
 				responseObj.setCourseId(courseObj.getId());
 				responseObj.setCourseName(courseObj.getName());
 				responseObj.setDuration(courseObj.getDuration());

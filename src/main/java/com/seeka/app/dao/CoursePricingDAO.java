@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -42,6 +43,13 @@ public class CoursePricingDAO implements ICoursePricingDAO{
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(Course.class); 
 		return crit.list();
+	}
+	@Override
+	public CoursePricing getPricingByCourseId(Integer courseId) {		
+		Session session = sessionFactory.getCurrentSession();				 
+		Criteria criteria = session.createCriteria(CoursePricing.class);	   	
+		criteria.add(Restrictions.eq("courseId", courseId));
+		return (CoursePricing) criteria.list().get(0);
 	}
 	
 	 
