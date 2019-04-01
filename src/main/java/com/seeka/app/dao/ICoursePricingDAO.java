@@ -9,6 +9,6 @@ public interface ICoursePricingDAO {
 	public void save(CoursePricing obj);
 	public void update(CoursePricing obj);
 	public CoursePricing get(Integer id);
-	public List<CoursePricing> getAll();
 	public CoursePricing getPricingByCourseId(Integer courseId);
+	public List<CoursePricing> getAll(); 
 }

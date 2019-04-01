@@ -127,18 +127,10 @@ public class MigrateCourseController {
 	}
 	
 	public Map<String, CourseDetails> get() throws Exception{
-		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\course\\university_course_attribute_uas.xlsx"); 
+		File myFile = new File("D:\\Seeka\\files\\course\\university_course_attribute_SouthAfrica.xlsx"); 
 		FileInputStream fis = new FileInputStream(myFile); 
 		XSSFWorkbook myWorkBook = new XSSFWorkbook (fis); 
 		XSSFSheet mySheet = myWorkBook.getSheetAt(0);
-	
-		/*SXSSFWorkbook wb = new SXSSFWorkbook(new XSSFWorkbook(new FileInputStream("E:\\Softwares\\Seeka\\March-2019\\Course\\course\\university_course_attribute_uas.xlsx")));
-	    SXSSFSheet sheet = (SXSSFSheet) wb.getSheetAt(0);
-		
-		FileInputStream excelFile = new FileInputStream(myFile);
-        Workbook workbook = new XSSFWorkbook(excelFile);
-        Sheet datatypeSheet = workbook.getSheetAt(0);*/
-		
 		
 		Iterator<org.apache.poi.ss.usermodel.Row> rowIterator = mySheet.iterator();
 		
@@ -832,7 +824,7 @@ public class MigrateCourseController {
 			course.setCityObj(cityObj);		
 			course.setCountryObj(countryObj);
 			
-			Level level = levelMap.get(Course_Type.toLowerCase().replaceAll("[^\\w]", ""));
+			Level level = levelMap.get(Course_Type.trim().toLowerCase().replaceAll("[^\\w]", ""));
 			boolean isNewLevel = false;
 			if(level == null) {
 				level = new Level();
@@ -846,7 +838,7 @@ public class MigrateCourseController {
 				levelService.save(level);
 				isNewLevel = true;
 				courseDetails.setLevelObj(level);
-				levelMap.put(Course_Type.toLowerCase().replaceAll("[^\\w]", ""), level);
+				levelMap.put(Course_Type.trim().toLowerCase().replaceAll("[^\\w]", ""), level);
 			}
 			
 			Faculty facultyObj = null;
@@ -861,9 +853,9 @@ public class MigrateCourseController {
 				facultyObj.setLevelObj(level);
 				facultyService.save(facultyObj);
 				courseDetails.setFacultyObj(facultyObj);
-				facultyMap.put(Faculty.toLowerCase().replaceAll("[^\\w]", "")+"-"+level.getId(),facultyObj);
+				facultyMap.put(Faculty.trim().toLowerCase().replaceAll("[^\\w]", "")+"-"+level.getId(),facultyObj);
 			}else {
-				facultyObj = facultyMap.get(Faculty.toLowerCase().replaceAll("[^\\w]", "")+"-"+level.getId());
+				facultyObj = facultyMap.get(Faculty.trim().toLowerCase().replaceAll("[^\\w]", "")+"-"+level.getId());
 				if(null == facultyObj) {
 					facultyObj = new Faculty();
 					facultyObj.setCreatedBy(createdBy);
@@ -942,13 +934,13 @@ public class MigrateCourseController {
 			//courseDetails.setCourseId(courseId);
 			courseDetails.setDescription(description);
 			
-			if(null != part_full && !part_full.isEmpty()) {
+			if(null != part_full && !part_full.equals("") && !part_full.isEmpty()) {
 				courseDetails.setPartFull(part_full);
 			}
-			if(null != study_mode && !study_mode.isEmpty()) {
+			if(null != study_mode && !study_mode.equals("") && !study_mode.isEmpty()) {
 				courseDetails.setStudyMode(study_mode);
 			}
-			if(null != WR_Range && !WR_Range.isEmpty()) {
+			if(null != WR_Range && !WR_Range.equals("") && !WR_Range.isEmpty()) {
 				courseDetails.setWorldRange(WR_Range);
 			}
 			
@@ -956,17 +948,17 @@ public class MigrateCourseController {
 			if(null != Local_Fees && !Local_Fees.isEmpty()) {
 				coursePricing.setLocalFees(Double.valueOf(Local_Fees));
 			}
-			if(null != UNION_FEES && !UNION_FEES.isEmpty()) {
+			if(null != UNION_FEES && !UNION_FEES.equals("") && !UNION_FEES.isEmpty()) {
 				coursePricing.setUnionFees(Double.valueOf(UNION_FEES));
 			}
-			if(null != Int_Fees && !Int_Fees.isEmpty()) {
+			if(null != Int_Fees && !Int_Fees.equals("") && !Int_Fees.isEmpty()) {
 				coursePricing.setInternationFees(Double.valueOf(Int_Fees));
 			}
-			if(null != Cost_Savings && !Cost_Savings.isEmpty()) {
+			if(null != Cost_Range && !Cost_Range.equals("") && !Cost_Range.isEmpty()) {
 				coursePricing.setCostRange(Double.valueOf(Cost_Range));
 			}
 			
-			if(null != Cost_Range && !Cost_Range.isEmpty()) {
+			if(null != Cost_Savings && !Cost_Savings.equals("") && !Cost_Savings.isEmpty()) {
 				coursePricing.setCostSavings(Double.valueOf(Cost_Savings));
 			}
 			
