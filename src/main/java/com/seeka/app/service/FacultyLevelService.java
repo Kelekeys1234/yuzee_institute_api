@@ -41,4 +41,9 @@ public class FacultyLevelService implements IFacultyLevelService {
 		return dao.getFacultyByCountryIdAndCourseTypeId(countryID,courseTypeId);
 	}
 	
+	@Override
+	public List<FacultyLevel> getAllFacultyLevelByInstituteId(Integer instituteId){
+		return dao.getAllFacultyLevelByInstituteId(instituteId);
+	}
+	
 }

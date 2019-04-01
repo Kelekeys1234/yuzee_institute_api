@@ -42,7 +42,7 @@ public class FacultyDAO implements IFacultyDAO{
 	@Override
 	public List<Faculty> getAll() {
 		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(Institute.class);
+		Criteria crit = session.createCriteria(Faculty.class);
 		return crit.list();
 	} 
 	

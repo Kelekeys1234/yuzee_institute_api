@@ -11,4 +11,5 @@ public interface IFacultyLevelService {
 	public FacultyLevel get(Integer id);
 	public List<FacultyLevel> getAll();
 	public List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(Integer countryID,Integer courseTypeId);
+	public List<FacultyLevel> getAllFacultyLevelByInstituteId(Integer instituteId);
 }

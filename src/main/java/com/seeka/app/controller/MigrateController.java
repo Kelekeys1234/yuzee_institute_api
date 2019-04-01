@@ -344,23 +344,28 @@ public class MigrateController {
 		Map<String, Country> countryDetailsMap = getCountryDetailsData();
 		
 		int i =0, j =0;
-		for(String countryCode : countryDetailsMap.keySet()) {
-			
-			Country masterObj = countryMasterMap.get(countryCode);
-			Country detailObj = countryDetailsMap.get(countryCode);
-			System.out.println("Code: "+countryCode+", masterObj: "+masterObj+", detailObj: "+detailObj);
-			if(null == detailObj) {
-				j++;
-			}else {
-				detailObj.setCreatedBy("Admin");
-				detailObj.setCreatedOn(new Date());
-				detailObj.setName(masterObj.getName());
-				countryService.save(detailObj);
-				i++;
+		for(String countryCode : countryMasterMap.keySet()) {
+			try {
+				Country masterObj = countryMasterMap.get(countryCode);
+				Country detailObj = countryDetailsMap.get(countryCode);
+				System.out.println("Code: "+countryCode+", masterObj: "+masterObj+", detailObj: "+detailObj);
+				if(null == detailObj) {
+					masterObj.setCreatedBy("AUTO");
+					masterObj.setCreatedOn(new Date());
+					countryService.save(masterObj);
+					j++;
+				}else {
+					detailObj.setCreatedBy("AUTO");
+					detailObj.setCreatedOn(new Date());
+					detailObj.setName(masterObj.getName());
+					countryService.save(detailObj);
+					i++;
+				}
+				System.out.println(i+"-------------------------------------------------------------"+j);
+			}catch(Exception e) {
+				e.printStackTrace();
 			}
-			System.out.println(i+"-------------------------------------------------------------"+j);
 		}
-		
 		Map<String,Object> response = new HashMap<String, Object>();
         response.put("status", 1);
 		response.put("message","Success.!");
@@ -672,35 +677,34 @@ public class MigrateController {
 		List<Country> countryList = countryService.getAll();
 		Map<String, Country> countryMap =  new HashMap<String, Country>();
 		for (Country country : countryList) {
-			if(country.getId() <= 262) {
-				continue;
-			}
 			countryMap.put(country.getCountryCode().toLowerCase().replaceAll("[^\\w]", ""), country);
-			
 			countryMap.put(country.getName().toLowerCase().replaceAll("[^\\w]", ""), country);
 		}
 		
 		for(String cityName : cityMap.keySet()) {
-			City masterObj = cityMap.get(cityName);
-			if(null == masterObj) {
-				j++;
-			}else {
-				System.out.println("Code: "+cityName+", CountryCode: "+masterObj.getDescription());
-				Country country = countryMap.get(masterObj.getDescription().toLowerCase().replaceAll("[^\\w]", ""));
-				if(null == country) {
-					k++;
+			try {
+				City masterObj = cityMap.get(cityName);
+				if(null == masterObj) {
+					j++;
 				}else {
-					masterObj.setCityImgCnt(0);
-					masterObj.setCountryObj(country);
-					masterObj.setDescription("");
-					cityService.save(masterObj);
-					i++;
+					System.out.println("Code: "+cityName+", CountryCode: "+masterObj.getDescription());
+					Country country = countryMap.get(masterObj.getDescription().toLowerCase().replaceAll("[^\\w]", ""));
+					if(null == country) {
+						k++;
+					}else {
+						masterObj.setCityImgCnt(0);
+						masterObj.setCountryObj(country);
+						masterObj.setDescription("");
+						cityService.save(masterObj);
+						i++;
+					}
 				}
-				
+				System.out.println(i+"-------------------------------"+j+"--------------------------------"+k);
+			}catch(Exception e) {
+				e.printStackTrace();
 			}
-			System.out.println(i+"-------------------------------"+j+"--------------------------------"+k);
+			
 		}
-		
 		Map<String,Object> response = new HashMap<String, Object>();
         response.put("status", 1);
 		response.put("message","Success.!");

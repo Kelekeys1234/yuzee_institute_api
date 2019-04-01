@@ -45,10 +45,10 @@ public class Course extends RecordModifier implements Serializable{
 	private String name; // name
 	
 	@Column(name="world_ranking")
-	private Integer worldRanking; // World Ranking
+	private String worldRanking; // World Ranking
 	
 	@Column(name="stars")
-	private Integer stars; // Stars
+	private String stars; // Stars
 	
 	@Column(name="recognition")
 	private String recognition; // Recognition
@@ -131,19 +131,19 @@ public class Course extends RecordModifier implements Serializable{
 		this.name = name;
 	}
 
-	public Integer getWorldRanking() {
+	public String getWorldRanking() {
 		return worldRanking;
 	}
 
-	public void setWorldRanking(Integer worldRanking) {
+	public void setWorldRanking(String worldRanking) {
 		this.worldRanking = worldRanking;
 	}
 
-	public Integer getStars() {
+	public String getStars() {
 		return stars;
 	}
 
-	public void setStars(Integer stars) {
+	public void setStars(String stars) {
 		this.stars = stars;
 	}
 

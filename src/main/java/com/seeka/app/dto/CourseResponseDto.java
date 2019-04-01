@@ -10,8 +10,8 @@ public class CourseResponseDto {
 	private String instituteName;
 	private String instituteLogoUrl;	
 	private String instituteImageUrl;	
-	private Integer worldRanking;	
-	private Integer stars;
+	private String worldRanking;	
+	private String stars;
 	private String cost;
 	private String duration;
 	private String durationTime;
@@ -56,16 +56,16 @@ public class CourseResponseDto {
 	public void setInstituteImageUrl(String instituteImageUrl) {
 		this.instituteImageUrl = instituteImageUrl;
 	}
-	public Integer getWorldRanking() {
+	public String getWorldRanking() {
 		return worldRanking;
 	}
-	public void setWorldRanking(Integer worldRanking) {
+	public void setWorldRanking(String worldRanking) {
 		this.worldRanking = worldRanking;
 	}
-	public Integer getStars() {
+	public String getStars() {
 		return stars;
 	}
-	public void setStars(Integer stars) {
+	public void setStars(String stars) {
 		this.stars = stars;
 	}
 	public String getCost() {

@@ -1,18 +1,13 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.google.gson.Gson;
 
 @Entity
 @Table(name="course_pricing")
@@ -27,16 +22,17 @@ public class CoursePricing extends RecordModifier implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
+	@Column(name="course_id")
+	private Integer courseId; //CourseId
+	 
+	@Column(name="local_fees")
+	private Double localFees; // Amount
 	
-	@ManyToOne
-	@JoinColumn(name="course_id")
-	private Course courseObj;//CourseId
-		
-	@Column(name="pricing_name")
-	private String pricingName; // Pricing Name
+	@Column(name="intl_fees")
+	private Double internationFees; // Amount
 	
-	@Column(name="amount")
-	private Double amount; // Amount
+	@Column(name="union_fees")
+	private Double unionFees; // Amount
 	
 	@Column(name="currency")
 	private String currency; // Currency
@@ -48,10 +44,7 @@ public class CoursePricing extends RecordModifier implements Serializable{
 	private Double costSavings; // Cost Savings
 	
 	@Column(name="cost_range")
-	private Double costRange; // Cost Range
-	
-	@Column(name="remarks")
-	private String remarks; // Website
+	private Double costRange; // Cost Range 
 	
 	@Column(name="is_active")
 	private	Boolean isActive; // Is Active
@@ -63,29 +56,37 @@ public class CoursePricing extends RecordModifier implements Serializable{
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
-	public Course getCourseObj() {
-		return courseObj;
+
+	public Integer getCourseId() {
+		return courseId;
 	}
 
-	public void setCourseObj(Course courseObj) {
-		this.courseObj = courseObj;
+	public void setCourseId(Integer courseId) {
+		this.courseId = courseId;
 	}
 
-	public String getPricingName() {
-		return pricingName;
+	public Double getLocalFees() {
+		return localFees;
 	}
 
-	public void setPricingName(String pricingName) {
-		this.pricingName = pricingName;
+	public void setLocalFees(Double localFees) {
+		this.localFees = localFees;
 	}
 
-	public Double getAmount() {
-		return amount;
+	public Double getInternationFees() {
+		return internationFees;
 	}
 
-	public void setAmount(Double amount) {
-		this.amount = amount;
+	public void setInternationFees(Double internationFees) {
+		this.internationFees = internationFees;
+	}
+
+	public Double getUnionFees() {
+		return unionFees;
+	}
+
+	public void setUnionFees(Double unionFees) {
+		this.unionFees = unionFees;
 	}
 
 	public String getCurrency() {
@@ -120,14 +121,6 @@ public class CoursePricing extends RecordModifier implements Serializable{
 		this.costRange = costRange;
 	}
 
-	public String getRemarks() {
-		return remarks;
-	}
-
-	public void setRemarks(String remarks) {
-		this.remarks = remarks;
-	}
-
 	public Boolean getIsActive() {
 		return isActive;
 	}
@@ -135,40 +128,6 @@ public class CoursePricing extends RecordModifier implements Serializable{
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
-	
-	public static void main(String[] args) {
-		   
-		CoursePricing obj = new CoursePricing();
-		
-		Course couObj = new Course();
-		couObj.setId(1);
-	    
-	   
-		obj.setCourseObj(couObj);
-		obj.setPricingName("International Fees");
-		obj.setAmount(31084.00);
-		obj.setCurrency("USD");
-		obj.setCurrencyTime("Years");
-		obj.setCostSavings(200.00);
-		obj.setCostRange(5000.00);
-		obj.setRemarks("Remarks");
-		obj.setIsActive(true);
-		obj.setCreatedOn(new Date());
-		obj.setUpdatedOn(new Date());
-		obj.setDeletedOn(new Date());
-		obj.setCreatedBy("Own");
-		obj.setUpdatedBy("Own");
-		obj.setIsDeleted(false);					
-		Gson gson = new Gson();
-		
-		String value = gson.toJson(obj);
-		
-		 System.out.println(value);
-		 
-		System.out.println(new Date().getTime());
-	}
-
-    
 	
   
 }
