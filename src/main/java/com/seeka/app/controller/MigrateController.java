@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -344,12 +345,15 @@ public class MigrateController {
 		
 		int i =0, j =0;
 		for(String countryCode : countryDetailsMap.keySet()) {
+			
 			Country masterObj = countryMasterMap.get(countryCode);
 			Country detailObj = countryDetailsMap.get(countryCode);
 			System.out.println("Code: "+countryCode+", masterObj: "+masterObj+", detailObj: "+detailObj);
-			if(null == detailObj || masterObj == null) {
+			if(null == detailObj) {
 				j++;
 			}else {
+				detailObj.setCreatedBy("Admin");
+				detailObj.setCreatedOn(new Date());
 				detailObj.setName(masterObj.getName());
 				countryService.save(detailObj);
 				i++;
