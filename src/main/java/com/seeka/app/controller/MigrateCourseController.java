@@ -8,8 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -129,19 +128,19 @@ public class MigrateCourseController {
 	
 	public Map<String, CourseDetails> get() throws Exception{
 		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\course\\university_course_attribute_uas.xlsx"); 
-		/*FileInputStream fis = new FileInputStream(myFile); 
+		FileInputStream fis = new FileInputStream(myFile); 
 		XSSFWorkbook myWorkBook = new XSSFWorkbook (fis); 
-		XSSFSheet mySheet = myWorkBook.getSheetAt(0); */
+		XSSFSheet mySheet = myWorkBook.getSheetAt(0);
 	
-		SXSSFWorkbook wb = new SXSSFWorkbook(new XSSFWorkbook(new FileInputStream("E:\\Softwares\\Seeka\\March-2019\\Course\\course\\university_course_attribute_uas.xlsx")));
+		/*SXSSFWorkbook wb = new SXSSFWorkbook(new XSSFWorkbook(new FileInputStream("E:\\Softwares\\Seeka\\March-2019\\Course\\course\\university_course_attribute_uas.xlsx")));
 	    SXSSFSheet sheet = (SXSSFSheet) wb.getSheetAt(0);
 		
-		/*FileInputStream excelFile = new FileInputStream(myFile);
+		FileInputStream excelFile = new FileInputStream(myFile);
         Workbook workbook = new XSSFWorkbook(excelFile);
         Sheet datatypeSheet = workbook.getSheetAt(0);*/
 		
 		
-		Iterator<org.apache.poi.ss.usermodel.Row> rowIterator = sheet.iterator();
+		Iterator<org.apache.poi.ss.usermodel.Row> rowIterator = mySheet.iterator();
 		
 		
 		List<Faculty> faculties =  facultyService.getAll();
@@ -819,6 +818,14 @@ public class MigrateCourseController {
 			City cityObj = cityMap.get(City.toLowerCase().replaceAll("[^\\w]", ""));
 			if(null == cityObj) {
 				continue;
+			}
+			
+			if(null == institute.getCityObj()) {
+				institute.setCityObj(cityObj);
+				instituteMap.put(University.toLowerCase().replaceAll("[^\\w]", ""), institute);
+				institute.setUpdatedBy(createdBy);
+				institute.setUpdatedOn(createdOn);
+				instituteService.update(institute);
 			}
 			
 			course.setInstituteObj(institute);
