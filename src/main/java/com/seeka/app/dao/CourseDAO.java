@@ -53,23 +53,33 @@ public class CourseDAO implements ICourseDAO{
 		    String sqlQuery="From Course c where 1=1 ";
 		    Map<String, Object> paramMap = new HashMap<String, Object>();
 		    
-		    if(null != filterObj.getCountryId()) {
-		    	sqlQuery = sqlQuery + " and c.countryObj.id = :countryIDParam";
-		    	paramMap.put("countryIDParam", filterObj.getCountryId());
+		    if(null != filterObj.getCountryIds() && !filterObj.getCountryIds().isEmpty()) {
+		    	sqlQuery = sqlQuery + " and c.countryObj.id IN :countryIDsParam";
+		    	paramMap.put("countryIDsParam", filterObj.getCountryIds());
 		    }
 		    
-		    if(null != filterObj.getFacultyId()) {
-		    	sqlQuery = sqlQuery + " and c.facultyObj.id = :facultyIDParam";
-		    	paramMap.put("facultyIDParam", filterObj.getFacultyId());
+		    if(null != filterObj.getFacultyIds()  && !filterObj.getFacultyIds().isEmpty()) {
+		    	sqlQuery = sqlQuery + " and c.facultyObj.id IN :facultyIDsParam";
+		    	paramMap.put("facultyIDsParam", filterObj.getFacultyIds());
 		    }
 		    
-		    if(null != filterObj.getLevelId()) {
-		    	sqlQuery = sqlQuery + " and c.facultyObj.levelObj.id = :levelIDParam";
-		    	paramMap.put("levelIDParam", filterObj.getLevelId());
+		    if(null != filterObj.getLevelIds() && !filterObj.getLevelIds().isEmpty()) {
+		    	sqlQuery = sqlQuery + " and c.facultyObj.levelObj.id IN :levelIDsParam";
+		    	paramMap.put("levelIDsParam", filterObj.getLevelIds());
 		    }
+		    
+		    /*if(null != filterObj.getMinDuration()) {
+		    	sqlQuery = sqlQuery + " and c.facultyObj.levelObj.id IN :levelIDsParam";
+		    	paramMap.put("levelIDsParam", filterObj.getLevelIds());
+		    }
+		    
+		    if(null != filterObj.getMaxDuration()) {
+		    	sqlQuery = sqlQuery + " and c.facultyObj.levelObj.id IN :levelIDsParam";
+		    	paramMap.put("levelIDsParam", filterObj.getLevelIds());
+		    }*/
 		    
 		    if(null != filterObj.getSearchKey() && !filterObj.getSearchKey().isEmpty()) {
-		    	sqlQuery = sqlQuery + " and c.name like :searchKeyParam ";
+		    	sqlQuery = sqlQuery + " and ( c.name like :searchKeyParam or c.instituteObj.name like :searchKeyParam ) ";
 		    	paramMap.put("searchKeyParam", "%"+filterObj.getSearchKey()+"%");
 		    } 
 		    Session session=sessionFactory.getCurrentSession();

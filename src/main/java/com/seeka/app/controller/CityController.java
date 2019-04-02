@@ -82,7 +82,12 @@ public class CityController {
 		Map<String, Object> response = new HashMap<String, Object>();
 		List<City> list = cityService.getAll();
 		for (City city : list) {
-			NumbeoWebServiceClient.getCityPricing(city.getName(), city.getId());
+			try {
+				NumbeoWebServiceClient.getCityPricing(city.getName(), city.getId());
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 		response.put("status", 1);
 		response.put("message","Success");		
@@ -94,12 +99,10 @@ public class CityController {
 		Map<String, Object> response = new HashMap<String, Object>();
 		
 		File file = new File(NumbeoWebServiceClient.fileDirectory+cityid+".json");
-	
+		City city = cityService.get(cityid);
 		if(null != file && file.exists()) {
 			//Already file there on the directory.			
 		}else {	
-			
-			City city = cityService.get(cityid);			
 			NumbeoWebServiceClient.getCityPricing(city.getName(), city.getId());
 			file = new File(NumbeoWebServiceClient.fileDirectory+cityid+".json");			
 		}
@@ -117,7 +120,8 @@ public class CityController {
 		}
 		response.put("status", 1);
 		response.put("message","Success");
-		response.put("cityPricing",jsonObject.toString());
+		response.put("cityName",city.getName()+", "+city.getCountryObj().getName());
+		response.put("livingCost",jsonObject.toString());
 		return ResponseEntity.accepted().body(response);
 	}
 	

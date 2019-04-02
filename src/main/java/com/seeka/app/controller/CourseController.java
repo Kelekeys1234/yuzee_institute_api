@@ -23,7 +23,6 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteLevel;
-import com.seeka.app.bean.SearchKeywords;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
@@ -201,15 +200,6 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "/search/coursekeyword", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> searchCourseKeyword(@RequestParam(value = "keyword") String keyword) throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
-		List<SearchKeywords> searchkeywordList  = searchKeywordsService.searchCourseKeyword(keyword);		
-		response.put("status", 1);
-		response.put("searchkeywordList", searchkeywordList);
-		response.put("message","Success");		
-		return ResponseEntity.accepted().body(response);
-	}
 	
 }
          

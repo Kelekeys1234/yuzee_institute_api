@@ -1,5 +1,6 @@
 package com.seeka.app.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,20 @@ public class FacultyController {
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("facultyList",facultyList);
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/get", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getAll() throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<Faculty> facultyList = facultyService.getAll();
+		Map<String, Faculty> map = new HashMap<String, Faculty>();
+		for (Faculty faculty : facultyList) {
+			map.put(faculty.getLevelObj().getId()+"-"+faculty.getName(), faculty);
+		}
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("facultyList",map.values());
 		return ResponseEntity.accepted().body(response);
 	}
 	

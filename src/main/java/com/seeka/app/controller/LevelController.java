@@ -41,4 +41,15 @@ public class LevelController {
 		return ResponseEntity.accepted().body(response);
 		
 	}
+	
+	@RequestMapping(value = "/get", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getAll() throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+        List<Level> levelList = levelService.getAll();
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("levelList",levelList); 
+		return ResponseEntity.accepted().body(response);
+		
+	}
 }

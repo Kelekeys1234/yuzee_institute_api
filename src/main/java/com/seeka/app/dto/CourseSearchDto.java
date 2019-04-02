@@ -1,12 +1,25 @@
 package com.seeka.app.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.Gson;
+
 public class CourseSearchDto {
 	
 	private String searchKey;
-	private Integer countryId;
-	private Integer levelId;
-	private Integer facultyId;
-	
+	private String courseName;
+	private Boolean isProfileSearch;
+	private List<String> courseKeys;
+	private List<Integer> levelIds;
+	private List<Integer> facultyIds;
+	private List<Integer> countryIds;
+	private List<Integer> serviceIds;
+	private Double minCost;
+	private Double maxCost;
+	private Integer minDuration;
+	private Integer maxDuration;
+	private CourseSearchFilterDto filter;
 	
 	public String getSearchKey() {
 		return searchKey;
@@ -15,24 +28,113 @@ public class CourseSearchDto {
 		this.searchKey = searchKey;
 	}
 	 
-	public Integer getCountryId() {
-		return countryId;
+	public String getCourseName() {
+		return courseName;
 	}
-	public void setCountryId(Integer countryId) {
-		this.countryId = countryId;
+	public void setCourseName(String courseName) {
+		this.courseName = courseName;
 	}
-	public Integer getLevelId() {
-		return levelId;
+	public Boolean getIsProfileSearch() {
+		return isProfileSearch;
 	}
-	public void setLevelId(Integer levelId) {
-		this.levelId = levelId;
+	public void setIsProfileSearch(Boolean isProfileSearch) {
+		this.isProfileSearch = isProfileSearch;
 	}
-	public Integer getFacultyId() {
-		return facultyId;
+	public List<String> getCourseKeys() {
+		return courseKeys;
 	}
-	public void setFacultyId(Integer facultyId) {
-		this.facultyId = facultyId;
+	public void setCourseKeys(List<String> courseKeys) {
+		this.courseKeys = courseKeys;
 	}
-	
-	 
+	public List<Integer> getLevelIds() {
+		return levelIds;
+	}
+	public void setLevelIds(List<Integer> levelIds) {
+		this.levelIds = levelIds;
+	}
+	public List<Integer> getFacultyIds() {
+		return facultyIds;
+	}
+	public void setFacultyIds(List<Integer> facultyIds) {
+		this.facultyIds = facultyIds;
+	}
+	public List<Integer> getCountryIds() {
+		return countryIds;
+	}
+	public void setCountryIds(List<Integer> countryIds) {
+		this.countryIds = countryIds;
+	}
+	public List<Integer> getServiceIds() {
+		return serviceIds;
+	}
+	public void setServiceIds(List<Integer> serviceIds) {
+		this.serviceIds = serviceIds;
+	}
+	public Double getMinCost() {
+		return minCost;
+	}
+	public void setMinCost(Double minCost) {
+		this.minCost = minCost;
+	}
+	public Double getMaxCost() {
+		return maxCost;
+	}
+	public void setMaxCost(Double maxCost) {
+		this.maxCost = maxCost;
+	}
+	public Integer getMinDuration() {
+		return minDuration;
+	}
+	public void setMinDuration(Integer minDuration) {
+		this.minDuration = minDuration;
+	}
+	public Integer getMaxDuration() {
+		return maxDuration;
+	}
+	public void setMaxDuration(Integer maxDuration) {
+		this.maxDuration = maxDuration;
+	}
+	public CourseSearchFilterDto getFilter() {
+		return filter;
+	}
+	public void setFilter(CourseSearchFilterDto filter) {
+		this.filter = filter;
+	}
+
+	public static void main(String[] args) {
+		
+		CourseSearchFilterDto filter = new CourseSearchFilterDto();
+		filter.setDuration("ASC");
+		filter.setLocation("ASC");
+		filter.setPrice("ASC");
+		filter.setRecognition("ASC");
+		
+		CourseSearchDto dto = new CourseSearchDto();
+		
+		List<Integer> ids = new ArrayList<>();
+		ids.add(2001);
+		ids.add(201);
+		
+		List<String> names = new ArrayList<>();
+		names.add("3-D Dimentional");
+		names.add("Graphic Design");
+		
+		dto.setCountryIds(ids);
+		dto.setCourseKeys(names);
+		dto.setCourseName("");
+		dto.setFacultyIds(ids);
+		dto.setFilter(filter);
+		dto.setIsProfileSearch(false);
+		dto.setLevelIds(ids);
+		dto.setMaxCost(500000.00);
+		dto.setMinCost(0.00);
+		dto.setMinDuration(1);
+		dto.setMaxDuration(10);
+		dto.setSearchKey("");
+		dto.setServiceIds(ids);
+		
+		Gson gson = new Gson();
+		String request = gson.toJson(dto);
+		System.out.println(request);
+	}
 }

@@ -8,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.google.gson.Gson;
@@ -24,9 +22,8 @@ public class ServiceDetails extends RecordModifier implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	@ManyToOne
-	@JoinColumn(name="institute_type_id")
-	private InstituteType instituteTypeId; //Institute type Id
+	@Column(name="institute_type_id")
+	private Integer instituteTypeId; //Institute type Id
 	
 	@Column(name="name")
 	private String name; //Name
@@ -43,13 +40,13 @@ public class ServiceDetails extends RecordModifier implements Serializable{
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
+	} 
 
-	public InstituteType getInstituteTypeId() {
+	public Integer getInstituteTypeId() {
 		return instituteTypeId;
 	}
 
-	public void setInstituteTypeId(InstituteType instituteTypeId) {
+	public void setInstituteTypeId(Integer instituteTypeId) {
 		this.instituteTypeId = instituteTypeId;
 	}
 
@@ -81,11 +78,7 @@ public class ServiceDetails extends RecordModifier implements Serializable{
 	public static void main(String[] args) {
 		
 		ServiceDetails obj = new ServiceDetails();
-		   
-		InstituteType insobj = new InstituteType();
-		insobj.setId(1);
-		
-	    obj.setInstituteTypeId(insobj);
+	    obj.setInstituteTypeId(1);
 		obj.setName("service");
 		obj.setDescription("description");
 		obj.setIsActive(true);
@@ -96,11 +89,8 @@ public class ServiceDetails extends RecordModifier implements Serializable{
 		obj.setUpdatedBy("Own");
 		obj.setIsDeleted(false);					
 		Gson gson = new Gson();
-		
 		String value = gson.toJson(obj);
-		
 		 System.out.println(value);
-		 
 		System.out.println(new Date().getTime());
 	}
 
