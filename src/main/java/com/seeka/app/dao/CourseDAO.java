@@ -1,5 +1,6 @@
 package com.seeka.app.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.Faculty;
 import com.seeka.app.dto.CourseSearchDto;
 
 @Repository
@@ -49,48 +51,26 @@ public class CourseDAO implements ICourseDAO{
 
 	@Override
 	public List<Course> getAllCoursesByFilter(CourseSearchDto filterObj) {
-	    try{
-		    String sqlQuery="From Course c where 1=1 ";
-		    Map<String, Object> paramMap = new HashMap<String, Object>();
-		    
-		    if(null != filterObj.getCountryIds() && !filterObj.getCountryIds().isEmpty()) {
-		    	sqlQuery = sqlQuery + " and c.countryObj.id IN :countryIDsParam";
-		    	paramMap.put("countryIDsParam", filterObj.getCountryIds());
-		    }
-		    
-		    if(null != filterObj.getFacultyIds()  && !filterObj.getFacultyIds().isEmpty()) {
-		    	sqlQuery = sqlQuery + " and c.facultyObj.id IN :facultyIDsParam";
-		    	paramMap.put("facultyIDsParam", filterObj.getFacultyIds());
-		    }
-		    
-		    if(null != filterObj.getLevelIds() && !filterObj.getLevelIds().isEmpty()) {
-		    	sqlQuery = sqlQuery + " and c.facultyObj.levelObj.id IN :levelIDsParam";
-		    	paramMap.put("levelIDsParam", filterObj.getLevelIds());
-		    }
-		    
-		    /*if(null != filterObj.getMinDuration()) {
-		    	sqlQuery = sqlQuery + " and c.facultyObj.levelObj.id IN :levelIDsParam";
-		    	paramMap.put("levelIDsParam", filterObj.getLevelIds());
-		    }
-		    
-		    if(null != filterObj.getMaxDuration()) {
-		    	sqlQuery = sqlQuery + " and c.facultyObj.levelObj.id IN :levelIDsParam";
-		    	paramMap.put("levelIDsParam", filterObj.getLevelIds());
-		    }*/
-		    
-		    if(null != filterObj.getSearchKey() && !filterObj.getSearchKey().isEmpty()) {
-		    	sqlQuery = sqlQuery + " and ( c.name like :searchKeyParam or c.instituteObj.name like :searchKeyParam ) ";
-		    	paramMap.put("searchKeyParam", "%"+filterObj.getSearchKey()+"%");
-		    } 
-		    Session session=sessionFactory.getCurrentSession();
-		    Query query=session.createQuery(sqlQuery).setProperties(paramMap);
-		    List<Course> list=query.list();
-		   // list.stream().forEach((p)->{System.out.println(p.getName());});    
-		    return list;
-	    }catch(Exception e){
-	        e.printStackTrace();
-	    }
-	    return null;
+		Session session = sessionFactory.getCurrentSession();	
+		Query query = session.createSQLQuery(
+				"select distinct cp.cost_range, cp.currency,inst.id as instId,inst.name as instName,city.id as cityId,city.name as cityName,ctry.id as countryId,ctry.name as countryName,crs.id,crs.name,crs.duration,crs.duration_time,crs.world_ranking,crs.course_lang from course crs with(nolock) "
+				+ "inner join course_pricing cp with(nolock) on cp.course_id = crs.id inner join institute inst with(nolock) on crs.institute_id = inst.id "
+				+ "inner join country ctry with(nolock) on ctry.id = crs.country_id inner join city city with(nolock) on city.id = crs.city_id where crs.country_id = 345 ");					    
+		    List<Object[]> rows = query.list();
+			List<Course> list = new ArrayList<Course>();
+			Course obj = null;			
+			for(Object[] row : rows){
+				obj = new Course();				
+				obj.setId(Integer.parseInt(row[8].toString()));
+				obj.setName(row[9].toString());	
+				obj.setDuration(row[10].toString());
+				obj.setDurationTime(row[11].toString());
+				obj.setWorldRanking(row[12].toString());
+				obj.setCourseLanguage(row[13].toString());
+				
+				list.add(obj);
+			}    
+		    return list;	   
 	}
 	
 	 

@@ -23,6 +23,7 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteLevel;
+import com.seeka.app.bean.SearchKeywords;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
@@ -122,12 +123,8 @@ public class CourseController {
 		CourseResponseDto responseObj = null;
 		for (Course courseObj : courseList) {
 			try {
-				CoursePricing coursePricing = coursePricingService.getPricingByCourseId(courseObj.getId());
-				if(null == coursePricing) {
-					continue;
-				}
 				responseObj = new CourseResponseDto();
-				responseObj.setCost(coursePricing.getCostRange()+" "+coursePricing.getCurrency());
+				responseObj.setCost("25000AUD");
 				responseObj.setCourseId(courseObj.getId());
 				responseObj.setCourseName(courseObj.getName());
 				responseObj.setDuration(courseObj.getDuration());
@@ -150,10 +147,51 @@ public class CourseController {
 		}
         response.put("status", 1);
 		response.put("message","Success.!");
-		response.put("courseList",courseResponseDtoList);
+		response.put("courseList",courseList);
 		return ResponseEntity.accepted().body(response);
 	}
 	
+	@RequestMapping(value = "/search1", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getCourseTypeByCountry12() throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<Course> courseList = courseService.getAllCoursesByFilter(null);
+		/*List<CourseResponseDto> courseResponseDtoList = new ArrayList<CourseResponseDto>();
+		if(courseList == null || courseList.isEmpty()) {
+			response.put("status", 1);
+			response.put("message","Success.!");
+			response.put("courseList",courseResponseDtoList);
+			return ResponseEntity.accepted().body(response);
+		}
+		CourseResponseDto responseObj = null;
+		for (Course courseObj : courseList) {
+			try {
+				responseObj = new CourseResponseDto();
+				responseObj.setCost("25000AUD");
+				responseObj.setCourseId(courseObj.getId());
+				responseObj.setCourseName(courseObj.getName());
+				responseObj.setDuration(courseObj.getDuration());
+				responseObj.setDurationTime(courseObj.getDurationTime());
+				responseObj.setInstituteId(courseObj.getInstituteObj().getId());
+				responseObj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
+				responseObj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
+				responseObj.setInstituteName(courseObj.getInstituteObj().getName());
+				responseObj.setLocation(courseObj.getCityObj().getName()+", "+courseObj.getCountryObj().getName());
+				responseObj.setStars(courseObj.getStars());
+				responseObj.setWorldRanking(courseObj.getWorldRanking());
+				responseObj.setCityId(courseObj.getCityObj().getId());
+				responseObj.setCountryId(courseObj.getCountryObj().getId());
+				responseObj.setCourseLanguage(courseObj.getCourseLanguage());
+				responseObj.setLanguageShortKey("EN");
+				courseResponseDtoList.add(responseObj);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}*/
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("courseList",courseList);
+		return ResponseEntity.accepted().body(response);
+	}
 	@RequestMapping(value = "/searchbycoursename", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> search(@Valid @RequestParam("searchkey") String searchkey) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
@@ -200,6 +238,15 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
+	@RequestMapping(value = "/search/coursekeyword", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> searchCourseKeyword(@RequestParam(value = "keyword") String keyword) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<SearchKeywords> searchkeywordList  = searchKeywordsService.searchCourseKeyword(keyword);		
+		response.put("status", 1);
+		response.put("searchkeywordList", searchkeywordList);
+		response.put("message","Success");		
+		return ResponseEntity.accepted().body(response);
+	}
 	
 }
          
