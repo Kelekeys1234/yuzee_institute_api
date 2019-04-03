@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -114,14 +115,16 @@ public class CityController {
 			 while ((st = br.readLine()) != null) {
 				 responseStr += st;
 				 System.out.println(responseStr); 
-			 }
-			br.close();			 
-			jsonObject = new JSONObject(responseStr);
-		}
+				 
+			 }			
+			br.close();	
+			JSONParser parser = new JSONParser();
+			jsonObject =  (JSONObject) parser.parse(responseStr);			
+		}								
 		response.put("status", 1);
 		response.put("message","Success");
 		response.put("cityName",city.getName()+", "+city.getCountryObj().getName());
-		response.put("livingCost",jsonObject.toString());
+		response.put("livingCost",jsonObject);
 		return ResponseEntity.accepted().body(response);
 	}
 	
