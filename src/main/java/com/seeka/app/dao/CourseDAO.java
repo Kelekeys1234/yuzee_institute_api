@@ -79,13 +79,14 @@ public class CourseDAO implements ICourseDAO{
 			int  i =0;
 			for (String key : filterObj.getCourseKeys()) {
 				if(null == key || key.isEmpty()) {
-					
+					continue;
 				}
 				if(i == 0) {
 					value = "'"+key.trim()+"'";
 				}else {
 					value = value +","+"'"+key.trim()+"'";
 				}
+				i++;
 			}
 			sqlQuery += " and crs.name in ("+value+")";
 		}
