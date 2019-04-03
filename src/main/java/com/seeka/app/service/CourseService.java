@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.dao.ICourseDAO;
+import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 
 @Service
@@ -38,7 +39,7 @@ public class CourseService implements ICourseService {
 	} 
 	
 	@Override
-	public List<Course> getAllCoursesByFilter(CourseSearchDto filterObj){
+	public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj){
 		return dao.getAllCoursesByFilter(filterObj);
 	}
 	

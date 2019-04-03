@@ -1,6 +1,5 @@
 package com.seeka.app.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,7 @@ import com.seeka.app.bean.SearchKeywords;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
+import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.service.ICourseDetailsService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
@@ -36,6 +36,7 @@ import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.ISearchKeywordsService;
+import com.seeka.app.util.PaginationUtil;
 
 @RestController
 @RequestMapping("/course")
@@ -108,96 +109,44 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	} 
 	
-	
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> getCourseTypeByCountry(@RequestBody CourseSearchDto courseSearchDto ) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
-		List<Course> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
-		List<CourseResponseDto> courseResponseDtoList = new ArrayList<CourseResponseDto>();
-		if(courseList == null || courseList.isEmpty()) {
-			response.put("status", 1);
-			response.put("message","Success.!");
-			response.put("courseList",courseResponseDtoList);
-			return ResponseEntity.accepted().body(response);
+		
+		if(courseSearchDto.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
+			ErrorDto errorDto = new ErrorDto();
+			errorDto.setCode("400");
+			errorDto.setMessage("Maximum course limit per is "+PaginationUtil.courseResultPageMaxSize);
+			response.put("status", 0);
+			response.put("error", errorDto);
+			return ResponseEntity.badRequest().body(response);
 		}
-		CourseResponseDto responseObj = null;
-		for (Course courseObj : courseList) {
-			try {
-				responseObj = new CourseResponseDto();
-				responseObj.setCost("25000AUD");
-				responseObj.setCourseId(courseObj.getId());
-				responseObj.setCourseName(courseObj.getName());
-				responseObj.setDuration(courseObj.getDuration());
-				responseObj.setDurationTime(courseObj.getDurationTime());
-				responseObj.setInstituteId(courseObj.getInstituteObj().getId());
-				responseObj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
-				responseObj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
-				responseObj.setInstituteName(courseObj.getInstituteObj().getName());
-				responseObj.setLocation(courseObj.getCityObj().getName()+", "+courseObj.getCountryObj().getName());
-				responseObj.setStars(courseObj.getStars());
-				responseObj.setWorldRanking(courseObj.getWorldRanking());
-				responseObj.setCityId(courseObj.getCityObj().getId());
-				responseObj.setCountryId(courseObj.getCountryObj().getId());
-				responseObj.setCourseLanguage(courseObj.getCourseLanguage());
-				responseObj.setLanguageShortKey("EN");
-				courseResponseDtoList.add(responseObj);
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
+		
+		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
+		Integer maxCount = 0,totalCount =0;
+		if(null != courseList && !courseList.isEmpty()) {
+			totalCount = courseList.get(0).getTotalCount();
+			maxCount = courseList.size();
+		}
+		boolean showMore;
+		if(courseSearchDto.getMaxSizePerPage() <= maxCount) {
+			showMore = true;
+		} else {
+			showMore = false;
 		}
         response.put("status", 1);
 		response.put("message","Success.!");
+		response.put("paginationObj",new PaginationDto(totalCount,showMore));
 		response.put("courseList",courseList);
 		return ResponseEntity.accepted().body(response);
 	}
-	
-	@RequestMapping(value = "/search1", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCourseTypeByCountry12() throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
-		List<Course> courseList = courseService.getAllCoursesByFilter(null);
-		/*List<CourseResponseDto> courseResponseDtoList = new ArrayList<CourseResponseDto>();
-		if(courseList == null || courseList.isEmpty()) {
-			response.put("status", 1);
-			response.put("message","Success.!");
-			response.put("courseList",courseResponseDtoList);
-			return ResponseEntity.accepted().body(response);
-		}
-		CourseResponseDto responseObj = null;
-		for (Course courseObj : courseList) {
-			try {
-				responseObj = new CourseResponseDto();
-				responseObj.setCost("25000AUD");
-				responseObj.setCourseId(courseObj.getId());
-				responseObj.setCourseName(courseObj.getName());
-				responseObj.setDuration(courseObj.getDuration());
-				responseObj.setDurationTime(courseObj.getDurationTime());
-				responseObj.setInstituteId(courseObj.getInstituteObj().getId());
-				responseObj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
-				responseObj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
-				responseObj.setInstituteName(courseObj.getInstituteObj().getName());
-				responseObj.setLocation(courseObj.getCityObj().getName()+", "+courseObj.getCountryObj().getName());
-				responseObj.setStars(courseObj.getStars());
-				responseObj.setWorldRanking(courseObj.getWorldRanking());
-				responseObj.setCityId(courseObj.getCityObj().getId());
-				responseObj.setCountryId(courseObj.getCountryObj().getId());
-				responseObj.setCourseLanguage(courseObj.getCourseLanguage());
-				responseObj.setLanguageShortKey("EN");
-				courseResponseDtoList.add(responseObj);
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-		}*/
-        response.put("status", 1);
-		response.put("message","Success.!");
-		response.put("courseList",courseList);
-		return ResponseEntity.accepted().body(response);
-	}
+	 
 	@RequestMapping(value = "/searchbycoursename", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> search(@Valid @RequestParam("searchkey") String searchkey) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setSearchKey(searchkey);
-		List<Course> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
+		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("courseList",courseList);

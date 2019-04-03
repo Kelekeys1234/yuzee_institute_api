@@ -18,6 +18,7 @@ public class CourseResponseDto {
 	private String location;
 	private Integer countryId;
 	private Integer cityId;
+	private Integer totalCount;
 	
 	
 	public Integer getCourseId() {
@@ -115,6 +116,12 @@ public class CourseResponseDto {
 	}
 	public void setLanguageShortKey(String languageShortKey) {
 		this.languageShortKey = languageShortKey;
+	}
+	public Integer getTotalCount() {
+		return totalCount;
+	}
+	public void setTotalCount(Integer totalCount) {
+		this.totalCount = totalCount;
 	}
 	
 }

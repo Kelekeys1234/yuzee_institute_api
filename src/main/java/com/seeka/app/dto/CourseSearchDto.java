@@ -1,9 +1,6 @@
 package com.seeka.app.dto;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gson.Gson;
 
 public class CourseSearchDto {
 	
@@ -19,6 +16,8 @@ public class CourseSearchDto {
 	private Double maxCost;
 	private Integer minDuration;
 	private Integer maxDuration;
+	private Integer maxSizePerPage;
+	private Integer pageNumber;
 	private CourseSearchFilterDto sortingObj;
 	
 	public String getSearchKey() {
@@ -101,40 +100,17 @@ public class CourseSearchDto {
 	public void setSortingObj(CourseSearchFilterDto sortingObj) {
 		this.sortingObj = sortingObj;
 	}
-	public static void main(String[] args) {
-		
-		CourseSearchFilterDto filter = new CourseSearchFilterDto();
-		filter.setDuration("ASC");
-		filter.setLocation("ASC");
-		filter.setPrice("ASC");
-		filter.setRecognition("ASC");
-		
-		CourseSearchDto dto = new CourseSearchDto();
-		
-		List<Integer> ids = new ArrayList<>();
-		ids.add(2001);
-		ids.add(201);
-		
-		List<String> names = new ArrayList<>();
-		names.add("3-D Dimentional");
-		names.add("Graphic Design");
-		
-		dto.setCountryIds(ids);
-		dto.setCourseKeys(names);
-		dto.setCourseName("");
-		dto.setFacultyIds(ids);
-		dto.setSortingObj(filter);
-		dto.setIsProfileSearch(false);
-		dto.setLevelIds(ids);
-		dto.setMaxCost(500000.00);
-		dto.setMinCost(0.00);
-		dto.setMinDuration(1);
-		dto.setMaxDuration(10);
-		dto.setSearchKey("");
-		dto.setServiceIds(ids);
-		
-		Gson gson = new Gson();
-		String request = gson.toJson(dto);
-		System.out.println(request);
+	public Integer getMaxSizePerPage() {
+		return maxSizePerPage;
 	}
+	public void setMaxSizePerPage(Integer maxSizePerPage) {
+		this.maxSizePerPage = maxSizePerPage;
+	}
+	public Integer getPageNumber() {
+		return pageNumber;
+	}
+	public void setPageNumber(Integer pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+	
 }
