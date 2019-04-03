@@ -29,7 +29,7 @@ import com.seeka.app.service.IInstituteTypeService;
 import com.seeka.app.service.IServiceDetailsService;
 
 @RestController
-@RequestMapping("/institue")
+@RequestMapping("/institute")
 public class InstituteController {
 
 	@Autowired

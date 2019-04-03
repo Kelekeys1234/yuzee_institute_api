@@ -19,7 +19,7 @@ public class CourseSearchDto {
 	private Double maxCost;
 	private Integer minDuration;
 	private Integer maxDuration;
-	private CourseSearchFilterDto filter;
+	private CourseSearchFilterDto sortingObj;
 	
 	public String getSearchKey() {
 		return searchKey;
@@ -94,13 +94,13 @@ public class CourseSearchDto {
 	public void setMaxDuration(Integer maxDuration) {
 		this.maxDuration = maxDuration;
 	}
-	public CourseSearchFilterDto getFilter() {
-		return filter;
-	}
-	public void setFilter(CourseSearchFilterDto filter) {
-		this.filter = filter;
-	}
 
+	public CourseSearchFilterDto getSortingObj() {
+		return sortingObj;
+	}
+	public void setSortingObj(CourseSearchFilterDto sortingObj) {
+		this.sortingObj = sortingObj;
+	}
 	public static void main(String[] args) {
 		
 		CourseSearchFilterDto filter = new CourseSearchFilterDto();
@@ -123,7 +123,7 @@ public class CourseSearchDto {
 		dto.setCourseKeys(names);
 		dto.setCourseName("");
 		dto.setFacultyIds(ids);
-		dto.setFilter(filter);
+		dto.setSortingObj(filter);
 		dto.setIsProfileSearch(false);
 		dto.setLevelIds(ids);
 		dto.setMaxCost(500000.00);
