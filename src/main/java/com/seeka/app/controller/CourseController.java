@@ -129,7 +129,7 @@ public class CourseController {
 			maxCount = courseList.size();
 		}
 		boolean showMore;
-		if(courseSearchDto.getMaxSizePerPage() <= maxCount) {
+		if(courseSearchDto.getMaxSizePerPage() == maxCount) {
 			showMore = true;
 		} else {
 			showMore = false;
