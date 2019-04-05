@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Course;
 import com.seeka.app.dto.ErrorDto;
@@ -101,15 +102,16 @@ public class CityController {
 	public ResponseEntity<?> getCityPricingByCityID(@PathVariable Integer cityid) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		
-		File file = new File(NumbeoWebServiceClient.fileDirectory+cityid+".json");
-		City city = cityService.get(cityid);
+		File file = new File(NumbeoWebServiceClient.fileDirectory+cityid+".json");		
+		City city = cityService.get(cityid);		
 		if(null != file && file.exists()) {
 			//Already file there on the directory.			
 		}else {	
 			NumbeoWebServiceClient.getCityPricing(city.getName(), city.getId());
 			file = new File(NumbeoWebServiceClient.fileDirectory+cityid+".json");			
 		}
-		JSONObject jsonObject = new JSONObject();
+		
+		JSONObject jsonObject = new JSONObject();	
 		if(null != file && file.exists()) {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String st;		
