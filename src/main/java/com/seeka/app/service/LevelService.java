@@ -47,4 +47,9 @@ public class LevelService implements ILevelService {
 	public List<Level> getLevelByCountryId(Integer countryId){
 		return dao.getLevelByCountryId(countryId);
 	}
+	
+	@Override
+	public List<Level> getAllLevelByCountry(){
+		return dao.getAllLevelByCountry();
+	}
 }

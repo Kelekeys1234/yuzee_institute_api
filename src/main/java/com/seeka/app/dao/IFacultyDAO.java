@@ -11,4 +11,5 @@ public interface IFacultyDAO {
 	public Faculty get(Integer id);
 	public List<Faculty> getAll();
 	public List<Faculty> getFacultyByCountryIdAndLevelId(Integer countryID,Integer levelId);
+	public List<Faculty> getAllFacultyByCountryIdAndLevel();
 }

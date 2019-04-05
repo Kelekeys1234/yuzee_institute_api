@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Level;
+import com.seeka.app.service.IFacultyService;
 import com.seeka.app.service.ILevelService;
 
 @RestController

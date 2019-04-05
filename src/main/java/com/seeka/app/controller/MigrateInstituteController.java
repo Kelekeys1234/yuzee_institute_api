@@ -381,6 +381,8 @@ public class MigrateInstituteController {
 					}
 					object.setWebsite(Website); 
 					
+					
+					
 					InstituteDetails instituteDetails = new InstituteDetails();
 					instituteDetails.setAboutUsInfo(About_Us_Info);
 					instituteDetails.setAverageCostOfLiving(avg_cost_of_living);

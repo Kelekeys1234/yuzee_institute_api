@@ -3,6 +3,7 @@ package com.seeka.app.controller;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.City;
+import com.seeka.app.bean.Course;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.service.ICityService;
 import com.seeka.app.util.NumbeoWebServiceClient;
