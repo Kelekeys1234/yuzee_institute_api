@@ -21,8 +21,7 @@ public class CourseDAO implements ICourseDAO{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
-	
-	
+		
 	@Override
 	public void save(Course obj) {	
 		Session session = sessionFactory.getCurrentSession();		
@@ -62,7 +61,7 @@ public class CourseDAO implements ICourseDAO{
 				+ "city ci with(nolock) on ci.id = crs.city_id inner join faculty f with(nolock) on f.id = crs.faculty_id where 1=1";
 		
 		
-		if(null != filterObj.getCountryIds() && !filterObj.getCountryIds().isEmpty()) {
+		if(null != filterObj.getCountryIds() && !filterObj.getCountryIds().isEmpty()) {         
 			sqlQuery += " and crs.country_id in ("+StringUtils.join(filterObj.getCountryIds(), ',')+")";
 		}
 		
