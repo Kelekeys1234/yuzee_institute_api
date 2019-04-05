@@ -1,7 +1,7 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,8 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="level")
@@ -35,8 +36,15 @@ public class Level extends RecordModifier implements Serializable{
 	@Column(name="description")
 	private String description; // Description
 	 
+	@JsonIgnore
 	@Column(name="is_active")
 	private	Boolean isActive; // Is Active
+	
+	@Transient
+	private Integer countryId;
+	
+	@Transient
+	private List<Faculty> facultyList;
 
 	public Integer getId() {
 		return id;
@@ -77,28 +85,21 @@ public class Level extends RecordModifier implements Serializable{
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
-    
-	public static void main(String[] args) {
-        System.out.println("Hello World!");
-        Level obj = new Level();
-        
-        
-		obj.setName("UG");
-		obj.setIsActive(true);
-		obj.setLevelKey("levelKey");
-		obj.setCreatedBy("Own");
-		obj.setDescription("Nothing");		
-		obj.setUpdatedBy("Own");		
-		obj.setCreatedOn(new Date());
-		obj.setUpdatedOn(new Date());
-		obj.setDeletedOn(new Date());
-		obj.setIsDeleted(true);					
-		Gson gson = new Gson();
-		
-		String value = gson.toJson(obj);
-		
-		System.out.println(value);
-    }
-    
+
+	public List<Faculty> getFacultyList() {
+		return facultyList;
+	}
+
+	public void setFacultyList(List<Faculty> facultyList) {
+		this.facultyList = facultyList;
+	}
+
+	public Integer getCountryId() {
+		return countryId;
+	}
+
+	public void setCountryId(Integer countryId) {
+		this.countryId = countryId;
+	} 
 	
 }

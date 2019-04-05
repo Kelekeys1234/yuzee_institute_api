@@ -28,7 +28,7 @@ public class CountryController {
 	@RequestMapping(value = "/get", method=RequestMethod.GET)
 	public ResponseEntity<?>  getAll() {
 		Map<String,Object> response = new HashMap<String, Object>();
-		List<Country> countryList = countryService.getAll();
+		List<CountryDto> countryList = countryService.getAllCountries();
 		response.put("status", 1);
 		response.put("message","Success.!");
     	response.put("list",countryList);
@@ -85,5 +85,8 @@ public class CountryController {
     	response.put("countryList",countryList);
     	return ResponseEntity.accepted().body(response);
 	}
+	
+	
+	 
 	
 }

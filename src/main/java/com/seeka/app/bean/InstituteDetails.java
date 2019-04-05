@@ -1,11 +1,13 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="institute_details")
@@ -52,6 +54,8 @@ public class InstituteDetails implements Serializable{
 	
 	@Column(name="english_partners")
 	private String englishPartners; //English Partners
+	
+	
 	
 	public Integer getInstituteId() {
 		return instituteId;
@@ -156,6 +160,7 @@ public class InstituteDetails implements Serializable{
 	public void setEnglishPartners(String englishPartners) {
 		this.englishPartners = englishPartners;
 	}
- 
+
+	
 	
 }

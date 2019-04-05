@@ -64,6 +64,26 @@ public class FacultyDAO implements IFacultyDAO{
 			faculties.add(obj);
 		}
 		return faculties;
+	} 
+	
+	@Override
+	public List<Faculty> getAllFacultyByCountryIdAndLevel() {
+		Session session = sessionFactory.getCurrentSession();	
+		Query query = session.createSQLQuery(
+				"select distinct f.id, f.name as facultyName,f.level_id as levelid,il.country_id from faculty f with(nolock) "
+				+ "inner join institute_level il with(nolock) on il.level_id = f.level_id");
+		List<Object[]> rows = query.list();
+		List<Faculty> faculties = new ArrayList<Faculty>();
+		Faculty obj = null;
+		for(Object[] row : rows){
+			obj = new Faculty();
+			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setName(row[1].toString());
+			obj.setLevelId(Integer.parseInt(row[2].toString()));
+			obj.setCountryId(Integer.parseInt(row[3].toString()));
+			faculties.add(obj);
+		}
+		return faculties;
 		
 		
 	} 

@@ -113,13 +113,7 @@ public class MigrateCourseController {
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-			
-			
-			
-			
 		}
-		
-		
 		Map<String,Object> response = new HashMap<String, Object>();
         response.put("status", 1);
 		response.put("message","Success.!");
@@ -134,7 +128,6 @@ public class MigrateCourseController {
 		
 		Iterator<org.apache.poi.ss.usermodel.Row> rowIterator = mySheet.iterator();
 		
-		
 		List<Faculty> faculties =  facultyService.getAll();
 		Map<String, Faculty> facultyMap =  new HashMap<String, Faculty>();
 		for (Faculty faculty : faculties) {
@@ -143,7 +136,6 @@ public class MigrateCourseController {
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-			
 		}
 		
 		List<Level> levels =  levelService.getAll();

@@ -12,4 +12,5 @@ public interface ILevelService {
 	public List<Level> getAll();
 	public List<Level> getCourseTypeByCountryId(Integer countryID);
 	public List<Level> getLevelByCountryId(Integer countryId);
+	public List<Level> getAllLevelByCountry();
 }

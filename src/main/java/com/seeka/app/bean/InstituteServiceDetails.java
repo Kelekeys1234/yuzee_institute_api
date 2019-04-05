@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,8 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.google.gson.Gson;
 
 @Entity
 @Table(name="institute_service")
@@ -26,11 +23,11 @@ public class InstituteServiceDetails extends RecordModifier implements Serializa
 	
 	@ManyToOne
 	@JoinColumn(name="service_id")
-	private ServiceDetails serviceId; //ServiceId
+	private ServiceDetails serviceObj; //ServiceId
 	
 	@ManyToOne
 	@JoinColumn(name="institute_id")
-	private Institute instituteId; //Institute Id
+	private Institute instituteObj; //Institute Id
 		
 	@Column(name="description")
 	private String description; //Description
@@ -45,21 +42,12 @@ public class InstituteServiceDetails extends RecordModifier implements Serializa
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
-	public ServiceDetails getServiceId() {
-		return serviceId;
+	public Institute getInstituteObj() {
+		return instituteObj;
 	}
 
-	public void setServiceId(ServiceDetails serviceId) {
-		this.serviceId = serviceId;
-	}
-
-	public Institute getInstituteId() {
-		return instituteId;
-	}
-
-	public void setInstituteId(Institute instituteId) {
-		this.instituteId = instituteId;
+	public void setInstituteObj(Institute instituteObj) {
+		this.instituteObj = instituteObj;
 	}
 
 	public String getDescription() {
@@ -78,38 +66,12 @@ public class InstituteServiceDetails extends RecordModifier implements Serializa
 		this.isActive = isActive;
 	}
 
-	public static void main(String[] args) {
-		   
-		InstituteServiceDetails obj = new InstituteServiceDetails();
-		
-		ServiceDetails svcObj = new ServiceDetails();
-		svcObj.setId(1);
-		
-		Institute insObj = new Institute();
-		insObj.setId(1);
-	    
-	    obj.setServiceId(svcObj);
-	    obj.setInstituteId(insObj);
-	    obj.setDescription("Description about the university");
-		obj.setIsActive(true);
-		obj.setCreatedOn(new Date());
-		obj.setUpdatedOn(new Date());
-		obj.setDeletedOn(new Date());
-		obj.setCreatedBy("Own");
-		obj.setUpdatedBy("Own");
-		obj.setIsDeleted(false);					
-		Gson gson = new Gson();
-		
-		String value = gson.toJson(obj);
-		
-		 System.out.println(value);
-		 
-		System.out.println(new Date().getTime());
+	public ServiceDetails getServiceObj() {
+		return serviceObj;
 	}
 
-	
-
-	
-    		 
-	
+	public void setServiceObj(ServiceDetails serviceObj) {
+		this.serviceObj = serviceObj;
+	}
+ 
 }

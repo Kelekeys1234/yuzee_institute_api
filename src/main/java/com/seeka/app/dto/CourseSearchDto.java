@@ -7,6 +7,8 @@ public class CourseSearchDto {
 	private String searchKey;
 	private String courseName;
 	private Boolean isProfileSearch;
+	private Integer userId;
+	private Integer currencyId;
 	private List<String> courseKeys;
 	private List<Integer> levelIds;
 	private List<Integer> facultyIds;
@@ -19,6 +21,7 @@ public class CourseSearchDto {
 	private Integer maxSizePerPage;
 	private Integer pageNumber;
 	private CourseSearchFilterDto sortingObj;
+	
 	
 	public String getSearchKey() {
 		return searchKey;
@@ -111,6 +114,18 @@ public class CourseSearchDto {
 	}
 	public void setPageNumber(Integer pageNumber) {
 		this.pageNumber = pageNumber;
+	}
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+	public Integer getCurrencyId() {
+		return currencyId;
+	}
+	public void setCurrencyId(Integer currencyId) {
+		this.currencyId = currencyId;
 	}
 	
 }

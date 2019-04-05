@@ -10,43 +10,43 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.Level;
+import com.seeka.app.bean.Currency;
 
 @Repository
-public class LevelDAO implements ILevelDAO{
+public class CurrencyDAO implements ICurrencyDAO{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
 	
 	
 	@Override
-	public void save(Level obj) {	
+	public void save(Currency obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}
 	
 	@Override
-	public void update(Level obj) {	
+	public void update(Currency obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.update(obj);	   					
 	}
 	
 	@Override
-	public Level get(Integer id) {	
+	public Currency get(Integer id) {	
 		Session session = sessionFactory.getCurrentSession();		
-		Level obj = session.get(Level.class, id);
+		Currency obj = session.get(Currency.class, id);
 		return obj;
 	}
 	
 	@Override
-	public List<Level> getAll() {
+	public List<Currency> getAll() {
 		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(Level.class);
+		Criteria crit = session.createCriteria(Currency.class);
 		return crit.list();
 	}
 	
 	@Override
-	public List<Level> getCourseTypeByCountryId(Integer countryID) {
+	public List<Currency> getCourseTypeByCountryId(Integer countryID) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
 				"select distinct ct.id, ct.type_txt as courseType from course_type ct with(nolock) inner join faculty f with(nolock) on f.course_type_id = ct.id "
@@ -54,9 +54,9 @@ public class LevelDAO implements ILevelDAO{
 				+ "where ic.country_id = :countryId")
 				.setParameter("countryId", countryID);
 		List<Object[]> rows = query.list();
-		List<Level> courseTypes = new ArrayList<>();
+		List<Currency> courseTypes = new ArrayList<>();
 		for(Object[] row : rows){
-			Level obj = new Level();
+			Currency obj = new Currency();
 			obj.setId(Integer.parseInt(row[0].toString()));
 			obj.setName(row[1].toString());
 			courseTypes.add(obj);
@@ -65,48 +65,26 @@ public class LevelDAO implements ILevelDAO{
 	}
  
 	@Override
-	public List<Level> getLevelByCountryId(Integer countryId) {
+	public List<Currency> getCurrencyByCountryId(Integer countryId) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
-				"select distinct le.id, le.name as name,le.level_key as levelkey from level le with(nolock) inner join institute_level il with(nolock) on il.level_id = le.id "
+				"select distinct le.id, le.name as name,le.Currency_key as Currencykey from Currency le with(nolock) inner join institute_Currency il with(nolock) on il.Currency_id = le.id "
 				+ "inner join country c with(nolock) on c.id = il.country_id "
 				+ "where il.country_id = :countryId")
 				.setParameter("countryId", countryId);
 				
 		List<Object[]> rows = query.list();
 		
-		List<Level> level = new ArrayList<>();
+		List<Currency> Currency = new ArrayList<>();
 		
 		for(Object[] row : rows){
-			Level obj = new Level();
+			Currency obj = new Currency();
 			obj.setId(Integer.parseInt(row[0].toString()));
 			obj.setName(row[1].toString());
-			obj.setLevelKey(row[2].toString());
-			level.add(obj);
+			//obj.setCurrencyKey(row[2].toString());
+			Currency.add(obj);
 		}
-		return level;
-	}
-	
-	
-	@Override
-	public List<Level> getAllLevelByCountry() {
-		Session session = sessionFactory.getCurrentSession();	
-		Query query = session.createSQLQuery(
-				"select distinct le.id, le.name as name,le.level_key as levelkey,il.country_id from level le with(nolock) inner join institute_level il with(nolock) on "
-				+ "il.level_id = le.id inner join country c with(nolock) on c.id = il.country_id");
-		List<Object[]> rows = query.list();
-		
-		List<Level> level = new ArrayList<>();
-		
-		for(Object[] row : rows){
-			Level obj = new Level();
-			obj.setId(Integer.parseInt(row[0].toString()));
-			obj.setName(row[1].toString());
-			obj.setLevelKey(row[2].toString());
-			obj.setCountryId(Integer.parseInt(row[3].toString()));
-			level.add(obj);
-		}
-		return level;
+		return Currency;
 	}
 	
 }
