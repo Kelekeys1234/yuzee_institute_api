@@ -57,7 +57,7 @@ public class MigrateInstituteController {
 	
 	
 	public Map<String, Institute> get() throws Exception{
-		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\University\\university_names_all.xlsx"); 
+		File myFile = new File("D:\\Seeka\\files\\University\\university_name_australia.xlsx"); 
 		FileInputStream fis = new FileInputStream(myFile); 
 		XSSFWorkbook myWorkBook = new XSSFWorkbook (fis); 
 		XSSFSheet mySheet = myWorkBook.getSheetAt(0); 

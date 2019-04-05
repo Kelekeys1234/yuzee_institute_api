@@ -81,11 +81,17 @@ public class MigrateCourseController {
 	public ResponseEntity<?> migrateCityData() throws Exception {
 		Map<String, CourseDetails> map = get();
 		
+		Integer size = map.size(),i = 0;
+		
+		
 		for (String key : map.keySet()) {
+			i++;
 			
 			try {
 				CourseDetails courseDetails = map.get(key);
 				Course course = courseDetails.getCourseObj();
+				
+				System.out.println(size+"----"+i+", Key: "+key+", Name: "+course.getName());
 				
 				Faculty faculty = courseDetails.getFacultyObj();
 				if(null != faculty) {
@@ -120,7 +126,7 @@ public class MigrateCourseController {
 	}
 	
 	public Map<String, CourseDetails> get() throws Exception{
-		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\Split\\university_course_attribute_australia_1.xlsx"); 
+		File myFile = new File("D:\\Seeka\\files\\Split\\university_course_attribute_australia_1.xlsx"); 
 		FileInputStream fis = new FileInputStream(myFile); 
 		XSSFWorkbook myWorkBook = new XSSFWorkbook (fis); 
 		XSSFSheet mySheet = myWorkBook.getSheetAt(0);
