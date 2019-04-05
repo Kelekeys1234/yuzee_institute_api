@@ -17,6 +17,7 @@ public class InstituteServiceDetails extends RecordModifier implements Serializa
 	
 	private static final long serialVersionUID = 1L;
 	
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;

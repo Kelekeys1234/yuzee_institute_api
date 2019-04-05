@@ -28,6 +28,7 @@ import com.seeka.app.service.ICityService;
 import com.seeka.app.service.ICountryService;
 import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteService;
+import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IServiceDetailsService; 
  
 
@@ -50,10 +51,13 @@ public class MigrateInstituteController {
 	@Autowired
 	IServiceDetailsService serviceDetailsService;
 	
+	@Autowired
+	IInstituteServiceDetailsService instituteServiceDetailsService;
+	
 	
 	
 	public Map<String, Institute> get() throws Exception{
-		File myFile = new File("B:\\SEEKA\\course\\data\\university_names.xlsx"); 
+		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\University\\university_names_all.xlsx"); 
 		FileInputStream fis = new FileInputStream(myFile); 
 		XSSFWorkbook myWorkBook = new XSSFWorkbook (fis); 
 		XSSFSheet mySheet = myWorkBook.getSheetAt(0); 
@@ -85,8 +89,12 @@ public class MigrateInstituteController {
 			cityMap.put(city.getName().toLowerCase().replaceAll("[^\\w]", ""), city);
 		}
 		
-		
+		int rowCount = 0;
 		while (rowIterator.hasNext()) { 
+			rowCount++;
+			if(rowCount == 1) {
+				continue;
+			}
 			
 			org.apache.poi.ss.usermodel.Row row = rowIterator.next(); 
 			Iterator<org.apache.poi.ss.usermodel.Cell> cellIterator = row.cellIterator(); 
@@ -161,10 +169,12 @@ public class MigrateInstituteController {
 						case  org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC: 
 							System.out.print(cell.getNumericCellValue() + "\t"); 
 							cellNumericValue = cell.getNumericCellValue();
+							cellStringValue = String.valueOf(cellNumericValue);
 							break; 
 						case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN: 
 							System.out.print(cell.getBooleanCellValue() + "\t"); 
 							cellBooleanValue = cell.getBooleanCellValue();
+							cellStringValue = String.valueOf(cellNumericValue);
 							break; 
 						default : 
 					} 
@@ -354,237 +364,236 @@ public class MigrateInstituteController {
 					if(i == 47) {
 						english_partners = cellStringValue;
 					} 
-					
 					i++;
-					
-					object = new Institute();
-					
-					Country countryObj = countryMap.get(Country.toLowerCase().replaceAll("[^\\w]", ""));
-					
-					if(null == countryObj) {
-						continue;
-					}
-					object.setCountryObj(countryObj);
-					object.setAccredited(Accredited);
-					object.setAddress(Address);
-					
-					/*City cityObj = new City();
-					cityObj.setName("CITYNAME");
-					object.setCityObj(cityObj);*/
-					//object.setDescription("");
-					
-					if(null != IMG_COUNT && !IMG_COUNT.isEmpty()) {
-						object.setInsImageCount(Integer.parseInt(IMG_COUNT));
-					}else {
-						object.setInsImageCount(0);
-					}
-					InstituteType instituteTypeObj = new InstituteType();
-					instituteTypeObj.setId(1);
-					
-					object.setInstituteTypeObj(instituteTypeObj);
-					object.setInterEmail(Int_Emails);
-					object.setInterPhoneNumber(Int_Ph_num);
-					object.setIsActive(true);
-					object.setIsDeleted(false);
-					object.setLatitude(Latitude);
-					object.setLongitude(Longitude);
-					object.setName(Univeristy_Name);
-					object.setCreatedBy("AUTO");
-					object.setCreatedOn(new Date());
-					if(null != T_num_of_stu && !T_num_of_stu.isEmpty()) {
-						object.setTotalNoOfStudent(Integer.parseInt(T_num_of_stu));
-					}else{
-						object.setTotalNoOfStudent(0);
-					}
-					object.setWebsite(Website); 
-			 
-					List<InstituteServiceDetails> insServiceList = new ArrayList<>();
-					InstituteServiceDetails insServiceDetailObj = null;
-					 
-					
-					if(null != Visa_Work_Benefits && !Visa_Work_Benefits.isEmpty() && Visa_Work_Benefits.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "visaworkbenefits", Visa_Work_Benefits);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Emp_career_dev && !Emp_career_dev.isEmpty() && Emp_career_dev.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "employmentandcareerdevelopment", Emp_career_dev);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Personal_Coun_acad && !Personal_Coun_acad.isEmpty() && Personal_Coun_acad.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "counsellingpersonalandacademic", Personal_Coun_acad);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Study_Library_Support && !Study_Library_Support.isEmpty() && Study_Library_Support.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "studylibrarysupport", Study_Library_Support);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Health_services && !Health_services.isEmpty() && Health_services.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "healthservices", Health_services);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Disability_Support && !Disability_Support.isEmpty() && Disability_Support.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "disabilitysupport", Disability_Support);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Childcare_Centre && !Childcare_Centre.isEmpty() && Childcare_Centre.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "childcarecentre", Childcare_Centre);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Cult_incl_antiracism_prg && !Cult_incl_antiracism_prg.isEmpty() && Cult_incl_antiracism_prg.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "culturalinclusionantiracismprograms", Cult_incl_antiracism_prg);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Tech_Serv && !Tech_Serv.isEmpty() && Tech_Serv.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "technologyservices", Tech_Serv);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Accommodation && !Accommodation.isEmpty() && Accommodation.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "accommodation", Accommodation);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Medical && !Medical.isEmpty() && Medical.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "Medical", Medical);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Leg_Service && !Leg_Service.isEmpty() && Leg_Service.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "legalservices", Leg_Service);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Acct_Serv && !Acct_Serv.isEmpty() && Acct_Serv.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "accountingservices", Acct_Serv);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Bus && !Bus.isEmpty() && Bus.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "bus", Bus);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Train && !Train.isEmpty() && Train.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "train", Train);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Airport_Pickup && !Airport_Pickup.isEmpty() && Airport_Pickup.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "airportpickup", Airport_Pickup);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Swimming_pool && !Swimming_pool.isEmpty() && Swimming_pool.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "swimmingpool", Swimming_pool);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Sports_Center && !Sports_Center.isEmpty() && Sports_Center.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "sportscenter", Sports_Center);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Sport_Teams && !Sport_Teams.isEmpty() && Sport_Teams.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "sportteams", Sport_Teams);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != Housing_Services && !Housing_Services.isEmpty() && Housing_Services.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "housingservices", Housing_Services);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != scholarship && !scholarship.isEmpty() && scholarship.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "scholarship", scholarship);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != govt_loan && !govt_loan.isEmpty() && govt_loan.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "govtloan", govt_loan);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					if(null != paymt_plan && !paymt_plan.isEmpty() && paymt_plan.length() > 0 ) {
-						insServiceDetailObj = getInsService(serviceMap, "paymentplan", paymt_plan);
-						if(insServiceDetailObj != null) {
-							insServiceList.add(insServiceDetailObj);
-						}
-					}
-					
-					InstituteDetails instituteDetails = new InstituteDetails();
-					instituteDetails.setAboutUsInfo(About_Us_Info);
-					instituteDetails.setAverageCostOfLiving(avg_cost_of_living);
-					instituteDetails.setClimate2(climate_2);
-					instituteDetails.setClosingHour(Closing_hour);
-					instituteDetails.setCourseStart(course_start);
-					instituteDetails.setEnglishPartners(english_partners);
-					instituteDetails.setEnrolmentLink(Enrolment_Link);
-					instituteDetails.setOpeningHour(Opening_hour);
-					instituteDetails.setTutionFeesPaymentPlan(Ttion_fees_p_plan);
-					instituteDetails.setType(Type);
-					instituteDetails.setWhatsappNo(whatsapp_no);
-					instituteDetails.setYoutubeLink(YOUTUBE_Link);
-					object.setInstituteDetailsObj(instituteDetails);
-					object.setServiceList(insServiceList);
-					
-	                String univName = Univeristy_Name.replaceAll("[^\\w]", "");
-	                map.put(univName, object);
 				}catch(Exception e) {
 					e.printStackTrace();
 				}
-			} 
+			}
+			
+			object = new Institute();
+			
+			Country countryObj = countryMap.get(Country.toLowerCase().replaceAll("[^\\w]", ""));
+			
+			if(null == countryObj) {
+				continue;
+			}
+			object.setCountryObj(countryObj);
+			object.setAccredited(Accredited);
+			object.setAddress(Address);
+			
+			/*City cityObj = new City();
+			cityObj.setName("CITYNAME");
+			object.setCityObj(cityObj);*/
+			//object.setDescription("");
+			
+			if(null != IMG_COUNT && !IMG_COUNT.isEmpty()) {
+				object.setInsImageCount(Double.valueOf(IMG_COUNT).intValue());
+			}else {
+				object.setInsImageCount(0);
+			}
+			InstituteType instituteTypeObj = new InstituteType();
+			instituteTypeObj.setId(1);
+			
+			object.setInstituteTypeObj(instituteTypeObj);
+			object.setInterEmail(Int_Emails);
+			object.setInterPhoneNumber(Int_Ph_num);
+			object.setIsActive(true);
+			object.setIsDeleted(false);
+			object.setLatitude(Latitude);
+			object.setLongitude(Longitude);
+			object.setName(Univeristy_Name);
+			object.setCreatedBy("AUTO");
+			object.setCreatedOn(new Date());
+			if(null != T_num_of_stu && !T_num_of_stu.isEmpty()) {
+				object.setTotalNoOfStudent(Double.valueOf(T_num_of_stu).intValue()); 
+			}else{
+				object.setTotalNoOfStudent(0);
+			}
+			object.setWebsite(Website); 
+	 
+			List<InstituteServiceDetails> insServiceList = new ArrayList<>();
+			InstituteServiceDetails insServiceDetailObj = null;
+			 
+			
+			if(null != Visa_Work_Benefits && !Visa_Work_Benefits.isEmpty() && Visa_Work_Benefits.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "visaworkbenefits", Visa_Work_Benefits);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Emp_career_dev && !Emp_career_dev.isEmpty() && Emp_career_dev.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "employmentandcareerdevelopment", Emp_career_dev);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Personal_Coun_acad && !Personal_Coun_acad.isEmpty() && Personal_Coun_acad.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "counsellingpersonalandacademic", Personal_Coun_acad);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Study_Library_Support && !Study_Library_Support.isEmpty() && Study_Library_Support.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "studylibrarysupport", Study_Library_Support);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Health_services && !Health_services.isEmpty() && Health_services.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "healthservices", Health_services);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Disability_Support && !Disability_Support.isEmpty() && Disability_Support.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "disabilitysupport", Disability_Support);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Childcare_Centre && !Childcare_Centre.isEmpty() && Childcare_Centre.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "childcarecentre", Childcare_Centre);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Cult_incl_antiracism_prg && !Cult_incl_antiracism_prg.isEmpty() && Cult_incl_antiracism_prg.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "culturalinclusionantiracismprograms", Cult_incl_antiracism_prg);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Tech_Serv && !Tech_Serv.isEmpty() && Tech_Serv.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "technologyservices", Tech_Serv);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Accommodation && !Accommodation.isEmpty() && Accommodation.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "accommodation", Accommodation);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Medical && !Medical.isEmpty() && Medical.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "Medical", Medical);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Leg_Service && !Leg_Service.isEmpty() && Leg_Service.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "legalservices", Leg_Service);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Acct_Serv && !Acct_Serv.isEmpty() && Acct_Serv.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "accountingservices", Acct_Serv);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Bus && !Bus.isEmpty() && Bus.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "bus", Bus);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Train && !Train.isEmpty() && Train.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "train", Train);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Airport_Pickup && !Airport_Pickup.isEmpty() && Airport_Pickup.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "airportpickup", Airport_Pickup);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Swimming_pool && !Swimming_pool.isEmpty() && Swimming_pool.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "swimmingpool", Swimming_pool);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Sports_Center && !Sports_Center.isEmpty() && Sports_Center.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "sportscenter", Sports_Center);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Sport_Teams && !Sport_Teams.isEmpty() && Sport_Teams.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "sportteams", Sport_Teams);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != Housing_Services && !Housing_Services.isEmpty() && Housing_Services.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "housingservices", Housing_Services);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != scholarship && !scholarship.isEmpty() && scholarship.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "scholarship", scholarship);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != govt_loan && !govt_loan.isEmpty() && govt_loan.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "govtloan", govt_loan);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			if(null != paymt_plan && !paymt_plan.isEmpty() && paymt_plan.length() > 0 ) {
+				insServiceDetailObj = getInsService(serviceMap, "paymentplan", paymt_plan);
+				if(insServiceDetailObj != null) {
+					insServiceList.add(insServiceDetailObj);
+				}
+			}
+			
+			InstituteDetails instituteDetails = new InstituteDetails();
+			instituteDetails.setAboutUsInfo(About_Us_Info);
+			instituteDetails.setAverageCostOfLiving(avg_cost_of_living);
+			instituteDetails.setClimate2(climate_2);
+			instituteDetails.setClosingHour(Closing_hour);
+			instituteDetails.setCourseStart(course_start);
+			instituteDetails.setEnglishPartners(english_partners);
+			instituteDetails.setEnrolmentLink(Enrolment_Link);
+			instituteDetails.setOpeningHour(Opening_hour);
+			instituteDetails.setTutionFeesPaymentPlan(Ttion_fees_p_plan);
+			instituteDetails.setType(Type);
+			instituteDetails.setWhatsappNo(whatsapp_no);
+			instituteDetails.setYoutubeLink(YOUTUBE_Link);
+			object.setInstituteDetailsObj(instituteDetails);
+			object.setServiceList(insServiceList);
+			
+            String univName = Univeristy_Name.replaceAll("[^\\w]", "");
+            map.put(univName, object);
 			System.out.println(""); 
 		}
 		System.out.println(map.size());
@@ -597,7 +606,7 @@ public class MigrateInstituteController {
 			if(null != details) {
 				InstituteServiceDetails serviceDetails = new InstituteServiceDetails();
 				serviceDetails.setServiceObj(details);
-				serviceDetails.setIsActive(Boolean.valueOf(field));
+				serviceDetails.setIsActive(Boolean.valueOf(String.valueOf(Double.valueOf(field).intValue())));
 				return serviceDetails;
 			}
 		}catch(Exception e) {
@@ -644,7 +653,7 @@ public class MigrateInstituteController {
 							obj.setCreatedBy("AUTO");
 							obj.setCreatedOn(new Date());
 							obj.setIsDeleted(false);
-							instituteDetailsService.save(instituteDetails);
+							instituteServiceDetailsService.save(obj);
 						}catch(Exception e) {
 							e.printStackTrace();
 						}

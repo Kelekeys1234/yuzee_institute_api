@@ -51,20 +51,12 @@ public class CountryLevelFacultyUtil {
     }
     
     public void run() {
-    	System.out.println("Job Started: "+new Date());
+    	System.out.println("CountryLevelFacultyUtil : Job Started: "+new Date());
     	List<CountryDto> countryList = countryService.getAllCountries();
-    	Integer countrySize = countryList.size();
-    	System.out.println("No Of countries: "+countrySize);
-    	
     	List<Level> levelList = levelService.getAllLevelByCountry();
-    	
-    	System.out.println("No Of levels: "+levelList.size());
-    	
     	Map<Integer, List<Level>> levelMap = new HashMap<>(); 
-    	
     	for (Level level : levelList) {
     		List<Level> list = levelMap.get(level.getCountryId());
-    		
     		if(null != list && !list.isEmpty()) {
     			levelMap.get(level.getCountryId()).add(level);
     			continue;
@@ -73,15 +65,8 @@ public class CountryLevelFacultyUtil {
     		list.add(level);
     		levelMap.put(level.getCountryId(), list);
 		}
-    	System.out.println("Level Grouping done at "+new Date()+", Size:"+levelMap.size());
-    	
-    	
     	List<Faculty> facultyList = facultyService.getAllFacultyByCountryIdAndLevel();
-    	
-    	System.out.println("No Of faculties: "+facultyList.size());
-    	
     	Map<String, List<Faculty>> facultyMap = new HashMap<>();
-    	
     	for (Faculty faculty : facultyList) {
     		
     		String key = faculty.getCountryId()+"-"+faculty.getLevelId();
@@ -96,23 +81,17 @@ public class CountryLevelFacultyUtil {
     		list.add(faculty);
     		facultyMap.put(key, list);
 		}
-    	
-    	System.out.println("Faculty Grouping done at "+new Date()+", Size:"+facultyMap.size());
-    	
 		List<CountryDto> finalList = new ArrayList<>();
-		
 		int i = 0;
 		
 		for (CountryDto countryDto : countryList) {
 			i++;
 			List<Level> levels = levelMap.get(countryDto.getId());
 			if(null != levels && !levels.isEmpty()) {
-				System.out.println("Total Country: "+countrySize+", Current: "+i+", Levels : "+levelList.size());
 				for (Level level : levelList) {
 					String key = countryDto.getId()+"-"+level.getId();
 					List<Faculty> list = facultyMap.get(key);
 					if(null !=list && !list.isEmpty()) {
-						System.out.println("KEY: "+key+", SMapSize: "+list.size());
 						level.setFacultyList(list);
 					}
 				}
@@ -122,7 +101,7 @@ public class CountryLevelFacultyUtil {
 		}
 		countryLevelFacultyList.clear();
 		countryLevelFacultyList = new ArrayList<CountryDto>(finalList);
-		System.out.println("Job Completed: "+new Date());
+		System.out.println("CountryLevelFacultyUtil : Job Completed: "+new Date());
     }
     
     

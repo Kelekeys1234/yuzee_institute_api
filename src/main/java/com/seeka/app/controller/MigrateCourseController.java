@@ -86,7 +86,6 @@ public class MigrateCourseController {
 			try {
 				CourseDetails courseDetails = map.get(key);
 				Course course = courseDetails.getCourseObj();
-				Level level = courseDetails.getLevelObj();
 				
 				Faculty faculty = courseDetails.getFacultyObj();
 				if(null != faculty) {
@@ -121,7 +120,7 @@ public class MigrateCourseController {
 	}
 	
 	public Map<String, CourseDetails> get() throws Exception{
-		File myFile = new File("D:\\Seeka\\files\\course\\university_course_attribute_Turkey.xlsx"); 
+		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\Split\\university_course_attribute_australia_1.xlsx"); 
 		FileInputStream fis = new FileInputStream(myFile); 
 		XSSFWorkbook myWorkBook = new XSSFWorkbook (fis); 
 		XSSFSheet mySheet = myWorkBook.getSheetAt(0);
@@ -840,8 +839,8 @@ public class MigrateCourseController {
 				facultyObj.setCreatedOn(createdOn);
 				facultyObj.setIsDeleted(false);
 				facultyObj.setIsActive(true);
-				facultyObj.setName(Course_Type);
-				facultyObj.setDescription(Course_Type);
+				facultyObj.setName(Faculty.trim());
+				facultyObj.setDescription(Faculty.trim());
 				facultyObj.setLevelObj(level);
 				facultyService.save(facultyObj);
 				courseDetails.setFacultyObj(facultyObj);
@@ -854,8 +853,8 @@ public class MigrateCourseController {
 					facultyObj.setCreatedOn(createdOn);
 					facultyObj.setIsDeleted(false);
 					facultyObj.setIsActive(true);
-					facultyObj.setName(Course_Type);
-					facultyObj.setDescription(Course_Type);
+					facultyObj.setName(Faculty.trim());
+					facultyObj.setDescription(Faculty.trim());
 					facultyObj.setLevelObj(level);
 					facultyService.save(facultyObj);
 					courseDetails.setFacultyObj(facultyObj);
@@ -921,7 +920,6 @@ public class MigrateCourseController {
 				course.setWorldRanking(World_Ranking);
 			}
 			
-			
 			courseDetails.setAvailbilty(availbilty);
 			//courseDetails.setCourseId(courseId);
 			courseDetails.setDescription(description);
@@ -953,23 +951,18 @@ public class MigrateCourseController {
 			if(null != Cost_Savings && !Cost_Savings.equals("") && !Cost_Savings.isEmpty()) {
 				coursePricing.setCostSavings(Double.valueOf(Cost_Savings));
 			}
-			
 			coursePricing.setCurrency(Currency);
 			coursePricing.setCurrencyTime(Currency_Time);
 			coursePricing.setIsActive(true);
 			coursePricing.setIsDeleted(false);
 			coursePricing.setCreatedBy(createdBy);
 			coursePricing.setCreatedOn(createdOn);
-			
 			courseDetails.setCourseObj(course);
 			courseDetails.setCoursePricingObj(coursePricing);
-			
 			String courseName = University.toLowerCase().replaceAll("[^\\w]", "")+Courses.toLowerCase().replaceAll("[^\\w]", "");
-			
             map.put(courseName, courseDetails);
-		System.out.println(""); 
+            System.out.println(""); 
 		}
-		
 		System.out.println("Total Course: "+map.size());
 		return map;
 	}
