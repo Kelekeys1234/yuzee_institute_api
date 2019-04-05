@@ -2,6 +2,7 @@ package com.seeka.app.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -79,6 +80,9 @@ public class Institute extends RecordModifier implements Serializable{
 	
 	@Transient
 	private InstituteDetails instituteDetailsObj;
+	
+	@Transient
+	private List<InstituteServiceDetails> serviceList;
 
 	public Integer getId() {
 		return id;
@@ -223,6 +227,15 @@ public class Institute extends RecordModifier implements Serializable{
 	public void setInstituteDetailsObj(InstituteDetails instituteDetailsObj) {
 		this.instituteDetailsObj = instituteDetailsObj;
 	} 
+	
+	public List<InstituteServiceDetails> getServiceList() {
+		return serviceList;
+	}
+
+	public void setServiceList(List<InstituteServiceDetails> serviceList) {
+		this.serviceList = serviceList;
+	}
+ 
 	
 	
 	public static void main(String[] args) {
