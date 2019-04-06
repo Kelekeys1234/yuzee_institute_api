@@ -27,7 +27,7 @@ public class CurrencyConversionRateUtil {
     public void reportCurrentTime() {
     	 log.info("The time is now {}", dateFormat.format(new Date()));
          System.out.println("The time is now {}"+ dateFormat.format(new Date()));
-         run();
+         //run();
     }
      
     public void run() {

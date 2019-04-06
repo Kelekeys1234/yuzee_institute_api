@@ -65,8 +65,21 @@ public class CountryLevelFacultyUtil {
     		list.add(level);
     		levelMap.put(level.getCountryId(), list);
 		}
+    	
+    	
+    	for (Integer cuntryId : levelMap.keySet()) {
+    		List<Level> list = levelMap.get(cuntryId);
+    		System.out.println(cuntryId+"======================================"+list.size());
+    		for (Level level : list) {
+    			System.out.println(level.getLevelKey()+"-----"+level.getId()+"----------"+level.getName());
+			}
+		}
+    	
     	List<Faculty> facultyList = facultyService.getAllFacultyByCountryIdAndLevel();
     	Map<String, List<Faculty>> facultyMap = new HashMap<>();
+    	
+    	System.out.println("====================================================================================================");
+    	
     	for (Faculty faculty : facultyList) {
     		
     		String key = faculty.getCountryId()+"-"+faculty.getLevelId();
@@ -81,21 +94,38 @@ public class CountryLevelFacultyUtil {
     		list.add(faculty);
     		facultyMap.put(key, list);
 		}
-		List<CountryDto> finalList = new ArrayList<>();
+    	
+    	for (String key : facultyMap.keySet()) {
+    		List<Faculty> list = facultyMap.get(key);
+    		System.out.println(key+"======================================"+list.size());
+    		for (Faculty level : list) {
+    			System.out.println("-----"+level.getId()+"----------"+level.getName());
+			}
+		}
+		
+    	List<CountryDto> finalList = new ArrayList<>();
 		int i = 0;
 		
 		for (CountryDto countryDto : countryList) {
+			
 			i++;
 			List<Level> levels = levelMap.get(countryDto.getId());
+			
 			if(null != levels && !levels.isEmpty()) {
-				for (Level level : levelList) {
+				
+				for (Level level : levels) {
+					
 					String key = countryDto.getId()+"-"+level.getId();
+					
 					List<Faculty> list = facultyMap.get(key);
+					
 					if(null !=list && !list.isEmpty()) {
+						
 						level.setFacultyList(list);
 					}
+					
 				}
-				countryDto.setLevelList(levelList);;
+				countryDto.setLevelList(levels);
 				finalList.add(countryDto);
 			}
 		}

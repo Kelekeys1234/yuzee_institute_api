@@ -126,7 +126,7 @@ public class MigrateCourseController {
 	}
 	
 	public Map<String, CourseDetails> get() throws Exception{
-		File myFile = new File("D:\\Seeka\\files\\Split\\university_course_attribute_australia_1.xlsx"); 
+		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\Split\\university_course_attribute_canada_6.xlsx"); 
 		FileInputStream fis = new FileInputStream(myFile); 
 		XSSFWorkbook myWorkBook = new XSSFWorkbook (fis); 
 		XSSFSheet mySheet = myWorkBook.getSheetAt(0);
