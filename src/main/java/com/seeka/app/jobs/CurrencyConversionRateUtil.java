@@ -1,7 +1,6 @@
 package com.seeka.app.jobs;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,7 +31,7 @@ public class CurrencyConversionRateUtil {
     public void reportCurrentTime() {
     	 log.info("CurrencyConversionRateUtil: The time is now {}", dateFormat.format(new Date()));
          System.out.println("CurrencyConversionRateUtil: The time is now {}"+ dateFormat.format(new Date()));
-         run();
+       //  run();
     }
      
     public void run() {
