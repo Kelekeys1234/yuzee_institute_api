@@ -32,13 +32,13 @@ public class InstituteServiceDetailsService implements IInstituteServiceDetailsS
 	}
 	
 	@Override
-	public List<InstituteServiceDetails> getAllInstituteByCountry(Integer countryId){
-		return dao.getAllInstituteByCountry(countryId);
+	public List<InstituteServiceDetails> getAll(){
+		return dao.getAll();
 	}
 	
 	@Override
-	public List<InstituteServiceDetails> getAll(){
-		return dao.getAll();
+	public List<String> getAllServices(Integer instituteId){
+		return dao.getAllServices(instituteId);
 	}
 
 	

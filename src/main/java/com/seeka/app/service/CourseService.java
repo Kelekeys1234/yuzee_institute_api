@@ -43,4 +43,9 @@ public class CourseService implements ICourseService {
 		return dao.getAllCoursesByFilter(filterObj);
 	}
 	
+	@Override
+	public List<CourseResponseDto> getAllCoursesByInstitute(Integer instituteId, CourseSearchDto filterObj){
+		return dao.getAllCoursesByInstitute(instituteId,filterObj);
+	}
+	
 }

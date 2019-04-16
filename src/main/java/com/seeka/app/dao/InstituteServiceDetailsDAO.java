@@ -1,8 +1,10 @@
 package com.seeka.app.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.InstituteServiceDetails;
+import com.seeka.app.dto.InstituteSearchResultDto;
 
 @Repository
 public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO{
@@ -37,18 +40,19 @@ public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO{
 	}
 	
 	@Override
-	public List<InstituteServiceDetails> getAllInstituteByCountry(Integer countryId) {
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(InstituteServiceDetails.class);
-		crit.add(Restrictions.eq("countryObj.id",countryId));
-		return crit.list();
-	}
-	
-	@Override
 	public List<InstituteServiceDetails> getAll() {
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(InstituteServiceDetails.class); 
 		return crit.list();
+	}
+	
+	@Override
+	public List<String> getAllServices(Integer instituteId) {
+		Session session = sessionFactory.getCurrentSession();	
+		Query query = session.createSQLQuery(
+				"select distinct s.name from service s inner join institute_service i on s.id =i.service_id where i.institute_id = "+instituteId);
+		List<String> rows = query.list();
+		return rows;
 	}
 	
 	/*@Override

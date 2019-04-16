@@ -9,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="seeka_articles")
@@ -27,11 +30,14 @@ public class Article implements Serializable{
 	private String imagePath;
 	private Integer type;
 	private Boolean active;
+	@JsonIgnore
 	private Boolean deleted;
+	@JsonIgnore
 	private Date createdDate;
 	private Integer shared;
 	private Integer reviewed;
 	private Integer likes;
+	private Integer totalCount;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -133,9 +139,12 @@ public class Article implements Serializable{
 	public void setLikes(Integer likes) {
 		this.likes = likes;
 	}
-	
-	
-	
-	
+	@Transient
+	public Integer getTotalCount() {
+		return totalCount;
+	}
+	public void setTotalCount(Integer totalCount) {
+		this.totalCount = totalCount;
+	}
 	
 }

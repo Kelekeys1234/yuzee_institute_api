@@ -11,35 +11,41 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.bean.SearchKeywords;
-import com.seeka.app.service.ISearchKeywordsService;
+import com.seeka.app.bean.CourseKeyword;
+import com.seeka.app.service.ICourseKeywordService;
+import com.seeka.app.service.IInstituteKeywordService;
 
 @RestController
-@RequestMapping("/coursekeyword")
-public class CourseKeywordController {
+@RequestMapping("/global")
+public class GlobalSearchController {
 	 
 	@Autowired
-	ISearchKeywordsService searchKeywordsService;
+	ICourseKeywordService courseKeywordService;
+	
+	@Autowired
+	IInstituteKeywordService instituteKeywordService;
+	
+	public static void main(String[] args) {
+		String str = "Hello I'm your String";
+		String[] splited = str.split("\\s+");
+		for (String string : splited) {
+			System.out.println(string);
+		}
+	}
 	  
 	@RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> searchCourseKeyword(@RequestParam(value = "keyword") String keyword) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
-		List<SearchKeywords> searchkeywordList  = searchKeywordsService.searchCourseKeyword(keyword);		
+		
+		String[] splittedKeywords = keyword.split("\\s+");
+		
+		
+		List<CourseKeyword> searchkeywordList  = courseKeywordService.searchCourseKeyword(keyword);		
 		response.put("status", 1);
 		response.put("searchkeywordList", searchkeywordList);
 		response.put("message","Success");		
 		return ResponseEntity.accepted().body(response);
 	}
-	
-	@RequestMapping(value = "/get", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAll() throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
-		List<SearchKeywords> searchkeywordList  = searchKeywordsService.getAll();
-		response.put("status", 1);
-		response.put("searchkeywordList", searchkeywordList);
-		response.put("message","Success");		
-		return ResponseEntity.accepted().body(response);
-	}
-	
+	 
 }
          

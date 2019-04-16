@@ -3,6 +3,7 @@ package com.seeka.app.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Institute;
+import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 
 @Repository
@@ -94,7 +97,139 @@ public class InstituteDAO implements IInstituteDAO{
 			instituteList.add(obj);
 		}
 		return instituteList;
-	} 
+	}
+	
+	@Override
+	public List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj) {
+		Session session = sessionFactory.getCurrentSession();	
+		
+		String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
+				+ "ctry.name as countryName,crs.world_ranking,crs.stars,crs.totalCourse "
+				+ "from institute inst with(nolock) inner join country ctry with(nolock) "
+				+ "on ctry.id = inst.country_id inner join city ci with(nolock) on ci.id = inst.city_id "
+				+ "inner join faculty_level f WITH(NOLOCK) on f.institute_id = inst.id "
+				+ "inner join institute_level l WITH(NOLOCK) on l.institute_id = inst.id "
+				+ "CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from "
+				+ "course c WITH(NOLOCK) where "
+				+ "c.institute_id = inst.id group by c.institute_id ) crs "
+				+ "where 1=1 ";
+		
+		
+		if(null != filterObj.getCountryIds() && !filterObj.getCountryIds().isEmpty()) {         
+			sqlQuery += " and inst.country_id in ("+StringUtils.join(filterObj.getCountryIds(), ',')+")";
+		}
+		
+		if(null != filterObj.getLevelIds() && !filterObj.getLevelIds().isEmpty()) {
+			sqlQuery += " and l.level_id in ("+StringUtils.join(filterObj.getLevelIds(), ',')+")";
+		}
+		
+		if(null != filterObj.getFacultyIds() && !filterObj.getFacultyIds().isEmpty()) {
+			sqlQuery += " and f.faculty_id in ("+StringUtils.join(filterObj.getFacultyIds(), ',')+")";
+		}
+		  
+		if(null != filterObj.getSearchKey() && !filterObj.getSearchKey().isEmpty()) {
+			sqlQuery += " and inst.name like '%"+filterObj.getSearchKey().trim()+"%'";
+		}
+		
+		sqlQuery += ") A ";
+		
+		
+		String sortingQuery = " order by A.instName asc";
+		sqlQuery += sortingQuery+" OFFSET ("+filterObj.getPageNumber()+"-1)*"+filterObj.getMaxSizePerPage()+" ROWS FETCH NEXT "+filterObj.getMaxSizePerPage()+" ROWS ONLY"; 
+		
+		System.out.println(sqlQuery);
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		List<InstituteResponseDto> list = new ArrayList<InstituteResponseDto>();
+		InstituteResponseDto obj = null;			
+		for(Object[] row : rows){
+			obj = new InstituteResponseDto();	
+			obj.setInstituteId(Integer.parseInt(String.valueOf(row[0])));
+			obj.setInstituteName(String.valueOf(row[1]));
+			obj.setLocation(String.valueOf(row[2])+", "+String.valueOf(row[3]));
+			Integer worldRanking = 0;
+			if(null != row[4]) {
+				worldRanking = Integer.valueOf(String.valueOf(row[4]));
+			}
+			obj.setWorldRanking(worldRanking.toString());
+			obj.setStars(String.valueOf(row[5]));
+			obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
+			obj.setTotalCount(Integer.parseInt(String.valueOf(row[7])));
+			obj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
+			obj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
+			list.add(obj);
+		}   
+	    return list;	   
+	}
+	
+	
+	@Override
+	public InstituteResponseDto getInstituteByID(Integer instituteId) {
+		
+		Session session = sessionFactory.getCurrentSession();	
+		
+		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
+				+ "ctry.name as countryName,crs.world_ranking,crs.stars,crs.totalCourse "
+				+ "from institute inst with(nolock) inner join country ctry with(nolock) "
+				+ "on ctry.id = inst.country_id inner join city ci with(nolock) on ci.id = inst.city_id "
+				+ "CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from "
+				+ "course c WITH(NOLOCK) where "
+				+ "c.institute_id = inst.id group by c.institute_id ) crs "
+				+ "where 1=1 and inst.id ="+instituteId;
+		 
+		System.out.println(sqlQuery);
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		List<InstituteResponseDto> list = new ArrayList<InstituteResponseDto>();
+		InstituteResponseDto obj = null;			
+		for(Object[] row : rows){
+			obj = new InstituteResponseDto();	
+			obj.setInstituteId(Integer.parseInt(String.valueOf(row[0])));
+			obj.setInstituteName(String.valueOf(row[1]));
+			obj.setLocation(String.valueOf(row[2])+", "+String.valueOf(row[3]));
+			obj.setWorldRanking(String.valueOf(row[4]));
+			obj.setStars(String.valueOf(row[5]));
+			obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
+			obj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
+			obj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
+		}   
+	    return obj;	   
+	}
+	
+	
+	/*@Override
+	public InstituteResponseDto getInstituteByID(Integer instituteId) {
+		
+		Session session = sessionFactory.getCurrentSession();	
+		
+		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
+				+ "ctry.name as countryName,crs.world_ranking,crs.stars,crs.totalCourse "
+				+ "from institute inst with(nolock) inner join country ctry with(nolock) "
+				+ "on ctry.id = inst.country_id inner join city ci with(nolock) on ci.id = inst.city_id "
+				+ "CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from "
+				+ "course c WITH(NOLOCK) where "
+				+ "c.institute_id = inst.id group by c.institute_id ) crs "
+				+ "where 1=1 and inst.id ="+instituteId;
+		 
+		System.out.println(sqlQuery);
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		List<InstituteResponseDto> list = new ArrayList<InstituteResponseDto>();
+		InstituteResponseDto obj = null;			
+		for(Object[] row : rows){
+			obj = new InstituteResponseDto();	
+			obj.setInstituteId(Integer.parseInt(String.valueOf(row[0])));
+			obj.setInstituteName(String.valueOf(row[1]));
+			obj.setLocation(String.valueOf(row[2])+", "+String.valueOf(row[3]));
+			obj.setWorldRanking(String.valueOf(row[4]));
+			obj.setStars(String.valueOf(row[5]));
+			obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
+			obj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
+			obj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
+		}   
+	    return obj;	   
+	}*/
+	
 	
 
 }

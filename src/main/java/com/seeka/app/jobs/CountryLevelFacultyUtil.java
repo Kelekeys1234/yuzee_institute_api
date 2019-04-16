@@ -67,18 +67,18 @@ public class CountryLevelFacultyUtil {
 		}
     	
     	
-    	for (Integer cuntryId : levelMap.keySet()) {
+    	/*for (Integer cuntryId : levelMap.keySet()) {
     		List<Level> list = levelMap.get(cuntryId);
     		System.out.println(cuntryId+"======================================"+list.size());
     		for (Level level : list) {
     			System.out.println(level.getLevelKey()+"-----"+level.getId()+"----------"+level.getName());
 			}
-		}
+		}*/
     	
     	List<Faculty> facultyList = facultyService.getAllFacultyByCountryIdAndLevel();
     	Map<String, List<Faculty>> facultyMap = new HashMap<>();
     	
-    	System.out.println("====================================================================================================");
+    	//System.out.println("====================================================================================================");
     	
     	for (Faculty faculty : facultyList) {
     		
@@ -95,13 +95,13 @@ public class CountryLevelFacultyUtil {
     		facultyMap.put(key, list);
 		}
     	
-    	for (String key : facultyMap.keySet()) {
+    	/*for (String key : facultyMap.keySet()) {
     		List<Faculty> list = facultyMap.get(key);
     		System.out.println(key+"======================================"+list.size());
     		for (Faculty level : list) {
     			System.out.println("-----"+level.getId()+"----------"+level.getName());
 			}
-		}
+		}*/
 		
     	List<CountryDto> finalList = new ArrayList<>();
 		int i = 0;

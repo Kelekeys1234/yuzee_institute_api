@@ -13,4 +13,5 @@ public interface ICourseDAO {
 	public Course get(Integer id);
 	public List<Course> getAll();
 	public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
+	public List<CourseResponseDto> getAllCoursesByInstitute(Integer instituteId, CourseSearchDto filterObj);
 }

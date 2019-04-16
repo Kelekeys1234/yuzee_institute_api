@@ -101,7 +101,6 @@ public class CityController {
 	@RequestMapping(value = "/pricing/{cityid}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getCityPricingByCityID(@PathVariable Integer cityid) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
-		
 		File file = new File(NumbeoWebServiceClient.fileDirectory+cityid+".json");		
 		City city = cityService.get(cityid);		
 		if(null != file && file.exists()) {
@@ -110,17 +109,15 @@ public class CityController {
 			NumbeoWebServiceClient.getCityPricing(city.getName(), city.getId());
 			file = new File(NumbeoWebServiceClient.fileDirectory+cityid+".json");			
 		}
-		
 		JSONObject jsonObject = new JSONObject();	
 		if(null != file && file.exists()) {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String st;		
 			String responseStr = "";
-			 while ((st = br.readLine()) != null) {
-				 responseStr += st;
-				 System.out.println(responseStr); 
-				 
-			 }			
+			while ((st = br.readLine()) != null) {
+				responseStr += st;
+				System.out.println(responseStr); 
+			}			
 			br.close();	
 			JSONParser parser = new JSONParser();
 			jsonObject =  (JSONObject) parser.parse(responseStr);			

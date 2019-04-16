@@ -19,6 +19,8 @@ public class CourseResponseDto {
 	private Integer countryId;
 	private Integer cityId;
 	private Integer totalCount;
+	private String localFees;
+	private String intlFees;
 	
 	
 	public Integer getCourseId() {
@@ -122,6 +124,18 @@ public class CourseResponseDto {
 	}
 	public void setTotalCount(Integer totalCount) {
 		this.totalCount = totalCount;
+	}
+	public String getLocalFees() {
+		return localFees;
+	}
+	public void setLocalFees(String localFees) {
+		this.localFees = localFees;
+	}
+	public String getIntlFees() {
+		return intlFees;
+	}
+	public void setIntlFees(String intlFees) {
+		this.intlFees = intlFees;
 	}
 	
 }

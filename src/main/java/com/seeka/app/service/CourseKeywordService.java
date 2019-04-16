@@ -6,33 +6,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.app.bean.SearchKeywords;
-import com.seeka.app.dao.ISearchKeywordsDAO;
+import com.seeka.app.bean.CourseKeyword;
+import com.seeka.app.dao.ICourseKeywordDAO;
 
 @Service
 @Transactional
-public class SerachKeywordsService implements ISearchKeywordsService {
+public class CourseKeywordService implements ICourseKeywordService {
 	
 	@Autowired
-	ISearchKeywordsDAO dao;
+	ICourseKeywordDAO dao;
 	
 	@Override
-	public void save(SearchKeywords obj) {
+	public void save(CourseKeyword obj) {
 		dao.save(obj);
 	}
 	
 	@Override
-	public void update(SearchKeywords obj) {
+	public void update(CourseKeyword obj) {
 		dao.update(obj);
 	}
 	
 	@Override
-	public List<SearchKeywords> getAll(){
+	public List<CourseKeyword> getAll(){
 		return dao.getAll();
 	}
 	
 	@Override
-	public List<SearchKeywords> searchCourseKeyword(String keyword){
+	public List<CourseKeyword> searchCourseKeyword(String keyword){
 		return dao.searchCourseKeyword(keyword);
 	}
 }

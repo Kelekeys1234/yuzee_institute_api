@@ -53,7 +53,7 @@ public class MigrateController {
         Country countryObj = null;
         Map<String, Country> countryMap = new HashMap<String, Country>();
         try {
-        	//ID	COUNTRY_TXT	CNT_DESC	COUNTRY_CODE
+        	//ID COUNTRY_TXT	CNT_DESC	COUNTRY_CODE
             br = new BufferedReader(new FileReader(csvFile));
             while ((line = br.readLine()) != null) {
                 String[] country = line.split(cvsSplitBy);

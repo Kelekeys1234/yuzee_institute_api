@@ -35,7 +35,7 @@ public class InstituteDetails implements Serializable{
 	private String openingHour; // Opening Hour
 	
 	@Column(name="closing_hour")
-	private String closingHour; //Closing Hour
+	private String closingHour; //Closing Hour 
 	
 	@Column(name="enrolment_link")
 	private String enrolmentLink; //Enrolment Link

@@ -127,5 +127,5 @@ public class CourseSearchDto {
 	public void setCurrencyId(Integer currencyId) {
 		this.currencyId = currencyId;
 	}
-	
+	 
 }

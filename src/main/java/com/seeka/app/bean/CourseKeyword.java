@@ -12,8 +12,8 @@ import javax.persistence.Table;
 import com.google.gson.Gson;
 
 @Entity
-@Table(name="search_keywords")
-public class SearchKeywords implements Serializable {
+@Table(name="course_keywords")
+public class CourseKeyword implements Serializable {
 	
 	/**
 	 * 
@@ -25,10 +25,10 @@ public class SearchKeywords implements Serializable {
 	private Integer id;
 	
 	@Column(name="keyword")
-	private String keyword; // keyword
+	private String keyword; //keyword
 	
 	@Column(name="k_desc")
-	private String keywordDescription; // keyword description
+	private String keywordDescription; //keyword description
 	
 	public Integer getId() {
 		return id;
@@ -58,7 +58,7 @@ public static void main(String[] args) {
 		
         System.out.println("Hello World!");  
         
-        SearchKeywords searchKeywordObj = new SearchKeywords();
+        CourseKeyword searchKeywordObj = new CourseKeyword();
         searchKeywordObj.setKeyword("Mechanical");
         searchKeywordObj.setKeywordDescription("Mechanical");
         

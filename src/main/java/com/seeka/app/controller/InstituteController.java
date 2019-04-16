@@ -21,12 +21,17 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.ServiceDetails;
+import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
+import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteService;
+import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IInstituteTypeService;
 import com.seeka.app.service.IServiceDetailsService;
+import com.seeka.app.util.PaginationUtil;
 
 @RestController
 @RequestMapping("/institute")
@@ -43,6 +48,9 @@ public class InstituteController {
 	
 	@Autowired
 	IServiceDetailsService serviceDetailsService;
+	
+	@Autowired
+	IInstituteServiceDetailsService instituteServiceDetailsService;
 	
 	@RequestMapping(value = "/type/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> saveInstituteType(@Valid @RequestBody InstituteType instituteTypeObj) throws Exception {
@@ -331,15 +339,59 @@ public class InstituteController {
 		response.put("serviceList",list);
 		return ResponseEntity.accepted().body(response);
 	}
-	
+	 
 	
 	@RequestMapping(value = "/service/get", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getAllInstituteService() throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		List<ServiceDetails> list = serviceDetailsService.getAll();;
+		
+		
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("serviceList",list);
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/service/get/{institueid}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable Integer institueid) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<String> serviceNames = instituteServiceDetailsService.getAllServices(institueid);
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("serviceList",serviceNames);
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> getCourseTypeByCountry(@RequestBody CourseSearchDto courseSearchDto ) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		
+		if(courseSearchDto.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
+			ErrorDto errorDto = new ErrorDto();
+			errorDto.setCode("400");
+			errorDto.setMessage("Maximum course limit per is "+PaginationUtil.courseResultPageMaxSize);
+			response.put("status", 0);
+			response.put("error", errorDto);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		List<InstituteResponseDto> courseList = instituteService.getAllInstitutesByFilter(courseSearchDto);
+		Integer maxCount = 0,totalCount =0;
+		if(null != courseList && !courseList.isEmpty()) {
+			totalCount = courseList.get(0).getTotalCount();
+			maxCount = courseList.size();
+		}
+		boolean showMore;
+		if(courseSearchDto.getMaxSizePerPage() == maxCount) {
+			showMore = true;
+		} else {
+			showMore = false;
+		}
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("paginationObj",new PaginationDto(totalCount,showMore));
+		response.put("instituteList",courseList);
 		return ResponseEntity.accepted().body(response);
 	}
 }
