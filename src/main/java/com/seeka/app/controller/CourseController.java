@@ -24,6 +24,7 @@ import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteLevel;
+import com.seeka.app.bean.UserInstCourseReview;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -39,6 +40,7 @@ import com.seeka.app.service.IFacultyService;
 import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
+import com.seeka.app.service.IUserInstCourseReviewService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController
@@ -71,6 +73,9 @@ public class CourseController {
 	
 	@Autowired
 	IFacultyLevelService facultyLevelService;
+	
+	@Autowired
+	IUserInstCourseReviewService userInstCourseReviewService; 
 	
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -194,10 +199,9 @@ public class CourseController {
 		instituteObj.setAddress(institute.getAddress());
 		instituteObj.setVisaRequirement(institute.getCountryObj().getVisa());
 		
-		CourseDto courseResObj = new CourseDto();
-		
 		CoursePricing coursePricing = coursePricingService.getPricingByCourseId(courseObj.getId());
 		
+		CourseDto courseResObj = new CourseDto();
 		courseResObj.setCourseName(courseObj.getName());
 		courseResObj.setCost(coursePricing.getCostRange()+" "+coursePricing.getCurrency());
 		courseResObj.setCostOfLiving("");
@@ -213,11 +217,15 @@ public class CourseController {
 		courseResObj.setLocalFees(coursePricing.getLocalFees()+" "+coursePricing.getCurrency());
 		courseResObj.setStars(courseObj.getStars());
 		courseResObj.setWorldRanking(courseObj.getWorldRanking());
-	 
+		courseResObj.setLevelId(courseObj.getFacultyObj().getLevelObj().getId());
+		
+		List<UserInstCourseReview> reviewsList = userInstCourseReviewService.getTopReviewsByFilter(courseObj.getId(),institute.getId());
+		
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("courseObj",courseResObj);
 		response.put("instituteObj",instituteObj);
+		response.put("reviewList",reviewsList);
 		return ResponseEntity.accepted().body(response);
 	}
 	

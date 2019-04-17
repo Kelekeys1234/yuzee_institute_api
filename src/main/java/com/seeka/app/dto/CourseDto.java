@@ -3,6 +3,7 @@ package com.seeka.app.dto;
 public class CourseDto {
 	
 	private Integer courseId;
+	private Integer levelId;
 	private String courseName;	
 	private String courseLanguage;
 	private String languageShortKey;
@@ -127,6 +128,12 @@ public class CourseDto {
 	}
 	public void setIntakeDate(String intakeDate) {
 		this.intakeDate = intakeDate;
+	}
+	public Integer getLevelId() {
+		return levelId;
+	}
+	public void setLevelId(Integer levelId) {
+		this.levelId = levelId;
 	}
 	
 }

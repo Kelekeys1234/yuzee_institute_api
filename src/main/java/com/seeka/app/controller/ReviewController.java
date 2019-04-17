@@ -34,7 +34,7 @@ public class ReviewController {
 	
 	
 	@RequestMapping(value = "/prevalidate", method = RequestMethod.PUT, produces = "application/json")
-	public ResponseEntity<?> getAllArticles(@Valid @RequestBody UserReviewRequestDto request) throws Exception {
+	public ResponseEntity<?> preValidate(@Valid @RequestBody UserReviewRequestDto request) throws Exception {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
 		if(null == request.getUserId()){
@@ -54,26 +54,10 @@ public class ReviewController {
 			response.put("error", errorDto);
 			return ResponseEntity.badRequest().body(response);
 		}
-		
-		List<UserInstCourseReview> reviewsList = userInstCourseReviewService.getAllReviewsByFilter(request);
-		UserInstCourseReview overAllReviewObj = userInstCourseReviewService.getOverAllReview(request);
-         
-		Integer maxCount = 0,totalCount =0;
-		if(null != reviewsList && !reviewsList.isEmpty()) {
-			totalCount = reviewsList.get(0).getTotalCount();
-			maxCount = reviewsList.size();
-		}
-		boolean showMore;
-		if(request.getMaxSizePerPage() == maxCount) {
-			showMore = true;
-		} else {
-			showMore = false;
-		}
+		Boolean isReviewWritten = userInstCourseReviewService.findReviewByFilters(request);
+		response.put("disableReview", isReviewWritten);
         response.put("status", 1);
 		response.put("message","Success.!");
-		response.put("paginationObj",new PaginationDto(totalCount,showMore));
-		response.put("reviewMasterObj",overAllReviewObj);
-		response.put("reviewsList",reviewsList);
 		return ResponseEntity.accepted().body(response);
 	}
 	

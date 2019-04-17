@@ -399,7 +399,7 @@ public class CourseDAO implements ICourseDAO{
 			obj.setDurationTime(String.valueOf(row[7]));
 			Integer worldRanking = 0;
 			if(null != row[12]) {
-				worldRanking = Integer.valueOf(String.valueOf(row[12]));
+				worldRanking = Double.valueOf(String.valueOf(row[12])).intValue();
 			}
 			obj.setWorldRanking(worldRanking.toString());
 			obj.setCourseLanguage(String.valueOf(row[13]));
