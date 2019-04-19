@@ -225,7 +225,13 @@ public class CourseController {
 		response.put("message","Success.!");
 		response.put("courseObj",courseResObj);
 		response.put("instituteObj",instituteObj);
-		response.put("reviewList",reviewsList);
+		
+		if(null != reviewsList && !reviewsList.isEmpty() && reviewsList.size() > 0) {
+			response.put("reviewObj",reviewsList.get(0));
+		}else {
+			response.put("reviewObj",null);
+		}
+		
 		return ResponseEntity.accepted().body(response);
 	}
 	

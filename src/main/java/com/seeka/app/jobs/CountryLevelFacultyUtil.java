@@ -37,6 +37,7 @@ public class CountryLevelFacultyUtil {
 	IFacultyService facultyService;
 	
 	public static List<CountryDto> countryLevelFacultyList = new ArrayList<CountryDto>();
+	public static List<Level> levelMasterList = new ArrayList<Level>();
 
 
     @Scheduled(fixedRate = 500000, initialDelay = 5000)
@@ -48,6 +49,10 @@ public class CountryLevelFacultyUtil {
     
     public static List<CountryDto> getCountryList() {
     	return countryLevelFacultyList;
+    }
+    
+    public static List<Level> getLevelList() {
+    	return levelMasterList;
     }
     
     public void run() {
@@ -65,27 +70,15 @@ public class CountryLevelFacultyUtil {
     		list.add(level);
     		levelMap.put(level.getCountryId(), list);
 		}
-    	
-    	
-    	/*for (Integer cuntryId : levelMap.keySet()) {
-    		List<Level> list = levelMap.get(cuntryId);
-    		System.out.println(cuntryId+"======================================"+list.size());
-    		for (Level level : list) {
-    			System.out.println(level.getLevelKey()+"-----"+level.getId()+"----------"+level.getName());
-			}
-		}*/
+    	List<Level> levelMasterListTemp = levelService.getAll();
+    	levelMasterList.clear();
+    	levelMasterList = new ArrayList<Level>(levelMasterListTemp);
     	
     	List<Faculty> facultyList = facultyService.getAllFacultyByCountryIdAndLevel();
     	Map<String, List<Faculty>> facultyMap = new HashMap<>();
-    	
-    	//System.out.println("====================================================================================================");
-    	
     	for (Faculty faculty : facultyList) {
-    		
     		String key = faculty.getCountryId()+"-"+faculty.getLevelId();
-    		
     		List<Faculty> list = facultyMap.get(key);
-    		
     		if(null != list && !list.isEmpty()) {
     			facultyMap.get(key).add(faculty);
     			continue;
@@ -94,36 +87,19 @@ public class CountryLevelFacultyUtil {
     		list.add(faculty);
     		facultyMap.put(key, list);
 		}
-    	
-    	/*for (String key : facultyMap.keySet()) {
-    		List<Faculty> list = facultyMap.get(key);
-    		System.out.println(key+"======================================"+list.size());
-    		for (Faculty level : list) {
-    			System.out.println("-----"+level.getId()+"----------"+level.getName());
-			}
-		}*/
-		
     	List<CountryDto> finalList = new ArrayList<>();
 		int i = 0;
-		
 		for (CountryDto countryDto : countryList) {
-			
 			i++;
 			List<Level> levels = levelMap.get(countryDto.getId());
-			
 			if(null != levels && !levels.isEmpty()) {
-				
 				for (Level level : levels) {
-					
 					String key = countryDto.getId()+"-"+level.getId();
-					
 					List<Faculty> list = facultyMap.get(key);
-					
 					if(null !=list && !list.isEmpty()) {
 						
 						level.setFacultyList(list);
 					}
-					
 				}
 				countryDto.setLevelList(levels);
 				finalList.add(countryDto);

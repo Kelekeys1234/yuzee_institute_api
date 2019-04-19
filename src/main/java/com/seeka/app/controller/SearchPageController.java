@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.bean.Level;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.jobs.CountryLevelFacultyUtil;
 import com.seeka.app.service.ICountryService;
@@ -34,8 +35,10 @@ public class SearchPageController {
 	public ResponseEntity<?>  getAllCountries() {
 		Map<String,Object> response = new HashMap<String, Object>();
 		List<CountryDto> countryList = CountryLevelFacultyUtil.getCountryList();
+		List<Level> levelList = CountryLevelFacultyUtil.getLevelList();
 		System.out.println("Countries: "+countryList.size());
 		response.put("countryList",countryList);
+		response.put("levelList",levelList);
 		response.put("status", 1);
 		response.put("message","Success.!");
     	return ResponseEntity.accepted().body(response);

@@ -2,6 +2,7 @@ package com.seeka.app.dto;
 
 import java.util.List;
 
+import com.seeka.app.bean.City;
 import com.seeka.app.bean.Level;
 
 public class CountryDto {
@@ -11,6 +12,7 @@ public class CountryDto {
 	private String countryCode;
 	private String imageUrl;
 	private List<Level> levelList;
+	private List<City> cityList;
 	
 	public Integer getId() {
 		return id;
@@ -42,5 +44,11 @@ public class CountryDto {
 	}
 	public void setLevelList(List<Level> levelList) {
 		this.levelList = levelList;
+	}
+	public List<City> getCityList() {
+		return cityList;
+	}
+	public void setCityList(List<City> cityList) {
+		this.cityList = cityList;
 	} 
 }
