@@ -1,16 +1,18 @@
 package com.seeka.app.dto;
 
+import java.util.UUID;
+
 public class InstituteSearchResultDto {
 	
-	private Integer instituteId;
+	private UUID instituteId;
 	private String instituteName;
 	private String location;
 	
 	
-	public Integer getInstituteId() {
+	public UUID getInstituteId() {
 		return instituteId;
 	}
-	public void setInstituteId(Integer instituteId) {
+	public void setInstituteId(UUID instituteId) {
 		this.instituteId = instituteId;
 	}
 	public String getInstituteName() {

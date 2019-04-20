@@ -2,11 +2,10 @@ package com.seeka.app.bean;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -22,10 +21,9 @@ public class Level extends RecordModifier implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Id	
 	@Column(name="id")
-	private Integer id;
+	private UUID id;
 	
 	@Column(name="name")
 	private String name; //type text
@@ -41,16 +39,16 @@ public class Level extends RecordModifier implements Serializable{
 	private	Boolean isActive; // Is Active
 	
 	@Transient
-	private Integer countryId;
+	private UUID countryId;
 	
 	@Transient
 	private List<Faculty> facultyList;
 
-	public Integer getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
@@ -94,11 +92,11 @@ public class Level extends RecordModifier implements Serializable{
 		this.facultyList = facultyList;
 	}
 
-	public Integer getCountryId() {
+	public UUID getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(Integer countryId) {
+	public void setCountryId(UUID countryId) {
 		this.countryId = countryId;
 	} 
 	

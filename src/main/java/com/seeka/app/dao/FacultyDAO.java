@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -33,7 +34,7 @@ public class FacultyDAO implements IFacultyDAO{
 	}
 	
 	@Override
-	public Faculty get(Integer id) {	
+	public Faculty get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		Faculty obj = session.get(Faculty.class, id);
 		return obj;
@@ -47,7 +48,7 @@ public class FacultyDAO implements IFacultyDAO{
 	} 
 	
 	@Override
-	public List<Faculty> getFacultyByCountryIdAndLevelId(Integer countryID,Integer levelId) {
+	public List<Faculty> getFacultyByCountryIdAndLevelId(UUID countryID,UUID levelId) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
 				"select distinct f.id, f.name as facultyName,f.level_id as levelid from faculty f with(nolock) "
@@ -59,7 +60,7 @@ public class FacultyDAO implements IFacultyDAO{
 		Faculty obj = null;
 		for(Object[] row : rows){
 			obj = new Faculty();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString((row[0].toString())));
 			obj.setName(row[1].toString());
 			faculties.add(obj);
 		}
@@ -77,10 +78,10 @@ public class FacultyDAO implements IFacultyDAO{
 		Faculty obj = null;
 		for(Object[] row : rows){
 			obj = new Faculty();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString((row[0].toString())));
 			obj.setName(row[1].toString());
-			obj.setLevelId(Integer.parseInt(row[2].toString()));
-			obj.setCountryId(Integer.parseInt(row[3].toString()));
+			obj.setLevelId(UUID.fromString((row[2].toString())));
+			obj.setCountryId(UUID.fromString((row[3].toString())));
 			faculties.add(obj);
 		}
 		return faculties;

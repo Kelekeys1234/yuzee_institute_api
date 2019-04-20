@@ -1,11 +1,10 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,19 +17,18 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
-	private Integer id;
+	private UUID id;
 		
 	@Column(name="institute_id")
-	private Integer instituteId; // InstituteId
+	private UUID instituteId; // InstituteId
 		
 	@ManyToOne
 	@JoinColumn(name="country_id")
 	private Country countryObj; // CountryId
 	
 	@Column(name="city_id")
-	private Integer cityId; // CityId
+	private UUID cityId; // CityId
 	
 	@ManyToOne
 	@JoinColumn(name="level_id")
@@ -39,19 +37,19 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 	@Column(name="is_active")
 	private	Boolean isActive; // Is Active
 
-	public Integer getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
-	public Integer getInstituteId() {
+	public UUID getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(Integer instituteId) {
+	public void setInstituteId(UUID instituteId) {
 		this.instituteId = instituteId;
 	} 
 
@@ -63,11 +61,11 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 		this.countryObj = countryObj;
 	}
 
-	public Integer getCityId() {
+	public UUID getCityId() {
 		return cityId;
 	}
 
-	public void setCityId(Integer cityId) {
+	public void setCityId(UUID cityId) {
 		this.cityId = cityId;
 	} 
 

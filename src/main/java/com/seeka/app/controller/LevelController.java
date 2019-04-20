@@ -3,6 +3,7 @@ package com.seeka.app.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class LevelController {
 	}
 	
 	@RequestMapping(value = "/getlevel/{countryid}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getLevelByCountry(@PathVariable Integer countryid) throws Exception {
+	public ResponseEntity<?> getLevelByCountry(@PathVariable UUID countryid) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
         List<Level> levelList = levelService.getLevelByCountryId(countryid);
         response.put("status", 1);

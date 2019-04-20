@@ -1,11 +1,10 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,8 +18,8 @@ public class InstituteServiceDetails extends RecordModifier implements Serializa
 	
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	@Column(name="id")
+	private UUID id;
 	
 	@ManyToOne
 	@JoinColumn(name="service_id")
@@ -36,11 +35,11 @@ public class InstituteServiceDetails extends RecordModifier implements Serializa
 	@Column(name="is_active")
 	private Boolean isActive; // Is Active
 
-	public Integer getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 	public Institute getInstituteObj() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class FacultyController {
 	}
 	
 	@RequestMapping(value = "/get/{countryid}/{levelid}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getFacultyeByCountryAndLevelId(@PathVariable Integer countryid,@PathVariable Integer levelid) throws Exception {
+	public ResponseEntity<?> getFacultyeByCountryAndLevelId(@PathVariable UUID countryid,@PathVariable UUID levelid) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		List<Faculty> facultyList = facultyService.getFacultyByCountryIdAndLevelId(countryid, levelid);
         response.put("status", 1);

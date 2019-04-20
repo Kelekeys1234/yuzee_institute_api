@@ -1,23 +1,24 @@
 package com.seeka.app.dto;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Level;
 
 public class CountryDto {
 	
-	private Integer id;
+	private UUID id;
 	private String name;
 	private String countryCode;
 	private String imageUrl;
 	private List<Level> levelList;
 	private List<City> cityList;
 	
-	public Integer getId() {
+	public UUID getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 	public String getName() {

@@ -1,12 +1,14 @@
 package com.seeka.app.dto;
 
+import java.util.UUID;
+
 public class CourseResponseDto {
 	
-	private Integer courseId;
+	private UUID courseId;
 	private String courseName;	
 	private String courseLanguage;
 	private String languageShortKey;
-	private Integer instituteId;
+	private UUID instituteId;
 	private String instituteName;
 	private String instituteLogoUrl;	
 	private String instituteImageUrl;	
@@ -16,17 +18,17 @@ public class CourseResponseDto {
 	private String duration;
 	private String durationTime;
 	private String location;
-	private Integer countryId;
-	private Integer cityId;
+	private UUID countryId;
+	private UUID cityId;
 	private Integer totalCount;
 	private String localFees;
 	private String intlFees;
 	
 	
-	public Integer getCourseId() {
+	public UUID getCourseId() {
 		return courseId;
 	}
-	public void setCourseId(Integer courseId) {
+	public void setCourseId(UUID courseId) {
 		this.courseId = courseId;
 	}
 	public String getCourseName() {
@@ -35,10 +37,10 @@ public class CourseResponseDto {
 	public void setCourseName(String courseName) {
 		this.courseName = courseName;
 	}
-	public Integer getInstituteId() {
+	public UUID getInstituteId() {
 		return instituteId;
 	}
-	public void setInstituteId(Integer instituteId) {
+	public void setInstituteId(UUID instituteId) {
 		this.instituteId = instituteId;
 	}
 	public String getInstituteName() {
@@ -95,16 +97,16 @@ public class CourseResponseDto {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	public Integer getCountryId() {
+	public UUID getCountryId() {
 		return countryId;
 	}
-	public void setCountryId(Integer countryId) {
+	public void setCountryId(UUID countryId) {
 		this.countryId = countryId;
 	}
-	public Integer getCityId() {
+	public UUID getCityId() {
 		return cityId;
 	}
-	public void setCityId(Integer cityId) {
+	public void setCityId(UUID cityId) {
 		this.cityId = cityId;
 	}
 	public String getCourseLanguage() {

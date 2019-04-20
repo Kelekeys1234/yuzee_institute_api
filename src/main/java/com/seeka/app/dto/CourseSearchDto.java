@@ -1,19 +1,20 @@
 package com.seeka.app.dto;
 
 import java.util.List;
+import java.util.UUID;
 
 public class CourseSearchDto {
 	
 	private String searchKey;
 	private String courseName;
 	private Boolean isProfileSearch;
-	private Integer userId;
-	private Integer currencyId;
+	private UUID userId;
+	private UUID currencyId;
 	private List<String> courseKeys;
-	private List<Integer> levelIds;
-	private List<Integer> facultyIds;
-	private List<Integer> countryIds;
-	private List<Integer> serviceIds;
+	private List<UUID> levelIds;
+	private List<UUID> facultyIds;
+	private List<UUID> countryIds;
+	private List<UUID> serviceIds;
 	private Double minCost;
 	private Double maxCost;
 	private Integer minDuration;
@@ -48,28 +49,28 @@ public class CourseSearchDto {
 	public void setCourseKeys(List<String> courseKeys) {
 		this.courseKeys = courseKeys;
 	}
-	public List<Integer> getLevelIds() {
+	public List<UUID> getLevelIds() {
 		return levelIds;
 	}
-	public void setLevelIds(List<Integer> levelIds) {
+	public void setLevelIds(List<UUID> levelIds) {
 		this.levelIds = levelIds;
 	}
-	public List<Integer> getFacultyIds() {
+	public List<UUID> getFacultyIds() {
 		return facultyIds;
 	}
-	public void setFacultyIds(List<Integer> facultyIds) {
+	public void setFacultyIds(List<UUID> facultyIds) {
 		this.facultyIds = facultyIds;
 	}
-	public List<Integer> getCountryIds() {
+	public List<UUID> getCountryIds() {
 		return countryIds;
 	}
-	public void setCountryIds(List<Integer> countryIds) {
+	public void setCountryIds(List<UUID> countryIds) {
 		this.countryIds = countryIds;
 	}
-	public List<Integer> getServiceIds() {
+	public List<UUID> getServiceIds() {
 		return serviceIds;
 	}
-	public void setServiceIds(List<Integer> serviceIds) {
+	public void setServiceIds(List<UUID> serviceIds) {
 		this.serviceIds = serviceIds;
 	}
 	public Double getMinCost() {
@@ -115,16 +116,16 @@ public class CourseSearchDto {
 	public void setPageNumber(Integer pageNumber) {
 		this.pageNumber = pageNumber;
 	}
-	public Integer getUserId() {
+	public UUID getUserId() {
 		return userId;
 	}
-	public void setUserId(Integer userId) {
+	public void setUserId(UUID userId) {
 		this.userId = userId;
 	}
-	public Integer getCurrencyId() {
+	public UUID getCurrencyId() {
 		return currencyId;
 	}
-	public void setCurrencyId(Integer currencyId) {
+	public void setCurrencyId(UUID currencyId) {
 		this.currencyId = currencyId;
 	}
 	 

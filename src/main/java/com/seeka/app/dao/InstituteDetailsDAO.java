@@ -1,6 +1,7 @@
 package com.seeka.app.dao;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -30,7 +31,7 @@ public class InstituteDetailsDAO implements IInstituteDetailsDAO{
 	}
 	
 	@Override
-	public InstituteDetails get(Integer id) {	
+	public InstituteDetails get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(InstituteDetails.class);
 		crit.add(Restrictions.eq("instituteId",id));
@@ -39,7 +40,7 @@ public class InstituteDetailsDAO implements IInstituteDetailsDAO{
 	}
 	
 	@Override
-	public List<InstituteDetails> getAllInstituteByCountry(Integer countryId) {
+	public List<InstituteDetails> getAllInstituteByCountry(UUID countryId) {
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(InstituteDetails.class);
 		crit.add(Restrictions.eq("countryObj.id",countryId));

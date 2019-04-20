@@ -1,5 +1,7 @@
 package com.seeka.app.dao;
 
+import java.util.UUID;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class InstituteTypeDAO implements IInstituteTypeDAO{
 	}
 	
 	@Override
-	public InstituteType get(Integer id) {	
+	public InstituteType get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		InstituteType obj = session.get(InstituteType.class, id);
 		return obj;

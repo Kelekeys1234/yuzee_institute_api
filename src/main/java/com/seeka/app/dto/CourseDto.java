@@ -1,9 +1,11 @@
 package com.seeka.app.dto;
 
+import java.util.UUID;
+
 public class CourseDto {
 	
-	private Integer courseId;
-	private Integer levelId;
+	private UUID courseId;
+	private UUID levelId;
 	private String courseName;	
 	private String courseLanguage;
 	private String languageShortKey;
@@ -21,10 +23,10 @@ public class CourseDto {
 	private String delivery;
 	private String intakeDate;
 	
-	public Integer getCourseId() {
+	public UUID getCourseId() {
 		return courseId;
 	}
-	public void setCourseId(Integer courseId) {
+	public void setCourseId(UUID courseId) {
 		this.courseId = courseId;
 	}
 	public String getCourseName() {
@@ -129,10 +131,10 @@ public class CourseDto {
 	public void setIntakeDate(String intakeDate) {
 		this.intakeDate = intakeDate;
 	}
-	public Integer getLevelId() {
+	public UUID getLevelId() {
 		return levelId;
 	}
-	public void setLevelId(Integer levelId) {
+	public void setLevelId(UUID levelId) {
 		this.levelId = levelId;
 	}
 	

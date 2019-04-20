@@ -1,6 +1,7 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,23 +24,23 @@ public class FacultyLevel extends RecordModifier implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;	
+	private UUID id;	
 	
 	@ManyToOne
 	@JoinColumn(name="institute_id")
 	private Institute instituteObj; // Institute LevelId
 	
 	@Column(name="faculty_id")
-	private Integer facultyId; // FacultyId
+	private UUID facultyId; // FacultyId
 			
 	@Column(name="is_active")
 	private	Boolean isActive; // Is Active
 
-	public Integer getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
  
@@ -52,11 +53,11 @@ public class FacultyLevel extends RecordModifier implements Serializable{
 		this.instituteObj = instituteObj;
 	}
 
-	public Integer getFacultyId() {
+	public UUID getFacultyId() {
 		return facultyId;
 	}
 
-	public void setFacultyId(Integer facultyId) {
+	public void setFacultyId(UUID facultyId) {
 		this.facultyId = facultyId;
 	}
 
@@ -72,11 +73,11 @@ public class FacultyLevel extends RecordModifier implements Serializable{
 		   
 	    FacultyLevel obj = new FacultyLevel();
 	    Level levlObj = new Level();
-	    levlObj.setId(3);
-	    obj.setFacultyId(1);
+	    levlObj.setId(UUID.randomUUID());
+	    obj.setFacultyId(UUID.randomUUID());
 	    
 	    Institute instituteObj = new Institute();
-	    instituteObj.setId(1);
+	    instituteObj.setId(UUID.randomUUID());
 	    
 	    
 	    obj.setInstituteObj(instituteObj);

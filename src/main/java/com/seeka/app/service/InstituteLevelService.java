@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,12 +28,12 @@ public class InstituteLevelService implements IInstituteLevelService {
 	}
 	
 	@Override
-	public InstituteLevel get(Integer id) {
+	public InstituteLevel get(UUID id) {
 		return dao.get(id);
 	}
 	
 	@Override
-	public List<InstituteLevel> getAllLevelByInstituteId(Integer instituteId){
+	public List<InstituteLevel> getAllLevelByInstituteId(UUID instituteId){
 		return dao.getAllLevelByInstituteId(instituteId);
 	}
 	

@@ -3,6 +3,7 @@ package com.seeka.app.bean;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,8 +25,8 @@ public class Institute extends RecordModifier implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	@Column(name = "id")
+	private UUID id;
 	
 	@ManyToOne
 	@JoinColumn(name="institute_type_id")
@@ -84,11 +85,11 @@ public class Institute extends RecordModifier implements Serializable{
 	@Transient
 	private List<InstituteServiceDetails> serviceList;
 
-	public Integer getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
@@ -241,13 +242,13 @@ public class Institute extends RecordModifier implements Serializable{
 	public static void main(String[] args) {
 		
 		Country countryObj = new Country();
-		countryObj.setId(257);
+		countryObj.setId(UUID.randomUUID());
 
 		InstituteType instituteTypeObj = new InstituteType();
-		instituteTypeObj.setId(1);
+		instituteTypeObj.setId(UUID.randomUUID());
 		
 		City cityObj = new City();
-		cityObj.setId(3);
+		cityObj.setId(UUID.randomUUID());
 		
 		
 		Institute institute = new Institute();

@@ -3,6 +3,7 @@ package com.seeka.app.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -98,6 +99,7 @@ public class CourseController {
 		Faculty faculty = facultyService.get(course.getFacultyObj().getId());
 		
 		InstituteLevel instituteLevel = new InstituteLevel();
+		instituteLevel.setId(UUID.randomUUID());
 		instituteLevel.setCityId(course.getCityObj().getId());
 		instituteLevel.setCountryObj(course.getCountryObj());
 		instituteLevel.setInstituteId(course.getInstituteObj().getId());
@@ -162,7 +164,7 @@ public class CourseController {
 	}
 	
 	@RequestMapping(value = "/get/{courseid}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@Valid @PathVariable Integer courseid) throws Exception {
+	public ResponseEntity<?> get(@Valid @PathVariable UUID courseid) throws Exception {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
 		Course courseObj = courseService.get(courseid);
@@ -236,7 +238,7 @@ public class CourseController {
 	}
 	
 	@RequestMapping(value = "/get/all/{instituteid}", method = RequestMethod.PUT, produces = "application/json")
-	public ResponseEntity<?> getAllCourseByInstituteID(@Valid @PathVariable Integer instituteid, @Valid @RequestBody CourseSearchDto request ) throws Exception {
+	public ResponseEntity<?> getAllCourseByInstituteID(@Valid @PathVariable UUID instituteid, @Valid @RequestBody CourseSearchDto request ) throws Exception {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
 		

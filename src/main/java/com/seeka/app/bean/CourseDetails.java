@@ -1,15 +1,13 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.google.gson.Gson;
 
 @Entity
 @Table(name="course_details")
@@ -22,7 +20,7 @@ public class CourseDetails implements Serializable{
 
 	@Id
 	@Column(name="course_id")
-	private Integer courseId;
+	private UUID courseId;
 		
 	@Column(name="wr_range")
 	private String worldRange;//World Range
@@ -59,13 +57,13 @@ public class CourseDetails implements Serializable{
  
 	 
 
-	public Integer getCourseId() {
+	public UUID getCourseId() {
 		return courseId;
 	}
 
 
 
-	public void setCourseId(Integer courseId) {
+	public void setCourseId(UUID courseId) {
 		this.courseId = courseId;
 	}
 

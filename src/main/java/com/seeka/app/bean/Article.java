@@ -2,11 +2,10 @@ package com.seeka.app.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,8 +20,8 @@ public class Article implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer id;
-	private Integer userId;
+	private UUID id;
+	private UUID userId;
 	private String addType;
 	private String heading;
 	private String content;
@@ -39,19 +38,19 @@ public class Article implements Serializable{
 	private Integer likes;
 	private Integer totalCount;
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	public Integer getId() {
+	@Id	
+	@Column(name="id")
+	public UUID getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 	@Column(name="user_id")
-	public Integer getUserId() {
+	public UUID getUserId() {
 		return userId;
 	}
-	public void setUserId(Integer userId) {
+	public void setUserId(UUID userId) {
 		this.userId = userId;
 	}
 	@Column(name="add_type")

@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -40,7 +41,7 @@ public class CourseDAO implements ICourseDAO{
 	}
 	
 	@Override
-	public Course get(Integer id) {	
+	public Course get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		Course obj = session.get(Course.class, id);
 		return obj;
@@ -188,14 +189,14 @@ public class CourseDAO implements ICourseDAO{
 				cost = ConvertionUtil.roundOffToUpper(costRange);
 				obj = new CourseResponseDto();	
 				obj.setCost(cost +" "+newCurrencyCode);
-				obj.setCourseId(Integer.parseInt(String.valueOf(row[0])));
+				obj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
 				obj.setCourseName(String.valueOf(row[1]));
-				obj.setInstituteId(Integer.parseInt(String.valueOf(row[2])));
+				obj.setInstituteId(UUID.fromString((String.valueOf(row[2]))));
 				obj.setInstituteName(String.valueOf(row[3]));
 				obj.setDuration(String.valueOf(row[6]));
 				obj.setDurationTime(String.valueOf(row[7]));
-				obj.setCityId(Integer.parseInt(String.valueOf(row[8])));
-				obj.setCountryId(Integer.parseInt(String.valueOf(row[9])));
+				obj.setCityId(UUID.fromString((String.valueOf(row[8]))));
+				obj.setCountryId(UUID.fromString((String.valueOf(row[9]))));
 				obj.setLocation(String.valueOf(row[10])+", "+String.valueOf(row[11]));
 				obj.setWorldRanking(String.valueOf(row[12]));
 				obj.setCourseLanguage(String.valueOf(row[13]));
@@ -264,15 +265,15 @@ public class CourseDAO implements ICourseDAO{
 		CourseResponseDto obj = null;			
 		for(Object[] row : rows){
 			obj = new CourseResponseDto();	
-			obj.setCourseId(Integer.parseInt(String.valueOf(row[0])));
+			obj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
 			obj.setCourseName(String.valueOf(row[1]));
-			obj.setInstituteId(Integer.parseInt(String.valueOf(row[2])));
+			obj.setInstituteId(UUID.fromString((String.valueOf(row[2]))));
 			obj.setInstituteName(String.valueOf(row[3]));
 			obj.setCost(String.valueOf(row[4]) +" "+String.valueOf(row[5]));
 			obj.setDuration(String.valueOf(row[6]));
 			obj.setDurationTime(String.valueOf(row[7]));
-			obj.setCityId(Integer.parseInt(String.valueOf(row[8])));
-			obj.setCountryId(Integer.parseInt(String.valueOf(row[9])));
+			obj.setCityId(UUID.fromString((String.valueOf(row[8]))));
+			obj.setCountryId(UUID.fromString((String.valueOf(row[9]))));
 			obj.setLocation(String.valueOf(row[10])+", "+String.valueOf(row[11]));
 			obj.setWorldRanking(String.valueOf(row[12]));
 			obj.setCourseLanguage(String.valueOf(row[13]));
@@ -288,7 +289,7 @@ public class CourseDAO implements ICourseDAO{
 	
 	
 	@Override
-	public List<CourseResponseDto> getAllCoursesByInstitute(Integer instituteId, CourseSearchDto filterObj) {
+	public List<CourseResponseDto> getAllCoursesByInstitute(UUID instituteId, CourseSearchDto filterObj) {
 		Session session = sessionFactory.getCurrentSession();	
 		String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName,"
 				+ "inst.id as instId,inst.name as instName,"
@@ -392,7 +393,7 @@ public class CourseDAO implements ICourseDAO{
 		CourseResponseDto obj = null;			
 		for(Object[] row : rows){
 			obj = new CourseResponseDto();	
-			obj.setCourseId(Integer.parseInt(String.valueOf(row[0])));
+			obj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
 			obj.setCourseName(String.valueOf(row[1]));
 			obj.setCost(String.valueOf(row[4]) +" "+String.valueOf(row[5]));
 			obj.setDuration(String.valueOf(row[6]));
@@ -414,7 +415,7 @@ public class CourseDAO implements ICourseDAO{
 	}
 	
 	
-	public CourseResponseDto getCourse(Integer instituteId, CourseSearchDto filterObj) {
+	public CourseResponseDto getCourse(UUID instituteId, CourseSearchDto filterObj) {
 		Session session = sessionFactory.getCurrentSession();	
 		String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName,"
 				+ "inst.id as instId,inst.name as instName,"
@@ -518,7 +519,7 @@ public class CourseDAO implements ICourseDAO{
 		CourseResponseDto obj = null;			
 		for(Object[] row : rows){
 			obj = new CourseResponseDto();	
-			obj.setCourseId(Integer.parseInt(String.valueOf(row[0])));
+			obj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
 			obj.setCourseName(String.valueOf(row[1]));
 			obj.setCost(String.valueOf(row[4]) +" "+String.valueOf(row[5]));
 			obj.setDuration(String.valueOf(row[6]));

@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class CurrencyService implements ICurrencyService {
 	}
 	
 	@Override
-	public Currency get(Integer id) {
+	public Currency get(UUID id) {
 		return dao.get(id);
 	}
 	
@@ -37,12 +38,12 @@ public class CurrencyService implements ICurrencyService {
 	}
 	
 	@Override
-	public List<Currency> getCourseTypeByCountryId(Integer countryID){
+	public List<Currency> getCourseTypeByCountryId(UUID countryID){
 		return dao.getCourseTypeByCountryId(countryID);
 	}
 	
 	@Override
-	public List<Currency> getCurrencyByCountryId(Integer countryId){
+	public List<Currency> getCurrencyByCountryId(UUID countryId){
 		return dao.getCurrencyByCountryId(countryId);
 	}
 }

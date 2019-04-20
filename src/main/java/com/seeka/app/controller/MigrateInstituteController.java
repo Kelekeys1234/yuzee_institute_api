@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -392,7 +393,7 @@ public class MigrateInstituteController {
 				object.setInsImageCount(0);
 			}
 			InstituteType instituteTypeObj = new InstituteType();
-			instituteTypeObj.setId(1);
+			instituteTypeObj.setId(UUID.randomUUID());
 			
 			object.setInstituteTypeObj(instituteTypeObj);
 			object.setInterEmail(Int_Emails);

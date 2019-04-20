@@ -2,6 +2,7 @@ package com.seeka.app.bean;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,8 +17,8 @@ public class InstituteDetails implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@Column(name="institute_id")
-	private Integer instituteId; //Institute Details
+	@Column(name="id")
+	private UUID instituteId; //Institute Details
 	
 	@Column(name="type")
 	private String type; //Type
@@ -57,11 +58,11 @@ public class InstituteDetails implements Serializable{
 	
 	
 	
-	public Integer getInstituteId() {
+	public UUID getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(Integer instituteId) {
+	public void setInstituteId(UUID instituteId) {
 		this.instituteId = instituteId;
 	}
 

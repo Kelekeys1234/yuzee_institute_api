@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -60,7 +61,7 @@ public class FacultyLevelDAO implements IFacultyLevelDAO{
 		FacultyLevel obj = null;
 		for(Object[] row : rows){
 			obj = new FacultyLevel();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString((row[0].toString())));
 			/*obj.setName(row[1].toString());*/
 			faculties.add(obj);
 		}

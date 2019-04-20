@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public class CountryUtil {
     	System.out.println("CountryUtil : Job Started: "+new Date());
     	List<CountryDto> countryListTemp = countryService.getAllCountries();
     	List<City> cityList = cityService.getAll();
-    	Map<Integer, List<City>> cityMap = new HashMap<>(); 
+    	Map<UUID, List<City>> cityMap = new HashMap<>(); 
     	for (City city : cityList) {
     		List<City> list = cityMap.get(city.getCountryObj().getId());
     		if(null != list && !list.isEmpty()) {

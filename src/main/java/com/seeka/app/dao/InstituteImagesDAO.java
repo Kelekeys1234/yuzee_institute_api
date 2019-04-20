@@ -1,6 +1,7 @@
 package com.seeka.app.dao;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -30,7 +31,7 @@ public class InstituteImagesDAO implements IInstituteImagesDAO {
 	}
 	
 	@Override
-	public InstituteImages get(Integer id) {	
+	public InstituteImages get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		InstituteImages obj = session.get(InstituteImages.class, id);
 		return obj;

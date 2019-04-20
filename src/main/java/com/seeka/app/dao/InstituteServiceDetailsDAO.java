@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -33,7 +34,7 @@ public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO{
 	}
 	
 	@Override
-	public InstituteServiceDetails get(Integer id) {	
+	public InstituteServiceDetails get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		InstituteServiceDetails obj = session.get(InstituteServiceDetails.class, id);
 		return obj;
@@ -47,7 +48,7 @@ public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO{
 	}
 	
 	@Override
-	public List<String> getAllServices(Integer instituteId) {
+	public List<String> getAllServices(UUID instituteId) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
 				"select distinct s.name from service s inner join institute_service i on s.id =i.service_id where i.institute_id = "+instituteId);

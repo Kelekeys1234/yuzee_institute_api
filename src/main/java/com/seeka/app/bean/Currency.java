@@ -2,6 +2,7 @@ package com.seeka.app.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +22,7 @@ public class Currency implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Integer id;
+	private UUID id;
 	private String code;
 	private String name;
 	private String symbol;
@@ -33,11 +34,11 @@ public class Currency implements Serializable{
 	private Date updatedDate;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	public Integer getId() {
+	@Column(name="id")
+	public UUID getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 	

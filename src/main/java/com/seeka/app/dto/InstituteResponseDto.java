@@ -1,10 +1,12 @@
 package com.seeka.app.dto;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 
 public class InstituteResponseDto {
 	
-	private Integer instituteId;
+	private UUID instituteId;
 	private String instituteName;
 	private String instituteLogoUrl;	
 	private String instituteImageUrl;	
@@ -28,10 +30,10 @@ public class InstituteResponseDto {
 	private String totalAvailableJobs;
 	
 	
-	public Integer getInstituteId() {
+	public UUID getInstituteId() {
 		return instituteId;
 	}
-	public void setInstituteId(Integer instituteId) {
+	public void setInstituteId(UUID instituteId) {
 		this.instituteId = instituteId;
 	}
 	public String getInstituteName() {

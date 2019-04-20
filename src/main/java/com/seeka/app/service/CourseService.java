@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class CourseService implements ICourseService {
 	}
 	
 	@Override
-	public Course get(Integer id) {
+	public Course get(UUID id) {
 		return dao.get(id);
 	}
 	
@@ -44,7 +45,7 @@ public class CourseService implements ICourseService {
 	}
 	
 	@Override
-	public List<CourseResponseDto> getAllCoursesByInstitute(Integer instituteId, CourseSearchDto filterObj){
+	public List<CourseResponseDto> getAllCoursesByInstitute(UUID instituteId, CourseSearchDto filterObj){
 		return dao.getAllCoursesByInstitute(instituteId,filterObj);
 	}
 	

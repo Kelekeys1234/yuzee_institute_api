@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class CoursePricingService implements ICoursePricingService {
 	}
 	
 	@Override
-	public CoursePricing get(Integer id) {
+	public CoursePricing get(UUID id) {
 		return dao.get(id);
 	}
 	
@@ -37,7 +38,7 @@ public class CoursePricingService implements ICoursePricingService {
 	} 
 	
 	@Override
-	public CoursePricing getPricingByCourseId(Integer courseId) {
+	public CoursePricing getPricingByCourseId(UUID courseId) {
 		return dao.getPricingByCourseId(courseId);
 	}
 

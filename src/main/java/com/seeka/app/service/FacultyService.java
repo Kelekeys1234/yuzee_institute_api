@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class FacultyService implements IFacultyService {
 	}
 	
 	@Override
-	public Faculty get(Integer id) {
+	public Faculty get(UUID id) {
 		return dao.get(id);
 	}
 	
@@ -37,7 +38,7 @@ public class FacultyService implements IFacultyService {
 	}
 	
 	@Override
-	public List<Faculty> getFacultyByCountryIdAndLevelId(Integer countryID,Integer levelId){
+	public List<Faculty> getFacultyByCountryIdAndLevelId(UUID countryID,UUID levelId){
 		return dao.getFacultyByCountryIdAndLevelId(countryID,levelId);
 	}
 	

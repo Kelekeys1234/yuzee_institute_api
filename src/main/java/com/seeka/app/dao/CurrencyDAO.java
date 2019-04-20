@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -32,7 +33,7 @@ public class CurrencyDAO implements ICurrencyDAO{
 	}
 	
 	@Override
-	public Currency get(Integer id) {	
+	public Currency get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		Currency obj = session.get(Currency.class, id);
 		return obj;
@@ -46,7 +47,7 @@ public class CurrencyDAO implements ICurrencyDAO{
 	}
 	
 	@Override
-	public List<Currency> getCourseTypeByCountryId(Integer countryID) {
+	public List<Currency> getCourseTypeByCountryId(UUID countryID) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
 				"select distinct ct.id, ct.type_txt as courseType from course_type ct with(nolock) inner join faculty f with(nolock) on f.course_type_id = ct.id "
@@ -57,7 +58,7 @@ public class CurrencyDAO implements ICurrencyDAO{
 		List<Currency> courseTypes = new ArrayList<>();
 		for(Object[] row : rows){
 			Currency obj = new Currency();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString((row[0].toString())));
 			obj.setName(row[1].toString());
 			courseTypes.add(obj);
 		}
@@ -65,7 +66,7 @@ public class CurrencyDAO implements ICurrencyDAO{
 	}
  
 	@Override
-	public List<Currency> getCurrencyByCountryId(Integer countryId) {
+	public List<Currency> getCurrencyByCountryId(UUID countryId) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
 				"select distinct le.id, le.name as name,le.Currency_key as Currencykey from Currency le with(nolock) inner join institute_Currency il with(nolock) on il.Currency_id = le.id "
@@ -79,7 +80,7 @@ public class CurrencyDAO implements ICurrencyDAO{
 		
 		for(Object[] row : rows){
 			Currency obj = new Currency();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString((row[0].toString())));
 			obj.setName(row[1].toString());
 			//obj.setCurrencyKey(row[2].toString());
 			Currency.add(obj);

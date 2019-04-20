@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -32,7 +33,7 @@ public class LevelDAO implements ILevelDAO{
 	}
 	
 	@Override
-	public Level get(Integer id) {	
+	public Level get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		Level obj = session.get(Level.class, id);
 		return obj;
@@ -46,7 +47,7 @@ public class LevelDAO implements ILevelDAO{
 	}
 	
 	@Override
-	public List<Level> getCourseTypeByCountryId(Integer countryID) {
+	public List<Level> getCourseTypeByCountryId(UUID countryID) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
 				"select distinct ct.id, ct.type_txt as courseType from course_type ct with(nolock) inner join faculty f with(nolock) on f.course_type_id = ct.id "
@@ -57,7 +58,7 @@ public class LevelDAO implements ILevelDAO{
 		List<Level> courseTypes = new ArrayList<>();
 		for(Object[] row : rows){
 			Level obj = new Level();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString((row[0].toString())));
 			obj.setName(row[1].toString());
 			courseTypes.add(obj);
 		}
@@ -65,7 +66,7 @@ public class LevelDAO implements ILevelDAO{
 	}
  
 	@Override
-	public List<Level> getLevelByCountryId(Integer countryId) {
+	public List<Level> getLevelByCountryId(UUID countryId) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
 				"select distinct le.id, le.name as name,le.level_key as levelkey from level le with(nolock) inner join institute_level il with(nolock) on il.level_id = le.id "
@@ -79,7 +80,7 @@ public class LevelDAO implements ILevelDAO{
 		
 		for(Object[] row : rows){
 			Level obj = new Level();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString((row[0].toString())));
 			obj.setName(row[1].toString());
 			obj.setLevelKey(row[2].toString());
 			level.add(obj);
@@ -100,10 +101,10 @@ public class LevelDAO implements ILevelDAO{
 		
 		for(Object[] row : rows){
 			Level obj = new Level();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString((row[0].toString())));
 			obj.setName(row[1].toString());
 			obj.setLevelKey(row[2].toString());
-			obj.setCountryId(Integer.parseInt(row[3].toString()));
+			obj.setCountryId(UUID.fromString(row[3].toString()));
 			level.add(obj);
 		}
 		return level;

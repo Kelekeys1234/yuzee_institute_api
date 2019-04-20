@@ -1,9 +1,11 @@
 package com.seeka.app.dto;
 
+import java.util.UUID;
+
 public class GlobalSearchResponseDto {
 	
 	private String type;	
-	private Integer id;
+	private UUID id;
 	private String name;
 	
 	public String getType() {
@@ -12,10 +14,10 @@ public class GlobalSearchResponseDto {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public Integer getId() {
+	public UUID getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 	public String getName() {

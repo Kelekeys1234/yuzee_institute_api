@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -36,14 +37,14 @@ public class InstituteDAO implements IInstituteDAO{
 	}
 	
 	@Override
-	public Institute get(Integer id) {	
+	public Institute get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		Institute obj = session.get(Institute.class, id);
 		return obj;
 	}
 	
 	@Override
-	public List<Institute> getAllInstituteByCountry(Integer countryId) {
+	public List<Institute> getAllInstituteByCountry(UUID countryId) {
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(Institute.class);
 		crit.add(Restrictions.eq("countryObj.id",countryId));
@@ -91,7 +92,7 @@ public class InstituteDAO implements IInstituteDAO{
 		InstituteSearchResultDto obj = null;
 		for(Object[] row : rows){
 			obj = new InstituteSearchResultDto();
-			obj.setInstituteId(Integer.parseInt(row[0].toString()));
+			obj.setInstituteId(UUID.fromString((row[0].toString())));
 			obj.setInstituteName(row[1].toString());
 			obj.setLocation(row[2].toString()+", "+row[3].toString());
 			instituteList.add(obj);
@@ -144,7 +145,7 @@ public class InstituteDAO implements IInstituteDAO{
 		InstituteResponseDto obj = null;			
 		for(Object[] row : rows){
 			obj = new InstituteResponseDto();	
-			obj.setInstituteId(Integer.parseInt(String.valueOf(row[0])));
+			obj.setInstituteId(UUID.fromString((String.valueOf(row[0]))));
 			obj.setInstituteName(String.valueOf(row[1]));
 			obj.setLocation(String.valueOf(row[2])+", "+String.valueOf(row[3]));
 			Integer worldRanking = 0;
@@ -164,7 +165,7 @@ public class InstituteDAO implements IInstituteDAO{
 	
 	
 	@Override
-	public InstituteResponseDto getInstituteByID(Integer instituteId) {
+	public InstituteResponseDto getInstituteByID(UUID instituteId) {
 		
 		Session session = sessionFactory.getCurrentSession();	
 		
@@ -184,7 +185,7 @@ public class InstituteDAO implements IInstituteDAO{
 		InstituteResponseDto obj = null;			
 		for(Object[] row : rows){
 			obj = new InstituteResponseDto();	
-			obj.setInstituteId(Integer.parseInt(String.valueOf(row[0])));
+			obj.setInstituteId(UUID.fromString((String.valueOf(row[0]))));
 			obj.setInstituteName(String.valueOf(row[1]));
 			obj.setLocation(String.valueOf(row[2])+", "+String.valueOf(row[3]));
 			obj.setWorldRanking(String.valueOf(row[4]));

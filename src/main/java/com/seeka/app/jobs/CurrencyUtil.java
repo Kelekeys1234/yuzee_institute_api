@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class CurrencyUtil implements InitializingBean {
 	@Autowired
 	ICurrencyService currencyService;
     
-    private static Map<Integer, Currency> currencyIdMap = new HashMap<Integer, Currency>();
+    private static Map<UUID, Currency> currencyIdMap = new HashMap<UUID, Currency>();
     private static Map<String, Currency> currencyCodeMap = new HashMap<String, Currency>();
 	
     
@@ -27,7 +28,7 @@ public class CurrencyUtil implements InitializingBean {
 		run();
 	}
 	
-	public static Currency getCurrencyObjById(Integer currencyId) {
+	public static Currency getCurrencyObjById(UUID currencyId) {
 		return currencyIdMap.get(currencyId);
 	}
 	
@@ -41,7 +42,7 @@ public class CurrencyUtil implements InitializingBean {
 	
     public void run() {
     	List<Currency> list = currencyService.getAll();
-    	Map<Integer, Currency> currencyIdMapTemp = new HashMap<Integer, Currency>();
+    	Map<UUID, Currency> currencyIdMapTemp = new HashMap<UUID, Currency>();
     	Map<String, Currency> currencyCodeMapTemp = new HashMap<String, Currency>();
     	for (Currency currency : list) {
     		if(null == currency.getName() || currency.getName().isEmpty()) {

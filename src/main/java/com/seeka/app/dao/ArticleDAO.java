@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -37,7 +38,7 @@ public class ArticleDAO implements IArticleDAO{
 		Article obj = null;			
 		for(Object[] row : rows){
 			obj = new Article();	
-			obj.setId(Integer.parseInt(String.valueOf(row[0])));
+			obj.setId(UUID.fromString(String.valueOf(row[0])));
 			obj.setHeading(String.valueOf(row[1]));
 			obj.setContent(String.valueOf(row[2]));
 			obj.setUrl(String.valueOf(row[3]));

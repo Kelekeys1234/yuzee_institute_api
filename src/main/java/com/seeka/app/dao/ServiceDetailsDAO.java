@@ -1,6 +1,7 @@
 package com.seeka.app.dao;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -31,14 +32,14 @@ public class ServiceDetailsDAO implements IServiceDetailsDAO{
 	}
 	
 	@Override
-	public ServiceDetails get(Integer id) {	
+	public ServiceDetails get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		ServiceDetails obj = session.get(ServiceDetails.class, id);
 		return obj;
 	}
 	
 	@Override
-	public List<ServiceDetails> getAllInstituteByCountry(Integer countryId) {
+	public List<ServiceDetails> getAllInstituteByCountry(UUID countryId) {
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(ServiceDetails.class);
 		crit.add(Restrictions.eq("countryObj.id",countryId));

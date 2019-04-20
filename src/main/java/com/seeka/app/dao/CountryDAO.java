@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -35,7 +36,7 @@ public class CountryDAO implements ICountryDAO {
 	}
 
 	@Override
-	public Country get(Integer id) {
+	public Country get(UUID id) {
 		Session session = sessionFactory.getCurrentSession();
 		Country country = session.get(Country.class, id);
 		return country;
@@ -52,7 +53,7 @@ public class CountryDAO implements ICountryDAO {
 		CountryDto obj = null;
 		for (Object[] row : rows) {
 			obj = new CountryDto();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString(row[0].toString()));
 			obj.setName(row[1].toString());
 			obj.setCountryCode(row[2].toString());
 			countries.add(obj);
@@ -71,7 +72,7 @@ public class CountryDAO implements ICountryDAO {
 		CountryDto obj = null;
 		for (Object[] row : rows) {
 			obj = new CountryDto();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString((row[0].toString())));
 			obj.setName(row[1].toString());
 			obj.setCountryCode(row[2].toString());
 			countries.add(obj);
@@ -89,7 +90,7 @@ public class CountryDAO implements ICountryDAO {
 		CountryDto obj = null;
 		for (Object[] row : rows) {
 			obj = new CountryDto();
-			obj.setId(Integer.parseInt(row[0].toString()));
+			obj.setId(UUID.fromString((row[0].toString())));
 			obj.setName(row[1].toString());
 			obj.setCountryCode(row[2].toString());
 			countries.add(obj);

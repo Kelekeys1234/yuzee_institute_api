@@ -3,10 +3,10 @@ package com.seeka.app.controller;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
 import com.seeka.app.bean.City;
-import com.seeka.app.bean.Course;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.service.ICityService;
 import com.seeka.app.util.NumbeoWebServiceClient;
@@ -43,7 +41,7 @@ public class CityController {
     	return ResponseEntity.accepted().body(response);
 	}
 	@RequestMapping(value = "/getallcitiesbycountry/{countryId}", method=RequestMethod.GET)
-	public ResponseEntity<?>  getAllCitiesByCountry(@PathVariable Integer countryId) throws Exception {
+	public ResponseEntity<?>  getAllCitiesByCountry(@PathVariable UUID countryId) throws Exception {
 		Map<String,Object> response = new HashMap<String, Object>();
 		List<City> cityList = cityService.getAllCitiesByCountry(countryId);
 		response.put("status", 1);
@@ -53,7 +51,7 @@ public class CityController {
 	}	
 	
 	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@PathVariable Integer id) throws Exception {
+	public ResponseEntity<?> get(@PathVariable UUID id) throws Exception {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
 		City cityObj = cityService.get(id);
@@ -99,7 +97,7 @@ public class CityController {
 	}
 	
 	@RequestMapping(value = "/pricing/{cityid}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCityPricingByCityID(@PathVariable Integer cityid) throws Exception {
+	public ResponseEntity<?> getCityPricingByCityID(@PathVariable UUID cityid) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		File file = new File(NumbeoWebServiceClient.fileDirectory+cityid+".json");		
 		City city = cityService.get(cityid);		

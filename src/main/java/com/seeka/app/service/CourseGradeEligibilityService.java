@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class CourseGradeEligibilityService implements ICourseGradeEligibilitySer
 	}
 	
 	@Override
-	public CourseGradeEligibility get(Integer id) {
+	public CourseGradeEligibility get(UUID id) {
 		return dao.get(id);
 	}
 	

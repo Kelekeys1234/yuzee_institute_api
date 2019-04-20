@@ -1,11 +1,10 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,12 +16,11 @@ public class InstituteImages extends RecordModifier implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
-	private Integer id; 
+	private UUID id; 
 	
 	@Column(name="institute_id")
-	private Integer instituteId; // Institute Id
+	private UUID instituteId; // Institute Id
 	
 	@Column(name="image_index")
 	private Integer imageIndex; // Image Index
@@ -39,19 +37,19 @@ public class InstituteImages extends RecordModifier implements Serializable {
 	@Column(name="is_active")
 	private Boolean isActive; // Is Active
 
-	public Integer getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
-	public Integer getInstituteId() {
+	public UUID getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(Integer instituteId) {
+	public void setInstituteId(UUID instituteId) {
 		this.instituteId = instituteId;
 	}
 

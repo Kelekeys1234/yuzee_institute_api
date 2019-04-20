@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.ManyToOne;
 
@@ -29,7 +30,7 @@ public class LevelService implements ILevelService {
 	}
 	
 	@Override
-	public Level get(Integer id) {
+	public Level get(UUID id) {
 		return dao.get(id);
 	}
 	
@@ -39,12 +40,12 @@ public class LevelService implements ILevelService {
 	}
 	
 	@Override
-	public List<Level> getCourseTypeByCountryId(Integer countryID){
+	public List<Level> getCourseTypeByCountryId(UUID countryID){
 		return dao.getCourseTypeByCountryId(countryID);
 	}
 	
 	@Override
-	public List<Level> getLevelByCountryId(Integer countryId){
+	public List<Level> getLevelByCountryId(UUID countryId){
 		return dao.getLevelByCountryId(countryId);
 	}
 	
