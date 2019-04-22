@@ -22,6 +22,7 @@ public class LevelDAO implements ILevelDAO{
 	
 	@Override
 	public void save(Level obj) {	
+		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

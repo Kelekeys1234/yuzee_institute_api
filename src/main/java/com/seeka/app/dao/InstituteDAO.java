@@ -25,7 +25,8 @@ public class InstituteDAO implements IInstituteDAO{
 	private SessionFactory sessionFactory;
 	
 	@Override
-	public void save(Institute obj) {	
+	public void save(Institute obj) {
+		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

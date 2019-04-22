@@ -21,7 +21,8 @@ public class InstituteLevelDAO implements IInstituteLevelDAO{
 	
 	
 	@Override
-	public void save(InstituteLevel obj) {	
+	public void save(InstituteLevel obj) {
+		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

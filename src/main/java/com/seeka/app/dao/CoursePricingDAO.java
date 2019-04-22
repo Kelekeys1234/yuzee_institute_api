@@ -22,6 +22,7 @@ public class CoursePricingDAO implements ICoursePricingDAO{
 	
 	@Override
 	public void save(CoursePricing obj) {	
+		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

@@ -19,7 +19,8 @@ public class CourseDetailsDAO implements ICourseDetailsDAO{
 	
 	
 	@Override
-	public void save(CourseDetails obj) {	
+	public void save(CourseDetails obj) {
+		obj.setCourseId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

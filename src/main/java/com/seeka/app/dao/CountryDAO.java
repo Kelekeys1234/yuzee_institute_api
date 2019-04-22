@@ -21,6 +21,7 @@ public class CountryDAO implements ICountryDAO {
 
 	@Override
 	public void save(Country obj) {
+		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();
 		session.save(obj);
 	}

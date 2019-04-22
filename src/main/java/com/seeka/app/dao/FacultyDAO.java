@@ -23,6 +23,7 @@ public class FacultyDAO implements IFacultyDAO{
 	
 	@Override
 	public void save(Faculty obj) {	
+		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

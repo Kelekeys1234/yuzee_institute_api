@@ -23,6 +23,7 @@ public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO{
 	
 	@Override
 	public void save(InstituteServiceDetails obj) {	
+		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

@@ -20,6 +20,7 @@ public class InstituteImagesDAO implements IInstituteImagesDAO {
 	
 	@Override
 	public void save(InstituteImages obj) {	
+		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

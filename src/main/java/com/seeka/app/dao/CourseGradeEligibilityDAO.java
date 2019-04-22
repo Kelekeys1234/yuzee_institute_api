@@ -21,6 +21,7 @@ public class CourseGradeEligibilityDAO implements ICourseGradeEligibilityDAO{
 	
 	@Override
 	public void save(CourseGradeEligibility obj) {	
+		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

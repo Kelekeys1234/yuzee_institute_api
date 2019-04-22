@@ -21,7 +21,8 @@ public class CurrencyDAO implements ICurrencyDAO{
 	
 	
 	@Override
-	public void save(Currency obj) {	
+	public void save(Currency obj) {
+		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}
