@@ -7,14 +7,13 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import com.google.gson.Gson;
 
@@ -25,7 +24,10 @@ public class Institute extends RecordModifier implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@Column(name = "id")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
+	@Type(type = "uuid-char")
+	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 	
 	@Column(name="institute_type_id")

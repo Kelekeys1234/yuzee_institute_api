@@ -51,6 +51,8 @@ public class CountryController {
 	public ResponseEntity<?> get(@PathVariable UUID id) throws Exception {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
+		
+		System.out.println("id : "+id);
  			
 		Country countryObj = countryService.get(id);
 		if(null == countryObj) {

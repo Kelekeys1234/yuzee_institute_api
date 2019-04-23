@@ -1,7 +1,6 @@
 package com.seeka.app.dao;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -20,7 +19,6 @@ public class InstituteKeywordDAO implements IInstituteKeywordDAO{
 	
 	@Override
 	public void save(InstituteKeyword obj) {
-		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

@@ -30,7 +30,6 @@ public class CourseDAO implements ICourseDAO{
 		
 	@Override
 	public void save(Course obj) {	
-		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

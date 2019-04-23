@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Faculty;
-import com.seeka.app.bean.Institute;
 
 @Repository
 public class FacultyDAO implements IFacultyDAO{
@@ -23,7 +22,6 @@ public class FacultyDAO implements IFacultyDAO{
 	
 	@Override
 	public void save(Faculty obj) {	
-		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

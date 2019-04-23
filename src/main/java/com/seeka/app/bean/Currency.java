@@ -11,6 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -34,7 +37,10 @@ public class Currency implements Serializable{
 	private Date updatedDate;
 	
 	@Id
-	@Column(name="id")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
+	@Type(type = "uuid-char")
+	@Column(name = "id", updatable = false, nullable = false)
 	public UUID getId() {
 		return id;
 	}

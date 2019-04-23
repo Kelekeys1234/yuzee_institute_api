@@ -1,14 +1,14 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name="institute_details")
@@ -17,6 +17,7 @@ public class InstituteDetails implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@Type(type = "uuid-char")
 	@Column(name="institute_id")
 	private UUID instituteId; //Institute Details
 	

@@ -24,7 +24,6 @@ public class FacultyLevelDAO implements IFacultyLevelDAO{
 	
 	@Override
 	public void save(FacultyLevel obj) {
-		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

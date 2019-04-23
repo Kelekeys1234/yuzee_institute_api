@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.id.UUIDHexGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +24,6 @@ public class CountryDAO implements ICountryDAO {
 
 	@Override
 	public void save(Country obj) {
-		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();
 		session.save(obj);
 	}
@@ -38,7 +40,13 @@ public class CountryDAO implements ICountryDAO {
 
 	@Override
 	public Country get(UUID id) {
-		Session session = sessionFactory.getCurrentSession();
+		System.out.println("UUID : "+id);
+		//Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();		
+		 
+		
+		//Country country = session.load(Country.class, id);
+		
 		Country country = session.get(Country.class, id);
 		return country;
 	}

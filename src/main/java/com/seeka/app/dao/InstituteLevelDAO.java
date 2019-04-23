@@ -10,7 +10,6 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteLevel;
 
 @Repository
@@ -22,7 +21,6 @@ public class InstituteLevelDAO implements IInstituteLevelDAO{
 	
 	@Override
 	public void save(InstituteLevel obj) {
-		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

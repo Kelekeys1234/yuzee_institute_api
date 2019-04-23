@@ -21,7 +21,6 @@ public class CourseKeywordDAO implements ICourseKeywordDAO{
 	
 	@Override
 	public void save(CourseKeyword obj) {	
-		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

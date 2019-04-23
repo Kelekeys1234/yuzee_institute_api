@@ -2,6 +2,7 @@ package com.seeka.app.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,36 @@ public class CurrencyController {
 		response.put("status", 1);
 		response.put("message","Success.!");
     	response.put("list",currencyList);
+    	return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/getall", method=RequestMethod.GET)
+	public ResponseEntity<?>  getAll1() {
+		Map<String,Object> response = new HashMap<String, Object>();
+		Collection<Currency> list = currencyService.getAll();
+		List<Currency> currencyList = new ArrayList<>(list);
+		currencyList.sort((Currency c1, Currency c2)->c1.getName().compareTo(c2.getName()));
+		response.put("status", 1);
+		response.put("message","Success.!");
+    	response.put("list",currencyList);
+    	return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/save", method=RequestMethod.GET)
+	public ResponseEntity<?>  saveCurrency() {
+		Map<String,Object> response = new HashMap<String, Object>();
+		
+		Currency currency = new Currency();
+		currency.setBaseCurrency("USD");
+		currency.setCode("ULAGA");
+		currency.setConversionRate(0.23244);
+		currency.setName("ULAGANATHAN");
+		currency.setSymbol("$");
+		currency.setUpdatedDate(new Date());
+		currencyService.save(currency);;
+		response.put("status", 1);
+		response.put("message","Success.!");
+    	response.put("currency",currency);
     	return ResponseEntity.accepted().body(response);
 	}
 	

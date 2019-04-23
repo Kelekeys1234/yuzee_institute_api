@@ -21,7 +21,6 @@ public class ServiceDetailsDAO implements IServiceDetailsDAO{
 	
 	@Override
 	public void save(ServiceDetails obj) {	
-		obj.setId(UUID.randomUUID());
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}

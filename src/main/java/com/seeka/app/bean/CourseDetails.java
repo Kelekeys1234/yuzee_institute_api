@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name="course_details")
 public class CourseDetails implements Serializable{
@@ -19,6 +21,7 @@ public class CourseDetails implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Type(type = "uuid-char")
 	@Column(name="course_id")
 	private UUID courseId;
 		
