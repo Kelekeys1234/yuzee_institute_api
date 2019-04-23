@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.bean.City;
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.CourseKeyword;
@@ -32,6 +34,8 @@ import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.service.ICityService;
+import com.seeka.app.service.ICountryService;
 import com.seeka.app.service.ICourseDetailsService;
 import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.service.ICoursePricingService;
@@ -78,6 +82,11 @@ public class CourseController {
 	@Autowired
 	IUserInstCourseReviewService userInstCourseReviewService; 
 	
+	@Autowired
+	ICountryService countryService;
+	
+	@Autowired
+	ICityService cityService;
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody CourseDetails courseDetailsObj) throws Exception {
@@ -181,12 +190,16 @@ public class CourseController {
 		
 		InstituteDetails instituteDetails = instituteDetailsService.get(institute.getId());
 		
+		Country countryObj = countryService.get(institute.getCountryId());
+		
+		City cityObj = cityService.get(institute.getCityId());
+		
 		InstituteResponseDto instituteObj = new InstituteResponseDto();
 		instituteObj.setInstituteId(institute.getId());
 		instituteObj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
 		instituteObj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
 		instituteObj.setInstituteName(institute.getName());
-		instituteObj.setLocation(institute.getCityObj().getName()+", "+institute.getCountryObj().getName());
+		instituteObj.setLocation(cityObj.getName()+", "+countryObj.getName());
 		instituteObj.setStars(courseObj.getStars());
 		instituteObj.setWorldRanking(String.valueOf(institute.getWorldRanking()));
 		instituteObj.setAboutUs(instituteDetails.getAboutUsInfo());
@@ -199,7 +212,7 @@ public class CourseController {
 		instituteObj.setTotalNoOfStudents(institute.getTotalNoOfStudent());
 		instituteObj.setWebsite(institute.getWebsite());
 		instituteObj.setAddress(institute.getAddress());
-		instituteObj.setVisaRequirement(institute.getCountryObj().getVisa());
+		instituteObj.setVisaRequirement(countryObj.getVisa());
 		
 		CoursePricing coursePricing = coursePricingService.getPricingByCourseId(courseObj.getId());
 		

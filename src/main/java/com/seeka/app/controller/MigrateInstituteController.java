@@ -58,7 +58,8 @@ public class MigrateInstituteController {
 	
 	
 	public Map<String, Institute> get() throws Exception{
-		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\University\\university_names_malaysia.xlsx"); 
+		// E:\\Softwares\\Seeka\\March-2019\\Course\\University\\university_names_malaysia.xlsx
+		File myFile = new File("D:\\SeekaNew\\files\\University\\university_china.xlsx"); 
 		FileInputStream fis = new FileInputStream(myFile); 
 		XSSFWorkbook myWorkBook = new XSSFWorkbook (fis); 
 		XSSFSheet mySheet = myWorkBook.getSheetAt(0); 
@@ -373,12 +374,11 @@ public class MigrateInstituteController {
 			
 			object = new Institute();
 			
-			Country countryObj = countryMap.get(Country.toLowerCase().replaceAll("[^\\w]", ""));
-			
+			Country countryObj = countryMap.get(Country.toLowerCase().replaceAll("[^\\w]", ""));			
 			if(null == countryObj) {
 				continue;
 			}
-			object.setCountryObj(countryObj);
+			object.setCountryId(countryObj.getId());
 			object.setAccredited(Accredited);
 			object.setAddress(Address);
 			
@@ -391,11 +391,8 @@ public class MigrateInstituteController {
 				object.setInsImageCount(Double.valueOf(IMG_COUNT).intValue());
 			}else {
 				object.setInsImageCount(0);
-			}
-			InstituteType instituteTypeObj = new InstituteType();
-			instituteTypeObj.setId(UUID.randomUUID());
-			
-			object.setInstituteTypeObj(instituteTypeObj);
+			}					
+			object.setInstituteTypeId(UUID.fromString("990E603E-9F20-488C-BC0D-8554C50EE500"));
 			object.setInterEmail(Int_Emails);
 			object.setInterPhoneNumber(Int_Ph_num);
 			object.setIsActive(true);

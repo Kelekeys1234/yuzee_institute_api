@@ -114,8 +114,8 @@ public class InstituteController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "/service/save", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> saveService() throws Exception {
+	@RequestMapping(value = "/service/save/{instituteTypeId}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> saveService(@PathVariable UUID instituteTypeId) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		List<ServiceDetails> list = new ArrayList<>(); 
 		String createdBy = "AUTO";
@@ -125,7 +125,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Visa Work Benefits");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Visa Work Benefits");
@@ -135,7 +135,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Employment and career development");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Employment and career development");
@@ -145,7 +145,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Counselling – personal and academic");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Counselling – personal and academic");
@@ -155,7 +155,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Study Library Support");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Study Library Support");
@@ -165,7 +165,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Health services");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Health services");
@@ -175,7 +175,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Disability Support");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Disability Support");
@@ -185,7 +185,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Childcare Centre");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Childcare Centre");
@@ -195,7 +195,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Cultural inclusion/anti-racism programs");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Cultural inclusion/anti-racism programs");
@@ -206,7 +206,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Technology Services");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Technology Services");
@@ -217,7 +217,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Accommodation");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Accommodation");
@@ -228,7 +228,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Medical");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Medical");
@@ -239,7 +239,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Legal Services");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Legal Services");
@@ -250,7 +250,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Accounting Services");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Accounting Services");
@@ -261,7 +261,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Bus");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Bus");
@@ -271,7 +271,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Train");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Train");
@@ -282,7 +282,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Airport Pickup");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Airport Pickup");
@@ -292,7 +292,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Swimming pool");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Swimming pool");
@@ -302,7 +302,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Sports Center");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Sports Center");
@@ -312,7 +312,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Sport Teams");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Sport Teams");
@@ -322,7 +322,7 @@ public class InstituteController {
 		serviceObj.setCreatedBy(createdBy);
 		serviceObj.setCreatedOn(createdOn);
 		serviceObj.setDescription("Housing Services");
-		serviceObj.setInstituteTypeId(UUID.randomUUID());
+		serviceObj.setInstituteTypeId(instituteTypeId);
 		serviceObj.setIsActive(true);
 		serviceObj.setIsDeleted(false);
 		serviceObj.setName("Housing Services");

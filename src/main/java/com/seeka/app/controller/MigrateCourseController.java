@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -104,6 +105,7 @@ public class MigrateCourseController {
 				
 				FacultyLevel facultyLevel = courseDetails.getFacultyLevelObj();
 				if(null != facultyLevel) {
+					facultyLevel.setId(UUID.randomUUID());
 					facultyLevelService.save(facultyLevel);
 				}
 				
@@ -126,7 +128,7 @@ public class MigrateCourseController {
 	}
 	
 	public Map<String, CourseDetails> get() throws Exception{
-		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\Split\\university_course_attribute_canada_6.xlsx"); 
+		File myFile = new File("D:\\SeekaNew\\files\\course\\university_course_attribute_china_2.xlsx"); 
 		FileInputStream fis = new FileInputStream(myFile); 
 		XSSFWorkbook myWorkBook = new XSSFWorkbook (fis); 
 		XSSFSheet mySheet = myWorkBook.getSheetAt(0);
@@ -809,8 +811,8 @@ public class MigrateCourseController {
 				continue;
 			}
 			
-			if(null == institute.getCityObj()) {
-				institute.setCityObj(cityObj);
+			if(null == institute.getCityId()) {
+				institute.setCityId(cityObj.getId());
 				instituteMap.put(University.toLowerCase().replaceAll("[^\\w]", ""), institute);
 				institute.setUpdatedBy(createdBy);
 				institute.setUpdatedOn(createdOn);

@@ -17,7 +17,7 @@ public class InstituteDetails implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@Column(name="id")
+	@Column(name="institute_id")
 	private UUID instituteId; //Institute Details
 	
 	@Column(name="type")

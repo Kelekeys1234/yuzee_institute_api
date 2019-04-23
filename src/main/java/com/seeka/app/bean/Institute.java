@@ -28,17 +28,14 @@ public class Institute extends RecordModifier implements Serializable{
 	@Column(name = "id")
 	private UUID id;
 	
-	@ManyToOne
-	@JoinColumn(name="institute_type_id")
-	private InstituteType instituteTypeObj; //Institute Type
+	@Column(name="institute_type_id")
+	private UUID instituteTypeId; //Institute Type
 					
-	@ManyToOne
-	@JoinColumn(name = "country_id")
-	private Country countryObj; //Country Detail 
+	@Column(name = "country_id")
+	private UUID countryId; //Country Detail 
 	
-	@ManyToOne
-	@JoinColumn(name="city_id")
-	private City cityObj; //City Detail
+	@Column(name="city_id")
+	private UUID cityId; //City Detail
 	
 	@Column(name="world_ranking")
 	private Integer worldRanking; //World Ranking
@@ -93,28 +90,28 @@ public class Institute extends RecordModifier implements Serializable{
 		this.id = id;
 	}
 
-	public InstituteType getInstituteTypeObj() {
-		return instituteTypeObj;
+	public UUID getInstituteTypeId() {
+		return instituteTypeId;
 	}
 
-	public void setInstituteTypeObj(InstituteType instituteTypeObj) {
-		this.instituteTypeObj = instituteTypeObj;
+	public void setInstituteTypeId(UUID instituteTypeId) {
+		this.instituteTypeId = instituteTypeId;
 	}
 
-	public Country getCountryObj() {
-		return countryObj;
+	public UUID getCountryId() {
+		return countryId;
 	}
 
-	public void setCountryObj(Country countryObj) {
-		this.countryObj = countryObj;
-	} 
-
-	public City getCityObj() {
-		return cityObj;
+	public void setCountryId(UUID countryId) {
+		this.countryId = countryId;
 	}
 
-	public void setCityObj(City cityObj) {
-		this.cityObj = cityObj;
+	public UUID getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(UUID cityId) {
+		this.cityId = cityId;
 	}
 
 	public Integer getWorldRanking() {
@@ -253,8 +250,8 @@ public class Institute extends RecordModifier implements Serializable{
 		
 		Institute institute = new Institute();
 		institute.setName("Name of the University");
-		institute.setCityObj(cityObj);
-		institute.setCountryObj(countryObj);
+		institute.setCityId(UUID.fromString("990E603E-9F20-488C-BC0D-8554C50EE500"));
+		institute.setCountryId(UUID.fromString("990E603E-9F20-488C-BC0D-8554C50EE500"));
 		institute.setAddress("Address of the University");
 		institute.setDescription("Description about the university");
 		institute.setCreatedBy("Name of the record Creator");
@@ -266,7 +263,7 @@ public class Institute extends RecordModifier implements Serializable{
 		
 		
 		institute.setInsImageCount(10);
-		institute.setInstituteTypeObj(instituteTypeObj);
+		institute.setInstituteTypeId(UUID.fromString("990E603E-9F20-488C-BC0D-8554C50EE500"));
 		institute.setInterEmail("internationalemail@email.com");
 		institute.setInterPhoneNumber("+91-9884512528");
 		institute.setIsActive(true);
