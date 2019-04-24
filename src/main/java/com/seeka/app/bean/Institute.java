@@ -30,12 +30,15 @@ public class Institute extends RecordModifier implements Serializable{
 	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 	
+	@Type(type = "uuid-char")
 	@Column(name="institute_type_id")
 	private UUID instituteTypeId; //Institute Type
-					
+	
+	@Type(type = "uuid-char")				
 	@Column(name = "country_id")
 	private UUID countryId; //Country Detail 
 	
+	@Type(type = "uuid-char")
 	@Column(name="city_id")
 	private UUID cityId; //City Detail
 	

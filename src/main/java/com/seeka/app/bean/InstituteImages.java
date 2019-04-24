@@ -28,6 +28,7 @@ public class InstituteImages extends RecordModifier implements Serializable {
 	private UUID id; 
 	
 	@Column(name="institute_id")
+	@Type(type = "uuid-char")
 	private UUID instituteId; // Institute Id
 	
 	@Column(name="image_index")

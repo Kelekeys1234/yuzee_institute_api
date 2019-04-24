@@ -29,6 +29,7 @@ public class CoursePricing extends RecordModifier implements Serializable{
 	private UUID id;
 	
 	@Column(name="course_id")
+	@Type(type = "uuid-char")
 	private UUID courseId; //CourseId
 	 
 	@Column(name="local_fees")

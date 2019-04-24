@@ -26,7 +26,8 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 	@Type(type = "uuid-char")
 	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
-		
+	
+	@Type(type = "uuid-char")
 	@Column(name="institute_id")
 	private UUID instituteId; // InstituteId
 		
@@ -34,6 +35,7 @@ public class InstituteLevel extends RecordModifier implements Serializable{
 	@JoinColumn(name="country_id")
 	private Country countryObj; // CountryId
 	
+	@Type(type = "uuid-char")
 	@Column(name="city_id")
 	private UUID cityId; // CityId
 	

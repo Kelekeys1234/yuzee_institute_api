@@ -35,6 +35,7 @@ public class FacultyLevel extends RecordModifier implements Serializable{
 	@JoinColumn(name="institute_id")
 	private Institute instituteObj; // Institute LevelId
 	
+	@Type(type = "uuid-char")
 	@Column(name="faculty_id")
 	private UUID facultyId; // FacultyId
 			

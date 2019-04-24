@@ -54,6 +54,7 @@ public class Article implements Serializable{
 		this.id = id;
 	}
 	@Column(name="user_id")
+	@Type(type = "uuid-char")
 	public UUID getUserId() {
 		return userId;
 	}

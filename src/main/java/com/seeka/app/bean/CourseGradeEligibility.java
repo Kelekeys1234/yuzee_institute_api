@@ -29,6 +29,7 @@ public class CourseGradeEligibility implements Serializable{
 	private UUID id;
 		
 	@Column(name="course_id")
+	@Type(type = "uuid-char")
 	private UUID courseId;//InstituteId
 	
 	@Column(name="name")

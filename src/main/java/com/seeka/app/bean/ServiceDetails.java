@@ -29,6 +29,7 @@ public class ServiceDetails extends RecordModifier implements Serializable{
 	private UUID id;
 	
 	@Column(name="institute_type_id")
+	@Type(type = "uuid-char")
 	private UUID instituteTypeId; //Institute type Id
 	
 	@Column(name="name")
