@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,11 @@ public class CourseService implements ICourseService {
 	@Override
 	public List<CourseResponseDto> getAllCoursesByInstitute(UUID instituteId, CourseSearchDto filterObj){
 		return dao.getAllCoursesByInstitute(instituteId,filterObj);
+	}
+
+	@Override
+	public Map<String, Object> getCourse(UUID courseid) {		
+		return dao.getCourse(courseid);
 	}
 	
 }

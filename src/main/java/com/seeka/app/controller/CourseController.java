@@ -195,8 +195,10 @@ public class CourseController {
 	public ResponseEntity<?> get(@Valid @PathVariable UUID courseid) throws Exception {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
-		Course courseObj = courseService.get(courseid);
-		if(courseObj == null) {
+		
+		
+		Map<String, Object> map = courseService.getCourse(courseid);
+		if(map == null || map.isEmpty() || map.size() <= 0) {
 			errorDto = new ErrorDto();
 			errorDto.setCode("400");
 			errorDto.setMessage("Invalid course.!");
@@ -205,59 +207,15 @@ public class CourseController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		
-		Institute institute = courseObj.getInstituteObj();
-		
-		InstituteDetails instituteDetails = instituteDetailsService.get(institute.getId());
-		
-		Country countryObj = countryService.get(institute.getCountryId());
-		
-		City cityObj = cityService.get(institute.getCityId());
-		
-		InstituteResponseDto instituteObj = new InstituteResponseDto();
-		instituteObj.setInstituteId(institute.getId());
+		CourseDto courseResObj =  (CourseDto) map.get("courseObj");
+		InstituteResponseDto instituteObj = (InstituteResponseDto) map.get("instituteObj");		
 		instituteObj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
 		instituteObj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
-		instituteObj.setInstituteName(institute.getName());
-		instituteObj.setLocation(cityObj.getName()+", "+countryObj.getName());
-		instituteObj.setStars(courseObj.getStars());
-		instituteObj.setWorldRanking(String.valueOf(institute.getWorldRanking()));
-		instituteObj.setAboutUs(instituteDetails.getAboutUsInfo());
-		instituteObj.setClosingHour(instituteDetails.getClosingHour());
-		instituteObj.setInterEmail(institute.getInterEmail());
-		instituteObj.setInterPhoneNumber(institute.getInterPhoneNumber());
-		instituteObj.setLatitute(institute.getLatitude());
-		instituteObj.setLongitude(institute.getLongitude());
-		instituteObj.setOpeningHour(instituteDetails.getOpeningHour());
-		instituteObj.setTotalNoOfStudents(institute.getTotalNoOfStudent());
-		instituteObj.setWebsite(institute.getWebsite());
-		instituteObj.setAddress(institute.getAddress());
-		instituteObj.setVisaRequirement(countryObj.getVisa());
 		
-		CoursePricing coursePricing = coursePricingService.getPricingByCourseId(courseObj.getId());
-		
-		CourseDto courseResObj = new CourseDto();
-		courseResObj.setCourseName(courseObj.getName());
-		courseResObj.setCost(coursePricing.getCostRange()+" "+coursePricing.getCurrency());
-		courseResObj.setCostOfLiving("");
-		courseResObj.setCourseId(courseObj.getId());
-		courseResObj.setCourseLanguage(courseObj.getCourseLanguage());
-		courseResObj.setDescription(courseObj.getDescription());
-		courseResObj.setDuration(courseObj.getDuration());
-		courseResObj.setDurationTime(courseObj.getDurationTime());
-		courseResObj.setFacultyName(courseObj.getFacultyObj().getName());
-		courseResObj.setIntlFees(coursePricing.getInternationFees()+" "+coursePricing.getCurrency());
-		courseResObj.setLanguageShortKey(courseObj.getCourseLanguage());
-		courseResObj.setLevelName(courseObj.getFacultyObj().getLevelObj().getName());
-		courseResObj.setLocalFees(coursePricing.getLocalFees()+" "+coursePricing.getCurrency());
-		courseResObj.setStars(courseObj.getStars());
-		courseResObj.setWorldRanking(courseObj.getWorldRanking());
-		courseResObj.setLevelId(courseObj.getFacultyObj().getLevelObj().getId());
-		
-		List<UserInstCourseReview> reviewsList = userInstCourseReviewService.getTopReviewsByFilter(courseObj.getId(),institute.getId());
-		
+		List<UserInstCourseReview> reviewsList = userInstCourseReviewService.getTopReviewsByFilter(courseResObj.getCourseId(),instituteObj.getInstituteId());
 		JobsDto jobsDto = new JobsDto();
-		jobsDto.setCityId(institute.getCityId());
-		jobsDto.setCountryId(institute.getCountryId());
+		jobsDto.setCityId(instituteObj.getCityId());
+		jobsDto.setCountryId(instituteObj.getCountryId());
 		jobsDto.setNoOfJobs(250000);
 		
         response.put("status", 1);

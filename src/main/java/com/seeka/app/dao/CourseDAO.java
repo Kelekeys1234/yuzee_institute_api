@@ -1,7 +1,9 @@
 package com.seeka.app.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,10 +16,12 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
 import com.seeka.app.dto.GlobalSearchResponseDto;
+import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.jobs.CurrencyUtil;
 import com.seeka.app.util.ConvertionUtil;
 import com.seeka.app.util.GlobalSearchWordUtil;
@@ -604,6 +608,66 @@ public class CourseDAO implements ICourseDAO{
 	    return obj;	   
 	}
 	
+	@Override
+	public Map<String, Object> getCourse(UUID courseid) {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery(
+				"select crs.id as crs_id,crs.stars as crs_stars,crs.name as crs_name,crs.course_lang as crs_cour_lang,crs.description as crs_desc,crs.duration as crs_dur,crs.duration_time as crs_du_time,crs.world_ranking as crs_word_ranking, "
+						+ "ins.id as ins_id,ins.name as ins_name,crs.world_ranking as ins_wrld_rank,ins.int_emails as ins_int_emails,ins.int_ph_num as ins_int_ph_num,ins.longitude as ins_longitude,ins.latitude as ins_latitude,ins.t_num_of_stu as ins_t_num_of_stu,ins.website as ins_website,ins.address as ins_address, "
+						+"id.about_us_info as ab_us_info,id.closing_hour as close_hour,id.opening_hour as open_hour, "
+						+"cp.currency,cp.cost_range,cp.intl_fees,cp.local_fees, "
+						+"cty.name as city_name,cntry.name as country_name,fty.name as faulty_name,le.id as le_id,le.name as le_name,cty.id as cityid,cntry.id as countryid,cntry.visa as visa from course crs with(nolock) "
+						+ "inner join institute ins with(nolock) on ins.id = crs.institute_id inner join country cntry with(nolock) on cntry.id = crs.country_id "
+						+"inner join city cty with(nolock) on cty.id = crs.city_id inner join faculty fty with(nolock) on fty.id = crs.faculty_id inner join institute_details id with(nolock) on id.institute_id = crs.institute_id "
+				        +"inner join level le with(nolock) on fty.level_id = le.id inner join course_pricing cp with(nolock) on cp.course_id = crs.id where "
+				        + "crs.id = '"+courseid+"'");
+		
+		List<Object[]> rows = query.list();
+		InstituteResponseDto instituteObj = null;
+		CourseDto courseObj = null;	
+		Map<String, Object> map = new HashMap<>();
+		for(Object[] row : rows){
+			courseObj = new CourseDto();	
+			courseObj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
+			courseObj.setStars(String.valueOf(row[1]));
+			courseObj.setCourseName(String.valueOf(row[2]));
+			courseObj.setCourseLanguage(String.valueOf(row[3]));
+			courseObj.setDescription(String.valueOf(row[4]));
+			courseObj.setDuration(String.valueOf(row[5]));
+			courseObj.setDurationTime(String.valueOf(row[6]));
+			courseObj.setWorldRanking(String.valueOf(row[7]));
+			courseObj.setIntlFees(String.valueOf(row[23])+""+ String.valueOf(row[21]));
+			courseObj.setLocalFees(String.valueOf(row[24])+""+ String.valueOf(row[21]));
+			courseObj.setCost(String.valueOf(row[22])+""+ String.valueOf(row[21]));
+			courseObj.setFacultyName(String.valueOf(row[27]));
+			courseObj.setLevelId(UUID.fromString((String.valueOf(row[28]))));
+			courseObj.setLevelName(String.valueOf(row[29]));
+			
+			instituteObj = new InstituteResponseDto();	
+			instituteObj.setInstituteId(UUID.fromString((String.valueOf(row[8]))));	
+			instituteObj.setStars(String.valueOf(row[1]));
+			instituteObj.setInstituteName(String.valueOf(row[9]));
+			instituteObj.setWorldRanking(String.valueOf(row[7]));
+			instituteObj.setInterEmail(String.valueOf(row[11]));
+			instituteObj.setInterPhoneNumber(String.valueOf(row[12]));
+			instituteObj.setLongitude(String.valueOf(row[13]));
+			instituteObj.setLatitute(String.valueOf(row[14]));
+			instituteObj.setTotalNoOfStudents(Integer.parseInt(String.valueOf(row[15])));
+			instituteObj.setWebsite(String.valueOf(row[16]));
+			instituteObj.setAddress(String.valueOf(row[17]));
+			instituteObj.setVisaRequirement(String.valueOf(row[32]));
+			instituteObj.setAboutUs(String.valueOf(row[18]));
+			instituteObj.setClosingHour(String.valueOf(row[19]));
+			instituteObj.setOpeningHour(String.valueOf(row[20]));
+			instituteObj.setLocation(String.valueOf(row[25])+""+String.valueOf(row[26]));
+			instituteObj.setCityId(UUID.fromString((String.valueOf(row[30]))));
+			instituteObj.setCountryId(UUID.fromString((String.valueOf(row[31]))));
+			
+			map.put("courseObj", courseObj);
+			map.put("instituteObj", instituteObj);
+		}
+	    return map;	
+	}
 	
 	public static void main(String[] args) {
 		List<Integer> list = new ArrayList<>();
@@ -613,5 +677,7 @@ public class CourseDAO implements ICourseDAO{
 		list.add(780);
 		System.out.println(list);
 	}
+
+
 	 
 }
