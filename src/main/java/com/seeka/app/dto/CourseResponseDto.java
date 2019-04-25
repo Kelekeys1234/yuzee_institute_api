@@ -23,6 +23,7 @@ public class CourseResponseDto {
 	private Integer totalCount;
 	private String localFees;
 	private String intlFees;
+	private String requirements;
 	
 	public UUID getCourseId() {
 		return courseId;
@@ -137,6 +138,15 @@ public class CourseResponseDto {
 	}
 	public void setIntlFees(String intlFees) {
 		this.intlFees = intlFees;
+	}
+	public String getRequirements() {
+		if(null == requirements || requirements.isEmpty() || requirements.contains("0.0") || requirements.contains("0.00")) {
+			requirements = "No Requirements";
+		}
+		return requirements;
+	}
+	public void setRequirements(String requirements) {
+		this.requirements = requirements;
 	}
 	
 }
