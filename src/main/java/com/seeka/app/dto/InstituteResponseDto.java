@@ -15,7 +15,8 @@ public class InstituteResponseDto {
 	private String location;
 	private Integer totalCourses;
 	private Integer totalCount;
-	
+	private UUID cityId;
+	private UUID countryId;
 	private String website;
 	private String aboutUs;
 	private String openingHour;
@@ -161,6 +162,18 @@ public class InstituteResponseDto {
 	}
 	public void setTotalAvailableJobs(String totalAvailableJobs) {
 		this.totalAvailableJobs = totalAvailableJobs;
+	}
+	public UUID getCityId() {
+		return cityId;
+	}
+	public void setCityId(UUID cityId) {
+		this.cityId = cityId;
+	}
+	public UUID getCountryId() {
+		return countryId;
+	}
+	public void setCountryId(UUID countryId) {
+		this.countryId = countryId;
 	}
 	 
 }
