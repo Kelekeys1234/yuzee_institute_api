@@ -116,16 +116,49 @@ public class InstituteDAO implements IInstituteDAO{
 				+ "where 1=1 ";
 		
 		
-		if(null != filterObj.getCountryIds() && !filterObj.getCountryIds().isEmpty()) {         
-			sqlQuery += " and inst.country_id in ("+StringUtils.join(filterObj.getCountryIds(), ',')+")";
+		if(null != filterObj.getCountryIds() && !filterObj.getCountryIds().isEmpty()) {  
+			String value = "";
+			int  i =0;
+			for (UUID key : filterObj.getCountryIds()) {
+				if(i == 0) {
+					value = "'"+key+"'";
+				}else {
+					value = value +","+"'"+key+"'";
+				}
+				i++;
+			}
+			sqlQuery += " and inst.country_id in ("+value+")";
+			//sqlQuery += " and inst.country_id in ("+StringUtils.join(filterObj.getCountryIds(), ',')+")";
 		}
 		
 		if(null != filterObj.getLevelIds() && !filterObj.getLevelIds().isEmpty()) {
-			sqlQuery += " and l.level_id in ("+StringUtils.join(filterObj.getLevelIds(), ',')+")";
+			String value = "";
+			int  i =0;
+			for (UUID key : filterObj.getLevelIds()) {
+				if(i == 0) {
+					value = "'"+key+"'";
+				}else {
+					value = value +","+"'"+key+"'";
+				}
+				i++;
+			}
+			sqlQuery += " and l.level_id in ("+value+")";
+			//sqlQuery += " and l.level_id in ("+StringUtils.join(filterObj.getLevelIds(), ',')+")";
 		}
 		
 		if(null != filterObj.getFacultyIds() && !filterObj.getFacultyIds().isEmpty()) {
-			sqlQuery += " and f.faculty_id in ("+StringUtils.join(filterObj.getFacultyIds(), ',')+")";
+			String value = "";
+			int  i =0;
+			for (UUID key : filterObj.getFacultyIds()) {
+				if(i == 0) {
+					value = "'"+key+"'";
+				}else {
+					value = value +","+"'"+key+"'";
+				}
+				i++;
+			}
+			sqlQuery += " and f.faculty_id in ("+value+")";
+			//sqlQuery += " and f.faculty_id in ("+StringUtils.join(filterObj.getFacultyIds(), ',')+")";
 		}
 		  
 		if(null != filterObj.getSearchKey() && !filterObj.getSearchKey().isEmpty()) {
@@ -150,7 +183,7 @@ public class InstituteDAO implements IInstituteDAO{
 			obj.setLocation(String.valueOf(row[2])+", "+String.valueOf(row[3]));
 			Integer worldRanking = 0;
 			if(null != row[4]) {
-				worldRanking = Integer.valueOf(String.valueOf(row[4]));
+				worldRanking = Double.valueOf(String.valueOf(row[4])).intValue();
 			}
 			obj.setWorldRanking(worldRanking.toString());
 			obj.setStars(String.valueOf(row[5]));
@@ -176,7 +209,7 @@ public class InstituteDAO implements IInstituteDAO{
 				+ "CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from "
 				+ "course c WITH(NOLOCK) where "
 				+ "c.institute_id = inst.id group by c.institute_id ) crs "
-				+ "where 1=1 and inst.id ="+instituteId;
+				+ "where 1=1 and inst.id ='"+instituteId+"'";
 		 
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
@@ -196,41 +229,5 @@ public class InstituteDAO implements IInstituteDAO{
 		}   
 	    return obj;	   
 	}
-	
-	
-	/*@Override
-	public InstituteResponseDto getInstituteByID(Integer instituteId) {
-		
-		Session session = sessionFactory.getCurrentSession();	
-		
-		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
-				+ "ctry.name as countryName,crs.world_ranking,crs.stars,crs.totalCourse "
-				+ "from institute inst with(nolock) inner join country ctry with(nolock) "
-				+ "on ctry.id = inst.country_id inner join city ci with(nolock) on ci.id = inst.city_id "
-				+ "CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from "
-				+ "course c WITH(NOLOCK) where "
-				+ "c.institute_id = inst.id group by c.institute_id ) crs "
-				+ "where 1=1 and inst.id ="+instituteId;
-		 
-		System.out.println(sqlQuery);
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		List<InstituteResponseDto> list = new ArrayList<InstituteResponseDto>();
-		InstituteResponseDto obj = null;			
-		for(Object[] row : rows){
-			obj = new InstituteResponseDto();	
-			obj.setInstituteId(Integer.parseInt(String.valueOf(row[0])));
-			obj.setInstituteName(String.valueOf(row[1]));
-			obj.setLocation(String.valueOf(row[2])+", "+String.valueOf(row[3]));
-			obj.setWorldRanking(String.valueOf(row[4]));
-			obj.setStars(String.valueOf(row[5]));
-			obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
-			obj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
-			obj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
-		}   
-	    return obj;	   
-	}*/
-	
-	
-
+	 
 }

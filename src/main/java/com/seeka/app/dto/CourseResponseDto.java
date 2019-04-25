@@ -24,7 +24,6 @@ public class CourseResponseDto {
 	private String localFees;
 	private String intlFees;
 	
-	
 	public UUID getCourseId() {
 		return courseId;
 	}

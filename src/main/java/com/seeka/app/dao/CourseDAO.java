@@ -61,23 +61,61 @@ public class CourseDAO implements ICourseDAO{
 		String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName,"
 				+ "inst.id as instId,inst.name as instName, cp.cost_range, "
 				+ "cp.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
-				+ "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition "
+				+ "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition, cp.local_fees, cp.intl_fees "
 				+ "from course crs with(nolock) inner join course_pricing cp with(nolock) on cp.course_id = crs.id inner join institute inst "
 				+ "with(nolock) on crs.institute_id = inst.id inner join country ctry with(nolock) on ctry.id = crs.country_id inner join "
 				+ "city ci with(nolock) on ci.id = crs.city_id inner join faculty f with(nolock) on f.id = crs.faculty_id "
 				+ "left join institute_service iis with(nolock) on iis.institute_id = inst.id where 1=1";
 		
 		
-		if(null != filterObj.getCountryIds() && !filterObj.getCountryIds().isEmpty()) {         
-			sqlQuery += " and crs.country_id in ("+StringUtils.join(filterObj.getCountryIds(), ',')+")";
+		if(null != filterObj.getCountryIds() && !filterObj.getCountryIds().isEmpty()) {  
+			
+			String value = "";
+			int  i =0;
+			for (UUID key : filterObj.getCountryIds()) {
+				if(i == 0) {
+					value = "'"+key+"'";
+				}else {
+					value = value +","+"'"+key+"'";
+				}
+				i++;
+			}
+			sqlQuery += " and crs.country_id in ("+value+")";
+			
+			//sqlQuery += " and crs.country_id in ("+StringUtils.join(filterObj.getCountryIds(), ',')+")";
 		}
 		
 		if(null != filterObj.getLevelIds() && !filterObj.getLevelIds().isEmpty()) {
-			sqlQuery += " and f.level_id in ("+StringUtils.join(filterObj.getLevelIds(), ',')+")";
+			String value = "";
+			int  i =0;
+			for (UUID key : filterObj.getLevelIds()) {
+				if(i == 0) {
+					value = "'"+key+"'";
+				}else {
+					value = value +","+"'"+key+"'";
+				}
+				i++;
+			}
+			sqlQuery += " and f.level_id in ("+value+")";
+			
+			//sqlQuery += " and f.level_id in ("+StringUtils.join(filterObj.getLevelIds(), ',')+")";
 		}
 		
 		if(null != filterObj.getFacultyIds() && !filterObj.getFacultyIds().isEmpty()) {
-			sqlQuery += " and crs.faculty_id in ("+StringUtils.join(filterObj.getFacultyIds(), ',')+")";
+			
+			String value = "";
+			int  i =0;
+			for (UUID key : filterObj.getFacultyIds()) {
+				if(i == 0) {
+					value = "'"+key+"'";
+				}else {
+					value = value +","+"'"+key+"'";
+				}
+				i++;
+			}
+			sqlQuery += " and crs.faculty_id in ("+value+")";
+			
+			//sqlQuery += " and crs.faculty_id in ("+StringUtils.join(filterObj.getFacultyIds(), ',')+")";
 		}
 		
 		if(null != filterObj.getCourseKeys() && !filterObj.getCourseKeys().isEmpty()) {
@@ -98,7 +136,18 @@ public class CourseDAO implements ICourseDAO{
 		}
 		
 		if(null != filterObj.getServiceIds() && !filterObj.getServiceIds().isEmpty()) {
-			sqlQuery += " and iis.service_id in ("+StringUtils.join(filterObj.getServiceIds(), ',')+")";
+			String value = "";
+			int  i =0;
+			for (UUID key : filterObj.getFacultyIds()) {
+				if(i == 0) {
+					value = "'"+key+"'";
+				}else {
+					value = value +","+"'"+key+"'";
+				}
+				i++;
+			}
+			sqlQuery += " and iis.service_id in ("+value+")";
+			//sqlQuery += " and iis.service_id in ("+StringUtils.join(filterObj.getServiceIds(), ',')+")";
 		}
 		
 		if(null != filterObj.getMinCost() && filterObj.getMinCost() >= 0) {
@@ -159,7 +208,7 @@ public class CourseDAO implements ICourseDAO{
 				 }
 			}
 		}else {
-			sortingQuery = " order by A.cost_range asc";
+			sortingQuery = " order by A.intl_fees asc";
 		}
 		sqlQuery += sortingQuery+" OFFSET ("+filterObj.getPageNumber()+"-1)*"+filterObj.getMaxSizePerPage()+" ROWS FETCH NEXT "+filterObj.getMaxSizePerPage()+" ROWS ONLY"; 
 		System.out.println(sqlQuery);
@@ -173,11 +222,15 @@ public class CourseDAO implements ICourseDAO{
 		CourseResponseDto obj = null;		
 		Currency oldCurrency = null;
 		Double usdConv = 0.00;
-		Long cost = 0l;
+		Long cost = 0l,localFees = 0l,intlFees = 0l;
 		String newCurrencyCode = ""; 
 		for(Object[] row : rows){
 			try {
 				Double costRange = Double.valueOf(String.valueOf(row[4]));
+				
+				Double localFeesD = Double.valueOf(String.valueOf(row[16]));
+				Double intlFeesD = Double.valueOf(String.valueOf(row[17]));
+				
 				newCurrencyCode = String.valueOf(row[5]);
 				if(null != currency) {
 					String oldCurrencyCode = String.valueOf(row[5]);
@@ -185,10 +238,19 @@ public class CourseDAO implements ICourseDAO{
 					usdConv = 1 / oldCurrency.getConversionRate();
 					newCurrencyCode = currency.getCode();
 					costRange = costRange * usdConv * currency.getConversionRate();
+					localFeesD = localFeesD  * usdConv * currency.getConversionRate();
+					intlFeesD = intlFeesD  * usdConv * currency.getConversionRate();
 				}
 				cost = ConvertionUtil.roundOffToUpper(costRange);
+				
+				cost = ConvertionUtil.roundOffToUpper(costRange);
+				localFees = ConvertionUtil.roundOffToUpper(localFeesD);
+				intlFees = ConvertionUtil.roundOffToUpper(intlFeesD);
+				
 				obj = new CourseResponseDto();	
-				obj.setCost(cost +" "+newCurrencyCode);
+				obj.setCost(intlFees +" "+newCurrencyCode);
+				obj.setLocalFees(localFees +" "+newCurrencyCode);
+				obj.setIntlFees(intlFees +" "+newCurrencyCode);
 				obj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
 				obj.setCourseName(String.valueOf(row[1]));
 				obj.setInstituteId(UUID.fromString((String.valueOf(row[2]))));
@@ -198,11 +260,17 @@ public class CourseDAO implements ICourseDAO{
 				obj.setCityId(UUID.fromString((String.valueOf(row[8]))));
 				obj.setCountryId(UUID.fromString((String.valueOf(row[9]))));
 				obj.setLocation(String.valueOf(row[10])+", "+String.valueOf(row[11]));
-				obj.setWorldRanking(String.valueOf(row[12]));
+				
+				Integer worldRanking = 0;
+				if(null != row[4]) {
+					worldRanking = Double.valueOf(String.valueOf(row[12])).intValue();
+				}
+				obj.setWorldRanking(worldRanking.toString());
+			 
 				obj.setCourseLanguage(String.valueOf(row[13]));
 				obj.setLanguageShortKey(String.valueOf(row[13]));
-				obj.setStars(String.valueOf(row[14]));
-				obj.setTotalCount(Integer.parseInt(String.valueOf(row[16])));
+				obj.setStars(String.valueOf(row[14])); 
+				obj.setTotalCount(Integer.parseInt(String.valueOf(row[18])));
 				obj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
 				obj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
 				list.add(obj);

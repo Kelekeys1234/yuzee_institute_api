@@ -31,8 +31,10 @@ import com.seeka.app.bean.UserInstCourseReview;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.CurrencyConverterDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.JobsDto;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.service.ICityService;
 import com.seeka.app.service.ICountryService;
@@ -153,10 +155,27 @@ public class CourseController {
 		} else {
 			showMore = false;
 		}
+		
+	/*	Currency currency = null;
+		if(null != courseSearchDto.getCurrencyId()) {
+			currency = CurrencyUtil.getCurrencyObjById(courseSearchDto.getCurrencyId());
+		}*/
+		
+		
+		CurrencyConverterDto curConvDto = new CurrencyConverterDto();
+		curConvDto.setConversionRate(1.35709759);
+		curConvDto.setFromCurrencyCode("SGD (Singapore dollar)");
+		curConvDto.setFromCurrencyId(UUID.fromString("4C8A2547-FB33-CD47-A520-94BE8929740E"));
+		curConvDto.setFromCurrencyMax(100);
+		curConvDto.setToCurrencyCode("USD (United States Dollar)");
+		curConvDto.setToCurrencyId(UUID.fromString("365D13D8-2A8B-9448-8F38-A149FC02B63E"));
+		curConvDto.setToCurrencyMax(100);
+		
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("paginationObj",new PaginationDto(totalCount,showMore));
 		response.put("courseList",courseList);
+		response.put("curConvObj",curConvDto);
 		return ResponseEntity.accepted().body(response);
 	}
 	 
@@ -236,17 +255,21 @@ public class CourseController {
 		
 		List<UserInstCourseReview> reviewsList = userInstCourseReviewService.getTopReviewsByFilter(courseObj.getId(),institute.getId());
 		
+		JobsDto jobsDto = new JobsDto();
+		jobsDto.setCityId(institute.getCityId());
+		jobsDto.setCountryId(institute.getCountryId());
+		jobsDto.setNoOfJobs(250000);
+		
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("courseObj",courseResObj);
 		response.put("instituteObj",instituteObj);
-		
+		response.put("jobsObj",jobsDto);
 		if(null != reviewsList && !reviewsList.isEmpty() && reviewsList.size() > 0) {
 			response.put("reviewObj",reviewsList.get(0));
 		}else {
 			response.put("reviewObj",null);
 		}
-		
 		return ResponseEntity.accepted().body(response);
 	}
 	

@@ -23,7 +23,6 @@ import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteServiceDetails;
-import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.ServiceDetails;
 import com.seeka.app.service.ICityService;
 import com.seeka.app.service.ICountryService;
@@ -58,8 +57,7 @@ public class MigrateInstituteController {
 	
 	
 	public Map<String, Institute> get() throws Exception{
-		// E:\\Softwares\\Seeka\\March-2019\\Course\\University\\university_names_malaysia.xlsx
-		File myFile = new File("D:\\SeekaNew\\files\\University\\university_names_Singapore.xlsx"); 
+		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\University\\university_names_malaysia.xlsx"); 
 		FileInputStream fis = new FileInputStream(myFile); 
 		XSSFWorkbook myWorkBook = new XSSFWorkbook (fis); 
 		XSSFSheet mySheet = myWorkBook.getSheetAt(0); 
@@ -67,7 +65,6 @@ public class MigrateInstituteController {
 		
 		Map<String, Institute> map = new HashMap<String, Institute>();
 		Institute object = null;
-		
 		
 		List<ServiceDetails> serviceDetailList = serviceDetailsService.getAll();
 		Map<String, ServiceDetails> serviceMap =  new HashMap<String, ServiceDetails>();
