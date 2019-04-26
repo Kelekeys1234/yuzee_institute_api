@@ -636,9 +636,9 @@ public class CourseDAO implements ICourseDAO{
 			courseObj.setDuration(String.valueOf(row[5]));
 			courseObj.setDurationTime(String.valueOf(row[6]));
 			courseObj.setWorldRanking(String.valueOf(row[7]));
-			courseObj.setIntlFees(String.valueOf(row[23])+""+ String.valueOf(row[21]));
-			courseObj.setLocalFees(String.valueOf(row[24])+""+ String.valueOf(row[21]));
-			courseObj.setCost(String.valueOf(row[22])+""+ String.valueOf(row[21]));
+			courseObj.setIntlFees(String.valueOf(row[23])+" "+ String.valueOf(row[21]));
+			courseObj.setLocalFees(String.valueOf(row[24])+" "+ String.valueOf(row[21]));
+			courseObj.setCost(String.valueOf(row[22])+" "+ String.valueOf(row[21]));
 			courseObj.setFacultyName(String.valueOf(row[27]));
 			courseObj.setLevelId(UUID.fromString((String.valueOf(row[28]))));
 			courseObj.setLevelName(String.valueOf(row[29]));
@@ -659,7 +659,7 @@ public class CourseDAO implements ICourseDAO{
 			instituteObj.setAboutUs(String.valueOf(row[18]));
 			instituteObj.setClosingHour(String.valueOf(row[19]));
 			instituteObj.setOpeningHour(String.valueOf(row[20]));
-			instituteObj.setLocation(String.valueOf(row[25])+""+String.valueOf(row[26]));
+			instituteObj.setLocation(String.valueOf(row[25])+","+String.valueOf(row[26]));
 			instituteObj.setCityId(UUID.fromString((String.valueOf(row[30]))));
 			instituteObj.setCountryId(UUID.fromString((String.valueOf(row[31]))));
 			
