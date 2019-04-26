@@ -15,6 +15,7 @@ public class CourseSearchDto {
 	private List<UUID> facultyIds;
 	private List<UUID> countryIds;
 	private List<UUID> serviceIds;
+	private List<UUID> cityIds;
 	private Double minCost;
 	private Double maxCost;
 	private Integer minDuration;
@@ -127,6 +128,12 @@ public class CourseSearchDto {
 	}
 	public void setCurrencyId(UUID currencyId) {
 		this.currencyId = currencyId;
+	}
+	public List<UUID> getCityIds() {
+		return cityIds;
+	}
+	public void setCityIds(List<UUID> cityIds) {
+		this.cityIds = cityIds;
 	}
 	 
 }

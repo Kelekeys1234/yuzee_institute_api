@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.Currency;
 import com.seeka.app.dao.ICourseDAO;
+import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 
@@ -41,8 +43,13 @@ public class CourseService implements ICourseService {
 	} 
 	
 	@Override
-	public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj){
-		return dao.getAllCoursesByFilter(filterObj);
+	public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj,Currency currency, UUID userCountryId){
+		return dao.getAllCoursesByFilter(filterObj,currency,userCountryId);
+	}
+	
+	@Override
+	public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj,Currency currency, String oldCurrencyCode) {
+		return dao.getAllCoursesFilterCostInfo(filterObj,currency,oldCurrencyCode);
 	}
 	
 	@Override

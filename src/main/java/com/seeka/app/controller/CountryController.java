@@ -74,8 +74,8 @@ public class CountryController {
 	public ResponseEntity<?>  getAllUniversityCountries() {
 		Map<String,Object> response = new HashMap<String, Object>();
 		List<CountryDto> countryList = countryService.getAllUniversityCountries();
-		response.put("status", 1);
-		response.put("message","Success.!");
+		response.put("status", 1); //List<CountryDto> countryList = CountryUtil.getCountryList();
+		response.put("message","Success.!"); 
     	response.put("countryList",countryList);
     	return ResponseEntity.accepted().body(response);
 	}

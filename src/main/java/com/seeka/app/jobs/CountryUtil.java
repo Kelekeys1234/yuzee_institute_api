@@ -31,6 +31,7 @@ public class CountryUtil {
 	@Autowired
 	ICityService cityService;
 	
+	//public static Map<UUID, List<City>> cityMap = 
 	public static List<CountryDto> countryList = new ArrayList<CountryDto>();
 
     @Scheduled(fixedRate = 500000, initialDelay = 5000)
@@ -48,21 +49,21 @@ public class CountryUtil {
     	System.out.println("CountryUtil : Job Started: "+new Date());
     	List<CountryDto> countryListTemp = countryService.getAllCountries();
     	List<City> cityList = cityService.getAll();
-    	Map<UUID, List<City>> cityMap = new HashMap<>(); 
+    	Map<UUID, List<City>> cityMapTemp = new HashMap<>(); 
     	for (City city : cityList) {
-    		List<City> list = cityMap.get(city.getCountryObj().getId());
+    		List<City> list = cityMapTemp.get(city.getCountryObj().getId());
     		if(null != list && !list.isEmpty()) {
-    			cityMap.get(city.getCountryObj().getId()).add(city);
+    			cityMapTemp.get(city.getCountryObj().getId()).add(city);
     			continue;
     		}
     		list = new ArrayList<>();
     		list.add(city);
-    		cityMap.put(city.getCountryObj().getId(), list);
+    		cityMapTemp.put(city.getCountryObj().getId(), list);
 		}
     	
     	List<CountryDto> finalList = new ArrayList<>();
 		for (CountryDto countryDto : countryListTemp) {
-			List<City> list = cityMap.get(countryDto.getId());
+			List<City> list = cityMapTemp.get(countryDto.getId());
 			if(null != list && !list.isEmpty()) {
 				list.sort((City s1, City s2)->s1.getName().compareTo(s2.getName()));
 				countryDto.setCityList(list);
