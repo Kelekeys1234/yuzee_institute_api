@@ -31,8 +31,10 @@ public class CountryUtil {
 	@Autowired
 	ICityService cityService;
 	
-	//public static Map<UUID, List<City>> cityMap = 
+	public static List<CountryDto> univCountryList = new ArrayList<CountryDto>();
 	public static List<CountryDto> countryList = new ArrayList<CountryDto>();
+	public static Map<UUID, List<City>> countryCityMap = new HashMap<>();
+	public static Map<UUID, CountryDto> countryMap = new HashMap<>();
 
     @Scheduled(fixedRate = 500000, initialDelay = 5000)
     public void reportCurrentTime() {
@@ -45,20 +47,35 @@ public class CountryUtil {
     	return countryList;
     }
     
+    public static List<CountryDto> getUnivCountryList() {
+    	return univCountryList;
+    }
+    
+    public static List<City> getCityListByCountryId(UUID countryId) {
+    	return countryCityMap.get(countryId);
+    }
+    
+    public static CountryDto getCountryByCountryId(UUID countryId) {
+    	return countryMap.get(countryId);
+    }
+    
     public void run() {
     	System.out.println("CountryUtil : Job Started: "+new Date());
     	List<CountryDto> countryListTemp = countryService.getAllCountries();
+    	
+    	List<CountryDto> countriesWithUniversity = countryService.getAllUniversityCountries();
+    	
     	List<City> cityList = cityService.getAll();
     	Map<UUID, List<City>> cityMapTemp = new HashMap<>(); 
     	for (City city : cityList) {
-    		List<City> list = cityMapTemp.get(city.getCountryObj().getId());
+    		List<City> list = cityMapTemp.get(city.getCountryId());
     		if(null != list && !list.isEmpty()) {
-    			cityMapTemp.get(city.getCountryObj().getId()).add(city);
+    			cityMapTemp.get(city.getCountryId()).add(city);
     			continue;
     		}
     		list = new ArrayList<>();
     		list.add(city);
-    		cityMapTemp.put(city.getCountryObj().getId(), list);
+    		cityMapTemp.put(city.getCountryId(), list);
 		}
     	
     	List<CountryDto> finalList = new ArrayList<>();
@@ -69,12 +86,33 @@ public class CountryUtil {
 				countryDto.setCityList(list);
 				finalList.add(countryDto);
 			}
+			countryMap.put(countryDto.getId(), countryDto);
 		}
+		
+		List<CountryDto> finalList1 = new ArrayList<>();
+		for (CountryDto countryDto : countriesWithUniversity) {
+			List<City> list = cityMapTemp.get(countryDto.getId());
+			if(null != list && !list.isEmpty()) {
+				list.sort((City s1, City s2)->s1.getName().compareTo(s2.getName()));
+				countryDto.setCityList(list);
+				finalList1.add(countryDto);
+			}
+		}
+		
+		countryCityMap.clear();
+		countryCityMap.putAll(cityMapTemp);
+		
+		finalList1.sort((CountryDto s1, CountryDto s2)->s1.getName().compareTo(s2.getName()));
 		
 		finalList.sort((CountryDto s1, CountryDto s2)->s1.getName().compareTo(s2.getName()));
 		countryList.clear();
 		countryList = new ArrayList<CountryDto>(finalList);
+		
+		univCountryList.clear();
+		univCountryList = new ArrayList<CountryDto>(finalList1);
+		
 		System.out.println("countryList : "+countryList.size());
+		System.out.println("univCountryList : "+univCountryList.size());
 		System.out.println("CountryUtil : Job Completed: "+new Date());
     }
     

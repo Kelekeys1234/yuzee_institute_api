@@ -442,7 +442,7 @@ public class MigrateController {
 						k++;
 					}else {
 						masterObj.setCityImgCnt(0);
-						masterObj.setCountryObj(country);
+						masterObj.setCountryId(country.getId());
 						masterObj.setDescription("");
 						cityService.save(masterObj);
 						i++;

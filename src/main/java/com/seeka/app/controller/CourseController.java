@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.bean.City;
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.CourseKeyword;
@@ -25,8 +23,6 @@ import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.FacultyLevel;
-import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.bean.User;
 import com.seeka.app.bean.UserInstCourseReview;

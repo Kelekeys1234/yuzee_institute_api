@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.dto.ErrorDto;
+import com.seeka.app.jobs.CountryUtil;
 import com.seeka.app.service.ICityService;
 import com.seeka.app.util.NumbeoWebServiceClient;
 
@@ -122,7 +123,7 @@ public class CityController {
 		}								
 		response.put("status", 1);
 		response.put("message","Success");
-		response.put("cityName",city.getName()+", "+city.getCountryObj().getName());
+		response.put("cityName",city.getName()+", "+CountryUtil.getCountryByCountryId(city.getCountryId()).getName());
 		response.put("livingCost",jsonObject);
 		return ResponseEntity.accepted().body(response);
 	}

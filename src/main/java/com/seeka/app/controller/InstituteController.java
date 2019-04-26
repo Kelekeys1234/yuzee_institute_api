@@ -22,6 +22,7 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.ServiceDetails;
+import com.seeka.app.bean.User;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
@@ -32,6 +33,7 @@ import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IInstituteTypeService;
 import com.seeka.app.service.IServiceDetailsService;
+import com.seeka.app.service.IUserService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController
@@ -52,6 +54,9 @@ public class InstituteController {
 	
 	@Autowired
 	IInstituteServiceDetailsService instituteServiceDetailsService;
+	
+	@Autowired
+	IUserService userService;
 	
 	@RequestMapping(value = "/type/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> saveInstituteType(@Valid @RequestBody InstituteType instituteTypeObj) throws Exception {
@@ -365,10 +370,10 @@ public class InstituteController {
 	}
 	
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> getCourseTypeByCountry(@RequestBody CourseSearchDto courseSearchDto ) throws Exception {
+	public ResponseEntity<?> getInstitutesBySearchFilters(@RequestBody CourseSearchDto request ) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		
-		if(courseSearchDto.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
+		if(request.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
 			ErrorDto errorDto = new ErrorDto();
 			errorDto.setCode("400");
 			errorDto.setMessage("Maximum course limit per is "+PaginationUtil.courseResultPageMaxSize);
@@ -377,14 +382,66 @@ public class InstituteController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		
-		List<InstituteResponseDto> courseList = instituteService.getAllInstitutesByFilter(courseSearchDto);
+		List<InstituteResponseDto> courseList = instituteService.getAllInstitutesByFilter(request);
 		Integer maxCount = 0,totalCount =0;
 		if(null != courseList && !courseList.isEmpty()) {
 			totalCount = courseList.get(0).getTotalCount();
 			maxCount = courseList.size();
 		}
 		boolean showMore;
-		if(courseSearchDto.getMaxSizePerPage() == maxCount) {
+		if(request.getMaxSizePerPage() == maxCount) {
+			showMore = true;
+		} else {
+			showMore = false;
+		}
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("paginationObj",new PaginationDto(totalCount,showMore));
+		response.put("instituteList",courseList);
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/get/recommended", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> getAllRecommendedInstitutes(@RequestBody CourseSearchDto request) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		ErrorDto errorDto = null;
+		if(request.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
+			errorDto = new ErrorDto();
+			errorDto.setCode("400");
+			errorDto.setMessage("Maximum course limit per is "+PaginationUtil.courseResultPageMaxSize);
+			response.put("status", 0);
+			response.put("error", errorDto);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		if(null == request.getUserId()) {
+			errorDto = new ErrorDto();
+			errorDto.setCode("400");
+			errorDto.setMessage("Invalid user data.!");
+			response.put("status", 0);
+			response.put("error", errorDto);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		User user = userService.get(request.getUserId());
+		
+		List<UUID> countryIds = request.getCountryIds();
+		if(null == countryIds || countryIds.isEmpty()) {
+			countryIds = new ArrayList<>();
+		}
+		if(null != user.getCountryId()) {
+			countryIds.add(user.getCountryId());
+			request.setCountryIds(countryIds);
+		}
+		
+		List<InstituteResponseDto> courseList = instituteService.getAllInstitutesByFilter(request);
+		Integer maxCount = 0,totalCount =0;
+		if(null != courseList && !courseList.isEmpty()) {
+			totalCount = courseList.get(0).getTotalCount();
+			maxCount = courseList.size();
+		}
+		boolean showMore;
+		if(request.getMaxSizePerPage() == maxCount) {
 			showMore = true;
 		} else {
 			showMore = false;
