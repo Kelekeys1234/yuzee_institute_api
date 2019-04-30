@@ -9,6 +9,7 @@ public class CourseSearchFilterDto {
 	private String latestCourse;
 	private String institute;
 	private String course;
+	private String worldRanking;
 	
 	public String getPrice() {
 		return price;
@@ -51,6 +52,12 @@ public class CourseSearchFilterDto {
 	}
 	public void setCourse(String course) {
 		this.course = course;
+	}
+	public String getWorldRanking() {
+		return worldRanking;
+	}
+	public void setWorldRanking(String worldRanking) {
+		this.worldRanking = worldRanking;
 	} 
 	 
 }

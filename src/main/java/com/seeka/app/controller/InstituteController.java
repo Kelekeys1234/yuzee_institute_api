@@ -382,6 +382,17 @@ public class InstituteController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		
+		User user = userService.get(request.getUserId());
+		
+		List<UUID> countryIds = request.getCountryIds();
+		if(null == countryIds || countryIds.isEmpty()) {
+			countryIds = new ArrayList<>();
+		}
+		if(null != user.getCountryId()) {
+			countryIds.add(user.getCountryId());
+			request.setCountryIds(countryIds);
+		}
+		
 		List<InstituteResponseDto> courseList = instituteService.getAllInstitutesByFilter(request);
 		Integer maxCount = 0,totalCount =0;
 		if(null != courseList && !courseList.isEmpty()) {

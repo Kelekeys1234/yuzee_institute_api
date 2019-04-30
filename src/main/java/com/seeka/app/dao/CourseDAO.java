@@ -193,6 +193,10 @@ public class CourseDAO implements ICourseDAO{
 			sqlQuery += " and crs.name like '%"+filterObj.getSearchKey().trim()+"%'";
 		}
 		
+		if(null != filterObj.getCourseName() && !filterObj.getCourseName().isEmpty()) {
+			sqlQuery += " and crs.name like '%"+filterObj.getCourseName().trim()+"%'";
+		}
+		
 		sqlQuery += ") A ";
 		
 		
@@ -561,7 +565,7 @@ public class CourseDAO implements ICourseDAO{
 				+ "from course crs with(nolock) inner join course_pricing cp with(nolock) on cp.course_id = crs.id inner join institute inst "
 				+ "with(nolock) on crs.institute_id = inst.id inner join country ctry with(nolock) on ctry.id = crs.country_id inner join "
 				+ "city ci with(nolock) on ci.id = crs.city_id inner join faculty f with(nolock) on f.id = crs.faculty_id "
-				+ "left join institute_service iis with(nolock) on iis.institute_id = inst.id where crs.institute_id = "+instituteId;
+				+ "left join institute_service iis with(nolock) on iis.institute_id = inst.id where crs.institute_id = '"+instituteId+"'";
 		
 		if(null != filterObj.getLevelIds() && !filterObj.getLevelIds().isEmpty()) {
 			sqlQuery += " and f.level_id in ("+StringUtils.join(filterObj.getLevelIds(), ',')+")";

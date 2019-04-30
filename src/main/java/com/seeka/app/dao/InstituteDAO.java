@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.CourseSearchFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 
@@ -167,8 +168,21 @@ public class InstituteDAO implements IInstituteDAO{
 		
 		sqlQuery += ") A ";
 		
+		String sortingQuery = "";
+		if(null != filterObj.getSortingObj()) {
+			CourseSearchFilterDto sortingObj = filterObj.getSortingObj();
+			if(null != sortingObj.getWorldRanking() && !sortingObj.getWorldRanking().isEmpty()) {
+				 if(sortingObj.getWorldRanking().equals("ASC")) {
+					 sortingQuery = " order by A.world_ranking asc";
+				 }else {
+					 sortingQuery = " order by A.world_ranking desc";
+				 }
+			}  
+		}else {
+			sortingQuery = " order by A.instName asc";
+		}
 		
-		String sortingQuery = " order by A.instName asc";
+		
 		sqlQuery += sortingQuery+" OFFSET ("+filterObj.getPageNumber()+"-1)*"+filterObj.getMaxSizePerPage()+" ROWS FETCH NEXT "+filterObj.getMaxSizePerPage()+" ROWS ONLY"; 
 		
 		System.out.println(sqlQuery);

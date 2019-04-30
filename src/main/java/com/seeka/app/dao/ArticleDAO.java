@@ -28,8 +28,8 @@ public class ArticleDAO implements IArticleDAO{
 	@Override
 	public List<Article> getArticlesByLookup(PageLookupDto pageLookupDto) {
 		Session session = sessionFactory.getCurrentSession();	
-		String sqlQuery = "select A.*,count(1) over () totalRows from  (select id,heading,content,url,imagePath,created_date from "
-				+ "seeka_articles with(nolock) ) A order by A.created_date desc";
+		String sqlQuery = "select A.*,count(1) over () totalRows from  (select id,heading,content,url,imagePath,created_at from "
+				+ "seeka_articles with(nolock) ) A order by A.created_at desc";
 		sqlQuery +=" OFFSET ("+pageLookupDto.getPageNumber()+"-1)*"+pageLookupDto.getMaxSizePerPage()+" ROWS FETCH NEXT "+pageLookupDto.getMaxSizePerPage()+" ROWS ONLY"; 
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
