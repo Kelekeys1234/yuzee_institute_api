@@ -11,13 +11,14 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
-import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseDto;
+import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
@@ -28,6 +29,7 @@ import com.seeka.app.util.ConvertionUtil;
 import com.seeka.app.util.GlobalSearchWordUtil;
 
 @Repository
+@SuppressWarnings("unchecked")
 public class CourseDAO implements ICourseDAO{
 	
 	@Autowired
@@ -873,6 +875,24 @@ public class CourseDAO implements ICourseDAO{
 		System.out.println(list);
 	}
 
-
-	 
+    @Override
+    public List<CourseResponseDto> getCouresesByFacultyId(UUID facultyId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(Course.class);
+        crit.add(Restrictions.eq("facultyObj.id", facultyId));
+        List<Course> courses = crit.list();
+        List<CourseResponseDto> dtos = new ArrayList<CourseResponseDto>();
+        for (Course course : courses) {
+            CourseResponseDto courseObj = new CourseResponseDto();
+            courseObj.setCourseId(course.getId());
+            courseObj.setStars(course.getStars());
+            courseObj.setCourseName(course.getName());
+            courseObj.setCourseLanguage(course.getCourseLanguage());
+            courseObj.setDuration(course.getDuration());
+            courseObj.setDurationTime(course.getDurationTime());
+            courseObj.setWorldRanking(course.getWorldRanking());
+            dtos.add(courseObj);
+        }
+        return dtos;
+    }
 }

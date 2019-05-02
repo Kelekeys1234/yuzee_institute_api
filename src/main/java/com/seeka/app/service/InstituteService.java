@@ -60,5 +60,10 @@ public class InstituteService implements IInstituteService {
 		return dao.getInstituteByID(instituteId);
 	}
 
+    @Override
+    public List<InstituteResponseDto> getInstitudeByCityId(UUID cityId) {
+        return dao.getInstitudeByCityId(cityId);
+    }
+
 	
 }

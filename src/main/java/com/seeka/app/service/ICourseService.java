@@ -11,13 +11,22 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 
 public interface ICourseService {
-	
-	public void save(Course obj);
-	public void update(Course obj);
-	public Course get(UUID id);
-	public List<Course> getAll(); 
-	public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj,Currency currency, UUID userCountryId);
-	public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj,Currency currency, String oldCurrencyCode);
-	public List<CourseResponseDto> getAllCoursesByInstitute(UUID instituteId, CourseSearchDto filterObj);
-	public Map<String, Object> getCourse(UUID courseid);
+
+    public void save(Course obj);
+
+    public void update(Course obj);
+
+    public Course get(UUID id);
+
+    public List<Course> getAll();
+
+    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, UUID userCountryId);
+
+    public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
+
+    public List<CourseResponseDto> getAllCoursesByInstitute(UUID instituteId, CourseSearchDto filterObj);
+
+    public Map<String, Object> getCourse(UUID courseid);
+
+    public List<CourseResponseDto> getCouresesByFacultyId(UUID facultyId);
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -243,5 +242,27 @@ public class InstituteDAO implements IInstituteDAO{
 		}   
 	    return obj;	   
 	}
-	 
+
+    @Override
+    public List<InstituteResponseDto> getInstitudeByCityId(UUID cityId) {
+        Session session = sessionFactory.getCurrentSession();
+
+        String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.institute_type_id as institudeTypeId "
+                        + "from institute_level instLevel with(nolock) inner join institute inst with(nolock) " + "on inst.id = instLevel.institute_id "
+                        + "where instLevel.city_id ='" + cityId + "'";
+
+        System.out.println(sqlQuery);
+        Query query = session.createSQLQuery(sqlQuery);
+        @SuppressWarnings("unchecked")
+        List<Object[]> rows = query.list();
+        List<InstituteResponseDto> instituteResponseDtos = new ArrayList<InstituteResponseDto>();
+        InstituteResponseDto instituteResponseDto = null;
+        for (Object[] row : rows) {
+            instituteResponseDto = new InstituteResponseDto();
+            instituteResponseDto.setInstituteId(UUID.fromString((String.valueOf(row[0]))));
+            instituteResponseDto.setInstituteName(String.valueOf(row[1]));
+            instituteResponseDtos.add(instituteResponseDto);
+        }
+        return instituteResponseDtos;
+    }
 }

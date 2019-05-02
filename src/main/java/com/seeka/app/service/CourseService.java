@@ -61,5 +61,10 @@ public class CourseService implements ICourseService {
 	public Map<String, Object> getCourse(UUID courseid) {		
 		return dao.getCourse(courseid);
 	}
+
+    @Override
+    public List<CourseResponseDto> getCouresesByFacultyId(UUID facultyId) {
+        return dao.getCouresesByFacultyId(facultyId);
+    }
 	
 }

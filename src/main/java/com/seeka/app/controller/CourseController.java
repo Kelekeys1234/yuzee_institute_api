@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +49,7 @@ import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IUserInstCourseReviewService;
 import com.seeka.app.service.IUserService;
+import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController
@@ -367,5 +369,18 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
+    @RequestMapping(value = "/getCouresesByFacultyId/{facultyId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getCouresesByFacultyId(@Valid @PathVariable UUID facultyId) throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<CourseResponseDto> courseDtos = courseService.getCouresesByFacultyId(facultyId);
+        if (courseDtos != null && !courseDtos.isEmpty()) {
+            response.put("status", IConstant.SUCCESS_CODE);
+            response.put("message", IConstant.SUCCESS_MESSAGE);
+        } else {
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", IConstant.COURSES_NOT_FOUND);
+        }
+        response.put("courses", courseDtos);
+        return ResponseEntity.accepted().body(response);
+    }
 }
-         

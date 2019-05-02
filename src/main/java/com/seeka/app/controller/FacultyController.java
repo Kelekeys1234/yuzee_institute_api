@@ -1,12 +1,14 @@
 package com.seeka.app.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,7 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.service.IFacultyLevelService;
 import com.seeka.app.service.IFacultyService;
+import com.seeka.app.util.IConstant;
 
 @RestController
 @RequestMapping("/faculty")
@@ -72,4 +75,18 @@ public class FacultyController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
+    @RequestMapping(value = "/getFacultyByInstituteId/{instituteId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getFacultyByInstituteId(@Valid @PathVariable UUID instituteId) throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<Faculty> faculties = facultyService.getFacultyByInstituteId(instituteId);
+        if (faculties != null && !faculties.isEmpty()) {
+            response.put("status", IConstant.SUCCESS_CODE);
+            response.put("message", IConstant.SUCCESS_MESSAGE);
+        } else {
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", IConstant.FACULTY_NOT_FOUND);
+        }
+        response.put("facultyList", faculties);
+        return ResponseEntity.accepted().body(response);
+    }
 }

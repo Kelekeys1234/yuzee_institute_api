@@ -18,4 +18,5 @@ public interface IInstituteService {
 	public List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
 	public List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj);
 	public InstituteResponseDto getInstituteByID(UUID instituteId);
+    public List<InstituteResponseDto> getInstitudeByCityId(UUID cityId);
 }
