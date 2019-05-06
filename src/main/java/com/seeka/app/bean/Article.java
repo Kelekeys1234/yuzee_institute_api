@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -15,6 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.seeka.app.dto.SubCategoryDto;
 
 @Entity
 @Table(name="seeka_articles")
@@ -34,13 +37,26 @@ public class Article implements Serializable{
 	private Integer type;
 	private Boolean active;
 	@JsonIgnore
-	private Boolean deleted;
+	private Date deleted;
 	@JsonIgnore
 	private Date createdDate;
 	private Integer shared;
 	private Integer reviewed;
 	private Integer likes;
 	private Integer totalCount;
+	private String link;
+    private Date updatedAt;
+
+    private UUID country;
+    private UUID city;
+    private UUID faculty;
+    private UUID institute;
+    private UUID courses;
+    private String gender;
+    private Category category;
+    private UUID subCategory;
+    private Date createdAt;
+    private SubCategoryDto subCategoryDropDownDto;
 	
 	@Id
 	@GeneratedValue(generator = "UUID")
@@ -91,7 +107,7 @@ public class Article implements Serializable{
 	}
 	@Column(name="imagePath")
 	public String getImagePath() {
-		imagePath = "https://www.seoclerk.com/pics/645213-1jFXX81544832051.jpg";
+		//imagePath = "https://www.seoclerk.com/pics/645213-1jFXX81544832051.jpg";
 		return imagePath;
 	}
 	public void setImagePath(String imagePath) {
@@ -111,14 +127,14 @@ public class Article implements Serializable{
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	@Column(name="deleted")
-	public Boolean getDeleted() {
+	@Column(name="deleted_on")
+	public Date getDeleted() {
 		return deleted;
 	}
-	public void setDeleted(Boolean deleted) {
+	public void setDeleted(Date deleted) {
 		this.deleted = deleted;
 	}
-	@Column(name="created_date")
+	@Column(name="created_at")
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -154,4 +170,131 @@ public class Article implements Serializable{
 		this.totalCount = totalCount;
 	}
 	
+	@Column(name = "link")
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    @Column(name = "updated_at")
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @Column(name = "country")
+    public UUID getCountry() {
+        return country;
+    }
+
+    public void setCountry(UUID country) {
+        this.country = country;
+    }
+
+    @Column(name = "city")
+    public UUID getCity() {
+        return city;
+    }
+
+    public void setCity(UUID city) {
+        this.city = city;
+    }
+
+    @Column(name = "faculty")
+    public UUID getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(UUID faculty) {
+        this.faculty = faculty;
+    }
+
+    @Column(name = "courses")
+    public UUID getCourses() {
+        return courses;
+    }
+
+    public void setCourses(UUID courses) {
+        this.courses = courses;
+    }
+
+    /**
+     * @return the institute
+     */
+    @Column(name = "institute")
+    public UUID getInstitute() {
+        return institute;
+    }
+
+    /**
+     * @param institute the institute to set
+     */
+    public void setInstitute(UUID institute) {
+        this.institute = institute;
+    }
+
+    /**
+     * @return the gender
+     */
+    @Column(name = "gender")
+    public String getGender() {
+        return gender;
+    }
+
+    /**
+     * @param gender the gender to set
+     */
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    @Column(name = "subcategory_id")
+    public UUID getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(UUID subCategory) {
+        this.subCategory = subCategory;
+    }
+    /**
+     * @return the createdAt
+     */
+    @Transient
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+    /**
+     * @param createdAt the createdAt to set
+     */
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+    /**
+     * @return the subCategoryDropDownDto
+     */
+    @Transient
+    public SubCategoryDto getSubCategoryDropDownDto() {
+        return subCategoryDropDownDto;
+    }
+    /**
+     * @param subCategoryDropDownDto the subCategoryDropDownDto to set
+     */
+    public void setSubCategoryDropDownDto(SubCategoryDto subCategoryDropDownDto) {
+        this.subCategoryDropDownDto = subCategoryDropDownDto;
+    }
 }

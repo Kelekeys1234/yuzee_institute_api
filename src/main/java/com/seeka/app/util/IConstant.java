@@ -13,4 +13,8 @@ public class IConstant {
     public static final String INSTITUDE_NOT_FOUND = "Institude is not found";
     public static final String FACULTY_NOT_FOUND = "Faulty is not found";
     public static final String COURSES_NOT_FOUND = "Courses is not found";
+    public static final String SUCCESS = "Success.!";
+    public static final String DELETE_FAILURE = "Getting issue when article is deleting";
+    public static final String DELETE_FAILURE_ID_NOT_FOUND = "Specified article not found";
+    public static final String DELETE_SUCCESS = "Article deleted successfully";
 }

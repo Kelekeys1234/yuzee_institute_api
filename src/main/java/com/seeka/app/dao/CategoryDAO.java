@@ -48,4 +48,11 @@ public class CategoryDAO implements ICategoryDAO {
         }
         return categoryDto;
     }
+
+    @Override
+    public Category findCategoryById(UUID categoryId) {
+        Session session = sessionFactory.getCurrentSession();
+        Category category = session.get(Category.class, categoryId);
+        return category;
+    }
 }
