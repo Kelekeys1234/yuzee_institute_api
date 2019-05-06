@@ -1,5 +1,6 @@
 package com.seeka.app.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.bean.CountryEnglishEligibility;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDetails;
+import com.seeka.app.bean.CourseEnglishEligibility;
+import com.seeka.app.bean.CourseGradeEligibility;
 import com.seeka.app.bean.CourseKeyword;
 import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Currency;
@@ -34,10 +38,14 @@ import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.JobsDto;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.jobs.CurrencyUtil;
 import com.seeka.app.service.ICityService;
+import com.seeka.app.service.ICountryEnglishEligibilityService;
 import com.seeka.app.service.ICountryService;
 import com.seeka.app.service.ICourseDetailsService;
+import com.seeka.app.service.ICourseEnglishEligibilityService;
+import com.seeka.app.service.ICourseGradeEligibilityService;
 import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
@@ -92,6 +100,15 @@ public class CourseController {
 	
 	@Autowired
 	IUserService userService;
+	
+	@Autowired
+	ICountryEnglishEligibilityService englishEligibilityService;
+	
+	@Autowired
+	ICourseEnglishEligibilityService courseEnglishService;
+	
+	@Autowired
+	ICourseGradeEligibilityService courseGradeService;
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody CourseDetails courseDetailsObj) throws Exception {
@@ -293,6 +310,11 @@ public class CourseController {
 		instituteObj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
 		instituteObj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
 		
+		//List<CountryEnglishEligibility> englishEligibilities = englishEligibilityService.getEnglishEligibiltyList(instituteObj.getCountryId());
+		
+		List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(courseid);
+		CourseGradeEligibility gradeCriteriaObj = courseGradeService.get(courseid);
+		
 		List<UserInstCourseReview> reviewsList = userInstCourseReviewService.getTopReviewsByFilter(courseResObj.getCourseId(),instituteObj.getInstituteId());
 		JobsDto jobsDto = new JobsDto();
 		jobsDto.setCityId(instituteObj.getCityId());
@@ -302,6 +324,8 @@ public class CourseController {
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("courseObj",courseResObj);
+		response.put("englishCriteriaList",englishCriteriaList);
+		response.put("gradeCriteriaObj",gradeCriteriaObj);
 		response.put("instituteObj",instituteObj);
 		response.put("jobsObj",jobsDto);
 		if(null != reviewsList && !reviewsList.isEmpty() && reviewsList.size() > 0) {
@@ -364,6 +388,76 @@ public class CourseController {
 		response.put("status", 1);
 		response.put("searchkeywordList", searchkeywordList);
 		response.put("message","Success");		
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	
+	@RequestMapping(value = "/eligibility/update", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<Course> courseList = courseService.getAll();
+		Date now = new Date();
+		
+		CourseEnglishEligibility englishEligibility = null;
+		CourseGradeEligibility courseGradeEligibility = null;
+		
+		int size = courseList.size(), i =1;
+		
+		for (Course course : courseList) {
+			System.out.println("Total:  "+size+",  Completed:  "+i+",  CourseID:  "+course.getId());
+			i++;
+			try {
+				courseGradeEligibility = new CourseGradeEligibility();
+				courseGradeEligibility.setCourseId(course.getId());
+				courseGradeEligibility.setGlobalALevel1("A");
+				courseGradeEligibility.setGlobalALevel2("A");
+				courseGradeEligibility.setGlobalALevel3("A");
+				courseGradeEligibility.setGlobalALevel4("A");
+				//courseGradeEligibility.setGlobalALevel5("");
+				courseGradeEligibility.setGlobalGpa(3.5);
+				courseGradeEligibility.setIsActive(true);
+				courseGradeEligibility.setIsDeleted(false);
+				courseGradeEligibility.setCreatedBy("AUTO");
+				courseGradeEligibility.setCreatedOn(now);
+				courseGradeService.save(courseGradeEligibility);
+				
+				englishEligibility = new CourseEnglishEligibility();
+				englishEligibility.setCourseId(course.getId());
+				englishEligibility.setEnglishType(EnglishType.IELTS);
+				englishEligibility.setId(UUID.randomUUID());
+				englishEligibility.setIsActive(true);
+				englishEligibility.setListening(4.0);
+				englishEligibility.setOverall(4.5);
+				englishEligibility.setReading(4.0);
+				englishEligibility.setSpeaking(5.0);
+				englishEligibility.setWriting(5.0);
+				englishEligibility.setIsDeleted(false);
+				englishEligibility.setCreatedBy("AUTO");
+				englishEligibility.setCreatedOn(now);
+				courseEnglishService.save(englishEligibility);
+				
+				englishEligibility = new CourseEnglishEligibility();
+				englishEligibility.setCourseId(course.getId());
+				englishEligibility.setEnglishType(EnglishType.TOEFL);
+				englishEligibility.setId(UUID.randomUUID());
+				englishEligibility.setIsActive(true);
+				englishEligibility.setListening(4.0);
+				englishEligibility.setOverall(4.5);
+				englishEligibility.setReading(4.0);
+				englishEligibility.setSpeaking(5.0);
+				englishEligibility.setWriting(5.0);
+				englishEligibility.setIsDeleted(false);
+				englishEligibility.setCreatedBy("AUTO");
+				englishEligibility.setCreatedOn(now);
+				courseEnglishService.save(englishEligibility);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		 
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("courseList",courseList);
 		return ResponseEntity.accepted().body(response);
 	}
 	

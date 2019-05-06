@@ -12,47 +12,46 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
-import com.seeka.app.bean.CourseGradeEligibility;
 
 @Repository
-public class CourseGradeEligibilityDAO implements ICourseGradeEligibilityDAO{
+public class CourseEnglishEligibilityDAO implements ICourseEnglishEligibilityDAO{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
 	
 	
 	@Override
-	public void save(CourseGradeEligibility obj) {	
+	public void save(CourseEnglishEligibility obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}
 	
 	@Override
-	public void update(CourseGradeEligibility obj) {	
+	public void update(CourseEnglishEligibility obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.update(obj);	   					
 	}
 	
 	@Override
-	public CourseGradeEligibility get(UUID id) {	
+	public CourseEnglishEligibility get(UUID id) {	
 		Session session = sessionFactory.getCurrentSession();		
-		CourseGradeEligibility obj = session.get(CourseGradeEligibility.class, id);
+		CourseEnglishEligibility obj = session.get(CourseEnglishEligibility.class, id);
 		return obj;
 	}
 	
 	@Override
-	public List<CourseGradeEligibility> getAll() {
+	public List<CourseEnglishEligibility> getAll() {
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(Course.class); 
 		return crit.list();
 	}
 	
 	@Override
-	public CourseGradeEligibility getAllEnglishEligibilityByCourse(UUID courseID) {
+	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(UUID courseID) {
 		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(CourseGradeEligibility.class); 
+		Criteria crit = session.createCriteria(CourseEnglishEligibility.class); 
 		crit.add(Restrictions.eq("courseId",courseID));
-		return null != crit.list()?(CourseGradeEligibility)crit.list().get(0):null;
+		return crit.list();
 	}
 	
 	 

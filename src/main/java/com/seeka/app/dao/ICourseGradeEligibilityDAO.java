@@ -11,4 +11,5 @@ public interface ICourseGradeEligibilityDAO {
 	public void update(CourseGradeEligibility obj);
 	public CourseGradeEligibility get(UUID id);
 	public List<CourseGradeEligibility> getAll();	
+	public CourseGradeEligibility getAllEnglishEligibilityByCourse(UUID courseID);
 }
