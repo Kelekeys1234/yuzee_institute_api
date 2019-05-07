@@ -195,6 +195,8 @@ public class InstituteDAO implements IInstituteDAO{
 			obj.setInstituteId(UUID.fromString((String.valueOf(row[0]))));
 			obj.setInstituteName(String.valueOf(row[1]));
 			obj.setLocation(String.valueOf(row[2])+", "+String.valueOf(row[3]));
+			obj.setCityName(String.valueOf(row[2]));
+			obj.setCountryName(String.valueOf(row[3]));
 			Integer worldRanking = 0;
 			if(null != row[4]) {
 				worldRanking = Double.valueOf(String.valueOf(row[4])).intValue();
@@ -203,8 +205,6 @@ public class InstituteDAO implements IInstituteDAO{
 			obj.setStars(String.valueOf(row[5]));
 			obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
 			obj.setTotalCount(Integer.parseInt(String.valueOf(row[7])));
-			obj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
-			obj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
 			list.add(obj);
 		}   
 	    return list;	   
@@ -238,8 +238,6 @@ public class InstituteDAO implements IInstituteDAO{
 			obj.setWorldRanking(String.valueOf(row[4]));
 			obj.setStars(String.valueOf(row[5]));
 			obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
-			obj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
-			obj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
 		}   
 	    return obj;	   
 	}

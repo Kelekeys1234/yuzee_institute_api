@@ -308,6 +308,8 @@ public class CourseDAO implements ICourseDAO{
 				obj.setCityId(UUID.fromString((String.valueOf(row[8]))));
 				obj.setCountryId(UUID.fromString((String.valueOf(row[9]))));
 				obj.setLocation(String.valueOf(row[10])+", "+String.valueOf(row[11]));
+				obj.setCountryName(String.valueOf(row[11]));
+				obj.setCityName(String.valueOf(row[10]));
 				
 				Integer worldRanking = 0;
 				if(null != row[4]) {
@@ -319,8 +321,6 @@ public class CourseDAO implements ICourseDAO{
 				obj.setStars(String.valueOf(row[14])); 
 				obj.setRequirements(String.valueOf(row[18]));
 				obj.setTotalCount(Integer.parseInt(String.valueOf(row[19])));
-				obj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
-				obj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
 				list.add(obj);
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -855,6 +855,8 @@ public class CourseDAO implements ICourseDAO{
 			instituteObj.setClosingHour(String.valueOf(row[19]));
 			instituteObj.setOpeningHour(String.valueOf(row[20]));
 			instituteObj.setLocation(String.valueOf(row[25])+","+String.valueOf(row[26]));
+			instituteObj.setCountryName(String.valueOf(row[26]));
+			instituteObj.setCityName(String.valueOf(row[25]));
 			instituteObj.setCityId(UUID.fromString((String.valueOf(row[30]))));
 			instituteObj.setCountryId(UUID.fromString((String.valueOf(row[31]))));
 			

@@ -1,5 +1,6 @@
 package com.seeka.app.controller;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.bean.CountryEnglishEligibility;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.CourseEnglishEligibility;
@@ -56,6 +56,7 @@ import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IUserInstCourseReviewService;
 import com.seeka.app.service.IUserService;
+import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController
@@ -189,6 +190,15 @@ public class CourseController {
 		
 		
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto,currency,user.getCountryId());
+		
+		for (CourseResponseDto obj : courseList) {
+			try {
+				obj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
+				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		Integer maxCount = 0,totalCount =0;
 		if(null != courseList && !courseList.isEmpty()) {
 			totalCount = courseList.get(0).getTotalCount();
@@ -248,10 +258,17 @@ public class CourseController {
 			currency = CurrencyUtil.getCurrencyObjById(user.getCurrencyId());
 			response.put("showCurrencyPopup",false);
 		}
-		
 		response.put("currencyPopupMsg",message);
 		
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto,currency,user.getCountryId());
+		for (CourseResponseDto obj : courseList) {
+			try {
+				obj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
+				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		Integer maxCount = 0,totalCount =0;
 		if(null != courseList && !courseList.isEmpty()) {
 			totalCount = courseList.get(0).getTotalCount();
@@ -306,9 +323,11 @@ public class CourseController {
 		}
 		
 		CourseDto courseResObj =  (CourseDto) map.get("courseObj");
-		InstituteResponseDto instituteObj = (InstituteResponseDto) map.get("instituteObj");		
-		instituteObj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
-		instituteObj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
+		InstituteResponseDto instituteObj = (InstituteResponseDto) map.get("instituteObj");	
+		
+		
+		instituteObj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
+		instituteObj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
 		
 		//List<CountryEnglishEligibility> englishEligibilities = englishEligibilityService.getEnglishEligibiltyList(instituteObj.getCountryId());
 		
@@ -350,6 +369,8 @@ public class CourseController {
 			response.put("error", errorDto);
 			return ResponseEntity.badRequest().body(response);
 		}
+	 	instituteResponseDto.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(instituteResponseDto.getCountryName(), instituteResponseDto.getInstituteName()));
+		instituteResponseDto.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(instituteResponseDto.getCountryName(), instituteResponseDto.getInstituteName()));
 		 
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByInstitute(instituteid, request);
 		

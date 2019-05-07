@@ -1,5 +1,6 @@
 package com.seeka.app.controller;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.ServiceDetails;
 import com.seeka.app.bean.User;
+import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
@@ -34,6 +36,7 @@ import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IInstituteTypeService;
 import com.seeka.app.service.IServiceDetailsService;
 import com.seeka.app.service.IUserService;
+import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController
@@ -394,6 +397,16 @@ public class InstituteController {
 		}
 		
 		List<InstituteResponseDto> courseList = instituteService.getAllInstitutesByFilter(request);
+		for (InstituteResponseDto obj : courseList) {
+			try {
+				obj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
+				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 		Integer maxCount = 0,totalCount =0;
 		if(null != courseList && !courseList.isEmpty()) {
 			totalCount = courseList.get(0).getTotalCount();
