@@ -9,11 +9,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import com.google.gson.Gson;
+import com.seeka.app.util.CDNServerUtil;
 
 @Entity
 @Table(name="service")
@@ -40,6 +42,9 @@ public class ServiceDetails extends RecordModifier implements Serializable{
 	
 	@Column(name="is_active")
 	private Boolean isActive; // Is Active
+	
+	@Transient
+	private String iconUrl;
 
 	public UUID getId() {
 		return id;
@@ -81,29 +86,15 @@ public class ServiceDetails extends RecordModifier implements Serializable{
 		this.isActive = isActive;
 	}
 
-	
-	public static void main(String[] args) {
-		
-		ServiceDetails obj = new ServiceDetails();
-	    obj.setInstituteTypeId(UUID.randomUUID());
-		obj.setName("service");
-		obj.setDescription("description");
-		obj.setIsActive(true);
-		obj.setCreatedOn(new Date());
-		obj.setUpdatedOn(new Date());
-		obj.setDeletedOn(new Date());
-		obj.setCreatedBy("Own");
-		obj.setUpdatedBy("Own");
-		obj.setIsDeleted(false);					
-		Gson gson = new Gson();
-		String value = gson.toJson(obj);
-		 System.out.println(value);
-		System.out.println(new Date().getTime());
+	public String getIconUrl() {
+		if(null != name && !name.isEmpty()) {
+			iconUrl = CDNServerUtil.getServiceIconUrl(name.trim());
+		}
+		return iconUrl;
 	}
 
-	
-
-	
-    		 
+	public void setIconUrl(String iconUrl) {
+		this.iconUrl = iconUrl;
+	}
 	
 }

@@ -354,7 +354,9 @@ public class InstituteController {
 	public ResponseEntity<?> getAllInstituteService() throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		List<ServiceDetails> list = serviceDetailsService.getAll();;
-		
+		for (ServiceDetails obj : list) {
+			
+		}
 		
         response.put("status", 1);
 		response.put("message","Success.!");

@@ -61,6 +61,10 @@ public class CountryController {
 		System.out.println("id : "+id);
  			
 		Country countryObj = countryService.get(id);
+		 //image url, media, international health cover data isn't there in above API
+
+
+
 		if(null == countryObj) {
 			errorDto = new ErrorDto();
 			errorDto.setCode("400");
