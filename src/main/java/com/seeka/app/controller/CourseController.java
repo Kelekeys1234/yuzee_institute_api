@@ -1,5 +1,6 @@
 package com.seeka.app.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDetails;
+import com.seeka.app.bean.CourseEnglishEligibility;
+import com.seeka.app.bean.CourseGradeEligibility;
 import com.seeka.app.bean.CourseKeyword;
 import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Currency;
@@ -35,10 +38,14 @@ import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.JobsDto;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.jobs.CurrencyUtil;
 import com.seeka.app.service.ICityService;
+import com.seeka.app.service.ICountryEnglishEligibilityService;
 import com.seeka.app.service.ICountryService;
 import com.seeka.app.service.ICourseDetailsService;
+import com.seeka.app.service.ICourseEnglishEligibilityService;
+import com.seeka.app.service.ICourseGradeEligibilityService;
 import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
@@ -49,6 +56,7 @@ import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IUserInstCourseReviewService;
 import com.seeka.app.service.IUserService;
+import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
@@ -94,6 +102,15 @@ public class CourseController {
 	
 	@Autowired
 	IUserService userService;
+	
+	@Autowired
+	ICountryEnglishEligibilityService englishEligibilityService;
+	
+	@Autowired
+	ICourseEnglishEligibilityService courseEnglishService;
+	
+	@Autowired
+	ICourseGradeEligibilityService courseGradeService;
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody CourseDetails courseDetailsObj) throws Exception {
@@ -174,6 +191,15 @@ public class CourseController {
 		
 		
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto,currency,user.getCountryId());
+		
+		for (CourseResponseDto obj : courseList) {
+			try {
+				obj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
+				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		Integer maxCount = 0,totalCount =0;
 		if(null != courseList && !courseList.isEmpty()) {
 			totalCount = courseList.get(0).getTotalCount();
@@ -233,10 +259,17 @@ public class CourseController {
 			currency = CurrencyUtil.getCurrencyObjById(user.getCurrencyId());
 			response.put("showCurrencyPopup",false);
 		}
-		
 		response.put("currencyPopupMsg",message);
 		
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto,currency,user.getCountryId());
+		for (CourseResponseDto obj : courseList) {
+			try {
+				obj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
+				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		Integer maxCount = 0,totalCount =0;
 		if(null != courseList && !courseList.isEmpty()) {
 			totalCount = courseList.get(0).getTotalCount();
@@ -291,9 +324,16 @@ public class CourseController {
 		}
 		
 		CourseDto courseResObj =  (CourseDto) map.get("courseObj");
-		InstituteResponseDto instituteObj = (InstituteResponseDto) map.get("instituteObj");		
-		instituteObj.setInstituteImageUrl("https://www.adelaide.edu.au/front/images/mo-orientation.jpg");
-		instituteObj.setInstituteLogoUrl("https://global.adelaide.edu.au/v/style-guide2/assets/img/logo.png");
+		InstituteResponseDto instituteObj = (InstituteResponseDto) map.get("instituteObj");	
+		
+		
+		instituteObj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
+		instituteObj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
+		
+		//List<CountryEnglishEligibility> englishEligibilities = englishEligibilityService.getEnglishEligibiltyList(instituteObj.getCountryId());
+		
+		List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(courseid);
+		CourseGradeEligibility gradeCriteriaObj = courseGradeService.get(courseid);
 		
 		List<UserInstCourseReview> reviewsList = userInstCourseReviewService.getTopReviewsByFilter(courseResObj.getCourseId(),instituteObj.getInstituteId());
 		JobsDto jobsDto = new JobsDto();
@@ -304,6 +344,8 @@ public class CourseController {
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("courseObj",courseResObj);
+		response.put("englishCriteriaList",englishCriteriaList);
+		response.put("gradeCriteriaObj",gradeCriteriaObj);
 		response.put("instituteObj",instituteObj);
 		response.put("jobsObj",jobsDto);
 		if(null != reviewsList && !reviewsList.isEmpty() && reviewsList.size() > 0) {
@@ -328,6 +370,8 @@ public class CourseController {
 			response.put("error", errorDto);
 			return ResponseEntity.badRequest().body(response);
 		}
+	 	instituteResponseDto.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(instituteResponseDto.getCountryName(), instituteResponseDto.getInstituteName()));
+		instituteResponseDto.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(instituteResponseDto.getCountryName(), instituteResponseDto.getInstituteName()));
 		 
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByInstitute(instituteid, request);
 		
@@ -383,4 +427,73 @@ public class CourseController {
         response.put("courses", courseDtos);
         return ResponseEntity.accepted().body(response);
     }
+	
+	@RequestMapping(value = "/eligibility/update", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<Course> courseList = courseService.getAll();
+		Date now = new Date();
+		
+		CourseEnglishEligibility englishEligibility = null;
+		CourseGradeEligibility courseGradeEligibility = null;
+		
+		int size = courseList.size(), i =1;
+		
+		for (Course course : courseList) {
+			System.out.println("Total:  "+size+",  Completed:  "+i+",  CourseID:  "+course.getId());
+			i++;
+			try {
+				courseGradeEligibility = new CourseGradeEligibility();
+				courseGradeEligibility.setCourseId(course.getId());
+				courseGradeEligibility.setGlobalALevel1("A");
+				courseGradeEligibility.setGlobalALevel2("A");
+				courseGradeEligibility.setGlobalALevel3("A");
+				courseGradeEligibility.setGlobalALevel4("A");
+				//courseGradeEligibility.setGlobalALevel5("");
+				courseGradeEligibility.setGlobalGpa(3.5);
+				courseGradeEligibility.setIsActive(true);
+				courseGradeEligibility.setIsDeleted(false);
+				courseGradeEligibility.setCreatedBy("AUTO");
+				courseGradeEligibility.setCreatedOn(now);
+				courseGradeService.save(courseGradeEligibility);
+				
+				englishEligibility = new CourseEnglishEligibility();
+				englishEligibility.setCourseId(course.getId());
+				englishEligibility.setEnglishType(EnglishType.IELTS);
+				englishEligibility.setId(UUID.randomUUID());
+				englishEligibility.setIsActive(true);
+				englishEligibility.setListening(4.0);
+				englishEligibility.setOverall(4.5);
+				englishEligibility.setReading(4.0);
+				englishEligibility.setSpeaking(5.0);
+				englishEligibility.setWriting(5.0);
+				englishEligibility.setIsDeleted(false);
+				englishEligibility.setCreatedBy("AUTO");
+				englishEligibility.setCreatedOn(now);
+				courseEnglishService.save(englishEligibility);
+				
+				englishEligibility = new CourseEnglishEligibility();
+				englishEligibility.setCourseId(course.getId());
+				englishEligibility.setEnglishType(EnglishType.TOEFL);
+				englishEligibility.setId(UUID.randomUUID());
+				englishEligibility.setIsActive(true);
+				englishEligibility.setListening(4.0);
+				englishEligibility.setOverall(4.5);
+				englishEligibility.setReading(4.0);
+				englishEligibility.setSpeaking(5.0);
+				englishEligibility.setWriting(5.0);
+				englishEligibility.setIsDeleted(false);
+				englishEligibility.setCreatedBy("AUTO");
+				englishEligibility.setCreatedOn(now);
+				courseEnglishService.save(englishEligibility);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		 
+        response.put("status", 1);
+		response.put("message","Success.!");
+		response.put("courseList",courseList);
+		return ResponseEntity.accepted().body(response);
+	}
 }

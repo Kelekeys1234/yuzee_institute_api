@@ -24,6 +24,8 @@ public class CourseResponseDto {
 	private String localFees;
 	private String intlFees;
 	private String requirements;
+	private String countryName;
+	private String cityName;
 	
 	public UUID getCourseId() {
 		return courseId;
@@ -148,5 +150,16 @@ public class CourseResponseDto {
 	public void setRequirements(String requirements) {
 		this.requirements = requirements;
 	}
-	
+	public String getCountryName() {
+		return countryName;
+	}
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+	public String getCityName() {
+		return cityName;
+	}
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
 }

@@ -26,19 +26,19 @@ public class CourseDetails implements Serializable{
 	private UUID courseId;
 		
 	@Column(name="wr_range")
-	private String worldRange;//World Range
+	private String worldRange; 
 	
 	@Column(name="availbilty")
-	private String availbilty; // Availbilty
+	private String availbilty; 
 	
 	@Column(name="part_full")
-	private String partFull;//Part Full
+	private String partFull; 
 	
 	@Column(name="study_mode")
-	private String studyMode;//Study Mode
+	private String studyMode; 
 	
 	@Column(name="description")
-	private String description; // Description
+	private String description; 
 	
 	@Transient
 	private Course courseObj;
@@ -57,6 +57,9 @@ public class CourseDetails implements Serializable{
 	
 	@Transient
 	private InstituteLevel instituteLevelObj;
+	
+	@Transient
+	private CourseGradeEligibility gradeObj;
  
 	 
 

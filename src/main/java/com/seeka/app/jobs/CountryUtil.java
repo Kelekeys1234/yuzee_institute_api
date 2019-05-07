@@ -1,5 +1,6 @@
 package com.seeka.app.jobs;
 
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +19,7 @@ import com.seeka.app.bean.City;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.service.ICityService;
 import com.seeka.app.service.ICountryService;
+import com.seeka.app.util.CDNServerUtil;
 
 @Component
 public class CountryUtil {

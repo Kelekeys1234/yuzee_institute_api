@@ -37,4 +37,9 @@ public class CourseGradeEligibilityService implements ICourseGradeEligibilitySer
 		return dao.getAll();
 	} 
 	
+	@Override
+	public CourseGradeEligibility getAllEnglishEligibilityByCourse(UUID courseID) {
+		return dao.getAllEnglishEligibilityByCourse(courseID);
+	}
+	
 }

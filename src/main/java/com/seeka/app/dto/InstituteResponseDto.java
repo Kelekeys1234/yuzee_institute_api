@@ -2,8 +2,6 @@ package com.seeka.app.dto;
 
 import java.util.UUID;
 
-import javax.persistence.Column;
-
 public class InstituteResponseDto {
 	
 	private UUID instituteId;
@@ -29,6 +27,8 @@ public class InstituteResponseDto {
 	private String address;
 	private String visaRequirement;
 	private String totalAvailableJobs;
+	private String countryName;
+	private String cityName;
 	
 	
 	public UUID getInstituteId() {
@@ -175,5 +175,16 @@ public class InstituteResponseDto {
 	public void setCountryId(UUID countryId) {
 		this.countryId = countryId;
 	}
-	 
+	public String getCountryName() {
+		return countryName;
+	}
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+	public String getCityName() {
+		return cityName;
+	}
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
 }

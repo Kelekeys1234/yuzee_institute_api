@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Country;
+import com.seeka.app.bean.CountryEnglishEligibility;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.ErrorDto;
+import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.jobs.CountryUtil;
+import com.seeka.app.service.ICountryEnglishEligibilityService;
 import com.seeka.app.service.ICountryService;
 
 @RestController
@@ -26,6 +29,9 @@ public class CountryController {
 	
 	@Autowired
 	ICountryService countryService;
+	
+	@Autowired
+	ICountryEnglishEligibilityService countryEnglishEligibilityService;
 	
 	@RequestMapping(value = "/get", method=RequestMethod.GET)
 	public ResponseEntity<?>  getAll() {
@@ -99,6 +105,51 @@ public class CountryController {
     	response.put("countryList",countryList);
     	return ResponseEntity.accepted().body(response);
 	}
+	
+	
+	@RequestMapping(value = "/add/english/sample", method=RequestMethod.GET)
+	public ResponseEntity<?>  addEnglishEligibility() {
+		Map<String,Object> response = new HashMap<String, Object>();
+		List<Country> countryList = countryService.getAll();
+		Date now = new Date();
+		CountryEnglishEligibility eligibility = null;
+		for (Country country : countryList) {
+			
+			eligibility = new CountryEnglishEligibility();
+			eligibility.setCountryId(country.getId());
+			eligibility.setCreatedBy("AUTO");
+			eligibility.setCreatedOn(now);
+			eligibility.setId(UUID.randomUUID());
+			eligibility.setIsActive(true);
+			eligibility.setListening(4.5);
+			eligibility.setOverall(4.5);
+			eligibility.setReading(4.00);
+			eligibility.setSpeaking(5.00);
+			eligibility.setEnglishType(EnglishType.TOEFL);
+			eligibility.setWriting(3.25);
+			countryEnglishEligibilityService.save(eligibility);
+			
+			eligibility = new CountryEnglishEligibility();
+			eligibility.setCountryId(country.getId());
+			eligibility.setCreatedBy("AUTO");
+			eligibility.setCreatedOn(now);
+			eligibility.setId(UUID.randomUUID());
+			eligibility.setIsActive(true);
+			eligibility.setListening(4.5);
+			eligibility.setOverall(4.5);
+			eligibility.setReading(4.00);
+			eligibility.setSpeaking(5.00);
+			eligibility.setEnglishType(EnglishType.IELTS);
+			eligibility.setWriting(3.25);
+			countryEnglishEligibilityService.save(eligibility);
+			
+		}
+		
+		response.put("status", 1);
+		response.put("message","Success.!");
+    	response.put("list",countryList);
+    	return ResponseEntity.accepted().body(response);
+	} 
 	
 	
 	 
