@@ -27,6 +27,7 @@ import com.seeka.app.service.IFacultyService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.ILevelService;
 import com.seeka.app.service.IUserService;
+import com.seeka.app.util.CDNServerUtil;
 
 @RestController
 @RequestMapping("/search")
@@ -65,6 +66,14 @@ public class SearchPageController {
 		courseSearchDto.setPageNumber(1);
 		courseSearchDto.setMaxSizePerPage(3);
 		List<InstituteResponseDto> recommendedInstList = instituteService.getAllInstitutesByFilter(courseSearchDto);
+		for (InstituteResponseDto obj : recommendedInstList) {
+			try {
+				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
+				obj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		List<CountryDto> countryList = CountryLevelFacultyUtil.getCountryList();
 		List<Level> levelList = CountryLevelFacultyUtil.getLevelList();
 		response.put("countryList",countryList);
