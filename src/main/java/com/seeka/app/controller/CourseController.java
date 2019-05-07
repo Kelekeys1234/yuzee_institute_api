@@ -194,8 +194,8 @@ public class CourseController {
 		
 		for (CourseResponseDto obj : courseList) {
 			try {
-				obj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
-				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
+				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
+				obj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -264,8 +264,8 @@ public class CourseController {
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto,currency,user.getCountryId());
 		for (CourseResponseDto obj : courseList) {
 			try {
-				obj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
-				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
+				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
+				obj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -327,8 +327,8 @@ public class CourseController {
 		InstituteResponseDto instituteObj = (InstituteResponseDto) map.get("instituteObj");	
 		
 		
-		instituteObj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
-		instituteObj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
+		instituteObj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
+		instituteObj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
 		
 		//List<CountryEnglishEligibility> englishEligibilities = englishEligibilityService.getEnglishEligibiltyList(instituteObj.getCountryId());
 		
@@ -370,8 +370,8 @@ public class CourseController {
 			response.put("error", errorDto);
 			return ResponseEntity.badRequest().body(response);
 		}
-	 	instituteResponseDto.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(instituteResponseDto.getCountryName(), instituteResponseDto.getInstituteName()));
-		instituteResponseDto.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(instituteResponseDto.getCountryName(), instituteResponseDto.getInstituteName()));
+	 	instituteResponseDto.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(instituteResponseDto.getCountryName(), instituteResponseDto.getInstituteName()));
+		instituteResponseDto.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(instituteResponseDto.getCountryName(), instituteResponseDto.getInstituteName()));
 		 
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByInstitute(instituteid, request);
 		

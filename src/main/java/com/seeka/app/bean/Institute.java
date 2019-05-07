@@ -82,6 +82,12 @@ public class Institute extends RecordModifier implements Serializable{
 	private Boolean isActive; // Is Active
 	
 	@Transient
+	private String instituteLogoUrl;
+	
+	@Transient
+	private String instituteImageUrl;	
+	
+	@Transient
 	private InstituteDetails instituteDetailsObj;
 	
 	@Transient
@@ -238,67 +244,20 @@ public class Institute extends RecordModifier implements Serializable{
 	public void setServiceList(List<InstituteServiceDetails> serviceList) {
 		this.serviceList = serviceList;
 	}
- 
-	
-	
-	public static void main(String[] args) {
-		
-		Country countryObj = new Country();
-		countryObj.setId(UUID.randomUUID());
 
-		InstituteType instituteTypeObj = new InstituteType();
-		instituteTypeObj.setId(UUID.randomUUID());
-		
-		City cityObj = new City();
-		cityObj.setId(UUID.randomUUID());
-		
-		
-		Institute institute = new Institute();
-		institute.setName("Name of the University");
-		institute.setCityId(UUID.fromString("990E603E-9F20-488C-BC0D-8554C50EE500"));
-		institute.setCountryId(UUID.fromString("990E603E-9F20-488C-BC0D-8554C50EE500"));
-		institute.setAddress("Address of the University");
-		institute.setDescription("Description about the university");
-		institute.setCreatedBy("Name of the record Creator");
-		institute.setUpdatedBy("Name of the record Creator");
-		institute.setCreatedOn(new Date());
-		institute.setUpdatedOn(new Date());
-		institute.setDeletedOn(new Date());
-		institute.setIsDeleted(false);	
-		
-		
-		institute.setInsImageCount(10);
-		institute.setInstituteTypeId(UUID.fromString("990E603E-9F20-488C-BC0D-8554C50EE500"));
-		institute.setInterEmail("internationalemail@email.com");
-		institute.setInterPhoneNumber("+91-9884512528");
-		institute.setIsActive(true);
-		institute.setLatitude("91.084754875");
-		institute.setLongitude("-78.074574556");
-		institute.setTotalNoOfStudent(2456);
-		institute.setWebsite("www.websiteoftheuniversity.com");
-		institute.setWorldRanking(590);
-		
-		InstituteDetails instituteDetails = new InstituteDetails();
-		instituteDetails.setAboutUsInfo("About us information about the universities");
-		instituteDetails.setAverageCostOfLiving("25000AUD");
-		instituteDetails.setClimate2("Climate of the university");
-		instituteDetails.setClosingHour("05:00PM");
-		instituteDetails.setCourseStart("Course Start");
-		instituteDetails.setEnglishPartners("University English Parameters");
-		instituteDetails.setEnrolmentLink("www.universityenrolmentlink.com");
-		instituteDetails.setOpeningHour("9:30AM");
-		instituteDetails.setTutionFeesPaymentPlan("University Payment Plan");
-		instituteDetails.setType("Type of university");
-		instituteDetails.setWhatsappNo("+91-9884512528");
-		instituteDetails.setYoutubeLink("www.youtubelinkofuniversity.com");
-		
-		institute.setInstituteDetailsObj(instituteDetails);
-		
-		Gson gson = new Gson();
-		
-		System.out.println(gson.toJson(institute));
-		
-		
+	public String getInstituteLogoUrl() {
+		return instituteLogoUrl;
 	}
-	
+
+	public void setInstituteLogoUrl(String instituteLogoUrl) {
+		this.instituteLogoUrl = instituteLogoUrl;
+	}
+
+	public String getInstituteImageUrl() {
+		return instituteImageUrl;
+	}
+
+	public void setInstituteImageUrl(String instituteImageUrl) {
+		this.instituteImageUrl = instituteImageUrl;
+	}
 }

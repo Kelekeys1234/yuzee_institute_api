@@ -24,11 +24,13 @@ import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.ServiceDetails;
 import com.seeka.app.bean.User;
+import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.jobs.CountryUtil;
 import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IInstituteServiceDetailsService;
@@ -99,6 +101,9 @@ public class InstituteController {
             response.put("error", errorDto);
             return ResponseEntity.badRequest().body(response);
         }
+        CountryDto country = CountryUtil.getCountryByCountryId(instituteObj.getCountryId());
+        instituteObj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(country.getName(), instituteObj.getName()));
+        instituteObj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(country.getName(), instituteObj.getName()));
         InstituteDetails instituteDetailsObj = instituteDetailsService.get(institueid);
         if (null != instituteDetailsObj) {
             instituteObj.setInstituteDetailsObj(instituteDetailsObj);
@@ -445,6 +450,15 @@ public class InstituteController {
         }
 
         List<InstituteResponseDto> courseList = instituteService.getAllInstitutesByFilter(request);
+        for (InstituteResponseDto obj : courseList) {
+            try {
+                obj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
+                obj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         Integer maxCount = 0, totalCount = 0;
         if (null != courseList && !courseList.isEmpty()) {
             totalCount = courseList.get(0).getTotalCount();
