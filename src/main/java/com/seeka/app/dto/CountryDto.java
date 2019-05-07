@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Level;
+import com.seeka.app.util.CDNServerUtil;
 
 public class CountryDto {
 	
@@ -34,7 +35,9 @@ public class CountryDto {
 		this.countryCode = countryCode;
 	}
 	public String getImageUrl() {
-		imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR88bG0LmhslAUzzc2M3dZFBgd4Bb1vsymV7h2hKhvV4QRq0CgI";
+		if(name != null && !name.isEmpty()) {
+			imageUrl = CDNServerUtil.getCountryImageUrl(name.trim());
+		}
 		return imageUrl;
 	}
 	public void setImageUrl(String imageUrl) {
