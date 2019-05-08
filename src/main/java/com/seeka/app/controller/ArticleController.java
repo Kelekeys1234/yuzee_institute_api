@@ -6,15 +6,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.Article;
 import com.seeka.app.dto.PageLookupDto;
@@ -78,7 +75,7 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/saveArticle", method = RequestMethod.POST)
-    public ResponseEntity<?> saveArticle(@ModelAttribute("articleobj") com.seeka.app.dto.ArticleDto article, @RequestPart(value = "file", required = false) MultipartFile file) {
-        return ResponseEntity.accepted().body(articleService.saveArticle(file, article));
+    public ResponseEntity<?> saveArticle(@RequestBody com.seeka.app.dto.ArticleDto article) {
+        return ResponseEntity.accepted().body(articleService.saveArticle(null, article));
     }
 }

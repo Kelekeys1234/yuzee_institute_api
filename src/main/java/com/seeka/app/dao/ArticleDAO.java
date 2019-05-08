@@ -144,12 +144,25 @@ public class ArticleDAO implements IArticleDAO {
     }
 
     @Override
-    public void save(Article article) {
+    public Article save(Article article) {
         try {
             Session session = sessionFactory.getCurrentSession();
             session.save(article);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        return article;
+    }
+
+    @Override
+    public void updateArticle(UUID subCAtegory, UUID id) {
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            String query = "UPDATE seeka_articles SET subcategory_id = '" + subCAtegory + "' where id='" + id + "'";
+            session.createSQLQuery(query).executeUpdate();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
     }
 }

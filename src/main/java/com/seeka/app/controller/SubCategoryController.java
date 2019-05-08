@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -73,6 +74,25 @@ public class SubCategoryController {
             response.put("message", IConstant.SUB_CATEGORY_NOT_FOUND);
         }
         response.put("subCategory", subCategoryDto);
+        return ResponseEntity.accepted().body(response);
+    }
+    
+    @RequestMapping(value = "/saveSubCategory", method = RequestMethod.POST)
+    public ResponseEntity<?> saveArticle(@RequestBody SubCategoryDto subCategoryDto) {
+        return ResponseEntity.accepted().body(subCategoryService.saveSubCategory(subCategoryDto));
+    }
+    
+    @RequestMapping(value = "/deleteSuCategory/{subCategoryId}", method = RequestMethod.GET)
+    public ResponseEntity<?> deleteSuCategory(@PathVariable UUID subCategoryId) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        boolean status = subCategoryService.deleteSubCategory(subCategoryId);
+        if (status) {
+            response.put("status", IConstant.SUCCESS_CODE);
+            response.put("message", IConstant.SUCCESS_MESSAGE);
+        } else {
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", IConstant.SUB_CATEGORY_NOT_FOUND);
+        }
         return ResponseEntity.accepted().body(response);
     }
 }

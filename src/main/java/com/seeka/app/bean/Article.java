@@ -189,6 +189,7 @@ public class Article implements Serializable{
     }
 
     @Column(name = "country")
+    @Type(type = "uuid-char")
     public UUID getCountry() {
         return country;
     }
@@ -198,6 +199,7 @@ public class Article implements Serializable{
     }
 
     @Column(name = "city")
+    @Type(type = "uuid-char")
     public UUID getCity() {
         return city;
     }
@@ -207,6 +209,7 @@ public class Article implements Serializable{
     }
 
     @Column(name = "faculty")
+    @Type(type = "uuid-char")
     public UUID getFaculty() {
         return faculty;
     }
@@ -216,6 +219,7 @@ public class Article implements Serializable{
     }
 
     @Column(name = "courses")
+    @Type(type = "uuid-char")
     public UUID getCourses() {
         return courses;
     }
@@ -228,6 +232,7 @@ public class Article implements Serializable{
      * @return the institute
      */
     @Column(name = "institute")
+    @Type(type = "uuid-char")
     public UUID getInstitute() {
         return institute;
     }
@@ -264,6 +269,7 @@ public class Article implements Serializable{
     }
 
     @Column(name = "subcategory_id")
+    @Type(type = "uuid-char")
     public UUID getSubCategory() {
         return subCategory;
     }

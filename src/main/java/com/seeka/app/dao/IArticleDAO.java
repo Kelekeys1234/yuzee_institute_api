@@ -20,5 +20,7 @@ public interface IArticleDAO {
 
     public int findTotalCount();
 
-    public void save(Article article);
+    public Article save(Article article);
+
+    public void updateArticle(UUID subCAtegory, UUID id);
 }
