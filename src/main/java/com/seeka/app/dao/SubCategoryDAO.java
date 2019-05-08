@@ -26,7 +26,8 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     public List<SubCategoryDto> getAllSubCategories() {
         List<SubCategoryDto> subCategoryDtos = new ArrayList<SubCategoryDto>();
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("SELECT sc.id, sc.name as name, sc.category_id FROM subcategory sc with(nolock)");
+        Query query = session.createSQLQuery(
+                        "SELECT sc.id, sc.name as name, sc.category_id, c.name as catName FROM subcategory sc with(nolock) inner join category c with(nolock) on sc.category_id = c.id where sc.is_deleted=1");
         List<Object[]> rows = query.list();
         SubCategoryDto subCategoryDto = null;
         for (Object[] row : rows) {
@@ -34,6 +35,7 @@ public class SubCategoryDAO implements ISubCategoryDAO {
             subCategoryDto.setId(UUID.fromString((row[0].toString())));
             subCategoryDto.setName(row[1].toString());
             subCategoryDto.setCategoryId(UUID.fromString((row[2].toString())));
+            subCategoryDto.setCategoryName(row[3].toString());
             subCategoryDtos.add(subCategoryDto);
         }
         return subCategoryDtos;
@@ -74,5 +76,24 @@ public class SubCategoryDAO implements ISubCategoryDAO {
             }
         }
         return subCategoryDto;
+    }
+
+    @Override
+    public boolean saveSubCategory(SubCategory subCategory) {
+        boolean status = true;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            session.save(subCategory);
+        } catch (Exception exception) {
+            status = false;
+        }
+        return status;
+    }
+
+    @Override
+    public SubCategory findById(UUID id) {
+        Session session = sessionFactory.getCurrentSession();
+        SubCategory subCategory = session.get(SubCategory.class, id);
+        return subCategory;
     }
 }

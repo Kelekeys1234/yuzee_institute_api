@@ -124,14 +124,14 @@ public class ArticleService implements IArticleService {
         Map<String, Object> response = new HashMap<String, Object>();
         String ResponseStatus = IConstant.SUCCESS;
         try {
-            String fileDownloadUri = null;
+            /*String fileDownloadUri = null;
             // save file
             if (file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()) {
                 String fileName = fileStorageService.storeFile(file);
                 fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/article/downloadFile/").path(fileName).toUriString();
             } else {
                 fileDownloadUri = articledto.getImageUrl();
-            }
+            }*/
             // save data
             Article article = new Article();
             if (articledto != null && articledto.getId() != null) {
@@ -143,6 +143,7 @@ public class ArticleService implements IArticleService {
                 article = new Article();
                 article.setCreatedDate(DateUtil.getUTCdatetimeAsDate());
             }
+            article.setImagePath(articledto.getImageUrl());
             article.setHeading(articledto.getHeading());
             article.setContent(articledto.getContent());
             article.setActive(true);
@@ -153,7 +154,7 @@ public class ArticleService implements IArticleService {
                 }
             }
             article.setSubCategory(articledto.getSubcategory());
-            article.setImagePath(fileDownloadUri);
+            //article.setImagePath(fileDownloadUri);
             article.setLink(articledto.getLink());
             article.setCountry(articledto.getCountry());
             article.setCity(articledto.getCity());
@@ -161,7 +162,9 @@ public class ArticleService implements IArticleService {
             article.setFaculty(articledto.getFaculty());
             article.setCourses(articledto.getCourses());
             article.setGender(articledto.getGender());
-            articleDAO.save(article);
+            article = articleDAO.save(article);
+            UUID subCAtegory = article.getSubCategory();
+            articleDAO.updateArticle(subCAtegory,article.getId()); 
         } catch (Exception exception) {
             exception.printStackTrace();
             ResponseStatus = IConstant.DELETE_FAILURE;

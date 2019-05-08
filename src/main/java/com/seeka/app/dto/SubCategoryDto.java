@@ -9,6 +9,8 @@ public class SubCategoryDto {
     private String name;
 
     private UUID categoryId;
+    
+    private String categoryName;
 
     /**
      * @return the id
@@ -53,5 +55,19 @@ public class SubCategoryDto {
      */
     public void setCategoryId(UUID categoryId) {
         this.categoryId = categoryId;
+    }
+
+    /**
+     * @return the categoryName
+     */
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    /**
+     * @param categoryName the categoryName to set
+     */
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }
