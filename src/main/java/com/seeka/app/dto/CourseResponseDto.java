@@ -1,5 +1,6 @@
 package com.seeka.app.dto;
 
+import java.util.List;
 import java.util.UUID;
 
 public class CourseResponseDto {
@@ -26,6 +27,8 @@ public class CourseResponseDto {
 	private String requirements;
 	private String countryName;
 	private String cityName;
+	private Boolean isFavourite;
+	private List<String> imageUrlList;	
 	
 	public UUID getCourseId() {
 		return courseId;
@@ -162,4 +165,20 @@ public class CourseResponseDto {
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
 	}
+	public List<String> getImageUrlList() {
+		return imageUrlList;
+	}
+	public void setImageUrlList(List<String> imageUrlList) {
+		this.imageUrlList = imageUrlList;
+	}
+	public Boolean getIsFavourite() {
+		if(null == isFavourite) {
+			isFavourite = false;
+		}
+		return isFavourite;
+	}
+	public void setIsFavourite(Boolean isFavourite) {
+		this.isFavourite = isFavourite;
+	}
+	
 }

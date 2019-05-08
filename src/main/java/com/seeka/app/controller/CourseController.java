@@ -30,6 +30,7 @@ import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.bean.User;
 import com.seeka.app.bean.UserInstCourseReview;
+import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseResponseDto;
@@ -55,6 +56,7 @@ import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IUserInstCourseReviewService;
+import com.seeka.app.service.IUserMyCourseService;
 import com.seeka.app.service.IUserService;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.IConstant;
@@ -111,6 +113,9 @@ public class CourseController {
 	
 	@Autowired
 	ICourseGradeEligibilityService courseGradeService;
+	
+	@Autowired
+	IUserMyCourseService myCourseService;
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody CourseDetails courseDetailsObj) throws Exception {
@@ -189,11 +194,15 @@ public class CourseController {
 		}
 		response.put("currencyPopupMsg",message);
 		
+		List<Integer> courseIds = myCourseService.getAllCourseIdsByUser(courseSearchDto.getUserId());
 		
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto,currency,user.getCountryId());
 		
 		for (CourseResponseDto obj : courseList) {
 			try {
+				if(null != courseIds && courseIds.contains(obj.getCourseId())) {
+					obj.setIsFavourite(true);
+				}
 				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
 				obj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
 			}catch(Exception e) {
@@ -494,6 +503,27 @@ public class CourseController {
         response.put("status", 1);
 		response.put("message","Success.!");
 		response.put("courseList",courseList);
+		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/user/favourite", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public ResponseEntity<?> markUserFavoriteCourse(@RequestBody UserMyCourse obj) throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		UserMyCourse dbObj = myCourseService.getDataByUserIDAndCourseID(obj.getUserId(), obj.getCourseId());
+		Date now = new Date();
+		if(null != dbObj) {
+			dbObj.setIsActive(false);
+			dbObj.setUpdatedBy("");
+			dbObj.setUpdatedOn(now);
+			myCourseService.update(dbObj);
+		}else {
+			obj.setIsActive(true);
+			obj.setCreatedBy("");
+			obj.setCreatedOn(now);
+			myCourseService.save(obj);
+		}
+		response.put("status", 1);
+		response.put("message","Added to my course.!");		
 		return ResponseEntity.accepted().body(response);
 	}
 }
