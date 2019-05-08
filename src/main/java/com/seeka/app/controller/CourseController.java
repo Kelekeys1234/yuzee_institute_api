@@ -194,14 +194,19 @@ public class CourseController {
 		}
 		response.put("currencyPopupMsg",message);
 		
-		List<Integer> courseIds = myCourseService.getAllCourseIdsByUser(courseSearchDto.getUserId());
+		List<UserMyCourse> userMyCourses = myCourseService.getDataByUserID(courseSearchDto.getUserId());
+		Map<UUID, Boolean> favouriteMap =  new HashMap<>();
+		for (UserMyCourse obj : userMyCourses) {
+			favouriteMap.put(obj.getCourseId(), true);
+		}
 		
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto,currency,user.getCountryId());
 		
 		for (CourseResponseDto obj : courseList) {
 			try {
-				if(null != courseIds && courseIds.contains(obj.getCourseId())) {
-					obj.setIsFavourite(true);
+				Boolean isFav = favouriteMap.get(obj.getCourseId());
+				if(null != isFav) {
+					obj.setIsFavourite(isFav);
 				}
 				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
 				obj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
@@ -511,11 +516,13 @@ public class CourseController {
 		Map<String, Object> response = new HashMap<String, Object>();
 		UserMyCourse dbObj = myCourseService.getDataByUserIDAndCourseID(obj.getUserId(), obj.getCourseId());
 		Date now = new Date();
+		String message = "Added to my course.";
 		if(null != dbObj) {
 			dbObj.setIsActive(false);
 			dbObj.setUpdatedBy("");
 			dbObj.setUpdatedOn(now);
 			myCourseService.update(dbObj);
+			message = "Removed to my course.";
 		}else {
 			obj.setIsActive(true);
 			obj.setCreatedBy("");
@@ -523,7 +530,7 @@ public class CourseController {
 			myCourseService.save(obj);
 		}
 		response.put("status", 1);
-		response.put("message","Added to my course.!");		
+		response.put("message",message);		
 		return ResponseEntity.accepted().body(response);
 	}
 }
