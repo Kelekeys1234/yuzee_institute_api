@@ -9,9 +9,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.seeka</groupId>
-	<artifactId>seekaapp</artifactId>
+	<artifactId>seekaapp-institute-api</artifactId>
 	<version>0.0.1</version>
-	<name>seekaapp</name>
+	<name>seekaapp-institute-api</name>
 	<description>Institute Micro Services of Seeka App</description>
 
 	<properties>
