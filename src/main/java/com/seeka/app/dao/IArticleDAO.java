@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.seeka.app.bean.Article;
+import com.seeka.app.dto.ArticleDto;
 import com.seeka.app.dto.PageLookupDto;
 
 public interface IArticleDAO {
@@ -23,4 +24,6 @@ public interface IArticleDAO {
     public Article save(Article article);
 
     public void updateArticle(UUID subCAtegory, UUID id);
+
+    public List<Article> searchArticle(ArticleDto article);
 }

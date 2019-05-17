@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.Article;
 import com.seeka.app.bean.Category;
 import com.seeka.app.bean.SubCategory;
+import com.seeka.app.dto.ArticleDto;
 import com.seeka.app.dto.PageLookupDto;
 import com.seeka.app.dto.SubCategoryDto;
 
@@ -101,7 +102,7 @@ public class ArticleDAO implements IArticleDAO {
                 article.setCategory(session.get(Category.class, UUID.fromString((String.valueOf(row[7])))));
 
             }
-            if (String.valueOf(row[8]) != null) {
+            if (String.valueOf(row[8]) != null && !String.valueOf(row[8]).equals("null")) {
                 article.setSubCategory(UUID.fromString((String.valueOf(row[8]))));
                 SubCategory subCategory = session.get(SubCategory.class, UUID.fromString((String.valueOf(row[8]))));
                 SubCategoryDto subCategoryDto = null;
@@ -164,5 +165,79 @@ public class ArticleDAO implements IArticleDAO {
             exception.printStackTrace();
         }
 
+    }
+
+    @Override
+    public List<Article> searchArticle(ArticleDto articleDto) {
+        boolean status;
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = null;
+        List<Article> articles = new ArrayList<Article>();
+        if (articleDto != null && articleDto.getCategory() != null && articleDto.getSubcategory() != null && articleDto.getStatus().equals("All")) {
+            sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.category_id = '"
+                            + articleDto.getCategory() + "' and sa.subcategory_id = '" + articleDto.getSubcategory() + "' and sa.deleted_on IS NULL ORDER BY sa.created_at DESC ";
+        } else if (articleDto != null && articleDto.getCategory() != null && articleDto.getSubcategory() != null && !articleDto.getStatus().equals("All")) {
+            if (articleDto.getStatus().equals("1")) {
+                status = true;
+            } else {
+                status = false;
+            }
+            sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.category_id = '"
+                            + articleDto.getCategory() + "' and sa.subcategory_id = '" + articleDto.getSubcategory() + "' and sa.active = '" + status
+                            + "'  and sa.deleted_on IS NULL ORDER BY sa.created_at DESC ";
+        } else if (articleDto != null && articleDto.getSubcategory() == null && articleDto.getStatus().equals("All")) {
+            sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.subcategory_id = '"
+                            + articleDto.getSubcategory() + "' and sa.deleted_on IS NULL ORDER BY sa.created_at DESC ";
+        } else if (articleDto != null && articleDto.getSubcategory() == null && !articleDto.getStatus().equals("All")) {
+            if (articleDto.getStatus().equals("1")) {
+                status = true;
+            } else {
+                status = false;
+            }
+            sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.subcategory_id = '"
+                            + articleDto.getSubcategory() + "' and sa.active = '" + status + "'  and sa.deleted_on IS NULL ORDER BY sa.created_at DESC ";
+        }
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        for (Object[] row : rows) {
+            Article article = new Article();
+            article.setId(UUID.fromString((String.valueOf(row[0]))));
+            article.setHeading(String.valueOf(row[1]));
+            article.setContent(String.valueOf(row[2]));
+            article.setImagePath(String.valueOf(row[3]));
+            article.setCreatedAt((Date) row[6]);
+            if (String.valueOf(row[7]) != null && !String.valueOf(row[7]).equals("null")) {
+                article.setCategory(session.get(Category.class, UUID.fromString((String.valueOf(row[7])))));
+
+            }
+            if (String.valueOf(row[8]) != null) {
+                article.setSubCategory(UUID.fromString((String.valueOf(row[8]))));
+                SubCategory subCategory = session.get(SubCategory.class, UUID.fromString((String.valueOf(row[8]))));
+                SubCategoryDto subCategoryDto = null;
+                if (subCategory != null) {
+                    subCategoryDto = new SubCategoryDto();
+                    subCategoryDto.setId(subCategory.getId());
+                    subCategoryDto.setName(subCategory.getName());
+                }
+                article.setSubCategoryDropDownDto(subCategoryDto);
+            }
+
+            article.setLink(String.valueOf(row[9]));
+            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
+                article.setCountry(UUID.fromString((String.valueOf(row[11]))));
+            }
+            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
+                article.setCity(UUID.fromString((String.valueOf(row[12]))));
+            }
+            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
+                article.setInstitute(UUID.fromString((String.valueOf(row[13]))));
+            }
+            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
+                article.setCourses(UUID.fromString((String.valueOf(row[14]))));
+            }
+            article.setGender(String.valueOf(row[15]));
+            articles.add(article);
+        }
+        return articles;
     }
 }

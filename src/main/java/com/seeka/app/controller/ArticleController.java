@@ -78,4 +78,9 @@ public class ArticleController {
     public ResponseEntity<?> saveArticle(@RequestBody com.seeka.app.dto.ArticleDto article) {
         return ResponseEntity.accepted().body(articleService.saveArticle(null, article));
     }
+    
+    @RequestMapping(value = "/searchArticle", method = RequestMethod.POST)
+    public ResponseEntity<?> searchArticle(@RequestBody com.seeka.app.dto.ArticleDto article) {
+        return ResponseEntity.accepted().body(articleService.searchArticle(article));
+    }
 }

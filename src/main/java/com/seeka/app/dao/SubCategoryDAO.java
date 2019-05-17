@@ -59,6 +59,10 @@ public class SubCategoryDAO implements ISubCategoryDAO {
                 subCategoryDtos.add(subCategoryDto);
             }
         }
+        SubCategoryDto subCategoryDto = new SubCategoryDto();
+        subCategoryDto.setId(UUID.fromString("CB52B698-98A4-4336-BCC6-98CC1F05EA66"));
+        subCategoryDto.setName("All");
+        subCategoryDtos.add(subCategoryDto);
         return subCategoryDtos;
     }
 

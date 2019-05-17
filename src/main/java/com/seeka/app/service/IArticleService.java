@@ -22,4 +22,6 @@ public interface IArticleService {
     public Map<String, Object> fetchAllArticleByPage(Integer page, Integer size, String query, boolean status);
 
     public Map<String, Object> saveArticle(MultipartFile file, ArticleDto article);
+
+    public Map<String, Object> searchArticle(ArticleDto article);
 }

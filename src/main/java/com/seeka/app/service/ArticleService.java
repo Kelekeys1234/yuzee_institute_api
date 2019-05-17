@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.seeka.app.bean.Article;
 import com.seeka.app.bean.Category;
@@ -26,9 +25,6 @@ public class ArticleService implements IArticleService {
 
     @Autowired
     IArticleDAO articleDAO;
-
-    @Autowired
-    private FileStorageService fileStorageService;
 
     @Autowired
     ICategoryDAO categoryDAO;
@@ -171,6 +167,25 @@ public class ArticleService implements IArticleService {
         }
         response.put("status", 1);
         response.put("message", ResponseStatus);
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> searchArticle(ArticleDto article) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        String ResponseStatus = IConstant.SUCCESS;
+        List<Article> articles = null;
+        int totalCount = 0;
+        try {
+            totalCount = articleDAO.findTotalCount();
+            articles = articleDAO.searchArticle(article);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        response.put("status", 1);
+        response.put("message", ResponseStatus);
+        response.put("articles", articles);
+        response.put("totalCount", totalCount);
         return response;
     }
 }
