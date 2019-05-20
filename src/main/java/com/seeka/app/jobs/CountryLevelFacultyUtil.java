@@ -60,7 +60,7 @@ public class CountryLevelFacultyUtil {
     	System.out.println("CountryLevelFacultyUtil : Job Started: "+new Date());
     	List<CountryDto> countryList = countryService.getAllCountries();
     	List<Level> levelList = levelService.getAllLevelByCountry();
-    	Map<UUID, List<Level>> levelMap = new HashMap<>(); 
+    	Map<UUID, List<Level>> levelMap = new HashMap<>();  // trying to build this map , which will contain each country uuid as its key and a list of all levels for the same
     	for (Level level : levelList) {
     		List<Level> list = levelMap.get(level.getCountryId());
     		if(null != list && !list.isEmpty()) {
@@ -70,15 +70,15 @@ public class CountryLevelFacultyUtil {
     		list = new ArrayList<>();
     		list.add(level);
     		levelMap.put(level.getCountryId(), list);
-		}
+		} // we just got levels for each country , at this point only 2 countries have levels in the map  
     	List<Level> levelMasterListTemp = levelService.getAll();
     	levelMasterList.clear();
     	levelMasterList = new ArrayList<Level>(levelMasterListTemp);
     	
-    	List<Faculty> facultyList = facultyService.getAllFacultyByCountryIdAndLevel();
+    	List<Faculty> facultyList = facultyService.getAllFacultyByCountryIdAndLevel();   // 96 faculties with country_id
     	Map<String, List<Faculty>> facultyMap = new HashMap<>();
     	for (Faculty faculty : facultyList) {
-    		String key = faculty.getCountryId()+"-"+faculty.getLevelId();
+    		String key = faculty.getCountryId()+"-"+faculty.getLevelId();  // making a facultyMap which contains country_id-level_id with list of this key as facult
     		List<Faculty> list = facultyMap.get(key);
     		if(null != list && !list.isEmpty()) {
     			facultyMap.get(key).add(faculty);

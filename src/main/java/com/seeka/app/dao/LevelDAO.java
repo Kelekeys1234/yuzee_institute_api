@@ -107,7 +107,7 @@ public class LevelDAO implements ILevelDAO{
 			obj.setCountryId(UUID.fromString(row[3].toString()));
 			level.add(obj);
 		}
-		return level;
+		return level; // it will extract only two countries
 	}
 	
 }
