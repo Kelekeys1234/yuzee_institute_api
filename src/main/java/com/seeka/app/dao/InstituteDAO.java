@@ -247,7 +247,7 @@ public class InstituteDAO implements IInstituteDAO{
 
         String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.institute_type_id as institudeTypeId "
                         + "from institute_level instLevel with(nolock) inner join institute inst with(nolock) " + "on inst.id = instLevel.institute_id "
-                        + "where instLevel.city_id ='" + cityId + "'";
+                        + "where instLevel.city_id ='" + cityId + "' ORDER BY inst.name";
 
         System.out.println(sqlQuery);
         Query query = session.createSQLQuery(sqlQuery);

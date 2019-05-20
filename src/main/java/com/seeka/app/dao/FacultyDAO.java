@@ -90,7 +90,7 @@ public class FacultyDAO implements IFacultyDAO {
         Session session = sessionFactory.getCurrentSession();
         Query query = session
                         .createSQLQuery("select distinct f.id, f.name as facultyName,f.level_id as levelid,f.description as description from faculty f with(nolock) "
-                                        + "inner join faculty_level fl with(nolock) on f.id = fl.faculty_id where fl.institute_id = '" + instituteId + "'");
+                                        + "inner join faculty_level fl with(nolock) on f.id = fl.faculty_id where fl.institute_id = '" + instituteId + "' ORDER BY f.name");
         List<Object[]> rows = query.list();
         List<Faculty> faculties = new ArrayList<Faculty>();
         Faculty obj = null;

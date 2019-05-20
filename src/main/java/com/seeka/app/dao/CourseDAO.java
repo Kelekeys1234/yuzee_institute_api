@@ -11,6 +11,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -882,6 +883,7 @@ public class CourseDAO implements ICourseDAO{
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(Course.class);
         crit.add(Restrictions.eq("facultyObj.id", facultyId));
+        crit.addOrder(Order.asc("name"));
         List<Course> courses = crit.list();
         List<CourseResponseDto> dtos = new ArrayList<CourseResponseDto>();
         for (Course course : courses) {

@@ -43,6 +43,16 @@ public class CountryController {
     	return ResponseEntity.accepted().body(response);
 	} 
 	
+	@RequestMapping(value = "/getAllCountry", method=RequestMethod.GET)
+    public ResponseEntity<?>  getAllCountry() {
+        Map<String,Object> response = new HashMap<String, Object>();
+        List<CountryDto> countryList = countryService.getAllCountryName();
+        response.put("status", 1);
+        response.put("message","Success.!");
+        response.put("list",countryList);
+        return ResponseEntity.accepted().body(response);
+    } 
+	
 	@RequestMapping(value = "/getwithcities", method=RequestMethod.GET)
 	public ResponseEntity<?>  getWithCities() {
 		Map<String,Object> response = new HashMap<String, Object>();

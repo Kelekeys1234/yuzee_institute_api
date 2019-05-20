@@ -19,6 +19,8 @@ public class ArticleDto {
     private UUID courses;
     private String gender;
     private String status;
+    private UUID userCity;
+    private UUID userCountry;
 
     public UUID getId() {
         return id;
@@ -209,5 +211,35 @@ public class ArticleDto {
      */
     public void setSubcategoryobj(SubCategoryDto subcategoryobj) {
         this.subcategoryobj = subcategoryobj;
+    }
+
+    /**
+     * @return the userCity
+     */
+    public UUID getUserCity() {
+        return userCity;
+    }
+
+    /**
+     * @param userCity
+     *            the userCity to set
+     */
+    public void setUserCity(UUID userCity) {
+        this.userCity = userCity;
+    }
+
+    /**
+     * @return the userCountry
+     */
+    public UUID getUserCountry() {
+        return userCountry;
+    }
+
+    /**
+     * @param userCountry
+     *            the userCountry to set
+     */
+    public void setUserCountry(UUID userCountry) {
+        this.userCountry = userCountry;
     }
 }

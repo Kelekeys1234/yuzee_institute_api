@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.Article;
+import com.seeka.app.bean.ArticleUserCitizenship;
 import com.seeka.app.bean.Category;
 import com.seeka.app.dao.IArticleDAO;
 import com.seeka.app.dao.ICategoryDAO;
+import com.seeka.app.dao.IUserArticleDAO;
 import com.seeka.app.dto.ArticleDto;
 import com.seeka.app.dto.PageLookupDto;
 import com.seeka.app.util.DateUtil;
@@ -28,6 +30,9 @@ public class ArticleService implements IArticleService {
 
     @Autowired
     ICategoryDAO categoryDAO;
+
+    @Autowired
+    IUserArticleDAO userArticleDAO;
 
     @Override
     public List<Article> getAll() {
@@ -84,6 +89,11 @@ public class ArticleService implements IArticleService {
                 articleDto.setFaculty(article.getFaculty());
                 articleDto.setCourses(article.getCourses());
                 articleDto.setGender(article.getGender());
+                ArticleUserCitizenship userCitizenship = userArticleDAO.findArticleUserCitizenshipDetails(article.getId());
+                if (userCitizenship.getCountry() != null && userCitizenship.getCity() != null) {
+                    articleDto.setUserCity(userCitizenship.getCity());
+                    articleDto.setUserCountry(userCitizenship.getCountry());
+                }
             } else {
                 status = IConstant.DELETE_FAILURE_ID_NOT_FOUND;
             }
@@ -120,14 +130,6 @@ public class ArticleService implements IArticleService {
         Map<String, Object> response = new HashMap<String, Object>();
         String ResponseStatus = IConstant.SUCCESS;
         try {
-            /*String fileDownloadUri = null;
-            // save file
-            if (file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()) {
-                String fileName = fileStorageService.storeFile(file);
-                fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/article/downloadFile/").path(fileName).toUriString();
-            } else {
-                fileDownloadUri = articledto.getImageUrl();
-            }*/
             // save data
             Article article = new Article();
             if (articledto != null && articledto.getId() != null) {
@@ -150,7 +152,7 @@ public class ArticleService implements IArticleService {
                 }
             }
             article.setSubCategory(articledto.getSubcategory());
-            //article.setImagePath(fileDownloadUri);
+            // article.setImagePath(fileDownloadUri);
             article.setLink(articledto.getLink());
             article.setCountry(articledto.getCountry());
             article.setCity(articledto.getCity());
@@ -160,7 +162,16 @@ public class ArticleService implements IArticleService {
             article.setGender(articledto.getGender());
             article = articleDAO.save(article);
             UUID subCAtegory = article.getSubCategory();
-            articleDAO.updateArticle(subCAtegory,article.getId()); 
+            articleDAO.updateArticle(subCAtegory, article.getId());
+            if (articledto.getUserCountry() != null && articledto.getUserCity() != null) {
+                ArticleUserCitizenship userCitizenship = new ArticleUserCitizenship();
+                userCitizenship.setCity(articledto.getUserCity());
+                userCitizenship.setCountry(articledto.getUserCountry());
+                userCitizenship.setArticleId(article.getId());
+                userCitizenship.setCreatedDate(DateUtil.getUTCdatetimeAsDate());
+                userCitizenship.setUpdatedDate(DateUtil.getUTCdatetimeAsDate());
+                userArticleDAO.saveArticleUserCitizenship(userCitizenship);
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
             ResponseStatus = IConstant.DELETE_FAILURE;

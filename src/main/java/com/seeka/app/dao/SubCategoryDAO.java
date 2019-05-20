@@ -8,6 +8,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -47,6 +48,7 @@ public class SubCategoryDAO implements ISubCategoryDAO {
         Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(SubCategory.class);
         criteria.add(Restrictions.eq("category.id", categoryId));
+        criteria.addOrder(Order.asc("name"));
         List<SubCategory> subCategories = criteria.list();
         if (subCategories != null && !subCategories.isEmpty()) {
             for (SubCategory sc : subCategories) {

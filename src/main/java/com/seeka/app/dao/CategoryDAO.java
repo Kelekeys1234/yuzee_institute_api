@@ -23,7 +23,7 @@ public class CategoryDAO implements ICategoryDAO {
     @Override
     public List<CategoryDto> getAllCategories() {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("SELECT c.id, c.name as name FROM category c");
+        Query query = session.createSQLQuery("SELECT c.id, c.name as name FROM category c ORDER BY c.name");
         List<Object[]> rows = query.list();
         List<CategoryDto> categoryDtos = new ArrayList<CategoryDto>();
         CategoryDto categoryDto = null;
