@@ -3,6 +3,7 @@ package com.seeka.app.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Article;
+import com.seeka.app.dto.ArticleDto2;
+import com.seeka.app.dto.ArticleFolderDto;
+import com.seeka.app.dto.ArticleFolderMapDto;
 import com.seeka.app.dto.PageLookupDto;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.service.IArticleService;
@@ -25,7 +29,7 @@ public class ArticleController {
     @Autowired
     IArticleService articleService;
 
-    @RequestMapping(value = "/get/all", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/get/all")
     public ResponseEntity<?> getAllArticles() throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Article> articleList = articleService.getAll();
@@ -59,28 +63,58 @@ public class ArticleController {
 
     }
 
-    @RequestMapping(value = "/deleteArticle/{articleId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete/{articleId}")
     public ResponseEntity<?> deleteArticle(@PathVariable String articleId) {
         return ResponseEntity.accepted().body(articleService.deleteArticle(articleId));
     }
 
-    @RequestMapping(value = "/getArticleById/{articleId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/byId/{articleId}")
     public ResponseEntity<?> getArticleById(@PathVariable String articleId) {
         return ResponseEntity.accepted().body(articleService.getArticleById(articleId));
     }
 
-    @RequestMapping(value = "/getArticleByPageWise/{page}/{size}", method = RequestMethod.GET)
+    @RequestMapping(value = "/byPageWise/{page}/{size}")
     public ResponseEntity<?> getArticleByPageWise(@PathVariable Integer page, @PathVariable Integer size, @RequestParam(required = false, name = "query") String query) {
         return ResponseEntity.accepted().body(articleService.fetchAllArticleByPage(page, size, query, true));
     }
 
-    @RequestMapping(value = "/saveArticle", method = RequestMethod.POST)
-    public ResponseEntity<?> saveArticle(@RequestBody com.seeka.app.dto.ArticleDto article) {
-        return ResponseEntity.accepted().body(articleService.saveArticle(null, article));
-    }
-    
-    @RequestMapping(value = "/searchArticle", method = RequestMethod.POST)
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
     public ResponseEntity<?> searchArticle(@RequestBody com.seeka.app.dto.ArticleDto article) {
         return ResponseEntity.accepted().body(articleService.searchArticle(article));
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public ResponseEntity<?> saveMultiArticle(@RequestBody ArticleDto2 article) {
+        return ResponseEntity.accepted().body(articleService.saveMultiArticle(article));
+    }
+
+    @RequestMapping(value = "/saveFolder", method = RequestMethod.POST)
+    public ResponseEntity<?> saveArticleFolder(@RequestBody ArticleFolderDto articleFolder) {
+        return ResponseEntity.accepted().body(articleService.saveArticleFolder(articleFolder));
+    }
+
+    @RequestMapping(value = "/folderById/{articleFolderId}")
+    public ResponseEntity<?> getArticleFolderById(@PathVariable UUID articleFolderId) {
+        return ResponseEntity.accepted().body(articleService.getArticleFolderById(articleFolderId));
+    }
+
+    @RequestMapping(value = "/allFolder")
+    public ResponseEntity<?> getAllArticleFolder() {
+        return ResponseEntity.accepted().body(articleService.getAllArticleFolder());
+    }
+
+    @RequestMapping(value = "/deleteFolder/{articleFolderId}")
+    public ResponseEntity<?> deleteArticleFolderById(@PathVariable UUID articleFolderId) {
+        return ResponseEntity.accepted().body(articleService.deleteArticleFolderById(articleFolderId));
+    }
+
+    @RequestMapping(value = "/saveFolderMapping", method = RequestMethod.POST)
+    public ResponseEntity<?> mapArticleFolder(@RequestBody ArticleFolderMapDto articleFolderMapDto) {
+        return ResponseEntity.accepted().body(articleService.mapArticleFolder(articleFolderMapDto));
+    }
+
+    @RequestMapping(value = "/folderByUserId/{userId}")
+    public ResponseEntity<?> getFolderWithArticle(@PathVariable UUID userId) {
+        return ResponseEntity.accepted().body(articleService.getFolderWithArticle(userId));
     }
 }

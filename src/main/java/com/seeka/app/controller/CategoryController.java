@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.bean.Category;
 import com.seeka.app.dto.CategoryDto;
 import com.seeka.app.service.ICategoryService;
 import com.seeka.app.util.IConstant;
@@ -56,6 +58,25 @@ public class CategoryController {
             response.put("message", IConstant.CATEGORY_NOT_FOUND);
         }
         response.put("category", categoryDto);
+        return ResponseEntity.accepted().body(response);
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public ResponseEntity<?> saveCategory(@RequestBody Category category) {
+        return ResponseEntity.accepted().body(categoryService.saveCategory(category));
+    }
+
+    @RequestMapping(value = "/delete/{categoryId}", method = RequestMethod.GET)
+    public ResponseEntity<?> deleteSuCategory(@PathVariable UUID categoryId) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        boolean status = categoryService.deleteCategory(categoryId);
+        if (status) {
+            response.put("status", IConstant.SUCCESS_CODE);
+            response.put("message", IConstant.SUCCESS_MESSAGE);
+        } else {
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", IConstant.CATEGORY_NOT_FOUND);
+        }
         return ResponseEntity.accepted().body(response);
     }
 }

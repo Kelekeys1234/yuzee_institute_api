@@ -41,7 +41,7 @@ public class FacultyController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "facultylevel/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	@RequestMapping(value = "level/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<?> saveFaultyLevel(@RequestBody FacultyLevel facultyLevelObj) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		facultyLevelService.save(facultyLevelObj);		
@@ -75,10 +75,25 @@ public class FacultyController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-    @RequestMapping(value = "/getFacultyByInstituteId/{instituteId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/byInstituteId/{instituteId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getFacultyByInstituteId(@Valid @PathVariable UUID instituteId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Faculty> faculties = facultyService.getFacultyByInstituteId(instituteId);
+        if (faculties != null && !faculties.isEmpty()) {
+            response.put("status", IConstant.SUCCESS_CODE);
+            response.put("message", IConstant.SUCCESS_MESSAGE);
+        } else {
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", IConstant.FACULTY_NOT_FOUND);
+        }
+        response.put("facultyList", faculties);
+        return ResponseEntity.accepted().body(response);
+    }
+    
+    @RequestMapping(value = "/byListOfInstituteId/{instituteId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getFacultyByListOfInstituteId(@Valid @PathVariable String instituteId) throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<Faculty> faculties = facultyService.getFacultyByListOfInstituteId(instituteId);
         if (faculties != null && !faculties.isEmpty()) {
             response.put("status", IConstant.SUCCESS_CODE);
             response.put("message", IConstant.SUCCESS_MESSAGE);

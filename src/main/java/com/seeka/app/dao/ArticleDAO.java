@@ -35,7 +35,7 @@ public class ArticleDAO implements IArticleDAO {
     @Override
     public List<Article> getArticlesByLookup(PageLookupDto pageLookupDto) {
         Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select A.*,count(1) over () totalRows from  (select id,heading,content,url,imagePath,created_at from "
+        String sqlQuery = "select A.*,count(1) over () totalRows from  (select id,heading,content,url,imagePath,created_at,category_id,subcategory_id from "
                         + "seeka_articles with(nolock) ) A order by A.created_at desc";
         sqlQuery += " OFFSET (" + pageLookupDto.getPageNumber() + "-1)*" + pageLookupDto.getMaxSizePerPage() + " ROWS FETCH NEXT " + pageLookupDto.getMaxSizePerPage()
                         + " ROWS ONLY";
@@ -51,7 +51,24 @@ public class ArticleDAO implements IArticleDAO {
             obj.setContent(String.valueOf(row[2]));
             obj.setUrl(String.valueOf(row[3]));
             obj.setImagePath(String.valueOf(row[4]));
-            obj.setTotalCount(Integer.parseInt(String.valueOf(row[6])));
+            obj.setTotalCount(Integer.parseInt(String.valueOf(row[8])));
+            
+            if (String.valueOf(row[6]) != null && !String.valueOf(row[6]).equals("null")) {
+                obj.setCategory(session.get(Category.class, UUID.fromString((String.valueOf(row[6])))));
+
+            }
+            if (String.valueOf(row[7]) != null && !String.valueOf(row[7]).equals("null")) {
+                obj.setSubCategory(UUID.fromString((String.valueOf(row[7]))));
+                SubCategory subCategory = session.get(SubCategory.class, UUID.fromString((String.valueOf(row[7]))));
+                SubCategoryDto subCategoryDto = null;
+                if (subCategory != null) {
+                    subCategoryDto = new SubCategoryDto();
+                    subCategoryDto.setId(subCategory.getId());
+                    subCategoryDto.setName(subCategory.getName());
+                }
+                obj.setSubCategoryDropDownDto(subCategoryDto);
+            }
+            
             list.add(obj);
         }
         return list;

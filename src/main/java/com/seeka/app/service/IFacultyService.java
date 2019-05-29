@@ -20,4 +20,6 @@ public interface IFacultyService {
     public List<Faculty> getAllFacultyByCountryIdAndLevel();
 
     public List<Faculty> getFacultyByInstituteId(UUID instituteId);
+
+    public List<Faculty> getFacultyByListOfInstituteId(String instituteId);
 }

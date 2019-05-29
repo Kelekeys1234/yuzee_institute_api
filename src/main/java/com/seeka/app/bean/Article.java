@@ -17,6 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.seeka.app.dto.CategoryDto;
 import com.seeka.app.dto.SubCategoryDto;
 
 @Entity
@@ -57,6 +58,10 @@ public class Article implements Serializable{
     private UUID subCategory;
     private Date createdAt;
     private SubCategoryDto subCategoryDropDownDto;
+    private CategoryDto categoryobj;
+    private String compnayName;
+    private String companyWebsite;
+    private String articleType;
 	
 	@Id
 	@GeneratedValue(generator = "UUID")
@@ -302,5 +307,57 @@ public class Article implements Serializable{
      */
     public void setSubCategoryDropDownDto(SubCategoryDto subCategoryDropDownDto) {
         this.subCategoryDropDownDto = subCategoryDropDownDto;
+    }
+    /**
+     * @return the categoryobj
+     */
+    @Transient
+    public CategoryDto getCategoryobj() {
+        return categoryobj;
+    }
+    /**
+     * @param categoryobj the categoryobj to set
+     */
+    public void setCategoryobj(CategoryDto categoryobj) {
+        this.categoryobj = categoryobj;
+    }
+    /**
+     * @return the compnayName
+     */
+    @Column(name = "company_name")
+    public String getCompnayName() {
+        return compnayName;
+    }
+    /**
+     * @param compnayName the compnayName to set
+     */
+    public void setCompnayName(String compnayName) {
+        this.compnayName = compnayName;
+    }
+    /**
+     * @return the companyWebsite
+     */
+    @Column(name = "company_website")
+    public String getCompanyWebsite() {
+        return companyWebsite;
+    }
+    /**
+     * @param companyWebsite the companyWebsite to set
+     */
+    public void setCompanyWebsite(String companyWebsite) {
+        this.companyWebsite = companyWebsite;
+    }
+    /**
+     * @return the articleType
+     */
+    @Column(name = "article_type")
+    public String getArticleType() {
+        return articleType;
+    }
+    /**
+     * @param articleType the articleType to set
+     */
+    public void setArticleType(String articleType) {
+        this.articleType = articleType;
     }
 }

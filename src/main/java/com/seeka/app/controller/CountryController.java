@@ -43,7 +43,7 @@ public class CountryController {
     	return ResponseEntity.accepted().body(response);
 	} 
 	
-	@RequestMapping(value = "/getAllCountry", method=RequestMethod.GET)
+	@RequestMapping(value = "/all", method=RequestMethod.GET)
     public ResponseEntity<?>  getAllCountry() {
         Map<String,Object> response = new HashMap<String, Object>();
         List<CountryDto> countryList = countryService.getAllCountryName();
@@ -90,7 +90,7 @@ public class CountryController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "/getallinstitutecountries", method=RequestMethod.GET)
+	@RequestMapping(value = "/byInstitute", method=RequestMethod.GET)
 	public ResponseEntity<?>  getAllUniversityCountries() {
 		Map<String,Object> response = new HashMap<String, Object>();
 		List<CountryDto> countryList = CountryUtil.getUnivCountryList();
@@ -164,8 +164,4 @@ public class CountryController {
     	response.put("list",countryList);
     	return ResponseEntity.accepted().body(response);
 	} 
-	
-	
-	 
-	
 }

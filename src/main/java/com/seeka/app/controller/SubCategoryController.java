@@ -43,7 +43,7 @@ public class SubCategoryController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/getSubCategoryByCategory/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/byCategory/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getSubCategoryByCategory(@RequestHeader(value = IConstant.CORRELATION_ID, required = false, defaultValue = "") String correlationId,
                     @RequestHeader(value = IConstant.USER_ID, required = false) String userId, @RequestHeader(value = IConstant.SESSION_ID, required = false) String sessionId,
                     @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable UUID categoryId) {
@@ -77,12 +77,12 @@ public class SubCategoryController {
         return ResponseEntity.accepted().body(response);
     }
     
-    @RequestMapping(value = "/saveSubCategory", method = RequestMethod.POST)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ResponseEntity<?> saveArticle(@RequestBody SubCategoryDto subCategoryDto) {
         return ResponseEntity.accepted().body(subCategoryService.saveSubCategory(subCategoryDto));
     }
     
-    @RequestMapping(value = "/deleteSuCategory/{subCategoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete/{subCategoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> deleteSuCategory(@PathVariable UUID subCategoryId) {
         Map<String, Object> response = new HashMap<String, Object>();
         boolean status = subCategoryService.deleteSubCategory(subCategoryId);

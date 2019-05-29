@@ -29,4 +29,6 @@ public interface ICourseDAO {
     public Map<String, Object> getCourse(UUID courseid);
 
     public List<CourseResponseDto> getCouresesByFacultyId(UUID facultyId);
+
+    public List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 }

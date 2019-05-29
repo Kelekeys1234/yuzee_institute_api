@@ -12,72 +12,62 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
-@Table(name = "category")
-public class Category implements Serializable {
+@Table(name = "article_institute")
+public class ArticleInstitute implements Serializable {
 
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
+    private UUID id;
+    private UUID articleId;
+    private UUID instituteId;
 
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "uuid-char")
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-
-    @Column(name = "name")
-    private String name; // name
-    
-    @JsonIgnore
-    @Column(name="active")
-    private Boolean active; 
-
-    /**
-     * @return the id
-     */
     public UUID getId() {
         return id;
     }
 
-    /**
-     * @param id
-     *            the id to set
-     */
     public void setId(UUID id) {
         this.id = id;
     }
 
     /**
-     * @return the name
+     * @return the articleId
      */
-    public String getName() {
-        return name;
+    @Column(name = "article_id")
+    @Type(type = "uuid-char")
+    public UUID getArticleId() {
+        return articleId;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param articleId
+     *            the articleId to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setArticleId(UUID articleId) {
+        this.articleId = articleId;
     }
 
     /**
-     * @return the active
+     * @return the instituteId
      */
-    public Boolean getActive() {
-        return active;
+    @Column(name = "institute_id")
+    @Type(type = "uuid-char")
+    public UUID getInstituteId() {
+        return instituteId;
     }
 
     /**
-     * @param active the active to set
+     * @param instituteId
+     *            the instituteId to set
      */
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setInstituteId(UUID instituteId) {
+        this.instituteId = instituteId;
     }
 }

@@ -51,4 +51,14 @@ public class FacultyService implements IFacultyService {
     public List<Faculty> getFacultyByInstituteId(UUID instituteId) {
         return dao.getFacultyByInstituteId(instituteId);
     }
+
+    @Override
+    public List<Faculty> getFacultyByListOfInstituteId(String instituteId) {
+        String[] citiesArray = instituteId.split(",");
+        String tempList = "";
+        for (String id : citiesArray) {
+            tempList = tempList + "," + "'" + UUID.fromString(id) + "'";
+        }
+        return dao.getFacultyByListOfInstituteId(tempList.substring(1, tempList.length()));
+    }
 }

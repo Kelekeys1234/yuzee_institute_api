@@ -12,72 +12,55 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
-@Table(name = "category")
-public class Category implements Serializable {
+@Table(name = "article_city")
+public class ArticleCity implements Serializable {
 
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
+    private UUID id;
+    private UUID articleId;
+    private UUID city;
 
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "uuid-char")
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-
-    @Column(name = "name")
-    private String name; // name
-    
-    @JsonIgnore
-    @Column(name="active")
-    private Boolean active; 
-
-    /**
-     * @return the id
-     */
     public UUID getId() {
         return id;
     }
 
-    /**
-     * @param id
-     *            the id to set
-     */
     public void setId(UUID id) {
         this.id = id;
     }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
+    @Column(name = "city_id")
+    @Type(type = "uuid-char")
+    public UUID getCity() {
+        return city;
+    }
+
+    public void setCity(UUID city) {
+        this.city = city;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @return the articleId
      */
-    public void setName(String name) {
-        this.name = name;
+    @Column(name = "article_id")
+    @Type(type = "uuid-char")
+    public UUID getArticleId() {
+        return articleId;
     }
 
     /**
-     * @return the active
+     * @param articleId
+     *            the articleId to set
      */
-    public Boolean getActive() {
-        return active;
-    }
-
-    /**
-     * @param active the active to set
-     */
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setArticleId(UUID articleId) {
+        this.articleId = articleId;
     }
 }

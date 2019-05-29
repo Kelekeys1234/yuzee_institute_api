@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Faculty;
+import com.seeka.app.dto.InstituteResponseDto;
 
 @Repository
 @SuppressWarnings("unchecked")
@@ -102,6 +103,30 @@ public class FacultyDAO implements IFacultyDAO {
             obj.setDescription(row[3].toString());
             faculties.add(obj);
         }
+        return faculties;
+    }
+
+    @Override
+    public List<Faculty> getFacultyByListOfInstituteId(String instituteId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session
+                        .createSQLQuery("select distinct f.id, f.name as facultyName,f.level_id as levelid,f.description as description from faculty f with(nolock) "
+                                        + "inner join faculty_level fl with(nolock) on f.id = fl.faculty_id where fl.institute_id in (" + instituteId + ") ORDER BY f.name");
+        List<Object[]> rows = query.list();
+        List<Faculty> faculties = new ArrayList<Faculty>();
+        Faculty obj = null;
+        for (Object[] row : rows) {
+            obj = new Faculty();
+            obj.setId(UUID.fromString((row[0].toString())));
+            obj.setName(row[1].toString());
+            obj.setLevelId(UUID.fromString((row[2].toString())));
+            obj.setDescription(row[3].toString());
+            faculties.add(obj);
+        }
+        Faculty allObject = new Faculty();
+        allObject.setId(UUID.fromString("CB52B698-98A4-4336-BCC6-98CC1F05EA66"));
+        allObject.setName("All");
+        faculties.add(allObject);
         return faculties;
     }
 }

@@ -41,7 +41,7 @@ public class CityController {
     	response.put("cityList",cityList);
     	return ResponseEntity.accepted().body(response);
 	}
-	@RequestMapping(value = "/getallcitiesbycountry/{countryId}", method=RequestMethod.GET)
+	@RequestMapping(value = "/byCountryId/{countryId}", method=RequestMethod.GET)
 	public ResponseEntity<?>  getAllCitiesByCountry(@PathVariable UUID countryId) throws Exception {
 		Map<String,Object> response = new HashMap<String, Object>();
 		List<City> cityList = cityService.getAllCitiesByCountry(countryId);
@@ -127,5 +127,15 @@ public class CityController {
 		response.put("livingCost",jsonObject);
 		return ResponseEntity.accepted().body(response);
 	}
+	
+	@RequestMapping(value = "/multiByCountryId/{countryId}", method=RequestMethod.GET)
+    public ResponseEntity<?>  getAllMultipleCitiesByCountry(@PathVariable String countryId) throws Exception {
+        Map<String,Object> response = new HashMap<String, Object>();
+        List<City> cityList = cityService.getAllMultipleCitiesByCountry(countryId);
+        response.put("status", 1);
+        response.put("message","Success.!");
+        response.put("cityList",cityList);
+        return ResponseEntity.accepted().body(response);
+    }   
 	
 }

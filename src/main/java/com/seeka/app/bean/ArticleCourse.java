@@ -12,72 +12,62 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
-@Table(name = "category")
-public class Category implements Serializable {
+@Table(name = "article_course")
+public class ArticleCourse implements Serializable {
 
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
+    private UUID id;
+    private UUID articleId;
+    private UUID courseId;
 
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "uuid-char")
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-
-    @Column(name = "name")
-    private String name; // name
-    
-    @JsonIgnore
-    @Column(name="active")
-    private Boolean active; 
-
-    /**
-     * @return the id
-     */
     public UUID getId() {
         return id;
     }
 
-    /**
-     * @param id
-     *            the id to set
-     */
     public void setId(UUID id) {
         this.id = id;
     }
 
     /**
-     * @return the name
+     * @return the articleId
      */
-    public String getName() {
-        return name;
+    @Column(name = "article_id")
+    @Type(type = "uuid-char")
+    public UUID getArticleId() {
+        return articleId;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param articleId
+     *            the articleId to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setArticleId(UUID articleId) {
+        this.articleId = articleId;
     }
 
     /**
-     * @return the active
+     * @return the courseId
      */
-    public Boolean getActive() {
-        return active;
+    @Column(name = "course_id")
+    @Type(type = "uuid-char")
+    public UUID getCourseId() {
+        return courseId;
     }
 
     /**
-     * @param active the active to set
+     * @param courseId
+     *            the courseId to set
      */
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setCourseId(UUID courseId) {
+        this.courseId = courseId;
     }
 }

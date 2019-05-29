@@ -23,8 +23,9 @@ public class CategoryDAO implements ICategoryDAO {
     @Override
     public List<CategoryDto> getAllCategories() {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("SELECT c.id, c.name as name FROM category c ORDER BY c.name");
+        Query query = session.createSQLQuery("SELECT c.id, c.name as name FROM category c where c.active='true' ORDER BY c.name");
         List<Object[]> rows = query.list();
+        
         List<CategoryDto> categoryDtos = new ArrayList<CategoryDto>();
         CategoryDto categoryDto = null;
         for (Object[] row : rows) {
@@ -54,5 +55,24 @@ public class CategoryDAO implements ICategoryDAO {
         Session session = sessionFactory.getCurrentSession();
         Category category = session.get(Category.class, categoryId);
         return category;
+    }
+
+    @Override
+    public Category findById(UUID id) {
+        Session session = sessionFactory.getCurrentSession();
+        Category category = session.get(Category.class, id);
+        return category;
+    }
+
+    @Override
+    public boolean saveCategory(Category category) {
+        boolean status = true;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            session.save(category);
+        } catch (Exception exception) {
+            status = false;
+        }
+        return status;
     }
 }

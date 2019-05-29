@@ -14,4 +14,8 @@ public interface ICategoryDAO {
 
     public Category findCategoryById(UUID category);
 
+    public Category findById(UUID id);
+
+    public boolean saveCategory(Category category);
+
 }

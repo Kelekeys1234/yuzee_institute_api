@@ -477,10 +477,25 @@ public class InstituteController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/getInstituteByCityId/{cityId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/byCityId/{cityId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getInstituteByCityId(@Valid @PathVariable UUID cityId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<InstituteResponseDto> institutes = instituteService.getInstitudeByCityId(cityId);
+        if (institutes != null && !institutes.isEmpty()) {
+            response.put("status", IConstant.SUCCESS_CODE);
+            response.put("message", IConstant.SUCCESS_MESSAGE);
+        } else {
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", IConstant.INSTITUDE_NOT_FOUND);
+        }
+        response.put("institutes", institutes);
+        return ResponseEntity.accepted().body(response);
+    }
+    
+    @RequestMapping(value = "/byListOfCityId/{cityId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getInstituteByListOfCityId(@Valid @PathVariable String cityId) throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<InstituteResponseDto> institutes = instituteService.getInstituteByListOfCityId(cityId);
         if (institutes != null && !institutes.isEmpty()) {
             response.put("status", IConstant.SUCCESS_CODE);
             response.put("message", IConstant.SUCCESS_MESSAGE);
