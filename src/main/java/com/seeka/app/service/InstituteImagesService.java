@@ -1,7 +1,7 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class InstituteImagesService implements IInstituteImagesService{
 	}
 	
 	@Override
-	public InstituteImages get(UUID id) {
+	public InstituteImages get(BigInteger id) {
 		return dao.get(id);
 	}
 	

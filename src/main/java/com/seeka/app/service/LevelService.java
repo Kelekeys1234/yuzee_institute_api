@@ -1,7 +1,7 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import javax.persistence.ManyToOne;
 
@@ -30,7 +30,7 @@ public class LevelService implements ILevelService {
 	}
 	
 	@Override
-	public Level get(UUID id) {
+	public Level get(BigInteger id) {
 		return dao.get(id);
 	}
 	
@@ -40,12 +40,12 @@ public class LevelService implements ILevelService {
 	}
 	
 	@Override
-	public List<Level> getCourseTypeByCountryId(UUID countryID){
+	public List<Level> getCourseTypeByCountryId(BigInteger countryID){
 		return dao.getCourseTypeByCountryId(countryID);
 	}
 	
 	@Override
-	public List<Level> getLevelByCountryId(UUID countryId){
+	public List<Level> getLevelByCountryId(BigInteger countryId){
 		return dao.getLevelByCountryId(countryId);
 	}
 	

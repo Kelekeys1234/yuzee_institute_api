@@ -1,7 +1,7 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -10,7 +10,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.CourseKeyword;
+import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.dto.CourseResponseDto;
 
 @Repository
@@ -21,26 +21,26 @@ public class CourseKeywordDAO implements ICourseKeywordDAO {
     private SessionFactory sessionFactory;
 
     @Override
-    public void save(CourseKeyword obj) {
+    public void save(CourseKeywords obj) {
         Session session = sessionFactory.getCurrentSession();
         session.save(obj);
     }
 
     @Override
-    public void update(CourseKeyword obj) {
+    public void update(CourseKeywords obj) {
         Session session = sessionFactory.getCurrentSession();
         session.update(obj);
     }
 
     @Override
-    public List<CourseKeyword> getAll() {
+    public List<CourseKeywords> getAll() {
         Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(CourseKeyword.class);
+        Criteria crit = session.createCriteria(CourseKeywords.class);
         return crit.list();
     }
 
     @Override
-    public List<CourseKeyword> searchCourseKeyword(String keyword) {
+    public List<CourseKeywords> searchCourseKeyword(String keyword) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("SELECT sk.keyword FROM search_keywords sk WHERE sk.keyword LIKE '%" + keyword + "%'");
         return query.list();

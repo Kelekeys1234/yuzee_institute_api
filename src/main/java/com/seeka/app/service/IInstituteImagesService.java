@@ -1,7 +1,6 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.seeka.app.bean.InstituteImages;
 
@@ -9,6 +8,6 @@ public interface IInstituteImagesService {
 	
 	public void save(InstituteImages obj);
 	public void update(InstituteImages obj);
-	public InstituteImages get(UUID id);
+	public InstituteImages get(BigInteger id);
 	public List<InstituteImages> getAll(); 
 }

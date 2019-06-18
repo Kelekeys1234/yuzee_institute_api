@@ -1,11 +1,12 @@
 package com.seeka.app.controller;
 
+import java.math.BigInteger;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -22,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteType;
-import com.seeka.app.bean.ServiceDetails;
-import com.seeka.app.bean.User;
+import com.seeka.app.bean.Service;
+import com.seeka.app.bean.UserInfo;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
@@ -63,7 +64,7 @@ public class InstituteController {
     @Autowired
     IUserService userService;
 
-    @RequestMapping(value = "/type/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/type", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> saveInstituteType(@Valid @RequestBody InstituteType instituteTypeObj) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         instituteTypeService.save(instituteTypeObj);
@@ -73,7 +74,7 @@ public class InstituteController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> save(@Valid @RequestBody Institute instituteObj) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         instituteObj.setCreatedOn(new Date());
@@ -89,10 +90,10 @@ public class InstituteController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/get/{institueid}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> get(@Valid @PathVariable UUID institueid) throws Exception {
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> get(@Valid @PathVariable BigInteger id) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        Institute instituteObj = instituteService.get(institueid);
+        Institute instituteObj = instituteService.get(id);
         if (instituteObj == null) {
             ErrorDto errorDto = new ErrorDto();
             errorDto.setCode("400");
@@ -101,10 +102,10 @@ public class InstituteController {
             response.put("error", errorDto);
             return ResponseEntity.badRequest().body(response);
         }
-        CountryDto country = CountryUtil.getCountryByCountryId(instituteObj.getCountryId());
+        CountryDto country = CountryUtil.getCountryByCountryId(instituteObj.getCountry().getId());
         instituteObj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(country.getName(), instituteObj.getName()));
         instituteObj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(country.getName(), instituteObj.getName()));
-        InstituteDetails instituteDetailsObj = instituteDetailsService.get(institueid);
+        InstituteDetails instituteDetailsObj = instituteDetailsService.get(id);
         if (null != instituteDetailsObj) {
             instituteObj.setInstituteDetailsObj(instituteDetailsObj);
         }
@@ -124,214 +125,214 @@ public class InstituteController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/service/save/{instituteTypeId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> saveService(@PathVariable UUID instituteTypeId) throws Exception {
+    @RequestMapping(value = "/service/{instituteTypeId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> saveService(@PathVariable BigInteger instituteTypeId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<ServiceDetails> list = new ArrayList<>();
+        List<Service> list = new ArrayList<>();
         String createdBy = "AUTO";
         Date createdOn = new Date();
 
-        ServiceDetails serviceObj = new ServiceDetails();
+        Service serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Visa Work Benefits");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Visa Work Benefits");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Employment and career development");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Employment and career development");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Counselling – personal and academic");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Counselling – personal and academic");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Study Library Support");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Study Library Support");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Health services");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Health services");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Disability Support");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Disability Support");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Childcare Centre");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Childcare Centre");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Cultural inclusion/anti-racism programs");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Cultural inclusion/anti-racism programs");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Technology Services");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Technology Services");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Accommodation");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Accommodation");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Medical");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Medical");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Legal Services");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Legal Services");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Accounting Services");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Accounting Services");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Bus");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Bus");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Train");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Train");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Airport Pickup");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        /// serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Airport Pickup");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Swimming pool");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Swimming pool");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Sports Center");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Sports Center");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Sport Teams");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Sport Teams");
         list.add(serviceObj);
 
-        serviceObj = new ServiceDetails();
+        serviceObj = new Service();
         serviceObj.setCreatedBy(createdBy);
         serviceObj.setCreatedOn(createdOn);
         serviceObj.setDescription("Housing Services");
-        serviceObj.setInstituteTypeId(instituteTypeId);
+        // serviceObj.setInstituteTypeId(instituteTypeId);
         serviceObj.setIsActive(true);
         serviceObj.setIsDeleted(false);
         serviceObj.setName("Housing Services");
         list.add(serviceObj);
 
-        for (ServiceDetails serviceDetails : list) {
+        for (Service serviceDetails : list) {
             try {
                 serviceDetailsService.save(serviceDetails);
             } catch (Exception e) {
@@ -347,17 +348,17 @@ public class InstituteController {
     @RequestMapping(value = "/service/get", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getAllInstituteService() throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<ServiceDetails> list = serviceDetailsService.getAll();
+        List<Service> list = serviceDetailsService.getAll();
         response.put("status", 1);
         response.put("message", "Success.!");
         response.put("serviceList", list);
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/service/get/{institueid}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable UUID institueid) throws Exception {
+    @RequestMapping(value = "/{id}/service", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable BigInteger id) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<String> serviceNames = instituteServiceDetailsService.getAllServices(institueid);
+        List<String> serviceNames = instituteServiceDetailsService.getAllServices(id);
         response.put("status", 1);
         response.put("message", "Success.!");
         response.put("serviceList", serviceNames);
@@ -377,14 +378,14 @@ public class InstituteController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        User user = userService.get(request.getUserId());
+        UserInfo user = userService.get(request.getUserId());
 
-        List<UUID> countryIds = request.getCountryIds();
+        List<BigInteger> countryIds = request.getCountryIds();
         if (null == countryIds || countryIds.isEmpty()) {
             countryIds = new ArrayList<>();
         }
-        if (null != user.getCountryId()) {
-            countryIds.add(user.getCountryId());
+        if (null != user.getPreferredCountryId()) {
+            countryIds.add(user.getPreferredCountryId());
             request.setCountryIds(countryIds);
         }
 
@@ -416,7 +417,7 @@ public class InstituteController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/get/recommended", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/recommended", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> getAllRecommendedInstitutes(@RequestBody CourseSearchDto request) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         ErrorDto errorDto = null;
@@ -438,14 +439,14 @@ public class InstituteController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        User user = userService.get(request.getUserId());
+        UserInfo user = userService.get(request.getUserId());
 
-        List<UUID> countryIds = request.getCountryIds();
+        List<BigInteger> countryIds = request.getCountryIds();
         if (null == countryIds || countryIds.isEmpty()) {
             countryIds = new ArrayList<>();
         }
-        if (null != user.getCountryId()) {
-            countryIds.add(user.getCountryId());
+        if (null != user.getPreferredCountryId()) {
+            countryIds.add(user.getPreferredCountryId());
             request.setCountryIds(countryIds);
         }
 
@@ -477,8 +478,8 @@ public class InstituteController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/byCityId/{cityId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getInstituteByCityId(@Valid @PathVariable UUID cityId) throws Exception {
+    @RequestMapping(value = "/city/{cityId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getInstituteByCityId(@Valid @PathVariable BigInteger cityId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<InstituteResponseDto> institutes = instituteService.getInstitudeByCityId(cityId);
         if (institutes != null && !institutes.isEmpty()) {
@@ -491,8 +492,8 @@ public class InstituteController {
         response.put("institutes", institutes);
         return ResponseEntity.accepted().body(response);
     }
-    
-    @RequestMapping(value = "/byListOfCityId/{cityId}", method = RequestMethod.GET, produces = "application/json")
+
+    @RequestMapping(value = "/multiple/city/{cityId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getInstituteByListOfCityId(@Valid @PathVariable String cityId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<InstituteResponseDto> institutes = instituteService.getInstituteByListOfCityId(cityId);

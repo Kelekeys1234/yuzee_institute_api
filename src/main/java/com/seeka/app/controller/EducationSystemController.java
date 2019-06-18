@@ -1,10 +1,10 @@
-package com.seeka.app.controller;
+package com.seeka.app.controller;import java.math.BigInteger;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 import javax.validation.Valid;
 
@@ -27,8 +27,8 @@ public class EducationSystemController {
 	IEducationSystemService educationSystemService; 
  
 	 
-	@RequestMapping(value = "/system/get/{countryid}", method = RequestMethod.PUT, produces = "application/json")
-	public ResponseEntity<?> getEducationSystems(@PathVariable UUID countryid) throws Exception {
+	@RequestMapping(value = "/system/{countryId}", method = RequestMethod.PUT, produces = "application/json")
+	public ResponseEntity<?> getEducationSystems(@PathVariable BigInteger countryId) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		List<EducationSystem> educationSystems = educationSystemService.getAll();
         response.put("status", 1);
@@ -38,13 +38,13 @@ public class EducationSystemController {
 	}
 	
 	
-	@RequestMapping(value = "/system/save", method = RequestMethod.PUT, produces = "application/json")
+	@RequestMapping(value = "/system", method = RequestMethod.PUT, produces = "application/json")
 	public ResponseEntity<?> getEducationSystems(@Valid @RequestBody EducationSystem educationSystem) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		educationSystem.setCreatedBy("AUTO");
 		educationSystem.setCreatedOn(new Date());
 		educationSystem.setIsActive(true);
-		educationSystem.setId(UUID.randomUUID());
+		//educationSystem.setId(BigInteger.randomBigInteger());
 		educationSystem.setIsDeleted(false);
 		educationSystemService.save(educationSystem);
 		List<EducationSystem> educationSystems = educationSystemService.getAll();

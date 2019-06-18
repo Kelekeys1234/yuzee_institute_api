@@ -1,9 +1,9 @@
 package com.seeka.app.controller;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,38 +19,38 @@ import com.seeka.app.service.ILevelService;
 @RestController
 @RequestMapping("/level")
 public class LevelController {
-	
-	@Autowired
-	ILevelService levelService;
-	
-	@RequestMapping(value = "/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> saveCity(@RequestBody Level obj) throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
-		levelService.save(obj);		
-		response.put("status", 1);
-		response.put("message","Success");		
-		return ResponseEntity.accepted().body(response);
-	}
-	
-	@RequestMapping(value = "/byCountryId/{countryid}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getLevelByCountry(@PathVariable UUID countryid) throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
-        List<Level> levelList = levelService.getLevelByCountryId(countryid);
+
+    @Autowired
+    ILevelService levelService;
+
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> saveCity(@RequestBody Level obj) throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        levelService.save(obj);
         response.put("status", 1);
-		response.put("message","Success.!");
-		response.put("levelList",levelList); 
-		return ResponseEntity.accepted().body(response);
-		
-	}
-	
-	@RequestMapping(value = "/get", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAll() throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
+        response.put("message", "Success");
+        return ResponseEntity.accepted().body(response);
+    }
+
+    @RequestMapping(value = "/country/{countryId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getLevelByCountry(@PathVariable BigInteger countryId) throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<Level> levelList = levelService.getLevelByCountryId(countryId);
+        response.put("status", 1);
+        response.put("message", "Success.!");
+        response.put("levelList", levelList);
+        return ResponseEntity.accepted().body(response);
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getAll() throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
         List<Level> levelList = levelService.getAll();
         response.put("status", 1);
-		response.put("message","Success.!");
-		response.put("levelList",levelList); 
-		return ResponseEntity.accepted().body(response);
-		
-	}
+        response.put("message", "Success.!");
+        response.put("levelList", levelList);
+        return ResponseEntity.accepted().body(response);
+
+    }
 }

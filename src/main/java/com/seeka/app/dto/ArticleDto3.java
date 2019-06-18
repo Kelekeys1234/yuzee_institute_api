@@ -1,17 +1,16 @@
-package com.seeka.app.dto;
+package com.seeka.app.dto;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Faculty;
 
 public class ArticleDto3 {
-    private UUID id;
+    private BigInteger id;
     private String heading;
     private String content;
-    private UUID category;
-    private UUID subcategory;
+    private String category;
+    private String subcategory;
     private CategoryDto categoryobj;
     private SubCategoryDto subcategoryobj;
     private String link;
@@ -23,8 +22,8 @@ public class ArticleDto3 {
     private List<CourseDto> courses;
     private List<GenderDto> gender;
     private String status;
-    private UUID userCity;
-    private UUID userCountry;
+    private String userCity;
+    private String userCountry;
     private String compnayName;
     private String companyWebsite;
     private String RecArticleType;
@@ -33,7 +32,7 @@ public class ArticleDto3 {
     /**
      * @return the id
      */
-    public UUID getId() {
+    public BigInteger getId() {
         return id;
     }
 
@@ -41,7 +40,7 @@ public class ArticleDto3 {
      * @param id
      *            the id to set
      */
-    public void setId(UUID id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
@@ -78,7 +77,7 @@ public class ArticleDto3 {
     /**
      * @return the category
      */
-    public UUID getCategory() {
+    public String getCategory() {
         return category;
     }
 
@@ -86,14 +85,14 @@ public class ArticleDto3 {
      * @param category
      *            the category to set
      */
-    public void setCategory(UUID category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
     /**
      * @return the subcategory
      */
-    public UUID getSubcategory() {
+    public String getSubcategory() {
         return subcategory;
     }
 
@@ -101,7 +100,7 @@ public class ArticleDto3 {
      * @param subcategory
      *            the subcategory to set
      */
-    public void setSubcategory(UUID subcategory) {
+    public void setSubcategory(String subcategory) {
         this.subcategory = subcategory;
     }
 
@@ -273,7 +272,7 @@ public class ArticleDto3 {
     /**
      * @return the userCity
      */
-    public UUID getUserCity() {
+    public String getUserCity() {
         return userCity;
     }
 
@@ -281,14 +280,14 @@ public class ArticleDto3 {
      * @param userCity
      *            the userCity to set
      */
-    public void setUserCity(UUID userCity) {
+    public void setUserCity(String userCity) {
         this.userCity = userCity;
     }
 
     /**
      * @return the userCountry
      */
-    public UUID getUserCountry() {
+    public String getUserCountry() {
         return userCountry;
     }
 
@@ -296,7 +295,7 @@ public class ArticleDto3 {
      * @param userCountry
      *            the userCountry to set
      */
-    public void setUserCountry(UUID userCountry) {
+    public void setUserCountry(String userCountry) {
         this.userCountry = userCountry;
     }
 

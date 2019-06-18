@@ -1,7 +1,7 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -32,14 +32,14 @@ public class InstituteLevelDAO implements IInstituteLevelDAO{
 	}
 	
 	@Override
-	public InstituteLevel get(UUID id) {	
+	public InstituteLevel get(BigInteger id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		InstituteLevel obj = session.get(InstituteLevel.class, id);
 		return obj;
 	}
 	
 	@Override
-	public List<InstituteLevel> getAllLevelByInstituteId(UUID instituteId) {	
+	public List<InstituteLevel> getAllLevelByInstituteId(BigInteger instituteId) {	
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(InstituteLevel.class);
 		crit.add(Restrictions.eq("instituteId",instituteId));

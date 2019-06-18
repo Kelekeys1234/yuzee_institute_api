@@ -1,6 +1,4 @@
-package com.seeka.app.dao;
-
-import java.util.UUID;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import com.seeka.app.bean.ArticleUserCitizenship;
 
@@ -8,6 +6,6 @@ public interface IUserArticleDAO {
 
     void saveArticleUserCitizenship(ArticleUserCitizenship userCitizenship);
 
-    ArticleUserCitizenship findArticleUserCitizenshipDetails(UUID id);
+    ArticleUserCitizenship findArticleUserCitizenshipDetails(BigInteger id);
 
 }

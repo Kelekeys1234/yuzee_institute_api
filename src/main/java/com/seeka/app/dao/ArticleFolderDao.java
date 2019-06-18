@@ -1,8 +1,7 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -28,7 +27,7 @@ public class ArticleFolderDao {
         }
     }
 
-    public ArticleFolder findById(UUID id) {
+    public ArticleFolder findById(BigInteger id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(ArticleFolder.class, id);
     }
@@ -42,7 +41,7 @@ public class ArticleFolderDao {
             for (Object[] row : rows) {
                 ArticleFolder bean = new ArticleFolder();
                 bean.setFolderName((row[1].toString()));
-                bean.setId(UUID.fromString((row[0].toString())));
+                bean.setId(new BigInteger((row[0].toString())));
                 articleFolders.add(bean);
             }
         } catch (Exception exception) {
@@ -51,7 +50,7 @@ public class ArticleFolderDao {
         return articleFolders;
     }
 
-    public List<ArticleFolder> getAllArticleFolderByUserId(UUID userId) {
+    public List<ArticleFolder> getAllArticleFolderByUserId(BigInteger userId) {
         List<ArticleFolder> articleFolders = new ArrayList<ArticleFolder>();
         try {
             Session session = sessionFactory.getCurrentSession();
@@ -60,7 +59,7 @@ public class ArticleFolderDao {
             for (Object[] row : rows) {
                 ArticleFolder bean = new ArticleFolder();
                 bean.setFolderName((row[1].toString()));
-                bean.setId(UUID.fromString((row[0].toString())));
+                bean.setId(new BigInteger((row[0].toString())));
                 articleFolders.add(bean);
             }
         } catch (Exception exception) {

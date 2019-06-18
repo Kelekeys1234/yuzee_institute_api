@@ -1,17 +1,15 @@
-package com.seeka.app.dto;
-
-import java.util.UUID;
+package com.seeka.app.dto;import java.math.BigInteger;
 
 public class CategoryDto {
 
-    private UUID id;
+    private BigInteger id;
 
     private String name;
 
     /**
      * @return the id
      */
-    public UUID getId() {
+    public BigInteger getId() {
         return id;
     }
 
@@ -19,7 +17,7 @@ public class CategoryDto {
      * @param id
      *            the id to set
      */
-    public void setId(UUID id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 

@@ -1,9 +1,9 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public CategoryDto getCategoryById(UUID categoryId) {
+    public CategoryDto getCategoryById(BigInteger categoryId) {
         return categoryDAO.getCategoryById(categoryId);
     }
 
@@ -61,7 +61,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public boolean deleteCategory(UUID categoryId) {
+    public boolean deleteCategory(BigInteger categoryId) {
         boolean status = true;
         try {
             if (categoryId != null) {

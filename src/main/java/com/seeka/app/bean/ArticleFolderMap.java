@@ -1,16 +1,14 @@
-package com.seeka.app.bean;
+package com.seeka.app.bean;import java.math.BigInteger;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "article_folder_map")
@@ -20,21 +18,19 @@ public class ArticleFolderMap implements Serializable {
      * 
      */
     private static final long serialVersionUID = 1L;
-    private UUID id;
-    private UUID userId;
-    private UUID folderId;
-    private UUID articleId;
+    private BigInteger id;
+    private BigInteger userId;
+    private BigInteger folderId;
+    private BigInteger articleId;
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Type(type = "uuid-char")
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
-    public UUID getId() {
+    public BigInteger getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
@@ -42,8 +38,8 @@ public class ArticleFolderMap implements Serializable {
      * @return the userId
      */
     @Column(name = "user_id")
-    @Type(type = "uuid-char")
-    public UUID getUserId() {
+    
+    public BigInteger getUserId() {
         return userId;
     }
 
@@ -51,7 +47,7 @@ public class ArticleFolderMap implements Serializable {
      * @param userId
      *            the userId to set
      */
-    public void setUserId(UUID userId) {
+    public void setUserId(BigInteger userId) {
         this.userId = userId;
     }
 
@@ -59,8 +55,8 @@ public class ArticleFolderMap implements Serializable {
      * @return the folderId
      */
     @Column(name = "folder_id")
-    @Type(type = "uuid-char")
-    public UUID getFolderId() {
+    
+    public BigInteger getFolderId() {
         return folderId;
     }
 
@@ -68,7 +64,7 @@ public class ArticleFolderMap implements Serializable {
      * @param folderId
      *            the folderId to set
      */
-    public void setFolderId(UUID folderId) {
+    public void setFolderId(BigInteger folderId) {
         this.folderId = folderId;
     }
 
@@ -76,8 +72,8 @@ public class ArticleFolderMap implements Serializable {
      * @return the articleId
      */
     @Column(name = "article_id")
-    @Type(type = "uuid-char")
-    public UUID getArticleId() {
+    
+    public BigInteger getArticleId() {
         return articleId;
     }
 
@@ -85,7 +81,7 @@ public class ArticleFolderMap implements Serializable {
      * @param articleId
      *            the articleId to set
      */
-    public void setArticleId(UUID articleId) {
+    public void setArticleId(BigInteger articleId) {
         this.articleId = articleId;
     }
 

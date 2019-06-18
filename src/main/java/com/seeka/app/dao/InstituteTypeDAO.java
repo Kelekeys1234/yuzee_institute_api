@@ -1,6 +1,6 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
-import java.util.UUID;
+
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,7 +29,7 @@ public class InstituteTypeDAO implements IInstituteTypeDAO{
 	}
 	
 	@Override
-	public InstituteType get(UUID id) {	
+	public InstituteType get(BigInteger id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		InstituteType obj = session.get(InstituteType.class, id);
 		return obj;

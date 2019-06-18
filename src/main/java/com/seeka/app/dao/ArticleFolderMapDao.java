@@ -1,8 +1,6 @@
-package com.seeka.app.dao;
-
+package com.seeka.app.dao;import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -29,18 +27,18 @@ public class ArticleFolderMapDao {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ArticleNameDto> getFolderArticles(UUID id) {
+    public List<ArticleNameDto> getFolderArticles(BigInteger id) {
         List<ArticleNameDto> articleNameDtos = new ArrayList<ArticleNameDto>();
         try {
             Session session = sessionFactory.getCurrentSession();
             Query query = session
-                            .createSQLQuery("SELECT sc.id, sc.heading FROM article_folder_map auc inner join seeka_articles sc with(nolock) on auc.article_id = sc.id  where auc.folder_id='"
+                            .createSQLQuery("SELECT sc.id, sc.heading FROM article_folder_map auc inner join seeka_articles sc on auc.article_id = sc.id  where auc.folder_id='"
                                             + id + "'");
             List<Object[]> rows = query.list();
             for (Object[] row : rows) {
                 ArticleNameDto bean = new ArticleNameDto();
                 bean.setTitle((row[1].toString()));
-                bean.setArticleId((UUID.fromString((row[0].toString()))));
+                bean.setArticleId((new BigInteger((row[0].toString()))));
                 articleNameDtos.add(bean);
             }
         } catch (Exception exception) {

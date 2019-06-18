@@ -1,4 +1,4 @@
-package com.seeka.app.dto;
+package com.seeka.app.dto;import java.math.BigInteger;
 
 import java.util.List;
 

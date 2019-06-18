@@ -1,7 +1,7 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class FacultyService implements IFacultyService {
 	}
 	
 	@Override
-	public Faculty get(UUID id) {
+	public Faculty get(BigInteger id) {
 		return dao.get(id);
 	}
 	
@@ -38,7 +38,7 @@ public class FacultyService implements IFacultyService {
 	}
 	
 	@Override
-	public List<Faculty> getFacultyByCountryIdAndLevelId(UUID countryID,UUID levelId){
+	public List<Faculty> getFacultyByCountryIdAndLevelId(BigInteger countryID,BigInteger levelId){
 		return dao.getFacultyByCountryIdAndLevelId(countryID,levelId);
 	}
 	
@@ -48,7 +48,7 @@ public class FacultyService implements IFacultyService {
 	}
 
     @Override
-    public List<Faculty> getFacultyByInstituteId(UUID instituteId) {
+    public List<Faculty> getFacultyByInstituteId(BigInteger instituteId) {
         return dao.getFacultyByInstituteId(instituteId);
     }
 
@@ -57,7 +57,7 @@ public class FacultyService implements IFacultyService {
         String[] citiesArray = instituteId.split(",");
         String tempList = "";
         for (String id : citiesArray) {
-            tempList = tempList + "," + "'" + UUID.fromString(id) + "'";
+            tempList = tempList + "," + "'" + new BigInteger(id) + "'";
         }
         return dao.getFacultyByListOfInstituteId(tempList.substring(1, tempList.length()));
     }

@@ -1,7 +1,6 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.seeka.app.bean.InstituteDetails;
 
@@ -9,7 +8,7 @@ public interface IInstituteDetailsDAO {
 	
 	public void save(InstituteDetails obj);
 	public void update(InstituteDetails obj);
-	public InstituteDetails get(UUID id);
-	public List<InstituteDetails> getAllInstituteByCountry(UUID countryId);	
+	public InstituteDetails get(BigInteger id);
+	public List<InstituteDetails> getAllInstituteByCountry(BigInteger countryId);	
 	public List<InstituteDetails> getAll();	
 }

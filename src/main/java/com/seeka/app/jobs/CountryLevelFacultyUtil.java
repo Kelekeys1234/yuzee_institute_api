@@ -1,12 +1,13 @@
 package com.seeka.app.jobs;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public class CountryLevelFacultyUtil {
     	System.out.println("CountryLevelFacultyUtil : Job Started: "+new Date());
     	List<CountryDto> countryList = countryService.getAllCountries();
     	List<Level> levelList = levelService.getAllLevelByCountry();
-    	Map<UUID, List<Level>> levelMap = new HashMap<>(); 
+    	Map<BigInteger, List<Level>> levelMap = new HashMap<>(); 
     	for (Level level : levelList) {
     		List<Level> list = levelMap.get(level.getCountryId());
     		if(null != list && !list.isEmpty()) {

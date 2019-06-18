@@ -1,6 +1,6 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
-import java.util.UUID;
+
 
 import com.seeka.app.bean.InstituteType;
 
@@ -8,5 +8,5 @@ public interface IInstituteTypeDAO {
 	
 	public void save(InstituteType obj);
 	public void update(InstituteType obj);
-	public InstituteType get(UUID id);
+	public InstituteType get(BigInteger id);
 }

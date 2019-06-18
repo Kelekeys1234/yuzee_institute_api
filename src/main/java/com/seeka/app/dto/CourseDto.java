@@ -1,11 +1,9 @@
-package com.seeka.app.dto;
-
-import java.util.UUID;
+package com.seeka.app.dto;import java.math.BigInteger;
 
 public class CourseDto {
 	
-	private UUID courseId;
-	private UUID levelId;
+	private BigInteger courseId;
+	private BigInteger levelId;
 	private String courseName;	
 	private String courseLanguage;
 	private String languageShortKey;
@@ -23,10 +21,10 @@ public class CourseDto {
 	private String delivery;
 	private String intakeDate;
 	
-	public UUID getCourseId() {
+	public BigInteger getCourseId() {
 		return courseId;
 	}
-	public void setCourseId(UUID courseId) {
+	public void setCourseId(BigInteger courseId) {
 		this.courseId = courseId;
 	}
 	public String getCourseName() {
@@ -131,10 +129,10 @@ public class CourseDto {
 	public void setIntakeDate(String intakeDate) {
 		this.intakeDate = intakeDate;
 	}
-	public UUID getLevelId() {
+	public BigInteger getLevelId() {
 		return levelId;
 	}
-	public void setLevelId(UUID levelId) {
+	public void setLevelId(BigInteger levelId) {
 		this.levelId = levelId;
 	}
 	

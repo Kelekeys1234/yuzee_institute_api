@@ -1,21 +1,21 @@
-package com.seeka.app.dto;
+package com.seeka.app.dto;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 public class CourseSearchDto {
 	
 	private String searchKey;
 	private String courseName;
 	private Boolean isProfileSearch;
-	private UUID userId;
-	private UUID currencyId;
+	private BigInteger userId;
+	private BigInteger currencyId;
 	private List<String> courseKeys;
-	private List<UUID> levelIds;
-	private List<UUID> facultyIds;
-	private List<UUID> countryIds;
-	private List<UUID> serviceIds;
-	private List<UUID> cityIds;
+	private List<BigInteger> levelIds;
+	private List<BigInteger> facultyIds;
+	private List<BigInteger> countryIds;
+	private List<BigInteger> serviceIds;
+	private List<BigInteger> cityIds;
 	private Double minCost;
 	private Double maxCost;
 	private Integer minDuration;
@@ -50,28 +50,28 @@ public class CourseSearchDto {
 	public void setCourseKeys(List<String> courseKeys) {
 		this.courseKeys = courseKeys;
 	}
-	public List<UUID> getLevelIds() {
+	public List<BigInteger> getLevelIds() {
 		return levelIds;
 	}
-	public void setLevelIds(List<UUID> levelIds) {
+	public void setLevelIds(List<BigInteger> levelIds) {
 		this.levelIds = levelIds;
 	}
-	public List<UUID> getFacultyIds() {
+	public List<BigInteger> getFacultyIds() {
 		return facultyIds;
 	}
-	public void setFacultyIds(List<UUID> facultyIds) {
+	public void setFacultyIds(List<BigInteger> facultyIds) {
 		this.facultyIds = facultyIds;
 	}
-	public List<UUID> getCountryIds() {
+	public List<BigInteger> getCountryIds() {
 		return countryIds;
 	}
-	public void setCountryIds(List<UUID> countryIds) {
+	public void setCountryIds(List<BigInteger> countryIds) {
 		this.countryIds = countryIds;
 	}
-	public List<UUID> getServiceIds() {
+	public List<BigInteger> getServiceIds() {
 		return serviceIds;
 	}
-	public void setServiceIds(List<UUID> serviceIds) {
+	public void setServiceIds(List<BigInteger> serviceIds) {
 		this.serviceIds = serviceIds;
 	}
 	public Double getMinCost() {
@@ -117,22 +117,22 @@ public class CourseSearchDto {
 	public void setPageNumber(Integer pageNumber) {
 		this.pageNumber = pageNumber;
 	}
-	public UUID getUserId() {
+	public BigInteger getUserId() {
 		return userId;
 	}
-	public void setUserId(UUID userId) {
+	public void setUserId(BigInteger userId) {
 		this.userId = userId;
 	}
-	public UUID getCurrencyId() {
+	public BigInteger getCurrencyId() {
 		return currencyId;
 	}
-	public void setCurrencyId(UUID currencyId) {
+	public void setCurrencyId(BigInteger currencyId) {
 		this.currencyId = currencyId;
 	}
-	public List<UUID> getCityIds() {
+	public List<BigInteger> getCityIds() {
 		return cityIds;
 	}
-	public void setCityIds(List<UUID> cityIds) {
+	public void setCityIds(List<BigInteger> cityIds) {
 		this.cityIds = cityIds;
 	}
 	 

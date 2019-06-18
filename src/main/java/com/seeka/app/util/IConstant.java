@@ -17,6 +17,6 @@ public class IConstant {
     public static final String FAIL = "Fail.!";
     public static final String DELETE_FAILURE = "Getting issue when article is deleting";
     public static final String DELETE_FAILURE_ID_NOT_FOUND = "Specified article not found";
-    public static final String DELETE_SUCCESS = "Article deleted successfully";
+    public static final String DELETE_SUCCESS = "SeekaArticles deleted successfully";
     public static final String SUB_CATEGORY_ERROR = "Getting datbase transaction error";
 }

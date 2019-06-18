@@ -1,10 +1,10 @@
-package com.seeka.app.controller;
+package com.seeka.app.controller;import java.math.BigInteger;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.CountryEnglishEligibility;
 import com.seeka.app.dto.CountryDto;
+import com.seeka.app.dto.CountryRequestDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.jobs.CountryUtil;
@@ -33,7 +34,7 @@ public class CountryController {
 	@Autowired
 	ICountryEnglishEligibilityService countryEnglishEligibilityService;
 	
-	@RequestMapping(value = "/get", method=RequestMethod.GET)
+	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<?>  getAll() {
 		Map<String,Object> response = new HashMap<String, Object>();
 		List<CountryDto> countryList = countryService.getAllCountries();
@@ -53,7 +54,7 @@ public class CountryController {
         return ResponseEntity.accepted().body(response);
     } 
 	
-	@RequestMapping(value = "/getwithcities", method=RequestMethod.GET)
+	@RequestMapping(value = "/country/cities", method=RequestMethod.GET)
 	public ResponseEntity<?>  getWithCities() {
 		Map<String,Object> response = new HashMap<String, Object>();
 		List<CountryDto> countryList = CountryUtil.getCountryList();
@@ -63,8 +64,8 @@ public class CountryController {
     	return ResponseEntity.accepted().body(response);
 	} 
 	
-	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@PathVariable UUID id) throws Exception {
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> get(@PathVariable BigInteger id) throws Exception {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<String, Object>();
 		
@@ -90,7 +91,7 @@ public class CountryController {
 		return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "/byInstitute", method=RequestMethod.GET)
+	@RequestMapping(value = "/country/institute", method=RequestMethod.GET)
 	public ResponseEntity<?>  getAllUniversityCountries() {
 		Map<String,Object> response = new HashMap<String, Object>();
 		List<CountryDto> countryList = CountryUtil.getUnivCountryList();
@@ -100,14 +101,9 @@ public class CountryController {
     	return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> saveCity(@RequestBody Country obj) throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
-		obj.setCreatedOn(new Date());
-		countryService.save(obj);		
-		response.put("status", 1);
-		response.put("message","Success");		
-		return ResponseEntity.accepted().body(response);
+	@RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public ResponseEntity<?> saveCity(@RequestBody CountryRequestDto  countryRequestDto) throws Exception {
+		return ResponseEntity.accepted().body(countryService.save(countryRequestDto));
 	}
 	
 	@RequestMapping(value = "/discover", method=RequestMethod.GET)
@@ -130,30 +126,30 @@ public class CountryController {
 		for (Country country : countryList) {
 			
 			eligibility = new CountryEnglishEligibility();
-			eligibility.setCountryId(country.getId());
+			eligibility.setCountry(country);
 			eligibility.setCreatedBy("AUTO");
 			eligibility.setCreatedOn(now);
-			eligibility.setId(UUID.randomUUID());
+			//eligibility.setId(BigInteger.randomBigInteger());
 			eligibility.setIsActive(true);
 			eligibility.setListening(4.5);
 			eligibility.setOverall(4.5);
 			eligibility.setReading(4.00);
 			eligibility.setSpeaking(5.00);
-			eligibility.setEnglishType(EnglishType.TOEFL);
+			eligibility.setEnglishType(EnglishType.TOEFL.toString());
 			eligibility.setWriting(3.25);
 			countryEnglishEligibilityService.save(eligibility);
 			
 			eligibility = new CountryEnglishEligibility();
-			eligibility.setCountryId(country.getId());
+			eligibility.setCountry(country);
 			eligibility.setCreatedBy("AUTO");
 			eligibility.setCreatedOn(now);
-			eligibility.setId(UUID.randomUUID());
+			//eligibility.setId(BigInteger.randomBigInteger());
 			eligibility.setIsActive(true);
 			eligibility.setListening(4.5);
 			eligibility.setOverall(4.5);
 			eligibility.setReading(4.00);
 			eligibility.setSpeaking(5.00);
-			eligibility.setEnglishType(EnglishType.IELTS);
+			eligibility.setEnglishType(EnglishType.IELTS.toString());
 			eligibility.setWriting(3.25);
 			countryEnglishEligibilityService.save(eligibility);
 			

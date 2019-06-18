@@ -1,7 +1,7 @@
 package com.seeka.app.dao;
 
+import java.math.BigInteger;
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.ArticleUserCitizenship;
+import com.seeka.app.bean.City;
+import com.seeka.app.bean.Country;
 
 @Repository
 public class UserArticleDAO implements IUserArticleDAO {
@@ -21,14 +23,18 @@ public class UserArticleDAO implements IUserArticleDAO {
     public void saveArticleUserCitizenship(ArticleUserCitizenship userCitizenship) {
         try {
             Session session = sessionFactory.getCurrentSession();
-            Query query = session.createSQLQuery("SELECT auc.id, auc.country_id FROM article_user_citizenship auc where auc.article_id='" + userCitizenship.getArticleId() + "'");
+            Query query = session.createSQLQuery(
+                            "SELECT auc.id, auc.country_id FROM article_user_citizenship auc where auc.article_id='" + userCitizenship.getSeekaArticles().getId() + "'");
             @SuppressWarnings("unchecked")
             List<Object[]> rows = query.list();
             ArticleUserCitizenship articleUserCitizenship = null;
             for (Object[] row : rows) {
                 articleUserCitizenship = new ArticleUserCitizenship();
-                articleUserCitizenship.setId(UUID.fromString((row[0].toString())));
-                articleUserCitizenship.setCountry(UUID.fromString((row[1].toString())));
+                articleUserCitizenship.setId(new BigInteger((row[0].toString())));
+                Country country = new Country();
+                country.setId(new BigInteger((row[1].toString())));
+
+                articleUserCitizenship.setCountry(country);
             }
             if (articleUserCitizenship != null && articleUserCitizenship.getId() != null) {
                 userCitizenship.setId(articleUserCitizenship.getId());
@@ -42,7 +48,7 @@ public class UserArticleDAO implements IUserArticleDAO {
     }
 
     @Override
-    public ArticleUserCitizenship findArticleUserCitizenshipDetails(UUID id) {
+    public ArticleUserCitizenship findArticleUserCitizenshipDetails(BigInteger id) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("SELECT auc.country_id, auc.city_id as cityId FROM article_user_citizenship auc");
         @SuppressWarnings("unchecked")
@@ -50,8 +56,13 @@ public class UserArticleDAO implements IUserArticleDAO {
         ArticleUserCitizenship articleUserCitizenship = null;
         for (Object[] row : rows) {
             articleUserCitizenship = new ArticleUserCitizenship();
-            articleUserCitizenship.setCountry(UUID.fromString((row[0].toString())));
-            articleUserCitizenship.setCity(UUID.fromString((row[1].toString())));
+            Country country = new Country();
+            country.setId(new BigInteger((row[0].toString())));
+            articleUserCitizenship.setCountry(country);
+
+            City city = new City();
+            city.setId(new BigInteger((row[1].toString())));
+            articleUserCitizenship.setCity(city);
         }
         return articleUserCitizenship;
     }

@@ -1,18 +1,16 @@
-package com.seeka.app.dto;
-
-import java.util.UUID;
+package com.seeka.app.dto;import java.math.BigInteger;
 
 public class ArticleFolderMapDto {
 
-    private UUID id;
-    private UUID userId;
-    private UUID folderId;
-    private UUID articleId;
+    private BigInteger id;
+    private BigInteger userId;
+    private BigInteger folderId;
+    private BigInteger articleId;
 
     /**
      * @return the id
      */
-    public UUID getId() {
+    public BigInteger getId() {
         return id;
     }
 
@@ -20,14 +18,14 @@ public class ArticleFolderMapDto {
      * @param id
      *            the id to set
      */
-    public void setId(UUID id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
     /**
      * @return the userId
      */
-    public UUID getUserId() {
+    public BigInteger getUserId() {
         return userId;
     }
 
@@ -35,14 +33,14 @@ public class ArticleFolderMapDto {
      * @param userId
      *            the userId to set
      */
-    public void setUserId(UUID userId) {
+    public void setUserId(BigInteger userId) {
         this.userId = userId;
     }
 
     /**
      * @return the folderId
      */
-    public UUID getFolderId() {
+    public BigInteger getFolderId() {
         return folderId;
     }
 
@@ -50,14 +48,14 @@ public class ArticleFolderMapDto {
      * @param folderId
      *            the folderId to set
      */
-    public void setFolderId(UUID folderId) {
+    public void setFolderId(BigInteger folderId) {
         this.folderId = folderId;
     }
 
     /**
      * @return the articleId
      */
-    public UUID getArticleId() {
+    public BigInteger getArticleId() {
         return articleId;
     }
 
@@ -65,7 +63,7 @@ public class ArticleFolderMapDto {
      * @param articleId
      *            the articleId to set
      */
-    public void setArticleId(UUID articleId) {
+    public void setArticleId(BigInteger articleId) {
         this.articleId = articleId;
     }
 }

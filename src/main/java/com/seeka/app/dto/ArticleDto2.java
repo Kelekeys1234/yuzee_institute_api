@@ -1,27 +1,26 @@
-package com.seeka.app.dto;
+package com.seeka.app.dto;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
 
 public class ArticleDto2 {
-    private UUID id;
+    private BigInteger id;
     private String heading;
     private String content;
-    private UUID category;
-    private UUID subcategory;
+    private BigInteger category;
+    private BigInteger subcategory;
     private CategoryDto categoryobj;
     private SubCategoryDto subcategoryobj;
     private String link;
     private String imageUrl;
-    private List<UUID> country;
-    private List<UUID> city;
-    private List<UUID> faculty;
-    private List<UUID> institute;
-    private List<UUID> courses;
+    private List<BigInteger> country;
+    private List<BigInteger> city;
+    private List<BigInteger> faculty;
+    private List<BigInteger> institute;
+    private List<BigInteger> courses;
     private List<String> gender;
     private String status;
-    private UUID userCity;
-    private UUID userCountry;
+    private BigInteger userCity;
+    private BigInteger userCountry;
     private String compnayName;
     private String companyWebsite;
     private Boolean recArticleType;
@@ -29,13 +28,13 @@ public class ArticleDto2 {
     /**
      * @return the id
      */
-    public UUID getId() {
+    public BigInteger getId() {
         return id;
     }
     /**
      * @param id the id to set
      */
-    public void setId(UUID id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
     /**
@@ -65,25 +64,25 @@ public class ArticleDto2 {
     /**
      * @return the category
      */
-    public UUID getCategory() {
+    public BigInteger getCategory() {
         return category;
     }
     /**
      * @param category the category to set
      */
-    public void setCategory(UUID category) {
+    public void setCategory(BigInteger category) {
         this.category = category;
     }
     /**
      * @return the subcategory
      */
-    public UUID getSubcategory() {
+    public BigInteger getSubcategory() {
         return subcategory;
     }
     /**
      * @param subcategory the subcategory to set
      */
-    public void setSubcategory(UUID subcategory) {
+    public void setSubcategory(BigInteger subcategory) {
         this.subcategory = subcategory;
     }
     /**
@@ -137,61 +136,61 @@ public class ArticleDto2 {
     /**
      * @return the country
      */
-    public List<UUID> getCountry() {
+    public List<BigInteger> getCountry() {
         return country;
     }
     /**
      * @param country the country to set
      */
-    public void setCountry(List<UUID> country) {
+    public void setCountry(List<BigInteger> country) {
         this.country = country;
     }
     /**
      * @return the city
      */
-    public List<UUID> getCity() {
+    public List<BigInteger> getCity() {
         return city;
     }
     /**
      * @param city the city to set
      */
-    public void setCity(List<UUID> city) {
+    public void setCity(List<BigInteger> city) {
         this.city = city;
     }
     /**
      * @return the faculty
      */
-    public List<UUID> getFaculty() {
+    public List<BigInteger> getFaculty() {
         return faculty;
     }
     /**
      * @param faculty the faculty to set
      */
-    public void setFaculty(List<UUID> faculty) {
+    public void setFaculty(List<BigInteger> faculty) {
         this.faculty = faculty;
     }
     /**
      * @return the institute
      */
-    public List<UUID> getInstitute() {
+    public List<BigInteger> getInstitute() {
         return institute;
     }
     /**
      * @param institute the institute to set
      */
-    public void setInstitute(List<UUID> institute) {
+    public void setInstitute(List<BigInteger> institute) {
         this.institute = institute;
     }
     /**
      * @return the courses
      */
-    public List<UUID> getCourses() {
+    public List<BigInteger> getCourses() {
         return courses;
     }
     /**
      * @param courses the courses to set
      */
-    public void setCourses(List<UUID> courses) {
+    public void setCourses(List<BigInteger> courses) {
         this.courses = courses;
     }
     /**
@@ -221,25 +220,25 @@ public class ArticleDto2 {
     /**
      * @return the userCity
      */
-    public UUID getUserCity() {
+    public BigInteger getUserCity() {
         return userCity;
     }
     /**
      * @param userCity the userCity to set
      */
-    public void setUserCity(UUID userCity) {
+    public void setUserCity(BigInteger userCity) {
         this.userCity = userCity;
     }
     /**
      * @return the userCountry
      */
-    public UUID getUserCountry() {
+    public BigInteger getUserCountry() {
         return userCountry;
     }
     /**
      * @param userCountry the userCountry to set
      */
-    public void setUserCountry(UUID userCountry) {
+    public void setUserCountry(BigInteger userCountry) {
         this.userCountry = userCountry;
     }
     /**

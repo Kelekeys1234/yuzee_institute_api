@@ -1,8 +1,8 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public Course get(UUID id) {
+    public Course get(BigInteger id) {
         return dao.get(id);
     }
 
@@ -43,7 +43,7 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, UUID userCountryId) {
+    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, BigInteger userCountryId) {
         return dao.getAllCoursesByFilter(filterObj, currency, userCountryId);
     }
 
@@ -53,17 +53,17 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public List<CourseResponseDto> getAllCoursesByInstitute(UUID instituteId, CourseSearchDto filterObj) {
+    public List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj) {
         return dao.getAllCoursesByInstitute(instituteId, filterObj);
     }
 
     @Override
-    public Map<String, Object> getCourse(UUID courseid) {
+    public Map<String, Object> getCourse(BigInteger courseid) {
         return dao.getCourse(courseid);
     }
 
     @Override
-    public List<CourseResponseDto> getCouresesByFacultyId(UUID facultyId) {
+    public List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId) {
         return dao.getCouresesByFacultyId(facultyId);
     }
 
@@ -72,7 +72,7 @@ public class CourseService implements ICourseService {
         String[] citiesArray = facultyId.split(",");
         String tempList = "";
         for (String id : citiesArray) {
-            tempList = tempList + "," + "'" + UUID.fromString(id) + "'";
+            tempList = tempList + "," + "'" + new BigInteger(id) + "'";
         }
         return dao.getCouresesByListOfFacultyId(tempList.substring(1, tempList.length()));
     }

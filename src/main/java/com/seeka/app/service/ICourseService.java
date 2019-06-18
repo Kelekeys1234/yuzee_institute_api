@@ -1,8 +1,8 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
@@ -16,19 +16,19 @@ public interface ICourseService {
 
     public void update(Course obj);
 
-    public Course get(UUID id);
+    public Course get(BigInteger id);
 
     public List<Course> getAll();
 
-    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, UUID userCountryId);
+    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, BigInteger userCountryId);
 
     public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
 
-    public List<CourseResponseDto> getAllCoursesByInstitute(UUID instituteId, CourseSearchDto filterObj);
+    public List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
-    public Map<String, Object> getCourse(UUID courseid);
+    public Map<String, Object> getCourse(BigInteger courseid);
 
-    public List<CourseResponseDto> getCouresesByFacultyId(UUID facultyId);
+    public List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
 
     public List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 }

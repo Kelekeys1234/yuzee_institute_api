@@ -1,24 +1,24 @@
-package com.seeka.app.dto;
+package com.seeka.app.dto;import java.math.BigInteger;
 
-import java.util.UUID;
+
 
 public class JobsDto {
 	
-	private UUID cityId;
-	private UUID countryId;
+	private BigInteger cityId;
+	private BigInteger countryId;
 	private Integer noOfJobs;
 	
 	
-	public UUID getCityId() {
+	public BigInteger getCityId() {
 		return cityId;
 	}
-	public void setCityId(UUID cityId) {
+	public void setCityId(BigInteger cityId) {
 		this.cityId = cityId;
 	}
-	public UUID getCountryId() {
+	public BigInteger getCountryId() {
 		return countryId;
 	}
-	public void setCountryId(UUID countryId) {
+	public void setCountryId(BigInteger countryId) {
 		this.countryId = countryId;
 	}
 	public Integer getNoOfJobs() {

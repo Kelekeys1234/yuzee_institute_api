@@ -1,15 +1,15 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
 
-import com.seeka.app.bean.ServiceDetails;
+
+import com.seeka.app.bean.Service;
 
 public interface IServiceDetailsService {
 	
-	public void save(ServiceDetails obj);
-	public void update(ServiceDetails obj);
-	public ServiceDetails get(UUID id);
-	public List<ServiceDetails> getAllInstituteByCountry(UUID countryId);
-	public List<ServiceDetails> getAll();
+	public void save(Service obj);
+	public void update(Service obj);
+	public Service get(BigInteger id);
+	public List<Service> getAllInstituteByCountry(BigInteger countryId);
+	public List<Service> getAll();
 }

@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.app.bean.CourseKeyword;
+import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.dao.ICourseKeywordDAO;
 
 @Service
@@ -17,22 +17,22 @@ public class CourseKeywordService implements ICourseKeywordService {
 	ICourseKeywordDAO dao;
 	
 	@Override
-	public void save(CourseKeyword obj) {
+	public void save(CourseKeywords obj) {
 		dao.save(obj);
 	}
 	
 	@Override
-	public void update(CourseKeyword obj) {
+	public void update(CourseKeywords obj) {
 		dao.update(obj);
 	}
 	
 	@Override
-	public List<CourseKeyword> getAll(){
+	public List<CourseKeywords> getAll(){
 		return dao.getAll();
 	}
 	
 	@Override
-	public List<CourseKeyword> searchCourseKeyword(String keyword){
+	public List<CourseKeywords> searchCourseKeyword(String keyword){
 		return dao.searchCourseKeyword(keyword);
 	}
 }

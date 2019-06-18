@@ -1,17 +1,17 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
 
-import com.seeka.app.bean.CourseKeyword;
+import com.seeka.app.bean.CourseKeywords;
 
 public interface ICourseKeywordDAO {
 
-    public void save(CourseKeyword obj);
+    public void save(CourseKeywords obj);
 
-    public void update(CourseKeyword obj);
+    public void update(CourseKeywords obj);
 
-    public List<CourseKeyword> getAll();
+    public List<CourseKeywords> getAll();
 
-    public List<CourseKeyword> searchCourseKeyword(String keyword);
+    public List<CourseKeywords> searchCourseKeyword(String keyword);
 
 }

@@ -1,18 +1,17 @@
 package com.seeka.app.service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.seeka.app.bean.Article;
 import com.seeka.app.bean.ArticleCity;
 import com.seeka.app.bean.ArticleCountry;
 import com.seeka.app.bean.ArticleCourse;
@@ -24,7 +23,12 @@ import com.seeka.app.bean.ArticleInstitute;
 import com.seeka.app.bean.ArticleUserCitizenship;
 import com.seeka.app.bean.Category;
 import com.seeka.app.bean.City;
+import com.seeka.app.bean.Country;
+import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Faculty;
+import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.SeekaArticles;
+import com.seeka.app.bean.Subcategory;
 import com.seeka.app.dao.ArticleCityDAO;
 import com.seeka.app.dao.ArticleCountryDAO;
 import com.seeka.app.dao.ArticleCourseDAO;
@@ -33,6 +37,7 @@ import com.seeka.app.dao.ArticleFolderDao;
 import com.seeka.app.dao.ArticleFolderMapDao;
 import com.seeka.app.dao.ArticleGenderDAO;
 import com.seeka.app.dao.ArticleInstituteDAO;
+import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dao.IArticleDAO;
 import com.seeka.app.dao.ICategoryDAO;
 import com.seeka.app.dao.IUserArticleDAO;
@@ -47,6 +52,7 @@ import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.GenderDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.PageLookupDto;
+import com.seeka.app.dto.SearchDto;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 
@@ -86,14 +92,17 @@ public class ArticleService implements IArticleService {
 
     @Autowired
     ArticleFolderMapDao articleFolderMapDao;
+    
+    @Autowired
+    CourseDAO courseDAO;
 
     @Override
-    public List<Article> getAll() {
+    public List<SeekaArticles> getAll() {
         return articleDAO.getAll();
     }
 
     @Override
-    public List<Article> getArticlesByLookup(PageLookupDto pageLookupDto) {
+    public List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto) {
         return articleDAO.getArticlesByLookup(pageLookupDto);
     }
 
@@ -102,10 +111,10 @@ public class ArticleService implements IArticleService {
         Map<String, Object> response = new HashMap<String, Object>();
         String status = IConstant.DELETE_SUCCESS;
         try {
-            Article article = articleDAO.findById(UUID.fromString(articleId));
+            SeekaArticles article = articleDAO.findById(new BigInteger(articleId));
             if (article != null) {
                 article.setActive(false);
-                article.setDeleted(DateUtil.getUTCdatetimeAsDate());
+                article.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
                 articleDAO.deleteArticle(article);
             } else {
                 status = IConstant.DELETE_FAILURE_ID_NOT_FOUND;
@@ -124,19 +133,21 @@ public class ArticleService implements IArticleService {
         ArticleDto3 articleDto = null;
         String status = IConstant.SUCCESS;
         try {
-            Article article = articleDAO.findById(UUID.fromString(articleId));
+            SeekaArticles article = articleDAO.findById(new BigInteger(articleId));
             if (article != null) {
                 articleDto = new ArticleDto3();
                 articleDto.setId(article.getId());
                 if (article.getCategory() != null) {
-                    articleDto.setCategory(article.getCategory().getId());
+                    articleDto.setCategory(String.valueOf(article.getCategory().getId()));
                 }
-                articleDto.setSubcategory(article.getSubCategory());
+                if (article.getSubcategory() != null) {
+                    articleDto.setSubcategory(String.valueOf(article.getSubcategory().getId()));
+                }
                 articleDto.setHeading(article.getHeading());
                 articleDto.setContent(article.getContent());
                 articleDto.setLink(article.getLink());
-                articleDto.setImageUrl(article.getImagePath());
-                articleDto.setCompnayName(article.getCompnayName());
+                articleDto.setImageUrl(article.getImagepath());
+                articleDto.setCompnayName(article.getCompanyName());
                 articleDto.setCompanyWebsite(article.getCompanyWebsite());
                 if (article.getArticleType() != null) {
                     articleDto.setSeekaArticleType(article.getArticleType().split(",")[0]);
@@ -156,9 +167,11 @@ public class ArticleService implements IArticleService {
                 articleDto.setGender(articleGender);
 
                 ArticleUserCitizenship userCitizenship = userArticleDAO.findArticleUserCitizenshipDetails(article.getId());
-                if (userCitizenship.getCountry() != null && userCitizenship.getCity() != null) {
-                    articleDto.setUserCity(userCitizenship.getCity());
-                    articleDto.setUserCountry(userCitizenship.getCountry());
+                if (userCitizenship.getCountry() != null) {
+                    articleDto.setUserCountry(String.valueOf(userCitizenship.getCountry().getId()));
+                }
+                if (userCitizenship.getCity() != null) {
+                    articleDto.setUserCity(String.valueOf(userCitizenship.getCity().getId()));
                 }
             } else {
                 status = IConstant.DELETE_FAILURE_ID_NOT_FOUND;
@@ -173,10 +186,10 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Map<String, Object> fetchAllArticleByPage(Integer page, Integer size, String query, boolean status) {
+    public Map<String, Object> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status) {
         Map<String, Object> response = new HashMap<String, Object>();
         String ResponseStatus = IConstant.SUCCESS;
-        List<Article> articles = null;
+        List<SeekaArticles> articles = null;
         int totalCount = 0;
         try {
             totalCount = articleDAO.findTotalCount();
@@ -197,17 +210,17 @@ public class ArticleService implements IArticleService {
         String ResponseStatus = IConstant.SUCCESS;
         try {
             // save data
-            Article article = new Article();
+            SeekaArticles article = new SeekaArticles();
             if (articledto != null && articledto.getId() != null) {
                 article = articleDAO.findById(articledto.getId());
                 if (article != null) {
                     article.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
                 }
             } else {
-                article = new Article();
-                article.setCreatedDate(DateUtil.getUTCdatetimeAsDate());
+                article = new SeekaArticles();
+                article.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
             }
-            article.setImagePath(articledto.getImageUrl());
+            article.setImagepath(articledto.getImageUrl());
             article.setHeading(articledto.getHeading());
             article.setContent(articledto.getContent());
             article.setActive(true);
@@ -217,7 +230,9 @@ public class ArticleService implements IArticleService {
                     article.setCategory(category);
                 }
             }
-            article.setSubCategory(articledto.getSubcategory());
+            Subcategory subcategory = new Subcategory();
+            subcategory.setId(articledto.getSubcategory());
+            article.setSubcategory(subcategory);
             // article.setImagePath(fileDownloadUri);
             article.setLink(articledto.getLink());
             article.setCountry(articledto.getCountry());
@@ -227,13 +242,18 @@ public class ArticleService implements IArticleService {
             article.setCourses(articledto.getCourses());
             article.setGender(articledto.getGender());
             article = articleDAO.save(article);
-            UUID subCAtegory = article.getSubCategory();
+            BigInteger subCAtegory = article.getSubcategory().getId();
             articleDAO.updateArticle(subCAtegory, article.getId());
             if (articledto.getUserCountry() != null && articledto.getUserCity() != null) {
                 ArticleUserCitizenship userCitizenship = new ArticleUserCitizenship();
-                userCitizenship.setCity(articledto.getUserCity());
-                userCitizenship.setCountry(articledto.getUserCountry());
-                userCitizenship.setArticleId(article.getId());
+                City city = new City();
+                city.setId(articledto.getUserCity());
+                userCitizenship.setCity(city);
+
+                Country country = new Country();
+                country.setId(articledto.getUserCountry());
+                userCitizenship.setCountry(country);
+                userCitizenship.setSeekaArticles(article);
                 userCitizenship.setCreatedDate(DateUtil.getUTCdatetimeAsDate());
                 userCitizenship.setUpdatedDate(DateUtil.getUTCdatetimeAsDate());
                 userArticleDAO.saveArticleUserCitizenship(userCitizenship);
@@ -248,10 +268,10 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Map<String, Object> searchArticle(ArticleDto article) {
+    public Map<String, Object> searchArticle(SearchDto article) {
         Map<String, Object> response = new HashMap<String, Object>();
         String ResponseStatus = IConstant.SUCCESS;
-        List<Article> articles = null;
+        List<SeekaArticles> articles = null;
         int totalCount = 0;
         try {
             totalCount = articleDAO.findTotalCount();
@@ -272,21 +292,21 @@ public class ArticleService implements IArticleService {
         String ResponseStatus = IConstant.SUCCESS;
         try {
             // save data
-            Article article = new Article();
+            SeekaArticles article = new SeekaArticles();
             if (articledto != null && articledto.getId() != null) {
                 article = articleDAO.findById(articledto.getId());
                 if (article != null) {
                     article.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
                 }
             } else {
-                article = new Article();
-                article.setCreatedDate(DateUtil.getUTCdatetimeAsDate());
+                article = new SeekaArticles();
+                article.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
             }
-            article.setImagePath(articledto.getImageUrl());
+            article.setImagepath(articledto.getImageUrl());
             article.setHeading(articledto.getHeading());
             article.setContent(articledto.getContent());
             article.setActive(true);
-            article.setCompnayName(articledto.getCompnayName());
+            article.setCompanyName(articledto.getCompnayName());
             article.setCompanyWebsite(articledto.getCompanyWebsite());
             article.setArticleType(articledto.getCeekaArticleType() + "," + articledto.getRecArticleType());
             if (articledto.getCategory() != null) {
@@ -295,7 +315,9 @@ public class ArticleService implements IArticleService {
                     article.setCategory(category);
                 }
             }
-            article.setSubCategory(articledto.getSubcategory());
+            Subcategory subcategory = new Subcategory();
+            subcategory.setId(articledto.getSubcategory());
+            article.setSubcategory(subcategory);
             // article.setImagePath(fileDownloadUri);
             article.setLink(articledto.getLink());
             // article.setCountry(articledto.getCountry());
@@ -305,63 +327,77 @@ public class ArticleService implements IArticleService {
             // article.setCourses(articledto.getCourses());
             // article.setGender(articledto.getGender());
             article = articleDAO.save(article);
-            UUID subCAtegory = article.getSubCategory();
+            BigInteger subCAtegory = article.getSubcategory().getId();
             articleDAO.updateArticle(subCAtegory, article.getId());
             if (articledto.getUserCountry() != null && articledto.getUserCity() != null) {
                 ArticleUserCitizenship userCitizenship = new ArticleUserCitizenship();
-                userCitizenship.setCity(articledto.getUserCity());
-                userCitizenship.setCountry(articledto.getUserCountry());
-                userCitizenship.setArticleId(article.getId());
+                City city = new City();
+                city.setId(articledto.getUserCity());
+                userCitizenship.setCity(city);
+
+                Country country = new Country();
+                country.setId(articledto.getUserCountry());
+                userCitizenship.setCountry(country);
+                userCitizenship.setSeekaArticles(article);
                 userCitizenship.setCreatedDate(DateUtil.getUTCdatetimeAsDate());
                 userCitizenship.setUpdatedDate(DateUtil.getUTCdatetimeAsDate());
                 userArticleDAO.saveArticleUserCitizenship(userCitizenship);
             }
             if (articledto.getCountry() != null && !articledto.getCountry().isEmpty()) {
                 List<ArticleCountry> list = new ArrayList<>();
-                for (UUID id : articledto.getCountry()) {
+                for (BigInteger id : articledto.getCountry()) {
                     ArticleCountry bean = new ArticleCountry();
-                    bean.setArticleId(article.getId());
-                    bean.setCountry(id);
+                    bean.setSeekaArticles(article);
+                    Country country = new Country();
+                    country.setId(id);
+                    bean.setCountry(country);
                     list.add(bean);
                 }
                 articleCountryDAO.saveArticleCountry(list, article.getId());
             }
             if (articledto.getCity() != null && !articledto.getCity().isEmpty()) {
                 List<ArticleCity> list = new ArrayList<>();
-                for (UUID id : articledto.getCity()) {
+                for (BigInteger id : articledto.getCity()) {
                     ArticleCity bean = new ArticleCity();
-                    bean.setArticleId(article.getId());
-                    bean.setCity(id);
+                    bean.setSeekaArticles(article);
+                    City city = new City();
+                    city.setId(id);
+                    bean.setCity(city);
                     list.add(bean);
                 }
                 articleCityDAO.saveArticleCity(list, article.getId());
             }
             if (articledto.getCourses() != null && !articledto.getCourses().isEmpty()) {
                 List<ArticleCourse> list = new ArrayList<>();
-                for (UUID id : articledto.getCourses()) {
+                for (BigInteger id : articledto.getCourses()) {
                     ArticleCourse bean = new ArticleCourse();
-                    bean.setArticleId(article.getId());
-                    bean.setCourseId(id);
+                    bean.setSeekaArticles(article);
+                    bean.setCourse(courseDAO.get(id));
                     list.add(bean);
                 }
                 articleCourseDAO.saveArticleCorses(list, article.getId());
             }
             if (articledto.getFaculty() != null && !articledto.getFaculty().isEmpty()) {
                 List<ArticleFaculty> list = new ArrayList<>();
-                for (UUID id : articledto.getFaculty()) {
+                for (BigInteger id : articledto.getFaculty()) {
                     ArticleFaculty bean = new ArticleFaculty();
-                    bean.setArticleId(article.getId());
-                    bean.setFacultyId(id);
+                    bean.setSeekaArticles(article);
+
+                    Faculty faculty = new Faculty();
+                    faculty.setId(id);
+                    bean.setFaculty(faculty);
                     list.add(bean);
                 }
                 articleFacultyDAO.saveArticleFaculty(list, article.getId());
             }
             if (articledto.getInstitute() != null && !articledto.getInstitute().isEmpty()) {
                 List<ArticleInstitute> list = new ArrayList<>();
-                for (UUID id : articledto.getInstitute()) {
+                for (BigInteger id : articledto.getInstitute()) {
                     ArticleInstitute bean = new ArticleInstitute();
-                    bean.setArticleId(article.getId());
-                    bean.setInstituteId(id);
+                    bean.setSeekaArticles(article);
+                    Institute institute = new Institute();
+                    institute.setId(id);
+                    bean.setInstitute(institute);
                     list.add(bean);
                 }
                 articleInstituteDAO.saveArticleInstitute(list, article.getId());
@@ -370,7 +406,7 @@ public class ArticleService implements IArticleService {
                 List<ArticleGender> list = new ArrayList<>();
                 for (String id : articledto.getGender()) {
                     ArticleGender bean = new ArticleGender();
-                    bean.setArticleId(article.getId());
+                    bean.setSeekaArticles(article);
                     bean.setGender(id);
                     list.add(bean);
                 }
@@ -404,7 +440,7 @@ public class ArticleService implements IArticleService {
                 articleFolder.setCreatedAt(new Date());
                 articleFolder.setDeleted(true);
                 articleFolder.setUpdatedAt(new Date());
-                articleFolder.setUserId(UUID.fromString("62E9623B-3C96-C649-B599-111201E7FB91"));
+                articleFolder.setUserId(new BigInteger("111111"));
                 articleFolderDao.save(articleFolder);
             }
         } catch (Exception exception) {
@@ -417,7 +453,7 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Map<String, Object> getArticleFolderById(UUID articleFolderId) {
+    public Map<String, Object> getArticleFolderById(BigInteger articleFolderId) {
         Map<String, Object> response = new HashMap<String, Object>();
         ArticleFolder result = null;
         try {
@@ -445,7 +481,7 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Map<String, Object> deleteArticleFolderById(UUID articleFolderId) {
+    public Map<String, Object> deleteArticleFolderById(BigInteger articleFolderId) {
         Map<String, Object> response = new HashMap<String, Object>();
         String ResponseStatus = IConstant.SUCCESS;
         try {
@@ -486,7 +522,7 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Map<String, Object> getFolderWithArticle(UUID userId) {
+    public Map<String, Object> getFolderWithArticle(BigInteger userId) {
         Map<String, Object> response = new HashMap<String, Object>();
         List<ArticleFolder> articleFolders = new ArrayList<>();
         try {

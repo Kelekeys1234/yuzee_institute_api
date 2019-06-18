@@ -1,7 +1,7 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,12 +28,12 @@ public class InstituteLevelService implements IInstituteLevelService {
 	}
 	
 	@Override
-	public InstituteLevel get(UUID id) {
+	public InstituteLevel get(BigInteger id) {
 		return dao.get(id);
 	}
 	
 	@Override
-	public List<InstituteLevel> getAllLevelByInstituteId(UUID instituteId){
+	public List<InstituteLevel> getAllLevelByInstituteId(BigInteger instituteId){
 		return dao.getAllLevelByInstituteId(instituteId);
 	}
 	

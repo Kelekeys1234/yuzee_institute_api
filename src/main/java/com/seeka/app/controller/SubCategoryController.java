@@ -1,9 +1,9 @@
 package com.seeka.app.controller;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ public class SubCategoryController {
     @Autowired
     private ISubCategoryService subCategoryService;
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getAll(@RequestHeader(value = IConstant.CORRELATION_ID, required = false, defaultValue = "") String correlationId,
                     @RequestHeader(value = IConstant.USER_ID, required = false) String userId, @RequestHeader(value = IConstant.SESSION_ID, required = false) String sessionId,
                     @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode) {
@@ -43,10 +43,10 @@ public class SubCategoryController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/byCategory/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/category/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getSubCategoryByCategory(@RequestHeader(value = IConstant.CORRELATION_ID, required = false, defaultValue = "") String correlationId,
                     @RequestHeader(value = IConstant.USER_ID, required = false) String userId, @RequestHeader(value = IConstant.SESSION_ID, required = false) String sessionId,
-                    @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable UUID categoryId) {
+                    @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable BigInteger categoryId) {
         Map<String, Object> response = new HashMap<String, Object>();
         List<SubCategoryDto> subCategoryDtos = subCategoryService.getSubCategoryByCategory(categoryId);
         if (subCategoryDtos != null && !subCategoryDtos.isEmpty()) {
@@ -60,12 +60,12 @@ public class SubCategoryController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/get/{subCategoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getSubCategoryById(@RequestHeader(value = IConstant.CORRELATION_ID, required = false, defaultValue = "") String correlationId,
                     @RequestHeader(value = IConstant.USER_ID, required = false) String userId, @RequestHeader(value = IConstant.SESSION_ID, required = false) String sessionId,
-                    @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable UUID subCategoryId) {
+                    @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable BigInteger id) {
         Map<String, Object> response = new HashMap<String, Object>();
-        SubCategoryDto subCategoryDto = subCategoryService.getSubCategoryById(subCategoryId);
+        SubCategoryDto subCategoryDto = subCategoryService.getSubCategoryById(id);
         if (subCategoryDto != null) {
             response.put("status", IConstant.SUCCESS_CODE);
             response.put("message", IConstant.SUCCESS_MESSAGE);
@@ -76,16 +76,16 @@ public class SubCategoryController {
         response.put("subCategory", subCategoryDto);
         return ResponseEntity.accepted().body(response);
     }
-    
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveArticle(@RequestBody SubCategoryDto subCategoryDto) {
         return ResponseEntity.accepted().body(subCategoryService.saveSubCategory(subCategoryDto));
     }
-    
-    @RequestMapping(value = "/delete/{subCategoryId}", method = RequestMethod.GET)
-    public ResponseEntity<?> deleteSuCategory(@PathVariable UUID subCategoryId) {
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteSuCategory(@PathVariable BigInteger id) {
         Map<String, Object> response = new HashMap<String, Object>();
-        boolean status = subCategoryService.deleteSubCategory(subCategoryId);
+        boolean status = subCategoryService.deleteSubCategory(id);
         if (status) {
             response.put("status", IConstant.SUCCESS_CODE);
             response.put("message", IConstant.SUCCESS_MESSAGE);

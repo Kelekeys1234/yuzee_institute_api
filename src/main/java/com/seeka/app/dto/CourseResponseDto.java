@@ -1,15 +1,14 @@
-package com.seeka.app.dto;
+package com.seeka.app.dto;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
 
 public class CourseResponseDto {
 	
-	private UUID courseId;
+	private BigInteger courseId;
 	private String courseName;	
 	private String courseLanguage;
 	private String languageShortKey;
-	private UUID instituteId;
+	private BigInteger instituteId;
 	private String instituteName;
 	private String instituteLogoUrl;	
 	private String instituteImageUrl;	
@@ -19,8 +18,8 @@ public class CourseResponseDto {
 	private String duration;
 	private String durationTime;
 	private String location;
-	private UUID countryId;
-	private UUID cityId;
+	private BigInteger countryId;
+	private BigInteger cityId;
 	private Integer totalCount;
 	private String localFees;
 	private String intlFees;
@@ -30,10 +29,10 @@ public class CourseResponseDto {
 	private Boolean isFavourite;
 	private List<String> imageUrlList;	
 	
-	public UUID getCourseId() {
+	public BigInteger getCourseId() {
 		return courseId;
 	}
-	public void setCourseId(UUID courseId) {
+	public void setCourseId(BigInteger courseId) {
 		this.courseId = courseId;
 	}
 	public String getCourseName() {
@@ -42,10 +41,10 @@ public class CourseResponseDto {
 	public void setCourseName(String courseName) {
 		this.courseName = courseName;
 	}
-	public UUID getInstituteId() {
+	public BigInteger getInstituteId() {
 		return instituteId;
 	}
-	public void setInstituteId(UUID instituteId) {
+	public void setInstituteId(BigInteger instituteId) {
 		this.instituteId = instituteId;
 	}
 	public String getInstituteName() {
@@ -102,16 +101,16 @@ public class CourseResponseDto {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	public UUID getCountryId() {
+	public BigInteger getCountryId() {
 		return countryId;
 	}
-	public void setCountryId(UUID countryId) {
+	public void setCountryId(BigInteger countryId) {
 		this.countryId = countryId;
 	}
-	public UUID getCityId() {
+	public BigInteger getCityId() {
 		return cityId;
 	}
-	public void setCityId(UUID cityId) {
+	public void setCityId(BigInteger cityId) {
 		this.cityId = cityId;
 	}
 	public String getCourseLanguage() {

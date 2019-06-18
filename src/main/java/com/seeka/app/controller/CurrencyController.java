@@ -1,6 +1,4 @@
-package com.seeka.app.controller;
-
-import java.util.ArrayList;
+package com.seeka.app.controller;import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,7 +22,7 @@ public class CurrencyController {
 	@Autowired
 	ICurrencyService currencyService;
 	
-	@RequestMapping(value = "/get", method=RequestMethod.GET)
+	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<?>  getAll() {
 		Map<String,Object> response = new HashMap<String, Object>();
 		Collection<Currency> list = CurrencyUtil.getAllCurrencies();
@@ -36,7 +34,7 @@ public class CurrencyController {
     	return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "/getall", method=RequestMethod.GET)
+	@RequestMapping(value = "/all", method=RequestMethod.GET)
 	public ResponseEntity<?>  getAll1() {
 		Map<String,Object> response = new HashMap<String, Object>();
 		Collection<Currency> list = currencyService.getAll();
@@ -48,22 +46,23 @@ public class CurrencyController {
     	return ResponseEntity.accepted().body(response);
 	}
 	
-	@RequestMapping(value = "/save", method=RequestMethod.GET)
-	public ResponseEntity<?>  saveCurrency() {
-		Map<String,Object> response = new HashMap<String, Object>();
-		
-		Currency currency = new Currency();
-		currency.setBaseCurrency("USD");
-		currency.setCode("ULAGA");
-		currency.setConversionRate(0.23244);
-		currency.setName("ULAGANATHAN");
-		currency.setSymbol("$");
-		currency.setUpdatedDate(new Date());
-		currencyService.save(currency);;
-		response.put("status", 1);
-		response.put("message","Success.!");
-    	response.put("currency",currency);
-    	return ResponseEntity.accepted().body(response);
-	}
+    @RequestMapping(value = "/save", method = RequestMethod.GET)
+    public ResponseEntity<?> saveCurrency() {
+        Map<String, Object> response = new HashMap<String, Object>();
+
+        Currency currency = new Currency();
+        currency.setBaseCurrency("USD");
+        currency.setCode("ULAGA");
+        currency.setConversionRate(0.23244);
+        currency.setName("ULAGANATHAN");
+        currency.setSymbol("$");
+        currency.setUpdatedDate(new Date());
+        currencyService.save(currency);
+        ;
+        response.put("status", 1);
+        response.put("message", "Success.!");
+        response.put("currency", currency);
+        return ResponseEntity.accepted().body(response);
+    }
 	
 }

@@ -1,7 +1,7 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -11,7 +11,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.ServiceDetails;
+import com.seeka.app.bean.Service;
 
 @Repository
 public class ServiceDetailsDAO implements IServiceDetailsDAO{
@@ -20,45 +20,45 @@ public class ServiceDetailsDAO implements IServiceDetailsDAO{
 	private SessionFactory sessionFactory;
 	
 	@Override
-	public void save(ServiceDetails obj) {	
+	public void save(Service obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}
 	
 	@Override
-	public void update(ServiceDetails obj) {	
+	public void update(Service obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.update(obj);	   					
 	}
 	
 	@Override
-	public ServiceDetails get(UUID id) {	
+	public Service get(BigInteger id) {	
 		Session session = sessionFactory.getCurrentSession();		
-		ServiceDetails obj = session.get(ServiceDetails.class, id);
+		Service obj = session.get(Service.class, id);
 		return obj;
 	}
 	
 	@Override
-	public List<ServiceDetails> getAllInstituteByCountry(UUID countryId) {
+	public List<Service> getAllInstituteByCountry(BigInteger countryId) {
 		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(ServiceDetails.class);
+		Criteria crit = session.createCriteria(Service.class);
 		crit.add(Restrictions.eq("countryObj.id",countryId));
 		return crit.list();
 	}
 	
 	@Override
-	public List<ServiceDetails> getAll() {
+	public List<Service> getAll() {
 		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(ServiceDetails.class).addOrder(Order.asc("name")); 
+		Criteria crit = session.createCriteria(Service.class).addOrder(Order.asc("name")); 
 		return crit.list();
 	}
 	
 	/*@Override
 	public Institute getUserByEmail(String email) {	
 		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(User.class);
+		Criteria crit = session.createCriteria(UserInfo.class);
 		crit.add(Restrictions.eq("emailId",email));
-		List<User> users = crit.list();
+		List<UserInfo> users = crit.list();
 		return users !=null && !users.isEmpty()?users.get(0):null;
 	}*/
 	

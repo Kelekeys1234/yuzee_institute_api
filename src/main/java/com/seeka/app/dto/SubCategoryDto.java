@@ -1,21 +1,19 @@
-package com.seeka.app.dto;
-
-import java.util.UUID;
+package com.seeka.app.dto;import java.math.BigInteger;
 
 public class SubCategoryDto {
 
-    private UUID id;
+    private BigInteger id;
 
     private String name;
 
-    private UUID categoryId;
+    private BigInteger categoryId;
     
     private String categoryName;
 
     /**
      * @return the id
      */
-    public UUID getId() {
+    public BigInteger getId() {
         return id;
     }
 
@@ -23,7 +21,7 @@ public class SubCategoryDto {
      * @param id
      *            the id to set
      */
-    public void setId(UUID id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
@@ -45,7 +43,7 @@ public class SubCategoryDto {
     /**
      * @return the categoryId
      */
-    public UUID getCategoryId() {
+    public BigInteger getCategoryId() {
         return categoryId;
     }
 
@@ -53,7 +51,7 @@ public class SubCategoryDto {
      * @param categoryId
      *            the categoryId to set
      */
-    public void setCategoryId(UUID categoryId) {
+    public void setCategoryId(BigInteger categoryId) {
         this.categoryId = categoryId;
     }
 

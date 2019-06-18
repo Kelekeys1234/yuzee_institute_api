@@ -1,16 +1,16 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
 
-import com.seeka.app.bean.CourseKeyword;
+import com.seeka.app.bean.CourseKeywords;
 
 public interface ICourseKeywordService {
 
-    public void save(CourseKeyword obj);
+    public void save(CourseKeywords obj);
 
-    public void update(CourseKeyword obj);
+    public void update(CourseKeywords obj);
 
-    public List<CourseKeyword> getAll();
+    public List<CourseKeywords> getAll();
 
-    public List<CourseKeyword> searchCourseKeyword(String keyword);
+    public List<CourseKeywords> searchCourseKeyword(String keyword);
 }

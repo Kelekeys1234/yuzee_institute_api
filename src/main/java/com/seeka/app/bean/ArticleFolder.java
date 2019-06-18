@@ -1,9 +1,10 @@
-package com.seeka.app.bean;
+package com.seeka.app.bean;import java.math.BigInteger;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,8 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+
 
 import com.seeka.app.dto.ArticleNameDto;
 
@@ -25,24 +25,22 @@ public class ArticleFolder implements Serializable {
      * 
      */
     private static final long serialVersionUID = 1L;
-    private UUID id;
+    private BigInteger id;
     private String folderName;
     private Boolean deleted;
     private Date createdAt;
     private Date updatedAt;
     private List<ArticleNameDto> articles;
-    private UUID userId;
+    private BigInteger userId;
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Type(type = "uuid-char")
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
-    public UUID getId() {
+    public BigInteger getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
@@ -129,15 +127,15 @@ public class ArticleFolder implements Serializable {
      * @return the userId
      */
     @Column(name = "user_id")
-    @Type(type = "uuid-char")
-    public UUID getUserId() {
+    
+    public BigInteger getUserId() {
         return userId;
     }
 
     /**
      * @param userId the userId to set
      */
-    public void setUserId(UUID userId) {
+    public void setUserId(BigInteger userId) {
         this.userId = userId;
     }
 }

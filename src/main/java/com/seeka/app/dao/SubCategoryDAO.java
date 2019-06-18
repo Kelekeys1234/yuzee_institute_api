@@ -1,8 +1,6 @@
-package com.seeka.app.dao;
-
+package com.seeka.app.dao;import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -13,7 +11,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.SubCategory;
+import com.seeka.app.bean.Subcategory;
 import com.seeka.app.dto.SubCategoryDto;
 
 @Repository
@@ -28,14 +26,14 @@ public class SubCategoryDAO implements ISubCategoryDAO {
         List<SubCategoryDto> subCategoryDtos = new ArrayList<SubCategoryDto>();
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery(
-                        "SELECT sc.id, sc.name as name, sc.category_id, c.name as catName FROM subcategory sc with(nolock) inner join category c with(nolock) on sc.category_id = c.id where sc.is_deleted=1");
+                        "SELECT sc.id, sc.name as name, sc.category_id, c.name as catName FROM subcategory sc  inner join category c  on sc.category_id = c.id where sc.is_deleted=1");
         List<Object[]> rows = query.list();
         SubCategoryDto subCategoryDto = null;
         for (Object[] row : rows) {
             subCategoryDto = new SubCategoryDto();
-            subCategoryDto.setId(UUID.fromString((row[0].toString())));
+            subCategoryDto.setId(new BigInteger((row[0].toString())));
             subCategoryDto.setName(row[1].toString());
-            subCategoryDto.setCategoryId(UUID.fromString((row[2].toString())));
+            subCategoryDto.setCategoryId(new BigInteger((row[2].toString())));
             subCategoryDto.setCategoryName(row[3].toString());
             subCategoryDtos.add(subCategoryDto);
         }
@@ -43,15 +41,15 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     }
 
     @Override
-    public List<SubCategoryDto> getSubCategoryByCategory(UUID categoryId) {
+    public List<SubCategoryDto> getSubCategoryByCategory(BigInteger categoryId) {
         List<SubCategoryDto> subCategoryDtos = new ArrayList<SubCategoryDto>();
         Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(SubCategory.class);
+        Criteria criteria = session.createCriteria(Subcategory.class);
         criteria.add(Restrictions.eq("category.id", categoryId));
         criteria.addOrder(Order.asc("name"));
-        List<SubCategory> subCategories = criteria.list();
+        List<Subcategory> subCategories = criteria.list();
         if (subCategories != null && !subCategories.isEmpty()) {
-            for (SubCategory sc : subCategories) {
+            for (Subcategory sc : subCategories) {
                 SubCategoryDto subCategoryDto = new SubCategoryDto();
                 subCategoryDto.setId(sc.getId());
                 subCategoryDto.setName(sc.getName());
@@ -62,16 +60,16 @@ public class SubCategoryDAO implements ISubCategoryDAO {
             }
         }
         SubCategoryDto subCategoryDto = new SubCategoryDto();
-        subCategoryDto.setId(UUID.fromString("CB52B698-98A4-4336-BCC6-98CC1F05EA66"));
+        subCategoryDto.setId(new BigInteger("111111"));
         subCategoryDto.setName("All");
         subCategoryDtos.add(subCategoryDto);
         return subCategoryDtos;
     }
 
     @Override
-    public SubCategoryDto getSubCategoryById(UUID subCategoryId) {
+    public SubCategoryDto getSubCategoryById(BigInteger subCategoryId) {
         Session session = sessionFactory.getCurrentSession();
-        SubCategory subCategory = session.get(SubCategory.class, subCategoryId);
+        Subcategory subCategory = session.get(Subcategory.class, subCategoryId);
         SubCategoryDto subCategoryDto = null;
         if (subCategory != null) {
             subCategoryDto = new SubCategoryDto();
@@ -85,7 +83,7 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     }
 
     @Override
-    public boolean saveSubCategory(SubCategory subCategory) {
+    public boolean saveSubCategory(Subcategory subCategory) {
         boolean status = true;
         try {
             Session session = sessionFactory.getCurrentSession();
@@ -97,9 +95,9 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     }
 
     @Override
-    public SubCategory findById(UUID id) {
+    public Subcategory findById(BigInteger id) {
         Session session = sessionFactory.getCurrentSession();
-        SubCategory subCategory = session.get(SubCategory.class, id);
+        Subcategory subCategory = session.get(Subcategory.class, id);
         return subCategory;
     }
 }

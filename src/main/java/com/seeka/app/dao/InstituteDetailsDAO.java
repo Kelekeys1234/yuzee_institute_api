@@ -1,7 +1,7 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -31,7 +31,7 @@ public class InstituteDetailsDAO implements IInstituteDetailsDAO{
 	}
 	
 	@Override
-	public InstituteDetails get(UUID id) {	
+	public InstituteDetails get(BigInteger id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(InstituteDetails.class);
 		crit.add(Restrictions.eq("instituteId",id));
@@ -40,7 +40,7 @@ public class InstituteDetailsDAO implements IInstituteDetailsDAO{
 	}
 	
 	@Override
-	public List<InstituteDetails> getAllInstituteByCountry(UUID countryId) {
+	public List<InstituteDetails> getAllInstituteByCountry(BigInteger countryId) {
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(InstituteDetails.class);
 		crit.add(Restrictions.eq("countryObj.id",countryId));
@@ -57,9 +57,9 @@ public class InstituteDetailsDAO implements IInstituteDetailsDAO{
 	/*@Override
 	public Institute getUserByEmail(String email) {	
 		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(User.class);
+		Criteria crit = session.createCriteria(UserInfo.class);
 		crit.add(Restrictions.eq("emailId",email));
-		List<User> users = crit.list();
+		List<UserInfo> users = crit.list();
 		return users !=null && !users.isEmpty()?users.get(0):null;
 	}*/
 	

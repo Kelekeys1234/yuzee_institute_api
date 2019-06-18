@@ -1,10 +1,10 @@
 package com.seeka.app.dao;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -49,7 +49,7 @@ public class CourseDAO implements ICourseDAO {
     }
 
     @Override
-    public Course get(UUID id) {
+    public Course get(BigInteger id) {
         Session session = sessionFactory.getCurrentSession();
         Course obj = session.get(Course.class, id);
         return obj;
@@ -63,17 +63,16 @@ public class CourseDAO implements ICourseDAO {
     }
 
     @Override
-    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, UUID userCountryId) {
+    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, BigInteger userCountryId) {
         Session session = sessionFactory.getCurrentSession();
 
-        String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName,"
-                        + "inst.id as instId,inst.name as instName, cp.cost_range, "
+        String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName, cp.cost_range, "
                         + "cp.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
                         + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition, cp.local_fees, cp.intl_fees,crs.remarks "
-                        + "from course crs with(nolock) inner join course_pricing cp with(nolock) on cp.course_id = crs.id inner join institute inst "
-                        + "with(nolock) on crs.institute_id = inst.id inner join country ctry with(nolock) on ctry.id = crs.country_id inner join "
-                        + "city ci with(nolock) on ci.id = crs.city_id inner join faculty f with(nolock) on f.id = crs.faculty_id "
-                        + "left join institute_service iis with(nolock) on iis.institute_id = inst.id where 1=1";
+                        + "from course crs  inner join course_pricing cp  on cp.course_id = crs.id inner join institute inst "
+                        + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
+                        + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
+                        + "left join institute_service iis  on iis.institute_id = inst.id where 1=1";
 
         boolean showIntlCost = false;
 
@@ -81,7 +80,7 @@ public class CourseDAO implements ICourseDAO {
 
             String value = "";
             int i = 0;
-            for (UUID key : filterObj.getCountryIds()) {
+            for (BigInteger key : filterObj.getCountryIds()) {
                 if (i == 0) {
                     value = "'" + key + "'";
                 } else {
@@ -103,7 +102,7 @@ public class CourseDAO implements ICourseDAO {
 
             String value = "";
             int i = 0;
-            for (UUID key : filterObj.getCityIds()) {
+            for (BigInteger key : filterObj.getCityIds()) {
                 if (i == 0) {
                     value = "'" + key + "'";
                 } else {
@@ -117,7 +116,7 @@ public class CourseDAO implements ICourseDAO {
         if (null != filterObj.getLevelIds() && !filterObj.getLevelIds().isEmpty()) {
             String value = "";
             int i = 0;
-            for (UUID key : filterObj.getLevelIds()) {
+            for (BigInteger key : filterObj.getLevelIds()) {
                 if (i == 0) {
                     value = "'" + key + "'";
                 } else {
@@ -132,7 +131,7 @@ public class CourseDAO implements ICourseDAO {
 
             String value = "";
             int i = 0;
-            for (UUID key : filterObj.getFacultyIds()) {
+            for (BigInteger key : filterObj.getFacultyIds()) {
                 if (i == 0) {
                     value = "'" + key + "'";
                 } else {
@@ -163,7 +162,7 @@ public class CourseDAO implements ICourseDAO {
         if (null != filterObj.getServiceIds() && !filterObj.getServiceIds().isEmpty()) {
             String value = "";
             int i = 0;
-            for (UUID key : filterObj.getFacultyIds()) {
+            for (BigInteger key : filterObj.getFacultyIds()) {
                 if (i == 0) {
                     value = "'" + key + "'";
                 } else {
@@ -199,74 +198,86 @@ public class CourseDAO implements ICourseDAO {
             sqlQuery += " and crs.name like '%" + filterObj.getCourseName().trim() + "%'";
         }
 
-        sqlQuery += ") A ";
+        sqlQuery += " ";
 
         String sortingQuery = "";
         if (null != filterObj.getSortingObj()) {
             CourseSearchFilterDto sortingObj = filterObj.getSortingObj();
             if (null != sortingObj.getPrice() && !sortingObj.getPrice().isEmpty()) {
                 if (sortingObj.getPrice().equals("ASC")) {
-                    sortingQuery = " order by A.cost_range asc";
+                    sortingQuery = " order by cp.cost_range asc";
                 } else {
-                    sortingQuery = " order by A.cost_range desc";
+                    sortingQuery = " order by cp.cost_range desc";
                 }
             }
 
             if (null != sortingObj.getLocation() && !sortingObj.getLocation().isEmpty()) {
                 if (sortingObj.getLocation().equals("ASC")) {
-                    sortingQuery = " order by A.countryName, A.cityName asc";
+                    sortingQuery = " order by ctry.countryName, ci.cityName asc";
                 } else {
-                    sortingQuery = " order by A.countryName, A.cityName desc";
+                    sortingQuery = " order by ctry.countryName, ci.cityName desc";
                 }
             }
 
             if (null != sortingObj.getDuration() && !sortingObj.getDuration().isEmpty()) {
                 if (sortingObj.getDuration().equals("ASC")) {
-                    sortingQuery = " order by A.duration asc";
+                    sortingQuery = " order by crs.duration asc";
                 } else {
-                    sortingQuery = " order by A.duration desc";
+                    sortingQuery = " order by crs.duration desc";
                 }
             }
 
             if (null != sortingObj.getRecognition() && !sortingObj.getRecognition().isEmpty()) {
                 if (sortingObj.getRecognition().equals("ASC")) {
-                    sortingQuery = " order by A.recognition asc";
+                    sortingQuery = " order by crs.recognition asc";
                 } else {
-                    sortingQuery = " order by A.recognition desc";
+                    sortingQuery = " order by crs.recognition desc";
                 }
             }
 
             if (null != sortingObj.getCourse() && !sortingObj.getCourse().isEmpty()) {
                 if (sortingObj.getCourse().equals("ASC")) {
-                    sortingQuery = " order by A.instName asc";
+                    sortingQuery = " order by inst.name asc";
                 } else {
-                    sortingQuery = " order by A.instName desc";
+                    sortingQuery = " order by inst.name desc";
                 }
             }
 
             if (null != sortingObj.getInstitute() && !sortingObj.getInstitute().isEmpty()) {
                 if (sortingObj.getInstitute().equals("ASC")) {
-                    sortingQuery = " order by A.courseName asc";
+                    sortingQuery = " order by crs.courseName asc";
                 } else {
-                    sortingQuery = " order by A.courseName desc";
+                    sortingQuery = " order by crs.courseName desc";
                 }
             }
 
             if (null != sortingObj.getLatestCourse() && !sortingObj.getLatestCourse().isEmpty()) {
                 if (sortingObj.getLatestCourse().equals("ASC")) {
-                    sortingQuery = " order by A.courseId asc";
+                    sortingQuery = " order by crs.courseId asc";
                 } else {
-                    sortingQuery = " order by A.courseId desc";
+                    sortingQuery = " order by crs.courseId desc";
                 }
             }
         } else {
-            sortingQuery = " order by A.intl_fees asc";
+            sortingQuery = " order by cp.intl_fees asc";
         }
-        sqlQuery += sortingQuery + " OFFSET (" + filterObj.getPageNumber() + "-1)*" + filterObj.getMaxSizePerPage() + " ROWS FETCH NEXT " + filterObj.getMaxSizePerPage()
-                        + " ROWS ONLY";
+        /*
+         * sqlQuery += sortingQuery + " OFFSET (" + filterObj.getPageNumber() + "-1)*" + filterObj.getMaxSizePerPage() + " ROWS FETCH NEXT " + filterObj.getMaxSizePerPage() +
+         * " ROWS ONLY";
+         */
+        String sizeQuery = sqlQuery;
+        if (filterObj.getPageNumber() != null && filterObj.getMaxSizePerPage() != null) {
+            sqlQuery += sortingQuery + " LIMIT " + filterObj.getPageNumber() + " ," + filterObj.getMaxSizePerPage();
+        } else {
+            sqlQuery += sortingQuery;
+        }
         System.out.println(sqlQuery);
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
+
+        Query query1 = session.createSQLQuery(sizeQuery);
+        List<Object[]> rows1 = query1.list();
+
         List<CourseResponseDto> list = new ArrayList<CourseResponseDto>();
         CourseResponseDto obj = null;
         Currency oldCurrency = null;
@@ -275,10 +286,18 @@ public class CourseDAO implements ICourseDAO {
         String newCurrencyCode = "";
         for (Object[] row : rows) {
             try {
-                Double costRange = Double.valueOf(String.valueOf(row[4]));
-                Double localFeesD = Double.valueOf(String.valueOf(row[16]));
-                Double intlFeesD = Double.valueOf(String.valueOf(row[17]));
-
+                Double costRange = null;
+                Double localFeesD = null;
+                Double intlFeesD = null;
+                if (row[4] != null) {
+                    costRange = Double.valueOf(String.valueOf(row[4]));
+                }
+                if (row[16] != null) {
+                    localFeesD = Double.valueOf(String.valueOf(row[16]));
+                }
+                if (row[17] != null) {
+                    intlFeesD = Double.valueOf(String.valueOf(row[17]));
+                }
                 newCurrencyCode = String.valueOf(row[5]);
                 if (null != currency) {
                     String oldCurrencyCode = String.valueOf(row[5]);
@@ -289,10 +308,15 @@ public class CourseDAO implements ICourseDAO {
                     localFeesD = localFeesD * usdConv * currency.getConversionRate();
                     intlFeesD = intlFeesD * usdConv * currency.getConversionRate();
                 }
-                cost = ConvertionUtil.roundOffToUpper(costRange);
-                localFees = ConvertionUtil.roundOffToUpper(localFeesD);
-                intlFees = ConvertionUtil.roundOffToUpper(intlFeesD);
-
+                if (costRange != null) {
+                    cost = ConvertionUtil.roundOffToUpper(costRange);
+                }
+                if (localFeesD != null) {
+                    localFees = ConvertionUtil.roundOffToUpper(localFeesD);
+                }
+                if (intlFeesD != null) {
+                    intlFees = ConvertionUtil.roundOffToUpper(intlFeesD);
+                }
                 obj = new CourseResponseDto();
                 if (showIntlCost) {
                     obj.setCost(intlFees + " " + newCurrencyCode);
@@ -301,14 +325,14 @@ public class CourseDAO implements ICourseDAO {
                 }
                 obj.setLocalFees(localFees + " " + newCurrencyCode);
                 obj.setIntlFees(intlFees + " " + newCurrencyCode);
-                obj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
+                obj.setCourseId(new BigInteger((String.valueOf(row[0]))));
                 obj.setCourseName(String.valueOf(row[1]));
-                obj.setInstituteId(UUID.fromString((String.valueOf(row[2]))));
+                obj.setInstituteId(new BigInteger((String.valueOf(row[2]))));
                 obj.setInstituteName(String.valueOf(row[3]));
                 obj.setDuration(String.valueOf(row[6]));
                 obj.setDurationTime(String.valueOf(row[7]));
-                obj.setCityId(UUID.fromString((String.valueOf(row[8]))));
-                obj.setCountryId(UUID.fromString((String.valueOf(row[9]))));
+                obj.setCityId(new BigInteger((String.valueOf(row[8]))));
+                obj.setCountryId(new BigInteger((String.valueOf(row[9]))));
                 obj.setLocation(String.valueOf(row[10]) + ", " + String.valueOf(row[11]));
                 obj.setCountryName(String.valueOf(row[11]));
                 obj.setCityName(String.valueOf(row[10]));
@@ -322,7 +346,7 @@ public class CourseDAO implements ICourseDAO {
                 obj.setLanguageShortKey(String.valueOf(row[13]));
                 obj.setStars(String.valueOf(row[14]));
                 obj.setRequirements(String.valueOf(row[18]));
-                obj.setTotalCount(Integer.parseInt(String.valueOf(row[19])));
+                obj.setTotalCount(rows1.size());
                 list.add(obj);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -338,16 +362,16 @@ public class CourseDAO implements ICourseDAO {
         Session session = sessionFactory.getCurrentSession();
 
         String sqlQuery = "select  min(cp.local_fees) as minLocalFees,max(cp.local_fees) as maxLocalFees," + "min(cp.intl_fees) as minIntlFees ,max(cp.intl_fees ) as maxIntlFees "
-                        + "from course crs with(nolock) inner join course_pricing cp with(nolock) on cp.course_id = crs.id inner join institute inst "
-                        + "with(nolock) on crs.institute_id = inst.id inner join country ctry with(nolock) on ctry.id = crs.country_id inner join "
-                        + "city ci with(nolock) on ci.id = crs.city_id inner join faculty f with(nolock) on f.id = crs.faculty_id left join  "
-                        + "institute_service iis with(nolock) on iis.institute_id = inst.id where 1=1 ";
+                        + "from course crs  inner join course_pricing cp  on cp.course_id = crs.id inner join institute inst "
+                        + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
+                        + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id left join  "
+                        + "institute_service iis  on iis.institute_id = inst.id where 1=1 ";
 
         if (null != filterObj.getCountryIds() && !filterObj.getCountryIds().isEmpty()) {
 
             String value = "";
             int i = 0;
-            for (UUID key : filterObj.getCountryIds()) {
+            for (BigInteger key : filterObj.getCountryIds()) {
                 if (i == 0) {
                     value = "'" + key + "'";
                 } else {
@@ -362,7 +386,7 @@ public class CourseDAO implements ICourseDAO {
 
             String value = "";
             int i = 0;
-            for (UUID key : filterObj.getCityIds()) {
+            for (BigInteger key : filterObj.getCityIds()) {
                 if (i == 0) {
                     value = "'" + key + "'";
                 } else {
@@ -376,7 +400,7 @@ public class CourseDAO implements ICourseDAO {
         if (null != filterObj.getLevelIds() && !filterObj.getLevelIds().isEmpty()) {
             String value = "";
             int i = 0;
-            for (UUID key : filterObj.getLevelIds()) {
+            for (BigInteger key : filterObj.getLevelIds()) {
                 if (i == 0) {
                     value = "'" + key + "'";
                 } else {
@@ -391,7 +415,7 @@ public class CourseDAO implements ICourseDAO {
 
             String value = "";
             int i = 0;
-            for (UUID key : filterObj.getFacultyIds()) {
+            for (BigInteger key : filterObj.getFacultyIds()) {
                 if (i == 0) {
                     value = "'" + key + "'";
                 } else {
@@ -422,7 +446,7 @@ public class CourseDAO implements ICourseDAO {
         if (null != filterObj.getServiceIds() && !filterObj.getServiceIds().isEmpty()) {
             String value = "";
             int i = 0;
-            for (UUID key : filterObj.getFacultyIds()) {
+            for (BigInteger key : filterObj.getFacultyIds()) {
                 if (i == 0) {
                     value = "'" + key + "'";
                 } else {
@@ -449,25 +473,52 @@ public class CourseDAO implements ICourseDAO {
 
         for (Object[] row : rows) {
             try {
-                Double minLocalFees = Double.valueOf(String.valueOf(row[0]));
-                Double maxLocalFees = Double.valueOf(String.valueOf(row[1]));
-                Double minIntlFees = Double.valueOf(String.valueOf(row[2]));
-                Double maxIntlFees = Double.valueOf(String.valueOf(row[3]));
-
-                if (!currency.getCode().toLowerCase().equals(oldCurrencyCode.toLowerCase())) {
+                Double minLocalFees = null;
+                Double maxLocalFees = null;
+                Double minIntlFees = null;
+                Double maxIntlFees = null;
+                if (row[0] != null) {
+                    minLocalFees = Double.valueOf(String.valueOf(row[0]));
+                }
+                if (row[1] != null) {
+                    maxLocalFees = Double.valueOf(String.valueOf(row[1]));
+                }
+                if (row[2] != null) {
+                    minIntlFees = Double.valueOf(String.valueOf(row[2]));
+                }
+                if (row[3] != null) {
+                    maxIntlFees = Double.valueOf(String.valueOf(row[3]));
+                }
+                if (oldCurrencyCode != null && (!currency.getCode().toLowerCase().equals(oldCurrencyCode.toLowerCase()))) {
                     oldCurrency = CurrencyUtil.getCurrencyObjByCode(oldCurrencyCode);
                     usdConv = 1 / oldCurrency.getConversionRate();
                     newCurrencyCode = currency.getCode();
-                    minLocalFees = minLocalFees * usdConv * currency.getConversionRate();
-                    maxLocalFees = maxLocalFees * usdConv * currency.getConversionRate();
-                    minIntlFees = minIntlFees * usdConv * currency.getConversionRate();
-                    maxIntlFees = maxIntlFees * usdConv * currency.getConversionRate();
+                    if (minLocalFees != null) {
+                        minLocalFees = minLocalFees * usdConv * currency.getConversionRate();
+                    }
+                    if (maxLocalFees != null) {
+                        maxLocalFees = maxLocalFees * usdConv * currency.getConversionRate();
+                    }
+                    if (minIntlFees != null) {
+                        minIntlFees = minIntlFees * usdConv * currency.getConversionRate();
+                    }
+                    if (maxIntlFees != null) {
+                        maxIntlFees = maxIntlFees * usdConv * currency.getConversionRate();
+                    }
                 }
 
-                minLocalFeesl = ConvertionUtil.roundOffToUpper(minLocalFees);
-                maxLocalFeesl = ConvertionUtil.roundOffToUpper(maxLocalFees);
-                minIntlFeesl = ConvertionUtil.roundOffToUpper(minIntlFees);
-                maxIntlFeesl = ConvertionUtil.roundOffToUpper(maxIntlFees);
+                if (minLocalFees != null) {
+                    minLocalFeesl = ConvertionUtil.roundOffToUpper(minLocalFees);
+                }
+                if (maxLocalFees != null) {
+                    maxLocalFeesl = ConvertionUtil.roundOffToUpper(maxLocalFees);
+                }
+                if (minIntlFees != null) {
+                    minIntlFeesl = ConvertionUtil.roundOffToUpper(minIntlFees);
+                }
+                if (maxIntlFees != null) {
+                    maxIntlFeesl = ConvertionUtil.roundOffToUpper(maxIntlFees);
+                }
                 responseDto.setMinCost(minLocalFeesl);
                 responseDto.setMaxCost(maxLocalFeesl);
             } catch (Exception e) {
@@ -479,7 +530,7 @@ public class CourseDAO implements ICourseDAO {
     }
 
     // @Override
-    public List<GlobalSearchResponseDto> getAllCourseAndInstituteBySearchKeywords(String[] keywords, Integer pageNumber, Integer maxRows) {
+    public List<GlobalSearchResponseDto> getAllCourseAndInstituteBySearchKeywords(String[] keywords, BigInteger pageNumber, BigInteger maxRows) {
         Session session = sessionFactory.getCurrentSession();
 
         String courseQuery = "", insituteQuery = "";
@@ -502,13 +553,11 @@ public class CourseDAO implements ICourseDAO {
             }
         }
 
-        String sqlQuery = "select * from (select distinct f.id as id, f.name as name,'COURSE' as type "
-                        + "from course crs with(nolock) left join country ctry with(nolock) on ctry.id = crs.country_id "
-                        + "left join city ci with(nolock) on ci.id = crs.city_id left join faculty f on f.id =crs.faculty_id " + "where ci.name like '%perth%' " + "union all "
-                        + "select distinct inst.id as id,inst.name as name,'INSTITUTE' as type from "
-                        + "institute inst with(nolock) left join country ctry with(nolock) on ctry.id = inst.country_id "
-                        + "left join city ci with(nolock) on ci.id = inst.city_id left join faculty_level fl  "
-                        + "on fl.institute_id = inst.id left join faculty f on f.id =fl.faculty_id " + "where ci.name like '%perth%' ) A " + "order by A.name";
+        String sqlQuery = "select * from (select distinct f.id as id, f.name as name,'COURSE' as type " + "from course crs  left join country ctry  on ctry.id = crs.country_id "
+                        + "left join city ci  on ci.id = crs.city_id left join faculty f on f.id =crs.faculty_id " + "where ci.name like '%perth%' " + "union all "
+                        + "select distinct inst.id as id,inst.name as name,'INSTITUTE' as type from " + "institute inst  left join country ctry  on ctry.id = inst.country_id "
+                        + "left join city ci  on ci.id = inst.city_id left join faculty_level fl  " + "on fl.institute_id = inst.id left join faculty f on f.id =fl.faculty_id "
+                        + "where ci.name like '%perth%' ) A " + "order by A.name";
 
         sqlQuery += ") A ";
 
@@ -523,15 +572,15 @@ public class CourseDAO implements ICourseDAO {
         CourseResponseDto obj = null;
         for (Object[] row : rows) {
             obj = new CourseResponseDto();
-            obj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
+            obj.setCourseId(new BigInteger((String.valueOf(row[0]))));
             obj.setCourseName(String.valueOf(row[1]));
-            obj.setInstituteId(UUID.fromString((String.valueOf(row[2]))));
+            obj.setInstituteId(new BigInteger((String.valueOf(row[2]))));
             obj.setInstituteName(String.valueOf(row[3]));
             obj.setCost(String.valueOf(row[4]) + " " + String.valueOf(row[5]));
             obj.setDuration(String.valueOf(row[6]));
             obj.setDurationTime(String.valueOf(row[7]));
-            obj.setCityId(UUID.fromString((String.valueOf(row[8]))));
-            obj.setCountryId(UUID.fromString((String.valueOf(row[9]))));
+            obj.setCityId(new BigInteger((String.valueOf(row[8]))));
+            obj.setCountryId(new BigInteger((String.valueOf(row[9]))));
             obj.setLocation(String.valueOf(row[10]) + ", " + String.valueOf(row[11]));
             obj.setWorldRanking(String.valueOf(row[12]));
             obj.setCourseLanguage(String.valueOf(row[13]));
@@ -546,15 +595,15 @@ public class CourseDAO implements ICourseDAO {
     }
 
     @Override
-    public List<CourseResponseDto> getAllCoursesByInstitute(UUID instituteId, CourseSearchDto filterObj) {
+    public List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName,"
                         + " cp.cost_range,cp.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
                         + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition,cp.local_fees,cp.intl_fees "
-                        + "from course crs with(nolock) inner join course_pricing cp with(nolock) on cp.course_id = crs.id inner join institute inst "
-                        + "with(nolock) on crs.institute_id = inst.id inner join country ctry with(nolock) on ctry.id = crs.country_id inner join "
-                        + "city ci with(nolock) on ci.id = crs.city_id inner join faculty f with(nolock) on f.id = crs.faculty_id "
-                        + "left join institute_service iis with(nolock) on iis.institute_id = inst.id where crs.institute_id = '" + instituteId + "'";
+                        + "from course crs  inner join course_pricing cp  on cp.course_id = crs.id inner join institute inst "
+                        + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
+                        + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
+                        + "left join institute_service iis  on iis.institute_id = inst.id where crs.institute_id = '" + instituteId + "'";
 
         if (null != filterObj.getLevelIds() && !filterObj.getLevelIds().isEmpty()) {
             sqlQuery += " and f.level_id in (" + StringUtils.join(filterObj.getLevelIds(), ',') + ")";
@@ -649,7 +698,7 @@ public class CourseDAO implements ICourseDAO {
         CourseResponseDto obj = null;
         for (Object[] row : rows) {
             obj = new CourseResponseDto();
-            obj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
+            obj.setCourseId(new BigInteger((String.valueOf(row[0]))));
             obj.setCourseName(String.valueOf(row[1]));
             obj.setCost(String.valueOf(row[4]) + " " + String.valueOf(row[5]));
             obj.setDuration(String.valueOf(row[6]));
@@ -670,15 +719,15 @@ public class CourseDAO implements ICourseDAO {
         return list;
     }
 
-    public CourseResponseDto getCourse(UUID instituteId, CourseSearchDto filterObj) {
+    public CourseResponseDto getCourse(BigInteger instituteId, CourseSearchDto filterObj) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName,"
                         + " cp.cost_range,cp.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
                         + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition,cp.local_fees,cp.intl_fees "
-                        + "from course crs with(nolock) inner join course_pricing cp with(nolock) on cp.course_id = crs.id inner join institute inst "
-                        + "with(nolock) on crs.institute_id = inst.id inner join country ctry with(nolock) on ctry.id = crs.country_id inner join "
-                        + "city ci with(nolock) on ci.id = crs.city_id inner join faculty f with(nolock) on f.id = crs.faculty_id "
-                        + "left join institute_service iis with(nolock) on iis.institute_id = inst.id where crs.institute_id = " + instituteId;
+                        + "from course crs  inner join course_pricing cp  on cp.course_id = crs.id inner join institute inst "
+                        + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
+                        + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
+                        + "left join institute_service iis  on iis.institute_id = inst.id where crs.institute_id = " + instituteId;
 
         if (null != filterObj.getLevelIds() && !filterObj.getLevelIds().isEmpty()) {
             sqlQuery += " and f.level_id in (" + StringUtils.join(filterObj.getLevelIds(), ',') + ")";
@@ -773,7 +822,7 @@ public class CourseDAO implements ICourseDAO {
         CourseResponseDto obj = null;
         for (Object[] row : rows) {
             obj = new CourseResponseDto();
-            obj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
+            obj.setCourseId(new BigInteger((String.valueOf(row[0]))));
             obj.setCourseName(String.valueOf(row[1]));
             obj.setCost(String.valueOf(row[4]) + " " + String.valueOf(row[5]));
             obj.setDuration(String.valueOf(row[6]));
@@ -791,18 +840,18 @@ public class CourseDAO implements ICourseDAO {
     }
 
     @Override
-    public Map<String, Object> getCourse(UUID courseid) {
+    public Map<String, Object> getCourse(BigInteger courseid) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session
                         .createSQLQuery("select crs.id as crs_id,crs.stars as crs_stars,crs.name as crs_name,crs.course_lang as crs_cour_lang,crs.description as crs_desc,crs.duration as crs_dur,crs.duration_time as crs_du_time,crs.world_ranking as crs_word_ranking, "
                                         + "ins.id as ins_id,ins.name as ins_name,crs.world_ranking as ins_wrld_rank,ins.int_emails as ins_int_emails,ins.int_ph_num as ins_int_ph_num,ins.longitude as ins_longitude,ins.latitude as ins_latitude,ins.t_num_of_stu as ins_t_num_of_stu,ins.website as ins_website,ins.address as ins_address, "
                                         + "id.about_us_info as ab_us_info,id.closing_hour as close_hour,id.opening_hour as open_hour, "
                                         + "cp.currency,cp.cost_range,cp.intl_fees,cp.local_fees, "
-                                        + "cty.name as city_name,cntry.name as country_name,fty.name as faulty_name,le.id as le_id,le.name as le_name,cty.id as cityid,cntry.id as countryid,cntry.visa as visa from course crs with(nolock) "
-                                        + "inner join institute ins with(nolock) on ins.id = crs.institute_id inner join country cntry with(nolock) on cntry.id = crs.country_id "
-                                        + "inner join city cty with(nolock) on cty.id = crs.city_id inner join faculty fty with(nolock) on fty.id = crs.faculty_id inner join institute_details id with(nolock) on id.institute_id = crs.institute_id "
-                                        + "inner join level le with(nolock) on fty.level_id = le.id inner join course_pricing cp with(nolock) on cp.course_id = crs.id where "
-                                        + "crs.id = '" + courseid + "'");
+                                        + "cty.name as city_name,cntry.name as country_name,fty.name as faulty_name,le.id as le_id,le.name as le_name,cty.id as cityid,cntry.id as countryid,cntry.visa as visa from course crs  "
+                                        + "inner join institute ins  on ins.id = crs.institute_id inner join country cntry  on cntry.id = crs.country_id "
+                                        + "inner join city cty  on cty.id = crs.city_id inner join faculty fty  on fty.id = crs.faculty_id inner join institute_details id  on id.institute_id = crs.institute_id "
+                                        + "inner join level le  on fty.level_id = le.id inner join course_pricing cp  on cp.course_id = crs.id where " + "crs.id = '" + courseid
+                                        + "'");
 
         List<Object[]> rows = query.list();
         InstituteResponseDto instituteObj = null;
@@ -810,7 +859,7 @@ public class CourseDAO implements ICourseDAO {
         Map<String, Object> map = new HashMap<>();
         for (Object[] row : rows) {
             courseObj = new CourseDto();
-            courseObj.setCourseId(UUID.fromString((String.valueOf(row[0]))));
+            courseObj.setCourseId(new BigInteger((String.valueOf(row[0]))));
             courseObj.setStars(String.valueOf(row[1]));
             courseObj.setCourseName(String.valueOf(row[2]));
             courseObj.setCourseLanguage(String.valueOf(row[3]));
@@ -822,11 +871,11 @@ public class CourseDAO implements ICourseDAO {
             courseObj.setLocalFees(String.valueOf(row[24]) + " " + String.valueOf(row[21]));
             courseObj.setCost(String.valueOf(row[22]) + " " + String.valueOf(row[21]));
             courseObj.setFacultyName(String.valueOf(row[27]));
-            courseObj.setLevelId(UUID.fromString((String.valueOf(row[28]))));
+            courseObj.setLevelId(new BigInteger((String.valueOf(row[28]))));
             courseObj.setLevelName(String.valueOf(row[29]));
 
             instituteObj = new InstituteResponseDto();
-            instituteObj.setInstituteId(UUID.fromString((String.valueOf(row[8]))));
+            instituteObj.setInstituteId(new BigInteger((String.valueOf(row[8]))));
             instituteObj.setStars(String.valueOf(row[1]));
             instituteObj.setInstituteName(String.valueOf(row[9]));
             instituteObj.setWorldRanking(String.valueOf(row[7]));
@@ -844,8 +893,8 @@ public class CourseDAO implements ICourseDAO {
             instituteObj.setLocation(String.valueOf(row[25]) + "," + String.valueOf(row[26]));
             instituteObj.setCountryName(String.valueOf(row[26]));
             instituteObj.setCityName(String.valueOf(row[25]));
-            instituteObj.setCityId(UUID.fromString((String.valueOf(row[30]))));
-            instituteObj.setCountryId(UUID.fromString((String.valueOf(row[31]))));
+            instituteObj.setCityId(new BigInteger((String.valueOf(row[30]))));
+            instituteObj.setCountryId(new BigInteger((String.valueOf(row[31]))));
 
             map.put("courseObj", courseObj);
             map.put("instituteObj", instituteObj);
@@ -863,7 +912,7 @@ public class CourseDAO implements ICourseDAO {
     }
 
     @Override
-    public List<CourseResponseDto> getCouresesByFacultyId(UUID facultyId) {
+    public List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(Course.class);
         crit.add(Restrictions.eq("facultyObj.id", facultyId));
@@ -875,7 +924,7 @@ public class CourseDAO implements ICourseDAO {
             courseObj.setCourseId(course.getId());
             courseObj.setStars(course.getStars());
             courseObj.setCourseName(course.getName());
-            courseObj.setCourseLanguage(course.getCourseLanguage());
+            courseObj.setCourseLanguage(course.getCourseLang());
             courseObj.setDuration(course.getDuration());
             courseObj.setDurationTime(course.getDurationTime());
             courseObj.setWorldRanking(course.getWorldRanking());
@@ -887,18 +936,18 @@ public class CourseDAO implements ICourseDAO {
     @Override
     public List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select distinct c.id, c.name as name  from course c with(nolock) " + "where c.faculty_id in (" + facultyId + ") ORDER BY c.name");
+        Query query = session.createSQLQuery("select distinct c.id, c.name as name  from course c  " + "where c.faculty_id in (" + facultyId + ") ORDER BY c.name");
         List<Object[]> rows = query.list();
         List<CourseResponseDto> dtos = new ArrayList<CourseResponseDto>();
         CourseResponseDto obj = null;
         for (Object[] row : rows) {
             obj = new CourseResponseDto();
-            obj.setCourseId(UUID.fromString((row[0].toString())));
+            obj.setCourseId(new BigInteger((row[0].toString())));
             obj.setCourseName(row[1].toString());
             dtos.add(obj);
         }
         CourseResponseDto allObject = new CourseResponseDto();
-        allObject.setCourseId(UUID.fromString("CB52B698-98A4-4336-BCC6-98CC1F05EA66"));
+        allObject.setCourseId(new BigInteger("111111"));
         allObject.setCourseName("All");
         dtos.add(allObject);
         return dtos;

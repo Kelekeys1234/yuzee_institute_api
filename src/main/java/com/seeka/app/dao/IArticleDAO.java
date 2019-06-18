@@ -1,29 +1,27 @@
-package com.seeka.app.dao;
-
+package com.seeka.app.dao;import java.math.BigInteger;
 import java.util.List;
-import java.util.UUID;
 
-import com.seeka.app.bean.Article;
-import com.seeka.app.dto.ArticleDto;
+import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.dto.PageLookupDto;
+import com.seeka.app.dto.SearchDto;
 
 public interface IArticleDAO {
 
-    public List<Article> getAll();
+    public List<SeekaArticles> getAll();
 
-    public List<Article> getArticlesByLookup(PageLookupDto pageLookupDto);
+    public List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto);
 
-    public Article findById(UUID uId);
+    public SeekaArticles findById(BigInteger uId);
 
-    public void deleteArticle(Article article);
+    public void deleteArticle(SeekaArticles article);
 
-    public List<Article> fetchAllArticleByPage(Integer page, Integer size, String query, boolean status);
+    public List<SeekaArticles> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status);
 
     public int findTotalCount();
 
-    public Article save(Article article);
+    public SeekaArticles save(SeekaArticles article);
 
-    public void updateArticle(UUID subCAtegory, UUID id);
+    public void updateArticle(BigInteger subCAtegory, BigInteger id);
 
-    public List<Article> searchArticle(ArticleDto article);
+    public List<SeekaArticles> searchArticle(SearchDto article);
 }

@@ -1,11 +1,11 @@
-package com.seeka.app.dto;
+package com.seeka.app.dto;import java.math.BigInteger;
 
-import java.util.UUID;
+
 
 public class GlobalSearchResponseDto {
 	
 	private String type;	
-	private UUID id;
+	private BigInteger id;
 	private String name;
 	
 	public String getType() {
@@ -14,10 +14,10 @@ public class GlobalSearchResponseDto {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public UUID getId() {
+	public BigInteger getId() {
 		return id;
 	}
-	public void setId(UUID id) {
+	public void setId(BigInteger id) {
 		this.id = id;
 	}
 	public String getName() {

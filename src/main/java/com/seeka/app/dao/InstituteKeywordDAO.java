@@ -1,4 +1,4 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.InstituteKeyword;
+import com.seeka.app.bean.InstituteKeywords;
 
 @Repository
 public class InstituteKeywordDAO implements IInstituteKeywordDAO{
@@ -18,26 +18,26 @@ public class InstituteKeywordDAO implements IInstituteKeywordDAO{
 	
 	
 	@Override
-	public void save(InstituteKeyword obj) {
+	public void save(InstituteKeywords obj) {
 		Session session = sessionFactory.getCurrentSession();		
 		session.save(obj);	   					
 	}
 	
 	@Override
-	public void update(InstituteKeyword obj) {	
+	public void update(InstituteKeywords obj) {	
 		Session session = sessionFactory.getCurrentSession();		
 		session.update(obj);	   					
 	}
 	
 	@Override
-	public List<InstituteKeyword> getAll() {
+	public List<InstituteKeywords> getAll() {
 		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(InstituteKeyword.class);
+		Criteria crit = session.createCriteria(InstituteKeywords.class);
 		return crit.list();
 	}
 	
 	/*@Override
-	public List<InstituteKeyword> searchCourseKeyword(String keyword){
+	public List<InstituteKeywords> searchCourseKeyword(String keyword){
 		Session session = sessionFactory.getCurrentSession();		
 		Query query = session.createSQLQuery("SELECT sk.keyword FROM search_keywords sk WHERE sk.keyword LIKE '%"+keyword+"%'");
 		return query.list();

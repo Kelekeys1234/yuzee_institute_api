@@ -1,32 +1,30 @@
-package com.seeka.app.dto;
-
-import java.util.UUID;
+package com.seeka.app.dto;import java.math.BigInteger;
 
 public class ArticleDto {
-    private UUID id;
+    private BigInteger id;
     private String heading;
     private String content;
-    private UUID category;
-    private UUID subcategory;
+    private BigInteger category;
+    private BigInteger subcategory;
     private CategoryDto categoryobj;
     private SubCategoryDto subcategoryobj;
     private String link;
     private String imageUrl;
-    private UUID country;
-    private UUID city;
-    private UUID faculty;
-    private UUID institute;
-    private UUID courses;
+    private BigInteger country;
+    private BigInteger city;
+    private BigInteger faculty;
+    private BigInteger institute;
+    private BigInteger courses;
     private String gender;
     private String status;
-    private UUID userCity;
-    private UUID userCountry;
+    private BigInteger userCity;
+    private BigInteger userCountry;
 
-    public UUID getId() {
+    public BigInteger getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
@@ -46,19 +44,19 @@ public class ArticleDto {
         this.content = content;
     }
 
-    public UUID getCategory() {
+    public BigInteger getCategory() {
         return category;
     }
 
-    public void setCategory(UUID category) {
+    public void setCategory(BigInteger category) {
         this.category = category;
     }
 
-    public UUID getSubcategory() {
+    public BigInteger getSubcategory() {
         return subcategory;
     }
 
-    public void setSubcategory(UUID subcategory) {
+    public void setSubcategory(BigInteger subcategory) {
         this.subcategory = subcategory;
     }
 
@@ -81,7 +79,7 @@ public class ArticleDto {
     /**
      * @return the country
      */
-    public UUID getCountry() {
+    public BigInteger getCountry() {
         return country;
     }
 
@@ -89,14 +87,14 @@ public class ArticleDto {
      * @param country
      *            the country to set
      */
-    public void setCountry(UUID country) {
+    public void setCountry(BigInteger country) {
         this.country = country;
     }
 
     /**
      * @return the city
      */
-    public UUID getCity() {
+    public BigInteger getCity() {
         return city;
     }
 
@@ -104,14 +102,14 @@ public class ArticleDto {
      * @param city
      *            the city to set
      */
-    public void setCity(UUID city) {
+    public void setCity(BigInteger city) {
         this.city = city;
     }
 
     /**
      * @return the faculty
      */
-    public UUID getFaculty() {
+    public BigInteger getFaculty() {
         return faculty;
     }
 
@@ -119,14 +117,14 @@ public class ArticleDto {
      * @param faculty
      *            the faculty to set
      */
-    public void setFaculty(UUID faculty) {
+    public void setFaculty(BigInteger faculty) {
         this.faculty = faculty;
     }
 
     /**
      * @return the courses
      */
-    public UUID getCourses() {
+    public BigInteger getCourses() {
         return courses;
     }
 
@@ -134,14 +132,14 @@ public class ArticleDto {
      * @param courses
      *            the courses to set
      */
-    public void setCourses(UUID courses) {
+    public void setCourses(BigInteger courses) {
         this.courses = courses;
     }
 
     /**
      * @return the institute
      */
-    public UUID getInstitute() {
+    public BigInteger getInstitute() {
         return institute;
     }
 
@@ -149,7 +147,7 @@ public class ArticleDto {
      * @param institute
      *            the institute to set
      */
-    public void setInstitute(UUID institute) {
+    public void setInstitute(BigInteger institute) {
         this.institute = institute;
     }
 
@@ -216,7 +214,7 @@ public class ArticleDto {
     /**
      * @return the userCity
      */
-    public UUID getUserCity() {
+    public BigInteger getUserCity() {
         return userCity;
     }
 
@@ -224,14 +222,14 @@ public class ArticleDto {
      * @param userCity
      *            the userCity to set
      */
-    public void setUserCity(UUID userCity) {
+    public void setUserCity(BigInteger userCity) {
         this.userCity = userCity;
     }
 
     /**
      * @return the userCountry
      */
-    public UUID getUserCountry() {
+    public BigInteger getUserCountry() {
         return userCountry;
     }
 
@@ -239,7 +237,7 @@ public class ArticleDto {
      * @param userCountry
      *            the userCountry to set
      */
-    public void setUserCountry(UUID userCountry) {
+    public void setUserCountry(BigInteger userCountry) {
         this.userCountry = userCountry;
     }
 }

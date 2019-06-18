@@ -1,7 +1,7 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class CourseGradeEligibilityService implements ICourseGradeEligibilitySer
 	}
 	
 	@Override
-	public CourseGradeEligibility get(UUID id) {
+	public CourseGradeEligibility get(BigInteger id) {
 		return dao.get(id);
 	}
 	
@@ -38,7 +38,7 @@ public class CourseGradeEligibilityService implements ICourseGradeEligibilitySer
 	} 
 	
 	@Override
-	public CourseGradeEligibility getAllEnglishEligibilityByCourse(UUID courseID) {
+	public CourseGradeEligibility getAllEnglishEligibilityByCourse(BigInteger courseID) {
 		return dao.getAllEnglishEligibilityByCourse(courseID);
 	}
 	

@@ -1,16 +1,16 @@
 package com.seeka.app.service;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.app.bean.SubCategory;
+import com.seeka.app.bean.Subcategory;
 import com.seeka.app.dao.ICategoryDAO;
 import com.seeka.app.dao.ISubCategoryDAO;
 import com.seeka.app.dto.SubCategoryDto;
@@ -33,22 +33,22 @@ public class SubCategoryService implements ISubCategoryService {
     }
 
     @Override
-    public List<SubCategoryDto> getSubCategoryByCategory(UUID categoryId) {
+    public List<SubCategoryDto> getSubCategoryByCategory(BigInteger categoryId) {
         return subCategoryDAO.getSubCategoryByCategory(categoryId);
     }
 
     @Override
-    public SubCategoryDto getSubCategoryById(UUID subCategoryId) {
+    public SubCategoryDto getSubCategoryById(BigInteger subCategoryId) {
         return subCategoryDAO.getSubCategoryById(subCategoryId);
     }
 
     @Override
     public Map<String, Object> saveSubCategory(SubCategoryDto subCategoryDto) {
         Map<String, Object> response = new HashMap<String, Object>();
-        SubCategory subCategory = null;
+        Subcategory subCategory = null;
         boolean status = true;
         if (subCategoryDto != null) {
-            subCategory = new SubCategory();
+            subCategory = new Subcategory();
             if (subCategoryDto.getId() != null) {
                 subCategory = subCategoryDAO.findById(subCategoryDto.getId());
             }
@@ -73,11 +73,11 @@ public class SubCategoryService implements ISubCategoryService {
     }
 
     @Override
-    public boolean deleteSubCategory(UUID subCategoryId) {
+    public boolean deleteSubCategory(BigInteger subCategoryId) {
         boolean status = true;
         try {
             if (subCategoryId != null) {
-                SubCategory subCategory = subCategoryDAO.findById(subCategoryId);
+                Subcategory subCategory = subCategoryDAO.findById(subCategoryId);
                 if (subCategory != null) {
                     subCategory.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
                     subCategory.setIsDeleted(false);
