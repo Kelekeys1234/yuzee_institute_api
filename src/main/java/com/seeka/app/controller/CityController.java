@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.City;
+import com.seeka.app.dto.CityDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.jobs.CountryUtil;
 import com.seeka.app.service.ICityService;
@@ -71,12 +72,8 @@ public class CityController {
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> saveCity(@RequestBody City obj) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        cityService.save(obj);
-        response.put("status", 1);
-        response.put("message", "Success");
-        return ResponseEntity.accepted().body(response);
+    public ResponseEntity<?> saveCity(@RequestBody CityDto city) throws Exception {
+        return ResponseEntity.accepted().body(cityService.save(city));
     }
 
     @RequestMapping(value = "/update/pricing", method = RequestMethod.GET, produces = "application/json")
@@ -89,7 +86,6 @@ public class CityController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
         response.put("status", 1);
         response.put("message", "Success");
@@ -136,5 +132,4 @@ public class CityController {
         response.put("cityList", cityList);
         return ResponseEntity.accepted().body(response);
     }
-
 }
