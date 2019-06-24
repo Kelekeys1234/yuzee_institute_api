@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class CurrencyConversionRateUtil {
          //run();
     }
      
-    public void run() {
+    public void run() throws JSONException {
     	System.out.println("CurrencyConversionRateUtil: Job Started: "+new Date());
     	RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject("http://data.fixer.io/api/latest?access_key=95bdc53aa11d07169765f1b413275ba2&format=1", String.class);
