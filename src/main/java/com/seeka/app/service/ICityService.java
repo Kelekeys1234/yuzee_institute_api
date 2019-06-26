@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.dto.CityDto;
+import com.seeka.app.dto.UpdateCityDto;
 
 public interface ICityService {
     public List<City> getAll();
@@ -19,4 +20,6 @@ public interface ICityService {
     public List<City> getAllMultipleCitiesByCountry(String countryId);
 
     public Map<String, Object> save(CityDto city);
+
+    public Map<String, Object> update(BigInteger id, UpdateCityDto city);
 }

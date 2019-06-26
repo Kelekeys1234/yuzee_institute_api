@@ -20,6 +20,7 @@ import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dto.CityDto;
 import com.seeka.app.dto.CityImageDto;
+import com.seeka.app.dto.UpdateCityDto;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.IConstant;
 
@@ -105,5 +106,11 @@ public class CityService implements ICityService {
             response.put("message", IConstant.FAIL);
         }
         return response;
+    }
+
+    @Override
+    public Map<String, Object> update(BigInteger id, UpdateCityDto city) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.bean.City;
 import com.seeka.app.dto.CityDto;
 import com.seeka.app.dto.ErrorDto;
+import com.seeka.app.dto.UpdateCityDto;
 import com.seeka.app.jobs.CountryUtil;
 import com.seeka.app.service.ICityService;
 import com.seeka.app.util.NumbeoWebServiceClient;
@@ -74,6 +75,11 @@ public class CityController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> saveCity(@RequestBody CityDto city) throws Exception {
         return ResponseEntity.accepted().body(cityService.save(city));
+    }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> update(@PathVariable BigInteger id, @RequestBody UpdateCityDto city) throws Exception {
+        return ResponseEntity.accepted().body(cityService.update(id, city));
     }
 
     @RequestMapping(value = "/update/pricing", method = RequestMethod.GET, produces = "application/json")
