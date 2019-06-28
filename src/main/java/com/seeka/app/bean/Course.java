@@ -323,4 +323,191 @@ public class Course implements java.io.Serializable {
 		this.isDeleted = isDeleted;
 	}
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((abbreviation == null) ? 0 : abbreviation.hashCode());
+        result = prime * result + ((city == null) ? 0 : city.hashCode());
+        result = prime * result + ((country == null) ? 0 : country.hashCode());
+        result = prime * result + ((courseLang == null) ? 0 : courseLang.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+        result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((duration == null) ? 0 : duration.hashCode());
+        result = prime * result + ((durationTime == null) ? 0 : durationTime.hashCode());
+        result = prime * result + ((faculty == null) ? 0 : faculty.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((institute == null) ? 0 : institute.hashCode());
+        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+        result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((recDate == null) ? 0 : recDate.hashCode());
+        result = prime * result + ((recognition == null) ? 0 : recognition.hashCode());
+        result = prime * result + ((recognitionType == null) ? 0 : recognitionType.hashCode());
+        result = prime * result + ((remarks == null) ? 0 : remarks.hashCode());
+        result = prime * result + ((stars == null) ? 0 : stars.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+        result = prime * result + ((website == null) ? 0 : website.hashCode());
+        result = prime * result + ((worldRanking == null) ? 0 : worldRanking.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Course other = (Course) obj;
+        if (abbreviation == null) {
+            if (other.abbreviation != null)
+                return false;
+        } else if (!abbreviation.equals(other.abbreviation))
+            return false;
+        if (city == null) {
+            if (other.city != null)
+                return false;
+        } else if (!city.equals(other.city))
+            return false;
+        if (country == null) {
+            if (other.country != null)
+                return false;
+        } else if (!country.equals(other.country))
+            return false;
+        if (courseLang == null) {
+            if (other.courseLang != null)
+                return false;
+        } else if (!courseLang.equals(other.courseLang))
+            return false;
+        if (createdBy == null) {
+            if (other.createdBy != null)
+                return false;
+        } else if (!createdBy.equals(other.createdBy))
+            return false;
+        if (createdOn == null) {
+            if (other.createdOn != null)
+                return false;
+        } else if (!createdOn.equals(other.createdOn))
+            return false;
+        if (deletedOn == null) {
+            if (other.deletedOn != null)
+                return false;
+        } else if (!deletedOn.equals(other.deletedOn))
+            return false;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
+        if (duration == null) {
+            if (other.duration != null)
+                return false;
+        } else if (!duration.equals(other.duration))
+            return false;
+        if (durationTime == null) {
+            if (other.durationTime != null)
+                return false;
+        } else if (!durationTime.equals(other.durationTime))
+            return false;
+        if (faculty == null) {
+            if (other.faculty != null)
+                return false;
+        } else if (!faculty.equals(other.faculty))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (institute == null) {
+            if (other.institute != null)
+                return false;
+        } else if (!institute.equals(other.institute))
+            return false;
+        if (isActive == null) {
+            if (other.isActive != null)
+                return false;
+        } else if (!isActive.equals(other.isActive))
+            return false;
+        if (isDeleted == null) {
+            if (other.isDeleted != null)
+                return false;
+        } else if (!isDeleted.equals(other.isDeleted))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (recDate == null) {
+            if (other.recDate != null)
+                return false;
+        } else if (!recDate.equals(other.recDate))
+            return false;
+        if (recognition == null) {
+            if (other.recognition != null)
+                return false;
+        } else if (!recognition.equals(other.recognition))
+            return false;
+        if (recognitionType == null) {
+            if (other.recognitionType != null)
+                return false;
+        } else if (!recognitionType.equals(other.recognitionType))
+            return false;
+        if (remarks == null) {
+            if (other.remarks != null)
+                return false;
+        } else if (!remarks.equals(other.remarks))
+            return false;
+        if (stars == null) {
+            if (other.stars != null)
+                return false;
+        } else if (!stars.equals(other.stars))
+            return false;
+        if (updatedBy == null) {
+            if (other.updatedBy != null)
+                return false;
+        } else if (!updatedBy.equals(other.updatedBy))
+            return false;
+        if (updatedOn == null) {
+            if (other.updatedOn != null)
+                return false;
+        } else if (!updatedOn.equals(other.updatedOn))
+            return false;
+        if (website == null) {
+            if (other.website != null)
+                return false;
+        } else if (!website.equals(other.website))
+            return false;
+        if (worldRanking == null) {
+            if (other.worldRanking != null)
+                return false;
+        } else if (!worldRanking.equals(other.worldRanking))
+            return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Course [id=" + id + ", city=" + city + ", country=" + country + ", faculty=" + faculty + ", institute=" + institute + ", name=" + name + ", worldRanking="
+                        + worldRanking + ", stars=" + stars + ", recognition=" + recognition + ", recognitionType=" + recognitionType + ", duration=" + duration + ", durationTime="
+                        + durationTime + ", website=" + website + ", courseLang=" + courseLang + ", abbreviation=" + abbreviation + ", recDate=" + recDate + ", remarks=" + remarks
+                        + ", description=" + description + ", isActive=" + isActive + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + ", deletedOn=" + deletedOn
+                        + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", isDeleted=" + isDeleted + "]";
+    }
+
 }

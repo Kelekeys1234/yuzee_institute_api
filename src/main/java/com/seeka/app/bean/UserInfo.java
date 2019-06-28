@@ -296,4 +296,177 @@ public class UserInfo implements java.io.Serializable {
     public void setFirebaseId(String firebaseId) {
         this.firebaseId = firebaseId;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((citizenship == null) ? 0 : citizenship.hashCode());
+        result = prime * result + ((countryOrgin == null) ? 0 : countryOrgin.hashCode());
+        result = prime * result + ((dob == null) ? 0 : dob.hashCode());
+        result = prime * result + ((emailId == null) ? 0 : emailId.hashCode());
+        result = prime * result + ((firebaseId == null) ? 0 : firebaseId.hashCode());
+        result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+        result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+        result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+        result = prime * result + ((lastUpdatedDate == null) ? 0 : lastUpdatedDate.hashCode());
+        result = prime * result + ((mobileNo == null) ? 0 : mobileNo.hashCode());
+        result = prime * result + ((password == null) ? 0 : password.hashCode());
+        result = prime * result + ((preferredCityId == null) ? 0 : preferredCityId.hashCode());
+        result = prime * result + ((preferredCityName == null) ? 0 : preferredCityName.hashCode());
+        result = prime * result + ((preferredCountryId == null) ? 0 : preferredCountryId.hashCode());
+        result = prime * result + ((preferredCurrencyId == null) ? 0 : preferredCurrencyId.hashCode());
+        result = prime * result + ((preferredCurrencyName == null) ? 0 : preferredCurrencyName.hashCode());
+        result = prime * result + ((signUpDate == null) ? 0 : signUpDate.hashCode());
+        result = prime * result + ((signupType == null) ? 0 : signupType.hashCode());
+        result = prime * result + ((skypeId == null) ? 0 : skypeId.hashCode());
+        result = prime * result + ((socialAccountId == null) ? 0 : socialAccountId.hashCode());
+        result = prime * result + status;
+        result = prime * result + ((userEduInfo == null) ? 0 : userEduInfo.hashCode());
+        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        UserInfo other = (UserInfo) obj;
+        if (citizenship == null) {
+            if (other.citizenship != null)
+                return false;
+        } else if (!citizenship.equals(other.citizenship))
+            return false;
+        if (countryOrgin == null) {
+            if (other.countryOrgin != null)
+                return false;
+        } else if (!countryOrgin.equals(other.countryOrgin))
+            return false;
+        if (dob == null) {
+            if (other.dob != null)
+                return false;
+        } else if (!dob.equals(other.dob))
+            return false;
+        if (emailId == null) {
+            if (other.emailId != null)
+                return false;
+        } else if (!emailId.equals(other.emailId))
+            return false;
+        if (firebaseId == null) {
+            if (other.firebaseId != null)
+                return false;
+        } else if (!firebaseId.equals(other.firebaseId))
+            return false;
+        if (firstName == null) {
+            if (other.firstName != null)
+                return false;
+        } else if (!firstName.equals(other.firstName))
+            return false;
+        if (gender == null) {
+            if (other.gender != null)
+                return false;
+        } else if (!gender.equals(other.gender))
+            return false;
+        if (lastName == null) {
+            if (other.lastName != null)
+                return false;
+        } else if (!lastName.equals(other.lastName))
+            return false;
+        if (lastUpdatedDate == null) {
+            if (other.lastUpdatedDate != null)
+                return false;
+        } else if (!lastUpdatedDate.equals(other.lastUpdatedDate))
+            return false;
+        if (mobileNo == null) {
+            if (other.mobileNo != null)
+                return false;
+        } else if (!mobileNo.equals(other.mobileNo))
+            return false;
+        if (password == null) {
+            if (other.password != null)
+                return false;
+        } else if (!password.equals(other.password))
+            return false;
+        if (preferredCityId == null) {
+            if (other.preferredCityId != null)
+                return false;
+        } else if (!preferredCityId.equals(other.preferredCityId))
+            return false;
+        if (preferredCityName == null) {
+            if (other.preferredCityName != null)
+                return false;
+        } else if (!preferredCityName.equals(other.preferredCityName))
+            return false;
+        if (preferredCountryId == null) {
+            if (other.preferredCountryId != null)
+                return false;
+        } else if (!preferredCountryId.equals(other.preferredCountryId))
+            return false;
+        if (preferredCurrencyId == null) {
+            if (other.preferredCurrencyId != null)
+                return false;
+        } else if (!preferredCurrencyId.equals(other.preferredCurrencyId))
+            return false;
+        if (preferredCurrencyName == null) {
+            if (other.preferredCurrencyName != null)
+                return false;
+        } else if (!preferredCurrencyName.equals(other.preferredCurrencyName))
+            return false;
+        if (signUpDate == null) {
+            if (other.signUpDate != null)
+                return false;
+        } else if (!signUpDate.equals(other.signUpDate))
+            return false;
+        if (signupType == null) {
+            if (other.signupType != null)
+                return false;
+        } else if (!signupType.equals(other.signupType))
+            return false;
+        if (skypeId == null) {
+            if (other.skypeId != null)
+                return false;
+        } else if (!skypeId.equals(other.skypeId))
+            return false;
+        if (socialAccountId == null) {
+            if (other.socialAccountId != null)
+                return false;
+        } else if (!socialAccountId.equals(other.socialAccountId))
+            return false;
+        if (status != other.status)
+            return false;
+        if (userEduInfo == null) {
+            if (other.userEduInfo != null)
+                return false;
+        } else if (!userEduInfo.equals(other.userEduInfo))
+            return false;
+        if (userId == null) {
+            if (other.userId != null)
+                return false;
+        } else if (!userId.equals(other.userId))
+            return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "UserInfo [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", gender=" + gender + ", dob=" + dob + ", countryOrgin=" + countryOrgin
+                        + ", citizenship=" + citizenship + ", emailId=" + emailId + ", password=" + password + ", mobileNo=" + mobileNo + ", skypeId=" + skypeId + ", userEduInfo="
+                        + userEduInfo + ", lastUpdatedDate=" + lastUpdatedDate + ", signUpDate=" + signUpDate + ", status=" + status + ", signupType=" + signupType
+                        + ", socialAccountId=" + socialAccountId + ", preferredCountryId=" + preferredCountryId + ", preferredCityId=" + preferredCityId + ", preferredCurrencyId="
+                        + preferredCurrencyId + ", preferredCityName=" + preferredCityName + ", preferredCurrencyName=" + preferredCurrencyName + ", firebaseId=" + firebaseId
+                        + "]";
+    }
 }

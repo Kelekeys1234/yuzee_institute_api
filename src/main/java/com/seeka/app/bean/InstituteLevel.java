@@ -179,4 +179,111 @@ public class InstituteLevel implements java.io.Serializable {
 		this.isDeleted = isDeleted;
 	}
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((city == null) ? 0 : city.hashCode());
+        result = prime * result + ((country == null) ? 0 : country.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+        result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((institute == null) ? 0 : institute.hashCode());
+        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+        result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+        result = prime * result + ((level == null) ? 0 : level.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        InstituteLevel other = (InstituteLevel) obj;
+        if (city == null) {
+            if (other.city != null)
+                return false;
+        } else if (!city.equals(other.city))
+            return false;
+        if (country == null) {
+            if (other.country != null)
+                return false;
+        } else if (!country.equals(other.country))
+            return false;
+        if (createdBy == null) {
+            if (other.createdBy != null)
+                return false;
+        } else if (!createdBy.equals(other.createdBy))
+            return false;
+        if (createdOn == null) {
+            if (other.createdOn != null)
+                return false;
+        } else if (!createdOn.equals(other.createdOn))
+            return false;
+        if (deletedOn == null) {
+            if (other.deletedOn != null)
+                return false;
+        } else if (!deletedOn.equals(other.deletedOn))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (institute == null) {
+            if (other.institute != null)
+                return false;
+        } else if (!institute.equals(other.institute))
+            return false;
+        if (isActive == null) {
+            if (other.isActive != null)
+                return false;
+        } else if (!isActive.equals(other.isActive))
+            return false;
+        if (isDeleted == null) {
+            if (other.isDeleted != null)
+                return false;
+        } else if (!isDeleted.equals(other.isDeleted))
+            return false;
+        if (level == null) {
+            if (other.level != null)
+                return false;
+        } else if (!level.equals(other.level))
+            return false;
+        if (updatedBy == null) {
+            if (other.updatedBy != null)
+                return false;
+        } else if (!updatedBy.equals(other.updatedBy))
+            return false;
+        if (updatedOn == null) {
+            if (other.updatedOn != null)
+                return false;
+        } else if (!updatedOn.equals(other.updatedOn))
+            return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "InstituteLevel [id=" + id + ", city=" + city + ", country=" + country + ", institute=" + institute + ", level=" + level + ", isActive=" + isActive + ", createdOn="
+                        + createdOn + ", updatedOn=" + updatedOn + ", deletedOn=" + deletedOn + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", isDeleted=" + isDeleted
+                        + "]";
+    }
+
 }

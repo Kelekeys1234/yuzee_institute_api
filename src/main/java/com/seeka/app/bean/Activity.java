@@ -57,4 +57,55 @@ public class Activity implements java.io.Serializable {
     public void setActivityDesc(String activityDesc) {
         this.activityDesc = activityDesc;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((activityDesc == null) ? 0 : activityDesc.hashCode());
+        result = prime * result + ((activityName == null) ? 0 : activityName.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Activity other = (Activity) obj;
+        if (activityDesc == null) {
+            if (other.activityDesc != null)
+                return false;
+        } else if (!activityDesc.equals(other.activityDesc))
+            return false;
+        if (activityName == null) {
+            if (other.activityName != null)
+                return false;
+        } else if (!activityName.equals(other.activityName))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Activity [id=" + id + ", activityName=" + activityName + ", activityDesc=" + activityDesc + "]";
+    }
 }

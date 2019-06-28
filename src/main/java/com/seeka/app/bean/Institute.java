@@ -369,4 +369,204 @@ public class Institute implements java.io.Serializable {
         this.serviceList = serviceList;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((TNumOfStu == null) ? 0 : TNumOfStu.hashCode());
+        result = prime * result + ((accredited == null) ? 0 : accredited.hashCode());
+        result = prime * result + ((address == null) ? 0 : address.hashCode());
+        result = prime * result + ((city == null) ? 0 : city.hashCode());
+        result = prime * result + ((country == null) ? 0 : country.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+        result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((insImgCnt == null) ? 0 : insImgCnt.hashCode());
+        result = prime * result + ((instituteDetailsObj == null) ? 0 : instituteDetailsObj.hashCode());
+        result = prime * result + ((instituteImageUrl == null) ? 0 : instituteImageUrl.hashCode());
+        result = prime * result + ((instituteLogoUrl == null) ? 0 : instituteLogoUrl.hashCode());
+        result = prime * result + ((instituteType == null) ? 0 : instituteType.hashCode());
+        result = prime * result + ((intEmails == null) ? 0 : intEmails.hashCode());
+        result = prime * result + ((intPhNum == null) ? 0 : intPhNum.hashCode());
+        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+        result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+        result = prime * result + ((latitude == null) ? 0 : latitude.hashCode());
+        result = prime * result + ((longitude == null) ? 0 : longitude.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((serviceList == null) ? 0 : serviceList.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+        result = prime * result + ((website == null) ? 0 : website.hashCode());
+        result = prime * result + ((worldRanking == null) ? 0 : worldRanking.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Institute other = (Institute) obj;
+        if (TNumOfStu == null) {
+            if (other.TNumOfStu != null)
+                return false;
+        } else if (!TNumOfStu.equals(other.TNumOfStu))
+            return false;
+        if (accredited == null) {
+            if (other.accredited != null)
+                return false;
+        } else if (!accredited.equals(other.accredited))
+            return false;
+        if (address == null) {
+            if (other.address != null)
+                return false;
+        } else if (!address.equals(other.address))
+            return false;
+        if (city == null) {
+            if (other.city != null)
+                return false;
+        } else if (!city.equals(other.city))
+            return false;
+        if (country == null) {
+            if (other.country != null)
+                return false;
+        } else if (!country.equals(other.country))
+            return false;
+        if (createdBy == null) {
+            if (other.createdBy != null)
+                return false;
+        } else if (!createdBy.equals(other.createdBy))
+            return false;
+        if (createdOn == null) {
+            if (other.createdOn != null)
+                return false;
+        } else if (!createdOn.equals(other.createdOn))
+            return false;
+        if (deletedOn == null) {
+            if (other.deletedOn != null)
+                return false;
+        } else if (!deletedOn.equals(other.deletedOn))
+            return false;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (insImgCnt == null) {
+            if (other.insImgCnt != null)
+                return false;
+        } else if (!insImgCnt.equals(other.insImgCnt))
+            return false;
+        if (instituteDetailsObj == null) {
+            if (other.instituteDetailsObj != null)
+                return false;
+        } else if (!instituteDetailsObj.equals(other.instituteDetailsObj))
+            return false;
+        if (instituteImageUrl == null) {
+            if (other.instituteImageUrl != null)
+                return false;
+        } else if (!instituteImageUrl.equals(other.instituteImageUrl))
+            return false;
+        if (instituteLogoUrl == null) {
+            if (other.instituteLogoUrl != null)
+                return false;
+        } else if (!instituteLogoUrl.equals(other.instituteLogoUrl))
+            return false;
+        if (instituteType == null) {
+            if (other.instituteType != null)
+                return false;
+        } else if (!instituteType.equals(other.instituteType))
+            return false;
+        if (intEmails == null) {
+            if (other.intEmails != null)
+                return false;
+        } else if (!intEmails.equals(other.intEmails))
+            return false;
+        if (intPhNum == null) {
+            if (other.intPhNum != null)
+                return false;
+        } else if (!intPhNum.equals(other.intPhNum))
+            return false;
+        if (isActive == null) {
+            if (other.isActive != null)
+                return false;
+        } else if (!isActive.equals(other.isActive))
+            return false;
+        if (isDeleted == null) {
+            if (other.isDeleted != null)
+                return false;
+        } else if (!isDeleted.equals(other.isDeleted))
+            return false;
+        if (latitude == null) {
+            if (other.latitude != null)
+                return false;
+        } else if (!latitude.equals(other.latitude))
+            return false;
+        if (longitude == null) {
+            if (other.longitude != null)
+                return false;
+        } else if (!longitude.equals(other.longitude))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (serviceList == null) {
+            if (other.serviceList != null)
+                return false;
+        } else if (!serviceList.equals(other.serviceList))
+            return false;
+        if (updatedBy == null) {
+            if (other.updatedBy != null)
+                return false;
+        } else if (!updatedBy.equals(other.updatedBy))
+            return false;
+        if (updatedOn == null) {
+            if (other.updatedOn != null)
+                return false;
+        } else if (!updatedOn.equals(other.updatedOn))
+            return false;
+        if (website == null) {
+            if (other.website != null)
+                return false;
+        } else if (!website.equals(other.website))
+            return false;
+        if (worldRanking == null) {
+            if (other.worldRanking != null)
+                return false;
+        } else if (!worldRanking.equals(other.worldRanking))
+            return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Institute [id=" + id + ", city=" + city + ", country=" + country + ", instituteType=" + instituteType + ", name=" + name + ", worldRanking=" + worldRanking
+                        + ", accredited=" + accredited + ", intPhNum=" + intPhNum + ", intEmails=" + intEmails + ", website=" + website + ", insImgCnt=" + insImgCnt
+                        + ", TNumOfStu=" + TNumOfStu + ", latitude=" + latitude + ", longitude=" + longitude + ", address=" + address + ", description=" + description
+                        + ", isActive=" + isActive + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + ", deletedOn=" + deletedOn + ", createdBy=" + createdBy
+                        + ", updatedBy=" + updatedBy + ", isDeleted=" + isDeleted + ", instituteLogoUrl=" + instituteLogoUrl + ", instituteImageUrl=" + instituteImageUrl
+                        + ", instituteDetailsObj=" + instituteDetailsObj + ", serviceList=" + serviceList + "]";
+    }
+
 }

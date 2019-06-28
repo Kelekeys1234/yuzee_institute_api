@@ -214,4 +214,117 @@ public class CourseDetails implements java.io.Serializable {
         this.gradeObj = gradeObj;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((LevelObj == null) ? 0 : LevelObj.hashCode());
+        result = prime * result + ((availbilty == null) ? 0 : availbilty.hashCode());
+        result = prime * result + ((course == null) ? 0 : course.hashCode());
+        result = prime * result + ((coursePricingObj == null) ? 0 : coursePricingObj.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((facultyLevelObj == null) ? 0 : facultyLevelObj.hashCode());
+        result = prime * result + ((facultyObj == null) ? 0 : facultyObj.hashCode());
+        result = prime * result + ((gradeObj == null) ? 0 : gradeObj.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((instituteLevelObj == null) ? 0 : instituteLevelObj.hashCode());
+        result = prime * result + ((partFull == null) ? 0 : partFull.hashCode());
+        result = prime * result + ((studyMode == null) ? 0 : studyMode.hashCode());
+        result = prime * result + ((wrRange == null) ? 0 : wrRange.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CourseDetails other = (CourseDetails) obj;
+        if (LevelObj == null) {
+            if (other.LevelObj != null)
+                return false;
+        } else if (!LevelObj.equals(other.LevelObj))
+            return false;
+        if (availbilty == null) {
+            if (other.availbilty != null)
+                return false;
+        } else if (!availbilty.equals(other.availbilty))
+            return false;
+        if (course == null) {
+            if (other.course != null)
+                return false;
+        } else if (!course.equals(other.course))
+            return false;
+        if (coursePricingObj == null) {
+            if (other.coursePricingObj != null)
+                return false;
+        } else if (!coursePricingObj.equals(other.coursePricingObj))
+            return false;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
+        if (facultyLevelObj == null) {
+            if (other.facultyLevelObj != null)
+                return false;
+        } else if (!facultyLevelObj.equals(other.facultyLevelObj))
+            return false;
+        if (facultyObj == null) {
+            if (other.facultyObj != null)
+                return false;
+        } else if (!facultyObj.equals(other.facultyObj))
+            return false;
+        if (gradeObj == null) {
+            if (other.gradeObj != null)
+                return false;
+        } else if (!gradeObj.equals(other.gradeObj))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (instituteLevelObj == null) {
+            if (other.instituteLevelObj != null)
+                return false;
+        } else if (!instituteLevelObj.equals(other.instituteLevelObj))
+            return false;
+        if (partFull == null) {
+            if (other.partFull != null)
+                return false;
+        } else if (!partFull.equals(other.partFull))
+            return false;
+        if (studyMode == null) {
+            if (other.studyMode != null)
+                return false;
+        } else if (!studyMode.equals(other.studyMode))
+            return false;
+        if (wrRange == null) {
+            if (other.wrRange != null)
+                return false;
+        } else if (!wrRange.equals(other.wrRange))
+            return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "CourseDetails [id=" + id + ", course=" + course + ", wrRange=" + wrRange + ", availbilty=" + availbilty + ", partFull=" + partFull + ", studyMode=" + studyMode
+                        + ", description=" + description + ", coursePricingObj=" + coursePricingObj + ", facultyObj=" + facultyObj + ", LevelObj=" + LevelObj + ", facultyLevelObj="
+                        + facultyLevelObj + ", instituteLevelObj=" + instituteLevelObj + ", gradeObj=" + gradeObj + "]";
+    }
+
 }

@@ -189,4 +189,124 @@ public class CourseGradeEligibility implements java.io.Serializable {
 		this.isDeleted = isDeleted;
 	}
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((courseId == null) ? 0 : courseId.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+        result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+        result = prime * result + ((globalALevel1 == null) ? 0 : globalALevel1.hashCode());
+        result = prime * result + ((globalALevel2 == null) ? 0 : globalALevel2.hashCode());
+        result = prime * result + ((globalALevel3 == null) ? 0 : globalALevel3.hashCode());
+        result = prime * result + ((globalALevel4 == null) ? 0 : globalALevel4.hashCode());
+        result = prime * result + ((globalALevel5 == null) ? 0 : globalALevel5.hashCode());
+        result = prime * result + ((globalGpa == null) ? 0 : globalGpa.hashCode());
+        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+        result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CourseGradeEligibility other = (CourseGradeEligibility) obj;
+        if (courseId == null) {
+            if (other.courseId != null)
+                return false;
+        } else if (!courseId.equals(other.courseId))
+            return false;
+        if (createdBy == null) {
+            if (other.createdBy != null)
+                return false;
+        } else if (!createdBy.equals(other.createdBy))
+            return false;
+        if (createdOn == null) {
+            if (other.createdOn != null)
+                return false;
+        } else if (!createdOn.equals(other.createdOn))
+            return false;
+        if (deletedOn == null) {
+            if (other.deletedOn != null)
+                return false;
+        } else if (!deletedOn.equals(other.deletedOn))
+            return false;
+        if (globalALevel1 == null) {
+            if (other.globalALevel1 != null)
+                return false;
+        } else if (!globalALevel1.equals(other.globalALevel1))
+            return false;
+        if (globalALevel2 == null) {
+            if (other.globalALevel2 != null)
+                return false;
+        } else if (!globalALevel2.equals(other.globalALevel2))
+            return false;
+        if (globalALevel3 == null) {
+            if (other.globalALevel3 != null)
+                return false;
+        } else if (!globalALevel3.equals(other.globalALevel3))
+            return false;
+        if (globalALevel4 == null) {
+            if (other.globalALevel4 != null)
+                return false;
+        } else if (!globalALevel4.equals(other.globalALevel4))
+            return false;
+        if (globalALevel5 == null) {
+            if (other.globalALevel5 != null)
+                return false;
+        } else if (!globalALevel5.equals(other.globalALevel5))
+            return false;
+        if (globalGpa == null) {
+            if (other.globalGpa != null)
+                return false;
+        } else if (!globalGpa.equals(other.globalGpa))
+            return false;
+        if (isActive == null) {
+            if (other.isActive != null)
+                return false;
+        } else if (!isActive.equals(other.isActive))
+            return false;
+        if (isDeleted == null) {
+            if (other.isDeleted != null)
+                return false;
+        } else if (!isDeleted.equals(other.isDeleted))
+            return false;
+        if (updatedBy == null) {
+            if (other.updatedBy != null)
+                return false;
+        } else if (!updatedBy.equals(other.updatedBy))
+            return false;
+        if (updatedOn == null) {
+            if (other.updatedOn != null)
+                return false;
+        } else if (!updatedOn.equals(other.updatedOn))
+            return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "CourseGradeEligibility [courseId=" + courseId + ", globalGpa=" + globalGpa + ", globalALevel1=" + globalALevel1 + ", globalALevel2=" + globalALevel2
+                        + ", globalALevel3=" + globalALevel3 + ", globalALevel4=" + globalALevel4 + ", globalALevel5=" + globalALevel5 + ", isActive=" + isActive + ", createdOn="
+                        + createdOn + ", updatedOn=" + updatedOn + ", deletedOn=" + deletedOn + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", isDeleted=" + isDeleted
+                        + "]";
+    }
+
 }

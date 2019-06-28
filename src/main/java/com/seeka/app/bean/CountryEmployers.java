@@ -173,4 +173,111 @@ public class CountryEmployers implements java.io.Serializable {
 		this.isDeleted = isDeleted;
 	}
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((country == null) ? 0 : country.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+        result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+        result = prime * result + ((employerName == null) ? 0 : employerName.hashCode());
+        result = prime * result + ((facultyId == null) ? 0 : facultyId.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+        result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+        result = prime * result + ((webUrl == null) ? 0 : webUrl.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CountryEmployers other = (CountryEmployers) obj;
+        if (country == null) {
+            if (other.country != null)
+                return false;
+        } else if (!country.equals(other.country))
+            return false;
+        if (createdBy == null) {
+            if (other.createdBy != null)
+                return false;
+        } else if (!createdBy.equals(other.createdBy))
+            return false;
+        if (createdOn == null) {
+            if (other.createdOn != null)
+                return false;
+        } else if (!createdOn.equals(other.createdOn))
+            return false;
+        if (deletedOn == null) {
+            if (other.deletedOn != null)
+                return false;
+        } else if (!deletedOn.equals(other.deletedOn))
+            return false;
+        if (employerName == null) {
+            if (other.employerName != null)
+                return false;
+        } else if (!employerName.equals(other.employerName))
+            return false;
+        if (facultyId == null) {
+            if (other.facultyId != null)
+                return false;
+        } else if (!facultyId.equals(other.facultyId))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (isActive == null) {
+            if (other.isActive != null)
+                return false;
+        } else if (!isActive.equals(other.isActive))
+            return false;
+        if (isDeleted == null) {
+            if (other.isDeleted != null)
+                return false;
+        } else if (!isDeleted.equals(other.isDeleted))
+            return false;
+        if (updatedBy == null) {
+            if (other.updatedBy != null)
+                return false;
+        } else if (!updatedBy.equals(other.updatedBy))
+            return false;
+        if (updatedOn == null) {
+            if (other.updatedOn != null)
+                return false;
+        } else if (!updatedOn.equals(other.updatedOn))
+            return false;
+        if (webUrl == null) {
+            if (other.webUrl != null)
+                return false;
+        } else if (!webUrl.equals(other.webUrl))
+            return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "CountryEmployers [id=" + id + ", country=" + country + ", webUrl=" + webUrl + ", employerName=" + employerName + ", facultyId=" + facultyId + ", isActive="
+                        + isActive + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + ", deletedOn=" + deletedOn + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy
+                        + ", isDeleted=" + isDeleted + "]";
+    }
+
 }

@@ -443,4 +443,257 @@ public class CountryDetails implements java.io.Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((ambHelp == null) ? 0 : ambHelp.hashCode());
+        result = prime * result + ((anualGrowth == null) ? 0 : anualGrowth.hashCode());
+        result = prime * result + ((area == null) ? 0 : area.hashCode());
+        result = prime * result + ((capitalCity == null) ? 0 : capitalCity.hashCode());
+        result = prime * result + ((climate == null) ? 0 : climate.hashCode());
+        result = prime * result + ((cntSafetyRating == null) ? 0 : cntSafetyRating.hashCode());
+        result = prime * result + ((costOfLiving == null) ? 0 : costOfLiving.hashCode());
+        result = prime * result + ((country == null) ? 0 : country.hashCode());
+        result = prime * result + ((countryFacts == null) ? 0 : countryFacts.hashCode());
+        result = prime * result + ((countryVideo == null) ? 0 : countryVideo.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+        result = prime * result + ((eduRecgLink == null) ? 0 : eduRecgLink.hashCode());
+        result = prime * result + ((eduRecognition == null) ? 0 : eduRecognition.hashCode());
+        result = prime * result + ((fireHelp == null) ? 0 : fireHelp.hashCode());
+        result = prime * result + ((gdp == null) ? 0 : gdp.hashCode());
+        result = prime * result + ((gdpPc == null) ? 0 : gdpPc.hashCode());
+        result = prime * result + ((hog == null) ? 0 : hog.hashCode());
+        result = prime * result + id;
+        result = prime * result + ((inflation == null) ? 0 : inflation.hashCode());
+        result = prime * result + ((intHealthCover == null) ? 0 : intHealthCover.hashCode());
+        result = prime * result + ((jobProspect == null) ? 0 : jobProspect.hashCode());
+        result = prime * result + ((language == null) ? 0 : language.hashCode());
+        result = prime * result + ((livingNAcomd == null) ? 0 : livingNAcomd.hashCode());
+        result = prime * result + ((majorIndus == null) ? 0 : majorIndus.hashCode());
+        result = prime * result + ((majorTrdPartnr == null) ? 0 : majorTrdPartnr.hashCode());
+        result = prime * result + ((people == null) ? 0 : people.hashCode());
+        result = prime * result + ((polHelp == null) ? 0 : polHelp.hashCode());
+        result = prime * result + ((population == null) ? 0 : population.hashCode());
+        result = prime * result + ((religion == null) ? 0 : religion.hashCode());
+        result = prime * result + ((shortSkilledIndustry == null) ? 0 : shortSkilledIndustry.hashCode());
+        result = prime * result + ((studentVisaLink == null) ? 0 : studentVisaLink.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+        result = prime * result + ((visa == null) ? 0 : visa.hashCode());
+        result = prime * result + ((workAndStudyRules == null) ? 0 : workAndStudyRules.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CountryDetails other = (CountryDetails) obj;
+        if (ambHelp == null) {
+            if (other.ambHelp != null)
+                return false;
+        } else if (!ambHelp.equals(other.ambHelp))
+            return false;
+        if (anualGrowth == null) {
+            if (other.anualGrowth != null)
+                return false;
+        } else if (!anualGrowth.equals(other.anualGrowth))
+            return false;
+        if (area == null) {
+            if (other.area != null)
+                return false;
+        } else if (!area.equals(other.area))
+            return false;
+        if (capitalCity == null) {
+            if (other.capitalCity != null)
+                return false;
+        } else if (!capitalCity.equals(other.capitalCity))
+            return false;
+        if (climate == null) {
+            if (other.climate != null)
+                return false;
+        } else if (!climate.equals(other.climate))
+            return false;
+        if (cntSafetyRating == null) {
+            if (other.cntSafetyRating != null)
+                return false;
+        } else if (!cntSafetyRating.equals(other.cntSafetyRating))
+            return false;
+        if (costOfLiving == null) {
+            if (other.costOfLiving != null)
+                return false;
+        } else if (!costOfLiving.equals(other.costOfLiving))
+            return false;
+        if (country == null) {
+            if (other.country != null)
+                return false;
+        } else if (!country.equals(other.country))
+            return false;
+        if (countryFacts == null) {
+            if (other.countryFacts != null)
+                return false;
+        } else if (!countryFacts.equals(other.countryFacts))
+            return false;
+        if (countryVideo == null) {
+            if (other.countryVideo != null)
+                return false;
+        } else if (!countryVideo.equals(other.countryVideo))
+            return false;
+        if (createdBy == null) {
+            if (other.createdBy != null)
+                return false;
+        } else if (!createdBy.equals(other.createdBy))
+            return false;
+        if (createdOn == null) {
+            if (other.createdOn != null)
+                return false;
+        } else if (!createdOn.equals(other.createdOn))
+            return false;
+        if (eduRecgLink == null) {
+            if (other.eduRecgLink != null)
+                return false;
+        } else if (!eduRecgLink.equals(other.eduRecgLink))
+            return false;
+        if (eduRecognition == null) {
+            if (other.eduRecognition != null)
+                return false;
+        } else if (!eduRecognition.equals(other.eduRecognition))
+            return false;
+        if (fireHelp == null) {
+            if (other.fireHelp != null)
+                return false;
+        } else if (!fireHelp.equals(other.fireHelp))
+            return false;
+        if (gdp == null) {
+            if (other.gdp != null)
+                return false;
+        } else if (!gdp.equals(other.gdp))
+            return false;
+        if (gdpPc == null) {
+            if (other.gdpPc != null)
+                return false;
+        } else if (!gdpPc.equals(other.gdpPc))
+            return false;
+        if (hog == null) {
+            if (other.hog != null)
+                return false;
+        } else if (!hog.equals(other.hog))
+            return false;
+        if (id != other.id)
+            return false;
+        if (inflation == null) {
+            if (other.inflation != null)
+                return false;
+        } else if (!inflation.equals(other.inflation))
+            return false;
+        if (intHealthCover == null) {
+            if (other.intHealthCover != null)
+                return false;
+        } else if (!intHealthCover.equals(other.intHealthCover))
+            return false;
+        if (jobProspect == null) {
+            if (other.jobProspect != null)
+                return false;
+        } else if (!jobProspect.equals(other.jobProspect))
+            return false;
+        if (language == null) {
+            if (other.language != null)
+                return false;
+        } else if (!language.equals(other.language))
+            return false;
+        if (livingNAcomd == null) {
+            if (other.livingNAcomd != null)
+                return false;
+        } else if (!livingNAcomd.equals(other.livingNAcomd))
+            return false;
+        if (majorIndus == null) {
+            if (other.majorIndus != null)
+                return false;
+        } else if (!majorIndus.equals(other.majorIndus))
+            return false;
+        if (majorTrdPartnr == null) {
+            if (other.majorTrdPartnr != null)
+                return false;
+        } else if (!majorTrdPartnr.equals(other.majorTrdPartnr))
+            return false;
+        if (people == null) {
+            if (other.people != null)
+                return false;
+        } else if (!people.equals(other.people))
+            return false;
+        if (polHelp == null) {
+            if (other.polHelp != null)
+                return false;
+        } else if (!polHelp.equals(other.polHelp))
+            return false;
+        if (population == null) {
+            if (other.population != null)
+                return false;
+        } else if (!population.equals(other.population))
+            return false;
+        if (religion == null) {
+            if (other.religion != null)
+                return false;
+        } else if (!religion.equals(other.religion))
+            return false;
+        if (shortSkilledIndustry == null) {
+            if (other.shortSkilledIndustry != null)
+                return false;
+        } else if (!shortSkilledIndustry.equals(other.shortSkilledIndustry))
+            return false;
+        if (studentVisaLink == null) {
+            if (other.studentVisaLink != null)
+                return false;
+        } else if (!studentVisaLink.equals(other.studentVisaLink))
+            return false;
+        if (updatedBy == null) {
+            if (other.updatedBy != null)
+                return false;
+        } else if (!updatedBy.equals(other.updatedBy))
+            return false;
+        if (updatedOn == null) {
+            if (other.updatedOn != null)
+                return false;
+        } else if (!updatedOn.equals(other.updatedOn))
+            return false;
+        if (visa == null) {
+            if (other.visa != null)
+                return false;
+        } else if (!visa.equals(other.visa))
+            return false;
+        if (workAndStudyRules == null) {
+            if (other.workAndStudyRules != null)
+                return false;
+        } else if (!workAndStudyRules.equals(other.workAndStudyRules))
+            return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "CountryDetails [id=" + id + ", country=" + country + ", capitalCity=" + capitalCity + ", countryFacts=" + countryFacts + ", shortSkilledIndustry="
+                        + shortSkilledIndustry + ", intHealthCover=" + intHealthCover + ", cntSafetyRating=" + cntSafetyRating + ", visa=" + visa + ", jobProspect=" + jobProspect
+                        + ", eduRecognition=" + eduRecognition + ", workAndStudyRules=" + workAndStudyRules + ", livingNAcomd=" + livingNAcomd + ", costOfLiving=" + costOfLiving
+                        + ", climate=" + climate + ", polHelp=" + polHelp + ", fireHelp=" + fireHelp + ", ambHelp=" + ambHelp + ", eduRecgLink=" + eduRecgLink
+                        + ", studentVisaLink=" + studentVisaLink + ", area=" + area + ", population=" + population + ", people=" + people + ", language=" + language + ", religion="
+                        + religion + ", hog=" + hog + ", gdpPc=" + gdpPc + ", anualGrowth=" + anualGrowth + ", inflation=" + inflation + ", majorIndus=" + majorIndus
+                        + ", majorTrdPartnr=" + majorTrdPartnr + ", countryVideo=" + countryVideo + ", gdp=" + gdp + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn
+                        + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + "]";
+    }
+
 }

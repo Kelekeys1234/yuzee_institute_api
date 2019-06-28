@@ -1,19 +1,17 @@
 package com.seeka.app.bean;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -29,36 +27,6 @@ public class Country implements java.io.Serializable {
     private String name;
     private String description;
     private String countryCode;
-    private String capitalCity;
-    private String countryFacts;
-    private String shortSkilledIndustry;
-    private String intHealthCover;
-    private String cntSafetyRating;
-    private String visa;
-    private String jobProspect;
-    private String eduRecognition;
-    private String workAndStudyRules;
-    private String livingNAcomd;
-    private String costOfLiving;
-    private String climate;
-    private String polHelp;
-    private String fireHelp;
-    private String ambHelp;
-    private String eduRecgLink;
-    private String studentVisaLink;
-    private String area;
-    private String population;
-    private String people;
-    private String language;
-    private String religion;
-    private String hog;
-    private String gdpPc;
-    private String anualGrowth;
-    private String inflation;
-    private String majorIndus;
-    private String majorTrdPartnr;
-    private String countryVideo;
-    private String gdp;
     private Date createdOn;
     private Date updatedOn;
     private Date deletedOn;
@@ -69,44 +37,10 @@ public class Country implements java.io.Serializable {
     public Country() {
     }
 
-    public Country(String name, String description, String countryCode, String capitalCity, String countryFacts, String shortSkilledIndustry, String intHealthCover,
-                    String cntSafetyRating, String visa, String jobProspect, String eduRecognition, String workAndStudyRules, String livingNAcomd, String costOfLiving,
-                    String climate, String polHelp, String fireHelp, String ambHelp, String eduRecgLink, String studentVisaLink, String area, String population, String people,
-                    String language, String religion, String hog, String gdpPc, String anualGrowth, String inflation, String majorIndus, String majorTrdPartnr, String countryVideo,
-                    String gdp, Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
+    public Country(String name, String description, String countryCode, Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
         this.name = name;
         this.description = description;
         this.countryCode = countryCode;
-        this.capitalCity = capitalCity;
-        this.countryFacts = countryFacts;
-        this.shortSkilledIndustry = shortSkilledIndustry;
-        this.intHealthCover = intHealthCover;
-        this.cntSafetyRating = cntSafetyRating;
-        this.visa = visa;
-        this.jobProspect = jobProspect;
-        this.eduRecognition = eduRecognition;
-        this.workAndStudyRules = workAndStudyRules;
-        this.livingNAcomd = livingNAcomd;
-        this.costOfLiving = costOfLiving;
-        this.climate = climate;
-        this.polHelp = polHelp;
-        this.fireHelp = fireHelp;
-        this.ambHelp = ambHelp;
-        this.eduRecgLink = eduRecgLink;
-        this.studentVisaLink = studentVisaLink;
-        this.area = area;
-        this.population = population;
-        this.people = people;
-        this.language = language;
-        this.religion = religion;
-        this.hog = hog;
-        this.gdpPc = gdpPc;
-        this.anualGrowth = anualGrowth;
-        this.inflation = inflation;
-        this.majorIndus = majorIndus;
-        this.majorTrdPartnr = majorTrdPartnr;
-        this.countryVideo = countryVideo;
-        this.gdp = gdp;
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
         this.deletedOn = deletedOn;
@@ -151,276 +85,6 @@ public class Country implements java.io.Serializable {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
-    }
-
-    @Column(name = "capital_city", length = 245)
-    public String getCapitalCity() {
-        return this.capitalCity;
-    }
-
-    public void setCapitalCity(String capitalCity) {
-        this.capitalCity = capitalCity;
-    }
-
-    @Column(name = "country_facts", length = 500)
-    public String getCountryFacts() {
-        return this.countryFacts;
-    }
-
-    public void setCountryFacts(String countryFacts) {
-        this.countryFacts = countryFacts;
-    }
-
-    @Column(name = "short_skilled_industry", length = 500)
-    public String getShortSkilledIndustry() {
-        return this.shortSkilledIndustry;
-    }
-
-    public void setShortSkilledIndustry(String shortSkilledIndustry) {
-        this.shortSkilledIndustry = shortSkilledIndustry;
-    }
-
-    @Column(name = "int_health_cover", length = 500)
-    public String getIntHealthCover() {
-        return this.intHealthCover;
-    }
-
-    public void setIntHealthCover(String intHealthCover) {
-        this.intHealthCover = intHealthCover;
-    }
-
-    @Column(name = "cnt_safety_rating", length = 500)
-    public String getCntSafetyRating() {
-        return this.cntSafetyRating;
-    }
-
-    public void setCntSafetyRating(String cntSafetyRating) {
-        this.cntSafetyRating = cntSafetyRating;
-    }
-
-    @Column(name = "visa", length = 500)
-    public String getVisa() {
-        return this.visa;
-    }
-
-    public void setVisa(String visa) {
-        this.visa = visa;
-    }
-
-    @Column(name = "job_prospect", length = 500)
-    public String getJobProspect() {
-        return this.jobProspect;
-    }
-
-    public void setJobProspect(String jobProspect) {
-        this.jobProspect = jobProspect;
-    }
-
-    @Column(name = "edu_recognition", length = 500)
-    public String getEduRecognition() {
-        return this.eduRecognition;
-    }
-
-    public void setEduRecognition(String eduRecognition) {
-        this.eduRecognition = eduRecognition;
-    }
-
-    @Column(name = "work_and_study_rules", length = 500)
-    public String getWorkAndStudyRules() {
-        return this.workAndStudyRules;
-    }
-
-    public void setWorkAndStudyRules(String workAndStudyRules) {
-        this.workAndStudyRules = workAndStudyRules;
-    }
-
-    @Column(name = "living_n_acomd", length = 500)
-    public String getLivingNAcomd() {
-        return this.livingNAcomd;
-    }
-
-    public void setLivingNAcomd(String livingNAcomd) {
-        this.livingNAcomd = livingNAcomd;
-    }
-
-    @Column(name = "cost_of_living", length = 500)
-    public String getCostOfLiving() {
-        return this.costOfLiving;
-    }
-
-    public void setCostOfLiving(String costOfLiving) {
-        this.costOfLiving = costOfLiving;
-    }
-
-    @Column(name = "climate", length = 500)
-    public String getClimate() {
-        return this.climate;
-    }
-
-    public void setClimate(String climate) {
-        this.climate = climate;
-    }
-
-    @Column(name = "pol_help", length = 10)
-    public String getPolHelp() {
-        return this.polHelp;
-    }
-
-    public void setPolHelp(String polHelp) {
-        this.polHelp = polHelp;
-    }
-
-    @Column(name = "fire_help", length = 10)
-    public String getFireHelp() {
-        return this.fireHelp;
-    }
-
-    public void setFireHelp(String fireHelp) {
-        this.fireHelp = fireHelp;
-    }
-
-    @Column(name = "amb_help", length = 10)
-    public String getAmbHelp() {
-        return this.ambHelp;
-    }
-
-    public void setAmbHelp(String ambHelp) {
-        this.ambHelp = ambHelp;
-    }
-
-    @Column(name = "edu_recg_link", length = 1000)
-    public String getEduRecgLink() {
-        return this.eduRecgLink;
-    }
-
-    public void setEduRecgLink(String eduRecgLink) {
-        this.eduRecgLink = eduRecgLink;
-    }
-
-    @Column(name = "student_visa_link", length = 1000)
-    public String getStudentVisaLink() {
-        return this.studentVisaLink;
-    }
-
-    public void setStudentVisaLink(String studentVisaLink) {
-        this.studentVisaLink = studentVisaLink;
-    }
-
-    @Column(name = "area", length = 45)
-    public String getArea() {
-        return this.area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    @Column(name = "population", length = 45)
-    public String getPopulation() {
-        return this.population;
-    }
-
-    public void setPopulation(String population) {
-        this.population = population;
-    }
-
-    @Column(name = "people", length = 500)
-    public String getPeople() {
-        return this.people;
-    }
-
-    public void setPeople(String people) {
-        this.people = people;
-    }
-
-    @Column(name = "language", length = 500)
-    public String getLanguage() {
-        return this.language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    @Column(name = "religion", length = 500)
-    public String getReligion() {
-        return this.religion;
-    }
-
-    public void setReligion(String religion) {
-        this.religion = religion;
-    }
-
-    @Column(name = "hog", length = 245)
-    public String getHog() {
-        return this.hog;
-    }
-
-    public void setHog(String hog) {
-        this.hog = hog;
-    }
-
-    @Column(name = "gdp_pc", length = 245)
-    public String getGdpPc() {
-        return this.gdpPc;
-    }
-
-    public void setGdpPc(String gdpPc) {
-        this.gdpPc = gdpPc;
-    }
-
-    @Column(name = "anual_growth", length = 45)
-    public String getAnualGrowth() {
-        return this.anualGrowth;
-    }
-
-    public void setAnualGrowth(String anualGrowth) {
-        this.anualGrowth = anualGrowth;
-    }
-
-    @Column(name = "inflation", length = 45)
-    public String getInflation() {
-        return this.inflation;
-    }
-
-    public void setInflation(String inflation) {
-        this.inflation = inflation;
-    }
-
-    @Column(name = "major_indus", length = 500)
-    public String getMajorIndus() {
-        return this.majorIndus;
-    }
-
-    public void setMajorIndus(String majorIndus) {
-        this.majorIndus = majorIndus;
-    }
-
-    @Column(name = "major_trd_partnr", length = 500)
-    public String getMajorTrdPartnr() {
-        return this.majorTrdPartnr;
-    }
-
-    public void setMajorTrdPartnr(String majorTrdPartnr) {
-        this.majorTrdPartnr = majorTrdPartnr;
-    }
-
-    @Column(name = "country_video", length = 500)
-    public String getCountryVideo() {
-        return this.countryVideo;
-    }
-
-    public void setCountryVideo(String countryVideo) {
-        this.countryVideo = countryVideo;
-    }
-
-    @Column(name = "gdp", length = 245)
-    public String getGdp() {
-        return this.gdp;
-    }
-
-    public void setGdp(String gdp) {
-        this.gdp = gdp;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -478,5 +142,99 @@ public class Country implements java.io.Serializable {
 
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((countryCode == null) ? 0 : countryCode.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+        result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Country other = (Country) obj;
+        if (countryCode == null) {
+            if (other.countryCode != null)
+                return false;
+        } else if (!countryCode.equals(other.countryCode))
+            return false;
+        if (createdBy == null) {
+            if (other.createdBy != null)
+                return false;
+        } else if (!createdBy.equals(other.createdBy))
+            return false;
+        if (createdOn == null) {
+            if (other.createdOn != null)
+                return false;
+        } else if (!createdOn.equals(other.createdOn))
+            return false;
+        if (deletedOn == null) {
+            if (other.deletedOn != null)
+                return false;
+        } else if (!deletedOn.equals(other.deletedOn))
+            return false;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (isDeleted == null) {
+            if (other.isDeleted != null)
+                return false;
+        } else if (!isDeleted.equals(other.isDeleted))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (updatedBy == null) {
+            if (other.updatedBy != null)
+                return false;
+        } else if (!updatedBy.equals(other.updatedBy))
+            return false;
+        if (updatedOn == null) {
+            if (other.updatedOn != null)
+                return false;
+        } else if (!updatedOn.equals(other.updatedOn))
+            return false;
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Country [id=" + id + ", name=" + name + ", description=" + description + ", countryCode=" + countryCode + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn
+                        + ", deletedOn=" + deletedOn + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", isDeleted=" + isDeleted + "]";
     }
 }
