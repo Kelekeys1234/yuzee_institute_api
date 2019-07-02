@@ -5,7 +5,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.19.RELEASE</version>
+		<!-- <version>1.5.19.RELEASE</version> -->
+		<version>2.1.4.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.seeka</groupId>
@@ -24,11 +25,8 @@
 
 
 	<dependencies>
-		<!-- <dependency>
-			<groupId>com.seeka.backend.common</groupId>
-			<artifactId>com.seeka.backend.common</artifactId>
-			<version>1.0.0</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.seeka.backend.common</groupId> <artifactId>com.seeka.backend.common</artifactId> 
+			<version>1.0.0</version> </dependency> -->
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -119,8 +117,12 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.13</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.jknack</groupId>
+			<artifactId>handlebars</artifactId>
+			<version>4.0.6</version>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
