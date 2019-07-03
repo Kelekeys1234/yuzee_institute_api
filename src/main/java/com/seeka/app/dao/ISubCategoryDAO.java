@@ -1,7 +1,7 @@
 package com.seeka.app.dao;import java.math.BigInteger;
 import java.util.List;
 
-import com.seeka.app.bean.Subcategory;
+import com.seeka.app.bean.SubCategory;
 import com.seeka.app.dto.SubCategoryDto;
 
 public interface ISubCategoryDAO {
@@ -12,8 +12,8 @@ public interface ISubCategoryDAO {
 
     public SubCategoryDto getSubCategoryById(BigInteger subCategoryId);
 
-    public boolean saveSubCategory(Subcategory subCategory);
+    public boolean saveSubCategory(SubCategory subCategory);
 
-    public Subcategory findById(BigInteger id);
+    public SubCategory findById(BigInteger id);
 
 }

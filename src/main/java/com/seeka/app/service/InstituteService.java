@@ -1,8 +1,6 @@
 package com.seeka.app.service;import java.math.BigInteger;
-
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,16 +17,21 @@ import com.seeka.app.dto.InstituteSearchResultDto;
 public class InstituteService implements IInstituteService {
 
     @Autowired
-    IInstituteDAO dao;
+    private IInstituteDAO dao;
 
     @Override
-    public void save(Institute obj) {
-        dao.save(obj);
+    public void save(Institute institute) {
+    	Date today = new Date();
+    	institute.setCreatedOn(today);
+    	institute.setUpdatedOn(today);
+        dao.save(institute);
     }
 
     @Override
-    public void update(Institute obj) {
-        dao.update(obj);
+    public void update(Institute institute) {
+    	Date today = new Date();
+    	institute.setUpdatedOn(today);
+        dao.update(institute);
     }
 
     @Override

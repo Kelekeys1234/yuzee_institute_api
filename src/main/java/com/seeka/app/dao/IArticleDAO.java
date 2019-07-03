@@ -7,21 +7,21 @@ import com.seeka.app.dto.SearchDto;
 
 public interface IArticleDAO {
 
-    public List<SeekaArticles> getAll();
+     List<SeekaArticles> getAll();
 
-    public List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto);
+     List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto);
 
-    public SeekaArticles findById(BigInteger uId);
+     SeekaArticles findById(BigInteger uId);
 
-    public void deleteArticle(SeekaArticles article);
+     void deleteArticle(SeekaArticles article);
 
-    public List<SeekaArticles> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status);
+     List<SeekaArticles> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status);
 
-    public int findTotalCount();
+     int findTotalCount();
 
-    public SeekaArticles save(SeekaArticles article);
+     SeekaArticles save(SeekaArticles article);
 
-    public void updateArticle(BigInteger subCAtegory, BigInteger id);
+     void updateArticle(BigInteger subCAtegory, BigInteger id);
 
-    public List<SeekaArticles> searchArticle(SearchDto article);
+     List<SeekaArticles> searchArticle(SearchDto article);
 }

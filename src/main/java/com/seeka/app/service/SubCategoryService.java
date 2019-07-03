@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.app.bean.Subcategory;
+import com.seeka.app.bean.SubCategory;
 import com.seeka.app.dao.ICategoryDAO;
 import com.seeka.app.dao.ISubCategoryDAO;
 import com.seeka.app.dto.SubCategoryDto;
@@ -45,10 +45,10 @@ public class SubCategoryService implements ISubCategoryService {
     @Override
     public Map<String, Object> saveSubCategory(SubCategoryDto subCategoryDto) {
         Map<String, Object> response = new HashMap<String, Object>();
-        Subcategory subCategory = null;
+        SubCategory subCategory = null;
         boolean status = true;
         if (subCategoryDto != null) {
-            subCategory = new Subcategory();
+            subCategory = new SubCategory();
             if (subCategoryDto.getId() != null) {
                 subCategory = subCategoryDAO.findById(subCategoryDto.getId());
             }
@@ -77,7 +77,7 @@ public class SubCategoryService implements ISubCategoryService {
         boolean status = true;
         try {
             if (subCategoryId != null) {
-                Subcategory subCategory = subCategoryDAO.findById(subCategoryId);
+                SubCategory subCategory = subCategoryDAO.findById(subCategoryId);
                 if (subCategory != null) {
                     subCategory.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
                     subCategory.setIsDeleted(false);

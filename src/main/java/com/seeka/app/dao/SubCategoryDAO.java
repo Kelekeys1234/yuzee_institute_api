@@ -11,7 +11,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.Subcategory;
+import com.seeka.app.bean.SubCategory;
 import com.seeka.app.dto.SubCategoryDto;
 
 @Repository
@@ -44,12 +44,12 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     public List<SubCategoryDto> getSubCategoryByCategory(BigInteger categoryId) {
         List<SubCategoryDto> subCategoryDtos = new ArrayList<SubCategoryDto>();
         Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(Subcategory.class);
+        Criteria criteria = session.createCriteria(SubCategory.class);
         criteria.add(Restrictions.eq("category.id", categoryId));
         criteria.addOrder(Order.asc("name"));
-        List<Subcategory> subCategories = criteria.list();
+        List<SubCategory> subCategories = criteria.list();
         if (subCategories != null && !subCategories.isEmpty()) {
-            for (Subcategory sc : subCategories) {
+            for (SubCategory sc : subCategories) {
                 SubCategoryDto subCategoryDto = new SubCategoryDto();
                 subCategoryDto.setId(sc.getId());
                 subCategoryDto.setName(sc.getName());
@@ -69,7 +69,7 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     @Override
     public SubCategoryDto getSubCategoryById(BigInteger subCategoryId) {
         Session session = sessionFactory.getCurrentSession();
-        Subcategory subCategory = session.get(Subcategory.class, subCategoryId);
+        SubCategory subCategory = session.get(SubCategory.class, subCategoryId);
         SubCategoryDto subCategoryDto = null;
         if (subCategory != null) {
             subCategoryDto = new SubCategoryDto();
@@ -83,7 +83,7 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     }
 
     @Override
-    public boolean saveSubCategory(Subcategory subCategory) {
+    public boolean saveSubCategory(SubCategory subCategory) {
         boolean status = true;
         try {
             Session session = sessionFactory.getCurrentSession();
@@ -95,9 +95,9 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     }
 
     @Override
-    public Subcategory findById(BigInteger id) {
+    public SubCategory findById(BigInteger id) {
         Session session = sessionFactory.getCurrentSession();
-        Subcategory subCategory = session.get(Subcategory.class, id);
+        SubCategory subCategory = session.get(SubCategory.class, id);
         return subCategory;
     }
 }

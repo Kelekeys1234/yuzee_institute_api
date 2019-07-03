@@ -14,31 +14,31 @@ import com.seeka.app.dao.IServiceDetailsDAO;
 public class ServiceDetailsService implements IServiceDetailsService {
 	
 	@Autowired
-	IServiceDetailsDAO dao;
+	private IServiceDetailsDAO iServiceDetailsDAO;
 	
 	@Override
 	public void save(com.seeka.app.bean.Service obj) {
-		dao.save(obj);
+		iServiceDetailsDAO.save(obj);
 	}
 	
 	@Override
 	public void update(com.seeka.app.bean.Service obj) {
-		dao.update(obj);
+		iServiceDetailsDAO.update(obj);
 	}
 	
 	@Override
 	public com.seeka.app.bean.Service get(BigInteger id) {
-		return dao.get(id);
+		return iServiceDetailsDAO.get(id);
 	}
 	
 	@Override
 	public List<com.seeka.app.bean.Service> getAllInstituteByCountry(BigInteger countryId){
-		return dao.getAllInstituteByCountry(countryId);
+		return iServiceDetailsDAO.getAllInstituteByCountry(countryId);
 	}
 	
 	@Override
 	public List<com.seeka.app.bean.Service> getAll(){
-		return dao.getAll();
+		return iServiceDetailsDAO.getAll();
 	}
 
 	

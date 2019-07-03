@@ -12,23 +12,23 @@ import com.seeka.app.dto.CourseSearchDto;
 
 public interface ICourseDAO {
 
-    public void save(Course obj);
+     void save(Course obj);
 
-    public void update(Course obj);
+     void update(Course obj);
 
-    public Course get(BigInteger id);
+     Course get(BigInteger id);
 
-    public List<Course> getAll();
+     List<Course> getAll();
 
-    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, BigInteger userCountryId);
+     List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, BigInteger userCountryId);
 
-    public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
+     CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
 
-    public List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
+     List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
-    public Map<String, Object> getCourse(BigInteger courseid);
+     Map<String, Object> getCourse(BigInteger courseid);
 
-    public List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
+     List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
 
-    public List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
+     List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 }

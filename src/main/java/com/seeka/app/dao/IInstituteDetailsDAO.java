@@ -6,9 +6,9 @@ import com.seeka.app.bean.InstituteDetails;
 
 public interface IInstituteDetailsDAO {
 	
-	public void save(InstituteDetails obj);
-	public void update(InstituteDetails obj);
-	public InstituteDetails get(BigInteger id);
-	public List<InstituteDetails> getAllInstituteByCountry(BigInteger countryId);	
-	public List<InstituteDetails> getAll();	
+	void save(InstituteDetails obj);
+	void update(InstituteDetails obj);
+	InstituteDetails get(BigInteger id);
+	List<InstituteDetails> getAllInstituteByCountry(BigInteger countryId);	
+	List<InstituteDetails> getAll();	
 }

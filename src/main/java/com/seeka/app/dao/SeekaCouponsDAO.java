@@ -1,16 +1,11 @@
 package com.seeka.app.dao;import java.math.BigInteger;
-
 import java.util.List;
 
-
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.City;
 import com.seeka.app.bean.SeekaCoupons;
 
 @Repository

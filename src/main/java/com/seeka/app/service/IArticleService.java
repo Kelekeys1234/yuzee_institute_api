@@ -14,31 +14,31 @@ import com.seeka.app.dto.SearchDto;
 
 public interface IArticleService {
 
-    public List<SeekaArticles> getAll();
+     List<SeekaArticles> getAll();
 
-    public List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto);
+     List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto);
 
-    public Map<String, Object> deleteArticle(String articleId);
+     Map<String, Object> deleteArticle(String articleId);
 
-    public Map<String, Object> getArticleById(String articleId);
+     Map<String, Object> getArticleById(String articleId);
 
-    public Map<String, Object> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status);
+     Map<String, Object> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status);
 
-    public Map<String, Object> saveArticle(MultipartFile file, ArticleDto article);
+     Map<String, Object> saveArticle(MultipartFile file, ArticleDto article);
 
-    public Map<String, Object> searchArticle(SearchDto article);
+     Map<String, Object> searchArticle(SearchDto article);
 
-    public Map<String, Object> saveMultiArticle(ArticleDto2 article);
+     Map<String, Object> saveMultiArticle(ArticleDto2 article);
 
-    public Map<String, Object> saveArticleFolder(ArticleFolderDto articleFolder);
+     Map<String, Object> saveArticleFolder(ArticleFolderDto articleFolder);
 
-    public Map<String, Object> getArticleFolderById(BigInteger articleFolderId);
+     Map<String, Object> getArticleFolderById(BigInteger articleFolderId);
 
-    public Map<String, Object> getAllArticleFolder();
+     Map<String, Object> getAllArticleFolder();
 
-    public Map<String, Object> deleteArticleFolderById(BigInteger articleFolderId);
+     Map<String, Object> deleteArticleFolderById(BigInteger articleFolderId);
 
-    public Map<String, Object> mapArticleFolder(ArticleFolderMapDto articleFolderMapDto);
+     Map<String, Object> mapArticleFolder(ArticleFolderMapDto articleFolderMapDto);
 
-    public Map<String, Object> getFolderWithArticle(BigInteger userId);
+     Map<String, Object> getFolderWithArticle(BigInteger userId);
 }

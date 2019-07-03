@@ -15,7 +15,7 @@ import com.seeka.app.dao.IInstituteDetailsDAO;
 public class InstituteDetailsService implements IInstituteDetailsService {
 	
 	@Autowired
-	IInstituteDetailsDAO dao;
+	private IInstituteDetailsDAO dao;
 	
 	@Override
 	public void save(InstituteDetails obj) {

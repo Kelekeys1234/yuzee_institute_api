@@ -24,7 +24,7 @@ import com.seeka.app.service.IArticleService;
 public class ArticleController {
 
     @Autowired
-    IArticleService articleService;
+    private IArticleService articleService;
 
     @RequestMapping(value = "/all" , method = RequestMethod.GET)
     public ResponseEntity<?> getAllArticles() throws Exception {

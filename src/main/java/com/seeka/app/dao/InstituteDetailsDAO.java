@@ -1,7 +1,5 @@
 package com.seeka.app.dao;import java.math.BigInteger;
-
 import java.util.List;
-
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -37,6 +35,16 @@ public class InstituteDetailsDAO implements IInstituteDetailsDAO{
 		crit.add(Restrictions.eq("instituteId",id));
 		List<InstituteDetails> list = crit.list();
 		return list !=null && !list.isEmpty()?list.get(0):null;
+		
+//		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+//		CriteriaQuery<InstituteDetails> criteriaQuery = criteriaBuilder.createQuery(InstituteDetails.class);
+//		Root<InstituteDetails> root = criteriaQuery.from(InstituteDetails.class);
+//		criteriaQuery.select(root);
+//		 
+//		Query<InstituteDetails> query = session.createQuery(criteriaQuery);
+//		List<InstituteDetails> results = query.getResultList();
+//		return results !=null && !results.isEmpty()?results.get(0):null;
+		
 	}
 	
 	@Override

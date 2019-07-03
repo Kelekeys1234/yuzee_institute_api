@@ -22,7 +22,7 @@ public class ArticleCourseDAO {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void saveArticleCorses(List<ArticleCourse> list, BigInteger id) {
+    public void saveArticleCorses(List<ArticleCourse> articleCourseList, BigInteger id) {
         try {
             Session session = sessionFactory.getCurrentSession();
             Query query = session.createSQLQuery("SELECT auc.id, auc.course_id FROM article_course auc where auc.article_id='" + id + "'");
@@ -38,8 +38,8 @@ public class ArticleCourseDAO {
                 bean.setId(new BigInteger((row[0].toString())));
                 session.delete(bean);
             }
-            for (ArticleCourse bean : list) {
-                session.save(bean);
+            for (ArticleCourse articleCourse : articleCourseList) {
+                session.save(articleCourse);
             }
         } catch (Exception exception) {
             exception.printStackTrace();

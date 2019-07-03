@@ -7,14 +7,14 @@ import com.seeka.app.dto.CategoryDto;
 
 public interface ICategoryDAO {
 
-    public List<CategoryDto> getAllCategories();
+     List<CategoryDto> getAllCategories();
 
-    public CategoryDto getCategoryById(BigInteger categoryId);
+     CategoryDto getCategoryById(BigInteger categoryId);
 
-    public Category findCategoryById(BigInteger category);
+     Category findCategoryById(BigInteger category);
 
-    public Category findById(BigInteger id);
+     Category findById(BigInteger id);
 
-    public boolean saveCategory(Category category);
+     boolean saveCategory(Category category);
 
 }

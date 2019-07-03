@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Category;
 import com.seeka.app.bean.SeekaArticles;
-import com.seeka.app.bean.Subcategory;
+import com.seeka.app.bean.SubCategory;
 import com.seeka.app.dto.PageLookupDto;
 import com.seeka.app.dto.SearchDto;
 import com.seeka.app.dto.SubCategoryDto;
@@ -62,7 +62,7 @@ public class ArticleDAO implements IArticleDAO {
 
             }
             if (String.valueOf(row[7]) != null && !String.valueOf(row[7]).equals("null")) {
-                Subcategory subCategory = session.get(Subcategory.class, new BigInteger((String.valueOf(row[7]))));
+                SubCategory subCategory = session.get(SubCategory.class, new BigInteger((String.valueOf(row[7]))));
                 SubCategoryDto subCategoryDto = null;
                 if (subCategory != null) {
                     subCategoryDto = new SubCategoryDto();
@@ -124,7 +124,7 @@ public class ArticleDAO implements IArticleDAO {
                 article.setCategory(session.get(Category.class, new BigInteger((String.valueOf(row[7])))));
             }
             if (String.valueOf(row[8]) != null && !String.valueOf(row[8]).equals("null")) {
-                Subcategory subCategory = session.get(Subcategory.class, new BigInteger((String.valueOf(row[8]))));
+                SubCategory subCategory = session.get(SubCategory.class, new BigInteger((String.valueOf(row[8]))));
                 SubCategoryDto subCategoryDto = null;
                 if (subCategory != null) {
                     subCategoryDto = new SubCategoryDto();
@@ -231,7 +231,7 @@ public class ArticleDAO implements IArticleDAO {
 
             }
             if (String.valueOf(row[8]) != null) {
-                Subcategory subCategory = session.get(Subcategory.class, new BigInteger((String.valueOf(row[8]))));
+                SubCategory subCategory = session.get(SubCategory.class, new BigInteger((String.valueOf(row[8]))));
                 SubCategoryDto subCategoryDto = null;
                 if (subCategory != null) {
                     subCategoryDto = new SubCategoryDto();

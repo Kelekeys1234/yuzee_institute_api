@@ -1,8 +1,6 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;import static javax.persistence.GenerationType.IDENTITY;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.io.Serializable;
+import java.math.BigInteger;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,14 +15,15 @@ import com.seeka.app.enumeration.EnglishType;
 
 @Entity
 @Table(name="user_edu_iel_tof_score")
-public class UserEnglishScore extends RecordModifier implements Serializable {	
+public class UserEnglishScore extends RecordModifier {	
+	
+
 	
 	/**
 	 * 
 	 */
-	
-	private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = -1461179559012854449L;
+
 	@Id
     @GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id")

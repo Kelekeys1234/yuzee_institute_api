@@ -47,26 +47,26 @@ import com.seeka.app.util.PaginationUtil;
 public class InstituteController {
 
     @Autowired
-    IInstituteService instituteService;
+    private IInstituteService instituteService;
 
     @Autowired
-    IInstituteDetailsService instituteDetailsService;
+    private IInstituteDetailsService instituteDetailsService;
 
     @Autowired
-    IInstituteTypeService instituteTypeService;
+    private IInstituteTypeService instituteTypeService;
 
     @Autowired
-    IServiceDetailsService serviceDetailsService;
+    private IServiceDetailsService serviceDetailsService;
 
     @Autowired
-    IInstituteServiceDetailsService instituteServiceDetailsService;
+    private IInstituteServiceDetailsService instituteServiceDetailsService;
 
     @Autowired
-    IUserService userService;
+    private IUserService userService;
 
     @RequestMapping(value = "/type", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> saveInstituteType(@Valid @RequestBody InstituteType instituteTypeObj) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<String, Object>(3);
         instituteTypeService.save(instituteTypeObj);
         response.put("status", 1);
         response.put("message", "Success.!");
@@ -76,8 +76,7 @@ public class InstituteController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> save(@Valid @RequestBody Institute instituteObj) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        instituteObj.setCreatedOn(new Date());
+        Map<String, Object> response = new HashMap<String, Object>(3);
         instituteService.save(instituteObj);
         if (null != instituteObj.getInstituteDetailsObj()) {
             InstituteDetails instituteDetails = instituteObj.getInstituteDetailsObj();

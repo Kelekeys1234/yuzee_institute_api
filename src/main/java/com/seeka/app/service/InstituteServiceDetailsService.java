@@ -15,31 +15,31 @@ import com.seeka.app.dao.IInstituteServiceDetailsDAO;
 public class InstituteServiceDetailsService implements IInstituteServiceDetailsService {
 
     @Autowired
-    IInstituteServiceDetailsDAO dao;
+    private IInstituteServiceDetailsDAO iInstituteServiceDetailsDAO;
 
     @Override
-    public void save(InstituteService obj) {
-        dao.save(obj);
+    public void save(InstituteService instituteService) {
+        iInstituteServiceDetailsDAO.save(instituteService);
     }
 
     @Override
-    public void update(InstituteService obj) {
-        dao.update(obj);
+    public void update(InstituteService instituteService) {
+        iInstituteServiceDetailsDAO.update(instituteService);
     }
 
     @Override
     public InstituteService get(BigInteger id) {
-        return dao.get(id);
+        return iInstituteServiceDetailsDAO.get(id);
     }
 
     @Override
     public List<InstituteService> getAll() {
-        return dao.getAll();
+        return iInstituteServiceDetailsDAO.getAll();
     }
 
     @Override
     public List<String> getAllServices(BigInteger instituteId) {
-        return dao.getAllServices(instituteId);
+        return iInstituteServiceDetailsDAO.getAllServices(instituteId);
     }
 
 }

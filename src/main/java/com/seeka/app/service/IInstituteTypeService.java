@@ -4,7 +4,7 @@ import com.seeka.app.bean.InstituteType;
 
 public interface IInstituteTypeService {
 
-	public void save(InstituteType obj);
-	public void update(InstituteType obj);
-	public InstituteType get(BigInteger id);
+	void save(InstituteType obj);
+	void update(InstituteType obj);
+	InstituteType get(BigInteger id);
 }

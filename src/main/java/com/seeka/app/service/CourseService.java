@@ -20,51 +20,51 @@ import com.seeka.app.dto.CourseSearchDto;
 public class CourseService implements ICourseService {
 
     @Autowired
-    ICourseDAO dao;
+    private ICourseDAO iCourseDAO;
 
     @Override
-    public void save(Course obj) {
-        dao.save(obj);
+    public void save(Course course) {
+        iCourseDAO.save(course);
     }
 
     @Override
-    public void update(Course obj) {
-        dao.update(obj);
+    public void update(Course course) {
+        iCourseDAO.update(course);
     }
 
     @Override
     public Course get(BigInteger id) {
-        return dao.get(id);
+        return iCourseDAO.get(id);
     }
 
     @Override
     public List<Course> getAll() {
-        return dao.getAll();
+        return iCourseDAO.getAll();
     }
 
     @Override
-    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, BigInteger userCountryId) {
-        return dao.getAllCoursesByFilter(filterObj, currency, userCountryId);
+    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto courseSearchDto, Currency currency, BigInteger userCountryId) {
+        return iCourseDAO.getAllCoursesByFilter(courseSearchDto, currency, userCountryId);
     }
 
     @Override
-    public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode) {
-        return dao.getAllCoursesFilterCostInfo(filterObj, currency, oldCurrencyCode);
+    public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto courseSearchDto, Currency currency, String oldCurrencyCode) {
+        return iCourseDAO.getAllCoursesFilterCostInfo(courseSearchDto, currency, oldCurrencyCode);
     }
 
     @Override
-    public List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj) {
-        return dao.getAllCoursesByInstitute(instituteId, filterObj);
+    public List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto courseSearchDto) {
+        return iCourseDAO.getAllCoursesByInstitute(instituteId, courseSearchDto);
     }
 
     @Override
-    public Map<String, Object> getCourse(BigInteger courseid) {
-        return dao.getCourse(courseid);
+    public Map<String, Object> getCourse(BigInteger courseId) {
+        return iCourseDAO.getCourse(courseId);
     }
 
     @Override
     public List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId) {
-        return dao.getCouresesByFacultyId(facultyId);
+        return iCourseDAO.getCouresesByFacultyId(facultyId);
     }
 
     @Override
@@ -74,6 +74,6 @@ public class CourseService implements ICourseService {
         for (String id : citiesArray) {
             tempList = tempList + "," + "'" + new BigInteger(id) + "'";
         }
-        return dao.getCouresesByListOfFacultyId(tempList.substring(1, tempList.length()));
+        return iCourseDAO.getCouresesByListOfFacultyId(tempList.substring(1, tempList.length()));
     }
 }

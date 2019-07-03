@@ -7,9 +7,9 @@ import com.seeka.app.bean.Service;
 
 public interface IServiceDetailsService {
 	
-	public void save(Service obj);
-	public void update(Service obj);
-	public Service get(BigInteger id);
-	public List<Service> getAllInstituteByCountry(BigInteger countryId);
-	public List<Service> getAll();
+	void save(Service obj);
+	void update(Service obj);
+	Service get(BigInteger id);
+	List<Service> getAllInstituteByCountry(BigInteger countryId);
+	List<Service> getAll();
 }

@@ -1,9 +1,6 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;import static javax.persistence.GenerationType.IDENTITY;
 
-
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.io.Serializable;
+import java.math.BigInteger;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,12 +11,12 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="seeka_scholarship")
-public class SeekaScholarships extends RecordModifier implements Serializable {
+public class SeekaScholarships extends RecordModifier {
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -8981672129777348075L;
 
 	@Id
     @GeneratedValue(strategy = IDENTITY)

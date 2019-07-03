@@ -10,14 +10,14 @@ import com.seeka.app.dto.InstituteSearchResultDto;
 
 public interface IInstituteDAO {
 	
-	public void save(Institute obj);
-	public void update(Institute obj);
-	public Institute get(BigInteger id);
-	public List<Institute> getAllInstituteByCountry(BigInteger countryId);	
-	public List<Institute> getAll();
-	public List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
-	public List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj);
-	public InstituteResponseDto getInstituteByID(BigInteger instituteId);
-    public List<InstituteResponseDto> getInstitudeByCityId(BigInteger cityId);
-    public List<InstituteResponseDto> getInstituteByListOfCityId(String citisId);
+	 void save(Institute obj);
+	 void update(Institute obj);
+	 Institute get(BigInteger id);
+	 List<Institute> getAllInstituteByCountry(BigInteger countryId);	
+	 List<Institute> getAll();
+	 List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
+	 List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj);
+	 InstituteResponseDto getInstituteByID(BigInteger instituteId);
+     List<InstituteResponseDto> getInstitudeByCityId(BigInteger cityId);
+     List<InstituteResponseDto> getInstituteByListOfCityId(String citisId);
 }
