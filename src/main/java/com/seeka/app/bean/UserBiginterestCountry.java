@@ -1,4 +1,7 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -20,8 +23,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "user_biginterest_country")
-public class UserBiginterestCountry implements java.io.Serializable {
+public class UserBiginterestCountry implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5961885660772909758L;
 	private BigInteger id;
 	private Country country;
 	private UserInfo userInfo;
@@ -40,9 +47,8 @@ public class UserBiginterestCountry implements java.io.Serializable {
 		this.userInfo = userInfo;
 	}
 
-	public UserBiginterestCountry(Country country, UserInfo userInfo,
-			Date createdOn, Date updatedOn, Date deletedOn, String createdBy,
-			String updatedBy, Boolean isDeleted) {
+	public UserBiginterestCountry(Country country, UserInfo userInfo, Date createdOn, Date updatedOn, Date deletedOn,
+			String createdBy, String updatedBy, Boolean isDeleted) {
 		this.country = country;
 		this.userInfo = userInfo;
 		this.createdOn = createdOn;

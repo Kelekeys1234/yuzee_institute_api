@@ -1,5 +1,8 @@
-package com.seeka.app.bean;import static javax.persistence.GenerationType.IDENTITY;
+package com.seeka.app.bean;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 
@@ -19,8 +22,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "country_english_eligibility")
-public class CountryEnglishEligibility implements java.io.Serializable {
+public class CountryEnglishEligibility implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8884333439508471297L;
 	private BigInteger id;
 	private Country country;
 	private String englishType;
@@ -44,11 +51,9 @@ public class CountryEnglishEligibility implements java.io.Serializable {
 		this.country = country;
 	}
 
-	public CountryEnglishEligibility(Country country, String englishType,
-			Double reading, Double writing, Double speaking,
-			Double listening, Double overall, Boolean isActive,
-			Date createdOn, Date updatedOn, Date deletedOn, String createdBy,
-			String updatedBy, Boolean isDeleted) {
+	public CountryEnglishEligibility(Country country, String englishType, Double reading, Double writing,
+			Double speaking, Double listening, Double overall, Boolean isActive, Date createdOn, Date updatedOn,
+			Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
 		this.country = country;
 		this.englishType = englishType;
 		this.reading = reading;
@@ -206,129 +211,141 @@ public class CountryEnglishEligibility implements java.io.Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((country == null) ? 0 : country.hashCode());
-        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
-        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
-        result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
-        result = prime * result + ((englishType == null) ? 0 : englishType.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
-        result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
-        result = prime * result + ((listening == null) ? 0 : listening.hashCode());
-        result = prime * result + ((overall == null) ? 0 : overall.hashCode());
-        result = prime * result + ((reading == null) ? 0 : reading.hashCode());
-        result = prime * result + ((speaking == null) ? 0 : speaking.hashCode());
-        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
-        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
-        result = prime * result + ((writing == null) ? 0 : writing.hashCode());
-        return result;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+		result = prime * result + ((englishType == null) ? 0 : englishType.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+		result = prime * result + ((listening == null) ? 0 : listening.hashCode());
+		result = prime * result + ((overall == null) ? 0 : overall.hashCode());
+		result = prime * result + ((reading == null) ? 0 : reading.hashCode());
+		result = prime * result + ((speaking == null) ? 0 : speaking.hashCode());
+		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+		result = prime * result + ((writing == null) ? 0 : writing.hashCode());
+		return result;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        CountryEnglishEligibility other = (CountryEnglishEligibility) obj;
-        if (country == null) {
-            if (other.country != null)
-                return false;
-        } else if (!country.equals(other.country))
-            return false;
-        if (createdBy == null) {
-            if (other.createdBy != null)
-                return false;
-        } else if (!createdBy.equals(other.createdBy))
-            return false;
-        if (createdOn == null) {
-            if (other.createdOn != null)
-                return false;
-        } else if (!createdOn.equals(other.createdOn))
-            return false;
-        if (deletedOn == null) {
-            if (other.deletedOn != null)
-                return false;
-        } else if (!deletedOn.equals(other.deletedOn))
-            return false;
-        if (englishType == null) {
-            if (other.englishType != null)
-                return false;
-        } else if (!englishType.equals(other.englishType))
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (isActive == null) {
-            if (other.isActive != null)
-                return false;
-        } else if (!isActive.equals(other.isActive))
-            return false;
-        if (isDeleted == null) {
-            if (other.isDeleted != null)
-                return false;
-        } else if (!isDeleted.equals(other.isDeleted))
-            return false;
-        if (listening == null) {
-            if (other.listening != null)
-                return false;
-        } else if (!listening.equals(other.listening))
-            return false;
-        if (overall == null) {
-            if (other.overall != null)
-                return false;
-        } else if (!overall.equals(other.overall))
-            return false;
-        if (reading == null) {
-            if (other.reading != null)
-                return false;
-        } else if (!reading.equals(other.reading))
-            return false;
-        if (speaking == null) {
-            if (other.speaking != null)
-                return false;
-        } else if (!speaking.equals(other.speaking))
-            return false;
-        if (updatedBy == null) {
-            if (other.updatedBy != null)
-                return false;
-        } else if (!updatedBy.equals(other.updatedBy))
-            return false;
-        if (updatedOn == null) {
-            if (other.updatedOn != null)
-                return false;
-        } else if (!updatedOn.equals(other.updatedOn))
-            return false;
-        if (writing == null) {
-            if (other.writing != null)
-                return false;
-        } else if (!writing.equals(other.writing))
-            return false;
-        return true;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CountryEnglishEligibility other = (CountryEnglishEligibility) obj;
+		if (country == null) {
+			if (other.country != null)
+				return false;
+		} else if (!country.equals(other.country))
+			return false;
+		if (createdBy == null) {
+			if (other.createdBy != null)
+				return false;
+		} else if (!createdBy.equals(other.createdBy))
+			return false;
+		if (createdOn == null) {
+			if (other.createdOn != null)
+				return false;
+		} else if (!createdOn.equals(other.createdOn))
+			return false;
+		if (deletedOn == null) {
+			if (other.deletedOn != null)
+				return false;
+		} else if (!deletedOn.equals(other.deletedOn))
+			return false;
+		if (englishType == null) {
+			if (other.englishType != null)
+				return false;
+		} else if (!englishType.equals(other.englishType))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (isActive == null) {
+			if (other.isActive != null)
+				return false;
+		} else if (!isActive.equals(other.isActive))
+			return false;
+		if (isDeleted == null) {
+			if (other.isDeleted != null)
+				return false;
+		} else if (!isDeleted.equals(other.isDeleted))
+			return false;
+		if (listening == null) {
+			if (other.listening != null)
+				return false;
+		} else if (!listening.equals(other.listening))
+			return false;
+		if (overall == null) {
+			if (other.overall != null)
+				return false;
+		} else if (!overall.equals(other.overall))
+			return false;
+		if (reading == null) {
+			if (other.reading != null)
+				return false;
+		} else if (!reading.equals(other.reading))
+			return false;
+		if (speaking == null) {
+			if (other.speaking != null)
+				return false;
+		} else if (!speaking.equals(other.speaking))
+			return false;
+		if (updatedBy == null) {
+			if (other.updatedBy != null)
+				return false;
+		} else if (!updatedBy.equals(other.updatedBy))
+			return false;
+		if (updatedOn == null) {
+			if (other.updatedOn != null)
+				return false;
+		} else if (!updatedOn.equals(other.updatedOn))
+			return false;
+		if (writing == null) {
+			if (other.writing != null)
+				return false;
+		} else if (!writing.equals(other.writing))
+			return false;
+		return true;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "CountryEnglishEligibility [id=" + id + ", country=" + country + ", englishType=" + englishType + ", reading=" + reading + ", writing=" + writing + ", speaking="
-                        + speaking + ", listening=" + listening + ", overall=" + overall + ", isActive=" + isActive + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn
-                        + ", deletedOn=" + deletedOn + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", isDeleted=" + isDeleted + "]";
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("CountryEnglishEligibility [id=").append(id).append(", country=").append(country)
+				.append(", englishType=").append(englishType).append(", reading=").append(reading).append(", writing=")
+				.append(writing).append(", speaking=").append(speaking).append(", listening=").append(listening)
+				.append(", overall=").append(overall).append(", isActive=").append(isActive).append(", createdOn=")
+				.append(createdOn).append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
+				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
+				.append(", isDeleted=").append(isDeleted).append("]");
+		return builder.toString();
+	}
 
 }

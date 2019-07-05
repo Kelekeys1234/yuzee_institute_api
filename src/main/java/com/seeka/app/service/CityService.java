@@ -29,33 +29,33 @@ import com.seeka.app.util.IConstant;
 public class CityService implements ICityService {
 
     @Autowired
-    private ICityDAO dao;
+    private ICityDAO iCityDAO;
 
     @Autowired
-    private ICountryDAO countryDAO;
+    private ICountryDAO iCountryDAO;
 
     @Autowired
     private CountryImagesDAO countryImagesDAO;
 
     @Override
     public void save(City obj) {
-        dao.save(obj);
+        iCityDAO.save(obj);
 
     }
 
     @Override
     public List<City> getAll() {
-        return dao.getAll();
+        return iCityDAO.getAll();
     }
 
     @Override
     public City get(BigInteger id) {
-        return dao.get(id);
+        return iCityDAO.get(id);
     }
 
     @Override
     public List<City> getAllCitiesByCountry(BigInteger countryId) {
-        return dao.getAllCitiesByCountry(countryId);
+        return iCityDAO.getAllCitiesByCountry(countryId);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CityService implements ICityService {
             list.add(new BigInteger(id));
             tempList = tempList + "," + "'" + new BigInteger(id) + "'";
         }
-        return dao.getAllMultipleCitiesByCountry(tempList.substring(1, tempList.length()));
+        return iCityDAO.getAllMultipleCitiesByCountry(tempList.substring(1, tempList.length()));
     }
 
     @Override
@@ -77,10 +77,10 @@ public class CityService implements ICityService {
         try {
             Country country = null;
             if (cityObj.getCountry() != null) {
-                country = countryDAO.get(cityObj.getCountry().getId());
+                country = iCountryDAO.get(cityObj.getCountry().getId());
             }
             City city = CommonUtil.convertCityDTOToBean(cityObj, country);
-            dao.save(city);
+            iCityDAO.save(city);
             if (cityObj != null && cityObj.getCityImageDtos() != null && !cityObj.getCityImageDtos().isEmpty()) {
                 for (CityImageDto dto : cityObj.getCityImageDtos()) {
                     CityImages cityImages = new CityImages();

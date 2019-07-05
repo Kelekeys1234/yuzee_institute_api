@@ -1,4 +1,6 @@
-package com.seeka.app.bean;import static javax.persistence.GenerationType.IDENTITY;
+package com.seeka.app.bean;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 import java.math.BigInteger;
 
@@ -14,47 +16,45 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.seeka.app.enumeration.EnglishType;
 
 @Entity
-@Table(name="user_edu_iel_tof_score")
-public class UserEnglishScore extends RecordModifier {	
-	
+@Table(name = "user_edu_iel_tof_score")
+public class UserEnglishScore extends RecordModifier {
 
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1461179559012854449L;
 
 	@Id
-    @GeneratedValue(strategy = IDENTITY)
+	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id")
 	private BigInteger id;
-	
+
 	@JsonIgnore
 	@Column(name = "user_id")
 	private BigInteger userId;
-	
+
 	@Enumerated(EnumType.STRING)
-	@Column(name="english_type")
-	private EnglishType englishType;  
-	
-	@Column(name="reading")
-	private	Double reading;  
-	
-	@Column(name="writing")
-	private	Double writing;  
-	
-	@Column(name="speaking")
-	private	Double speaking;  
-	
-	@Column(name="listening")
-	private	Double listening;  
-	
-	@Column(name="overall")
-	private	Double overall;  
-	
+	@Column(name = "english_type")
+	private EnglishType englishType;
+
+	@Column(name = "reading")
+	private Double reading;
+
+	@Column(name = "writing")
+	private Double writing;
+
+	@Column(name = "speaking")
+	private Double speaking;
+
+	@Column(name = "listening")
+	private Double listening;
+
+	@Column(name = "overall")
+	private Double overall;
+
 	@JsonIgnore
-	@Column(name="is_active")
-	private	Boolean isActive;
+	@Column(name = "is_active")
+	private Boolean isActive;
 
 	public BigInteger getId() {
 		return id;
@@ -126,6 +126,86 @@ public class UserEnglishScore extends RecordModifier {
 
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
-	}  
-	
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((englishType == null) ? 0 : englishType.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+		result = prime * result + ((listening == null) ? 0 : listening.hashCode());
+		result = prime * result + ((overall == null) ? 0 : overall.hashCode());
+		result = prime * result + ((reading == null) ? 0 : reading.hashCode());
+		result = prime * result + ((speaking == null) ? 0 : speaking.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		result = prime * result + ((writing == null) ? 0 : writing.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserEnglishScore other = (UserEnglishScore) obj;
+		if (englishType != other.englishType)
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (isActive == null) {
+			if (other.isActive != null)
+				return false;
+		} else if (!isActive.equals(other.isActive))
+			return false;
+		if (listening == null) {
+			if (other.listening != null)
+				return false;
+		} else if (!listening.equals(other.listening))
+			return false;
+		if (overall == null) {
+			if (other.overall != null)
+				return false;
+		} else if (!overall.equals(other.overall))
+			return false;
+		if (reading == null) {
+			if (other.reading != null)
+				return false;
+		} else if (!reading.equals(other.reading))
+			return false;
+		if (speaking == null) {
+			if (other.speaking != null)
+				return false;
+		} else if (!speaking.equals(other.speaking))
+			return false;
+		if (userId == null) {
+			if (other.userId != null)
+				return false;
+		} else if (!userId.equals(other.userId))
+			return false;
+		if (writing == null) {
+			if (other.writing != null)
+				return false;
+		} else if (!writing.equals(other.writing))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserEnglishScore [id=").append(id).append(", userId=").append(userId).append(", englishType=")
+				.append(englishType).append(", reading=").append(reading).append(", writing=").append(writing)
+				.append(", speaking=").append(speaking).append(", listening=").append(listening).append(", overall=")
+				.append(overall).append(", isActive=").append(isActive).append("]");
+		return builder.toString();
+	}
+
 }

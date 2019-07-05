@@ -16,26 +16,26 @@ import com.seeka.app.dao.ICityImagesDAO;
 public class CityImagesService implements ICityImagesService{
 	
 	@Autowired
-	ICityImagesDAO dao;
+	private ICityImagesDAO iCityImagesDAO;
 	
 	@Override
 	public void save(CityImages obj) {
-		dao.save(obj);
+		iCityImagesDAO.save(obj);
 	}
 	
 	@Override
 	public void update(CityImages obj) {
-		dao.update(obj);
+		iCityImagesDAO.update(obj);
 	}
 	
 	@Override
 	public CityImages get(BigInteger id) {
-		return dao.get(id);
+		return iCityImagesDAO.get(id);
 	}
 	
 	@Override
 	public List<CityImages> getAll(){
-		return dao.getAll();
+		return iCityImagesDAO.getAll();
 	} 
 
 }

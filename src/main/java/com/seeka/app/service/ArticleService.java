@@ -51,9 +51,11 @@ import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.GenderDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.PageLookupDto;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.SearchDto;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
+import com.seeka.app.util.PaginationUtil;
 
 @Service
 @Transactional
@@ -190,19 +192,12 @@ public class ArticleService implements IArticleService {
 		Map<String, Object> response = new HashMap<String, Object>();
 		String ResponseStatus = IConstant.SUCCESS;
 		List<SeekaArticles> articles = null;
+		PaginationUtilDto paginationUtilDto = null;
 		int totalCount = 0;
-		int totalPages = 0;
-		boolean hasPreviousPage = false;
-		boolean hasNextPage = false;
 		try {
 			totalCount = articleDAO.findTotalCount();
-			totalPages = (totalCount / size.intValue()) + 1;
-			if (page.intValue() != 1 && page.intValue() <= totalPages) {
-				hasPreviousPage = true;
-			}
-			if (page.intValue() < totalPages) {
-				hasNextPage = true;
-			}
+			paginationUtilDto = PaginationUtil.calculatePagination(page.intValue(), size.intValue(),
+					totalCount);
 			articles = articleDAO.fetchAllArticleByPage(page, size, query, status);
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -211,10 +206,10 @@ public class ArticleService implements IArticleService {
 		response.put("message", ResponseStatus);
 		response.put("articles", articles);
 		response.put("totalCount", totalCount);
-		response.put("pageNumber", page);
-		response.put("hasPreviousPage", hasPreviousPage);
-		response.put("hasNextPage", hasNextPage);
-		response.put("totalPages", totalPages);
+		response.put("pageNumber", paginationUtilDto.getPageNumber());
+		response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		response.put("totalPages", paginationUtilDto.getTotalPages());
 
 		return response;
 	}

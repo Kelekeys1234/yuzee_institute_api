@@ -15,7 +15,7 @@ import com.seeka.app.dao.ISeekaCareerDetailDAO;
 public class SeekaCareerDetailService implements ISeekaCareerDetailService{
 	
 	@Autowired
-	ISeekaCareerDetailDAO dao;
+	private ISeekaCareerDetailDAO dao;
     
 	@Override
 	public void save(SeekaCareerDetail obj) {

@@ -17,36 +17,36 @@ import com.seeka.app.dto.CountryDto;
 public class CountryEmployerService implements ICountryEmployerService{
 	
 	@Autowired
-	ICountryEmployerDAO dao;
+	private ICountryEmployerDAO iCountryEmployerDAO;
 	
 	@Override
 	public void save(CountryEmployers obj) {
-		dao.save(obj);
+		iCountryEmployerDAO.save(obj);
 		
 	}
 	
 	@Override
 	public List<CountryEmployers> getAll() {		
-		return dao.getAll();
+		return iCountryEmployerDAO.getAll();
 	}
     
 	@Override
 	public CountryEmployers get(BigInteger id) {
-		return dao.get(id);
+		return iCountryEmployerDAO.get(id);
 	}
 	
 	@Override
 	public List<CountryDto> getAllUniversityCountries(){
-		return dao.getAllUniversityCountries();
+		return iCountryEmployerDAO.getAllUniversityCountries();
 	}
 	
 	@Override
 	public List<CountryDto> searchInterestByCountry(String name) {		
-		return dao.searchInterestByCountry(name);
+		return iCountryEmployerDAO.searchInterestByCountry(name);
 	}
 	
 	@Override
 	public List<CountryDto> getAllCountries(){
-		return dao.getAllCountries();
+		return iCountryEmployerDAO.getAllCountries();
 	}
 }

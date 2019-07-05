@@ -16,41 +16,41 @@ import com.seeka.app.dto.UserReviewRequestDto;
 public class UserInstCourseService implements IUserInstCourseReviewService {
 
 	@Autowired
-	IUserInstCourseReviewDAO dao;
+	private IUserInstCourseReviewDAO iUserInstCourseReviewDAO;
 
 	@Override
 	public void save(UserCourseReview reviewObj) {
-		dao.save(reviewObj);
+		iUserInstCourseReviewDAO.save(reviewObj);
 	}
 	
 	@Override
 	public void update(UserCourseReview reviewObj) {
-		dao.update(reviewObj);
+		iUserInstCourseReviewDAO.update(reviewObj);
 	}
 	
 	@Override
 	public UserCourseReview get(BigInteger userId) {
-		return dao.get(userId);
+		return iUserInstCourseReviewDAO.get(userId);
 	}
 	
 	@Override
 	public List<UserCourseReview> getAllReviewsByFilter(UserReviewRequestDto filterObj){
-		return dao.getAllReviewsByFilter(filterObj);
+		return iUserInstCourseReviewDAO.getAllReviewsByFilter(filterObj);
 	}
 	
 	@Override
 	public UserCourseReview getOverAllReview(UserReviewRequestDto filterObj) {
-		return dao.getOverAllReview(filterObj);
+		return iUserInstCourseReviewDAO.getOverAllReview(filterObj);
 	}
 	
 	@Override
 	public Boolean findReviewByFilters(UserReviewRequestDto filterObj) {
-		return dao.findReviewByFilters(filterObj);
+		return iUserInstCourseReviewDAO.findReviewByFilters(filterObj);
 	}
 	
 	@Override
 	public List<UserCourseReview> getTopReviewsByFilter(BigInteger courseId, BigInteger instituteId){
-		return dao.getTopReviewsByFilter(courseId,instituteId);
+		return iUserInstCourseReviewDAO.getTopReviewsByFilter(courseId,instituteId);
 	}
 	
 }

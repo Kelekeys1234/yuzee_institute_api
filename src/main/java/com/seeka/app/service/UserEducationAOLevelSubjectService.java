@@ -15,30 +15,30 @@ import com.seeka.app.dao.IUserEducationAOLevelSubjectDAO;
 public class UserEducationAOLevelSubjectService implements IUserEducationAOLevelSubjectService {
 
 	@Autowired
-	IUserEducationAOLevelSubjectDAO dao;
+	private IUserEducationAOLevelSubjectDAO iUserEducationAOLevelSubjectDAO;
 
 	@Override
 	public void save(UserEducationAOLevelSubjects hobbiesObj) {
-		dao.save(hobbiesObj);
+		iUserEducationAOLevelSubjectDAO.save(hobbiesObj);
 	}
 	
 	@Override
 	public void update(UserEducationAOLevelSubjects hobbiesObj) {
-		dao.update(hobbiesObj);
+		iUserEducationAOLevelSubjectDAO.update(hobbiesObj);
 	}
 	
 	@Override
 	public List<UserEducationAOLevelSubjects> getUserLevelSubjectGrades(BigInteger userId) {
-		return dao.getUserLevelSubjectGrades(userId);
+		return iUserEducationAOLevelSubjectDAO.getUserLevelSubjectGrades(userId);
 	}
 	
 	@Override
 	public UserEducationAOLevelSubjects get(BigInteger id) {
-		return dao.get(id);
+		return iUserEducationAOLevelSubjectDAO.get(id);
 	}
 	
 	@Override
 	public List<UserEducationAOLevelSubjects> getActiveUserLevelSubjectGrades(BigInteger userId){
-		return dao.getActiveUserLevelSubjectGrades(userId);
+		return iUserEducationAOLevelSubjectDAO.getActiveUserLevelSubjectGrades(userId);
 	}
 }

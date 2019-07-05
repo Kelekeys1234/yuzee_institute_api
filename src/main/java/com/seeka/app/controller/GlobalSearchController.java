@@ -20,10 +20,10 @@ import com.seeka.app.service.IInstituteKeywordService;
 public class GlobalSearchController {
 
     @Autowired
-    ICourseKeywordService courseKeywordService;
+    private ICourseKeywordService courseKeywordService;
 
     @Autowired
-    IInstituteKeywordService instituteKeywordService;
+    private IInstituteKeywordService instituteKeywordService;
 
     public static void main(String[] args) {
         String str = "Hello I'm your String";

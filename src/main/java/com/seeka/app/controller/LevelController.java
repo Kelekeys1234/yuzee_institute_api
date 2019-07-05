@@ -21,7 +21,7 @@ import com.seeka.app.service.ILevelService;
 public class LevelController {
 
     @Autowired
-    ILevelService levelService;
+    private ILevelService levelService;
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> saveCity(@RequestBody Level obj) throws Exception {

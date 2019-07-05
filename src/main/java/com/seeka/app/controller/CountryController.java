@@ -30,7 +30,7 @@ import com.seeka.app.service.ICountryService;
 public class CountryController {
 
     @Autowired
-    ICountryService countryService;
+    private ICountryService countryService;
 
     @Autowired
     ICountryEnglishEligibilityService countryEnglishEligibilityService;

@@ -15,31 +15,31 @@ import com.seeka.app.dao.IUserTempPasswordDAO;
 public class UserTempPasswordService implements IUserTempPasswordService {
 
 	@Autowired
-	IUserTempPasswordDAO dao;
+	private IUserTempPasswordDAO iUserTempPasswordDAO;
 
 	@Override
 	public void save(UserTempPassword UserTempPassword) {
-		dao.save(UserTempPassword);
+		iUserTempPasswordDAO.save(UserTempPassword);
 	}
 	
 	@Override
 	public void update(UserTempPassword UserTempPassword) {
-		dao.update(UserTempPassword);
+		iUserTempPasswordDAO.update(UserTempPassword);
 	}
 	
 	@Override
 	public UserTempPassword get(BigInteger userId) {
-		return dao.get(userId);
+		return iUserTempPasswordDAO.get(userId);
 	}
 	
 	@Override
 	public UserTempPassword getUserByEmail(String email) {
-		return dao.getUserByEmail(email);
+		return iUserTempPasswordDAO.getUserByEmail(email);
 	}
 	
 	@Override
 	public List<UserTempPassword> getActiveTempPasswordUserId(BigInteger userId){
-		return dao.getActiveTempPasswordUserId(userId);
+		return iUserTempPasswordDAO.getActiveTempPasswordUserId(userId);
 	}
 	
 	 

@@ -15,7 +15,7 @@ import com.seeka.app.dao.IFacultyDAO;
 public class FacultyService implements IFacultyService {
 	
 	@Autowired
-	IFacultyDAO dao;
+	private IFacultyDAO dao;
 	
 	@Override
 	public void save(Faculty obj) {

@@ -34,13 +34,13 @@ import com.seeka.app.service.ICurrencyService;
 public class MigrateController {
 
     @Autowired
-    ICountryService countryService;
+    private ICountryService countryService;
 
     @Autowired
-    ICityService cityService;
+    private ICityService cityService;
 
     @Autowired
-    ICurrencyService currencyService;
+    private ICurrencyService currencyService;
 
     public static Map<String, Country> getCountryMasterData() {
         String csvFile = "E:\\Softwares\\Seeka\\March-2019\\Country\\Country.csv";

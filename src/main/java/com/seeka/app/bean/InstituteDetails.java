@@ -1,4 +1,6 @@
-package com.seeka.app.bean;import java.io.Serializable;
+package com.seeka.app.bean;
+
+import java.io.Serializable;
 import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
@@ -38,11 +40,9 @@ public class InstituteDetails implements Serializable {
 	public InstituteDetails() {
 	}
 
-	public InstituteDetails(String type, String youtubeLink,
-			String ttionFeesPPlan, String courseStart, String openingHour,
-			String closingHour, String enrolmentLink, String aboutUsInfo,
-			String climate2, String avgCostOfLiving, String whatsappNo,
-			String englishPartners) {
+	public InstituteDetails(String type, String youtubeLink, String ttionFeesPPlan, String courseStart,
+			String openingHour, String closingHour, String enrolmentLink, String aboutUsInfo, String climate2,
+			String avgCostOfLiving, String whatsappNo, String englishPartners) {
 		this.type = type;
 		this.youtubeLink = youtubeLink;
 		this.ttionFeesPPlan = ttionFeesPPlan;
@@ -176,117 +176,124 @@ public class InstituteDetails implements Serializable {
 		this.englishPartners = englishPartners;
 	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((aboutUsInfo == null) ? 0 : aboutUsInfo.hashCode());
-        result = prime * result + ((avgCostOfLiving == null) ? 0 : avgCostOfLiving.hashCode());
-        result = prime * result + ((climate2 == null) ? 0 : climate2.hashCode());
-        result = prime * result + ((closingHour == null) ? 0 : closingHour.hashCode());
-        result = prime * result + ((courseStart == null) ? 0 : courseStart.hashCode());
-        result = prime * result + ((englishPartners == null) ? 0 : englishPartners.hashCode());
-        result = prime * result + ((enrolmentLink == null) ? 0 : enrolmentLink.hashCode());
-        result = prime * result + ((instituteId == null) ? 0 : instituteId.hashCode());
-        result = prime * result + ((openingHour == null) ? 0 : openingHour.hashCode());
-        result = prime * result + ((ttionFeesPPlan == null) ? 0 : ttionFeesPPlan.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((whatsappNo == null) ? 0 : whatsappNo.hashCode());
-        result = prime * result + ((youtubeLink == null) ? 0 : youtubeLink.hashCode());
-        return result;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((aboutUsInfo == null) ? 0 : aboutUsInfo.hashCode());
+		result = prime * result + ((avgCostOfLiving == null) ? 0 : avgCostOfLiving.hashCode());
+		result = prime * result + ((climate2 == null) ? 0 : climate2.hashCode());
+		result = prime * result + ((closingHour == null) ? 0 : closingHour.hashCode());
+		result = prime * result + ((courseStart == null) ? 0 : courseStart.hashCode());
+		result = prime * result + ((englishPartners == null) ? 0 : englishPartners.hashCode());
+		result = prime * result + ((enrolmentLink == null) ? 0 : enrolmentLink.hashCode());
+		result = prime * result + ((instituteId == null) ? 0 : instituteId.hashCode());
+		result = prime * result + ((openingHour == null) ? 0 : openingHour.hashCode());
+		result = prime * result + ((ttionFeesPPlan == null) ? 0 : ttionFeesPPlan.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((whatsappNo == null) ? 0 : whatsappNo.hashCode());
+		result = prime * result + ((youtubeLink == null) ? 0 : youtubeLink.hashCode());
+		return result;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        InstituteDetails other = (InstituteDetails) obj;
-        if (aboutUsInfo == null) {
-            if (other.aboutUsInfo != null)
-                return false;
-        } else if (!aboutUsInfo.equals(other.aboutUsInfo))
-            return false;
-        if (avgCostOfLiving == null) {
-            if (other.avgCostOfLiving != null)
-                return false;
-        } else if (!avgCostOfLiving.equals(other.avgCostOfLiving))
-            return false;
-        if (climate2 == null) {
-            if (other.climate2 != null)
-                return false;
-        } else if (!climate2.equals(other.climate2))
-            return false;
-        if (closingHour == null) {
-            if (other.closingHour != null)
-                return false;
-        } else if (!closingHour.equals(other.closingHour))
-            return false;
-        if (courseStart == null) {
-            if (other.courseStart != null)
-                return false;
-        } else if (!courseStart.equals(other.courseStart))
-            return false;
-        if (englishPartners == null) {
-            if (other.englishPartners != null)
-                return false;
-        } else if (!englishPartners.equals(other.englishPartners))
-            return false;
-        if (enrolmentLink == null) {
-            if (other.enrolmentLink != null)
-                return false;
-        } else if (!enrolmentLink.equals(other.enrolmentLink))
-            return false;
-        if (instituteId == null) {
-            if (other.instituteId != null)
-                return false;
-        } else if (!instituteId.equals(other.instituteId))
-            return false;
-        if (openingHour == null) {
-            if (other.openingHour != null)
-                return false;
-        } else if (!openingHour.equals(other.openingHour))
-            return false;
-        if (ttionFeesPPlan == null) {
-            if (other.ttionFeesPPlan != null)
-                return false;
-        } else if (!ttionFeesPPlan.equals(other.ttionFeesPPlan))
-            return false;
-        if (type == null) {
-            if (other.type != null)
-                return false;
-        } else if (!type.equals(other.type))
-            return false;
-        if (whatsappNo == null) {
-            if (other.whatsappNo != null)
-                return false;
-        } else if (!whatsappNo.equals(other.whatsappNo))
-            return false;
-        if (youtubeLink == null) {
-            if (other.youtubeLink != null)
-                return false;
-        } else if (!youtubeLink.equals(other.youtubeLink))
-            return false;
-        return true;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		InstituteDetails other = (InstituteDetails) obj;
+		if (aboutUsInfo == null) {
+			if (other.aboutUsInfo != null)
+				return false;
+		} else if (!aboutUsInfo.equals(other.aboutUsInfo))
+			return false;
+		if (avgCostOfLiving == null) {
+			if (other.avgCostOfLiving != null)
+				return false;
+		} else if (!avgCostOfLiving.equals(other.avgCostOfLiving))
+			return false;
+		if (climate2 == null) {
+			if (other.climate2 != null)
+				return false;
+		} else if (!climate2.equals(other.climate2))
+			return false;
+		if (closingHour == null) {
+			if (other.closingHour != null)
+				return false;
+		} else if (!closingHour.equals(other.closingHour))
+			return false;
+		if (courseStart == null) {
+			if (other.courseStart != null)
+				return false;
+		} else if (!courseStart.equals(other.courseStart))
+			return false;
+		if (englishPartners == null) {
+			if (other.englishPartners != null)
+				return false;
+		} else if (!englishPartners.equals(other.englishPartners))
+			return false;
+		if (enrolmentLink == null) {
+			if (other.enrolmentLink != null)
+				return false;
+		} else if (!enrolmentLink.equals(other.enrolmentLink))
+			return false;
+		if (instituteId == null) {
+			if (other.instituteId != null)
+				return false;
+		} else if (!instituteId.equals(other.instituteId))
+			return false;
+		if (openingHour == null) {
+			if (other.openingHour != null)
+				return false;
+		} else if (!openingHour.equals(other.openingHour))
+			return false;
+		if (ttionFeesPPlan == null) {
+			if (other.ttionFeesPPlan != null)
+				return false;
+		} else if (!ttionFeesPPlan.equals(other.ttionFeesPPlan))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		if (whatsappNo == null) {
+			if (other.whatsappNo != null)
+				return false;
+		} else if (!whatsappNo.equals(other.whatsappNo))
+			return false;
+		if (youtubeLink == null) {
+			if (other.youtubeLink != null)
+				return false;
+		} else if (!youtubeLink.equals(other.youtubeLink))
+			return false;
+		return true;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "InstituteDetails [instituteId=" + instituteId + ", type=" + type + ", youtubeLink=" + youtubeLink + ", ttionFeesPPlan=" + ttionFeesPPlan + ", courseStart="
-                        + courseStart + ", openingHour=" + openingHour + ", closingHour=" + closingHour + ", enrolmentLink=" + enrolmentLink + ", aboutUsInfo=" + aboutUsInfo
-                        + ", climate2=" + climate2 + ", avgCostOfLiving=" + avgCostOfLiving + ", whatsappNo=" + whatsappNo + ", englishPartners=" + englishPartners + "]";
-    }
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("InstituteDetails [instituteId=").append(instituteId).append(", type=").append(type)
+				.append(", youtubeLink=").append(youtubeLink).append(", ttionFeesPPlan=").append(ttionFeesPPlan)
+				.append(", courseStart=").append(courseStart).append(", openingHour=").append(openingHour)
+				.append(", closingHour=").append(closingHour).append(", enrolmentLink=").append(enrolmentLink)
+				.append(", aboutUsInfo=").append(aboutUsInfo).append(", climate2=").append(climate2)
+				.append(", avgCostOfLiving=").append(avgCostOfLiving).append(", whatsappNo=").append(whatsappNo)
+				.append(", englishPartners=").append(englishPartners).append("]");
+		return builder.toString();
+	}
 
 }

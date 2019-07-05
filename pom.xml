@@ -143,6 +143,7 @@
 				</executions>
 			</plugin>
 		</plugins>
+	<finalName>seeka-institute</finalName>
 	</build>
 
 	<repositories>

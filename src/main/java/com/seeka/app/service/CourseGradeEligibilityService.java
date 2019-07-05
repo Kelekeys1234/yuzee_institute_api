@@ -15,31 +15,31 @@ import com.seeka.app.dao.ICourseGradeEligibilityDAO;
 public class CourseGradeEligibilityService implements ICourseGradeEligibilityService {
 	
 	@Autowired
-	ICourseGradeEligibilityDAO dao;
+	private ICourseGradeEligibilityDAO iCourseGradeEligibilityDAO;
 	
 	@Override
-	public void save(CourseGradeEligibility obj) {
-		dao.save(obj);
+	public void save(CourseGradeEligibility courseGradeEligibility) {
+		iCourseGradeEligibilityDAO.save(courseGradeEligibility);
 	}
 	
 	@Override
-	public void update(CourseGradeEligibility obj) {
-		dao.update(obj);
+	public void update(CourseGradeEligibility courseGradeEligibility) {
+		iCourseGradeEligibilityDAO.update(courseGradeEligibility);
 	}
 	
 	@Override
 	public CourseGradeEligibility get(BigInteger id) {
-		return dao.get(id);
+		return iCourseGradeEligibilityDAO.get(id);
 	}
 	
 	@Override
 	public List<CourseGradeEligibility> getAll(){
-		return dao.getAll();
+		return iCourseGradeEligibilityDAO.getAll();
 	} 
 	
 	@Override
 	public CourseGradeEligibility getAllEnglishEligibilityByCourse(BigInteger courseID) {
-		return dao.getAllEnglishEligibilityByCourse(courseID);
+		return iCourseGradeEligibilityDAO.getAllEnglishEligibilityByCourse(courseID);
 	}
 	
 }

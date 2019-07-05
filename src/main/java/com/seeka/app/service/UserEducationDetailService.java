@@ -14,26 +14,26 @@ import com.seeka.app.dao.IUserEducationDetailDAO;
 public class UserEducationDetailService implements IUserEducationDetailService {
 
 	@Autowired
-	IUserEducationDetailDAO dao;
+	private IUserEducationDetailDAO iUserEducationDetailDAO;
 
 	@Override
 	public void save(UserEducationDetails hobbiesObj) {
-		dao.save(hobbiesObj);
+		iUserEducationDetailDAO.save(hobbiesObj);
 	}
 	
 	@Override
 	public void update(UserEducationDetails hobbiesObj) {
-		dao.update(hobbiesObj);
+		iUserEducationDetailDAO.update(hobbiesObj);
 	}
 	
 	@Override
 	public UserEducationDetails getUserEducationDetails(BigInteger userId) {
-		return dao.getUserEducationDetails(userId);
+		return iUserEducationDetailDAO.getUserEducationDetails(userId);
 	}
 	
 	@Override
 	public UserEducationDetails get(BigInteger id) {
-		return dao.get(id);
+		return iUserEducationDetailDAO.get(id);
 	}
 	
 }

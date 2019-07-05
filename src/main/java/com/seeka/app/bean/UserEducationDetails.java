@@ -2,6 +2,7 @@ package com.seeka.app.bean;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
@@ -22,230 +23,375 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "user_education_details")
-public class UserEducationDetails implements java.io.Serializable {
+public class UserEducationDetails implements Serializable {
 
-    private BigInteger userId;
-    private BigInteger eduCountry;
-    private BigInteger eduSystemId;
-    private String eduInstitue;
-    private String gpaScore;
-    private String isEnglishMedium;
-    private String englishLevel;
-    private String eduSysScore;
-    private String eduLevel;
-    private Boolean isActive;
-    private Date createdOn;
-    private Date updatedOn;
-    private Date deletedOn;
-    private String createdBy;
-    private String updatedBy;
-    private Boolean isDeleted;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6557054387264945982L;
+	private BigInteger userId;
+	private BigInteger eduCountry;
+	private BigInteger eduSystemId;
+	private String eduInstitue;
+	private String gpaScore;
+	private String isEnglishMedium;
+	private String englishLevel;
+	private String eduSysScore;
+	private String eduLevel;
+	private Boolean isActive;
+	private Date createdOn;
+	private Date updatedOn;
+	private Date deletedOn;
+	private String createdBy;
+	private String updatedBy;
+	private Boolean isDeleted;
 
-    private String educationSystemName;
+	private String educationSystemName;
 
-    private String educationCountryName;
+	private String educationCountryName;
 
-    public UserEducationDetails() {
-    }
+	public UserEducationDetails() {
+	}
 
-    public UserEducationDetails(BigInteger eduCountry, BigInteger eduSystemId, String eduInstitue, String gpaScore, String isEnglishMedium, String englishLevel, String eduSysScore,
-                    String eduLevel, Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
-        this.eduCountry = eduCountry;
-        this.eduSystemId = eduSystemId;
-        this.eduInstitue = eduInstitue;
-        this.gpaScore = gpaScore;
-        this.isEnglishMedium = isEnglishMedium;
-        this.englishLevel = englishLevel;
-        this.eduSysScore = eduSysScore;
-        this.eduLevel = eduLevel;
-        this.isActive = isActive;
-        this.createdOn = createdOn;
-        this.updatedOn = updatedOn;
-        this.deletedOn = deletedOn;
-        this.createdBy = createdBy;
-        this.updatedBy = updatedBy;
-        this.isDeleted = isDeleted;
-    }
+	public UserEducationDetails(BigInteger eduCountry, BigInteger eduSystemId, String eduInstitue, String gpaScore,
+			String isEnglishMedium, String englishLevel, String eduSysScore, String eduLevel, Boolean isActive,
+			Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
+		this.eduCountry = eduCountry;
+		this.eduSystemId = eduSystemId;
+		this.eduInstitue = eduInstitue;
+		this.gpaScore = gpaScore;
+		this.isEnglishMedium = isEnglishMedium;
+		this.englishLevel = englishLevel;
+		this.eduSysScore = eduSysScore;
+		this.eduLevel = eduLevel;
+		this.isActive = isActive;
+		this.createdOn = createdOn;
+		this.updatedOn = updatedOn;
+		this.deletedOn = deletedOn;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.isDeleted = isDeleted;
+	}
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "user_id", unique = true, nullable = false)
-    public BigInteger getUserId() {
-        return this.userId;
-    }
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "user_id", unique = true, nullable = false)
+	public BigInteger getUserId() {
+		return this.userId;
+	}
 
-    public void setUserId(BigInteger userId) {
-        this.userId = userId;
-    }
+	public void setUserId(BigInteger userId) {
+		this.userId = userId;
+	}
 
-    @Column(name = "edu_country")
-    public BigInteger getEduCountry() {
-        return this.eduCountry;
-    }
+	@Column(name = "edu_country")
+	public BigInteger getEduCountry() {
+		return this.eduCountry;
+	}
 
-    public void setEduCountry(BigInteger eduCountry) {
-        this.eduCountry = eduCountry;
-    }
+	public void setEduCountry(BigInteger eduCountry) {
+		this.eduCountry = eduCountry;
+	}
 
-    @Column(name = "edu_system_id")
-    public BigInteger getEduSystemId() {
-        return this.eduSystemId;
-    }
+	@Column(name = "edu_system_id")
+	public BigInteger getEduSystemId() {
+		return this.eduSystemId;
+	}
 
-    public void setEduSystemId(BigInteger eduSystemId) {
-        this.eduSystemId = eduSystemId;
-    }
+	public void setEduSystemId(BigInteger eduSystemId) {
+		this.eduSystemId = eduSystemId;
+	}
 
-    @Column(name = "edu_institue", length = 500)
-    public String getEduInstitue() {
-        return this.eduInstitue;
-    }
+	@Column(name = "edu_institue", length = 500)
+	public String getEduInstitue() {
+		return this.eduInstitue;
+	}
 
-    public void setEduInstitue(String eduInstitue) {
-        this.eduInstitue = eduInstitue;
-    }
+	public void setEduInstitue(String eduInstitue) {
+		this.eduInstitue = eduInstitue;
+	}
 
-    @Column(name = "gpa_score", length = 50)
-    public String getGpaScore() {
-        return this.gpaScore;
-    }
+	@Column(name = "gpa_score", length = 50)
+	public String getGpaScore() {
+		return this.gpaScore;
+	}
 
-    public void setGpaScore(String gpaScore) {
-        this.gpaScore = gpaScore;
-    }
+	public void setGpaScore(String gpaScore) {
+		this.gpaScore = gpaScore;
+	}
 
-    @Column(name = "is_english_medium", length = 10)
-    public String getIsEnglishMedium() {
-        return this.isEnglishMedium;
-    }
+	@Column(name = "is_english_medium", length = 10)
+	public String getIsEnglishMedium() {
+		return this.isEnglishMedium;
+	}
 
-    public void setIsEnglishMedium(String isEnglishMedium) {
-        this.isEnglishMedium = isEnglishMedium;
-    }
+	public void setIsEnglishMedium(String isEnglishMedium) {
+		this.isEnglishMedium = isEnglishMedium;
+	}
 
-    @Column(name = "english_level", length = 100)
-    public String getEnglishLevel() {
-        return this.englishLevel;
-    }
+	@Column(name = "english_level", length = 100)
+	public String getEnglishLevel() {
+		return this.englishLevel;
+	}
 
-    public void setEnglishLevel(String englishLevel) {
-        this.englishLevel = englishLevel;
-    }
+	public void setEnglishLevel(String englishLevel) {
+		this.englishLevel = englishLevel;
+	}
 
-    @Column(name = "edu_sys_score", length = 100)
-    public String getEduSysScore() {
-        return this.eduSysScore;
-    }
+	@Column(name = "edu_sys_score", length = 100)
+	public String getEduSysScore() {
+		return this.eduSysScore;
+	}
 
-    public void setEduSysScore(String eduSysScore) {
-        this.eduSysScore = eduSysScore;
-    }
+	public void setEduSysScore(String eduSysScore) {
+		this.eduSysScore = eduSysScore;
+	}
 
-    @Column(name = "edu_level", length = 100)
-    public String getEduLevel() {
-        return this.eduLevel;
-    }
+	@Column(name = "edu_level", length = 100)
+	public String getEduLevel() {
+		return this.eduLevel;
+	}
 
-    public void setEduLevel(String eduLevel) {
-        this.eduLevel = eduLevel;
-    }
+	public void setEduLevel(String eduLevel) {
+		this.eduLevel = eduLevel;
+	}
 
-    @Column(name = "is_active")
-    public Boolean getIsActive() {
-        return this.isActive;
-    }
+	@Column(name = "is_active")
+	public Boolean getIsActive() {
+		return this.isActive;
+	}
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_on", length = 19)
-    public Date getCreatedOn() {
-        return this.createdOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on", length = 19)
+	public Date getCreatedOn() {
+		return this.createdOn;
+	}
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_on", length = 19)
-    public Date getUpdatedOn() {
-        return this.updatedOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on", length = 19)
+	public Date getUpdatedOn() {
+		return this.updatedOn;
+	}
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
+	public void setUpdatedOn(Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "deleted_on", length = 19)
-    public Date getDeletedOn() {
-        return this.deletedOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deleted_on", length = 19)
+	public Date getDeletedOn() {
+		return this.deletedOn;
+	}
 
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
+	public void setDeletedOn(Date deletedOn) {
+		this.deletedOn = deletedOn;
+	}
 
-    @Column(name = "created_by", length = 50)
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
+	@Column(name = "created_by", length = 50)
+	public String getCreatedBy() {
+		return this.createdBy;
+	}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    @Column(name = "updated_by", length = 50)
-    public String getUpdatedBy() {
-        return this.updatedBy;
-    }
+	@Column(name = "updated_by", length = 50)
+	public String getUpdatedBy() {
+		return this.updatedBy;
+	}
 
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
-    @Column(name = "is_deleted")
-    public Boolean getIsDeleted() {
-        return this.isDeleted;
-    }
+	@Column(name = "is_deleted")
+	public Boolean getIsDeleted() {
+		return this.isDeleted;
+	}
 
-    public void setIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 
-    /**
-     * @return the educationSystemName
-     */
-    @Transient
-    public String getEducationSystemName() {
-        return educationSystemName;
-    }
+	/**
+	 * @return the educationSystemName
+	 */
+	@Transient
+	public String getEducationSystemName() {
+		return educationSystemName;
+	}
 
-    /**
-     * @param educationSystemName
-     *            the educationSystemName to set
-     */
-    public void setEducationSystemName(String educationSystemName) {
-        this.educationSystemName = educationSystemName;
-    }
+	/**
+	 * @param educationSystemName the educationSystemName to set
+	 */
+	public void setEducationSystemName(String educationSystemName) {
+		this.educationSystemName = educationSystemName;
+	}
 
-    /**
-     * @return the educationCountryName
-     */
-    @Transient
-    public String getEducationCountryName() {
-        return educationCountryName;
-    }
+	/**
+	 * @return the educationCountryName
+	 */
+	@Transient
+	public String getEducationCountryName() {
+		return educationCountryName;
+	}
 
-    /**
-     * @param educationCountryName
-     *            the educationCountryName to set
-     */
-    public void setEducationCountryName(String educationCountryName) {
-        this.educationCountryName = educationCountryName;
-    }
+	/**
+	 * @param educationCountryName the educationCountryName to set
+	 */
+	public void setEducationCountryName(String educationCountryName) {
+		this.educationCountryName = educationCountryName;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+		result = prime * result + ((eduCountry == null) ? 0 : eduCountry.hashCode());
+		result = prime * result + ((eduInstitue == null) ? 0 : eduInstitue.hashCode());
+		result = prime * result + ((eduLevel == null) ? 0 : eduLevel.hashCode());
+		result = prime * result + ((eduSysScore == null) ? 0 : eduSysScore.hashCode());
+		result = prime * result + ((eduSystemId == null) ? 0 : eduSystemId.hashCode());
+		result = prime * result + ((educationCountryName == null) ? 0 : educationCountryName.hashCode());
+		result = prime * result + ((educationSystemName == null) ? 0 : educationSystemName.hashCode());
+		result = prime * result + ((englishLevel == null) ? 0 : englishLevel.hashCode());
+		result = prime * result + ((gpaScore == null) ? 0 : gpaScore.hashCode());
+		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+		result = prime * result + ((isEnglishMedium == null) ? 0 : isEnglishMedium.hashCode());
+		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserEducationDetails other = (UserEducationDetails) obj;
+		if (createdBy == null) {
+			if (other.createdBy != null)
+				return false;
+		} else if (!createdBy.equals(other.createdBy))
+			return false;
+		if (createdOn == null) {
+			if (other.createdOn != null)
+				return false;
+		} else if (!createdOn.equals(other.createdOn))
+			return false;
+		if (deletedOn == null) {
+			if (other.deletedOn != null)
+				return false;
+		} else if (!deletedOn.equals(other.deletedOn))
+			return false;
+		if (eduCountry == null) {
+			if (other.eduCountry != null)
+				return false;
+		} else if (!eduCountry.equals(other.eduCountry))
+			return false;
+		if (eduInstitue == null) {
+			if (other.eduInstitue != null)
+				return false;
+		} else if (!eduInstitue.equals(other.eduInstitue))
+			return false;
+		if (eduLevel == null) {
+			if (other.eduLevel != null)
+				return false;
+		} else if (!eduLevel.equals(other.eduLevel))
+			return false;
+		if (eduSysScore == null) {
+			if (other.eduSysScore != null)
+				return false;
+		} else if (!eduSysScore.equals(other.eduSysScore))
+			return false;
+		if (eduSystemId == null) {
+			if (other.eduSystemId != null)
+				return false;
+		} else if (!eduSystemId.equals(other.eduSystemId))
+			return false;
+		if (educationCountryName == null) {
+			if (other.educationCountryName != null)
+				return false;
+		} else if (!educationCountryName.equals(other.educationCountryName))
+			return false;
+		if (educationSystemName == null) {
+			if (other.educationSystemName != null)
+				return false;
+		} else if (!educationSystemName.equals(other.educationSystemName))
+			return false;
+		if (englishLevel == null) {
+			if (other.englishLevel != null)
+				return false;
+		} else if (!englishLevel.equals(other.englishLevel))
+			return false;
+		if (gpaScore == null) {
+			if (other.gpaScore != null)
+				return false;
+		} else if (!gpaScore.equals(other.gpaScore))
+			return false;
+		if (isActive == null) {
+			if (other.isActive != null)
+				return false;
+		} else if (!isActive.equals(other.isActive))
+			return false;
+		if (isDeleted == null) {
+			if (other.isDeleted != null)
+				return false;
+		} else if (!isDeleted.equals(other.isDeleted))
+			return false;
+		if (isEnglishMedium == null) {
+			if (other.isEnglishMedium != null)
+				return false;
+		} else if (!isEnglishMedium.equals(other.isEnglishMedium))
+			return false;
+		if (updatedBy == null) {
+			if (other.updatedBy != null)
+				return false;
+		} else if (!updatedBy.equals(other.updatedBy))
+			return false;
+		if (updatedOn == null) {
+			if (other.updatedOn != null)
+				return false;
+		} else if (!updatedOn.equals(other.updatedOn))
+			return false;
+		if (userId == null) {
+			if (other.userId != null)
+				return false;
+		} else if (!userId.equals(other.userId))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserEducationDetails [userId=").append(userId).append(", eduCountry=").append(eduCountry)
+				.append(", eduSystemId=").append(eduSystemId).append(", eduInstitue=").append(eduInstitue)
+				.append(", gpaScore=").append(gpaScore).append(", isEnglishMedium=").append(isEnglishMedium)
+				.append(", englishLevel=").append(englishLevel).append(", eduSysScore=").append(eduSysScore)
+				.append(", eduLevel=").append(eduLevel).append(", isActive=").append(isActive).append(", createdOn=")
+				.append(createdOn).append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
+				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
+				.append(", isDeleted=").append(isDeleted).append(", educationSystemName=").append(educationSystemName)
+				.append(", educationCountryName=").append(educationCountryName).append("]");
+		return builder.toString();
+	}
 
 }

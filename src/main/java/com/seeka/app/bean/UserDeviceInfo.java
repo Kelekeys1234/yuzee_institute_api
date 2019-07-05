@@ -1,4 +1,9 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -6,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,8 +21,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_device_info")
-public class UserDeviceInfo implements java.io.Serializable {
+public class UserDeviceInfo implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3972736325716186398L;
 	private BigInteger id;
 	private UserInfo userInfo;
 	private String deviceId;
@@ -34,8 +42,8 @@ public class UserDeviceInfo implements java.io.Serializable {
 		this.userInfo = userInfo;
 	}
 
-	public UserDeviceInfo(UserInfo userInfo, String deviceId, String platform,
-			String ipAddress, String deviceInfo, String notification) {
+	public UserDeviceInfo(UserInfo userInfo, String deviceId, String platform, String ipAddress, String deviceInfo,
+			String notification) {
 		this.userInfo = userInfo;
 		this.deviceId = deviceId;
 		this.platform = platform;
@@ -108,6 +116,76 @@ public class UserDeviceInfo implements java.io.Serializable {
 
 	public void setNotification(String notification) {
 		this.notification = notification;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((deviceId == null) ? 0 : deviceId.hashCode());
+		result = prime * result + ((deviceInfo == null) ? 0 : deviceInfo.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((ipAddress == null) ? 0 : ipAddress.hashCode());
+		result = prime * result + ((notification == null) ? 0 : notification.hashCode());
+		result = prime * result + ((platform == null) ? 0 : platform.hashCode());
+		result = prime * result + ((userInfo == null) ? 0 : userInfo.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserDeviceInfo other = (UserDeviceInfo) obj;
+		if (deviceId == null) {
+			if (other.deviceId != null)
+				return false;
+		} else if (!deviceId.equals(other.deviceId))
+			return false;
+		if (deviceInfo == null) {
+			if (other.deviceInfo != null)
+				return false;
+		} else if (!deviceInfo.equals(other.deviceInfo))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (ipAddress == null) {
+			if (other.ipAddress != null)
+				return false;
+		} else if (!ipAddress.equals(other.ipAddress))
+			return false;
+		if (notification == null) {
+			if (other.notification != null)
+				return false;
+		} else if (!notification.equals(other.notification))
+			return false;
+		if (platform == null) {
+			if (other.platform != null)
+				return false;
+		} else if (!platform.equals(other.platform))
+			return false;
+		if (userInfo == null) {
+			if (other.userInfo != null)
+				return false;
+		} else if (!userInfo.equals(other.userInfo))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserDeviceInfo [id=").append(id).append(", userInfo=").append(userInfo).append(", deviceId=")
+				.append(deviceId).append(", platform=").append(platform).append(", ipAddress=").append(ipAddress)
+				.append(", deviceInfo=").append(deviceInfo).append(", notification=").append(notification).append("]");
+		return builder.toString();
 	}
 
 }

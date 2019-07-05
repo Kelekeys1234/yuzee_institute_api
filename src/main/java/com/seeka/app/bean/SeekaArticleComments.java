@@ -1,13 +1,18 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,8 +25,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "seeka_article_comments")
-public class SeekaArticleComments implements java.io.Serializable {
+public class SeekaArticleComments implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2315258617119601665L;
 	private BigInteger id;
 	private SeekaArticles seekaArticles;
 	private UserInfo userInfo;
@@ -32,8 +41,8 @@ public class SeekaArticleComments implements java.io.Serializable {
 	public SeekaArticleComments() {
 	}
 
-	public SeekaArticleComments(SeekaArticles seekaArticles, UserInfo userInfo,
-			String comment, Date dated, Boolean status) {
+	public SeekaArticleComments(SeekaArticles seekaArticles, UserInfo userInfo, String comment, Date dated,
+			Boolean status) {
 		this.seekaArticles = seekaArticles;
 		this.userInfo = userInfo;
 		this.comment = comment;
@@ -98,6 +107,70 @@ public class SeekaArticleComments implements java.io.Serializable {
 
 	public void setStatus(Boolean status) {
 		this.status = status;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+		result = prime * result + ((dated == null) ? 0 : dated.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((seekaArticles == null) ? 0 : seekaArticles.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((userInfo == null) ? 0 : userInfo.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SeekaArticleComments other = (SeekaArticleComments) obj;
+		if (comment == null) {
+			if (other.comment != null)
+				return false;
+		} else if (!comment.equals(other.comment))
+			return false;
+		if (dated == null) {
+			if (other.dated != null)
+				return false;
+		} else if (!dated.equals(other.dated))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (seekaArticles == null) {
+			if (other.seekaArticles != null)
+				return false;
+		} else if (!seekaArticles.equals(other.seekaArticles))
+			return false;
+		if (status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!status.equals(other.status))
+			return false;
+		if (userInfo == null) {
+			if (other.userInfo != null)
+				return false;
+		} else if (!userInfo.equals(other.userInfo))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SeekaArticleComments [id=").append(id).append(", seekaArticles=").append(seekaArticles)
+				.append(", userInfo=").append(userInfo).append(", comment=").append(comment).append(", dated=")
+				.append(dated).append(", status=").append(status).append("]");
+		return builder.toString();
 	}
 
 }

@@ -9,17 +9,17 @@ import com.seeka.app.dto.CityDto;
 import com.seeka.app.dto.UpdateCityDto;
 
 public interface ICityService {
-    public List<City> getAll();
+	List<City> getAll();
 
-    public City get(BigInteger id);
+	City get(BigInteger id);
 
-    public List<City> getAllCitiesByCountry(BigInteger countryId);
+	List<City> getAllCitiesByCountry(BigInteger countryId);
 
-    public void save(City obj);
+	void save(City obj);
 
-    public List<City> getAllMultipleCitiesByCountry(String countryId);
+	List<City> getAllMultipleCitiesByCountry(String countryId);
 
-    public Map<String, Object> save(CityDto city);
+	Map<String, Object> save(CityDto city);
 
-    public Map<String, Object> update(BigInteger id, UpdateCityDto city);
+	Map<String, Object> update(BigInteger id, UpdateCityDto city);
 }

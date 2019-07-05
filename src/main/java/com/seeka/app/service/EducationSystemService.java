@@ -15,7 +15,7 @@ import com.seeka.app.dao.IEducationSystemDAO;
 public class EducationSystemService implements IEducationSystemService {
 
 	@Autowired
-	IEducationSystemDAO dao;
+	private IEducationSystemDAO dao;
 
 	@Override
 	public void save(EducationSystem hobbiesObj) {

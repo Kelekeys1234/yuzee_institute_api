@@ -15,7 +15,7 @@ import com.seeka.app.dao.ISeekaPopupDAO;
 public class SeekaPopupService implements ISeekaPopupService{
 	
 	@Autowired
-	ISeekaPopupDAO dao;
+	private ISeekaPopupDAO dao;
     
 	@Override
 	public void save(SeekaPopup obj) {

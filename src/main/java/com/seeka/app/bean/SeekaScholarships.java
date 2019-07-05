@@ -1,4 +1,6 @@
-package com.seeka.app.bean;import static javax.persistence.GenerationType.IDENTITY;
+package com.seeka.app.bean;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 import java.math.BigInteger;
 
@@ -8,67 +10,66 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
 @Entity
-@Table(name="seeka_scholarship")
+@Table(name = "seeka_scholarship")
 public class SeekaScholarships extends RecordModifier {
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8981672129777348075L;
 
 	@Id
-    @GeneratedValue(strategy = IDENTITY)
+	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", updatable = false, nullable = false)
-    private BigInteger id;
-		
-	@Column(name ="name")  
+	private BigInteger id;
+
+	@Column(name = "name")
 	private String name;
-	
-	@Column(name ="study_country")  
+
+	@Column(name = "study_country")
 	private String studyCountry;
-	
-	@Column(name ="offered_by")  
+
+	@Column(name = "offered_by")
 	private String offeredBy;
-	
-	@Column(name ="level")  
+
+	@Column(name = "level")
 	private String level;
-	
-	@Column(name ="amount")  
+
+	@Column(name = "amount")
 	private String amount;
-	
-	@Column(name ="detail")  
+
+	@Column(name = "detail")
 	private String detail;
-	
-	@Column(name ="url")  
+
+	@Column(name = "url")
 	private String url;
-	
-	@Column(name ="deleted")  
+
+	@Column(name = "deleted")
 	private String deleted;
-	
-	@Column(name ="created_date")  
+
+	@Column(name = "created_date")
 	private String createdDate;
-	
-	@Column(name ="active")  
+
+	@Column(name = "active")
 	private String active;
-	
-	@Column(name ="deadline")  
+
+	@Column(name = "deadline")
 	private String deadline;
-	
-	@Column(name ="student_type")  
+
+	@Column(name = "student_type")
 	private String studentType;
-	
-	@Column(name ="course_type")  
+
+	@Column(name = "course_type")
 	private String courseType;
-	
-	@Column(name ="currency_type")  
+
+	@Column(name = "currency_type")
 	private String currencyType;
-	
-	@Column(name ="gpa")  
+
+	@Column(name = "gpa")
 	private String gpa;
-	
-	@Column(name ="scholarship_type")  
+
+	@Column(name = "scholarship_type")
 	private String scholarshipType;
 
 	public BigInteger getId() {
@@ -207,7 +208,138 @@ public class SeekaScholarships extends RecordModifier {
 		this.scholarshipType = scholarshipType;
 	}
 
-	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((active == null) ? 0 : active.hashCode());
+		result = prime * result + ((amount == null) ? 0 : amount.hashCode());
+		result = prime * result + ((courseType == null) ? 0 : courseType.hashCode());
+		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
+		result = prime * result + ((currencyType == null) ? 0 : currencyType.hashCode());
+		result = prime * result + ((deadline == null) ? 0 : deadline.hashCode());
+		result = prime * result + ((deleted == null) ? 0 : deleted.hashCode());
+		result = prime * result + ((detail == null) ? 0 : detail.hashCode());
+		result = prime * result + ((gpa == null) ? 0 : gpa.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((level == null) ? 0 : level.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((offeredBy == null) ? 0 : offeredBy.hashCode());
+		result = prime * result + ((scholarshipType == null) ? 0 : scholarshipType.hashCode());
+		result = prime * result + ((studentType == null) ? 0 : studentType.hashCode());
+		result = prime * result + ((studyCountry == null) ? 0 : studyCountry.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
 
-	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SeekaScholarships other = (SeekaScholarships) obj;
+		if (active == null) {
+			if (other.active != null)
+				return false;
+		} else if (!active.equals(other.active))
+			return false;
+		if (amount == null) {
+			if (other.amount != null)
+				return false;
+		} else if (!amount.equals(other.amount))
+			return false;
+		if (courseType == null) {
+			if (other.courseType != null)
+				return false;
+		} else if (!courseType.equals(other.courseType))
+			return false;
+		if (createdDate == null) {
+			if (other.createdDate != null)
+				return false;
+		} else if (!createdDate.equals(other.createdDate))
+			return false;
+		if (currencyType == null) {
+			if (other.currencyType != null)
+				return false;
+		} else if (!currencyType.equals(other.currencyType))
+			return false;
+		if (deadline == null) {
+			if (other.deadline != null)
+				return false;
+		} else if (!deadline.equals(other.deadline))
+			return false;
+		if (deleted == null) {
+			if (other.deleted != null)
+				return false;
+		} else if (!deleted.equals(other.deleted))
+			return false;
+		if (detail == null) {
+			if (other.detail != null)
+				return false;
+		} else if (!detail.equals(other.detail))
+			return false;
+		if (gpa == null) {
+			if (other.gpa != null)
+				return false;
+		} else if (!gpa.equals(other.gpa))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (level == null) {
+			if (other.level != null)
+				return false;
+		} else if (!level.equals(other.level))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (offeredBy == null) {
+			if (other.offeredBy != null)
+				return false;
+		} else if (!offeredBy.equals(other.offeredBy))
+			return false;
+		if (scholarshipType == null) {
+			if (other.scholarshipType != null)
+				return false;
+		} else if (!scholarshipType.equals(other.scholarshipType))
+			return false;
+		if (studentType == null) {
+			if (other.studentType != null)
+				return false;
+		} else if (!studentType.equals(other.studentType))
+			return false;
+		if (studyCountry == null) {
+			if (other.studyCountry != null)
+				return false;
+		} else if (!studyCountry.equals(other.studyCountry))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SeekaScholarships [id=").append(id).append(", name=").append(name).append(", studyCountry=")
+				.append(studyCountry).append(", offeredBy=").append(offeredBy).append(", level=").append(level)
+				.append(", amount=").append(amount).append(", detail=").append(detail).append(", url=").append(url)
+				.append(", deleted=").append(deleted).append(", createdDate=").append(createdDate).append(", active=")
+				.append(active).append(", deadline=").append(deadline).append(", studentType=").append(studentType)
+				.append(", courseType=").append(courseType).append(", currencyType=").append(currencyType)
+				.append(", gpa=").append(gpa).append(", scholarshipType=").append(scholarshipType).append("]");
+		return builder.toString();
+	}
+
 }

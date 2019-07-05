@@ -41,9 +41,6 @@ import com.seeka.app.dto.JobsDto;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.jobs.CurrencyUtil;
-import com.seeka.app.service.ICityService;
-import com.seeka.app.service.ICountryEnglishEligibilityService;
-import com.seeka.app.service.ICountryService;
 import com.seeka.app.service.ICourseDetailsService;
 import com.seeka.app.service.ICourseEnglishEligibilityService;
 import com.seeka.app.service.ICourseGradeEligibilityService;
@@ -52,7 +49,6 @@ import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IFacultyLevelService;
 import com.seeka.app.service.IFacultyService;
-import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IUserInstCourseReviewService;
@@ -67,55 +63,43 @@ import com.seeka.app.util.PaginationUtil;
 public class CourseController {
 
     @Autowired
-    IInstituteService instituteService;
+    private IInstituteService instituteService;
 
     @Autowired
-    IInstituteDetailsService instituteDetailsService;
+    private ICourseService courseService;
 
     @Autowired
-    ICourseService courseService;
+    private ICourseDetailsService courseDetailsService;
 
     @Autowired
-    ICourseDetailsService courseDetailsService;
+    private ICoursePricingService coursePricingService;
 
     @Autowired
-    ICoursePricingService coursePricingService;
+    private ICourseKeywordService courseKeywordService;
 
     @Autowired
-    ICourseKeywordService courseKeywordService;
+    private IFacultyService facultyService;
 
     @Autowired
-    IFacultyService facultyService;
+    private IInstituteLevelService instituteLevelService;
 
     @Autowired
-    IInstituteLevelService instituteLevelService;
+    private IFacultyLevelService facultyLevelService;
 
     @Autowired
-    IFacultyLevelService facultyLevelService;
+    private IUserInstCourseReviewService userInstCourseReviewService;
 
     @Autowired
-    IUserInstCourseReviewService userInstCourseReviewService;
+    private IUserService userService;
 
     @Autowired
-    ICountryService countryService;
+    private ICourseEnglishEligibilityService courseEnglishService;
 
     @Autowired
-    ICityService cityService;
+    private ICourseGradeEligibilityService courseGradeService;
 
     @Autowired
-    IUserService userService;
-
-    @Autowired
-    ICountryEnglishEligibilityService englishEligibilityService;
-
-    @Autowired
-    ICourseEnglishEligibilityService courseEnglishService;
-
-    @Autowired
-    ICourseGradeEligibilityService courseGradeService;
-
-    @Autowired
-    IUserMyCourseService myCourseService;
+    private IUserMyCourseService myCourseService;
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> save(@Valid @RequestBody CourseDetails courseDetailsObj) throws Exception {

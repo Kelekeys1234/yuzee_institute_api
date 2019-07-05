@@ -1,4 +1,5 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -21,8 +22,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "course_pricing")
-public class CoursePricing implements java.io.Serializable {
+public class CoursePricing implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8311274851710389762L;
 	private BigInteger id;
 	private Course course;
 	private Double localFees;
@@ -340,14 +345,17 @@ public class CoursePricing implements java.io.Serializable {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
-    public String toString() {
-        return "CoursePricing [id=" + id + ", course=" + course + ", localFees=" + localFees + ", intlFees=" + intlFees + ", unionFees=" + unionFees + ", currency=" + currency
-                        + ", currencyTime=" + currencyTime + ", costSavings=" + costSavings + ", costRange=" + costRange + ", isActive=" + isActive + ", createdOn=" + createdOn
-                        + ", updatedOn=" + updatedOn + ", deletedOn=" + deletedOn + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", isDeleted=" + isDeleted + "]";
-    }
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("CoursePricing [id=").append(id).append(", course=").append(course).append(", localFees=")
+				.append(localFees).append(", intlFees=").append(intlFees).append(", unionFees=").append(unionFees)
+				.append(", currency=").append(currency).append(", currencyTime=").append(currencyTime)
+				.append(", costSavings=").append(costSavings).append(", costRange=").append(costRange)
+				.append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=")
+				.append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
+				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
+		return builder.toString();
+	}
 
 }

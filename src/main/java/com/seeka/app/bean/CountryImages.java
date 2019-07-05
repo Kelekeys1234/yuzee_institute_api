@@ -1,4 +1,7 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -20,8 +23,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "country_images")
-public class CountryImages implements java.io.Serializable {
+public class CountryImages implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3574590975763597787L;
 	private BigInteger id;
 	private Country country;
 	private long imageIndex;
@@ -44,10 +51,9 @@ public class CountryImages implements java.io.Serializable {
 		this.imageIndex = imageIndex;
 	}
 
-	public CountryImages(Country country, long imageIndex, String imageName,
-			String imagePath, String description, Boolean isActive,
-			Date createdOn, Date updatedOn, Date deletedOn, String createdBy,
-			String updatedBy, Boolean isDeleted) {
+	public CountryImages(Country country, long imageIndex, String imageName, String imagePath, String description,
+			Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy,
+			Boolean isDeleted) {
 		this.country = country;
 		this.imageIndex = imageIndex;
 		this.imageName = imageName;
@@ -185,114 +191,120 @@ public class CountryImages implements java.io.Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "CountryImages [id=" + id + ", country=" + country + ", imageIndex=" + imageIndex + ", imageName=" + imageName + ", imagePath=" + imagePath + ", description="
-                        + description + ", isActive=" + isActive + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + ", deletedOn=" + deletedOn + ", createdBy=" + createdBy
-                        + ", updatedBy=" + updatedBy + ", isDeleted=" + isDeleted + "]";
-    }
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("CountryImages [id=").append(id).append(", country=").append(country).append(", imageIndex=")
+				.append(imageIndex).append(", imageName=").append(imageName).append(", imagePath=").append(imagePath)
+				.append(", description=").append(description).append(", isActive=").append(isActive)
+				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
+				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
+				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
+		return builder.toString();
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((country == null) ? 0 : country.hashCode());
-        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
-        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
-        result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + (int) (imageIndex ^ (imageIndex >>> 32));
-        result = prime * result + ((imageName == null) ? 0 : imageName.hashCode());
-        result = prime * result + ((imagePath == null) ? 0 : imagePath.hashCode());
-        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
-        result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
-        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
-        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
-        return result;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + (int) (imageIndex ^ (imageIndex >>> 32));
+		result = prime * result + ((imageName == null) ? 0 : imageName.hashCode());
+		result = prime * result + ((imagePath == null) ? 0 : imagePath.hashCode());
+		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+		return result;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        CountryImages other = (CountryImages) obj;
-        if (country == null) {
-            if (other.country != null)
-                return false;
-        } else if (!country.equals(other.country))
-            return false;
-        if (createdBy == null) {
-            if (other.createdBy != null)
-                return false;
-        } else if (!createdBy.equals(other.createdBy))
-            return false;
-        if (createdOn == null) {
-            if (other.createdOn != null)
-                return false;
-        } else if (!createdOn.equals(other.createdOn))
-            return false;
-        if (deletedOn == null) {
-            if (other.deletedOn != null)
-                return false;
-        } else if (!deletedOn.equals(other.deletedOn))
-            return false;
-        if (description == null) {
-            if (other.description != null)
-                return false;
-        } else if (!description.equals(other.description))
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (imageIndex != other.imageIndex)
-            return false;
-        if (imageName == null) {
-            if (other.imageName != null)
-                return false;
-        } else if (!imageName.equals(other.imageName))
-            return false;
-        if (imagePath == null) {
-            if (other.imagePath != null)
-                return false;
-        } else if (!imagePath.equals(other.imagePath))
-            return false;
-        if (isActive == null) {
-            if (other.isActive != null)
-                return false;
-        } else if (!isActive.equals(other.isActive))
-            return false;
-        if (isDeleted == null) {
-            if (other.isDeleted != null)
-                return false;
-        } else if (!isDeleted.equals(other.isDeleted))
-            return false;
-        if (updatedBy == null) {
-            if (other.updatedBy != null)
-                return false;
-        } else if (!updatedBy.equals(other.updatedBy))
-            return false;
-        if (updatedOn == null) {
-            if (other.updatedOn != null)
-                return false;
-        } else if (!updatedOn.equals(other.updatedOn))
-            return false;
-        return true;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CountryImages other = (CountryImages) obj;
+		if (country == null) {
+			if (other.country != null)
+				return false;
+		} else if (!country.equals(other.country))
+			return false;
+		if (createdBy == null) {
+			if (other.createdBy != null)
+				return false;
+		} else if (!createdBy.equals(other.createdBy))
+			return false;
+		if (createdOn == null) {
+			if (other.createdOn != null)
+				return false;
+		} else if (!createdOn.equals(other.createdOn))
+			return false;
+		if (deletedOn == null) {
+			if (other.deletedOn != null)
+				return false;
+		} else if (!deletedOn.equals(other.deletedOn))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (imageIndex != other.imageIndex)
+			return false;
+		if (imageName == null) {
+			if (other.imageName != null)
+				return false;
+		} else if (!imageName.equals(other.imageName))
+			return false;
+		if (imagePath == null) {
+			if (other.imagePath != null)
+				return false;
+		} else if (!imagePath.equals(other.imagePath))
+			return false;
+		if (isActive == null) {
+			if (other.isActive != null)
+				return false;
+		} else if (!isActive.equals(other.isActive))
+			return false;
+		if (isDeleted == null) {
+			if (other.isDeleted != null)
+				return false;
+		} else if (!isDeleted.equals(other.isDeleted))
+			return false;
+		if (updatedBy == null) {
+			if (other.updatedBy != null)
+				return false;
+		} else if (!updatedBy.equals(other.updatedBy))
+			return false;
+		if (updatedOn == null) {
+			if (other.updatedOn != null)
+				return false;
+		} else if (!updatedOn.equals(other.updatedOn))
+			return false;
+		return true;
+	}
 
 }

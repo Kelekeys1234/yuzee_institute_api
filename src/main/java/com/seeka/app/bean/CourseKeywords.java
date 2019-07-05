@@ -1,11 +1,15 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -14,8 +18,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "course_keywords")
-public class CourseKeywords implements java.io.Serializable {
+public class CourseKeywords implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -167782154348375697L;
 	private BigInteger id;
 	private String keyword;
 	private String KDesc;
@@ -57,55 +65,49 @@ public class CourseKeywords implements java.io.Serializable {
 		this.KDesc = KDesc;
 	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((KDesc == null) ? 0 : KDesc.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((keyword == null) ? 0 : keyword.hashCode());
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((KDesc == null) ? 0 : KDesc.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((keyword == null) ? 0 : keyword.hashCode());
+		return result;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        CourseKeywords other = (CourseKeywords) obj;
-        if (KDesc == null) {
-            if (other.KDesc != null)
-                return false;
-        } else if (!KDesc.equals(other.KDesc))
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (keyword == null) {
-            if (other.keyword != null)
-                return false;
-        } else if (!keyword.equals(other.keyword))
-            return false;
-        return true;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CourseKeywords other = (CourseKeywords) obj;
+		if (KDesc == null) {
+			if (other.KDesc != null)
+				return false;
+		} else if (!KDesc.equals(other.KDesc))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (keyword == null) {
+			if (other.keyword != null)
+				return false;
+		} else if (!keyword.equals(other.keyword))
+			return false;
+		return true;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "CourseKeywords [id=" + id + ", keyword=" + keyword + ", KDesc=" + KDesc + "]";
-    }
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("CourseKeywords [id=").append(id).append(", keyword=").append(keyword).append(", KDesc=")
+				.append(KDesc).append("]");
+		return builder.toString();
+	}
 
 }

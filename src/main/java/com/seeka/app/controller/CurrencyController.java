@@ -20,7 +20,7 @@ import com.seeka.app.service.ICurrencyService;
 public class CurrencyController {
 	
 	@Autowired
-	ICurrencyService currencyService;
+	private ICurrencyService currencyService;
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<?>  getAll() {

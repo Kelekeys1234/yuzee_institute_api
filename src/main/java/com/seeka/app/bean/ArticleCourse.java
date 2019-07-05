@@ -1,4 +1,7 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -17,8 +20,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "article_course")
-public class ArticleCourse implements java.io.Serializable {
+public class ArticleCourse implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2658251942896060664L;
 	private BigInteger id;
 	private Course course;
 	private SeekaArticles seekaArticles;
@@ -60,6 +67,51 @@ public class ArticleCourse implements java.io.Serializable {
 
 	public void setSeekaArticles(SeekaArticles seekaArticles) {
 		this.seekaArticles = seekaArticles;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((course == null) ? 0 : course.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((seekaArticles == null) ? 0 : seekaArticles.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ArticleCourse other = (ArticleCourse) obj;
+		if (course == null) {
+			if (other.course != null)
+				return false;
+		} else if (!course.equals(other.course))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (seekaArticles == null) {
+			if (other.seekaArticles != null)
+				return false;
+		} else if (!seekaArticles.equals(other.seekaArticles))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ArticleCourse [id=").append(id).append(", course=").append(course).append(", seekaArticles=")
+				.append(seekaArticles).append("]");
+		return builder.toString();
 	}
 
 }

@@ -15,7 +15,7 @@ import com.seeka.app.dao.IHobbyDAO;
 public class HobbyService implements IHobbyService {
 
 	@Autowired
-	IHobbyDAO dao;
+	private IHobbyDAO dao;
 
 	@Override
 	public void save(Hobbies hobbiesObj) {

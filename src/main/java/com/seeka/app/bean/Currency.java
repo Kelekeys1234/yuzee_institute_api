@@ -1,4 +1,5 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -18,8 +19,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "currency")
-public class Currency implements java.io.Serializable {
+public class Currency implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5111616897386950348L;
 	private BigInteger id;
 	private String code;
 	private String name;
@@ -174,13 +179,14 @@ public class Currency implements java.io.Serializable {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
-    public String toString() {
-        return "Currency [id=" + id + ", code=" + code + ", name=" + name + ", symbol=" + symbol + ", conversionRate=" + conversionRate + ", baseCurrency=" + baseCurrency
-                        + ", updatedDate=" + updatedDate + "]";
-    }
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Currency [id=").append(id).append(", code=").append(code).append(", name=").append(name)
+				.append(", symbol=").append(symbol).append(", conversionRate=").append(conversionRate)
+				.append(", baseCurrency=").append(baseCurrency).append(", updatedDate=").append(updatedDate)
+				.append("]");
+		return builder.toString();
+	}
 
 }

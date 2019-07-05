@@ -15,7 +15,7 @@ import com.seeka.app.dao.ISeekaScholarshipsDAO;
 public class SeekaScholarshipsService implements ISeekaScholarshipsService{
 	
 	@Autowired
-	ISeekaScholarshipsDAO dao;
+	private ISeekaScholarshipsDAO dao;
     
 	@Override
 	public void save(SeekaScholarships obj) {

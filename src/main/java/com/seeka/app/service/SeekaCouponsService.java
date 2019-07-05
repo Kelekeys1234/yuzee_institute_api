@@ -15,7 +15,7 @@ import com.seeka.app.dao.ISeekaCouponsDAO;
 public class SeekaCouponsService implements ISeekaCouponsService{
 	
 	@Autowired
-	ISeekaCouponsDAO dao;
+	private ISeekaCouponsDAO dao;
     
 	@Override
 	public void save(SeekaCoupons obj) {

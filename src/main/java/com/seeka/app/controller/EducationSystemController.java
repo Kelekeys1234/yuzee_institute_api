@@ -24,7 +24,7 @@ import com.seeka.app.service.IEducationSystemService;
 public class EducationSystemController {
 	
 	@Autowired
-	IEducationSystemService educationSystemService; 
+	private IEducationSystemService educationSystemService; 
  
 	 
 	@RequestMapping(value = "/system/{countryId}", method = RequestMethod.PUT, produces = "application/json")

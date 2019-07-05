@@ -31,7 +31,7 @@ import com.seeka.app.util.NumbeoWebServiceClient;
 public class CityController {
 
     @Autowired
-    ICityService cityService;
+    private ICityService cityService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getAll() throws Exception {

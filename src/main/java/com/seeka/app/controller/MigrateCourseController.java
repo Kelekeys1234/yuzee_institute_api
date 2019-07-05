@@ -44,37 +44,34 @@ import com.seeka.app.service.ILevelService;
 public class MigrateCourseController {
 
     @Autowired
-    ICountryService countryService;
+    private ICountryService countryService;
 
     @Autowired
-    ICityService cityService;
+    private ICityService cityService;
 
     @Autowired
-    IInstituteDetailsService instituteDetailsService;
+    private IInstituteService instituteService;
 
     @Autowired
-    IInstituteService instituteService;
+    private IFacultyService facultyService;
 
     @Autowired
-    IFacultyService facultyService;
+    private ILevelService levelService;
 
     @Autowired
-    ILevelService levelService;
+    private IInstituteLevelService instituteLevelService;
 
     @Autowired
-    IInstituteLevelService instituteLevelService;
+    private IFacultyLevelService facultyLevelService;
 
     @Autowired
-    IFacultyLevelService facultyLevelService;
+    private ICourseService courseService;
 
     @Autowired
-    ICourseService courseService;
+    private ICourseDetailsService courseDetailsService;
 
     @Autowired
-    ICourseDetailsService courseDetailsService;
-
-    @Autowired
-    ICoursePricingService coursePricingService;
+    private ICoursePricingService coursePricingService;
 
     @RequestMapping(value = "/course", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> migrateCityData() throws Exception {

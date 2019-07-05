@@ -31,368 +31,585 @@ import com.seeka.app.dto.SubCategoryDto;
 @Table(name = "seeka_articles")
 public class SeekaArticles implements Serializable {
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7910522322611149651L;
 	private BigInteger id;
-    private Category category;
-    private SubCategory subcategory;
-    private UserInfo userInfo;
-    private String addType;
-    private String heading;
-    private String content;
-    private String url;
-    private String imagepath;
-    private BigInteger type;
-    private Boolean active;
-    private Date deletedOn;
-    private Date createdAt;
-    private BigInteger shared;
-    private BigInteger reviewed;
-    private BigInteger likes;
-    private String link;
-    private Date updatedAt;
-    private BigInteger country;
-    private BigInteger city;
-    private BigInteger faculty;
-    private BigInteger institute;
-    private BigInteger courses;
-    private String gender;
-    private String articleType;
-    private String companyName;
-    private String companyWebsite;
-    private Integer totalCount;
-
-    private SubCategoryDto subCategoryDropDownDto;
-
-    private CategoryDto categoryobj;
-
-    public SeekaArticles() {
-    }
-
-    public SeekaArticles(Category category, SubCategory subcategory, UserInfo userInfo, String addType, String heading, String content, String url, String imagepath,
-                    BigInteger type, Boolean active, Date deletedOn, Date createdAt, BigInteger shared, BigInteger reviewed, BigInteger likes, String link, Date updatedAt,
-                    BigInteger country, BigInteger city, BigInteger faculty, BigInteger institute, BigInteger courses, String gender, String articleType, String companyName,
-                    String companyWebsite) {
-        this.category = category;
-        this.subcategory = subcategory;
-        this.userInfo = userInfo;
-        this.addType = addType;
-        this.heading = heading;
-        this.content = content;
-        this.url = url;
-        this.imagepath = imagepath;
-        this.type = type;
-        this.active = active;
-        this.deletedOn = deletedOn;
-        this.createdAt = createdAt;
-        this.shared = shared;
-        this.reviewed = reviewed;
-        this.likes = likes;
-        this.link = link;
-        this.updatedAt = updatedAt;
-        this.country = country;
-        this.city = city;
-        this.faculty = faculty;
-        this.institute = institute;
-        this.courses = courses;
-        this.gender = gender;
-        this.articleType = articleType;
-        this.companyName = companyName;
-        this.companyWebsite = companyWebsite;
-    }
-
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public BigInteger getId() {
-        return this.id;
-    }
-
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    public Category getCategory() {
-        return this.category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "subcategory_id")
-    public SubCategory getSubcategory() {
-        return this.subcategory;
-    }
-
-    public void setSubcategory(SubCategory subcategory) {
-        this.subcategory = subcategory;
-    }
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    public UserInfo getUserInfo() {
-        return this.userInfo;
-    }
-
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
-    }
-
-    @Column(name = "add_type", length = 100)
-    public String getAddType() {
-        return this.addType;
-    }
-
-    public void setAddType(String addType) {
-        this.addType = addType;
-    }
-
-    @Column(name = "heading", length = 200)
-    public String getHeading() {
-        return this.heading;
-    }
-
-    public void setHeading(String heading) {
-        this.heading = heading;
-    }
-
-    @Column(name = "content", length = 500)
-    public String getContent() {
-        return this.content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    @Column(name = "url", length = 500)
-    public String getUrl() {
-        return this.url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    @Column(name = "imagepath", length = 500)
-    public String getImagepath() {
-        return this.imagepath;
-    }
-
-    public void setImagepath(String imagepath) {
-        this.imagepath = imagepath;
-    }
-
-    @Column(name = "type")
-    public BigInteger getType() {
-        return this.type;
-    }
-
-    public void setType(BigInteger type) {
-        this.type = type;
-    }
-
-    @Column(name = "active")
-    public Boolean getActive() {
-        return this.active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "deleted_on", length = 19)
-    public Date getDeletedOn() {
-        return this.deletedOn;
-    }
-
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at", length = 19)
-    public Date getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    @Column(name = "shared")
-    public BigInteger getShared() {
-        return this.shared;
-    }
-
-    public void setShared(BigInteger shared) {
-        this.shared = shared;
-    }
-
-    @Column(name = "reviewed")
-    public BigInteger getReviewed() {
-        return this.reviewed;
-    }
-
-    public void setReviewed(BigInteger reviewed) {
-        this.reviewed = reviewed;
-    }
-
-    @Column(name = "likes")
-    public BigInteger getLikes() {
-        return this.likes;
-    }
-
-    public void setLikes(BigInteger likes) {
-        this.likes = likes;
-    }
-
-    @Column(name = "link")
-    public String getLink() {
-        return this.link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at", length = 19)
-    public Date getUpdatedAt() {
-        return this.updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    @Column(name = "country")
-    public BigInteger getCountry() {
-        return this.country;
-    }
-
-    public void setCountry(BigInteger country) {
-        this.country = country;
-    }
-
-    @Column(name = "city")
-    public BigInteger getCity() {
-        return this.city;
-    }
-
-    public void setCity(BigInteger city) {
-        this.city = city;
-    }
-
-    @Column(name = "faculty")
-    public BigInteger getFaculty() {
-        return this.faculty;
-    }
-
-    public void setFaculty(BigInteger faculty) {
-        this.faculty = faculty;
-    }
-
-    @Column(name = "institute")
-    public BigInteger getInstitute() {
-        return this.institute;
-    }
-
-    public void setInstitute(BigInteger institute) {
-        this.institute = institute;
-    }
-
-    @Column(name = "courses")
-    public BigInteger getCourses() {
-        return this.courses;
-    }
-
-    public void setCourses(BigInteger courses) {
-        this.courses = courses;
-    }
-
-    @Column(name = "gender", length = 100)
-    public String getGender() {
-        return this.gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    @Column(name = "article_type", length = 100)
-    public String getArticleType() {
-        return this.articleType;
-    }
-
-    public void setArticleType(String articleType) {
-        this.articleType = articleType;
-    }
-
-    @Column(name = "company_name", length = 100)
-    public String getCompanyName() {
-        return this.companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    @Column(name = "company_website", length = 500)
-    public String getCompanyWebsite() {
-        return this.companyWebsite;
-    }
-
-    public void setCompanyWebsite(String companyWebsite) {
-        this.companyWebsite = companyWebsite;
-    }
-
-    @Transient
-    public Integer getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(Integer totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    /**
-     * @return the subCategoryDropDownDto
-     */
-    @Transient
-    public SubCategoryDto getSubCategoryDropDownDto() {
-        return subCategoryDropDownDto;
-    }
-
-    /**
-     * @param subCategoryDropDownDto
-     *            the subCategoryDropDownDto to set
-     */
-    public void setSubCategoryDropDownDto(SubCategoryDto subCategoryDropDownDto) {
-        this.subCategoryDropDownDto = subCategoryDropDownDto;
-    }
-
-    /**
-     * @return the categoryobj
-     */
-    @Transient
-    public CategoryDto getCategoryobj() {
-        return categoryobj;
-    }
-
-    /**
-     * @param categoryobj
-     *            the categoryobj to set
-     */
-    public void setCategoryobj(CategoryDto categoryobj) {
-        this.categoryobj = categoryobj;
-    }
+	private Category category;
+	private SubCategory subcategory;
+	private UserInfo userInfo;
+	private String addType;
+	private String heading;
+	private String content;
+	private String url;
+	private String imagepath;
+	private BigInteger type;
+	private Boolean active;
+	private Date deletedOn;
+	private Date createdAt;
+	private BigInteger shared;
+	private BigInteger reviewed;
+	private BigInteger likes;
+	private String link;
+	private Date updatedAt;
+	private BigInteger country;
+	private BigInteger city;
+	private BigInteger faculty;
+	private BigInteger institute;
+	private BigInteger courses;
+	private String gender;
+	private String articleType;
+	private String companyName;
+	private String companyWebsite;
+	private Integer totalCount;
+
+	private SubCategoryDto subCategoryDropDownDto;
+
+	private CategoryDto categoryobj;
+
+	public SeekaArticles() {
+	}
+
+	public SeekaArticles(Category category, SubCategory subcategory, UserInfo userInfo, String addType, String heading,
+			String content, String url, String imagepath, BigInteger type, Boolean active, Date deletedOn,
+			Date createdAt, BigInteger shared, BigInteger reviewed, BigInteger likes, String link, Date updatedAt,
+			BigInteger country, BigInteger city, BigInteger faculty, BigInteger institute, BigInteger courses,
+			String gender, String articleType, String companyName, String companyWebsite) {
+		this.category = category;
+		this.subcategory = subcategory;
+		this.userInfo = userInfo;
+		this.addType = addType;
+		this.heading = heading;
+		this.content = content;
+		this.url = url;
+		this.imagepath = imagepath;
+		this.type = type;
+		this.active = active;
+		this.deletedOn = deletedOn;
+		this.createdAt = createdAt;
+		this.shared = shared;
+		this.reviewed = reviewed;
+		this.likes = likes;
+		this.link = link;
+		this.updatedAt = updatedAt;
+		this.country = country;
+		this.city = city;
+		this.faculty = faculty;
+		this.institute = institute;
+		this.courses = courses;
+		this.gender = gender;
+		this.articleType = articleType;
+		this.companyName = companyName;
+		this.companyWebsite = companyWebsite;
+	}
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
+	public BigInteger getId() {
+		return this.id;
+	}
+
+	public void setId(BigInteger id) {
+		this.id = id;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "category_id")
+	public Category getCategory() {
+		return this.category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "subcategory_id")
+	public SubCategory getSubcategory() {
+		return this.subcategory;
+	}
+
+	public void setSubcategory(SubCategory subcategory) {
+		this.subcategory = subcategory;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_id")
+	public UserInfo getUserInfo() {
+		return this.userInfo;
+	}
+
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
+	@Column(name = "add_type", length = 100)
+	public String getAddType() {
+		return this.addType;
+	}
+
+	public void setAddType(String addType) {
+		this.addType = addType;
+	}
+
+	@Column(name = "heading", length = 200)
+	public String getHeading() {
+		return this.heading;
+	}
+
+	public void setHeading(String heading) {
+		this.heading = heading;
+	}
+
+	@Column(name = "content", length = 500)
+	public String getContent() {
+		return this.content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	@Column(name = "url", length = 500)
+	public String getUrl() {
+		return this.url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	@Column(name = "imagepath", length = 500)
+	public String getImagepath() {
+		return this.imagepath;
+	}
+
+	public void setImagepath(String imagepath) {
+		this.imagepath = imagepath;
+	}
+
+	@Column(name = "type")
+	public BigInteger getType() {
+		return this.type;
+	}
+
+	public void setType(BigInteger type) {
+		this.type = type;
+	}
+
+	@Column(name = "active")
+	public Boolean getActive() {
+		return this.active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deleted_on", length = 19)
+	public Date getDeletedOn() {
+		return this.deletedOn;
+	}
+
+	public void setDeletedOn(Date deletedOn) {
+		this.deletedOn = deletedOn;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_at", length = 19)
+	public Date getCreatedAt() {
+		return this.createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	@Column(name = "shared")
+	public BigInteger getShared() {
+		return this.shared;
+	}
+
+	public void setShared(BigInteger shared) {
+		this.shared = shared;
+	}
+
+	@Column(name = "reviewed")
+	public BigInteger getReviewed() {
+		return this.reviewed;
+	}
+
+	public void setReviewed(BigInteger reviewed) {
+		this.reviewed = reviewed;
+	}
+
+	@Column(name = "likes")
+	public BigInteger getLikes() {
+		return this.likes;
+	}
+
+	public void setLikes(BigInteger likes) {
+		this.likes = likes;
+	}
+
+	@Column(name = "link")
+	public String getLink() {
+		return this.link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_at", length = 19)
+	public Date getUpdatedAt() {
+		return this.updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	@Column(name = "country")
+	public BigInteger getCountry() {
+		return this.country;
+	}
+
+	public void setCountry(BigInteger country) {
+		this.country = country;
+	}
+
+	@Column(name = "city")
+	public BigInteger getCity() {
+		return this.city;
+	}
+
+	public void setCity(BigInteger city) {
+		this.city = city;
+	}
+
+	@Column(name = "faculty")
+	public BigInteger getFaculty() {
+		return this.faculty;
+	}
+
+	public void setFaculty(BigInteger faculty) {
+		this.faculty = faculty;
+	}
+
+	@Column(name = "institute")
+	public BigInteger getInstitute() {
+		return this.institute;
+	}
+
+	public void setInstitute(BigInteger institute) {
+		this.institute = institute;
+	}
+
+	@Column(name = "courses")
+	public BigInteger getCourses() {
+		return this.courses;
+	}
+
+	public void setCourses(BigInteger courses) {
+		this.courses = courses;
+	}
+
+	@Column(name = "gender", length = 100)
+	public String getGender() {
+		return this.gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	@Column(name = "article_type", length = 100)
+	public String getArticleType() {
+		return this.articleType;
+	}
+
+	public void setArticleType(String articleType) {
+		this.articleType = articleType;
+	}
+
+	@Column(name = "company_name", length = 100)
+	public String getCompanyName() {
+		return this.companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	@Column(name = "company_website", length = 500)
+	public String getCompanyWebsite() {
+		return this.companyWebsite;
+	}
+
+	public void setCompanyWebsite(String companyWebsite) {
+		this.companyWebsite = companyWebsite;
+	}
+
+	@Transient
+	public Integer getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(Integer totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	/**
+	 * @return the subCategoryDropDownDto
+	 */
+	@Transient
+	public SubCategoryDto getSubCategoryDropDownDto() {
+		return subCategoryDropDownDto;
+	}
+
+	/**
+	 * @param subCategoryDropDownDto the subCategoryDropDownDto to set
+	 */
+	public void setSubCategoryDropDownDto(SubCategoryDto subCategoryDropDownDto) {
+		this.subCategoryDropDownDto = subCategoryDropDownDto;
+	}
+
+	/**
+	 * @return the categoryobj
+	 */
+	@Transient
+	public CategoryDto getCategoryobj() {
+		return categoryobj;
+	}
+
+	/**
+	 * @param categoryobj the categoryobj to set
+	 */
+	public void setCategoryobj(CategoryDto categoryobj) {
+		this.categoryobj = categoryobj;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((active == null) ? 0 : active.hashCode());
+		result = prime * result + ((addType == null) ? 0 : addType.hashCode());
+		result = prime * result + ((articleType == null) ? 0 : articleType.hashCode());
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
+		result = prime * result + ((categoryobj == null) ? 0 : categoryobj.hashCode());
+		result = prime * result + ((city == null) ? 0 : city.hashCode());
+		result = prime * result + ((companyName == null) ? 0 : companyName.hashCode());
+		result = prime * result + ((companyWebsite == null) ? 0 : companyWebsite.hashCode());
+		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((courses == null) ? 0 : courses.hashCode());
+		result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+		result = prime * result + ((faculty == null) ? 0 : faculty.hashCode());
+		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result + ((heading == null) ? 0 : heading.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((imagepath == null) ? 0 : imagepath.hashCode());
+		result = prime * result + ((institute == null) ? 0 : institute.hashCode());
+		result = prime * result + ((likes == null) ? 0 : likes.hashCode());
+		result = prime * result + ((link == null) ? 0 : link.hashCode());
+		result = prime * result + ((reviewed == null) ? 0 : reviewed.hashCode());
+		result = prime * result + ((shared == null) ? 0 : shared.hashCode());
+		result = prime * result + ((subCategoryDropDownDto == null) ? 0 : subCategoryDropDownDto.hashCode());
+		result = prime * result + ((subcategory == null) ? 0 : subcategory.hashCode());
+		result = prime * result + ((totalCount == null) ? 0 : totalCount.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + ((userInfo == null) ? 0 : userInfo.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SeekaArticles other = (SeekaArticles) obj;
+		if (active == null) {
+			if (other.active != null)
+				return false;
+		} else if (!active.equals(other.active))
+			return false;
+		if (addType == null) {
+			if (other.addType != null)
+				return false;
+		} else if (!addType.equals(other.addType))
+			return false;
+		if (articleType == null) {
+			if (other.articleType != null)
+				return false;
+		} else if (!articleType.equals(other.articleType))
+			return false;
+		if (category == null) {
+			if (other.category != null)
+				return false;
+		} else if (!category.equals(other.category))
+			return false;
+		if (categoryobj == null) {
+			if (other.categoryobj != null)
+				return false;
+		} else if (!categoryobj.equals(other.categoryobj))
+			return false;
+		if (city == null) {
+			if (other.city != null)
+				return false;
+		} else if (!city.equals(other.city))
+			return false;
+		if (companyName == null) {
+			if (other.companyName != null)
+				return false;
+		} else if (!companyName.equals(other.companyName))
+			return false;
+		if (companyWebsite == null) {
+			if (other.companyWebsite != null)
+				return false;
+		} else if (!companyWebsite.equals(other.companyWebsite))
+			return false;
+		if (content == null) {
+			if (other.content != null)
+				return false;
+		} else if (!content.equals(other.content))
+			return false;
+		if (country == null) {
+			if (other.country != null)
+				return false;
+		} else if (!country.equals(other.country))
+			return false;
+		if (courses == null) {
+			if (other.courses != null)
+				return false;
+		} else if (!courses.equals(other.courses))
+			return false;
+		if (createdAt == null) {
+			if (other.createdAt != null)
+				return false;
+		} else if (!createdAt.equals(other.createdAt))
+			return false;
+		if (deletedOn == null) {
+			if (other.deletedOn != null)
+				return false;
+		} else if (!deletedOn.equals(other.deletedOn))
+			return false;
+		if (faculty == null) {
+			if (other.faculty != null)
+				return false;
+		} else if (!faculty.equals(other.faculty))
+			return false;
+		if (gender == null) {
+			if (other.gender != null)
+				return false;
+		} else if (!gender.equals(other.gender))
+			return false;
+		if (heading == null) {
+			if (other.heading != null)
+				return false;
+		} else if (!heading.equals(other.heading))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (imagepath == null) {
+			if (other.imagepath != null)
+				return false;
+		} else if (!imagepath.equals(other.imagepath))
+			return false;
+		if (institute == null) {
+			if (other.institute != null)
+				return false;
+		} else if (!institute.equals(other.institute))
+			return false;
+		if (likes == null) {
+			if (other.likes != null)
+				return false;
+		} else if (!likes.equals(other.likes))
+			return false;
+		if (link == null) {
+			if (other.link != null)
+				return false;
+		} else if (!link.equals(other.link))
+			return false;
+		if (reviewed == null) {
+			if (other.reviewed != null)
+				return false;
+		} else if (!reviewed.equals(other.reviewed))
+			return false;
+		if (shared == null) {
+			if (other.shared != null)
+				return false;
+		} else if (!shared.equals(other.shared))
+			return false;
+		if (subCategoryDropDownDto == null) {
+			if (other.subCategoryDropDownDto != null)
+				return false;
+		} else if (!subCategoryDropDownDto.equals(other.subCategoryDropDownDto))
+			return false;
+		if (subcategory == null) {
+			if (other.subcategory != null)
+				return false;
+		} else if (!subcategory.equals(other.subcategory))
+			return false;
+		if (totalCount == null) {
+			if (other.totalCount != null)
+				return false;
+		} else if (!totalCount.equals(other.totalCount))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		if (updatedAt == null) {
+			if (other.updatedAt != null)
+				return false;
+		} else if (!updatedAt.equals(other.updatedAt))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		if (userInfo == null) {
+			if (other.userInfo != null)
+				return false;
+		} else if (!userInfo.equals(other.userInfo))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SeekaArticles [id=").append(id).append(", category=").append(category).append(", subcategory=")
+				.append(subcategory).append(", userInfo=").append(userInfo).append(", addType=").append(addType)
+				.append(", heading=").append(heading).append(", content=").append(content).append(", url=").append(url)
+				.append(", imagepath=").append(imagepath).append(", type=").append(type).append(", active=")
+				.append(active).append(", deletedOn=").append(deletedOn).append(", createdAt=").append(createdAt)
+				.append(", shared=").append(shared).append(", reviewed=").append(reviewed).append(", likes=")
+				.append(likes).append(", link=").append(link).append(", updatedAt=").append(updatedAt)
+				.append(", country=").append(country).append(", city=").append(city).append(", faculty=")
+				.append(faculty).append(", institute=").append(institute).append(", courses=").append(courses)
+				.append(", gender=").append(gender).append(", articleType=").append(articleType)
+				.append(", companyName=").append(companyName).append(", companyWebsite=").append(companyWebsite)
+				.append(", totalCount=").append(totalCount).append(", subCategoryDropDownDto=")
+				.append(subCategoryDropDownDto).append(", categoryobj=").append(categoryobj).append("]");
+		return builder.toString();
+	}
 
 }

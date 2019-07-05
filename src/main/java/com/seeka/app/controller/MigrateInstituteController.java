@@ -37,22 +37,22 @@ import com.seeka.app.service.IServiceDetailsService;
 public class MigrateInstituteController {
 
     @Autowired
-    ICountryService countryService;
+    private ICountryService countryService;
 
     @Autowired
-    ICityService cityService;
+    private ICityService cityService;
 
     @Autowired
-    IInstituteDetailsService instituteDetailsService;
+    private IInstituteDetailsService instituteDetailsService;
 
     @Autowired
-    IInstituteService instituteService;
+    private IInstituteService instituteService;
 
     @Autowired
-    IServiceDetailsService serviceDetailsService;
+    private IServiceDetailsService serviceDetailsService;
 
     @Autowired
-    IInstituteServiceDetailsService instituteServiceDetailsService;
+    private IInstituteServiceDetailsService instituteServiceDetailsService;
 
     public Map<String, Institute> get() throws Exception {
         File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\University\\university_names_malaysia.xlsx");

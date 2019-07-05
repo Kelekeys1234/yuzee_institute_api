@@ -22,10 +22,7 @@ import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.jobs.CountryLevelFacultyUtil;
-import com.seeka.app.service.ICountryService;
-import com.seeka.app.service.IFacultyService;
 import com.seeka.app.service.IInstituteService;
-import com.seeka.app.service.ILevelService;
 import com.seeka.app.service.IUserService;
 import com.seeka.app.util.CDNServerUtil;
 
@@ -34,19 +31,10 @@ import com.seeka.app.util.CDNServerUtil;
 public class SearchPageController {
 
     @Autowired
-    ICountryService countryService;
+    private IUserService userService;
 
     @Autowired
-    ILevelService levelService;
-
-    @Autowired
-    IFacultyService facultyService;
-
-    @Autowired
-    IUserService userService;
-
-    @Autowired
-    IInstituteService instituteService;
+    private IInstituteService instituteService;
 
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCountries(@PathVariable("userId") BigInteger userId) {

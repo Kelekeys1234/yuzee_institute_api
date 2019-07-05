@@ -27,10 +27,10 @@ import com.seeka.app.service.IUserService;
 public class ReviewController {
 
     @Autowired
-    IUserService userService;
+    private IUserService userService;
 
     @Autowired
-    IUserInstCourseReviewService userInstCourseReviewService;
+    private IUserInstCourseReviewService userInstCourseReviewService;
 
     @RequestMapping(value = "/prevalidate", method = RequestMethod.PUT, produces = "application/json")
     public ResponseEntity<?> preValidate(@Valid @RequestBody UserReviewRequestDto request) throws Exception {

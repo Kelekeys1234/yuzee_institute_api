@@ -1,12 +1,17 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -17,8 +22,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "user_info_v2")
-public class UserInfoV2 implements java.io.Serializable {
+public class UserInfoV2 implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9092058806487300399L;
 	private BigInteger userId;
 	private String firstName;
 	private String lastName;
@@ -40,19 +49,16 @@ public class UserInfoV2 implements java.io.Serializable {
 	public UserInfoV2() {
 	}
 
-	public UserInfoV2(String password, Date lastUpdatedDate, Date signUpDate,
-			byte status) {
+	public UserInfoV2(String password, Date lastUpdatedDate, Date signUpDate, byte status) {
 		this.password = password;
 		this.lastUpdatedDate = lastUpdatedDate;
 		this.signUpDate = signUpDate;
 		this.status = status;
 	}
 
-	public UserInfoV2(String firstName, String lastName, String gender,
-			Date dob, String countryOrgin, String citizenship, String emailId,
-			String password, String mobileNo, String skypeId,
-			String userEduInfo, Date lastUpdatedDate, Date signUpDate,
-			byte status, String signupType, String socialAccountId) {
+	public UserInfoV2(String firstName, String lastName, String gender, Date dob, String countryOrgin,
+			String citizenship, String emailId, String password, String mobileNo, String skypeId, String userEduInfo,
+			Date lastUpdatedDate, Date signUpDate, byte status, String signupType, String socialAccountId) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.gender = gender;
@@ -227,6 +233,138 @@ public class UserInfoV2 implements java.io.Serializable {
 
 	public void setSocialAccountId(String socialAccountId) {
 		this.socialAccountId = socialAccountId;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((citizenship == null) ? 0 : citizenship.hashCode());
+		result = prime * result + ((countryOrgin == null) ? 0 : countryOrgin.hashCode());
+		result = prime * result + ((dob == null) ? 0 : dob.hashCode());
+		result = prime * result + ((emailId == null) ? 0 : emailId.hashCode());
+		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+		result = prime * result + ((lastUpdatedDate == null) ? 0 : lastUpdatedDate.hashCode());
+		result = prime * result + ((mobileNo == null) ? 0 : mobileNo.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((signUpDate == null) ? 0 : signUpDate.hashCode());
+		result = prime * result + ((signupType == null) ? 0 : signupType.hashCode());
+		result = prime * result + ((skypeId == null) ? 0 : skypeId.hashCode());
+		result = prime * result + ((socialAccountId == null) ? 0 : socialAccountId.hashCode());
+		result = prime * result + status;
+		result = prime * result + ((userEduInfo == null) ? 0 : userEduInfo.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserInfoV2 other = (UserInfoV2) obj;
+		if (citizenship == null) {
+			if (other.citizenship != null)
+				return false;
+		} else if (!citizenship.equals(other.citizenship))
+			return false;
+		if (countryOrgin == null) {
+			if (other.countryOrgin != null)
+				return false;
+		} else if (!countryOrgin.equals(other.countryOrgin))
+			return false;
+		if (dob == null) {
+			if (other.dob != null)
+				return false;
+		} else if (!dob.equals(other.dob))
+			return false;
+		if (emailId == null) {
+			if (other.emailId != null)
+				return false;
+		} else if (!emailId.equals(other.emailId))
+			return false;
+		if (firstName == null) {
+			if (other.firstName != null)
+				return false;
+		} else if (!firstName.equals(other.firstName))
+			return false;
+		if (gender == null) {
+			if (other.gender != null)
+				return false;
+		} else if (!gender.equals(other.gender))
+			return false;
+		if (lastName == null) {
+			if (other.lastName != null)
+				return false;
+		} else if (!lastName.equals(other.lastName))
+			return false;
+		if (lastUpdatedDate == null) {
+			if (other.lastUpdatedDate != null)
+				return false;
+		} else if (!lastUpdatedDate.equals(other.lastUpdatedDate))
+			return false;
+		if (mobileNo == null) {
+			if (other.mobileNo != null)
+				return false;
+		} else if (!mobileNo.equals(other.mobileNo))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (signUpDate == null) {
+			if (other.signUpDate != null)
+				return false;
+		} else if (!signUpDate.equals(other.signUpDate))
+			return false;
+		if (signupType == null) {
+			if (other.signupType != null)
+				return false;
+		} else if (!signupType.equals(other.signupType))
+			return false;
+		if (skypeId == null) {
+			if (other.skypeId != null)
+				return false;
+		} else if (!skypeId.equals(other.skypeId))
+			return false;
+		if (socialAccountId == null) {
+			if (other.socialAccountId != null)
+				return false;
+		} else if (!socialAccountId.equals(other.socialAccountId))
+			return false;
+		if (status != other.status)
+			return false;
+		if (userEduInfo == null) {
+			if (other.userEduInfo != null)
+				return false;
+		} else if (!userEduInfo.equals(other.userEduInfo))
+			return false;
+		if (userId == null) {
+			if (other.userId != null)
+				return false;
+		} else if (!userId.equals(other.userId))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserInfoV2 [userId=").append(userId).append(", firstName=").append(firstName)
+				.append(", lastName=").append(lastName).append(", gender=").append(gender).append(", dob=").append(dob)
+				.append(", countryOrgin=").append(countryOrgin).append(", citizenship=").append(citizenship)
+				.append(", emailId=").append(emailId).append(", password=").append(password).append(", mobileNo=")
+				.append(mobileNo).append(", skypeId=").append(skypeId).append(", userEduInfo=").append(userEduInfo)
+				.append(", lastUpdatedDate=").append(lastUpdatedDate).append(", signUpDate=").append(signUpDate)
+				.append(", status=").append(status).append(", signupType=").append(signupType)
+				.append(", socialAccountId=").append(socialAccountId).append("]");
+		return builder.toString();
 	}
 
 }

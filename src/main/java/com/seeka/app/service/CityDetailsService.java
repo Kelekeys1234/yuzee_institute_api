@@ -16,21 +16,21 @@ import com.seeka.app.dao.ICityDetailsDAO;
 public class CityDetailsService implements ICityDetailsService{
 	
 	@Autowired
-	ICityDetailsDAO dao;
+	private ICityDetailsDAO iCityDetailsDAO;
 
 	@Override
 	public List<CityDetails> getAll() {		
-		return dao.getAll();
+		return iCityDetailsDAO.getAll();
 	}
 	
 	@Override
 	public CityDetails get(BigInteger id) {
-		return dao.get(id);
+		return iCityDetailsDAO.get(id);
 	}
 	
 	@Override
 	public List<CityDetails> getAllCitiesByCountry(BigInteger countryId) {		
-		return dao.getAllCitiesByCountry(countryId);
+		return iCityDetailsDAO.getAllCitiesByCountry(countryId);
 	}
 	
 

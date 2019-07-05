@@ -1,6 +1,4 @@
-package com.seeka.app.service;import java.math.BigInteger;
-
-import java.util.List;
+package com.seeka.app.service;import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +13,10 @@ import com.seeka.app.dao.ICountryImagesDAO;
 public class CountryImagesService implements ICountryImagesService{
 	
 	@Autowired
-	ICountryImagesDAO dao;
+	private ICountryImagesDAO iCountryImagesDAO;
 	
 	public List<CountryImages> getAll() {
-		// TO DO Auto-generated method stub
-		return dao.getAll();
+		return iCountryImagesDAO.getAll();
 	}
 
 }

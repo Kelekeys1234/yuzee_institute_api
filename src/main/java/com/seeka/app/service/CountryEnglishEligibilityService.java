@@ -16,25 +16,25 @@ import com.seeka.app.dao.ICountryEnglishEligibilityDAO;
 public class CountryEnglishEligibilityService implements ICountryEnglishEligibilityService{
 	
 	@Autowired
-	ICountryEnglishEligibilityDAO dao;
+	private ICountryEnglishEligibilityDAO iCountryEnglishEligibilityDAO;
 	
 	@Override
-	public void save(CountryEnglishEligibility obj) {
-		dao.save(obj);
+	public void save(CountryEnglishEligibility countryEnglishEligibility) {
+		iCountryEnglishEligibilityDAO.save(countryEnglishEligibility);
 	}
 	
 	@Override
 	public List<CountryEnglishEligibility> getAll() {		
-		return dao.getAll();
+		return iCountryEnglishEligibilityDAO.getAll();
 	}
     
 	@Override
 	public CountryEnglishEligibility get(BigInteger id) {
-		return dao.get(id);
+		return iCountryEnglishEligibilityDAO.get(id);
 	}
 	
 	public List<CountryEnglishEligibility> getEnglishEligibiltyList(BigInteger countryId){
-		return dao.getEnglishEligibiltyList(countryId);
+		return iCountryEnglishEligibilityDAO.getEnglishEligibiltyList(countryId);
 	}
 	
 }

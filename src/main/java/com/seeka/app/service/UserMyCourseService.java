@@ -15,35 +15,35 @@ import com.seeka.app.dao.IUserMyCourseDAO;
 public class UserMyCourseService implements IUserMyCourseService {
 
 	@Autowired
-	IUserMyCourseDAO dao;
+	private IUserMyCourseDAO iUserMyCourseDAO;
 
 	@Override
 	public void save(UserMyCourse reviewObj) {
-		dao.save(reviewObj);
+		iUserMyCourseDAO.save(reviewObj);
 	}
 	
 	@Override
 	public void update(UserMyCourse reviewObj) {
-		dao.update(reviewObj);
+		iUserMyCourseDAO.update(reviewObj);
 	}
 	
 	@Override
 	public UserMyCourse get(BigInteger userId) {
-		return dao.get(userId);
+		return iUserMyCourseDAO.get(userId);
 	}
 	
 	@Override
 	public UserMyCourse getDataByUserIDAndCourseID(BigInteger userId,BigInteger courseId) {
-		return dao.getDataByUserIDAndCourseID(userId,courseId);
+		return iUserMyCourseDAO.getDataByUserIDAndCourseID(userId,courseId);
 	}
 	
 	@Override
 	public List<UserMyCourse> getDataByUserID(BigInteger userId){
-		return dao.getDataByUserID(userId);
+		return iUserMyCourseDAO.getDataByUserID(userId);
 	}
 	
 	@Override
 	public List<BigInteger> getAllCourseIdsByUser(BigInteger userId){
-		return dao.getAllCourseIdsByUser(userId);
+		return iUserMyCourseDAO.getAllCourseIdsByUser(userId);
 	}
 }

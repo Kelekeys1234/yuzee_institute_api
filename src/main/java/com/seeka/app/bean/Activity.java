@@ -17,95 +17,104 @@ import javax.persistence.Table;
 @Table(name = "activity")
 public class Activity implements java.io.Serializable {
 
-    private BigInteger id;
-    private String activityName;
-    private String activityDesc;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4896547771928499529L;
+	private BigInteger id;
+	private String activityName;
+	private String activityDesc;
 
-    public Activity() {
-    }
+	public Activity() {
+	}
 
-    public Activity(String activityName, String activityDesc) {
-        this.activityName = activityName;
-        this.activityDesc = activityDesc;
-    }
+	public Activity(String activityName, String activityDesc) {
+		this.activityName = activityName;
+		this.activityDesc = activityDesc;
+	}
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public BigInteger getId() {
-        return this.id;
-    }
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
+	public BigInteger getId() {
+		return this.id;
+	}
 
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
+	public void setId(BigInteger id) {
+		this.id = id;
+	}
 
-    @Column(name = "activity_name", length = 250)
-    public String getActivityName() {
-        return this.activityName;
-    }
+	@Column(name = "activity_name", length = 250)
+	public String getActivityName() {
+		return this.activityName;
+	}
 
-    public void setActivityName(String activityName) {
-        this.activityName = activityName;
-    }
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
 
-    @Column(name = "activity_desc", length = 250)
-    public String getActivityDesc() {
-        return this.activityDesc;
-    }
+	@Column(name = "activity_desc", length = 250)
+	public String getActivityDesc() {
+		return this.activityDesc;
+	}
 
-    public void setActivityDesc(String activityDesc) {
-        this.activityDesc = activityDesc;
-    }
+	public void setActivityDesc(String activityDesc) {
+		this.activityDesc = activityDesc;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((activityDesc == null) ? 0 : activityDesc.hashCode());
-        result = prime * result + ((activityName == null) ? 0 : activityName.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((activityDesc == null) ? 0 : activityDesc.hashCode());
+		result = prime * result + ((activityName == null) ? 0 : activityName.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Activity other = (Activity) obj;
-        if (activityDesc == null) {
-            if (other.activityDesc != null)
-                return false;
-        } else if (!activityDesc.equals(other.activityDesc))
-            return false;
-        if (activityName == null) {
-            if (other.activityName != null)
-                return false;
-        } else if (!activityName.equals(other.activityName))
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Activity other = (Activity) obj;
+		if (activityDesc == null) {
+			if (other.activityDesc != null)
+				return false;
+		} else if (!activityDesc.equals(other.activityDesc))
+			return false;
+		if (activityName == null) {
+			if (other.activityName != null)
+				return false;
+		} else if (!activityName.equals(other.activityName))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "Activity [id=" + id + ", activityName=" + activityName + ", activityDesc=" + activityDesc + "]";
-    }
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Activity [id=").append(id).append(", activityName=").append(activityName)
+				.append(", activityDesc=").append(activityDesc).append("]");
+		return builder.toString();
+	}
+
 }

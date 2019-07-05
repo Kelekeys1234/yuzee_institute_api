@@ -1,4 +1,7 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -17,8 +20,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "article_gender")
-public class ArticleGender implements java.io.Serializable {
+public class ArticleGender implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7477761309981871867L;
 	private BigInteger id;
 	private SeekaArticles seekaArticles;
 	private String gender;
@@ -59,6 +66,51 @@ public class ArticleGender implements java.io.Serializable {
 
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((seekaArticles == null) ? 0 : seekaArticles.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ArticleGender other = (ArticleGender) obj;
+		if (gender == null) {
+			if (other.gender != null)
+				return false;
+		} else if (!gender.equals(other.gender))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (seekaArticles == null) {
+			if (other.seekaArticles != null)
+				return false;
+		} else if (!seekaArticles.equals(other.seekaArticles))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ArticleGender [id=").append(id).append(", seekaArticles=").append(seekaArticles)
+				.append(", gender=").append(gender).append("]");
+		return builder.toString();
 	}
 
 }

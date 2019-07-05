@@ -1,4 +1,9 @@
-package com.seeka.app.service;import java.math.BigInteger;
+package com.seeka.app.service;import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -10,13 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.seek.app.exception.FileStorageException;
 import com.seek.app.exception.MyFileNotFoundException;
 import com.seeka.app.util.FileStorageProperties;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 @Service
 public class FileStorageService {

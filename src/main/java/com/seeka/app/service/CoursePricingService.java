@@ -15,31 +15,31 @@ import com.seeka.app.dao.ICoursePricingDAO;
 public class CoursePricingService implements ICoursePricingService {
 	
 	@Autowired
-	ICoursePricingDAO dao;
+	private ICoursePricingDAO iCoursePricingDAO;
 	
 	@Override
-	public void save(CoursePricing obj) {
-		dao.save(obj);
+	public void save(CoursePricing coursePricing) {
+		iCoursePricingDAO.save(coursePricing);
 	}
 	
 	@Override
-	public void update(CoursePricing obj) {
-		dao.update(obj);
+	public void update(CoursePricing coursePricing) {
+		iCoursePricingDAO.update(coursePricing);
 	}
 	
 	@Override
 	public CoursePricing get(BigInteger id) {
-		return dao.get(id);
+		return iCoursePricingDAO.get(id);
 	}
 	
 	@Override
 	public List<CoursePricing> getAll(){
-		return dao.getAll();
+		return iCoursePricingDAO.getAll();
 	} 
 	
 	@Override
 	public CoursePricing getPricingByCourseId(BigInteger courseId) {
-		return dao.getPricingByCourseId(courseId);
+		return iCoursePricingDAO.getPricingByCourseId(courseId);
 	}
 
 }

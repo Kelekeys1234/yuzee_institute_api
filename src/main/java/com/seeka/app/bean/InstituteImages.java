@@ -1,13 +1,16 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,8 +23,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "institute_images")
-public class InstituteImages implements java.io.Serializable {
+public class InstituteImages implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7478538284327710921L;
 	private BigInteger id;
 	private Institute institute;
 	private int imageIndex;
@@ -285,14 +292,16 @@ public class InstituteImages implements java.io.Serializable {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
-    public String toString() {
-        return "InstituteImages [id=" + id + ", institute=" + institute + ", imageIndex=" + imageIndex + ", imageName=" + imageName + ", imagePath=" + imagePath + ", description="
-                        + description + ", isActive=" + isActive + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + ", deletedOn=" + deletedOn + ", createdBy=" + createdBy
-                        + ", updatedBy=" + updatedBy + ", isDeleted=" + isDeleted + "]";
-    }
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("InstituteImages [id=").append(id).append(", institute=").append(institute)
+				.append(", imageIndex=").append(imageIndex).append(", imageName=").append(imageName)
+				.append(", imagePath=").append(imagePath).append(", description=").append(description)
+				.append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=")
+				.append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
+				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
+		return builder.toString();
+	}
 
 }

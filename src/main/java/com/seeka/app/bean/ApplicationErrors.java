@@ -1,4 +1,7 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -20,8 +23,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "application_errors")
-public class ApplicationErrors implements java.io.Serializable {
+public class ApplicationErrors implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6729319332447912968L;
 	private BigInteger id;
 	private UserInfo userInfo;
 	private String subject;
@@ -41,9 +48,8 @@ public class ApplicationErrors implements java.io.Serializable {
 		this.status = status;
 	}
 
-	public ApplicationErrors(UserInfo userInfo, String subject, String notes,
-			String phoneType, String location, String country,
-			String deviceInfo, Date createdDate, byte status) {
+	public ApplicationErrors(UserInfo userInfo, String subject, String notes, String phoneType, String location,
+			String country, String deviceInfo, Date createdDate, byte status) {
 		this.userInfo = userInfo;
 		this.subject = subject;
 		this.notes = notes;
@@ -147,6 +153,93 @@ public class ApplicationErrors implements java.io.Serializable {
 
 	public void setStatus(byte status) {
 		this.status = status;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
+		result = prime * result + ((deviceInfo == null) ? 0 : deviceInfo.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((notes == null) ? 0 : notes.hashCode());
+		result = prime * result + ((phoneType == null) ? 0 : phoneType.hashCode());
+		result = prime * result + status;
+		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
+		result = prime * result + ((userInfo == null) ? 0 : userInfo.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ApplicationErrors other = (ApplicationErrors) obj;
+		if (country == null) {
+			if (other.country != null)
+				return false;
+		} else if (!country.equals(other.country))
+			return false;
+		if (createdDate == null) {
+			if (other.createdDate != null)
+				return false;
+		} else if (!createdDate.equals(other.createdDate))
+			return false;
+		if (deviceInfo == null) {
+			if (other.deviceInfo != null)
+				return false;
+		} else if (!deviceInfo.equals(other.deviceInfo))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
+			return false;
+		if (notes == null) {
+			if (other.notes != null)
+				return false;
+		} else if (!notes.equals(other.notes))
+			return false;
+		if (phoneType == null) {
+			if (other.phoneType != null)
+				return false;
+		} else if (!phoneType.equals(other.phoneType))
+			return false;
+		if (status != other.status)
+			return false;
+		if (subject == null) {
+			if (other.subject != null)
+				return false;
+		} else if (!subject.equals(other.subject))
+			return false;
+		if (userInfo == null) {
+			if (other.userInfo != null)
+				return false;
+		} else if (!userInfo.equals(other.userInfo))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ApplicationErrors [id=").append(id).append(", userInfo=").append(userInfo).append(", subject=")
+				.append(subject).append(", notes=").append(notes).append(", phoneType=").append(phoneType)
+				.append(", location=").append(location).append(", country=").append(country).append(", deviceInfo=")
+				.append(deviceInfo).append(", createdDate=").append(createdDate).append(", status=").append(status)
+				.append("]");
+		return builder.toString();
 	}
 
 }

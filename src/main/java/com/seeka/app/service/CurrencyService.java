@@ -15,7 +15,7 @@ import com.seeka.app.dao.ICurrencyDAO;
 public class CurrencyService implements ICurrencyService {
 	
 	@Autowired
-	ICurrencyDAO dao;
+	private ICurrencyDAO dao;
 	
 	@Override
 	public void save(Currency obj) {

@@ -9,12 +9,12 @@ import com.seeka.app.dto.CategoryDto;
 
 public interface ICategoryService {
 
-    public List<CategoryDto> getAllCategories();
+     List<CategoryDto> getAllCategories();
 
-    public CategoryDto getCategoryById(BigInteger categoryId);
+     CategoryDto getCategoryById(BigInteger categoryId);
 
-    public Map<String, Object> saveCategory(Category category);
+     Map<String, Object> saveCategory(Category category);
 
-    public boolean deleteCategory(BigInteger categoryId);
+     boolean deleteCategory(BigInteger categoryId);
 
 }

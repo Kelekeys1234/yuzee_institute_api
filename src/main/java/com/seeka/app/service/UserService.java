@@ -15,7 +15,7 @@ import com.seeka.app.enumeration.SignUpType;
 public class UserService implements IUserService {
 
 	@Autowired
-	IUserDAO userDAO;
+	private IUserDAO userDAO;
 
 	@Override
 	public void save(UserInfo user) {

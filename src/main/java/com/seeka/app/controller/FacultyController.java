@@ -27,10 +27,10 @@ import com.seeka.app.util.IConstant;
 public class FacultyController {
 	
 	@Autowired
-	IFacultyService facultyService;
+	private IFacultyService facultyService;
 	
 	@Autowired
-	IFacultyLevelService facultyLevelService;
+	private IFacultyLevelService facultyLevelService;
 	 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<?> saveLevel(@RequestBody Faculty obj) throws Exception {

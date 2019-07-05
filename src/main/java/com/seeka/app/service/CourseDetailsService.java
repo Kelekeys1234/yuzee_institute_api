@@ -15,26 +15,26 @@ import com.seeka.app.dao.ICourseDetailsDAO;
 public class CourseDetailsService implements ICourseDetailsService {
 	
 	@Autowired
-	ICourseDetailsDAO dao;
+	private ICourseDetailsDAO iCourseDetailsDAO;
 	
 	@Override
 	public void save(CourseDetails obj) {
-		dao.save(obj);
+		iCourseDetailsDAO.save(obj);
 	}
 	
 	@Override
 	public void update(CourseDetails obj) {
-		dao.update(obj);
+		iCourseDetailsDAO.update(obj);
 	}
 	
 	@Override
 	public CourseDetails get(BigInteger id) {
-		return dao.get(id);
+		return iCourseDetailsDAO.get(id);
 	}
 	
 	@Override
 	public List<CourseDetails> getAll(){
-		return dao.getAll();
+		return iCourseDetailsDAO.getAll();
 	} 
 	
 }

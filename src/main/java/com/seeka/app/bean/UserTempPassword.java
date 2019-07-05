@@ -1,13 +1,18 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,8 +25,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "user_temp_password")
-public class UserTempPassword implements java.io.Serializable {
+public class UserTempPassword implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7774110419439714974L;
 	private BigInteger id;
 	private UserInfo userInfo;
 	private String email;
@@ -34,8 +43,8 @@ public class UserTempPassword implements java.io.Serializable {
 	public UserTempPassword() {
 	}
 
-	public UserTempPassword(UserInfo userInfo, String email, String password,
-			Date createdDate, Date expiryDate, Date updatedDate, String status) {
+	public UserTempPassword(UserInfo userInfo, String email, String password, Date createdDate, Date expiryDate,
+			Date updatedDate, String status) {
 		this.userInfo = userInfo;
 		this.email = email;
 		this.password = password;
@@ -121,6 +130,83 @@ public class UserTempPassword implements java.io.Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((expiryDate == null) ? 0 : expiryDate.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((updatedDate == null) ? 0 : updatedDate.hashCode());
+		result = prime * result + ((userInfo == null) ? 0 : userInfo.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserTempPassword other = (UserTempPassword) obj;
+		if (createdDate == null) {
+			if (other.createdDate != null)
+				return false;
+		} else if (!createdDate.equals(other.createdDate))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (expiryDate == null) {
+			if (other.expiryDate != null)
+				return false;
+		} else if (!expiryDate.equals(other.expiryDate))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!status.equals(other.status))
+			return false;
+		if (updatedDate == null) {
+			if (other.updatedDate != null)
+				return false;
+		} else if (!updatedDate.equals(other.updatedDate))
+			return false;
+		if (userInfo == null) {
+			if (other.userInfo != null)
+				return false;
+		} else if (!userInfo.equals(other.userInfo))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserTempPassword [id=").append(id).append(", userInfo=").append(userInfo).append(", email=")
+				.append(email).append(", password=").append(password).append(", createdDate=").append(createdDate)
+				.append(", expiryDate=").append(expiryDate).append(", updatedDate=").append(updatedDate)
+				.append(", status=").append(status).append("]");
+		return builder.toString();
 	}
 
 }

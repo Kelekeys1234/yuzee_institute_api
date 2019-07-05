@@ -16,30 +16,30 @@ import com.seeka.app.dao.IUserEnglishScoreDAO;
 public class UserEnglishScoreService implements IUserEnglishScoreService{
 	
 	@Autowired
-	IUserEnglishScoreDAO dao;
+	private IUserEnglishScoreDAO iUserEnglishScoreDAO;
 	
 	@Override
 	public void save(UserEnglishScore obj) {
-		dao.save(obj);
+		iUserEnglishScoreDAO.save(obj);
 	}
 	
 	@Override
 	public void update(UserEnglishScore obj) {
-		dao.update(obj);
+		iUserEnglishScoreDAO.update(obj);
 	}
 	
 	@Override
 	public List<UserEnglishScore> getAll() {		
-		return dao.getAll();
+		return iUserEnglishScoreDAO.getAll();
 	}
     
 	@Override
 	public UserEnglishScore get(BigInteger id) {
-		return dao.get(id);
+		return iUserEnglishScoreDAO.get(id);
 	}
 	
 	public List<UserEnglishScore> getEnglishEligibiltyByUserID(BigInteger userId){
-		return dao.getEnglishEligibiltyByUserID(userId);
+		return iUserEnglishScoreDAO.getEnglishEligibiltyByUserID(userId);
 	}
 	
 }

@@ -1,4 +1,7 @@
-package com.seeka.app.bean;import java.math.BigInteger;
+package com.seeka.app.bean;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -20,8 +23,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "article_user_citizenship")
-public class ArticleUserCitizenship implements java.io.Serializable {
+public class ArticleUserCitizenship implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3766742694768712352L;
 	private BigInteger id;
 	private City city;
 	private Country country;
@@ -34,9 +41,8 @@ public class ArticleUserCitizenship implements java.io.Serializable {
 	public ArticleUserCitizenship() {
 	}
 
-	public ArticleUserCitizenship(City city, Country country,
-			SeekaArticles seekaArticles, String createdBy, Date createdDate,
-			String updatedBy, Date updatedDate) {
+	public ArticleUserCitizenship(City city, Country country, SeekaArticles seekaArticles, String createdBy,
+			Date createdDate, String updatedBy, Date updatedDate) {
 		this.city = city;
 		this.country = country;
 		this.seekaArticles = seekaArticles;
@@ -123,6 +129,83 @@ public class ArticleUserCitizenship implements java.io.Serializable {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((city == null) ? 0 : city.hashCode());
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((seekaArticles == null) ? 0 : seekaArticles.hashCode());
+		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+		result = prime * result + ((updatedDate == null) ? 0 : updatedDate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ArticleUserCitizenship other = (ArticleUserCitizenship) obj;
+		if (city == null) {
+			if (other.city != null)
+				return false;
+		} else if (!city.equals(other.city))
+			return false;
+		if (country == null) {
+			if (other.country != null)
+				return false;
+		} else if (!country.equals(other.country))
+			return false;
+		if (createdBy == null) {
+			if (other.createdBy != null)
+				return false;
+		} else if (!createdBy.equals(other.createdBy))
+			return false;
+		if (createdDate == null) {
+			if (other.createdDate != null)
+				return false;
+		} else if (!createdDate.equals(other.createdDate))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (seekaArticles == null) {
+			if (other.seekaArticles != null)
+				return false;
+		} else if (!seekaArticles.equals(other.seekaArticles))
+			return false;
+		if (updatedBy == null) {
+			if (other.updatedBy != null)
+				return false;
+		} else if (!updatedBy.equals(other.updatedBy))
+			return false;
+		if (updatedDate == null) {
+			if (other.updatedDate != null)
+				return false;
+		} else if (!updatedDate.equals(other.updatedDate))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ArticleUserCitizenship [id=").append(id).append(", city=").append(city).append(", country=")
+				.append(country).append(", seekaArticles=").append(seekaArticles).append(", createdBy=")
+				.append(createdBy).append(", createdDate=").append(createdDate).append(", updatedBy=").append(updatedBy)
+				.append(", updatedDate=").append(updatedDate).append("]");
+		return builder.toString();
 	}
 
 }
