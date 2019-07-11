@@ -25,6 +25,14 @@ public class ArticleDto2 {
     private String companyWebsite;
     private Boolean recArticleType;
     private Boolean ceekaArticleType;
+    
+    private String author;
+    private String postDate;
+    private String expireyDate;
+    private boolean enabled;
+    private boolean featured;
+    private String notes;
+    
     /**
      * @return the id
      */
@@ -288,5 +296,77 @@ public class ArticleDto2 {
      */
     public void setCeekaArticleType(Boolean ceekaArticleType) {
         this.ceekaArticleType = ceekaArticleType;
+    }
+    /**
+     * @return the author
+     */
+    public String getAuthor() {
+        return author;
+    }
+    /**
+     * @param author the author to set
+     */
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+    /**
+     * @return the postDate
+     */
+    public String getPostDate() {
+        return postDate;
+    }
+    /**
+     * @param postDate the postDate to set
+     */
+    public void setPostDate(String postDate) {
+        this.postDate = postDate;
+    }
+    /**
+     * @return the expireyDate
+     */
+    public String getExpireyDate() {
+        return expireyDate;
+    }
+    /**
+     * @param expireyDate the expireyDate to set
+     */
+    public void setExpireyDate(String expireyDate) {
+        this.expireyDate = expireyDate;
+    }
+    /**
+     * @return the enabled
+     */
+    public boolean getEnabled() {
+        return enabled;
+    }
+    /**
+     * @param enabled the enabled to set
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+    /**
+     * @return the featured
+     */
+    public boolean getFeatured() {
+        return featured;
+    }
+    /**
+     * @param featured the featured to set
+     */
+    public void setFeatured(boolean featured) {
+        this.featured = featured;
+    }
+    /**
+     * @return the notes
+     */
+    public String getNotes() {
+        return notes;
+    }
+    /**
+     * @param notes the notes to set
+     */
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

@@ -30,4 +30,15 @@ public class DateUtil {
         }
         return dateToReturn;
     }
+    
+    public static Date stringDateToDateYYYY_MM_DD(String StrDate) {
+        Date dateToReturn = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        try {
+            dateToReturn = (Date) dateFormat.parse(StrDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateToReturn;
+    }
 }
