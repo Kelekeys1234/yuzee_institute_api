@@ -22,4 +22,9 @@ public interface ICountryService {
     public List<CountryDto> getAllCountryName();
 
     public Map<String,Object> save(CountryRequestDto countryRequestDto);
+
+	/**
+	 * @return
+	 */
+	List<CountryDto> getAllCountryWithCities();
 }

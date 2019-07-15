@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,9 @@ public class CountryService implements ICountryService {
 
     @Autowired
     private ICountryImageDAO countryImageDAO;
+    
+    @Autowired
+    private ICityService iCityService;
 
     @Override
     public List<Country> getAll() {
@@ -61,6 +65,17 @@ public class CountryService implements ICountryService {
     @Override
     public List<CountryDto> getAllCountryName() {
         return countryDAO.getAllCountryName();
+    }
+    
+    @Override
+    public List<CountryDto> getAllCountryWithCities() {
+    	List<CountryDto> countryList =  countryDAO.getAllCountryName();
+    	List<CountryDto> resultCountryList = new ArrayList<>();
+    	for (CountryDto countryDto : countryList) {
+    		countryDto.setCityList(iCityService.getAllCitiesByCountry(countryDto.getId()));
+    		resultCountryList.add(countryDto);
+		}
+    	return resultCountryList;
     }
 
     @Override

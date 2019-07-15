@@ -58,7 +58,7 @@ public class CountryController {
     @RequestMapping(value = "/country/cities", method = RequestMethod.GET)
     public ResponseEntity<?> getWithCities() {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<CountryDto> countryList = CountryUtil.getCountryList();
+        List<CountryDto> countryList = countryService.getAllCountryWithCities();
         response.put("status", 1);
         response.put("message", "Success.!");
         response.put("list", countryList);
