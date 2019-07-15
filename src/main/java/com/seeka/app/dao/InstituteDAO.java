@@ -12,14 +12,17 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.seeka.app.bean.City;
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.InstituteType;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 
 @Repository
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
 public class InstituteDAO implements IInstituteDAO {
 
     @Autowired
@@ -257,5 +260,83 @@ public class InstituteDAO implements IInstituteDAO {
         instituteResponseDto1.setInstituteName("All");
         instituteResponseDtos.add(instituteResponseDto1);
         return instituteResponseDtos;
+    }
+
+    @Override
+    public List<Institute> searchInstitute(String sqlQuery) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<Institute> instituteList = new ArrayList<Institute>();
+        Institute obj = null;
+        for (Object[] row : rows) {
+            obj = new Institute();
+            obj.setId(new BigInteger((row[0].toString())));
+            obj.setName(row[1].toString());
+            if (row[2] != null) {
+                obj.setCountry(getCountry(new BigInteger((row[2].toString())), session));
+            }
+            if (row[3] != null) {
+                obj.setCity(getCity(new BigInteger((row[3].toString())), session));
+            }
+            if (row[4] != null) {
+                obj.setInstituteType(getInstituteType(new BigInteger((row[4].toString())), session));
+            }
+            instituteList.add(obj);
+        }
+        return instituteList;
+    }
+
+    private InstituteType getInstituteType(BigInteger id, Session session) {
+        return session.get(InstituteType.class, id);
+    }
+
+    private City getCity(BigInteger id, Session session) {
+        return session.get(City.class, id);
+    }
+
+    private Country getCountry(BigInteger id, Session session) {
+        return session.get(Country.class, id);
+    }
+
+    @Override
+    public int findTotalCount() {
+        int status = 1;
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select sa.id from institute sa where sa.is_active = " + status + " and sa.deleted_on IS NULL";
+        System.out.println(sqlQuery);
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        return rows.size();
+    }
+
+    @Override
+    public List<Institute> getAll(Integer pageNumber, Integer pageSize) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description FROM institute as inst where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
+        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<Institute> instituteList = new ArrayList<Institute>();
+        Institute obj = null;
+        for (Object[] row : rows) {
+            obj = new Institute();
+            obj.setId(new BigInteger((row[0].toString())));
+            obj.setName(row[1].toString());
+            if (row[2] != null) {
+                obj.setCountry(getCountry(new BigInteger((row[2].toString())), session));
+            }
+            if (row[3] != null) {
+                obj.setCity(getCity(new BigInteger((row[3].toString())), session));
+            }
+            if (row[4] != null) {
+                obj.setInstituteType(getInstituteType(new BigInteger((row[4].toString())), session));
+            }
+            if (row[5] != null) {
+                obj.setDescription(row[5].toString());
+            }
+            instituteList.add(obj);
+        }
+        return instituteList;
     }
 }

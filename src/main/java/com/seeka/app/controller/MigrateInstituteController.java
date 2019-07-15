@@ -369,37 +369,15 @@ public class MigrateInstituteController {
                 continue;
             }
             object.setCountry(countryObj);
-            object.setAccredited(Accredited);
-            object.setAddress(Address);
 
-            /*
-             * City cityObj = new City(); cityObj.setName("CITYNAME"); object.setCityObj(cityObj);
-             */
-            // object.setDescription("");
-
-            if (null != IMG_COUNT && !IMG_COUNT.isEmpty()) {
-                object.setInsImgCnt(Double.valueOf(IMG_COUNT).intValue());
-            } else {
-                object.setInsImgCnt(0);
-            }
             InstituteType instituteType = new InstituteType();
             instituteType.setId(new BigInteger("111111"));
             object.setInstituteType((instituteType));
-            object.setIntEmails(Int_Emails);
-            object.setIntPhNum(Int_Ph_num);
             object.setIsActive(true);
             object.setIsDeleted(false);
-            object.setLatitude(Latitude);
-            object.setLongitude(Longitude);
             object.setName(Univeristy_Name);
             object.setCreatedBy("AUTO");
             object.setCreatedOn(new Date());
-            if (null != T_num_of_stu && !T_num_of_stu.isEmpty()) {
-                object.setTNumOfStu(Double.valueOf(T_num_of_stu).intValue());
-            } else {
-                object.setTNumOfStu(0);
-            }
-            object.setWebsite(Website);
 
             List<InstituteService> insServiceList = new ArrayList<>();
             InstituteService insServiceDetailObj = null;
