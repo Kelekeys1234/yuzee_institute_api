@@ -18,7 +18,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "scholarship", catalog = "seeka_dev_v5")
+// @Table(name = "scholarship", catalog = "seeka_dev_v5")
+@Table(name = "scholarship")
 public class Scholarship implements java.io.Serializable {
 
     private BigInteger id;
@@ -34,10 +35,29 @@ public class Scholarship implements java.io.Serializable {
     private Date updatedOn;
     private String createdBy;
     private String updatedBy;
-    
+
+    private String scholarshipTitle;
+    private String offeredBy;
+    private String benefits;
+    private String requirements;
+    private String eligibility;
+    private String intake;
+    private String language;
+    private String validity;
+    private String gender;
+    private String applicationDeadline;
+    private Double scholarshipAmount;
+    private Integer numberOfAvaliability;
+    private String headquaters;
+    private String email;
+    private String address;
+
     private String instituteName;
     private String countryName;
     private String levelName;
+
+    private Boolean isActive;
+    private Boolean isDeleted;
 
     /**
      * @return the id
@@ -226,6 +246,159 @@ public class Scholarship implements java.io.Serializable {
         this.updatedBy = updatedBy;
     }
 
+    @Column(name = "scholarship_title")
+    public String getScholarshipTitle() {
+        return scholarshipTitle;
+    }
+
+    public void setScholarshipTitle(String scholarshipTitle) {
+        this.scholarshipTitle = scholarshipTitle;
+    }
+
+    @Column(name = "offered_by")
+    public String getOfferedBy() {
+        return offeredBy;
+    }
+
+    public void setOfferedBy(String offeredBy) {
+        this.offeredBy = offeredBy;
+    }
+
+    @Column(name = "benefits")
+    public String getBenefits() {
+        return benefits;
+    }
+
+    public void setBenefits(String benefits) {
+        this.benefits = benefits;
+    }
+
+    @Column(name = "requirements")
+    public String getRequirements() {
+        return requirements;
+    }
+
+    public void setRequirements(String requirements) {
+        this.requirements = requirements;
+    }
+
+    @Column(name = "eligibility")
+    public String getEligibility() {
+        return eligibility;
+    }
+
+    public void setEligibility(String eligibility) {
+        this.eligibility = eligibility;
+    }
+
+    @Column(name = "intake")
+    public String getIntake() {
+        return intake;
+    }
+
+    public void setIntake(String intake) {
+        this.intake = intake;
+    }
+
+    @Column(name = "language")
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    @Column(name = "validity")
+    public String getValidity() {
+        return validity;
+    }
+
+    public void setValidity(String validity) {
+        this.validity = validity;
+    }
+
+    @Column(name = "gender")
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    @Column(name = "application_deadline")
+    public String getApplicationDeadline() {
+        return applicationDeadline;
+    }
+
+    public void setApplicationDeadline(String applicationDeadline) {
+        this.applicationDeadline = applicationDeadline;
+    }
+
+    @Column(name = "scholarship_amount")
+    public Double getScholarshipAmount() {
+        return scholarshipAmount;
+    }
+
+    public void setScholarshipAmount(Double scholarshipAmount) {
+        this.scholarshipAmount = scholarshipAmount;
+    }
+
+    @Column(name = "number_of_avaliability")
+    public Integer getNumberOfAvaliability() {
+        return numberOfAvaliability;
+    }
+
+    public void setNumberOfAvaliability(Integer numberOfAvaliability) {
+        this.numberOfAvaliability = numberOfAvaliability;
+    }
+
+    @Column(name = "headquaters")
+    public String getHeadquaters() {
+        return headquaters;
+    }
+
+    public void setHeadquaters(String headquaters) {
+        this.headquaters = headquaters;
+    }
+
+    @Column(name = "email")
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Column(name = "address")
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Column(name = "is_active")
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    @Column(name = "is_deleted")
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -354,7 +527,8 @@ public class Scholarship implements java.io.Serializable {
     }
 
     /**
-     * @param instituteName the instituteName to set
+     * @param instituteName
+     *            the instituteName to set
      */
     public void setInstituteName(String instituteName) {
         this.instituteName = instituteName;
@@ -369,7 +543,8 @@ public class Scholarship implements java.io.Serializable {
     }
 
     /**
-     * @param countryName the countryName to set
+     * @param countryName
+     *            the countryName to set
      */
     public void setCountryName(String countryName) {
         this.countryName = countryName;
@@ -384,7 +559,8 @@ public class Scholarship implements java.io.Serializable {
     }
 
     /**
-     * @param levelName the levelName to set
+     * @param levelName
+     *            the levelName to set
      */
     public void setLevelName(String levelName) {
         this.levelName = levelName;

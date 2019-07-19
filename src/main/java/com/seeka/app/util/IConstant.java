@@ -23,4 +23,12 @@ public class IConstant {
     public static final String INSTITUDE_API = "Api Document";
     public static final String COUNTRY_SUCCESS_MESSAGE = "Country addded successfully";
     public static final String CITY_SUCCESS_MESSAGE = "City addded successfully";
+    public static final String SCHOLARSHIP_SUCCESS_MESSAGE = "Scholarship addded successfully";
+    public static final String SCHOLARSHIP_DELETE_SUCCESS = "Scholarship deleted successfully";
+    public static final String DELETE_FAILURE_ID_NOT_FOUND_SCHOLARSHIP = "Specified Scholarship not found";
+    public static final String DELETE_FAILURE_SCHOLARSHIP = "Getting issue when Scholarship is deleting";
+
+    public static final String UPDATE_FAILURE_ID_NOT_FOUND_SCHOLARSHIP = "Specified Scholarship not found";
+    public static final String UPDATE_FAILURE_SCHOLARSHIP = "Getting issue when Scholarship is updating";
+    public static final String SCHOLARSHIP_UPDATE_SUCCESS = "Scholarship updated successfully";
 }
