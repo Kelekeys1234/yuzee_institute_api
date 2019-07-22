@@ -135,5 +135,4 @@ public class CourseDto {
 	public void setLevelId(BigInteger levelId) {
 		this.levelId = levelId;
 	}
-	
 }

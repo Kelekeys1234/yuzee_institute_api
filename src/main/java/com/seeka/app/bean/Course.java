@@ -56,6 +56,7 @@ public class Course implements Serializable {
 	private String createdBy;
 	private String updatedBy;
 	private Boolean isDeleted;
+	private Integer cId;
 
 	public Course() {
 	}
@@ -521,5 +522,20 @@ public class Course implements Serializable {
 				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
 		return builder.toString();
 	}
+
+    /**
+     * @return the cId
+     */
+	@Column(name = "c_id")
+    public Integer getcId() {
+        return cId;
+    }
+
+    /**
+     * @param cId the cId to set
+     */
+    public void setcId(Integer cId) {
+        this.cId = cId;
+    }
 
 }

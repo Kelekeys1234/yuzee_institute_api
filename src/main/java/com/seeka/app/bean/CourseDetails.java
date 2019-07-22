@@ -47,6 +47,19 @@ public class CourseDetails implements Serializable {
 	private InstituteLevel instituteLevelObj;
 
 	private CourseGradeEligibility gradeObj;
+	
+	private String intake;
+	private String fileUrl;
+	private String grades;
+	private String contact;
+	private String openingHour;
+	private String campusLocation;
+	private String webiste;
+	private String jobFullTime;
+	private String jobPartTime;
+	private String courseLink;
+	private String domesticFee;
+	private String internationalFee;
 
 	public CourseDetails() {
 	}
@@ -340,5 +353,173 @@ public class CourseDetails implements Serializable {
 				.append("]");
 		return builder.toString();
 	}
+
+    /**
+     * @return the intake
+     */
+    public String getIntake() {
+        return intake;
+    }
+
+    /**
+     * @param intake the intake to set
+     */
+    public void setIntake(String intake) {
+        this.intake = intake;
+    }
+
+    /**
+     * @return the fileUrl
+     */
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    /**
+     * @param fileUrl the fileUrl to set
+     */
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    /**
+     * @return the grades
+     */
+    public String getGrades() {
+        return grades;
+    }
+
+    /**
+     * @param grades the grades to set
+     */
+    public void setGrades(String grades) {
+        this.grades = grades;
+    }
+
+    /**
+     * @return the contact
+     */
+    public String getContact() {
+        return contact;
+    }
+
+    /**
+     * @param contact the contact to set
+     */
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    /**
+     * @return the openingHour
+     */
+    public String getOpeningHour() {
+        return openingHour;
+    }
+
+    /**
+     * @param openingHour the openingHour to set
+     */
+    public void setOpeningHour(String openingHour) {
+        this.openingHour = openingHour;
+    }
+
+    /**
+     * @return the campusLocation
+     */
+    public String getCampusLocation() {
+        return campusLocation;
+    }
+
+    /**
+     * @param campusLocation the campusLocation to set
+     */
+    public void setCampusLocation(String campusLocation) {
+        this.campusLocation = campusLocation;
+    }
+
+    /**
+     * @return the webiste
+     */
+    public String getWebiste() {
+        return webiste;
+    }
+
+    /**
+     * @param webiste the webiste to set
+     */
+    public void setWebiste(String webiste) {
+        this.webiste = webiste;
+    }
+
+    /**
+     * @return the jobFullTime
+     */
+    public String getJobFullTime() {
+        return jobFullTime;
+    }
+
+    /**
+     * @param jobFullTime the jobFullTime to set
+     */
+    public void setJobFullTime(String jobFullTime) {
+        this.jobFullTime = jobFullTime;
+    }
+
+    /**
+     * @return the jobPartTime
+     */
+    public String getJobPartTime() {
+        return jobPartTime;
+    }
+
+    /**
+     * @param jobPartTime the jobPartTime to set
+     */
+    public void setJobPartTime(String jobPartTime) {
+        this.jobPartTime = jobPartTime;
+    }
+
+    /**
+     * @return the courseLink
+     */
+    public String getCourseLink() {
+        return courseLink;
+    }
+
+    /**
+     * @param courseLink the courseLink to set
+     */
+    public void setCourseLink(String courseLink) {
+        this.courseLink = courseLink;
+    }
+
+    /**
+     * @return the domesticFee
+     */
+    public String getDomesticFee() {
+        return domesticFee;
+    }
+
+    /**
+     * @param domesticFee the domesticFee to set
+     */
+    public void setDomesticFee(String domesticFee) {
+        this.domesticFee = domesticFee;
+    }
+
+    /**
+     * @return the internationalFee
+     */
+    public String getInternationalFee() {
+        return internationalFee;
+    }
+
+    /**
+     * @param internationalFee the internationalFee to set
+     */
+    public void setInternationalFee(String internationalFee) {
+        this.internationalFee = internationalFee;
+    }
 
 }

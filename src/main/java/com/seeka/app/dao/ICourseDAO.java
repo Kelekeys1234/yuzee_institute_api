@@ -1,34 +1,39 @@
-package com.seeka.app.dao;import java.math.BigInteger;
+package com.seeka.app.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
-
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
+import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 
 public interface ICourseDAO {
 
-     void save(Course obj);
+    void save(Course obj);
 
-     void update(Course obj);
+    void update(Course obj);
 
-     Course get(BigInteger id);
+    Course get(BigInteger id);
 
-     List<Course> getAll();
+    List<Course> getAll();
 
-     List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, BigInteger userCountryId);
+    List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, BigInteger userCountryId);
 
-     CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
+    CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
 
-     List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
+    List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
-     Map<String, Object> getCourse(BigInteger courseid);
+    Map<String, Object> getCourse(BigInteger courseid);
 
-     List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
+    List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
 
-     List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
+    List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
+
+    int findTotalCount();
+
+    List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
 }

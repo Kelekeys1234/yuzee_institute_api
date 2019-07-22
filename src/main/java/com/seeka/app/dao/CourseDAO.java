@@ -17,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
+import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
@@ -30,7 +32,7 @@ import com.seeka.app.util.ConvertionUtil;
 import com.seeka.app.util.GlobalSearchWordUtil;
 
 @Repository
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
 public class CourseDAO implements ICourseDAO {
 
     @Autowired
@@ -688,8 +690,8 @@ public class CourseDAO implements ICourseDAO {
         } else {
             sortingQuery = " order by A.cost_range asc";
         }
-        sqlQuery += sortingQuery + " OFFSET (" + courseSearchDto.getPageNumber() + "-1)*" + courseSearchDto.getMaxSizePerPage() + " ROWS FETCH NEXT " + courseSearchDto.getMaxSizePerPage()
-                        + " ROWS ONLY";
+        sqlQuery += sortingQuery + " OFFSET (" + courseSearchDto.getPageNumber() + "-1)*" + courseSearchDto.getMaxSizePerPage() + " ROWS FETCH NEXT "
+                        + courseSearchDto.getMaxSizePerPage() + " ROWS ONLY";
 
         System.out.println(sqlQuery);
         Query query = session.createSQLQuery(sqlQuery);
@@ -812,8 +814,8 @@ public class CourseDAO implements ICourseDAO {
         } else {
             sortingQuery = " order by A.cost_range asc";
         }
-        sqlQuery += sortingQuery + " OFFSET (" + courseSearchDto.getPageNumber() + "-1)*" + courseSearchDto.getMaxSizePerPage() + " ROWS FETCH NEXT " + courseSearchDto.getMaxSizePerPage()
-                        + " ROWS ONLY";
+        sqlQuery += sortingQuery + " OFFSET (" + courseSearchDto.getPageNumber() + "-1)*" + courseSearchDto.getMaxSizePerPage() + " ROWS FETCH NEXT "
+                        + courseSearchDto.getMaxSizePerPage() + " ROWS ONLY";
 
         System.out.println(sqlQuery);
         Query query = session.createSQLQuery(sqlQuery);
@@ -951,5 +953,69 @@ public class CourseDAO implements ICourseDAO {
         allObject.setCourseName("All");
         dtos.add(allObject);
         return dtos;
+    }
+
+    @Override
+    public int findTotalCount() {
+        int status = 1;
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select sa.id from course sa where sa.is_active = " + status + " and sa.deleted_on IS NULL";
+        System.out.println(sqlQuery);
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        return rows.size();
+    }
+
+    @Override
+    public List<CourseRequest> getAll(Integer pageNumber, Integer pageSize) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
+                        + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
+                        + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
+                        + " cd.job_part_time, cd.job_full_time, cd.course_link  FROM course c inner join course_details cd "
+                        + " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL ORDER BY c.created_on DESC ";
+        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<CourseRequest> courses = new ArrayList<CourseRequest>();
+        CourseRequest obj = null;
+        for (Object[] row : rows) {
+            obj = new CourseRequest();
+            obj.setCourseId(new BigInteger((row[0].toString())));
+            obj.setcId(Integer.valueOf(row[1].toString()));
+            obj.setInstituteId(new BigInteger((row[2].toString())));
+            obj.setCountryId(new BigInteger((row[3].toString())));
+            obj.setCityId(new BigInteger((row[4].toString())));
+            obj.setFacultyId(new BigInteger((row[5].toString())));
+            obj.setName(row[6].toString());
+            obj.setDescription(row[7].toString());
+            obj.setIntake(row[8].toString());
+            obj.setDuration(row[9].toString());
+            obj.setLanguaige(row[10].toString());
+            obj.setDomasticFee(row[11].toString());
+            obj.setInternationalFee(row[12].toString());
+            obj.setGrades(row[13].toString());
+            obj.setDocumentUrl(row[14].toString());
+            obj.setContact(row[15].toString());
+            obj.setOpeningHourFrom(row[16].toString());
+            obj.setCampusLocation(row[17].toString());
+            obj.setWebsite(row[18].toString());
+            obj.setPartTime(row[19].toString());
+            obj.setFullTime(row[20].toString());
+            obj.setCourseLink(row[21].toString());
+            obj.setEnglishEligibility(getEnglishEligibility(session, obj.getCourseId()));
+            courses.add(obj);
+        }
+        return courses;
+    }
+
+    private CourseEnglishEligibility getEnglishEligibility(Session session, BigInteger courseId) {
+        CourseEnglishEligibility eligibility = null;
+        Criteria crit = session.createCriteria(CourseEnglishEligibility.class);
+        crit.add(Restrictions.eq("courseId", courseId));
+        if (!crit.list().isEmpty()) {
+            eligibility = (CourseEnglishEligibility) crit.list().get(0);
+        }
+        return eligibility;
     }
 }

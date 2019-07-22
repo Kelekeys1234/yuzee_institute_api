@@ -19,20 +19,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseGradeEligibility;
 import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Currency;
-import com.seeka.app.bean.Faculty;
-import com.seeka.app.bean.FacultyLevel;
-import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.bean.UserCourseReview;
 import com.seeka.app.bean.UserInfo;
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
+import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
@@ -41,15 +38,11 @@ import com.seeka.app.dto.JobsDto;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.jobs.CurrencyUtil;
-import com.seeka.app.service.ICourseDetailsService;
 import com.seeka.app.service.ICourseEnglishEligibilityService;
 import com.seeka.app.service.ICourseGradeEligibilityService;
 import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
-import com.seeka.app.service.IFacultyLevelService;
-import com.seeka.app.service.IFacultyService;
-import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IUserInstCourseReviewService;
 import com.seeka.app.service.IUserMyCourseService;
@@ -69,22 +62,10 @@ public class CourseController {
     private ICourseService courseService;
 
     @Autowired
-    private ICourseDetailsService courseDetailsService;
-
-    @Autowired
     private ICoursePricingService coursePricingService;
 
     @Autowired
     private ICourseKeywordService courseKeywordService;
-
-    @Autowired
-    private IFacultyService facultyService;
-
-    @Autowired
-    private IInstituteLevelService instituteLevelService;
-
-    @Autowired
-    private IFacultyLevelService facultyLevelService;
 
     @Autowired
     private IUserInstCourseReviewService userInstCourseReviewService;
@@ -102,43 +83,18 @@ public class CourseController {
     private IUserMyCourseService myCourseService;
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> save(@Valid @RequestBody CourseDetails courseDetailsObj) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        if (null == courseDetailsObj.getCourse()) {
-            ErrorDto errorDto = new ErrorDto();
-            errorDto.setCode("400");
-            errorDto.setMessage("Invalid course.!");
-            response.put("status", 0);
-            response.put("error", errorDto);
-            return ResponseEntity.badRequest().body(response);
-        }
-        Course course = courseDetailsObj.getCourse();
-        courseService.save(course);
+    public ResponseEntity<?> save(@Valid @RequestBody CourseRequest course) throws Exception {
+        return ResponseEntity.badRequest().body(courseService.save(course));
+    }
 
-        courseDetailsObj.setCourse(course);
-        courseDetailsService.save(courseDetailsObj);
+    @RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getAllCourse(@PathVariable Integer pageNumber, @PathVariable Integer pageSize) throws Exception {
+        return ResponseEntity.accepted().body(courseService.getAllCourse(pageNumber, pageSize));
+    }
 
-        Faculty faculty = facultyService.get(course.getFaculty().getId());
-
-        InstituteLevel instituteLevel = new InstituteLevel();
-        // instituteLevel.setId(BigInteger.randomBigInteger());
-        instituteLevel.setCity(course.getCity());
-        instituteLevel.setCountry(course.getCountry());
-        instituteLevel.setInstitute(course.getInstitute());
-        instituteLevel.setIsActive(true);
-        instituteLevel.setLevel(faculty.getLevel());
-        instituteLevelService.save(instituteLevel);
-
-        FacultyLevel facultyLevel = new FacultyLevel();
-        facultyLevel.setFaculty(faculty);
-        facultyLevel.setInstitute(course.getInstitute());
-        facultyLevel.setIsActive(true);
-        facultyLevelService.save(facultyLevel);
-
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("courseDetailsObj", courseDetailsObj);
-        return ResponseEntity.accepted().body(response);
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
+    public ResponseEntity<?> delete(@Valid @PathVariable BigInteger id) throws Exception {
+        return ResponseEntity.accepted().body(courseService.deleteCourse(id));
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -215,11 +171,11 @@ public class CourseController {
             oldCurrencyCode = userCurrency.getCode();
         }
         CourseFilterCostResponseDto costResponseDto = courseService.getAllCoursesFilterCostInfo(courseSearchDto, currency, oldCurrencyCode);
-        if(currency!=null){
+        if (currency != null) {
             costResponseDto.setCurrencyId(currency.getId());
             costResponseDto.setCurrencySymbol(currency.getSymbol());
             costResponseDto.setCurrencyCode(currency.getCode());
-            costResponseDto.setCurrencyName(currency.getName()); 
+            costResponseDto.setCurrencyName(currency.getName());
         }
         response.put("status", 1);
         response.put("message", "Success.!");
@@ -314,7 +270,6 @@ public class CourseController {
     public ResponseEntity<?> get(@Valid @PathVariable BigInteger id) throws Exception {
         ErrorDto errorDto = null;
         Map<String, Object> response = new HashMap<String, Object>();
-
         Map<String, Object> map = courseService.getCourse(id);
         if (map == null || map.isEmpty() || map.size() <= 0) {
             errorDto = new ErrorDto();
@@ -324,24 +279,17 @@ public class CourseController {
             response.put("error", errorDto);
             return ResponseEntity.badRequest().body(response);
         }
-
         CourseDto courseResObj = (CourseDto) map.get("courseObj");
         InstituteResponseDto instituteObj = (InstituteResponseDto) map.get("instituteObj");
-
         instituteObj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
         instituteObj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
-
-        // List<CountryEnglishEligibility> englishEligibilities = englishEligibilityService.getEnglishEligibiltyList(instituteObj.getCountryId());
-
         List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
         CourseGradeEligibility gradeCriteriaObj = courseGradeService.get(id);
-
         List<UserCourseReview> reviewsList = userInstCourseReviewService.getTopReviewsByFilter(courseResObj.getCourseId(), instituteObj.getInstituteId());
         JobsDto jobsDto = new JobsDto();
         jobsDto.setCityId(instituteObj.getCityId());
         jobsDto.setCountryId(instituteObj.getCountryId());
         jobsDto.setNoOfJobs(250000);
-
         response.put("status", 1);
         response.put("message", "Success.!");
         response.put("courseObj", courseResObj);
