@@ -127,7 +127,7 @@ public class Hobbies implements Serializable {
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

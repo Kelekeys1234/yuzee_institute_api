@@ -1,7 +1,9 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +18,11 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.Institute;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
@@ -972,8 +976,194 @@ public class CourseDAO implements ICourseDAO {
         String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
                         + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
                         + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
-                        + " cd.job_part_time, cd.job_full_time, cd.course_link  FROM course c inner join course_details cd "
+                        + " cd.job_part_time, cd.job_full_time, cd.course_link, c.updated_on  FROM course c inner join course_details cd "
                         + " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL ORDER BY c.created_on DESC ";
+        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<CourseRequest> courses = new ArrayList<CourseRequest>();
+        CourseRequest obj = null;
+        for (Object[] row : rows) {
+            obj = new CourseRequest();
+            obj.setCourseId(new BigInteger((row[0].toString())));
+            obj.setcId(Integer.valueOf(row[1].toString()));
+            if (row[2] != null) {
+                obj.setInstituteId(new BigInteger((row[2].toString())));
+                obj.setInstituteName(getInstituteName(row[2].toString(), session));
+            }
+            if (row[3] != null) {
+                obj.setCountryId(new BigInteger((row[3].toString())));
+                obj.setLocation(((getLocationName(row[3].toString(), session))));
+            }
+            obj.setCityId(new BigInteger((row[4].toString())));
+            obj.setFacultyId(new BigInteger((row[5].toString())));
+            if (row[6] != null) {
+                obj.setName(row[6].toString());
+            }
+            if (row[7] != null) {
+                obj.setDescription(row[7].toString());
+            }
+            if (row[8] != null) {
+                obj.setIntake(row[8].toString());
+            }
+            if (row[9] != null) {
+                obj.setDuration(row[9].toString());
+            }
+            if (row[10] != null) {
+                obj.setLanguaige(row[10].toString());
+            }
+            if (row[11] != null) {
+                obj.setDomasticFee(row[11].toString());
+            }
+            if (row[12] != null) {
+                obj.setInternationalFee(row[12].toString());
+            }
+            if (row[13] != null) {
+                obj.setGrades(row[13].toString());
+            }
+            if (row[14] != null) {
+                obj.setDocumentUrl(row[14].toString());
+            }
+            if (row[15] != null) {
+                obj.setContact(row[15].toString());
+            }
+            if (row[16] != null) {
+                obj.setOpeningHourFrom(row[16].toString());
+            }
+            if (row[17] != null) {
+                obj.setCampusLocation(row[17].toString());
+            }
+            if (row[18] != null) {
+                obj.setWebsite(row[18].toString());
+            }
+            if (row[19] != null) {
+                obj.setPartTime(row[19].toString());
+            }
+            if (row[20] != null) {
+                obj.setFullTime(row[20].toString());
+            }
+            if (row[21] != null) {
+                obj.setCourseLink(row[21].toString());
+            }
+            if (row[22] != null) {
+                System.out.println(row[2].toString());
+                System.out.println(row[22].toString());
+                Date createdDate = (Date) row[22];
+                System.out.println(createdDate);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+                String dateResult = formatter.format(createdDate);
+                obj.setLastUpdated(dateResult);
+
+            }
+            obj.setEnglishEligibility(getEnglishEligibility(session, obj.getCourseId()));
+            courses.add(obj);
+        }
+        return courses;
+    }
+
+    private String getLocationName(String id, Session session) {
+        String name = null;
+        if (id != null) {
+            Country obj = session.get(Country.class, new BigInteger(id));
+            name = obj.getName();
+        }
+        return name;
+    }
+
+    private String getInstituteName(String id, Session session) {
+        String name = null;
+        if (id != null) {
+            Institute obj = session.get(Institute.class, new BigInteger(id));
+            name = obj.getName();
+        }
+        return name;
+    }
+
+    private CourseEnglishEligibility getEnglishEligibility(Session session, BigInteger courseId) {
+        CourseEnglishEligibility eligibility = null;
+        Criteria crit = session.createCriteria(CourseEnglishEligibility.class);
+        crit.add(Restrictions.eq("course.id", courseId));
+        if (!crit.list().isEmpty()) {
+            eligibility = (CourseEnglishEligibility) crit.list().get(0);
+        }
+        return eligibility;
+    }
+
+    @Override
+    public List<CourseRequest> searchCoursesBasedOnFilter(String sqlQuery) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<CourseRequest> courses = new ArrayList<CourseRequest>();
+        CourseRequest obj = null;
+        for (Object[] row : rows) {
+            obj = new CourseRequest();
+            obj.setCourseId(new BigInteger((row[0].toString())));
+            obj.setcId(Integer.valueOf(row[1].toString()));
+            obj.setInstituteId(new BigInteger((row[2].toString())));
+            obj.setCountryId(new BigInteger((row[3].toString())));
+            obj.setCityId(new BigInteger((row[4].toString())));
+            obj.setFacultyId(new BigInteger((row[5].toString())));
+            obj.setName(row[6].toString());
+            if (row[7] != null) {
+                obj.setDescription(row[7].toString());
+            }
+            if (row[8] != null) {
+                obj.setIntake(row[8].toString());
+            }
+            if (row[9] != null) {
+                obj.setDuration(row[9].toString());
+            }
+            if (row[10] != null) {
+                obj.setLanguaige(row[10].toString());
+            }
+            if (row[11] != null) {
+                obj.setDomasticFee(row[11].toString());
+            }
+            if (row[12] != null) {
+                obj.setInternationalFee(row[12].toString());
+            }
+            if (row[13] != null) {
+                obj.setGrades(row[13].toString());
+            }
+            if (row[14] != null) {
+                obj.setDocumentUrl(row[14].toString());
+            }
+            if (row[15] != null) {
+                obj.setContact(row[15].toString());
+            }
+            if (row[16] != null) {
+                obj.setOpeningHourFrom(row[16].toString());
+            }
+            if (row[17] != null) {
+                obj.setCampusLocation(row[17].toString());
+            }
+            if (row[18] != null) {
+                obj.setWebsite(row[18].toString());
+            }
+            if (row[19] != null) {
+                obj.setPartTime(row[19].toString());
+            }
+            if (row[20] != null) {
+                obj.setFullTime(row[20].toString());
+            }
+            if (row[21] != null) {
+                obj.setCourseLink(row[21].toString());
+            }
+            obj.setEnglishEligibility(getEnglishEligibility(session, obj.getCourseId()));
+            courses.add(obj);
+        }
+        return courses;
+    }
+
+    @Override
+    public List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
+                        + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
+                        + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
+                        + " cd.job_part_time, cd.job_full_time, cd.course_link  FROM  user_my_course umc inner join course c on umc.course_id = c.id inner join course_details cd "
+                        + " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL and umc.user_id = " + userId + "  ORDER BY c.created_on DESC ";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
@@ -988,34 +1178,54 @@ public class CourseDAO implements ICourseDAO {
             obj.setCityId(new BigInteger((row[4].toString())));
             obj.setFacultyId(new BigInteger((row[5].toString())));
             obj.setName(row[6].toString());
-            obj.setDescription(row[7].toString());
-            obj.setIntake(row[8].toString());
-            obj.setDuration(row[9].toString());
-            obj.setLanguaige(row[10].toString());
-            obj.setDomasticFee(row[11].toString());
-            obj.setInternationalFee(row[12].toString());
-            obj.setGrades(row[13].toString());
-            obj.setDocumentUrl(row[14].toString());
-            obj.setContact(row[15].toString());
-            obj.setOpeningHourFrom(row[16].toString());
-            obj.setCampusLocation(row[17].toString());
-            obj.setWebsite(row[18].toString());
-            obj.setPartTime(row[19].toString());
-            obj.setFullTime(row[20].toString());
-            obj.setCourseLink(row[21].toString());
-            obj.setEnglishEligibility(getEnglishEligibility(session, obj.getCourseId()));
+            if (row[7] != null) {
+                obj.setDescription(row[7].toString());
+            }
+            if (row[8] != null) {
+                obj.setIntake(row[8].toString());
+            }
+            if (row[9] != null) {
+                obj.setDuration(row[9].toString());
+            }
+            if (row[10] != null) {
+                obj.setLanguaige(row[10].toString());
+            }
+            if (row[11] != null) {
+                obj.setDomasticFee(row[11].toString());
+            }
+            if (row[12] != null) {
+                obj.setInternationalFee(row[12].toString());
+            }
+            if (row[13] != null) {
+                obj.setGrades(row[13].toString());
+            }
+            if (row[14] != null) {
+                obj.setDocumentUrl(row[14].toString());
+            }
+            if (row[15] != null) {
+                obj.setContact(row[15].toString());
+            }
+            if (row[16] != null) {
+                obj.setOpeningHourFrom(row[16].toString());
+            }
+            if (row[17] != null) {
+                obj.setCampusLocation(row[17].toString());
+            }
+            if (row[18] != null) {
+                obj.setWebsite(row[18].toString());
+            }
+            if (row[19] != null) {
+                obj.setPartTime(row[19].toString());
+            }
+            if (row[20] != null) {
+                obj.setFullTime(row[20].toString());
+            }
+            if (row[21] != null) {
+                obj.setCourseLink(row[21].toString());
+            }
+            obj.setEnglishEligibility(getEnglishEligibility(session, new BigInteger((row[0].toString()))));
             courses.add(obj);
         }
         return courses;
-    }
-
-    private CourseEnglishEligibility getEnglishEligibility(Session session, BigInteger courseId) {
-        CourseEnglishEligibility eligibility = null;
-        Criteria crit = session.createCriteria(CourseEnglishEligibility.class);
-        crit.add(Restrictions.eq("courseId", courseId));
-        if (!crit.list().isEmpty()) {
-            eligibility = (CourseEnglishEligibility) crit.list().get(0);
-        }
-        return eligibility;
     }
 }

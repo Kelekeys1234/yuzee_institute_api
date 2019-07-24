@@ -10,6 +10,7 @@ import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.UserCourse;
 
 public interface ICourseService {
 
@@ -38,4 +39,10 @@ public interface ICourseService {
     public Map<String, Object> getAllCourse(Integer pageNumber, Integer pageSize);
 
     public Map<String, Object> deleteCourse(@Valid BigInteger courseId);
+
+    public Map<String, Object> searchCourseBasedOnFilter(BigInteger countryId, BigInteger instituteId, BigInteger facultyId, String name, String languauge);
+
+    public Map<String, Object> addUserCourses(@Valid UserCourse userCourse);
+
+    public Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize);
 }

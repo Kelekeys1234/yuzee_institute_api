@@ -187,28 +187,51 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Map<String, Object> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status) {
+    public Map<String, Object> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status, BigInteger categoryId, String tag, String status2) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String ResponseStatus = IConstant.SUCCESS;
+        String responseStatus = IConstant.SUCCESS;
         List<SeekaArticles> articles = null;
         PaginationUtilDto paginationUtilDto = null;
         int totalCount = 0;
+        String sqlQuery = null;
         try {
-            totalCount = articleDAO.findTotalCount();
-            paginationUtilDto = PaginationUtil.calculatePagination(page.intValue(), size.intValue(), totalCount);
-            articles = articleDAO.fetchAllArticleByPage(page, size, query, status);
+            if (categoryId == null && status2 == null && tag == null) {
+                totalCount = articleDAO.findTotalCount();
+                paginationUtilDto = PaginationUtil.calculatePagination(page.intValue(), size.intValue(), totalCount);
+                articles = articleDAO.fetchAllArticleByPage(page, size, query, status);
+            } else {
+                String countQuery = "select sa.id from seeka_articles sa where sa.active = 1 and sa.deleted_on IS NULL ";
+                sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.active = "
+                                + "1 and sa.deleted_on IS NULL";
+                if (categoryId != null) {
+                    sqlQuery += " and sa.category_id = " + categoryId;
+                    countQuery += " and sa.category_id = " + categoryId;
+                }
+                if (tag != null && !tag.isEmpty()) {
+                    sqlQuery += " and sa.tags  = '" + tag + "'";
+                    countQuery += " and sa.tags  = '" + tag + "'";
+                }
+                if (status2 != null && !status2.isEmpty()) {
+                    sqlQuery += " and sa.status  = '" + status2 + "'";
+                    countQuery += " and sa.status  = '" + status2 + "'";
+                }
+                sqlQuery += " ORDER BY sa.created_at DESC";
+                sqlQuery = sqlQuery + " LIMIT " + page + " ," + size;
+                articles = articleDAO.articleByFilter(sqlQuery);
+                totalCount = articleDAO.findTotalCountBasedOnCondition(countQuery);
+                paginationUtilDto = PaginationUtil.calculatePagination(page.intValue(), size.intValue(), totalCount);
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
         response.put("status", 1);
-        response.put("message", ResponseStatus);
+        response.put("message", responseStatus);
         response.put("articles", articles);
         response.put("totalCount", totalCount);
         response.put("pageNumber", paginationUtilDto.getPageNumber());
         response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
         response.put("hasNextPage", paginationUtilDto.isHasNextPage());
         response.put("totalPages", paginationUtilDto.getTotalPages());
-
         return response;
     }
 
@@ -241,7 +264,6 @@ public class ArticleService implements IArticleService {
             SubCategory subcategory = new SubCategory();
             subcategory.setId(articledto.getSubcategory());
             article.setSubcategory(subcategory);
-            // article.setImagePath(fileDownloadUri);
             article.setLink(articledto.getLink());
             article.setCountry(articledto.getCountry());
             article.setCity(articledto.getCity());
@@ -317,6 +339,10 @@ public class ArticleService implements IArticleService {
             article.setCompanyName(articledto.getCompnayName());
             article.setCompanyWebsite(articledto.getCompanyWebsite());
             article.setArticleType(articledto.getCeekaArticleType() + "," + articledto.getRecArticleType());
+            article.setSeekaRecommended(articledto.getSeekaRecommended());
+            article.setTags(articledto.getTags());
+            article.setWebsiteUrl(articledto.getWebsiteUrl());
+            article.setStatus(articledto.getStatus());
             if (articledto.getCategory() != null) {
                 Category category = categoryDAO.findCategoryById(articledto.getCategory());
                 if (category != null) {
@@ -556,6 +582,23 @@ public class ArticleService implements IArticleService {
         }
         response.put("status", 1);
         response.put("articleFolders", articleFolders);
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> searchBasedOnNameAndContent(String searchText) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        String responseStatus = IConstant.SUCCESS;
+        List<SeekaArticles> articles = null;
+        try {
+            articles = articleDAO.searchBasedOnNameAndContent(searchText);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            responseStatus = IConstant.FAIL;
+        }
+        response.put("status", 1);
+        response.put("message", responseStatus);
+        response.put("articles", articles);
         return response;
     }
 }

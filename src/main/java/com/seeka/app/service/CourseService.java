@@ -19,6 +19,7 @@ import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICourseDAO;
@@ -26,11 +27,14 @@ import com.seeka.app.dao.ICourseDetailsDAO;
 import com.seeka.app.dao.ICourseEnglishEligibilityDAO;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.IInstituteDAO;
+import com.seeka.app.dao.IUserDAO;
+import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.dto.UserCourse;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -59,6 +63,12 @@ public class CourseService implements ICourseService {
 
     @Autowired
     private IFacultyDAO facultyDAO;
+
+    @Autowired
+    private IUserMyCourseDAO myCourseDAO;
+
+    @Autowired
+    private IUserDAO userDAO;
 
     @Override
     public void save(Course course) {
@@ -239,6 +249,90 @@ public class CourseService implements ICourseService {
         }
         response.put("status", 1);
         response.put("message", status);
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> searchCourseBasedOnFilter(BigInteger countryId, BigInteger instituteId, BigInteger facultyId, String name, String languauge) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        String status = IConstant.SUCCESS;
+        List<CourseRequest> courses = new ArrayList<CourseRequest>();
+        try {
+            String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
+                            + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
+                            + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
+                            + " cd.job_part_time, cd.job_full_time, cd.course_link  FROM course c inner join course_details cd "
+                            + " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL ";
+            if (countryId != null) {
+                sqlQuery += " and c.country_id = " + countryId;
+            } else if (instituteId != null) {
+                sqlQuery += " and c.institute_id = " + instituteId;
+            } else if (facultyId != null) {
+                sqlQuery += " and inst.faculty_id = " + facultyId;
+            } else if (name != null && !name.isEmpty()) {
+                sqlQuery += " and c.name  = '" + name + "'";
+            } else if (languauge != null && !languauge.isEmpty()) {
+                sqlQuery += " and c.course_lang  = '" + languauge + "'";
+            }
+            sqlQuery += " ORDER BY c.created_on DESC";
+            courses = iCourseDAO.searchCoursesBasedOnFilter(sqlQuery);
+        } catch (Exception exception) {
+            status = IConstant.FAIL;
+        }
+        response.put("status", 1);
+        response.put("message", status);
+        response.put("courses", courses);
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> addUserCourses(@Valid UserCourse userCourse) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        String status = IConstant.SUCCESS;
+        try {
+            if (userCourse.getCourses() != null && !userCourse.getCourses().isEmpty()) {
+                for (BigInteger courseId : userCourse.getCourses()) {
+                    UserMyCourse myCourse = new UserMyCourse();
+                    myCourse.setCourse(iCourseDAO.get(courseId));
+                    myCourse.setUserInfo(userDAO.get(userCourse.getUserId()));
+                    myCourse.setIsActive(true);
+                    myCourse.setCreatedBy("API");
+                    myCourse.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+                    myCourse.setUpdatedBy("API");
+                    myCourse.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+                    myCourseDAO.save(myCourse);
+                }
+            }
+        } catch (Exception exception) {
+            status = IConstant.FAIL;
+        }
+        response.put("status", 1);
+        response.put("message", status);
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        String status = IConstant.SUCCESS;
+        List<CourseRequest> courses = new ArrayList<CourseRequest>();
+        int totalCount = 0;
+        PaginationUtilDto paginationUtilDto = null;
+        try {
+            totalCount = iCourseDAO.findTotalCount();
+            paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
+            courses = iCourseDAO.getUserCourse(userId, pageNumber, pageSize);
+        } catch (Exception exception) {
+            status = IConstant.FAIL;
+        }
+        response.put("status", 1);
+        response.put("message", status);
+        response.put("courses", courses);
+        response.put("totalCount", totalCount);
+        response.put("pageNumber", paginationUtilDto.getPageNumber());
+        response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+        response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+        response.put("totalPages", paginationUtilDto.getTotalPages());
         return response;
     }
 }

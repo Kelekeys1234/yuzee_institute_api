@@ -30,6 +30,10 @@ public class CourseRequest {
     private String campusLocation;
     private String website;
     private String courseLink;
+    private String lastUpdated;
+    
+    private String instituteName;
+    private String location;
     /**
      * @return the courseId
      */
@@ -317,6 +321,42 @@ public class CourseRequest {
      */
     public void setCountryId(BigInteger countryId) {
         this.countryId = countryId;
+    }
+    /**
+     * @return the lastUpdated
+     */
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+    /**
+     * @param lastUpdated the lastUpdated to set
+     */
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+    /**
+     * @return the instituteName
+     */
+    public String getInstituteName() {
+        return instituteName;
+    }
+    /**
+     * @param instituteName the instituteName to set
+     */
+    public void setInstituteName(String instituteName) {
+        this.instituteName = instituteName;
+    }
+    /**
+     * @return the location
+     */
+    public String getLocation() {
+        return location;
+    }
+    /**
+     * @param location the location to set
+     */
+    public void setLocation(String location) {
+        this.location = location;
     }
 
 }

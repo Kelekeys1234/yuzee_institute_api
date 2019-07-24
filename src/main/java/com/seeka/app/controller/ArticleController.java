@@ -1,4 +1,5 @@
 package com.seeka.app.controller;
+
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ArticleController {
     @Autowired
     private IArticleService articleService;
 
-    @RequestMapping(value = "/all" , method = RequestMethod.GET)
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAllArticles() throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<SeekaArticles> articleList = articleService.getAll();
@@ -37,42 +38,21 @@ public class ArticleController {
 
     }
 
-   /* @RequestMapping(value = "/get", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> getAllArticlesByPage(@RequestBody PageLookupDto lookupDto) {
-        Map<String, Object> response = new HashMap<String, Object>();
-        List<SeekaArticles> articleList = articleService.getArticlesByLookup(lookupDto);
-        Integer maxCount = 0, totalCount = 0;
-        if (null != articleList && !articleList.isEmpty()) {
-            totalCount = articleList.get(0).getTotalCount();
-            maxCount = articleList.size();
-        }
-        boolean showMore = false;
-        if (lookupDto.getMaxSizePerPage() == maxCount) {
-            showMore = true;
-        } else {
-            showMore = false;
-        }
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("articleList", articleList);
-        response.put("paginationObj", new PaginationDto(totalCount, showMore));
-        return ResponseEntity.accepted().body(response);
-
-    }*/
-
-    @RequestMapping(value = "/{id}" , method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteArticle(@PathVariable String id) {
         return ResponseEntity.accepted().body(articleService.deleteArticle(id));
     }
 
-    @RequestMapping(value = "/{id}" , method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getArticleById(@PathVariable String id) {
         return ResponseEntity.accepted().body(articleService.getArticleById(id));
     }
 
-    @RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}" , method = RequestMethod.GET)
-    public ResponseEntity<?> getArticleByPageWise(@PathVariable BigInteger pageNumber, @PathVariable BigInteger pageSize, @RequestParam(required = false, name = "query") String query) {
-        return ResponseEntity.accepted().body(articleService.fetchAllArticleByPage(pageNumber, pageSize, query, true));
+    @RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET)
+    public ResponseEntity<?> getArticleByPageWise(@PathVariable BigInteger pageNumber, @PathVariable BigInteger pageSize,
+                    @RequestParam(required = false, name = "query") String query, @RequestParam(required = false) BigInteger categoryId, @RequestParam(required = false) String tag,
+                    @RequestParam(required = false) String status) {
+        return ResponseEntity.accepted().body(articleService.fetchAllArticleByPage(pageNumber, pageSize, query, true, categoryId, tag, status));
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
@@ -80,6 +60,11 @@ public class ArticleController {
         return ResponseEntity.accepted().body(articleService.searchArticle(article));
     }
 
+    @RequestMapping(value = "/search/content/{searchText}", method = RequestMethod.GET)
+    public ResponseEntity<?> contentSearch(@PathVariable String searchText) {
+        return ResponseEntity.accepted().body(articleService.searchBasedOnNameAndContent(searchText));
+    }
+    
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveMultiArticle(@RequestBody ArticleDto2 article) {
         return ResponseEntity.accepted().body(articleService.saveMultiArticle(article));
@@ -90,17 +75,17 @@ public class ArticleController {
         return ResponseEntity.accepted().body(articleService.saveArticleFolder(articleFolder));
     }
 
-    @RequestMapping(value = "/folder/{id}" , method = RequestMethod.GET)
+    @RequestMapping(value = "/folder/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getArticleFolderById(@PathVariable BigInteger id) {
         return ResponseEntity.accepted().body(articleService.getArticleFolderById(id));
     }
 
-    @RequestMapping(value = "/folder/all" , method = RequestMethod.GET)
+    @RequestMapping(value = "/folder/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAllArticleFolder() {
         return ResponseEntity.accepted().body(articleService.getAllArticleFolder());
     }
 
-    @RequestMapping(value = "/folder/{id}" , method = RequestMethod.DELETE)
+    @RequestMapping(value = "/folder/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteArticleFolderById(@PathVariable BigInteger articleFolderId) {
         return ResponseEntity.accepted().body(articleService.deleteArticleFolderById(articleFolderId));
     }
@@ -110,7 +95,7 @@ public class ArticleController {
         return ResponseEntity.accepted().body(articleService.mapArticleFolder(articleFolderMapDto));
     }
 
-    @RequestMapping(value = "/folder/user/{userId}" , method = RequestMethod.GET)
+    @RequestMapping(value = "/folder/user/{userId}", method = RequestMethod.GET)
     public ResponseEntity<?> getFolderWithArticle(@PathVariable BigInteger userId) {
         return ResponseEntity.accepted().body(articleService.getFolderWithArticle(userId));
     }

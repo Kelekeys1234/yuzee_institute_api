@@ -36,4 +36,8 @@ public interface ICourseDAO {
     int findTotalCount();
 
     List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
+
+    List<CourseRequest> searchCoursesBasedOnFilter(String query);
+
+    List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize);
 }

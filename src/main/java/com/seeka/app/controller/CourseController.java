@@ -36,6 +36,7 @@ import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.JobsDto;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.dto.UserCourse;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.jobs.CurrencyUtil;
 import com.seeka.app.service.ICourseEnglishEligibilityService;
@@ -95,6 +96,13 @@ public class CourseController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public ResponseEntity<?> delete(@Valid @PathVariable BigInteger id) throws Exception {
         return ResponseEntity.accepted().body(courseService.deleteCourse(id));
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> searchCourse(@RequestParam(required = false) BigInteger countryId, @RequestParam(required = false) BigInteger instituteId,
+                    @RequestParam(required = false) BigInteger facultyId, @RequestParam(required = false) String name, @RequestParam(required = false) String languauge)
+                    throws Exception {
+        return ResponseEntity.accepted().body(courseService.searchCourseBasedOnFilter(countryId, instituteId, facultyId, name, languauge));
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -482,5 +490,15 @@ public class CourseController {
         response.put("status", 1);
         response.put("message", message);
         return ResponseEntity.accepted().body(response);
+    }
+
+    @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> userCourses(@Valid @RequestBody UserCourse userCourse) throws Exception {
+        return ResponseEntity.badRequest().body(courseService.addUserCourses(userCourse));
+    }
+
+    @RequestMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getUserCourses(@PathVariable BigInteger userId, @PathVariable Integer pageNumber, @PathVariable Integer pageSize) throws Exception {
+        return ResponseEntity.accepted().body(courseService.getUserCourse(userId, pageNumber, pageSize));
     }
 }

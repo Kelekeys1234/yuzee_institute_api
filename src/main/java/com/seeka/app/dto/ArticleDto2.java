@@ -33,6 +33,11 @@ public class ArticleDto2 {
     private boolean featured;
     private String notes;
     
+    private String websiteUrl;
+    private boolean seekaRecommended;
+    private String tags;
+
+    
     /**
      * @return the id
      */
@@ -368,5 +373,41 @@ public class ArticleDto2 {
      */
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+    /**
+     * @return the websiteUrl
+     */
+    public String getWebsiteUrl() {
+        return websiteUrl;
+    }
+    /**
+     * @param websiteUrl the websiteUrl to set
+     */
+    public void setWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
+    }
+    /**
+     * @return the seekaRecommended
+     */
+    public boolean getSeekaRecommended() {
+        return seekaRecommended;
+    }
+    /**
+     * @param seekaRecommended the seekaRecommended to set
+     */
+    public void setSeekaRecommended(boolean seekaRecommended) {
+        this.seekaRecommended = seekaRecommended;
+    }
+    /**
+     * @return the tags
+     */
+    public String getTags() {
+        return tags;
+    }
+    /**
+     * @param tags the tags to set
+     */
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 }

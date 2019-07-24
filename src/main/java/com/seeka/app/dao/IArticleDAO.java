@@ -24,4 +24,10 @@ public interface IArticleDAO {
      void updateArticle(BigInteger subCAtegory, BigInteger id);
 
      List<SeekaArticles> searchArticle(SearchDto article);
+
+    List<SeekaArticles> articleByFilter(String sqlQuery);
+
+    int findTotalCountBasedOnCondition(String countQuery);
+
+    List<SeekaArticles> searchBasedOnNameAndContent(String searchText);
 }

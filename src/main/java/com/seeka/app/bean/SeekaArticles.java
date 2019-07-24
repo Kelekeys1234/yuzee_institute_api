@@ -74,6 +74,11 @@ public class SeekaArticles implements Serializable {
     private boolean enabled;
     private boolean featured;
     private String notes;
+    
+    private String websiteUrl;
+    private boolean seekaRecommended;
+    private String tags;
+    private String status;
 
     public SeekaArticles() {
     }
@@ -710,5 +715,65 @@ public class SeekaArticles implements Serializable {
      */
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    /**
+     * @return the websiteUrl
+     */
+    @Column(name = "website_url", length = 100)
+    public String getWebsiteUrl() {
+        return websiteUrl;
+    }
+
+    /**
+     * @param websiteUrl the websiteUrl to set
+     */
+    public void setWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
+    }
+
+    /**
+     * @return the seekaRecommended
+     */
+    @Column(name = "seeka_recommended")
+    public boolean isSeekaRecommended() {
+        return seekaRecommended;
+    }
+
+    /**
+     * @param seekaRecommended the seekaRecommended to set
+     */
+    public void setSeekaRecommended(boolean seekaRecommended) {
+        this.seekaRecommended = seekaRecommended;
+    }
+
+    /**
+     * @return the tags
+     */
+    @Column(name = "tags", length = 500)
+    public String getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags the tags to set
+     */
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    /**
+     * @return the status
+     */
+    @Column(name = "status", length = 500)
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
