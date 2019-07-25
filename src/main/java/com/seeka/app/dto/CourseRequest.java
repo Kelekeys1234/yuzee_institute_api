@@ -34,6 +34,15 @@ public class CourseRequest {
     
     private String instituteName;
     private String location;
+    private String instituteLogoUrl;
+    private String instituteImageUrl;
+    private String worldRanking;
+    private String stars;
+    private String cost;
+    private String durationTime;
+    private String totalCount;
+    private String localFees;
+    private String intlFees;
     /**
      * @return the courseId
      */
@@ -357,6 +366,114 @@ public class CourseRequest {
      */
     public void setLocation(String location) {
         this.location = location;
+    }
+    /**
+     * @return the instituteLogoUrl
+     */
+    public String getInstituteLogoUrl() {
+        return instituteLogoUrl;
+    }
+    /**
+     * @param instituteLogoUrl the instituteLogoUrl to set
+     */
+    public void setInstituteLogoUrl(String instituteLogoUrl) {
+        this.instituteLogoUrl = instituteLogoUrl;
+    }
+    /**
+     * @return the instituteImageUrl
+     */
+    public String getInstituteImageUrl() {
+        return instituteImageUrl;
+    }
+    /**
+     * @param instituteImageUrl the instituteImageUrl to set
+     */
+    public void setInstituteImageUrl(String instituteImageUrl) {
+        this.instituteImageUrl = instituteImageUrl;
+    }
+    /**
+     * @return the worldRanking
+     */
+    public String getWorldRanking() {
+        return worldRanking;
+    }
+    /**
+     * @param worldRanking the worldRanking to set
+     */
+    public void setWorldRanking(String worldRanking) {
+        this.worldRanking = worldRanking;
+    }
+    /**
+     * @return the stars
+     */
+    public String getStars() {
+        return stars;
+    }
+    /**
+     * @param stars the stars to set
+     */
+    public void setStars(String stars) {
+        this.stars = stars;
+    }
+    /**
+     * @return the cost
+     */
+    public String getCost() {
+        return cost;
+    }
+    /**
+     * @param cost the cost to set
+     */
+    public void setCost(String cost) {
+        this.cost = cost;
+    }
+    /**
+     * @return the durationTime
+     */
+    public String getDurationTime() {
+        return durationTime;
+    }
+    /**
+     * @param durationTime the durationTime to set
+     */
+    public void setDurationTime(String durationTime) {
+        this.durationTime = durationTime;
+    }
+    /**
+     * @return the totalCount
+     */
+    public String getTotalCount() {
+        return totalCount;
+    }
+    /**
+     * @param totalCount the totalCount to set
+     */
+    public void setTotalCount(String totalCount) {
+        this.totalCount = totalCount;
+    }
+    /**
+     * @return the localFees
+     */
+    public String getLocalFees() {
+        return localFees;
+    }
+    /**
+     * @param localFees the localFees to set
+     */
+    public void setLocalFees(String localFees) {
+        this.localFees = localFees;
+    }
+    /**
+     * @return the intlFees
+     */
+    public String getIntlFees() {
+        return intlFees;
+    }
+    /**
+     * @param intlFees the intlFees to set
+     */
+    public void setIntlFees(String intlFees) {
+        this.intlFees = intlFees;
     }
 
 }

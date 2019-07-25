@@ -976,7 +976,7 @@ public class CourseDAO implements ICourseDAO {
         String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
                         + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
                         + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
-                        + " cd.job_part_time, cd.job_full_time, cd.course_link, c.updated_on  FROM course c inner join course_details cd "
+                        + " cd.job_part_time, cd.job_full_time, cd.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time  FROM course c inner join course_details cd "
                         + " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL ORDER BY c.created_on DESC ";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
@@ -990,6 +990,8 @@ public class CourseDAO implements ICourseDAO {
             if (row[2] != null) {
                 obj.setInstituteId(new BigInteger((row[2].toString())));
                 obj.setInstituteName(getInstituteName(row[2].toString(), session));
+                obj.setInstituteLogoUrl(getInstituteLogo(row[2].toString(), session));
+                obj.setInstituteImageUrl(getInstituteImage(row[2].toString(), session));
             }
             if (row[3] != null) {
                 obj.setCountryId(new BigInteger((row[3].toString())));
@@ -1055,6 +1057,15 @@ public class CourseDAO implements ICourseDAO {
                 obj.setLastUpdated(dateResult);
 
             }
+            if (row[23] != null) {
+                obj.setWorldRanking(row[23].toString());
+            }
+            if (row[24] != null) {
+                obj.setStars(row[24].toString());
+            }
+            if (row[25] != null) {
+                obj.setDurationTime(row[25].toString());
+            }
             obj.setEnglishEligibility(getEnglishEligibility(session, obj.getCourseId()));
             courses.add(obj);
         }
@@ -1100,8 +1111,16 @@ public class CourseDAO implements ICourseDAO {
             obj = new CourseRequest();
             obj.setCourseId(new BigInteger((row[0].toString())));
             obj.setcId(Integer.valueOf(row[1].toString()));
-            obj.setInstituteId(new BigInteger((row[2].toString())));
-            obj.setCountryId(new BigInteger((row[3].toString())));
+            if (row[2] != null) {
+                obj.setInstituteId(new BigInteger((row[2].toString())));
+                obj.setInstituteName(getInstituteName(row[2].toString(), session));
+                obj.setInstituteLogoUrl(getInstituteLogo(row[2].toString(), session));
+                obj.setInstituteImageUrl(getInstituteImage(row[2].toString(), session));
+            }
+            if (row[3] != null) {
+                obj.setCountryId(new BigInteger((row[3].toString())));
+                obj.setLocation(((getLocationName(row[3].toString(), session))));
+            }
             obj.setCityId(new BigInteger((row[4].toString())));
             obj.setFacultyId(new BigInteger((row[5].toString())));
             obj.setName(row[6].toString());
@@ -1149,6 +1168,24 @@ public class CourseDAO implements ICourseDAO {
             }
             if (row[21] != null) {
                 obj.setCourseLink(row[21].toString());
+            }
+            if (row[22] != null) {
+                System.out.println(row[2].toString());
+                System.out.println(row[22].toString());
+                Date createdDate = (Date) row[22];
+                System.out.println(createdDate);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+                String dateResult = formatter.format(createdDate);
+                obj.setLastUpdated(dateResult);
+            }
+            if (row[23] != null) {
+                obj.setWorldRanking(row[23].toString());
+            }
+            if (row[24] != null) {
+                obj.setStars(row[24].toString());
+            }
+            if (row[25] != null) {
+                obj.setDurationTime(row[25].toString());
             }
             obj.setEnglishEligibility(getEnglishEligibility(session, obj.getCourseId()));
             courses.add(obj);
@@ -1162,7 +1199,7 @@ public class CourseDAO implements ICourseDAO {
         String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
                         + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
                         + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
-                        + " cd.job_part_time, cd.job_full_time, cd.course_link  FROM  user_my_course umc inner join course c on umc.course_id = c.id inner join course_details cd "
+                        + " cd.job_part_time, cd.job_full_time, cd.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time  FROM  user_my_course umc inner join course c on umc.course_id = c.id inner join course_details cd "
                         + " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL and umc.user_id = " + userId + "  ORDER BY c.created_on DESC ";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
@@ -1173,8 +1210,16 @@ public class CourseDAO implements ICourseDAO {
             obj = new CourseRequest();
             obj.setCourseId(new BigInteger((row[0].toString())));
             obj.setcId(Integer.valueOf(row[1].toString()));
-            obj.setInstituteId(new BigInteger((row[2].toString())));
-            obj.setCountryId(new BigInteger((row[3].toString())));
+            if (row[2] != null) {
+                obj.setInstituteId(new BigInteger((row[2].toString())));
+                obj.setInstituteName(getInstituteName(row[2].toString(), session));
+                obj.setInstituteLogoUrl(getInstituteLogo(row[2].toString(), session));
+                obj.setInstituteImageUrl(getInstituteImage(row[2].toString(), session));
+            }
+            if (row[3] != null) {
+                obj.setCountryId(new BigInteger((row[3].toString())));
+                obj.setLocation(((getLocationName(row[3].toString(), session))));
+            }
             obj.setCityId(new BigInteger((row[4].toString())));
             obj.setFacultyId(new BigInteger((row[5].toString())));
             obj.setName(row[6].toString());
@@ -1223,9 +1268,62 @@ public class CourseDAO implements ICourseDAO {
             if (row[21] != null) {
                 obj.setCourseLink(row[21].toString());
             }
+            if (row[22] != null) {
+                System.out.println(row[2].toString());
+                System.out.println(row[22].toString());
+                Date createdDate = (Date) row[22];
+                System.out.println(createdDate);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+                String dateResult = formatter.format(createdDate);
+                obj.setLastUpdated(dateResult);
+            }
+            if (row[23] != null) {
+                obj.setWorldRanking(row[23].toString());
+            }
+            if (row[24] != null) {
+                obj.setStars(row[24].toString());
+            }
+            if (row[25] != null) {
+                obj.setDurationTime(row[25].toString());
+            }
             obj.setEnglishEligibility(getEnglishEligibility(session, new BigInteger((row[0].toString()))));
             courses.add(obj);
         }
         return courses;
+    }
+
+    private String getInstituteImage(String instituteId, Session session) {
+        String logo = null;
+        Query query = session.createSQLQuery("select c.id, c.image_path from institute_images c  where c.institute_id=" + instituteId);
+        List<Object[]> rows = query.list();
+        for (Object[] row : rows) {
+            if (row[1] != null) {
+                logo = row[1].toString();
+            }
+        }
+        return logo;
+    }
+
+    private String getInstituteLogo(String instituteId, Session session) {
+        String logo = null;
+        Query query = session.createSQLQuery("select c.id, c.institute_logo_url from institute_details c  where c.institute_id=" + instituteId);
+        List<Object[]> rows = query.list();
+        for (Object[] row : rows) {
+            if (row[1] != null) {
+                logo = row[1].toString();
+            }
+        }
+        return logo;
+    }
+
+    @Override
+    public int findTotalCountByUserId(BigInteger userId) {
+        int status = 1;
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select sa.id from user_my_course sa where sa.is_active = " + status + " and sa.deleted_on IS NULL and sa.user_id=" + userId;
+        System.out.println(sqlQuery);
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        return rows.size();
     }
 }

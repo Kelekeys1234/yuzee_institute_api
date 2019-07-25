@@ -472,7 +472,7 @@ public class CourseController {
     @RequestMapping(value = "/user/favourite", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> markUserFavoriteCourse(@RequestBody UserMyCourse obj) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        UserMyCourse dbObj = myCourseService.getDataByUserIDAndCourseID(obj.getUserInfo().getUserId(), obj.getCourse().getId());
+        UserMyCourse dbObj = myCourseService.getDataByUserIDAndCourseID(obj.getUserId(), obj.getCourse().getId());
         Date now = new Date();
         String message = "Added to my course.";
         if (null != dbObj) {

@@ -27,7 +27,6 @@ import com.seeka.app.dao.ICourseDetailsDAO;
 import com.seeka.app.dao.ICourseEnglishEligibilityDAO;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.IInstituteDAO;
-import com.seeka.app.dao.IUserDAO;
 import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
@@ -66,9 +65,6 @@ public class CourseService implements ICourseService {
 
     @Autowired
     private IUserMyCourseDAO myCourseDAO;
-
-    @Autowired
-    private IUserDAO userDAO;
 
     @Override
     public void save(Course course) {
@@ -261,7 +257,7 @@ public class CourseService implements ICourseService {
             String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
                             + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
                             + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
-                            + " cd.job_part_time, cd.job_full_time, cd.course_link  FROM course c inner join course_details cd "
+                            + " cd.job_part_time, cd.job_full_time , cd.course_link,c.updated_on, c.world_ranking, c.stars, c.duration_time  FROM course c inner join course_details cd "
                             + " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL ";
             if (countryId != null) {
                 sqlQuery += " and c.country_id = " + countryId;
@@ -294,7 +290,7 @@ public class CourseService implements ICourseService {
                 for (BigInteger courseId : userCourse.getCourses()) {
                     UserMyCourse myCourse = new UserMyCourse();
                     myCourse.setCourse(iCourseDAO.get(courseId));
-                    myCourse.setUserInfo(userDAO.get(userCourse.getUserId()));
+                    myCourse.setUserId(userCourse.getUserId());
                     myCourse.setIsActive(true);
                     myCourse.setCreatedBy("API");
                     myCourse.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -319,7 +315,7 @@ public class CourseService implements ICourseService {
         int totalCount = 0;
         PaginationUtilDto paginationUtilDto = null;
         try {
-            totalCount = iCourseDAO.findTotalCount();
+            totalCount = iCourseDAO.findTotalCountByUserId(userId);
             paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
             courses = iCourseDAO.getUserCourse(userId, pageNumber, pageSize);
         } catch (Exception exception) {

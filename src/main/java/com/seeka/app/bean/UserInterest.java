@@ -33,7 +33,7 @@ public class UserInterest implements Serializable {
     private static final long serialVersionUID = 5898014655457998560L;
     private BigInteger id;
     private Interest interest;
-    private UserInfo userInfo;
+    private BigInteger userInfo;
     private Date createdOn;
     private Date updatedOn;
     private String createdBy;
@@ -77,9 +77,8 @@ public class UserInterest implements Serializable {
     /**
      * @return the userInfo
      */
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
-    public UserInfo getUserInfo() {
+    @Column(name = "user_id", length = 20)
+    public BigInteger getUserInfo() {
         return userInfo;
     }
 
@@ -87,7 +86,7 @@ public class UserInterest implements Serializable {
      * @param userInfo
      *            the userInfo to set
      */
-    public void setUserInfo(UserInfo userInfo) {
+    public void setUserInfo(BigInteger userInfo) {
         this.userInfo = userInfo;
     }
 

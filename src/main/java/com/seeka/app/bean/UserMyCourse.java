@@ -33,7 +33,7 @@ public class UserMyCourse implements Serializable {
 	private static final long serialVersionUID = -379655458576053915L;
 	private BigInteger id;
 	private Course course;
-	private UserInfo userInfo;
+	private BigInteger userId;
 	private Boolean isActive;
 	private Date createdOn;
 	private Date updatedOn;
@@ -49,10 +49,10 @@ public class UserMyCourse implements Serializable {
 		this.course = course;
 	}
 
-	public UserMyCourse(Course course, UserInfo userInfo, Boolean isActive, Date createdOn, Date updatedOn,
+	public UserMyCourse(Course course, BigInteger userId, Boolean isActive, Date createdOn, Date updatedOn,
 			Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
 		this.course = course;
-		this.userInfo = userInfo;
+		this.userId = userId;
 		this.isActive = isActive;
 		this.createdOn = createdOn;
 		this.updatedOn = updatedOn;
@@ -83,14 +83,14 @@ public class UserMyCourse implements Serializable {
 		this.course = course;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@Column(name = "user_id", length = 20)
 	@JoinColumn(name = "user_id")
-	public UserInfo getUserInfo() {
-		return this.userInfo;
+	public BigInteger getUserId() {
+		return this.userId;
 	}
 
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
+	public void setUserId(BigInteger userId) {
+		this.userId = userId;
 	}
 
 	@Column(name = "is_active")
@@ -172,7 +172,7 @@ public class UserMyCourse implements Serializable {
 		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
 		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
 		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
-		result = prime * result + ((userInfo == null) ? 0 : userInfo.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
 	}
 
@@ -230,10 +230,10 @@ public class UserMyCourse implements Serializable {
 				return false;
 		} else if (!updatedOn.equals(other.updatedOn))
 			return false;
-		if (userInfo == null) {
-			if (other.userInfo != null)
+		if (userId == null) {
+			if (other.userId != null)
 				return false;
-		} else if (!userInfo.equals(other.userInfo))
+		} else if (!userId.equals(other.userId))
 			return false;
 		return true;
 	}
@@ -241,8 +241,8 @@ public class UserMyCourse implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserMyCourse [id=").append(id).append(", course=").append(course).append(", userInfo=")
-				.append(userInfo).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
+		builder.append("UserMyCourse [id=").append(id).append(", course=").append(course).append(", userId=")
+				.append(userId).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
 				.append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
 				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
 				.append(", isDeleted=").append(isDeleted).append("]");

@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Hobbies;
 import com.seeka.app.bean.Interest;
-import com.seeka.app.bean.UserInfo;
+import com.seeka.app.bean.UserBiginterestCountry;
 import com.seeka.app.bean.UserInterestHobbies;
 import com.seeka.app.dao.IHobbyDAO;
 import com.seeka.app.dao.InterestDao;
-import com.seeka.app.dao.UserDAO;
 import com.seeka.app.dao.UserHobbyDao;
 import com.seeka.app.dao.UserInterestDao;
+import com.seeka.app.dto.UserCountryHobbiesDto;
 import com.seeka.app.dto.UserHobbies;
 import com.seeka.app.dto.UserInterest;
 import com.seeka.app.util.DateUtil;
@@ -32,9 +32,6 @@ public class HobbyService implements IHobbyService {
 
     @Autowired
     private IHobbyDAO dao;
-
-    @Autowired
-    private UserDAO userDAO;
 
     @Autowired
     private UserHobbyDao userHobbyDao;
@@ -86,11 +83,10 @@ public class HobbyService implements IHobbyService {
         Map<String, Object> response = new HashMap<String, Object>();
         String status = IConstant.SUCCESS;
         try {
-            UserInfo user = userDAO.get(userHobbies.getUserId());
             for (BigInteger id : userHobbies.getHobbies()) {
                 UserInterestHobbies interestHobbies = new UserInterestHobbies();
                 interestHobbies.setHobbies(dao.get(id));
-                interestHobbies.setUserInfo(user);
+                interestHobbies.setUserInfo(userHobbies.getUserId());
                 interestHobbies.setCreatedBy("API");
                 interestHobbies.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
                 interestHobbies.setUpdatedBy("API");
@@ -188,11 +184,10 @@ public class HobbyService implements IHobbyService {
         Map<String, Object> response = new HashMap<String, Object>();
         String status = IConstant.SUCCESS;
         try {
-            UserInfo user = userDAO.get(userInterest.getUserId());
             for (BigInteger id : userInterest.getInterest()) {
                 com.seeka.app.bean.UserInterest interestHobbies = new com.seeka.app.bean.UserInterest();
                 interestHobbies.setInterest(interestDao.get(id));
-                interestHobbies.setUserInfo(user);
+                interestHobbies.setUserInfo(userInterest.getUserId());
                 interestHobbies.setCreatedBy("API");
                 interestHobbies.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
                 interestHobbies.setUpdatedBy("API");
@@ -229,6 +224,77 @@ public class HobbyService implements IHobbyService {
         String status = IConstant.SUCCESS;
         try {
             userInterestDao.deleteUserInterest(userId, interestId);
+        } catch (Exception exception) {
+            status = IConstant.FAIL;
+        }
+        response.put("status", 1);
+        response.put("message", status);
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> addCountryHobbies(@Valid UserCountryHobbiesDto userHountryHobbies) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        String status = IConstant.SUCCESS;
+        try {
+            for (BigInteger id : userHountryHobbies.getHobbies()) {
+                UserInterestHobbies interestHobbies = new UserInterestHobbies();
+                interestHobbies.setHobbies(dao.get(id));
+                interestHobbies.setUserInfo(userHountryHobbies.getUserId());
+                interestHobbies.setCreatedBy("API");
+                interestHobbies.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+                interestHobbies.setUpdatedBy("API");
+                interestHobbies.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+                userHobbyDao.save(interestHobbies);
+            }
+            for (String name : userHountryHobbies.getCountry()) {
+                UserBiginterestCountry userBiginterestCountry = new UserBiginterestCountry();
+                userBiginterestCountry.setUserInfo(userHountryHobbies.getUserId());
+                userBiginterestCountry.setCountry(name);
+                userBiginterestCountry.setCreatedBy("API");
+                userBiginterestCountry.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+                userBiginterestCountry.setUpdatedBy("API");
+                userBiginterestCountry.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+                userHobbyDao.saveUserCountry(userBiginterestCountry);
+            }
+        } catch (Exception exception) {
+            status = IConstant.FAIL;
+        }
+        response.put("status", 1);
+        response.put("message", status);
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getUserHobbiesAndCountry(BigInteger userId) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        String status = IConstant.SUCCESS;
+        List<Hobbies> hobbies = new ArrayList<Hobbies>();
+        List<String> countries = new ArrayList<String>();
+        try {
+            hobbies = userHobbyDao.getUserHobbies(userId);
+            countries = userHobbyDao.getCountryByUserId(userId);
+        } catch (Exception exception) {
+            status = IConstant.FAIL;
+        }
+        response.put("status", 1);
+        response.put("message", status);
+        response.put("hobbies", hobbies);
+        response.put("countries", countries);
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> deleteInterest(BigInteger userId, BigInteger hobbyId, String countryId) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        String status = IConstant.SUCCESS;
+        try {
+            if (hobbyId != null) {
+                userHobbyDao.deleteUserHobbies(userId, hobbyId);
+            }
+            if (countryId != null && !countryId.isEmpty()) {
+                userHobbyDao.deleteUserCountry(userId, countryId);
+            }
         } catch (Exception exception) {
             status = IConstant.FAIL;
         }

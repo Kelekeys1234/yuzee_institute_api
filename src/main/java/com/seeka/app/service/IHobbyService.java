@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.seeka.app.bean.Hobbies;
+import com.seeka.app.dto.UserCountryHobbiesDto;
 import com.seeka.app.dto.UserHobbies;
 import com.seeka.app.dto.UserInterest;
 
@@ -38,5 +39,11 @@ public interface IHobbyService {
     public Map<String, Object> getUserInterest(BigInteger userId);
 
     public Map<String, Object> deleteUserInterest(BigInteger userId, BigInteger interestId);
+
+    public Map<String, Object> addCountryHobbies(@Valid UserCountryHobbiesDto userHountryHobbies);
+
+    public Map<String, Object> getUserHobbiesAndCountry(BigInteger userId);
+
+    public Map<String, Object> deleteInterest(BigInteger userId, BigInteger hobbyId, String countryId);
 
 }

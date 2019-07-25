@@ -33,7 +33,7 @@ public class UserInterestHobbies implements Serializable {
 	private static final long serialVersionUID = 5898014655457998560L;
 	private BigInteger id;
 	private Hobbies hobbies;
-	private UserInfo userInfo;
+	private BigInteger userInfo;
 	private String hobbyTxt;
 	private Date createdOn;
 	private Date updatedOn;
@@ -45,12 +45,12 @@ public class UserInterestHobbies implements Serializable {
 	public UserInterestHobbies() {
 	}
 
-	public UserInterestHobbies(Hobbies hobbies, UserInfo userInfo) {
+	public UserInterestHobbies(Hobbies hobbies, BigInteger userInfo) {
 		this.hobbies = hobbies;
 		this.userInfo = userInfo;
 	}
 
-	public UserInterestHobbies(Hobbies hobbies, UserInfo userInfo, String hobbyTxt, Date createdOn, Date updatedOn,
+	public UserInterestHobbies(Hobbies hobbies, BigInteger userInfo, String hobbyTxt, Date createdOn, Date updatedOn,
 			Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
 		this.hobbies = hobbies;
 		this.userInfo = userInfo;
@@ -84,13 +84,12 @@ public class UserInterestHobbies implements Serializable {
 		this.hobbies = hobbies;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_id", nullable = false)
-	public UserInfo getUserInfo() {
+	@Column(name = "user_id", length = 20)
+	public BigInteger getUserInfo() {
 		return this.userInfo;
 	}
 
-	public void setUserInfo(UserInfo userInfo) {
+	public void setUserInfo(BigInteger userInfo) {
 		this.userInfo = userInfo;
 	}
 
