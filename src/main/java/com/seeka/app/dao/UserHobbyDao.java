@@ -93,4 +93,32 @@ public class UserHobbyDao {
             session.delete(obj);
         }
     }
+
+    public void deleteUserAllHobbies(BigInteger userId) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select uih.id , uih.user_id FROM user_interest_hobbies uih where uih.user_id= " + userId;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        UserInterestHobbies obj = null;
+        for (Object[] row : rows) {
+            obj = new UserInterestHobbies();
+            obj.setId(new BigInteger((row[0].toString())));
+            session.delete(obj);
+        }
+
+    }
+
+    public void deleteUserAllCountries(BigInteger userId) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select uih.id , uih.user_id FROM user_biginterest_country uih where uih.user_id= " + userId;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        UserBiginterestCountry obj = null;
+        for (Object[] row : rows) {
+            obj = new UserBiginterestCountry();
+            obj.setId(new BigInteger((row[0].toString())));
+            session.delete(obj);
+        }
+
+    }
 }

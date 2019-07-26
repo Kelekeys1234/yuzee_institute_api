@@ -1,7 +1,6 @@
 package com.seeka.app.controller;
 
 import java.math.BigInteger;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -102,13 +101,8 @@ public class CountryController {
     }
 
     @RequestMapping(value = "/discover", method = RequestMethod.GET)
-    public ResponseEntity<?> getDiscoverPage() {
-        Map<String, Object> response = new HashMap<String, Object>();
-        List<CountryDto> countryList = countryService.getAllCountries();
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("countryList", countryList);
-        return ResponseEntity.accepted().body(response);
+    public ResponseEntity<?> getDiscoverCountry() {
+        return ResponseEntity.accepted().body(countryService.getAllDiscoverCountry());
     }
 
     @RequestMapping(value = "/add/english/sample", method = RequestMethod.GET)

@@ -12,9 +12,10 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.dto.CountryDto;
+import com.seeka.app.dto.DiscoverCountryDto;
 
 @Repository
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
 public class CountryDAO implements ICountryDAO {
 
     @Autowired
@@ -111,6 +112,29 @@ public class CountryDAO implements ICountryDAO {
             obj.setName(row[1].toString());
             if (row[2] != null) {
                 obj.setCountryCode(row[2].toString());
+            }
+            countries.add(obj);
+        }
+        return countries;
+    }
+
+    @Override
+    public List<DiscoverCountryDto> getDiscoverCountry() {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery(
+                        "SELECT c.id, c.name as name, c.country_code as code, ci.image_path FROM country c left join country_images ci on c.id = ci.country_id ORDER BY c.name");
+        List<Object[]> rows = query.list();
+        List<DiscoverCountryDto> countries = new ArrayList<DiscoverCountryDto>();
+        DiscoverCountryDto obj = null;
+        for (Object[] row : rows) {
+            obj = new DiscoverCountryDto();
+            obj.setId(new BigInteger((row[0].toString())));
+            obj.setName(row[1].toString());
+            if (row[2] != null) {
+                obj.setCountryCode(row[2].toString());
+            }
+            if (row[3] != null) {
+                obj.setImageUrl(row[3].toString());
             }
             countries.add(obj);
         }

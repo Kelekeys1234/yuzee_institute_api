@@ -27,4 +27,6 @@ public interface ICountryService {
 	 * @return
 	 */
 	List<CountryDto> getAllCountryWithCities();
+
+    public Map<String,Object> getAllDiscoverCountry();
 }

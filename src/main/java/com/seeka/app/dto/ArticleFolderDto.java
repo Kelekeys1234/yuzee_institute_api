@@ -4,6 +4,7 @@ public class ArticleFolderDto {
     
     private BigInteger id;
     private String folderName;
+    private BigInteger userId;
     /**
      * @return the id
      */
@@ -27,6 +28,18 @@ public class ArticleFolderDto {
      */
     public void setFolderName(String folderName) {
         this.folderName = folderName;
+    }
+    /**
+     * @return the userId
+     */
+    public BigInteger getUserId() {
+        return userId;
+    }
+    /**
+     * @param userId the userId to set
+     */
+    public void setUserId(BigInteger userId) {
+        this.userId = userId;
     }
 
 }

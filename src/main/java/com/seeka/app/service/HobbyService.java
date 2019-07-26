@@ -237,6 +237,12 @@ public class HobbyService implements IHobbyService {
         Map<String, Object> response = new HashMap<String, Object>();
         String status = IConstant.SUCCESS;
         try {
+            if (userHountryHobbies.getHobbies() != null && !userHountryHobbies.getHobbies().isEmpty()) {
+                userHobbyDao.deleteUserAllHobbies(userHountryHobbies.getUserId());
+            }
+            if (userHountryHobbies.getCountry() != null && !userHountryHobbies.getCountry().isEmpty()) {
+                userHobbyDao.deleteUserAllCountries(userHountryHobbies.getUserId());
+            }
             for (BigInteger id : userHountryHobbies.getHobbies()) {
                 UserInterestHobbies interestHobbies = new UserInterestHobbies();
                 interestHobbies.setHobbies(dao.get(id));

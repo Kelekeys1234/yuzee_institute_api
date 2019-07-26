@@ -1,4 +1,5 @@
-package com.seeka.app.controller;import java.util.ArrayList;
+package com.seeka.app.controller;import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +24,7 @@ public class CurrencyController {
 	@Autowired
 	private ICurrencyService currencyService;
 	
-	@RequestMapping(method=RequestMethod.GET)
+	/*@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<?>  getAll() {
 		Map<String,Object> response = new HashMap<String, Object>();
 		Collection<Currency> list = CurrencyUtil.getAllCurrencies();
@@ -58,11 +60,14 @@ public class CurrencyController {
         currency.setSymbol("$");
         currency.setUpdatedDate(new Date());
         currencyService.save(currency);
-        ;
         response.put("status", 1);
         response.put("message", "Success.!");
         response.put("currency", currency);
         return ResponseEntity.accepted().body(response);
-    }
+    }*/
 	
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getAllCurrencies() throws Exception {
+        return ResponseEntity.accepted().body(currencyService.getAllCurrencies());
+    }
 }

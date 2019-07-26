@@ -478,6 +478,7 @@ public class ArticleService implements IArticleService {
             if (result != null) {
                 result.setFolderName(articleFolderDto.getFolderName());
                 result.setUpdatedAt(new Date());
+                result.setUserId(articleFolderDto.getUserId());
                 articleFolderDao.save(result);
             } else {
                 ArticleFolder articleFolder = new ArticleFolder();
@@ -485,7 +486,7 @@ public class ArticleService implements IArticleService {
                 articleFolder.setCreatedAt(new Date());
                 articleFolder.setDeleted(true);
                 articleFolder.setUpdatedAt(new Date());
-                articleFolder.setUserId(new BigInteger("111111"));
+                articleFolder.setUserId(articleFolderDto.getUserId());
                 articleFolderDao.save(articleFolder);
             }
         } catch (Exception exception) {

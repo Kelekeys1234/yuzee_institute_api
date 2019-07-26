@@ -92,7 +92,7 @@ public class ArticleController {
 
     @RequestMapping(value = "/folder/user/mapping", method = RequestMethod.POST)
     public ResponseEntity<?> mapArticleFolder(@RequestBody ArticleFolderMapDto articleFolderMapDto) {
-        return ResponseEntity.accepted().body(articleService.mapArticleFolder(articleFolderMapDto));
+        return ResponseEntity.ok().body(articleService.mapArticleFolder(articleFolderMapDto));
     }
 
     @RequestMapping(value = "/folder/user/{userId}", method = RequestMethod.GET)

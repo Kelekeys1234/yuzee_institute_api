@@ -18,6 +18,7 @@ import com.seeka.app.dao.ICountryImageDAO;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CountryImageDto;
 import com.seeka.app.dto.CountryRequestDto;
+import com.seeka.app.dto.DiscoverCountryDto;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.IConstant;
 
@@ -33,7 +34,7 @@ public class CountryService implements ICountryService {
 
     @Autowired
     private ICountryImageDAO countryImageDAO;
-    
+
     @Autowired
     private ICityService iCityService;
 
@@ -66,16 +67,16 @@ public class CountryService implements ICountryService {
     public List<CountryDto> getAllCountryName() {
         return countryDAO.getAllCountryName();
     }
-    
+
     @Override
     public List<CountryDto> getAllCountryWithCities() {
-    	List<CountryDto> countryList =  countryDAO.getAllCountryName();
-    	List<CountryDto> resultCountryList = new ArrayList<>();
-    	for (CountryDto countryDto : countryList) {
-    		countryDto.setCityList(iCityService.getAllCitiesByCountry(countryDto.getId()));
-    		resultCountryList.add(countryDto);
-		}
-    	return resultCountryList;
+        List<CountryDto> countryList = countryDAO.getAllCountryName();
+        List<CountryDto> resultCountryList = new ArrayList<>();
+        for (CountryDto countryDto : countryList) {
+            countryDto.setCityList(iCityService.getAllCitiesByCountry(countryDto.getId()));
+            resultCountryList.add(countryDto);
+        }
+        return resultCountryList;
     }
 
     @Override
@@ -103,6 +104,22 @@ public class CountryService implements ICountryService {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.put("message", IConstant.FAIL);
         }
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getAllDiscoverCountry() {
+        Map<String, Object> response = new HashMap<String, Object>();
+        String status = IConstant.SUCCESS;
+        List<DiscoverCountryDto> discoverCountryDtos = new ArrayList<DiscoverCountryDto>();
+        try {
+            discoverCountryDtos = countryDAO.getDiscoverCountry();
+        } catch (Exception exception) {
+            status = IConstant.FAIL;
+        }
+        response.put("status", 200);
+        response.put("message", status);
+        response.put("countries", discoverCountryDtos);
         return response;
     }
 }
