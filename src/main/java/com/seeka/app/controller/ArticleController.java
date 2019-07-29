@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import com.seeka.app.dto.ArticleDto2;
 import com.seeka.app.dto.ArticleFolderDto;
 import com.seeka.app.dto.ArticleFolderMapDto;
 import com.seeka.app.service.IArticleService;
+import com.seeka.app.util.IConstant;
 
 @RestController
 @RequestMapping("/article")
@@ -31,9 +33,14 @@ public class ArticleController {
     public ResponseEntity<?> getAllArticles() throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<SeekaArticles> articleList = articleService.getAll();
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("articleList", articleList);
+        if (articleList != null && !articleList.isEmpty()) {
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", IConstant.ARTICLE_GET_SUCCESS);
+        } else {
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", IConstant.ARTICLE_NOT_FOUND);
+        }
+        response.put("data", articleList);
         return ResponseEntity.accepted().body(response);
 
     }
@@ -64,7 +71,7 @@ public class ArticleController {
     public ResponseEntity<?> contentSearch(@PathVariable String searchText) {
         return ResponseEntity.accepted().body(articleService.searchBasedOnNameAndContent(searchText));
     }
-    
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveMultiArticle(@RequestBody ArticleDto2 article) {
         return ResponseEntity.accepted().body(articleService.saveMultiArticle(article));

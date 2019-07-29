@@ -57,6 +57,7 @@ public class Course implements Serializable {
 	private String updatedBy;
 	private Boolean isDeleted;
 	private Integer cId;
+	private String levelCode;
 
 	public Course() {
 	}
@@ -536,6 +537,21 @@ public class Course implements Serializable {
      */
     public void setcId(Integer cId) {
         this.cId = cId;
+    }
+
+    /**
+     * @return the levelCode
+     */
+    @Column(name = "level_code")
+    public String getLevelCode() {
+        return levelCode;
+    }
+
+    /**
+     * @param levelCode the levelCode to set
+     */
+    public void setLevelCode(String levelCode) {
+        this.levelCode = levelCode;
     }
 
 }

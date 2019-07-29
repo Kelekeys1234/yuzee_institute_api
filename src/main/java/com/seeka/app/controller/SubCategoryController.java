@@ -33,13 +33,13 @@ public class SubCategoryController {
         Map<String, Object> response = new HashMap<String, Object>();
         List<SubCategoryDto> subCategoryDtos = subCategoryService.getAllSubCategories();
         if (subCategoryDtos != null && !subCategoryDtos.isEmpty()) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Sub category fetched successfully");
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.SUB_CATEGORY_NOT_FOUND);
         }
-        response.put("subCategories", subCategoryDtos);
+        response.put("data", subCategoryDtos);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -50,13 +50,13 @@ public class SubCategoryController {
         Map<String, Object> response = new HashMap<String, Object>();
         List<SubCategoryDto> subCategoryDtos = subCategoryService.getSubCategoryByCategory(categoryId);
         if (subCategoryDtos != null && !subCategoryDtos.isEmpty()) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Sub category fetched successfully");
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.SUB_CATEGORY_NOT_FOUND);
         }
-        response.put("subCategories", subCategoryDtos);
+        response.put("data", subCategoryDtos);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -67,13 +67,13 @@ public class SubCategoryController {
         Map<String, Object> response = new HashMap<String, Object>();
         SubCategoryDto subCategoryDto = subCategoryService.getSubCategoryById(id);
         if (subCategoryDto != null) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Sub category fetched successfully");
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.SUB_CATEGORY_NOT_FOUND);
         }
-        response.put("subCategory", subCategoryDto);
+        response.put("data", subCategoryDto);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -87,8 +87,8 @@ public class SubCategoryController {
         Map<String, Object> response = new HashMap<String, Object>();
         boolean status = subCategoryService.deleteSubCategory(id);
         if (status) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Sub category deleted successfully");
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.SUB_CATEGORY_NOT_FOUND);

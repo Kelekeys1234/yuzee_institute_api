@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -117,13 +118,15 @@ public class ArticleService implements IArticleService {
                 article.setActive(false);
                 article.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
                 articleDAO.deleteArticle(article);
+                response.put("status", HttpStatus.OK.value());
             } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
                 status = IConstant.DELETE_FAILURE_ID_NOT_FOUND;
             }
         } catch (Exception exception) {
-            status = IConstant.DELETE_FAILURE;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            status = IConstant.SQL_ERROR;
         }
-        response.put("status", 1);
         response.put("message", status);
         return response;
     }
@@ -132,7 +135,7 @@ public class ArticleService implements IArticleService {
     public Map<String, Object> getArticleById(String articleId) {
         Map<String, Object> response = new HashMap<String, Object>();
         ArticleDto3 articleDto = null;
-        String status = IConstant.SUCCESS;
+        String status = IConstant.ARTICLE_GET_SUCCESS;
         try {
             SeekaArticles article = articleDAO.findById(new BigInteger(articleId));
             if (article != null) {
@@ -174,13 +177,15 @@ public class ArticleService implements IArticleService {
                 if (userCitizenship.getCity() != null) {
                     articleDto.setUserCity(String.valueOf(userCitizenship.getCity().getId()));
                 }
+                response.put("status", HttpStatus.OK.value());
             } else {
-                status = IConstant.DELETE_FAILURE_ID_NOT_FOUND;
+                status = IConstant.ARTICLE_NOT_FOUND;
+                response.put("status", HttpStatus.NOT_FOUND.value());
             }
         } catch (Exception exception) {
-            status = IConstant.DELETE_FAILURE;
+            status = IConstant.SQL_ERROR;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
         response.put("message", status);
         response.put("articleDto", articleDto);
         return response;
@@ -189,7 +194,6 @@ public class ArticleService implements IArticleService {
     @Override
     public Map<String, Object> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status, BigInteger categoryId, String tag, String status2) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String responseStatus = IConstant.SUCCESS;
         List<SeekaArticles> articles = null;
         PaginationUtilDto paginationUtilDto = null;
         int totalCount = 0;
@@ -223,15 +227,23 @@ public class ArticleService implements IArticleService {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", IConstant.SQL_ERROR);
         }
-        response.put("status", 1);
-        response.put("message", responseStatus);
-        response.put("articles", articles);
-        response.put("totalCount", totalCount);
-        response.put("pageNumber", paginationUtilDto.getPageNumber());
-        response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-        response.put("hasNextPage", paginationUtilDto.isHasNextPage());
-        response.put("totalPages", paginationUtilDto.getTotalPages());
+        if (articles != null && !articles.isEmpty()) {
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", IConstant.ARTICLE_GET_SUCCESS);
+            response.put("data", articles);
+            response.put("totalCount", totalCount);
+            response.put("pageNumber", paginationUtilDto.getPageNumber());
+            response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+            response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+            response.put("totalPages", paginationUtilDto.getTotalPages());
+        } else {
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", IConstant.ARTICLE_NOT_FOUND);
+            response.put("data", articles);
+        }
         return response;
     }
 
@@ -300,18 +312,20 @@ public class ArticleService implements IArticleService {
     @Override
     public Map<String, Object> searchArticle(SearchDto article) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String ResponseStatus = IConstant.SUCCESS;
+        String ResponseStatus = IConstant.ARTICLE_GET_SUCCESS;
         List<SeekaArticles> articles = null;
         int totalCount = 0;
         try {
             totalCount = articleDAO.findTotalCount();
             articles = articleDAO.searchArticle(article);
+            response.put("status", HttpStatus.OK.value());
         } catch (Exception exception) {
             exception.printStackTrace();
+            ResponseStatus = IConstant.SQL_ERROR;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
         response.put("message", ResponseStatus);
-        response.put("articles", articles);
+        response.put("data", articles);
         response.put("totalCount", totalCount);
         return response;
     }
@@ -319,7 +333,8 @@ public class ArticleService implements IArticleService {
     @Override
     public Map<String, Object> saveMultiArticle(ArticleDto2 articledto) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String ResponseStatus = IConstant.SUCCESS;
+        String ResponseStatus = IConstant.ARTICLE_ADD_SUCCESS;
+        response.put("status", HttpStatus.OK.value());
         try {
             // save data
             SeekaArticles article = new SeekaArticles();
@@ -352,15 +367,7 @@ public class ArticleService implements IArticleService {
             SubCategory subcategory = new SubCategory();
             subcategory.setId(articledto.getSubcategory());
             article.setSubcategory(subcategory);
-            // article.setImagePath(fileDownloadUri);
             article.setLink(articledto.getLink());
-            // article.setCountry(articledto.getCountry());
-            // article.setCity(articledto.getCity());
-            // article.setInstitute(articledto.getInstitute());
-            // article.setFaculty(articledto.getFaculty());
-            // article.setCourses(articledto.getCourses());
-            // article.setGender(articledto.getGender());
-
             article.setAuthor(articledto.getAuthor());
             article.setEnabled(articledto.getEnabled());
             article.setFeatured(articledto.getFeatured());
@@ -457,11 +464,12 @@ public class ArticleService implements IArticleService {
                 }
                 articleGenderDAO.saveArticleGender(list, article.getId());
             }
+
         } catch (Exception exception) {
             exception.printStackTrace();
-            ResponseStatus = IConstant.DELETE_FAILURE;
+            ResponseStatus = IConstant.SQL_ERROR;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
         response.put("message", ResponseStatus);
         return response;
     }
@@ -469,7 +477,6 @@ public class ArticleService implements IArticleService {
     @Override
     public Map<String, Object> saveArticleFolder(ArticleFolderDto articleFolderDto) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String ResponseStatus = IConstant.SUCCESS;
         try {
             ArticleFolder result = null;
             if (articleFolderDto.getId() != null) {
@@ -480,6 +487,7 @@ public class ArticleService implements IArticleService {
                 result.setUpdatedAt(new Date());
                 result.setUserId(articleFolderDto.getUserId());
                 articleFolderDao.save(result);
+                response.put("message", IConstant.ADD_ARTICLE_FOLDER_SUCCESS);
             } else {
                 ArticleFolder articleFolder = new ArticleFolder();
                 articleFolder.setFolderName(articleFolderDto.getFolderName());
@@ -488,13 +496,14 @@ public class ArticleService implements IArticleService {
                 articleFolder.setUpdatedAt(new Date());
                 articleFolder.setUserId(articleFolderDto.getUserId());
                 articleFolderDao.save(articleFolder);
+                response.put("message", IConstant.UPDATE_ARTICLE_FOLDER_SUCCESS);
             }
+            response.put("status", HttpStatus.OK.value());
         } catch (Exception exception) {
             exception.printStackTrace();
-            ResponseStatus = IConstant.FAIL;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", IConstant.SQL_ERROR);
         }
-        response.put("status", 1);
-        response.put("message", ResponseStatus);
         return response;
     }
 
@@ -504,11 +513,19 @@ public class ArticleService implements IArticleService {
         ArticleFolder result = null;
         try {
             result = articleFolderDao.findById(articleFolderId);
+            if (result != null) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.GET_ARTICLE_FOLDER_SUCCESS);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.GET_ARTICLE_FOLDER_NOT_FOUND);
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", IConstant.SQL_ERROR);
         }
-        response.put("status", 1);
-        response.put("result", result);
+        response.put("data", result);
         return response;
     }
 
@@ -518,11 +535,19 @@ public class ArticleService implements IArticleService {
         List<ArticleFolder> articleFolders = new ArrayList<>();
         try {
             articleFolders = articleFolderDao.getAllArticleFolder();
+            if (articleFolders != null && !articleFolders.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.GET_ARTICLE_FOLDER_SUCCESS);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.GET_ARTICLE_FOLDER_NOT_FOUND);
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", IConstant.SQL_ERROR);
         }
-        response.put("status", 1);
-        response.put("articleFolders", articleFolders);
+        response.put("data", articleFolders);
         return response;
     }
 
@@ -536,14 +561,17 @@ public class ArticleService implements IArticleService {
                 result.setDeleted(false);
                 result.setUpdatedAt(new Date());
                 articleFolderDao.save(result);
+                ResponseStatus = IConstant.ARTICLE_FOLDER_DELETED;
+                response.put("status", HttpStatus.OK.value());
             } else {
-                ResponseStatus = IConstant.FAIL;
+                ResponseStatus = IConstant.GET_ARTICLE_FOLDER_NOT_FOUND;
+                response.put("status", HttpStatus.NOT_FOUND.value());
             }
         } catch (Exception exception) {
             exception.printStackTrace();
-            ResponseStatus = IConstant.FAIL;
+            ResponseStatus = IConstant.SQL_ERROR;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
         response.put("message", ResponseStatus);
         return response;
     }
@@ -551,18 +579,19 @@ public class ArticleService implements IArticleService {
     @Override
     public Map<String, Object> mapArticleFolder(ArticleFolderMapDto articleFolderMapDto) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String ResponseStatus = IConstant.SUCCESS;
+        String ResponseStatus = IConstant.FOLDER_ARTICLE_MAP_SUCCESS;
         try {
             ArticleFolderMap articleFolderMap = new ArticleFolderMap();
             articleFolderMap.setFolderId(articleFolderMapDto.getFolderId());
             articleFolderMap.setArticleId(articleFolderMapDto.getArticleId());
             articleFolderMap.setUserId(articleFolderMapDto.getUserId());
             articleFolderMapDao.save(articleFolderMap);
+            response.put("status", HttpStatus.OK.value());
         } catch (Exception exception) {
             exception.printStackTrace();
-            ResponseStatus = IConstant.FAIL;
+            ResponseStatus = IConstant.SQL_ERROR;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
         response.put("message", ResponseStatus);
         return response;
     }
@@ -573,33 +602,47 @@ public class ArticleService implements IArticleService {
         List<ArticleFolder> articleFolders = new ArrayList<>();
         try {
             articleFolders = articleFolderDao.getAllArticleFolderByUserId(userId);
-            for (ArticleFolder articleFolder : articleFolders) {
-                List<ArticleNameDto> articles = articleFolderMapDao.getFolderArticles(articleFolder.getId());
-                articleFolder.setArticles(articles);
-                articleFolder.setUserId(userId);
+            if (!articleFolders.isEmpty()) {
+                for (ArticleFolder articleFolder : articleFolders) {
+                    List<ArticleNameDto> articles = articleFolderMapDao.getFolderArticles(articleFolder.getId());
+                    articleFolder.setArticles(articles);
+                    articleFolder.setUserId(userId);
+                }
+                response.put("message", IConstant.GET_ARTICLE_FOLDER_SUCCESS);
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.GET_ARTICLE_FOLDER_NOT_FOUND);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", IConstant.SQL_ERROR);
         }
-        response.put("status", 1);
-        response.put("articleFolders", articleFolders);
+        response.put("data", articleFolders);
         return response;
     }
 
     @Override
     public Map<String, Object> searchBasedOnNameAndContent(String searchText) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String responseStatus = IConstant.SUCCESS;
+        String responseStatus = IConstant.ARTICLE_GET_SUCCESS;
         List<SeekaArticles> articles = null;
         try {
             articles = articleDAO.searchBasedOnNameAndContent(searchText);
+            if (articles != null && !articles.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                responseStatus = IConstant.ARTICLE_NOT_FOUND;
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
-            responseStatus = IConstant.FAIL;
+            responseStatus = IConstant.SQL_ERROR;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
         response.put("message", responseStatus);
-        response.put("articles", articles);
+        response.put("data", articles);
         return response;
     }
 }

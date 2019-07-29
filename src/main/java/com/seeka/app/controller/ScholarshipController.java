@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,9 +56,14 @@ public class ScholarshipController {
     public ResponseEntity<?> search(@Valid @RequestParam("searchkey") String searchkey) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<ScholarshipDto> scholarshipList = scholarshipService.getScholarshipBySearchKey(searchkey);
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("scholarshipList", scholarshipList);
+        if (scholarshipList != null && !scholarshipList.isEmpty()) {
+            response.put("message", "Scholarship fetched successfully");
+            response.put("status", HttpStatus.OK.value());
+        } else {
+            response.put("message", "Scholarship not found");
+            response.put("status", HttpStatus.NOT_FOUND.value());
+        }
+        response.put("data", scholarshipList);
         return ResponseEntity.accepted().body(response);
     }
 }

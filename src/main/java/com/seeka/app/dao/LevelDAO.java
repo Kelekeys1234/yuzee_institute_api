@@ -1,7 +1,6 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +65,7 @@ public class LevelDAO implements ILevelDAO {
     @Override
     public List<Level> getLevelByCountryId(BigInteger countryId) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.level_key as levelkey from level le  inner join institute_level il  on il.level_id = le.id "
+        Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.code as levelkey from level le  inner join institute_level il  on il.level_id = le.id "
                         + "inner join country c  on c.id = il.country_id " + "where il.country_id = :countryId").setParameter("countryId", countryId);
 
         List<Object[]> rows = query.list();
@@ -77,7 +76,7 @@ public class LevelDAO implements ILevelDAO {
             Level obj = new Level();
             obj.setId(new BigInteger((row[0].toString())));
             obj.setName(row[1].toString());
-            obj.setLevelKey(row[2].toString());
+            obj.setCode(row[2].toString());
             level.add(obj);
         }
         return level;
@@ -86,7 +85,7 @@ public class LevelDAO implements ILevelDAO {
     @Override
     public List<Level> getAllLevelByCountry() {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.level_key as levelkey,il.country_id from level le  inner join institute_level il  on "
+        Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.code as levelkey,il.country_id from level le  inner join institute_level il  on "
                         + "il.level_id = le.id inner join country c  on c.id = il.country_id");
         List<Object[]> rows = query.list();
 
@@ -97,7 +96,7 @@ public class LevelDAO implements ILevelDAO {
             obj.setId(new BigInteger((row[0].toString())));
             obj.setName(row[1].toString());
             if (row[2] != null) {
-                obj.setLevelKey(row[2].toString());
+                obj.setCode(row[2].toString());
             }
             obj.setCountryId(new BigInteger(row[3].toString()));
             level.add(obj);

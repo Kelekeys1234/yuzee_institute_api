@@ -714,7 +714,7 @@ public class MigrateCourseController {
                 level.setDescription(description);
                 level.setIsActive(true);
                 level.setIsDeleted(false);
-                level.setLevelKey(Course_Type);
+                level.setCode(Course_Type);
                 level.setName(Course_Type);
                 level.setCreatedBy(createdBy);
                 level.setCreatedOn(createdOn);

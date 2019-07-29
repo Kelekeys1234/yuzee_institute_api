@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +24,6 @@ import com.seeka.app.dao.IInstituteDetailsDAO;
 import com.seeka.app.dao.IInstituteTypeDAO;
 import com.seeka.app.dao.IInstituteVideoDao;
 import com.seeka.app.dto.CourseSearchDto;
-import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteDetailsGetRequest;
 import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteMedia;
@@ -120,18 +120,18 @@ public class InstituteService implements IInstituteService {
     @Override
     public Map<String, Object> save(@Valid InstituteRequestDto instituteRequest) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         try {
             Institute institute = saveInstitute(instituteRequest);
             saveInstituteDetails(instituteRequest, institute);
             if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
                 saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
             }
+            response.put("message", "Institute saved successfully");
+            response.put("status", HttpStatus.OK.value());
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
         return response;
     }
 
@@ -192,7 +192,6 @@ public class InstituteService implements IInstituteService {
     @Override
     public Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
         int totalCount = 0;
         PaginationUtilDto paginationUtilDto = null;
@@ -203,12 +202,18 @@ public class InstituteService implements IInstituteService {
             for (Institute institute : institutes) {
                 instituteGetRequestDtos.add(getInstitute(institute));
             }
+            if (institutes != null && !institutes.isEmpty()) {
+                response.put("message", "Institute fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", IConstant.INSTITUDE_NOT_FOUND);
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
-        response.put("institutes", instituteGetRequestDtos);
+        response.put("data", instituteGetRequestDtos);
         response.put("totalCount", totalCount);
         response.put("pageNumber", paginationUtilDto.getPageNumber());
         response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
@@ -267,33 +272,28 @@ public class InstituteService implements IInstituteService {
     @Override
     public Map<String, Object> getById(@Valid BigInteger id) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         InstituteGetRequestDto dto = null;
         try {
             Institute institute = dao.get(id);
             if (institute == null) {
-                ErrorDto errorDto = new ErrorDto();
-                errorDto.setCode("400");
-                errorDto.setMessage("Invalid institue.!");
-                response.put("status", 0);
-                response.put("error", errorDto);
-                return response;
+                response.put("message", "Institute not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
             } else {
                 dto = getInstitute(institute);
+                response.put("message", "Institute fetched successfully");
+                response.put("status", HttpStatus.OK.value());
             }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
-        response.put("institutes", dto);
+        response.put("data", dto);
         return response;
     }
 
     @Override
     public Map<String, Object> searchInstitute(@Valid String searchText) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
         try {
             if (searchText != null && !searchText.isEmpty()) {
@@ -322,13 +322,15 @@ public class InstituteService implements IInstituteService {
                     instituteGetRequestDtos.add(getInstitute(institute));
                 }
             } else {
-                status = IConstant.FAIL;
+                response.put("message", IConstant.INSTITUDE_NOT_FOUND);
+                response.put("status", HttpStatus.NOT_FOUND.value());
             }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
+        response.put("message", "Institute fetched successfully");
+        response.put("status", HttpStatus.OK.value());
         response.put("institutes", instituteGetRequestDtos);
         return response;
     }

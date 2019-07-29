@@ -60,9 +60,9 @@ public class InstituteController {
     public ResponseEntity<?> saveInstituteType(@Valid @RequestBody InstituteType instituteTypeObj) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>(3);
         instituteTypeService.save(instituteTypeObj);
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("instituteTypeObj", instituteTypeObj);
+        response.put("message", "Institute type saved successfully");
+        response.put("status", HttpStatus.OK.value());
+        response.put("data", instituteTypeObj);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -70,9 +70,14 @@ public class InstituteController {
     public ResponseEntity<?> search(@Valid @RequestParam("searchkey") String searchkey) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<InstituteSearchResultDto> instituteList = instituteService.getInstitueBySearchKey(searchkey);
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("instituteList", instituteList);
+        if (instituteList != null && !instituteList.isEmpty()) {
+            response.put("message", "Institute fetched successfully");
+            response.put("status", HttpStatus.OK.value());
+        } else {
+            response.put("message", "Institute not found");
+            response.put("status", HttpStatus.NOT_FOUND.value());
+        }
+        response.put("data", instituteList);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -310,9 +315,14 @@ public class InstituteController {
     public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable BigInteger id) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<String> serviceNames = instituteServiceDetailsService.getAllServices(id);
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("serviceList", serviceNames);
+        if (serviceNames != null && !serviceNames.isEmpty()) {
+            response.put("message", "Service fetched successfully");
+            response.put("status", HttpStatus.OK.value());
+        } else {
+            response.put("message", "Service not found");
+            response.put("status", HttpStatus.NOT_FOUND.value());
+        }
+        response.put("data", serviceNames);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -433,13 +443,13 @@ public class InstituteController {
         Map<String, Object> response = new HashMap<String, Object>();
         List<InstituteResponseDto> institutes = instituteService.getInstitudeByCityId(cityId);
         if (institutes != null && !institutes.isEmpty()) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("message", "Institute fetched successfully");
+            response.put("status", HttpStatus.OK.value());
         } else {
-            response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.INSTITUDE_NOT_FOUND);
+            response.put("status", HttpStatus.NOT_FOUND.value());
         }
-        response.put("institutes", institutes);
+        response.put("data", institutes);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -448,11 +458,11 @@ public class InstituteController {
         Map<String, Object> response = new HashMap<String, Object>();
         List<InstituteResponseDto> institutes = instituteService.getInstituteByListOfCityId(cityId);
         if (institutes != null && !institutes.isEmpty()) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("message", "Institute fetched successfully");
+            response.put("status", HttpStatus.OK.value());
         } else {
-            response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.INSTITUDE_NOT_FOUND);
+            response.put("status", HttpStatus.NOT_FOUND.value());
         }
         response.put("institutes", institutes);
         return ResponseEntity.accepted().body(response);
@@ -468,7 +478,7 @@ public class InstituteController {
         return ResponseEntity.accepted().body(instituteService.update(institute, id));
     }
 
-    @RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}" , method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getAllInstitute(@PathVariable Integer pageNumber, @PathVariable Integer pageSize) throws Exception {
         return ResponseEntity.accepted().body(instituteService.getAllInstitute(pageNumber, pageSize));
     }

@@ -33,11 +33,11 @@ public class FacultyController {
     private IFacultyLevelService facultyLevelService;
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> saveLevel(@RequestBody Faculty obj) throws Exception {
+    public ResponseEntity<?> saveFaculty(@RequestBody Faculty obj) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         facultyService.save(obj);
-        response.put("status", 1);
-        response.put("message", "Success");
+        response.put("status", HttpStatus.OK.value());
+        response.put("message", IConstant.FACULTY_SAVE_SUCCESS);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -45,9 +45,9 @@ public class FacultyController {
     public ResponseEntity<?> saveFaultyLevel(@RequestBody FacultyLevel facultyLevelObj) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         facultyLevelService.save(facultyLevelObj);
-        response.put("status", 1);
-        response.put("message", "Success");
-        response.put("facultyLevelObj", facultyLevelObj);
+        response.put("status", HttpStatus.OK.value());
+        response.put("message", "Faculty level added successfully");
+        response.put("data", facultyLevelObj);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -65,10 +65,14 @@ public class FacultyController {
     public ResponseEntity<?> getAll() throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Faculty> facultyList = facultyService.getAll();
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("facultyList", facultyList);
-        
+        if (facultyList != null && !facultyList.isEmpty()) {
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Faculty fetched successfully");
+        } else {
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", "Faculty data not found");
+        }
+        response.put("data", facultyList);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -77,13 +81,13 @@ public class FacultyController {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Faculty> faculties = facultyService.getFacultyByInstituteId(instituteId);
         if (faculties != null && !faculties.isEmpty()) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Faculty fetched successfully");
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.FACULTY_NOT_FOUND);
         }
-        response.put("facultyList", faculties);
+        response.put("data", faculties);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -92,13 +96,13 @@ public class FacultyController {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Faculty> faculties = facultyService.getFacultyByListOfInstituteId(instituteId);
         if (faculties != null && !faculties.isEmpty()) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Faculty fetched successfully");
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.FACULTY_NOT_FOUND);
         }
-        response.put("facultyList", faculties);
+        response.put("data", faculties);
         return ResponseEntity.accepted().body(response);
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,11 +25,11 @@ public class LevelController {
     private ILevelService levelService;
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> saveCity(@RequestBody Level obj) throws Exception {
+    public ResponseEntity<?> saveLevel(@RequestBody Level obj) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         levelService.save(obj);
-        response.put("status", 1);
-        response.put("message", "Success");
+        response.put("message", "Level added successfully");
+        response.put("status", HttpStatus.OK.value());
         return ResponseEntity.accepted().body(response);
     }
 
@@ -36,9 +37,14 @@ public class LevelController {
     public ResponseEntity<?> getLevelByCountry(@PathVariable BigInteger countryId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Level> levelList = levelService.getLevelByCountryId(countryId);
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("levelList", levelList);
+        if (levelList != null && !levelList.isEmpty()) {
+            response.put("message", "Level fetched successfully");
+            response.put("status", HttpStatus.OK.value());
+        } else {
+            response.put("message", "Level not found");
+            response.put("status", HttpStatus.NOT_FOUND.value());
+        }
+        response.put("data", levelList);
         return ResponseEntity.accepted().body(response);
 
     }
@@ -47,9 +53,14 @@ public class LevelController {
     public ResponseEntity<?> getAll() throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Level> levelList = levelService.getAll();
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("levelList", levelList);
+        if (levelList != null && !levelList.isEmpty()) {
+            response.put("message", "Level fetched successfully");
+            response.put("status", HttpStatus.OK.value());
+        } else {
+            response.put("message", "Level not found");
+            response.put("status", HttpStatus.NOT_FOUND.value());
+        }
+        response.put("data", levelList);
         return ResponseEntity.accepted().body(response);
 
     }

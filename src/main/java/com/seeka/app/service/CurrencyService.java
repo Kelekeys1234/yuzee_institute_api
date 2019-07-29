@@ -11,6 +11,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -64,7 +65,6 @@ public class CurrencyService implements ICurrencyService {
     @Override
     public Map<String, Object> getAllCurrencies() {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<Currency> currencies = new ArrayList<Currency>();
         try {
             currencies = dao.getAll();
@@ -72,10 +72,11 @@ public class CurrencyService implements ICurrencyService {
                 currencies = saveCurrencies();
             }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
         }
-        response.put("status", 200);
-        response.put("message", status);
+        response.put("status", HttpStatus.OK);
+        response.put("message", IConstant.ARTICLE_GET_SUCCESS);
         response.put("currencies", currencies);
         return response;
     }

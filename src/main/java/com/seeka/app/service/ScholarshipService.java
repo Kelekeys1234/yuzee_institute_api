@@ -21,7 +21,6 @@ import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.IScholarshipDAO;
-import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.util.CommonUtil;
@@ -51,21 +50,16 @@ public class ScholarshipService implements IScholarshipService {
 
     @Override
     public Map<String, Object> get(BigInteger id) {
-        ErrorDto errorDto = null;
         Map<String, Object> response = new HashMap<String, Object>();
         Scholarship scholarshipObj = iScholarshipDAO.get(id);
-        if (null == scholarshipObj) {
-            errorDto = new ErrorDto();
-            errorDto.setCode("400");
-            errorDto.setMessage("Scholarship Not Found.!");
-            response.put("status", 0);
-            response.put("error", errorDto);
-            return response;
-
+        if (scholarshipObj != null) {
+            response.put("message", "Scholarship fetched successfully");
+            response.put("status", HttpStatus.OK.value());
+        } else {
+            response.put("message", "Scholarship not found");
+            response.put("status", HttpStatus.NOT_FOUND.value());
         }
-        response.put("status", 1);
-        response.put("message", "Success");
-        response.put("scholarshipObj", scholarshipObj);
+        response.put("data", scholarshipObj);
         return response;
     }
 
@@ -96,7 +90,7 @@ public class ScholarshipService implements IScholarshipService {
             exception.printStackTrace();
         }
         if (status) {
-            response.put("status", IConstant.SUCCESS_CODE);
+            response.put("status", HttpStatus.OK.value());
             response.put("message", IConstant.SCHOLARSHIP_SUCCESS_MESSAGE);
         } else {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -116,13 +110,15 @@ public class ScholarshipService implements IScholarshipService {
                 scholarshiyById.setIsActive(false);
                 scholarshiyById.setIsDeleted(true);
                 iScholarshipDAO.deleteScholarship(scholarshiyById);
+                response.put("status", HttpStatus.OK.value());
             } else {
                 status = IConstant.DELETE_FAILURE_ID_NOT_FOUND_SCHOLARSHIP;
+                response.put("status", HttpStatus.NOT_FOUND.value());
             }
         } catch (Exception exception) {
             status = IConstant.DELETE_FAILURE_SCHOLARSHIP;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
         response.put("message", status);
         return response;
     }
@@ -134,15 +130,16 @@ public class ScholarshipService implements IScholarshipService {
         try {
             Scholarship scholarshiyById = iScholarshipDAO.findById(id);
             if (scholarshiyById != null) {
-
                 iScholarshipDAO.updateScholarship(scholarshiyById, scholarshipDto);
+                response.put("status", HttpStatus.OK.value());
             } else {
                 status = IConstant.UPDATE_FAILURE_ID_NOT_FOUND_SCHOLARSHIP;
+                response.put("status", HttpStatus.NOT_FOUND.value());
             }
         } catch (Exception exception) {
             status = IConstant.UPDATE_FAILURE_SCHOLARSHIP;
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
         response.put("message", status);
         return response;
     }
@@ -150,7 +147,6 @@ public class ScholarshipService implements IScholarshipService {
     @Override
     public Map<String, Object> getAllScholarship(Integer pageNumber, Integer pageSize) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<Scholarship> scholarshipList = new ArrayList<>();
         int totalCount = 0;
         PaginationUtilDto paginationUtilDto = null;
@@ -161,12 +157,18 @@ public class ScholarshipService implements IScholarshipService {
             for (Scholarship scholarship : scholarships) {
                 scholarshipList.add(getScholarship(scholarship));
             }
+            if (scholarships != null && !scholarships.isEmpty()) {
+                response.put("message", "Scholarship fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", "Scholarship not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
-        response.put("Scholarships", scholarshipList);
+        response.put("data", scholarshipList);
         response.put("totalCount", totalCount);
         response.put("pageNumber", paginationUtilDto.getPageNumber());
         response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
@@ -210,5 +212,4 @@ public class ScholarshipService implements IScholarshipService {
     public List<ScholarshipDto> getScholarshipBySearchKey(String searchKey) {
         return iScholarshipDAO.getScholarshipBySearchKey(searchKey);
     }
-
 }

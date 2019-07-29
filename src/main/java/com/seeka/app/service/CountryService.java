@@ -98,11 +98,12 @@ public class CountryService implements ICountryService {
             exception.printStackTrace();
         }
         if (status) {
-            response.put("status", IConstant.SUCCESS_CODE);
+            response.put("status", HttpStatus.OK.value());
             response.put("message", IConstant.COUNTRY_SUCCESS_MESSAGE);
         } else {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.put("message", IConstant.FAIL);
+            ;
+            response.put("message", IConstant.SQL_ERROR);
         }
         return response;
     }
@@ -110,16 +111,21 @@ public class CountryService implements ICountryService {
     @Override
     public Map<String, Object> getAllDiscoverCountry() {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<DiscoverCountryDto> discoverCountryDtos = new ArrayList<DiscoverCountryDto>();
         try {
             discoverCountryDtos = countryDAO.getDiscoverCountry();
+            if (discoverCountryDtos != null && !discoverCountryDtos.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.DISCOVER_GET_COUNTRY_SUCCESS);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.DISCOVER_COUNTRY_NOT_FOUND);
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 200);
-        response.put("message", status);
-        response.put("countries", discoverCountryDtos);
+        response.put("data", discoverCountryDtos);
         return response;
     }
 }

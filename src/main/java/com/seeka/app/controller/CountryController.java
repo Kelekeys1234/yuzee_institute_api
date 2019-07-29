@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,11 +19,11 @@ import com.seeka.app.bean.Country;
 import com.seeka.app.bean.CountryEnglishEligibility;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CountryRequestDto;
-import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.jobs.CountryUtil;
 import com.seeka.app.service.ICountryEnglishEligibilityService;
 import com.seeka.app.service.ICountryService;
+import com.seeka.app.util.IConstant;
 
 @RestController
 @RequestMapping("/country")
@@ -37,61 +38,105 @@ public class CountryController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getAll() {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<CountryDto> countryList = countryService.getAllCountries();
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("list", countryList);
+        List<CountryDto> countryList = null;
+        try {
+            countryList = countryService.getAllCountries();
+            if (countryList != null && !countryList.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.COUNTRY_GET_SUCCESS);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.COUNTRY_GET_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        response.put("data", countryList);
         return ResponseEntity.accepted().body(response);
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCountry() {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<CountryDto> countryList = countryService.getAllCountryName();
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("list", countryList);
+        List<CountryDto> countryList = null;
+        try {
+            countryList = countryService.getAllCountryName();
+            if (countryList != null && !countryList.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.COUNTRY_GET_SUCCESS);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.COUNTRY_GET_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        response.put("data", countryList);
         return ResponseEntity.accepted().body(response);
     }
 
     @RequestMapping(value = "/country/cities", method = RequestMethod.GET)
     public ResponseEntity<?> getWithCities() {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<CountryDto> countryList = countryService.getAllCountryWithCities();
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("list", countryList);
+        List<CountryDto> countryList = null;
+        try {
+            countryList = countryService.getAllCountryWithCities();
+            if (countryList != null && !countryList.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.COUNTRY_GET_SUCCESS);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.COUNTRY_GET_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        response.put("data", countryList);
         return ResponseEntity.accepted().body(response);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> get(@PathVariable BigInteger id) throws Exception {
-        ErrorDto errorDto = null;
         Map<String, Object> response = new HashMap<String, Object>();
-        System.out.println("id : " + id);
-        Country countryObj = countryService.get(id);
-        // image url, media, international health cover data isn't there in above API
-        if (null == countryObj) {
-            errorDto = new ErrorDto();
-            errorDto.setCode("400");
-            errorDto.setMessage("Country Not Found.!");
-            response.put("status", 0);
-            response.put("error", errorDto);
-            return ResponseEntity.badRequest().body(response);
+        Country countryObj = null;
+        try {
+            countryObj = countryService.get(id);
+            if (countryObj != null) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.COUNTRY_GET_SUCCESS);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.COUNTRY_GET_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
         }
-        response.put("status", 1);
-        response.put("message", "Success");
-        response.put("countryObj", countryObj);
+        response.put("data", countryObj);
         return ResponseEntity.accepted().body(response);
     }
 
     @RequestMapping(value = "/country/institute", method = RequestMethod.GET)
     public ResponseEntity<?> getAllUniversityCountries() {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<CountryDto> countryList = CountryUtil.getUnivCountryList();
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("countryList", countryList);
+        List<CountryDto> countryList = null;
+        try {
+            countryList = CountryUtil.getUnivCountryList();
+            if (countryList != null && !countryList.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.COUNTRY_GET_SUCCESS);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.COUNTRY_GET_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        response.put("data", countryList);
         return ResponseEntity.accepted().body(response);
     }
 

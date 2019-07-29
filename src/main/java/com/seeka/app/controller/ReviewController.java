@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,7 +97,7 @@ public class ReviewController {
         } else {
             showMore = false;
         }
-        response.put("status", 1);
+        response.put("status", HttpStatus.OK.value());
         response.put("message", "Success.!");
         response.put("paginationObj", new PaginationDto(totalCount, showMore));
         response.put("reviewMasterObj", overAllReviewObj);
@@ -120,7 +121,7 @@ public class ReviewController {
         request.setCreatedOn(new Date());
         request.setIsActive(true);
         userInstCourseReviewService.save(request);
-        response.put("status", 1);
+        response.put("status", HttpStatus.OK.value());
         response.put("message", "Success.!");
         return ResponseEntity.accepted().body(response);
     }

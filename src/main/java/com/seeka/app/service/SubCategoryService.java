@@ -59,11 +59,11 @@ public class SubCategoryService implements ISubCategoryService {
             subCategory.setIsDeleted(true);
             status = subCategoryDAO.saveSubCategory(subCategory);
             if (status) {
-                response.put("status", IConstant.SUCCESS_CODE);
-                response.put("message", IConstant.SUCCESS_MESSAGE);
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Sub category added successfully");
             } else {
                 response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-                response.put("message", IConstant.SUB_CATEGORY_ERROR);
+                response.put("message", IConstant.SQL_ERROR);
             }
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());

@@ -32,7 +32,7 @@ public class Level implements Serializable {
 	private static final long serialVersionUID = 9149617652748065109L;
 	private BigInteger id;
 	private String name;
-	private String levelKey;
+	private String code;
 	private String description;
 	private Boolean isActive;
 	private Date createdOn;
@@ -49,10 +49,10 @@ public class Level implements Serializable {
 	public Level() {
 	}
 
-	public Level(String name, String levelKey, String description, Boolean isActive, Date createdOn, Date updatedOn,
+	public Level(String name, String code, String description, Boolean isActive, Date createdOn, Date updatedOn,
 			Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
 		this.name = name;
-		this.levelKey = levelKey;
+		this.code = code;
 		this.description = description;
 		this.isActive = isActive;
 		this.createdOn = createdOn;
@@ -83,13 +83,13 @@ public class Level implements Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "level_key", length = 45)
-	public String getLevelKey() {
-		return this.levelKey;
+	@Column(name = "code", length = 45)
+	public String getCode() {
+		return this.code;
 	}
 
-	public void setLevelKey(String levelKey) {
-		this.levelKey = levelKey;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	@Column(name = "description", length = 500)
@@ -215,7 +215,7 @@ public class Level implements Serializable {
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
 		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
-		result = prime * result + ((levelKey == null) ? 0 : levelKey.hashCode());
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
 		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
@@ -281,10 +281,10 @@ public class Level implements Serializable {
 				return false;
 		} else if (!isDeleted.equals(other.isDeleted))
 			return false;
-		if (levelKey == null) {
-			if (other.levelKey != null)
+		if (code == null) {
+			if (other.code != null)
 				return false;
-		} else if (!levelKey.equals(other.levelKey))
+		} else if (!code.equals(other.code))
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -307,7 +307,7 @@ public class Level implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Level [id=").append(id).append(", name=").append(name).append(", levelKey=").append(levelKey)
+		builder.append("Level [id=").append(id).append(", name=").append(name).append(", code=").append(code)
 				.append(", description=").append(description).append(", isActive=").append(isActive)
 				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
 				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)

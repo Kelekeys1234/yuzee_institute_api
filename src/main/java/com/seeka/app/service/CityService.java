@@ -99,11 +99,11 @@ public class CityService implements ICityService {
             exception.printStackTrace();
         }
         if (status) {
-            response.put("status", IConstant.SUCCESS_CODE);
+            response.put("status", HttpStatus.OK.value());
             response.put("message", IConstant.CITY_SUCCESS_MESSAGE);
         } else {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.put("message", IConstant.FAIL);
+            response.put("message", IConstant.SQL_ERROR);
         }
         return response;
     }

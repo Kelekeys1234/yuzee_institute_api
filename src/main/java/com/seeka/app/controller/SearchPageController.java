@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +67,7 @@ public class SearchPageController {
         response.put("countryList", countryList);
         response.put("levelList", levelList);
         response.put("recommendedInstList", recommendedInstList);
-        response.put("status", 1);
+        response.put("status", HttpStatus.OK.value());
         response.put("message", "Success.!");
         long duration = new Date().getTime() - now.getTime();
         long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);

@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,6 @@ import com.seeka.app.dto.UserCountryHobbiesDto;
 import com.seeka.app.dto.UserHobbies;
 import com.seeka.app.dto.UserInterest;
 import com.seeka.app.util.DateUtil;
-import com.seeka.app.util.IConstant;
 
 @Service
 @Transactional
@@ -65,23 +65,27 @@ public class HobbyService implements IHobbyService {
     @Override
     public Map<String, Object> getHobbies() {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
-        List<Hobbies> courses = new ArrayList<Hobbies>();
+        List<Hobbies> hobbies = new ArrayList<Hobbies>();
         try {
-            courses = dao.getAll();
+            hobbies = dao.getAll();
+            if (hobbies != null && !hobbies.isEmpty()) {
+                response.put("message", "Hobbies fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", "Hobbies not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
-        response.put("hobbies", courses);
+        response.put("data", hobbies);
         return response;
     }
 
     @Override
     public Map<String, Object> addUserHobbies(@Valid UserHobbies userHobbies) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         try {
             for (BigInteger id : userHobbies.getHobbies()) {
                 UserInterestHobbies interestHobbies = new UserInterestHobbies();
@@ -92,97 +96,117 @@ public class HobbyService implements IHobbyService {
                 interestHobbies.setUpdatedBy("API");
                 interestHobbies.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
                 userHobbyDao.save(interestHobbies);
+                response.put("message", "Hobbies fetched successfully");
+                response.put("status", HttpStatus.OK.value());
             }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
         return response;
     }
 
     @Override
     public Map<String, Object> getUserHobbies(BigInteger userId) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<Hobbies> hobbies = new ArrayList<Hobbies>();
         try {
             hobbies = userHobbyDao.getUserHobbies(userId);
+            if (hobbies != null && !hobbies.isEmpty()) {
+                response.put("message", "Hobbies fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", "Hobbies not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
-        response.put("hobbies", hobbies);
+        response.put("data", hobbies);
         return response;
     }
 
     @Override
     public Map<String, Object> searchHobbies(String searchText) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<Hobbies> hobbies = new ArrayList<Hobbies>();
         try {
             hobbies = dao.searchHobbies(searchText);
+            if (hobbies != null && !hobbies.isEmpty()) {
+                response.put("message", "Hobbies fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", "Hobbies not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
-        response.put("hobbies", hobbies);
+        response.put("data", hobbies);
         return response;
     }
 
     @Override
     public Map<String, Object> deleteUserHobbies(BigInteger userId, BigInteger hobbyId) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         try {
             userHobbyDao.deleteUserHobbies(userId, hobbyId);
+            response.put("message", "Hobbies deleted successfully");
+            response.put("status", HttpStatus.OK.value());
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
         return response;
     }
 
     @Override
     public Map<String, Object> getInterest() {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<Interest> interest = new ArrayList<Interest>();
         try {
             interest = interestDao.getAll();
+            if (interest != null && !interest.isEmpty()) {
+                response.put("message", "Interest fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", "Interest not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
-        response.put("interest", interest);
+        response.put("data", interest);
         return response;
     }
 
     @Override
     public Map<String, Object> searchInterest(String searchText) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<Interest> interest = new ArrayList<Interest>();
         try {
             interest = interestDao.searchInterest(searchText);
+            if (interest != null && !interest.isEmpty()) {
+                response.put("message", "Interest fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", "Interest not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
-        response.put("interests", interest);
+        response.put("data", interest);
         return response;
     }
 
     @Override
     public Map<String, Object> addUserInterest(@Valid UserInterest userInterest) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         try {
             for (BigInteger id : userInterest.getInterest()) {
                 com.seeka.app.bean.UserInterest interestHobbies = new com.seeka.app.bean.UserInterest();
@@ -193,49 +217,54 @@ public class HobbyService implements IHobbyService {
                 interestHobbies.setUpdatedBy("API");
                 interestHobbies.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
                 userInterestDao.save(interestHobbies);
+                response.put("message", "Interest added successfully");
+                response.put("status", HttpStatus.OK.value());
             }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
         return response;
     }
 
     @Override
     public Map<String, Object> getUserInterest(BigInteger userId) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<Interest> interests = new ArrayList<Interest>();
         try {
             interests = userInterestDao.getUserInterest(userId);
+            if (interests != null && !interests.isEmpty()) {
+                response.put("message", "Interest fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", "Interest not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
-        response.put("interests", interests);
+        response.put("data", interests);
         return response;
     }
 
     @Override
     public Map<String, Object> deleteUserInterest(BigInteger userId, BigInteger interestId) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         try {
             userInterestDao.deleteUserInterest(userId, interestId);
+            response.put("message", "Interest deleted successfully");
+            response.put("status", HttpStatus.OK.value());
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
         return response;
     }
 
     @Override
     public Map<String, Object> addCountryHobbies(@Valid UserCountryHobbiesDto userHountryHobbies) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         try {
             if (userHountryHobbies.getHobbies() != null && !userHountryHobbies.getHobbies().isEmpty()) {
                 userHobbyDao.deleteUserAllHobbies(userHountryHobbies.getUserId());
@@ -263,28 +292,28 @@ public class HobbyService implements IHobbyService {
                 userBiginterestCountry.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
                 userHobbyDao.saveUserCountry(userBiginterestCountry);
             }
+            response.put("message", "Interest added successfully");
+            response.put("status", HttpStatus.OK.value());
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
         return response;
     }
 
     @Override
     public Map<String, Object> getUserHobbiesAndCountry(BigInteger userId) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<Hobbies> hobbies = new ArrayList<Hobbies>();
         List<String> countries = new ArrayList<String>();
         try {
             hobbies = userHobbyDao.getUserHobbies(userId);
             countries = userHobbyDao.getCountryByUserId(userId);
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            exception.printStackTrace();
         }
-        response.put("status", 1);
-        response.put("message", status);
+        response.put("message", "Interest fatched successfully");
+        response.put("status", HttpStatus.OK.value());
         response.put("hobbies", hobbies);
         response.put("countries", countries);
         return response;
@@ -293,7 +322,6 @@ public class HobbyService implements IHobbyService {
     @Override
     public Map<String, Object> deleteInterest(BigInteger userId, BigInteger hobbyId, String countryId) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         try {
             if (hobbyId != null) {
                 userHobbyDao.deleteUserHobbies(userId, hobbyId);
@@ -302,10 +330,10 @@ public class HobbyService implements IHobbyService {
                 userHobbyDao.deleteUserCountry(userId, countryId);
             }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            exception.printStackTrace();
         }
-        response.put("status", 1);
-        response.put("message", status);
+        response.put("message", "Interest deleted successfully");
+        response.put("status", HttpStatus.OK.value());
         return response;
     }
 }

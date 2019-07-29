@@ -1,9 +1,9 @@
-package com.seeka.app.controller;import java.math.BigInteger;
+package com.seeka.app.controller;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,13 +34,13 @@ public class CategoryController {
         Map<String, Object> response = new HashMap<String, Object>();
         List<CategoryDto> categoryDtos = categoryService.getAllCategories();
         if (categoryDtos != null && !categoryDtos.isEmpty()) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", IConstant.CATEGORY_GET_SUCCESS);
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.CATEGORY_NOT_FOUND);
         }
-        response.put("categories", categoryDtos);
+        response.put("data", categoryDtos);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -51,13 +51,13 @@ public class CategoryController {
         Map<String, Object> response = new HashMap<String, Object>();
         CategoryDto categoryDto = categoryService.getCategoryById(id);
         if (categoryDto != null) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", IConstant.CATEGORY_GET_SUCCESS);
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.CATEGORY_NOT_FOUND);
         }
-        response.put("category", categoryDto);
+        response.put("data", categoryDto);
         return ResponseEntity.accepted().body(response);
     }
 
@@ -71,8 +71,8 @@ public class CategoryController {
         Map<String, Object> response = new HashMap<String, Object>();
         boolean status = categoryService.deleteCategory(id);
         if (status) {
-            response.put("status", IConstant.SUCCESS_CODE);
-            response.put("message", IConstant.SUCCESS_MESSAGE);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", IConstant.CATEGORY_DELETE_SUCCESS);
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());
             response.put("message", IConstant.CATEGORY_NOT_FOUND);

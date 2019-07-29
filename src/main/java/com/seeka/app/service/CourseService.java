@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,7 +125,6 @@ public class CourseService implements ICourseService {
     @Override
     public Map<String, Object> save(@Valid CourseRequest courseDto) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         try {
             Course course = new Course();
             course.setInstitute(getInstititute(courseDto.getInstituteId()));
@@ -162,11 +162,12 @@ public class CourseService implements ICourseService {
             if (courseDto.getEnglishEligibility() != null) {
                 courseEnglishEligibilityDAO.save(courseDto.getEnglishEligibility());
             }
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", IConstant.COURSE_ADD_SUCCESS);
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
         return response;
     }
 
@@ -205,7 +206,6 @@ public class CourseService implements ICourseService {
     @Override
     public Map<String, Object> getAllCourse(Integer pageNumber, Integer pageSize) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<CourseRequest> courses = new ArrayList<CourseRequest>();
         int totalCount = 0;
         PaginationUtilDto paginationUtilDto = null;
@@ -213,24 +213,29 @@ public class CourseService implements ICourseService {
             totalCount = iCourseDAO.findTotalCount();
             paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
             courses = iCourseDAO.getAll(pageNumber, pageSize);
+            if (courses != null && !courses.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
+                response.put("courses", courses);
+                response.put("totalCount", totalCount);
+                response.put("pageNumber", paginationUtilDto.getPageNumber());
+                response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+                response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+                response.put("totalPages", paginationUtilDto.getTotalPages());
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.COURSE_GET_NOT_FOUND);
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
-        response.put("courses", courses);
-        response.put("totalCount", totalCount);
-        response.put("pageNumber", paginationUtilDto.getPageNumber());
-        response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-        response.put("hasNextPage", paginationUtilDto.isHasNextPage());
-        response.put("totalPages", paginationUtilDto.getTotalPages());
         return response;
     }
 
     @Override
     public Map<String, Object> deleteCourse(@Valid BigInteger courseId) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         try {
             Course course = iCourseDAO.get(courseId);
             if (course != null) {
@@ -239,12 +244,16 @@ public class CourseService implements ICourseService {
                 course.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
                 course.setIsDeleted(true);
                 iCourseDAO.update(course);
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.COURSE_DELETED_SUCCESS);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.COURSE_GET_NOT_FOUND);
             }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
         return response;
     }
 
