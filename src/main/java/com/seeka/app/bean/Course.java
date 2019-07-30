@@ -28,7 +28,7 @@ import javax.persistence.TemporalType;
 public class Course implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 8492390790670110780L;
 	private BigInteger id;
@@ -57,16 +57,15 @@ public class Course implements Serializable {
 	private String updatedBy;
 	private Boolean isDeleted;
 	private Integer cId;
-	private String levelCode;
+	private Level level;
 
 	public Course() {
 	}
 
-	public Course(City city, Country country, Faculty faculty, Institute institute, String name, String worldRanking,
-			String stars, String recognition, String recognitionType, String duration, String durationTime,
-			String website, String courseLang, String abbreviation, Date recDate, String remarks, String description,
-			Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy,
-			Boolean isDeleted) {
+	public Course(final City city, final Country country, final Faculty faculty, final Institute institute, final String name, final String worldRanking,
+			final String stars, final String recognition, final String recognitionType, final String duration, final String durationTime, final String website,
+			final String courseLang, final String abbreviation, final Date recDate, final String remarks, final String description, final Boolean isActive,
+			final Date createdOn, final Date updatedOn, final Date deletedOn, final String createdBy, final String updatedBy, final Boolean isDeleted) {
 		this.city = city;
 		this.country = country;
 		this.faculty = faculty;
@@ -100,7 +99,7 @@ public class Course implements Serializable {
 		return this.id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(final BigInteger id) {
 		this.id = id;
 	}
 
@@ -110,7 +109,7 @@ public class Course implements Serializable {
 		return this.city;
 	}
 
-	public void setCity(City city) {
+	public void setCity(final City city) {
 		this.city = city;
 	}
 
@@ -120,7 +119,7 @@ public class Course implements Serializable {
 		return this.country;
 	}
 
-	public void setCountry(Country country) {
+	public void setCountry(final Country country) {
 		this.country = country;
 	}
 
@@ -130,7 +129,7 @@ public class Course implements Serializable {
 		return this.faculty;
 	}
 
-	public void setFaculty(Faculty faculty) {
+	public void setFaculty(final Faculty faculty) {
 		this.faculty = faculty;
 	}
 
@@ -140,7 +139,7 @@ public class Course implements Serializable {
 		return this.institute;
 	}
 
-	public void setInstitute(Institute institute) {
+	public void setInstitute(final Institute institute) {
 		this.institute = institute;
 	}
 
@@ -149,7 +148,7 @@ public class Course implements Serializable {
 		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -158,7 +157,7 @@ public class Course implements Serializable {
 		return this.worldRanking;
 	}
 
-	public void setWorldRanking(String worldRanking) {
+	public void setWorldRanking(final String worldRanking) {
 		this.worldRanking = worldRanking;
 	}
 
@@ -167,7 +166,7 @@ public class Course implements Serializable {
 		return this.stars;
 	}
 
-	public void setStars(String stars) {
+	public void setStars(final String stars) {
 		this.stars = stars;
 	}
 
@@ -176,7 +175,7 @@ public class Course implements Serializable {
 		return this.recognition;
 	}
 
-	public void setRecognition(String recognition) {
+	public void setRecognition(final String recognition) {
 		this.recognition = recognition;
 	}
 
@@ -185,7 +184,7 @@ public class Course implements Serializable {
 		return this.recognitionType;
 	}
 
-	public void setRecognitionType(String recognitionType) {
+	public void setRecognitionType(final String recognitionType) {
 		this.recognitionType = recognitionType;
 	}
 
@@ -194,7 +193,7 @@ public class Course implements Serializable {
 		return this.duration;
 	}
 
-	public void setDuration(String duration) {
+	public void setDuration(final String duration) {
 		this.duration = duration;
 	}
 
@@ -203,7 +202,7 @@ public class Course implements Serializable {
 		return this.durationTime;
 	}
 
-	public void setDurationTime(String durationTime) {
+	public void setDurationTime(final String durationTime) {
 		this.durationTime = durationTime;
 	}
 
@@ -212,7 +211,7 @@ public class Course implements Serializable {
 		return this.website;
 	}
 
-	public void setWebsite(String website) {
+	public void setWebsite(final String website) {
 		this.website = website;
 	}
 
@@ -221,7 +220,7 @@ public class Course implements Serializable {
 		return this.courseLang;
 	}
 
-	public void setCourseLang(String courseLang) {
+	public void setCourseLang(final String courseLang) {
 		this.courseLang = courseLang;
 	}
 
@@ -230,7 +229,7 @@ public class Course implements Serializable {
 		return this.abbreviation;
 	}
 
-	public void setAbbreviation(String abbreviation) {
+	public void setAbbreviation(final String abbreviation) {
 		this.abbreviation = abbreviation;
 	}
 
@@ -240,7 +239,7 @@ public class Course implements Serializable {
 		return this.recDate;
 	}
 
-	public void setRecDate(Date recDate) {
+	public void setRecDate(final Date recDate) {
 		this.recDate = recDate;
 	}
 
@@ -249,7 +248,7 @@ public class Course implements Serializable {
 		return this.remarks;
 	}
 
-	public void setRemarks(String remarks) {
+	public void setRemarks(final String remarks) {
 		this.remarks = remarks;
 	}
 
@@ -258,7 +257,7 @@ public class Course implements Serializable {
 		return this.description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -267,7 +266,7 @@ public class Course implements Serializable {
 		return this.isActive;
 	}
 
-	public void setIsActive(Boolean isActive) {
+	public void setIsActive(final Boolean isActive) {
 		this.isActive = isActive;
 	}
 
@@ -277,7 +276,7 @@ public class Course implements Serializable {
 		return this.createdOn;
 	}
 
-	public void setCreatedOn(Date createdOn) {
+	public void setCreatedOn(final Date createdOn) {
 		this.createdOn = createdOn;
 	}
 
@@ -287,7 +286,7 @@ public class Course implements Serializable {
 		return this.updatedOn;
 	}
 
-	public void setUpdatedOn(Date updatedOn) {
+	public void setUpdatedOn(final Date updatedOn) {
 		this.updatedOn = updatedOn;
 	}
 
@@ -297,7 +296,7 @@ public class Course implements Serializable {
 		return this.deletedOn;
 	}
 
-	public void setDeletedOn(Date deletedOn) {
+	public void setDeletedOn(final Date deletedOn) {
 		this.deletedOn = deletedOn;
 	}
 
@@ -306,7 +305,7 @@ public class Course implements Serializable {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(final String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -315,7 +314,7 @@ public class Course implements Serializable {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(String updatedBy) {
+	public void setUpdatedBy(final String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
@@ -324,234 +323,290 @@ public class Course implements Serializable {
 		return this.isDeleted;
 	}
 
-	public void setIsDeleted(Boolean isDeleted) {
+	public void setIsDeleted(final Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((abbreviation == null) ? 0 : abbreviation.hashCode());
-		result = prime * result + ((city == null) ? 0 : city.hashCode());
-		result = prime * result + ((country == null) ? 0 : country.hashCode());
-		result = prime * result + ((courseLang == null) ? 0 : courseLang.hashCode());
-		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
-		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
-		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((duration == null) ? 0 : duration.hashCode());
-		result = prime * result + ((durationTime == null) ? 0 : durationTime.hashCode());
-		result = prime * result + ((faculty == null) ? 0 : faculty.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((institute == null) ? 0 : institute.hashCode());
-		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
-		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((recDate == null) ? 0 : recDate.hashCode());
-		result = prime * result + ((recognition == null) ? 0 : recognition.hashCode());
-		result = prime * result + ((recognitionType == null) ? 0 : recognitionType.hashCode());
-		result = prime * result + ((remarks == null) ? 0 : remarks.hashCode());
-		result = prime * result + ((stars == null) ? 0 : stars.hashCode());
-		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
-		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
-		result = prime * result + ((website == null) ? 0 : website.hashCode());
-		result = prime * result + ((worldRanking == null) ? 0 : worldRanking.hashCode());
+		result = prime * result + (abbreviation == null ? 0 : abbreviation.hashCode());
+		result = prime * result + (cId == null ? 0 : cId.hashCode());
+		result = prime * result + (city == null ? 0 : city.hashCode());
+		result = prime * result + (country == null ? 0 : country.hashCode());
+		result = prime * result + (courseLang == null ? 0 : courseLang.hashCode());
+		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
+		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
+		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
+		result = prime * result + (description == null ? 0 : description.hashCode());
+		result = prime * result + (duration == null ? 0 : duration.hashCode());
+		result = prime * result + (durationTime == null ? 0 : durationTime.hashCode());
+		result = prime * result + (faculty == null ? 0 : faculty.hashCode());
+		result = prime * result + (id == null ? 0 : id.hashCode());
+		result = prime * result + (institute == null ? 0 : institute.hashCode());
+		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
+		result = prime * result + (isDeleted == null ? 0 : isDeleted.hashCode());
+		result = prime * result + (level == null ? 0 : level.hashCode());
+		result = prime * result + (name == null ? 0 : name.hashCode());
+		result = prime * result + (recDate == null ? 0 : recDate.hashCode());
+		result = prime * result + (recognition == null ? 0 : recognition.hashCode());
+		result = prime * result + (recognitionType == null ? 0 : recognitionType.hashCode());
+		result = prime * result + (remarks == null ? 0 : remarks.hashCode());
+		result = prime * result + (stars == null ? 0 : stars.hashCode());
+		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
+		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
+		result = prime * result + (website == null ? 0 : website.hashCode());
+		result = prime * result + (worldRanking == null ? 0 : worldRanking.hashCode());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Course other = (Course) obj;
 		if (abbreviation == null) {
-			if (other.abbreviation != null)
+			if (other.abbreviation != null) {
 				return false;
-		} else if (!abbreviation.equals(other.abbreviation))
+			}
+		} else if (!abbreviation.equals(other.abbreviation)) {
 			return false;
+		}
+		if (cId == null) {
+			if (other.cId != null) {
+				return false;
+			}
+		} else if (!cId.equals(other.cId)) {
+			return false;
+		}
 		if (city == null) {
-			if (other.city != null)
+			if (other.city != null) {
 				return false;
-		} else if (!city.equals(other.city))
+			}
+		} else if (!city.equals(other.city)) {
 			return false;
+		}
 		if (country == null) {
-			if (other.country != null)
+			if (other.country != null) {
 				return false;
-		} else if (!country.equals(other.country))
+			}
+		} else if (!country.equals(other.country)) {
 			return false;
+		}
 		if (courseLang == null) {
-			if (other.courseLang != null)
+			if (other.courseLang != null) {
 				return false;
-		} else if (!courseLang.equals(other.courseLang))
+			}
+		} else if (!courseLang.equals(other.courseLang)) {
 			return false;
+		}
 		if (createdBy == null) {
-			if (other.createdBy != null)
+			if (other.createdBy != null) {
 				return false;
-		} else if (!createdBy.equals(other.createdBy))
+			}
+		} else if (!createdBy.equals(other.createdBy)) {
 			return false;
+		}
 		if (createdOn == null) {
-			if (other.createdOn != null)
+			if (other.createdOn != null) {
 				return false;
-		} else if (!createdOn.equals(other.createdOn))
+			}
+		} else if (!createdOn.equals(other.createdOn)) {
 			return false;
+		}
 		if (deletedOn == null) {
-			if (other.deletedOn != null)
+			if (other.deletedOn != null) {
 				return false;
-		} else if (!deletedOn.equals(other.deletedOn))
+			}
+		} else if (!deletedOn.equals(other.deletedOn)) {
 			return false;
+		}
 		if (description == null) {
-			if (other.description != null)
+			if (other.description != null) {
 				return false;
-		} else if (!description.equals(other.description))
+			}
+		} else if (!description.equals(other.description)) {
 			return false;
+		}
 		if (duration == null) {
-			if (other.duration != null)
+			if (other.duration != null) {
 				return false;
-		} else if (!duration.equals(other.duration))
+			}
+		} else if (!duration.equals(other.duration)) {
 			return false;
+		}
 		if (durationTime == null) {
-			if (other.durationTime != null)
+			if (other.durationTime != null) {
 				return false;
-		} else if (!durationTime.equals(other.durationTime))
+			}
+		} else if (!durationTime.equals(other.durationTime)) {
 			return false;
+		}
 		if (faculty == null) {
-			if (other.faculty != null)
+			if (other.faculty != null) {
 				return false;
-		} else if (!faculty.equals(other.faculty))
+			}
+		} else if (!faculty.equals(other.faculty)) {
 			return false;
+		}
 		if (id == null) {
-			if (other.id != null)
+			if (other.id != null) {
 				return false;
-		} else if (!id.equals(other.id))
+			}
+		} else if (!id.equals(other.id)) {
 			return false;
+		}
 		if (institute == null) {
-			if (other.institute != null)
+			if (other.institute != null) {
 				return false;
-		} else if (!institute.equals(other.institute))
+			}
+		} else if (!institute.equals(other.institute)) {
 			return false;
+		}
 		if (isActive == null) {
-			if (other.isActive != null)
+			if (other.isActive != null) {
 				return false;
-		} else if (!isActive.equals(other.isActive))
+			}
+		} else if (!isActive.equals(other.isActive)) {
 			return false;
+		}
 		if (isDeleted == null) {
-			if (other.isDeleted != null)
+			if (other.isDeleted != null) {
 				return false;
-		} else if (!isDeleted.equals(other.isDeleted))
+			}
+		} else if (!isDeleted.equals(other.isDeleted)) {
 			return false;
+		}
+		if (level == null) {
+			if (other.level != null) {
+				return false;
+			}
+		} else if (!level.equals(other.level)) {
+			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		if (recDate == null) {
-			if (other.recDate != null)
+			if (other.recDate != null) {
 				return false;
-		} else if (!recDate.equals(other.recDate))
+			}
+		} else if (!recDate.equals(other.recDate)) {
 			return false;
+		}
 		if (recognition == null) {
-			if (other.recognition != null)
+			if (other.recognition != null) {
 				return false;
-		} else if (!recognition.equals(other.recognition))
+			}
+		} else if (!recognition.equals(other.recognition)) {
 			return false;
+		}
 		if (recognitionType == null) {
-			if (other.recognitionType != null)
+			if (other.recognitionType != null) {
 				return false;
-		} else if (!recognitionType.equals(other.recognitionType))
+			}
+		} else if (!recognitionType.equals(other.recognitionType)) {
 			return false;
+		}
 		if (remarks == null) {
-			if (other.remarks != null)
+			if (other.remarks != null) {
 				return false;
-		} else if (!remarks.equals(other.remarks))
+			}
+		} else if (!remarks.equals(other.remarks)) {
 			return false;
+		}
 		if (stars == null) {
-			if (other.stars != null)
+			if (other.stars != null) {
 				return false;
-		} else if (!stars.equals(other.stars))
+			}
+		} else if (!stars.equals(other.stars)) {
 			return false;
+		}
 		if (updatedBy == null) {
-			if (other.updatedBy != null)
+			if (other.updatedBy != null) {
 				return false;
-		} else if (!updatedBy.equals(other.updatedBy))
+			}
+		} else if (!updatedBy.equals(other.updatedBy)) {
 			return false;
+		}
 		if (updatedOn == null) {
-			if (other.updatedOn != null)
+			if (other.updatedOn != null) {
 				return false;
-		} else if (!updatedOn.equals(other.updatedOn))
+			}
+		} else if (!updatedOn.equals(other.updatedOn)) {
 			return false;
+		}
 		if (website == null) {
-			if (other.website != null)
+			if (other.website != null) {
 				return false;
-		} else if (!website.equals(other.website))
+			}
+		} else if (!website.equals(other.website)) {
 			return false;
+		}
 		if (worldRanking == null) {
-			if (other.worldRanking != null)
+			if (other.worldRanking != null) {
 				return false;
-		} else if (!worldRanking.equals(other.worldRanking))
+			}
+		} else if (!worldRanking.equals(other.worldRanking)) {
 			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Course [id=").append(id).append(", city=").append(city).append(", country=").append(country)
-				.append(", faculty=").append(faculty).append(", institute=").append(institute).append(", name=")
-				.append(name).append(", worldRanking=").append(worldRanking).append(", stars=").append(stars)
-				.append(", recognition=").append(recognition).append(", recognitionType=").append(recognitionType)
-				.append(", duration=").append(duration).append(", durationTime=").append(durationTime)
-				.append(", website=").append(website).append(", courseLang=").append(courseLang)
-				.append(", abbreviation=").append(abbreviation).append(", recDate=").append(recDate)
-				.append(", remarks=").append(remarks).append(", description=").append(description).append(", isActive=")
-				.append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
-				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
-				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
+		builder.append("Course [id=").append(id).append(", city=").append(city).append(", country=").append(country).append(", faculty=").append(faculty)
+				.append(", institute=").append(institute).append(", name=").append(name).append(", worldRanking=").append(worldRanking).append(", stars=")
+				.append(stars).append(", recognition=").append(recognition).append(", recognitionType=").append(recognitionType).append(", duration=")
+				.append(duration).append(", durationTime=").append(durationTime).append(", website=").append(website).append(", courseLang=").append(courseLang)
+				.append(", abbreviation=").append(abbreviation).append(", recDate=").append(recDate).append(", remarks=").append(remarks)
+				.append(", description=").append(description).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
+				.append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
+				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", cId=").append(cId).append(", level=").append(level)
+				.append("]");
 		return builder.toString();
 	}
 
-    /**
-     * @return the cId
-     */
+	/**
+	 * @return the cId
+	 */
 	@Column(name = "c_id")
-    public Integer getcId() {
-        return cId;
-    }
+	public Integer getcId() {
+		return cId;
+	}
 
-    /**
-     * @param cId the cId to set
-     */
-    public void setcId(Integer cId) {
-        this.cId = cId;
-    }
+	/**
+	 * @param cId the cId to set
+	 */
+	public void setcId(final Integer cId) {
+		this.cId = cId;
+	}
 
-    /**
-     * @return the levelCode
-     */
-    @Column(name = "level_code")
-    public String getLevelCode() {
-        return levelCode;
-    }
+	/**
+	 * @return the levelCode
+	 */
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "level_id")
 
-    /**
-     * @param levelCode the levelCode to set
-     */
-    public void setLevelCode(String levelCode) {
-        this.levelCode = levelCode;
-    }
+	public Level getLevel() {
+		return level;
+	}
+
+	public void setLevel(final Level level) {
+		this.level = level;
+	}
 
 }
