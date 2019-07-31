@@ -45,4 +45,8 @@ public interface ICourseService {
     public Map<String, Object> addUserCourses(@Valid UserCourse userCourse);
 
     public Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize);
+
+    public Map<String, Object> addUserCompareCourse(@Valid UserCourse userCourse);
+
+    public Map<String, Object> getUserCompareCourse(BigInteger userId);
 }

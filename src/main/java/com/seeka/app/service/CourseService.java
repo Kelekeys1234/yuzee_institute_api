@@ -2,6 +2,7 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.UserCompareCourse;
+import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
@@ -34,6 +37,7 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -260,7 +264,6 @@ public class CourseService implements ICourseService {
     @Override
     public Map<String, Object> searchCourseBasedOnFilter(BigInteger countryId, BigInteger instituteId, BigInteger facultyId, String name, String languauge) {
         Map<String, Object> response = new HashMap<String, Object>();
-        String status = IConstant.SUCCESS;
         List<CourseRequest> courses = new ArrayList<CourseRequest>();
         try {
             String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
@@ -281,11 +284,17 @@ public class CourseService implements ICourseService {
             }
             sqlQuery += " ORDER BY c.created_on DESC";
             courses = iCourseDAO.searchCoursesBasedOnFilter(sqlQuery);
+            if(courses!=null && !courses.isEmpty()){
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Course fetch successfully");
+            }else{
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", "Course not found");
+            }
         } catch (Exception exception) {
-            status = IConstant.FAIL;
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.OK.value());
         }
-        response.put("status", 1);
-        response.put("message", status);
         response.put("courses", courses);
         return response;
     }
@@ -330,7 +339,7 @@ public class CourseService implements ICourseService {
         } catch (Exception exception) {
             status = IConstant.FAIL;
         }
-        response.put("status", 1);
+        response.put("status", HttpStatus.OK.value());
         response.put("message", status);
         response.put("courses", courses);
         response.put("totalCount", totalCount);
@@ -339,5 +348,78 @@ public class CourseService implements ICourseService {
         response.put("hasNextPage", paginationUtilDto.isHasNextPage());
         response.put("totalPages", paginationUtilDto.getTotalPages());
         return response;
+    }
+
+    @Override
+    public Map<String, Object> addUserCompareCourse(@Valid UserCourse userCourse) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        try {
+            if (userCourse.getCourses() != null && !userCourse.getCourses().isEmpty()) {
+                String compareValue = "";
+                for (BigInteger courseId : userCourse.getCourses()) {
+                    compareValue += courseId + ",";
+                }
+                UserCompareCourse compareCourse = new UserCompareCourse();
+                compareCourse.setCompareValue(compareValue);
+                compareCourse.setCreatedBy(userCourse.getCreatedBy());
+                compareCourse.setCreatedOn(new Date());
+                compareCourse.setUpdatedBy(userCourse.getUpdatedBy());
+                compareCourse.setUpdatedOn(new Date());
+                compareCourse.setUserId(userCourse.getUserId());
+                iCourseDAO.saveUserCompareCourse(compareCourse);
+                for (BigInteger courseId : userCourse.getCourses()) {
+                    UserCompareCourseBundle compareCourseBundle = new UserCompareCourseBundle();
+                    compareCourseBundle.setUserId(userCourse.getUserId());
+                    compareCourseBundle.setCompareCourse(compareCourse);
+                    compareCourseBundle.setCourse(iCourseDAO.get(courseId));
+                    iCourseDAO.saveUserCompareCourseBundle(compareCourseBundle);
+                }
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "User course added successfully");
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", "Course can't be null");
+            }
+        } catch (Exception exception) {
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getUserCompareCourse(BigInteger userId) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<UserCompareCourseResponse> compareCourseResponses = new ArrayList<UserCompareCourseResponse>();
+        try {
+            List<UserCompareCourse> compareCourses = iCourseDAO.getUserCompareCourse(userId);
+            for (UserCompareCourse compareCourse : compareCourses) {
+                UserCompareCourseResponse courseResponse = new UserCompareCourseResponse();
+                courseResponse.setUserCourseCompareId(compareCourse.getId());
+                courseResponse.setCourses(getCourses(compareCourse.getCompareValue()));
+                compareCourseResponses.add(courseResponse);
+            }
+            if (compareCourses != null && !compareCourses.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.COURSE_GET_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        response.put("data", compareCourseResponses);
+        return response;
+    }
+
+    private List<CourseRequest> getCourses(String compareValue) {
+        List<CourseRequest> courses = new ArrayList<CourseRequest>();
+        String[] compareValues = compareValue.split(",");
+        for (String id : compareValues) {
+            courses.add(iCourseDAO.getCourseById(Integer.valueOf(id)));
+        }
+        return courses;
     }
 }

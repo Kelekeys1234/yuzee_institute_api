@@ -18,7 +18,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
-// @Table(name = "scholarship", catalog = "seeka_dev_v5")
+// @Table(name = "scholarship")
 @Table(name = "scholarship")
 public class Scholarship implements java.io.Serializable {
 

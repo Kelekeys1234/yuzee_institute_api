@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.UserCompareCourse;
+import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
@@ -42,5 +44,13 @@ public interface ICourseDAO {
     List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize);
 
     int findTotalCountByUserId(BigInteger userId);
+
+    void saveUserCompareCourse(UserCompareCourse compareCourse);
+
+    void saveUserCompareCourseBundle(UserCompareCourseBundle compareCourseBundle);
+
+    List<UserCompareCourse> getUserCompareCourse(BigInteger userId);
+
+    CourseRequest getCourseById(Integer valueOf);
     
 }
