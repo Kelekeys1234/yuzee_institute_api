@@ -11,11 +11,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,7 +29,7 @@ public class UserEducationAOLevelSubjects implements Serializable {
 	 */
 	private static final long serialVersionUID = -4352002437209568031L;
 	private BigInteger id;
-	private UserInfo userInfo;
+	private BigInteger userId;
 	private String subName;
 	private String grade;
 	private Boolean isActive;
@@ -46,13 +43,13 @@ public class UserEducationAOLevelSubjects implements Serializable {
 	public UserEducationAOLevelSubjects() {
 	}
 
-	public UserEducationAOLevelSubjects(UserInfo userInfo) {
-		this.userInfo = userInfo;
+	public UserEducationAOLevelSubjects(BigInteger userId) {
+		this.userId = userId;
 	}
 
-	public UserEducationAOLevelSubjects(UserInfo userInfo, String subName, String grade, Boolean isActive,
+	public UserEducationAOLevelSubjects(BigInteger userId, String subName, String grade, Boolean isActive,
 			Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
-		this.userInfo = userInfo;
+		this.userId = userId;
 		this.subName = subName;
 		this.grade = grade;
 		this.isActive = isActive;
@@ -75,14 +72,13 @@ public class UserEducationAOLevelSubjects implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_id", nullable = false)
-	public UserInfo getUserInfo() {
-		return this.userInfo;
+	@Column(name = "user_id", nullable = false)
+	public BigInteger getUserId() {
+		return this.userId;
 	}
 
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
+	public void setUserId(BigInteger userId) {
+		this.userId = userId;
 	}
 
 	@Column(name = "sub_name", length = 100)
@@ -183,7 +179,7 @@ public class UserEducationAOLevelSubjects implements Serializable {
 		result = prime * result + ((subName == null) ? 0 : subName.hashCode());
 		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
 		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
-		result = prime * result + ((userInfo == null) ? 0 : userInfo.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
 	}
 
@@ -246,10 +242,10 @@ public class UserEducationAOLevelSubjects implements Serializable {
 				return false;
 		} else if (!updatedOn.equals(other.updatedOn))
 			return false;
-		if (userInfo == null) {
-			if (other.userInfo != null)
+		if (userId == null) {
+			if (other.userId != null)
 				return false;
-		} else if (!userInfo.equals(other.userInfo))
+		} else if (!userId.equals(other.userId))
 			return false;
 		return true;
 	}
@@ -257,12 +253,11 @@ public class UserEducationAOLevelSubjects implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserEducationAOLevelSubjects [id=").append(id).append(", userInfo=").append(userInfo)
+		builder.append("UserEducationAOLevelSubjects [id=").append(id).append(", userId=").append(userId)
 				.append(", subName=").append(subName).append(", grade=").append(grade).append(", isActive=")
 				.append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
 				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
 				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
 		return builder.toString();
 	}
-
 }

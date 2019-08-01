@@ -29,6 +29,7 @@ public class UserEducationDetails implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 6557054387264945982L;
+	private BigInteger id;
 	private BigInteger userId;
 	private BigInteger eduCountry;
 	private BigInteger eduSystemId;
@@ -47,7 +48,6 @@ public class UserEducationDetails implements Serializable {
 	private Boolean isDeleted;
 
 	private String educationSystemName;
-
 	private String educationCountryName;
 
 	public UserEducationDetails() {
@@ -75,7 +75,22 @@ public class UserEducationDetails implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "user_id", unique = true, nullable = false)
+	@Column(name = "id", unique = true, nullable = false)
+	 /**
+     * @return the id
+     */
+    public BigInteger getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(BigInteger id) {
+        this.id = id;
+    }
+	
+    @Column(name = "user_id")
 	public BigInteger getUserId() {
 		return this.userId;
 	}
@@ -393,5 +408,4 @@ public class UserEducationDetails implements Serializable {
 				.append(", educationCountryName=").append(educationCountryName).append("]");
 		return builder.toString();
 	}
-
 }
