@@ -24,6 +24,8 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.UserCompareCourse;
+import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
@@ -1266,5 +1268,132 @@ public class CourseDAO implements ICourseDAO {
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
 		return rows.size();
+	}
+
+	@Override
+	public void saveUserCompareCourse(final UserCompareCourse compareCourse) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(compareCourse);
+	}
+
+	@Override
+	public void saveUserCompareCourseBundle(final UserCompareCourseBundle compareCourseBundle) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(compareCourseBundle);
+	}
+
+	@Override
+	public List<UserCompareCourse> getUserCompareCourse(final BigInteger userId) {
+		List<UserCompareCourse> compareCourses = new ArrayList<>();
+		Session session = sessionFactory.getCurrentSession();
+		String sqlQuery = "select ucc.id, ucc.compare_value FROM  user_compare_course ucc where ucc.deleted_on IS NULL and ucc.user_id=" + userId;
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		UserCompareCourse obj = null;
+		for (Object[] row : rows) {
+			obj = new UserCompareCourse();
+			obj.setId(new BigInteger(row[0].toString()));
+			if (row[1] != null) {
+				obj.setCompareValue(row[1].toString());
+			}
+			compareCourses.add(obj);
+		}
+		return compareCourses;
+	}
+
+	@Override
+	public CourseRequest getCourseById(final Integer courseId) {
+		Session session = sessionFactory.getCurrentSession();
+		String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
+				+ "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
+				+ "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
+				+ " cd.job_part_time, cd.job_full_time, cd.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time  FROM course c inner join course_details cd "
+				+ " on c.id = cd.course_id where c.id=" + courseId;
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		CourseRequest courseRequest = null;
+		for (Object[] row : rows) {
+			courseRequest = new CourseRequest();
+			courseRequest.setCourseId(new BigInteger(row[0].toString()));
+			courseRequest.setcId(Integer.valueOf(row[1].toString()));
+			if (row[2] != null) {
+				courseRequest.setInstituteId(new BigInteger(row[2].toString()));
+				courseRequest.setInstituteName(getInstituteName(row[2].toString(), session));
+				courseRequest.setInstituteLogoUrl(getInstituteLogo(row[2].toString(), session));
+				courseRequest.setInstituteImageUrl(getInstituteImage(row[2].toString(), session));
+			}
+			if (row[3] != null) {
+				courseRequest.setCountryId(new BigInteger(row[3].toString()));
+				courseRequest.setLocation(getLocationName(row[3].toString(), session));
+			}
+			courseRequest.setCityId(new BigInteger(row[4].toString()));
+			courseRequest.setFacultyId(new BigInteger(row[5].toString()));
+			courseRequest.setName(row[6].toString());
+			if (row[7] != null) {
+				courseRequest.setDescription(row[7].toString());
+			}
+			if (row[8] != null) {
+				courseRequest.setIntake(row[8].toString());
+			}
+			if (row[9] != null) {
+				courseRequest.setDuration(row[9].toString());
+			}
+			if (row[10] != null) {
+				courseRequest.setLanguaige(row[10].toString());
+			}
+			if (row[11] != null) {
+				courseRequest.setDomasticFee(row[11].toString());
+			}
+			if (row[12] != null) {
+				courseRequest.setInternationalFee(row[12].toString());
+			}
+			if (row[13] != null) {
+				courseRequest.setGrades(row[13].toString());
+			}
+			if (row[14] != null) {
+				courseRequest.setDocumentUrl(row[14].toString());
+			}
+			if (row[15] != null) {
+				courseRequest.setContact(row[15].toString());
+			}
+			if (row[16] != null) {
+				courseRequest.setOpeningHourFrom(row[16].toString());
+			}
+			if (row[17] != null) {
+				courseRequest.setCampusLocation(row[17].toString());
+			}
+			if (row[18] != null) {
+				courseRequest.setWebsite(row[18].toString());
+			}
+			if (row[19] != null) {
+				courseRequest.setPartTime(row[19].toString());
+			}
+			if (row[20] != null) {
+				courseRequest.setFullTime(row[20].toString());
+			}
+			if (row[21] != null) {
+				courseRequest.setCourseLink(row[21].toString());
+			}
+			if (row[22] != null) {
+				System.out.println(row[2].toString());
+				System.out.println(row[22].toString());
+				Date createdDate = (Date) row[22];
+				System.out.println(createdDate);
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+				String dateResult = formatter.format(createdDate);
+				courseRequest.setLastUpdated(dateResult);
+			}
+			if (row[23] != null) {
+				courseRequest.setWorldRanking(row[23].toString());
+			}
+			if (row[24] != null) {
+				courseRequest.setStars(row[24].toString());
+			}
+			if (row[25] != null) {
+				courseRequest.setDurationTime(row[25].toString());
+			}
+			courseRequest.setEnglishEligibility(getEnglishEligibility(session, new BigInteger(row[0].toString())));
+		}
+		return courseRequest;
 	}
 }

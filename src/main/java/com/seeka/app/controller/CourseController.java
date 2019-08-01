@@ -530,4 +530,14 @@ public class CourseController {
 			throws Exception {
 		return ResponseEntity.accepted().body(courseService.getUserCourse(userId, pageNumber, pageSize));
 	}
+
+	@RequestMapping(value = "/compare", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> userCompareCourse(@Valid @RequestBody final UserCourse userCourse) throws Exception {
+		return ResponseEntity.accepted().body(courseService.addUserCompareCourse(userCourse));
+	}
+
+	@RequestMapping(value = "/compare/user/{userId}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getUserCompareCourse(@PathVariable final BigInteger userId) throws Exception {
+		return ResponseEntity.accepted().body(courseService.getUserCompareCourse(userId));
+	}
 }
