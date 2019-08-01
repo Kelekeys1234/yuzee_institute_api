@@ -28,7 +28,6 @@ import com.seeka.app.bean.UserCourseReview;
 import com.seeka.app.bean.UserInfo;
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.dto.CourseDto;
-import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -98,15 +97,37 @@ public class CourseController {
 		return ResponseEntity.accepted().body(courseService.deleteCourse(id));
 	}
 
-	@RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> searchCourse(@RequestParam(required = false) final BigInteger countryId,
-			@RequestParam(required = false) final BigInteger instituteId, @RequestParam(required = false) final BigInteger facultyId,
-			@RequestParam(required = false) final String name, @RequestParam(required = false) final String languauge) throws Exception {
-		return ResponseEntity.accepted().body(courseService.searchCourseBasedOnFilter(countryId, instituteId, facultyId, name, languauge));
+	@RequestMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> searchCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = false) final List<BigInteger> countryIds, @RequestParam(required = false) final BigInteger instituteId,
+			@RequestParam(required = false) final List<BigInteger> facultyIds, @RequestParam(required = false) final List<BigInteger> cityIds,
+			@RequestParam(required = false) final List<BigInteger> levelIds, @RequestParam(required = false) final List<BigInteger> serviceIds,
+			@RequestParam(required = false) final Double minCost, @RequestParam(required = false) final Double maxCost,
+			@RequestParam(required = false) final Integer minDuration, @RequestParam(required = false) final Integer maxDuration,
+			@RequestParam(required = false) final String courseName) throws Exception {
+		CourseSearchDto courseSearchDto = new CourseSearchDto();
+		courseSearchDto.setCountryIds(countryIds);
+		courseSearchDto.setInstituteId(instituteId);
+		courseSearchDto.setFacultyIds(facultyIds);
+		courseSearchDto.setCityIds(cityIds);
+		courseSearchDto.setLevelIds(levelIds);
+		courseSearchDto.setServiceIds(serviceIds);
+		courseSearchDto.setMinCost(minCost);
+		courseSearchDto.setMaxCost(maxCost);
+		courseSearchDto.setMinDuration(minDuration);
+		courseSearchDto.setMaxDuration(maxDuration);
+		courseSearchDto.setCourseName(courseName);
+		courseSearchDto.setPageNumber(pageNumber);
+		courseSearchDto.setMaxSizePerPage(pageSize);
+		return courseSearch(courseSearchDto);
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> getCourseTypeByCountry(@RequestBody final CourseSearchDto courseSearchDto) throws Exception {
+	public ResponseEntity<?> searchCourse(@RequestBody final CourseSearchDto courseSearchDto) throws Exception {
+		return courseSearch(courseSearchDto);
+	}
+
+	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto) {
 		Map<String, Object> response = new HashMap<>();
 		ErrorDto errorDto = null;
 		if (courseSearchDto.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
@@ -118,29 +139,29 @@ public class CourseController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		UserInfo user = userService.get(courseSearchDto.getUserId());
-
-		if (null == user) {
-			errorDto = new ErrorDto();
-			errorDto.setCode("400");
-			errorDto.setMessage("Invalid user.!");
-			response.put("status", 0);
-			response.put("error", errorDto);
-			return ResponseEntity.badRequest().body(response);
-		}
-
-		Currency userCurrency = CurrencyUtil.getCurrencyObjById(user.getPreferredCurrencyId());
-		Currency currency = null;
-		String message = "";
-		if (null != courseSearchDto.getCurrencyId() && !user.getPreferredCurrencyId().equals(courseSearchDto.getCurrencyId())) {
-			currency = CurrencyUtil.getCurrencyObjById(courseSearchDto.getCurrencyId());
-			response.put("showCurrencyPopup", true);
-			message = "Do you want to change " + currency.getName() + " (" + currency.getCode() + ") as your currency.?";
-		} else {
-			currency = CurrencyUtil.getCurrencyObjById(user.getPreferredCurrencyId());
-			response.put("showCurrencyPopup", false);
-		}
-		response.put("currencyPopupMsg", message);
+//		UserInfo user = userService.get(courseSearchDto.getUserId());
+//
+//		if (null == user) {
+//			errorDto = new ErrorDto();
+//			errorDto.setCode("400");
+//			errorDto.setMessage("Invalid user.!");
+//			response.put("status", 0);
+//			response.put("error", errorDto);
+//			return ResponseEntity.badRequest().body(response);
+//		}
+//
+//		Currency userCurrency = CurrencyUtil.getCurrencyObjById(user.getPreferredCurrencyId());
+//		Currency currency = null;
+//		String message = "";
+//		if (null != courseSearchDto.getCurrencyId() && !user.getPreferredCurrencyId().equals(courseSearchDto.getCurrencyId())) {
+//			currency = CurrencyUtil.getCurrencyObjById(courseSearchDto.getCurrencyId());
+//			response.put("showCurrencyPopup", true);
+//			message = "Do you want to change " + currency.getName() + " (" + currency.getCode() + ") as your currency.?";
+//		} else {
+//			currency = CurrencyUtil.getCurrencyObjById(user.getPreferredCurrencyId());
+//			response.put("showCurrencyPopup", false);
+//		}
+//		response.put("currencyPopupMsg", message);
 
 //        List<UserMyCourse> userMyCourses = myCourseService.getDataByUserID(courseSearchDto.getUserId());
 		Map<BigInteger, Boolean> favouriteMap = new HashMap<>();
@@ -148,7 +169,7 @@ public class CourseController {
 //            favouriteMap.put(obj.getCourse().getId(), true);
 //        }
 
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, currency, user.getPreferredCountryId());
+		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
 
 		for (CourseResponseDto obj : courseList) {
 			try {
@@ -174,22 +195,22 @@ public class CourseController {
 			showMore = false;
 		}
 
-		String oldCurrencyCode = null;
-		if (userCurrency != null && userCurrency.getCode() != null) {
-			oldCurrencyCode = userCurrency.getCode();
-		}
-		CourseFilterCostResponseDto costResponseDto = courseService.getAllCoursesFilterCostInfo(courseSearchDto, currency, oldCurrencyCode);
-		if (currency != null) {
-			costResponseDto.setCurrencyId(currency.getId());
-			costResponseDto.setCurrencySymbol(currency.getSymbol());
-			costResponseDto.setCurrencyCode(currency.getCode());
-			costResponseDto.setCurrencyName(currency.getName());
-		}
+//		String oldCurrencyCode = null;
+//		if (userCurrency != null && userCurrency.getCode() != null) {
+//			oldCurrencyCode = userCurrency.getCode();
+//		}
+//		CourseFilterCostResponseDto costResponseDto = courseService.getAllCoursesFilterCostInfo(courseSearchDto, currency, oldCurrencyCode);
+//		if (currency != null) {
+//			costResponseDto.setCurrencyId(currency.getId());
+//			costResponseDto.setCurrencySymbol(currency.getSymbol());
+//			costResponseDto.setCurrencyCode(currency.getCode());
+//			costResponseDto.setCurrencyName(currency.getName());
+//		}
 		response.put("status", 1);
 		response.put("message", "Success.!");
 		response.put("paginationObj", new PaginationDto(totalCount, showMore));
 		response.put("courseList", courseList);
-		response.put("costCurrency", costResponseDto);
+//		response.put("costCurrency", costResponseDto);
 		return ResponseEntity.ok().body(response);
 	}
 
@@ -229,7 +250,7 @@ public class CourseController {
 		}
 		response.put("currencyPopupMsg", message);
 
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, currency, user.getPreferredCountryId());
+		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
 		for (CourseResponseDto obj : courseList) {
 			try {
 				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
@@ -271,7 +292,7 @@ public class CourseController {
 		Map<String, Object> response = new HashMap<>();
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setSearchKey(searchkey);
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, null, null);
+		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
 		response.put("status", 1);
 		response.put("message", "Success.!");
 		response.put("courseList", courseList);

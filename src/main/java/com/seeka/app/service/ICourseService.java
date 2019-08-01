@@ -1,4 +1,6 @@
-package com.seeka.app.service;import java.math.BigInteger;
+package com.seeka.app.service;
+
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -14,35 +16,35 @@ import com.seeka.app.dto.UserCourse;
 
 public interface ICourseService {
 
-    public void save(Course obj);
+	void save(Course obj);
 
-    public void update(Course obj);
+	void update(Course obj);
 
-    public Course get(BigInteger id);
+	Course get(BigInteger id);
 
-    public List<Course> getAll();
+	List<Course> getAll();
 
-    public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Currency currency, BigInteger userCountryId);
+	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
 
-    public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
+	CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
 
-    public List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
+	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
-    public Map<String, Object> getCourse(BigInteger courseid);
+	Map<String, Object> getCourse(BigInteger courseid);
 
-    public List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
+	List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
 
-    public List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
+	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
-    public Map<String, Object> save(@Valid CourseRequest courseDto);
+	Map<String, Object> save(@Valid CourseRequest courseDto);
 
-    public Map<String, Object> getAllCourse(Integer pageNumber, Integer pageSize);
+	Map<String, Object> getAllCourse(Integer pageNumber, Integer pageSize);
 
-    public Map<String, Object> deleteCourse(@Valid BigInteger courseId);
+	Map<String, Object> deleteCourse(@Valid BigInteger courseId);
 
-    public Map<String, Object> searchCourseBasedOnFilter(BigInteger countryId, BigInteger instituteId, BigInteger facultyId, String name, String languauge);
+	Map<String, Object> searchCourseBasedOnFilter(BigInteger countryId, BigInteger instituteId, BigInteger facultyId, String name, String languauge);
 
-    public Map<String, Object> addUserCourses(@Valid UserCourse userCourse);
+	Map<String, Object> addUserCourses(@Valid UserCourse userCourse);
 
-    public Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize);
+	Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize);
 }

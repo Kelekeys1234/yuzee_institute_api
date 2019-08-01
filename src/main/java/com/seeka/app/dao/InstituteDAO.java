@@ -106,6 +106,7 @@ public class InstituteDAO implements IInstituteDAO {
 
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
 				+ "ctry.name as countryName,count(c.id) as courses, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars "
+				+ " ,ctry.id as countryId, ci.id as cityId "
 				+ "from institute inst  inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
 				+ "inner join faculty_level f on f.institute_id = inst.id inner join institute_level l on l.institute_id = inst.id "
 				+ "inner join course c  on c.institute_id=inst.id where 1=1 ";
@@ -150,23 +151,25 @@ public class InstituteDAO implements IInstituteDAO {
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
 		List<InstituteResponseDto> list = new ArrayList<>();
-		InstituteResponseDto obj = null;
+		InstituteResponseDto instituteResponseDto = null;
 		for (Object[] row : rows) {
-			obj = new InstituteResponseDto();
-			obj.setInstituteId(new BigInteger(String.valueOf(row[0])));
-			obj.setInstituteName(String.valueOf(row[1]));
-			obj.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
-			obj.setCityName(String.valueOf(row[2]));
-			obj.setCountryName(String.valueOf(row[3]));
+			instituteResponseDto = new InstituteResponseDto();
+			instituteResponseDto.setInstituteId(new BigInteger(String.valueOf(row[0])));
+			instituteResponseDto.setInstituteName(String.valueOf(row[1]));
+			instituteResponseDto.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
+			instituteResponseDto.setCityName(String.valueOf(row[2]));
+			instituteResponseDto.setCountryName(String.valueOf(row[3]));
 			Integer worldRanking = 0;
 			if (null != row[4]) {
 				worldRanking = Double.valueOf(String.valueOf(row[4])).intValue();
 			}
-			obj.setWorldRanking(worldRanking.toString());
-			obj.setStars(String.valueOf(row[5]));
-			obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
-			obj.setTotalCount(rows1.size());
-			list.add(obj);
+			instituteResponseDto.setWorldRanking(worldRanking.toString());
+			instituteResponseDto.setStars(String.valueOf(row[5]));
+			instituteResponseDto.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
+			instituteResponseDto.setCountryId(new BigInteger(String.valueOf(row[7])));
+			instituteResponseDto.setCityId(new BigInteger(String.valueOf(row[8])));
+			instituteResponseDto.setTotalCount(rows1.size());
+			list.add(instituteResponseDto);
 		}
 		return list;
 	}

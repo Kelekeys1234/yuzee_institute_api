@@ -8,8 +8,8 @@ public class CourseSearchDto {
 	private String searchKey;
 	private String courseName;
 	private Boolean isProfileSearch;
-	private BigInteger userId;
 	private BigInteger currencyId;
+	private BigInteger userId;
 	private List<String> courseKeys;
 	private List<BigInteger> levelIds;
 	private List<BigInteger> facultyIds;

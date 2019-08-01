@@ -70,7 +70,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Currency currency, final BigInteger userCountryId) {
+	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto) {
 		Session session = sessionFactory.getCurrentSession();
 
 		String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName, cp.cost_range, "
@@ -91,9 +91,9 @@ public class CourseDAO implements ICourseDAO {
 
 			sqlQuery += " and crs.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 
-			if (null != userCountryId && courseSearchDto.getCountryIds().size() == 1 && !courseSearchDto.getCountryIds().get(0).equals(userCountryId)) {
-				showIntlCost = true;
-			}
+//			if (null != userCountryId && courseSearchDto.getCountryIds().size() == 1 && !courseSearchDto.getCountryIds().get(0).equals(userCountryId)) {
+//				showIntlCost = true;
+//			}
 		}
 
 		if (null != courseSearchDto.getCityIds() && !courseSearchDto.getCityIds().isEmpty()) {
@@ -238,15 +238,15 @@ public class CourseDAO implements ICourseDAO {
 					intlFeesD = Double.valueOf(String.valueOf(row[17]));
 				}
 				newCurrencyCode = String.valueOf(row[5]);
-				if (null != currency) {
-					String oldCurrencyCode = String.valueOf(row[5]);
-					oldCurrency = CurrencyUtil.getCurrencyObjByCode(oldCurrencyCode);
-					usdConv = 1 / oldCurrency.getConversionRate();
-					newCurrencyCode = currency.getCode();
-					costRange = costRange * usdConv * currency.getConversionRate();
-					localFeesD = localFeesD * usdConv * currency.getConversionRate();
-					intlFeesD = intlFeesD * usdConv * currency.getConversionRate();
-				}
+//				if (null != currency) {
+//					String oldCurrencyCode = String.valueOf(row[5]);
+//					oldCurrency = CurrencyUtil.getCurrencyObjByCode(oldCurrencyCode);
+//					usdConv = 1 / oldCurrency.getConversionRate();
+//					newCurrencyCode = currency.getCode();
+//					costRange = costRange * usdConv * currency.getConversionRate();
+//					localFeesD = localFeesD * usdConv * currency.getConversionRate();
+//					intlFeesD = intlFeesD * usdConv * currency.getConversionRate();
+//				}
 				if (costRange != null) {
 					cost = ConvertionUtil.roundOffToUpper(costRange);
 				}

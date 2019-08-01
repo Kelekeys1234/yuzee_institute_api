@@ -26,7 +26,6 @@ import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
-import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IInstituteServiceDetailsService;
@@ -63,21 +62,6 @@ public class InstituteController {
 		response.put("message", "Institute type saved successfully");
 		response.put("status", HttpStatus.OK.value());
 		response.put("data", instituteTypeObj);
-		return ResponseEntity.accepted().body(response);
-	}
-
-	@RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> search(@Valid @RequestParam("searchkey") final String searchkey) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		List<InstituteSearchResultDto> instituteList = instituteService.getInstitueBySearchKey(searchkey);
-		if (instituteList != null && !instituteList.isEmpty()) {
-			response.put("message", "Institute fetched successfully");
-			response.put("status", HttpStatus.OK.value());
-		} else {
-			response.put("message", "Institute not found");
-			response.put("status", HttpStatus.NOT_FOUND.value());
-		}
-		response.put("data", instituteList);
 		return ResponseEntity.accepted().body(response);
 	}
 
@@ -327,7 +311,24 @@ public class InstituteController {
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> getInstitutesBySearchFilters(@RequestBody final CourseSearchDto request) throws Exception {
+	public ResponseEntity<?> instituteSearch(@RequestBody final CourseSearchDto request) throws Exception {
+		return getInstitutesBySearchFilters(request);
+	}
+
+	@RequestMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> instituteSearch(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = false) final List<BigInteger> countryIds, @RequestParam(required = false) final List<BigInteger> facultyIds,
+			@RequestParam(required = false) final List<BigInteger> levelIds) throws Exception {
+		CourseSearchDto courseSearchDto = new CourseSearchDto();
+		courseSearchDto.setCountryIds(countryIds);
+		courseSearchDto.setFacultyIds(facultyIds);
+		courseSearchDto.setLevelIds(levelIds);
+		courseSearchDto.setPageNumber(pageNumber);
+		courseSearchDto.setMaxSizePerPage(pageSize);
+		return getInstitutesBySearchFilters(courseSearchDto);
+	}
+
+	private ResponseEntity<?> getInstitutesBySearchFilters(final CourseSearchDto request) {
 		Map<String, Object> response = new HashMap<>();
 		if (request.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
 			ErrorDto errorDto = new ErrorDto();
@@ -338,19 +339,19 @@ public class InstituteController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		UserInfo user = userService.get(request.getUserId());
+//		UserInfo user = userService.get(request.getUserId());
 
 		List<BigInteger> countryIds = request.getCountryIds();
 		if (null == countryIds || countryIds.isEmpty()) {
 			countryIds = new ArrayList<>();
 		}
-		if (null != user.getPreferredCountryId()) {
-			countryIds.add(user.getPreferredCountryId());
-			request.setCountryIds(countryIds);
-		}
+//		if (null != user.getPreferredCountryId()) {
+//			countryIds.add(user.getPreferredCountryId());
+//			request.setCountryIds(countryIds);
+//		}
 
-		List<InstituteResponseDto> courseList = instituteService.getAllInstitutesByFilter(request);
-		for (InstituteResponseDto obj : courseList) {
+		List<InstituteResponseDto> instituteList = instituteService.getAllInstitutesByFilter(request);
+		for (InstituteResponseDto obj : instituteList) {
 			try {
 				obj.setInstituteImageUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
 				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
@@ -360,9 +361,9 @@ public class InstituteController {
 		}
 
 		Integer maxCount = 0, totalCount = 0;
-		if (null != courseList && !courseList.isEmpty()) {
-			totalCount = courseList.get(0).getTotalCount();
-			maxCount = courseList.size();
+		if (null != instituteList && !instituteList.isEmpty()) {
+			totalCount = instituteList.get(0).getTotalCount();
+			maxCount = instituteList.size();
 		}
 		boolean showMore;
 		if (request.getMaxSizePerPage() == maxCount) {
@@ -373,7 +374,7 @@ public class InstituteController {
 		response.put("status", 1);
 		response.put("message", "Success.!");
 		response.put("paginationObj", new PaginationDto(totalCount, showMore));
-		response.put("instituteList", courseList);
+		response.put("instituteList", instituteList);
 		return ResponseEntity.accepted().body(response);
 	}
 
