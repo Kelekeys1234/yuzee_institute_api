@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.EducationSystem;
+import com.seeka.app.bean.Subject;
 import com.seeka.app.bean.UserEducationAOLevelSubjects;
 import com.seeka.app.bean.UserEducationDetails;
 import com.seeka.app.bean.UserEnglishScore;
@@ -83,6 +84,7 @@ public class EducationSystemService implements IEducationSystemService {
         try {
             educationSystems = dao.getEducationSystemsByCountryId(countryId);
             if (educationSystems != null && !educationSystems.isEmpty()) {
+                educationSystems = getSubjectDetail(educationSystems);
                 response.put("message", IConstant.EDUCATION_SUCCESS);
                 response.put("status", HttpStatus.OK.value());
             } else {
@@ -95,6 +97,14 @@ public class EducationSystemService implements IEducationSystemService {
         }
         response.put("data", educationSystems);
         return ResponseEntity.ok().body(response);
+    }
+
+    private List<EducationSystem> getSubjectDetail(List<EducationSystem> educationSystems) {
+        for (EducationSystem educationSystem : educationSystems) {
+            List<Subject> subjects = dao.getSubjectByEducationSystem(educationSystem.getId());
+            educationSystem.setSubjects(subjects);
+        }
+        return educationSystems;
     }
 
     @Override

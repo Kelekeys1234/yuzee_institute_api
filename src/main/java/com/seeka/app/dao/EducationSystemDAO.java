@@ -8,10 +8,12 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.EducationSystem;
+import com.seeka.app.bean.Subject;
 
 @Repository
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
@@ -77,5 +79,13 @@ public class EducationSystemDAO implements IEducationSystemDAO {
             list.add(obj);
         }
         return list;
+    }
+
+    @Override
+    public List<Subject> getSubjectByEducationSystem(BigInteger educationSystemId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(Subject.class);
+        crit.add(Restrictions.eq("educationSystemId", educationSystemId));
+        return crit.list();
     }
 }
