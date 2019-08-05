@@ -26,6 +26,15 @@ public class CDNServerUtil {
 		return "";
 	}
 	
+	public static String getInstituteImages(String countryName, String instituteName,int i) {
+        try {
+            return baseUrl+"/"+URLEncoder.encode(countryName, "UTF-8").replace("+", "%20")+"/Universities/"+URLEncoder.encode(instituteName, "UTF-8").replace("+", "%20")+"/"+i+".jpg";
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+	
 	
 	public static String getCityImage(String countryName, String cityName,Integer index) {
 		try {
