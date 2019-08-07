@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.dto.EducationSystemDto;
+import com.seeka.app.dto.EducationSystemRequest;
 import com.seeka.app.service.IEducationSystemService;
 
 @RestController
@@ -30,5 +31,20 @@ public class EducationSystemController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<?> save(@Valid @RequestBody EducationSystemDto educationSystem) throws Exception {
         return educationSystemService.save(educationSystem);
+    }
+
+    @RequestMapping(value = "/details", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<?> saveEducationDetails(@Valid @RequestBody EducationSystemRequest educationSystemDetails) throws Exception {
+        return educationSystemService.saveEducationDetails(educationSystemDetails);
+    }
+    
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getEducationSystemsDetailByUserId(@PathVariable BigInteger userId) throws Exception {
+        return educationSystemService.getEducationSystemsDetailByUserId(userId);
+    }
+    
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.DELETE, produces = "application/json")
+    public ResponseEntity<?> delete(@Valid @PathVariable final BigInteger userId) throws Exception {
+        return ResponseEntity.accepted().body(educationSystemService.deleteEducationSystemDetailByUserId(userId));
     }
 }

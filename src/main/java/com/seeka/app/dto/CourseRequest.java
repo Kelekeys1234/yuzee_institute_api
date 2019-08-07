@@ -1,6 +1,7 @@
 package com.seeka.app.dto;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import com.seeka.app.bean.CourseEnglishEligibility;
 
@@ -43,6 +44,8 @@ public class CourseRequest {
     private String totalCount;
     private String localFees;
     private String intlFees;
+    private String requirements;
+    private List<String> instituteImageUrls;
     /**
      * @return the courseId
      */
@@ -474,6 +477,30 @@ public class CourseRequest {
      */
     public void setIntlFees(String intlFees) {
         this.intlFees = intlFees;
+    }
+    /**
+     * @return the requirements
+     */
+    public String getRequirements() {
+        return requirements;
+    }
+    /**
+     * @param requirements the requirements to set
+     */
+    public void setRequirements(String requirements) {
+        this.requirements = requirements;
+    }
+    /**
+     * @return the instituteImageUrls
+     */
+    public List<String> getInstituteImageUrls() {
+        return instituteImageUrls;
+    }
+    /**
+     * @param instituteImageUrls the instituteImageUrls to set
+     */
+    public void setInstituteImageUrls(List<String> instituteImageUrls) {
+        this.instituteImageUrls = instituteImageUrls;
     }
 
 }

@@ -21,12 +21,14 @@ public interface ICountryService {
 
     public List<CountryDto> getAllCountryName();
 
-    public Map<String,Object> save(CountryRequestDto countryRequestDto);
+    public Map<String, Object> save(CountryRequestDto countryRequestDto);
 
-	/**
-	 * @return
-	 */
-	List<CountryDto> getAllCountryWithCities();
+    /**
+     * @return
+     */
+    List<CountryDto> getAllCountryWithCities();
 
-    public Map<String,Object> getAllDiscoverCountry();
+    public Map<String, Object> getAllDiscoverCountry();
+
+    public Map<String, Object> getCountryDetailsById(BigInteger id);
 }

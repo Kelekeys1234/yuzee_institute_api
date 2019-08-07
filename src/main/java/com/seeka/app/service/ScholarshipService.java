@@ -152,8 +152,14 @@ public class ScholarshipService implements IScholarshipService {
         PaginationUtilDto paginationUtilDto = null;
         try {
             totalCount = iScholarshipDAO.findTotalCount();
-            paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
-            List<Scholarship> scholarships = iScholarshipDAO.getAll(pageNumber, pageSize);
+            int startIndex;
+            if (pageNumber > 1) {
+                startIndex = ((pageNumber-1) * pageSize) + 1;
+            } else {
+                startIndex = pageNumber;
+            }
+            paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+            List<Scholarship> scholarships = iScholarshipDAO.getAll(startIndex, pageSize);
             for (Scholarship scholarship : scholarships) {
                 scholarshipList.add(getScholarship(scholarship));
             }

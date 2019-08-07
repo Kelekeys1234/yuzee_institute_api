@@ -11,11 +11,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,7 +29,7 @@ public class UserEduIelTofScore implements Serializable {
 	 */
 	private static final long serialVersionUID = 5399436420545397464L;
 	private BigInteger id;
-	private UserInfo userInfo;
+	private BigInteger userId;
 	private String englishType;
 	private Double reading;
 	private Double writing;
@@ -50,14 +47,14 @@ public class UserEduIelTofScore implements Serializable {
 	public UserEduIelTofScore() {
 	}
 
-	public UserEduIelTofScore(UserInfo userInfo) {
-		this.userInfo = userInfo;
+	public UserEduIelTofScore(BigInteger userId) {
+		this.userId = userId;
 	}
 
-	public UserEduIelTofScore(UserInfo userInfo, String englishType, Double reading, Double writing, Double speaking,
+	public UserEduIelTofScore(BigInteger userId, String englishType, Double reading, Double writing, Double speaking,
 			Double listening, Double overall, Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn,
 			String createdBy, String updatedBy, Boolean isDeleted) {
-		this.userInfo = userInfo;
+		this.userId = userId;
 		this.englishType = englishType;
 		this.reading = reading;
 		this.writing = writing;
@@ -84,14 +81,13 @@ public class UserEduIelTofScore implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_id", nullable = false)
-	public UserInfo getUserInfo() {
-		return this.userInfo;
+	@Column(name = "user_id")
+	public BigInteger getUserInfo() {
+		return this.userId;
 	}
 
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
+	public void setUserInfo(BigInteger userId) {
+		this.userId = userId;
 	}
 
 	@Column(name = "english_type", length = 10)
@@ -231,7 +227,7 @@ public class UserEduIelTofScore implements Serializable {
 		result = prime * result + ((speaking == null) ? 0 : speaking.hashCode());
 		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
 		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
-		result = prime * result + ((userInfo == null) ? 0 : userInfo.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		result = prime * result + ((writing == null) ? 0 : writing.hashCode());
 		return result;
 	}
@@ -310,10 +306,10 @@ public class UserEduIelTofScore implements Serializable {
 				return false;
 		} else if (!updatedOn.equals(other.updatedOn))
 			return false;
-		if (userInfo == null) {
-			if (other.userInfo != null)
+		if (userId == null) {
+			if (other.userId != null)
 				return false;
-		} else if (!userInfo.equals(other.userInfo))
+		} else if (!userId.equals(other.userId))
 			return false;
 		if (writing == null) {
 			if (other.writing != null)
@@ -326,7 +322,7 @@ public class UserEduIelTofScore implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserEduIelTofScore [id=").append(id).append(", userInfo=").append(userInfo)
+		builder.append("UserEduIelTofScore [id=").append(id).append(", userId=").append(userId)
 				.append(", englishType=").append(englishType).append(", reading=").append(reading).append(", writing=")
 				.append(writing).append(", speaking=").append(speaking).append(", listening=").append(listening)
 				.append(", overall=").append(overall).append(", isActive=").append(isActive).append(", createdOn=")

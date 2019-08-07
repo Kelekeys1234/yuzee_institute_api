@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.seeka.app.enumeration.EnglishType;
 
 @Entity
@@ -29,7 +28,6 @@ public class UserEnglishScore extends RecordModifier {
 	@Column(name = "id")
 	private BigInteger id;
 
-	@JsonIgnore
 	@Column(name = "user_id")
 	private BigInteger userId;
 
@@ -52,7 +50,6 @@ public class UserEnglishScore extends RecordModifier {
 	@Column(name = "overall")
 	private Double overall;
 
-	@JsonIgnore
 	@Column(name = "is_active")
 	private Boolean isActive;
 

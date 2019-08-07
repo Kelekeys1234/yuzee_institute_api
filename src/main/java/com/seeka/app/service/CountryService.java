@@ -12,13 +12,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Country;
+import com.seeka.app.bean.CountryDetails;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICountryDetailsDAO;
 import com.seeka.app.dao.ICountryImageDAO;
+import com.seeka.app.dto.CountryDetailsResponse;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CountryImageDto;
 import com.seeka.app.dto.CountryRequestDto;
 import com.seeka.app.dto.DiscoverCountryDto;
+import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.IConstant;
 
@@ -127,5 +130,33 @@ public class CountryService implements ICountryService {
         }
         response.put("data", discoverCountryDtos);
         return response;
+    }
+
+    @Override
+    public Map<String, Object> getCountryDetailsById(BigInteger id) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        CountryDetailsResponse countryDetailsResponse = new CountryDetailsResponse();
+        try {
+            CountryDetails countryDetails = countryDetailsDAO.getDetailsByCountryId(id);
+            countryDetailsResponse.setCountryId(id);
+            countryDetailsResponse.setCountryDetails(countryDetails);
+            countryDetailsResponse.setImages(getCountryImages(id));
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Country details get successfully");
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        response.put("data", countryDetailsResponse);
+        return response;
+    }
+
+    private List<String> getCountryImages(BigInteger id) {
+        List<String> images = new ArrayList<>();
+        Country country = countryDAO.get(id);
+        if (country != null) {
+            images.add(CDNServerUtil.getCountryImageUrl(country.getName()));
+        }
+        return images;
     }
 }

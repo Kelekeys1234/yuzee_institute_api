@@ -84,7 +84,7 @@ public class CourseController {
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws Exception {
-		return ResponseEntity.badRequest().body(courseService.save(course));
+		return ResponseEntity.accepted().body(courseService.save(course));
 	}
 
 	@RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
@@ -522,7 +522,7 @@ public class CourseController {
 
 	@RequestMapping(value = "/user", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> userCourses(@Valid @RequestBody final UserCourse userCourse) throws Exception {
-		return ResponseEntity.badRequest().body(courseService.addUserCourses(userCourse));
+		return ResponseEntity.accepted().body(courseService.addUserCourses(userCourse));
 	}
 
 	@RequestMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
