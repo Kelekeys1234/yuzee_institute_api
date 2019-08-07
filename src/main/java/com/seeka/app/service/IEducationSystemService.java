@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import com.seeka.app.bean.EducationSystem;
 import com.seeka.app.dto.EducationSystemDto;
 import com.seeka.app.dto.EducationSystemRequest;
+import com.seeka.app.dto.GradeDto;
 
 public interface IEducationSystemService {
     public void save(EducationSystem hobbiesObj);
@@ -31,4 +32,6 @@ public interface IEducationSystemService {
     public ResponseEntity<?> getEducationSystemsDetailByUserId(BigInteger userId);
 
     public ResponseEntity<?> deleteEducationSystemDetailByUserId(@Valid BigInteger userId);
+
+    public ResponseEntity<?> calculate(@Valid GradeDto gradeDto);
 }

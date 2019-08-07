@@ -1,15 +1,19 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.seeka.app.bean.GradeDetails;
 import com.seeka.app.bean.UserEducationDetails;
 
 @Repository
@@ -77,9 +81,9 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
             }
             userEducationDetails.setId(new BigInteger(row[11].toString()));
             if (row[12] != null) {
-                if(row[12].toString().equals("1")){
+                if (row[12].toString().equals("1")) {
                     userEducationDetails.setIsActive(true);
-                }else{
+                } else {
                     userEducationDetails.setIsActive(false);
                 }
             }
@@ -93,5 +97,26 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
             }
         }
         return userEducationDetails;
+    }
+
+    public String getGradeDetails(BigInteger countryId, BigInteger educationSystemId, String grade) {
+        String gpaGrade = "0.0";
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(GradeDetails.class);
+        crit.add(Restrictions.eq("countryId", countryId)).add(Restrictions.eq("educationSystemId", educationSystemId)).add(Restrictions.eq("grade", grade));
+        List<GradeDetails> details = crit.list();
+        ArrayList<GradeDetails> min = new ArrayList<GradeDetails>();
+        for (GradeDetails x : details) {
+            if (min.size() == 0 || Double.valueOf(x.getGpaGrade()) == Double.valueOf(min.get(0).getGpaGrade()))
+                min.add(x);
+            else if (Double.valueOf(x.getGpaGrade()) < Double.valueOf(min.get(0).getGpaGrade())) {
+                min.clear();
+                min.add(x);
+            }
+        }
+        if (min != null && !min.isEmpty()) {
+            gpaGrade = min.get(0).getGpaGrade();
+        }
+        return gpaGrade;
     }
 }

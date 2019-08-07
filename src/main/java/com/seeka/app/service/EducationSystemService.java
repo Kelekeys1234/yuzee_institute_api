@@ -1,6 +1,8 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ import com.seeka.app.dto.EducationSystemDto;
 import com.seeka.app.dto.EducationSystemRequest;
 import com.seeka.app.dto.EducationSystemResponse;
 import com.seeka.app.dto.EnglishScoresDto;
+import com.seeka.app.dto.GradeDto;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -309,5 +312,39 @@ public class EducationSystemService implements IEducationSystemService {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         return ResponseEntity.ok().body(response);
+    }
+
+    @Override
+    public ResponseEntity<?> calculate(@Valid GradeDto gradeDto) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        Double averageGpa = null;
+        try {
+            averageGpa = calculateGpa(gradeDto);
+            response.put("message", "Calculated average gpa successfully");
+            response.put("status", HttpStatus.OK.value());
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        response.put("data", averageGpa);
+        return ResponseEntity.ok().body(response);
+    }
+
+    private Double calculateGpa(@Valid GradeDto gradeDto) {
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        Double averageGpa = null;
+        Double gpaGrade = 0.0;
+        List<String> gpaGrades = new ArrayList<String>();
+        for (String grade : gradeDto.getSubjectGrades()) {
+            gpaGrades.add(educationDetailDAO.getGradeDetails(gradeDto.getCountryId(), gradeDto.getEducationSystemId(), grade));
+        }
+        for (String grade : gpaGrades) {
+            gpaGrade = gpaGrade + Double.valueOf(grade);
+        }
+        averageGpa = gpaGrade / gpaGrades.size();
+        if (averageGpa != null) {
+            averageGpa = Double.valueOf(decimalFormat.format(averageGpa));
+        }
+        return averageGpa;
     }
 }

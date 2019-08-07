@@ -193,4 +193,9 @@ public class CountryController {
         response.put("list", countryList);
         return ResponseEntity.accepted().body(response);
     }
+
+    @RequestMapping(value = "/details/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getCountryDetailsById(@PathVariable BigInteger id) {
+        return ResponseEntity.accepted().body(countryService.getCountryDetailsById(id));
+    }
 }

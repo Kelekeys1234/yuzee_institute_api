@@ -197,8 +197,14 @@ public class InstituteService implements IInstituteService {
         PaginationUtilDto paginationUtilDto = null;
         try {
             totalCount = dao.findTotalCount();
-            paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
-            List<Institute> institutes = dao.getAll(pageNumber, pageSize);
+            int startIndex;
+            if (pageNumber > 1) {
+                startIndex = ((pageNumber-1) * pageSize) + 1;
+            } else {
+                startIndex = pageNumber;
+            }
+            paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+            List<Institute> institutes = dao.getAll(startIndex, pageSize);
             for (Institute institute : institutes) {
                 instituteGetRequestDtos.add(getInstitute(institute));
             }

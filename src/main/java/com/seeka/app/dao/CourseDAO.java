@@ -1170,8 +1170,8 @@ public class CourseDAO implements ICourseDAO {
         String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
                         + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
                         + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
-                        + " cd.job_part_time, cd.job_full_time, cd.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM  user_my_course umc inner join course c on umc.course_id = c.id inner join course_details cd "
-                        + " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL and umc.user_id = " + userId + "  ORDER BY c.created_on DESC ";
+                        + " cd.job_part_time, cd.job_full_time, cd.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM  user_my_course umc left join course c on umc.course_id = c.id left join course_details cd "
+                        + " on c.id = cd.course_id where umc.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = " + userId + "  ORDER BY c.created_on DESC ";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
