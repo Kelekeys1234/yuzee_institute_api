@@ -5,7 +5,10 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import com.seeka.app.bean.Currency;
+import com.seeka.app.dto.CurrencyConvertorRequest;
 
 public interface ICurrencyService {
 
@@ -24,4 +27,6 @@ public interface ICurrencyService {
     public Currency getCurrencyByCode(String currencyCode);
 
     public Map<String, Object> getAllCurrencies();
+
+    public Map<String, Object> currencyConversion(@Valid CurrencyConvertorRequest convertorRequest);
 }

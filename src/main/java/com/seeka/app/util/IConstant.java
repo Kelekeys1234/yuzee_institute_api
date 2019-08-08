@@ -1,7 +1,8 @@
 package com.seeka.app.util;
 
 public class IConstant {
-
+    public static final String CURRENCY_URL = "https://api.exchangerate-api.com/v4/latest/";
+    static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
     public static final String CORRELATION_ID = "correlationId";
     public static final String USER_ID = "userId";
     public static final String SESSION_ID = "sessionId";

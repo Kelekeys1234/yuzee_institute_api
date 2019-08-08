@@ -8,8 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,7 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.CurrencyRate;
+import com.seeka.app.dao.CurrencyRateDAO;
 import com.seeka.app.dao.ICurrencyDAO;
+import com.seeka.app.dto.CurrencyConvertorRequest;
+import com.seeka.app.util.CommonUtil;
+import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 
 @Service
@@ -26,6 +35,9 @@ public class CurrencyService implements ICurrencyService {
 
     @Autowired
     private ICurrencyDAO dao;
+
+    @Autowired
+    private CurrencyRateDAO currencyRateDAO;
 
     @Override
     public void save(Currency obj) {
@@ -105,5 +117,75 @@ public class CurrencyService implements ICurrencyService {
             e.printStackTrace();
         }
         return currencies;
+    }
+
+    @Override
+    public Map<String, Object> currencyConversion(@Valid CurrencyConvertorRequest convertorRequest) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        Double convertedCurrcny = null;
+        try {
+            convertedCurrcny = convertCurrency(convertorRequest);
+            response.put("message", "Currency converted successfully");
+            response.put("status", HttpStatus.OK.value());
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        response.put("data", convertedCurrcny);
+        return response;
+    }
+
+    private Double convertCurrency(@Valid CurrencyConvertorRequest convertorRequest) {
+        Double convertedRate = null;
+        CurrencyRate currencyRate = currencyRateDAO.getCurrencyRate(convertorRequest.getFromCurrencyId());
+        if (currencyRate == null) {
+            currencyRate = saveCurrencyRate(convertorRequest);
+        }
+        if (currencyRate != null) {
+            convertedRate = getConvertedCurrency(currencyRate, convertorRequest.getToCurrencyId(), convertorRequest.getAmount());
+        }
+        return convertedRate;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private Double getConvertedCurrency(CurrencyRate currencyRate, BigInteger toCurrencyId, Double amount) {
+        Double convertedRate = null;
+        try {
+            if (currencyRate.getRateDetail() != null) {
+                Currency currency = dao.get(toCurrencyId);
+                JSONParser parser = new JSONParser();
+                org.json.simple.JSONObject json = (org.json.simple.JSONObject) parser.parse(currencyRate.getRateDetail());
+                org.json.simple.JSONObject rates = (org.json.simple.JSONObject) json.get("rates");
+                System.out.println(rates);
+                Double currencyValue = null;
+                for (Iterator iterator = rates.keySet().iterator(); iterator.hasNext();) {
+                    String key = (String) iterator.next();
+                    if (key.equalsIgnoreCase(currency.getCode())) {
+                        currencyValue = (Double) rates.get(key);
+                        break;
+                    }
+                }
+                if (currencyValue != null) {
+                    convertedRate = currencyValue * amount;
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return convertedRate;
+    }
+
+    private CurrencyRate saveCurrencyRate(@Valid CurrencyConvertorRequest convertorRequest) {
+        CurrencyRate currencyRate = null;
+        Currency currency = dao.get(convertorRequest.getFromCurrencyId());
+        String currencyResponse = CommonUtil.getCurrencyDetails(currency.getCode());
+        if (currencyResponse != null) {
+            currencyRate = new CurrencyRate();
+            currencyRate.setCreatedDate(DateUtil.getUTCdatetimeAsStringYYYY_MM_DD());
+            currencyRate.setBaseCurrencyId(convertorRequest.getFromCurrencyId());
+            currencyRate.setRateDetail(currencyResponse);
+            currencyRateDAO.save(currencyRate);
+        }
+        return currencyRate;
     }
 }

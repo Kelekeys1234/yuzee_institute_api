@@ -1,9 +1,19 @@
 package com.seeka.app.util;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.CountryDetails;
@@ -94,5 +104,28 @@ public class CommonUtil {
         scholarship.setEmail(scholarshipObj.getEmail());
         scholarship.setAddress(scholarshipObj.getAddress());
         return scholarship;
+    }
+
+    public static String getCurrencyDetails(String baseCurrency) {
+        String currencyResponse = null;
+        URL url = null;
+        try {
+            url = new URL(IConstant.CURRENCY_URL + baseCurrency);
+            HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.connect();
+            JsonParser jp = new JsonParser();
+            JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+            JsonObject jsonobj = root.getAsJsonObject();
+            currencyResponse = jsonobj.toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e2) {
+            e2.printStackTrace();
+        } catch (JsonIOException e) {
+            e.printStackTrace();
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
+        return currencyResponse;
     }
 }

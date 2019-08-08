@@ -30,7 +30,7 @@ public class DateUtil {
         }
         return dateToReturn;
     }
-    
+
     public static Date stringDateToDateYYYY_MM_DD(String StrDate) {
         Date dateToReturn = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -40,5 +40,12 @@ public class DateUtil {
             e.printStackTrace();
         }
         return dateToReturn;
+    }
+
+    public static String getUTCdatetimeAsStringYYYY_MM_DD() {
+        final SimpleDateFormat sdf = new SimpleDateFormat(IConstant.DATE_FORMAT_YYYY_MM_DD);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        final String utcTime = sdf.format(new Date());
+        return utcTime;
     }
 }
