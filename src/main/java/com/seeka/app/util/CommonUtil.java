@@ -110,7 +110,7 @@ public class CommonUtil {
         String currencyResponse = null;
         URL url = null;
         try {
-            url = new URL(IConstant.CURRENCY_URL + baseCurrency);
+            url = new URL(IConstant.CURRENCY_URL + "latest?access_key=" + IConstant.API_KEY + "&base=" + baseCurrency);
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
             JsonParser jp = new JsonParser();

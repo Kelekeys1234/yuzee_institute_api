@@ -1,7 +1,9 @@
 package com.seeka.app.util;
 
 public class IConstant {
-    public static final String CURRENCY_URL = "https://api.exchangerate-api.com/v4/latest/";
+    public static final String CURRENCY_URL = "https://data.fixer.io/api/";
+    public static final String API_KEY = "95bdc53aa11d07169765f1b413275ba2";
+    
     static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
     public static final String CORRELATION_ID = "correlationId";
     public static final String USER_ID = "userId";
@@ -60,4 +62,8 @@ public class IConstant {
     public static final String COURSE_GET_NOT_FOUND = "Course not found";
     public static final String COURSE_DELETED_SUCCESS = "Course deleted successfully";
     public static final String FACULTY_SAVE_SUCCESS = "Faculty added successfully";
+    public static final String COUNTRY_TYPE = "Country";
+    public static final String INSTITUTE_TYPE = "Institution";
+    public static final String CITY_TYPE = "City";
+    public static final String COURSE_TYPE = "Course";
 }
