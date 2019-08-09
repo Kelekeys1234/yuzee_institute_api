@@ -31,7 +31,7 @@ public interface IArticleService {
 
 	Map<String, Object> searchArticle(SearchDto article);
 
-	Map<String, Object> saveMultiArticle(ArticleDto2 article);
+	Map<String, Object> saveMultiArticle(ArticleDto2 article, MultipartFile file);
 
 	Map<String, Object> saveArticleFolder(ArticleFolderDto articleFolder);
 
@@ -47,5 +47,5 @@ public interface IArticleService {
 
 	Map<String, Object> searchBasedOnNameAndContent(String searchText);
 
-	Map<String, Object> addArticleImage(MultipartFile file, String articleId);
+	Map<String, Object> addArticleImage(MultipartFile file, BigInteger articleId);
 }

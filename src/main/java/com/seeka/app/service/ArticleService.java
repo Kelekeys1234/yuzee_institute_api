@@ -355,7 +355,7 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public Map<String, Object> saveMultiArticle(final ArticleDto2 articledto) {
+	public Map<String, Object> saveMultiArticle(final ArticleDto2 articledto, final MultipartFile file) {
 		Map<String, Object> response = new HashMap<>();
 		String ResponseStatus = IConstant.ARTICLE_ADD_SUCCESS;
 		response.put("status", HttpStatus.OK.value());
@@ -488,12 +488,13 @@ public class ArticleService implements IArticleService {
 				}
 				articleGenderDAO.saveArticleGender(list, article.getId());
 			}
-
+			response.put("articleId", article.getId());
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			ResponseStatus = IConstant.SQL_ERROR;
 			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
+
 		response.put("message", ResponseStatus);
 		return response;
 	}
@@ -671,10 +672,10 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public Map<String, Object> addArticleImage(final MultipartFile file, final String articleId) {
+	public Map<String, Object> addArticleImage(final MultipartFile file, final BigInteger articleId) {
 		Map<String, Object> response = new HashMap<>();
 
-		SeekaArticles article = articleDAO.findById(new BigInteger(articleId));
+		SeekaArticles article = articleDAO.findById(articleId);
 		if (null == article) {
 			response.put("status", HttpStatus.NOT_FOUND.value());
 			response.put("message", IConstant.ARTICLE_NOT_FOUND);
@@ -691,7 +692,7 @@ public class ArticleService implements IArticleService {
 		return response;
 	}
 
-	private String uploadImage(final MultipartFile file, final String userId) {
+	private String uploadImage(final MultipartFile file, final BigInteger articleId) {
 		ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClients.createDefault());
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
 		/**
@@ -706,7 +707,7 @@ public class ArticleService implements IArticleService {
 		MultiValueMap<String, Object> formDate = new LinkedMultiValueMap<>();
 		formDate.add("file", new FileSystemResource(convert(file)));
 
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(storageURL).queryParam("id", userId).queryParam("imageType", "ARTICLE");
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(storageURL).queryParam("id", articleId).queryParam("imageType", "ARTICLE");
 
 		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(formDate, headers);
 		ResponseEntity<Map> response = restTemplate.postForEntity(builder.toUriString(), request, Map.class);

@@ -8,13 +8,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -76,8 +75,12 @@ public class ArticleController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> saveMultiArticle(@RequestBody final ArticleDto2 article) {
-		return ResponseEntity.accepted().body(articleService.saveMultiArticle(article));
+	public ResponseEntity<?> saveMultiArticle(@RequestParam(name = "file", required = false) final MultipartFile file,
+			@ModelAttribute final ArticleDto2 article) {
+		Map<String, Object> articleResponse = articleService.saveMultiArticle(article, file);
+		BigInteger articleId = (BigInteger) articleResponse.remove("articleId");
+		articleService.addArticleImage(file, articleId);
+		return ResponseEntity.accepted().body(articleResponse);
 	}
 
 	@RequestMapping(value = "/folder", method = RequestMethod.POST)
@@ -108,12 +111,5 @@ public class ArticleController {
 	@RequestMapping(value = "/folder/user/{userId}", method = RequestMethod.GET)
 	public ResponseEntity<?> getFolderWithArticle(@PathVariable final BigInteger userId) {
 		return ResponseEntity.accepted().body(articleService.getFolderWithArticle(userId));
-	}
-
-	@PostMapping("/image")
-	public ResponseEntity<Object> addArticleImage(@RequestPart(value = "file") final MultipartFile file,
-			@RequestParam(name = "articleId") final String articleId) {
-		Map<String, Object> response = articleService.addArticleImage(file, articleId);
-		return ResponseEntity.ok().body(response);
 	}
 }
