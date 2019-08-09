@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.CountryDetails;
+import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICountryDetailsDAO;
 import com.seeka.app.dao.ICountryImageDAO;
+import com.seeka.app.dao.YoutubeVideoDAO;
 import com.seeka.app.dto.CountryDetailsResponse;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CountryImageDto;
@@ -40,6 +42,9 @@ public class CountryService implements ICountryService {
 
     @Autowired
     private ICityService iCityService;
+
+    @Autowired
+    private YoutubeVideoDAO youtubeVideoDAO;
 
     @Override
     public List<Country> getAll() {
@@ -141,6 +146,7 @@ public class CountryService implements ICountryService {
             countryDetailsResponse.setCountryId(id);
             countryDetailsResponse.setCountryDetails(countryDetails);
             countryDetailsResponse.setImages(getCountryImages(id));
+            countryDetailsResponse.setYoutubeVideos(getYoutubeVideos(id));
             response.put("status", HttpStatus.OK.value());
             response.put("message", "Country details get successfully");
         } catch (Exception exception) {
@@ -149,6 +155,10 @@ public class CountryService implements ICountryService {
         }
         response.put("data", countryDetailsResponse);
         return response;
+    }
+
+    private List<YoutubeVideo> getYoutubeVideos(BigInteger id) {
+        return youtubeVideoDAO.getYoutubeVideoByCountryId(id, IConstant.COUNTRY_TYPE);
     }
 
     private List<String> getCountryImages(BigInteger id) {

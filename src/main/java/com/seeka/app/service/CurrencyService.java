@@ -98,7 +98,7 @@ public class CurrencyService implements ICurrencyService {
         System.out.println("CurrencyConversionRateUtil: Job Started: " + new Date());
         List<Currency> currencies = null;
         RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject("http://data.fixer.io/api/symbols?access_key=95bdc53aa11d07169765f1b413275ba2&format=1", String.class);
+        String result = restTemplate.getForObject(IConstant.CURRENCY_URL + "symbols?access_key=" + IConstant.API_KEY + "&format=1", String.class);
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);

@@ -4,12 +4,14 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.CountryDetails;
+import com.seeka.app.bean.YoutubeVideo;
 
 public class CountryDetailsResponse {
 
     private BigInteger countryId;
     private CountryDetails countryDetails;
     private List<String> images;
+    private List<YoutubeVideo> youtubeVideos;
 
     /**
      * @return the countryId
@@ -54,5 +56,19 @@ public class CountryDetailsResponse {
      */
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    /**
+     * @return the youtubeVideos
+     */
+    public List<YoutubeVideo> getYoutubeVideos() {
+        return youtubeVideos;
+    }
+
+    /**
+     * @param youtubeVideos the youtubeVideos to set
+     */
+    public void setYoutubeVideos(List<YoutubeVideo> youtubeVideos) {
+        this.youtubeVideos = youtubeVideos;
     }
 }
