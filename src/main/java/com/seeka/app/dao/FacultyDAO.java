@@ -1,5 +1,6 @@
-package com.seeka.app.dao;import java.math.BigInteger;
+package com.seeka.app.dao;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.Faculty;
 
 @Repository
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
 public class FacultyDAO implements IFacultyDAO {
 
     @Autowired
@@ -49,8 +50,7 @@ public class FacultyDAO implements IFacultyDAO {
     public List<Faculty> getFacultyByCountryIdAndLevelId(BigInteger countryID, BigInteger levelId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session
-                        .createSQLQuery("select distinct f.id, f.name as facultyName,f.level_id as levelid from faculty f  "
-                                        + "inner join institute_level il  on il.level_id = f.level_id " + "where il.country_id = :countryId and f.level_id = :levelId")
+                        .createSQLQuery("select distinct f.id, f.name as facultyName, il.level_id as levelid from institute_level il inner join faculty_level fl on fl.institute_id = il.institute_id inner join faculty f on fl.faculty_id= f.id where il.country_id = :countryId and il.level_id = :levelId")
                         .setParameter("countryId", countryID).setParameter("levelId", levelId);
         List<Object[]> rows = query.list();
         List<Faculty> faculties = new ArrayList<Faculty>();

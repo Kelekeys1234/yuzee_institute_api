@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteVideos;
@@ -31,6 +32,7 @@ import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -199,7 +201,7 @@ public class InstituteService implements IInstituteService {
             totalCount = dao.findTotalCount();
             int startIndex;
             if (pageNumber > 1) {
-                startIndex = ((pageNumber-1) * pageSize) + 1;
+                startIndex = ((pageNumber - 1) * pageSize) + 1;
             } else {
                 startIndex = pageNumber;
             }
@@ -241,37 +243,35 @@ public class InstituteService implements IInstituteService {
         dto.setUpdatedOn(institute.getUpdatedOn());
         dto.setUpdatedBy(institute.getUpdatedBy());
         dto.setInstituteDetails(getInstituteDetails(institute.getId()));
-        dto.setInstituteYoutubes(getInstituteYoutube(institute.getId()));
+        dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountry(), institute.getName()));
         return dto;
     }
 
-    private List<InstituteMedia> getInstituteYoutube(BigInteger id) {
-        return instituteVideoDao.findByInstituteId(id);
+    private List<String> getInstituteYoutube(Country country, String instituteName) {
+        List<String> images = new ArrayList<>();
+        if (country != null && country.getName() != null) {
+            for (int i = 1; i <= 20; i++) {
+                images.add(CDNServerUtil.getInstituteImages(country.getName(), instituteName, i));
+            }
+        }
+        return images;
     }
 
     private List<InstituteDetailsGetRequest> getInstituteDetails(BigInteger id) {
-        List<InstituteDetails> instituteDetails = instituteDetailsDAO.findByInstituteId(id);
         List<InstituteDetailsGetRequest> instituteDetailsGetRequests = new ArrayList<>();
-        for (InstituteDetails dto : instituteDetails) {
-            InstituteDetailsGetRequest instituteDetail = new InstituteDetailsGetRequest();
-            instituteDetail.setLatitute(dto.getLatitute());
-            instituteDetail.setLongitude(dto.getLongitude());
-            instituteDetail.setTotalStudent(dto.getTotalStudent());
-            instituteDetail.setWorldRanking(dto.getWorldRanking());
-            instituteDetail.setAccreditation(dto.getAccreditation());
-            instituteDetail.setAverageCostFrom(dto.getAverageCostFrom());
-            instituteDetail.setAverageCostTo(dto.getAverageCostTo());
-            instituteDetail.setEnrolment(dto.getEnrolment());
-            instituteDetail.setTuitionFessPaymentPlan(dto.getTuitionFessPaymentPlan());
-            instituteDetail.setScholarshipFinancingAssistance(dto.getScholarshipFinancingAssistance());
-            instituteDetail.setOpeningHour(dto.getOpeningHour());
-            instituteDetail.setClosingHour(dto.getClosingHour());
-            instituteDetail.setEmail(dto.getEmail());
-            instituteDetail.setPhoneNumber(dto.getPhoneNumber());
-            instituteDetail.setWebsite(dto.getWebsite());
-            instituteDetail.setAddress(dto.getAddress());
-            instituteDetailsGetRequests.add(instituteDetail);
-        }
+        Institute dto = dao.get(id);
+        InstituteDetailsGetRequest instituteDetail = new InstituteDetailsGetRequest();
+        instituteDetail.setLatitute(dto.getLatitute());
+        instituteDetail.setLongitude(dto.getLongitude());
+        instituteDetail.setTotalStudent(dto.getTotalStudent());
+        instituteDetail.setWorldRanking(dto.getWorldRanking());
+        instituteDetail.setAccreditation(dto.getAccreditation());
+        instituteDetail.setEmail(dto.getEmail());
+        instituteDetail.setPhoneNumber(dto.getPhoneNumber());
+        instituteDetail.setWebsite(dto.getWebsite());
+        instituteDetail.setAddress(dto.getAddress());
+        instituteDetail.setAvgCostOfLiving(dto.getAvgCostOfLiving());
+        instituteDetailsGetRequests.add(instituteDetail);
         return instituteDetailsGetRequests;
     }
 
@@ -303,7 +303,7 @@ public class InstituteService implements IInstituteService {
         List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
         try {
             if (searchText != null && !searchText.isEmpty()) {
-                String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id FROM institute inst inner join institute_details instDetails on inst.id = instDetails.institute_id where inst.is_active = 1  ";
+                String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id FROM institute inst where inst.is_active = 1  ";
                 String countryId = searchText.split(",")[0];
                 String name = searchText.split(",")[1];
                 String cityId = searchText.split(",")[2];
@@ -317,7 +317,7 @@ public class InstituteService implements IInstituteService {
                 } else if (cityId != null && !cityId.isEmpty()) {
                     sqlQuery += " and inst.city_id = " + Integer.valueOf(cityId);
                 } else if (worldRanking != null && !worldRanking.isEmpty()) {
-                    sqlQuery += " and instDetails.world_ranking = " + Integer.valueOf(worldRanking);
+                    sqlQuery += " and inst.world_ranking = " + Integer.valueOf(worldRanking);
                 } else if (typeId != null && !typeId.isEmpty()) {
                     sqlQuery += " and inst.institute_type_id = " + Integer.valueOf(typeId);
                 } else if (postDate != null && !postDate.isEmpty()) {

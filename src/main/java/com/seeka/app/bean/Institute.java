@@ -47,13 +47,22 @@ public class Institute implements Serializable {
     private Boolean isDeleted;
 
     private String instituteLogoUrl;
-
     private String instituteImageUrl;
-
     private InstituteDetails instituteDetailsObj;
-
     private List<InstituteService> serviceList;
     private String description;
+    
+    private Integer worldRanking;
+    private String accreditation;
+    private String website;
+    private String address;
+    private Integer totalStudent;
+    private String latitute;
+    private String longitude;
+    private String email;
+    private String avgCostOfLiving;
+    private String campus;
+    private String phoneNumber;
 
     public Institute() {
     }
@@ -404,5 +413,170 @@ public class Institute implements Serializable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * @return the worldRanking
+     */
+    @Column(name = "world_ranking")
+    public Integer getWorldRanking() {
+        return worldRanking;
+    }
+
+    /**
+     * @param worldRanking the worldRanking to set
+     */
+    public void setWorldRanking(Integer worldRanking) {
+        this.worldRanking = worldRanking;
+    }
+
+    /**
+     * @return the accreditation
+     */
+    @Column(name = "accreditation")
+    public String getAccreditation() {
+        return accreditation;
+    }
+
+    /**
+     * @param accreditation the accreditation to set
+     */
+    public void setAccreditation(String accreditation) {
+        this.accreditation = accreditation;
+    }
+
+    /**
+     * @return the website
+     */
+    @Column(name = "website")
+    public String getWebsite() {
+        return website;
+    }
+
+    /**
+     * @param website the website to set
+     */
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    /**
+     * @return the address
+     */
+    @Column(name = "address")
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @param address the address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * @return the totalStudent
+     */
+    @Column(name = "total_student")
+    public Integer getTotalStudent() {
+        return totalStudent;
+    }
+
+    /**
+     * @param totalStudent the totalStudent to set
+     */
+    public void setTotalStudent(Integer totalStudent) {
+        this.totalStudent = totalStudent;
+    }
+
+    /**
+     * @return the latitute
+     */
+    @Column(name = "latitute")
+    public String getLatitute() {
+        return latitute;
+    }
+
+    /**
+     * @param latitute the latitute to set
+     */
+    public void setLatitute(String latitute) {
+        this.latitute = latitute;
+    }
+
+    /**
+     * @return the longitude
+     */
+    @Column(name = "longitute")
+    public String getLongitude() {
+        return longitude;
+    }
+
+    /**
+     * @param longitude the longitude to set
+     */
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    /**
+     * @return the email
+     */
+    @Column(name = "email")
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * @return the avgCostOfLiving
+     */
+    @Column(name = "avg_cost_of_living")
+    public String getAvgCostOfLiving() {
+        return avgCostOfLiving;
+    }
+
+    /**
+     * @param avgCostOfLiving the avgCostOfLiving to set
+     */
+    public void setAvgCostOfLiving(String avgCostOfLiving) {
+        this.avgCostOfLiving = avgCostOfLiving;
+    }
+
+    /**
+     * @return the campus
+     */
+    @Column(name = "campus")
+    public String getCampus() {
+        return campus;
+    }
+
+    /**
+     * @param campus the campus to set
+     */
+    public void setCampus(String campus) {
+        this.campus = campus;
+    }
+
+    /**
+     * @return the phoneNumber
+     */
+    @Column(name = "phone_number")
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    /**
+     * @param phoneNumber the phoneNumber to set
+     */
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

@@ -16,7 +16,7 @@ public class InstituteGetRequestDto {
     private InstituteType instituteType;
     private String name;
     private List<InstituteDetailsGetRequest> instituteDetails;
-    private List<InstituteMedia> instituteYoutubes;
+    private List<String> instituteYoutubes;
 
     private Boolean isActive;
     private Date createdOn;
@@ -117,7 +117,7 @@ public class InstituteGetRequestDto {
     /**
      * @return the instituteYoutubes
      */
-    public List<InstituteMedia> getInstituteYoutubes() {
+    public List<String> getInstituteYoutubes() {
         return instituteYoutubes;
     }
 
@@ -125,7 +125,7 @@ public class InstituteGetRequestDto {
      * @param instituteYoutubes
      *            the instituteYoutubes to set
      */
-    public void setInstituteYoutubes(List<InstituteMedia> instituteYoutubes) {
+    public void setInstituteYoutubes(List<String> instituteYoutubes) {
         this.instituteYoutubes = instituteYoutubes;
     }
 

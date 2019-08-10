@@ -198,4 +198,9 @@ public class CountryController {
     public ResponseEntity<?> getCountryDetailsById(@PathVariable BigInteger id) {
         return ResponseEntity.accepted().body(countryService.getCountryDetailsById(id));
     }
+
+    @RequestMapping(value = "/level/faculty", method = RequestMethod.GET)
+    public ResponseEntity<?> getCountryLevelFaculty() {
+        return ResponseEntity.accepted().body(countryService.getCountryLevelFaculty());
+    }
 }

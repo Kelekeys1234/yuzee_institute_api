@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.Level;
 
 @Repository
+@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
 public class LevelDAO implements ILevelDAO {
 
     @Autowired
@@ -66,12 +67,9 @@ public class LevelDAO implements ILevelDAO {
     public List<Level> getLevelByCountryId(BigInteger countryId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.code as levelkey from level le  inner join institute_level il  on il.level_id = le.id "
-                        + "inner join country c  on c.id = il.country_id " + "where il.country_id = :countryId").setParameter("countryId", countryId);
-
+                        + "inner join country c on c.id = il.country_id " + "where il.country_id = :countryId").setParameter("countryId", countryId);
         List<Object[]> rows = query.list();
-
         List<Level> level = new ArrayList<>();
-
         for (Object[] row : rows) {
             Level obj = new Level();
             obj.setId(new BigInteger((row[0].toString())));

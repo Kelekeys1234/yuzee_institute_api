@@ -7,18 +7,11 @@ public class InstituteDetailsGetRequest {
     private Integer totalStudent;
     private Integer worldRanking;
     private String accreditation;
-    private String instituteLogoUrl;
-    private String averageCostFrom;
-    private String averageCostTo;
-    private String openingHour;
-    private String closingHour;
-    private String enrolment;
-    private String tuitionFessPaymentPlan;
-    private String scholarshipFinancingAssistance;
     private String email;
     private String phoneNumber;
     private String website;
     private String address;
+    private String avgCostOfLiving;
 
     /**
      * @return the latitute
@@ -96,126 +89,6 @@ public class InstituteDetailsGetRequest {
     }
 
     /**
-     * @return the instituteLogoUrl
-     */
-    public String getInstituteLogoUrl() {
-        return instituteLogoUrl;
-    }
-
-    /**
-     * @param instituteLogoUrl
-     *            the instituteLogoUrl to set
-     */
-    public void setInstituteLogoUrl(String instituteLogoUrl) {
-        this.instituteLogoUrl = instituteLogoUrl;
-    }
-
-    /**
-     * @return the averageCostFrom
-     */
-    public String getAverageCostFrom() {
-        return averageCostFrom;
-    }
-
-    /**
-     * @param averageCostFrom
-     *            the averageCostFrom to set
-     */
-    public void setAverageCostFrom(String averageCostFrom) {
-        this.averageCostFrom = averageCostFrom;
-    }
-
-    /**
-     * @return the averageCostTo
-     */
-    public String getAverageCostTo() {
-        return averageCostTo;
-    }
-
-    /**
-     * @param averageCostTo
-     *            the averageCostTo to set
-     */
-    public void setAverageCostTo(String averageCostTo) {
-        this.averageCostTo = averageCostTo;
-    }
-
-    /**
-     * @return the openingHour
-     */
-    public String getOpeningHour() {
-        return openingHour;
-    }
-
-    /**
-     * @param openingHour
-     *            the openingHour to set
-     */
-    public void setOpeningHour(String openingHour) {
-        this.openingHour = openingHour;
-    }
-
-    /**
-     * @return the closingHour
-     */
-    public String getClosingHour() {
-        return closingHour;
-    }
-
-    /**
-     * @param closingHour
-     *            the closingHour to set
-     */
-    public void setClosingHour(String closingHour) {
-        this.closingHour = closingHour;
-    }
-
-    /**
-     * @return the enrolment
-     */
-    public String getEnrolment() {
-        return enrolment;
-    }
-
-    /**
-     * @param enrolment
-     *            the enrolment to set
-     */
-    public void setEnrolment(String enrolment) {
-        this.enrolment = enrolment;
-    }
-
-    /**
-     * @return the tuitionFessPaymentPlan
-     */
-    public String getTuitionFessPaymentPlan() {
-        return tuitionFessPaymentPlan;
-    }
-
-    /**
-     * @param tuitionFessPaymentPlan
-     *            the tuitionFessPaymentPlan to set
-     */
-    public void setTuitionFessPaymentPlan(String tuitionFessPaymentPlan) {
-        this.tuitionFessPaymentPlan = tuitionFessPaymentPlan;
-    }
-
-    /**
-     * @return the scholarshipFinancingAssistance
-     */
-    public String getScholarshipFinancingAssistance() {
-        return scholarshipFinancingAssistance;
-    }
-
-    /**
-     * @param scholarshipFinancingAssistance
-     *            the scholarshipFinancingAssistance to set
-     */
-    public void setScholarshipFinancingAssistance(String scholarshipFinancingAssistance) {
-        this.scholarshipFinancingAssistance = scholarshipFinancingAssistance;
-    }
-
-    /**
      * @return the email
      */
     public String getEmail() {
@@ -273,6 +146,21 @@ public class InstituteDetailsGetRequest {
      */
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    /**
+     * @return the avgCostOfLiving
+     */
+    public String getAvgCostOfLiving() {
+        return avgCostOfLiving;
+    }
+
+    /**
+     * @param avgCostOfLiving
+     *            the avgCostOfLiving to set
+     */
+    public void setAvgCostOfLiving(String avgCostOfLiving) {
+        this.avgCostOfLiving = avgCostOfLiving;
     }
 
 }

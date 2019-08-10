@@ -65,7 +65,10 @@ public class CourseService implements ICourseService {
 
     @Autowired
     private IUserMyCourseDAO myCourseDAO;
-
+    
+    @Autowired
+    private CurrencyService currencyService;
+    
     @Override
     public void save(final Course course) {
         iCourseDAO.save(course);

@@ -111,6 +111,4 @@ public class CountryLevelFacultyUtil {
 		countryLevelFacultyList = new ArrayList<CountryDto>(finalList);
 		System.out.println("CountryLevelFacultyUtil : Job Completed: "+new Date());
     }
-    
-    
 }

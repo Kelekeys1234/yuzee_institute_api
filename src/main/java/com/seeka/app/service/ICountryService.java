@@ -31,4 +31,6 @@ public interface ICountryService {
     public Map<String, Object> getAllDiscoverCountry();
 
     public Map<String, Object> getCountryDetailsById(BigInteger id);
+
+    public Map<String, Object> getCountryLevelFaculty();
 }

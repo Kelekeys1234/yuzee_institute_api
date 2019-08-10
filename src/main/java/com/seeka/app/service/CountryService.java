@@ -13,14 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.CountryDetails;
+import com.seeka.app.bean.Faculty;
+import com.seeka.app.bean.Level;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICountryDetailsDAO;
 import com.seeka.app.dao.ICountryImageDAO;
+import com.seeka.app.dao.IFacultyDAO;
+import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.YoutubeVideoDAO;
 import com.seeka.app.dto.CountryDetailsResponse;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CountryImageDto;
+import com.seeka.app.dto.CountryLevelFacultyDto;
 import com.seeka.app.dto.CountryRequestDto;
 import com.seeka.app.dto.DiscoverCountryDto;
 import com.seeka.app.util.CDNServerUtil;
@@ -45,6 +50,12 @@ public class CountryService implements ICountryService {
 
     @Autowired
     private YoutubeVideoDAO youtubeVideoDAO;
+
+    @Autowired
+    private ILevelDAO levelDAO;
+
+    @Autowired
+    private IFacultyDAO facultyDAO;
 
     @Override
     public List<Country> getAll() {
@@ -168,5 +179,41 @@ public class CountryService implements ICountryService {
             images.add(CDNServerUtil.getCountryImageUrl(country.getName()));
         }
         return images;
+    }
+
+    @Override
+    public Map<String, Object> getCountryLevelFaculty() {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<CountryLevelFacultyDto> dtos = new ArrayList<>();
+        try {
+            List<Country> countries = countryDAO.getAll();
+            for (Country country : countries) {
+                CountryLevelFacultyDto dto = new CountryLevelFacultyDto();
+                dto.setId(country.getId());
+                dto.setName(country.getName());
+                dto.setCountryCode(country.getCountryCode());
+                dto.setLevels(getLevelByCountryId(country.getId()));
+                dtos.add(dto);
+            }
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Country details get successfully");
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        response.put("data", dtos);
+        return response;
+    }
+
+    private List<Level> getLevelByCountryId(BigInteger id) {
+        List<Level> levels = levelDAO.getLevelByCountryId(id);
+        for (Level level : levels) {
+            level.setFacultyList(getFacultiesByLevelId(level.getId(), id));
+        }
+        return levels;
+    }
+
+    private List<Faculty> getFacultiesByLevelId(BigInteger levelId, BigInteger countryId) {
+        return facultyDAO.getFacultyByCountryIdAndLevelId(countryId, levelId);
     }
 }

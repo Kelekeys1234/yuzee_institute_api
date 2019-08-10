@@ -135,7 +135,7 @@ public class CurrencyService implements ICurrencyService {
         return response;
     }
 
-    private Double convertCurrency(@Valid CurrencyConvertorRequest convertorRequest) {
+    public Double convertCurrency(@Valid CurrencyConvertorRequest convertorRequest) {
         Double convertedRate = null;
         CurrencyRate currencyRate = currencyRateDAO.getCurrencyRate(convertorRequest.getFromCurrencyId());
         if (currencyRate == null) {
