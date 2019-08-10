@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
@@ -27,7 +26,6 @@ import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICourseDAO;
-import com.seeka.app.dao.ICourseDetailsDAO;
 import com.seeka.app.dao.ICourseEnglishEligibilityDAO;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.IInstituteDAO;
@@ -49,9 +47,6 @@ public class CourseService implements ICourseService {
 
     @Autowired
     private ICourseDAO iCourseDAO;
-
-    @Autowired
-    private ICourseDetailsDAO courseDetailsDAO;
 
     @Autowired
     private ICourseEnglishEligibilityDAO courseEnglishEligibilityDAO;
@@ -145,23 +140,20 @@ public class CourseService implements ICourseService {
             course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
             course.setUpdatedBy("API");
             course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-            iCourseDAO.save(course);
 
-            CourseDetails courseDetails = new CourseDetails();
-            courseDetails.setIntake(courseDto.getIntake());
-            courseDetails.setCourseLink(courseDto.getCourseLink());
-            courseDetails.setDomesticFee(courseDto.getDomasticFee());
-            courseDetails.setInternationalFee(courseDto.getInternationalFee());
-            courseDetails.setGrades(courseDto.getGrades());
-            courseDetails.setJobFullTime(courseDto.getFullTime());
-            courseDetails.setJobPartTime(courseDto.getPartTime());
-            courseDetails.setFileUrl(courseDto.getDocumentUrl());
-            courseDetails.setContact(courseDto.getContact());
-            courseDetails.setOpeningHour(courseDto.getOpeningHourFrom() + "-" + courseDto.getOpeningHourTo());
-            courseDetails.setCampusLocation(courseDto.getCampusLocation());
-            courseDetails.setWebiste(courseDto.getWebsite());
-            courseDetails.setCourse(course);
-            courseDetailsDAO.save(courseDetails);
+            // Course Details
+            course.setIntake(courseDto.getIntake());
+            course.setCourseLink(courseDto.getCourseLink());
+            course.setDomesticFee(courseDto.getDomasticFee());
+            course.setInternationalFee(courseDto.getInternationalFee());
+            course.setGrades(courseDto.getGrades());
+            course.setJobFullTime(courseDto.getFullTime());
+            course.setJobPartTime(courseDto.getPartTime());
+            course.setFileUrl(courseDto.getDocumentUrl());
+            course.setContact(courseDto.getContact());
+            course.setOpeningHour(courseDto.getOpeningHourFrom() + "-" + courseDto.getOpeningHourTo());
+            course.setCampusLocation(courseDto.getCampusLocation());
+            iCourseDAO.save(course);
 
             if (courseDto.getEnglishEligibility() != null) {
                 courseEnglishEligibilityDAO.save(courseDto.getEnglishEligibility());
@@ -217,7 +209,7 @@ public class CourseService implements ICourseService {
             totalCount = iCourseDAO.findTotalCount();
             int startIndex;
             if (pageNumber > 1) {
-                startIndex = ((pageNumber-1) * pageSize) + 1;
+                startIndex = ((pageNumber - 1) * pageSize) + 1;
             } else {
                 startIndex = pageNumber;
             }
@@ -343,7 +335,7 @@ public class CourseService implements ICourseService {
             totalCount = iCourseDAO.findTotalCountByUserId(userId);
             int startIndex;
             if (pageNumber > 1) {
-                startIndex = ((pageNumber-1) * pageSize) + 1;
+                startIndex = ((pageNumber - 1) * pageSize) + 1;
             } else {
                 startIndex = pageNumber;
             }

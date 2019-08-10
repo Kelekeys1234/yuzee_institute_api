@@ -449,7 +449,6 @@ public class CourseController {
 				courseGradeEligibility.setGlobalALevel2("A");
 				courseGradeEligibility.setGlobalALevel3("A");
 				courseGradeEligibility.setGlobalALevel4("A");
-				// courseGradeEligibility.setGlobalALevel5("");
 				courseGradeEligibility.setGlobalGpa(3.5);
 				courseGradeEligibility.setIsActive(true);
 				courseGradeEligibility.setIsDeleted(false);
@@ -460,7 +459,6 @@ public class CourseController {
 				englishEligibility = new CourseEnglishEligibility();
 				englishEligibility.setCourse(course);
 				englishEligibility.setEnglishType(EnglishType.IELTS.toString());
-				// englishEligibility.setId(BigInteger.randomBigInteger());
 				englishEligibility.setIsActive(true);
 				englishEligibility.setListening(4.0);
 				englishEligibility.setOverall(4.5);
@@ -471,11 +469,9 @@ public class CourseController {
 				englishEligibility.setCreatedBy("AUTO");
 				englishEligibility.setCreatedOn(now);
 				courseEnglishService.save(englishEligibility);
-
 				englishEligibility = new CourseEnglishEligibility();
 				englishEligibility.setCourse(course);
 				englishEligibility.setEnglishType(EnglishType.TOEFL.toString());
-				// englishEligibility.setId(BigInteger.randomBigInteger());
 				englishEligibility.setIsActive(true);
 				englishEligibility.setListening(4.0);
 				englishEligibility.setOverall(4.5);

@@ -76,11 +76,10 @@ public class CourseDAO implements ICourseDAO {
     public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto) {
         Session session = sessionFactory.getCurrentSession();
 
-        String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName, cp.cost_range, "
-                        + "cp.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
-                        + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition, cp.local_fees, cp.intl_fees,crs.remarks "
-                        + "from course crs  inner join course_pricing cp  on cp.course_id = crs.id inner join institute inst "
-                        + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
+        String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName, crs.cost_range, "
+                        + "crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
+                        + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition, crs.domestic_fee, crs.international_fee,crs.remarks "
+                        + "from course crs inner join institute inst " + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
                         + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
                         + "left join institute_service iis  on iis.institute_id = inst.id where 1=1";
 
@@ -120,11 +119,11 @@ public class CourseDAO implements ICourseDAO {
         }
 
         if (null != courseSearchDto.getMinCost() && courseSearchDto.getMinCost() >= 0) {
-            sqlQuery += " and cp.cost_range >= " + courseSearchDto.getMinCost();
+            sqlQuery += " and crs.cost_range >= " + courseSearchDto.getMinCost();
         }
 
         if (null != courseSearchDto.getMaxCost() && courseSearchDto.getMaxCost() >= 0) {
-            sqlQuery += " and cp.cost_range <= " + courseSearchDto.getMaxCost();
+            sqlQuery += " and crs.cost_range <= " + courseSearchDto.getMaxCost();
         }
 
         if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
@@ -150,9 +149,9 @@ public class CourseDAO implements ICourseDAO {
             CourseSearchFilterDto sortingObj = courseSearchDto.getSortingObj();
             if (null != sortingObj.getPrice() && !sortingObj.getPrice().isEmpty()) {
                 if (sortingObj.getPrice().equals("ASC")) {
-                    sortingQuery = " order by cp.cost_range asc";
+                    sortingQuery = " order by crs.cost_range asc";
                 } else {
-                    sortingQuery = " order by cp.cost_range desc";
+                    sortingQuery = " order by crs.cost_range desc";
                 }
             }
 
@@ -204,7 +203,7 @@ public class CourseDAO implements ICourseDAO {
                 }
             }
         } else {
-            sortingQuery = " order by cp.intl_fees asc";
+            sortingQuery = " order by crs.international_fee asc";
         }
 
         String sizeQuery = sqlQuery;
@@ -303,8 +302,8 @@ public class CourseDAO implements ICourseDAO {
 
         Session session = sessionFactory.getCurrentSession();
 
-        String sqlQuery = "select  min(cp.local_fees) as minLocalFees,max(cp.local_fees) as maxLocalFees," + "min(cp.intl_fees) as minIntlFees ,max(cp.intl_fees ) as maxIntlFees "
-                        + "from course crs  inner join course_pricing cp  on cp.course_id = crs.id inner join institute inst "
+        String sqlQuery = "select  min(crs.domestic_fee) as minLocalFees,max(crs.domestic_fee) as maxLocalFees,"
+                        + "min(crs.international_fee) as minIntlFees ,max(crs.international_fee ) as maxIntlFees " + "from course crs inner join institute inst "
                         + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
                         + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id left join  "
                         + "institute_service iis  on iis.institute_id = inst.id where 1=1 ";
@@ -540,10 +539,9 @@ public class CourseDAO implements ICourseDAO {
     public List<CourseResponseDto> getAllCoursesByInstitute(final BigInteger instituteId, final CourseSearchDto courseSearchDto) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName,"
-                        + " cp.cost_range,cp.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
-                        + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition,cp.local_fees,cp.intl_fees "
-                        + "from course crs  inner join course_pricing cp  on cp.course_id = crs.id inner join institute inst "
-                        + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
+                        + " crs.cost_range, crs.currency, crs.duration,crs.duration_time, ci.id as cityId, ctry.id as countryId,ci.name as cityName,"
+                        + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition,crs.domestic_fee,crs.international_fee "
+                        + "from course crs  inner join institute inst " + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
                         + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
                         + "left join institute_service iis  on iis.institute_id = inst.id where crs.institute_id = '" + instituteId + "'";
 
@@ -573,11 +571,11 @@ public class CourseDAO implements ICourseDAO {
         }
 
         if (null != courseSearchDto.getMinCost() && courseSearchDto.getMinCost() >= 0) {
-            sqlQuery += " and cp.cost_range >= " + courseSearchDto.getMinCost();
+            sqlQuery += " and crs.cost_range >= " + courseSearchDto.getMinCost();
         }
 
         if (null != courseSearchDto.getMaxCost() && courseSearchDto.getMaxCost() >= 0) {
-            sqlQuery += " and cp.cost_range <= " + courseSearchDto.getMaxCost();
+            sqlQuery += " and crs.cost_range <= " + courseSearchDto.getMaxCost();
         }
 
         if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
@@ -664,10 +662,9 @@ public class CourseDAO implements ICourseDAO {
     public CourseResponseDto getCourse(final BigInteger instituteId, final CourseSearchDto courseSearchDto) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName,"
-                        + " cp.cost_range,cp.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
-                        + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition,cp.local_fees,cp.intl_fees "
-                        + "from course crs  inner join course_pricing cp  on cp.course_id = crs.id inner join institute inst "
-                        + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
+                        + " crs.cost_range,crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
+                        + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition,crs.domestic_fee,crs.international_fee "
+                        + "from course crs inner join institute inst " + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
                         + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
                         + "left join institute_service iis  on iis.institute_id = inst.id where crs.institute_id = " + instituteId;
 
@@ -697,11 +694,11 @@ public class CourseDAO implements ICourseDAO {
         }
 
         if (null != courseSearchDto.getMinCost() && courseSearchDto.getMinCost() >= 0) {
-            sqlQuery += " and cp.cost_range >= " + courseSearchDto.getMinCost();
+            sqlQuery += " and crs.cost_range >= " + courseSearchDto.getMinCost();
         }
 
         if (null != courseSearchDto.getMaxCost() && courseSearchDto.getMaxCost() >= 0) {
-            sqlQuery += " and cp.cost_range <= " + courseSearchDto.getMaxCost();
+            sqlQuery += " and crs.cost_range <= " + courseSearchDto.getMaxCost();
         }
 
         if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
@@ -788,12 +785,11 @@ public class CourseDAO implements ICourseDAO {
                         .createSQLQuery("select crs.id as crs_id,crs.stars as crs_stars,crs.name as crs_name,crs.course_lang as crs_cour_lang,crs.description as crs_desc,crs.duration as crs_dur,crs.duration_time as crs_du_time,crs.world_ranking as crs_word_ranking, "
                                         + "ins.id as ins_id,ins.name as ins_name,crs.world_ranking as ins_wrld_rank,ins.int_emails as ins_int_emails,ins.int_ph_num as ins_int_ph_num,ins.longitude as ins_longitude,ins.latitude as ins_latitude,ins.t_num_of_stu as ins_t_num_of_stu,ins.website as ins_website,ins.address as ins_address, "
                                         + "id.about_us_info as ab_us_info,id.closing_hour as close_hour,id.opening_hour as open_hour, "
-                                        + "cp.currency,cp.cost_range,cp.intl_fees,cp.local_fees, "
+                                        + "crs.currency,crs.cost_range,crs.international_fee,crs.domestic_fee, "
                                         + "cty.name as city_name,cntry.name as country_name,fty.name as faulty_name,le.id as le_id,le.name as le_name,cty.id as cityid,cntry.id as countryid,cntry.visa as visa from course crs  "
                                         + "inner join institute ins  on ins.id = crs.institute_id inner join country cntry  on cntry.id = crs.country_id "
                                         + "inner join city cty  on cty.id = crs.city_id inner join faculty fty  on fty.id = crs.faculty_id inner join institute_details id  on id.institute_id = crs.institute_id "
-                                        + "inner join level le  on fty.level_id = le.id inner join course_pricing cp  on cp.course_id = crs.id where " + "crs.id = '" + courseId
-                                        + "'");
+                                        + "inner join level le  on fty.level_id = le.id where " + "crs.id = '" + courseId + "'");
 
         List<Object[]> rows = query.list();
         InstituteResponseDto instituteObj = null;
@@ -910,10 +906,10 @@ public class CourseDAO implements ICourseDAO {
     public List<CourseRequest> getAll(final Integer pageNumber, final Integer pageSize) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
-                        + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
-                        + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
-                        + " cd.job_part_time, cd.job_full_time, cd.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM course c inner join course_details cd "
-                        + " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL ORDER BY c.created_on DESC ";
+                        + "c.description, c.intake, c.duration, c.course_lang, c.domestic_fee, c.international_fee,"
+                        + "c.grade, c.file_url, c.contact, c.opening_hours, c.campus_location, c.website,"
+                        + " c.job_part_time, c.job_full_time, c.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM course c "
+                        + " where c.is_active = 1 and c.deleted_on IS NULL ORDER BY c.created_on DESC ";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
@@ -1168,10 +1164,10 @@ public class CourseDAO implements ICourseDAO {
     public List<CourseRequest> getUserCourse(final BigInteger userId, final Integer pageNumber, final Integer pageSize) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
-                        + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
-                        + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
-                        + " cd.job_part_time, cd.job_full_time, cd.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM  user_my_course umc left join course c on umc.course_id = c.id left join course_details cd "
-                        + " on c.id = cd.course_id where umc.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = " + userId + "  ORDER BY c.created_on DESC ";
+                        + "c.description, c.intake,c.duration, c.course_lang,c.domestic_fee, c.international_fee,"
+                        + " c.grade, c.file_url, c.contact, c.opening_hours, c.campus_location, c.website,"
+                        + " c.job_part_time, c.job_full_time, c.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM  user_my_course umc left join course c on umc.course_id = c.id "
+                        + " where umc.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = " + userId + "  ORDER BY c.created_on DESC ";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
@@ -1341,10 +1337,10 @@ public class CourseDAO implements ICourseDAO {
     public CourseRequest getCourseById(final Integer courseId) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
-                        + "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
-                        + "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
-                        + " cd.job_part_time, cd.job_full_time, cd.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time,c.remarks  FROM course c inner join course_details cd "
-                        + " on c.id = cd.course_id where c.id=" + courseId;
+                        + "c.description, c.intake,c.duration, c.course_lang, c.domestic_fee, c.international_fee,"
+                        + "c.grade, c.file_url, c.contact, c.opening_hours, c.campus_location, c.website,"
+                        + " c.job_part_time, c.job_full_time, c.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time,c.remarks  FROM course c " + " where c.id="
+                        + courseId;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
         CourseRequest courseRequest = null;

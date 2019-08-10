@@ -58,6 +58,27 @@ public class Course implements Serializable {
 	private Boolean isDeleted;
 	private Integer cId;
 	private Level level;
+	
+    private String availbilty;
+    private String partFull;
+    private String studyMode;
+	private String intake;
+    private String fileUrl;
+    private String grades;
+    private String contact;
+    private String openingHour;
+    private String campusLocation;
+    private String jobFullTime;
+    private String jobPartTime;
+    private String courseLink;
+    private String domesticFee;
+    private String internationalFee;
+    private String currency;
+    private String currencyTime;
+    private String usdInternationFee;
+    private String usdDomasticFee;
+    private Double costRange;
+    
 
 	public Course() {
 	}
@@ -608,5 +629,256 @@ public class Course implements Serializable {
 	public void setLevel(final Level level) {
 		this.level = level;
 	}
+	
+	@Column(name = "availbilty", length = 250)
+    public String getAvailbilty() {
+        return this.availbilty;
+    }
+
+    public void setAvailbilty(String availbilty) {
+        this.availbilty = availbilty;
+    }
+
+    @Column(name = "part_full", length = 50)
+    public String getPartFull() {
+        return this.partFull;
+    }
+
+    public void setPartFull(String partFull) {
+        this.partFull = partFull;
+    }
+
+    @Column(name = "study_mode", length = 50)
+    public String getStudyMode() {
+        return this.studyMode;
+    }
+
+    public void setStudyMode(String studyMode) {
+        this.studyMode = studyMode;
+    }
+   
+    @Column(name = "currency", length = 100)
+    public String getCurrency() {
+        return this.currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    @Column(name = "currency_time", length = 250)
+    public String getCurrencyTime() {
+        return this.currencyTime;
+    }
+
+    public void setCurrencyTime(String currencyTime) {
+        this.currencyTime = currencyTime;
+    }
+
+    /**
+     * @return the usdInternationFee
+     */
+    @Column(name = "usd_international_fee")
+    public String getUsdInternationFee() {
+        return usdInternationFee;
+    }
+
+    /**
+     * @param usdInternationFee
+     *            the usdInternationFee to set
+     */
+    public void setUsdInternationFee(String usdInternationFee) {
+        this.usdInternationFee = usdInternationFee;
+    }
+
+    /**
+     * @return the usdDomasticFee
+     */
+    @Column(name = "usd_domestic_fee")
+    public String getUsdDomasticFee() {
+        return usdDomasticFee;
+    }
+
+    /**
+     * @param usdDomasticFee
+     *            the usdDomasticFee to set
+     */
+    public void setUsdDomasticFee(String usdDomasticFee) {
+        this.usdDomasticFee = usdDomasticFee;
+    }
+
+    /**
+     * @return the intake
+     */
+    @Column(name = "intake")
+    public String getIntake() {
+        return intake;
+    }
+
+    /**
+     * @param intake the intake to set
+     */
+    public void setIntake(String intake) {
+        this.intake = intake;
+    }
+
+    /**
+     * @return the fileUrl
+     */
+    @Column(name = "file_url")
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    /**
+     * @param fileUrl the fileUrl to set
+     */
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    /**
+     * @return the grades
+     */
+    @Column(name = "grade")
+    public String getGrades() {
+        return grades;
+    }
+
+    /**
+     * @param grades the grades to set
+     */
+    public void setGrades(String grades) {
+        this.grades = grades;
+    }
+
+    /**
+     * @return the contact
+     */
+    @Column(name = "contact")
+    public String getContact() {
+        return contact;
+    }
+
+    /**
+     * @param contact the contact to set
+     */
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    /**
+     * @return the openingHour
+     */
+    @Column(name = "opening_hours")
+    public String getOpeningHour() {
+        return openingHour;
+    }
+
+    /**
+     * @param openingHour the openingHour to set
+     */
+    public void setOpeningHour(String openingHour) {
+        this.openingHour = openingHour;
+    }
+
+    /**
+     * @return the campusLocation
+     */
+    @Column(name = "campus_location")
+    public String getCampusLocation() {
+        return campusLocation;
+    }
+
+    /**
+     * @param campusLocation the campusLocation to set
+     */
+    public void setCampusLocation(String campusLocation) {
+        this.campusLocation = campusLocation;
+    }
+
+    /**
+     * @return the jobFullTime
+     */
+    @Column(name = "job_full_time")
+    public String getJobFullTime() {
+        return jobFullTime;
+    }
+
+    /**
+     * @param jobFullTime the jobFullTime to set
+     */
+    public void setJobFullTime(String jobFullTime) {
+        this.jobFullTime = jobFullTime;
+    }
+
+    /**
+     * @return the jobPartTime
+     */
+    @Column(name = "job_part_time")
+    public String getJobPartTime() {
+        return jobPartTime;
+    }
+
+    /**
+     * @param jobPartTime the jobPartTime to set
+     */
+    public void setJobPartTime(String jobPartTime) {
+        this.jobPartTime = jobPartTime;
+    }
+
+    /**
+     * @return the courseLink
+     */
+    @Column(name = "course_link")
+    public String getCourseLink() {
+        return courseLink;
+    }
+
+    /**
+     * @param courseLink the courseLink to set
+     */
+    public void setCourseLink(String courseLink) {
+        this.courseLink = courseLink;
+    }
+
+    /**
+     * @return the domesticFee
+     */
+    @Column(name = "domestic_fee")
+    public String getDomesticFee() {
+        return domesticFee;
+    }
+
+    /**
+     * @param domesticFee the domesticFee to set
+     */
+    public void setDomesticFee(String domesticFee) {
+        this.domesticFee = domesticFee;
+    }
+
+    /**
+     * @return the internationalFee
+     */
+    @Column(name = "international_fee")
+    public String getInternationalFee() {
+        return internationalFee;
+    }
+
+    /**
+     * @param internationalFee the internationalFee to set
+     */
+    public void setInternationalFee(String internationalFee) {
+        this.internationalFee = internationalFee;
+    }
+    
+    @Column(name = "cost_range", precision = 18, scale = 3)
+    public Double getCostRange() {
+        return this.costRange;
+    }
+
+    public void setCostRange(Double costRange) {
+        this.costRange = costRange;
+    }
 
 }
