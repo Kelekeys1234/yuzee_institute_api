@@ -3,11 +3,13 @@ package com.seeka.app.dao;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
+import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
@@ -52,5 +54,9 @@ public interface ICourseDAO {
 	List<UserCompareCourse> getUserCompareCourse(BigInteger userId);
 
 	CourseRequest getCourseById(Integer valueOf);
+
+	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, Set<String> keyword);
+
+	Course getCourseData(BigInteger id);
 
 }

@@ -536,4 +536,9 @@ public class CourseController {
 	public ResponseEntity<?> getUserCompareCourse(@PathVariable final BigInteger userId) throws Exception {
 		return ResponseEntity.accepted().body(courseService.getUserCompareCourse(userId));
 	}
+
+	@RequestMapping(value = "/youtube/{courseId}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final BigInteger courseId) throws Exception {
+		return ResponseEntity.accepted().body(courseService.getYoutubeDataforCourse(courseId));
+	}
 }

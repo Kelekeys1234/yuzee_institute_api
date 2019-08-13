@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
@@ -51,4 +52,6 @@ public interface ICourseService {
 	Map<String, Object> addUserCompareCourse(@Valid UserCourse userCourse);
 
 	Map<String, Object> getUserCompareCourse(BigInteger userId);
+
+	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger courseId);
 }
