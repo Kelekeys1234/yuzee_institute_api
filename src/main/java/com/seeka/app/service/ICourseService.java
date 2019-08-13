@@ -47,7 +47,7 @@ public interface ICourseService {
 
 	Map<String, Object> addUserCourses(@Valid UserCourse userCourse);
 
-	Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize);
+	Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, Boolean sortAsscending);
 
 	Map<String, Object> addUserCompareCourse(@Valid UserCourse userCourse);
 

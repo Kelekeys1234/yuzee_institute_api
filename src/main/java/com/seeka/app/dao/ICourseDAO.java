@@ -43,7 +43,7 @@ public interface ICourseDAO {
 
 	List<CourseRequest> searchCoursesBasedOnFilter(String query);
 
-	List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize);
+	List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType);
 
 	int findTotalCountByUserId(BigInteger userId);
 

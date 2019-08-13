@@ -66,4 +66,5 @@ public class IConstant {
     public static final String INSTITUTE_TYPE = "Institution";
     public static final String CITY_TYPE = "City";
     public static final String COURSE_TYPE = "Course";
+    public static final String DEFAULT_BASE_CURRENCY = "USD";
 }

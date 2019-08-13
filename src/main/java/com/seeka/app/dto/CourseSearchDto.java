@@ -24,6 +24,9 @@ public class CourseSearchDto {
 	private Integer pageNumber;
 	private CourseSearchFilterDto sortingObj;
 	private BigInteger instituteId;
+	private boolean sortAsscending;
+	private String sortBy;
+	private String currencyCode;
 
 	public String getSearchKey() {
 		return searchKey;
@@ -189,5 +192,47 @@ public class CourseSearchDto {
 				.append(instituteId).append("]");
 		return builder.toString();
 	}
+
+    /**
+     * @return the sortAsscending
+     */
+    public boolean getSortAsscending() {
+        return sortAsscending;
+    }
+
+    /**
+     * @param sortAsscending the sortAsscending to set
+     */
+    public void setSortAsscending(boolean sortAsscending) {
+        this.sortAsscending = sortAsscending;
+    }
+
+    /**
+     * @return the sortBy
+     */
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    /**
+     * @param sortBy the sortBy to set
+     */
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    /**
+     * @return the currencyCode
+     */
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    /**
+     * @param currencyCode the currencyCode to set
+     */
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
 
 }
