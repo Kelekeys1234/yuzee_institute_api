@@ -1,7 +1,7 @@
-package com.seeka.app.dao;import java.math.BigInteger;
+package com.seeka.app.dao;
 
+import java.math.BigInteger;
 import java.util.List;
-
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -14,45 +14,44 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
 
 @Repository
-public class CourseEnglishEligibilityDAO implements ICourseEnglishEligibilityDAO{
-	
+public class CourseEnglishEligibilityDAO implements ICourseEnglishEligibilityDAO {
+
 	@Autowired
 	private SessionFactory sessionFactory;
-	
-	
+
 	@Override
-	public void save(CourseEnglishEligibility obj) {	
-		Session session = sessionFactory.getCurrentSession();		
-		session.save(obj);	   					
+	public void save(final CourseEnglishEligibility obj) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(obj);
 	}
-	
+
 	@Override
-	public void update(CourseEnglishEligibility obj) {	
-		Session session = sessionFactory.getCurrentSession();		
-		session.update(obj);	   					
+	public void update(final CourseEnglishEligibility obj) {
+		Session session = sessionFactory.getCurrentSession();
+		session.update(obj);
 	}
-	
+
 	@Override
-	public CourseEnglishEligibility get(BigInteger id) {	
-		Session session = sessionFactory.getCurrentSession();		
+	public CourseEnglishEligibility get(final BigInteger id) {
+		Session session = sessionFactory.getCurrentSession();
 		CourseEnglishEligibility obj = session.get(CourseEnglishEligibility.class, id);
 		return obj;
 	}
-	
+
 	@Override
 	public List<CourseEnglishEligibility> getAll() {
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(Course.class); 
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Course.class);
 		return crit.list();
 	}
-	
+
 	@Override
-	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(BigInteger courseID) {
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(CourseEnglishEligibility.class); 
-		crit.add(Restrictions.eq("courseId",courseID));
-		return crit.list();
+	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(final BigInteger courseID) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria c = session.createCriteria(CourseEnglishEligibility.class, "courseEnglishEligibility");
+		c.createAlias("courseEnglishEligibility.course", "course");
+		c.add(Restrictions.eq("course.id", courseID));
+		return c.list();
 	}
-	
-	 
+
 }

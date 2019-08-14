@@ -54,4 +54,6 @@ public interface ICourseService {
 	Map<String, Object> getUserCompareCourse(BigInteger userId);
 
 	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger courseId);
+
+	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, String courseName);
 }
