@@ -531,7 +531,7 @@ public class CourseController {
 	@RequestMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getUserCourses(@PathVariable final BigInteger userId, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final String currencyCode, @RequestParam(required = false) final String sortBy,
-			@RequestParam(required = false) final Boolean sortAsscending) throws Exception {
+			@RequestParam(required = false) final boolean sortAsscending) throws Exception {
 		return ResponseEntity.accepted().body(courseService.getUserCourse(userId, pageNumber, pageSize, currencyCode, sortBy, sortAsscending));
 	}
 
