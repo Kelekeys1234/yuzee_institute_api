@@ -25,7 +25,6 @@ import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.UserInfo;
-import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseRequest;
@@ -44,7 +43,6 @@ import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IUserInstCourseReviewService;
-import com.seeka.app.service.IUserMyCourseService;
 import com.seeka.app.service.IUserService;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.IConstant;
@@ -77,9 +75,6 @@ public class CourseController {
 
 	@Autowired
 	private ICourseGradeEligibilityService courseGradeService;
-
-	@Autowired
-	private IUserMyCourseService myCourseService;
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws Exception {
@@ -497,29 +492,6 @@ public class CourseController {
 		response.put("status", 1);
 		response.put("message", "Success.!");
 		response.put("courseList", courseList);
-		return ResponseEntity.accepted().body(response);
-	}
-
-	@RequestMapping(value = "/user/favourite", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> markUserFavoriteCourse(@RequestBody final UserMyCourse obj) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		UserMyCourse dbObj = myCourseService.getDataByUserIDAndCourseID(obj.getUserId(), obj.getCourse().getId());
-		Date now = new Date();
-		String message = "Added to my course.";
-		if (null != dbObj) {
-			dbObj.setIsActive(false);
-			dbObj.setUpdatedBy("");
-			dbObj.setUpdatedOn(now);
-			myCourseService.update(dbObj);
-			message = "Removed to my course.";
-		} else {
-			obj.setIsActive(true);
-			obj.setCreatedBy("");
-			obj.setCreatedOn(now);
-			myCourseService.save(obj);
-		}
-		response.put("status", 1);
-		response.put("message", message);
 		return ResponseEntity.accepted().body(response);
 	}
 

@@ -452,4 +452,9 @@ public class CourseService implements ICourseService {
 		Set<String> keyword = courseKeyword.stream().filter(i -> !i.isEmpty() && !skipWords.contains(i)).collect(Collectors.toSet());
 		return iCourseDAO.getYoutubeDataforCourse(instituteId, keyword);
 	}
+
+	@Override
+	public Course getCourseData(final BigInteger courseId) {
+		return iCourseDAO.getCourseData(courseId);
+	}
 }

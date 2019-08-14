@@ -1,17 +1,29 @@
-package com.seeka.app.service;import java.math.BigInteger;
+package com.seeka.app.service;
 
-
+import java.math.BigInteger;
 import java.util.List;
 
-
 import com.seeka.app.bean.UserMyCourse;
+import com.seeka.app.dto.UserMyCourseRequestDto;
+import com.seeka.app.exception.ValidationException;
 
+/**
+ *
+ * @author SeekADegree
+ *
+ */
 public interface IUserMyCourseService {
-	public void save(UserMyCourse user);
-	public void update(UserMyCourse user);
-	public UserMyCourse get(BigInteger userId);
-	public UserMyCourse getDataByUserIDAndCourseID(BigInteger userId,BigInteger courseId);
-	public List<UserMyCourse> getDataByUserID(BigInteger userId);
-	public List<BigInteger> getAllCourseIdsByUser(BigInteger userId);
-}
+	void save(UserMyCourse user);
 
+	void update(UserMyCourse user);
+
+	UserMyCourse get(BigInteger userId);
+
+	UserMyCourse getDataByUserIDAndCourseID(BigInteger userId, BigInteger courseId);
+
+	List<UserMyCourse> getUserMyCourseByUserID(BigInteger userId);
+
+	List<BigInteger> getAllCourseIdsByUser(BigInteger userId);
+
+	void createUserMyCourse(UserMyCourseRequestDto courseRequestDto) throws ValidationException;
+}
