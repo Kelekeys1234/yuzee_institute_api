@@ -3,14 +3,14 @@ package com.seeka.app.dto;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-public class UserMyCourseRequestDto implements Serializable {
+public class UserArticleRequestDto implements Serializable {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = -5780245895720098894L;
 	private BigInteger userId;
-	private BigInteger courseId;
+	private BigInteger articleId;
 
 	public BigInteger getUserId() {
 		return userId;
@@ -20,19 +20,19 @@ public class UserMyCourseRequestDto implements Serializable {
 		this.userId = userId;
 	}
 
-	public BigInteger getCourseId() {
-		return courseId;
+	public BigInteger getArticleId() {
+		return articleId;
 	}
 
-	public void setCourseId(final BigInteger courseId) {
-		this.courseId = courseId;
+	public void setArticleId(final BigInteger articleId) {
+		this.articleId = articleId;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (courseId == null ? 0 : courseId.hashCode());
+		result = prime * result + (articleId == null ? 0 : articleId.hashCode());
 		result = prime * result + (userId == null ? 0 : userId.hashCode());
 		return result;
 	}
@@ -48,12 +48,12 @@ public class UserMyCourseRequestDto implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		UserMyCourseRequestDto other = (UserMyCourseRequestDto) obj;
-		if (courseId == null) {
-			if (other.courseId != null) {
+		UserArticleRequestDto other = (UserArticleRequestDto) obj;
+		if (articleId == null) {
+			if (other.articleId != null) {
 				return false;
 			}
-		} else if (!courseId.equals(other.courseId)) {
+		} else if (!articleId.equals(other.articleId)) {
 			return false;
 		}
 		if (userId == null) {
@@ -69,7 +69,7 @@ public class UserMyCourseRequestDto implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserCourseRequestDto [userId=").append(userId).append(", courseId=").append(courseId).append("]");
+		builder.append("UserArticleRequestDto [userId=").append(userId).append(", articleId=").append(articleId).append("]");
 		return builder.toString();
 	}
 

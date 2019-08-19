@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.dao.IUserMyCourseDAO;
-import com.seeka.app.dto.UserMyCourseRequestDto;
+import com.seeka.app.dto.UserCourseRequestDto;
 import com.seeka.app.exception.ValidationException;
 
 /**
@@ -30,7 +30,7 @@ public class UserMyCourseService implements IUserMyCourseService {
 	private ICourseService iCourseService;
 
 	@Override
-	public void createUserMyCourse(final UserMyCourseRequestDto courseRequestDto) throws ValidationException {
+	public void createUserMyCourse(final UserCourseRequestDto courseRequestDto) throws ValidationException {
 		UserMyCourse existingUserMyCourse = iUserMyCourseDAO.getDataByUserIDAndCourseID(courseRequestDto.getUserId(), courseRequestDto.getCourseId());
 		Date now = new Date();
 		if (existingUserMyCourse != null) {

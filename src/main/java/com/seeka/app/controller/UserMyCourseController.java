@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
-import com.seeka.app.dto.UserMyCourseRequestDto;
+import com.seeka.app.dto.UserCourseRequestDto;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.UserMyCourseService;
 
@@ -32,7 +32,7 @@ public class UserMyCourseController {
 	private UserMyCourseService userMyCourseService;
 
 	@PostMapping(value = "/user/favourite")
-	public ResponseEntity<?> markUserFavoriteCourse(@RequestBody final UserMyCourseRequestDto courseRequestDto) throws ValidationException {
+	public ResponseEntity<?> markUserFavoriteCourse(@RequestBody final UserCourseRequestDto courseRequestDto) throws ValidationException {
 		userMyCourseService.createUserMyCourse(courseRequestDto);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Added to my course.").create();
 	}

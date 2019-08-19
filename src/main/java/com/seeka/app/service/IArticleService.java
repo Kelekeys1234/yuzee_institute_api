@@ -48,4 +48,6 @@ public interface IArticleService {
 	Map<String, Object> searchBasedOnNameAndContent(String searchText);
 
 	Map<String, Object> addArticleImage(MultipartFile file, BigInteger articleId);
+
+	SeekaArticles findByArticleId(BigInteger articleId);
 }

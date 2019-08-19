@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.UserMyCourse;
-import com.seeka.app.dto.UserMyCourseRequestDto;
+import com.seeka.app.dto.UserCourseRequestDto;
 import com.seeka.app.exception.ValidationException;
 
 /**
@@ -25,5 +25,5 @@ public interface IUserMyCourseService {
 
 	List<BigInteger> getAllCourseIdsByUser(BigInteger userId);
 
-	void createUserMyCourse(UserMyCourseRequestDto courseRequestDto) throws ValidationException;
+	void createUserMyCourse(UserCourseRequestDto courseRequestDto) throws ValidationException;
 }

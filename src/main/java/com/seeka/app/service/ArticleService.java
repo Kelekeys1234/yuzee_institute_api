@@ -215,6 +215,11 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
+	public SeekaArticles findByArticleId(final BigInteger articleId) {
+		return articleDAO.findById(articleId);
+	}
+
+	@Override
 	public Map<String, Object> fetchAllArticleByPage(final BigInteger page, final BigInteger size, final String query, final boolean status,
 			final BigInteger categoryId, final String tag, final String status2) {
 		Map<String, Object> response = new HashMap<>();
