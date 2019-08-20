@@ -34,6 +34,7 @@ import com.seeka.app.dao.ICourseEnglishEligibilityDAO;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IUserMyCourseDAO;
+import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
@@ -471,5 +472,11 @@ public class CourseService implements ICourseService {
         response.put("message", "Service retrieve succesfully");
         response.put("servies", services);
         return response;
+    }
+
+    @Override
+    public Map<String, Object> advanceSearch(AdvanceSearchDto courseSearchDto) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

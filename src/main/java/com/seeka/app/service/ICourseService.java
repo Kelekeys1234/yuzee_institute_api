@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.YoutubeVideo;
+import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
@@ -60,4 +61,6 @@ public interface ICourseService {
 	Course getCourseData(BigInteger courseId);
 
     Map<String, Object> getAllServices();
+
+    Map<String, Object> advanceSearch(AdvanceSearchDto courseSearchDto);
 }

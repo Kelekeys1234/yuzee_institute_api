@@ -26,6 +26,7 @@ import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.UserInfo;
 import com.seeka.app.bean.YoutubeVideo;
+import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
@@ -132,43 +133,8 @@ public class CourseController {
             response.put("error", errorDto);
             return ResponseEntity.badRequest().body(response);
         }
-
-        // UserInfo user = userService.get(courseSearchDto.getUserId());
-        //
-        // if (null == user) {
-        // errorDto = new ErrorDto();
-        // errorDto.setCode("400");
-        // errorDto.setMessage("Invalid user.!");
-        // response.put("status", 0);
-        // response.put("error", errorDto);
-        // return ResponseEntity.badRequest().body(response);
-        // }
-        //
-        // Currency userCurrency =
-        // CurrencyUtil.getCurrencyObjById(user.getPreferredCurrencyId());
-        // Currency currency = null;
-        // String message = "";
-        // if (null != courseSearchDto.getCurrencyId() &&
-        // !user.getPreferredCurrencyId().equals(courseSearchDto.getCurrencyId())) {
-        // currency = CurrencyUtil.getCurrencyObjById(courseSearchDto.getCurrencyId());
-        // response.put("showCurrencyPopup", true);
-        // message = "Do you want to change " + currency.getName() + " (" +
-        // currency.getCode() + ") as your currency.?";
-        // } else {
-        // currency = CurrencyUtil.getCurrencyObjById(user.getPreferredCurrencyId());
-        // response.put("showCurrencyPopup", false);
-        // }
-        // response.put("currencyPopupMsg", message);
-
-        // List<UserMyCourse> userMyCourses =
-        // myCourseService.getDataByUserID(courseSearchDto.getUserId());
         Map<BigInteger, Boolean> favouriteMap = new HashMap<>();
-        // for (UserMyCourse obj : userMyCourses) {
-        // favouriteMap.put(obj.getCourse().getId(), true);
-        // }
-
         List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
-
         for (CourseResponseDto obj : courseList) {
             try {
                 Boolean isFav = favouriteMap.get(obj.getCourseId());
@@ -192,26 +158,16 @@ public class CourseController {
         } else {
             showMore = false;
         }
-
-        // String oldCurrencyCode = null;
-        // if (userCurrency != null && userCurrency.getCode() != null) {
-        // oldCurrencyCode = userCurrency.getCode();
-        // }
-        // CourseFilterCostResponseDto costResponseDto =
-        // courseService.getAllCoursesFilterCostInfo(courseSearchDto, currency,
-        // oldCurrencyCode);
-        // if (currency != null) {
-        // costResponseDto.setCurrencyId(currency.getId());
-        // costResponseDto.setCurrencySymbol(currency.getSymbol());
-        // costResponseDto.setCurrencyCode(currency.getCode());
-        // costResponseDto.setCurrencyName(currency.getName());
-        // }
         response.put("status", 1);
         response.put("message", "Success.!");
         response.put("paginationObj", new PaginationDto(totalCount, showMore));
         response.put("courseList", courseList);
-        // response.put("costCurrency", costResponseDto);
         return ResponseEntity.ok().body(response);
+    }
+    
+    @RequestMapping(value = "/advanceSearch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> advanceSearch(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception {
+        return ResponseEntity.ok().body(courseService.advanceSearch(courseSearchDto));
     }
 
     @RequestMapping(value = "/mycourses", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")

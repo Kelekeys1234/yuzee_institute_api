@@ -736,7 +736,7 @@ public class SeekaArticles implements Serializable {
      * @return the seekaRecommended
      */
     @Column(name = "seeka_recommended")
-    public boolean isSeekaRecommended() {
+    public boolean getSeekaRecommended() {
         return seekaRecommended;
     }
 
