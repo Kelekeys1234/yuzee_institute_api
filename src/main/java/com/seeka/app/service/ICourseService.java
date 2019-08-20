@@ -58,4 +58,6 @@ public interface ICourseService {
 	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, String courseName);
 
 	Course getCourseData(BigInteger courseId);
+
+    Map<String, Object> getAllServices();
 }

@@ -36,4 +36,6 @@ public interface IInstituteDAO {
     int findTotalCount();
 
     List<Institute> getAll(Integer pageNumber, Integer pageSize);
+
+    List<com.seeka.app.bean.Service> getAllServices();
 }
