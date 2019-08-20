@@ -8,6 +8,8 @@ public class AdvanceSearchDto {
     private List<BigInteger> faculties;
     private List<BigInteger> levelIds;
     private List<BigInteger> serviceIds;
+    private List<BigInteger> countryIds;
+    private List<String> courseKeys;
     private Double minCost;
     private Double maxCost;
     private Integer minDuration;
@@ -15,6 +17,9 @@ public class AdvanceSearchDto {
 
     private boolean sortAsscending;
     private String sortBy;
+    private Integer maxSizePerPage;
+    private Integer pageNumber;
+    private String currencyCode;
 
     /**
      * @return the faculties
@@ -124,7 +129,7 @@ public class AdvanceSearchDto {
     /**
      * @return the sortAsscending
      */
-    public boolean isSortAsscending() {
+    public boolean getSortAsscending() {
         return sortAsscending;
     }
 
@@ -149,6 +154,76 @@ public class AdvanceSearchDto {
      */
     public void setSortBy(String sortBy) {
         this.sortBy = sortBy;
+    }
+
+    /**
+     * @return the countryIds
+     */
+    public List<BigInteger> getCountryIds() {
+        return countryIds;
+    }
+
+    /**
+     * @param countryIds the countryIds to set
+     */
+    public void setCountryIds(List<BigInteger> countryIds) {
+        this.countryIds = countryIds;
+    }
+
+    /**
+     * @return the courseKeys
+     */
+    public List<String> getCourseKeys() {
+        return courseKeys;
+    }
+
+    /**
+     * @param courseKeys the courseKeys to set
+     */
+    public void setCourseKeys(List<String> courseKeys) {
+        this.courseKeys = courseKeys;
+    }
+
+    /**
+     * @return the maxSizePerPage
+     */
+    public Integer getMaxSizePerPage() {
+        return maxSizePerPage;
+    }
+
+    /**
+     * @param maxSizePerPage the maxSizePerPage to set
+     */
+    public void setMaxSizePerPage(Integer maxSizePerPage) {
+        this.maxSizePerPage = maxSizePerPage;
+    }
+
+    /**
+     * @return the pageNumber
+     */
+    public Integer getPageNumber() {
+        return pageNumber;
+    }
+
+    /**
+     * @param pageNumber the pageNumber to set
+     */
+    public void setPageNumber(Integer pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    /**
+     * @return the currencyCode
+     */
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    /**
+     * @param currencyCode the currencyCode to set
+     */
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
 }

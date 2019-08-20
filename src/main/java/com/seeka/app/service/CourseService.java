@@ -476,7 +476,36 @@ public class CourseService implements ICourseService {
 
     @Override
     public Map<String, Object> advanceSearch(AdvanceSearchDto courseSearchDto) {
-        // TODO Auto-generated method stub
-        return null;
+        Map<String, Object> response = new HashMap<>();
+        List<CourseResponseDto> courseResponseDtos = iCourseDAO.advanceSearch(courseSearchDto);
+        int totalCount = 0;
+        PaginationUtilDto paginationUtilDto = null;
+        try {
+            if (courseResponseDtos != null && !courseResponseDtos.isEmpty()) {
+                totalCount = courseResponseDtos.get(0).getTotalCount();
+                int startIndex;
+                if (courseSearchDto.getPageNumber() > 1) {
+                    startIndex = (courseSearchDto.getPageNumber() - 1) * courseSearchDto.getMaxSizePerPage() + 1;
+                } else {
+                    startIndex = courseSearchDto.getPageNumber();
+                }
+                paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Course retrieved successfully");
+                response.put("courses", courseResponseDtos);
+                response.put("totalCount", totalCount);
+                response.put("pageNumber", paginationUtilDto.getPageNumber());
+                response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+                response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+                response.put("totalPages", paginationUtilDto.getTotalPages());
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", "Course Not Found");
+            }
+        } catch (Exception exception) {
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        return response;
     }
 }

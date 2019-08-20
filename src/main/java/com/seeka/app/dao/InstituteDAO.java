@@ -22,6 +22,7 @@ import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.util.CDNServerUtil;
 
 @Repository
 @SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
@@ -331,6 +332,7 @@ public class InstituteDAO implements IInstituteDAO {
             if (row[2] != null) {
                 obj.setDescription(row[2].toString());
             }
+            obj.setIcon(CDNServerUtil.getServiceIconUrl(row[1].toString()));
             services.add(obj);
         }
         return services;

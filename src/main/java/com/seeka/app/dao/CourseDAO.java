@@ -28,6 +28,7 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
+import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
@@ -1556,5 +1557,211 @@ public class CourseDAO implements ICourseDAO {
             course = session.get(Course.class, id);
         }
         return course;
+    }
+
+    @Override
+    public List<CourseResponseDto> advanceSearch(AdvanceSearchDto courseSearchDto) {
+        Session session = sessionFactory.getCurrentSession();
+
+        String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName, crs.cost_range, "
+                        + "crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
+                        + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition, crs.domestic_fee, crs.international_fee,crs.remarks, usd_domestic_fee, usd_international_fee "
+                        + "from course crs inner join institute inst " + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
+                        + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
+                        + "left join institute_service iis  on iis.institute_id = inst.id where 1=1";
+
+        boolean showIntlCost = false;
+        sqlQuery = addCondition(sqlQuery, courseSearchDto);
+        sqlQuery += " ";
+        String sortingQuery = "";
+        if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
+            sortingQuery = addSorting(sortingQuery, courseSearchDto);
+        }
+        String sizeQuery = sqlQuery;
+        if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
+            sqlQuery += sortingQuery + " LIMIT " + courseSearchDto.getPageNumber() + " ," + courseSearchDto.getMaxSizePerPage();
+        } else {
+            sqlQuery += sortingQuery;
+        }
+        System.out.println(sqlQuery);
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+
+        Query query1 = session.createSQLQuery(sizeQuery);
+        List<Object[]> rows1 = query1.list();
+
+        List<CourseResponseDto> list = new ArrayList<>();
+        CourseResponseDto courseResponseDto = null;
+        BigInteger baseCurrencyId = null;
+        BigInteger toCurrencyId = null;
+        if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
+            baseCurrencyId = getCurrencyByCode(IConstant.DEFAULT_BASE_CURRENCY).getId();
+            toCurrencyId = getCurrencyByCode(courseSearchDto.getCurrencyCode()).getId();
+        }
+        for (Object[] row : rows) {
+            try {
+                courseResponseDto = getCourseData(row, rows1, courseSearchDto, showIntlCost, baseCurrencyId, toCurrencyId);
+                list.add(courseResponseDto);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    private CourseResponseDto getCourseData(Object[] row, List<Object[]> rows1, AdvanceSearchDto courseSearchDto, boolean showIntlCost, BigInteger baseCurrencyId,
+                    BigInteger toCurrencyId) {
+        CourseResponseDto courseResponseDto = null;
+        Long cost = 0l, localFees = 0l, intlFees = 0l;
+        String newCurrencyCode = "";
+        Double costRange = null;
+        Double localFeesD = null;
+        Double intlFeesD = null;
+        if (row[4] != null) {
+            costRange = Double.valueOf(String.valueOf(row[4]));
+        }
+        if (row[16] != null) {
+            localFeesD = Double.valueOf(String.valueOf(row[16]));
+        }
+        if (row[17] != null) {
+            intlFeesD = Double.valueOf(String.valueOf(row[17]));
+        }
+        newCurrencyCode = String.valueOf(row[5]);
+        if (costRange != null) {
+            cost = ConvertionUtil.roundOffToUpper(costRange);
+            System.out.println(cost);
+        }
+        if (localFeesD != null) {
+            localFees = ConvertionUtil.roundOffToUpper(localFeesD);
+        }
+        if (intlFeesD != null) {
+            intlFees = ConvertionUtil.roundOffToUpper(intlFeesD);
+        }
+        courseResponseDto = new CourseResponseDto();
+        if (showIntlCost) {
+            courseResponseDto.setCost(intlFees + " " + newCurrencyCode);
+        } else {
+            courseResponseDto.setCost(localFees + " " + newCurrencyCode);
+        }
+        courseResponseDto.setLocalFees(localFees + " " + newCurrencyCode);
+        courseResponseDto.setIntlFees(intlFees + " " + newCurrencyCode);
+        courseResponseDto.setCourseId(new BigInteger(String.valueOf(row[0])));
+        courseResponseDto.setCourseName(String.valueOf(row[1]));
+        courseResponseDto.setInstituteId(new BigInteger(String.valueOf(row[2])));
+        courseResponseDto.setInstituteName(String.valueOf(row[3]));
+        courseResponseDto.setDuration(String.valueOf(row[6]));
+        courseResponseDto.setDurationTime(String.valueOf(row[7]));
+        courseResponseDto.setCityId(new BigInteger(String.valueOf(row[8])));
+        courseResponseDto.setCountryId(new BigInteger(String.valueOf(row[9])));
+        courseResponseDto.setLocation(String.valueOf(row[10]) + ", " + String.valueOf(row[11]));
+        courseResponseDto.setCountryName(String.valueOf(row[11]));
+        courseResponseDto.setCityName(String.valueOf(row[10]));
+
+        Integer worldRanking = 0;
+        if (null != row[4]) {
+            worldRanking = Double.valueOf(String.valueOf(row[12])).intValue();
+        }
+        courseResponseDto.setWorldRanking(worldRanking.toString());
+        courseResponseDto.setCourseLanguage(String.valueOf(row[13]));
+        courseResponseDto.setLanguageShortKey(String.valueOf(row[13]));
+        courseResponseDto.setStars(String.valueOf(row[14]));
+        courseResponseDto.setRequirements(String.valueOf(row[18]));
+        courseResponseDto.setTotalCount(rows1.size());
+        if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
+            if (row[19] != null) {
+                CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
+                dto.setFromCurrencyId(baseCurrencyId);
+                dto.setToCurrencyId(toCurrencyId);
+                dto.setAmount(Double.valueOf(row[19].toString()));
+                Double convertedRate = currencyService.convertCurrency(dto);
+                if (convertedRate != null) {
+                    courseResponseDto.setLocalFees(String.valueOf(convertedRate) + " " + courseSearchDto.getCurrencyCode());
+                }
+            }
+            if (row[20] != null) {
+                CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
+                dto.setFromCurrencyId(baseCurrencyId);
+                dto.setToCurrencyId(toCurrencyId);
+                dto.setAmount(Double.valueOf(row[20].toString()));
+                Double convertedRate = currencyService.convertCurrency(dto);
+                if (convertedRate != null) {
+                    courseResponseDto.setIntlFees(String.valueOf(convertedRate) + " " + courseSearchDto.getCurrencyCode());
+                }
+            }
+        }
+        courseResponseDto.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(courseResponseDto.getCountryName(), courseResponseDto.getInstituteName()));
+        courseResponseDto.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(courseResponseDto.getCountryName(), courseResponseDto.getInstituteName()));
+        return courseResponseDto;
+    }
+
+    private String addSorting(String sortingQuery, AdvanceSearchDto courseSearchDto) {
+        String sortTypeValue = "ASC";
+        if (!courseSearchDto.getSortAsscending()) {
+            sortTypeValue = "DESC";
+        }
+        if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.NAME.toString())) {
+            sortingQuery = sortingQuery + " ORDER BY crs.name " + sortTypeValue + " ";
+        }
+        if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DOMESTIC_PRICE.toString())) {
+            sortingQuery = sortingQuery + " ORDER BY crs.domestic_fee " + sortTypeValue + " ";
+        }
+        if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.INTERNATION_PRICE.toString())) {
+            sortingQuery = sortingQuery + " ORDER BY crs.international_fee " + sortTypeValue + " ";
+        }
+        if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.CREATED_DATE.toString())) {
+            sortingQuery = sortingQuery + " ORDER BY crs.created_on " + sortTypeValue + " ";
+        }
+        if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DURATION.toString())) {
+            sortingQuery = sortingQuery + " ORDER BY crs.duration " + sortTypeValue + " ";
+        }
+        if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.RECOGNITION.toString())) {
+            sortingQuery = sortingQuery + " ORDER BY crs.recognition " + sortTypeValue + " ";
+        }
+        if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.LOCATION.toString())) {
+            sortingQuery = sortingQuery + " ORDER BY ctry.name " + sortTypeValue + " ";
+        }
+        if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.PRICE.toString())) {
+            sortingQuery = sortingQuery + " ORDER BY IF(crs.currency='" + courseSearchDto.getCurrencyCode() + "', crs.usd_domestic_fee, crs.usd_international_fee) " + sortTypeValue
+                            + " ";
+        }
+        return sortingQuery;
+    }
+
+    private String addCondition(String sqlQuery, AdvanceSearchDto courseSearchDto) {
+        if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
+            sqlQuery += " and crs.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+        }
+        if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
+            sqlQuery += " and f.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+        }
+
+        if (null != courseSearchDto.getFaculties() && !courseSearchDto.getFaculties().isEmpty()) {
+            sqlQuery += " and crs.faculty_id in (" + courseSearchDto.getFaculties().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+        }
+
+        if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
+            sqlQuery += " and crs.name in (" + courseSearchDto.getCourseKeys().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+        }
+
+        if (null != courseSearchDto.getServiceIds() && !courseSearchDto.getServiceIds().isEmpty()) {
+            sqlQuery += " and iis.service_id in (" + courseSearchDto.getServiceIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+        }
+
+        if (null != courseSearchDto.getMinCost() && courseSearchDto.getMinCost() >= 0) {
+            sqlQuery += " and crs.cost_range >= " + courseSearchDto.getMinCost();
+        }
+
+        if (null != courseSearchDto.getMaxCost() && courseSearchDto.getMaxCost() >= 0) {
+            sqlQuery += " and crs.cost_range <= " + courseSearchDto.getMaxCost();
+        }
+
+        if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
+            sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) >= " + courseSearchDto.getMinDuration();
+        }
+
+        if (null != courseSearchDto.getMaxDuration() && courseSearchDto.getMaxDuration() >= 0) {
+            sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) <= " + courseSearchDto.getMaxDuration();
+        }
+        return sqlQuery;
     }
 }

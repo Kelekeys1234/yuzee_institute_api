@@ -47,6 +47,7 @@ public class Faculty implements Serializable {
 	private BigInteger levelId;
 
 	private BigInteger countryId;
+	private String icon;
 
 	public Faculty() {
 	}
@@ -318,5 +319,20 @@ public class Faculty implements Serializable {
 				.append(levelId).append(", countryId=").append(countryId).append("]");
 		return builder.toString();
 	}
+
+    /**
+     * @return the icon
+     */
+	@Transient
+    public String getIcon() {
+        return icon;
+    }
+
+    /**
+     * @param icon the icon to set
+     */
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
 }

@@ -10,6 +10,7 @@ import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
+import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
@@ -17,46 +18,48 @@ import com.seeka.app.dto.CourseSearchDto;
 
 public interface ICourseDAO {
 
-	void save(Course obj);
+    void save(Course obj);
 
-	void update(Course obj);
+    void update(Course obj);
 
-	Course get(BigInteger id);
+    Course get(BigInteger id);
 
-	List<Course> getAll();
+    List<Course> getAll();
 
-	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
+    List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
 
-	CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
+    CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
 
-	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
+    List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
-	Map<String, Object> getCourse(BigInteger courseid);
+    Map<String, Object> getCourse(BigInteger courseid);
 
-	List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
+    List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
 
-	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
+    List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
-	int findTotalCount();
+    int findTotalCount();
 
-	List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
+    List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
 
-	List<CourseRequest> searchCoursesBasedOnFilter(String query);
+    List<CourseRequest> searchCoursesBasedOnFilter(String query);
 
-	List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType);
+    List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType);
 
-	int findTotalCountByUserId(BigInteger userId);
+    int findTotalCountByUserId(BigInteger userId);
 
-	void saveUserCompareCourse(UserCompareCourse compareCourse);
+    void saveUserCompareCourse(UserCompareCourse compareCourse);
 
-	void saveUserCompareCourseBundle(UserCompareCourseBundle compareCourseBundle);
+    void saveUserCompareCourseBundle(UserCompareCourseBundle compareCourseBundle);
 
-	List<UserCompareCourse> getUserCompareCourse(BigInteger userId);
+    List<UserCompareCourse> getUserCompareCourse(BigInteger userId);
 
-	CourseRequest getCourseById(Integer valueOf);
+    CourseRequest getCourseById(Integer valueOf);
 
-	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, Set<String> keyword);
+    List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, Set<String> keyword);
 
-	Course getCourseData(BigInteger id);
+    Course getCourseData(BigInteger id);
+
+    List<CourseResponseDto> advanceSearch(AdvanceSearchDto courseSearchDto);
 
 }

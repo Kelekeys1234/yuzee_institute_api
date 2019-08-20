@@ -71,4 +71,7 @@ public class CDNServerUtil {
 		}
 		return "";
 	}
+	public static void main(String[] args) {
+        System.out.println(getServiceIconUrl("Visa Work Benefits"));
+    }
 }
