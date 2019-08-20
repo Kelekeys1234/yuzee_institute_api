@@ -3,6 +3,7 @@ package com.seeka.app.service;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.seeka.app.bean.Course;
 import com.seeka.app.bean.UserWatchArticle;
 import com.seeka.app.bean.UserWatchCourse;
 import com.seeka.app.dto.UserArticleRequestDto;
@@ -11,11 +12,13 @@ import com.seeka.app.exception.ValidationException;
 
 public interface UserRecommendationService {
 
-	void createRecommendCourse(UserCourseRequestDto courseRequestDto) throws ValidationException;
+	void createUserWatchCourse(UserCourseRequestDto courseRequestDto) throws ValidationException;
 
-	List<UserWatchCourse> getRecommendCourse(BigInteger userId);
+	List<UserWatchCourse> getUserWatchCourse(BigInteger userId);
 
-	List<UserWatchArticle> getRecommendArticle(BigInteger userId);
+	List<UserWatchArticle> getUserWatchArticle(BigInteger userId);
 
-	void createRecommendArticle(UserArticleRequestDto userArticleRequestDto) throws ValidationException;
+	void createUserWatchArticle(UserArticleRequestDto userArticleRequestDto) throws ValidationException;
+
+	List<Course> getRecommendCourse(BigInteger courseId, BigInteger userId) throws ValidationException;
 }
