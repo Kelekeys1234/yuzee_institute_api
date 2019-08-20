@@ -71,6 +71,7 @@ import com.seeka.app.dto.ArticleNameDto;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.ElasticSearchArticleDto;
+import com.seeka.app.dto.ElasticSearchDTO;
 import com.seeka.app.dto.GenderDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.PageLookupDto;
@@ -86,6 +87,15 @@ public class ArticleService implements IArticleService {
 
     @Value("${storage.connection.url}")
     private String storageURL;
+
+    @Value("${elastic.search.host.port}")
+    private String elasticSearchPort;
+    
+    @Value("${elastic.search.host.ip}")
+    private String elasticSearchHost;
+    
+    @Value("${elastic.search.index}")
+    private String elasticSearchIndex;
 
     @Value("${s3.url}")
     private String s3URL;
@@ -159,6 +169,25 @@ public class ArticleService implements IArticleService {
                 article.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
                 articleDAO.deleteArticle(article);
                 response.put("status", HttpStatus.OK.value());
+                
+                /**
+		         * Code to Update ElasticSearch Instance with the Article Data - Delete Article Data From ElasticSearch Instance
+		         */
+//		        	RestTemplate restTemplate = new RestTemplate();
+//		        	
+//		        	ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+//		        	elasticSearchDto.setIndex(elasticSearchIndex);
+//		        	elasticSearchDto.setType("article");
+//		        	elasticSearchDto.setEntityId(String.valueOf(article.getId()));
+//		        	elasticSearchDto.setObject(article);
+//		        	
+//		            restTemplate.delete("http://"+elasticSearchHost+":"+elasticSearchPort+"/elasticSearch", elasticSearchDto);
+//		        
+		            /**
+		             * ElasticSearch Updation Code Ends
+		             */
+                
+                
             } else {
                 response.put("status", HttpStatus.NOT_FOUND.value());
                 status = IConstant.DELETE_FAILURE_ID_NOT_FOUND;
@@ -533,6 +562,23 @@ public class ArticleService implements IArticleService {
                 articleGenderDAO.saveArticleGender(list, article.getId());
             }
             response.put("articleId", article.getId());
+            
+            /**
+	         * Code to Update ElasticSearch Instance with the Article Data -- Add/Update Article to ElasticSearch Instance
+	         */
+	        	RestTemplate restTemplate = new RestTemplate();
+	        	
+	        	ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+	        	elasticSearchDto.setIndex(elasticSearchIndex);
+	        	elasticSearchDto.setType("article");
+	        	elasticSearchDto.setEntityId(String.valueOf(elasticSearchArticleDto.getId()));
+	        	elasticSearchDto.setObject(elasticSearchArticleDto);
+	        	
+	            ResponseEntity<Object> object = restTemplate.postForEntity("http://"+elasticSearchHost+":"+elasticSearchPort+"/elasticSearch", elasticSearchDto, Object.class);
+	            System.out.println(object);
+	        /**
+	         * ElasticSearch Updation Code Ends
+	         */
         } catch (Exception exception) {
             exception.printStackTrace();
             ResponseStatus = IConstant.SQL_ERROR;
