@@ -283,11 +283,13 @@ public class CourseController {
 		// userInstCourseReviewService.getTopReviewsByFilter(courseResObj.getCourseId(),
 		// instituteObj.getInstituteId());
 		List<Course> recommendCourse = userRecommendationService.getRecommendCourse(id, null);
+		List<Course> relatedCourse = userRecommendationService.getRelatedCourse(id);
 		response.put("status", 1);
 		response.put("message", "Success.!");
 		response.put("courseObj", courseResObj);
 		response.put("englishCriteriaList", englishCriteriaList);
 		response.put("recommendCourse", recommendCourse);
+		response.put("relatedCourse", relatedCourse);
 		// response.put("gradeCriteriaObj", gradeCriteriaObj);
 		response.put("instituteObj", instituteObj);
 		response.put("youtubeData", youtubeData);
