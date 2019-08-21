@@ -95,8 +95,8 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 				low = BigDecimal.ZERO;
 			}
 			BigDecimal high = price.add(variablePrice);
-			crit.add(Restrictions.between("course.internationalFee", low, high));
-			crit.addOrder(Order.asc("course.internationalFee"));
+			crit.add(Restrictions.between("course.usdInternationFee", low, high));
+			crit.addOrder(Order.asc("course.usdInternationFee"));
 		}
 		if (courseIds != null && !courseIds.isEmpty()) {
 			crit.add(Restrictions.not(Restrictions.in("course.id", courseIds.toArray())));

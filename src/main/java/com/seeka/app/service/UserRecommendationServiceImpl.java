@@ -160,7 +160,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		}
 
 		remainingCourse = 4 - firstCourses.size() - secondCourses.size() - thirdCourses.size() - forthCourses.size();
-		if (remainingCourse < 5) {
+		if (remainingCourse < 5 && userId != null) {
 			List<UserWatchCourse> userWatchCourses = userRecommendationDao.getUserWatchCourse(userId);
 			List<Course> courseWatchList = userWatchCourses.stream().map(i -> i.getCourse()).filter(i -> !courseIds.contains(i.getId()))
 					.collect(Collectors.toList());
