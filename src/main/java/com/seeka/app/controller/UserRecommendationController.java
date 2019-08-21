@@ -65,4 +65,10 @@ public class UserRecommendationController {
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage("Get recommend course.successfully")
 				.create();
 	}
+
+	@GetMapping(value = "/related/course/{courseId}")
+	public ResponseEntity<?> getRelatedCourse(@PathVariable final BigInteger courseId) throws Exception {
+		List<Course> recommendCourses = userRecommendationService.getRelatedCourse(courseId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage("Get related course.successfully").create();
+	}
 }

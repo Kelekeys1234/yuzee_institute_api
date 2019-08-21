@@ -21,4 +21,6 @@ public interface UserRecommendationService {
 	void createUserWatchArticle(UserArticleRequestDto userArticleRequestDto) throws ValidationException;
 
 	List<Course> getRecommendCourse(BigInteger courseId, BigInteger userId) throws ValidationException;
+
+	List<Course> getRelatedCourse(BigInteger courseId) throws ValidationException;
 }

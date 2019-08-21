@@ -74,6 +74,12 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 	@Override
 	public List<Course> getRecommendCourse(final BigInteger facultyId, final BigInteger instituteId, final BigInteger countryId, final BigInteger cityId,
 			final BigDecimal price, final BigDecimal variablePrice, final int pageSize, final List<BigInteger> courseIds) {
+		return getRelatedCourse(facultyId, instituteId, countryId, cityId, price, variablePrice, pageSize, courseIds, null);
+	}
+
+	@Override
+	public List<Course> getRelatedCourse(final BigInteger facultyId, final BigInteger instituteId, final BigInteger countryId, final BigInteger cityId,
+			final BigDecimal price, final BigDecimal variablePrice, final int pageSize, final List<BigInteger> courseIds, final String courseName) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
 		crit.createAlias("course.faculty", "faculty");
@@ -100,6 +106,10 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 		}
 		if (courseIds != null && !courseIds.isEmpty()) {
 			crit.add(Restrictions.not(Restrictions.in("course.id", courseIds.toArray())));
+		}
+
+		if (courseName != null) {
+			crit.add(Restrictions.eq("course.name", courseName));
 		}
 
 		crit.setFirstResult(0);

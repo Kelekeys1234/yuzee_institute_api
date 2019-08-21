@@ -25,4 +25,7 @@ public interface UserRecommendationDao {
 	List<Course> getRecommendCourse(BigInteger facultyId, BigInteger instituteId, BigInteger countryId, BigInteger cityId, BigDecimal price,
 			BigDecimal variablePrice, int pageSize, List<BigInteger> courseIds);
 
+	List<Course> getRelatedCourse(BigInteger facultyId, BigInteger instituteId, BigInteger countryId, BigInteger cityId, BigDecimal price,
+			BigDecimal variablePrice, int pageSize, List<BigInteger> courseIds, String courseName);
+
 }
