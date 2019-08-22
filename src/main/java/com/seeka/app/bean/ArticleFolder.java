@@ -123,7 +123,6 @@ public class ArticleFolder implements Serializable {
 	 * @return the userId
 	 */
 	@Column(name = "user_id")
-
 	public BigInteger getUserId() {
 		return userId;
 	}

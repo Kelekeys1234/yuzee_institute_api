@@ -90,10 +90,10 @@ public class ArticleService implements IArticleService {
 
     @Value("${elastic.search.host.port}")
     private String elasticSearchPort;
-    
+
     @Value("${elastic.search.host.ip}")
     private String elasticSearchHost;
-    
+
     @Value("${elastic.search.index}")
     private String elasticSearchIndex;
 
@@ -169,25 +169,24 @@ public class ArticleService implements IArticleService {
                 article.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
                 articleDAO.deleteArticle(article);
                 response.put("status", HttpStatus.OK.value());
-                
+
                 /**
-		         * Code to Update ElasticSearch Instance with the Article Data - Delete Article Data From ElasticSearch Instance
-		         */
-//		        	RestTemplate restTemplate = new RestTemplate();
-//		        	
-//		        	ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-//		        	elasticSearchDto.setIndex(elasticSearchIndex);
-//		        	elasticSearchDto.setType("article");
-//		        	elasticSearchDto.setEntityId(String.valueOf(article.getId()));
-//		        	elasticSearchDto.setObject(article);
-//		        	
-//		            restTemplate.delete("http://"+elasticSearchHost+":"+elasticSearchPort+"/elasticSearch", elasticSearchDto);
-//		        
-		            /**
-		             * ElasticSearch Updation Code Ends
-		             */
-                
-                
+                 * Code to Update ElasticSearch Instance with the Article Data - Delete Article Data From ElasticSearch Instance
+                 */
+                // RestTemplate restTemplate = new RestTemplate();
+                //
+                // ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+                // elasticSearchDto.setIndex(elasticSearchIndex);
+                // elasticSearchDto.setType("article");
+                // elasticSearchDto.setEntityId(String.valueOf(article.getId()));
+                // elasticSearchDto.setObject(article);
+                //
+                // restTemplate.delete("http://"+elasticSearchHost+":"+elasticSearchPort+"/elasticSearch", elasticSearchDto);
+                //
+                /**
+                 * ElasticSearch Updation Code Ends
+                 */
+
             } else {
                 response.put("status", HttpStatus.NOT_FOUND.value());
                 status = IConstant.DELETE_FAILURE_ID_NOT_FOUND;
@@ -246,7 +245,6 @@ public class ArticleService implements IArticleService {
                 if (userCitizenship.getCity() != null) {
                     articleDto.setUserCity(String.valueOf(userCitizenship.getCity().getId()));
                 }
-
                 response.put("status", HttpStatus.OK.value());
             } else {
                 status = IConstant.ARTICLE_NOT_FOUND;
@@ -562,23 +560,23 @@ public class ArticleService implements IArticleService {
                 articleGenderDAO.saveArticleGender(list, article.getId());
             }
             response.put("articleId", article.getId());
-            
+
             /**
-	         * Code to Update ElasticSearch Instance with the Article Data -- Add/Update Article to ElasticSearch Instance
-	         */
-	        	RestTemplate restTemplate = new RestTemplate();
-	        	
-	        	ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-	        	elasticSearchDto.setIndex(elasticSearchIndex);
-	        	elasticSearchDto.setType("article");
-	        	elasticSearchDto.setEntityId(String.valueOf(elasticSearchArticleDto.getId()));
-	        	elasticSearchDto.setObject(elasticSearchArticleDto);
-	        	
-	            ResponseEntity<Object> object = restTemplate.postForEntity("http://"+elasticSearchHost+":"+elasticSearchPort+"/elasticSearch", elasticSearchDto, Object.class);
-	            System.out.println(object);
-	        /**
-	         * ElasticSearch Updation Code Ends
-	         */
+             * Code to Update ElasticSearch Instance with the Article Data -- Add/Update Article to ElasticSearch Instance
+             */
+            RestTemplate restTemplate = new RestTemplate();
+
+            ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+            elasticSearchDto.setIndex(elasticSearchIndex);
+            elasticSearchDto.setType("article");
+            elasticSearchDto.setEntityId(String.valueOf(elasticSearchArticleDto.getId()));
+            elasticSearchDto.setObject(elasticSearchArticleDto);
+
+            ResponseEntity<Object> object = restTemplate.postForEntity("http://" + elasticSearchHost + ":" + elasticSearchPort + "/elasticSearch", elasticSearchDto, Object.class);
+            System.out.println(object);
+            /**
+             * ElasticSearch Updation Code Ends
+             */
         } catch (Exception exception) {
             exception.printStackTrace();
             ResponseStatus = IConstant.SQL_ERROR;
@@ -627,7 +625,8 @@ public class ArticleService implements IArticleService {
                 result.setUpdatedAt(new Date());
                 result.setUserId(articleFolderDto.getUserId());
                 articleFolderDao.save(result);
-                response.put("message", IConstant.ADD_ARTICLE_FOLDER_SUCCESS);
+                response.put("id", result.getId());
+                response.put("message", IConstant.UPDATE_ARTICLE_FOLDER_SUCCESS);
             } else {
                 ArticleFolder articleFolder = new ArticleFolder();
                 articleFolder.setFolderName(articleFolderDto.getFolderName());
@@ -636,7 +635,8 @@ public class ArticleService implements IArticleService {
                 articleFolder.setUpdatedAt(new Date());
                 articleFolder.setUserId(articleFolderDto.getUserId());
                 articleFolderDao.save(articleFolder);
-                response.put("message", IConstant.UPDATE_ARTICLE_FOLDER_SUCCESS);
+                response.put("message", IConstant.ADD_ARTICLE_FOLDER_SUCCESS);
+                response.put("id", articleFolder.getId());
             }
             response.put("status", HttpStatus.OK.value());
         } catch (Exception exception) {
@@ -843,5 +843,46 @@ public class ArticleService implements IArticleService {
         }
 
         return convFile;
+    }
+
+    @Override
+    public Map<String, Object> unMappedFolder(BigInteger articleId, BigInteger folderId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            articleFolderDao.unMappedFolder(articleId, folderId);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Article unmapped successfully");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getArticleByFolderId(BigInteger folderId) {
+        Map<String, Object> response = new HashMap<>();
+        List<ArticleDto3> articleDto3s = new ArrayList<>();
+        try {
+            List<ArticleFolderMap> articleFolderMaps = articleFolderMapDao.getArticleByFolderId(folderId);
+            if (!articleFolderMaps.isEmpty()) {
+                for (ArticleFolderMap articleFolder : articleFolderMaps) {
+                    Map<String, Object> articleResponse = getArticleById(String.valueOf(articleFolder.getArticleId()));
+                    articleDto3s.add((ArticleDto3) articleResponse.get("articleDto"));
+                }
+                response.put("message", IConstant.GET_ARTICLE_FOLDER_SUCCESS);
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.GET_ARTICLE_FOLDER_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", IConstant.SQL_ERROR);
+        }
+        response.put("data", articleDto3s);
+        return response;
     }
 }

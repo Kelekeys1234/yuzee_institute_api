@@ -50,4 +50,8 @@ public interface IArticleService {
 	Map<String, Object> addArticleImage(MultipartFile file, BigInteger articleId);
 
 	SeekaArticles findByArticleId(BigInteger articleId);
+
+    Map<String, Object> unMappedFolder(BigInteger articleId, BigInteger folderId);
+
+    Map<String, Object> getArticleByFolderId(BigInteger folderId);
 }

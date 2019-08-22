@@ -1,5 +1,6 @@
-package com.seeka.app.dao;import java.math.BigInteger;
+package com.seeka.app.dao;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.ArticleFolder;
 
 @Repository
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class ArticleFolderDao {
 
     @Autowired
@@ -32,6 +33,7 @@ public class ArticleFolderDao {
         return session.get(ArticleFolder.class, id);
     }
 
+    @SuppressWarnings("rawtypes")
     public List<ArticleFolder> getAllArticleFolder() {
         List<ArticleFolder> articleFolders = new ArrayList<ArticleFolder>();
         try {
@@ -50,6 +52,7 @@ public class ArticleFolderDao {
         return articleFolders;
     }
 
+    @SuppressWarnings("rawtypes")
     public List<ArticleFolder> getAllArticleFolderByUserId(BigInteger userId) {
         List<ArticleFolder> articleFolders = new ArrayList<ArticleFolder>();
         try {
@@ -66,5 +69,12 @@ public class ArticleFolderDao {
             exception.printStackTrace();
         }
         return articleFolders;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public void unMappedFolder(BigInteger articleId, BigInteger folderId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery("delete from ArticleFolderMap where article_id =" + articleId + " and folder_id=" + folderId);
+        q.executeUpdate();
     }
 }
