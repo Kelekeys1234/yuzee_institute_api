@@ -98,8 +98,8 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/folder/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteArticleFolderById(@PathVariable final BigInteger articleFolderId) {
-        return ResponseEntity.accepted().body(articleService.deleteArticleFolderById(articleFolderId));
+    public ResponseEntity<?> deleteArticleFolderById(@PathVariable final BigInteger id) {
+        return ResponseEntity.accepted().body(articleService.deleteArticleFolderById(id));
     }
 
     @RequestMapping(value = "/folder/user/mapping", method = RequestMethod.POST)
