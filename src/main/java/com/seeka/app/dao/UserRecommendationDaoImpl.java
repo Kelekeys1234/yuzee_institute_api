@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -73,13 +72,13 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 
 	@Override
 	public List<Course> getRecommendCourse(final BigInteger facultyId, final BigInteger instituteId, final BigInteger countryId, final BigInteger cityId,
-			final BigDecimal price, final BigDecimal variablePrice, final int pageSize, final List<BigInteger> courseIds) {
+			final Double price, final Double variablePrice, final int pageSize, final List<BigInteger> courseIds) {
 		return getRelatedCourse(facultyId, instituteId, countryId, cityId, price, variablePrice, pageSize, courseIds, null);
 	}
 
 	@Override
 	public List<Course> getRelatedCourse(final BigInteger facultyId, final BigInteger instituteId, final BigInteger countryId, final BigInteger cityId,
-			final BigDecimal price, final BigDecimal variablePrice, final int pageSize, final List<BigInteger> courseIds, final String courseName) {
+			final Double price, final Double variablePrice, final int pageSize, final List<BigInteger> courseIds, final String courseName) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
 		crit.createAlias("course.faculty", "faculty");
@@ -91,16 +90,19 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 		if (instituteId != null) {
 			crit.add(Restrictions.eq("institute.id", instituteId));
 		}
-		crit.add(Restrictions.eq("country.id", countryId));
+		if (countryId != null) {
+			crit.add(Restrictions.eq("country.id", countryId));
+		}
+
 		if (cityId != null) {
 			crit.add(Restrictions.eq("city.id", cityId));
 		}
 		if (price != null) {
-			BigDecimal low = price.subtract(variablePrice);
-			if (low.compareTo(BigDecimal.ZERO) < 0) {
-				low = BigDecimal.ZERO;
+			Double low = price - variablePrice;
+			if (low < 0) {
+				low = Double.valueOf(0);
 			}
-			BigDecimal high = price.add(variablePrice);
+			Double high = price + variablePrice;
 			crit.add(Restrictions.between("course.usdInternationFee", low, high));
 			crit.addOrder(Order.asc("course.usdInternationFee"));
 		}

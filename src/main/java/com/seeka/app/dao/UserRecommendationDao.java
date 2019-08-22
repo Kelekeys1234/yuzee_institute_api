@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -22,10 +21,10 @@ public interface UserRecommendationDao {
 
 	List<UserWatchArticle> getUserWatchArticle(BigInteger userId);
 
-	List<Course> getRecommendCourse(BigInteger facultyId, BigInteger instituteId, BigInteger countryId, BigInteger cityId, BigDecimal price,
-			BigDecimal variablePrice, int pageSize, List<BigInteger> courseIds);
+	List<Course> getRecommendCourse(BigInteger facultyId, BigInteger instituteId, BigInteger countryId, BigInteger cityId, Double price, Double variablePrice,
+			int pageSize, List<BigInteger> courseIds);
 
-	List<Course> getRelatedCourse(BigInteger facultyId, BigInteger instituteId, BigInteger countryId, BigInteger cityId, BigDecimal price,
-			BigDecimal variablePrice, int pageSize, List<BigInteger> courseIds, String courseName);
+	List<Course> getRelatedCourse(BigInteger facultyId, BigInteger instituteId, BigInteger countryId, BigInteger cityId, Double price, Double variablePrice,
+			int pageSize, List<BigInteger> courseIds, String courseName);
 
 }

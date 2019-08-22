@@ -72,12 +72,12 @@ public class Course implements Serializable {
 	private String jobFullTime;
 	private String jobPartTime;
 	private String courseLink;
-	private String domesticFee;
-	private String internationalFee;
+	private Double domesticFee;
+	private Double internationalFee;
 	private String currency;
 	private String currencyTime;
-	private String usdInternationFee;
-	private String usdDomasticFee;
+	private Double usdInternationFee;
+	private Double usdDomasticFee;
 	private Double costRange;
 
 	public Course() {
@@ -348,259 +348,6 @@ public class Course implements Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (abbreviation == null ? 0 : abbreviation.hashCode());
-		result = prime * result + (cId == null ? 0 : cId.hashCode());
-		result = prime * result + (city == null ? 0 : city.hashCode());
-		result = prime * result + (country == null ? 0 : country.hashCode());
-		result = prime * result + (courseLang == null ? 0 : courseLang.hashCode());
-		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
-		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
-		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
-		result = prime * result + (description == null ? 0 : description.hashCode());
-		result = prime * result + (duration == null ? 0 : duration.hashCode());
-		result = prime * result + (durationTime == null ? 0 : durationTime.hashCode());
-		result = prime * result + (faculty == null ? 0 : faculty.hashCode());
-		result = prime * result + (id == null ? 0 : id.hashCode());
-		result = prime * result + (institute == null ? 0 : institute.hashCode());
-		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
-		result = prime * result + (isDeleted == null ? 0 : isDeleted.hashCode());
-		result = prime * result + (level == null ? 0 : level.hashCode());
-		result = prime * result + (name == null ? 0 : name.hashCode());
-		result = prime * result + (recDate == null ? 0 : recDate.hashCode());
-		result = prime * result + (recognition == null ? 0 : recognition.hashCode());
-		result = prime * result + (recognitionType == null ? 0 : recognitionType.hashCode());
-		result = prime * result + (remarks == null ? 0 : remarks.hashCode());
-		result = prime * result + (stars == null ? 0 : stars.hashCode());
-		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
-		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
-		result = prime * result + (website == null ? 0 : website.hashCode());
-		result = prime * result + (worldRanking == null ? 0 : worldRanking.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Course other = (Course) obj;
-		if (abbreviation == null) {
-			if (other.abbreviation != null) {
-				return false;
-			}
-		} else if (!abbreviation.equals(other.abbreviation)) {
-			return false;
-		}
-		if (cId == null) {
-			if (other.cId != null) {
-				return false;
-			}
-		} else if (!cId.equals(other.cId)) {
-			return false;
-		}
-		if (city == null) {
-			if (other.city != null) {
-				return false;
-			}
-		} else if (!city.equals(other.city)) {
-			return false;
-		}
-		if (country == null) {
-			if (other.country != null) {
-				return false;
-			}
-		} else if (!country.equals(other.country)) {
-			return false;
-		}
-		if (courseLang == null) {
-			if (other.courseLang != null) {
-				return false;
-			}
-		} else if (!courseLang.equals(other.courseLang)) {
-			return false;
-		}
-		if (createdBy == null) {
-			if (other.createdBy != null) {
-				return false;
-			}
-		} else if (!createdBy.equals(other.createdBy)) {
-			return false;
-		}
-		if (createdOn == null) {
-			if (other.createdOn != null) {
-				return false;
-			}
-		} else if (!createdOn.equals(other.createdOn)) {
-			return false;
-		}
-		if (deletedOn == null) {
-			if (other.deletedOn != null) {
-				return false;
-			}
-		} else if (!deletedOn.equals(other.deletedOn)) {
-			return false;
-		}
-		if (description == null) {
-			if (other.description != null) {
-				return false;
-			}
-		} else if (!description.equals(other.description)) {
-			return false;
-		}
-		if (duration == null) {
-			if (other.duration != null) {
-				return false;
-			}
-		} else if (!duration.equals(other.duration)) {
-			return false;
-		}
-		if (durationTime == null) {
-			if (other.durationTime != null) {
-				return false;
-			}
-		} else if (!durationTime.equals(other.durationTime)) {
-			return false;
-		}
-		if (faculty == null) {
-			if (other.faculty != null) {
-				return false;
-			}
-		} else if (!faculty.equals(other.faculty)) {
-			return false;
-		}
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
-			return false;
-		}
-		if (institute == null) {
-			if (other.institute != null) {
-				return false;
-			}
-		} else if (!institute.equals(other.institute)) {
-			return false;
-		}
-		if (isActive == null) {
-			if (other.isActive != null) {
-				return false;
-			}
-		} else if (!isActive.equals(other.isActive)) {
-			return false;
-		}
-		if (isDeleted == null) {
-			if (other.isDeleted != null) {
-				return false;
-			}
-		} else if (!isDeleted.equals(other.isDeleted)) {
-			return false;
-		}
-		if (level == null) {
-			if (other.level != null) {
-				return false;
-			}
-		} else if (!level.equals(other.level)) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		if (recDate == null) {
-			if (other.recDate != null) {
-				return false;
-			}
-		} else if (!recDate.equals(other.recDate)) {
-			return false;
-		}
-		if (recognition == null) {
-			if (other.recognition != null) {
-				return false;
-			}
-		} else if (!recognition.equals(other.recognition)) {
-			return false;
-		}
-		if (recognitionType == null) {
-			if (other.recognitionType != null) {
-				return false;
-			}
-		} else if (!recognitionType.equals(other.recognitionType)) {
-			return false;
-		}
-		if (remarks == null) {
-			if (other.remarks != null) {
-				return false;
-			}
-		} else if (!remarks.equals(other.remarks)) {
-			return false;
-		}
-		if (stars == null) {
-			if (other.stars != null) {
-				return false;
-			}
-		} else if (!stars.equals(other.stars)) {
-			return false;
-		}
-		if (updatedBy == null) {
-			if (other.updatedBy != null) {
-				return false;
-			}
-		} else if (!updatedBy.equals(other.updatedBy)) {
-			return false;
-		}
-		if (updatedOn == null) {
-			if (other.updatedOn != null) {
-				return false;
-			}
-		} else if (!updatedOn.equals(other.updatedOn)) {
-			return false;
-		}
-		if (website == null) {
-			if (other.website != null) {
-				return false;
-			}
-		} else if (!website.equals(other.website)) {
-			return false;
-		}
-		if (worldRanking == null) {
-			if (other.worldRanking != null) {
-				return false;
-			}
-		} else if (!worldRanking.equals(other.worldRanking)) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Course [id=").append(id).append(", city=").append(city).append(", country=").append(country).append(", faculty=").append(faculty)
-				.append(", institute=").append(institute).append(", name=").append(name).append(", worldRanking=").append(worldRanking).append(", stars=")
-				.append(stars).append(", recognition=").append(recognition).append(", recognitionType=").append(recognitionType).append(", duration=")
-				.append(duration).append(", durationTime=").append(durationTime).append(", website=").append(website).append(", courseLang=").append(courseLang)
-				.append(", abbreviation=").append(abbreviation).append(", recDate=").append(recDate).append(", remarks=").append(remarks)
-				.append(", description=").append(description).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
-				.append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
-				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", cId=").append(cId).append(", level=").append(level)
-				.append("]");
-		return builder.toString();
-	}
-
 	/**
 	 * @return the cId
 	 */
@@ -679,14 +426,14 @@ public class Course implements Serializable {
 	 * @return the usdInternationFee
 	 */
 	@Column(name = "usd_international_fee")
-	public String getUsdInternationFee() {
+	public Double getUsdInternationFee() {
 		return usdInternationFee;
 	}
 
 	/**
 	 * @param usdInternationFee the usdInternationFee to set
 	 */
-	public void setUsdInternationFee(final String usdInternationFee) {
+	public void setUsdInternationFee(final Double usdInternationFee) {
 		this.usdInternationFee = usdInternationFee;
 	}
 
@@ -694,14 +441,14 @@ public class Course implements Serializable {
 	 * @return the usdDomasticFee
 	 */
 	@Column(name = "usd_domestic_fee")
-	public String getUsdDomasticFee() {
+	public Double getUsdDomasticFee() {
 		return usdDomasticFee;
 	}
 
 	/**
 	 * @param usdDomasticFee the usdDomasticFee to set
 	 */
-	public void setUsdDomasticFee(final String usdDomasticFee) {
+	public void setUsdDomasticFee(final Double usdDomasticFee) {
 		this.usdDomasticFee = usdDomasticFee;
 	}
 
@@ -844,14 +591,14 @@ public class Course implements Serializable {
 	 * @return the domesticFee
 	 */
 	@Column(name = "domestic_fee")
-	public String getDomesticFee() {
+	public Double getDomesticFee() {
 		return domesticFee;
 	}
 
 	/**
 	 * @param domesticFee the domesticFee to set
 	 */
-	public void setDomesticFee(final String domesticFee) {
+	public void setDomesticFee(final Double domesticFee) {
 		this.domesticFee = domesticFee;
 	}
 
@@ -859,14 +606,14 @@ public class Course implements Serializable {
 	 * @return the internationalFee
 	 */
 	@Column(name = "international_fee")
-	public String getInternationalFee() {
+	public Double getInternationalFee() {
 		return internationalFee;
 	}
 
 	/**
 	 * @param internationalFee the internationalFee to set
 	 */
-	public void setInternationalFee(final String internationalFee) {
+	public void setInternationalFee(final Double internationalFee) {
 		this.internationalFee = internationalFee;
 	}
 
@@ -877,6 +624,417 @@ public class Course implements Serializable {
 
 	public void setCostRange(final Double costRange) {
 		this.costRange = costRange;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (abbreviation == null ? 0 : abbreviation.hashCode());
+		result = prime * result + (availbilty == null ? 0 : availbilty.hashCode());
+		result = prime * result + (cId == null ? 0 : cId.hashCode());
+		result = prime * result + (campusLocation == null ? 0 : campusLocation.hashCode());
+		result = prime * result + (city == null ? 0 : city.hashCode());
+		result = prime * result + (contact == null ? 0 : contact.hashCode());
+		result = prime * result + (costRange == null ? 0 : costRange.hashCode());
+		result = prime * result + (country == null ? 0 : country.hashCode());
+		result = prime * result + (courseLang == null ? 0 : courseLang.hashCode());
+		result = prime * result + (courseLink == null ? 0 : courseLink.hashCode());
+		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
+		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
+		result = prime * result + (currency == null ? 0 : currency.hashCode());
+		result = prime * result + (currencyTime == null ? 0 : currencyTime.hashCode());
+		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
+		result = prime * result + (description == null ? 0 : description.hashCode());
+		result = prime * result + (domesticFee == null ? 0 : domesticFee.hashCode());
+		result = prime * result + (duration == null ? 0 : duration.hashCode());
+		result = prime * result + (durationTime == null ? 0 : durationTime.hashCode());
+		result = prime * result + (faculty == null ? 0 : faculty.hashCode());
+		result = prime * result + (fileUrl == null ? 0 : fileUrl.hashCode());
+		result = prime * result + (grades == null ? 0 : grades.hashCode());
+		result = prime * result + (id == null ? 0 : id.hashCode());
+		result = prime * result + (institute == null ? 0 : institute.hashCode());
+		result = prime * result + (intake == null ? 0 : intake.hashCode());
+		result = prime * result + (internationalFee == null ? 0 : internationalFee.hashCode());
+		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
+		result = prime * result + (isDeleted == null ? 0 : isDeleted.hashCode());
+		result = prime * result + (jobFullTime == null ? 0 : jobFullTime.hashCode());
+		result = prime * result + (jobPartTime == null ? 0 : jobPartTime.hashCode());
+		result = prime * result + (level == null ? 0 : level.hashCode());
+		result = prime * result + (name == null ? 0 : name.hashCode());
+		result = prime * result + (openingHour == null ? 0 : openingHour.hashCode());
+		result = prime * result + (partFull == null ? 0 : partFull.hashCode());
+		result = prime * result + (recDate == null ? 0 : recDate.hashCode());
+		result = prime * result + (recognition == null ? 0 : recognition.hashCode());
+		result = prime * result + (recognitionType == null ? 0 : recognitionType.hashCode());
+		result = prime * result + (remarks == null ? 0 : remarks.hashCode());
+		result = prime * result + (stars == null ? 0 : stars.hashCode());
+		result = prime * result + (studyMode == null ? 0 : studyMode.hashCode());
+		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
+		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
+		result = prime * result + (usdDomasticFee == null ? 0 : usdDomasticFee.hashCode());
+		result = prime * result + (usdInternationFee == null ? 0 : usdInternationFee.hashCode());
+		result = prime * result + (website == null ? 0 : website.hashCode());
+		result = prime * result + (worldRanking == null ? 0 : worldRanking.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Course other = (Course) obj;
+		if (abbreviation == null) {
+			if (other.abbreviation != null) {
+				return false;
+			}
+		} else if (!abbreviation.equals(other.abbreviation)) {
+			return false;
+		}
+		if (availbilty == null) {
+			if (other.availbilty != null) {
+				return false;
+			}
+		} else if (!availbilty.equals(other.availbilty)) {
+			return false;
+		}
+		if (cId == null) {
+			if (other.cId != null) {
+				return false;
+			}
+		} else if (!cId.equals(other.cId)) {
+			return false;
+		}
+		if (campusLocation == null) {
+			if (other.campusLocation != null) {
+				return false;
+			}
+		} else if (!campusLocation.equals(other.campusLocation)) {
+			return false;
+		}
+		if (city == null) {
+			if (other.city != null) {
+				return false;
+			}
+		} else if (!city.equals(other.city)) {
+			return false;
+		}
+		if (contact == null) {
+			if (other.contact != null) {
+				return false;
+			}
+		} else if (!contact.equals(other.contact)) {
+			return false;
+		}
+		if (costRange == null) {
+			if (other.costRange != null) {
+				return false;
+			}
+		} else if (!costRange.equals(other.costRange)) {
+			return false;
+		}
+		if (country == null) {
+			if (other.country != null) {
+				return false;
+			}
+		} else if (!country.equals(other.country)) {
+			return false;
+		}
+		if (courseLang == null) {
+			if (other.courseLang != null) {
+				return false;
+			}
+		} else if (!courseLang.equals(other.courseLang)) {
+			return false;
+		}
+		if (courseLink == null) {
+			if (other.courseLink != null) {
+				return false;
+			}
+		} else if (!courseLink.equals(other.courseLink)) {
+			return false;
+		}
+		if (createdBy == null) {
+			if (other.createdBy != null) {
+				return false;
+			}
+		} else if (!createdBy.equals(other.createdBy)) {
+			return false;
+		}
+		if (createdOn == null) {
+			if (other.createdOn != null) {
+				return false;
+			}
+		} else if (!createdOn.equals(other.createdOn)) {
+			return false;
+		}
+		if (currency == null) {
+			if (other.currency != null) {
+				return false;
+			}
+		} else if (!currency.equals(other.currency)) {
+			return false;
+		}
+		if (currencyTime == null) {
+			if (other.currencyTime != null) {
+				return false;
+			}
+		} else if (!currencyTime.equals(other.currencyTime)) {
+			return false;
+		}
+		if (deletedOn == null) {
+			if (other.deletedOn != null) {
+				return false;
+			}
+		} else if (!deletedOn.equals(other.deletedOn)) {
+			return false;
+		}
+		if (description == null) {
+			if (other.description != null) {
+				return false;
+			}
+		} else if (!description.equals(other.description)) {
+			return false;
+		}
+		if (domesticFee == null) {
+			if (other.domesticFee != null) {
+				return false;
+			}
+		} else if (!domesticFee.equals(other.domesticFee)) {
+			return false;
+		}
+		if (duration == null) {
+			if (other.duration != null) {
+				return false;
+			}
+		} else if (!duration.equals(other.duration)) {
+			return false;
+		}
+		if (durationTime == null) {
+			if (other.durationTime != null) {
+				return false;
+			}
+		} else if (!durationTime.equals(other.durationTime)) {
+			return false;
+		}
+		if (faculty == null) {
+			if (other.faculty != null) {
+				return false;
+			}
+		} else if (!faculty.equals(other.faculty)) {
+			return false;
+		}
+		if (fileUrl == null) {
+			if (other.fileUrl != null) {
+				return false;
+			}
+		} else if (!fileUrl.equals(other.fileUrl)) {
+			return false;
+		}
+		if (grades == null) {
+			if (other.grades != null) {
+				return false;
+			}
+		} else if (!grades.equals(other.grades)) {
+			return false;
+		}
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (institute == null) {
+			if (other.institute != null) {
+				return false;
+			}
+		} else if (!institute.equals(other.institute)) {
+			return false;
+		}
+		if (intake == null) {
+			if (other.intake != null) {
+				return false;
+			}
+		} else if (!intake.equals(other.intake)) {
+			return false;
+		}
+		if (internationalFee == null) {
+			if (other.internationalFee != null) {
+				return false;
+			}
+		} else if (!internationalFee.equals(other.internationalFee)) {
+			return false;
+		}
+		if (isActive == null) {
+			if (other.isActive != null) {
+				return false;
+			}
+		} else if (!isActive.equals(other.isActive)) {
+			return false;
+		}
+		if (isDeleted == null) {
+			if (other.isDeleted != null) {
+				return false;
+			}
+		} else if (!isDeleted.equals(other.isDeleted)) {
+			return false;
+		}
+		if (jobFullTime == null) {
+			if (other.jobFullTime != null) {
+				return false;
+			}
+		} else if (!jobFullTime.equals(other.jobFullTime)) {
+			return false;
+		}
+		if (jobPartTime == null) {
+			if (other.jobPartTime != null) {
+				return false;
+			}
+		} else if (!jobPartTime.equals(other.jobPartTime)) {
+			return false;
+		}
+		if (level == null) {
+			if (other.level != null) {
+				return false;
+			}
+		} else if (!level.equals(other.level)) {
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (openingHour == null) {
+			if (other.openingHour != null) {
+				return false;
+			}
+		} else if (!openingHour.equals(other.openingHour)) {
+			return false;
+		}
+		if (partFull == null) {
+			if (other.partFull != null) {
+				return false;
+			}
+		} else if (!partFull.equals(other.partFull)) {
+			return false;
+		}
+		if (recDate == null) {
+			if (other.recDate != null) {
+				return false;
+			}
+		} else if (!recDate.equals(other.recDate)) {
+			return false;
+		}
+		if (recognition == null) {
+			if (other.recognition != null) {
+				return false;
+			}
+		} else if (!recognition.equals(other.recognition)) {
+			return false;
+		}
+		if (recognitionType == null) {
+			if (other.recognitionType != null) {
+				return false;
+			}
+		} else if (!recognitionType.equals(other.recognitionType)) {
+			return false;
+		}
+		if (remarks == null) {
+			if (other.remarks != null) {
+				return false;
+			}
+		} else if (!remarks.equals(other.remarks)) {
+			return false;
+		}
+		if (stars == null) {
+			if (other.stars != null) {
+				return false;
+			}
+		} else if (!stars.equals(other.stars)) {
+			return false;
+		}
+		if (studyMode == null) {
+			if (other.studyMode != null) {
+				return false;
+			}
+		} else if (!studyMode.equals(other.studyMode)) {
+			return false;
+		}
+		if (updatedBy == null) {
+			if (other.updatedBy != null) {
+				return false;
+			}
+		} else if (!updatedBy.equals(other.updatedBy)) {
+			return false;
+		}
+		if (updatedOn == null) {
+			if (other.updatedOn != null) {
+				return false;
+			}
+		} else if (!updatedOn.equals(other.updatedOn)) {
+			return false;
+		}
+		if (usdDomasticFee == null) {
+			if (other.usdDomasticFee != null) {
+				return false;
+			}
+		} else if (!usdDomasticFee.equals(other.usdDomasticFee)) {
+			return false;
+		}
+		if (usdInternationFee == null) {
+			if (other.usdInternationFee != null) {
+				return false;
+			}
+		} else if (!usdInternationFee.equals(other.usdInternationFee)) {
+			return false;
+		}
+		if (website == null) {
+			if (other.website != null) {
+				return false;
+			}
+		} else if (!website.equals(other.website)) {
+			return false;
+		}
+		if (worldRanking == null) {
+			if (other.worldRanking != null) {
+				return false;
+			}
+		} else if (!worldRanking.equals(other.worldRanking)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Course [id=").append(id).append(", city=").append(city).append(", country=").append(country).append(", faculty=").append(faculty)
+				.append(", institute=").append(institute).append(", name=").append(name).append(", worldRanking=").append(worldRanking).append(", stars=")
+				.append(stars).append(", recognition=").append(recognition).append(", recognitionType=").append(recognitionType).append(", duration=")
+				.append(duration).append(", durationTime=").append(durationTime).append(", website=").append(website).append(", courseLang=").append(courseLang)
+				.append(", abbreviation=").append(abbreviation).append(", recDate=").append(recDate).append(", remarks=").append(remarks)
+				.append(", description=").append(description).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
+				.append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
+				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", cId=").append(cId).append(", level=").append(level)
+				.append(", availbilty=").append(availbilty).append(", partFull=").append(partFull).append(", studyMode=").append(studyMode).append(", intake=")
+				.append(intake).append(", fileUrl=").append(fileUrl).append(", grades=").append(grades).append(", contact=").append(contact)
+				.append(", openingHour=").append(openingHour).append(", campusLocation=").append(campusLocation).append(", jobFullTime=").append(jobFullTime)
+				.append(", jobPartTime=").append(jobPartTime).append(", courseLink=").append(courseLink).append(", domesticFee=").append(domesticFee)
+				.append(", internationalFee=").append(internationalFee).append(", currency=").append(currency).append(", currencyTime=").append(currencyTime)
+				.append(", usdInternationFee=").append(usdInternationFee).append(", usdDomasticFee=").append(usdDomasticFee).append(", costRange=")
+				.append(costRange).append("]");
+		return builder.toString();
 	}
 
 }

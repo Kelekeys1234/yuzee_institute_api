@@ -44,7 +44,7 @@ public class UserRecommendationController {
 	@GetMapping(value = "/watch/course/{userId}")
 	public ResponseEntity<?> getUserWatchCourse(@PathVariable final BigInteger userId) throws Exception {
 		List<UserWatchCourse> userMyCourseList = userRecommendationService.getUserWatchCourse(userId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userMyCourseList).setMessage("Get watch course.successfully").create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userMyCourseList).setMessage("Get watch course successfully").create();
 	}
 
 	@PostMapping(value = "/watch/article")
@@ -62,13 +62,13 @@ public class UserRecommendationController {
 	@GetMapping(value = "/recommend/course/{courseId}")
 	public ResponseEntity<?> getUserRecommendCourse(@PathVariable final BigInteger courseId, @RequestParam final BigInteger userId) throws Exception {
 		List<Course> recommendCourses = userRecommendationService.getRecommendCourse(courseId, userId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage("Get recommend course.successfully")
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage("Get recommend course successfully")
 				.create();
 	}
 
 	@GetMapping(value = "/related/course/{courseId}")
 	public ResponseEntity<?> getRelatedCourse(@PathVariable final BigInteger courseId) throws Exception {
 		List<Course> recommendCourses = userRecommendationService.getRelatedCourse(courseId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage("Get related course.successfully").create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage("Get related course successfully").create();
 	}
 }
