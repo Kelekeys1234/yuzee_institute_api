@@ -161,7 +161,11 @@ public class CurrencyService implements ICurrencyService {
                 for (Iterator iterator = rates.keySet().iterator(); iterator.hasNext();) {
                     String key = (String) iterator.next();
                     if (key.equalsIgnoreCase(currency.getCode())) {
-                        currencyValue = (Double) rates.get(key);
+                        if (rates.get(key) != null && String.valueOf(rates.get(key)).contains(".")) {
+                            currencyValue = (Double) rates.get(key);
+                        } else {
+                            currencyValue = Double.valueOf((Long) rates.get(key));
+                        }
                         break;
                     }
                 }

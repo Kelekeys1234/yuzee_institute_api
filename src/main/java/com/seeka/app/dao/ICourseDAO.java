@@ -62,4 +62,6 @@ public interface ICourseDAO {
 
     List<CourseResponseDto> advanceSearch(AdvanceSearchDto courseSearchDto);
 
+    List<Course> getAllCourse();
+
 }

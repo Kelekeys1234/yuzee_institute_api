@@ -508,4 +508,25 @@ public class CourseService implements ICourseService {
         }
         return response;
     }
+
+    @Override
+    public Map<String, Object> getAllCourse() {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<Course> courses = new ArrayList<Course>();
+        try {
+            courses = iCourseDAO.getAllCourse();
+            if (courses != null && !courses.isEmpty()) {
+                response.put("status", HttpStatus.OK);
+                response.put("message", "Course retrieve succesfully");
+                response.put("courses", courses);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND);
+                response.put("message", "Course Not Found");
+            }
+        } catch (Exception exception) {
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        return response;
+    }
 }

@@ -1570,14 +1570,23 @@ public class CourseDAO implements ICourseDAO {
                         + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
                         + "left join institute_service iis  on iis.institute_id = inst.id where 1=1";
 
+        String sizeSqlQuery = "select count(distinct crs.id) " + "from course crs inner join institute inst "
+                        + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
+                        + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
+                        + "left join institute_service iis  on iis.institute_id = inst.id where 1=1";
+
         boolean showIntlCost = false;
         sqlQuery = addCondition(sqlQuery, courseSearchDto);
         sqlQuery += " ";
+
+        sizeSqlQuery = addCondition(sizeSqlQuery, courseSearchDto);
+        sizeSqlQuery += " ";
+
         String sortingQuery = "";
         if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
             sortingQuery = addSorting(sortingQuery, courseSearchDto);
         }
-        String sizeQuery = sqlQuery;
+        String sizeQuery = sizeSqlQuery;
         if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
             sqlQuery += sortingQuery + " LIMIT " + courseSearchDto.getPageNumber() + " ," + courseSearchDto.getMaxSizePerPage();
         } else {
@@ -1587,9 +1596,12 @@ public class CourseDAO implements ICourseDAO {
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
 
+        int totalCount = 0;
         Query query1 = session.createSQLQuery(sizeQuery);
-        List<Object[]> rows1 = query1.list();
-
+        List<BigInteger> rows1 = query1.list();
+        if (rows1 != null && !rows1.isEmpty()) {
+            totalCount = rows1.get(0).intValue();
+        }
         List<CourseResponseDto> list = new ArrayList<>();
         CourseResponseDto courseResponseDto = null;
         BigInteger baseCurrencyId = null;
@@ -1600,7 +1612,7 @@ public class CourseDAO implements ICourseDAO {
         }
         for (Object[] row : rows) {
             try {
-                courseResponseDto = getCourseData(row, rows1, courseSearchDto, showIntlCost, baseCurrencyId, toCurrencyId);
+                courseResponseDto = getCourseData(row, totalCount, courseSearchDto, showIntlCost, baseCurrencyId, toCurrencyId);
                 list.add(courseResponseDto);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1609,7 +1621,7 @@ public class CourseDAO implements ICourseDAO {
         return list;
     }
 
-    private CourseResponseDto getCourseData(Object[] row, List<Object[]> rows1, AdvanceSearchDto courseSearchDto, boolean showIntlCost, BigInteger baseCurrencyId,
+    private CourseResponseDto getCourseData(Object[] row, int totalCount, AdvanceSearchDto courseSearchDto, boolean showIntlCost, BigInteger baseCurrencyId,
                     BigInteger toCurrencyId) {
         CourseResponseDto courseResponseDto = null;
         Long cost = 0l, localFees = 0l, intlFees = 0l;
@@ -1666,7 +1678,7 @@ public class CourseDAO implements ICourseDAO {
         courseResponseDto.setLanguageShortKey(String.valueOf(row[13]));
         courseResponseDto.setStars(String.valueOf(row[14]));
         courseResponseDto.setRequirements(String.valueOf(row[18]));
-        courseResponseDto.setTotalCount(rows1.size());
+        courseResponseDto.setTotalCount(totalCount);
         if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
             if (row[19] != null) {
                 CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
@@ -1763,5 +1775,20 @@ public class CourseDAO implements ICourseDAO {
             sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) <= " + courseSearchDto.getMaxDuration();
         }
         return sqlQuery;
+    }
+
+    @Override
+    public List<Course> getAllCourse() {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("select distinct c.id, c.name as name from course c");
+        List<Object[]> rows = query.list();
+        List<Course> courses = new ArrayList<>();
+        for (Object[] row : rows) {
+            Course obj = new Course();
+            obj.setId(new BigInteger((row[0].toString())));
+            obj.setName(row[1].toString());
+            courses.add(obj);
+        }
+        return courses;
     }
 }

@@ -63,4 +63,6 @@ public interface ICourseService {
     Map<String, Object> getAllServices();
 
     Map<String, Object> advanceSearch(AdvanceSearchDto courseSearchDto);
+
+    Map<String, Object> getAllCourse();
 }

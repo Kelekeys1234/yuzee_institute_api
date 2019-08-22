@@ -76,9 +76,15 @@ public class EducationSystemDAO implements IEducationSystemDAO {
             obj.setId(new BigInteger((row[0].toString())));
             obj.setName(row[1].toString());
             obj.setCode(row[2].toString());
+            obj.setSubjects(getSubject(session));
             list.add(obj);
         }
         return list;
+    }
+
+    private List<Subject> getSubject(Session session) {
+        Criteria crit = session.createCriteria(Subject.class);
+        return crit.list();
     }
 
     @Override

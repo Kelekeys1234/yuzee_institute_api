@@ -87,7 +87,7 @@ public class EducationSystemService implements IEducationSystemService {
         try {
             educationSystems = dao.getEducationSystemsByCountryId(countryId);
             if (educationSystems != null && !educationSystems.isEmpty()) {
-                educationSystems = getSubjectDetail(educationSystems);
+                //educationSystems = getSubjectDetail(educationSystems);
                 response.put("message", IConstant.EDUCATION_SUCCESS);
                 response.put("status", HttpStatus.OK.value());
             } else {
@@ -102,6 +102,7 @@ public class EducationSystemService implements IEducationSystemService {
         return ResponseEntity.ok().body(response);
     }
 
+    @SuppressWarnings("unused")
     private List<EducationSystem> getSubjectDetail(List<EducationSystem> educationSystems) {
         for (EducationSystem educationSystem : educationSystems) {
             List<Subject> subjects = dao.getSubjectByEducationSystem(educationSystem.getId());
