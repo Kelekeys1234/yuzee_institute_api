@@ -21,12 +21,14 @@ import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.bean.YoutubeVideo;
+import com.seeka.app.dao.CurrencyDAO;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICourseDAO;
@@ -70,6 +72,9 @@ public class CourseService implements ICourseService {
 
     @Autowired
     private IUserMyCourseDAO myCourseDAO;
+
+    @Autowired
+    private CurrencyDAO currencyDAO;
 
     @Override
     public void save(final Course course) {
@@ -145,22 +150,49 @@ public class CourseService implements ICourseService {
             course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
             course.setUpdatedBy("API");
             course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+            course.setStars(courseDto.getStars());
 
             // Course Details
             course.setIntake(courseDto.getIntake());
             course.setCourseLink(courseDto.getCourseLink());
             course.setDomesticFee(courseDto.getDomasticFee());
             course.setInternationalFee(courseDto.getInternationalFee());
-            // course.setGrades(courseDto.getGrades());
-            // course.setJobFullTime(courseDto.getFullTime());
-            // course.setJobPartTime(courseDto.getPartTime());
-            // course.setFileUrl(courseDto.getDocumentUrl());
-            // course.setContact(courseDto.getContact());
-            // course.setOpeningHour(courseDto.getOpeningHourFrom() + "-" + courseDto.getOpeningHourTo());
             course.setCampusLocation(courseDto.getCampusLocation());
+            if (courseDto.getCourseCurrency() != null) {
+                course.setCurrency(courseDto.getCourseCurrency());
+                List<Currency> currencies = currencyDAO.getAll();
+                Currency toCurrency = currencyDAO.getCurrencyByCode("USD");
+                BigInteger toCurrencyId = null;
+                if (toCurrency != null) {
+                    toCurrencyId = toCurrency.getId();
+                }
+
+                CurrencyRate currencyRate = getCurrencyRate(courseDto.getCourseCurrency(), currencies);
+                BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCourseCurrency());
+                if (currencyRate == null) {
+                    currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCourseCurrency());
+                }
+                if (currencyRate != null) {
+                    if (toCurrencyId != null) {
+                        if (courseDto.getDomasticFee() != null) {
+                            Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
+                            if (convertedRate != null) {
+                                course.setUsdDomasticFee(convertedRate);
+                            }
+                        }
+                        if (courseDto.getInternationalFee() != null) {
+                            Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId, Double.valueOf(courseDto.getInternationalFee()));
+                            if (convertedRate != null) {
+                                course.setUsdInternationFee(convertedRate);
+                            }
+                        }
+                    }
+                }
+            }
             iCourseDAO.save(course);
 
             if (courseDto.getEnglishEligibility() != null) {
+                courseDto.getEnglishEligibility().setCourse(course);
                 courseEnglishEligibilityDAO.save(courseDto.getEnglishEligibility());
             }
             response.put("status", HttpStatus.OK.value());
@@ -170,6 +202,23 @@ public class CourseService implements ICourseService {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         return response;
+    }
+
+    private CurrencyRate getCurrencyRate(String courseCurrency, List<Currency> currencies) {
+        BigInteger fromCurrencyId = getCurrencyId(currencies, courseCurrency);
+        CurrencyRate currencyRate = currencyDAO.getCurrencyRate(fromCurrencyId);
+        return currencyRate;
+    }
+
+    private BigInteger getCurrencyId(List<Currency> currencies, String currency) {
+        BigInteger id = null;
+        for (Currency c : currencies) {
+            if (c.getCode().equalsIgnoreCase(currency)) {
+                id = c.getId();
+                break;
+            }
+        }
+        return id;
     }
 
     private Country getCountry(final BigInteger countryId) {

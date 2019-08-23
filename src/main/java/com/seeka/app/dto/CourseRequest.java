@@ -46,6 +46,8 @@ public class CourseRequest {
 	private String intlFees;
 	private String requirements;
 	private List<String> instituteImageUrls;
+	
+	private String courseCurrency;
 
 	/**
 	 * @return the courseId
@@ -579,4 +581,17 @@ public class CourseRequest {
 		this.instituteImageUrls = instituteImageUrls;
 	}
 
+    /**
+     * @return the courseCurrency
+     */
+    public String getCourseCurrency() {
+        return courseCurrency;
+    }
+
+    /**
+     * @param courseCurrency the courseCurrency to set
+     */
+    public void setCourseCurrency(String courseCurrency) {
+        this.courseCurrency = courseCurrency;
+    }
 }
