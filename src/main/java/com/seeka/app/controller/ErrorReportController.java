@@ -31,12 +31,22 @@ public class ErrorReportController {
     public ResponseEntity<?> save(@Valid @RequestBody ErrorReportDto errorReport) throws Exception {
         return errorReportService.save(errorReport);
     }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json")
+    public ResponseEntity<?> update(@Valid @RequestBody ErrorReportDto errorReport, @Valid @PathVariable BigInteger id) throws Exception {
+        return errorReportService.update(errorReport, id);
+    }
 
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getErrorReportByUserId(@PathVariable BigInteger userId) throws Exception {
         return errorReportService.getErrorReportByUserId(userId);
     }
 
+    @RequestMapping(value = "/id/{id}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getErrorReportById(@PathVariable BigInteger id) throws Exception {
+        return errorReportService.getErrorReportById(id);
+    }
+    
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> get() throws Exception {
         return errorReportService.getAllErrorReport();

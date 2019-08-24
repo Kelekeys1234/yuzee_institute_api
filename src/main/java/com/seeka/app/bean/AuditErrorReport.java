@@ -17,10 +17,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "error_report")
-public class ErrorReport implements java.io.Serializable {
+@Table(name = "audit_error_report")
+public class AuditErrorReport implements java.io.Serializable{
 
-    /**
+	 /**
      * 
      */
     private static final long serialVersionUID = -4896547771928499529L;
@@ -41,6 +41,11 @@ public class ErrorReport implements java.io.Serializable {
     private String coreArticalDetail;
     private Date dueDate;
     private BigInteger assigneeUserId;
+    
+    private BigInteger errorReportId;
+    private String auditCreatedBy;
+    private String auditUpdatedBy;
+    
 
     /**
      * @return the id
@@ -245,6 +250,41 @@ public class ErrorReport implements java.io.Serializable {
 	public void setAssigneeUserId(BigInteger assigneeUserId) {
 		this.assigneeUserId = assigneeUserId;
 	}
-    
+
+	/**
+     * @return the errorreportId
+     */
+    @Column(name = "error_report_id")
+	public BigInteger getErrorReportId() {
+		return errorReportId;
+	}
+
+	public void setErrorReportId(BigInteger errorReportId) {
+		this.errorReportId = errorReportId;
+	}
+
+	/**
+     * @return the errorreportId
+     */
+    @Column(name = "audit_createdby")
+	public String getAuditCreatedBy() {
+		return auditCreatedBy;
+	}
+
+	public void setAuditCreatedBy(String auditCreatedBy) {
+		this.auditCreatedBy = auditCreatedBy;
+	}
+
+	/**
+     * @return the errorreportId
+     */
+    @Column(name = "audit_updatedby")
+	public String getAuditUpdatedBy() {
+		return auditUpdatedBy;
+	}
+
+	public void setAuditUpdatedBy(String auditUpdatedBy) {
+		this.auditUpdatedBy = auditUpdatedBy;
+	}
     
 }

@@ -15,6 +15,8 @@ public interface IErrorReportDAO {
     public List<ErrorReport> getAllErrorReport();
 
     public List<ErrorReport> getErrorReportByUserId(BigInteger userId);
+    
+    public ErrorReport getErrorReportById(BigInteger id);
 
     public void update(ErrorReport errorReport);
 
