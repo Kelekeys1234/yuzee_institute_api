@@ -301,8 +301,10 @@ public class CourseDAO implements ICourseDAO {
 				} else {
 					courseResponseDto.setCost(localFees + " " + newCurrencyCode);
 				}
-				courseResponseDto.setLocalFees(localFees + " " + newCurrencyCode);
-				courseResponseDto.setIntlFees(intlFees + " " + newCurrencyCode);
+				courseResponseDto.setLocalFees(Double.valueOf(String.valueOf(localFees)));
+				courseResponseDto.setIntlFees(Double.valueOf(String.valueOf(intlFees)));
+//				courseResponseDto.setLocalFees(localFees + " " + newCurrencyCode);
+//				courseResponseDto.setIntlFees(intlFees + " " + newCurrencyCode);
 				courseResponseDto.setCourseId(new BigInteger(String.valueOf(row[0])));
 				courseResponseDto.setCourseName(String.valueOf(row[1]));
 				courseResponseDto.setInstituteId(new BigInteger(String.valueOf(row[2])));
@@ -333,7 +335,8 @@ public class CourseDAO implements ICourseDAO {
 						dto.setAmount(Double.valueOf(row[19].toString()));
 						Double convertedRate = currencyService.convertCurrency(dto);
 						if (convertedRate != null) {
-							courseResponseDto.setLocalFees(String.valueOf(convertedRate) + " " + courseSearchDto.getCurrencyCode());
+//							courseResponseDto.setLocalFees(String.valueOf(convertedRate) + " " + courseSearchDto.getCurrencyCode());
+							courseResponseDto.setLocalFees(convertedRate);
 						}
 					}
 					if (row[20] != null) {
@@ -343,7 +346,8 @@ public class CourseDAO implements ICourseDAO {
 						dto.setAmount(Double.valueOf(row[20].toString()));
 						Double convertedRate = currencyService.convertCurrency(dto);
 						if (convertedRate != null) {
-							courseResponseDto.setIntlFees(String.valueOf(convertedRate) + " " + courseSearchDto.getCurrencyCode());
+//							courseResponseDto.setIntlFees(String.valueOf(convertedRate) + " " + courseSearchDto.getCurrencyCode());
+							courseResponseDto.setIntlFees(convertedRate);
 						}
 					}
 				}
@@ -717,8 +721,10 @@ public class CourseDAO implements ICourseDAO {
 			obj.setCourseLanguage(String.valueOf(row[13]));
 			obj.setLanguageShortKey(String.valueOf(row[13]));
 			obj.setStars(String.valueOf(row[14]));
-			obj.setLocalFees(String.valueOf(row[16]) + " " + String.valueOf(row[5]));
-			obj.setIntlFees(String.valueOf(row[17]) + " " + String.valueOf(row[5]));
+//			obj.setLocalFees(String.valueOf(row[16]) + " " + String.valueOf(row[5]));
+//			obj.setIntlFees(String.valueOf(row[17]) + " " + String.valueOf(row[5]));
+			obj.setLocalFees(Double.valueOf(String.valueOf(row[16])));
+			obj.setIntlFees(Double.valueOf(String.valueOf(row[17])));
 			obj.setTotalCount(Integer.parseInt(String.valueOf(row[18])));
 			list.add(obj);
 		}
@@ -838,8 +844,10 @@ public class CourseDAO implements ICourseDAO {
 			obj.setCourseLanguage(String.valueOf(row[13]));
 			obj.setLanguageShortKey(String.valueOf(row[13]));
 			obj.setStars(String.valueOf(row[14]));
-			obj.setLocalFees(String.valueOf(row[16]) + " " + String.valueOf(row[5]));
-			obj.setIntlFees(String.valueOf(row[17]) + " " + String.valueOf(row[5]));
+//			obj.setLocalFees(String.valueOf(row[16]) + " " + String.valueOf(row[5]));
+//			obj.setIntlFees(String.valueOf(row[17]) + " " + String.valueOf(row[5]));
+			obj.setLocalFees(Double.valueOf(String.valueOf(row[16])));
+			obj.setIntlFees(Double.valueOf(String.valueOf(row[17])));
 			obj.setTotalCount(Integer.parseInt(String.valueOf(row[18])));
 			list.add(obj);
 		}
@@ -1666,8 +1674,10 @@ public class CourseDAO implements ICourseDAO {
 		} else {
 			courseResponseDto.setCost(localFees + " " + newCurrencyCode);
 		}
-		courseResponseDto.setLocalFees(localFees + " " + newCurrencyCode);
-		courseResponseDto.setIntlFees(intlFees + " " + newCurrencyCode);
+		courseResponseDto.setLocalFees(Double.valueOf(String.valueOf(localFees)));
+		courseResponseDto.setIntlFees(Double.valueOf(String.valueOf(intlFees)));
+//		courseResponseDto.setLocalFees(localFees + " " + newCurrencyCode);
+//		courseResponseDto.setIntlFees(intlFees + " " + newCurrencyCode);
 		courseResponseDto.setCourseId(new BigInteger(String.valueOf(row[0])));
 		courseResponseDto.setCourseName(String.valueOf(row[1]));
 		courseResponseDto.setInstituteId(new BigInteger(String.valueOf(row[2])));
@@ -1698,7 +1708,8 @@ public class CourseDAO implements ICourseDAO {
 				dto.setAmount(Double.valueOf(row[19].toString()));
 				Double convertedRate = currencyService.convertCurrency(dto);
 				if (convertedRate != null) {
-					courseResponseDto.setLocalFees(String.valueOf(convertedRate) + " " + courseSearchDto.getCurrencyCode());
+//					courseResponseDto.setLocalFees(String.valueOf(convertedRate) + " " + courseSearchDto.getCurrencyCode());
+					courseResponseDto.setLocalFees(convertedRate);
 				}
 			}
 			if (row[20] != null) {
@@ -1708,7 +1719,8 @@ public class CourseDAO implements ICourseDAO {
 				dto.setAmount(Double.valueOf(row[20].toString()));
 				Double convertedRate = currencyService.convertCurrency(dto);
 				if (convertedRate != null) {
-					courseResponseDto.setIntlFees(String.valueOf(convertedRate) + " " + courseSearchDto.getCurrencyCode());
+//					courseResponseDto.setIntlFees(String.valueOf(convertedRate) + " " + courseSearchDto.getCurrencyCode());
+					courseResponseDto.setIntlFees(convertedRate);
 				}
 			}
 		}

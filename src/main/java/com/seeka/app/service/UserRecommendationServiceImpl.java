@@ -15,9 +15,11 @@ import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.bean.UserWatchArticle;
 import com.seeka.app.bean.UserWatchCourse;
 import com.seeka.app.dao.UserRecommendationDao;
+import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.UserArticleRequestDto;
 import com.seeka.app.dto.UserCourseRequestDto;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.util.CDNServerUtil;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -310,6 +312,77 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 					courseName);
 		}
 		return courseList;
+	}
+
+	/**
+	 * For restricted response for related course
+	 */
+	@Override
+	public List<CourseResponseDto> getCourseRelated(final BigInteger courseId) throws ValidationException {
+		List<CourseResponseDto> resultList = new ArrayList<>();
+		List<Course> courseList = getRelatedCourse(courseId);
+		for (Course course : courseList) {
+			CourseResponseDto courseResponseDto = new CourseResponseDto();
+			courseResponseDto.setCourseId(course.getId());
+			courseResponseDto.setCityId(course.getCity().getId());
+			courseResponseDto.setCityName(course.getCity().getName());
+			courseResponseDto.setCost(String.valueOf(course.getCostRange()));
+			courseResponseDto.setCountryId(course.getCountry().getId());
+			courseResponseDto.setCountryName(course.getCountry().getName());
+			courseResponseDto.setCourseLanguage(course.getCourseLang());
+			courseResponseDto.setCourseName(course.getName());
+			courseResponseDto.setDuration(course.getDuration());
+			courseResponseDto.setDurationTime(course.getDurationTime());
+			courseResponseDto.setInstituteId(course.getInstitute().getId());
+			courseResponseDto.setInstituteName(course.getInstitute().getName());
+			courseResponseDto.setIntlFees(course.getInternationalFee());
+			courseResponseDto.setLocalFees(course.getDomesticFee());
+			courseResponseDto.setLocation(course.getCity().getName() + "," + course.getCountry().getName());
+			courseResponseDto.setRequirements(course.getRemarks());
+			courseResponseDto.setStars(course.getStars());
+			courseResponseDto.setWorldRanking(course.getWorldRanking());
+			courseResponseDto.setLanguageShortKey(course.getCourseLang());
+			courseResponseDto
+					.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(course.getInstitute().getCountry().getName(), course.getInstitute().getName()));
+			courseResponseDto
+					.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(course.getInstitute().getCountry().getName(), course.getInstitute().getName()));
+			resultList.add(courseResponseDto);
+		}
+		return resultList;
+	}
+
+	@Override
+	public List<CourseResponseDto> getCourseRecommended(final BigInteger courseId) throws ValidationException {
+		List<CourseResponseDto> resultList = new ArrayList<>();
+		List<Course> courseList = getRecommendCourse(courseId, null);
+		for (Course course : courseList) {
+			CourseResponseDto courseResponseDto = new CourseResponseDto();
+			courseResponseDto.setCourseId(course.getId());
+			courseResponseDto.setCityId(course.getCity().getId());
+			courseResponseDto.setCityName(course.getCity().getName());
+			courseResponseDto.setCost(String.valueOf(course.getCostRange()));
+			courseResponseDto.setCountryId(course.getCountry().getId());
+			courseResponseDto.setCountryName(course.getCountry().getName());
+			courseResponseDto.setCourseLanguage(course.getCourseLang());
+			courseResponseDto.setCourseName(course.getName());
+			courseResponseDto.setDuration(course.getDuration());
+			courseResponseDto.setDurationTime(course.getDurationTime());
+			courseResponseDto.setInstituteId(course.getInstitute().getId());
+			courseResponseDto.setInstituteName(course.getInstitute().getName());
+			courseResponseDto.setIntlFees(course.getInternationalFee());
+			courseResponseDto.setLocalFees(course.getDomesticFee());
+			courseResponseDto.setLocation(course.getCity().getName() + "," + course.getCountry().getName());
+			courseResponseDto.setRequirements(course.getRemarks());
+			courseResponseDto.setStars(course.getStars());
+			courseResponseDto.setWorldRanking(course.getWorldRanking());
+			courseResponseDto.setLanguageShortKey(course.getCourseLang());
+			courseResponseDto
+					.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(course.getInstitute().getCountry().getName(), course.getInstitute().getName()));
+			courseResponseDto
+					.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(course.getInstitute().getCountry().getName(), course.getInstitute().getName()));
+			resultList.add(courseResponseDto);
+		}
+		return resultList;
 	}
 
 }
