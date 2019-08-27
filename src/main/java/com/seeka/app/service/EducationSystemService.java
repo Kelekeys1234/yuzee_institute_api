@@ -271,6 +271,7 @@ public class EducationSystemService implements IEducationSystemService {
         EducationSystemResponse systemResponse = new EducationSystemResponse();
         try {
             UserEducationDetails educationDetails = educationDetailDAO.getUserEducationDetails(userId);
+            System.out.println("Education "+educationDetails);
             if (educationDetails != null) {
                 systemResponse.setEducationDetail(educationDetails);
                 systemResponse.setEnglishScoresList(englishScoreDAO.getEnglishEligibiltyByUserID(userId));

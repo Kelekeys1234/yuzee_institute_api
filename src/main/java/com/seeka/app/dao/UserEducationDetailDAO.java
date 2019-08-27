@@ -59,11 +59,21 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
         for (Object[] row : rows) {
             userEducationDetails = new UserEducationDetails();
             userEducationDetails.setUserId(new BigInteger(row[0].toString()));
-            userEducationDetails.setEduCountry(new BigInteger(row[1].toString()));
-            userEducationDetails.setEducationCountryName(row[2].toString());
-            userEducationDetails.setEduSystemId(new BigInteger(row[3].toString()));
-            userEducationDetails.setEducationSystemName(row[4].toString());
-            userEducationDetails.setEduInstitue(row[5].toString());
+            if (row[1] != null) {
+                userEducationDetails.setEduCountry(new BigInteger(row[1].toString()));
+            }
+            if (row[2] != null) {
+                userEducationDetails.setEducationCountryName(row[2].toString());
+            }
+            if (row[3] != null) {
+                userEducationDetails.setEduSystemId(new BigInteger(row[3].toString()));
+            }
+            if (row[4] != null) {
+                userEducationDetails.setEducationSystemName(row[4].toString());
+            }
+            if (row[5] != null) {
+                userEducationDetails.setEduInstitue(row[5].toString());
+            }
             if (null != row[6]) {
                 userEducationDetails.setGpaScore(row[6].toString());
             }

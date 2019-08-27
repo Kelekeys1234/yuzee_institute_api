@@ -25,6 +25,9 @@ import com.seeka.app.dto.CityDto;
 import com.seeka.app.dto.CountryDetailsDto;
 import com.seeka.app.dto.CountryImageDto;
 import com.seeka.app.dto.CountryRequestDto;
+import com.seeka.app.dto.CourseDto;
+import com.seeka.app.dto.CourseRequest;
+import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.ScholarshipDto;
 
 public class CommonUtil {
@@ -75,6 +78,58 @@ public class CommonUtil {
         return city;
     }
 
+    public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(Institute institute){
+        InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+        instituteRequestDto.setAccreditation(institute.getAccreditation());
+        instituteRequestDto.setAccreditation(institute.getAddress());
+        instituteRequestDto.setAverageCostFrom(institute.getAvgCostOfLiving());
+        instituteRequestDto.setCityId(institute.getCity().getId());
+        instituteRequestDto.setCountryId(institute.getCountry().getId());
+        instituteRequestDto.setDescription(institute.getDescription());
+        instituteRequestDto.setEmail(institute.getEmail());
+        instituteRequestDto.setInstituteLogoUrl(institute.getInstituteLogoUrl());
+        instituteRequestDto.setInstituteTypeId(institute.getId());
+        instituteRequestDto.setLatitute(institute.getLatitute());
+        instituteRequestDto.setLongitude(institute.getLongitude());
+        instituteRequestDto.setPhoneNumber(institute.getPhoneNumber());
+        instituteRequestDto.setTotalStudent(institute.getTotalStudent());
+        instituteRequestDto.setWorldRanking(institute.getWorldRanking());
+        return instituteRequestDto;
+    }
+    
+    
+    
+    public static ScholarshipDto convertScholarshipBeanToScholarshipDto(Scholarship scholarship){
+        ScholarshipDto scholarshipDto = new ScholarshipDto();
+        scholarshipDto.setAddress(scholarship.getAddress());
+        scholarshipDto.setAmount(scholarship.getAmount());
+        scholarshipDto.setApplicationDeadline(scholarship.getApplicationDeadline());
+        scholarshipDto.setBenefits(scholarship.getBenefits());
+        scholarshipDto.setCountryId(scholarship.getCountry().getId());
+        scholarshipDto.setDescription(scholarship.getDescription());
+        scholarshipDto.setEligibility(scholarship.getEligibility());
+        scholarshipDto.setEmail(scholarship.getEmail());
+        scholarshipDto.setGender(scholarship.getGender());
+        scholarshipDto.setHeadquaters(scholarship.getHeadquaters());
+        scholarshipDto.setId(scholarship.getId());
+        scholarshipDto.setInstituteId(scholarship.getInstitute().getId());
+        scholarshipDto.setIntake(scholarship.getIntake());
+        scholarshipDto.setIsActive(scholarship.getIsActive());
+        scholarshipDto.setIsDeleted(scholarship.getIsDeleted());
+        scholarshipDto.setLanguage(scholarship.getLanguage());
+        scholarshipDto.setLevelId(scholarship.getLevel().getId());
+        scholarshipDto.setName(scholarship.getName());
+        scholarshipDto.setNumberOfAvaliability(scholarship.getNumberOfAvaliability());
+        scholarshipDto.setOfferedBy(scholarship.getOfferedBy());
+        scholarshipDto.setRequirements(scholarship.getRequirements());
+        scholarshipDto.setScholarshipAmount(scholarship.getScholarshipAmount());
+        scholarshipDto.setScholarshipTitle(scholarship.getScholarshipTitle());
+        scholarshipDto.setStudent(scholarship.getStudent());
+        scholarshipDto.setValidity(scholarship.getValidity());
+        scholarshipDto.setWebsite(scholarship.getWebsite());
+        return scholarshipDto;
+    }
+    
     public static Scholarship convertScholarshipDTOToBean(ScholarshipDto scholarshipObj, Country country, Institute institute, Level level) {
         Scholarship scholarship = new Scholarship();
 
@@ -104,6 +159,22 @@ public class CommonUtil {
         scholarship.setEmail(scholarshipObj.getEmail());
         scholarship.setAddress(scholarshipObj.getAddress());
         return scholarship;
+    }
+
+    
+    
+    public static CourseRequest convertCourseDtoToCourseRequest(CourseDto co) {
+        CourseRequest courseRequest = new CourseRequest();
+        courseRequest.setCourseId(co.getCourseId());
+        courseRequest.setStars(co.getStars());
+        courseRequest.setDescription(co.getDescription());
+        courseRequest.setDuration(co.getDuration());
+        courseRequest.setDurationTime(co.getDurationTime());
+        courseRequest.setWorldRanking(co.getWorldRanking());
+        courseRequest.setIntlFees(co.getIntlFees());
+        courseRequest.setLocalFees(co.getLocalFees());
+        courseRequest.setCost(co.getCost());
+               return courseRequest;
     }
 
     public static String getCurrencyDetails(String baseCurrency) {

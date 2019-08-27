@@ -212,7 +212,6 @@ public class CourseService implements ICourseService {
             // Fetching the previous object
             Course course = new Course();
             course = iCourseDAO.get(id);
-            System.out.println("The Course Object: " + course);
             course.setId(id);
             course.setInstitute(getInstititute(courseDto.getInstituteId()));
             course.setDescription(courseDto.getDescription());

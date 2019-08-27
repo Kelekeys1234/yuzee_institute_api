@@ -46,6 +46,7 @@ import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IUserService;
 import com.seeka.app.service.UserRecommendationService;
 import com.seeka.app.util.CDNServerUtil;
+import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
@@ -270,6 +271,7 @@ public class CourseController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> get(@Valid @PathVariable final BigInteger id) throws Exception {
         ErrorDto errorDto = null;
+        CourseRequest courseRequest = null;
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> map = courseService.getCourse(id);
         if (map == null || map.isEmpty() || map.size() <= 0) {
@@ -281,32 +283,26 @@ public class CourseController {
             return ResponseEntity.badRequest().body(response);
         }
         CourseDto courseResObj = (CourseDto) map.get("courseObj");
+        courseRequest = CommonUtil.convertCourseDtoToCourseRequest(courseResObj);
+        
         InstituteResponseDto instituteObj = (InstituteResponseDto) map.get("instituteObj");
-        instituteObj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
-        instituteObj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
+        courseRequest.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
+        courseRequest.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
         List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
+        if(!englishCriteriaList.isEmpty()){
+            courseRequest.setEnglishEligibility(englishCriteriaList.get(0));
+        }
         List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getInstituteId(), courseResObj.getCourseName());
-        // CourseGradeEligibility gradeCriteriaObj = courseGradeService.get(id);
-        // List<UserCourseReview> reviewsList =
-        // userInstCourseReviewService.getTopReviewsByFilter(courseResObj.getCourseId(),
-        // instituteObj.getInstituteId());
         List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
         List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(id);
         response.put("status", 1);
         response.put("message", "Success.!");
-        response.put("courseObj", courseResObj);
-        response.put("englishCriteriaList", englishCriteriaList);
+        response.put("courseObj", courseRequest);
+//        response.put("englishCriteriaList", englishCriteriaList);
         response.put("recommendCourse", recommendCourse);
         response.put("relatedCourse", relatedCourse);
-        // response.put("gradeCriteriaObj", gradeCriteriaObj);
         response.put("instituteObj", instituteObj);
         response.put("youtubeData", youtubeData);
-        // if (null != reviewsList && !reviewsList.isEmpty() && reviewsList.size() > 0)
-        // {
-        // response.put("reviewObj", reviewsList.get(0));
-        // } else {
-        // response.put("reviewObj", null);
-        // }
         return ResponseEntity.accepted().body(response);
     }
 

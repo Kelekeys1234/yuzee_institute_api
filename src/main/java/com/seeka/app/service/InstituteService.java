@@ -33,6 +33,7 @@ import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.util.CDNServerUtil;
+import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -279,8 +280,10 @@ public class InstituteService implements IInstituteService {
     public Map<String, Object> getById(@Valid BigInteger id) {
         Map<String, Object> response = new HashMap<String, Object>();
         InstituteGetRequestDto dto = null;
+        InstituteRequestDto instituteRequestDto = null;
         try {
             Institute institute = dao.get(id);
+            instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
             if (institute == null) {
                 response.put("message", "Institute not found");
                 response.put("status", HttpStatus.NOT_FOUND.value());
@@ -293,7 +296,7 @@ public class InstituteService implements IInstituteService {
             response.put("message", exception.getCause());
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("data", dto);
+        response.put("data", instituteRequestDto);
         return response;
     }
 

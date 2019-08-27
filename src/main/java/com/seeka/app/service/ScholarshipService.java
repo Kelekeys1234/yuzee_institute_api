@@ -51,15 +51,17 @@ public class ScholarshipService implements IScholarshipService {
     @Override
     public Map<String, Object> get(BigInteger id) {
         Map<String, Object> response = new HashMap<String, Object>();
+        ScholarshipDto scholarshipDto = null;
         Scholarship scholarshipObj = iScholarshipDAO.get(id);
-        if (scholarshipObj != null) {
+        scholarshipDto = CommonUtil.convertScholarshipBeanToScholarshipDto(scholarshipObj);
+        if (scholarshipDto != null) {
             response.put("message", "Scholarship fetched successfully");
             response.put("status", HttpStatus.OK.value());
+            response.put("data", scholarshipDto);
         } else {
             response.put("message", "Scholarship not found");
             response.put("status", HttpStatus.NOT_FOUND.value());
         }
-        response.put("data", scholarshipObj);
         return response;
     }
 
