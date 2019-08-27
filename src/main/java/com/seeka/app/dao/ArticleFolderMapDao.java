@@ -50,6 +50,21 @@ public class ArticleFolderMapDao {
     }
 
     @SuppressWarnings("unchecked")
+    public String getFolderImageUrl(BigInteger id) {
+        String imageUrl = null;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Query query = session.createSQLQuery(
+                            "SELECT sc.imagepath FROM article_folder_map auc inner join seeka_articles sc on auc.article_id = sc.id  where auc.folder_id='" + id + "'"
+                                            + "ORDER BY auc.article_id DESC LIMIT 1");
+             imageUrl = (String) query.uniqueResult();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return imageUrl;
+    }
+    
+    @SuppressWarnings("unchecked")
     public List<ArticleFolderMap> getArticleByFolderId(BigInteger folderId) {
         List<ArticleFolderMap> articleFolderMaps = new ArrayList<>();
         try {

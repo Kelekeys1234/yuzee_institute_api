@@ -71,12 +71,12 @@ public class SeekaArticles implements Serializable {
     private String author;
     private Date postDate;
     private Date expireyDate;
-    private boolean enabled;
-    private boolean featured;
+    private Boolean enabled;
+    private Boolean featured;
     private String notes;
     
     private String websiteUrl;
-    private boolean seekaRecommended;
+    private Boolean seekaRecommended;
     private String tags;
     private String status;
 
@@ -673,7 +673,7 @@ public class SeekaArticles implements Serializable {
      * @return the enabled
      */
     @Column(name = "enabled")
-    public boolean getEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
@@ -681,7 +681,7 @@ public class SeekaArticles implements Serializable {
      * @param enabled
      *            the enabled to set
      */
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -689,7 +689,7 @@ public class SeekaArticles implements Serializable {
      * @return the featured
      */
     @Column(name = "featured")
-    public boolean getFeatured() {
+    public Boolean getFeatured() {
         return featured;
     }
 
@@ -697,7 +697,7 @@ public class SeekaArticles implements Serializable {
      * @param featured
      *            the featured to set
      */
-    public void setFeatured(boolean featured) {
+    public void setFeatured(Boolean featured) {
         this.featured = featured;
     }
 
@@ -736,14 +736,14 @@ public class SeekaArticles implements Serializable {
      * @return the seekaRecommended
      */
     @Column(name = "seeka_recommended")
-    public boolean getSeekaRecommended() {
+    public Boolean getSeekaRecommended() {
         return seekaRecommended;
     }
 
     /**
      * @param seekaRecommended the seekaRecommended to set
      */
-    public void setSeekaRecommended(boolean seekaRecommended) {
+    public void setSeekaRecommended(Boolean seekaRecommended) {
         this.seekaRecommended = seekaRecommended;
     }
 

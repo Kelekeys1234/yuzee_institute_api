@@ -22,4 +22,6 @@ public interface IErrorReportDAO {
 
     public List<ErrorReportCategory> getAllErrorCategory();
 
+    public void addErrorRepoerAudit(BigInteger id);
+
 }

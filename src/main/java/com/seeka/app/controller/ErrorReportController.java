@@ -26,12 +26,12 @@ public class ErrorReportController {
     public ResponseEntity<?> getAllErrorCategory() throws Exception {
         return errorReportService.getAllErrorCategory();
     }
-    
+
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<?> save(@Valid @RequestBody ErrorReportDto errorReport) throws Exception {
         return errorReportService.save(errorReport);
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json")
     public ResponseEntity<?> update(@Valid @RequestBody ErrorReportDto errorReport, @Valid @PathVariable BigInteger id) throws Exception {
         return errorReportService.update(errorReport, id);
@@ -46,7 +46,7 @@ public class ErrorReportController {
     public ResponseEntity<?> getErrorReportById(@PathVariable BigInteger id) throws Exception {
         return errorReportService.getErrorReportById(id);
     }
-    
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> get() throws Exception {
         return errorReportService.getAllErrorReport();

@@ -29,6 +29,7 @@ public class ArticleDAO implements IArticleDAO {
     public List<SeekaArticles> getAll() {
         Session session = sessionFactory.getCurrentSession();
         List<SeekaArticles> list = session.createCriteria(SeekaArticles.class).list();
+        System.out.println("The List Of list: "+list.size());
         return list;
     }
 

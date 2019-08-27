@@ -36,7 +36,8 @@ public class LevelController {
     @RequestMapping(value = "/country/{countryId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getLevelByCountry(@PathVariable BigInteger countryId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<Level> levelList = levelService.getLevelByCountryId(countryId);
+        BigInteger bg = new BigInteger(String.valueOf(countryId));
+        List<Level> levelList = levelService.getLevelByCountryId(bg);
         if (levelList != null && !levelList.isEmpty()) {
             response.put("message", "Level fetched successfully");
             response.put("status", HttpStatus.OK.value());

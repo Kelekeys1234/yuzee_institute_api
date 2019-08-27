@@ -48,4 +48,15 @@ public class DateUtil {
         final String utcTime = sdf.format(new Date());
         return utcTime;
     }
+    
+    public static Date stringDateToDateYYYY_MM_DDFormat(String StrDate) {
+        Date dateToReturn = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            dateToReturn = (Date) dateFormat.parse(StrDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateToReturn;
+    }
 }

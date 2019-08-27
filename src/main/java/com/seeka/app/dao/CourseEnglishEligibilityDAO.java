@@ -53,5 +53,12 @@ public class CourseEnglishEligibilityDAO implements ICourseEnglishEligibilityDAO
 		c.add(Restrictions.eq("course.id", courseID));
 		return c.list();
 	}
+	
+	public void delete(final BigInteger courseID){
+	    Session session = sessionFactory.getCurrentSession();
+        Criteria c = session.createCriteria(CourseEnglishEligibility.class, "courseEnglishEligibility");
+        c.createAlias("courseEnglishEligibility.course", "course");
+        c.add(Restrictions.eq("course.id", courseID));
+	}
 
 }

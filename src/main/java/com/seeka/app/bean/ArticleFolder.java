@@ -32,6 +32,8 @@ public class ArticleFolder implements Serializable {
 	private Date updatedAt;
 	private List<ArticleNameDto> articles;
 	private BigInteger userId;
+	
+	private String folderImage;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -195,6 +197,15 @@ public class ArticleFolder implements Serializable {
 		return true;
 	}
 
+	@Transient
+    public String getFolderImage() {
+        return folderImage;
+    }
+
+    public void setFolderImage(String folderImage) {
+        this.folderImage = folderImage;
+    }
+    
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

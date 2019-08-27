@@ -745,6 +745,8 @@ public class ArticleService implements IArticleService {
             if (!articleFolders.isEmpty()) {
                 for (ArticleFolder articleFolder : articleFolders) {
                     List<ArticleNameDto> articles = articleFolderMapDao.getFolderArticles(articleFolder.getId());
+                    String imageUrl = articleFolderMapDao.getFolderImageUrl(articleFolder.getId());
+                    articleFolder.setFolderImage(imageUrl);
                     articleFolder.setArticles(articles);
                     articleFolder.setUserId(userId);
                 }

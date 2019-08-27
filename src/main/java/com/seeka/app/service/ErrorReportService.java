@@ -47,31 +47,31 @@ public class ErrorReportService implements IErrorReportService {
     }
 
     @Override
-	public ResponseEntity<?> update(ErrorReportDto errorReportDto,
-			BigInteger id) {
-    	 Map<String, Object> response = new HashMap<String, Object>();
-         try {
-             if (errorReportDto != null && id.compareTo(new BigInteger("0")) == 1) {
-            	 System.out.println("The Id is: "+id);
-                 ErrorReport errorReport = getErrorReport(errorReportDto);
-                 errorReport.setId(id);
-                 errorReportDAO.update(errorReport);
-                 response.put("message", "Error added successfully");
-                 response.put("status", HttpStatus.OK.value());
-             } else if(id.compareTo(new BigInteger("0")) != 1){
-            	 response.put("message", "Error Bad Request");
-                 response.put("status", HttpStatus.BAD_REQUEST.value());
-             } else {
-                 response.put("message", "Error can't be empty");
-                 response.put("status", HttpStatus.NOT_FOUND.value());
-             }
-         } catch (Exception exception) {
-             response.put("message", exception.getCause());
-             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-         }
-         return ResponseEntity.ok().body(response);
-	}
-    
+    public ResponseEntity<?> update(ErrorReportDto errorReportDto, BigInteger id) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        try {
+            if (errorReportDto != null && id.compareTo(new BigInteger("0")) == 1) {
+                System.out.println("The Id is: " + id);
+                ErrorReport errorReport = getErrorReport(errorReportDto);
+                errorReport.setId(id);
+                errorReportDAO.addErrorRepoerAudit(id);
+                errorReportDAO.update(errorReport);
+                response.put("message", "Error added successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else if (id.compareTo(new BigInteger("0")) != 1) {
+                response.put("message", "Error Bad Request");
+                response.put("status", HttpStatus.BAD_REQUEST.value());
+            } else {
+                response.put("message", "Error can't be empty");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return ResponseEntity.ok().body(response);
+    }
+
     private ErrorReport getErrorReport(ErrorReportDto errorReportDto) {
         ErrorReport errorReport = new ErrorReport();
         errorReport.setDescription(errorReportDto.getDescription());
@@ -84,8 +84,10 @@ public class ErrorReportService implements IErrorReportService {
         errorReport.setIsActive(true);
         errorReport.setCaseNumber(errorReportDto.getCaseNumber());
         errorReport.setStatus(errorReportDto.getStatus());
-        errorReport.setCoreArticalDetail(errorReportDto.getCoreArticalDetail());
-        errorReport.setDueDate(errorReportDto.getDueDate());
+        errorReport.setCourseArticleId(errorReportDto.getCourseArticleId());
+        if(errorReportDto.getDueDate()!=null && !errorReportDto.getDueDate().isEmpty()){
+            errorReport.setDueDate(DateUtil.stringDateToDateYYYY_MM_DDFormat(errorReportDto.getDueDate()));
+        }
         errorReport.setAssigneeUserId(errorReportDto.getAssigneeUserId());
         return errorReport;
     }
@@ -109,7 +111,7 @@ public class ErrorReportService implements IErrorReportService {
         }
         return ResponseEntity.ok().body(response);
     }
-    
+
     @Override
     public ResponseEntity<?> getErrorReportById(BigInteger id) {
         Map<String, Object> response = new HashMap<String, Object>();
@@ -194,5 +196,5 @@ public class ErrorReportService implements IErrorReportService {
         }
         return ResponseEntity.ok().body(response);
     }
-    
+
 }

@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.math.BigInteger;
-import java.util.Date;
 
 public class ErrorReportDto {
 
@@ -13,8 +12,8 @@ public class ErrorReportDto {
     
     private String caseNumber;
     private String status;
-    private String coreArticalDetail;
-    private Date dueDate;
+    private BigInteger courseArticleId;
+    private String dueDate;
     private BigInteger assigneeUserId;
 
     /**
@@ -119,32 +118,33 @@ public class ErrorReportDto {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
+	
 	/**
      * @return the coreArticalDetail
      */
-	public String getCoreArticalDetail() {
-		return coreArticalDetail;
+	public BigInteger getCourseArticleId() {
+		return courseArticleId;
 	}
 
+
 	 /**
-     * @param coreArticalDetail
-     */
-	public void setCoreArticalDetail(String coreArticalDetail) {
-		this.coreArticalDetail = coreArticalDetail;
+    * @param coreArticalDetail
+    */
+	public void setCourseArticleId(BigInteger courseArticleId) {
+		this.courseArticleId = courseArticleId;
 	}
 
 	/**
      * @return the dueDate
      */
-	public Date getDueDate() {
+	public String getDueDate() {
 		return dueDate;
 	}
 
 	/**
      * @param dueDate
      */
-	public void setDueDate(Date dueDate) {
+	public void setDueDate(String dueDate) {
 		this.dueDate = dueDate;
 	}
 

@@ -38,7 +38,7 @@ public class ErrorReport implements java.io.Serializable {
     
     private String caseNumber;
     private String status;
-    private String coreArticalDetail;
+    private BigInteger courseArticleId;
     private Date dueDate;
     private BigInteger assigneeUserId;
 
@@ -203,19 +203,20 @@ public class ErrorReport implements java.io.Serializable {
 		this.status = status;
 	}
 
+	
 	 /**
      * @return the coreArticalDetail
      */
-    @Column(name = "core_article_detail")
-	public String getCoreArticalDetail() {
-		return coreArticalDetail;
+    @Column(name = "course_article_id")
+	public BigInteger getCourseArticleId() {
+		return courseArticleId;
 	}
 
-    /**
+	 /**
      * @param coreArticalDetail
      */
-	public void setCoreArticalDetail(String coreArticalDetail) {
-		this.coreArticalDetail = coreArticalDetail;
+	public void setCourseArticleId(BigInteger courseArticleId) {
+		this.courseArticleId = courseArticleId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

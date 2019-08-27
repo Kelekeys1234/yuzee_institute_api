@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.AuditErrorReport;
 import com.seeka.app.bean.ErrorReport;
 import com.seeka.app.bean.ErrorReportCategory;
-import com.seeka.app.util.DateUtil;
 
 @Repository
 @SuppressWarnings({ "deprecation", "unchecked" })
@@ -27,7 +26,7 @@ public class ErrorReportDAO implements IErrorReportDAO {
         Session session = sessionFactory.getCurrentSession();
         session.save(errorReport);
     }
-    
+
     @Override
     public ErrorReportCategory getErrorCategory(BigInteger errorReportCategoryId) {
         ErrorReportCategory errorReportCategory = null;
@@ -53,7 +52,7 @@ public class ErrorReportDAO implements IErrorReportDAO {
         crit.add(Restrictions.eq("userId", userId)).add(Restrictions.eq("isActive", true));
         return crit.list();
     }
-    
+
     @Override
     public ErrorReport getErrorReportById(BigInteger id) {
         Session session = sessionFactory.getCurrentSession();
@@ -65,9 +64,23 @@ public class ErrorReportDAO implements IErrorReportDAO {
     @Override
     public void update(ErrorReport errorReport) {
         Session session = sessionFactory.getCurrentSession();
-        
-       /* Criteria crit = session.createCriteria(ErrorReport.class);
-        crit.add(Restrictions.eq("id", errorReport.getId())).add(Restrictions.eq("isActive", true));
+        session.update(errorReport);
+    }
+
+    @Override
+    public List<ErrorReportCategory> getAllErrorCategory() {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(ErrorReportCategory.class);
+        crit.add(Restrictions.eq("isActive", true));
+        return crit.list();
+    }
+
+    @Override
+    public void addErrorRepoerAudit(BigInteger id) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(ErrorReport.class);
+        System.out.println("The errorReport Id" + id);
+        crit.add(Restrictions.eq("id", id)).add(Restrictions.eq("isActive", true));
         ErrorReport errorReport2 = (ErrorReport) crit.uniqueResult();
         AuditErrorReport auditErrorReport = new AuditErrorReport();
         auditErrorReport.setDescription(errorReport2.getDescription());
@@ -80,22 +93,13 @@ public class ErrorReportDAO implements IErrorReportDAO {
         auditErrorReport.setIsActive(errorReport2.getIsActive());
         auditErrorReport.setCaseNumber(errorReport2.getCaseNumber());
         auditErrorReport.setStatus(errorReport2.getStatus());
-        auditErrorReport.setCoreArticalDetail(errorReport2.getCoreArticalDetail());
+        auditErrorReport.setCourseArticleId(errorReport2.getCourseArticleId());
         auditErrorReport.setDueDate(errorReport2.getDueDate());
         auditErrorReport.setAssigneeUserId(errorReport2.getAssigneeUserId());
+        auditErrorReport.setErrorReportId(errorReport2.getId());
         auditErrorReport.setAuditCreatedBy("");
         auditErrorReport.setAuditUpdatedBy("");
-        session.save(auditErrorReport);*/
-        
-        session.update(errorReport);        
-    }
-
-    @Override
-    public List<ErrorReportCategory> getAllErrorCategory() {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(ErrorReportCategory.class);
-        crit.add(Restrictions.eq("isActive", true));
-        return crit.list();
+        session.save(auditErrorReport);
     }
 
 }

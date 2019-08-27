@@ -65,4 +65,6 @@ public interface ICourseService {
     Map<String, Object> advanceSearch(AdvanceSearchDto courseSearchDto);
 
     Map<String, Object> getAllCourse();
+
+    Map<String, Object> update(@Valid CourseRequest courseDto, BigInteger id);
 }

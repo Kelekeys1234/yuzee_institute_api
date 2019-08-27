@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
@@ -192,6 +193,95 @@ public class CourseService implements ICourseService {
             iCourseDAO.save(course);
 
             if (courseDto.getEnglishEligibility() != null) {
+                courseDto.getEnglishEligibility().setCourse(course);
+                courseEnglishEligibilityDAO.save(courseDto.getEnglishEligibility());
+            }
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", IConstant.COURSE_ADD_SUCCESS);
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> update(@Valid final CourseRequest courseDto, BigInteger id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // Fetching the previous object
+            Course course = new Course();
+            course = iCourseDAO.get(id);
+            System.out.println("The Course Object: " + course);
+            course.setId(id);
+            course.setInstitute(getInstititute(courseDto.getInstituteId()));
+            course.setDescription(courseDto.getDescription());
+            course.setName(courseDto.getName());
+            course.setcId(courseDto.getcId());
+            course.setDuration(courseDto.getDuration());
+            course.setFaculty(getFaculty(courseDto.getFacultyId()));
+            course.setCity(getCity(courseDto.getCityId()));
+            course.setCourseLang(courseDto.getLanguaige());
+            course.setCountry(getCountry(courseDto.getCountryId()));
+            course.setIsActive(true);
+            course.setCreatedBy("API");
+            course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+            course.setUpdatedBy("API");
+            course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+            course.setStars(courseDto.getStars());
+
+            // Course Details
+            course.setIntake(courseDto.getIntake());
+            course.setCourseLink(courseDto.getCourseLink());
+            course.setDomesticFee(courseDto.getDomasticFee());
+            course.setInternationalFee(courseDto.getInternationalFee());
+            course.setCampusLocation(courseDto.getCampusLocation());
+            if (courseDto.getCourseCurrency() != null) {
+                course.setCurrency(courseDto.getCourseCurrency());
+                List<Currency> currencies = currencyDAO.getAll();
+                Currency toCurrency = currencyDAO.getCurrencyByCode("USD");
+                BigInteger toCurrencyId = null;
+                if (toCurrency != null) {
+                    toCurrencyId = toCurrency.getId();
+                }
+
+                CurrencyRate currencyRate = getCurrencyRate(courseDto.getCourseCurrency(), currencies);
+                BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCourseCurrency());
+                if (currencyRate == null) {
+                    currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCourseCurrency());
+                }
+                if (currencyRate != null) {
+                    if (toCurrencyId != null) {
+                        if (courseDto.getDomasticFee() != null) {
+                            Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
+                            if (convertedRate != null) {
+                                course.setUsdDomasticFee(convertedRate);
+                            }
+                        }
+                        if (courseDto.getInternationalFee() != null) {
+                            Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId, Double.valueOf(courseDto.getInternationalFee()));
+                            if (convertedRate != null) {
+                                course.setUsdInternationFee(convertedRate);
+                            }
+                        }
+                    }
+                }
+            }
+            iCourseDAO.update(course);
+            System.out.println("courseDto.getEnglishEligibility(): " +courseDto.getEnglishEligibility());
+            if (courseDto.getEnglishEligibility() != null) {
+                List<CourseEnglishEligibility> courseEnglishEligibilityList = courseEnglishEligibilityDAO.getAllEnglishEligibilityByCourse(id);
+                System.out.println("The English Eligibility Size: " + courseEnglishEligibilityList.size());
+                if (!courseEnglishEligibilityList.isEmpty()) {
+                    for (CourseEnglishEligibility courseEnglishEligibility : courseEnglishEligibilityList) {
+                        if (courseEnglishEligibility.getIsActive()) {
+                            courseEnglishEligibility.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
+                            courseEnglishEligibility.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+                            courseEnglishEligibility.setIsActive(false);
+                            courseEnglishEligibilityDAO.update(courseEnglishEligibility);
+                        }
+                    }
+                }
                 courseDto.getEnglishEligibility().setCourse(course);
                 courseEnglishEligibilityDAO.save(courseDto.getEnglishEligibility());
             }

@@ -51,7 +51,7 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
         String sqlQuery = "SELECT ed.user_id, ed.edu_country,c.name as CountryName, ed.edu_system_id,"
                         + "s.name as SystemName, ed.edu_institue, ed.gpa_score, ed.is_english_medium,"
                         + "ed.english_level, ed.edu_sys_score, ed.edu_level, ed.id, ed.is_active, ed.created_on, ed.created_by FROM user_education_details ed "
-                        + "inner join education_system s on s.id = ed.edu_system_id inner join " + "country c on c.id=ed.edu_country where ed.is_active = 1 and ed.user_id = '"
+                        + "left join education_system s on s.id = ed.edu_system_id left join " + "country c on c.id=ed.edu_country where ed.is_active = 1 and ed.user_id = '"
                         + userId + "'";
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
