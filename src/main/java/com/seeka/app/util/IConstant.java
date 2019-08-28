@@ -67,4 +67,17 @@ public class IConstant {
     public static final String CITY_TYPE = "City";
     public static final String COURSE_TYPE = "Course";
     public static final String DEFAULT_BASE_CURRENCY = "USD";
+    
+    public static final String STORAGE = "STORAGE-SERVICE/storage";
+    public static final String IDENTITY = "AUTH-SERVICE";
+    public static final String NOTIFICATION = "NOTIFICATION-SERVICE/notification";
+    
+    public static final String STORAGE_CONNECTION_URL="http://"+STORAGE+"/api/v1/storage";
+    
+    public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH";
+    public static final String ELASTIC_SEARCH_INDEX = "seeka_dev";
+    public static final String ELASTIC_SEARCH_COURSE_TYPE = "course";
+    public static final String ELASTIC_SEARCH_ARTICLE_TYPE = "article";
+    
+
 }
