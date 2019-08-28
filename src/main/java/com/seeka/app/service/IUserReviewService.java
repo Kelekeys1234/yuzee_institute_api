@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.UserReview;
-import com.seeka.app.bean.UserReviewRating;
 import com.seeka.app.dto.UserReviewDto;
 import com.seeka.app.dto.UserReviewResultDto;
 import com.seeka.app.exception.ValidationException;
@@ -24,7 +23,7 @@ public interface IUserReviewService {
 
 	List<UserReviewDto> getUserReviewBasedOnData(BigInteger entityId, String entityType) throws ValidationException;
 
-	List<UserReviewRating> getUserAverageReviewBasedOnData(BigInteger entityId, String entityType);
+	UserReviewResultDto getUserAverageReviewBasedOnData(BigInteger entityId, String entityType);
 
 	void deleteUserReview(BigInteger userReviewId) throws ValidationException;
 

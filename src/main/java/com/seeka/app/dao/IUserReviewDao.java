@@ -25,4 +25,6 @@ public interface IUserReviewDao {
 
 	List<UserReviewRating> getUserReviewRatings(BigInteger userReviewId);
 
+	Double getReviewStar(BigInteger entityId, String entityType);
+
 }

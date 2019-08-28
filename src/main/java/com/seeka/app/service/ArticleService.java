@@ -85,17 +85,14 @@ import com.seeka.app.util.PaginationUtil;
 @Transactional
 public class ArticleService implements IArticleService {
 
-    @Value("${storage.connection.url}")
-    private String storageURL;
+//    @Value("${storage.connection.url}")
+//    private String storageURL;
 
-    @Value("${elastic.search.host.port}")
-    private String elasticSearchPort;
-
-    @Value("${elastic.search.host.ip}")
-    private String elasticSearchHost;
-
-    @Value("${elastic.search.index}")
-    private String elasticSearchIndex;
+//    @Value("${elastic.search.host.port}")
+//    private String elasticSearchPort;
+//
+//    @Value("${elastic.search.host.ip}")
+//    private String elasticSearchHost;
 
     @Value("${s3.url}")
     private String s3URL;
@@ -147,6 +144,9 @@ public class ArticleService implements IArticleService {
 
     @Autowired
     private FacultyDAO facultyDAO;
+    
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public List<SeekaArticles> getAll() {
@@ -564,16 +564,7 @@ public class ArticleService implements IArticleService {
             /**
              * Code to Update ElasticSearch Instance with the Article Data -- Add/Update Article to ElasticSearch Instance
              */
-            RestTemplate restTemplate = new RestTemplate();
-
-            ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-            elasticSearchDto.setIndex(elasticSearchIndex);
-            elasticSearchDto.setType("article");
-            elasticSearchDto.setEntityId(String.valueOf(elasticSearchArticleDto.getId()));
-            elasticSearchDto.setObject(elasticSearchArticleDto);
-
-            ResponseEntity<Object> object = restTemplate.postForEntity("http://" + elasticSearchHost + ":" + elasticSearchPort + "/elasticSearch", elasticSearchDto, Object.class);
-            System.out.println(object);
+            saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE, elasticSearchArticleDto, IConstant.ELASTIC_SEARCH);
             /**
              * ElasticSearch Updation Code Ends
              */
@@ -811,8 +802,8 @@ public class ArticleService implements IArticleService {
 
     @SuppressWarnings("rawtypes")
     private String uploadImage(final MultipartFile file, final BigInteger articleId) {
-        ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClients.createDefault());
-        RestTemplate restTemplate = new RestTemplate(requestFactory);
+//        ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClients.createDefault());
+//        RestTemplate restTemplate = new RestTemplate(requestFactory);
         /**
          * Set http headers
          */
@@ -825,7 +816,7 @@ public class ArticleService implements IArticleService {
         MultiValueMap<String, Object> formDate = new LinkedMultiValueMap<>();
         formDate.add("file", new FileSystemResource(convert(file)));
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(storageURL).queryParam("id", articleId).queryParam("imageType", "ARTICLE");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL).queryParam("id", articleId).queryParam("imageType", "ARTICLE");
 
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(formDate, headers);
         ResponseEntity<Map> response = restTemplate.postForEntity(builder.toUriString(), request, Map.class);
@@ -886,5 +877,17 @@ public class ArticleService implements IArticleService {
         }
         response.put("data", articleDto3s);
         return response;
+    }
+    
+    public void saveArticleOnElasticSearch(String elasticSearchIndex, String type, ElasticSearchArticleDto articleDto, String elasticSearchName) {
+            ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+            elasticSearchDto.setIndex(elasticSearchIndex);
+            elasticSearchDto.setType(type);
+            elasticSearchDto.setEntityId(String.valueOf(articleDto.getId()));
+            elasticSearchDto.setObject(articleDto);
+            System.out.println(elasticSearchDto);
+			ResponseEntity<Object> object = restTemplate.postForEntity(
+					"http://" +  elasticSearchName +"/elasticSearch/", elasticSearchDto, Object.class);
+            System.out.println(object);
     }
 }

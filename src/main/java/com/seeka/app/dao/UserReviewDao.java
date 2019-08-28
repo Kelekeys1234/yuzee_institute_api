@@ -55,6 +55,20 @@ public class UserReviewDao implements IUserReviewDao {
 	}
 
 	@Override
+	public Double getReviewStar(final BigInteger entityId, final String entityType) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(UserReview.class, "userReview");
+		if (entityId != null && entityType != null) {
+			crit.add(Restrictions.eq("userReview.entityId", entityId));
+			crit.add(Restrictions.eq("userReview.entityType", entityType));
+		}
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.avg("userReview.reviewStar"), "reviewStar");
+		crit.setProjection(projList);
+		return (Double) crit.uniqueResult();
+	}
+
+	@Override
 	public List<Object> getUserAverageReview(final BigInteger entityId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReviewRating.class, "userReviewRating");
