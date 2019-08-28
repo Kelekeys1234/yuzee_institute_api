@@ -64,7 +64,7 @@ public class UserReviewController {
 	}
 
 	@DeleteMapping("/{userReviewId}")
-	public ResponseEntity<?> deleteUserReview(@PathVariable final BigInteger userReviewId) {
+	public ResponseEntity<?> deleteUserReview(@PathVariable final BigInteger userReviewId) throws ValidationException {
 		iUserReview.deleteUserReview(userReviewId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted user review successfully").create();
 	}

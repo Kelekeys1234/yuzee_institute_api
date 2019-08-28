@@ -22,10 +22,7 @@ public class ReviewQuestionDao implements IReviewQuestionDao {
 	@Override
 	public void addReviewQuestions(final ReviewQuestions reviewQuestions) {
 		Session session = sessionFactory.getCurrentSession();
-		Transaction tx = session.beginTransaction();
 		session.save(reviewQuestions);
-		tx.commit();
-		session.close();
 	}
 
 	@Override

@@ -26,6 +26,6 @@ public interface IUserReviewService {
 
 	List<UserReviewRating> getUserAverageReviewBasedOnData(BigInteger entityId, String entityType);
 
-	void deleteUserReview(BigInteger userReviewId);
+	void deleteUserReview(BigInteger userReviewId) throws ValidationException;
 
 }

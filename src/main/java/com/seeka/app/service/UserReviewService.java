@@ -147,9 +147,15 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public void deleteUserReview(final BigInteger userReviewId) {
+	public void deleteUserReview(final BigInteger userReviewId) throws ValidationException {
 		UserReview userReview = iUserReviewDao.getUserReview(userReviewId);
-		userReview.setIsActive(false);
+		if (userReview != null) {
+			userReview.setIsActive(false);
+			iUserReviewDao.save(userReview);
+		} else {
+			throw new ValidationException("User review is not found for id " + userReviewId);
+		}
+
 	}
 
 }
