@@ -6,17 +6,11 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import com.seeka.app.bean.UserReviewRating;
-
 /**
  * @author SeekADegree
  *
  */
-/**
- * @author SeekADegree
- *
- */
-public class UserReviewDto implements Serializable {
+public class UserReviewResultDto implements Serializable {
 
 	/**
 	 *
@@ -47,9 +41,10 @@ public class UserReviewDto implements Serializable {
 	private Boolean isAnonymous;
 	private Double reviewStar;
 	private String comments;
+	private Boolean isActive;
 
 	@NotNull(message = "ratings is required")
-	private List<UserReviewRating> ratings;
+	private List<UserReviewRatingDto> ratings;
 
 	public BigInteger getId() {
 		return id;
@@ -123,11 +118,19 @@ public class UserReviewDto implements Serializable {
 		this.comments = comments;
 	}
 
-	public List<UserReviewRating> getRatings() {
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(final Boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public List<UserReviewRatingDto> getRatings() {
 		return ratings;
 	}
 
-	public void setRatings(final List<UserReviewRating> ratings) {
+	public void setRatings(final List<UserReviewRatingDto> ratings) {
 		this.ratings = ratings;
 	}
 
@@ -139,6 +142,7 @@ public class UserReviewDto implements Serializable {
 		result = prime * result + (entityId == null ? 0 : entityId.hashCode());
 		result = prime * result + (entityType == null ? 0 : entityType.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
+		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
 		result = prime * result + (isAnonymous == null ? 0 : isAnonymous.hashCode());
 		result = prime * result + (ratings == null ? 0 : ratings.hashCode());
 		result = prime * result + (reviewStar == null ? 0 : reviewStar.hashCode());
@@ -159,7 +163,7 @@ public class UserReviewDto implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		UserReviewDto other = (UserReviewDto) obj;
+		UserReviewResultDto other = (UserReviewResultDto) obj;
 		if (comments == null) {
 			if (other.comments != null) {
 				return false;
@@ -186,6 +190,13 @@ public class UserReviewDto implements Serializable {
 				return false;
 			}
 		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (isActive == null) {
+			if (other.isActive != null) {
+				return false;
+			}
+		} else if (!isActive.equals(other.isActive)) {
 			return false;
 		}
 		if (isAnonymous == null) {
@@ -236,10 +247,10 @@ public class UserReviewDto implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserReviewDto [id=").append(id).append(", userId=").append(userId).append(", entityId=").append(entityId).append(", entityType=")
+		builder.append("UserReviewResultDto [id=").append(id).append(", userId=").append(userId).append(", entityId=").append(entityId).append(", entityType=")
 				.append(entityType).append(", studentType=").append(studentType).append(", studentCategory=").append(studentCategory).append(", isAnonymous=")
-				.append(isAnonymous).append(", reviewStar=").append(reviewStar).append(", comments=").append(comments).append(", ratings=").append(ratings)
-				.append("]");
+				.append(isAnonymous).append(", reviewStar=").append(reviewStar).append(", comments=").append(comments).append(", isActive=").append(isActive)
+				.append(", ratings=").append(ratings).append("]");
 		return builder.toString();
 	}
 

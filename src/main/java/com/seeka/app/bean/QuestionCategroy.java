@@ -13,14 +13,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author SeekADegree
  *
  */
 @Entity
-@Table(name = "user_review")
-public class UserReview implements Serializable {
+@Table(name = "question_category")
+public class QuestionCategroy implements Serializable {
 
 	/**
 	 *
@@ -32,38 +33,9 @@ public class UserReview implements Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	private BigInteger id;
 
-	@Column(name = "user_id")
-	private BigInteger userId;
-
-	@Column(name = "entity_id")
-	private BigInteger entityId;
-
-	/**
-	 * Which reviews do you want to share with us : Course or Institute
-	 */
-	@Column(name = "entity_type", length = 250)
-	private String entityType;
-	/**
-	 * Are you current student or alumni
-	 */
-	@Column(name = "student_type", length = 250)
-	private String studentType;
-
-	/**
-	 * Student is international or Domestic
-	 */
-	@Column(name = "student_category", nullable = false, length = 20)
-	private String studentCategory;
-
-	/**
-	 * Post as an anonymous
-	 */
-	@Column(name = "is_anonymous")
-	private Boolean isAnonymous;
-	@Column(name = "review_star", nullable = false, precision = 4)
-	private Double reviewStar;
-	@Column(name = "comments", length = 500)
-	private String comments;
+	@Column(name = "category_name", length = 250)
+	@NotNull(message = "categoryName is required")
+	private String categoryName;
 
 	@Column(name = "is_active")
 	private Boolean isActive;
@@ -91,68 +63,12 @@ public class UserReview implements Serializable {
 		this.id = id;
 	}
 
-	public BigInteger getUserId() {
-		return userId;
+	public String getCategoryName() {
+		return categoryName;
 	}
 
-	public void setUserId(final BigInteger userId) {
-		this.userId = userId;
-	}
-
-	public BigInteger getEntityId() {
-		return entityId;
-	}
-
-	public void setEntityId(final BigInteger entityId) {
-		this.entityId = entityId;
-	}
-
-	public String getEntityType() {
-		return entityType;
-	}
-
-	public void setEntityType(final String entityType) {
-		this.entityType = entityType;
-	}
-
-	public String getStudentType() {
-		return studentType;
-	}
-
-	public void setStudentType(final String studentType) {
-		this.studentType = studentType;
-	}
-
-	public String getStudentCategory() {
-		return studentCategory;
-	}
-
-	public void setStudentCategory(final String studentCategory) {
-		this.studentCategory = studentCategory;
-	}
-
-	public Boolean getIsAnonymous() {
-		return isAnonymous;
-	}
-
-	public void setIsAnonymous(final Boolean isAnonymous) {
-		this.isAnonymous = isAnonymous;
-	}
-
-	public Double getReviewStar() {
-		return reviewStar;
-	}
-
-	public void setReviewStar(final Double reviewStar) {
-		this.reviewStar = reviewStar;
-	}
-
-	public String getComments() {
-		return comments;
-	}
-
-	public void setComments(final String comments) {
-		this.comments = comments;
+	public void setCategoryName(final String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 	public Boolean getIsActive() {
@@ -215,22 +131,15 @@ public class UserReview implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (comments == null ? 0 : comments.hashCode());
+		result = prime * result + (categoryName == null ? 0 : categoryName.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (deletedBy == null ? 0 : deletedBy.hashCode());
 		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
-		result = prime * result + (entityId == null ? 0 : entityId.hashCode());
-		result = prime * result + (entityType == null ? 0 : entityType.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
-		result = prime * result + (isAnonymous == null ? 0 : isAnonymous.hashCode());
-		result = prime * result + (reviewStar == null ? 0 : reviewStar.hashCode());
-		result = prime * result + (studentCategory == null ? 0 : studentCategory.hashCode());
-		result = prime * result + (studentType == null ? 0 : studentType.hashCode());
 		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
 		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
-		result = prime * result + (userId == null ? 0 : userId.hashCode());
 		return result;
 	}
 
@@ -245,12 +154,12 @@ public class UserReview implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		UserReview other = (UserReview) obj;
-		if (comments == null) {
-			if (other.comments != null) {
+		QuestionCategroy other = (QuestionCategroy) obj;
+		if (categoryName == null) {
+			if (other.categoryName != null) {
 				return false;
 			}
-		} else if (!comments.equals(other.comments)) {
+		} else if (!categoryName.equals(other.categoryName)) {
 			return false;
 		}
 		if (createdBy == null) {
@@ -281,20 +190,6 @@ public class UserReview implements Serializable {
 		} else if (!deletedOn.equals(other.deletedOn)) {
 			return false;
 		}
-		if (entityId == null) {
-			if (other.entityId != null) {
-				return false;
-			}
-		} else if (!entityId.equals(other.entityId)) {
-			return false;
-		}
-		if (entityType == null) {
-			if (other.entityType != null) {
-				return false;
-			}
-		} else if (!entityType.equals(other.entityType)) {
-			return false;
-		}
 		if (id == null) {
 			if (other.id != null) {
 				return false;
@@ -307,34 +202,6 @@ public class UserReview implements Serializable {
 				return false;
 			}
 		} else if (!isActive.equals(other.isActive)) {
-			return false;
-		}
-		if (isAnonymous == null) {
-			if (other.isAnonymous != null) {
-				return false;
-			}
-		} else if (!isAnonymous.equals(other.isAnonymous)) {
-			return false;
-		}
-		if (reviewStar == null) {
-			if (other.reviewStar != null) {
-				return false;
-			}
-		} else if (!reviewStar.equals(other.reviewStar)) {
-			return false;
-		}
-		if (studentCategory == null) {
-			if (other.studentCategory != null) {
-				return false;
-			}
-		} else if (!studentCategory.equals(other.studentCategory)) {
-			return false;
-		}
-		if (studentType == null) {
-			if (other.studentType != null) {
-				return false;
-			}
-		} else if (!studentType.equals(other.studentType)) {
 			return false;
 		}
 		if (updatedBy == null) {
@@ -351,22 +218,13 @@ public class UserReview implements Serializable {
 		} else if (!updatedOn.equals(other.updatedOn)) {
 			return false;
 		}
-		if (userId == null) {
-			if (other.userId != null) {
-				return false;
-			}
-		} else if (!userId.equals(other.userId)) {
-			return false;
-		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserReview [id=").append(id).append(", userId=").append(userId).append(", entityId=").append(entityId).append(", entityType=")
-				.append(entityType).append(", studentType=").append(studentType).append(", studentCategory=").append(studentCategory).append(", isAnonymous=")
-				.append(isAnonymous).append(", reviewStar=").append(reviewStar).append(", comments=").append(comments).append(", isActive=").append(isActive)
+		builder.append("QuestionCategroy [id=").append(id).append(", categoryName=").append(categoryName).append(", isActive=").append(isActive)
 				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
 				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", deletedBy=").append(deletedBy).append("]");
 		return builder.toString();

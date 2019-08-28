@@ -4,7 +4,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.UserReview;
+import com.seeka.app.bean.UserReviewRating;
 import com.seeka.app.dto.UserReviewDto;
+import com.seeka.app.dto.UserReviewResultDto;
 import com.seeka.app.exception.ValidationException;
 
 /**
@@ -16,10 +18,14 @@ public interface IUserReviewService {
 
 	UserReview addUserReview(UserReviewDto userReviewDto) throws ValidationException;
 
-	List<UserReview> getUserReview(BigInteger userId);
+	List<UserReviewDto> getUserReviewList(BigInteger userId);
 
-	List<UserReview> getUserReviewBasedOnData(BigInteger entityId, String entityType) throws ValidationException;
+	UserReviewResultDto getUserReviewDetails(BigInteger userId) throws ValidationException;
 
-	UserReview getUserAverageReviewBasedOnData(BigInteger entityId, String entityType);
+	List<UserReviewDto> getUserReviewBasedOnData(BigInteger entityId, String entityType) throws ValidationException;
+
+	List<UserReviewRating> getUserAverageReviewBasedOnData(BigInteger entityId, String entityType);
+
+	void deleteUserReview(BigInteger userReviewId);
 
 }

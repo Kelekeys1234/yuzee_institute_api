@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.UserReview;
+import com.seeka.app.bean.UserReviewRating;
 
 /**
  *
@@ -14,8 +15,14 @@ public interface IUserReviewDao {
 
 	void save(UserReview userReview);
 
-	List<UserReview> getUserReview(BigInteger userId, BigInteger entityId, String entityType);
+	List<UserReview> getUserReviewList(BigInteger userId, BigInteger entityId, String entityType);
 
-	UserReview getUserAverageReview(BigInteger entityId, String entityType);
+	List<Object> getUserAverageReview(BigInteger entityId, String entityType);
+
+	UserReview getUserReview(BigInteger userReviewId);
+
+	void saveUserReviewRating(UserReviewRating userReviewRating);
+
+	List<UserReviewRating> getUserReviewRatings(BigInteger userReviewId);
 
 }

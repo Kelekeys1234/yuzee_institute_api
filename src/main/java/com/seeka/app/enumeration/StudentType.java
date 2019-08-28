@@ -1,5 +1,5 @@
 package com.seeka.app.enumeration;
 
 public enum StudentType {
-	CURRENTSTUDENT,ALUMNI
+	CURRENT_STUDENT, ALUMNI, BOTH
 }

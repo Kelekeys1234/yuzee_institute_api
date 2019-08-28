@@ -14,58 +14,29 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-/**
- * @author SeekADegree
- *
- */
 @Entity
-@Table(name = "user_review")
-public class UserReview implements Serializable {
-
+@Table(name = "review_questions")
+public class ReviewQuestions implements Serializable {
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -5699019798373814995L;
-
+	private static final long serialVersionUID = -4060022809496074798L;
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private BigInteger id;
-
-	@Column(name = "user_id")
-	private BigInteger userId;
-
-	@Column(name = "entity_id")
-	private BigInteger entityId;
-
-	/**
-	 * Which reviews do you want to share with us : Course or Institute
-	 */
-	@Column(name = "entity_type", length = 250)
-	private String entityType;
-	/**
-	 * Are you current student or alumni
-	 */
-	@Column(name = "student_type", length = 250)
+	@Column(name = "student_type", nullable = false, length = 20)
 	private String studentType;
-
-	/**
-	 * Student is international or Domestic
-	 */
 	@Column(name = "student_category", nullable = false, length = 20)
 	private String studentCategory;
+	@Column(name = "question_title", nullable = false, length = 250)
+	private String questionTitle;
+	@Column(name = "question_category_id", nullable = false)
+	private BigInteger questionCategoryId;
+	@Column(name = "question", nullable = false, length = 2000)
+	private String question;
 
-	/**
-	 * Post as an anonymous
-	 */
-	@Column(name = "is_anonymous")
-	private Boolean isAnonymous;
-	@Column(name = "review_star", nullable = false, precision = 4)
-	private Double reviewStar;
-	@Column(name = "comments", length = 500)
-	private String comments;
-
-	@Column(name = "is_active")
+	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
@@ -91,30 +62,6 @@ public class UserReview implements Serializable {
 		this.id = id;
 	}
 
-	public BigInteger getUserId() {
-		return userId;
-	}
-
-	public void setUserId(final BigInteger userId) {
-		this.userId = userId;
-	}
-
-	public BigInteger getEntityId() {
-		return entityId;
-	}
-
-	public void setEntityId(final BigInteger entityId) {
-		this.entityId = entityId;
-	}
-
-	public String getEntityType() {
-		return entityType;
-	}
-
-	public void setEntityType(final String entityType) {
-		this.entityType = entityType;
-	}
-
 	public String getStudentType() {
 		return studentType;
 	}
@@ -131,28 +78,28 @@ public class UserReview implements Serializable {
 		this.studentCategory = studentCategory;
 	}
 
-	public Boolean getIsAnonymous() {
-		return isAnonymous;
+	public String getQuestionTitle() {
+		return questionTitle;
 	}
 
-	public void setIsAnonymous(final Boolean isAnonymous) {
-		this.isAnonymous = isAnonymous;
+	public void setQuestionTitle(final String questionTitle) {
+		this.questionTitle = questionTitle;
 	}
 
-	public Double getReviewStar() {
-		return reviewStar;
+	public BigInteger getQuestionCategoryId() {
+		return questionCategoryId;
 	}
 
-	public void setReviewStar(final Double reviewStar) {
-		this.reviewStar = reviewStar;
+	public void setQuestionCategoryId(final BigInteger questionCategoryId) {
+		this.questionCategoryId = questionCategoryId;
 	}
 
-	public String getComments() {
-		return comments;
+	public String getQuestion() {
+		return question;
 	}
 
-	public void setComments(final String comments) {
-		this.comments = comments;
+	public void setQuestion(final String question) {
+		this.question = question;
 	}
 
 	public Boolean getIsActive() {
@@ -215,22 +162,19 @@ public class UserReview implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (comments == null ? 0 : comments.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (deletedBy == null ? 0 : deletedBy.hashCode());
 		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
-		result = prime * result + (entityId == null ? 0 : entityId.hashCode());
-		result = prime * result + (entityType == null ? 0 : entityType.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
-		result = prime * result + (isAnonymous == null ? 0 : isAnonymous.hashCode());
-		result = prime * result + (reviewStar == null ? 0 : reviewStar.hashCode());
+		result = prime * result + (question == null ? 0 : question.hashCode());
+		result = prime * result + (questionCategoryId == null ? 0 : questionCategoryId.hashCode());
+		result = prime * result + (questionTitle == null ? 0 : questionTitle.hashCode());
 		result = prime * result + (studentCategory == null ? 0 : studentCategory.hashCode());
 		result = prime * result + (studentType == null ? 0 : studentType.hashCode());
 		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
 		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
-		result = prime * result + (userId == null ? 0 : userId.hashCode());
 		return result;
 	}
 
@@ -245,14 +189,7 @@ public class UserReview implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		UserReview other = (UserReview) obj;
-		if (comments == null) {
-			if (other.comments != null) {
-				return false;
-			}
-		} else if (!comments.equals(other.comments)) {
-			return false;
-		}
+		ReviewQuestions other = (ReviewQuestions) obj;
 		if (createdBy == null) {
 			if (other.createdBy != null) {
 				return false;
@@ -281,20 +218,6 @@ public class UserReview implements Serializable {
 		} else if (!deletedOn.equals(other.deletedOn)) {
 			return false;
 		}
-		if (entityId == null) {
-			if (other.entityId != null) {
-				return false;
-			}
-		} else if (!entityId.equals(other.entityId)) {
-			return false;
-		}
-		if (entityType == null) {
-			if (other.entityType != null) {
-				return false;
-			}
-		} else if (!entityType.equals(other.entityType)) {
-			return false;
-		}
 		if (id == null) {
 			if (other.id != null) {
 				return false;
@@ -309,18 +232,25 @@ public class UserReview implements Serializable {
 		} else if (!isActive.equals(other.isActive)) {
 			return false;
 		}
-		if (isAnonymous == null) {
-			if (other.isAnonymous != null) {
+		if (question == null) {
+			if (other.question != null) {
 				return false;
 			}
-		} else if (!isAnonymous.equals(other.isAnonymous)) {
+		} else if (!question.equals(other.question)) {
 			return false;
 		}
-		if (reviewStar == null) {
-			if (other.reviewStar != null) {
+		if (questionCategoryId == null) {
+			if (other.questionCategoryId != null) {
 				return false;
 			}
-		} else if (!reviewStar.equals(other.reviewStar)) {
+		} else if (!questionCategoryId.equals(other.questionCategoryId)) {
+			return false;
+		}
+		if (questionTitle == null) {
+			if (other.questionTitle != null) {
+				return false;
+			}
+		} else if (!questionTitle.equals(other.questionTitle)) {
 			return false;
 		}
 		if (studentCategory == null) {
@@ -351,24 +281,17 @@ public class UserReview implements Serializable {
 		} else if (!updatedOn.equals(other.updatedOn)) {
 			return false;
 		}
-		if (userId == null) {
-			if (other.userId != null) {
-				return false;
-			}
-		} else if (!userId.equals(other.userId)) {
-			return false;
-		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserReview [id=").append(id).append(", userId=").append(userId).append(", entityId=").append(entityId).append(", entityType=")
-				.append(entityType).append(", studentType=").append(studentType).append(", studentCategory=").append(studentCategory).append(", isAnonymous=")
-				.append(isAnonymous).append(", reviewStar=").append(reviewStar).append(", comments=").append(comments).append(", isActive=").append(isActive)
-				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
-				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", deletedBy=").append(deletedBy).append("]");
+		builder.append("ReviewQuestions [id=").append(id).append(", studentType=").append(studentType).append(", studentCategory=").append(studentCategory)
+				.append(", questionTitle=").append(questionTitle).append(", questionCategoryId=").append(questionCategoryId).append(", question=")
+				.append(question).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
+				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
+				.append(", deletedBy=").append(deletedBy).append("]");
 		return builder.toString();
 	}
 
