@@ -116,6 +116,7 @@ public class UserReviewService implements IUserReviewService {
 			resultList.add(userReviewRatingDto);
 		}
 		userReviewResultDto.setRatings(resultList);
+
 		return userReviewResultDto;
 	}
 
@@ -133,17 +134,20 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public List<UserReviewRating> getUserAverageReviewBasedOnData(final BigInteger entityId, final String entityType) {
+	public UserReviewResultDto getUserAverageReviewBasedOnData(final BigInteger entityId, final String entityType) {
 		List<Object> objectList = iUserReviewDao.getUserAverageReview(entityId, entityType);
-		List<UserReviewRating> resultList = new ArrayList<>();
+		UserReviewResultDto userReviewResultDto = new UserReviewResultDto();
+		List<UserReviewRatingDto> resultList = new ArrayList<>();
 		for (Object object : objectList) {
 			Object[] obj1 = (Object[]) object;
-			UserReviewRating userReviewRating = new UserReviewRating();
-			userReviewRating.setReviewQuestionId((BigInteger) obj1[0]);
-			userReviewRating.setRating((Double) obj1[1]);
-			resultList.add(userReviewRating);
+			UserReviewRatingDto userReviewRatingDto = new UserReviewRatingDto();
+			userReviewRatingDto.setReviewQuestionId((BigInteger) obj1[0]);
+			userReviewRatingDto.setRating((Double) obj1[1]);
+			resultList.add(userReviewRatingDto);
 		}
-		return resultList;
+		userReviewResultDto.setRatings(resultList);
+		userReviewResultDto.setReviewStar(iUserReviewDao.getReviewStar(entityId, entityType));
+		return userReviewResultDto;
 	}
 
 	@Override

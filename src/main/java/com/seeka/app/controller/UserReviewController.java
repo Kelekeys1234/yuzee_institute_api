@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.UserReview;
-import com.seeka.app.bean.UserReviewRating;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.UserReviewDto;
 import com.seeka.app.dto.UserReviewResultDto;
@@ -59,8 +58,8 @@ public class UserReviewController {
 	@GetMapping("/average")
 	public ResponseEntity<?> getUserAverageReviewBasedOnData(@RequestParam(name = "entityId") final BigInteger entityId,
 			@RequestParam(name = "entityType") final String entityType) throws ValidationException {
-		List<UserReviewRating> userReview = iUserReview.getUserAverageReviewBasedOnData(entityId, entityType);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReview).setMessage("Get user average review successfully").create();
+		UserReviewResultDto userReviewResultDto = iUserReview.getUserAverageReviewBasedOnData(entityId, entityType);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReviewResultDto).setMessage("Get user average review successfully").create();
 	}
 
 	@DeleteMapping("/{userReviewId}")
