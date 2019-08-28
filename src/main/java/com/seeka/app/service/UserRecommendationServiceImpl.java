@@ -100,10 +100,23 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if (existingCourse == null) {
 			throw new ValidationException("Course not found for Id : " + courseId);
 		}
-		BigInteger facultyId = existingCourse.getFaculty().getId();
-		BigInteger instituteId = existingCourse.getInstitute().getId();
-		BigInteger countryId = existingCourse.getCountry().getId();
-		BigInteger cityId = existingCourse.getCity().getId();
+		BigInteger facultyId = null;
+		BigInteger instituteId = null;
+		BigInteger countryId = null;
+		BigInteger cityId = null;
+		if(existingCourse.getFaculty()!=null){
+		    facultyId = existingCourse.getFaculty().getId();
+		}
+		if(existingCourse.getInstitute()!=null){
+		     instituteId = existingCourse.getInstitute().getId();
+        }
+		if(existingCourse.getCountry()!=null){
+		     countryId = existingCourse.getCountry().getId();
+        }
+		if(existingCourse.getCity()!=null){
+		     cityId = existingCourse.getCity().getId();
+        }
+		
 		Double price = existingCourse.getUsdInternationFee();
 		List<Course> resultList = new ArrayList<>();
 
@@ -207,10 +220,22 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if (existingCourse == null) {
 			throw new ValidationException("Course not found for Id : " + courseId);
 		}
-		BigInteger facultyId = existingCourse.getFaculty().getId();
-		BigInteger instituteId = existingCourse.getInstitute().getId();
-		BigInteger countryId = existingCourse.getCountry().getId();
-		BigInteger cityId = existingCourse.getCity().getId();
+        BigInteger facultyId = null;
+        BigInteger instituteId = null;
+        BigInteger countryId = null;
+        BigInteger cityId = null;
+        if (existingCourse.getFaculty() != null) {
+            facultyId = existingCourse.getFaculty().getId();
+        }
+        if (existingCourse.getInstitute() != null) {
+            instituteId = existingCourse.getInstitute().getId();
+        }
+        if (existingCourse.getCountry() != null) {
+            countryId = existingCourse.getCountry().getId();
+        }
+        if (existingCourse.getCity() != null) {
+            cityId = existingCourse.getCity().getId();
+        }
 		String courseName = existingCourse.getName();
 		Double price = existingCourse.getUsdInternationFee();
 		List<Course> resultList = new ArrayList<>();

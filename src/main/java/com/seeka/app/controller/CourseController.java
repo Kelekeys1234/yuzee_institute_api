@@ -283,14 +283,14 @@ public class CourseController {
             return ResponseEntity.badRequest().body(response);
         }
         CourseDto courseResObj = (CourseDto) map.get("courseObj");
-        courseRequest = CommonUtil.convertCourseDtoToCourseRequest(courseResObj);
-        
+        Course course=  courseService.get(id);
+        courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
         InstituteResponseDto instituteObj = (InstituteResponseDto) map.get("instituteObj");
         courseRequest.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
         courseRequest.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(instituteObj.getCountryName(), instituteObj.getInstituteName()));
         List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
         if(!englishCriteriaList.isEmpty()){
-            courseRequest.setEnglishEligibility(englishCriteriaList.get(0));
+            courseRequest.setEnglishEligibility(englishCriteriaList);
         }
         List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getInstituteId(), courseResObj.getCourseName());
         List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
@@ -298,7 +298,6 @@ public class CourseController {
         response.put("status", 1);
         response.put("message", "Success.!");
         response.put("courseObj", courseRequest);
-//        response.put("englishCriteriaList", englishCriteriaList);
         response.put("recommendCourse", recommendCourse);
         response.put("relatedCourse", relatedCourse);
         response.put("instituteObj", instituteObj);

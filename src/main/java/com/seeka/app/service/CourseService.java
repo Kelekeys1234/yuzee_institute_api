@@ -144,7 +144,7 @@ public class CourseService implements ICourseService {
             course.setDuration(courseDto.getDuration());
             course.setFaculty(getFaculty(courseDto.getFacultyId()));
             course.setCity(getCity(courseDto.getCityId()));
-            course.setCourseLang(courseDto.getLanguaige());
+            course.setCourseLang(courseDto.getLanguage());
             course.setCountry(getCountry(courseDto.getCountryId()));
             course.setIsActive(true);
             course.setCreatedBy("API");
@@ -193,8 +193,11 @@ public class CourseService implements ICourseService {
             iCourseDAO.save(course);
 
             if (courseDto.getEnglishEligibility() != null) {
-                courseDto.getEnglishEligibility().setCourse(course);
-                courseEnglishEligibilityDAO.save(courseDto.getEnglishEligibility());
+                for (CourseEnglishEligibility e : courseDto.getEnglishEligibility()) {
+                    e.setCourse(course);
+                    e.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+                    courseEnglishEligibilityDAO.save(e);
+                }
             }
             response.put("status", HttpStatus.OK.value());
             response.put("message", IConstant.COURSE_ADD_SUCCESS);
@@ -220,7 +223,7 @@ public class CourseService implements ICourseService {
             course.setDuration(courseDto.getDuration());
             course.setFaculty(getFaculty(courseDto.getFacultyId()));
             course.setCity(getCity(courseDto.getCityId()));
-            course.setCourseLang(courseDto.getLanguaige());
+            course.setCourseLang(courseDto.getLanguage());
             course.setCountry(getCountry(courseDto.getCountryId()));
             course.setIsActive(true);
             course.setCreatedBy("API");
@@ -267,7 +270,7 @@ public class CourseService implements ICourseService {
                 }
             }
             iCourseDAO.update(course);
-            System.out.println("courseDto.getEnglishEligibility(): " +courseDto.getEnglishEligibility());
+            System.out.println("courseDto.getEnglishEligibility(): " + courseDto.getEnglishEligibility());
             if (courseDto.getEnglishEligibility() != null) {
                 List<CourseEnglishEligibility> courseEnglishEligibilityList = courseEnglishEligibilityDAO.getAllEnglishEligibilityByCourse(id);
                 System.out.println("The English Eligibility Size: " + courseEnglishEligibilityList.size());
@@ -281,11 +284,14 @@ public class CourseService implements ICourseService {
                         }
                     }
                 }
-                courseDto.getEnglishEligibility().setCourse(course);
-                courseEnglishEligibilityDAO.save(courseDto.getEnglishEligibility());
+                for (CourseEnglishEligibility e : courseDto.getEnglishEligibility()) {
+                    e.setCourse(course);
+                    e.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+                    courseEnglishEligibilityDAO.save(e);
+                }
             }
             response.put("status", HttpStatus.OK.value());
-            response.put("message", IConstant.COURSE_ADD_SUCCESS);
+            response.put("message", "Course updated successfully");
         } catch (Exception exception) {
             response.put("message", exception.getCause());
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());

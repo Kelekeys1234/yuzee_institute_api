@@ -18,6 +18,7 @@ import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.CountryDetails;
 import com.seeka.app.bean.CountryImages;
+import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Level;
 import com.seeka.app.bean.Scholarship;
@@ -158,23 +159,43 @@ public class CommonUtil {
         scholarship.setHeadquaters(scholarshipObj.getHeadquaters());
         scholarship.setEmail(scholarshipObj.getEmail());
         scholarship.setAddress(scholarshipObj.getAddress());
+        scholarship.setIsActive(true);
         return scholarship;
     }
 
     
     
-    public static CourseRequest convertCourseDtoToCourseRequest(CourseDto co) {
+    public static CourseRequest convertCourseDtoToCourseRequest(Course course) {
         CourseRequest courseRequest = new CourseRequest();
-        courseRequest.setCourseId(co.getCourseId());
-        courseRequest.setStars(co.getStars());
-        courseRequest.setDescription(co.getDescription());
-        courseRequest.setDuration(co.getDuration());
-        courseRequest.setDurationTime(co.getDurationTime());
-        courseRequest.setWorldRanking(co.getWorldRanking());
-        courseRequest.setIntlFees(co.getIntlFees());
-        courseRequest.setLocalFees(co.getLocalFees());
-        courseRequest.setCost(co.getCost());
-               return courseRequest;
+        courseRequest.setCourseId(course.getId());
+        courseRequest.setStars(course.getStars());
+        courseRequest.setDescription(course.getDescription());
+        courseRequest.setDuration(course.getDuration());
+        courseRequest.setDurationTime(course.getDurationTime());
+        courseRequest.setWorldRanking(course.getWorldRanking());
+        //courseRequest.setCost(course.getCostRange());
+        courseRequest.setName(course.getName());
+        courseRequest.setCourseLink(course.getCourseLink());
+        courseRequest.setIntake(course.getIntake());
+        courseRequest.setLanguage(course.getCourseLang());
+        if(course.getFaculty()!=null){
+            courseRequest.setFacultyId(course.getFaculty().getId());
+        }
+        courseRequest.setDomasticFee(course.getDomesticFee());
+        courseRequest.setInternationalFee(course.getInternationalFee());
+        if(course.getCountry()!=null){
+            courseRequest.setCountryId(course.getCountry().getId());
+        }
+        courseRequest.setGrades(course.getGrades());
+        //courseRequest.setPartTime(course.getp);
+        courseRequest.setContact(course.getContact());
+        //courseRequest.setOpeningHourFrom(openingHourFrom);
+        //courseRequest.setOpeningHourTo(openingHourTo);
+        courseRequest.setCampusLocation(course.getCampusLocation());
+        courseRequest.setWebsite(course.getWebsite());
+        //courseRequest.setFullTime(course.g);
+        courseRequest.setCourseCurrency(course.getCurrency());
+        return courseRequest;
     }
 
     public static String getCurrencyDetails(String baseCurrency) {

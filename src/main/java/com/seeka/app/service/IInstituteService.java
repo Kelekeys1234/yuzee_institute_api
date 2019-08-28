@@ -42,5 +42,5 @@ public interface IInstituteService {
 
     Map<String, Object> searchInstitute(@Valid String searchText);
 
-     Map<String, Object> update(InstituteRequestDto institute, @Valid BigInteger id);
+    Map<String, Object> update(InstituteRequestDto institute, @Valid BigInteger id);
 }

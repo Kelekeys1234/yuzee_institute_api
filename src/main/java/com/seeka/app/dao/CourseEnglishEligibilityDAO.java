@@ -51,6 +51,7 @@ public class CourseEnglishEligibilityDAO implements ICourseEnglishEligibilityDAO
 		Criteria c = session.createCriteria(CourseEnglishEligibility.class, "courseEnglishEligibility");
 		c.createAlias("courseEnglishEligibility.course", "course");
 		c.add(Restrictions.eq("course.id", courseID));
+		c.add(Restrictions.eq("isActive", true));
 		return c.list();
 	}
 	

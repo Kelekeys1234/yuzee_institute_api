@@ -84,8 +84,6 @@ public class ScholarshipDao implements IScholarshipDAO{
 	        for (Object[] row : rows) {
 	            obj = new Scholarship();
 	            obj.setId(new BigInteger((row[0].toString())));
-	            
-	            
 	            if (row[1] != null) {
 	                obj.setCountry(getCountry(new BigInteger((row[1].toString())), session));
 	            }

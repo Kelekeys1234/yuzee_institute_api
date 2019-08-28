@@ -17,11 +17,11 @@ public class CourseRequest {
 	private String description;
 	private String duration;
 	private String intake;
-	private String languaige;
+	private String language;
 	private Double domasticFee;
 	private Double internationalFee;
 	private String grades;
-	private CourseEnglishEligibility englishEligibility;
+	private List<CourseEnglishEligibility> englishEligibility;
 	private String partTime;
 	private String fullTime;
 	private String documentUrl;
@@ -175,21 +175,16 @@ public class CourseRequest {
 		this.intake = intake;
 	}
 
-	/**
-	 * @return the languaige
-	 */
-	public String getLanguaige() {
-		return languaige;
-	}
 
-	/**
-	 * @param languaige the languaige to set
-	 */
-	public void setLanguaige(final String languaige) {
-		this.languaige = languaige;
-	}
+	public String getLanguage() {
+        return language;
+    }
 
-	/**
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    /**
 	 * @return the domasticFee
 	 */
 	public Double getDomasticFee() {
@@ -231,21 +226,17 @@ public class CourseRequest {
 		this.grades = grades;
 	}
 
-	/**
-	 * @return the englishEligibility
-	 */
-	public CourseEnglishEligibility getEnglishEligibility() {
-		return englishEligibility;
-	}
+	
 
-	/**
-	 * @param englishEligibility the englishEligibility to set
-	 */
-	public void setEnglishEligibility(final CourseEnglishEligibility englishEligibility) {
-		this.englishEligibility = englishEligibility;
-	}
+	public List<CourseEnglishEligibility> getEnglishEligibility() {
+        return englishEligibility;
+    }
 
-	/**
+    public void setEnglishEligibility(List<CourseEnglishEligibility> englishEligibility) {
+        this.englishEligibility = englishEligibility;
+    }
+
+    /**
 	 * @return the partTime
 	 */
 	public String getPartTime() {

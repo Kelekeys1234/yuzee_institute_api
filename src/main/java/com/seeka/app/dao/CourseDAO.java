@@ -865,10 +865,10 @@ public class CourseDAO implements ICourseDAO {
 						+ "ins.address as ins_address, crs.currency,crs.cost_range,crs.international_fee,crs.domestic_fee,cty.name as city_name,cntry.name as country_name,"
 						+ "fty.name as faulty_name,le.id as level_id,le.name as level_name,cty.id as city_id,cntry.id as country_id,ins.about_us_info as about_us,"
 						+ "ins.closing_hour as closing_hour,ins.opening_hour as opening_hour,cj.available_jobs as available_job,cd.student_visa_link as student_visa_link,crs.remarks,crs.intake from course crs "
-						+ "inner join institute ins  on ins.id = crs.institute_id inner join country cntry  on cntry.id = crs.country_id inner join city cty "
-						+ "on cty.id = crs.city_id inner join faculty fty  on fty.id = crs.faculty_id "
-						+ "inner join level le  on crs.level_id = le.id left join city_jobs cj on cty.id=cj.city_id "
-						+ "left join country_details cd on cd.country_id=cntry.id where crs.id = '" + courseId + "'");
+						+ "left join institute ins  on ins.id = crs.institute_id left join country cntry  on cntry.id = crs.country_id left join city cty "
+						+ "on cty.id = crs.city_id left join faculty fty  on fty.id = crs.faculty_id "
+						+ "left join level le  on crs.level_id = le.id left join city_jobs cj on cty.id=cj.city_id "
+						+ "left join country_details cd on cd.country_id=cntry.id where crs.id = " + courseId);
 
 		List<Object[]> rows = query.list();
 		InstituteResponseDto instituteObj = null;
@@ -896,7 +896,9 @@ public class CourseDAO implements ICourseDAO {
 			courseObj.setRemarks(String.valueOf(row[33]));
 
 			instituteObj = new InstituteResponseDto();
-			instituteObj.setInstituteId(new BigInteger(String.valueOf(row[8])));
+            if (row[8] != null) {
+                instituteObj.setInstituteId(new BigInteger(String.valueOf(row[8])));
+            }
 			instituteObj.setStars(String.valueOf(row[1]));
 			instituteObj.setInstituteName(String.valueOf(row[9]));
 			instituteObj.setWorldRanking(String.valueOf(row[7]));
@@ -1043,7 +1045,7 @@ public class CourseDAO implements ICourseDAO {
 				obj.setDuration(row[9].toString());
 			}
 			if (row[10] != null) {
-				obj.setLanguaige(row[10].toString());
+				obj.setLanguage(row[10].toString());
 			}
 			if (row[11] != null) {
 				obj.setDomasticFee(Double.valueOf(row[11].toString()));
@@ -1140,12 +1142,12 @@ public class CourseDAO implements ICourseDAO {
 		return obj;
 	}
 
-	private CourseEnglishEligibility getEnglishEligibility(final Session session, final BigInteger courseId) {
-		CourseEnglishEligibility eligibility = null;
+	private List<CourseEnglishEligibility> getEnglishEligibility(final Session session, final BigInteger courseId) {
+	    List<CourseEnglishEligibility> eligibility = null;
 		Criteria crit = session.createCriteria(CourseEnglishEligibility.class);
 		crit.add(Restrictions.eq("course.id", courseId));
 		if (!crit.list().isEmpty()) {
-			eligibility = (CourseEnglishEligibility) crit.list().get(0);
+			eligibility = (List<CourseEnglishEligibility>) crit.list();
 		}
 		return eligibility;
 	}
@@ -1192,7 +1194,7 @@ public class CourseDAO implements ICourseDAO {
 				obj.setDuration(row[9].toString());
 			}
 			if (row[10] != null) {
-				obj.setLanguaige(row[10].toString());
+				obj.setLanguage(row[10].toString());
 			}
 			if (row[11] != null) {
 				obj.setDomasticFee(Double.valueOf(row[11].toString()));
@@ -1297,7 +1299,7 @@ public class CourseDAO implements ICourseDAO {
 				obj.setDuration(row[9].toString());
 			}
 			if (row[10] != null) {
-				obj.setLanguaige(row[10].toString());
+				obj.setLanguage(row[10].toString());
 			}
 			if (row[11] != null) {
 				obj.setDomasticFee(Double.valueOf(row[11].toString()));
@@ -1470,7 +1472,7 @@ public class CourseDAO implements ICourseDAO {
 				courseRequest.setDuration(row[9].toString());
 			}
 			if (row[10] != null) {
-				courseRequest.setLanguaige(row[10].toString());
+				courseRequest.setLanguage(row[10].toString());
 			}
 			if (row[11] != null) {
 				courseRequest.setDomasticFee(Double.valueOf(row[11].toString()));
