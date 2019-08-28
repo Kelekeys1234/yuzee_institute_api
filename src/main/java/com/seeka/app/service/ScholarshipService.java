@@ -51,13 +51,11 @@ public class ScholarshipService implements IScholarshipService {
     @Override
     public Map<String, Object> get(BigInteger id) {
         Map<String, Object> response = new HashMap<String, Object>();
-        ScholarshipDto scholarshipDto = null;
         Scholarship scholarshipObj = iScholarshipDAO.get(id);
-        scholarshipDto = CommonUtil.convertScholarshipBeanToScholarshipDto(scholarshipObj);
-        if (scholarshipDto != null) {
+        if (scholarshipObj != null) {
             response.put("message", "Scholarship fetched successfully");
             response.put("status", HttpStatus.OK.value());
-            response.put("data", scholarshipDto);
+            response.put("data", CommonUtil.convertScholarshipBeanToScholarshipDto(scholarshipObj));
         } else {
             response.put("message", "Scholarship not found");
             response.put("status", HttpStatus.NOT_FOUND.value());
@@ -86,7 +84,6 @@ public class ScholarshipService implements IScholarshipService {
 
             Scholarship scholarship = CommonUtil.convertScholarshipDTOToBean(scholarshipObj, country, institute, level);
             iScholarshipDAO.save(scholarship);
-
         } catch (Exception exception) {
             status = false;
             exception.printStackTrace();
@@ -99,7 +96,6 @@ public class ScholarshipService implements IScholarshipService {
             response.put("message", IConstant.FAIL);
         }
         return response;
-
     }
 
     @Override
@@ -130,9 +126,9 @@ public class ScholarshipService implements IScholarshipService {
         Map<String, Object> response = new HashMap<String, Object>();
         String status = IConstant.SCHOLARSHIP_UPDATE_SUCCESS;
         try {
-            Scholarship scholarshiyById = iScholarshipDAO.findById(id);
-            if (scholarshiyById != null) {
-                iScholarshipDAO.updateScholarship(scholarshiyById, scholarshipDto);
+            Scholarship scholarship = iScholarshipDAO.findById(id);
+            if (scholarship != null) {
+                iScholarshipDAO.updateScholarship(scholarship, scholarshipDto);
                 response.put("status", HttpStatus.OK.value());
             } else {
                 status = IConstant.UPDATE_FAILURE_ID_NOT_FOUND_SCHOLARSHIP;
@@ -156,7 +152,7 @@ public class ScholarshipService implements IScholarshipService {
             totalCount = iScholarshipDAO.findTotalCount();
             int startIndex;
             if (pageNumber > 1) {
-                startIndex = ((pageNumber-1) * pageSize) + 1;
+                startIndex = ((pageNumber - 1) * pageSize) + 1;
             } else {
                 startIndex = pageNumber;
             }

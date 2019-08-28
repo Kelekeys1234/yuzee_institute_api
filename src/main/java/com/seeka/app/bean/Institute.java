@@ -463,7 +463,7 @@ public class Institute implements Serializable {
     /**
      * @return the address
      */
-    @Column(name = "address")
+    @Transient
     public String getAddress() {
         return address;
     }
@@ -478,7 +478,7 @@ public class Institute implements Serializable {
     /**
      * @return the totalStudent
      */
-    @Column(name = "total_student")
+    @Transient
     public Integer getTotalStudent() {
         return totalStudent;
     }
@@ -493,7 +493,7 @@ public class Institute implements Serializable {
     /**
      * @return the latitute
      */
-    @Column(name = "latitute")
+    @Transient
     public String getLatitute() {
         return latitute;
     }
@@ -508,7 +508,7 @@ public class Institute implements Serializable {
     /**
      * @return the longitude
      */
-    @Column(name = "longitute")
+    @Transient
     public String getLongitude() {
         return longitude;
     }
@@ -523,7 +523,7 @@ public class Institute implements Serializable {
     /**
      * @return the email
      */
-    @Column(name = "email")
+    @Transient
     public String getEmail() {
         return email;
     }
@@ -568,7 +568,7 @@ public class Institute implements Serializable {
     /**
      * @return the phoneNumber
      */
-    @Column(name = "phone_number")
+    @Transient
     public String getPhoneNumber() {
         return phoneNumber;
     }

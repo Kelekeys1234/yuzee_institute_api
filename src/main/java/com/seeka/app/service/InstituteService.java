@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.InstituteCampus;
 import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteVideos;
 import com.seeka.app.dao.ICityDAO;
@@ -25,6 +26,7 @@ import com.seeka.app.dao.IInstituteDetailsDAO;
 import com.seeka.app.dao.IInstituteTypeDAO;
 import com.seeka.app.dao.IInstituteVideoDao;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.InstituteCampusDto;
 import com.seeka.app.dto.InstituteDetailsGetRequest;
 import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteMedia;
@@ -125,7 +127,10 @@ public class InstituteService implements IInstituteService {
         Map<String, Object> response = new HashMap<String, Object>();
         try {
             Institute institute = saveInstitute(instituteRequest);
-            saveInstituteDetails(instituteRequest, institute);
+            saveInstituteCampus(getCampusDto(instituteRequest), institute, 1);
+            for (InstituteCampusDto campusDto : instituteRequest.getInstituteCampus()) {
+                saveInstituteCampus(campusDto, institute, 2);
+            }
             if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
                 saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
             }
@@ -136,6 +141,36 @@ public class InstituteService implements IInstituteService {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         return response;
+    }
+
+    private void saveInstituteCampus(InstituteCampusDto campusDto, Institute institute, int campusType) {
+        InstituteCampus campus = new InstituteCampus();
+        campus.setInstitute(institute);
+        campus.setCampusType(campusType);
+        campus.setAddress(institute.getAddress());
+        campus.setLatitute(campusDto.getLatitute());
+        campus.setLongitute(campusDto.getLongitute());
+        campus.setTotalStudent(campusDto.getTotalStudent());
+        campus.setOpeningFrom(campusDto.getOpeningFrom());
+        campus.setOpeningTo(campusDto.getOpeningTo());
+        campus.setOfferService(campusDto.getOfferService());
+        dao.save(campus);
+    }
+
+    private InstituteCampusDto getCampusDto(InstituteRequestDto institute) {
+        InstituteCampusDto dto = new InstituteCampusDto();
+        dto.setAddress(institute.getAddress());
+        dto.setEmail(institute.getEmail());
+        if (institute.getLatitute() != null) {
+            dto.setLatitute(Double.parseDouble(institute.getLatitute()));
+        }
+        if (institute.getLongitude() != null) {
+            dto.setLongitute(Double.parseDouble(institute.getLongitude()));
+        }
+        dto.setTotalStudent(institute.getTotalStudent());
+        dto.setOpeningFrom(institute.getClosingHour());
+        dto.setOpeningTo(institute.getOpeningHour());
+        return dto;
     }
 
     private void saveInstituteYoutubeVideos(List<InstituteMedia> instituteMedias, Institute institute) {
@@ -178,6 +213,7 @@ public class InstituteService implements IInstituteService {
 
     private Institute saveInstitute(@Valid InstituteRequestDto instituteRequest) {
         Institute institute = new Institute();
+        institute.setAccreditation(instituteRequest.getAccreditation());
         institute.setName(instituteRequest.getInstituteName());
         institute.setDescription(instituteRequest.getDescription());
         institute.setCountry(countryDAO.get(instituteRequest.getCountryId()));
@@ -188,6 +224,8 @@ public class InstituteService implements IInstituteService {
         institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
         institute.setUpdatedBy("API");
         institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+        institute.setWorldRanking(instituteRequest.getWorldRanking());
+        institute.setWebsite(instituteRequest.getWebsite());
         dao.save(institute);
         return institute;
     }

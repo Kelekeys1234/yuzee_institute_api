@@ -26,7 +26,6 @@ import com.seeka.app.dto.CityDto;
 import com.seeka.app.dto.CountryDetailsDto;
 import com.seeka.app.dto.CountryImageDto;
 import com.seeka.app.dto.CountryRequestDto;
-import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.ScholarshipDto;
@@ -95,6 +94,8 @@ public class CommonUtil {
         instituteRequestDto.setPhoneNumber(institute.getPhoneNumber());
         instituteRequestDto.setTotalStudent(institute.getTotalStudent());
         instituteRequestDto.setWorldRanking(institute.getWorldRanking());
+        instituteRequestDto.setInstituteName(institute.getName());
+        instituteRequestDto.setInstituteId(institute.getInstituteType().getId());
         return instituteRequestDto;
     }
     
@@ -103,7 +104,7 @@ public class CommonUtil {
     public static ScholarshipDto convertScholarshipBeanToScholarshipDto(Scholarship scholarship){
         ScholarshipDto scholarshipDto = new ScholarshipDto();
         scholarshipDto.setAddress(scholarship.getAddress());
-        scholarshipDto.setAmount(scholarship.getAmount());
+        scholarshipDto.setScholarshipAmount(scholarship.getAmount());
         scholarshipDto.setApplicationDeadline(scholarship.getApplicationDeadline());
         scholarshipDto.setBenefits(scholarship.getBenefits());
         scholarshipDto.setCountryId(scholarship.getCountry().getId());
@@ -119,11 +120,11 @@ public class CommonUtil {
         scholarshipDto.setIsDeleted(scholarship.getIsDeleted());
         scholarshipDto.setLanguage(scholarship.getLanguage());
         scholarshipDto.setLevelId(scholarship.getLevel().getId());
-        scholarshipDto.setName(scholarship.getName());
+        scholarshipDto.setScholarshipTitle(scholarship.getName());
         scholarshipDto.setNumberOfAvaliability(scholarship.getNumberOfAvaliability());
         scholarshipDto.setOfferedBy(scholarship.getOfferedBy());
         scholarshipDto.setRequirements(scholarship.getRequirements());
-        scholarshipDto.setScholarshipAmount(scholarship.getScholarshipAmount());
+        scholarshipDto.setScholarshipAmount((scholarship.getAmount()));
         scholarshipDto.setScholarshipTitle(scholarship.getScholarshipTitle());
         scholarshipDto.setStudent(scholarship.getStudent());
         scholarshipDto.setValidity(scholarship.getValidity());
@@ -133,12 +134,11 @@ public class CommonUtil {
     
     public static Scholarship convertScholarshipDTOToBean(ScholarshipDto scholarshipObj, Country country, Institute institute, Level level) {
         Scholarship scholarship = new Scholarship();
-
         scholarship.setCountry(country);
         scholarship.setInstitute(institute);
         scholarship.setLevel(level);
-        scholarship.setName(scholarshipObj.getName());
-        scholarship.setAmount(scholarshipObj.getAmount());
+        scholarship.setName(scholarshipObj.getScholarshipTitle());
+        scholarship.setAmount(scholarshipObj.getScholarshipAmount());
         scholarship.setDescription(scholarshipObj.getDescription());
         scholarship.setStudent(scholarshipObj.getStudent());
         scholarship.setWebsite(scholarshipObj.getWebsite());
@@ -154,7 +154,7 @@ public class CommonUtil {
         scholarship.setValidity(scholarshipObj.getValidity());
         scholarship.setGender(scholarshipObj.getGender());
         scholarship.setApplicationDeadline(scholarshipObj.getApplicationDeadline());
-        scholarship.setScholarshipAmount(scholarshipObj.getScholarshipAmount());
+        scholarship.setAmount(scholarshipObj.getScholarshipAmount());
         scholarship.setNumberOfAvaliability(scholarshipObj.getNumberOfAvaliability());
         scholarship.setHeadquaters(scholarshipObj.getHeadquaters());
         scholarship.setEmail(scholarshipObj.getEmail());

@@ -2,23 +2,15 @@ package com.seeka.app.dto;
 
 import java.math.BigInteger;
 
-import com.seeka.app.bean.Country;
-import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.Level;
-
 public class ScholarshipDto {
 	
 	private BigInteger id;
     private BigInteger countryId;
     private BigInteger instituteId;
     private BigInteger levelId;
-    private String name;
-    private String amount;
     private String description;
     private String student;
     private String website;
-    
-    
     private String scholarshipTitle;
     private String offeredBy;
     private String benefits;
@@ -29,7 +21,7 @@ public class ScholarshipDto {
     private String validity;
     private String gender;
     private String applicationDeadline;
-    private Double scholarshipAmount;
+    private String scholarshipAmount;
     private Integer numberOfAvaliability;
     private String headquaters;
     private String email;
@@ -61,18 +53,6 @@ public class ScholarshipDto {
 	}
 	public void setLevelId(BigInteger levelId) {
 		this.levelId = levelId;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getAmount() {
-		return amount;
-	}
-	public void setAmount(String amount) {
-		this.amount = amount;
 	}
 	public String getDescription() {
 		return description;
@@ -152,10 +132,10 @@ public class ScholarshipDto {
 	public void setApplicationDeadline(String applicationDeadline) {
 		this.applicationDeadline = applicationDeadline;
 	}
-	public Double getScholarshipAmount() {
+	public String getScholarshipAmount() {
 		return scholarshipAmount;
 	}
-	public void setScholarshipAmount(Double scholarshipAmount) {
+	public void setScholarshipAmount(String scholarshipAmount) {
 		this.scholarshipAmount = scholarshipAmount;
 	}
 	public Integer getNumberOfAvaliability() {

@@ -3,6 +3,8 @@ package com.seeka.app.dto;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.seeka.app.bean.InstituteCampus;
+
 public class InstituteRequestDto {
 
     private BigInteger instituteId;
@@ -30,6 +32,7 @@ public class InstituteRequestDto {
     private String website;
     private String address;
     private List<InstituteMedia> instituteMedias;
+    private List<InstituteCampusDto> instituteCampus;
 
     /**
      * @return the instituteId
@@ -391,4 +394,12 @@ public class InstituteRequestDto {
         this.instituteMedias = instituteMedias;
     }
 
-}
+    public List<InstituteCampusDto> getInstituteCampus() {
+        return instituteCampus;
+    }
+
+    public void setInstituteCampus(List<InstituteCampusDto> instituteCampus) {
+        this.instituteCampus = instituteCampus;
+    }
+
+   }

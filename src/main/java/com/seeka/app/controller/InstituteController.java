@@ -475,7 +475,7 @@ public class InstituteController {
         return ResponseEntity.accepted().body(instituteService.save(institute));
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> update(@Valid @PathVariable final BigInteger id, @RequestBody final InstituteRequestDto institute) throws Exception {
         return ResponseEntity.accepted().body(instituteService.update(institute, id));
     }

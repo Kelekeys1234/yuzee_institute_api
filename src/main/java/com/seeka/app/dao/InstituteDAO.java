@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.InstituteCampus;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
 import com.seeka.app.dto.CourseSearchDto;
@@ -37,6 +38,12 @@ public class InstituteDAO implements IInstituteDAO {
         session.save(obj);
     }
 
+    @Override
+    public void save(final InstituteCampus instituteCampusObj) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(instituteCampusObj);
+    }
+    
     @Override
     public void update(final Institute obj) {
         Session session = sessionFactory.getCurrentSession();
