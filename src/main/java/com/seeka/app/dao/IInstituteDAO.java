@@ -40,4 +40,8 @@ public interface IInstituteDAO {
     List<Institute> getAll(Integer pageNumber, Integer pageSize);
 
     List<com.seeka.app.bean.Service> getAllServices();
+
+    List<InstituteCampus> getInstituteCampusByInstituteId(BigInteger instituteId);
+
+    void delete(Institute obj);
 }
