@@ -25,7 +25,7 @@ import com.seeka.app.service.IScholarshipService;
 @RestController
 @RequestMapping("/scholarship")
 public class ScholarshipController {
-
+ 
     @Autowired
     private IScholarshipService scholarshipService;
 

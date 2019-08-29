@@ -222,11 +222,10 @@ public class ScholarshipService implements IScholarshipService {
     @Override
     public Object scholarshipFilter(ScholarshipFilterDto scholarshipFilterDto) {
         Map<String, Object> response = new HashMap<>();
-        List<InstituteRequestDto> scholarshipFilterDtos = new ArrayList<>();
+        List<ScholarshipFilterDto> scholarshipFilterDtos = new ArrayList<>();
         int totalCount = 0;
         PaginationUtilDto paginationUtilDto = null;
-        try {
-          
+        try { 
          
         } catch (Exception exception) {
             response.put("message", exception.getCause());

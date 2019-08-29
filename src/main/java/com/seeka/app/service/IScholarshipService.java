@@ -19,7 +19,7 @@ public interface IScholarshipService {
     Map<String, Object> getAllScholarship(Integer pageNumber, Integer pageSize);
 
     Map<String, Object> get(BigInteger id);
-
+  
     Map<String, Object> deleteScholarship(BigInteger id);
 
     Map<String, Object> updateScholarship(@Valid BigInteger id, ScholarshipDto scholarshipDto);

@@ -11,7 +11,7 @@ public class ScholarshipFilterDto {
     private String type;
     private String coverage;
     private Date datePosted;
-    private Integer maxSizePerPage;
+    private Integer maxSizePerPage; 
     private Integer pageNumber;
     
     public BigInteger getCityId() {
