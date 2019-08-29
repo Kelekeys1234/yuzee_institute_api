@@ -21,8 +21,10 @@ import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.IScholarshipDAO;
+import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.ScholarshipDto;
+import com.seeka.app.dto.ScholarshipFilterDto;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -215,5 +217,21 @@ public class ScholarshipService implements IScholarshipService {
     @Override
     public List<ScholarshipDto> getScholarshipBySearchKey(String searchKey) {
         return iScholarshipDAO.getScholarshipBySearchKey(searchKey);
+    }
+
+    @Override
+    public Object scholarshipFilter(ScholarshipFilterDto scholarshipFilterDto) {
+        Map<String, Object> response = new HashMap<>();
+        List<InstituteRequestDto> scholarshipFilterDtos = new ArrayList<>();
+        int totalCount = 0;
+        PaginationUtilDto paginationUtilDto = null;
+        try {
+          
+         
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return null;
     }
 }

@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
@@ -43,4 +44,6 @@ public interface IInstituteService {
     Map<String, Object> searchInstitute(@Valid String searchText);
 
     Map<String, Object> update(InstituteRequestDto institute, @Valid BigInteger id);
+
+    Object instituteFilter(InstituteFilterDto instituteFilterDto);
 }

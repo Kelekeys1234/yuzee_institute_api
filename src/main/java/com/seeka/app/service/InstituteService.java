@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +28,7 @@ import com.seeka.app.dao.IInstituteVideoDao;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteCampusDto;
 import com.seeka.app.dto.InstituteDetailsGetRequest;
+import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteMedia;
 import com.seeka.app.dto.InstituteRequestDto;
@@ -438,6 +438,22 @@ public class InstituteService implements IInstituteService {
         institute.setWebsite(instituteRequest.getWebsite());
         dao.update(institute);
         return institute;
+    }
+
+    @Override
+    public Object instituteFilter(InstituteFilterDto instituteFilterDto) {
+        Map<String, Object> response = new HashMap<>();
+        List<InstituteRequestDto> instituteRequestDtos = new ArrayList<>();
+        int totalCount = 0;
+        PaginationUtilDto paginationUtilDto = null;
+        try {
+          
+         
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return null;
     }
     
 }

@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.ScholarshipDto;
+import com.seeka.app.dto.ScholarshipFilterDto;
 import com.seeka.app.service.IScholarshipService;
 
 @RestController
@@ -65,5 +67,10 @@ public class ScholarshipController {
         }
         response.put("data", scholarshipList);
         return ResponseEntity.accepted().body(response);
+    }
+    
+    @RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> scholarshipFilter(@RequestBody final ScholarshipFilterDto scholarshipFilterDto) throws Exception {
+        return ResponseEntity.ok().body(scholarshipService.scholarshipFilter(scholarshipFilterDto));
     }
 }

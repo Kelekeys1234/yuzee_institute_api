@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import com.seeka.app.bean.Scholarship;
 import com.seeka.app.dto.ScholarshipDto;
+import com.seeka.app.dto.ScholarshipFilterDto;
 
 public interface IScholarshipService {
 
@@ -24,4 +25,6 @@ public interface IScholarshipService {
     Map<String, Object> updateScholarship(@Valid BigInteger id, ScholarshipDto scholarshipDto);
 
     List<ScholarshipDto> getScholarshipBySearchKey(String searchKey);
+
+    Object scholarshipFilter(ScholarshipFilterDto scholarshipFilterDto);
 }
