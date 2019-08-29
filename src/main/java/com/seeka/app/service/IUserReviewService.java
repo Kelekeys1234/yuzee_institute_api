@@ -23,7 +23,7 @@ public interface IUserReviewService {
 
 	List<UserReviewDto> getUserReviewBasedOnData(BigInteger entityId, String entityType) throws ValidationException;
 
-	UserReviewResultDto getUserAverageReviewBasedOnData(BigInteger entityId, String entityType);
+	UserReviewResultDto getUserAverageReviewBasedOnData(BigInteger entityId, String entityType) throws ValidationException;
 
 	void deleteUserReview(BigInteger userReviewId) throws ValidationException;
 

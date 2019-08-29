@@ -134,13 +134,17 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public UserReviewResultDto getUserAverageReviewBasedOnData(final BigInteger entityId, final String entityType) {
+	public UserReviewResultDto getUserAverageReviewBasedOnData(final BigInteger entityId, final String entityType) throws ValidationException {
 		List<Object> objectList = iUserReviewDao.getUserAverageReview(entityId, entityType);
 		UserReviewResultDto userReviewResultDto = new UserReviewResultDto();
+		userReviewResultDto.setEntityId(entityId);
+		userReviewResultDto.setEntityType(entityType);
 		List<UserReviewRatingDto> resultList = new ArrayList<>();
 		for (Object object : objectList) {
 			Object[] obj1 = (Object[]) object;
 			UserReviewRatingDto userReviewRatingDto = new UserReviewRatingDto();
+			ReviewQuestionsDto reviewQuestionsDto = iReviewQuestionService.getReviewQuestion((BigInteger) obj1[0]);
+			BeanUtils.copyProperties(reviewQuestionsDto, userReviewRatingDto);
 			userReviewRatingDto.setReviewQuestionId((BigInteger) obj1[0]);
 			userReviewRatingDto.setRating((Double) obj1[1]);
 			resultList.add(userReviewRatingDto);

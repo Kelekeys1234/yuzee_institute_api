@@ -13,18 +13,17 @@ import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.util.FileStorageProperties;
 
-
 @SpringBootApplication
 @EnableScheduling
 @EnableConfigurationProperties({ FileStorageProperties.class })
-@ComponentScan(basePackages="com.seeka.app")
+@ComponentScan(basePackages = "com.seeka.app")
 @EnableEurekaClient
 public class SeekaApplication {
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		SpringApplication.run(SeekaApplication.class, args);
 	}
-	
+
 	@Bean
 	@LoadBalanced // Load balance between service instances running at different ports.
 	public RestTemplate restTemplate() {
