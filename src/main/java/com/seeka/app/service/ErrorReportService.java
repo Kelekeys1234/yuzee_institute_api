@@ -178,10 +178,10 @@ public class ErrorReportService implements IErrorReportService {
     }
 
     @Override
-    public ResponseEntity<?> getAllErrorCategory() {
+    public ResponseEntity<?> getAllErrorCategory(String errorCategoryType) {
         Map<String, Object> response = new HashMap<String, Object>();
         try {
-            List<ErrorReportCategory> errorReportCategoriesrorReports = errorReportDAO.getAllErrorCategory();
+            List<ErrorReportCategory> errorReportCategoriesrorReports = errorReportDAO.getAllErrorCategory(errorCategoryType);
             if (errorReportCategoriesrorReports != null && !errorReportCategoriesrorReports.isEmpty()) {
                 response.put("message", "Error category fetched successfully");
                 response.put("status", HttpStatus.OK.value());

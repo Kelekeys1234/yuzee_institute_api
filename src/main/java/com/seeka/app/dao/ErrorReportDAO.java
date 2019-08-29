@@ -68,10 +68,11 @@ public class ErrorReportDAO implements IErrorReportDAO {
     }
 
     @Override
-    public List<ErrorReportCategory> getAllErrorCategory() {
+    public List<ErrorReportCategory> getAllErrorCategory(String errorCategoryType) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(ErrorReportCategory.class);
         crit.add(Restrictions.eq("isActive", true));
+        crit.add(Restrictions.eq("errorCategoryType", errorCategoryType));
         return crit.list();
     }
 

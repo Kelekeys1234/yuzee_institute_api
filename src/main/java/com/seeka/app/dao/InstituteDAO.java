@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
-import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCampus;
 import com.seeka.app.bean.InstituteType;
