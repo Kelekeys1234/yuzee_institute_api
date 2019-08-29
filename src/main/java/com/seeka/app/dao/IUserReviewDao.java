@@ -15,7 +15,7 @@ public interface IUserReviewDao {
 
 	void save(UserReview userReview);
 
-	List<UserReview> getUserReviewList(BigInteger userId, BigInteger entityId, String entityType);
+	List<UserReview> getUserReviewList(BigInteger userId, BigInteger entityId, String entityType, Integer startIndex, Integer pageSize);
 
 	List<Object> getUserAverageReview(BigInteger entityId, String entityType);
 

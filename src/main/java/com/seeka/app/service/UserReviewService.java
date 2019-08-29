@@ -65,7 +65,7 @@ public class UserReviewService implements IUserReviewService {
 		UserReview userReview = new UserReview();
 
 		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(userReviewDto.getUserId(), userReviewDto.getEntityId(),
-				userReviewDto.getEntityType());
+				userReviewDto.getEntityType(), null, null);
 		if (!userReviewList.isEmpty()) {
 			throw new ValidationException("User review exists for same " + userReviewDto.getEntityType());
 		}
@@ -88,8 +88,9 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public List<UserReviewDto> getUserReviewList(final BigInteger userId) {
-		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(userId, null, null);
+	public List<UserReviewDto> getUserReviewList(final BigInteger userId, final Integer pageNumber, final Integer pageSize) {
+		int startIndex = (pageNumber - 1) * pageSize;
+		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(userId, null, null, startIndex, pageSize);
 		List<UserReviewDto> resultList = new ArrayList<>();
 		for (UserReview userReview : userReviewList) {
 			UserReviewDto userReviewDto = new UserReviewDto();
@@ -121,8 +122,10 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public List<UserReviewDto> getUserReviewBasedOnData(final BigInteger entityId, final String entityType) throws ValidationException {
-		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, entityId, entityType);
+	public List<UserReviewDto> getUserReviewBasedOnData(final BigInteger entityId, final String entityType, final Integer pageNumber, final Integer pageSize)
+			throws ValidationException {
+		int startIndex = (pageNumber - 1) * pageSize;
+		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, entityId, entityType, startIndex, pageSize);
 		List<UserReviewDto> resultList = new ArrayList<>();
 		for (UserReview userReview : userReviewList) {
 			UserReviewDto userReviewDto = new UserReviewDto();

@@ -17,11 +17,11 @@ public interface IUserReviewService {
 
 	UserReview addUserReview(UserReviewDto userReviewDto) throws ValidationException;
 
-	List<UserReviewDto> getUserReviewList(BigInteger userId);
+	List<UserReviewDto> getUserReviewList(BigInteger userId, Integer pageNumber, Integer pageSize);
 
 	UserReviewResultDto getUserReviewDetails(BigInteger userId) throws ValidationException;
 
-	List<UserReviewDto> getUserReviewBasedOnData(BigInteger entityId, String entityType) throws ValidationException;
+	List<UserReviewDto> getUserReviewBasedOnData(BigInteger entityId, String entityType, Integer pageNumber, Integer pageSize) throws ValidationException;
 
 	UserReviewResultDto getUserAverageReviewBasedOnData(BigInteger entityId, String entityType) throws ValidationException;
 

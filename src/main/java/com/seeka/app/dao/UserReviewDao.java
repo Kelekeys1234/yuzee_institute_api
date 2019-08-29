@@ -39,7 +39,8 @@ public class UserReviewDao implements IUserReviewDao {
 	}
 
 	@Override
-	public List<UserReview> getUserReviewList(final BigInteger userId, final BigInteger entityId, final String entityType) {
+	public List<UserReview> getUserReviewList(final BigInteger userId, final BigInteger entityId, final String entityType, final Integer startIndex,
+			final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReview.class, "userReview");
 		if (entityId != null && entityType != null) {
@@ -49,6 +50,10 @@ public class UserReviewDao implements IUserReviewDao {
 
 		if (userId != null) {
 			crit.add(Restrictions.eq("userId", userId));
+		}
+		if (startIndex != null && pageSize != null) {
+			crit.setFirstResult(startIndex);
+			crit.setMaxResults(pageSize);
 		}
 		return crit.list();
 
