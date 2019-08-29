@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
+import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCampus;
 import com.seeka.app.bean.InstituteType;
@@ -51,12 +52,28 @@ public class InstituteDAO implements IInstituteDAO {
     }
 
     @Override
+    public void delete(final Institute obj) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("DELETE FROM institute_campus WHERE institute_id ="+obj.getId());
+        query.executeUpdate();
+    }
+
+    
+    @Override
     public Institute get(final BigInteger id) {
         Session session = sessionFactory.getCurrentSession();
         Institute obj = session.get(Institute.class, id);
         return obj;
     }
 
+    @Override
+    public  List<InstituteCampus> getInstituteCampusByInstituteId(final BigInteger instituteId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(InstituteCampus.class);
+        crit.add(Restrictions.eq("institute.id", instituteId));
+        return crit.list();
+    }
+    
     @Override
     public List<Institute> getAllInstituteByCountry(final BigInteger countryId) {
         Session session = sessionFactory.getCurrentSession();

@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -147,7 +148,9 @@ public class InstituteService implements IInstituteService {
         InstituteCampus campus = new InstituteCampus();
         campus.setInstitute(institute);
         campus.setCampusType(campusType);
-        campus.setAddress(institute.getAddress());
+        campus.setAddress(campusDto.getAddress());
+        campus.setEmail(campusDto.getEmail());
+        campus.setPhoneNumber(campusDto.getPhoneNumber());
         campus.setLatitute(campusDto.getLatitute());
         campus.setLongitute(campusDto.getLongitute());
         campus.setTotalStudent(campusDto.getTotalStudent());
@@ -168,6 +171,7 @@ public class InstituteService implements IInstituteService {
             dto.setLongitute(Double.parseDouble(institute.getLongitude()));
         }
         dto.setTotalStudent(institute.getTotalStudent());
+        dto.setPhoneNumber(institute.getPhoneNumber());
         dto.setOpeningFrom(institute.getClosingHour());
         dto.setOpeningTo(institute.getOpeningHour());
         return dto;
@@ -230,6 +234,7 @@ public class InstituteService implements IInstituteService {
         return institute;
     }
 
+    
     @Override
     public Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize) {
         Map<String, Object> response = new HashMap<String, Object>();
@@ -319,9 +324,18 @@ public class InstituteService implements IInstituteService {
         Map<String, Object> response = new HashMap<String, Object>();
         InstituteGetRequestDto dto = null;
         InstituteRequestDto instituteRequestDto = null;
+        List<InstituteCampusDto> instituteCampusDtoList = new ArrayList<>();
         try {
             Institute institute = dao.get(id);
-            instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
+            List<InstituteCampus> instituteCampusList = dao.getInstituteCampusByInstituteId(id);
+            for(InstituteCampus campus : instituteCampusList){
+                if(campus.getCampusType() == 2){
+                    InstituteCampusDto campusDto = CommonUtil.convertInstituteCampusToInstituteCampusDto(campus); 
+                    instituteCampusDtoList.add(campusDto);
+                }else{
+                    instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute, instituteCampusList.get(0));
+                }
+            }
             if (institute == null) {
                 response.put("message", "Institute not found");
                 response.put("status", HttpStatus.NOT_FOUND.value());
@@ -334,6 +348,8 @@ public class InstituteService implements IInstituteService {
             response.put("message", exception.getCause());
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
+        
+        response.put("instituteCampusList", instituteCampusDtoList);
         response.put("data", instituteRequestDto);
         return response;
     }
@@ -383,8 +399,45 @@ public class InstituteService implements IInstituteService {
     }
 
     @Override
-    public Map<String, Object> update(InstituteRequestDto institute, @Valid BigInteger id) {
-        // TODO Auto-generated method stub
-        return null;
+    public Map<String, Object> update(InstituteRequestDto instituteRequest, @Valid BigInteger id) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        try {
+            Institute institute = updateInstitute(instituteRequest, id);
+            dao.delete(institute);
+            saveInstituteCampus(getCampusDto(instituteRequest), institute, 1);
+            for (InstituteCampusDto campusDto : instituteRequest.getInstituteCampus()) {
+                saveInstituteCampus(campusDto, institute, 2);
+            }
+            if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
+                saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
+            }
+            response.put("message", "Institute update successfully");
+            response.put("status", HttpStatus.OK.value());
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
     }
+    
+    private Institute updateInstitute(@Valid InstituteRequestDto instituteRequest, BigInteger id) {
+        Institute institute = new Institute();
+        institute.setId(id);
+        institute.setAccreditation(instituteRequest.getAccreditation());
+        institute.setName(instituteRequest.getInstituteName());
+        institute.setDescription(instituteRequest.getDescription());
+        institute.setCountry(countryDAO.get(instituteRequest.getCountryId()));
+        institute.setCity(cityDAO.get(instituteRequest.getCityId()));
+        institute.setInstituteType(instituteTypeDAO.get(instituteRequest.getInstituteTypeId()));
+        institute.setIsActive(true);
+        institute.setCreatedBy("API");
+        institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+        institute.setUpdatedBy("API");
+        institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+        institute.setWorldRanking(instituteRequest.getWorldRanking());
+        institute.setWebsite(instituteRequest.getWebsite());
+        dao.update(institute);
+        return institute;
+    }
+    
 }
