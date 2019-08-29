@@ -28,6 +28,7 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserInfo;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
+import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -508,5 +509,10 @@ public class CourseController {
 	@RequestMapping(value = "/youtube/{courseId}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final BigInteger courseId) throws Exception {
 		return ResponseEntity.accepted().body(courseService.getYoutubeDataforCourse(courseId));
+	}
+	
+	@RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> courseFilter(@RequestBody final CourseFilterDto courseFilter) throws Exception {
+		return ResponseEntity.ok().body(courseService.courseFilter(courseFilter));
 	}
 }

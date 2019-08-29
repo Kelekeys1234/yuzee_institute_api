@@ -11,6 +11,7 @@ import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
+import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -67,4 +68,6 @@ public interface ICourseService {
     Map<String, Object> getAllCourse();
 
     Map<String, Object> update(@Valid CourseRequest courseDto, BigInteger id);
+
+	Map<String, Object> courseFilter(CourseFilterDto courseFilter);
 }
