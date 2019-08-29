@@ -20,7 +20,7 @@ public interface IErrorReportDAO {
 
     public void update(ErrorReport errorReport);
 
-    public List<ErrorReportCategory> getAllErrorCategory();
+    public List<ErrorReportCategory> getAllErrorCategory(String errorCategoryType);
 
     public void addErrorRepoerAudit(BigInteger id);
 

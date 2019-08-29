@@ -3,8 +3,6 @@ package com.seeka.app.dto;
 import java.math.BigInteger;
 import java.util.List;
 
-import com.seeka.app.bean.InstituteCampus;
-
 public class InstituteRequestDto {
 
     private BigInteger instituteId;
@@ -12,7 +10,7 @@ public class InstituteRequestDto {
     private String description;
     private BigInteger cityId;
     private BigInteger countryId;
-    
+
     private String latitute;
     private String longitude;
     private Integer totalStudent;
@@ -402,4 +400,4 @@ public class InstituteRequestDto {
         this.instituteCampus = instituteCampus;
     }
 
-   }
+}

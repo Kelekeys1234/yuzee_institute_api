@@ -17,12 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCampus;
-import com.seeka.app.bean.InstituteDetails;
 import com.seeka.app.bean.InstituteVideos;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.IInstituteDAO;
-import com.seeka.app.dao.IInstituteDetailsDAO;
 import com.seeka.app.dao.IInstituteTypeDAO;
 import com.seeka.app.dao.IInstituteVideoDao;
 import com.seeka.app.dto.CourseSearchDto;
@@ -56,9 +54,6 @@ public class InstituteService implements IInstituteService {
 
     @Autowired
     private IInstituteTypeDAO instituteTypeDAO;
-
-    @Autowired
-    private IInstituteDetailsDAO instituteDetailsDAO;
 
     @Autowired
     private IInstituteVideoDao instituteVideoDao;
@@ -194,27 +189,6 @@ public class InstituteService implements IInstituteService {
         }
     }
 
-    private void saveInstituteDetails(@Valid InstituteRequestDto instituteRequest, Institute institute) {
-        InstituteDetails instituteDetail = new InstituteDetails();
-        instituteDetail.setLatitute(instituteRequest.getLatitute());
-        instituteDetail.setLongitude(instituteRequest.getLongitude());
-        instituteDetail.setTotalStudent(instituteRequest.getTotalStudent());
-        instituteDetail.setWorldRanking(instituteRequest.getWorldRanking());
-        instituteDetail.setAccreditation(instituteRequest.getAccreditation());
-        instituteDetail.setAverageCostFrom(instituteRequest.getAverageCostFrom());
-        instituteDetail.setAverageCostTo(instituteRequest.getAverageCostTo());
-        instituteDetail.setEnrolment(instituteRequest.getEnrolment());
-        instituteDetail.setTuitionFessPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
-        instituteDetail.setScholarshipFinancingAssistance(instituteRequest.getScholarshipFinancingAssistance());
-        instituteDetail.setOpeningHour(instituteRequest.getOpeningHour());
-        instituteDetail.setClosingHour(instituteRequest.getClosingHour());
-        instituteDetail.setEmail(instituteRequest.getEmail());
-        instituteDetail.setPhoneNumber(instituteRequest.getPhoneNumber());
-        instituteDetail.setWebsite(instituteRequest.getWebsite());
-        instituteDetail.setAddress(instituteRequest.getAddress());
-        instituteDetailsDAO.save(instituteDetail);
-    }
-
     private Institute saveInstitute(@Valid InstituteRequestDto instituteRequest) {
         Institute institute = new Institute();
         institute.setAccreditation(instituteRequest.getAccreditation());
@@ -234,7 +208,6 @@ public class InstituteService implements IInstituteService {
         return institute;
     }
 
-    
     @Override
     public Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize) {
         Map<String, Object> response = new HashMap<String, Object>();
@@ -322,17 +295,16 @@ public class InstituteService implements IInstituteService {
     @Override
     public Map<String, Object> getById(@Valid BigInteger id) {
         Map<String, Object> response = new HashMap<String, Object>();
-        InstituteGetRequestDto dto = null;
         InstituteRequestDto instituteRequestDto = null;
         List<InstituteCampusDto> instituteCampusDtoList = new ArrayList<>();
         try {
             Institute institute = dao.get(id);
             List<InstituteCampus> instituteCampusList = dao.getInstituteCampusByInstituteId(id);
-            for(InstituteCampus campus : instituteCampusList){
-                if(campus.getCampusType() == 2){
-                    InstituteCampusDto campusDto = CommonUtil.convertInstituteCampusToInstituteCampusDto(campus); 
+            for (InstituteCampus campus : instituteCampusList) {
+                if (campus.getCampusType() == 2) {
+                    InstituteCampusDto campusDto = CommonUtil.convertInstituteCampusToInstituteCampusDto(campus);
                     instituteCampusDtoList.add(campusDto);
-                }else{
+                } else {
                     instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute, instituteCampusList.get(0));
                 }
             }
@@ -340,7 +312,6 @@ public class InstituteService implements IInstituteService {
                 response.put("message", "Institute not found");
                 response.put("status", HttpStatus.NOT_FOUND.value());
             } else {
-                dto = getInstitute(institute);
                 response.put("message", "Institute fetched successfully");
                 response.put("status", HttpStatus.OK.value());
             }
@@ -348,8 +319,9 @@ public class InstituteService implements IInstituteService {
             response.put("message", exception.getCause());
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        
-        response.put("instituteCampusList", instituteCampusDtoList);
+        if (instituteRequestDto != null) {
+            instituteRequestDto.setInstituteCampus(instituteCampusDtoList);
+        }
         response.put("data", instituteRequestDto);
         return response;
     }
@@ -419,7 +391,7 @@ public class InstituteService implements IInstituteService {
         }
         return response;
     }
-    
+
     private Institute updateInstitute(@Valid InstituteRequestDto instituteRequest, BigInteger id) {
         Institute institute = new Institute();
         institute.setId(id);
@@ -447,13 +419,12 @@ public class InstituteService implements IInstituteService {
         int totalCount = 0;
         PaginationUtilDto paginationUtilDto = null;
         try {
-          
-         
+
         } catch (Exception exception) {
             response.put("message", exception.getCause());
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         return null;
     }
-    
+
 }

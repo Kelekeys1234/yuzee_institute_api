@@ -22,6 +22,6 @@ public interface IErrorReportService {
 
     public ResponseEntity<?> deleteByUserId(@Valid BigInteger userId);
 
-    public ResponseEntity<?> getAllErrorCategory();
+    public ResponseEntity<?> getAllErrorCategory(String errorCategoryType);
 
 }

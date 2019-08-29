@@ -30,6 +30,7 @@ public class ErrorReportCategory implements java.io.Serializable {
     private String updatedBy;
     private Date deletedOn;
     private Boolean isActive;
+    private String errorCategoryType;
 
     /**
      * @return the id
@@ -215,5 +216,14 @@ public class ErrorReportCategory implements java.io.Serializable {
     public String toString() {
         return "ErrorReportCategory [id=" + id + ", name=" + name + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + ", createdBy=" + createdBy + ", updatedBy="
                         + updatedBy + ", deletedOn=" + deletedOn + ", isActive=" + isActive + "]";
+    }
+
+    @Column(name = "error_category_type", length = 100)
+    public String getErrorCategoryType() {
+        return errorCategoryType;
+    }
+
+    public void setErrorCategoryType(String errorCategoryType) {
+        this.errorCategoryType = errorCategoryType;
     }
 }

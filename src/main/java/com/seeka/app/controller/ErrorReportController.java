@@ -22,9 +22,9 @@ public class ErrorReportController {
     @Autowired
     private IErrorReportService errorReportService;
 
-    @RequestMapping(value = "/category", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getAllErrorCategory() throws Exception {
-        return errorReportService.getAllErrorCategory();
+    @RequestMapping(value = "/category/{errorCategoryType}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getAllErrorCategory(@PathVariable String errorCategoryType) throws Exception {
+        return errorReportService.getAllErrorCategory(errorCategoryType);
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
