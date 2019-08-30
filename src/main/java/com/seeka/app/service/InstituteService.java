@@ -87,20 +87,6 @@ public class InstituteService implements IInstituteService {
     public List<Institute> getAll() {
         return dao.getInstituteCampusWithInstitue();
     }
-    
-    public Institute convertInstituteCampusInsideInstituteObject(InstituteCampus campus, Institute institute){
-        institute.setAddress(campus.getAddress());
-        institute.setEmail(campus.getEmail());
-        institute.setPhoneNumber(campus.getPhoneNumber());
-        if(campus.getLatitute() != null){
-        institute.setLatitute(campus.getLatitute().toString());
-        }
-        if(campus.getLongitute() != null){
-        institute.setLongitude(campus.getLatitute().toString());
-        }
-        institute.setTotalStudent(campus.getTotalStudent());
-        return institute;
-    }
 
     @Override
     public List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey) {
@@ -275,6 +261,7 @@ public class InstituteService implements IInstituteService {
         dto.setUpdatedBy(institute.getUpdatedBy());
         dto.setInstituteDetails(getInstituteDetails(institute.getId()));
         dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountry(), institute.getName()));
+        dto.setLastUpdated(institute.getLastUpdated());
         return dto;
     }
 
@@ -427,18 +414,41 @@ public class InstituteService implements IInstituteService {
     }
 
     @Override
-    public Object instituteFilter(InstituteFilterDto instituteFilterDto) {
-        Map<String, Object> response = new HashMap<>();
-        List<InstituteRequestDto> instituteRequestDtos = new ArrayList<>();
+    public Map<String, Object> instituteFilter(InstituteFilterDto instituteFilterDto) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
         int totalCount = 0;
         PaginationUtilDto paginationUtilDto = null;
         try {
-
+            totalCount = dao.findTotalCountFilterInstitute(instituteFilterDto);
+            int startIndex;
+            if (instituteFilterDto.getPageNumber() > 1) {
+                startIndex = ((instituteFilterDto.getPageNumber() - 1) * instituteFilterDto.getPageNumber()) + 1;
+            } else {
+                startIndex = instituteFilterDto.getPageNumber();
+            }
+            paginationUtilDto = PaginationUtil.calculatePagination(startIndex, instituteFilterDto.getMaxSizePerPage(), totalCount);
+            List<Institute> institutes = dao.instituteFilter(startIndex, instituteFilterDto.getMaxSizePerPage(), instituteFilterDto);
+            for (Institute institute : institutes) {
+                instituteGetRequestDtos.add(getInstitute(institute));
+            }
+            if (institutes != null && !institutes.isEmpty()) {
+                response.put("message", "Institute fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", IConstant.INSTITUDE_NOT_FOUND);
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
         } catch (Exception exception) {
             response.put("message", exception.getCause());
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        return null;
+        response.put("data", instituteGetRequestDtos);
+        response.put("totalCount", totalCount);
+        response.put("pageNumber", paginationUtilDto.getPageNumber());
+        response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+        response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+        response.put("totalPages", paginationUtilDto.getTotalPages());
+        return response;
     }
-
 }

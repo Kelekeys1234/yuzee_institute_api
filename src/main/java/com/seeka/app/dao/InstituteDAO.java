@@ -1,9 +1,10 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.hibernate.Criteria;
@@ -22,6 +23,7 @@ import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
+import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.util.CDNServerUtil;
@@ -74,67 +76,6 @@ public class InstituteDAO implements IInstituteDAO {
     }
 
     @Override
-    public InstituteCampus getInstituteCampusByInstituteIdAndCampusType(BigInteger instituteId, Integer campustype) {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("SELECT FROM institute_campus as ic LEFT JOIN institute as i ON i.id=ic.institute_id " + "where ic.institute_id=" + instituteId
-                        + " and ic.campus_type='" + campustype + "'");
-        return (InstituteCampus) query.uniqueResult();
-    }
-
-    @Override
-    public List<Institute> getInstituteCampusWithInstitue() {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("SELECT i.id, i.name, ic.institute_id, ic.address, ic.email, ic.phone_number, ic.latitute,"
-                        + " ic.longitute, ic.offer_service, ic.opening_from, ic.opening_to, ic.total_student FROM institute as "
-                        + "i LEFT JOIN institute_campus as ic ON ic.institute_id=i.id WHERE ic.campus_type =1");
-        List<Object[]> rows = query.list();
-        List<Institute> institutes = new ArrayList<Institute>();
-        for (Object[] row : rows) {
-            Institute institute = new Institute();
-            InstituteCampus campus = new InstituteCampus();
-            if (row[0] != null) {
-                institute.setId(new BigInteger(row[0].toString()));
-            }
-            if (row[1] != null) {
-                institute.setName(row[1].toString());
-            }
-            if (row[2] != null) {
-                campus.setId(new BigInteger(row[2].toString()));
-            }
-            if (row[3] != null) {
-                campus.setAddress(row[3].toString());
-            }
-            if (row[4] != null) {
-                campus.setEmail(row[4].toString());
-            }
-            if (row[5] != null) {
-                campus.setPhoneNumber(row[5].toString());
-            }
-            if (row[6] != null) {
-                campus.setLatitute(Double.parseDouble(row[6].toString()));
-            }
-            if (row[7] != null) {
-                campus.setLongitute(Double.parseDouble(row[7].toString()));
-            }
-            if (row[8] != null) {
-                campus.setOfferService(row[8].toString());
-            }
-            if (row[9] != null) {
-                campus.setOpeningFrom(row[9].toString());
-            }
-            if (row[10] != null) {
-                campus.setOpeningTo(row[10].toString());
-            }
-            if (row[11] != null) {
-                campus.setTotalStudent(Integer.parseInt(row[11].toString()));
-            }
-            institute.setInstituteCampus(campus);
-            institutes.add(institute);
-        }
-        return institutes;
-    }
-
-    @Override
     public List<Institute> getAllInstituteByCountry(final BigInteger countryId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(Institute.class);
@@ -151,13 +92,13 @@ public class InstituteDAO implements IInstituteDAO {
 
     /*
      * @Override public Institute getUserByEmail(String email) { Session session = sessionFactory.getCurrentSession();
-     * Criteria crit = session.createCriteria(UserInfo.class); crit.add(Restrictions.eq("emailId",email));
-     * List<UserInfo> users = crit.list(); return users !=null && !users.isEmpty()?users.get(0):null; }
+     * Criteria crit = session.createCriteria(UserInfo.class); crit.add(Restrictions.eq("emailId",email)); List<UserInfo>
+     * users = crit.list(); return users !=null && !users.isEmpty()?users.get(0):null; }
      */
 
     /*
      * private void retrieveEmployee() {
-     * 
+     *
      * try{ String sqlQuery="select e from Employee e inner join e.addList"; Session
      * session=sessionFactory.getCurrentSession(); Query query=session.createQuery(sqlQuery); List<Institute>
      * list=query.list(); list.stream().forEach((p)->{System.out.println(p.getName());}); }catch(Exception e){
@@ -377,7 +318,7 @@ public class InstituteDAO implements IInstituteDAO {
     @Override
     public List<Institute> getAll(final Integer pageNumber, final Integer pageSize) {
         Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description FROM institute as inst where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
+        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on FROM institute as inst where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
@@ -398,6 +339,13 @@ public class InstituteDAO implements IInstituteDAO {
             }
             if (row[5] != null) {
                 obj.setDescription(row[5].toString());
+            }
+            if (row[6] != null) {
+                Date createdDate = (Date) row[6];
+                System.out.println(createdDate);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+                String dateResult = formatter.format(createdDate);
+                obj.setLastUpdated(dateResult);
             }
             instituteList.add(obj);
         }
@@ -425,4 +373,132 @@ public class InstituteDAO implements IInstituteDAO {
         return services;
     }
 
+    @Override
+    public List<Institute> instituteFilter(int pageNumber, Integer pageSize, InstituteFilterDto instituteFilterDto) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = getFilterInstituteSqlQuery(instituteFilterDto);
+        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<Institute> instituteList = new ArrayList<>();
+        Institute obj = null;
+        for (Object[] row : rows) {
+            obj = new Institute();
+            obj.setId(new BigInteger(row[0].toString()));
+            obj.setName(row[1].toString());
+            if (row[2] != null) {
+                obj.setCountry(getCountry(new BigInteger(row[2].toString()), session));
+            }
+            if (row[3] != null) {
+                obj.setCity(getCity(new BigInteger(row[3].toString()), session));
+            }
+            if (row[4] != null) {
+                obj.setInstituteType(getInstituteType(new BigInteger(row[4].toString()), session));
+            }
+            if (row[5] != null) {
+                obj.setDescription(row[5].toString());
+            }
+            if (row[6] != null) {
+                System.out.println(row[6].toString());
+                Date createdDate = (Date) row[6];
+                System.out.println(createdDate);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+                String dateResult = formatter.format(createdDate);
+                obj.setLastUpdated(dateResult);
+
+            }
+            instituteList.add(obj);
+        }
+        return instituteList;
+    }
+
+    @Override
+    public int findTotalCountFilterInstitute(InstituteFilterDto instituteFilterDto) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = getFilterInstituteSqlQuery(instituteFilterDto);
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        return rows.size();
+    }
+
+    private String getFilterInstituteSqlQuery(InstituteFilterDto instituteFilterDto) {
+        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on FROM institute as inst "
+                        + " inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
+                        + "inner join faculty_level f on f.institute_id = inst.id inner join institute_level l on l.institute_id = inst.id "
+                        + "inner join course c  on c.institute_id=inst.id where inst.is_active = 1 and inst.deleted_on IS NULL  ";
+
+        if (instituteFilterDto.getCountryId() != null && instituteFilterDto.getCountryId().intValue() > 0) {
+            sqlQuery += " and inst.country_id = " + instituteFilterDto.getCountryId() + " ";
+        }
+
+        if (instituteFilterDto.getCityId() != null && instituteFilterDto.getCityId().intValue() > 0) {
+            sqlQuery += " and inst.city_id = " + instituteFilterDto.getCityId().intValue() + " ";
+        }
+
+        if (instituteFilterDto.getInstituteId() != null && instituteFilterDto.getInstituteId().intValue() > 0) {
+            sqlQuery += " and inst.id =" + instituteFilterDto.getInstituteId() + " ";
+        }
+
+        if (instituteFilterDto.getWorldRanking() != null && instituteFilterDto.getWorldRanking() > 0) {
+            sqlQuery += " and inst.world_ranking = " + instituteFilterDto.getWorldRanking() + " ";
+        }
+
+        if (instituteFilterDto.getInstituteTypeId() != null && instituteFilterDto.getInstituteTypeId().intValue() > 0) {
+            sqlQuery += " and inst.institute_type_id = " + instituteFilterDto.getInstituteTypeId() + " ";
+        }
+        return sqlQuery;
+    }
+
+    @Override
+    public List<Institute> getInstituteCampusWithInstitue() {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("SELECT i.id, i.name, ic.institute_id, ic.address, ic.email, ic.phone_number, ic.latitute,"
+                        + " ic.longitute, ic.offer_service, ic.opening_from, ic.opening_to, ic.total_student FROM institute as "
+                        + "i LEFT JOIN institute_campus as ic ON ic.institute_id=i.id WHERE ic.campus_type =1");
+        List<Object[]> rows = query.list();
+        List<Institute> institutes = new ArrayList<Institute>();
+        for (Object[] row : rows) {
+            Institute institute = new Institute();
+            InstituteCampus campus = new InstituteCampus();
+            if (row[0] != null) {
+                institute.setId(new BigInteger(row[0].toString()));
+            }
+            if (row[1] != null) {
+                institute.setName(row[1].toString());
+            }
+            if (row[2] != null) {
+                campus.setId(new BigInteger(row[2].toString()));
+            }
+            if (row[3] != null) {
+                campus.setAddress(row[3].toString());
+            }
+            if (row[4] != null) {
+                campus.setEmail(row[4].toString());
+            }
+            if (row[5] != null) {
+                campus.setPhoneNumber(row[5].toString());
+            }
+            if (row[6] != null) {
+                campus.setLatitute(Double.parseDouble(row[6].toString()));
+            }
+            if (row[7] != null) {
+                campus.setLongitute(Double.parseDouble(row[7].toString()));
+            }
+            if (row[8] != null) {
+                campus.setOfferService(row[8].toString());
+            }
+            if (row[9] != null) {
+                campus.setOpeningFrom(row[9].toString());
+            }
+            if (row[10] != null) {
+                campus.setOpeningTo(row[10].toString());
+            }
+            if (row[11] != null) {
+                campus.setTotalStudent(Integer.parseInt(row[11].toString()));
+            }
+            institute.setInstituteCampus(campus);
+            institutes.add(institute);
+        }
+        return institutes;
+    }
 }

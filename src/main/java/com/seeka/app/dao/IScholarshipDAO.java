@@ -2,12 +2,10 @@ package com.seeka.app.dao;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
 
 import com.seeka.app.bean.Scholarship;
 import com.seeka.app.dto.ScholarshipDto;
+import com.seeka.app.dto.ScholarshipFilterDto;
 
 public interface IScholarshipDAO {
 
@@ -26,4 +24,8 @@ public interface IScholarshipDAO {
 	public int findTotalCount();
 	
 	List<ScholarshipDto> getScholarshipBySearchKey(String searchKey);
+
+    public List<Scholarship> scholarshipFilter(int startIndex, Integer maxSizePerPage, ScholarshipFilterDto scholarshipFilterDto);
+
+    public int findTotalCountOfSchoolarship(ScholarshipFilterDto scholarshipFilterDto);
 }

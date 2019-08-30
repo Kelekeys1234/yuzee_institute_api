@@ -21,7 +21,6 @@ import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.IScholarshipDAO;
-import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.dto.ScholarshipFilterDto;
@@ -147,7 +146,7 @@ public class ScholarshipService implements IScholarshipService {
     @Override
     public Map<String, Object> getAllScholarship(Integer pageNumber, Integer pageSize) {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<Scholarship> scholarshipList = new ArrayList<>();
+        List<Scholarship> scholarships = null;
         int totalCount = 0;
         PaginationUtilDto paginationUtilDto = null;
         try {
@@ -159,10 +158,7 @@ public class ScholarshipService implements IScholarshipService {
                 startIndex = pageNumber;
             }
             paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-            List<Scholarship> scholarships = iScholarshipDAO.getAll(startIndex, pageSize);
-            for (Scholarship scholarship : scholarships) {
-                scholarshipList.add(getScholarship(scholarship));
-            }
+            scholarships = iScholarshipDAO.getAll(startIndex, pageSize);
             if (scholarships != null && !scholarships.isEmpty()) {
                 response.put("message", "Scholarship fetched successfully");
                 response.put("status", HttpStatus.OK.value());
@@ -174,7 +170,7 @@ public class ScholarshipService implements IScholarshipService {
             response.put("message", exception.getCause());
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("data", scholarshipList);
+        response.put("data", scholarships);
         response.put("totalCount", totalCount);
         response.put("pageNumber", paginationUtilDto.getPageNumber());
         response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
@@ -221,16 +217,40 @@ public class ScholarshipService implements IScholarshipService {
 
     @Override
     public Object scholarshipFilter(ScholarshipFilterDto scholarshipFilterDto) {
-        Map<String, Object> response = new HashMap<>();
-        List<ScholarshipFilterDto> scholarshipFilterDtos = new ArrayList<>();
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<Scholarship> scholarshipList = new ArrayList<>();
         int totalCount = 0;
         PaginationUtilDto paginationUtilDto = null;
-        try { 
-         
+        try {
+            totalCount = iScholarshipDAO.findTotalCountOfSchoolarship(scholarshipFilterDto);
+            int startIndex;
+            if (scholarshipFilterDto.getPageNumber() > 1) {
+                startIndex = ((scholarshipFilterDto.getPageNumber() - 1) * scholarshipFilterDto.getMaxSizePerPage()) + 1;
+            } else {
+                startIndex = scholarshipFilterDto.getPageNumber();
+            }
+            paginationUtilDto = PaginationUtil.calculatePagination(startIndex, scholarshipFilterDto.getMaxSizePerPage(), totalCount);
+            List<Scholarship> scholarships = iScholarshipDAO.scholarshipFilter(startIndex, scholarshipFilterDto.getMaxSizePerPage(), scholarshipFilterDto);
+            for (Scholarship scholarship : scholarships) {
+                scholarshipList.add(getScholarship(scholarship));
+            }
+            if (scholarships != null && !scholarships.isEmpty()) {
+                response.put("message", "Scholarship fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", "Scholarship not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
         } catch (Exception exception) {
             response.put("message", exception.getCause());
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        return null;
+        response.put("data", scholarshipList);
+        response.put("totalCount", totalCount);
+        response.put("pageNumber", paginationUtilDto.getPageNumber());
+        response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+        response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+        response.put("totalPages", paginationUtilDto.getTotalPages());
+        return response;
     }
 }

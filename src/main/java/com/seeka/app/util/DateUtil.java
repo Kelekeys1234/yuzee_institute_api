@@ -59,4 +59,20 @@ public class DateUtil {
         }
         return dateToReturn;
     }
+    
+    public static Date getDateFromString(String StrDate) {
+        Date dateToReturn = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            dateToReturn = (Date) dateFormat.parse(StrDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateToReturn;
+    }
+    
+    public static String getStringDateFromDate(Date datePostedUpdated) {
+        final SimpleDateFormat sdf = new SimpleDateFormat(IConstant.DATE_FORMAT_YYYY_MM_DD);
+        return sdf.format(datePostedUpdated);
+    }
 }

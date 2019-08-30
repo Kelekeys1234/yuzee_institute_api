@@ -18,10 +18,13 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
-// @Table(name = "scholarship")
 @Table(name = "scholarship")
 public class Scholarship implements java.io.Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private BigInteger id;
     private Country country;
     private Institute institute;
@@ -58,6 +61,11 @@ public class Scholarship implements java.io.Serializable {
 
     private Boolean isActive;
     private Boolean isDeleted;
+
+    private String lastUpdated;
+    
+    private String coverage;
+    private String type;
 
     /**
      * @return the id
@@ -566,4 +574,42 @@ public class Scholarship implements java.io.Serializable {
         this.levelName = levelName;
     }
 
+    @Transient
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    /**
+     * @return the coverage
+     */
+    @Column(name = "coverage")
+    public String getCoverage() {
+        return coverage;
+    }
+
+    /**
+     * @param coverage the coverage to set
+     */
+    public void setCoverage(String coverage) {
+        this.coverage = coverage;
+    }
+
+    /**
+     * @return the type
+     */
+    @Column(name = "type")
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 }

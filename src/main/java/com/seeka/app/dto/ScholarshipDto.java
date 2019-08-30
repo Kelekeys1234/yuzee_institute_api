@@ -28,6 +28,8 @@ public class ScholarshipDto {
     private String address;
     private Boolean isActive;
     private Boolean isDeleted;
+    private String coverage;
+    private String type;
     
 	public BigInteger getId() {
 		return id;
@@ -174,6 +176,30 @@ public class ScholarshipDto {
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
+    /**
+     * @return the coverage
+     */
+    public String getCoverage() {
+        return coverage;
+    }
+    /**
+     * @param coverage the coverage to set
+     */
+    public void setCoverage(String coverage) {
+        this.coverage = coverage;
+    }
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
     
     

@@ -1081,10 +1081,10 @@ public class CourseDAO implements ICourseDAO {
             }
             if (row[22] != null) {
                 System.out.println(row[22].toString());
-                Date createdDate = (Date) row[22];
-                System.out.println(createdDate);
+                Date updatedDate = (Date) row[22];
+                System.out.println(updatedDate);
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-                String dateResult = formatter.format(createdDate);
+                String dateResult = formatter.format(updatedDate);
                 obj.setLastUpdated(dateResult);
 
             }
@@ -1914,9 +1914,9 @@ public class CourseDAO implements ICourseDAO {
                 obj.setCourseLink(row[21].toString());
             }
             if (row[22] != null) {
-                Date createdDate = (Date) row[22];
+                Date updatedDate = (Date) row[22];
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-                String dateResult = formatter.format(createdDate);
+                String dateResult = formatter.format(updatedDate);
                 obj.setLastUpdated(dateResult);
             }
             if (row[23] != null) {

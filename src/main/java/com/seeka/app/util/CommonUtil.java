@@ -170,6 +170,8 @@ public class CommonUtil {
         scholarship.setEmail(scholarshipObj.getEmail());
         scholarship.setAddress(scholarshipObj.getAddress());
         scholarship.setIsActive(true);
+        scholarship.setCoverage(scholarshipObj.getCoverage());
+        scholarship.setType(scholarshipObj.getType());
         return scholarship;
     }
 

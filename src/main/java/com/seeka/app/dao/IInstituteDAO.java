@@ -2,11 +2,11 @@ package com.seeka.app.dao;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCampus;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 
@@ -46,7 +46,9 @@ public interface IInstituteDAO {
 
     void delete(Institute obj);
 
-    InstituteCampus getInstituteCampusByInstituteIdAndCampusType(BigInteger id, Integer campustype);
+    List<Institute> instituteFilter(int startIndex, Integer maxSizePerPage, InstituteFilterDto instituteFilterDto);
+
+    int findTotalCountFilterInstitute(InstituteFilterDto instituteFilterDto);
 
     List<Institute> getInstituteCampusWithInstitue();
 }

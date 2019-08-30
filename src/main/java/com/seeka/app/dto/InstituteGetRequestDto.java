@@ -23,6 +23,15 @@ public class InstituteGetRequestDto {
     private Date updatedOn;
     private String createdBy;
     private String updatedBy;
+    private String lastUpdated;
+
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 
     /**
      * @return the id

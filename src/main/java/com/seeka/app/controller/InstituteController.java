@@ -23,7 +23,6 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
 import com.seeka.app.bean.UserInfo;
-import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteFilterDto;
@@ -511,10 +510,10 @@ public class InstituteController {
         response.put("institutes", institutes);
         return ResponseEntity.accepted().body(response);
     }
-    
+
     @RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> instituteFilter(@RequestBody final InstituteFilterDto instituteFilterDto) throws Exception {
         return ResponseEntity.ok().body(instituteService.instituteFilter(instituteFilterDto));
     }
-    
+
 }

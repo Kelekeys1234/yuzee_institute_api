@@ -51,7 +51,7 @@ public class Institute implements Serializable {
     private InstituteDetails instituteDetailsObj;
     private List<InstituteService> serviceList;
     private String description;
-    
+
     private Integer worldRanking;
     private String accreditation;
     private String website;
@@ -64,7 +64,17 @@ public class Institute implements Serializable {
     private String campus;
     private String phoneNumber;
     private InstituteCampus instituteCampus;
-    
+
+    private String lastUpdated;
+
+    @Transient
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 
     public Institute() {
     }
@@ -411,7 +421,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param description the description to set
+     * @param description
+     *            the description to set
      */
     public void setDescription(String description) {
         this.description = description;
@@ -426,7 +437,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param worldRanking the worldRanking to set
+     * @param worldRanking
+     *            the worldRanking to set
      */
     public void setWorldRanking(Integer worldRanking) {
         this.worldRanking = worldRanking;
@@ -441,7 +453,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param accreditation the accreditation to set
+     * @param accreditation
+     *            the accreditation to set
      */
     public void setAccreditation(String accreditation) {
         this.accreditation = accreditation;
@@ -456,7 +469,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param website the website to set
+     * @param website
+     *            the website to set
      */
     public void setWebsite(String website) {
         this.website = website;
@@ -471,7 +485,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param address the address to set
+     * @param address
+     *            the address to set
      */
     public void setAddress(String address) {
         this.address = address;
@@ -486,7 +501,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param totalStudent the totalStudent to set
+     * @param totalStudent
+     *            the totalStudent to set
      */
     public void setTotalStudent(Integer totalStudent) {
         this.totalStudent = totalStudent;
@@ -501,7 +517,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param latitute the latitute to set
+     * @param latitute
+     *            the latitute to set
      */
     public void setLatitute(String latitute) {
         this.latitute = latitute;
@@ -516,7 +533,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param longitude the longitude to set
+     * @param longitude
+     *            the longitude to set
      */
     public void setLongitude(String longitude) {
         this.longitude = longitude;
@@ -531,7 +549,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param email the email to set
+     * @param email
+     *            the email to set
      */
     public void setEmail(String email) {
         this.email = email;
@@ -546,7 +565,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param avgCostOfLiving the avgCostOfLiving to set
+     * @param avgCostOfLiving
+     *            the avgCostOfLiving to set
      */
     public void setAvgCostOfLiving(String avgCostOfLiving) {
         this.avgCostOfLiving = avgCostOfLiving;
@@ -561,7 +581,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param campus the campus to set
+     * @param campus
+     *            the campus to set
      */
     public void setCampus(String campus) {
         this.campus = campus;
@@ -576,7 +597,8 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param phoneNumber the phoneNumber to set
+     * @param phoneNumber
+     *            the phoneNumber to set
      */
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
@@ -591,12 +613,11 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @param instituteCampus the instituteCampus to set
+     * @param instituteCampus
+     *            the instituteCampus to set
      */
     public void setInstituteCampus(InstituteCampus instituteCampus) {
         this.instituteCampus = instituteCampus;
     }
-    
-    
-    
+
 }
