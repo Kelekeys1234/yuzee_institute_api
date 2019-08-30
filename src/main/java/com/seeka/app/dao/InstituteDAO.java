@@ -454,7 +454,7 @@ public class InstituteDAO implements IInstituteDAO {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("SELECT i.id, i.name, ic.institute_id, ic.address, ic.email, ic.phone_number, ic.latitute,"
                         + " ic.longitute, ic.offer_service, ic.opening_from, ic.opening_to, ic.total_student FROM institute as "
-                        + "i LEFT JOIN institute_campus as ic ON ic.institute_id=i.id WHERE ic.campus_type =1");
+                        + "i LEFT JOIN institute_campus as ic ON ic.institute_id=i.id AND ic.campus_type =1");
         List<Object[]> rows = query.list();
         List<Institute> institutes = new ArrayList<Institute>();
         for (Object[] row : rows) {
