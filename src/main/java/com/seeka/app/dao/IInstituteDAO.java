@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCampus;
@@ -44,4 +45,8 @@ public interface IInstituteDAO {
     List<InstituteCampus> getInstituteCampusByInstituteId(BigInteger instituteId);
 
     void delete(Institute obj);
+
+    InstituteCampus getInstituteCampusByInstituteIdAndCampusType(BigInteger id, Integer campustype);
+
+    List<Institute> getInstituteCampusWithInstitue();
 }

@@ -3,6 +3,7 @@ package com.seeka.app.dao;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.hibernate.Criteria;
@@ -43,7 +44,7 @@ public class InstituteDAO implements IInstituteDAO {
         Session session = sessionFactory.getCurrentSession();
         session.save(instituteCampusObj);
     }
-    
+
     @Override
     public void update(final Institute obj) {
         Session session = sessionFactory.getCurrentSession();
@@ -53,11 +54,10 @@ public class InstituteDAO implements IInstituteDAO {
     @Override
     public void delete(final Institute obj) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("DELETE FROM institute_campus WHERE institute_id ="+obj.getId());
+        Query query = session.createSQLQuery("DELETE FROM institute_campus WHERE institute_id =" + obj.getId());
         query.executeUpdate();
     }
 
-    
     @Override
     public Institute get(final BigInteger id) {
         Session session = sessionFactory.getCurrentSession();
@@ -66,13 +66,74 @@ public class InstituteDAO implements IInstituteDAO {
     }
 
     @Override
-    public  List<InstituteCampus> getInstituteCampusByInstituteId(final BigInteger instituteId) {
+    public List<InstituteCampus> getInstituteCampusByInstituteId(final BigInteger instituteId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(InstituteCampus.class);
         crit.add(Restrictions.eq("institute.id", instituteId));
         return crit.list();
     }
-    
+
+    @Override
+    public InstituteCampus getInstituteCampusByInstituteIdAndCampusType(BigInteger instituteId, Integer campustype) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("SELECT FROM institute_campus as ic LEFT JOIN institute as i ON i.id=ic.institute_id " + "where ic.institute_id=" + instituteId
+                        + " and ic.campus_type='" + campustype + "'");
+        return (InstituteCampus) query.uniqueResult();
+    }
+
+    @Override
+    public List<Institute> getInstituteCampusWithInstitue() {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("SELECT i.id, i.name, ic.institute_id, ic.address, ic.email, ic.phone_number, ic.latitute,"
+                        + " ic.longitute, ic.offer_service, ic.opening_from, ic.opening_to, ic.total_student FROM institute as "
+                        + "i LEFT JOIN institute_campus as ic ON ic.institute_id=i.id WHERE ic.campus_type =1");
+        List<Object[]> rows = query.list();
+        List<Institute> institutes = new ArrayList<Institute>();
+        for (Object[] row : rows) {
+            Institute institute = new Institute();
+            InstituteCampus campus = new InstituteCampus();
+            if (row[0] != null) {
+                institute.setId(new BigInteger(row[0].toString()));
+            }
+            if (row[1] != null) {
+                institute.setName(row[1].toString());
+            }
+            if (row[2] != null) {
+                campus.setId(new BigInteger(row[2].toString()));
+            }
+            if (row[3] != null) {
+                campus.setAddress(row[3].toString());
+            }
+            if (row[4] != null) {
+                campus.setEmail(row[4].toString());
+            }
+            if (row[5] != null) {
+                campus.setPhoneNumber(row[5].toString());
+            }
+            if (row[6] != null) {
+                campus.setLatitute(Double.parseDouble(row[6].toString()));
+            }
+            if (row[7] != null) {
+                campus.setLongitute(Double.parseDouble(row[7].toString()));
+            }
+            if (row[8] != null) {
+                campus.setOfferService(row[8].toString());
+            }
+            if (row[9] != null) {
+                campus.setOpeningFrom(row[9].toString());
+            }
+            if (row[10] != null) {
+                campus.setOpeningTo(row[10].toString());
+            }
+            if (row[11] != null) {
+                campus.setTotalStudent(Integer.parseInt(row[11].toString()));
+            }
+            institute.setInstituteCampus(campus);
+            institutes.add(institute);
+        }
+        return institutes;
+    }
+
     @Override
     public List<Institute> getAllInstituteByCountry(final BigInteger countryId) {
         Session session = sessionFactory.getCurrentSession();
@@ -89,15 +150,18 @@ public class InstituteDAO implements IInstituteDAO {
     }
 
     /*
-     * @Override public Institute getUserByEmail(String email) { Session session = sessionFactory.getCurrentSession(); Criteria crit = session.createCriteria(UserInfo.class);
-     * crit.add(Restrictions.eq("emailId",email)); List<UserInfo> users = crit.list(); return users !=null && !users.isEmpty()?users.get(0):null; }
+     * @Override public Institute getUserByEmail(String email) { Session session = sessionFactory.getCurrentSession();
+     * Criteria crit = session.createCriteria(UserInfo.class); crit.add(Restrictions.eq("emailId",email));
+     * List<UserInfo> users = crit.list(); return users !=null && !users.isEmpty()?users.get(0):null; }
      */
 
     /*
      * private void retrieveEmployee() {
-     *
-     * try{ String sqlQuery="select e from Employee e inner join e.addList"; Session session=sessionFactory.getCurrentSession(); Query query=session.createQuery(sqlQuery);
-     * List<Institute> list=query.list(); list.stream().forEach((p)->{System.out.println(p.getName());}); }catch(Exception e){ e.printStackTrace(); } }
+     * 
+     * try{ String sqlQuery="select e from Employee e inner join e.addList"; Session
+     * session=sessionFactory.getCurrentSession(); Query query=session.createQuery(sqlQuery); List<Institute>
+     * list=query.list(); list.stream().forEach((p)->{System.out.println(p.getName());}); }catch(Exception e){
+     * e.printStackTrace(); } }
      */
 
     @Override
@@ -360,4 +424,5 @@ public class InstituteDAO implements IInstituteDAO {
         }
         return services;
     }
+
 }

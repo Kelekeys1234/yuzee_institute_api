@@ -63,6 +63,8 @@ public class Institute implements Serializable {
     private String avgCostOfLiving;
     private String campus;
     private String phoneNumber;
+    private InstituteCampus instituteCampus;
+    
 
     public Institute() {
     }
@@ -579,4 +581,22 @@ public class Institute implements Serializable {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    /**
+     * @return the instituteCampus
+     */
+    @Transient
+    public InstituteCampus getInstituteCampus() {
+        return instituteCampus;
+    }
+
+    /**
+     * @param instituteCampus the instituteCampus to set
+     */
+    public void setInstituteCampus(InstituteCampus instituteCampus) {
+        this.instituteCampus = instituteCampus;
+    }
+    
+    
+    
 }

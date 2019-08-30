@@ -85,7 +85,21 @@ public class InstituteService implements IInstituteService {
 
     @Override
     public List<Institute> getAll() {
-        return dao.getAll();
+        return dao.getInstituteCampusWithInstitue();
+    }
+    
+    public Institute convertInstituteCampusInsideInstituteObject(InstituteCampus campus, Institute institute){
+        institute.setAddress(campus.getAddress());
+        institute.setEmail(campus.getEmail());
+        institute.setPhoneNumber(campus.getPhoneNumber());
+        if(campus.getLatitute() != null){
+        institute.setLatitute(campus.getLatitute().toString());
+        }
+        if(campus.getLongitute() != null){
+        institute.setLongitude(campus.getLatitute().toString());
+        }
+        institute.setTotalStudent(campus.getTotalStudent());
+        return institute;
     }
 
     @Override
