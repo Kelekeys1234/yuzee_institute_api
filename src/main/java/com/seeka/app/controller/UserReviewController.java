@@ -45,7 +45,7 @@ public class UserReviewController {
 	@GetMapping("/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getUserReview(@PathVariable final BigInteger userId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) {
-		List<UserReviewDto> userReviewList = iUserReview.getUserReviewList(userId, pageNumber, pageSize);
+		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewList(userId, pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReviewList).setMessage("Get user review successfully").create();
 	}
 
@@ -53,7 +53,13 @@ public class UserReviewController {
 	public ResponseEntity<?> getUserReviewBasedOnData(@RequestParam(name = "entityId") final BigInteger entityId,
 			@RequestParam(name = "entityType") final String entityType, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize)
 			throws ValidationException {
-		List<UserReviewDto> userReviewList = iUserReview.getUserReviewBasedOnData(entityId, entityType, pageNumber, pageSize);
+		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewBasedOnData(entityId, entityType, pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReviewList).setMessage("Get user review successfully").create();
+	}
+
+	@GetMapping("/list")
+	public ResponseEntity<?> getUserReview() throws ValidationException {
+		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewList();
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReviewList).setMessage("Get user review successfully").create();
 	}
 

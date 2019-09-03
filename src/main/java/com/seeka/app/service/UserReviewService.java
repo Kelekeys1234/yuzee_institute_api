@@ -77,6 +77,7 @@ public class UserReviewService implements IUserReviewService {
 
 		userReview.setCreatedBy("API");
 		userReview.setCreatedOn(new Date());
+		userReview.setIsActive(true);
 		iUserReviewDao.save(userReview);
 
 		for (UserReviewRating userReviewRating : userReviewDto.getRatings()) {
@@ -88,16 +89,24 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public List<UserReviewDto> getUserReviewList(final BigInteger userId, final Integer pageNumber, final Integer pageSize) {
+	public List<UserReviewResultDto> getUserReviewList(final BigInteger userId, final Integer pageNumber, final Integer pageSize) {
 		int startIndex = (pageNumber - 1) * pageSize;
 		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(userId, null, null, startIndex, pageSize);
-		List<UserReviewDto> resultList = new ArrayList<>();
+		List<UserReviewResultDto> resultList = new ArrayList<>();
 		for (UserReview userReview : userReviewList) {
-			UserReviewDto userReviewDto = new UserReviewDto();
-			BeanUtils.copyProperties(userReview, userReviewDto);
-			userReviewDto.setRatings(iUserReviewDao.getUserReviewRatings(userReview.getId()));
-			resultList.add(userReviewDto);
+			UserReviewResultDto reviewResultDto = new UserReviewResultDto();
+			BeanUtils.copyProperties(userReview, reviewResultDto);
+			List<UserReviewRating> userReviewRatings = iUserReviewDao.getUserReviewRatings(userReview.getId());
+			List<UserReviewRatingDto> userReviewRatingDtos = new ArrayList<>();
+			for (UserReviewRating userReviewRating : userReviewRatings) {
+				UserReviewRatingDto userReviewRatingDto = new UserReviewRatingDto();
+				BeanUtils.copyProperties(userReviewRating, userReviewRatingDto);
+				userReviewRatingDtos.add(userReviewRatingDto);
+			}
+			reviewResultDto.setRatings(userReviewRatingDtos);
+			resultList.add(reviewResultDto);
 		}
+
 		return resultList;
 	}
 
@@ -122,16 +131,35 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public List<UserReviewDto> getUserReviewBasedOnData(final BigInteger entityId, final String entityType, final Integer pageNumber, final Integer pageSize)
-			throws ValidationException {
+	public List<UserReviewResultDto> getUserReviewBasedOnData(final BigInteger entityId, final String entityType, final Integer pageNumber,
+			final Integer pageSize) throws ValidationException {
 		int startIndex = (pageNumber - 1) * pageSize;
 		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, entityId, entityType, startIndex, pageSize);
-		List<UserReviewDto> resultList = new ArrayList<>();
+		List<UserReviewResultDto> resultList = new ArrayList<>();
 		for (UserReview userReview : userReviewList) {
-			UserReviewDto userReviewDto = new UserReviewDto();
-			BeanUtils.copyProperties(userReview, userReviewDto);
-			userReviewDto.setRatings(iUserReviewDao.getUserReviewRatings(userReview.getId()));
-			resultList.add(userReviewDto);
+			UserReviewResultDto reviewResultDto = new UserReviewResultDto();
+			BeanUtils.copyProperties(userReview, reviewResultDto);
+			List<UserReviewRating> userReviewRatings = iUserReviewDao.getUserReviewRatings(userReview.getId());
+			List<UserReviewRatingDto> userReviewRatingDtos = new ArrayList<>();
+			for (UserReviewRating userReviewRating : userReviewRatings) {
+				UserReviewRatingDto userReviewRatingDto = new UserReviewRatingDto();
+				BeanUtils.copyProperties(userReviewRating, userReviewRatingDto);
+				userReviewRatingDtos.add(userReviewRatingDto);
+			}
+			reviewResultDto.setRatings(userReviewRatingDtos);
+			resultList.add(reviewResultDto);
+		}
+		return resultList;
+	}
+
+	@Override
+	public List<UserReviewResultDto> getUserReviewList() throws ValidationException {
+		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, null, null, null, null);
+		List<UserReviewResultDto> resultList = new ArrayList<>();
+		for (UserReview userReview : userReviewList) {
+			UserReviewResultDto reviewResultDto = new UserReviewResultDto();
+			BeanUtils.copyProperties(userReview, reviewResultDto);
+			resultList.add(reviewResultDto);
 		}
 		return resultList;
 	}

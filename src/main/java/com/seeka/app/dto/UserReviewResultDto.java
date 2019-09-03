@@ -2,9 +2,8 @@ package com.seeka.app.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * @author SeekADegree
@@ -18,32 +17,17 @@ public class UserReviewResultDto implements Serializable {
 	private static final long serialVersionUID = 1298861732976808001L;
 
 	private BigInteger id;
-	@NotNull(message = "userId is required")
 	private BigInteger userId;
-	@NotNull(message = "entityId is required")
 	private BigInteger entityId;
-	/**
-	 * Which reviews do you want to share with us : Course or Institute
-	 */
-	@NotNull(message = "entityType is required")
 	private String entityType;
-	/**
-	 * Are you current student or alumni
-	 */
-	@NotNull(message = "studentType is required")
 	private String studentType;
-
-	@NotNull(message = "studentCategory is required")
 	private String studentCategory;
-	/**
-	 * Post as an anonymous
-	 */
 	private Boolean isAnonymous;
 	private Double reviewStar;
 	private String comments;
 	private Boolean isActive;
-
-	@NotNull(message = "ratings is required")
+	private Date createdOn;
+	private String userName;
 	private List<UserReviewRatingDto> ratings;
 
 	public BigInteger getId() {
@@ -126,6 +110,22 @@ public class UserReviewResultDto implements Serializable {
 		this.isActive = isActive;
 	}
 
+	public Date getCreatedOn() {
+		return createdOn;
+	}
+
+	public void setCreatedOn(final Date createdOn) {
+		this.createdOn = createdOn;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(final String userName) {
+		this.userName = userName;
+	}
+
 	public List<UserReviewRatingDto> getRatings() {
 		return ratings;
 	}
@@ -139,6 +139,7 @@ public class UserReviewResultDto implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (comments == null ? 0 : comments.hashCode());
+		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (entityId == null ? 0 : entityId.hashCode());
 		result = prime * result + (entityType == null ? 0 : entityType.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
@@ -149,6 +150,7 @@ public class UserReviewResultDto implements Serializable {
 		result = prime * result + (studentCategory == null ? 0 : studentCategory.hashCode());
 		result = prime * result + (studentType == null ? 0 : studentType.hashCode());
 		result = prime * result + (userId == null ? 0 : userId.hashCode());
+		result = prime * result + (userName == null ? 0 : userName.hashCode());
 		return result;
 	}
 
@@ -169,6 +171,13 @@ public class UserReviewResultDto implements Serializable {
 				return false;
 			}
 		} else if (!comments.equals(other.comments)) {
+			return false;
+		}
+		if (createdOn == null) {
+			if (other.createdOn != null) {
+				return false;
+			}
+		} else if (!createdOn.equals(other.createdOn)) {
 			return false;
 		}
 		if (entityId == null) {
@@ -241,6 +250,13 @@ public class UserReviewResultDto implements Serializable {
 		} else if (!userId.equals(other.userId)) {
 			return false;
 		}
+		if (userName == null) {
+			if (other.userName != null) {
+				return false;
+			}
+		} else if (!userName.equals(other.userName)) {
+			return false;
+		}
 		return true;
 	}
 
@@ -250,7 +266,7 @@ public class UserReviewResultDto implements Serializable {
 		builder.append("UserReviewResultDto [id=").append(id).append(", userId=").append(userId).append(", entityId=").append(entityId).append(", entityType=")
 				.append(entityType).append(", studentType=").append(studentType).append(", studentCategory=").append(studentCategory).append(", isAnonymous=")
 				.append(isAnonymous).append(", reviewStar=").append(reviewStar).append(", comments=").append(comments).append(", isActive=").append(isActive)
-				.append(", ratings=").append(ratings).append("]");
+				.append(", createdOn=").append(createdOn).append(", userName=").append(userName).append(", ratings=").append(ratings).append("]");
 		return builder.toString();
 	}
 
