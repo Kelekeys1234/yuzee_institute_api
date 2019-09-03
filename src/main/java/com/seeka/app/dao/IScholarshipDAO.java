@@ -28,4 +28,8 @@ public interface IScholarshipDAO {
     public List<Scholarship> scholarshipFilter(int startIndex, Integer maxSizePerPage, ScholarshipFilterDto scholarshipFilterDto);
 
     public int findTotalCountOfSchoolarship(ScholarshipFilterDto scholarshipFilterDto);
+
+    public List<Scholarship> autoSearch(int startIndex, Integer pageSize, String searchKey);
+
+    public int findTotalCountOfScholarshipAutoSearch(String searchKey);
 }

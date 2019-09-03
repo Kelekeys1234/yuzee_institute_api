@@ -72,6 +72,11 @@ public class ScholarshipDao implements IScholarshipDAO {
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
+        List<Scholarship> scholarshipList = getScholarshipData(rows, session);
+        return scholarshipList;
+    }
+
+    private List<Scholarship> getScholarshipData(List<Object[]> rows, Session session) {
         List<Scholarship> scholarshipList = new ArrayList<Scholarship>();
         Scholarship obj = null;
         for (Object[] row : rows) {
@@ -424,6 +429,28 @@ public class ScholarshipDao implements IScholarshipDAO {
                         + " where sch.is_deleted IS NULL ";
 
         sqlQuery = addSchoolarFilter(sqlQuery, scholarshipFilterDto);
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        return rows.size();
+    }
+
+    @Override
+    public List<Scholarship> autoSearch(int pageNumber, Integer pageSize, String searchKey) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select sch.id, sch.country_id , sch.institute_id, sch.level_id, sch.name ,sch.amount, sch.student, sch.description, sch.website, sch.created_on, sch.updated_on, sch.created_by, sch.updated_by, sch.scholarship_title, sch.offered_by, sch.benefits, sch.requirements, sch.eligibility, sch.intake, sch.language, sch.validity, sch.gender, sch.application_deadline, sch.scholarship_amount, sch.number_of_avaliability, sch.headquaters, sch.email, sch.address, sch.is_active, sch.is_deleted  FROM scholarship as sch "
+                        + " where sch.is_deleted IS NULL and (sch.name like '%" + searchKey + "%' or sch.description like '%" + searchKey + "%') ORDER BY sch.created_on DESC";
+        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<Scholarship> scholarshipList = getScholarshipData(rows, session);
+        return scholarshipList;
+    }
+
+    @Override
+    public int findTotalCountOfScholarshipAutoSearch(String searchKey) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select sch.id, sch.country_id , sch.institute_id, sch.level_id, sch.name ,sch.amount, sch.student, sch.description, sch.website, sch.created_on, sch.updated_on, sch.created_by, sch.updated_by, sch.scholarship_title, sch.offered_by, sch.benefits, sch.requirements, sch.eligibility, sch.intake, sch.language, sch.validity, sch.gender, sch.application_deadline, sch.scholarship_amount, sch.number_of_avaliability, sch.headquaters, sch.email, sch.address, sch.is_active, sch.is_deleted  FROM scholarship as sch "
+                        + " where sch.is_deleted IS NULL and (sch.name like '%" + searchKey + "%' or sch.description like '%" + searchKey + "%') ";
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
         return rows.size();

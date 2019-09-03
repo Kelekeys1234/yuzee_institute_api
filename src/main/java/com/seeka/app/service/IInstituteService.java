@@ -46,4 +46,6 @@ public interface IInstituteService {
     Map<String, Object> update(InstituteRequestDto institute, @Valid BigInteger id);
 
     Map<String, Object> instituteFilter(InstituteFilterDto instituteFilterDto);
+
+    Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
 }

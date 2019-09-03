@@ -69,4 +69,8 @@ public interface ICourseDAO {
 
     int findTotalCountCourseFilter(CourseFilterDto courseFilter);
 
+    List<CourseRequest> autoSearch(int startIndex, Integer pageSize, String searchKey);
+
+    int autoSearchTotalCount(String searchKey);
+
 }

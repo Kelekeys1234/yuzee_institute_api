@@ -999,6 +999,11 @@ public class CourseDAO implements ICourseDAO {
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
+        List<CourseRequest> courses = getCourseDetails(rows, session);
+        return courses;
+    }
+
+    private List<CourseRequest> getCourseDetails(List<Object[]> rows, Session session) {
         List<CourseRequest> courses = new ArrayList<>();
         CourseRequest obj = null;
         for (Object[] row : rows) {
@@ -1829,116 +1834,15 @@ public class CourseDAO implements ICourseDAO {
 
         sqlQuery = addCourseFilterCondition(sqlQuery, courseFilter);
         sqlQuery += " ";
-
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
-        List<CourseRequest> courses = new ArrayList<>();
-        CourseRequest obj = null;
-        for (Object[] row : rows) {
-            obj = new CourseRequest();
-            obj.setCourseId(new BigInteger(row[0].toString()));
-            if (row[1] != null) {
-                obj.setcId(Integer.valueOf(row[1].toString()));
-            }
-            if (row[2] != null) {
-                obj.setInstituteId(new BigInteger(row[2].toString()));
-                obj.setInstituteName(getInstituteName(row[2].toString(), session));
-                obj.setCost(getCost(row[2].toString(), session));
-                Institute institute = getInstitute(row[2].toString(), session);
-                obj.setInstituteId(new BigInteger(row[2].toString()));
-                obj.setInstituteName(institute.getName());
-                obj.setCost(getCost(row[2].toString(), session));
-                if (row[3] != null) {
-                    Country country = getCountry(row[3].toString(), session);
-                    obj.setInstituteLogoUrl(getInstituteLogo(country.getName(), institute.getName()));
-                    obj.setInstituteImageUrls(getInstituteImage(country.getName(), institute.getName()));
-                }
-            }
-            if (row[3] != null) {
-                obj.setCountryId(new BigInteger(row[3].toString()));
-                obj.setLocation(getLocationName(row[3].toString(), session));
-            }
-            if (row[4] != null) {
-                obj.setCityId(new BigInteger(row[4].toString()));
-            }
-            if (row[5] != null) {
-                obj.setFacultyId(new BigInteger(row[5].toString()));
-            }
-            if (row[6] != null) {
-                obj.setName(row[6].toString());
-            }
-            if (row[7] != null) {
-                obj.setDescription(row[7].toString());
-            }
-            if (row[8] != null) {
-                obj.setIntake(row[8].toString());
-            }
-            if (row[9] != null) {
-                obj.setDuration(row[9].toString());
-            }
-            if (row[10] != null) {
-                obj.setLanguage(row[10].toString());
-            }
-            if (row[11] != null) {
-                obj.setDomasticFee(Double.valueOf(row[11].toString()));
-            }
-            if (row[12] != null) {
-                obj.setInternationalFee(Double.valueOf(row[12].toString()));
-            }
-            if (row[13] != null) {
-                // obj.setGrades(row[13].toString());
-            }
-            if (row[14] != null) {
-                obj.setDocumentUrl(row[14].toString());
-            }
-            if (row[15] != null) {
-                // obj.setContact(row[15].toString());
-            }
-            if (row[16] != null) {
-                // obj.setOpeningHourFrom(row[16].toString());
-            }
-            if (row[17] != null) {
-                // obj.setCampusLocation(row[17].toString());
-            }
-            if (row[18] != null) {
-                obj.setWebsite(row[18].toString());
-            }
-            if (row[19] != null) {
-                // obj.setPartTime(row[19].toString());
-            }
-            if (row[20] != null) {
-                obj.setFullTime(row[20].toString());
-            }
-            if (row[21] != null) {
-                obj.setCourseLink(row[21].toString());
-            }
-            if (row[22] != null) {
-                Date updatedDate = (Date) row[22];
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-                String dateResult = formatter.format(updatedDate);
-                obj.setLastUpdated(dateResult);
-            }
-            if (row[23] != null) {
-                obj.setWorldRanking(row[23].toString());
-            }
-            if (row[24] != null) {
-                obj.setStars(row[24].toString());
-            }
-            if (row[25] != null) {
-                obj.setDurationTime(row[25].toString());
-            }
-            if (row[26] != null) {
-                obj.setRequirements(row[26].toString());
-            }
-            obj.setEnglishEligibility(getEnglishEligibility(session, obj.getCourseId()));
-            courses.add(obj);
-        }
+        List<CourseRequest> courses = getCourseDetails(rows, session);
         return courses;
     }
 
     private String addCourseFilterCondition(String sqlQuery, CourseFilterDto courseFilter) {
-        
+
         if (null != courseFilter.getCountryId() && courseFilter.getCountryId().intValue() > 0) {
             sqlQuery += " and c.country_id = " + courseFilter.getCountryId() + " ";
         }
@@ -1975,6 +1879,36 @@ public class CourseDAO implements ICourseDAO {
                         + " city ci  on ci.id = c.city_id inner join faculty f  on f.id = c.faculty_id "
                         + " left join institute_service iis  on iis.institute_id = inst.id where c.is_active = 1 and c.deleted_on IS NULL ";
         sqlQuery = addCourseFilterCondition(sqlQuery, courseFilter);
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        return rows.size();
+    }
+
+    @Override
+    public List<CourseRequest> autoSearch(int pageNumber, Integer pageSize, String searchKey) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
+                        + "c.description, c.intake, c.duration, c.course_lang, c.domestic_fee, c.international_fee,"
+                        + "c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
+                        + " c.recognition_type, c.part_full, c.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM course c inner join institute ist on c.institute_id = ist.id"
+                        + " where c.is_active = 1 and c.deleted_on IS NULL and (c.name like '%" + searchKey + "%' or ist.name like '%" + searchKey
+                        + "%') ORDER BY c.created_on DESC ";
+        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<CourseRequest> courses = getCourseDetails(rows, session);
+        return courses;
+    }
+
+    @Override
+    public int autoSearchTotalCount(String searchKey) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
+                        + "c.description, c.intake, c.duration, c.course_lang, c.domestic_fee, c.international_fee,"
+                        + "c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
+                        + " c.recognition_type, c.part_full, c.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM course c inner join institute ist on c.institute_id = ist.id"
+                        + " where c.is_active = 1 and c.deleted_on IS NULL and (c.name like '%" + searchKey + "%' or ist.name like '%" + searchKey
+                        + "%') ORDER BY c.created_on DESC ";
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
         return rows.size();

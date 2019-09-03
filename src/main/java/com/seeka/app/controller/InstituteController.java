@@ -486,6 +486,11 @@ public class InstituteController {
         return ResponseEntity.accepted().body(instituteService.getAllInstitute(pageNumber, pageSize));
     }
 
+    @RequestMapping(value = "/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getAllInstitute(@PathVariable final String searchKey, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
+        return ResponseEntity.accepted().body(instituteService.autoSearch(pageNumber, pageSize, searchKey));
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> get(@Valid @PathVariable final BigInteger id) throws Exception {
         return ResponseEntity.accepted().body(instituteService.getById(id));

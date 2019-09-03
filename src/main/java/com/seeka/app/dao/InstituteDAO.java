@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.InstituteCampus;
+import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
 import com.seeka.app.dto.CourseSearchDto;
@@ -42,12 +42,6 @@ public class InstituteDAO implements IInstituteDAO {
     }
 
     @Override
-    public void save(final InstituteCampus instituteCampusObj) {
-        Session session = sessionFactory.getCurrentSession();
-        session.save(instituteCampusObj);
-    }
-
-    @Override
     public void update(final Institute obj) {
         Session session = sessionFactory.getCurrentSession();
         session.update(obj);
@@ -65,14 +59,6 @@ public class InstituteDAO implements IInstituteDAO {
         Session session = sessionFactory.getCurrentSession();
         Institute obj = session.get(Institute.class, id);
         return obj;
-    }
-
-    @Override
-    public List<InstituteCampus> getInstituteCampusByInstituteId(final BigInteger instituteId) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(InstituteCampus.class);
-        crit.add(Restrictions.eq("institute.id", instituteId));
-        return crit.list();
     }
 
     @Override
@@ -322,12 +308,19 @@ public class InstituteDAO implements IInstituteDAO {
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
+        List<Institute> instituteList = getInstituteData(rows, session);
+        return instituteList;
+    }
+
+    private List<Institute> getInstituteData(List<Object[]> rows, Session session) {
         List<Institute> instituteList = new ArrayList<>();
         Institute obj = null;
         for (Object[] row : rows) {
             obj = new Institute();
             obj.setId(new BigInteger(row[0].toString()));
-            obj.setName(row[1].toString());
+            if (row[1] != null) {
+                obj.setName(row[1].toString());
+            }
             if (row[2] != null) {
                 obj.setCountry(getCountry(new BigInteger(row[2].toString()), session));
             }
@@ -342,7 +335,6 @@ public class InstituteDAO implements IInstituteDAO {
             }
             if (row[6] != null) {
                 Date createdDate = (Date) row[6];
-                System.out.println(createdDate);
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
                 String dateResult = formatter.format(createdDate);
                 obj.setLastUpdated(dateResult);
@@ -451,54 +443,55 @@ public class InstituteDAO implements IInstituteDAO {
 
     @Override
     public List<Institute> getInstituteCampusWithInstitue() {
+        return getAll();
+    }
+
+    @Override
+    public List<Institute> autoSearch(int pageNumber, Integer pageSize, String searchKey) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("SELECT i.id, i.name, ic.institute_id, ic.address, ic.email, ic.phone_number, ic.latitute,"
-                        + " ic.longitute, ic.offer_service, ic.opening_from, ic.opening_to, ic.total_student FROM institute as "
-                        + "i LEFT JOIN institute_campus as ic ON ic.institute_id=i.id AND ic.campus_type =1");
+        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on FROM institute as inst  "
+                        + " inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
+                        + " inner join institute_type instType on instType.id = inst.institute_type_id " + " where  inst.deleted_on IS NULL and (inst.name like '%" + searchKey
+                        + "%' or inst.description like '%" + searchKey + "%' or ctry.name like '%" + searchKey + "%' or ci.name like '%" + searchKey + "%' or instType.name like '%"
+                        + searchKey + "%') " + " ORDER BY inst.created_on DESC";
+        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+        Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
-        List<Institute> institutes = new ArrayList<Institute>();
-        for (Object[] row : rows) {
-            Institute institute = new Institute();
-            InstituteCampus campus = new InstituteCampus();
-            if (row[0] != null) {
-                institute.setId(new BigInteger(row[0].toString()));
-            }
-            if (row[1] != null) {
-                institute.setName(row[1].toString());
-            }
-            if (row[2] != null) {
-                campus.setId(new BigInteger(row[2].toString()));
-            }
-            if (row[3] != null) {
-                campus.setAddress(row[3].toString());
-            }
-            if (row[4] != null) {
-                campus.setEmail(row[4].toString());
-            }
-            if (row[5] != null) {
-                campus.setPhoneNumber(row[5].toString());
-            }
-            if (row[6] != null) {
-                campus.setLatitute(Double.parseDouble(row[6].toString()));
-            }
-            if (row[7] != null) {
-                campus.setLongitute(Double.parseDouble(row[7].toString()));
-            }
-            if (row[8] != null) {
-                campus.setOfferService(row[8].toString());
-            }
-            if (row[9] != null) {
-                campus.setOpeningFrom(row[9].toString());
-            }
-            if (row[10] != null) {
-                campus.setOpeningTo(row[10].toString());
-            }
-            if (row[11] != null) {
-                campus.setTotalStudent(Integer.parseInt(row[11].toString()));
-            }
-            institute.setInstituteCampus(campus);
-            institutes.add(institute);
+        List<Institute> instituteList = getInstituteData(rows, session);
+        return instituteList;
+    }
+
+    @Override
+    public int findTotalCountForInstituteAutosearch(String searchKey) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on FROM institute as inst  "
+                        + " inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
+                        + " inner join institute_type instType on instType.id = inst.institute_type_id " + " where inst.deleted_on IS NULL and (inst.name like '%" + searchKey
+                        + "%' or inst.description like '%" + searchKey + "%' or ctry.name like '%" + searchKey + "%' or ci.name like '%" + searchKey + "%' or instType.name like '%"
+                        + searchKey + "%') " + " ";
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        return rows.size();
+    }
+
+    @Override
+    public InstituteCategoryType getInstituteCategoryType(BigInteger instituteCategoryTypeId) {
+        InstituteCategoryType obj = null;
+        if (instituteCategoryTypeId != null) {
+            Session session = sessionFactory.getCurrentSession();
+            obj = session.get(InstituteCategoryType.class, instituteCategoryTypeId);
         }
-        return institutes;
+        return obj;
+    }
+
+    @Override
+    public List<Institute> getSecondayCampus(BigInteger countryId, BigInteger cityId, String name) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(Institute.class);
+        crit.add(Restrictions.eq("country.id", countryId));
+        crit.add(Restrictions.eq("city.id", cityId));
+        crit.add(Restrictions.eq("name", name));
+        crit.add(Restrictions.eq("campusType", "SECONDARY"));
+        return crit.list();
     }
 }
