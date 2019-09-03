@@ -1,5 +1,6 @@
 package com.seeka.app.dto;
 
+import java.math.BigInteger;
 
 public class InstituteCampusDto {
 
@@ -12,6 +13,8 @@ public class InstituteCampusDto {
     private String openingTo;
     private String offerService;
     private Integer totalStudent;
+    private String campusType;
+    private BigInteger id;
 
     public String getEmail() {
         return email;
@@ -83,5 +86,35 @@ public class InstituteCampusDto {
 
     public void setTotalStudent(Integer totalStudent) {
         this.totalStudent = totalStudent;
+    }
+
+    /**
+     * @return the type
+     */
+    public String getCampusType() {
+        return campusType;
+    }
+
+    /**
+     * @param type
+     *            the type to set
+     */
+    public void setCampusType(String campusType) {
+        this.campusType = campusType;
+    }
+
+    /**
+     * @return the id
+     */
+    public BigInteger getId() {
+        return id;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(BigInteger id) {
+        this.id = id;
     }
 }

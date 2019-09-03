@@ -57,15 +57,18 @@ public class Institute implements Serializable {
     private String website;
     private String address;
     private Integer totalStudent;
-    private String latitute;
-    private String longitude;
+    private Double latitute;
+    private Double longitude;
     private String email;
     private String avgCostOfLiving;
     private String campus;
     private String phoneNumber;
-    private InstituteCampus instituteCampus;
-
+    private String campusType;
     private String lastUpdated;
+    private String openingFrom;
+    private String openingTo;
+    private String offerService;
+    private InstituteCategoryType instituteCategoryType;
 
     @Transient
     public String getLastUpdated() {
@@ -479,7 +482,7 @@ public class Institute implements Serializable {
     /**
      * @return the address
      */
-    @Transient
+    @Column(name = "address")
     public String getAddress() {
         return address;
     }
@@ -495,7 +498,7 @@ public class Institute implements Serializable {
     /**
      * @return the totalStudent
      */
-    @Transient
+    @Column(name = "total_student")
     public Integer getTotalStudent() {
         return totalStudent;
     }
@@ -511,8 +514,8 @@ public class Institute implements Serializable {
     /**
      * @return the latitute
      */
-    @Transient
-    public String getLatitute() {
+    @Column(name = "latitute")
+    public Double getLatitute() {
         return latitute;
     }
 
@@ -520,15 +523,15 @@ public class Institute implements Serializable {
      * @param latitute
      *            the latitute to set
      */
-    public void setLatitute(String latitute) {
+    public void setLatitute(Double latitute) {
         this.latitute = latitute;
     }
 
     /**
      * @return the longitude
      */
-    @Transient
-    public String getLongitude() {
+    @Column(name = "longitute")
+    public Double getLongitude() {
         return longitude;
     }
 
@@ -536,14 +539,14 @@ public class Institute implements Serializable {
      * @param longitude
      *            the longitude to set
      */
-    public void setLongitude(String longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
     /**
      * @return the email
      */
-    @Transient
+    @Column(name = "email")
     public String getEmail() {
         return email;
     }
@@ -591,7 +594,7 @@ public class Institute implements Serializable {
     /**
      * @return the phoneNumber
      */
-    @Transient
+    @Column(name = "phone_number")
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -605,19 +608,63 @@ public class Institute implements Serializable {
     }
 
     /**
-     * @return the instituteCampus
+     * @return the campusType
      */
-    @Transient
-    public InstituteCampus getInstituteCampus() {
-        return instituteCampus;
+    @Column(name = "campus_type")
+    public String getCampusType() {
+        return campusType;
     }
 
     /**
-     * @param instituteCampus
-     *            the instituteCampus to set
+     * @param campusType
+     *            the campusType to set
      */
-    public void setInstituteCampus(InstituteCampus instituteCampus) {
-        this.instituteCampus = instituteCampus;
+    public void setCampusType(String campusType) {
+        this.campusType = campusType;
+    }
+
+    @Column(name = "opening_from")
+    public String getOpeningFrom() {
+        return openingFrom;
+    }
+
+    public void setOpeningFrom(String openingFrom) {
+        this.openingFrom = openingFrom;
+    }
+
+    @Column(name = "opening_to")
+    public String getOpeningTo() {
+        return openingTo;
+    }
+
+    public void setOpeningTo(String openingTo) {
+        this.openingTo = openingTo;
+    }
+
+    @Column(name = "offer_service")
+    public String getOfferService() {
+        return offerService;
+    }
+
+    public void setOfferService(String offerService) {
+        this.offerService = offerService;
+    }
+
+    /**
+     * @return the instituteCategoryType
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "institute_category_type_id")
+    public InstituteCategoryType getInstituteCategoryType() {
+        return instituteCategoryType;
+    }
+
+    /**
+     * @param instituteCategoryType
+     *            the instituteCategoryType to set
+     */
+    public void setInstituteCategoryType(InstituteCategoryType instituteCategoryType) {
+        this.instituteCategoryType = instituteCategoryType;
     }
 
 }

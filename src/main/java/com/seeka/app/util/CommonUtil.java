@@ -20,7 +20,6 @@ import com.seeka.app.bean.CountryDetails;
 import com.seeka.app.bean.CountryImages;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.InstituteCampus;
 import com.seeka.app.bean.Level;
 import com.seeka.app.bean.Scholarship;
 import com.seeka.app.dto.CityDto;
@@ -80,38 +79,38 @@ public class CommonUtil {
         return city;
     }
 
-    public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(Institute institute, InstituteCampus instituteCampus){
+    public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(Institute institute) {
         InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
         instituteRequestDto.setAccreditation(institute.getAccreditation());
-//        instituteRequestDto.setAccreditation(institute.getAddress());
         instituteRequestDto.setAverageCostFrom(institute.getAvgCostOfLiving());
         instituteRequestDto.setCityId(institute.getCity().getId());
         instituteRequestDto.setCountryId(institute.getCountry().getId());
         instituteRequestDto.setDescription(institute.getDescription());
-        instituteRequestDto.setEmail(instituteCampus.getEmail());
+        instituteRequestDto.setEmail(institute.getEmail());
         instituteRequestDto.setInstituteLogoUrl(institute.getInstituteLogoUrl());
-        instituteRequestDto.setInstituteTypeId(institute.getId());
-        if(instituteCampus.getLatitute() != null){
-        instituteRequestDto.setLatitute(String.valueOf(instituteCampus.getLatitute()));
+        instituteRequestDto.setInstituteId(institute.getId());
+        if (institute.getInstituteType() != null) {
+            instituteRequestDto.setInstituteTypeId(institute.getInstituteType().getId());
         }
-        if(instituteCampus.getLongitute() != null){
-        instituteRequestDto.setLongitude(String.valueOf(instituteCampus.getLongitute()));
+        if (institute.getLatitute() != null) {
+            instituteRequestDto.setLatitute(String.valueOf(institute.getLatitute()));
         }
-        System.out.println("The List is: "+instituteCampus.getAddress());
-        instituteRequestDto.setAddress(instituteCampus.getAddress());
-        instituteRequestDto.setPhoneNumber(instituteCampus.getPhoneNumber());
-        instituteRequestDto.setOpeningHour(instituteCampus.getOpeningFrom());
-        instituteRequestDto.setClosingHour(instituteCampus.getOpeningTo());
-        instituteRequestDto.setTotalStudent(instituteCampus.getTotalStudent());
+        if (institute.getLongitude() != null) {
+            instituteRequestDto.setLongitude(String.valueOf(institute.getLongitude()));
+        }
+        System.out.println("The List is: " + institute.getAddress());
+        instituteRequestDto.setAddress(institute.getAddress());
+        instituteRequestDto.setPhoneNumber(institute.getPhoneNumber());
+        instituteRequestDto.setOpeningHour(institute.getOpeningFrom());
+        instituteRequestDto.setClosingHour(institute.getOpeningTo());
+        instituteRequestDto.setTotalStudent(institute.getTotalStudent());
         instituteRequestDto.setWorldRanking(institute.getWorldRanking());
         instituteRequestDto.setInstituteName(institute.getName());
-        instituteRequestDto.setInstituteId(institute.getInstituteType().getId());
+        instituteRequestDto.setCampusType(institute.getCampusType());
         return instituteRequestDto;
     }
-    
-    
-    
-    public static ScholarshipDto convertScholarshipBeanToScholarshipDto(Scholarship scholarship){
+
+    public static ScholarshipDto convertScholarshipBeanToScholarshipDto(Scholarship scholarship) {
         ScholarshipDto scholarshipDto = new ScholarshipDto();
         scholarshipDto.setAddress(scholarship.getAddress());
         scholarshipDto.setScholarshipAmount(scholarship.getAmount());
@@ -141,7 +140,7 @@ public class CommonUtil {
         scholarshipDto.setWebsite(scholarship.getWebsite());
         return scholarshipDto;
     }
-    
+
     public static Scholarship convertScholarshipDTOToBean(ScholarshipDto scholarshipObj, Country country, Institute institute, Level level) {
         Scholarship scholarship = new Scholarship();
         scholarship.setCountry(country);
@@ -175,8 +174,6 @@ public class CommonUtil {
         return scholarship;
     }
 
-    
-    
     public static CourseRequest convertCourseDtoToCourseRequest(Course course) {
         CourseRequest courseRequest = new CourseRequest();
         courseRequest.setCourseId(course.getId());
@@ -185,27 +182,27 @@ public class CommonUtil {
         courseRequest.setDuration(course.getDuration());
         courseRequest.setDurationTime(course.getDurationTime());
         courseRequest.setWorldRanking(course.getWorldRanking());
-        //courseRequest.setCost(course.getCostRange());
+        // courseRequest.setCost(course.getCostRange());
         courseRequest.setName(course.getName());
         courseRequest.setCourseLink(course.getCourseLink());
         courseRequest.setIntake(course.getIntake());
         courseRequest.setLanguage(course.getCourseLang());
-        if(course.getFaculty()!=null){
+        if (course.getFaculty() != null) {
             courseRequest.setFacultyId(course.getFaculty().getId());
         }
         courseRequest.setDomasticFee(course.getDomesticFee());
         courseRequest.setInternationalFee(course.getInternationalFee());
-        if(course.getCountry()!=null){
+        if (course.getCountry() != null) {
             courseRequest.setCountryId(course.getCountry().getId());
         }
         courseRequest.setGrades(course.getGrades());
-        //courseRequest.setPartTime(course.getp);
+        // courseRequest.setPartTime(course.getp);
         courseRequest.setContact(course.getContact());
-        //courseRequest.setOpeningHourFrom(openingHourFrom);
-        //courseRequest.setOpeningHourTo(openingHourTo);
+        // courseRequest.setOpeningHourFrom(openingHourFrom);
+        // courseRequest.setOpeningHourTo(openingHourTo);
         courseRequest.setCampusLocation(course.getCampusLocation());
         courseRequest.setWebsite(course.getWebsite());
-        //courseRequest.setFullTime(course.g);
+        // courseRequest.setFullTime(course.g);
         courseRequest.setCourseCurrency(course.getCurrency());
         return courseRequest;
     }
@@ -233,17 +230,19 @@ public class CommonUtil {
         return currencyResponse;
     }
 
-    public static InstituteCampusDto convertInstituteCampusToInstituteCampusDto(InstituteCampus campus) {
+    public static InstituteCampusDto convertInstituteCampusToInstituteCampusDto(Institute campus) {
         InstituteCampusDto campusDto = new InstituteCampusDto();
         campusDto.setAddress(campus.getAddress());
         campusDto.setEmail(campus.getEmail());
         campusDto.setLatitute(campus.getLatitute());
-        campusDto.setLongitute(campus.getLongitute());
+        campusDto.setLongitute(campus.getLongitude());
         campusDto.setOfferService(campus.getOfferService());
         campusDto.setOpeningFrom(campus.getOpeningFrom());
         campusDto.setOpeningTo(campus.getOpeningTo());
         campusDto.setPhoneNumber(campus.getPhoneNumber());
         campusDto.setTotalStudent(campus.getTotalStudent());
+        campusDto.setId(campus.getId());
+        campusDto.setCampusType(campus.getCampusType());
         return campusDto;
     }
 }

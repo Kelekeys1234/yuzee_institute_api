@@ -43,6 +43,11 @@ public class ScholarshipController {
         return ResponseEntity.accepted().body(scholarshipService.getAllScholarship(pageNumber, pageSize));
     }
 
+    @RequestMapping(value = "/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> autoSearch(@PathVariable final String searchKey, @PathVariable Integer pageNumber, @PathVariable Integer pageSize) throws Exception {
+        return ResponseEntity.accepted().body(scholarshipService.autoSearch(pageNumber, pageSize, searchKey));
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteScholarship(@PathVariable BigInteger id) {
         return ResponseEntity.accepted().body(scholarshipService.deleteScholarship(id));

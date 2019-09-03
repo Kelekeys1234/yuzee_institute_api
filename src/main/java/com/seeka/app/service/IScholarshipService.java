@@ -26,5 +26,7 @@ public interface IScholarshipService {
 
     List<ScholarshipDto> getScholarshipBySearchKey(String searchKey);
 
-    Object scholarshipFilter(ScholarshipFilterDto scholarshipFilterDto);
+    Map<String, Object> scholarshipFilter(ScholarshipFilterDto scholarshipFilterDto);
+
+    Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
 }

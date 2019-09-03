@@ -216,7 +216,7 @@ public class ScholarshipService implements IScholarshipService {
     }
 
     @Override
-    public Object scholarshipFilter(ScholarshipFilterDto scholarshipFilterDto) {
+    public Map<String, Object> scholarshipFilter(ScholarshipFilterDto scholarshipFilterDto) {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Scholarship> scholarshipList = new ArrayList<>();
         int totalCount = 0;
@@ -246,6 +246,37 @@ public class ScholarshipService implements IScholarshipService {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         response.put("data", scholarshipList);
+        response.put("totalCount", totalCount);
+        response.put("pageNumber", paginationUtilDto.getPageNumber());
+        response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+        response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+        response.put("totalPages", paginationUtilDto.getTotalPages());
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<Scholarship> scholarships = null;
+        int totalCount = 0;
+        PaginationUtilDto paginationUtilDto = null;
+        try {
+            totalCount = iScholarshipDAO.findTotalCountOfScholarshipAutoSearch(searchKey);
+            int startIndex = (pageNumber - 1) * pageSize;
+            paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+            scholarships = iScholarshipDAO.autoSearch(startIndex, pageSize, searchKey);
+            if (scholarships != null && !scholarships.isEmpty()) {
+                response.put("message", "Scholarship fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", "Scholarship not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        response.put("data", scholarships);
         response.put("totalCount", totalCount);
         response.put("pageNumber", paginationUtilDto.getPageNumber());
         response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());

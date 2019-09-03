@@ -70,4 +70,6 @@ public interface ICourseService {
     Map<String, Object> update(@Valid CourseRequest courseDto, BigInteger id);
 
 	Map<String, Object> courseFilter(CourseFilterDto courseFilter);
+
+    Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
 }

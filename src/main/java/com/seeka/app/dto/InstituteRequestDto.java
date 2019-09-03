@@ -31,6 +31,8 @@ public class InstituteRequestDto {
     private String address;
     private List<InstituteMedia> instituteMedias;
     private List<InstituteCampusDto> instituteCampus;
+    private BigInteger instituteCategoryTypeId;
+    private String campusType;
 
     /**
      * @return the instituteId
@@ -398,6 +400,34 @@ public class InstituteRequestDto {
 
     public void setInstituteCampus(List<InstituteCampusDto> instituteCampus) {
         this.instituteCampus = instituteCampus;
+    }
+
+    /**
+     * @return the instituteCategoryTypeId
+     */
+    public BigInteger getInstituteCategoryTypeId() {
+        return instituteCategoryTypeId;
+    }
+
+    /**
+     * @param instituteCategoryTypeId the instituteCategoryTypeId to set
+     */
+    public void setInstituteCategoryTypeId(BigInteger instituteCategoryTypeId) {
+        this.instituteCategoryTypeId = instituteCategoryTypeId;
+    }
+
+    /**
+     * @return the campusType
+     */
+    public String getCampusType() {
+        return campusType;
+    }
+
+    /**
+     * @param campusType the campusType to set
+     */
+    public void setCampusType(String campusType) {
+        this.campusType = campusType;
     }
 
 }

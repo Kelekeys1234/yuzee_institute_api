@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.InstituteCampus;
+import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
@@ -14,8 +14,6 @@ public interface IInstituteDAO {
 
     void save(Institute obj);
 
-    void save(InstituteCampus instituteCampusObj);
-    
     void update(Institute obj);
 
     Institute get(BigInteger id);
@@ -42,8 +40,6 @@ public interface IInstituteDAO {
 
     List<com.seeka.app.bean.Service> getAllServices();
 
-    List<InstituteCampus> getInstituteCampusByInstituteId(BigInteger instituteId);
-
     void delete(Institute obj);
 
     List<Institute> instituteFilter(int startIndex, Integer maxSizePerPage, InstituteFilterDto instituteFilterDto);
@@ -51,4 +47,12 @@ public interface IInstituteDAO {
     int findTotalCountFilterInstitute(InstituteFilterDto instituteFilterDto);
 
     List<Institute> getInstituteCampusWithInstitue();
+
+    List<Institute> autoSearch(int startIndex, Integer pageSize, String searchKey);
+
+    int findTotalCountForInstituteAutosearch(String searchKey);
+
+    InstituteCategoryType getInstituteCategoryType(BigInteger instituteCategoryTypeId);
+
+    List<Institute> getSecondayCampus(BigInteger countryId, BigInteger cityId, String name);
 }

@@ -707,4 +707,35 @@ public class CourseService implements ICourseService {
         }
         return response;
     }
+
+    @Override
+    public Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey) {
+        Map<String, Object> response = new HashMap<>();
+        List<CourseRequest> courses = new ArrayList<>();
+        int totalCount = 0;
+        PaginationUtilDto paginationUtilDto = null;
+        try {
+            totalCount = iCourseDAO.autoSearchTotalCount(searchKey);
+            int startIndex = (pageNumber - 1) * pageSize;
+            paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+            courses = iCourseDAO.autoSearch(startIndex, pageSize, searchKey);
+            if (courses != null && !courses.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
+                response.put("courses", courses);
+                response.put("totalCount", totalCount);
+                response.put("pageNumber", paginationUtilDto.getPageNumber());
+                response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+                response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+                response.put("totalPages", paginationUtilDto.getTotalPages());
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.COURSE_GET_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
 }
