@@ -67,7 +67,7 @@ public class Institute implements Serializable {
     private String lastUpdated;
     private String openingFrom;
     private String openingTo;
-    private String offerService;
+    private String campusName;
     private InstituteCategoryType instituteCategoryType;
 
     @Transient
@@ -641,13 +641,13 @@ public class Institute implements Serializable {
         this.openingTo = openingTo;
     }
 
-    @Column(name = "offer_service")
-    public String getOfferService() {
-        return offerService;
+    @Column(name = "campus_name")
+    public String getCampusName() {
+        return campusName;
     }
 
-    public void setOfferService(String offerService) {
-        this.offerService = offerService;
+    public void setCampusName(String campusName) {
+        this.campusName = campusName;
     }
 
     /**

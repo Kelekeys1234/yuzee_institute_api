@@ -236,7 +236,6 @@ public class CommonUtil {
         campusDto.setEmail(campus.getEmail());
         campusDto.setLatitute(campus.getLatitute());
         campusDto.setLongitute(campus.getLongitude());
-        campusDto.setOfferService(campus.getOfferService());
         campusDto.setOpeningFrom(campus.getOpeningFrom());
         campusDto.setOpeningTo(campus.getOpeningTo());
         campusDto.setPhoneNumber(campus.getPhoneNumber());

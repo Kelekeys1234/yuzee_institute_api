@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
+import com.seeka.app.bean.InstituteService;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
@@ -55,4 +56,8 @@ public interface IInstituteDAO {
     InstituteCategoryType getInstituteCategoryType(BigInteger instituteCategoryTypeId);
 
     List<Institute> getSecondayCampus(BigInteger countryId, BigInteger cityId, String name);
+
+    void saveInstituteserviceDetails(InstituteService instituteServiceDetails);
+
+    void deleteInstituteService(BigInteger id);
 }

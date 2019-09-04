@@ -19,6 +19,7 @@ import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
+import com.seeka.app.bean.InstituteService;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
 import com.seeka.app.dto.CourseSearchDto;
@@ -493,5 +494,19 @@ public class InstituteDAO implements IInstituteDAO {
         crit.add(Restrictions.eq("name", name));
         crit.add(Restrictions.eq("campusType", "SECONDARY"));
         return crit.list();
+    }
+
+    @Override
+    public void saveInstituteserviceDetails(InstituteService instituteServiceDetails) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(instituteServiceDetails);
+    }
+
+    @Override
+    public void deleteInstituteService(BigInteger id) {
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery("delete from InstituteService where institute_id =" + id);
+        q.executeUpdate();
+
     }
 }

@@ -23,6 +23,7 @@ import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IInstituteTypeDAO;
 import com.seeka.app.dao.IInstituteVideoDao;
+import com.seeka.app.dao.ServiceDetailsDAO;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteCampusDto;
 import com.seeka.app.dto.InstituteDetailsGetRequest;
@@ -57,6 +58,9 @@ public class InstituteService implements IInstituteService {
 
     @Autowired
     private IInstituteVideoDao instituteVideoDao;
+
+    @Autowired
+    private ServiceDetailsDAO serviceDetailsDAO;
 
     @Override
     public void save(Institute institute) {
@@ -189,10 +193,28 @@ public class InstituteService implements IInstituteService {
         institute.setTotalStudent(campusDto.getTotalStudent());
         institute.setOpeningFrom(campusDto.getOpeningFrom());
         institute.setOpeningTo(campusDto.getOpeningTo());
-        institute.setOfferService(campusDto.getOfferService());
+        institute.setCampusName(campusDto.getCampusName());
         dao.save(institute);
-
+        if (campusDto.getOfferService() != null && !campusDto.getOfferService().isEmpty()) {
+            saveInstituteService(institute, campusDto.getOfferService());
+        }
         return institute;
+    }
+
+    private void saveInstituteService(Institute institute, List<BigInteger> offerService) {
+        dao.deleteInstituteService(institute.getId());
+        for (BigInteger id : offerService) {
+            com.seeka.app.bean.Service service = serviceDetailsDAO.get(id);
+            com.seeka.app.bean.InstituteService instituteServiceDetails = new com.seeka.app.bean.InstituteService();
+            instituteServiceDetails.setInstitute(institute);
+            instituteServiceDetails.setService(service);
+            instituteServiceDetails.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+            instituteServiceDetails.setIsActive(true);
+            instituteServiceDetails.setCreatedBy("AUTO");
+            instituteServiceDetails.setUpdatedBy("AUTO");
+            instituteServiceDetails.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+            dao.saveInstituteserviceDetails(instituteServiceDetails);
+        }
     }
 
     private InstituteCategoryType getInstituteCategoryType(BigInteger instituteCategoryTypeId) {
@@ -300,6 +322,7 @@ public class InstituteService implements IInstituteService {
                     List<Institute> institutes = dao.getSecondayCampus(institute.getCountry().getId(), institute.getCity().getId(), institute.getName());
                     for (Institute campus : institutes) {
                         InstituteCampusDto campusDto = CommonUtil.convertInstituteCampusToInstituteCampusDto(campus);
+                        campusDto.setOfferService(getOfferServices(campusDto.getId()));
                         instituteCampusDtoList.add(campusDto);
                     }
                 }
@@ -321,6 +344,10 @@ public class InstituteService implements IInstituteService {
         }
         response.put("data", instituteRequestDto);
         return response;
+    }
+
+    private List<BigInteger> getOfferServices(BigInteger id) {
+        return serviceDetailsDAO.getServices(id);
     }
 
     @Override
@@ -433,9 +460,11 @@ public class InstituteService implements IInstituteService {
         institute.setTotalStudent(campusDto.getTotalStudent());
         institute.setOpeningFrom(campusDto.getOpeningFrom());
         institute.setOpeningTo(campusDto.getOpeningTo());
-        institute.setOfferService(campusDto.getOfferService());
-
+        institute.setCampusName(campusDto.getCampusName());
         dao.update(institute);
+        if (campusDto.getOfferService() != null && !campusDto.getOfferService().isEmpty()) {
+            saveInstituteService(institute, campusDto.getOfferService());
+        }
         return institute;
     }
 
