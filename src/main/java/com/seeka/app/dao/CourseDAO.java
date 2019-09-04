@@ -1815,7 +1815,9 @@ public class CourseDAO implements ICourseDAO {
         for (Object[] row : rows) {
             Course obj = new Course();
             obj.setId(new BigInteger(row[0].toString()));
-            obj.setName(row[1].toString());
+            if (row[1] != null) {
+                obj.setName(row[1].toString());
+            }
             courses.add(obj);
         }
         return courses;
