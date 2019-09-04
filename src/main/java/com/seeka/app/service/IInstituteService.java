@@ -15,37 +15,39 @@ import com.seeka.app.dto.InstituteSearchResultDto;
 
 public interface IInstituteService {
 
-    void save(Institute obj);
+	void save(Institute obj);
 
-    void update(Institute obj);
+	void update(Institute obj);
 
-    Institute get(BigInteger id);
+	Institute get(BigInteger id);
 
-    List<Institute> getAllInstituteByCountry(BigInteger countryId);
+	List<Institute> getAllInstituteByCountry(BigInteger countryId);
 
-    List<Institute> getAll();
+	List<Institute> getAll();
 
-    List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
+	List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
 
-    List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj);
+	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj);
 
-    InstituteResponseDto getInstituteByID(BigInteger instituteId);
+	InstituteResponseDto getInstituteByID(BigInteger instituteId);
 
-    List<InstituteResponseDto> getInstitudeByCityId(BigInteger cityId);
+	List<InstituteResponseDto> getInstitudeByCityId(BigInteger cityId);
 
-    List<InstituteResponseDto> getInstituteByListOfCityId(String cityId);
+	List<InstituteResponseDto> getInstituteByListOfCityId(String cityId);
 
-    Map<String, Object> save(@Valid InstituteRequestDto institute);
+	Map<String, Object> save(@Valid InstituteRequestDto institute);
 
-    Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize);
+	Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize);
 
-    Map<String, Object> getById(@Valid BigInteger id);
+	Map<String, Object> getById(@Valid BigInteger id);
 
-    Map<String, Object> searchInstitute(@Valid String searchText);
+	Map<String, Object> searchInstitute(@Valid String searchText);
 
-    Map<String, Object> update(InstituteRequestDto institute, @Valid BigInteger id);
+	Map<String, Object> update(InstituteRequestDto institute, @Valid BigInteger id);
 
-    Map<String, Object> instituteFilter(InstituteFilterDto instituteFilterDto);
+	Map<String, Object> instituteFilter(InstituteFilterDto instituteFilterDto);
 
-    Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
+	Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
+
+	List<Institute> getAllInstitute();
 }
