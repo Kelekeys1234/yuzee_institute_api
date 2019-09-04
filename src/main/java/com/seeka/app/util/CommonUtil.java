@@ -22,6 +22,7 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Level;
 import com.seeka.app.bean.Scholarship;
+import com.seeka.app.bean.Todo;
 import com.seeka.app.dto.CityDto;
 import com.seeka.app.dto.CountryDetailsDto;
 import com.seeka.app.dto.CountryImageDto;
@@ -30,6 +31,7 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.InstituteCampusDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.ScholarshipDto;
+import com.seeka.app.dto.TodoDto;
 
 public class CommonUtil {
 
@@ -243,5 +245,31 @@ public class CommonUtil {
         campusDto.setId(campus.getId());
         campusDto.setCampusType(campus.getCampusType());
         return campusDto;
+    }
+
+    public static Todo convertTodoDtoIntoTodo(TodoDto todoDto) {
+        Todo todo = new Todo();
+        todo.setDescription(todoDto.getDescription());
+        todo.setTitle(todoDto.getTitle());
+        todo.setUserId(todoDto.getUserId());
+        todo.setStatus(todoDto.getStatus());
+        todo.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+        todo.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+        todo.setFolderId(todoDto.getFolderId());
+        todo.setCreatedBy(todoDto.getCreatedBy());
+        todo.setUpdatedBy(todoDto.getUpdatedBy());
+        return todo;
+    }
+
+    public static TodoDto convertTodoIntoTodoDto(Todo todo) {
+        TodoDto todoDto = new TodoDto();
+        todoDto.setDescription(todo.getDescription());
+        todoDto.setTitle(todo.getTitle());
+        todoDto.setUserId(todo.getUserId());
+        todoDto.setStatus(todo.getStatus());
+        todoDto.setFolderId(todo.getFolderId());
+        todoDto.setCreatedBy(todo.getCreatedBy());
+        todoDto.setUpdatedBy(todo.getUpdatedBy());
+        return todoDto;
     }
 }
