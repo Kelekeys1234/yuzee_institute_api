@@ -35,7 +35,7 @@ public interface IInstituteService {
 
 	List<InstituteResponseDto> getInstituteByListOfCityId(String cityId);
 
-	Map<String, Object> save(@Valid InstituteRequestDto institute);
+	Map<String, Object> save(@Valid List<InstituteRequestDto> institute);
 
 	Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize);
 
@@ -43,7 +43,7 @@ public interface IInstituteService {
 
 	Map<String, Object> searchInstitute(@Valid String searchText);
 
-	Map<String, Object> update(InstituteRequestDto institute, @Valid BigInteger id);
+	Map<String, Object> update(List<InstituteRequestDto> institute, @Valid BigInteger id);
 
 	Map<String, Object> instituteFilter(InstituteFilterDto instituteFilterDto);
 
