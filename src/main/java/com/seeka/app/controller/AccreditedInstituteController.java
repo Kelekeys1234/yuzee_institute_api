@@ -27,57 +27,52 @@ import com.seeka.app.service.IAccreditedInstituteService;
 @RequestMapping("/accredited/institute")
 public class AccreditedInstituteController {
 
-	@Autowired
-	private IAccreditedInstituteService iAccreditedInstitute;
+    @Autowired
+    private IAccreditedInstituteService iAccreditedInstitute;
 
-	@PostMapping
-	public ResponseEntity<?> addAccreditedInstitute(@RequestParam(name = "file", required = false) final MultipartFile file,
-			@ModelAttribute final AccreditedInstituteRequestDto accreditedInstituteRequestDto) throws ValidationException {
-		AccreditedInstitute accreditedInstitute2 = iAccreditedInstitute.addAccreditedInstitute(accreditedInstituteRequestDto);
-		if (file != null) {
-			iAccreditedInstitute.addAccreditedLogo(file, accreditedInstitute2);
-		}
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstitute2)
-				.setMessage("Created accredited institute successfully").create();
-	}
+    @PostMapping
+    public ResponseEntity<?> addAccreditedInstitute(@RequestParam(name = "file", required = false) final MultipartFile file,
+                    @ModelAttribute final AccreditedInstituteRequestDto accreditedInstituteRequestDto) throws ValidationException {
+        AccreditedInstitute accreditedInstitute2 = iAccreditedInstitute.addAccreditedInstitute(accreditedInstituteRequestDto);
+        if (file != null) {
+            iAccreditedInstitute.addAccreditedLogo(file, accreditedInstitute2);
+        }
+        return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstitute2).setMessage("Created accredited institute successfully").create();
+    }
 
-	@PutMapping("/{accreditedInstituteId}")
-	public ResponseEntity<?> updateAccreditedInstitute(@PathVariable final BigInteger accreditedInstituteId,
-			@RequestParam(name = "file", required = false) final MultipartFile file,
-			@ModelAttribute final AccreditedInstituteRequestDto accreditedInstituteRequestDto) throws ValidationException {
-		AccreditedInstitute resultAccreditedInstitute = iAccreditedInstitute.updateAccreditedInstitute(accreditedInstituteId, accreditedInstituteRequestDto);
-		if (file != null) {
-			iAccreditedInstitute.addAccreditedLogo(file, resultAccreditedInstitute);
-		}
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(resultAccreditedInstitute)
-				.setMessage("Updated accredited institute successfully").create();
-	}
+    @PutMapping("/{accreditedInstituteId}")
+    public ResponseEntity<?> updateAccreditedInstitute(@PathVariable final BigInteger accreditedInstituteId,
+                    @RequestParam(name = "file", required = false) final MultipartFile file, @ModelAttribute final AccreditedInstituteRequestDto accreditedInstituteRequestDto)
+                    throws ValidationException {
+        AccreditedInstitute resultAccreditedInstitute = iAccreditedInstitute.updateAccreditedInstitute(accreditedInstituteId, accreditedInstituteRequestDto);
+        if (file != null) {
+            iAccreditedInstitute.addAccreditedLogo(file, resultAccreditedInstitute);
+        }
+        return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(resultAccreditedInstitute).setMessage("Updated accredited institute successfully").create();
+    }
 
-	@DeleteMapping("/{accreditedInstituteId}")
-	public ResponseEntity<?> deleteAccreditedInstitute(@PathVariable final BigInteger accreditedInstituteId) throws ValidationException {
-		iAccreditedInstitute.deleteAccreditedInstitute(accreditedInstituteId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted accredited Institute successfully").create();
-	}
+    @DeleteMapping("/{accreditedInstituteId}")
+    public ResponseEntity<?> deleteAccreditedInstitute(@PathVariable final BigInteger accreditedInstituteId) throws ValidationException {
+        iAccreditedInstitute.deleteAccreditedInstitute(accreditedInstituteId);
+        return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted accredited Institute successfully").create();
+    }
 
-	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getAccreditedInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) {
-		List<AccreditedInstitute> accreditedInstituteList = iAccreditedInstitute.getAccreditedInstituteList(pageNumber, pageSize);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstituteList)
-				.setMessage("Get accredited Institute list successfully").create();
-	}
+    @GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
+    public ResponseEntity<?> getAccreditedInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) {
+        List<AccreditedInstitute> accreditedInstituteList = iAccreditedInstitute.getAccreditedInstituteList(pageNumber, pageSize);
+        return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstituteList).setMessage("Get accredited Institute list successfully").create();
+    }
 
-	@GetMapping("/{accreditedInstituteId}")
-	public ResponseEntity<?> getAccreditedInstituteDetail(@PathVariable final BigInteger accreditedInstituteId) {
-		AccreditedInstitute accreditedInstitute = iAccreditedInstitute.getAccreditedInstituteDetail(accreditedInstituteId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstitute).setMessage("Get accredited Institute successfully")
-				.create();
-	}
-	
-	@GetMapping("/getall")
-	public ResponseEntity<?> getAllAccreditedInstituteDetails() {
+    @GetMapping("/{accreditedInstituteId}")
+    public ResponseEntity<?> getAccreditedInstituteDetail(@PathVariable final BigInteger accreditedInstituteId) {
+        AccreditedInstitute accreditedInstitute = iAccreditedInstitute.getAccreditedInstituteDetail(accreditedInstituteId);
+        return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstitute).setMessage("Get accredited Institute successfully").create();
+    }
+
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAllAccreditedInstituteDetails() {
         List<AccreditedInstituteRequestDto> accreditedInstitute = iAccreditedInstitute.getAllAccreditedInstitutes();
-        return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstitute).setMessage("Get accredited Institute successfully")
-                .create();
+        return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstitute).setMessage("Get accredited Institute successfully").create();
     }
 
 }
