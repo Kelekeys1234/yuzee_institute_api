@@ -69,4 +69,6 @@ public interface IInstituteDAO {
     void deleteInstituteIntakeById(BigInteger id);
 
     List<BigInteger> getIntakesById(@Valid BigInteger id);
+    
+    List<InstituteCategoryType> getAllCategories();
 }

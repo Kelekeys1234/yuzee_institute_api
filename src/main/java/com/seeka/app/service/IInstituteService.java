@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
@@ -50,4 +51,6 @@ public interface IInstituteService {
 	Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
 
 	List<Institute> getAllInstitute();
+	
+	List<InstituteCategoryType> getAllCategories();
 }

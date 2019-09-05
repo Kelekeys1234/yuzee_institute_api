@@ -539,4 +539,11 @@ public class InstituteDAO implements IInstituteDAO {
         }
         return list;
     }
+
+    @Override
+    public List<InstituteCategoryType> getAllCategories() {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(InstituteCategoryType.class);
+        return crit.list();
+    }
 }

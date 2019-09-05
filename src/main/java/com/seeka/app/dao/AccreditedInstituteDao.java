@@ -56,4 +56,11 @@ public class AccreditedInstituteDao implements IAccreditedInstituteDao {
 		return (AccreditedInstitute) crit.uniqueResult();
 	}
 
+    @Override
+    public List<AccreditedInstitute> getAllAccreditedInstitutes() {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(AccreditedInstitute.class);
+        return crit.list();
+    }
+
 }

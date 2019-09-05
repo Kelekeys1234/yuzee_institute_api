@@ -23,5 +23,7 @@ public interface IAccreditedInstituteService {
 			throws ValidationException;
 
 	void deleteAccreditedInstitute(BigInteger accreditedInstituteId) throws ValidationException;
+	
+	List<AccreditedInstituteRequestDto> getAllAccreditedInstitutes();
 
 }

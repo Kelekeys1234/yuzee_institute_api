@@ -111,4 +111,17 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 		iAccreditedInstituteDao.update(existingAccreditedInstitute);
 	}
 
+    @Override
+    public List<AccreditedInstituteRequestDto> getAllAccreditedInstitutes() {
+       List<AccreditedInstituteRequestDto> accreditedInstituteRequestDto = new ArrayList<>();
+       List<AccreditedInstitute> accreditedInstitutes = iAccreditedInstituteDao.getAllAccreditedInstitutes();
+       for(AccreditedInstitute accreditedInstitute:accreditedInstitutes){
+           AccreditedInstituteRequestDto instituteRequestDto = new AccreditedInstituteRequestDto();
+           BeanUtils.copyProperties(accreditedInstitute, instituteRequestDto); 
+           accreditedInstituteRequestDto.add(instituteRequestDto);
+       }
+        return accreditedInstituteRequestDto;
+    }
+    
+
 }

@@ -16,5 +16,7 @@ public interface IAccreditedInstituteDao {
 	AccreditedInstitute getAccreditedInstituteDetail(BigInteger instituteId);
 
 	AccreditedInstitute getAccreditedInstituteDetailBasedOnName(String name, BigInteger instituteId);
+	
+	List<AccreditedInstitute> getAllAccreditedInstitutes();
 
 }

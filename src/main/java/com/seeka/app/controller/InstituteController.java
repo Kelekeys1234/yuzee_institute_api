@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
 import com.seeka.app.bean.UserInfo;
@@ -519,6 +520,29 @@ public class InstituteController {
     @RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> instituteFilter(@RequestBody final InstituteFilterDto instituteFilterDto) throws Exception {
         return ResponseEntity.ok().body(instituteService.instituteFilter(instituteFilterDto));
+    }
+
+    @RequestMapping(value = "/allCategoryType", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> getAllCategoryType() throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        try {
+            List<InstituteCategoryType> categoryTypes = instituteService.getAllCategories();
+            if (categoryTypes != null && !categoryTypes.isEmpty()) {
+                response.put("message", "CategoryType fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+                response.put("data", categoryTypes);
+            } else {
+                response.put("message", "Error CategoryType fetched");
+                response.put("status", HttpStatus.BAD_REQUEST.value());
+                response.put("data", "Error");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            response.put("message", "Error CategoryType fetched");
+            response.put("status", HttpStatus.BAD_REQUEST.value());
+            response.put("data", "Error");
+        }
+        return ResponseEntity.ok().body(response);
     }
 
 }

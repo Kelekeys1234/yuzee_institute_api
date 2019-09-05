@@ -529,4 +529,9 @@ public class InstituteService implements IInstituteService {
     public List<Institute> getAllInstitute() {
         return dao.getAll();
     }
+
+    @Override
+    public List<InstituteCategoryType> getAllCategories() {
+        return dao.getAllCategories();
+    }
 }
