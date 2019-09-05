@@ -7,17 +7,17 @@ public class PaginationUtil {
 
 	/**
 	 * Use to calculate pagination parameters
-	 * 
+	 *
 	 * @param startIndex
 	 * @param pageSize
 	 * @param totalCount
 	 * @return
 	 */
-	public static PaginationUtilDto calculatePagination(int startIndex, int pageSize, int totalCount) {
+	public static PaginationUtilDto calculatePagination(final int startIndex, final int pageSize, final int totalCount) {
 		PaginationUtilDto paginationUtilDto = new PaginationUtilDto();
 		boolean hasPreviousPage = false;
 		boolean hasNextPage = false;
-		int totalPages = (totalCount / pageSize);
+		int totalPages = totalCount / pageSize;
 		if (totalCount % pageSize > 0) {
 			totalPages += 1;
 		}
@@ -35,5 +35,9 @@ public class PaginationUtil {
 		paginationUtilDto.setHasNextPage(hasNextPage);
 		return paginationUtilDto;
 
+	}
+
+	public static int getStartIndex(final int pageNumber, final int pageSize) {
+		return (pageNumber - 1) * pageSize;
 	}
 }
