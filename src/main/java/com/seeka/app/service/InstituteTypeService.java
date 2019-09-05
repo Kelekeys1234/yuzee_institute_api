@@ -61,4 +61,9 @@ public class InstituteTypeService implements IInstituteTypeService {
         }
         return response;
     }
+
+    @Override
+    public List<InstituteType> getAllInstituteType() {
+        return iInstituteTypeDAO.getAll();
+    }
 }

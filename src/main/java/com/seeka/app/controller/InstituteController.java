@@ -522,7 +522,7 @@ public class InstituteController {
         return ResponseEntity.ok().body(instituteService.instituteFilter(instituteFilterDto));
     }
 
-    @RequestMapping(value = "/allCategoryType", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "allCategoryType", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getAllCategoryType() throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         try {
@@ -532,8 +532,8 @@ public class InstituteController {
                 response.put("status", HttpStatus.OK.value());
                 response.put("data", categoryTypes);
             } else {
-                response.put("message", "Error CategoryType fetched");
-                response.put("status", HttpStatus.BAD_REQUEST.value());
+                response.put("message", "CategoryType not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
                 response.put("data", "Error");
             }
         } catch (Exception ex) {
@@ -541,6 +541,27 @@ public class InstituteController {
             response.put("message", "Error CategoryType fetched");
             response.put("status", HttpStatus.BAD_REQUEST.value());
             response.put("data", "Error");
+        }
+        return ResponseEntity.ok().body(response);
+    }
+
+    @RequestMapping(value = "type", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getAllInstituteType() throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        try {
+            List<InstituteType> instituteTypes = instituteTypeService.getAllInstituteType();
+            if (instituteTypes != null && !instituteTypes.isEmpty()) {
+                response.put("message", "Institute type fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+                response.put("data", instituteTypes);
+            } else {
+                response.put("message", "Institute type not vound");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            response.put("message", "Error CategoryType fetched");
+            response.put("status", HttpStatus.BAD_REQUEST.value());
         }
         return ResponseEntity.ok().body(response);
     }

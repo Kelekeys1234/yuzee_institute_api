@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 
 import com.seeka.app.bean.InstituteType;
@@ -14,4 +15,6 @@ public interface IInstituteTypeService {
     InstituteType get(BigInteger id);
 
     Map<String, Object> getAllIntake();
+
+    List<InstituteType> getAllInstituteType();
 }

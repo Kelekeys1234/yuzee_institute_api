@@ -15,4 +15,6 @@ public interface IInstituteTypeDAO {
     InstituteType get(BigInteger id);
 
     List<Intake> getAllIntake();
+
+    List<InstituteType> getAll();
 }
