@@ -83,24 +83,21 @@ public class CommonUtil {
 
     public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(Institute institute) {
         InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
-        instituteRequestDto.setAccreditation(institute.getAccreditation());
         instituteRequestDto.setAverageCostFrom(institute.getAvgCostOfLiving());
         instituteRequestDto.setCityId(institute.getCity().getId());
         instituteRequestDto.setCountryId(institute.getCountry().getId());
         instituteRequestDto.setDescription(institute.getDescription());
-        instituteRequestDto.setEmail(institute.getEmail());
         instituteRequestDto.setInstituteLogoUrl(institute.getInstituteLogoUrl());
         instituteRequestDto.setInstituteId(institute.getId());
         if (institute.getInstituteType() != null) {
             instituteRequestDto.setInstituteTypeId(institute.getInstituteType().getId());
         }
         if (institute.getLatitute() != null) {
-            instituteRequestDto.setLatitute(String.valueOf(institute.getLatitute()));
+            instituteRequestDto.setLatitute((institute.getLatitute()));
         }
         if (institute.getLongitude() != null) {
-            instituteRequestDto.setLongitude(String.valueOf(institute.getLongitude()));
+            instituteRequestDto.setLongitude((institute.getLongitude()));
         }
-        System.out.println("The List is: " + institute.getAddress());
         instituteRequestDto.setAddress(institute.getAddress());
         instituteRequestDto.setPhoneNumber(institute.getPhoneNumber());
         instituteRequestDto.setOpeningHour(institute.getOpeningFrom());
@@ -109,6 +106,8 @@ public class CommonUtil {
         instituteRequestDto.setWorldRanking(institute.getWorldRanking());
         instituteRequestDto.setInstituteName(institute.getName());
         instituteRequestDto.setCampusType(institute.getCampusType());
+        instituteRequestDto.setCampusName(institute.getCampusName());
+        instituteRequestDto.setEmail(institute.getEmail());
         return instituteRequestDto;
     }
 

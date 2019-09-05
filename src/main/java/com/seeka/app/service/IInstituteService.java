@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
@@ -35,7 +36,7 @@ public interface IInstituteService {
 
 	List<InstituteResponseDto> getInstituteByListOfCityId(String cityId);
 
-	Map<String, Object> save(@Valid InstituteRequestDto institute);
+	Map<String, Object> save(@Valid List<InstituteRequestDto> institute);
 
 	Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize);
 
@@ -43,11 +44,13 @@ public interface IInstituteService {
 
 	Map<String, Object> searchInstitute(@Valid String searchText);
 
-	Map<String, Object> update(InstituteRequestDto institute, @Valid BigInteger id);
+	Map<String, Object> update(List<InstituteRequestDto> institute, @Valid BigInteger id);
 
 	Map<String, Object> instituteFilter(InstituteFilterDto instituteFilterDto);
 
 	Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
 
 	List<Institute> getAllInstitute();
+	
+	List<InstituteCategoryType> getAllCategories();
 }

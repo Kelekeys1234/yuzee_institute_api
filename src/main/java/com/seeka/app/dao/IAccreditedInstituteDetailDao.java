@@ -3,6 +3,8 @@ package com.seeka.app.dao;
 import java.math.BigInteger;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.seeka.app.bean.AccreditedInstituteDetail;
 
 public interface IAccreditedInstituteDetailDao {
@@ -14,5 +16,9 @@ public interface IAccreditedInstituteDetailDao {
 	List<AccreditedInstituteDetail> getAccreditedInstituteDetail(BigInteger accreditedInstituteId);
 
 	AccreditedInstituteDetail getAccreditedInstituteDetailbasedOnParams(BigInteger accreditedInstituteId, BigInteger entityId, String entityType);
+	
+	void deleteAccreditedInstitueDetailByEntityId(BigInteger entityId);
+
+    List<BigInteger> getAccreditation(@Valid BigInteger id);
 
 }

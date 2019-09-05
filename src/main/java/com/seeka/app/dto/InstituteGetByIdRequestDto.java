@@ -3,40 +3,36 @@ package com.seeka.app.dto;
 import java.math.BigInteger;
 import java.util.List;
 
-public class InstituteRequestDto {
+public class InstituteGetByIdRequestDto {
 
     private BigInteger instituteId;
     private String instituteName;
     private String description;
     private BigInteger cityId;
     private BigInteger countryId;
+
+    private String latitute;
+    private String longitude;
+    private Integer totalStudent;
     private Integer worldRanking;
+    private String accreditation;
     private String instituteLogoUrl;
     private String averageCostFrom;
     private String averageCostTo;
     private BigInteger instituteTypeId;
+    private String openingHour;
+    private String closingHour;
     private String enrolment;
     private String tuitionFessPaymentPlan;
     private String scholarshipFinancingAssistance;
-    private String website;
-    private List<InstituteMedia> instituteMedias;
-    private BigInteger instituteCategoryTypeId;
-    private String campusType;
-
-    private String campusName;
-    private Double latitute;
-    private Double longitude;
-    private Integer totalStudent;
-    private String openingHour;
-    private String closingHour;
     private String email;
     private String phoneNumber;
+    private String website;
     private String address;
-    private List<BigInteger> offerService;
-    private List<BigInteger> accreditation;
-    private List<BigInteger> intakes;
-    private String createdBy;
-    private String updatedBy;
+    private List<InstituteMedia> instituteMedias;
+    private List<InstituteCampusDto> instituteCampus;
+    private BigInteger instituteCategoryTypeId;
+    private String campusType;
 
     /**
      * @return the instituteId
@@ -114,6 +110,51 @@ public class InstituteRequestDto {
     }
 
     /**
+     * @return the latitute
+     */
+    public String getLatitute() {
+        return latitute;
+    }
+
+    /**
+     * @param latitute
+     *            the latitute to set
+     */
+    public void setLatitute(String latitute) {
+        this.latitute = latitute;
+    }
+
+    /**
+     * @return the longitude
+     */
+    public String getLongitude() {
+        return longitude;
+    }
+
+    /**
+     * @param longitude
+     *            the longitude to set
+     */
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    /**
+     * @return the totalStudent
+     */
+    public Integer getTotalStudent() {
+        return totalStudent;
+    }
+
+    /**
+     * @param totalStudent
+     *            the totalStudent to set
+     */
+    public void setTotalStudent(Integer totalStudent) {
+        this.totalStudent = totalStudent;
+    }
+
+    /**
      * @return the worldRanking
      */
     public Integer getWorldRanking() {
@@ -126,6 +167,21 @@ public class InstituteRequestDto {
      */
     public void setWorldRanking(Integer worldRanking) {
         this.worldRanking = worldRanking;
+    }
+
+    /**
+     * @return the accreditation
+     */
+    public String getAccreditation() {
+        return accreditation;
+    }
+
+    /**
+     * @param accreditation
+     *            the accreditation to set
+     */
+    public void setAccreditation(String accreditation) {
+        this.accreditation = accreditation;
     }
 
     /**
@@ -189,6 +245,36 @@ public class InstituteRequestDto {
     }
 
     /**
+     * @return the openingHour
+     */
+    public String getOpeningHour() {
+        return openingHour;
+    }
+
+    /**
+     * @param openingHour
+     *            the openingHour to set
+     */
+    public void setOpeningHour(String openingHour) {
+        this.openingHour = openingHour;
+    }
+
+    /**
+     * @return the closingHour
+     */
+    public String getClosingHour() {
+        return closingHour;
+    }
+
+    /**
+     * @param closingHour
+     *            the closingHour to set
+     */
+    public void setClosingHour(String closingHour) {
+        this.closingHour = closingHour;
+    }
+
+    /**
      * @return the enrolment
      */
     public String getEnrolment() {
@@ -234,156 +320,6 @@ public class InstituteRequestDto {
     }
 
     /**
-     * @return the website
-     */
-    public String getWebsite() {
-        return website;
-    }
-
-    /**
-     * @param website
-     *            the website to set
-     */
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    /**
-     * @return the instituteMedias
-     */
-    public List<InstituteMedia> getInstituteMedias() {
-        return instituteMedias;
-    }
-
-    /**
-     * @param instituteMedias
-     *            the instituteMedias to set
-     */
-    public void setInstituteMedias(List<InstituteMedia> instituteMedias) {
-        this.instituteMedias = instituteMedias;
-    }
-
-    /**
-     * @return the instituteCategoryTypeId
-     */
-    public BigInteger getInstituteCategoryTypeId() {
-        return instituteCategoryTypeId;
-    }
-
-    /**
-     * @param instituteCategoryTypeId
-     *            the instituteCategoryTypeId to set
-     */
-    public void setInstituteCategoryTypeId(BigInteger instituteCategoryTypeId) {
-        this.instituteCategoryTypeId = instituteCategoryTypeId;
-    }
-
-    /**
-     * @return the campusType
-     */
-    public String getCampusType() {
-        return campusType;
-    }
-
-    /**
-     * @param campusType
-     *            the campusType to set
-     */
-    public void setCampusType(String campusType) {
-        this.campusType = campusType;
-    }
-
-    /**
-     * @return the campusName
-     */
-    public String getCampusName() {
-        return campusName;
-    }
-
-    /**
-     * @param campusName
-     *            the campusName to set
-     */
-    public void setCampusName(String campusName) {
-        this.campusName = campusName;
-    }
-
-    /**
-     * @return the latitute
-     */
-    public Double getLatitute() {
-        return latitute;
-    }
-
-    /**
-     * @param latitute
-     *            the latitute to set
-     */
-    public void setLatitute(Double latitute) {
-        this.latitute = latitute;
-    }
-
-    /**
-     * @return the longitude
-     */
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    /**
-     * @param longitude
-     *            the longitude to set
-     */
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    /**
-     * @return the totalStudent
-     */
-    public Integer getTotalStudent() {
-        return totalStudent;
-    }
-
-    /**
-     * @param totalStudent
-     *            the totalStudent to set
-     */
-    public void setTotalStudent(Integer totalStudent) {
-        this.totalStudent = totalStudent;
-    }
-
-    /**
-     * @return the openingHour
-     */
-    public String getOpeningHour() {
-        return openingHour;
-    }
-
-    /**
-     * @param openingHour
-     *            the openingHour to set
-     */
-    public void setOpeningHour(String openingHour) {
-        this.openingHour = openingHour;
-    }
-
-    /**
-     * @return the closingHour
-     */
-    public String getClosingHour() {
-        return closingHour;
-    }
-
-    /**
-     * @param closingHour
-     *            the closingHour to set
-     */
-    public void setClosingHour(String closingHour) {
-        this.closingHour = closingHour;
-    }
-
-    /**
      * @return the email
      */
     public String getEmail() {
@@ -414,6 +350,21 @@ public class InstituteRequestDto {
     }
 
     /**
+     * @return the website
+     */
+    public String getWebsite() {
+        return website;
+    }
+
+    /**
+     * @param website
+     *            the website to set
+     */
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    /**
      * @return the address
      */
     public String getAddress() {
@@ -429,75 +380,54 @@ public class InstituteRequestDto {
     }
 
     /**
-     * @return the offerService
+     * @return the instituteMedias
      */
-    public List<BigInteger> getOfferService() {
-        return offerService;
+    public List<InstituteMedia> getInstituteMedias() {
+        return instituteMedias;
     }
 
     /**
-     * @param offerService
-     *            the offerService to set
+     * @param instituteMedias
+     *            the instituteMedias to set
      */
-    public void setOfferService(List<BigInteger> offerService) {
-        this.offerService = offerService;
+    public void setInstituteMedias(List<InstituteMedia> instituteMedias) {
+        this.instituteMedias = instituteMedias;
+    }
+
+    public List<InstituteCampusDto> getInstituteCampus() {
+        return instituteCampus;
+    }
+
+    public void setInstituteCampus(List<InstituteCampusDto> instituteCampus) {
+        this.instituteCampus = instituteCampus;
     }
 
     /**
-     * @return the accreditation
+     * @return the instituteCategoryTypeId
      */
-    public List<BigInteger> getAccreditation() {
-        return accreditation;
+    public BigInteger getInstituteCategoryTypeId() {
+        return instituteCategoryTypeId;
     }
 
     /**
-     * @param accreditation
-     *            the accreditation to set
+     * @param instituteCategoryTypeId the instituteCategoryTypeId to set
      */
-    public void setAccreditation(List<BigInteger> accreditation) {
-        this.accreditation = accreditation;
+    public void setInstituteCategoryTypeId(BigInteger instituteCategoryTypeId) {
+        this.instituteCategoryTypeId = instituteCategoryTypeId;
     }
 
     /**
-     * @return the intakes
+     * @return the campusType
      */
-    public List<BigInteger> getIntakes() {
-        return intakes;
+    public String getCampusType() {
+        return campusType;
     }
 
     /**
-     * @param intakes
-     *            the intakes to set
+     * @param campusType the campusType to set
      */
-    public void setIntakes(List<BigInteger> intakes) {
-        this.intakes = intakes;
+    public void setCampusType(String campusType) {
+        this.campusType = campusType;
     }
 
-    /**
-     * @return the createdBy
-     */
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    /**
-     * @param createdBy the createdBy to set
-     */
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    /**
-     * @return the updatedBy
-     */
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    /**
-     * @param updatedBy the updatedBy to set
-     */
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
 }

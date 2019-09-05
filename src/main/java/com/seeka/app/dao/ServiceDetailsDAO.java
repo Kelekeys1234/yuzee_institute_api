@@ -66,4 +66,21 @@ public class ServiceDetailsDAO implements IServiceDetailsDAO {
         }
         return list;
     }
+
+    public Service getServiceById(BigInteger id) {
+        Service service = new Service();
+        service.setId(id);
+        return service;
+    }
+
+    public List<BigInteger> getServicesById(BigInteger id) {
+        List<BigInteger> list = new ArrayList<BigInteger>();
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("select s.id, s.service_id from institute_service s where s.institute_id=" + id);
+        List<Object[]> rows = query.list();
+        for (Object[] row : rows) {
+            list.add(new BigInteger(row[1].toString()));
+        }
+        return list;
+    }
 }

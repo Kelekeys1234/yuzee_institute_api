@@ -3,8 +3,11 @@ package com.seeka.app.dao;
 import java.math.BigInteger;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
+import com.seeka.app.bean.InstituteIntake;
 import com.seeka.app.bean.InstituteService;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
@@ -60,4 +63,12 @@ public interface IInstituteDAO {
     void saveInstituteserviceDetails(InstituteService instituteServiceDetails);
 
     void deleteInstituteService(BigInteger id);
+
+    void saveInstituteIntake(InstituteIntake instituteIntake);
+
+    void deleteInstituteIntakeById(BigInteger id);
+
+    List<BigInteger> getIntakesById(@Valid BigInteger id);
+    
+    List<InstituteCategoryType> getAllCategories();
 }
