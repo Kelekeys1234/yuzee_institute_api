@@ -18,6 +18,7 @@ import com.seeka.app.bean.AccreditedInstituteDetail;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
+import com.seeka.app.bean.InstituteIntake;
 import com.seeka.app.bean.InstituteVideos;
 import com.seeka.app.dao.IAccreditedInstituteDetailDao;
 import com.seeka.app.dao.ICityDAO;
@@ -27,7 +28,6 @@ import com.seeka.app.dao.IInstituteTypeDAO;
 import com.seeka.app.dao.IInstituteVideoDao;
 import com.seeka.app.dao.ServiceDetailsDAO;
 import com.seeka.app.dto.CourseSearchDto;
-import com.seeka.app.dto.InstituteCampusDto;
 import com.seeka.app.dto.InstituteDetailsGetRequest;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteGetRequestDto;
@@ -63,7 +63,7 @@ public class InstituteService implements IInstituteService {
 
     @Autowired
     private ServiceDetailsDAO serviceDetailsDAO;
-    
+
     @Autowired
     private IAccreditedInstituteDetailDao accreditedInstituteDetailDao;
 
@@ -164,8 +164,7 @@ public class InstituteService implements IInstituteService {
         }
         return response;
     }
-    
-    
+
     private void saveInstituteYoutubeVideos(final List<InstituteMedia> instituteMedias, final Institute institute) {
         for (InstituteMedia instituteMedia : instituteMedias) {
             InstituteVideos instituteVideo = new InstituteVideos();
@@ -217,28 +216,42 @@ public class InstituteService implements IInstituteService {
         if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
             saveInstituteService(institute, instituteRequest.getOfferService());
         }
-        if(instituteRequest.getAccreditation() != null &&  !instituteRequest.getAccreditation().isEmpty()){
+        if (instituteRequest.getAccreditation() != null && !instituteRequest.getAccreditation().isEmpty()) {
             saveAccreditedInstituteDetails(institute, instituteRequest.getAccreditation());
+        }
+        if (instituteRequest.getIntakes() != null && !instituteRequest.getIntakes().isEmpty()) {
+            saveIntakesInstituteDetails(institute, instituteRequest.getIntakes());
         }
         return institute;
     }
 
-    private void saveAccreditedInstituteDetails(final Institute institute, final List<BigInteger> accreditation){
-         accreditedInstituteDetailDao.deleteAccreditedInstitueDetailByEntityId(institute.getId()); 
-        for(BigInteger accreditedInstituteDetail2:accreditation){
+    private void saveIntakesInstituteDetails(Institute institute, List<BigInteger> intakes) {
+        dao.deleteInstituteIntakeById(institute.getId());
+        for (BigInteger intakeId : intakes) {
+            InstituteIntake instituteIntake = new InstituteIntake();
+            instituteIntake.setEntityId(institute.getId());
+            instituteIntake.setEntityType("INSTITUTE");
+            instituteIntake.setInTakeId(intakeId);
+            dao.saveInstituteIntake(instituteIntake);
+        }
+    }
+
+    private void saveAccreditedInstituteDetails(final Institute institute, final List<BigInteger> accreditation) {
+        accreditedInstituteDetailDao.deleteAccreditedInstitueDetailByEntityId(institute.getId());
+        for (BigInteger accreditedInstituteDetail2 : accreditation) {
             AccreditedInstituteDetail accreditedInstituteDetail = new AccreditedInstituteDetail();
             BigInteger accreditationId = new BigInteger(accreditedInstituteDetail2.toString());
             accreditedInstituteDetail.setEntityId(institute.getId());
-            accreditedInstituteDetail.setEntityType(institute.getInstituteType().getId().toString());
+            accreditedInstituteDetail.setEntityType("INSTITUTE");
             accreditedInstituteDetail.setAccreditedInstituteId(accreditationId);
             accreditedInstituteDetailDao.addAccreditedInstituteDetail(accreditedInstituteDetail);
         }
     }
-    
+
     private void saveInstituteService(final Institute institute, final List<BigInteger> offerService) {
         dao.deleteInstituteService(institute.getId());
         for (BigInteger id : offerService) {
-            com.seeka.app.bean.Service service = serviceDetailsDAO.get(id);
+            com.seeka.app.bean.Service service = serviceDetailsDAO.getServiceById(id);
             com.seeka.app.bean.InstituteService instituteServiceDetails = new com.seeka.app.bean.InstituteService();
             instituteServiceDetails.setInstitute(institute);
             instituteServiceDetails.setService(service);
@@ -349,11 +362,12 @@ public class InstituteService implements IInstituteService {
         Map<String, Object> response = new HashMap<String, Object>();
         InstituteRequestDto instituteRequestDto = null;
         List<InstituteRequestDto> instituteRequestDtos = new ArrayList<>();
-        List<InstituteCampusDto> instituteCampusDtoList = new ArrayList<>();
         try {
             Institute institute = dao.get(id);
             instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
             instituteRequestDto.setOfferService(getOfferServices(id));
+            instituteRequestDto.setAccreditation(getAccreditation(id));
+            instituteRequestDto.setIntakes(getIntakes(id));
             instituteRequestDtos.add(instituteRequestDto);
             if (institute != null && institute.getCampusType() != null && institute.getCampusType().equals("PRIMARY")) {
                 if (institute.getCountry() != null && institute.getCity() != null && institute.getName() != null) {
@@ -361,6 +375,8 @@ public class InstituteService implements IInstituteService {
                     for (Institute campus : institutes) {
                         instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(campus);
                         instituteRequestDto.setOfferService(getOfferServices(campus.getId()));
+                        instituteRequestDto.setAccreditation(getAccreditation(campus.getId()));
+                        instituteRequestDto.setIntakes(getIntakes(campus.getId()));
                         instituteRequestDtos.add(instituteRequestDto);
                     }
                 }
@@ -376,12 +392,20 @@ public class InstituteService implements IInstituteService {
             response.put("message", exception.getCause());
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.put("data", instituteCampusDtoList);
+        response.put("data", instituteRequestDtos);
         return response;
     }
 
+    private List<BigInteger> getIntakes(@Valid BigInteger id) {
+        return dao.getIntakesById(id);
+    }
+
+    private List<BigInteger> getAccreditation(@Valid BigInteger id) {
+        return accreditedInstituteDetailDao.getAccreditation(id);
+    }
+
     private List<BigInteger> getOfferServices(final BigInteger id) {
-        return serviceDetailsDAO.getServices(id);
+        return serviceDetailsDAO.getServicesById(id);
     }
 
     @Override

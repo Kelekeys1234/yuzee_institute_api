@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,6 +21,7 @@ import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
+import com.seeka.app.bean.InstituteIntake;
 import com.seeka.app.bean.InstituteService;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
@@ -508,5 +511,32 @@ public class InstituteDAO implements IInstituteDAO {
         Query q = session.createQuery("delete from InstituteService where institute_id =" + id);
         q.executeUpdate();
 
+    }
+
+    @Override
+    public void saveInstituteIntake(InstituteIntake instituteIntake) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(instituteIntake);
+
+    }
+
+    @Override
+    public void deleteInstituteIntakeById(BigInteger id) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("DELETE FROM institute_intake WHERE entity_id =" + id);
+        query.executeUpdate();
+    }
+
+    @Override
+    public List<BigInteger> getIntakesById(@Valid BigInteger id) {
+        List<BigInteger> list = new ArrayList<>();
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(InstituteIntake.class);
+        crit.add(Restrictions.eq("entityId", id));
+        List<InstituteIntake> accreditedInstituteDetails = crit.list();
+        for (InstituteIntake bean : accreditedInstituteDetails) {
+            list.add(bean.getInTakeId());
+        }
+        return list;
     }
 }
