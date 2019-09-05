@@ -14,5 +14,7 @@ public interface IAccreditedInstituteDetailDao {
 	List<AccreditedInstituteDetail> getAccreditedInstituteDetail(BigInteger accreditedInstituteId);
 
 	AccreditedInstituteDetail getAccreditedInstituteDetailbasedOnParams(BigInteger accreditedInstituteId, BigInteger entityId, String entityType);
+	
+	void deleteAccreditedInstitueDetailByEntityId(BigInteger entityId);
 
 }

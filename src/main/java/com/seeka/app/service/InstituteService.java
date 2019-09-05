@@ -14,10 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.seeka.app.bean.AccreditedInstituteDetail;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteVideos;
+import com.seeka.app.dao.IAccreditedInstituteDetailDao;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.IInstituteDAO;
@@ -61,6 +63,9 @@ public class InstituteService implements IInstituteService {
 
     @Autowired
     private ServiceDetailsDAO serviceDetailsDAO;
+    
+    @Autowired
+    private IAccreditedInstituteDetailDao accreditedInstituteDetailDao;
 
     @Override
     public void save(final Institute institute) {
@@ -159,7 +164,8 @@ public class InstituteService implements IInstituteService {
         }
         return response;
     }
-
+    
+    
     private void saveInstituteYoutubeVideos(final List<InstituteMedia> instituteMedias, final Institute institute) {
         for (InstituteMedia instituteMedia : instituteMedias) {
             InstituteVideos instituteVideo = new InstituteVideos();
@@ -211,9 +217,24 @@ public class InstituteService implements IInstituteService {
         if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
             saveInstituteService(institute, instituteRequest.getOfferService());
         }
+        if(instituteRequest.getAccreditation() != null &&  !instituteRequest.getAccreditation().isEmpty()){
+            saveAccreditedInstituteDetails(institute, instituteRequest.getAccreditation());
+        }
         return institute;
     }
 
+    private void saveAccreditedInstituteDetails(final Institute institute, final List<BigInteger> accreditation){
+         accreditedInstituteDetailDao.deleteAccreditedInstitueDetailByEntityId(institute.getId()); 
+        for(BigInteger accreditedInstituteDetail2:accreditation){
+            AccreditedInstituteDetail accreditedInstituteDetail = new AccreditedInstituteDetail();
+            BigInteger accreditationId = new BigInteger(accreditedInstituteDetail2.toString());
+            accreditedInstituteDetail.setEntityId(institute.getId());
+            accreditedInstituteDetail.setEntityType(institute.getInstituteType().getId().toString());
+            accreditedInstituteDetail.setAccreditedInstituteId(accreditationId);
+            accreditedInstituteDetailDao.addAccreditedInstituteDetail(accreditedInstituteDetail);
+        }
+    }
+    
     private void saveInstituteService(final Institute institute, final List<BigInteger> offerService) {
         dao.deleteInstituteService(institute.getId());
         for (BigInteger id : offerService) {

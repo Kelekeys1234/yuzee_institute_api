@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +22,7 @@ public class AccreditedInstituteDetailDao implements IAccreditedInstituteDetailD
 	@Override
 	public void addAccreditedInstituteDetail(final AccreditedInstituteDetail accreditedInstituteDetail) {
 		Session session = sessionFactory.getCurrentSession();
-		session.save(accreditedInstituteDetail);
+		session.saveOrUpdate(accreditedInstituteDetail);
 	}
 
 	@Override
@@ -52,5 +53,13 @@ public class AccreditedInstituteDetailDao implements IAccreditedInstituteDetailD
 		crit.add(Restrictions.eq("accreditedInstituteDetail.accreditedInstituteId", accreditedInstituteId));
 		return (AccreditedInstituteDetail) crit.uniqueResult();
 	}
+
+    @Override
+    public void deleteAccreditedInstitueDetailByEntityId(BigInteger entityId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery("delete from AccreditedInstituteDetail where entity_id =" + entityId);
+        q.executeUpdate();
+        
+    }
 
 }
