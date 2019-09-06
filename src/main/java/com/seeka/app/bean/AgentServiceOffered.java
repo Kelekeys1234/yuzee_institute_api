@@ -23,7 +23,7 @@ public class AgentServiceOffered {
     */
     private static final long serialVersionUID = 8492390790670110780L;
     private BigInteger id;
-    private String service;
+    private Service service;
     private Double amount;
     private EducationAgent educationAgent;
     private String createdBy;
@@ -43,11 +43,12 @@ public class AgentServiceOffered {
         this.id = id;
     }
     
-    @Column(name = "service")
-    public String getService() {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "service")
+    public Service getService() {
         return service;
     }
-    public void setService(String service) {
+    public void setService(Service service) {
         this.service = service;
     }
     

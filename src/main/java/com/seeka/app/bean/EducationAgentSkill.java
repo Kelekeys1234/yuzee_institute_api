@@ -24,7 +24,7 @@ public class EducationAgentSkill implements Serializable{
     */
     private static final long serialVersionUID = 8492390790670110780L;
     private BigInteger id;
-    private BigInteger skillId;
+    private Skill skillId;
     private EducationAgent educationAgent;
     private String createdBy;
     private Date createdOn;
@@ -37,7 +37,7 @@ public class EducationAgentSkill implements Serializable{
         super();
     }
     
-    public EducationAgentSkill(BigInteger id, BigInteger skillId, EducationAgent educationAgent) {
+    public EducationAgentSkill(BigInteger id, Skill skillId, EducationAgent educationAgent) {
         super();
         this.id = id;
         this.skillId = skillId;
@@ -54,11 +54,12 @@ public class EducationAgentSkill implements Serializable{
         this.id = id;
     }
     
-    @Column(name = "skill_id")
-    public BigInteger getSkillId() {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "skill_id")
+    public Skill getSkillId() {
         return skillId;
     }
-    public void setSkillId(BigInteger skillId) {
+    public void setSkillId(Skill skillId) {
         this.skillId = skillId;
     }
     

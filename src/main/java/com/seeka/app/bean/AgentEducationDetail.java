@@ -17,15 +17,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "agent_education_detail")
 public class AgentEducationDetail {
-    
+
     /**
     *
     */
-    private static final long serialVersionUID = 8492390790670110780L;
     private BigInteger id;
     private String course;
     private Date durationFrom;
     private Date durationTo;
+    private String institute;
     private EducationAgent educationAgent;
     private String createdBy;
     private Date createdOn;
@@ -33,41 +33,52 @@ public class AgentEducationDetail {
     private Date updatedOn;
     private String deletedBy;
     private Date deletedOn;
-    
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     public BigInteger getId() {
         return id;
     }
+
     public void setId(BigInteger id) {
         this.id = id;
     }
-    
+
     @Column(name = "course")
     public String getCourse() {
         return course;
     }
+
     public void setCourse(String course) {
         this.course = course;
     }
-    
 
     @Column(name = "duration_from")
     public Date getDurationFrom() {
         return durationFrom;
     }
+
     public void setDurationFrom(Date durationFrom) {
         this.durationFrom = durationFrom;
     }
-    
 
     @Column(name = "duration_to")
     public Date getDurationTo() {
         return durationTo;
     }
+
     public void setDurationTo(Date durationTo) {
         this.durationTo = durationTo;
+    }
+
+    @Column(name = "institute")
+    public String getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(String institute) {
+        this.institute = institute;
     }
     
     @ManyToOne(fetch = FetchType.EAGER)
@@ -75,10 +86,11 @@ public class AgentEducationDetail {
     public EducationAgent getEducationAgent() {
         return educationAgent;
     }
+
     public void setEducationAgent(EducationAgent educationAgent) {
         this.educationAgent = educationAgent;
     }
-    
+
     @Column(name = "created_by")
     public String getCreatedBy() {
         return createdBy;
@@ -132,6 +144,5 @@ public class AgentEducationDetail {
     public void setDeletedOn(Date deletedOn) {
         this.deletedOn = deletedOn;
     }
-    
 
 }
