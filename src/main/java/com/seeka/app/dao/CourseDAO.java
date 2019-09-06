@@ -43,6 +43,7 @@ import com.seeka.app.enumeration.CourseSortBy;
 import com.seeka.app.jobs.CurrencyUtil;
 import com.seeka.app.service.CurrencyService;
 import com.seeka.app.util.CDNServerUtil;
+import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.ConvertionUtil;
 import com.seeka.app.util.GlobalSearchWordUtil;
 import com.seeka.app.util.IConstant;
@@ -340,7 +341,7 @@ public class CourseDAO implements ICourseDAO {
 						if (convertedRate != null) {
 							// courseResponseDto.setLocalFees(String.valueOf(convertedRate) + " " +
 							// courseSearchDto.getCurrencyCode());
-							courseResponseDto.setLocalFees(convertedRate);
+							courseResponseDto.setLocalFees(CommonUtil.foundOff2Digit(convertedRate));
 						}
 					}
 					if (row[20] != null) {
@@ -350,9 +351,7 @@ public class CourseDAO implements ICourseDAO {
 						dto.setAmount(Double.valueOf(row[20].toString()));
 						Double convertedRate = currencyService.convertCurrency(dto);
 						if (convertedRate != null) {
-							// courseResponseDto.setIntlFees(String.valueOf(convertedRate) + " " +
-							// courseSearchDto.getCurrencyCode());
-							courseResponseDto.setIntlFees(convertedRate);
+							courseResponseDto.setIntlFees(CommonUtil.foundOff2Digit(convertedRate));
 						}
 					}
 				}

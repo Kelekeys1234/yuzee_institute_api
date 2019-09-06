@@ -3,6 +3,8 @@ package com.seeka.app.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -273,5 +275,13 @@ public class CommonUtil {
         todoDto.setCreatedBy(todo.getCreatedBy());
         todoDto.setUpdatedBy(todo.getUpdatedBy());
         return todoDto;
+    }
+
+    public static Double foundOff2Digit(Double convertedRate) {
+        System.out.println("double : " + convertedRate);
+        BigDecimal bd = new BigDecimal(convertedRate).setScale(2, RoundingMode.HALF_UP);
+        Double salary = bd.doubleValue();
+        System.out.println("salary : " + salary);
+        return salary;
     }
 }

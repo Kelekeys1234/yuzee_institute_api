@@ -1,11 +1,14 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.seeka.app.bean.AgentEducationDetail;
@@ -22,101 +25,74 @@ import com.seeka.app.dto.AgentEducationDetailDto;
 import com.seeka.app.dto.AgentMediaDocumentationDto;
 import com.seeka.app.dto.AgentServiceOfferedDto;
 import com.seeka.app.dto.EducationAgentDto;
+import com.seeka.app.dto.EducationAgentGetAllDto;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.util.DateUtil;
+import com.seeka.app.util.PaginationUtil;
 
 @Service
 public class EducationAgentService implements IEducationAgentService {
 
     @Autowired
-    IEducationAgentDAO educationAgentDao;
+    private IEducationAgentDAO educationAgentDao;
+
     @Autowired
-    ICountryDAO countryDao;
+    private ICountryDAO countryDao;
+
     @Autowired
-    ICityDAO cityDao;
+    private ICityDAO cityDao;
+
     @Autowired
-    IServiceDetailsDAO serviceDao;
+    private IServiceDetailsDAO serviceDao;
 
     @Override
-    public ResponseEntity<?> save(@Valid EducationAgentDto educationAgentDto) {
-        try {
-            EducationAgent educationAgent = convertEducationAgentDtoToEducationAgent(educationAgentDto);
-            educationAgentDao.saveEducationAgent(educationAgent);
-            if (educationAgentDto.getSkill() != null && !educationAgentDto.getSkill().isEmpty()) {
-                saveSkillAndEducationAgentSkill(educationAgentDto, educationAgent);
-            }
-            if (educationAgentDto.getAgentServiceOffereds() != null && !educationAgentDto.getAgentServiceOffereds().isEmpty()) {
-                saveAgentServiceOffered(educationAgentDto, educationAgent);
-            }
-            if (educationAgentDto.getAgentEducationDetails() != null && !educationAgentDto.getAgentEducationDetails().isEmpty()) {
-                saveAgentEducationDetails(educationAgentDto, educationAgent);
-            }
-            if (educationAgentDto.getAgentMediaDocumentations() != null && !educationAgentDto.getAgentMediaDocumentations().isEmpty()) {
-                saveAgentMediaDocumentation(educationAgentDto, educationAgent);
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+    public void save(@Valid EducationAgentDto educationAgentDto) {
+        EducationAgent educationAgent = convertAgentDtoToBean(educationAgentDto, null);
+        educationAgentDao.saveEducationAgent(educationAgent);
+        saveAgentDetails(educationAgentDto, educationAgent);
+    }
+
+    private EducationAgent convertAgentDtoToBean(@Valid EducationAgentDto educationAgentDto, BigInteger id) {
+        EducationAgent educationAgent = null;
+        if (id != null) {
+            educationAgent = educationAgentDao.get(id);
+        } else {
+            educationAgent = new EducationAgent();
         }
-        return null;
+        educationAgent.setFirstName(educationAgentDto.getFirstName());
+        educationAgent.setLastName(educationAgentDto.getLastName());
+        educationAgent.setDescription(educationAgentDto.getDescription());
+        educationAgent.setCountry(countryDao.get(educationAgentDto.getCity()));
+        educationAgent.setCity(cityDao.get(educationAgentDto.getCountry()));
+        educationAgent.setCreatedBy(educationAgentDto.getCreatedBy());
+        educationAgent.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+        educationAgent.setUpdatedBy(educationAgentDto.getUpdatedBy());
+        educationAgent.setUpdatedOn(educationAgentDto.getUpdatedOn());
+        educationAgent.setPhoneNumber(educationAgentDto.getPhoneNumber());
+        educationAgent.setEmail(educationAgentDto.getEmail());
+        return educationAgent;
     }
 
     @Override
-    public ResponseEntity<?> update(@Valid EducationAgentDto educationAgentDto, BigInteger id) {
-        try {
-            EducationAgent educationAgent = convertEducationAgentDtoToEducationAgentForUpdate(educationAgentDto, id);
-            educationAgentDao.updateEducationAgent(educationAgent);
-            if (educationAgentDto.getSkill() != null && !educationAgentDto.getSkill().isEmpty()) {
-                saveSkillAndEducationAgentSkill(educationAgentDto, educationAgent);
-            }
-            if (educationAgentDto.getAgentServiceOffereds() != null && !educationAgentDto.getAgentServiceOffereds().isEmpty()) {
-                saveAgentServiceOffered(educationAgentDto, educationAgent);
-            }
-            if (educationAgentDto.getAgentEducationDetails() != null && !educationAgentDto.getAgentEducationDetails().isEmpty()) {
-                saveAgentEducationDetails(educationAgentDto, educationAgent);
-            }
-            if (educationAgentDto.getAgentMediaDocumentations() != null && !educationAgentDto.getAgentMediaDocumentations().isEmpty()) {
-                saveAgentMediaDocumentation(educationAgentDto, educationAgent);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public void update(@Valid EducationAgentDto educationAgentDto, BigInteger id) {
+        EducationAgent educationAgent = convertAgentDtoToBean(educationAgentDto, id);
+        educationAgentDao.updateEducationAgent(educationAgent);
+        saveAgentDetails(educationAgentDto, educationAgent);
+    }
+
+    private void saveAgentDetails(@Valid EducationAgentDto educationAgentDto, EducationAgent educationAgent) {
+        if (educationAgentDto.getSkill() != null && !educationAgentDto.getSkill().isEmpty()) {
+            saveSkillAndEducationAgentSkill(educationAgentDto, educationAgent);
         }
-        return null;
-    }
-
-    public EducationAgent convertEducationAgentDtoToEducationAgentForUpdate(EducationAgentDto educationAgentDto, BigInteger id) {
-        EducationAgent agent = new EducationAgent();
-        agent.setId(id);
-        agent.setFirstName(educationAgentDto.getFirstName());
-        agent.setLastName(educationAgentDto.getLastName());
-        agent.setDescription(educationAgentDto.getDescription());
-        agent.setCountry(countryDao.get(educationAgentDto.getCity()));
-        agent.setCity(cityDao.get(educationAgentDto.getCountry()));
-        agent.setCreatedBy(educationAgentDto.getCreatedBy());
-        agent.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-        agent.setUpdatedBy(educationAgentDto.getUpdatedBy());
-        agent.setUpdatedOn(educationAgentDto.getUpdatedOn());
-        agent.setDeletedBy(educationAgentDto.getDeletedBy());
-        agent.setDeletedOn(educationAgentDto.getDeletedOn());
-        agent.setPhoneNumber(educationAgentDto.getPhoneNumber());
-        agent.setEmail(educationAgentDto.getEmail());
-        return agent;
-    }
-
-    public EducationAgent convertEducationAgentDtoToEducationAgent(EducationAgentDto educationAgentDto) {
-        EducationAgent agent = new EducationAgent();
-        agent.setFirstName(educationAgentDto.getFirstName());
-        agent.setLastName(educationAgentDto.getLastName());
-        agent.setDescription(educationAgentDto.getDescription());
-        agent.setCountry(countryDao.get(educationAgentDto.getCountry()));
-        agent.setCity(cityDao.get(educationAgentDto.getCity()));
-        agent.setCreatedBy(educationAgentDto.getCreatedBy());
-        agent.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-        agent.setUpdatedBy(educationAgentDto.getUpdatedBy());
-        agent.setUpdatedOn(educationAgentDto.getUpdatedOn());
-        agent.setDeletedBy(educationAgentDto.getDeletedBy());
-        agent.setDeletedOn(educationAgentDto.getDeletedOn());
-        agent.setPhoneNumber(educationAgentDto.getPhoneNumber());
-        agent.setEmail(educationAgentDto.getEmail());
-        return agent;
+        if (educationAgentDto.getAgentServiceOffereds() != null && !educationAgentDto.getAgentServiceOffereds().isEmpty()) {
+            saveAgentServiceOffered(educationAgentDto, educationAgent);
+        }
+        if (educationAgentDto.getAgentEducationDetails() != null && !educationAgentDto.getAgentEducationDetails().isEmpty()) {
+            saveAgentEducationDetails(educationAgentDto, educationAgent);
+        }
+        if (educationAgentDto.getAgentMediaDocumentations() != null && !educationAgentDto.getAgentMediaDocumentations().isEmpty()) {
+            saveAgentMediaDocumentation(educationAgentDto, educationAgent);
+        }
     }
 
     public void saveSkillAndEducationAgentSkill(EducationAgentDto educationAgentDto, EducationAgent educationAgent) {
@@ -189,4 +165,34 @@ public class EducationAgentService implements IEducationAgentService {
         }
     }
 
+    @Override
+    public Map<String, Object> getAllEducationAgent(Integer pageNumber, Integer pageSize) {
+        Map<String, Object> response = new HashMap<>();
+        List<EducationAgentGetAllDto> educationAgents = null;
+        int totalCount = 0;
+        PaginationUtilDto paginationUtilDto = null;
+        try {
+            totalCount = educationAgentDao.findTotalCount();
+            int startIndex = (pageNumber - 1) * pageSize;
+            paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+            educationAgents = educationAgentDao.getAll(startIndex, pageSize);
+            if (educationAgents != null && !educationAgents.isEmpty()) {
+                response.put("message", "Education agent fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", "Education agent not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        response.put("data", educationAgents);
+        response.put("totalCount", totalCount);
+        response.put("pageNumber", paginationUtilDto.getPageNumber());
+        response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+        response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+        response.put("totalPages", paginationUtilDto.getTotalPages());
+        return response;
+    }
 }
