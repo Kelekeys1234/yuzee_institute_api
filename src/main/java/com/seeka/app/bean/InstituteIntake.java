@@ -31,8 +31,8 @@ public class InstituteIntake implements Serializable {
     @Column(name = "entity_type", nullable = false)
     private String entityType;
 
-    @Column(name = "intake_id", nullable = false)
-    private BigInteger inTakeId;
+    @Column(name = "intake", nullable = false)
+    private String intake;
 
     /**
      * @return the id
@@ -80,17 +80,18 @@ public class InstituteIntake implements Serializable {
     }
 
     /**
-     * @return the inTakeId
+     * @return the intake
      */
-    public BigInteger getInTakeId() {
-        return inTakeId;
+    public String getIntake() {
+        return intake;
     }
 
     /**
-     * @param inTakeId
-     *            the inTakeId to set
+     * @param intake the intake to set
      */
-    public void setInTakeId(BigInteger inTakeId) {
-        this.inTakeId = inTakeId;
+    public void setIntake(String intake) {
+        this.intake = intake;
     }
+
+    
 }

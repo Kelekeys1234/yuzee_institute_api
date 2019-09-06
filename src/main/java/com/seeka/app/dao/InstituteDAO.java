@@ -528,14 +528,14 @@ public class InstituteDAO implements IInstituteDAO {
     }
 
     @Override
-    public List<BigInteger> getIntakesById(@Valid BigInteger id) {
-        List<BigInteger> list = new ArrayList<>();
+    public List<String> getIntakesById(@Valid BigInteger id) {
+        List<String> list = new ArrayList<>();
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(InstituteIntake.class);
         crit.add(Restrictions.eq("entityId", id));
         List<InstituteIntake> accreditedInstituteDetails = crit.list();
         for (InstituteIntake bean : accreditedInstituteDetails) {
-            list.add(bean.getInTakeId());
+            list.add(bean.getIntake());
         }
         return list;
     }

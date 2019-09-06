@@ -206,12 +206,15 @@ public class InstituteService implements IInstituteService {
         institute.setAddress(instituteRequest.getAddress());
         institute.setEmail(instituteRequest.getEmail());
         institute.setPhoneNumber(instituteRequest.getPhoneNumber());
-        institute.setLatitute(instituteRequest.getLatitute());
+        institute.setLatitute(instituteRequest.getLatitude());
         institute.setLongitude(instituteRequest.getLongitude());
         institute.setTotalStudent(instituteRequest.getTotalStudent());
         institute.setOpeningFrom(instituteRequest.getOpeningHour());
         institute.setOpeningTo(instituteRequest.getClosingHour());
         institute.setCampusName(instituteRequest.getCampusName());
+        institute.setEnrolment(instituteRequest.getEnrolment());
+        institute.setTuitionFessPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
+        institute.setScholarshipFinancingAssistance(instituteRequest.getScholarshipFinancingAssistance());
         dao.save(institute);
         if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
             saveInstituteService(institute, instituteRequest.getOfferService());
@@ -225,13 +228,13 @@ public class InstituteService implements IInstituteService {
         return institute;
     }
 
-    private void saveIntakesInstituteDetails(Institute institute, List<BigInteger> intakes) {
+    private void saveIntakesInstituteDetails(Institute institute, List<String> intakes) {
         dao.deleteInstituteIntakeById(institute.getId());
-        for (BigInteger intakeId : intakes) {
+        for (String intakeId : intakes) {
             InstituteIntake instituteIntake = new InstituteIntake();
             instituteIntake.setEntityId(institute.getId());
             instituteIntake.setEntityType("INSTITUTE");
-            instituteIntake.setInTakeId(intakeId);
+            instituteIntake.setIntake(intakeId);
             dao.saveInstituteIntake(instituteIntake);
         }
     }
@@ -396,7 +399,7 @@ public class InstituteService implements IInstituteService {
         return response;
     }
 
-    private List<BigInteger> getIntakes(@Valid BigInteger id) {
+    private List<String> getIntakes(@Valid BigInteger id) {
         return dao.getIntakesById(id);
     }
 

@@ -69,6 +69,10 @@ public class Institute implements Serializable {
     private String openingTo;
     private String campusName;
     private InstituteCategoryType instituteCategoryType;
+    
+    private String enrolment;
+    private String tuitionFessPaymentPlan;
+    private String scholarshipFinancingAssistance;
 
     @Transient
     public String getLastUpdated() {
@@ -665,6 +669,51 @@ public class Institute implements Serializable {
      */
     public void setInstituteCategoryType(InstituteCategoryType instituteCategoryType) {
         this.instituteCategoryType = instituteCategoryType;
+    }
+
+    /**
+     * @return the enrolment
+     */
+    @Column(name = "enrolment_link")
+    public String getEnrolment() {
+        return enrolment;
+    }
+
+    /**
+     * @param enrolment the enrolment to set
+     */
+    public void setEnrolment(String enrolment) {
+        this.enrolment = enrolment;
+    }
+
+    /**
+     * @return the tuitionFessPaymentPlan
+     */
+    @Column(name = "ttion_fees_p_plan")
+    public String getTuitionFessPaymentPlan() {
+        return tuitionFessPaymentPlan;
+    }
+
+    /**
+     * @param tuitionFessPaymentPlan the tuitionFessPaymentPlan to set
+     */
+    public void setTuitionFessPaymentPlan(String tuitionFessPaymentPlan) {
+        this.tuitionFessPaymentPlan = tuitionFessPaymentPlan;
+    }
+
+    /**
+     * @return the scholarshipFinancingAssistance
+     */
+    @Column(name = "scholarship_financing_assistance")
+    public String getScholarshipFinancingAssistance() {
+        return scholarshipFinancingAssistance;
+    }
+
+    /**
+     * @param scholarshipFinancingAssistance the scholarshipFinancingAssistance to set
+     */
+    public void setScholarshipFinancingAssistance(String scholarshipFinancingAssistance) {
+        this.scholarshipFinancingAssistance = scholarshipFinancingAssistance;
     }
 
 }

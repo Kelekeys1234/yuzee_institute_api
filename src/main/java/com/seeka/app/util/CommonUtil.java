@@ -108,6 +108,9 @@ public class CommonUtil {
         instituteRequestDto.setCampusType(institute.getCampusType());
         instituteRequestDto.setCampusName(institute.getCampusName());
         instituteRequestDto.setEmail(institute.getEmail());
+        instituteRequestDto.setEnrolment(institute.getEnrolment());
+        instituteRequestDto.setScholarshipFinancingAssistance(institute.getScholarshipFinancingAssistance());
+        instituteRequestDto.setTuitionFessPaymentPlan(institute.getTuitionFessPaymentPlan());
         return instituteRequestDto;
     }
 

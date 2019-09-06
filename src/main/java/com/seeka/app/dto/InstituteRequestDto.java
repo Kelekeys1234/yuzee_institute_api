@@ -24,7 +24,7 @@ public class InstituteRequestDto {
     private String campusType;
 
     private String campusName;
-    private Double latitute;
+    private Double latitude;
     private Double longitude;
     private Integer totalStudent;
     private String openingHour;
@@ -34,7 +34,7 @@ public class InstituteRequestDto {
     private String address;
     private List<BigInteger> offerService;
     private List<BigInteger> accreditation;
-    private List<BigInteger> intakes;
+    private List<String> intakes;
     private String createdBy;
     private String updatedBy;
 
@@ -311,16 +311,16 @@ public class InstituteRequestDto {
     /**
      * @return the latitute
      */
-    public Double getLatitute() {
-        return latitute;
+    public Double getLatitude() {
+        return latitude;
     }
 
     /**
      * @param latitute
      *            the latitute to set
      */
-    public void setLatitute(Double latitute) {
-        this.latitute = latitute;
+    public void setLatitute(Double latitude) {
+        this.latitude = latitude;
     }
 
     /**
@@ -461,7 +461,7 @@ public class InstituteRequestDto {
     /**
      * @return the intakes
      */
-    public List<BigInteger> getIntakes() {
+    public List<String> getIntakes() {
         return intakes;
     }
 
@@ -469,7 +469,7 @@ public class InstituteRequestDto {
      * @param intakes
      *            the intakes to set
      */
-    public void setIntakes(List<BigInteger> intakes) {
+    public void setIntakes(List<String> intakes) {
         this.intakes = intakes;
     }
 
@@ -481,7 +481,8 @@ public class InstituteRequestDto {
     }
 
     /**
-     * @param createdBy the createdBy to set
+     * @param createdBy
+     *            the createdBy to set
      */
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
@@ -495,7 +496,8 @@ public class InstituteRequestDto {
     }
 
     /**
-     * @param updatedBy the updatedBy to set
+     * @param updatedBy
+     *            the updatedBy to set
      */
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
