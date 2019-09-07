@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.seeka.app.dto.EducationAgentDto;
+import com.seeka.app.dto.EducationAgentPartnershipsDto;
 
 public interface IEducationAgentService {
 
@@ -14,7 +15,10 @@ public interface IEducationAgentService {
     public void update(@Valid EducationAgentDto educationAgentDto, BigInteger id);
 
     public Map<String, Object> getAllEducationAgent(Integer pageNumber, Integer pageSize);
-    
+
     public Map<String, Object> get(@Valid BigInteger id);
 
+    public void savePartnership(EducationAgentPartnershipsDto agentPartnershipsDto);
+
+    public void deleteEducationAgent(BigInteger id);
 }

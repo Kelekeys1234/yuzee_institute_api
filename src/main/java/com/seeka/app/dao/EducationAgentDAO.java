@@ -20,6 +20,7 @@ import com.seeka.app.bean.AgentServiceOffered;
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.EducationAgent;
+import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
 import com.seeka.app.bean.Service;
 import com.seeka.app.bean.Skill;
@@ -283,5 +284,30 @@ public class EducationAgentDAO implements IEducationAgentDAO {
         Criteria crit = session.createCriteria(AgentMediaDocumentation.class);
         List<AgentMediaDocumentation> agentMediaDocumentations = crit.add(Restrictions.eq("educationAgent.id", educationAgent)).list();
         return agentMediaDocumentations;
+    }
+
+    @Override
+    public void saveEducationAgentPartnerships(EducationAgentPartnerships educationAgentPartnerships) {
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            session.save(educationAgentPartnerships);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteEducationAgent(BigInteger id) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("DELETE FROM education_agent WHERE id =" + id);
+        query.executeUpdate();
+    }
+
+    @Override
+    public void deleteEducationAgentPartnerships(BigInteger educationAgentId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("DELETE FROM education_agent_partnerships WHERE education_agent =" + educationAgentId);
+        query.executeUpdate();
+
     }
 }

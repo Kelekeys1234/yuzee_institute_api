@@ -7,6 +7,7 @@ import com.seeka.app.bean.AgentEducationDetail;
 import com.seeka.app.bean.AgentMediaDocumentation;
 import com.seeka.app.bean.AgentServiceOffered;
 import com.seeka.app.bean.EducationAgent;
+import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
 import com.seeka.app.bean.Skill;
 import com.seeka.app.dto.EducationAgentGetAllDto;
@@ -16,16 +17,18 @@ public interface IEducationAgentDAO {
     public void saveEducationAgent(EducationAgent educationAgent);
 
     public void updateEducationAgent(EducationAgent educationAgent);
-    
+
     public EducationAgent fetchEducationAgent(BigInteger id);
-    
-    public  List<EducationAgentSkill> fetchEducationAgentSkillByEducationAgentId(BigInteger educationAgent);
-    
-    public  List<AgentServiceOffered> fetchAgentServiceOffered(BigInteger educationAgent);
-    
-    public  List<AgentEducationDetail> fetchAgentEducationDetail(BigInteger educationAgent);
-    
-    public  List<AgentMediaDocumentation> fetchAgentMediaDocumentation(BigInteger educationAgent);
+
+    public void deleteEducationAgent(BigInteger id);
+
+    public List<EducationAgentSkill> fetchEducationAgentSkillByEducationAgentId(BigInteger educationAgent);
+
+    public List<AgentServiceOffered> fetchAgentServiceOffered(BigInteger educationAgent);
+
+    public List<AgentEducationDetail> fetchAgentEducationDetail(BigInteger educationAgent);
+
+    public List<AgentMediaDocumentation> fetchAgentMediaDocumentation(BigInteger educationAgent);
 
     public void saveSkill(Skill skill);
 
@@ -54,5 +57,9 @@ public interface IEducationAgentDAO {
     public int findTotalCount();
 
     public List<EducationAgentGetAllDto> getAll(int startIndex, Integer pageSize);
+
+    public void saveEducationAgentPartnerships(EducationAgentPartnerships educationAgentPartnerships);
+
+    public void deleteEducationAgentPartnerships(BigInteger educationAgent);
 
 }

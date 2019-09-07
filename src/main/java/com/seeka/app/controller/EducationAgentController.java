@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.dto.EducationAgentDto;
+import com.seeka.app.dto.EducationAgentPartnershipsDto;
 import com.seeka.app.service.IEducationAgentService;
 
 @RestController
@@ -63,7 +64,37 @@ public class EducationAgentController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getAllEducationAgent(@PathVariable final BigInteger id) throws Exception {
+    public ResponseEntity<?> getEducationAgent(@PathVariable final BigInteger id) throws Exception {
         return ResponseEntity.accepted().body(educationService.get(id));
+    }
+
+    @RequestMapping(value = "/partnership", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<?> saveEducationAgentPartnership(@RequestBody final EducationAgentPartnershipsDto agentPartnershipsDto) throws Exception {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            educationService.savePartnership(agentPartnershipsDto);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Education Agent Partnership Save Successfully");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        return ResponseEntity.accepted().body(response);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteEducationAgent(@PathVariable BigInteger id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            educationService.deleteEducationAgent(id);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "Education Agent Delete Successfully");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        return ResponseEntity.accepted().body(response);
     }
 }

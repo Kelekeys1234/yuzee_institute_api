@@ -15,18 +15,26 @@ import org.springframework.stereotype.Service;
 import com.seeka.app.bean.AgentEducationDetail;
 import com.seeka.app.bean.AgentMediaDocumentation;
 import com.seeka.app.bean.AgentServiceOffered;
+import com.seeka.app.bean.City;
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.EducationAgent;
+import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
+import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Skill;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
+import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IEducationAgentDAO;
+import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IServiceDetailsDAO;
+import com.seeka.app.dao.InstituteDAO;
 import com.seeka.app.dto.AgentEducationDetailDto;
 import com.seeka.app.dto.AgentMediaDocumentationDto;
 import com.seeka.app.dto.AgentServiceOfferedDto;
 import com.seeka.app.dto.EducationAgentDto;
 import com.seeka.app.dto.EducationAgentGetAllDto;
+import com.seeka.app.dto.EducationAgentPartnershipsDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.PaginationUtil;
@@ -46,6 +54,12 @@ public class EducationAgentService implements IEducationAgentService {
     @Autowired
     private IServiceDetailsDAO serviceDao;
 
+    @Autowired
+    private IInstituteDAO instituteDao;
+
+    @Autowired
+    private ICourseDAO courseDao;
+
     @Override
     public void save(@Valid EducationAgentDto educationAgentDto) {
         EducationAgent educationAgent = convertAgentDtoToBean(educationAgentDto, null);
@@ -63,8 +77,8 @@ public class EducationAgentService implements IEducationAgentService {
         educationAgent.setFirstName(educationAgentDto.getFirstName());
         educationAgent.setLastName(educationAgentDto.getLastName());
         educationAgent.setDescription(educationAgentDto.getDescription());
-        educationAgent.setCountry(countryDao.get(educationAgentDto.getCity()));
-        educationAgent.setCity(cityDao.get(educationAgentDto.getCountry()));
+        educationAgent.setCountry(countryDao.get(educationAgentDto.getCountry()));
+        educationAgent.setCity(cityDao.get(educationAgentDto.getCity()));
         educationAgent.setCreatedBy(educationAgentDto.getCreatedBy());
         educationAgent.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
         educationAgent.setUpdatedBy(educationAgentDto.getUpdatedBy());
@@ -292,5 +306,49 @@ public class EducationAgentService implements IEducationAgentService {
         agentMediaDocumentationDto.setDocumentName(agentMediaDocumentation.getDocumentName());
         agentMediaDocumentationDto.setType(agentMediaDocumentation.getType());
         return agentMediaDocumentationDto;
+    }
+
+    @Override
+    public void savePartnership(EducationAgentPartnershipsDto agentPartnershipsDto) {
+        try {
+            convertDtoToEducationAgentPartnerships(agentPartnershipsDto);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void convertDtoToEducationAgentPartnerships(EducationAgentPartnershipsDto agentPartnershipsDto) {
+        try {
+            Integer i = 0;
+            educationAgentDao.deleteEducationAgentPartnerships(agentPartnershipsDto.getEducationAgentId());
+            for (BigInteger institute : agentPartnershipsDto.getInstituteId()) {
+                EducationAgentPartnerships agentPartnership = new EducationAgentPartnerships();
+                agentPartnership.setEducationAgent(educationAgentDao.get(agentPartnershipsDto.getEducationAgentId()));
+                agentPartnership.setInstitute(instituteDao.get(institute));
+                agentPartnership.setCourse(courseDao.get(agentPartnershipsDto.getCourseId().get(i)));
+                agentPartnership.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+                agentPartnership.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+                agentPartnership.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
+                agentPartnership.setCreatedBy(agentPartnershipsDto.getCreatedBy());
+                agentPartnership.setUpdatedBy(agentPartnershipsDto.getUpdatedBy());
+                educationAgentDao.saveEducationAgentPartnerships(agentPartnership);
+                i++;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteEducationAgent(BigInteger id) {
+        try {
+            educationAgentDao.deleteEducationAgent(id);
+            educationAgentDao.deleteEducationAgentSkill(id);
+            educationAgentDao.deleteAgentServiceOffered(id);
+            educationAgentDao.deleteAgentEducationDetail(id);
+            educationAgentDao.deleteAgentMediaDocumentation(id);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }
