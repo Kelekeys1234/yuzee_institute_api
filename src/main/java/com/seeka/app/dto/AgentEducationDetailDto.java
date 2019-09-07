@@ -1,12 +1,13 @@
 package com.seeka.app.dto;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 public class AgentEducationDetailDto {
 
     private String course;
-    private Date durationFrom;
-    private Date durationTo;
+    private BigInteger durationFrom;
+    private BigInteger durationTo;
     private String institute;
 
     public String getCourse() {
@@ -17,19 +18,19 @@ public class AgentEducationDetailDto {
         this.course = course;
     }
 
-    public Date getDurationFrom() {
+    public BigInteger getDurationFrom() {
         return durationFrom;
     }
 
-    public void setDurationFrom(Date durationFrom) {
+    public void setDurationFrom(BigInteger durationFrom) {
         this.durationFrom = durationFrom;
     }
 
-    public Date getDurationTo() {
+    public BigInteger getDurationTo() {
         return durationTo;
     }
 
-    public void setDurationTo(Date durationTo) {
+    public void setDurationTo(BigInteger durationTo) {
         this.durationTo = durationTo;
     }
 

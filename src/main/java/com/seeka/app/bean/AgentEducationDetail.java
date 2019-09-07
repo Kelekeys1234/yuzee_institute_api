@@ -23,8 +23,8 @@ public class AgentEducationDetail {
     */
     private BigInteger id;
     private String course;
-    private Date durationFrom;
-    private Date durationTo;
+    private BigInteger durationFrom;
+    private BigInteger durationTo;
     private String institute;
     private EducationAgent educationAgent;
     private String createdBy;
@@ -55,20 +55,20 @@ public class AgentEducationDetail {
     }
 
     @Column(name = "duration_from")
-    public Date getDurationFrom() {
+    public BigInteger getDurationFrom() {
         return durationFrom;
     }
 
-    public void setDurationFrom(Date durationFrom) {
+    public void setDurationFrom(BigInteger durationFrom) {
         this.durationFrom = durationFrom;
     }
 
     @Column(name = "duration_to")
-    public Date getDurationTo() {
+    public BigInteger getDurationTo() {
         return durationTo;
     }
 
-    public void setDurationTo(Date durationTo) {
+    public void setDurationTo(BigInteger durationTo) {
         this.durationTo = durationTo;
     }
 

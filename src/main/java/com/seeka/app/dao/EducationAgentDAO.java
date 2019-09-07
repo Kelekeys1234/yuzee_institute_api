@@ -1,7 +1,9 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,17 +11,18 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import com.seeka.app.bean.AgentEducationDetail;
 import com.seeka.app.bean.AgentMediaDocumentation;
 import com.seeka.app.bean.AgentServiceOffered;
 import com.seeka.app.bean.EducationAgent;
 import com.seeka.app.bean.EducationAgentSkill;
-import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.Service;
 import com.seeka.app.bean.Skill;
 import com.seeka.app.dto.EducationAgentGetAllDto;
 
 @Repository
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
 public class EducationAgentDAO implements IEducationAgentDAO {
 
     @Autowired
@@ -131,12 +134,11 @@ public class EducationAgentDAO implements IEducationAgentDAO {
         query.executeUpdate();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public Skill fetchSkill(BigInteger id) {
         Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Skill.class, "skill");
-        crit.add(Restrictions.eq("skill.id", id));
+        Criteria crit = session.createCriteria(Skill.class);
+        crit.add(Restrictions.eq("id", id));
         return (Skill) crit.uniqueResult();
     }
 
@@ -170,5 +172,55 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     private List<EducationAgentGetAllDto> getEducationAgentDetails(List<Object[]> rows, Session session) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public EducationAgent fetchEducationAgent(BigInteger id) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(EducationAgent.class, "skill");
+        crit.add(Restrictions.eq("EducationAgent.id", id));
+        return (EducationAgent) crit.uniqueResult();
+    }
+
+    @Override
+    public List<EducationAgentSkill> fetchEducationAgentSkillByEducationAgentId(BigInteger educationAgent) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(EducationAgentSkill.class);
+        List<EducationAgentSkill> agentSkills = crit.add(Restrictions.eq("educationAgent.id", educationAgent)).list();
+        return agentSkills;
+    }
+
+    @Override
+    public List<AgentServiceOffered> fetchAgentServiceOffered(BigInteger educationAgent) {
+        Session session = sessionFactory.getCurrentSession();
+        List<AgentServiceOffered> agentServiceOffereds = new ArrayList<>();
+        List<Object[]> agentService = session.createSQLQuery(
+                        "SELECT aso.amount, aso.service FROM agent_service_offered as aso WHERE education_agent =" + educationAgent + "").list();
+        for(Object[] obj:agentService){
+            AgentServiceOffered agentServiceOffered = new AgentServiceOffered();
+            Service service = new Service();
+            agentServiceOffered.setAmount(Double.parseDouble(obj[0].toString()));
+            service.setId(new BigInteger(obj[1].toString()));
+            agentServiceOffered.setService(service);
+            agentServiceOffereds.add(agentServiceOffered);
+        }
+        
+        return agentServiceOffereds;
+    }
+
+    @Override
+    public List<AgentEducationDetail> fetchAgentEducationDetail(BigInteger educationAgent) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(AgentEducationDetail.class);
+        List<AgentEducationDetail> agentEducationDetails = crit.add(Restrictions.eq("educationAgent.id", educationAgent)).list();
+        return agentEducationDetails;
+    }
+
+    @Override
+    public List<AgentMediaDocumentation> fetchAgentMediaDocumentation(BigInteger educationAgent) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(AgentMediaDocumentation.class);
+        List<AgentMediaDocumentation> agentMediaDocumentations = crit.add(Restrictions.eq("educationAgent.id", educationAgent)).list();
+        return agentMediaDocumentations;
     }
 }

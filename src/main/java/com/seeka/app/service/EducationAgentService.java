@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class EducationAgentService implements IEducationAgentService {
         educationAgent.setCreatedBy(educationAgentDto.getCreatedBy());
         educationAgent.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
         educationAgent.setUpdatedBy(educationAgentDto.getUpdatedBy());
-        educationAgent.setUpdatedOn(educationAgentDto.getUpdatedOn());
+        educationAgent.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
         educationAgent.setPhoneNumber(educationAgentDto.getPhoneNumber());
         educationAgent.setEmail(educationAgentDto.getEmail());
         return educationAgent;
@@ -194,5 +195,91 @@ public class EducationAgentService implements IEducationAgentService {
         response.put("hasNextPage", paginationUtilDto.isHasNextPage());
         response.put("totalPages", paginationUtilDto.getTotalPages());
         return response;
+    }
+
+    @Override
+    public EducationAgentDto get(@Valid BigInteger id) {
+        EducationAgentDto agentDto = null;
+       try{
+           EducationAgent educationAgent = educationAgentDao.get(id);
+           if(educationAgent != null){
+               agentDto =  convertEductaionAgentToDto(educationAgent);
+           }
+           List<EducationAgentSkill> agentSkills = educationAgentDao.fetchEducationAgentSkillByEducationAgentId(id);
+           for(EducationAgentSkill educationAgentSkill: agentSkills){
+               List<Skill> skills = new ArrayList<>();
+             Skill skill = educationAgentDao.fetchSkill(educationAgentSkill.getSkillId().getId());
+             skills.add(skill);
+             agentDto.setSkill(skills);
+           }
+           List<AgentServiceOffered> agentServiceOffereds = educationAgentDao.fetchAgentServiceOffered(id);
+           if(agentServiceOffereds != null && !agentServiceOffereds.isEmpty()){
+               for(AgentServiceOffered offered:agentServiceOffereds){
+               List<AgentServiceOfferedDto> agentServiceOfferedDtos = new ArrayList<>();
+               AgentServiceOfferedDto agentServiceOfferedDto = convertAgentServiceOfferedToDto(offered); 
+               agentServiceOfferedDtos.add(agentServiceOfferedDto);
+               agentDto.setAgentServiceOffereds(agentServiceOfferedDtos);
+               }
+           }
+           List<AgentEducationDetail> agentEducationDetails = educationAgentDao.fetchAgentEducationDetail(id);
+           if(agentEducationDetails != null && !agentEducationDetails.isEmpty()){
+               for(AgentEducationDetail agentEducationDetail:agentEducationDetails){
+                   List<AgentEducationDetailDto> agentEducationDetailDtos = new ArrayList<>();
+                   AgentEducationDetailDto agentEducationDetailDto = convertAgentEducationDetailToDto(agentEducationDetail);
+                   agentEducationDetailDtos.add(agentEducationDetailDto);
+                   agentDto.setAgentEducationDetails(agentEducationDetailDtos);
+               }
+           }
+           List<AgentMediaDocumentation> agentMediaDocumentations = educationAgentDao.fetchAgentMediaDocumentation(id);
+           if(agentMediaDocumentations != null && !agentMediaDocumentations.isEmpty()){
+               for(AgentMediaDocumentation agentMediaDocumentation:agentMediaDocumentations){
+                   List<AgentMediaDocumentationDto> agentMediaDocumentationDtos = new ArrayList<>();
+                   AgentMediaDocumentationDto agentMediaDocumentationDto = convertAgentMediaDocumentationToDto(agentMediaDocumentation);
+                   agentMediaDocumentationDtos.add(agentMediaDocumentationDto);
+                   agentDto.setAgentMediaDocumentations(agentMediaDocumentationDtos);
+               }
+           }
+       }catch(Exception ex){
+           ex.printStackTrace();
+       }
+        return agentDto;
+    }
+    
+    public EducationAgentDto convertEductaionAgentToDto(EducationAgent agent){
+        EducationAgentDto agentDto = new EducationAgentDto();
+        agentDto.setFirstName(agent.getFirstName());
+        agentDto.setLastName(agent.getLastName());
+        agentDto.setDescription(agent.getDescription());
+        agentDto.setCity(agent.getCity().getId());
+        agentDto.setCountry(agent.getCountry().getId());
+        agentDto.setPhoneNumber(agent.getPhoneNumber());
+        agentDto.setEmail(agent.getEmail());
+        agentDto.setCreatedBy(agent.getCreatedBy());
+        agentDto.setUpdatedBy(agent.getUpdatedBy());
+        agentDto.setDeletedBy(agent.getDeletedBy());
+        return agentDto;
+    }
+    
+    public AgentServiceOfferedDto convertAgentServiceOfferedToDto(AgentServiceOffered offered){
+        AgentServiceOfferedDto agentServiceOfferedDto = new AgentServiceOfferedDto();
+        agentServiceOfferedDto.setAmount(offered.getAmount());
+        agentServiceOfferedDto.setService(offered.getService());
+        return agentServiceOfferedDto;
+    }
+    
+    public AgentEducationDetailDto convertAgentEducationDetailToDto(AgentEducationDetail agentEducationDetail){
+        AgentEducationDetailDto agentEducationDetailDto = new AgentEducationDetailDto();
+        agentEducationDetailDto.setCourse(agentEducationDetail.getCourse());
+        agentEducationDetailDto.setDurationFrom(agentEducationDetail.getDurationFrom());
+        agentEducationDetailDto.setDurationTo(agentEducationDetail.getDurationTo());
+        agentEducationDetailDto.setInstitute(agentEducationDetail.getInstitute());
+        return agentEducationDetailDto;
+    }
+    
+    public AgentMediaDocumentationDto convertAgentMediaDocumentationToDto(AgentMediaDocumentation agentMediaDocumentation){
+        AgentMediaDocumentationDto agentMediaDocumentationDto = new AgentMediaDocumentationDto();
+        agentMediaDocumentationDto.setDocumentName(agentMediaDocumentation.getDocumentName());
+        agentMediaDocumentationDto.setType(agentMediaDocumentation.getType());
+        return agentMediaDocumentationDto;
     }
 }

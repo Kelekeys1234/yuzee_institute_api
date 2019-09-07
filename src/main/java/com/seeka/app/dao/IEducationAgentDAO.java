@@ -16,6 +16,16 @@ public interface IEducationAgentDAO {
     public void saveEducationAgent(EducationAgent educationAgent);
 
     public void updateEducationAgent(EducationAgent educationAgent);
+    
+    public EducationAgent fetchEducationAgent(BigInteger id);
+    
+    public  List<EducationAgentSkill> fetchEducationAgentSkillByEducationAgentId(BigInteger educationAgent);
+    
+    public  List<AgentServiceOffered> fetchAgentServiceOffered(BigInteger educationAgent);
+    
+    public  List<AgentEducationDetail> fetchAgentEducationDetail(BigInteger educationAgent);
+    
+    public  List<AgentMediaDocumentation> fetchAgentMediaDocumentation(BigInteger educationAgent);
 
     public void saveSkill(Skill skill);
 
