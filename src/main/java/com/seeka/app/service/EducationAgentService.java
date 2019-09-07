@@ -198,54 +198,65 @@ public class EducationAgentService implements IEducationAgentService {
     }
 
     @Override
-    public EducationAgentDto get(@Valid BigInteger id) {
-        EducationAgentDto agentDto = null;
-       try{
-           EducationAgent educationAgent = educationAgentDao.get(id);
-           if(educationAgent != null){
-               agentDto =  convertEductaionAgentToDto(educationAgent);
-           }
-           List<EducationAgentSkill> agentSkills = educationAgentDao.fetchEducationAgentSkillByEducationAgentId(id);
-           for(EducationAgentSkill educationAgentSkill: agentSkills){
-               List<Skill> skills = new ArrayList<>();
-             Skill skill = educationAgentDao.fetchSkill(educationAgentSkill.getSkillId().getId());
-             skills.add(skill);
-             agentDto.setSkill(skills);
-           }
-           List<AgentServiceOffered> agentServiceOffereds = educationAgentDao.fetchAgentServiceOffered(id);
-           if(agentServiceOffereds != null && !agentServiceOffereds.isEmpty()){
-               for(AgentServiceOffered offered:agentServiceOffereds){
-               List<AgentServiceOfferedDto> agentServiceOfferedDtos = new ArrayList<>();
-               AgentServiceOfferedDto agentServiceOfferedDto = convertAgentServiceOfferedToDto(offered); 
-               agentServiceOfferedDtos.add(agentServiceOfferedDto);
-               agentDto.setAgentServiceOffereds(agentServiceOfferedDtos);
-               }
-           }
-           List<AgentEducationDetail> agentEducationDetails = educationAgentDao.fetchAgentEducationDetail(id);
-           if(agentEducationDetails != null && !agentEducationDetails.isEmpty()){
-               for(AgentEducationDetail agentEducationDetail:agentEducationDetails){
-                   List<AgentEducationDetailDto> agentEducationDetailDtos = new ArrayList<>();
-                   AgentEducationDetailDto agentEducationDetailDto = convertAgentEducationDetailToDto(agentEducationDetail);
-                   agentEducationDetailDtos.add(agentEducationDetailDto);
-                   agentDto.setAgentEducationDetails(agentEducationDetailDtos);
-               }
-           }
-           List<AgentMediaDocumentation> agentMediaDocumentations = educationAgentDao.fetchAgentMediaDocumentation(id);
-           if(agentMediaDocumentations != null && !agentMediaDocumentations.isEmpty()){
-               for(AgentMediaDocumentation agentMediaDocumentation:agentMediaDocumentations){
-                   List<AgentMediaDocumentationDto> agentMediaDocumentationDtos = new ArrayList<>();
-                   AgentMediaDocumentationDto agentMediaDocumentationDto = convertAgentMediaDocumentationToDto(agentMediaDocumentation);
-                   agentMediaDocumentationDtos.add(agentMediaDocumentationDto);
-                   agentDto.setAgentMediaDocumentations(agentMediaDocumentationDtos);
-               }
-           }
-       }catch(Exception ex){
-           ex.printStackTrace();
-       }
-        return agentDto;
+    public Map<String, Object> get(@Valid BigInteger id) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        try {
+            EducationAgent educationAgent = educationAgentDao.get(id);
+            if (educationAgent == null) {
+                response.put("message", "Education agent not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            } else {
+                EducationAgentDto agentDto = null;
+                if (educationAgent != null) {
+                    agentDto = convertEductaionAgentToDto(educationAgent);
+                }
+                List<EducationAgentSkill> agentSkills = educationAgentDao.fetchEducationAgentSkillByEducationAgentId(id);
+                List<Skill> skills = new ArrayList<>();
+                for (EducationAgentSkill educationAgentSkill : agentSkills) {
+                    Skill skill = educationAgentDao.fetchSkill(educationAgentSkill.getSkillId().getId());
+                    skills.add(skill);
+                }
+                agentDto.setSkill(skills);
+
+                List<AgentServiceOffered> agentServiceOffereds = educationAgentDao.fetchAgentServiceOffered(id);
+                if (agentServiceOffereds != null && !agentServiceOffereds.isEmpty()) {
+                    List<AgentServiceOfferedDto> agentServiceOfferedDtos = new ArrayList<>();
+                    for (AgentServiceOffered offered : agentServiceOffereds) {
+                        AgentServiceOfferedDto agentServiceOfferedDto = convertAgentServiceOfferedToDto(offered);
+                        agentServiceOfferedDtos.add(agentServiceOfferedDto);
+                    }
+                    agentDto.setAgentServiceOffereds(agentServiceOfferedDtos);
+                }
+                List<AgentEducationDetail> agentEducationDetails = educationAgentDao.fetchAgentEducationDetail(id);
+                if (agentEducationDetails != null && !agentEducationDetails.isEmpty()) {
+                    List<AgentEducationDetailDto> agentEducationDetailDtos = new ArrayList<>();
+                    for (AgentEducationDetail agentEducationDetail : agentEducationDetails) {
+                        AgentEducationDetailDto agentEducationDetailDto = convertAgentEducationDetailToDto(agentEducationDetail);
+                        agentEducationDetailDtos.add(agentEducationDetailDto);
+                    }
+                    agentDto.setAgentEducationDetails(agentEducationDetailDtos);
+                }
+                List<AgentMediaDocumentation> agentMediaDocumentations = educationAgentDao.fetchAgentMediaDocumentation(id);
+                if (agentMediaDocumentations != null && !agentMediaDocumentations.isEmpty()) {
+                    List<AgentMediaDocumentationDto> agentMediaDocumentationDtos = new ArrayList<>();
+                    for (AgentMediaDocumentation agentMediaDocumentation : agentMediaDocumentations) {
+                        AgentMediaDocumentationDto agentMediaDocumentationDto = convertAgentMediaDocumentationToDto(agentMediaDocumentation);
+                        agentMediaDocumentationDtos.add(agentMediaDocumentationDto);
+                    }
+                    agentDto.setAgentMediaDocumentations(agentMediaDocumentationDtos);
+                }
+                response.put("message", "Education agent fetched successfully");
+                response.put("status", HttpStatus.OK.value());
+                response.put("data", agentDto);
+            }
+        } catch (Exception ex) {
+            response.put("message", ex.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
     }
-    
-    public EducationAgentDto convertEductaionAgentToDto(EducationAgent agent){
+
+    public EducationAgentDto convertEductaionAgentToDto(EducationAgent agent) {
         EducationAgentDto agentDto = new EducationAgentDto();
         agentDto.setFirstName(agent.getFirstName());
         agentDto.setLastName(agent.getLastName());
@@ -259,15 +270,15 @@ public class EducationAgentService implements IEducationAgentService {
         agentDto.setDeletedBy(agent.getDeletedBy());
         return agentDto;
     }
-    
-    public AgentServiceOfferedDto convertAgentServiceOfferedToDto(AgentServiceOffered offered){
+
+    public AgentServiceOfferedDto convertAgentServiceOfferedToDto(AgentServiceOffered offered) {
         AgentServiceOfferedDto agentServiceOfferedDto = new AgentServiceOfferedDto();
         agentServiceOfferedDto.setAmount(offered.getAmount());
         agentServiceOfferedDto.setService(offered.getService());
         return agentServiceOfferedDto;
     }
-    
-    public AgentEducationDetailDto convertAgentEducationDetailToDto(AgentEducationDetail agentEducationDetail){
+
+    public AgentEducationDetailDto convertAgentEducationDetailToDto(AgentEducationDetail agentEducationDetail) {
         AgentEducationDetailDto agentEducationDetailDto = new AgentEducationDetailDto();
         agentEducationDetailDto.setCourse(agentEducationDetail.getCourse());
         agentEducationDetailDto.setDurationFrom(agentEducationDetail.getDurationFrom());
@@ -275,8 +286,8 @@ public class EducationAgentService implements IEducationAgentService {
         agentEducationDetailDto.setInstitute(agentEducationDetail.getInstitute());
         return agentEducationDetailDto;
     }
-    
-    public AgentMediaDocumentationDto convertAgentMediaDocumentationToDto(AgentMediaDocumentation agentMediaDocumentation){
+
+    public AgentMediaDocumentationDto convertAgentMediaDocumentationToDto(AgentMediaDocumentation agentMediaDocumentation) {
         AgentMediaDocumentationDto agentMediaDocumentationDto = new AgentMediaDocumentationDto();
         agentMediaDocumentationDto.setDocumentName(agentMediaDocumentation.getDocumentName());
         agentMediaDocumentationDto.setType(agentMediaDocumentation.getType());

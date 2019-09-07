@@ -1,7 +1,9 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.AgentEducationDetail;
 import com.seeka.app.bean.AgentMediaDocumentation;
 import com.seeka.app.bean.AgentServiceOffered;
+import com.seeka.app.bean.City;
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.EducationAgent;
 import com.seeka.app.bean.EducationAgentSkill;
 import com.seeka.app.bean.Service;
@@ -170,8 +174,65 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     private List<EducationAgentGetAllDto> getEducationAgentDetails(List<Object[]> rows, Session session) {
-        // TODO Auto-generated method stub
-        return null;
+        List<EducationAgentGetAllDto> educationAgentGetAllDtos = new ArrayList<>();
+        EducationAgentGetAllDto educationAgent = null;
+        for (Object[] row : rows) {
+            educationAgent = new EducationAgentGetAllDto();
+            educationAgent.setId(new BigInteger(row[0].toString()));
+            educationAgent.setAgentName(row[1].toString());
+            educationAgent.setDescription(row[2].toString());
+            if (row[3] != null) {
+                educationAgent.setCity(getCity(new BigInteger(row[3].toString())));
+            }
+            if (row[4] != null) {
+                educationAgent.setCountry(getCountry(new BigInteger(row[4].toString())));
+            }
+            String contact = null;
+            if (row[6] != null) {
+                contact = row[6].toString();
+            }
+            if (row[5] != null) {
+                if (contact != null) {
+                    contact = contact + ", " + row[5].toString();
+                } else {
+                    contact = row[5].toString();
+                }
+            }
+            educationAgent.setContact(contact);
+            educationAgent.setStatus("ACTIVE");
+            if (row[7] != null) {
+                Date updatedDate = (Date) row[7];
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+                String dateResult = formatter.format(updatedDate);
+                educationAgent.setLastUpdated(dateResult);
+            }
+            educationAgentGetAllDtos.add(educationAgent);
+        }
+        return educationAgentGetAllDtos;
+    }
+
+    private String getCountry(BigInteger id) {
+        String name = null;
+        if (id != null) {
+            Session session = sessionFactory.getCurrentSession();
+            Country country = session.get(Country.class, id);
+            if (country != null) {
+                name = country.getName();
+            }
+        }
+        return name;
+    }
+
+    private String getCity(BigInteger id) {
+        String name = null;
+        if (id != null) {
+            Session session = sessionFactory.getCurrentSession();
+            City city = session.get(City.class, id);
+            if (city != null) {
+                name = city.getName();
+            }
+        }
+        return name;
     }
 
     @Override
@@ -194,9 +255,9 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     public List<AgentServiceOffered> fetchAgentServiceOffered(BigInteger educationAgent) {
         Session session = sessionFactory.getCurrentSession();
         List<AgentServiceOffered> agentServiceOffereds = new ArrayList<>();
-        List<Object[]> agentService = session.createSQLQuery(
-                        "SELECT aso.amount, aso.service FROM agent_service_offered as aso WHERE education_agent =" + educationAgent + "").list();
-        for(Object[] obj:agentService){
+        List<Object[]> agentService = session.createSQLQuery("SELECT aso.amount, aso.service FROM agent_service_offered as aso WHERE education_agent =" + educationAgent + "")
+                        .list();
+        for (Object[] obj : agentService) {
             AgentServiceOffered agentServiceOffered = new AgentServiceOffered();
             Service service = new Service();
             agentServiceOffered.setAmount(Double.parseDouble(obj[0].toString()));
@@ -204,7 +265,7 @@ public class EducationAgentDAO implements IEducationAgentDAO {
             agentServiceOffered.setService(service);
             agentServiceOffereds.add(agentServiceOffered);
         }
-        
+
         return agentServiceOffereds;
     }
 

@@ -56,12 +56,12 @@ public class EducationAgentController {
         }
         return ResponseEntity.accepted().body(response);
     }
-    
+
     @RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getAllEducationAgent(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
         return ResponseEntity.accepted().body(educationService.getAllEducationAgent(pageNumber, pageSize));
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getAllEducationAgent(@PathVariable final BigInteger id) throws Exception {
         return ResponseEntity.accepted().body(educationService.get(id));

@@ -15,6 +15,6 @@ public interface IEducationAgentService {
 
     public Map<String, Object> getAllEducationAgent(Integer pageNumber, Integer pageSize);
     
-    public EducationAgentDto get(@Valid BigInteger id);
+    public Map<String, Object> get(@Valid BigInteger id);
 
 }
