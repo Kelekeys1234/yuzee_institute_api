@@ -20,5 +20,5 @@ public interface IEducationAgentService {
 
     public void savePartnership(EducationAgentPartnershipsDto agentPartnershipsDto);
 
-    public void deleteEducationAgent(BigInteger id);
+    public Map<String, Object> deleteEducationAgent(BigInteger id);
 }

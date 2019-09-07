@@ -14,6 +14,7 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
 
 @Repository
+@SuppressWarnings({ "deprecation", "unchecked" })
 public class CourseEnglishEligibilityDAO implements ICourseEnglishEligibilityDAO {
 
 	@Autowired
@@ -45,7 +46,7 @@ public class CourseEnglishEligibilityDAO implements ICourseEnglishEligibilityDAO
 		return crit.list();
 	}
 
-	@Override
+    @Override
 	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(final BigInteger courseID) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria c = session.createCriteria(CourseEnglishEligibility.class, "courseEnglishEligibility");

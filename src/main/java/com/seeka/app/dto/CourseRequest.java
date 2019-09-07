@@ -48,6 +48,12 @@ public class CourseRequest {
 	private List<String> instituteImageUrls;
 	
 	private String courseCurrency;
+	private String facultyName;
+	private String studyMode;
+	private String partFull;
+	private BigInteger levelId;
+	private String levelName;
+	private String availbility;
 
 	/**
 	 * @return the courseId
@@ -584,5 +590,89 @@ public class CourseRequest {
      */
     public void setCourseCurrency(String courseCurrency) {
         this.courseCurrency = courseCurrency;
+    }
+
+    /**
+     * @return the facultyName
+     */
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    /**
+     * @param facultyName the facultyName to set
+     */
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
+    }
+
+    /**
+     * @return the studyMode
+     */
+    public String getStudyMode() {
+        return studyMode;
+    }
+
+    /**
+     * @param studyMode the studyMode to set
+     */
+    public void setStudyMode(String studyMode) {
+        this.studyMode = studyMode;
+    }
+
+    /**
+     * @return the partFull
+     */
+    public String getPartFull() {
+        return partFull;
+    }
+
+    /**
+     * @param partFull the partFull to set
+     */
+    public void setPartFull(String partFull) {
+        this.partFull = partFull;
+    }
+
+    /**
+     * @return the levelId
+     */
+    public BigInteger getLevelId() {
+        return levelId;
+    }
+
+    /**
+     * @param levelId the levelId to set
+     */
+    public void setLevelId(BigInteger levelId) {
+        this.levelId = levelId;
+    }
+
+    /**
+     * @return the levelName
+     */
+    public String getLevelName() {
+        return levelName;
+    }
+
+    /**
+     * @param levelName the levelName to set
+     */
+    public void setLevelName(String levelName) {
+        this.levelName = levelName;
+    }
+
+    /**
+     * @return the availbility
+     */
+    public String getAvailbility() {
+        return availbility;
+    }
+
+    /**
+     * @param availbility the availbility to set
+     */
+    public void setAvailbility(String availbility) {
+        this.availbility = availbility;
     }
 }

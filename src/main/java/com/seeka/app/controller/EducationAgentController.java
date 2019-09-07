@@ -68,6 +68,11 @@ public class EducationAgentController {
         return ResponseEntity.accepted().body(educationService.get(id));
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteEducationAgent(@PathVariable BigInteger id) {
+        return ResponseEntity.accepted().body(educationService.deleteEducationAgent(id));
+    }
+
     @RequestMapping(value = "/partnership", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<?> saveEducationAgentPartnership(@RequestBody final EducationAgentPartnershipsDto agentPartnershipsDto) throws Exception {
         Map<String, Object> response = new HashMap<>();
@@ -75,21 +80,6 @@ public class EducationAgentController {
             educationService.savePartnership(agentPartnershipsDto);
             response.put("status", HttpStatus.OK.value());
             response.put("message", "Education Agent Partnership Save Successfully");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.put("message", exception.getCause());
-        }
-        return ResponseEntity.accepted().body(response);
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteEducationAgent(@PathVariable BigInteger id) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            educationService.deleteEducationAgent(id);
-            response.put("status", HttpStatus.OK.value());
-            response.put("message", "Education Agent Delete Successfully");
         } catch (Exception exception) {
             exception.printStackTrace();
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());

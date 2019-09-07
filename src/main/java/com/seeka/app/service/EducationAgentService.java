@@ -15,12 +15,9 @@ import org.springframework.stereotype.Service;
 import com.seeka.app.bean.AgentEducationDetail;
 import com.seeka.app.bean.AgentMediaDocumentation;
 import com.seeka.app.bean.AgentServiceOffered;
-import com.seeka.app.bean.City;
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.EducationAgent;
 import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
-import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Skill;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
@@ -28,7 +25,6 @@ import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IEducationAgentDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IServiceDetailsDAO;
-import com.seeka.app.dao.InstituteDAO;
 import com.seeka.app.dto.AgentEducationDetailDto;
 import com.seeka.app.dto.AgentMediaDocumentationDto;
 import com.seeka.app.dto.AgentServiceOfferedDto;
@@ -340,15 +336,24 @@ public class EducationAgentService implements IEducationAgentService {
     }
 
     @Override
-    public void deleteEducationAgent(BigInteger id) {
+    public Map<String, Object> deleteEducationAgent(BigInteger id) {
+        Map<String, Object> response = new HashMap<>();
         try {
-            educationAgentDao.deleteEducationAgent(id);
-            educationAgentDao.deleteEducationAgentSkill(id);
-            educationAgentDao.deleteAgentServiceOffered(id);
-            educationAgentDao.deleteAgentEducationDetail(id);
-            educationAgentDao.deleteAgentMediaDocumentation(id);
+            EducationAgent educationAgent = educationAgentDao.get(id);
+            if (educationAgent != null) {
+                educationAgent.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
+                educationAgentDao.updateEducationAgent(educationAgent);
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Education Agent Delete Successfully");
+            } else {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Education Agent not found");
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
         }
+        return response;
     }
 }

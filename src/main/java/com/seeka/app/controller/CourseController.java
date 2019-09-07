@@ -25,6 +25,7 @@ import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.bean.UserInfo;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
@@ -45,6 +46,7 @@ import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IUserService;
+import com.seeka.app.service.InstituteLevelService;
 import com.seeka.app.service.UserRecommendationService;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.CommonUtil;
@@ -79,6 +81,9 @@ public class CourseController {
     @Autowired
     private ICourseGradeEligibilityService courseGradeService;
 
+    @Autowired
+    private InstituteLevelService instituteLevelService;
+
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws Exception {
         return ResponseEntity.accepted().body(courseService.save(course));
@@ -93,7 +98,7 @@ public class CourseController {
     public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
         return ResponseEntity.accepted().body(courseService.getAllCourse(pageNumber, pageSize));
     }
-    
+
     @RequestMapping(value = "/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> autoSearch(@PathVariable final String searchKey, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
         return ResponseEntity.accepted().body(courseService.autoSearch(pageNumber, pageSize, searchKey));
@@ -301,6 +306,15 @@ public class CourseController {
         List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName());
         List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
         List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(id);
+        if (course.getInstitute() != null) {
+            List<InstituteLevel> instituteLevels = instituteLevelService.getAllLevelByInstituteId(course.getInstitute().getId());
+            if (instituteLevels != null && !instituteLevels.isEmpty()) {
+                if (instituteLevels.get(0).getLevel() != null) {
+                    courseRequest.setLevelId(instituteLevels.get(0).getLevel().getId());
+                    courseRequest.setLevelName(instituteLevels.get(0).getLevel().getName());
+                }
+            }
+        }
         response.put("status", 1);
         response.put("message", "Success.!");
         response.put("courseObj", courseRequest);

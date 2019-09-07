@@ -184,17 +184,21 @@ public class CommonUtil {
         CourseRequest courseRequest = new CourseRequest();
         courseRequest.setCourseId(course.getId());
         courseRequest.setStars(course.getStars());
-        courseRequest.setDescription(course.getDescription());
+        if (course.getDescription() != null) {
+            courseRequest.setDescription(course.getDescription());
+        } else {
+            courseRequest.setDescription(IConstant.COURSE_DEFAULT_DESCRPTION);
+        }
         courseRequest.setDuration(course.getDuration());
         courseRequest.setDurationTime(course.getDurationTime());
         courseRequest.setWorldRanking(course.getWorldRanking());
-        // courseRequest.setCost(course.getCostRange());
         courseRequest.setName(course.getName());
         courseRequest.setCourseLink(course.getCourseLink());
         courseRequest.setIntake(course.getIntake());
         courseRequest.setLanguage(course.getCourseLang());
         if (course.getFaculty() != null) {
             courseRequest.setFacultyId(course.getFaculty().getId());
+            courseRequest.setFacultyName(course.getFaculty().getName());
         }
         courseRequest.setDomasticFee(course.getDomesticFee());
         courseRequest.setInternationalFee(course.getInternationalFee());
@@ -202,14 +206,14 @@ public class CommonUtil {
             courseRequest.setCountryId(course.getCountry().getId());
         }
         courseRequest.setGrades(course.getGrades());
-        // courseRequest.setPartTime(course.getp);
         courseRequest.setContact(course.getContact());
-        // courseRequest.setOpeningHourFrom(openingHourFrom);
-        // courseRequest.setOpeningHourTo(openingHourTo);
         courseRequest.setCampusLocation(course.getCampusLocation());
-        courseRequest.setWebsite(course.getWebsite());
-        // courseRequest.setFullTime(course.g);
         courseRequest.setCourseCurrency(course.getCurrency());
+        courseRequest.setWebsite(course.getWebsite());
+        courseRequest.setcId(course.getcId());
+        courseRequest.setPartFull(course.getPartFull());
+        courseRequest.setStudyMode(course.getStudyMode());
+        courseRequest.setAvailbility(course.getAvailbilty());
         return courseRequest;
     }
 
