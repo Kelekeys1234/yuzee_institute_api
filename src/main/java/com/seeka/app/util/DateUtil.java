@@ -75,4 +75,14 @@ public class DateUtil {
         final SimpleDateFormat sdf = new SimpleDateFormat(IConstant.DATE_FORMAT_YYYY_MM_DD);
         return sdf.format(datePostedUpdated);
     }
+    public static Date stringDateToDateDD_MM_YYYYYFormat(String StrDate) {
+        Date dateToReturn = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            dateToReturn = (Date) dateFormat.parse(StrDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateToReturn;
+    }
 }

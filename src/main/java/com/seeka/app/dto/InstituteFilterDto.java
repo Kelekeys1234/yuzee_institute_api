@@ -22,6 +22,7 @@ public class InstituteFilterDto {
     private Integer maxSizePerPage;
     private Integer pageNumber;
     private Integer worldRanking;
+    private String datePosted;
 
     public Integer getWorldRanking() {
         return worldRanking;
@@ -77,5 +78,19 @@ public class InstituteFilterDto {
 
     public void setPageNumber(Integer pageNumber) {
         this.pageNumber = pageNumber;
+    }
+
+    /**
+     * @return the datePosted
+     */
+    public String getDatePosted() {
+        return datePosted;
+    }
+
+    /**
+     * @param datePosted the datePosted to set
+     */
+    public void setDatePosted(String datePosted) {
+        this.datePosted = datePosted;
     }
 }

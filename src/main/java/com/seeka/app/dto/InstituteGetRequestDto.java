@@ -24,6 +24,8 @@ public class InstituteGetRequestDto {
     private String createdBy;
     private String updatedBy;
     private String lastUpdated;
+    private Integer courseCount;
+    
 
     public String getLastUpdated() {
         return lastUpdated;
@@ -211,5 +213,19 @@ public class InstituteGetRequestDto {
      */
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    /**
+     * @return the courseCount
+     */
+    public Integer getCourseCount() {
+        return courseCount;
+    }
+
+    /**
+     * @param courseCount the courseCount to set
+     */
+    public void setCourseCount(Integer courseCount) {
+        this.courseCount = courseCount;
     }
 }

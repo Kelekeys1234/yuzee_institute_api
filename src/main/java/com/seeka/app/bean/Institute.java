@@ -73,6 +73,8 @@ public class Institute implements Serializable {
     private String enrolment;
     private String tuitionFessPaymentPlan;
     private String scholarshipFinancingAssistance;
+    
+    private Integer courseCount;
 
     @Transient
     public String getLastUpdated() {
@@ -714,6 +716,21 @@ public class Institute implements Serializable {
      */
     public void setScholarshipFinancingAssistance(String scholarshipFinancingAssistance) {
         this.scholarshipFinancingAssistance = scholarshipFinancingAssistance;
+    }
+
+    /**
+     * @return the courseCount
+     */
+    @Transient
+    public Integer getCourseCount() {
+        return courseCount;
+    }
+
+    /**
+     * @param courseCount the courseCount to set
+     */
+    public void setCourseCount(Integer courseCount) {
+        this.courseCount = courseCount;
     }
 
 }

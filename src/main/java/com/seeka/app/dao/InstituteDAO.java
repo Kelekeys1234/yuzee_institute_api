@@ -3,6 +3,7 @@ package com.seeka.app.dao;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.util.CDNServerUtil;
+import com.seeka.app.util.DateUtil;
 
 @Repository
 @SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
@@ -403,9 +405,18 @@ public class InstituteDAO implements IInstituteDAO {
                 obj.setLastUpdated(dateResult);
 
             }
+            obj.setCourseCount(getCourseCount(new BigInteger(row[0].toString())));
             instituteList.add(obj);
         }
         return instituteList;
+    }
+
+    private Integer getCourseCount(BigInteger id) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select sa.id from course sa where sa.institute_id=" + id;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        return rows.size();
     }
 
     @Override
@@ -419,9 +430,9 @@ public class InstituteDAO implements IInstituteDAO {
 
     private String getFilterInstituteSqlQuery(InstituteFilterDto instituteFilterDto) {
         String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on FROM institute as inst "
-                        + " inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
-                        + "inner join faculty_level f on f.institute_id = inst.id inner join institute_level l on l.institute_id = inst.id "
-                        + "inner join course c  on c.institute_id=inst.id where inst.is_active = 1 and inst.deleted_on IS NULL  ";
+                        + " left join country ctry  on ctry.id = inst.country_id left join city ci  on ci.id = inst.city_id "
+                        + "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
+                        + "left join course c  on c.institute_id=inst.id where inst.is_active = 1 and inst.deleted_on IS NULL  ";
 
         if (instituteFilterDto.getCountryId() != null && instituteFilterDto.getCountryId().intValue() > 0) {
             sqlQuery += " and inst.country_id = " + instituteFilterDto.getCountryId() + " ";
@@ -440,7 +451,16 @@ public class InstituteDAO implements IInstituteDAO {
         }
 
         if (instituteFilterDto.getInstituteTypeId() != null && instituteFilterDto.getInstituteTypeId().intValue() > 0) {
-            sqlQuery += " and inst.institute_type_id = " + instituteFilterDto.getInstituteTypeId() + " ";
+            sqlQuery += " and inst.institute_category_type_id = " + instituteFilterDto.getInstituteTypeId() + " ";
+        }
+        if (instituteFilterDto.getDatePosted() != null && !instituteFilterDto.getDatePosted().isEmpty()) {
+            Date postedDate = DateUtil.stringDateToDateDD_MM_YYYYYFormat(instituteFilterDto.getDatePosted());
+            Calendar c = Calendar.getInstance();
+            c.setTime(postedDate);
+            c.add(Calendar.DATE, 1);
+            postedDate = c.getTime();
+            String updatedDate = DateUtil.getStringDateFromDate(postedDate);
+            sqlQuery += " and (inst.created_on >= '" + instituteFilterDto.getDatePosted() + "' and inst.created_on < '" + updatedDate + "')";
         }
         return sqlQuery;
     }

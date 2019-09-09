@@ -325,6 +325,7 @@ public class InstituteService implements IInstituteService {
         dto.setInstituteDetails(getInstituteDetails(institute.getId()));
         dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountry(), institute.getName()));
         dto.setLastUpdated(institute.getLastUpdated());
+        dto.setCourseCount(institute.getCourseCount());
         return dto;
     }
 
@@ -463,12 +464,7 @@ public class InstituteService implements IInstituteService {
         PaginationUtilDto paginationUtilDto = null;
         try {
             totalCount = dao.findTotalCountFilterInstitute(instituteFilterDto);
-            int startIndex;
-            if (instituteFilterDto.getPageNumber() > 1) {
-                startIndex = (instituteFilterDto.getPageNumber() - 1) * instituteFilterDto.getPageNumber() + 1;
-            } else {
-                startIndex = instituteFilterDto.getPageNumber();
-            }
+            int startIndex = (instituteFilterDto.getPageNumber() - 1) * instituteFilterDto.getMaxSizePerPage();
             paginationUtilDto = PaginationUtil.calculatePagination(startIndex, instituteFilterDto.getMaxSizePerPage(), totalCount);
             List<Institute> institutes = dao.instituteFilter(startIndex, instituteFilterDto.getMaxSizePerPage(), instituteFilterDto);
             for (Institute institute : institutes) {
