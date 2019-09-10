@@ -75,6 +75,7 @@ public class Institute implements Serializable {
     private String scholarshipFinancingAssistance;
     
     private Integer courseCount;
+    private String worldRankingType;
 
     @Transient
     public String getLastUpdated() {
@@ -731,6 +732,21 @@ public class Institute implements Serializable {
      */
     public void setCourseCount(Integer courseCount) {
         this.courseCount = courseCount;
+    }
+
+    /**
+     * @return the worldRankingType
+     */
+    @Column(name = "world_ranking_type")
+    public String getWorldRankingType() {
+        return worldRankingType;
+    }
+
+    /**
+     * @param worldRankingType the worldRankingType to set
+     */
+    public void setWorldRankingType(String worldRankingType) {
+        this.worldRankingType = worldRankingType;
     }
 
 }

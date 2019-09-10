@@ -113,6 +113,7 @@ public class CommonUtil {
         instituteRequestDto.setEnrolment(institute.getEnrolment());
         instituteRequestDto.setScholarshipFinancingAssistance(institute.getScholarshipFinancingAssistance());
         instituteRequestDto.setTuitionFessPaymentPlan(institute.getTuitionFessPaymentPlan());
+        instituteRequestDto.setWorldRankingType(institute.getWorldRankingType());
         return instituteRequestDto;
     }
 

@@ -37,6 +37,7 @@ public class InstituteRequestDto {
     private List<String> intakes;
     private String createdBy;
     private String updatedBy;
+    private String worldRankingType;
 
     /**
      * @return the instituteId
@@ -501,5 +502,26 @@ public class InstituteRequestDto {
      */
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    /**
+     * @return the worldRankingType
+     */
+    public String getWorldRankingType() {
+        return worldRankingType;
+    }
+
+    /**
+     * @param worldRankingType the worldRankingType to set
+     */
+    public void setWorldRankingType(String worldRankingType) {
+        this.worldRankingType = worldRankingType;
+    }
+
+    /**
+     * @param latitude the latitude to set
+     */
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 }

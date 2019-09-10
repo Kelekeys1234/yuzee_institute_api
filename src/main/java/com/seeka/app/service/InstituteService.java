@@ -215,6 +215,7 @@ public class InstituteService implements IInstituteService {
         institute.setEnrolment(instituteRequest.getEnrolment());
         institute.setTuitionFessPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
         institute.setScholarshipFinancingAssistance(instituteRequest.getScholarshipFinancingAssistance());
+        institute.setWorldRankingType(instituteRequest.getWorldRankingType());
         dao.save(institute);
         if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
             saveInstituteService(institute, instituteRequest.getOfferService());
