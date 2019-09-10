@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.EducationSystem;
+import com.seeka.app.bean.GradeDetails;
 import com.seeka.app.bean.Subject;
 import com.seeka.app.bean.UserEducationAOLevelSubjects;
 import com.seeka.app.bean.UserEducationDetails;
 import com.seeka.app.bean.UserEnglishScore;
+import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.IEducationSystemDAO;
 import com.seeka.app.dao.UserEducationAOLevelSubjectDAO;
@@ -87,7 +89,7 @@ public class EducationSystemService implements IEducationSystemService {
         try {
             educationSystems = dao.getEducationSystemsByCountryId(countryId);
             if (educationSystems != null && !educationSystems.isEmpty()) {
-                //educationSystems = getSubjectDetail(educationSystems);
+                // educationSystems = getSubjectDetail(educationSystems);
                 response.put("message", IConstant.EDUCATION_SUCCESS);
                 response.put("status", HttpStatus.OK.value());
             } else {
@@ -271,7 +273,7 @@ public class EducationSystemService implements IEducationSystemService {
         EducationSystemResponse systemResponse = new EducationSystemResponse();
         try {
             UserEducationDetails educationDetails = educationDetailDAO.getUserEducationDetails(userId);
-            System.out.println("Education "+educationDetails);
+            System.out.println("Education " + educationDetails);
             if (educationDetails != null) {
                 systemResponse.setEducationDetail(educationDetails);
                 systemResponse.setEnglishScoresList(englishScoreDAO.getEnglishEligibiltyByUserID(userId));
@@ -349,10 +351,25 @@ public class EducationSystemService implements IEducationSystemService {
         }
         return averageGpa;
     }
-    
-    public Double calGpa(@Valid GradeDto gradeDto){
+
+    public Double calGpa(@Valid GradeDto gradeDto) {
         Double avr = 0.0;
-        calculateGpa(gradeDto);
+        avr = calculateGpa(gradeDto);
         return avr;
+    }
+
+    @Override
+    public ResponseEntity<?> getGrades(BigInteger countryId, BigInteger systemId) {
+        List<GradeDetails> grades = null;
+        try {
+            grades = educationDetailDAO.getGrades(countryId, systemId);
+            if (grades != null && !grades.isEmpty()) {
+                return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(grades).setMessage("Grades fetched successfully").create();
+            } else {
+                return new GenericResponseHandlers.Builder().setStatus(HttpStatus.NOT_FOUND).setData(grades).setMessage("Grades not found").create();
+            }
+        } catch (Exception exception) {
+            return new GenericResponseHandlers.Builder().setStatus(HttpStatus.INTERNAL_SERVER_ERROR).setData(grades).setMessage(exception.getCause().getMessage()).create();
+        }
     }
 }

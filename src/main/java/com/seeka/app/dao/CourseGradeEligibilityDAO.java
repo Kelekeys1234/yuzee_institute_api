@@ -47,11 +47,12 @@ public class CourseGradeEligibilityDAO implements ICourseGradeEligibilityDAO{
 		return crit.list();
 	}
 	
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	public CourseGradeEligibility getAllEnglishEligibilityByCourse(BigInteger courseID) {
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(CourseGradeEligibility.class); 
-		crit.add(Restrictions.eq("courseId",courseID));
+		crit.add(Restrictions.eq("course.id",courseID));
 		return null != crit.list()?(CourseGradeEligibility)crit.list().get(0):null;
 	}
 	

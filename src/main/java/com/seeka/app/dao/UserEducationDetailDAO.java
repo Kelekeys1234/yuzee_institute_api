@@ -130,4 +130,12 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
         }
         return gpaGrade;
     }
+
+    public List<GradeDetails> getGrades(BigInteger countryId, BigInteger systemId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(GradeDetails.class);
+        crit.add(Restrictions.eq("countryId", countryId));
+        crit.add(Restrictions.eq("educationSystemId", systemId));
+        return crit.list();
+    }
 }

@@ -254,8 +254,8 @@ public class CourseController {
             showMore = false;
         }
         /*
-         * CourseFilterCostResponseDto costResponseDto = courseService.getAllCoursesFilterCostInfo(courseSearchDto,
-         * currency, userCurrency.getCode()); costResponseDto.setCurrencyId(currency.getId());
+         * CourseFilterCostResponseDto costResponseDto = courseService.getAllCoursesFilterCostInfo(courseSearchDto, currency,
+         * userCurrency.getCode()); costResponseDto.setCurrencyId(currency.getId());
          * costResponseDto.setCurrencySymbol(currency.getSymbol()); costResponseDto.setCurrencyCode(currency.getCode());
          * costResponseDto.setCurrencyName(currency.getName());
          */
@@ -429,11 +429,11 @@ public class CourseController {
             i++;
             try {
                 courseGradeEligibility = new CourseGradeEligibility();
-                courseGradeEligibility.setCourseId(course.getId());
-                courseGradeEligibility.setGlobalALevel1("A");
-                courseGradeEligibility.setGlobalALevel2("A");
-                courseGradeEligibility.setGlobalALevel3("A");
-                courseGradeEligibility.setGlobalALevel4("A");
+                //courseGradeEligibility.setCourseId(course.getId());
+                //courseGradeEligibility.setGlobalALevel1("A");
+               // courseGradeEligibility.setGlobalALevel2("A");
+               //courseGradeEligibility.setGlobalALevel3("A");
+              //  courseGradeEligibility.setGlobalALevel4("A");
                 courseGradeEligibility.setGlobalGpa(3.5);
                 courseGradeEligibility.setIsActive(true);
                 courseGradeEligibility.setIsDeleted(false);
@@ -510,7 +510,7 @@ public class CourseController {
         return ResponseEntity.ok().body(courseService.courseFilter(courseFilter));
     }
 
-    @RequestMapping(value = "/courseMinRequirement", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/minimumRequirement", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> saveCourseMinRequirement(@Valid @RequestBody final CourseMinRequirementDto courseMinRequirementDto) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -525,7 +525,7 @@ public class CourseController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/courseMinRequirement/{courseId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/minimumRequirement/{courseId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getCourseMinRequirement(@PathVariable final BigInteger courseId) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {

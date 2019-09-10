@@ -767,7 +767,8 @@ public class CourseService implements ICourseService {
         Integer i = 0;
         GradeDto gradeDto = new GradeDto();
         List<String> subjectGrade = new ArrayList<>();
-        for (String country : courseMinRequirementDto.getSubject()) {
+        for (String subject : courseMinRequirementDto.getSubject()) {
+            System.out.println(subject);
             CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
             courseMinRequirement.setCountry(countryDAO.get(courseMinRequirementDto.getCountry()));
             courseMinRequirement.setSystem(courseMinRequirementDto.getSystem());
@@ -782,16 +783,18 @@ public class CourseService implements ICourseService {
         gradeDto.setEducationSystemId(courseMinRequirementDto.getSystem());
         gradeDto.setSubjectGrades(subjectGrade);
         Double averageGPA = educationSystemService.calGpa(gradeDto);
-        CourseGradeEligibility courseGradeEligibility = courseGradeEligibilityDao.getAllEnglishEligibilityByCourse(courseMinRequirementDto.getCourse());
+        CourseGradeEligibility courseGradeEligibility = null;
+        courseGradeEligibility = courseGradeEligibilityDao.getAllEnglishEligibilityByCourse(courseMinRequirementDto.getCourse());
         if (courseGradeEligibility != null) {
-            courseGradeEligibility.setSystemGlobalGpa(averageGPA);
+            courseGradeEligibility.setCountryLevelGpa(averageGPA);
             courseGradeEligibilityDao.update(courseGradeEligibility);
         } else {
+            courseGradeEligibility = new CourseGradeEligibility();
             courseGradeEligibility.setGlobalGpa(0.0);
             courseGradeEligibility.setIsActive(true);
             courseGradeEligibility.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
             courseGradeEligibility.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-            courseGradeEligibility.setSystemGlobalGpa(averageGPA);
+            courseGradeEligibility.setCountryLevelGpa(averageGPA);
             courseGradeEligibilityDao.save(courseGradeEligibility);
         }
     }

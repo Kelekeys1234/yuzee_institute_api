@@ -853,13 +853,13 @@ public class MigrateCourseController {
             courseDetails.setCoursePricingObj(coursePricing);
 
             CourseGradeEligibility gradeObj = new CourseGradeEligibility();
-            gradeObj.setGlobalALevel1(GLOB_A_LEV_1);
-            gradeObj.setGlobalALevel2(GLOB_A_LEV_2);
-            gradeObj.setGlobalALevel3(GLOB_A_LEV_3);
-            gradeObj.setGlobalALevel4(GLOB_A_LEV_4);
-            gradeObj.setGlobalALevel5(GLOB_A_LEV_5);
-            gradeObj.setGlobalGpa(Double.valueOf(GLOB_GPA));
-            gradeObj.setIsActive(true);
+            //gradeObj.setGlobalALevel1(GLOB_A_LEV_1);
+            //gradeObj.setGlobalALevel2(GLOB_A_LEV_2);
+           // gradeObj.setGlobalALevel3(GLOB_A_LEV_3);
+            //gradeObj.setGlobalALevel4(GLOB_A_LEV_4);
+           // gradeObj.setGlobalALevel5(GLOB_A_LEV_5);
+           // gradeObj.setGlobalGpa(Double.valueOf(GLOB_GPA));
+            //gradeObj.setIsActive(true);
 
             String courseName = University.toLowerCase().replaceAll("[^\\w]", "") + Courses.toLowerCase().replaceAll("[^\\w]", "");
             map.put(courseName, courseDetails);

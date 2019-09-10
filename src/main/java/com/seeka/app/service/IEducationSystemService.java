@@ -34,4 +34,6 @@ public interface IEducationSystemService {
     public ResponseEntity<?> deleteEducationSystemDetailByUserId(@Valid BigInteger userId);
 
     public ResponseEntity<?> calculate(@Valid GradeDto gradeDto);
+
+    public ResponseEntity<?> getGrades(BigInteger countryId, BigInteger systemId);
 }
