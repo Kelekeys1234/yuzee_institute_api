@@ -115,6 +115,7 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
         Criteria crit = session.createCriteria(GradeDetails.class);
         crit.add(Restrictions.eq("countryId", countryId)).add(Restrictions.eq("educationSystemId", educationSystemId)).add(Restrictions.eq("grade", grade));
         List<GradeDetails> details = crit.list();
+        System.out.println("The List: "+details.size());
         ArrayList<GradeDetails> min = new ArrayList<GradeDetails>();
         for (GradeDetails x : details) {
             if (min.size() == 0 || Double.valueOf(x.getGpaGrade()) == Double.valueOf(min.get(0).getGpaGrade()))

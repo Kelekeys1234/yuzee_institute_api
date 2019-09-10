@@ -30,6 +30,7 @@ import com.seeka.app.bean.UserInfo;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterDto;
+import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -253,8 +254,8 @@ public class CourseController {
             showMore = false;
         }
         /*
-         * CourseFilterCostResponseDto costResponseDto = courseService.getAllCoursesFilterCostInfo(courseSearchDto, currency,
-         * userCurrency.getCode()); costResponseDto.setCurrencyId(currency.getId());
+         * CourseFilterCostResponseDto costResponseDto = courseService.getAllCoursesFilterCostInfo(courseSearchDto,
+         * currency, userCurrency.getCode()); costResponseDto.setCurrencyId(currency.getId());
          * costResponseDto.setCurrencySymbol(currency.getSymbol()); costResponseDto.setCurrencyCode(currency.getCode());
          * costResponseDto.setCurrencyName(currency.getName());
          */
@@ -508,4 +509,36 @@ public class CourseController {
     public ResponseEntity<?> courseFilter(@RequestBody final CourseFilterDto courseFilter) throws Exception {
         return ResponseEntity.ok().body(courseService.courseFilter(courseFilter));
     }
+
+    @RequestMapping(value = "/courseMinRequirement", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> saveCourseMinRequirement(@Valid @RequestBody final CourseMinRequirementDto courseMinRequirementDto) throws Exception {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            courseService.saveCourseMinrequirement(courseMinRequirementDto);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "CourseMinRequirement Save Successfully");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", "Error to save CourseMinRequirement");
+        }
+        return ResponseEntity.accepted().body(response);
+    }
+
+    @RequestMapping(value = "/courseMinRequirement/{courseId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getCourseMinRequirement(@PathVariable final BigInteger courseId) throws Exception {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            CourseMinRequirementDto courseMinRequirementDto = courseService.getCourseMinRequirement(courseId);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", "CourseMinRequirement fetch Successfully");
+            response.put("data", courseMinRequirementDto);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("message", "Error to fetch CourseMinRequirement");
+        }
+        return ResponseEntity.accepted().body(response);
+    }
+
 }

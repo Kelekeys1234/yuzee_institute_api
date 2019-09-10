@@ -21,6 +21,8 @@ import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
+import com.seeka.app.bean.CourseGradeEligibility;
+import com.seeka.app.bean.CourseMinRequirement;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
@@ -29,20 +31,24 @@ import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.bean.YoutubeVideo;
+import com.seeka.app.dao.CourseGradeEligibilityDAO;
 import com.seeka.app.dao.CurrencyDAO;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.ICourseEnglishEligibilityDAO;
+import com.seeka.app.dao.ICourseMinRequirementDao;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseFilterDto;
+import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.GradeDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
@@ -77,6 +83,15 @@ public class CourseService implements ICourseService {
 
     @Autowired
     private CurrencyDAO currencyDAO;
+
+    @Autowired
+    private ICourseMinRequirementDao courseMinRequirementDao;
+
+    @Autowired
+    private EducationSystemService educationSystemService;
+
+    @Autowired
+    private CourseGradeEligibilityDAO courseGradeEligibilityDao;
 
     @Override
     public void save(final Course course) {
@@ -737,5 +752,75 @@ public class CourseService implements ICourseService {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         return response;
+    }
+
+    @Override
+    public void saveCourseMinrequirement(CourseMinRequirementDto courseMinRequirementDto) {
+        try {
+            convertDtoToCourseMinRequirement(courseMinRequirementDto);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void convertDtoToCourseMinRequirement(CourseMinRequirementDto courseMinRequirementDto) {
+        Integer i = 0;
+        GradeDto gradeDto = new GradeDto();
+        List<String> subjectGrade = new ArrayList<>();
+        for (String country : courseMinRequirementDto.getSubject()) {
+            CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
+            courseMinRequirement.setCountry(countryDAO.get(courseMinRequirementDto.getCountry()));
+            courseMinRequirement.setSystem(courseMinRequirementDto.getSystem());
+            courseMinRequirement.setSubject(courseMinRequirementDto.getSubject().get(i));
+            courseMinRequirement.setGrade(courseMinRequirementDto.getGrade().get(i));
+            subjectGrade.add(courseMinRequirementDto.getGrade().get(i));
+            courseMinRequirement.setCourse(iCourseDAO.get(courseMinRequirementDto.getCourse()));
+            courseMinRequirementDao.save(courseMinRequirement);
+            i++;
+        }
+        gradeDto.setCountryId(courseMinRequirementDto.getCountry());
+        gradeDto.setEducationSystemId(courseMinRequirementDto.getSystem());
+        gradeDto.setSubjectGrades(subjectGrade);
+        Double averageGPA = educationSystemService.calGpa(gradeDto);
+        CourseGradeEligibility courseGradeEligibility = courseGradeEligibilityDao.getAllEnglishEligibilityByCourse(courseMinRequirementDto.getCourse());
+        if (courseGradeEligibility != null) {
+            courseGradeEligibility.setSystemGlobalGpa(averageGPA);
+            courseGradeEligibilityDao.update(courseGradeEligibility);
+        } else {
+            courseGradeEligibility.setGlobalGpa(0.0);
+            courseGradeEligibility.setIsActive(true);
+            courseGradeEligibility.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+            courseGradeEligibility.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+            courseGradeEligibility.setSystemGlobalGpa(averageGPA);
+            courseGradeEligibilityDao.save(courseGradeEligibility);
+        }
+    }
+
+    @Override
+    public CourseMinRequirementDto getCourseMinRequirement(BigInteger course) {
+        CourseMinRequirementDto courseMinRequirementDto = null;
+        try {
+            List<CourseMinRequirement> courseMinRequirements = courseMinRequirementDao.get(course);
+            courseMinRequirementDto = convertCourseMinRequirementToDto(courseMinRequirements);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return courseMinRequirementDto;
+    }
+
+    public CourseMinRequirementDto convertCourseMinRequirementToDto(List<CourseMinRequirement> courseMinRequirement) {
+        List<String> subject = new ArrayList<>();
+        List<String> grade = new ArrayList<>();
+        CourseMinRequirementDto courseMinRequirementDto = new CourseMinRequirementDto();
+        for (CourseMinRequirement courseMinRequirements : courseMinRequirement) {
+            subject.add(courseMinRequirements.getSubject());
+            grade.add(courseMinRequirements.getGrade());
+            courseMinRequirementDto.setCountry(courseMinRequirements.getCountry().getId());
+            courseMinRequirementDto.setSystem(courseMinRequirements.getSystem());
+            courseMinRequirementDto.setCourse(courseMinRequirements.getCourse().getId());
+        }
+        courseMinRequirementDto.setSubject(subject);
+        courseMinRequirementDto.setGrade(grade);
+        return courseMinRequirementDto;
     }
 }

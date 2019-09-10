@@ -349,4 +349,10 @@ public class EducationSystemService implements IEducationSystemService {
         }
         return averageGpa;
     }
+    
+    public Double calGpa(@Valid GradeDto gradeDto){
+        Double avr = 0.0;
+        calculateGpa(gradeDto);
+        return avr;
+    }
 }

@@ -12,6 +12,7 @@ import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseFilterDto;
+import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -72,4 +73,8 @@ public interface ICourseService {
 	Map<String, Object> courseFilter(CourseFilterDto courseFilter);
 
     Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
+    
+    void saveCourseMinrequirement(CourseMinRequirementDto obj);
+    
+    CourseMinRequirementDto getCourseMinRequirement(BigInteger courseId);
 }

@@ -40,6 +40,7 @@ public class CourseGradeEligibility implements Serializable {
 	private String createdBy;
 	private String updatedBy;
 	private Boolean isDeleted;
+	private Double systemGlobalGpa;
 
 	public CourseGradeEligibility() {
 	}
@@ -192,8 +193,17 @@ public class CourseGradeEligibility implements Serializable {
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
+	
+	@Column(name = "system_global_gpa", precision = 18)
+	public Double getSystemGlobalGpa() {
+        return systemGlobalGpa;
+    }
 
-	/*
+    public void setSystemGlobalGpa(Double systemGlobalGpa) {
+        this.systemGlobalGpa = systemGlobalGpa;
+    }
+
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#hashCode()
