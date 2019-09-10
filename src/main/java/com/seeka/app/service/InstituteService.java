@@ -533,4 +533,27 @@ public class InstituteService implements IInstituteService {
     public List<InstituteCategoryType> getAllCategories() {
         return dao.getAllCategories();
     }
+
+    @Override
+    public Map<String, Object> deleteInstitute(@Valid BigInteger id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Institute institute = dao.get(id);
+            if (institute != null) {
+                institute.setIsActive(false);
+                institute.setIsDeleted(true);
+                institute.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
+                dao.update(institute);
+                response.put("message", "Institute deleted successfully");
+                response.put("status", HttpStatus.OK.value());
+            } else {
+                response.put("message", IConstant.INSTITUDE_NOT_FOUND);
+                response.put("status", HttpStatus.NOT_FOUND.value());
+            }
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
 }

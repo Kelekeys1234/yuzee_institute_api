@@ -53,4 +53,6 @@ public interface IInstituteService {
 	List<Institute> getAllInstitute();
 	
 	List<InstituteCategoryType> getAllCategories();
+
+    Map<String, Object> deleteInstitute(@Valid BigInteger id);
 }

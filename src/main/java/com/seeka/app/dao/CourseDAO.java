@@ -332,6 +332,7 @@ public class CourseDAO implements ICourseDAO {
 				courseResponseDto.setRequirements(String.valueOf(row[18]));
 				courseResponseDto.setTotalCount(rows1.size());
 				if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
+				    courseResponseDto.setCurrencyCode(courseSearchDto.getCurrencyCode());
 					if (row[19] != null) {
 						CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
 						dto.setFromCurrencyId(baseCurrencyId);
@@ -339,8 +340,6 @@ public class CourseDAO implements ICourseDAO {
 						dto.setAmount(Double.valueOf(row[19].toString()));
 						Double convertedRate = currencyService.convertCurrency(dto);
 						if (convertedRate != null) {
-							// courseResponseDto.setLocalFees(String.valueOf(convertedRate) + " " +
-							// courseSearchDto.getCurrencyCode());
 							courseResponseDto.setLocalFees(CommonUtil.foundOff2Digit(convertedRate));
 						}
 					}
@@ -355,6 +354,7 @@ public class CourseDAO implements ICourseDAO {
 						}
 					}
 				}
+				
 				list.add(courseResponseDto);
 			} catch (Exception e) {
 				e.printStackTrace();

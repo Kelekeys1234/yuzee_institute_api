@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Country;
+import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Level;
 import com.seeka.app.bean.Scholarship;
@@ -68,7 +69,7 @@ public class ScholarshipDao implements IScholarshipDAO {
     @Override
     public List<Scholarship> getAll(Integer pageNumber, Integer pageSize) {
         Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select sch.id, sch.country_id , sch.institute_id, sch.level_id, sch.name ,sch.amount, sch.student, sch.description, sch.website, sch.created_on, sch.updated_on, sch.created_by, sch.updated_by, sch.scholarship_title, sch.offered_by, sch.benefits, sch.requirements, sch.eligibility, sch.intake, sch.language, sch.validity, sch.gender, sch.application_deadline, sch.scholarship_amount, sch.number_of_avaliability, sch.headquaters, sch.email, sch.address, sch.is_active, sch.is_deleted  FROM scholarship as sch where sch.is_active = 1 and sch.is_deleted IS NULL ORDER BY sch.created_on DESC";
+        String sqlQuery = "select sch.id, sch.country_id , sch.institute_id, sch.level_id, sch.name ,sch.amount, sch.student, sch.description, sch.website, sch.created_on, sch.updated_on, sch.created_by, sch.updated_by, sch.scholarship_title, sch.offered_by_institution_id, sch.benefits, sch.requirements, sch.eligibility, sch.intake, sch.language, sch.validity, sch.gender, sch.application_deadline, sch.scholarship_amount, sch.number_of_avaliability, sch.headquaters, sch.email, sch.address, sch.is_active, sch.is_deleted, sch.offer_by_course_id  FROM scholarship as sch where sch.is_active = 1 and sch.is_deleted IS NULL ORDER BY sch.created_on DESC";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
@@ -138,7 +139,7 @@ public class ScholarshipDao implements IScholarshipDAO {
                 obj.setScholarshipTitle(row[13].toString());
             }
             if (row[14] != null) {
-                obj.setOfferedBy(row[14].toString());
+                obj.setOfferedByInstitute(new BigInteger(row[14].toString()));
             }
             if (row[15] != null) {
                 obj.setBenefits(row[15].toString());
@@ -185,9 +186,47 @@ public class ScholarshipDao implements IScholarshipDAO {
             if (row[29] != null) {
                 obj.setIsDeleted(Boolean.parseBoolean(row[29].toString()));
             }
+            if (row[30] != null) {
+                obj.setOfferedByCourse(new BigInteger(row[30].toString()));
+            }
+            if (obj.getOfferedByCourse() != null) {
+                obj.setOfferByCourseName(getCourseName(obj.getOfferedByCourse()));
+            }
+            if (obj.getOfferedByInstitute() != null) {
+                obj.setOfferedByInstituteName(getInstituteName(obj.getOfferedByInstitute()));
+            }
+
             scholarshipList.add(obj);
         }
         return scholarshipList;
+    }
+
+    private String getInstituteName(BigInteger id) {
+        String name = null;
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            Institute institute = session.get(Institute.class, id);
+            if (institute != null) {
+                name = institute.getName();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
+
+    private String getCourseName(BigInteger id) {
+        String name = null;
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            Course course = session.get(Course.class, id);
+            if (course != null) {
+                name = course.getName();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return name;
     }
 
     @Override
@@ -225,7 +264,8 @@ public class ScholarshipDao implements IScholarshipDAO {
             scholarship.setStudent(scholarshipdto.getStudent());
             scholarship.setWebsite(scholarshipdto.getWebsite());
             scholarship.setScholarshipTitle(scholarshipdto.getScholarshipTitle());
-            scholarship.setOfferedBy(scholarshipdto.getOfferedBy());
+            scholarship.setOfferedByInstitute(scholarshipdto.getOfferedByInstitute());
+            scholarship.setOfferedByCourse(scholarshipdto.getOfferedByCourse());
             scholarship.setBenefits(scholarshipdto.getBenefits());
             scholarship.setRequirements(scholarshipdto.getRequirements());
             scholarship.setEligibility(scholarshipdto.getEligibility());
@@ -243,6 +283,8 @@ public class ScholarshipDao implements IScholarshipDAO {
             scholarship.setUpdatedOn(new Date());
             scholarship.setCoverage(scholarship.getCoverage());
             scholarship.setType(scholarship.getType());
+            scholarship.setAward(scholarship.getAward());
+            scholarship.setHowToApply(scholarship.getHowToApply());
             session.update(scholarship);
         } catch (Exception e) {
             e.printStackTrace();
@@ -273,7 +315,7 @@ public class ScholarshipDao implements IScholarshipDAO {
     @Override
     public List<Scholarship> scholarshipFilter(int pageNumber, Integer pageSize, ScholarshipFilterDto scholarshipFilterDto) {
         Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select sch.id, sch.country_id , sch.institute_id, sch.level_id, sch.name ,sch.amount, sch.student, sch.description, sch.website, sch.created_on, sch.updated_on, sch.created_by, sch.updated_by, sch.scholarship_title, sch.offered_by, sch.benefits, sch.requirements, sch.eligibility, sch.intake, sch.language, sch.validity, sch.gender, sch.application_deadline, sch.scholarship_amount, sch.number_of_avaliability, sch.headquaters, sch.email, sch.address, sch.is_active, sch.is_deleted  FROM scholarship as sch "
+        String sqlQuery = "select sch.id, sch.country_id , sch.institute_id, sch.level_id, sch.name ,sch.amount, sch.student, sch.description, sch.website, sch.created_on, sch.updated_on, sch.created_by, sch.updated_by, sch.scholarship_title, sch.offered_by, sch.benefits, sch.requirements, sch.eligibility, sch.intake, sch.language, sch.validity, sch.gender, sch.application_deadline, sch.scholarship_amount, sch.number_of_avaliability, sch.headquaters, sch.email, sch.address, sch.is_active, sch.is_deleted, sch.offer_by_course_id  FROM scholarship as sch "
                         + " where sch.is_deleted IS NULL ";
 
         sqlQuery = addSchoolarFilter(sqlQuery, scholarshipFilterDto);
@@ -338,7 +380,7 @@ public class ScholarshipDao implements IScholarshipDAO {
                 obj.setScholarshipTitle(row[13].toString());
             }
             if (row[14] != null) {
-                obj.setOfferedBy(row[14].toString());
+                obj.setOfferedByInstitute(new BigInteger(row[14].toString()));
             }
             if (row[15] != null) {
                 obj.setBenefits(row[15].toString());
@@ -386,6 +428,15 @@ public class ScholarshipDao implements IScholarshipDAO {
             scholarshipList.add(obj);
             if (row[29] != null) {
                 obj.setIsDeleted(Boolean.parseBoolean(row[29].toString()));
+            }
+            if (row[30] != null) {
+                obj.setOfferedByCourse(new BigInteger(row[30].toString()));
+            }
+            if (obj.getOfferedByCourse() != null) {
+                obj.setOfferByCourseName(getCourseName(obj.getOfferedByCourse()));
+            }
+            if (obj.getOfferedByInstitute() != null) {
+                obj.setOfferedByInstituteName(getInstituteName(obj.getOfferedByInstitute()));
             }
             scholarshipList.add(obj);
         }
@@ -437,7 +488,7 @@ public class ScholarshipDao implements IScholarshipDAO {
     @Override
     public List<Scholarship> autoSearch(int pageNumber, Integer pageSize, String searchKey) {
         Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select sch.id, sch.country_id , sch.institute_id, sch.level_id, sch.name ,sch.amount, sch.student, sch.description, sch.website, sch.created_on, sch.updated_on, sch.created_by, sch.updated_by, sch.scholarship_title, sch.offered_by, sch.benefits, sch.requirements, sch.eligibility, sch.intake, sch.language, sch.validity, sch.gender, sch.application_deadline, sch.scholarship_amount, sch.number_of_avaliability, sch.headquaters, sch.email, sch.address, sch.is_active, sch.is_deleted  FROM scholarship as sch "
+        String sqlQuery = "select sch.id, sch.country_id , sch.institute_id, sch.level_id, sch.name ,sch.amount, sch.student, sch.description, sch.website, sch.created_on, sch.updated_on, sch.created_by, sch.updated_by, sch.scholarship_title, sch.offered_by_institution_id, sch.benefits, sch.requirements, sch.eligibility, sch.intake, sch.language, sch.validity, sch.gender, sch.application_deadline, sch.scholarship_amount, sch.number_of_avaliability, sch.headquaters, sch.email, sch.address, sch.is_active, sch.is_deleted ,sch.offer_by_course_id FROM scholarship as sch "
                         + " where sch.is_deleted IS NULL and (sch.name like '%" + searchKey + "%' or sch.description like '%" + searchKey + "%') ORDER BY sch.created_on DESC";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
@@ -449,7 +500,7 @@ public class ScholarshipDao implements IScholarshipDAO {
     @Override
     public int findTotalCountOfScholarshipAutoSearch(String searchKey) {
         Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select sch.id, sch.country_id , sch.institute_id, sch.level_id, sch.name ,sch.amount, sch.student, sch.description, sch.website, sch.created_on, sch.updated_on, sch.created_by, sch.updated_by, sch.scholarship_title, sch.offered_by, sch.benefits, sch.requirements, sch.eligibility, sch.intake, sch.language, sch.validity, sch.gender, sch.application_deadline, sch.scholarship_amount, sch.number_of_avaliability, sch.headquaters, sch.email, sch.address, sch.is_active, sch.is_deleted  FROM scholarship as sch "
+        String sqlQuery = "select sch.id, sch.country_id , sch.institute_id, sch.level_id, sch.name ,sch.amount, sch.student, sch.description, sch.website, sch.created_on, sch.updated_on, sch.created_by, sch.updated_by, sch.scholarship_title, sch.offered_by_institution_id, sch.benefits, sch.requirements, sch.eligibility, sch.intake, sch.language, sch.validity, sch.gender, sch.application_deadline, sch.scholarship_amount, sch.number_of_avaliability, sch.headquaters, sch.email, sch.address, sch.is_active, sch.is_deleted ,sch.offer_by_course_id FROM scholarship as sch "
                         + " where sch.is_deleted IS NULL and (sch.name like '%" + searchKey + "%' or sch.description like '%" + searchKey + "%') ";
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();

@@ -137,13 +137,16 @@ public class CommonUtil {
         scholarshipDto.setLevelId(scholarship.getLevel().getId());
         scholarshipDto.setScholarshipTitle(scholarship.getName());
         scholarshipDto.setNumberOfAvaliability(scholarship.getNumberOfAvaliability());
-        scholarshipDto.setOfferedBy(scholarship.getOfferedBy());
+        scholarshipDto.setOfferedByCourse(scholarship.getOfferedByCourse());
+        scholarshipDto.setOfferedByInstitute(scholarship.getOfferedByInstitute());
         scholarshipDto.setRequirements(scholarship.getRequirements());
         scholarshipDto.setScholarshipAmount((scholarship.getAmount()));
         scholarshipDto.setScholarshipTitle(scholarship.getScholarshipTitle());
         scholarshipDto.setStudent(scholarship.getStudent());
         scholarshipDto.setValidity(scholarship.getValidity());
         scholarshipDto.setWebsite(scholarship.getWebsite());
+        scholarshipDto.setAward(scholarship.getAward());
+        scholarshipDto.setHowToApply(scholarship.getHowToApply());
         return scholarshipDto;
     }
 
@@ -160,7 +163,8 @@ public class CommonUtil {
         scholarship.setCreatedOn(new Date());
         scholarship.setUpdatedOn(new Date());
         scholarship.setScholarshipTitle(scholarshipObj.getScholarshipTitle());
-        scholarship.setOfferedBy(scholarshipObj.getOfferedBy());
+        scholarship.setOfferedByInstitute(scholarshipObj.getOfferedByInstitute());
+        scholarship.setOfferedByCourse(scholarshipObj.getOfferedByCourse());
         scholarship.setBenefits(scholarshipObj.getBenefits());
         scholarship.setRequirements(scholarshipObj.getRequirements());
         scholarship.setEligibility(scholarshipObj.getEligibility());
@@ -177,6 +181,8 @@ public class CommonUtil {
         scholarship.setIsActive(true);
         scholarship.setCoverage(scholarshipObj.getCoverage());
         scholarship.setType(scholarshipObj.getType());
+        scholarship.setAward(scholarshipObj.getAward());
+        scholarship.setHowToApply(scholarshipObj.getHowToApply());
         return scholarship;
     }
 

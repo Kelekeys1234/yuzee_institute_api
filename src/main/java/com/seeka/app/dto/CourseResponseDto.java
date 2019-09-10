@@ -29,6 +29,7 @@ public class CourseResponseDto {
 	private String cityName;
 	private Boolean isFavourite;
 	private List<String> imageUrlList;
+	private String currencyCode;
 
 	public BigInteger getCourseId() {
 		return courseId;
@@ -227,5 +228,19 @@ public class CourseResponseDto {
 	public void setIsFavourite(final Boolean isFavourite) {
 		this.isFavourite = isFavourite;
 	}
+
+    /**
+     * @return the currencyCode
+     */
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    /**
+     * @param currencyCode the currencyCode to set
+     */
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
 
 }

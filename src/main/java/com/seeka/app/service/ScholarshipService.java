@@ -191,7 +191,8 @@ public class ScholarshipService implements IScholarshipService {
         dto.setStudent(scholarship.getStudent());
         dto.setWebsite(scholarship.getWebsite());
         dto.setScholarshipTitle(scholarship.getScholarshipTitle());
-        dto.setOfferedBy(scholarship.getOfferedBy());
+        dto.setOfferedByCourse(scholarship.getOfferedByCourse());
+        dto.setOfferedByInstitute(scholarship.getOfferedByInstitute());
         dto.setBenefits(scholarship.getBenefits());
         dto.setRequirements(scholarship.getRequirements());
         dto.setEligibility(scholarship.getEligibility());

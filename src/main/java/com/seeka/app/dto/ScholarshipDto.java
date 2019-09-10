@@ -30,6 +30,10 @@ public class ScholarshipDto {
     private Boolean isDeleted;
     private String coverage;
     private String type;
+    private BigInteger offeredByInstitute;
+    private BigInteger offeredByCourse;
+    private String award;
+    private String howToApply;
     
 	public BigInteger getId() {
 		return id;
@@ -199,6 +203,54 @@ public class ScholarshipDto {
      */
     public void setType(String type) {
         this.type = type;
+    }
+    /**
+     * @return the offeredByInstitute
+     */
+    public BigInteger getOfferedByInstitute() {
+        return offeredByInstitute;
+    }
+    /**
+     * @param offeredByInstitute the offeredByInstitute to set
+     */
+    public void setOfferedByInstitute(BigInteger offeredByInstitute) {
+        this.offeredByInstitute = offeredByInstitute;
+    }
+    /**
+     * @return the offeredByCourse
+     */
+    public BigInteger getOfferedByCourse() {
+        return offeredByCourse;
+    }
+    /**
+     * @param offeredByCourse the offeredByCourse to set
+     */
+    public void setOfferedByCourse(BigInteger offeredByCourse) {
+        this.offeredByCourse = offeredByCourse;
+    }
+    /**
+     * @return the award
+     */
+    public String getAward() {
+        return award;
+    }
+    /**
+     * @param award the award to set
+     */
+    public void setAward(String award) {
+        this.award = award;
+    }
+    /**
+     * @return the howToApply
+     */
+    public String getHowToApply() {
+        return howToApply;
+    }
+    /**
+     * @param howToApply the howToApply to set
+     */
+    public void setHowToApply(String howToApply) {
+        this.howToApply = howToApply;
     }
 
     

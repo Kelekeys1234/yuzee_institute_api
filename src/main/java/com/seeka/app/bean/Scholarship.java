@@ -40,7 +40,8 @@ public class Scholarship implements java.io.Serializable {
     private String updatedBy;
 
     private String scholarshipTitle;
-    private String offeredBy;
+    private BigInteger offeredByInstitute;
+    private BigInteger offeredByCourse;
     private String benefits;
     private String requirements;
     private String eligibility;
@@ -63,9 +64,15 @@ public class Scholarship implements java.io.Serializable {
     private Boolean isDeleted;
 
     private String lastUpdated;
-    
+
     private String coverage;
     private String type;
+    
+    private String award;
+    private String howToApply;
+    
+    private String offeredByInstituteName;
+    private String offerByCourseName;
 
     /**
      * @return the id
@@ -261,15 +268,6 @@ public class Scholarship implements java.io.Serializable {
 
     public void setScholarshipTitle(String scholarshipTitle) {
         this.scholarshipTitle = scholarshipTitle;
-    }
-
-    @Column(name = "offered_by")
-    public String getOfferedBy() {
-        return offeredBy;
-    }
-
-    public void setOfferedBy(String offeredBy) {
-        this.offeredBy = offeredBy;
     }
 
     @Column(name = "benefits")
@@ -592,7 +590,8 @@ public class Scholarship implements java.io.Serializable {
     }
 
     /**
-     * @param coverage the coverage to set
+     * @param coverage
+     *            the coverage to set
      */
     public void setCoverage(String coverage) {
         this.coverage = coverage;
@@ -607,9 +606,102 @@ public class Scholarship implements java.io.Serializable {
     }
 
     /**
-     * @param type the type to set
+     * @param type
+     *            the type to set
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * @return the offeredByInstitute
+     */
+    @Column(name = "offered_by_institution_id")
+    public BigInteger getOfferedByInstitute() {
+        return offeredByInstitute;
+    }
+
+    /**
+     * @param offeredByInstitute
+     *            the offeredByInstitute to set
+     */
+    public void setOfferedByInstitute(BigInteger offeredByInstitute) {
+        this.offeredByInstitute = offeredByInstitute;
+    }
+
+    /**
+     * @return the offeredByCourse
+     */
+    @Column(name = "offer_by_course_id")
+    public BigInteger getOfferedByCourse() {
+        return offeredByCourse;
+    }
+
+    /**
+     * @param offeredByCourse
+     *            the offeredByCourse to set
+     */
+    public void setOfferedByCourse(BigInteger offeredByCourse) {
+        this.offeredByCourse = offeredByCourse;
+    }
+
+    /**
+     * @return the award
+     */
+    @Column(name = "scholarship_award")
+    public String getAward() {
+        return award;
+    }
+
+    /**
+     * @param award the award to set
+     */
+    public void setAward(String award) {
+        this.award = award;
+    }
+
+    /**
+     * @return the howToApply
+     */
+    @Column(name = "how_to_apply")
+    public String getHowToApply() {
+        return howToApply;
+    }
+
+    /**
+     * @param howToApply the howToApply to set
+     */
+    public void setHowToApply(String howToApply) {
+        this.howToApply = howToApply;
+    }
+
+    /**
+     * @return the offeredByInstituteName
+     */
+    @Transient
+    public String getOfferedByInstituteName() {
+        return offeredByInstituteName;
+    }
+
+    /**
+     * @param offeredByInstituteName the offeredByInstituteName to set
+     */
+    public void setOfferedByInstituteName(String offeredByInstituteName) {
+        this.offeredByInstituteName = offeredByInstituteName;
+    }
+
+    /**
+     * @return the offerByCourseName
+     */
+    @Transient
+    public String getOfferByCourseName() {
+        return offerByCourseName;
+    }
+
+    /**
+     * @param offerByCourseName the offerByCourseName to set
+     */
+    public void setOfferByCourseName(String offerByCourseName) {
+        this.offerByCourseName = offerByCourseName;
     }
 }
