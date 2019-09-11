@@ -30,23 +30,30 @@ public class InstituteGoogleReviewService implements IInstituteGoogleReviewServi
 	public void addInstituteGoogleReview() {
 		RestTemplate restTemplate = new RestTemplate();
 		List<Institute> instituteList = iInstituteService.getAllInstitute();
+		int count = 0;
 		for (Institute institute : instituteList) {
-			InstituteGoogleReview instituteGoogleReview = fetchInformationFromGoogle(restTemplate, institute.getName());
-			InstituteGoogleReview existingInstituteGoogleReview = iInstituteGoogleReviewDao.getInstituteGoogleReviewDetail(institute.getId());
-			if (existingInstituteGoogleReview != null) {
-				instituteGoogleReview.setId(existingInstituteGoogleReview.getId());
-				instituteGoogleReview.setInstituteId(institute.getId());
-				instituteGoogleReview.setCreatedBy(existingInstituteGoogleReview.getCreatedBy());
-				instituteGoogleReview.setCreatedOn(existingInstituteGoogleReview.getCreatedOn());
-				instituteGoogleReview.setUpdatedBy("API");
-				instituteGoogleReview.setUpdatedOn(new Date());
-				iInstituteGoogleReviewDao.update(instituteGoogleReview);
-			} else {
-				instituteGoogleReview.setInstituteId(institute.getId());
-				instituteGoogleReview.setCreatedBy("API");
-				instituteGoogleReview.setCreatedOn(new Date());
-				iInstituteGoogleReviewDao.save(instituteGoogleReview);
+			if (count > 100) {
+				break;
 			}
+			InstituteGoogleReview instituteGoogleReview = fetchInformationFromGoogle(restTemplate, institute.getName());
+			if (instituteGoogleReview != null) {
+				InstituteGoogleReview existingInstituteGoogleReview = iInstituteGoogleReviewDao.getInstituteGoogleReviewDetail(institute.getId());
+				if (existingInstituteGoogleReview != null) {
+					instituteGoogleReview.setId(existingInstituteGoogleReview.getId());
+					instituteGoogleReview.setInstituteId(institute.getId());
+					instituteGoogleReview.setCreatedBy(existingInstituteGoogleReview.getCreatedBy());
+					instituteGoogleReview.setCreatedOn(existingInstituteGoogleReview.getCreatedOn());
+					instituteGoogleReview.setUpdatedBy("API");
+					instituteGoogleReview.setUpdatedOn(new Date());
+					iInstituteGoogleReviewDao.update(instituteGoogleReview);
+				} else {
+					instituteGoogleReview.setInstituteId(institute.getId());
+					instituteGoogleReview.setCreatedBy("API");
+					instituteGoogleReview.setCreatedOn(new Date());
+					iInstituteGoogleReviewDao.save(instituteGoogleReview);
+				}
+			}
+			count++;
 		}
 
 	}
@@ -59,23 +66,27 @@ public class InstituteGoogleReviewService implements IInstituteGoogleReviewServi
 		ResponseEntity<GoogleReviewDto> result = restTemplate.getForEntity(builder.build().toUri(), GoogleReviewDto.class);
 		System.out.println(result.getBody());
 		GoogleReviewDto googleReviewDto = result.getBody();
-		InstituteGoogleReview instituteGoogleReview = new InstituteGoogleReview();
-//		instituteGoogleReview.setAddress(googleReviewDto.getCandidates().get(0).getFormattedAddress());
-		instituteGoogleReview.setName(googleReviewDto.getCandidates().get(0).getName());
-		if (googleReviewDto.getCandidates().get(0).getRating() != null) {
-			instituteGoogleReview.setReviewStar(googleReviewDto.getCandidates().get(0).getRating());
-		} else {
-			instituteGoogleReview.setReviewStar(0d);
-		}
-		if (googleReviewDto.getCandidates().get(0).getUserRatingsTotal() != null) {
-			instituteGoogleReview.setTotalReviews(googleReviewDto.getCandidates().get(0).getUserRatingsTotal());
-		} else {
-			instituteGoogleReview.setTotalReviews(0);
+		if (!googleReviewDto.getCandidates().isEmpty()) {
+			InstituteGoogleReview instituteGoogleReview = new InstituteGoogleReview();
+//			instituteGoogleReview.setAddress(googleReviewDto.getCandidates().get(0).getFormattedAddress());
+			instituteGoogleReview.setName(googleReviewDto.getCandidates().get(0).getName());
+			if (googleReviewDto.getCandidates().get(0).getRating() != null) {
+				instituteGoogleReview.setReviewStar(googleReviewDto.getCandidates().get(0).getRating());
+			} else {
+				instituteGoogleReview.setReviewStar(0d);
+			}
+			if (googleReviewDto.getCandidates().get(0).getUserRatingsTotal() != null) {
+				instituteGoogleReview.setTotalReviews(googleReviewDto.getCandidates().get(0).getUserRatingsTotal());
+			} else {
+				instituteGoogleReview.setTotalReviews(0);
+			}
+
+			instituteGoogleReview.setLatitute(googleReviewDto.getCandidates().get(0).getGeometry().getLocation().getLat());
+			instituteGoogleReview.setLongitude(googleReviewDto.getCandidates().get(0).getGeometry().getLocation().getLng());
+			return instituteGoogleReview;
 		}
 
-		instituteGoogleReview.setLatitute(googleReviewDto.getCandidates().get(0).getGeometry().getLocation().getLat());
-		instituteGoogleReview.setLongitude(googleReviewDto.getCandidates().get(0).getGeometry().getLocation().getLng());
-		return instituteGoogleReview;
+		return null;
 	}
 
 	@Override

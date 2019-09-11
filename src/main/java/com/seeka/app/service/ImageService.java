@@ -20,6 +20,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.IConstant;
 
 @Service
@@ -28,6 +30,9 @@ public class ImageService implements IImageService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	private IEnrollmentService iEnrollmentService;
 
 	@SuppressWarnings("rawtypes")
 	@Override
@@ -65,6 +70,18 @@ public class ImageService implements IImageService {
 		}
 
 		return convFile;
+	}
+
+	@Override
+	public String addCategoryImage(final MultipartFile file, final String category, final String subCategory, final BigInteger categoryId)
+			throws ValidationException {
+		String imageName = null;
+		if (category.equals(ImageCategory.ENROLLMENT.name())) {
+			imageName = uploadImage(file, categoryId, ImageCategory.ENROLLMENT.name());
+			iEnrollmentService.saveEnrollmentImage(categoryId, subCategory, imageName);
+		}
+
+		return imageName;
 	}
 
 }
