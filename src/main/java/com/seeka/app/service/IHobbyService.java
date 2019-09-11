@@ -46,4 +46,6 @@ public interface IHobbyService {
 
     public Map<String, Object> deleteInterest(BigInteger userId, BigInteger hobbyId, String countryId);
 
+    public Map<String, Object> autoSearch(String searchKey);
+
 }

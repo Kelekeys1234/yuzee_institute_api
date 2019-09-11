@@ -34,7 +34,6 @@ import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IFacultyLevelService;
 import com.seeka.app.service.IFacultyService;
-import com.seeka.app.service.IInstituteDetailsService;
 import com.seeka.app.service.IInstituteLevelService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.ILevelService;
@@ -193,10 +192,13 @@ public class MigrateCourseController {
 
             int i = 0;
 
-            String C_ID = "", Courses = "", Course_Type = "", University = "", City = "", Country = "", Faculty = "", World_Ranking = "", Recognition = "", Recognition_Type = "",
-                            Int_Fees = "", Currency = "", Currency_Time = "", Duration = "", Duration_Time = "", IELTS_Overall_Score = "", IELTS_Reading = "", IELTS_Writing = "",
-                            IELTS_Listening = "", IELTS_Speaking = "", TOFEL_Overall_Score = "", TOFEL_Reading = "", TOFEL_Writing = "", TOFEL_Listening = "", TOFEL_Speaking = "";
+            String C_ID = "", Courses = "", Course_Type = "", University = "", City = "", Country = "", Faculty = "", Recognition = "", Recognition_Type = "", Int_Fees = "",
+                            Currency = "", Currency_Time = "", Duration_Time = "", IELTS_Overall_Score = "", IELTS_Reading = "", IELTS_Writing = "", IELTS_Listening = "",
+                            IELTS_Speaking = "", TOFEL_Overall_Score = "", TOFEL_Reading = "", TOFEL_Writing = "", TOFEL_Listening = "", TOFEL_Speaking = "";
 
+            Integer Duration = null;
+            Integer World_Ranking = null;
+            Integer stars = null;
             String Cost_Savings = "", Cost_Range = "", Remarks_ = "", Twinning_Program = "", UK_A_LEV_1 = "", UK_A_LEV_2 = "", UK_A_LEV_3 = "", UK_A_LEV_4 = "", UK_A_LEV_5 = "",
                             UK_O_LEV1 = "", IND_HSC_ISC_SSC = "", CHINA_GAOKAO_Gao_San = "", CHINA_GAO_ER = "", MAL_STPM_1 = "", MAL_STPM_2 = "", MAL_STPM_3 = "", MAL_STPM_4 = "",
                             MAL_STPM_5 = "", MAL_SPM_1 = "", GLOB_A_LEV_1 = "", GLOB_A_LEV_2 = "", GLOB_A_LEV_3 = "", GLOB_A_LEV_4 = "", GLOB_A_LEV_5 = "", GLOB_O_LEV1 = "",
@@ -206,8 +208,8 @@ public class MigrateCourseController {
                             UAE_REG_DM_HSC = "", GLOB_DIPLOMA = "", GLOB_IF = "", GLOB_FIRST_YEAR = "", GLOB_SECOND_YEAR = "", GLOB_DEGREE = "", WR_Range = "", Website = "",
                             Local_Fees = "", UNION_FEES = "", Rec_Date = "", SAT_USA = "", UK_O_LEV2 = "", UK_O_LEV3 = "", UK_O_LEV4 = "", UK_O_LEV5 = "", GLOB_O_LEV2 = "",
                             GLOB_O_LEV3 = "", GLOB_O_LEV4 = "", GLOB_O_LEV5 = "", SG_O_LEV2 = "", SG_O_LEV3 = "", SG_O_LEV4 = "", SG_O_LEV5 = "", SRI_O_LEV2 = "", SRI_O_LEV3 = "",
-                            SRI_O_LEV4 = "", SRI_O_LEV5 = "", MAL_SPM2 = "", MAL_SPM3 = "", MAL_SPM4 = "", MAL_SPM5 = "", CITY_IMG_CNT = "", stars = "", UNI_IMG_CNT = "",
-                            course_lang = "", availbilty = "", part_full = "", study_mode = "", Cost_of_living = "", description = "", inst_id = "", abbreviation = "";
+                            SRI_O_LEV4 = "", SRI_O_LEV5 = "", MAL_SPM2 = "", MAL_SPM3 = "", MAL_SPM4 = "", MAL_SPM5 = "", CITY_IMG_CNT = "", UNI_IMG_CNT = "", course_lang = "",
+                            availbilty = "", part_full = "", study_mode = "", Cost_of_living = "", description = "", inst_id = "", abbreviation = "";
 
             while (cellIterator.hasNext()) {
 
@@ -267,7 +269,7 @@ public class MigrateCourseController {
                     }
 
                     if (i == 7) {
-                        World_Ranking = cellStringValue;
+                        // World_Ranking = cellStringValue;
                     }
 
                     if (i == 8) {
@@ -291,7 +293,7 @@ public class MigrateCourseController {
                     }
 
                     if (i == 13) {
-                        Duration = cellStringValue;
+                        Duration = Integer.valueOf(cellStringValue);
                     }
 
                     if (i == 14) {
@@ -638,7 +640,7 @@ public class MigrateCourseController {
                         CITY_IMG_CNT = cellStringValue;
                     }
                     if (i == 107) {
-                        stars = cellStringValue;
+                        stars = Integer.valueOf(cellStringValue);
                     }
                     if (i == 108) {
                         UNI_IMG_CNT = cellStringValue;
@@ -800,15 +802,15 @@ public class MigrateCourseController {
             course.setRecognitionType(Recognition_Type);
             // course.setRecordedDate(Rec_Date);
             course.setRemarks(Remarks_);
-            if (null != stars && !stars.isEmpty()) {
+            if (null != stars) {
                 course.setStars(stars);
             } else {
-                course.setStars("0.0");
+                course.setStars(0);
             }
 
             course.setWebsite(Website);
 
-            if (null != World_Ranking && !World_Ranking.isEmpty()) {
+            if (null != World_Ranking) {
                 course.setWorldRanking(World_Ranking);
             }
 
@@ -853,13 +855,13 @@ public class MigrateCourseController {
             courseDetails.setCoursePricingObj(coursePricing);
 
             CourseGradeEligibility gradeObj = new CourseGradeEligibility();
-            //gradeObj.setGlobalALevel1(GLOB_A_LEV_1);
-            //gradeObj.setGlobalALevel2(GLOB_A_LEV_2);
-           // gradeObj.setGlobalALevel3(GLOB_A_LEV_3);
-            //gradeObj.setGlobalALevel4(GLOB_A_LEV_4);
-           // gradeObj.setGlobalALevel5(GLOB_A_LEV_5);
-           // gradeObj.setGlobalGpa(Double.valueOf(GLOB_GPA));
-            //gradeObj.setIsActive(true);
+            // gradeObj.setGlobalALevel1(GLOB_A_LEV_1);
+            // gradeObj.setGlobalALevel2(GLOB_A_LEV_2);
+            // gradeObj.setGlobalALevel3(GLOB_A_LEV_3);
+            // gradeObj.setGlobalALevel4(GLOB_A_LEV_4);
+            // gradeObj.setGlobalALevel5(GLOB_A_LEV_5);
+            // gradeObj.setGlobalGpa(Double.valueOf(GLOB_GPA));
+            // gradeObj.setIsActive(true);
 
             String courseName = University.toLowerCase().replaceAll("[^\\w]", "") + Courses.toLowerCase().replaceAll("[^\\w]", "");
             map.put(courseName, courseDetails);

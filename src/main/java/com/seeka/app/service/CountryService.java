@@ -216,4 +216,25 @@ public class CountryService implements ICountryService {
     private List<Faculty> getFacultiesByLevelId(BigInteger levelId, BigInteger countryId) {
         return facultyDAO.getFacultyByCountryIdAndLevelId(countryId, levelId);
     }
+
+    @Override
+    public Map<String, Object> autoSearch(String searchKey) {
+        Map<String, Object> response = new HashMap<>();
+        List<CountryDto> countries = new ArrayList<CountryDto>();
+        try {
+            countries = countryDAO.autoSearch(1, 50, searchKey);
+            if (countries != null && !countries.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Country fetched successfully");
+                response.put("courses", countries);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", "Country not found");
+            }
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
 }

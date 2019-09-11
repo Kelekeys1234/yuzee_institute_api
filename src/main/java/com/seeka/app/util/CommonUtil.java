@@ -190,15 +190,23 @@ public class CommonUtil {
     public static CourseRequest convertCourseDtoToCourseRequest(Course course) {
         CourseRequest courseRequest = new CourseRequest();
         courseRequest.setCourseId(course.getId());
-        courseRequest.setStars(course.getStars());
+        if (course.getStars() != null) {
+            courseRequest.setStars(String.valueOf(course.getStars()));
+        }
+        if (course.getDuration() != null) {
+            courseRequest.setDuration(String.valueOf(course.getDuration()));
+        }
+        if (course.getWorldRanking() != null) {
+            courseRequest.setWorldRanking(String.valueOf(course.getWorldRanking()));
+        }
         if (course.getDescription() != null) {
             courseRequest.setDescription(course.getDescription());
         } else {
             courseRequest.setDescription(IConstant.COURSE_DEFAULT_DESCRPTION);
         }
-        courseRequest.setDuration(course.getDuration());
+
         courseRequest.setDurationTime(course.getDurationTime());
-        courseRequest.setWorldRanking(course.getWorldRanking());
+
         courseRequest.setName(course.getName());
         courseRequest.setCourseLink(course.getCourseLink());
         courseRequest.setIntake(course.getIntake());

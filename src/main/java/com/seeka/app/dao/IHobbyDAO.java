@@ -20,4 +20,6 @@ public interface IHobbyDAO {
 
     public List<Hobbies> searchHobbies(String searchText);
 
+    public List<Hobbies> autoSearch(int i, int j, String searchKey);
+
 }

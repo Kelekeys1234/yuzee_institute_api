@@ -36,4 +36,9 @@ public class UserController {
     public ResponseEntity<?> deleteInterest(@PathVariable BigInteger userId, @PathVariable BigInteger hobbyId, @PathVariable String countryName) throws Exception {
         return ResponseEntity.accepted().body(hobbyService.deleteInterest(userId, hobbyId, countryName));
     }
+    
+    @RequestMapping(value = "/autoSearch/{searchKey}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> autoSearch(@PathVariable final String searchKey) throws Exception {
+        return ResponseEntity.accepted().body(hobbyService.autoSearch(searchKey));
+    }
 }

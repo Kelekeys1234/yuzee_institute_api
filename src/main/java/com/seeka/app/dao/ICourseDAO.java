@@ -65,12 +65,14 @@ public interface ICourseDAO {
 
     List<Course> getAllCourse();
 
-	List<CourseRequest> courseFilter(int pageNumber, Integer pageSize, CourseFilterDto courseFilter);
+    List<CourseRequest> courseFilter(int pageNumber, Integer pageSize, CourseFilterDto courseFilter);
 
     int findTotalCountCourseFilter(CourseFilterDto courseFilter);
 
     List<CourseRequest> autoSearch(int startIndex, Integer pageSize, String searchKey);
 
     int autoSearchTotalCount(String searchKey);
+
+    List<CourseRequest> autoSearchByCharacter(int pageNumber, Integer pageSize, String searchKey);
 
 }

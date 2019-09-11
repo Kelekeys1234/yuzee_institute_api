@@ -103,4 +103,22 @@ public class HobbyDAO implements IHobbyDAO {
         }
         return hobbies;
     }
+
+    @Override
+    public List<Hobbies> autoSearch(int pageNumber, int pageSize, String searchKey) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select h.id as id , h.hobby_txt FROM hobbies h where h.deleted_on IS NULL and h.hobby_txt like '%" + searchKey.trim() + "%' ORDER BY h.created_on DESC ";
+        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<Hobbies> hobbies = new ArrayList<Hobbies>();
+        Hobbies obj = null;
+        for (Object[] row : rows) {
+            obj = new Hobbies();
+            obj.setId(new BigInteger((row[0].toString())));
+            obj.setHobbyTxt(row[1].toString());
+            hobbies.add(obj);
+        }
+        return hobbies;
+    }
 }

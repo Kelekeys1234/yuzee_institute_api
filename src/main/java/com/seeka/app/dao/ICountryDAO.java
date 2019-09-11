@@ -24,4 +24,6 @@ public interface ICountryDAO {
     public List<CountryDto> getAllCountryName();
 
     public List<DiscoverCountryDto> getDiscoverCountry();
+
+    public List<CountryDto> autoSearch(int i, int j, String searchKey);
 }

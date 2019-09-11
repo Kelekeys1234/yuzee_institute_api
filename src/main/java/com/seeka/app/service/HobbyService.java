@@ -336,4 +336,25 @@ public class HobbyService implements IHobbyService {
         response.put("status", HttpStatus.OK.value());
         return response;
     }
+
+    @Override
+    public Map<String, Object> autoSearch(String searchKey) {
+        Map<String, Object> response = new HashMap<>();
+        List<Hobbies> hobbies = new ArrayList<Hobbies>();
+        try {
+            hobbies = dao.autoSearch(1, 50, searchKey);
+            if (hobbies != null && !hobbies.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Hobby fetched successfully");
+                response.put("courses", hobbies);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", "Hobby not found");
+            }
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
 }

@@ -429,11 +429,11 @@ public class CourseController {
             i++;
             try {
                 courseGradeEligibility = new CourseGradeEligibility();
-                //courseGradeEligibility.setCourseId(course.getId());
-                //courseGradeEligibility.setGlobalALevel1("A");
-               // courseGradeEligibility.setGlobalALevel2("A");
-               //courseGradeEligibility.setGlobalALevel3("A");
-              //  courseGradeEligibility.setGlobalALevel4("A");
+                // courseGradeEligibility.setCourseId(course.getId());
+                // courseGradeEligibility.setGlobalALevel1("A");
+                // courseGradeEligibility.setGlobalALevel2("A");
+                // courseGradeEligibility.setGlobalALevel3("A");
+                // courseGradeEligibility.setGlobalALevel4("A");
                 courseGradeEligibility.setGlobalGpa(3.5);
                 courseGradeEligibility.setIsActive(true);
                 courseGradeEligibility.setIsDeleted(false);
@@ -531,7 +531,7 @@ public class CourseController {
         try {
             CourseMinRequirementDto courseMinRequirementDto = courseService.getCourseMinRequirement(courseId);
             response.put("status", HttpStatus.OK.value());
-            response.put("message", "CourseMinRequirement fetch Successfully");
+            response.put("message", "Course minimum requirement fetch Successfully");
             response.put("data", courseMinRequirementDto);
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -539,6 +539,11 @@ public class CourseController {
             response.put("message", "Error to fetch CourseMinRequirement");
         }
         return ResponseEntity.accepted().body(response);
+    }
+
+    @RequestMapping(value = "/autoSearch/{searchKey}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> autoSearchByCharacter(@PathVariable final String searchKey) throws Exception {
+        return ResponseEntity.accepted().body(courseService.autoSearchByCharacter(searchKey));
     }
 
 }

@@ -157,7 +157,9 @@ public class CourseService implements ICourseService {
             course.setDescription(courseDto.getDescription());
             course.setName(courseDto.getName());
             course.setcId(courseDto.getcId());
-            course.setDuration(courseDto.getDuration());
+            if (courseDto.getDuration() != null && !courseDto.getDuration().isEmpty()) {
+                course.setDuration(Integer.valueOf(courseDto.getDuration()));
+            }
             course.setFaculty(getFaculty(courseDto.getFacultyId()));
             course.setCity(getCity(courseDto.getCityId()));
             course.setCourseLang(courseDto.getLanguage());
@@ -167,8 +169,9 @@ public class CourseService implements ICourseService {
             course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
             course.setUpdatedBy("API");
             course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-            course.setStars(courseDto.getStars());
-
+            if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
+                course.setStars(Integer.valueOf(courseDto.getStars()));
+            }
             // Course Details
             course.setIntake(courseDto.getIntake());
             course.setCourseLink(courseDto.getCourseLink());
@@ -236,7 +239,6 @@ public class CourseService implements ICourseService {
             course.setDescription(courseDto.getDescription());
             course.setName(courseDto.getName());
             course.setcId(courseDto.getcId());
-            course.setDuration(courseDto.getDuration());
             course.setFaculty(getFaculty(courseDto.getFacultyId()));
             course.setCity(getCity(courseDto.getCityId()));
             course.setCourseLang(courseDto.getLanguage());
@@ -246,7 +248,12 @@ public class CourseService implements ICourseService {
             course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
             course.setUpdatedBy("API");
             course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-            course.setStars(courseDto.getStars());
+            if (courseDto.getDuration() != null && !courseDto.getDuration().isEmpty()) {
+                course.setDuration(Integer.valueOf(courseDto.getDuration()));
+            }
+            if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
+                course.setStars(Integer.valueOf(courseDto.getStars()));
+            }
 
             // Course Details
             course.setIntake(courseDto.getIntake());
@@ -801,14 +808,7 @@ public class CourseService implements ICourseService {
 
     @Override
     public CourseMinRequirementDto getCourseMinRequirement(BigInteger course) {
-        CourseMinRequirementDto courseMinRequirementDto = null;
-        try {
-            List<CourseMinRequirement> courseMinRequirements = courseMinRequirementDao.get(course);
-            courseMinRequirementDto = convertCourseMinRequirementToDto(courseMinRequirements);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return courseMinRequirementDto;
+        return convertCourseMinRequirementToDto(courseMinRequirementDao.get(course));
     }
 
     public CourseMinRequirementDto convertCourseMinRequirementToDto(List<CourseMinRequirement> courseMinRequirement) {
@@ -825,5 +825,26 @@ public class CourseService implements ICourseService {
         courseMinRequirementDto.setSubject(subject);
         courseMinRequirementDto.setGrade(grade);
         return courseMinRequirementDto;
+    }
+
+    @Override
+    public Map<String, Object> autoSearchByCharacter(String searchKey) {
+        Map<String, Object> response = new HashMap<>();
+        List<CourseRequest> courses = new ArrayList<>();
+        try {
+            courses = iCourseDAO.autoSearchByCharacter(1, 50, searchKey);
+            if (courses != null && !courses.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
+                response.put("courses", courses);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.COURSE_GET_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
     }
 }

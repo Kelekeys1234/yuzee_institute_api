@@ -547,7 +547,7 @@ public class MigrateCourseControllerTesting {
             course.setAbbreviation(abbreviation);
             course.setCourseLang(course_lang);
             course.setDescription(description);
-            course.setDuration(Duration);
+           //course.setDuration(Duration);
             course.setDurationTime(Duration_Time);
             // course.setFacultyObj(facultyObj);
             // course.setInstituteObj(instituteObj);
@@ -559,15 +559,15 @@ public class MigrateCourseControllerTesting {
             // course.setRecordedDate(Rec_Date);
             course.setRemarks(Remarks_);
             if (null != stars && !stars.isEmpty()) {
-                course.setStars(stars);
+             //   course.setStars(stars);
             } else {
-                course.setStars("0.0");
+                //course.setStars("0.0");
             }
 
             course.setWebsite(Website);
 
             if (null != World_Ranking && !World_Ranking.isEmpty()) {
-                course.setWorldRanking(World_Ranking);
+               // course.setWorldRanking(World_Ranking);
             }
 
             courseDetails.setAvailbilty(availbilty);

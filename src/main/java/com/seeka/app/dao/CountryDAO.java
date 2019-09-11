@@ -140,4 +140,25 @@ public class CountryDAO implements ICountryDAO {
         }
         return countries;
     }
+
+    @Override
+    public List<CountryDto> autoSearch(int pageNumber, int pageSize, String searchKey) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select distinct c.id, c.name as name, c.country_code as code from country c where c.name like '%" + searchKey.trim() + "%'";
+        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<CountryDto> countries = new ArrayList<CountryDto>();
+        CountryDto obj = null;
+        for (Object[] row : rows) {
+            obj = new CountryDto();
+            obj.setId(new BigInteger((row[0].toString())));
+            obj.setName(row[1].toString());
+            if (row[2] != null) {
+                obj.setCountryCode(row[2].toString());
+            }
+            countries.add(obj);
+        }
+        return countries;
+    }
 }

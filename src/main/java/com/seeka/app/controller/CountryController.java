@@ -203,4 +203,9 @@ public class CountryController {
     public ResponseEntity<?> getCountryLevelFaculty() {
         return ResponseEntity.accepted().body(countryService.getCountryLevelFaculty());
     }
+    
+    @RequestMapping(value = "/autoSearch/{searchKey}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> autoSearch(@PathVariable final String searchKey) throws Exception {
+        return ResponseEntity.accepted().body(countryService.autoSearch(searchKey));
+    }
 }

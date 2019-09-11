@@ -77,4 +77,6 @@ public interface ICourseService {
     void saveCourseMinrequirement(CourseMinRequirementDto obj);
     
     CourseMinRequirementDto getCourseMinRequirement(BigInteger courseId);
+
+    Map<String, Object> autoSearchByCharacter(String searchKey);
 }

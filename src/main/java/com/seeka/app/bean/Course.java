@@ -38,11 +38,11 @@ public class Course implements Serializable {
 	private Faculty faculty;
 	private Institute institute;
 	private String name;
-	private String worldRanking;
-	private String stars;
+	private Integer worldRanking;
+	private Integer stars;
 	private String recognition;
 	private String recognitionType;
-	private String duration;
+	private Integer duration;
 	private String durationTime;
 	private String website;
 	private String courseLang;
@@ -83,8 +83,8 @@ public class Course implements Serializable {
 	public Course() {
 	}
 
-	public Course(final City city, final Country country, final Faculty faculty, final Institute institute, final String name, final String worldRanking,
-			final String stars, final String recognition, final String recognitionType, final String duration, final String durationTime, final String website,
+	public Course(final City city, final Country country, final Faculty faculty, final Institute institute, final String name, final Integer worldRanking,
+			final Integer stars, final String recognition, final String recognitionType, final Integer duration, final String durationTime, final String website,
 			final String courseLang, final String abbreviation, final Date recDate, final String remarks, final String description, final Boolean isActive,
 			final Date createdOn, final Date updatedOn, final Date deletedOn, final String createdBy, final String updatedBy, final Boolean isDeleted) {
 		this.city = city;
@@ -174,20 +174,20 @@ public class Course implements Serializable {
 	}
 
 	@Column(name = "world_ranking", length = 50)
-	public String getWorldRanking() {
+	public Integer getWorldRanking() {
 		return this.worldRanking;
 	}
 
-	public void setWorldRanking(final String worldRanking) {
+	public void setWorldRanking(final Integer worldRanking) {
 		this.worldRanking = worldRanking;
 	}
 
 	@Column(name = "stars", length = 50)
-	public String getStars() {
+	public Integer getStars() {
 		return this.stars;
 	}
 
-	public void setStars(final String stars) {
+	public void setStars(final Integer stars) {
 		this.stars = stars;
 	}
 
@@ -210,11 +210,11 @@ public class Course implements Serializable {
 	}
 
 	@Column(name = "duration", length = 250)
-	public String getDuration() {
+	public Integer getDuration() {
 		return this.duration;
 	}
 
-	public void setDuration(final String duration) {
+	public void setDuration(final Integer duration) {
 		this.duration = duration;
 	}
 
