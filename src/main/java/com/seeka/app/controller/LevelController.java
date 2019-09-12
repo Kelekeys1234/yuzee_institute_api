@@ -47,7 +47,11 @@ public class LevelController {
         }
         response.put("data", levelList);
         return ResponseEntity.accepted().body(response);
-
+    }
+ 
+    @RequestMapping(value = "/course/country/{countryId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getCountryLevel(@PathVariable BigInteger countryId) throws Exception {
+        return ResponseEntity.accepted().body(levelService.getCountryLevel(countryId));
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
@@ -63,6 +67,5 @@ public class LevelController {
         }
         response.put("data", levelList);
         return ResponseEntity.accepted().body(response);
-
     }
 }

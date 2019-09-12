@@ -11,6 +11,7 @@ import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
+import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
@@ -74,5 +75,7 @@ public interface ICourseDAO {
     int autoSearchTotalCount(String searchKey);
 
     List<CourseRequest> autoSearchByCharacter(int pageNumber, Integer pageSize, String searchKey);
+
+    List<CountryDto> getCourseCountry();
 
 }

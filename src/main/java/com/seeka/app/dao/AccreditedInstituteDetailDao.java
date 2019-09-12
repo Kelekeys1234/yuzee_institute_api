@@ -67,9 +67,9 @@ public class AccreditedInstituteDetailDao implements IAccreditedInstituteDetailD
     public List<BigInteger> getAccreditation(@Valid BigInteger id) {
         List<BigInteger> list = new ArrayList<>();
         Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(AccreditedInstituteDetail.class, "accreditedInstituteDetail");
-        crit.add(Restrictions.eq("accreditedInstituteDetail.entityId", id));
-        crit.add(Restrictions.eq("accreditedInstituteDetail.entityType", "INSTITUTE"));
+        Criteria crit = session.createCriteria(AccreditedInstituteDetail.class);
+        crit.add(Restrictions.eq("entityId", id));
+        crit.add(Restrictions.eq("entityType", "INSTITUTE"));
         List<AccreditedInstituteDetail> accreditedInstituteDetails = crit.list();
         for (AccreditedInstituteDetail bean : accreditedInstituteDetails) {
             list.add(bean.getAccreditedInstituteId());

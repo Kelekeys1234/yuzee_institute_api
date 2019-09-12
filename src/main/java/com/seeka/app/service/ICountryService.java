@@ -35,4 +35,6 @@ public interface ICountryService {
     public Map<String, Object> getCountryLevelFaculty();
 
     public Map<String, Object> autoSearch(String searchKey);
+
+    public Map<String, Object> getCourseCountry();
 }

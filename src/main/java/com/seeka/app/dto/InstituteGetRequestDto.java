@@ -25,6 +25,7 @@ public class InstituteGetRequestDto {
     private String updatedBy;
     private String lastUpdated;
     private Integer courseCount;
+    private String campusType;
     
 
     public String getLastUpdated() {
@@ -227,5 +228,19 @@ public class InstituteGetRequestDto {
      */
     public void setCourseCount(Integer courseCount) {
         this.courseCount = courseCount;
+    }
+
+    /**
+     * @return the campusType
+     */
+    public String getCampusType() {
+        return campusType;
+    }
+
+    /**
+     * @param campusType the campusType to set
+     */
+    public void setCampusType(String campusType) {
+        this.campusType = campusType;
     }
 }

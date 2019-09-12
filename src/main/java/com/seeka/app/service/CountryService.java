@@ -19,6 +19,7 @@ import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICountryDetailsDAO;
 import com.seeka.app.dao.ICountryImageDAO;
+import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.YoutubeVideoDAO;
@@ -56,6 +57,9 @@ public class CountryService implements ICountryService {
 
     @Autowired
     private IFacultyDAO facultyDAO;
+
+    @Autowired
+    private ICourseDAO courseDAO;
 
     @Override
     public List<Country> getAll() {
@@ -223,6 +227,27 @@ public class CountryService implements ICountryService {
         List<CountryDto> countries = new ArrayList<CountryDto>();
         try {
             countries = countryDAO.autoSearch(1, 50, searchKey);
+            if (countries != null && !countries.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Country fetched successfully");
+                response.put("courses", countries);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", "Country not found");
+            }
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getCourseCountry() {
+        Map<String, Object> response = new HashMap<>();
+        List<CountryDto> countries = new ArrayList<CountryDto>();
+        try {
+            countries = courseDAO.getCourseCountry();
             if (countries != null && !countries.isEmpty()) {
                 response.put("status", HttpStatus.OK.value());
                 response.put("message", "Country fetched successfully");

@@ -29,6 +29,7 @@ import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
+import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseFilterDto;
@@ -1935,5 +1936,24 @@ public class CourseDAO implements ICourseDAO {
             courses.add(courseRequest);
         }
         return courses;
+    }
+
+    @Override
+    public List<CountryDto> getCourseCountry() {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select distinct ctry.id as countryId, ctry.name as countryName from course crs inner join country ctry on ctry.id = crs.country_id where crs.deleted_on IS NULL";
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<CountryDto> countryDtos = new ArrayList<>();
+        CountryDto countryDto = null;
+        for (Object[] row : rows) {
+            countryDto = new CountryDto();
+            countryDto.setId(new BigInteger(row[0].toString()));
+            if (row[1] != null) {
+                countryDto.setName(row[1].toString());
+            }
+            countryDtos.add(countryDto);
+        }
+        return countryDtos;
     }
 }

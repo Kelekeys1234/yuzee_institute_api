@@ -67,4 +67,9 @@ public class FacultyService implements IFacultyService {
         }
         return dao.getFacultyByListOfInstituteId(tempList.substring(1, tempList.length()));
     }
+
+    @Override
+    public List<Faculty> getCourseFaculty(BigInteger countryId, BigInteger levelId) {
+        return dao.getCourseFaculty(countryId, levelId);
+    }
 }

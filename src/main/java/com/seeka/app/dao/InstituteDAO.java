@@ -310,7 +310,7 @@ public class InstituteDAO implements IInstituteDAO {
     @Override
     public List<Institute> getAll(final Integer pageNumber, final Integer pageSize) {
         Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on FROM institute as inst where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
+        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on , inst.campus_type FROM institute as inst where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
@@ -344,6 +344,9 @@ public class InstituteDAO implements IInstituteDAO {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
                 String dateResult = formatter.format(createdDate);
                 obj.setLastUpdated(dateResult);
+            }
+            if (row[7] != null) {
+                obj.setCampusType(row[7].toString());
             }
             instituteList.add(obj);
         }
@@ -405,6 +408,9 @@ public class InstituteDAO implements IInstituteDAO {
                 obj.setLastUpdated(dateResult);
 
             }
+            if (row[7] != null) {
+                obj.setCampusType(row[7].toString());
+            }
             obj.setCourseCount(getCourseCount(new BigInteger(row[0].toString())));
             instituteList.add(obj);
         }
@@ -429,7 +435,7 @@ public class InstituteDAO implements IInstituteDAO {
     }
 
     private String getFilterInstituteSqlQuery(InstituteFilterDto instituteFilterDto) {
-        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on FROM institute as inst "
+        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on, inst.campus_type FROM institute as inst "
                         + " left join country ctry  on ctry.id = inst.country_id left join city ci  on ci.id = inst.city_id "
                         + "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
                         + "left join course c  on c.institute_id=inst.id where inst.is_active = 1 and inst.deleted_on IS NULL  ";
@@ -467,13 +473,39 @@ public class InstituteDAO implements IInstituteDAO {
 
     @Override
     public List<Institute> getInstituteCampusWithInstitue() {
-        return getAll();
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on , inst.campus_type FROM institute as inst where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        List<Institute> instituteList = new ArrayList<>();
+        Institute obj = null;
+        for (Object[] row : rows) {
+            obj = new Institute();
+            obj.setId(new BigInteger(row[0].toString()));
+            if (row[1] != null) {
+                obj.setName(row[1].toString());
+            }
+            if (row[5] != null) {
+                obj.setDescription(row[5].toString());
+            }
+            if (row[6] != null) {
+                Date createdDate = (Date) row[6];
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+                String dateResult = formatter.format(createdDate);
+                obj.setLastUpdated(dateResult);
+            }
+            if (row[7] != null) {
+                obj.setCampusType(row[7].toString());
+            }
+            instituteList.add(obj);
+        }
+        return instituteList;
     }
 
     @Override
     public List<Institute> autoSearch(int pageNumber, Integer pageSize, String searchKey) {
         Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on FROM institute as inst  "
+        String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on, inst.campus_type FROM institute as inst  "
                         + " inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
                         + " inner join institute_type instType on instType.id = inst.institute_type_id " + " where  inst.deleted_on IS NULL and (inst.name like '%" + searchKey
                         + "%' or inst.description like '%" + searchKey + "%' or ctry.name like '%" + searchKey + "%' or ci.name like '%" + searchKey + "%' or instType.name like '%"

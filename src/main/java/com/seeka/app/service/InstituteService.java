@@ -185,7 +185,7 @@ public class InstituteService implements IInstituteService {
     private Institute saveInstitute(@Valid InstituteRequestDto instituteRequest, BigInteger id) {
         Institute institute = null;
         if (id != null) {
-            institute = dao.get(id);
+            institute = dao.get(instituteRequest.getInstituteId());
         } else {
             institute = new Institute();
             institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -216,7 +216,11 @@ public class InstituteService implements IInstituteService {
         institute.setTuitionFessPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
         institute.setScholarshipFinancingAssistance(instituteRequest.getScholarshipFinancingAssistance());
         institute.setWorldRankingType(instituteRequest.getWorldRankingType());
-        dao.save(institute);
+        if (id != null) {
+            dao.update(institute);
+        } else {
+            dao.save(institute);
+        }
         if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
             saveInstituteService(institute, instituteRequest.getOfferService());
         }
@@ -327,6 +331,7 @@ public class InstituteService implements IInstituteService {
         dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountry(), institute.getName()));
         dto.setLastUpdated(institute.getLastUpdated());
         dto.setCourseCount(institute.getCourseCount());
+        dto.setCampusType(institute.getCampusType());
         return dto;
     }
 

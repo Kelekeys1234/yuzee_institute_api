@@ -49,8 +49,8 @@ public class FacultyDAO implements IFacultyDAO {
     @Override
     public List<Faculty> getFacultyByCountryIdAndLevelId(BigInteger countryID, BigInteger levelId) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session
-                        .createSQLQuery("select distinct f.id, f.name as facultyName, il.level_id as levelid from institute_level il inner join faculty_level fl on fl.institute_id = il.institute_id inner join faculty f on fl.faculty_id= f.id where il.country_id = :countryId and il.level_id = :levelId")
+        Query query = session.createSQLQuery(
+                        "select distinct f.id, f.name as facultyName, il.level_id as levelid from institute_level il inner join faculty_level fl on fl.institute_id = il.institute_id inner join faculty f on fl.faculty_id= f.id where il.country_id = :countryId and il.level_id = :levelId")
                         .setParameter("countryId", countryID).setParameter("levelId", levelId);
         List<Object[]> rows = query.list();
         List<Faculty> faculties = new ArrayList<Faculty>();
@@ -125,6 +125,24 @@ public class FacultyDAO implements IFacultyDAO {
         allObject.setId(new BigInteger("111111"));
         allObject.setName("All");
         faculties.add(allObject);
+        return faculties;
+    }
+
+    @Override
+    public List<Faculty> getCourseFaculty(BigInteger countryId, BigInteger levelId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery(
+                        "select distinct f.id, f.name as facultyName, il.level_id as levelid from course c inner join institute_level il on c.institute_id = il.institute_id inner join faculty f on c.faculty_id= f.id where il.country_id = :countryId and il.level_id = :levelId")
+                        .setParameter("countryId", countryId).setParameter("levelId", levelId);
+        List<Object[]> rows = query.list();
+        List<Faculty> faculties = new ArrayList<Faculty>();
+        Faculty obj = null;
+        for (Object[] row : rows) {
+            obj = new Faculty();
+            obj.setId(new BigInteger((row[0].toString())));
+            obj.setName(row[1].toString());
+            faculties.add(obj);
+        }
         return faculties;
     }
 }
