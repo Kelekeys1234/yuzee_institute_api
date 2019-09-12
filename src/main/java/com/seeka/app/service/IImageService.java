@@ -8,7 +8,7 @@ import com.seeka.app.exception.ValidationException;
 
 public interface IImageService {
 
-	String uploadImage(MultipartFile file, BigInteger entityId, String entityType);
+	String uploadImage(MultipartFile file, BigInteger entityId, String entityType, final String subCategory);
 
 	String addCategoryImage(MultipartFile file, String category, String subCategory, BigInteger categoryId) throws ValidationException;
 

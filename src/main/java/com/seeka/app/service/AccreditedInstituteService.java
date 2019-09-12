@@ -73,7 +73,7 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 
 	@Override
 	public void addAccreditedLogo(final MultipartFile file, final AccreditedInstitute accreditedInstitute) {
-		String logoName = iImageService.uploadImage(file, accreditedInstitute.getId(), "ACCREDITED_INSTITUTE");
+		String logoName = iImageService.uploadImage(file, accreditedInstitute.getId(), "ACCREDITED_INSTITUTE", null);
 		accreditedInstitute.setLogoImage(logoName);
 		iAccreditedInstituteDao.update(accreditedInstitute);
 	}
@@ -111,17 +111,16 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 		iAccreditedInstituteDao.update(existingAccreditedInstitute);
 	}
 
-    @Override
-    public List<AccreditedInstituteRequestDto> getAllAccreditedInstitutes() {
-       List<AccreditedInstituteRequestDto> accreditedInstituteRequestDto = new ArrayList<>();
-       List<AccreditedInstitute> accreditedInstitutes = iAccreditedInstituteDao.getAllAccreditedInstitutes();
-       for(AccreditedInstitute accreditedInstitute:accreditedInstitutes){
-           AccreditedInstituteRequestDto instituteRequestDto = new AccreditedInstituteRequestDto();
-           BeanUtils.copyProperties(accreditedInstitute, instituteRequestDto); 
-           accreditedInstituteRequestDto.add(instituteRequestDto);
-       }
-        return accreditedInstituteRequestDto;
-    }
-    
+	@Override
+	public List<AccreditedInstituteRequestDto> getAllAccreditedInstitutes() {
+		List<AccreditedInstituteRequestDto> accreditedInstituteRequestDto = new ArrayList<>();
+		List<AccreditedInstitute> accreditedInstitutes = iAccreditedInstituteDao.getAllAccreditedInstitutes();
+		for (AccreditedInstitute accreditedInstitute : accreditedInstitutes) {
+			AccreditedInstituteRequestDto instituteRequestDto = new AccreditedInstituteRequestDto();
+			BeanUtils.copyProperties(accreditedInstitute, instituteRequestDto);
+			accreditedInstituteRequestDto.add(instituteRequestDto);
+		}
+		return accreditedInstituteRequestDto;
+	}
 
 }

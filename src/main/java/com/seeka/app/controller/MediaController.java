@@ -17,15 +17,15 @@ import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IImageService;
 
 @RestController
-@RequestMapping("/image")
-public class ImageController {
+@RequestMapping("/media/upload")
+public class MediaController {
 
 	@Autowired
 	private IImageService iImageService;
 
 	@PostMapping
 	public ResponseEntity<Object> addCategoryImage(@RequestPart(value = "file") final MultipartFile file,
-			@RequestParam(name = "category") final String category, @RequestParam(name = "subCategory") final String subCategory,
+			@RequestParam(name = "category") final String category, @RequestParam(name = "subCategory", required = false) final String subCategory,
 			@RequestParam(name = "categoryId") final BigInteger categoryId) throws ValidationException {
 		String imageName = iImageService.addCategoryImage(file, category, subCategory, categoryId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(imageName).setMessage("file uploading successfully.").create();

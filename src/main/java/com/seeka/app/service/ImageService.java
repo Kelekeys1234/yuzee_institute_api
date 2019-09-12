@@ -34,9 +34,12 @@ public class ImageService implements IImageService {
 	@Autowired
 	private IEnrollmentService iEnrollmentService;
 
+	@Autowired
+	private IInstituteImagesService iInstituteImagesService;
+
 	@SuppressWarnings("rawtypes")
 	@Override
-	public String uploadImage(final MultipartFile file, final BigInteger entityId, final String entityType) {
+	public String uploadImage(final MultipartFile file, final BigInteger categoryId, final String category, final String subCategory) {
 		/**
 		 * Set http headers
 		 */
@@ -49,8 +52,11 @@ public class ImageService implements IImageService {
 		MultiValueMap<String, Object> formDate = new LinkedMultiValueMap<>();
 		formDate.add("file", new FileSystemResource(convert(file)));
 
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL).queryParam("id", entityId).queryParam("imageType",
-				entityType);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL).queryParam("categoryId", categoryId)
+				.queryParam("category", category);
+		if (subCategory != null) {
+			builder.queryParam("subCategory", subCategory);
+		}
 
 		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(formDate, headers);
 		ResponseEntity<Map> response = restTemplate.postForEntity(builder.toUriString(), request, Map.class);
@@ -77,7 +83,7 @@ public class ImageService implements IImageService {
 			throws ValidationException {
 		String imageName = null;
 		if (category.equals(ImageCategory.ENROLLMENT.name())) {
-			imageName = uploadImage(file, categoryId, ImageCategory.ENROLLMENT.name());
+			imageName = uploadImage(file, categoryId, ImageCategory.ENROLLMENT.name(), subCategory);
 			iEnrollmentService.saveEnrollmentImage(categoryId, subCategory, imageName);
 		}
 
