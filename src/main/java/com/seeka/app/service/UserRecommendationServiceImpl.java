@@ -409,5 +409,11 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		}
 		return resultList;
 	}
+	
+	@Override
+	public List<BigInteger> getTopSearchedCoursesByOtherUsers(BigInteger userId) {
+		
+		return userRecommendationDao.getOtherUserWatchCourse(userId);
+	}
 
 }

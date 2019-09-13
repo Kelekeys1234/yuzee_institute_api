@@ -41,6 +41,7 @@ import com.seeka.app.dao.ICourseMinRequirementDao;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IUserMyCourseDAO;
+import com.seeka.app.dao.UserRecommendationDao;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseFilterDto;
@@ -92,6 +93,9 @@ public class CourseService implements ICourseService {
 
     @Autowired
     private CourseGradeEligibilityDAO courseGradeEligibilityDao;
+    
+    @Autowired
+    private UserRecommendationDao userRecommendationDao;
 
     @Override
     public void save(final Course course) {
@@ -856,13 +860,33 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public long checkIfCoursesPresentForCountry(Country country) {
-		// TODO Auto-generated method stub
 		return iCourseDAO.getCourseCountForCountry(country);
 	}
 
 	@Override
 	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country) {
-		// TODO Auto-generated method stub
 		return iCourseDAO.getTopRatedCoursesForCountryWorldRankingWise(country);
+	}
+
+	@Override
+	public List<Course> getAllCourseUsingFaculty(Long facultyId) {
+		return iCourseDAO.getAllCourseForFacultyWorldRankingWise(facultyId);
+	}
+	
+	@Override
+	public List<BigInteger> getAllCourseUsingFaculty(BigInteger facultyId) {
+		return iCourseDAO.getAllCourseForFacultyWorldRankingWise(facultyId);
+	}
+
+	@Override
+	public List<BigInteger> getTopSearchedCoursesByOtherUsers(BigInteger userId) {
+		// TODO Auto-generated method stub
+		return userRecommendationDao.getOtherUserWatchCourse(userId);
+	}
+
+	@Override
+	public List<Course> getCoursesById(List<BigInteger> allSearchCourses) {
+		// TODO Auto-generated method stub
+		return iCourseDAO.getCoursesFromId(allSearchCourses);
 	}
 }

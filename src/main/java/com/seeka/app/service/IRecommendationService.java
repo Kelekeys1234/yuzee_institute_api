@@ -13,4 +13,6 @@ public interface IRecommendationService {
 	void getOtherPeopleSearch();
 
 	List<Course> getRecommendedCourses(BigInteger userId) throws ValidationException;
+	
+	List<Course> getTopSearchedCoursesForFaculty(BigInteger facultyId, BigInteger userId);
 }

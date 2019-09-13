@@ -120,4 +120,19 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 		return crit.list();
 	}
 
+	@Override
+	public List<BigInteger> getOtherUserWatchCourse(BigInteger userId) {
+		Session session = sessionFactory.getCurrentSession();
+		List<BigInteger> courseList = (List<BigInteger>)session.createNativeQuery("select course_id from user_watch_course userwatchcourse where userwatchcourse.user_Id not in (?) group by userwatchcourse.course_id order by count(*) desc").
+		setBigInteger(1, userId).getResultList();
+		
+//		Criteria crit = session.createCriteria(UserWatchCourse.class, "userWatchCourse");
+//		crit.add(Restrictions.ne("userId", userId));
+//		crit.setProjection(Projections.projectionList().add(Projections.groupProperty("course"))
+//				.add(Projections.property("course"))
+//				.add(Projections.rowCount(),"count"));
+//		crit.addOrder(Order.desc("count"));
+		return courseList;
+	}
+
 }

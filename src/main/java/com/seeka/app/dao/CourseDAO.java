@@ -1970,7 +1970,6 @@ public class CourseDAO implements ICourseDAO {
 
 	@Override
 	public long getCourseCountForCountry(Country country) {
-		// TODO Auto-generated method stub
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
 		crit.add(Restrictions.eq("country", country));
@@ -1980,11 +1979,39 @@ public class CourseDAO implements ICourseDAO {
 
 	@Override
 	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country) {
-		// TODO Auto-generated method stub
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
 		crit.add(Restrictions.eq("country", country));
 		crit.addOrder(Order.desc("worldRanking"));
 		return crit.list();
 	}
+
+	@Override
+	public List<Course> getAllCourseForFacultyWorldRankingWise(Long facultyId) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Course.class, "course");
+		crit.createAlias("course.faculty", "courseFaculty");
+		crit.add(Restrictions.eq("courseFaculty.id", BigInteger.valueOf(facultyId)));
+		crit.addOrder(Order.asc("worldRanking"));
+		return crit.list();
+	}
+	
+	@Override
+	public List<BigInteger> getAllCourseForFacultyWorldRankingWise(BigInteger facultyId) {
+		
+		Session session = sessionFactory.getCurrentSession();
+		List<BigInteger> courseList = (List<BigInteger>)session.createNativeQuery("select id from course c where c.faculty_id = ? order by c.world_ranking asc").
+		setBigInteger(1, facultyId).getResultList();
+		return courseList;
+		
+	}
+
+	@Override
+	public List<Course> getCoursesFromId(List<BigInteger> allSearchCourses) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Course.class, "course");
+		crit.add(Restrictions.in("id", allSearchCourses));
+		return crit.list();
+	}
+	
 }

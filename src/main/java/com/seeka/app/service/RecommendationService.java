@@ -230,5 +230,18 @@ public class RecommendationService implements IRecommendationService {
 			return new ArrayList<>();
 		}
 	}
+
+	@Override
+	public List<Course> getTopSearchedCoursesForFaculty(BigInteger facultyId, BigInteger userId) {
+		List<BigInteger> facultyWiseCourses = icourseService.getAllCourseUsingFaculty(facultyId);
+		List<BigInteger> allSearchCourses = icourseService.getTopSearchedCoursesByOtherUsers(userId);
+		allSearchCourses.retainAll(facultyWiseCourses);
+		System.out.println("All Course Size -- "+allSearchCourses.size());
+		if(allSearchCourses == null || allSearchCourses.size()==0) {
+			allSearchCourses = facultyWiseCourses.size()>10 ? facultyWiseCourses.subList(0, 9):facultyWiseCourses;
+		}
+		
+		return icourseService.getCoursesById(allSearchCourses);
+	}
 	
 }

@@ -88,4 +88,12 @@ public interface ICourseService {
     long checkIfCoursesPresentForCountry(Country country);
     
     List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
+
+	List<Course> getAllCourseUsingFaculty(Long facultyId);
+
+	List<BigInteger> getAllCourseUsingFaculty(BigInteger facultyId);
+	
+	List<BigInteger> getTopSearchedCoursesByOtherUsers(BigInteger userId);
+
+	List<Course> getCoursesById(List<BigInteger> allSearchCourses);
 }
