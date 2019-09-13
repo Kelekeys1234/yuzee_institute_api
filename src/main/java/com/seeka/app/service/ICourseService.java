@@ -6,8 +6,11 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.Faculty;
+import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
@@ -74,9 +77,15 @@ public interface ICourseService {
 
     Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
     
+    List<Course> facultyWiseCourseForInstitute(List<Faculty> facultyList, Institute institute);
+    
     void saveCourseMinrequirement(CourseMinRequirementDto obj);
     
     CourseMinRequirementDto getCourseMinRequirement(BigInteger courseId);
 
     Map<String, Object> autoSearchByCharacter(String searchKey);
+    
+    long checkIfCoursesPresentForCountry(Country country);
+    
+    List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
 }

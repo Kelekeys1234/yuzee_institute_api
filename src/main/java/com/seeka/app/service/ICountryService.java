@@ -37,4 +37,6 @@ public interface ICountryService {
     public Map<String, Object> autoSearch(String searchKey);
 
     public Map<String, Object> getCourseCountry();
+
+	Country getCountryBasedOnCitizenship(String citizenship);
 }

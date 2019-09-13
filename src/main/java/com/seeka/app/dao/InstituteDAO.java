@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -598,4 +599,14 @@ public class InstituteDAO implements IInstituteDAO {
         Criteria crit = session.createCriteria(InstituteCategoryType.class);
         return crit.list();
     }
+
+	@Override
+	public List<Institute> ratingWiseInstituteListByCountry(Country country) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Institute.class, "institute");
+		
+		crit.add(Restrictions.eq("country", country));
+		crit.addOrder(Order.asc("worldRanking"));
+        return crit.list();
+	}
 }

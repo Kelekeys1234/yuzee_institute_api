@@ -8,6 +8,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -127,6 +128,14 @@ public class FacultyDAO implements IFacultyDAO {
         faculties.add(allObject);
         return faculties;
     }
+    
+    public List<Faculty> getFacultyListByFacultyNames(List<String> facultyNameList){
+    	Session session = sessionFactory.getCurrentSession();
+    	Criteria crit = session.createCriteria(Faculty.class, "faculty");
+		crit.add(Restrictions.in("name", facultyNameList));
+		return crit.list();
+    }
+
 
     @Override
     public List<Faculty> getCourseFaculty(BigInteger countryId, BigInteger levelId) {

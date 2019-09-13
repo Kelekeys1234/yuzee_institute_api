@@ -262,4 +262,9 @@ public class CountryService implements ICountryService {
         }
         return response;
     }
+	@Override
+	public Country getCountryBasedOnCitizenship(String citizenship) {
+		// TODO Auto-generated method stub
+		return countryDAO.getCountryBasedOnCitizenship(citizenship);
+	}
 }

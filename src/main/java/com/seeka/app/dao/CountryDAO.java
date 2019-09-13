@@ -4,9 +4,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -161,4 +163,14 @@ public class CountryDAO implements ICountryDAO {
         }
         return countries;
     }
+
+	@Override
+	public Country getCountryBasedOnCitizenship(String citizenship) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Country.class, "country");
+		System.out.println("citizenship-- "+citizenship);
+		crit.add(Restrictions.eq("name", citizenship));
+		return (Country) (crit.list().size() > 0 ? crit.list().get(0) : crit.uniqueResult());
+	}
 }

@@ -562,4 +562,9 @@ public class InstituteService implements IInstituteService {
         }
         return response;
     }
+    
+    @Override
+    public List<Institute> ratingWiseInstituteListByCountry(Country country){
+    	return dao.ratingWiseInstituteListByCountry(country);
+    }
 }

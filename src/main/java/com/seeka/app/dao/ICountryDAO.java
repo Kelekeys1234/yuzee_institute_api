@@ -26,4 +26,6 @@ public interface ICountryDAO {
     public List<DiscoverCountryDto> getDiscoverCountry();
 
     public List<CountryDto> autoSearch(int i, int j, String searchKey);
+
+	Country getCountryBasedOnCitizenship(String citizenship);
 }

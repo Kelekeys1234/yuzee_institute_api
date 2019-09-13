@@ -761,6 +761,12 @@ public class CourseService implements ICourseService {
         return response;
     }
 
+	@Override
+	public List<Course> facultyWiseCourseForInstitute(List<Faculty> facultyList, Institute institute) {
+		// TODO Auto-generated method stub
+		return iCourseDAO.facultyWiseCourseForTopInstitute(facultyList, institute);
+	}
+
     @Override
     public void saveCourseMinrequirement(CourseMinRequirementDto courseMinRequirementDto) {
         try {
@@ -847,4 +853,16 @@ public class CourseService implements ICourseService {
         }
         return response;
     }
+
+	@Override
+	public long checkIfCoursesPresentForCountry(Country country) {
+		// TODO Auto-generated method stub
+		return iCourseDAO.getCourseCountForCountry(country);
+	}
+
+	@Override
+	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country) {
+		// TODO Auto-generated method stub
+		return iCourseDAO.getTopRatedCoursesForCountryWorldRankingWise(country);
+	}
 }

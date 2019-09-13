@@ -72,4 +72,7 @@ public class FacultyService implements IFacultyService {
     public List<Faculty> getCourseFaculty(BigInteger countryId, BigInteger levelId) {
         return dao.getCourseFaculty(countryId, levelId);
     }
+    public List<Faculty> getFacultyListByName(List<String> facultyNames){
+    	return dao.getFacultyListByFacultyNames(facultyNames);
+    }
 }

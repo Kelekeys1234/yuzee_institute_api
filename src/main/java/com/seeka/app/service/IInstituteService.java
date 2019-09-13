@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.dto.CourseSearchDto;
@@ -55,4 +56,6 @@ public interface IInstituteService {
 	List<InstituteCategoryType> getAllCategories();
 
     Map<String, Object> deleteInstitute(@Valid BigInteger id);
+
+	List<Institute> ratingWiseInstituteListByCountry(Country country);
 }

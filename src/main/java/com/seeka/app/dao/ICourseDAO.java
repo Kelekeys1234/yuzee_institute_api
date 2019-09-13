@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.Faculty;
+import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
@@ -74,8 +77,12 @@ public interface ICourseDAO {
 
     int autoSearchTotalCount(String searchKey);
 
+    List<Course> facultyWiseCourseForTopInstitute(List<Faculty> facultyList, Institute institute);
     List<CourseRequest> autoSearchByCharacter(int pageNumber, Integer pageSize, String searchKey);
 
     List<CountryDto> getCourseCountry();
 
+    long getCourseCountForCountry(Country country);
+    
+    List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
 }

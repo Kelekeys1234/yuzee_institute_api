@@ -15,6 +15,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
@@ -1919,6 +1921,15 @@ public class CourseDAO implements ICourseDAO {
     }
 
     @Override
+	public List<Course> facultyWiseCourseForTopInstitute(List<Faculty> facultyList, Institute institute){
+		Session session = sessionFactory.getCurrentSession();
+    	Criteria crit = session.createCriteria(Course.class, "course");
+    	crit.add(Restrictions.eq("institute", institute));
+		crit.add(Restrictions.in("faculty", facultyList));
+		return crit.list();
+	}
+
+    @Override
     public List<CourseRequest> autoSearchByCharacter(int pageNumber, Integer pageSize, String searchKey) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select c.id , c.name  " + " FROM course c" + " where c.is_active = 1 and c.deleted_on IS NULL and (c.name like '%" + searchKey + "%') ";
@@ -1956,4 +1967,24 @@ public class CourseDAO implements ICourseDAO {
         }
         return countryDtos;
     }
+
+	@Override
+	public long getCourseCountForCountry(Country country) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Course.class, "course");
+		crit.add(Restrictions.eq("country", country));
+		crit.setProjection(Projections.rowCount());
+		return (long)crit.uniqueResult();
+	}
+
+	@Override
+	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Course.class, "course");
+		crit.add(Restrictions.eq("country", country));
+		crit.addOrder(Order.desc("worldRanking"));
+		return crit.list();
+	}
 }
