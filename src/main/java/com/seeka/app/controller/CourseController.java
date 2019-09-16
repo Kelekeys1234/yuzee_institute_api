@@ -541,8 +541,7 @@ public class CourseController {
                 response.put("data", courseMinRequirementDto);
             } else {
                 response.put("status", HttpStatus.NOT_FOUND.value());
-                response.put("message", "Course minimum requirement fetch Successfully");
-                response.put("data", courseMinRequirementDto);
+                response.put("message", "Course minimum requirement Not Found");
             }
         } catch (Exception exception) {
             exception.printStackTrace();
