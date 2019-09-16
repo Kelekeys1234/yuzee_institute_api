@@ -45,6 +45,14 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 		crit.addOrder(Order.desc("userWatchCourse.updatedOn"));
 		return crit.list();
 	}
+	
+	@Override
+	public List<BigInteger> getUserWatchCourseIds(final BigInteger userId) {
+		Session session = sessionFactory.getCurrentSession();
+		List<BigInteger> courseIds = session.createNativeQuery("Select course_id from user_watch_course where user_id = ? group by course_id order by count(*) desc")
+			.setParameter(1, userId).getResultList();
+		return courseIds;
+	}
 
 	@Override
 	public void save(final UserWatchArticle userWatchArticle) {

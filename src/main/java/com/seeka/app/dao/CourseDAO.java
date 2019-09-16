@@ -2021,4 +2021,59 @@ public class CourseDAO implements ICourseDAO {
 		return crit.list();
 	}
 
+	@Override
+	public Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList,
+			BigInteger instituteId) {
+		// TODO Auto-generated method stub
+		Map<BigInteger, BigInteger> mapOfCourseIdFacultyId = new HashMap<>();
+		StringBuilder facultyIds = new StringBuilder();
+//		
+//		facultyIds = facultyList.stream().collect(f -> f.getId()+",");
+//		
+//		System.out.println("facutlyId -- "+facultyIds);
+		int count = 0;
+		
+		facultyIds = new StringBuilder();
+		for (Faculty faculty : facultyList) {
+			count ++;
+			
+			facultyIds.append(faculty.getId());
+			if(count < facultyList.size()-1) {
+				facultyIds.append(",");
+			}
+		}
+		
+		Session session = sessionFactory.getCurrentSession();
+		List<Object[]> rows = session.createNativeQuery("Select course_id, faculty_id from course where institute_id = ? and faculty_id in ("+facultyIds+") and course_id is not null").
+    			setBigInteger(1, instituteId).getResultList();
+		
+		 for (Object[] row : rows) {
+	            mapOfCourseIdFacultyId.put(new BigInteger(row[0].toString()), new BigInteger(row[1].toString()));
+	     }
+		
+		return mapOfCourseIdFacultyId;
+	}
+
+	@Override
+	public List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Course.class, "course");
+		crit.add(Restrictions.in("id", listOfRecommendedCourseIds));
+		return crit.list();
+	}
+	
+	@Override
+	public List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(Country country) {
+		Session session = sessionFactory.getCurrentSession();
+		List<BigInteger> rows= session.createNativeQuery("select id from course where country_id = ? order by world_ranking desc")
+				.setBigInteger(1, country.getId()).getResultList();
+		List<BigInteger> courseIds = rows;
+//		for (BigInteger[] row : rows) {
+//	            courseIds.add(new BigInteger(row[0].toString()));
+//	     }
+		
+		
+		return courseIds;
+	}
+	
 }

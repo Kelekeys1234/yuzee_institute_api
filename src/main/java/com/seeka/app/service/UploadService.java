@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,8 +46,6 @@ public class UploadService implements IUploadService {
 		for (Top10Course top10Course : listOffacultyWiseTop10Courses) {
 			top10CourseService.saveTop10Courses(top10Course);
 		}
-		System.out.println("listOffacultyWiseTop10Courses");
-		System.out.println(listOffacultyWiseTop10Courses);
 		return "successful";
 	}
 	
@@ -68,9 +67,9 @@ public class UploadService implements IUploadService {
 	
 	private String saveFile(MultipartFile file, String directory) throws IOException {
 		
-		final String uploadLocation = uploadDirectory+"/"+directory; 
+		final String uploadLocation = uploadDirectory+directory; 
 		byte[] bytes = file.getBytes();
-		Path path = Paths.get(uploadLocation + "/" + file.getOriginalFilename()/* +"_"+LocalDate.now() */);
+		Path path = Paths.get(uploadLocation + "/" +LocalDateTime.now().getYear()+"_"+LocalDateTime.now().getMonth()+"_"+LocalDateTime.now().getDayOfMonth()+"_"+LocalDateTime.now().getHour()+"_"+LocalDateTime.now().getMinute()+"_"+LocalDateTime.now().getSecond()+"_"+file.getOriginalFilename()/* +"_"+LocalDate.now() */);
 		Files.write(path, bytes);
 		return path.toString();
 	}

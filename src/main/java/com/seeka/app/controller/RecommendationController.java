@@ -2,6 +2,7 @@ package com.seeka.app.controller;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,5 +48,11 @@ public class RecommendationController {
 		List<Course> topSearchedCourses = iRecommendationService.getTopSearchedCoursesForFaculty(facultyId, userId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(topSearchedCourses).setMessage("Recommended Course Displayed Successfully")
 				.create();
+	}
+	
+	@GetMapping("/userCourseRelatedToSearch")
+	public ResponseEntity<?> displayRelatedCourseAsPerUserPastSearch(@RequestHeader(value="userId")BigInteger userId) throws ValidationException{
+		Set<Course> listOfRelatedCourses = iRecommendationService.displayRelatedCourseAsPerUserPastSearch(userId);
+		return new GenericResponseHandlers.Builder().setData(listOfRelatedCourses).setMessage("Related Courses Display Successfully").setStatus(HttpStatus.OK).create();
 	}
 }

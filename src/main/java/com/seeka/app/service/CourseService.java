@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,6 +55,7 @@ import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -100,6 +102,9 @@ public class CourseService implements ICourseService {
 
 	@Autowired
 	private IInstituteImagesService iInstituteImagesService;
+
+    @Autowired
+    private UserRecommendationService userRecommendationService;
 
 	@Override
 	public void save(final Course course) {
@@ -894,5 +899,36 @@ public class CourseService implements ICourseService {
 	public List<Course> getCoursesById(final List<BigInteger> allSearchCourses) {
 		// TODO Auto-generated method stub
 		return iCourseDAO.getCoursesFromId(allSearchCourses);
+	}
+	
+	@Override
+	public Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty>facultyList, BigInteger instituteId){
+		return iCourseDAO.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
+}
+
+	@Override
+	public List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds) {
+		// TODO Auto-generated method stub
+		return iCourseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
+	}
+	
+	@Override
+	public List<BigInteger> getTopRatedCourseIdForCountryWorldRankingWise(Country country) {
+		return iCourseDAO.getTopRatedCourseIdsForCountryWorldRankingWise(country);
+	}
+	
+	@Override
+	public List<BigInteger> getTopSearchedCoursesByUsers(BigInteger userId) {
+		return userRecommendationDao.getUserWatchCourseIds(userId);
+	}
+
+	@Override
+	public Set<Course> getRelatedCoursesBasedOnPastSearch(List<BigInteger> courseList) throws ValidationException{
+		// TODO Auto-generated method stub
+		Set<Course> relatedCourses = new HashSet<>();
+		for (BigInteger courseId : courseList) {
+			relatedCourses.addAll(userRecommendationService.getRelatedCourse(courseId));
+		}
+		return relatedCourses;
 	}
 }
