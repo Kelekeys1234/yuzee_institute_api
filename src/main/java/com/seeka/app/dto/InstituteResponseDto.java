@@ -1,236 +1,263 @@
-package com.seeka.app.dto;import java.math.BigInteger;
+package com.seeka.app.dto;
 
-public class InstituteResponseDto {
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.List;
 
-    private BigInteger instituteId;
-    private String instituteName;
-    private String instituteLogoUrl;
-    private String instituteImageUrl;
-    private String worldRanking;
-    private String stars;
-    private String location;
-    private Integer totalCourses;
-    private Integer totalCount;
-    private BigInteger cityId;
-    private BigInteger countryId;
-    private String website;
-    private String aboutUs;
-    private String openingHour;
-    private String closingHour;
-    private Integer totalNoOfStudents;
-    private String latitute;
-    private String longitude;
-    private String interPhoneNumber;
-    private String interEmail;
-    private String address;
-    private String visaRequirement;
-    private String totalAvailableJobs;
-    private String countryName;
-    private String cityName;
+public class InstituteResponseDto implements Serializable {
 
-    public BigInteger getInstituteId() {
-        return instituteId;
-    }
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 4673759147405801959L;
+	private BigInteger instituteId;
+	private String instituteName;
+//    private String instituteLogoUrl;
+//    private String instituteImageUrl;
+	private String worldRanking;
+	private String stars;
+	private String location;
+	private Integer totalCourses;
+	private Integer totalCount;
+	private BigInteger cityId;
+	private BigInteger countryId;
+	private String website;
+	private String aboutUs;
+	private String openingHour;
+	private String closingHour;
+	private Integer totalNoOfStudents;
+	private String latitute;
+	private String longitude;
+	private String interPhoneNumber;
+	private String interEmail;
+	private String address;
+	private String visaRequirement;
+	private String totalAvailableJobs;
+	private String countryName;
+	private String cityName;
+	private String logoImage;
+	private List<ImageResponseDto> instituteImages;
 
-    public void setInstituteId(BigInteger instituteId) {
-        this.instituteId = instituteId;
-    }
+	public BigInteger getInstituteId() {
+		return instituteId;
+	}
 
-    public String getInstituteName() {
-        return instituteName;
-    }
+	public void setInstituteId(final BigInteger instituteId) {
+		this.instituteId = instituteId;
+	}
 
-    public void setInstituteName(String instituteName) {
-        this.instituteName = instituteName;
-    }
+	public String getInstituteName() {
+		return instituteName;
+	}
 
-    public String getInstituteLogoUrl() {
-        return instituteLogoUrl;
-    }
+	public void setInstituteName(final String instituteName) {
+		this.instituteName = instituteName;
+	}
 
-    public void setInstituteLogoUrl(String instituteLogoUrl) {
-        this.instituteLogoUrl = instituteLogoUrl;
-    }
+//    public String getInstituteLogoUrl() {
+//        return instituteLogoUrl;
+//    }
+//
+//    public void setInstituteLogoUrl(String instituteLogoUrl) {
+//        this.instituteLogoUrl = instituteLogoUrl;
+//    }
+//
+//    public String getInstituteImageUrl() {
+//        return instituteImageUrl;
+//    }
+//
+//    public void setInstituteImageUrl(String instituteImageUrl) {
+//        this.instituteImageUrl = instituteImageUrl;
+//    }
 
-    public String getInstituteImageUrl() {
-        return instituteImageUrl;
-    }
+	public String getWorldRanking() {
+		return worldRanking;
+	}
 
-    public void setInstituteImageUrl(String instituteImageUrl) {
-        this.instituteImageUrl = instituteImageUrl;
-    }
+	public void setWorldRanking(final String worldRanking) {
+		this.worldRanking = worldRanking;
+	}
 
-    public String getWorldRanking() {
-        return worldRanking;
-    }
+	public String getStars() {
+		return stars;
+	}
 
-    public void setWorldRanking(String worldRanking) {
-        this.worldRanking = worldRanking;
-    }
+	public void setStars(final String stars) {
+		this.stars = stars;
+	}
 
-    public String getStars() {
-        return stars;
-    }
+	public String getLocation() {
+		return location;
+	}
 
-    public void setStars(String stars) {
-        this.stars = stars;
-    }
+	public void setLocation(final String location) {
+		this.location = location;
+	}
 
-    public String getLocation() {
-        return location;
-    }
+	public Integer getTotalCourses() {
+		return totalCourses;
+	}
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+	public void setTotalCourses(final Integer totalCourses) {
+		this.totalCourses = totalCourses;
+	}
 
-    public Integer getTotalCourses() {
-        return totalCourses;
-    }
+	public Integer getTotalCount() {
+		return totalCount;
+	}
 
-    public void setTotalCourses(Integer totalCourses) {
-        this.totalCourses = totalCourses;
-    }
+	public void setTotalCount(final Integer totalCount) {
+		this.totalCount = totalCount;
+	}
 
-    public Integer getTotalCount() {
-        return totalCount;
-    }
+	public String getWebsite() {
+		return website;
+	}
 
-    public void setTotalCount(Integer totalCount) {
-        this.totalCount = totalCount;
-    }
+	public void setWebsite(final String website) {
+		this.website = website;
+	}
 
-    public String getWebsite() {
-        return website;
-    }
+	public String getAboutUs() {
+		return aboutUs;
+	}
 
-    public void setWebsite(String website) {
-        this.website = website;
-    }
+	public void setAboutUs(final String aboutUs) {
+		this.aboutUs = aboutUs;
+	}
 
-    public String getAboutUs() {
-        return aboutUs;
-    }
+	public String getOpeningHour() {
+		return openingHour;
+	}
 
-    public void setAboutUs(String aboutUs) {
-        this.aboutUs = aboutUs;
-    }
+	public void setOpeningHour(final String openingHour) {
+		this.openingHour = openingHour;
+	}
 
-    public String getOpeningHour() {
-        return openingHour;
-    }
+	public String getClosingHour() {
+		return closingHour;
+	}
 
-    public void setOpeningHour(String openingHour) {
-        this.openingHour = openingHour;
-    }
+	public void setClosingHour(final String closingHour) {
+		this.closingHour = closingHour;
+	}
 
-    public String getClosingHour() {
-        return closingHour;
-    }
+	public Integer getTotalNoOfStudents() {
+		return totalNoOfStudents;
+	}
 
-    public void setClosingHour(String closingHour) {
-        this.closingHour = closingHour;
-    }
+	public void setTotalNoOfStudents(final Integer totalNoOfStudents) {
+		this.totalNoOfStudents = totalNoOfStudents;
+	}
 
-    public Integer getTotalNoOfStudents() {
-        return totalNoOfStudents;
-    }
+	public String getLatitute() {
+		return latitute;
+	}
 
-    public void setTotalNoOfStudents(Integer totalNoOfStudents) {
-        this.totalNoOfStudents = totalNoOfStudents;
-    }
+	public void setLatitute(final String latitute) {
+		this.latitute = latitute;
+	}
 
-    public String getLatitute() {
-        return latitute;
-    }
+	public String getLongitude() {
+		return longitude;
+	}
 
-    public void setLatitute(String latitute) {
-        this.latitute = latitute;
-    }
+	public void setLongitude(final String longitude) {
+		this.longitude = longitude;
+	}
 
-    public String getLongitude() {
-        return longitude;
-    }
+	public String getInterPhoneNumber() {
+		return interPhoneNumber;
+	}
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
+	public void setInterPhoneNumber(final String interPhoneNumber) {
+		this.interPhoneNumber = interPhoneNumber;
+	}
 
-    public String getInterPhoneNumber() {
-        return interPhoneNumber;
-    }
+	public String getInterEmail() {
+		return interEmail;
+	}
 
-    public void setInterPhoneNumber(String interPhoneNumber) {
-        this.interPhoneNumber = interPhoneNumber;
-    }
+	public void setInterEmail(final String interEmail) {
+		this.interEmail = interEmail;
+	}
 
-    public String getInterEmail() {
-        return interEmail;
-    }
+	public String getAddress() {
+		return address;
+	}
 
-    public void setInterEmail(String interEmail) {
-        this.interEmail = interEmail;
-    }
+	public void setAddress(final String address) {
+		this.address = address;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	public String getVisaRequirement() {
+		if (null == visaRequirement) {
+			visaRequirement = "";
+		}
+		return visaRequirement;
+	}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	public void setVisaRequirement(final String visaRequirement) {
+		this.visaRequirement = visaRequirement;
+	}
 
-    public String getVisaRequirement() {
-        if (null == visaRequirement) {
-            visaRequirement = "";
-        }
-        return visaRequirement;
-    }
+	public String getTotalAvailableJobs() {
+		if (null == totalAvailableJobs) {
+			totalAvailableJobs = "0";
+		}
+		return totalAvailableJobs;
+	}
 
-    public void setVisaRequirement(String visaRequirement) {
-        this.visaRequirement = visaRequirement;
-    }
+	public void setTotalAvailableJobs(final String totalAvailableJobs) {
+		this.totalAvailableJobs = totalAvailableJobs;
+	}
 
-    public String getTotalAvailableJobs() {
-        if (null == totalAvailableJobs) {
-            totalAvailableJobs = "0";
-        }
-        return totalAvailableJobs;
-    }
+	public BigInteger getCityId() {
+		return cityId;
+	}
 
-    public void setTotalAvailableJobs(String totalAvailableJobs) {
-        this.totalAvailableJobs = totalAvailableJobs;
-    }
+	public void setCityId(final BigInteger cityId) {
+		this.cityId = cityId;
+	}
 
-    public BigInteger getCityId() {
-        return cityId;
-    }
+	public BigInteger getCountryId() {
+		return countryId;
+	}
 
-    public void setCityId(BigInteger cityId) {
-        this.cityId = cityId;
-    }
+	public void setCountryId(final BigInteger countryId) {
+		this.countryId = countryId;
+	}
 
-    public BigInteger getCountryId() {
-        return countryId;
-    }
+	public String getCountryName() {
+		return countryName;
+	}
 
-    public void setCountryId(BigInteger countryId) {
-        this.countryId = countryId;
-    }
+	public void setCountryName(final String countryName) {
+		this.countryName = countryName;
+	}
 
-    public String getCountryName() {
-        return countryName;
-    }
+	public String getCityName() {
+		return cityName;
+	}
 
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
+	public void setCityName(final String cityName) {
+		this.cityName = cityName;
+	}
 
-    public String getCityName() {
-        return cityName;
-    }
+	public String getLogoImage() {
+		return logoImage;
+	}
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
+	public void setLogoImage(final String logoImage) {
+		this.logoImage = logoImage;
+	}
+
+	public List<ImageResponseDto> getInstituteImages() {
+		return instituteImages;
+	}
+
+	public void setInstituteImages(final List<ImageResponseDto> instituteImages) {
+		this.instituteImages = instituteImages;
+	}
+
 }

@@ -26,7 +26,7 @@ import com.seeka.app.util.IConstant;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
-public class ImageService implements IImageService {
+public class MediaService implements IMediaService {
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -36,6 +36,12 @@ public class ImageService implements IImageService {
 
 	@Autowired
 	private IInstituteImagesService iInstituteImagesService;
+
+	@Autowired
+	private IInstituteService iInstituteService;
+
+	@Autowired
+	private ICityImagesService iCityImagesService;
 
 	@SuppressWarnings("rawtypes")
 	@Override
@@ -50,7 +56,8 @@ public class ImageService implements IImageService {
 		 * Form-data body
 		 */
 		MultiValueMap<String, Object> formDate = new LinkedMultiValueMap<>();
-		formDate.add("file", new FileSystemResource(convert(file)));
+		File newFile = convert(file);
+		formDate.add("file", new FileSystemResource(newFile));
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL).queryParam("categoryId", categoryId)
 				.queryParam("category", category);
@@ -60,6 +67,7 @@ public class ImageService implements IImageService {
 
 		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(formDate, headers);
 		ResponseEntity<Map> response = restTemplate.postForEntity(builder.toUriString(), request, Map.class);
+		newFile.delete();
 		return String.valueOf(response.getBody().get("fileName"));
 
 	}
@@ -85,9 +93,46 @@ public class ImageService implements IImageService {
 		if (category.equals(ImageCategory.ENROLLMENT.name())) {
 			imageName = uploadImage(file, categoryId, ImageCategory.ENROLLMENT.name(), subCategory);
 			iEnrollmentService.saveEnrollmentImage(categoryId, subCategory, imageName);
+		} else if (category.equals(ImageCategory.INSTITUTE.name())) {
+			imageName = uploadImage(file, categoryId, ImageCategory.INSTITUTE.name(), subCategory);
+			if (subCategory.equals("LOGO")) {
+				iInstituteService.updateInstituteImage(categoryId, imageName);
+			} else {
+				iInstituteImagesService.saveInstituteImage(categoryId, imageName);
+			}
+		} else if (category.equals(ImageCategory.CITY.name())) {
+			imageName = uploadImage(file, categoryId, ImageCategory.CITY.name(), subCategory);
+			iCityImagesService.saveCityImage(categoryId, imageName);
 		}
 
 		return imageName;
+	}
+
+	@Override
+	public String deleteCategoryImage(final BigInteger id, final String category, final String subCategory, final BigInteger categoryId)
+			throws ValidationException {
+		String imageName = null;
+		if (category.equals(ImageCategory.ENROLLMENT.name())) {
+			imageName = iEnrollmentService.removeEnrollmentImage(id);
+			deleteImage(imageName);
+		} else if (category.equals(ImageCategory.INSTITUTE.name())) {
+			if (subCategory.equals("LOGO")) {
+				imageName = iInstituteService.deleteInstituteImage(categoryId);
+			} else {
+				imageName = iInstituteImagesService.deleteInstituteImage(id);
+			}
+			deleteImage(imageName);
+		} else if (category.equals(ImageCategory.CITY.name())) {
+			imageName = iCityImagesService.deleteCityImage(id);
+			deleteImage(imageName);
+		}
+
+		return imageName;
+	}
+
+	private void deleteImage(final String imageName) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL).queryParam("fileName", imageName);
+		restTemplate.delete(builder.toUriString());
 	}
 
 }

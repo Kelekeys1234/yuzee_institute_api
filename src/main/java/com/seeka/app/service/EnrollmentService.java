@@ -252,8 +252,8 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public void removeEnrollmentImage(final BigInteger enrollmentImageId) {
-		iEnrollmentDao.removeEnrollmentImage(enrollmentImageId);
+	public String removeEnrollmentImage(final BigInteger enrollmentImageId) {
+		return iEnrollmentDao.removeEnrollmentImage(enrollmentImageId);
 	}
 
 }

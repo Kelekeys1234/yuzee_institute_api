@@ -81,9 +81,10 @@ public class EnrollmentDao implements IEnrollmentDao {
 	}
 
 	@Override
-	public void removeEnrollmentImage(final BigInteger enrollmentImageId) {
+	public String removeEnrollmentImage(final BigInteger enrollmentImageId) {
 		Session session = sessionFactory.getCurrentSession();
 		EnrollmentImage enrollmentImage = session.get(EnrollmentImage.class, enrollmentImageId);
 		session.remove(enrollmentImage);
+		return enrollmentImage.getImageName();
 	}
 }

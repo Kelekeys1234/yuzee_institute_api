@@ -1,16 +1,18 @@
 package com.seeka.app.bean;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -26,10 +28,10 @@ import javax.persistence.TemporalType;
 public class CityImages implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 9199652126136478339L;
-	private Integer id;
+	private BigInteger id;
 	private City city;
 	private int imageIndex;
 	private String imageName;
@@ -46,14 +48,13 @@ public class CityImages implements Serializable {
 	public CityImages() {
 	}
 
-	public CityImages(City city, int imageIndex) {
+	public CityImages(final City city, final int imageIndex) {
 		this.city = city;
 		this.imageIndex = imageIndex;
 	}
 
-	public CityImages(City city, int imageIndex, String imageName, String imagePath, String description,
-			Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy,
-			Boolean isDeleted) {
+	public CityImages(final City city, final int imageIndex, final String imageName, final String imagePath, final String description, final Boolean isActive,
+			final Date createdOn, final Date updatedOn, final Date deletedOn, final String createdBy, final String updatedBy, final Boolean isDeleted) {
 		this.city = city;
 		this.imageIndex = imageIndex;
 		this.imageName = imageName;
@@ -71,11 +72,11 @@ public class CityImages implements Serializable {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
-	public Integer getId() {
+	public BigInteger getId() {
 		return this.id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final BigInteger id) {
 		this.id = id;
 	}
 
@@ -85,7 +86,7 @@ public class CityImages implements Serializable {
 		return this.city;
 	}
 
-	public void setCity(City city) {
+	public void setCity(final City city) {
 		this.city = city;
 	}
 
@@ -94,7 +95,7 @@ public class CityImages implements Serializable {
 		return this.imageIndex;
 	}
 
-	public void setImageIndex(int imageIndex) {
+	public void setImageIndex(final int imageIndex) {
 		this.imageIndex = imageIndex;
 	}
 
@@ -103,7 +104,7 @@ public class CityImages implements Serializable {
 		return this.imageName;
 	}
 
-	public void setImageName(String imageName) {
+	public void setImageName(final String imageName) {
 		this.imageName = imageName;
 	}
 
@@ -112,7 +113,7 @@ public class CityImages implements Serializable {
 		return this.imagePath;
 	}
 
-	public void setImagePath(String imagePath) {
+	public void setImagePath(final String imagePath) {
 		this.imagePath = imagePath;
 	}
 
@@ -121,7 +122,7 @@ public class CityImages implements Serializable {
 		return this.description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -130,7 +131,7 @@ public class CityImages implements Serializable {
 		return this.isActive;
 	}
 
-	public void setIsActive(Boolean isActive) {
+	public void setIsActive(final Boolean isActive) {
 		this.isActive = isActive;
 	}
 
@@ -140,7 +141,7 @@ public class CityImages implements Serializable {
 		return this.createdOn;
 	}
 
-	public void setCreatedOn(Date createdOn) {
+	public void setCreatedOn(final Date createdOn) {
 		this.createdOn = createdOn;
 	}
 
@@ -150,7 +151,7 @@ public class CityImages implements Serializable {
 		return this.updatedOn;
 	}
 
-	public void setUpdatedOn(Date updatedOn) {
+	public void setUpdatedOn(final Date updatedOn) {
 		this.updatedOn = updatedOn;
 	}
 
@@ -160,7 +161,7 @@ public class CityImages implements Serializable {
 		return this.deletedOn;
 	}
 
-	public void setDeletedOn(Date deletedOn) {
+	public void setDeletedOn(final Date deletedOn) {
 		this.deletedOn = deletedOn;
 	}
 
@@ -169,7 +170,7 @@ public class CityImages implements Serializable {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(final String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -178,7 +179,7 @@ public class CityImages implements Serializable {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(String updatedBy) {
+	public void setUpdatedBy(final String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
@@ -187,7 +188,7 @@ public class CityImages implements Serializable {
 		return this.isDeleted;
 	}
 
-	public void setIsDeleted(Boolean isDeleted) {
+	public void setIsDeleted(final Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
@@ -195,105 +196,131 @@ public class CityImages implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((city == null) ? 0 : city.hashCode());
-		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
-		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
-		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + (city == null ? 0 : city.hashCode());
+		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
+		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
+		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
+		result = prime * result + (description == null ? 0 : description.hashCode());
+		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + imageIndex;
-		result = prime * result + ((imageName == null) ? 0 : imageName.hashCode());
-		result = prime * result + ((imagePath == null) ? 0 : imagePath.hashCode());
-		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
-		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
-		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
-		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+		result = prime * result + (imageName == null ? 0 : imageName.hashCode());
+		result = prime * result + (imagePath == null ? 0 : imagePath.hashCode());
+		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
+		result = prime * result + (isDeleted == null ? 0 : isDeleted.hashCode());
+		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
+		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CityImages other = (CityImages) obj;
 		if (city == null) {
-			if (other.city != null)
+			if (other.city != null) {
 				return false;
-		} else if (!city.equals(other.city))
+			}
+		} else if (!city.equals(other.city)) {
 			return false;
+		}
 		if (createdBy == null) {
-			if (other.createdBy != null)
+			if (other.createdBy != null) {
 				return false;
-		} else if (!createdBy.equals(other.createdBy))
+			}
+		} else if (!createdBy.equals(other.createdBy)) {
 			return false;
+		}
 		if (createdOn == null) {
-			if (other.createdOn != null)
+			if (other.createdOn != null) {
 				return false;
-		} else if (!createdOn.equals(other.createdOn))
+			}
+		} else if (!createdOn.equals(other.createdOn)) {
 			return false;
+		}
 		if (deletedOn == null) {
-			if (other.deletedOn != null)
+			if (other.deletedOn != null) {
 				return false;
-		} else if (!deletedOn.equals(other.deletedOn))
+			}
+		} else if (!deletedOn.equals(other.deletedOn)) {
 			return false;
+		}
 		if (description == null) {
-			if (other.description != null)
+			if (other.description != null) {
 				return false;
-		} else if (!description.equals(other.description))
+			}
+		} else if (!description.equals(other.description)) {
 			return false;
+		}
 		if (id == null) {
-			if (other.id != null)
+			if (other.id != null) {
 				return false;
-		} else if (!id.equals(other.id))
+			}
+		} else if (!id.equals(other.id)) {
 			return false;
-		if (imageIndex != other.imageIndex)
+		}
+		if (imageIndex != other.imageIndex) {
 			return false;
+		}
 		if (imageName == null) {
-			if (other.imageName != null)
+			if (other.imageName != null) {
 				return false;
-		} else if (!imageName.equals(other.imageName))
+			}
+		} else if (!imageName.equals(other.imageName)) {
 			return false;
+		}
 		if (imagePath == null) {
-			if (other.imagePath != null)
+			if (other.imagePath != null) {
 				return false;
-		} else if (!imagePath.equals(other.imagePath))
+			}
+		} else if (!imagePath.equals(other.imagePath)) {
 			return false;
+		}
 		if (isActive == null) {
-			if (other.isActive != null)
+			if (other.isActive != null) {
 				return false;
-		} else if (!isActive.equals(other.isActive))
+			}
+		} else if (!isActive.equals(other.isActive)) {
 			return false;
+		}
 		if (isDeleted == null) {
-			if (other.isDeleted != null)
+			if (other.isDeleted != null) {
 				return false;
-		} else if (!isDeleted.equals(other.isDeleted))
+			}
+		} else if (!isDeleted.equals(other.isDeleted)) {
 			return false;
+		}
 		if (updatedBy == null) {
-			if (other.updatedBy != null)
+			if (other.updatedBy != null) {
 				return false;
-		} else if (!updatedBy.equals(other.updatedBy))
+			}
+		} else if (!updatedBy.equals(other.updatedBy)) {
 			return false;
+		}
 		if (updatedOn == null) {
-			if (other.updatedOn != null)
+			if (other.updatedOn != null) {
 				return false;
-		} else if (!updatedOn.equals(other.updatedOn))
+			}
+		} else if (!updatedOn.equals(other.updatedOn)) {
 			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("CityImages [id=").append(id).append(", city=").append(city).append(", imageIndex=")
-				.append(imageIndex).append(", imageName=").append(imageName).append(", imagePath=").append(imagePath)
-				.append(", description=").append(description).append(", isActive=").append(isActive)
-				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
-				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
-				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
+		builder.append("CityImages [id=").append(id).append(", city=").append(city).append(", imageIndex=").append(imageIndex).append(", imageName=")
+				.append(imageName).append(", imagePath=").append(imagePath).append(", description=").append(description).append(", isActive=").append(isActive)
+				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
+				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
 		return builder.toString();
 	}
 

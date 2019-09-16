@@ -16,10 +16,10 @@ import com.seeka.app.bean.UserWatchArticle;
 import com.seeka.app.bean.UserWatchCourse;
 import com.seeka.app.dao.UserRecommendationDao;
 import com.seeka.app.dto.CourseResponseDto;
+import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.UserArticleRequestDto;
 import com.seeka.app.dto.UserCourseRequestDto;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.util.CDNServerUtil;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -33,6 +33,9 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 
 	@Autowired
 	private IArticleService iArticleService;
+
+	@Autowired
+	private IInstituteImagesService iInstituteImagesService;
 
 	@Override
 	public void createUserWatchCourse(final UserCourseRequestDto userCourseRequestDto) throws ValidationException {
@@ -104,19 +107,19 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		BigInteger instituteId = null;
 		BigInteger countryId = null;
 		BigInteger cityId = null;
-		if(existingCourse.getFaculty()!=null){
-		    facultyId = existingCourse.getFaculty().getId();
+		if (existingCourse.getFaculty() != null) {
+			facultyId = existingCourse.getFaculty().getId();
 		}
-		if(existingCourse.getInstitute()!=null){
-		     instituteId = existingCourse.getInstitute().getId();
-        }
-		if(existingCourse.getCountry()!=null){
-		     countryId = existingCourse.getCountry().getId();
-        }
-		if(existingCourse.getCity()!=null){
-		     cityId = existingCourse.getCity().getId();
-        }
-		
+		if (existingCourse.getInstitute() != null) {
+			instituteId = existingCourse.getInstitute().getId();
+		}
+		if (existingCourse.getCountry() != null) {
+			countryId = existingCourse.getCountry().getId();
+		}
+		if (existingCourse.getCity() != null) {
+			cityId = existingCourse.getCity().getId();
+		}
+
 		Double price = existingCourse.getUsdInternationFee();
 		List<Course> resultList = new ArrayList<>();
 
@@ -220,22 +223,22 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if (existingCourse == null) {
 			throw new ValidationException("Course not found for Id : " + courseId);
 		}
-        BigInteger facultyId = null;
-        BigInteger instituteId = null;
-        BigInteger countryId = null;
-        BigInteger cityId = null;
-        if (existingCourse.getFaculty() != null) {
-            facultyId = existingCourse.getFaculty().getId();
-        }
-        if (existingCourse.getInstitute() != null) {
-            instituteId = existingCourse.getInstitute().getId();
-        }
-        if (existingCourse.getCountry() != null) {
-            countryId = existingCourse.getCountry().getId();
-        }
-        if (existingCourse.getCity() != null) {
-            cityId = existingCourse.getCity().getId();
-        }
+		BigInteger facultyId = null;
+		BigInteger instituteId = null;
+		BigInteger countryId = null;
+		BigInteger cityId = null;
+		if (existingCourse.getFaculty() != null) {
+			facultyId = existingCourse.getFaculty().getId();
+		}
+		if (existingCourse.getInstitute() != null) {
+			instituteId = existingCourse.getInstitute().getId();
+		}
+		if (existingCourse.getCountry() != null) {
+			countryId = existingCourse.getCountry().getId();
+		}
+		if (existingCourse.getCity() != null) {
+			cityId = existingCourse.getCity().getId();
+		}
 		String courseName = existingCourse.getName();
 		Double price = existingCourse.getUsdInternationFee();
 		List<Course> resultList = new ArrayList<>();
@@ -367,11 +370,9 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setStars(course.getStars());
 			courseResponseDto.setWorldRanking(course.getWorldRanking());
 			courseResponseDto.setLanguageShortKey(course.getCourseLang());
-			courseResponseDto
-					.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(course.getInstitute().getCountry().getName(), course.getInstitute().getName()));
-			courseResponseDto
-					.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(course.getInstitute().getCountry().getName(), course.getInstitute().getName()));
-			resultList.add(courseResponseDto);
+			courseResponseDto.setLogoImage(course.getInstitute().getLogoImage());
+			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(courseResponseDto.getInstituteId());
+			courseResponseDto.setInstituteImages(imageResponseDtos);
 		}
 		return resultList;
 	}
@@ -401,18 +402,16 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setStars(course.getStars());
 			courseResponseDto.setWorldRanking(course.getWorldRanking());
 			courseResponseDto.setLanguageShortKey(course.getCourseLang());
-			courseResponseDto
-					.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(course.getInstitute().getCountry().getName(), course.getInstitute().getName()));
-			courseResponseDto
-					.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(course.getInstitute().getCountry().getName(), course.getInstitute().getName()));
-			resultList.add(courseResponseDto);
+			courseResponseDto.setLogoImage(course.getInstitute().getLogoImage());
+			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(courseResponseDto.getInstituteId());
+			courseResponseDto.setInstituteImages(imageResponseDtos);
 		}
 		return resultList;
 	}
-	
+
 	@Override
-	public List<BigInteger> getTopSearchedCoursesByOtherUsers(BigInteger userId) {
-		
+	public List<BigInteger> getTopSearchedCoursesByOtherUsers(final BigInteger userId) {
+
 		return userRecommendationDao.getOtherUserWatchCourse(userId);
 	}
 

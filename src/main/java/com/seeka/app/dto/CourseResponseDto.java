@@ -11,8 +11,8 @@ public class CourseResponseDto {
 	private String languageShortKey;
 	private BigInteger instituteId;
 	private String instituteName;
-	private String instituteLogoUrl;
-	private String instituteImageUrl;
+//	private String instituteLogoUrl;
+//	private String instituteImageUrl;
 	private Integer worldRanking;
 	private Integer stars;
 	private String cost;
@@ -30,6 +30,8 @@ public class CourseResponseDto {
 	private Boolean isFavourite;
 	private List<String> imageUrlList;
 	private String currencyCode;
+	private String logoImage;
+	private List<ImageResponseDto> instituteImages;
 
 	public BigInteger getCourseId() {
 		return courseId;
@@ -63,21 +65,21 @@ public class CourseResponseDto {
 		this.instituteName = instituteName;
 	}
 
-	public String getInstituteLogoUrl() {
-		return instituteLogoUrl;
-	}
-
-	public void setInstituteLogoUrl(final String instituteLogoUrl) {
-		this.instituteLogoUrl = instituteLogoUrl;
-	}
-
-	public String getInstituteImageUrl() {
-		return instituteImageUrl;
-	}
-
-	public void setInstituteImageUrl(final String instituteImageUrl) {
-		this.instituteImageUrl = instituteImageUrl;
-	}
+//	public String getInstituteLogoUrl() {
+//		return instituteLogoUrl;
+//	}
+//
+//	public void setInstituteLogoUrl(final String instituteLogoUrl) {
+//		this.instituteLogoUrl = instituteLogoUrl;
+//	}
+//
+//	public String getInstituteImageUrl() {
+//		return instituteImageUrl;
+//	}
+//
+//	public void setInstituteImageUrl(final String instituteImageUrl) {
+//		this.instituteImageUrl = instituteImageUrl;
+//	}
 
 	public Integer getWorldRanking() {
 		return worldRanking;
@@ -229,18 +231,34 @@ public class CourseResponseDto {
 		this.isFavourite = isFavourite;
 	}
 
-    /**
-     * @return the currencyCode
-     */
-    public String getCurrencyCode() {
-        return currencyCode;
-    }
+	/**
+	 * @return the currencyCode
+	 */
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
 
-    /**
-     * @param currencyCode the currencyCode to set
-     */
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
-    }
+	/**
+	 * @param currencyCode the currencyCode to set
+	 */
+	public void setCurrencyCode(final String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	public String getLogoImage() {
+		return logoImage;
+	}
+
+	public void setLogoImage(final String logoImage) {
+		this.logoImage = logoImage;
+	}
+
+	public List<ImageResponseDto> getInstituteImages() {
+		return instituteImages;
+	}
+
+	public void setInstituteImages(final List<ImageResponseDto> instituteImages) {
+		this.instituteImages = instituteImages;
+	}
 
 }

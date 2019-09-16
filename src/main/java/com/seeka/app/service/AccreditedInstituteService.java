@@ -25,7 +25,7 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 	private IAccreditedInstituteDao iAccreditedInstituteDao;
 
 	@Autowired
-	private IImageService iImageService;
+	private IMediaService iImageService;
 
 	@Value("${s3.url}")
 	private String s3URL;

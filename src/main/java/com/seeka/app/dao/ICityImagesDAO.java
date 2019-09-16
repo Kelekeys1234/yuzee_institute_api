@@ -1,13 +1,18 @@
-package com.seeka.app.dao;import java.math.BigInteger;
+package com.seeka.app.dao;
 
+import java.math.BigInteger;
 import java.util.List;
-
 
 import com.seeka.app.bean.CityImages;
 
 public interface ICityImagesDAO {
-	public void save(CityImages obj);
-	public void update(CityImages obj);
-	public CityImages get(BigInteger id);
-	public List<CityImages> getAll();	
+	void save(CityImages obj);
+
+	void update(CityImages obj);
+
+	CityImages get(BigInteger id);
+
+	List<CityImages> getAll();
+
+	List<CityImages> getCityImageListBasedOnCityId(BigInteger cityId);
 }

@@ -25,6 +25,6 @@ public interface IEnrollmentDao {
 
 	List<Enrollment> getEnrollmentList();
 
-	void removeEnrollmentImage(BigInteger enrollmentImageId);
+	String removeEnrollmentImage(BigInteger enrollmentImageId);
 
 }

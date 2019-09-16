@@ -24,6 +24,6 @@ public interface IEnrollmentService {
 
 	void saveEnrollmentImage(BigInteger categoryId, String subCategory, String imageName) throws ValidationException;
 
-	void removeEnrollmentImage(BigInteger enrollmentImageId);
+	String removeEnrollmentImage(BigInteger enrollmentImageId);
 
 }

@@ -14,6 +14,7 @@ import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.exception.ValidationException;
 
 public interface IInstituteService {
 
@@ -52,10 +53,14 @@ public interface IInstituteService {
 	Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
 
 	List<Institute> getAllInstitute();
-	
+
 	List<InstituteCategoryType> getAllCategories();
 
-    Map<String, Object> deleteInstitute(@Valid BigInteger id);
+	Map<String, Object> deleteInstitute(@Valid BigInteger id);
 
 	List<Institute> ratingWiseInstituteListByCountry(Country country);
+
+	void updateInstituteImage(BigInteger instituteId, String logoImage) throws ValidationException;
+
+	String deleteInstituteImage(BigInteger instituteId);
 }

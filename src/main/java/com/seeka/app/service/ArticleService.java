@@ -136,7 +136,7 @@ public class ArticleService implements IArticleService {
 	private RestTemplate restTemplate;
 
 	@Autowired
-	private IImageService iImageService;
+	private IMediaService iImageService;
 
 	@Override
 	public List<SeekaArticles> getAll() {
