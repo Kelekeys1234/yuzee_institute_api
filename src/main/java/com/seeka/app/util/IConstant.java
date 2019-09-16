@@ -58,6 +58,7 @@ public class IConstant {
 	public static final String DISCOVER_GET_COUNTRY_SUCCESS = "Discover country get successfully";
 	public static final String DISCOVER_COUNTRY_NOT_FOUND = "Discover country not found";
 	public static final String COURSE_ADD_SUCCESS = "Course added successfully";
+	public static final String HELP_SUCCESS_MESSAGE = "Help added successfully";
 	public static final String COURSE_GET_SUCCESS_MESSAGE = "Course get successfully";
 	public static final String COURSE_GET_NOT_FOUND = "Course not found";
 	public static final String COURSE_DELETED_SUCCESS = "Course deleted successfully";
