@@ -3,9 +3,11 @@ package com.seeka.app.service;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -107,6 +109,7 @@ public class RecommendationService implements IRecommendationService {
 			/**
 			 * This list contains the details of the courses that are to be returned
 			 */
+			List<BigInteger> listOfRecommendedCourseIds = new ArrayList<>();
 			List<Course> listOfRecommendedCourses = new ArrayList<>();
 			Map<Long, Faculty> facultyMap = new HashMap<>();
 			
@@ -119,34 +122,53 @@ public class RecommendationService implements IRecommendationService {
 			
 			for (Institute institute : allInstitutesRankingWise) {
 				List<Course> listOfCourse = facultyWiseCourseForInstitute(/*allFaculty*/new ArrayList<Faculty>(facultyMap.values()), institute/* .getId().longValue() */);
+				Map<BigInteger, BigInteger> mapFacultyIdCourseId = facultyWiseCourseIdMapForInstitute(new ArrayList<Faculty>(facultyMap.values()), institute);
 				System.out.println(count++);
 				System.out.println("CourseList -- "+listOfCourse.size());
-				for (Course course : listOfCourse) {
-					if(facultyMap.containsKey(course.getFaculty().getId().longValue())) {
-						listOfRecommendedCourses.add(course);
+//				for (Course course : listOfCourse) {
+//					if(facultyMap.containsKey(course.getFaculty().getId().longValue())) {
+//						listOfRecommendedCourseIds.add(course.getId());
+//						/**
+//						 * removing facultyIds from faculty map for which courses are already obtained so that we do not get any courses corresponding to those 
+//						 * faculty for the next intitutes, also we get only one course per faculty in our final list of courses.
+//						 */
+//						facultyMap.remove(course.getFaculty().getId().longValue());
+//					}
+//				}
+				
+				for (Entry<BigInteger,BigInteger> entry : mapFacultyIdCourseId.entrySet()) {
+					if(facultyMap.containsKey(entry.getValue().longValue())) {
+						listOfRecommendedCourseIds.add(entry.getKey());
 						/**
 						 * removing facultyIds from faculty map for which courses are already obtained so that we do not get any courses corresponding to those 
 						 * faculty for the next intitutes, also we get only one course per faculty in our final list of courses.
 						 */
-						facultyMap.remove(course.getFaculty().getId().longValue());
+						facultyMap.remove(entry.getValue().longValue());
 					}
 				}
+				
+				
 				/**
 				 * If we have obtained list of courses for all faculties then no need to further navigate through other 
 				 * institutes and hence breaking the loop
 				 */
-				if(allFaculty.isEmpty()) {
+				if(facultyMap.isEmpty()) {
 					break;
 				}
 				
 			}
 			System.out.println("insititute count -- "+allInstitutesRankingWise.size());
+			
+			listOfRecommendedCourses =  icourseService.getAllCoursesUsingId(listOfRecommendedCourseIds);
 			return listOfRecommendedCourses;
 		} else {
 			
-			Map<String, List<Course>> mapOfCountryToItsCoursesList = new TreeMap<>();
+			//Map<String, List<Course>> mapOfCountryToItsCoursesList = new TreeMap<>();
+			Map<String, List<BigInteger>> mapOfCountryToItsCoursesList = new TreeMap<>();
 			
 			List<Course> recommendedCourseList = new ArrayList<>();
+			
+			List<BigInteger> recommendedCourseListIds = new ArrayList<>();
 			
 			long count = iGlobalStudentDataService.checkForPresenceOfUserCountryInGlobalDataFile(country.getName());
 			/**
@@ -163,7 +185,8 @@ public class RecommendationService implements IRecommendationService {
 			List<GlobalDataDto> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
 
 			for (GlobalDataDto globalDataDto : countryWiseStudentCountListForUserCountry) {
-				List<Course> courseList = getTopRatedCoursesForCountryWorldRankingWise(getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry()));
+				//List<Course> courseList = getTopRatedCoursesForCountryWorldRankingWise(getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry()));
+				List<BigInteger> courseList = getTopRatedCourseIdsForCountryWorldRankingWise(getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry()));
 				mapOfCountryToItsCoursesList.put(globalDataDto.getDestinationCountry(), courseList);
 			}
 			List<Integer> requiredCoursesPerCountry = new ArrayList<>();
@@ -175,12 +198,23 @@ public class RecommendationService implements IRecommendationService {
 			while(recommendedCourseList.size() < 20 && i < 3) {
 				int courseCountPerCountry = requiredCoursesPerCountry.get(i);
 				recommendedCourseList = new ArrayList<Course>();
-				for (Entry<String, List<Course>> entry : mapOfCountryToItsCoursesList.entrySet()) {
-					List<Course> cl = entry.getValue();
+				
+//				for (Entry<String, List<Course>> entry : mapOfCountryToItsCoursesList.entrySet()) {
+//					List<Course> cl = entry.getValue();
+//					if(cl.size() > 0) {
+//						recommendedCourseList.addAll(cl.subList(0, cl.size()>courseCountPerCountry?courseCountPerCountry:cl.size()-1));
+//					}
+//					if(recommendedCourseList.size() >= 20) {
+//						break;
+//					}
+//				}
+				
+				for (Entry<String, List<BigInteger>> entry : mapOfCountryToItsCoursesList.entrySet()) {
+					List<BigInteger> cl = entry.getValue();
 					if(cl.size() > 0) {
-						recommendedCourseList.addAll(cl.subList(0, cl.size()>courseCountPerCountry?courseCountPerCountry:cl.size()-1));
+						recommendedCourseListIds.addAll(cl.subList(0, cl.size()>courseCountPerCountry?courseCountPerCountry:cl.size()-1));
 					}
-					if(recommendedCourseList.size() >= 20) {
+					if(recommendedCourseListIds.size() >= 20) {
 						break;
 					}
 				}
@@ -189,6 +223,8 @@ public class RecommendationService implements IRecommendationService {
 				}
 				i++;
 			}
+			
+			recommendedCourseList = icourseService.getCoursesById(recommendedCourseListIds);
 			
 			System.out.println(recommendedCourseList);
 			
@@ -215,6 +251,10 @@ public class RecommendationService implements IRecommendationService {
 		return icourseService.facultyWiseCourseForInstitute(facultyList, instituteId);
 	}
 	
+	private Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, Institute instituteId){
+		return icourseService.facultyWiseCourseIdMapForInstitute(facultyList, instituteId.getId());
+	}
+	
 	private Country getCountryBasedOnCitizenship(String citizenship) {
 		return icountryService.getCountryBasedOnCitizenship(citizenship);
 	}
@@ -226,6 +266,14 @@ public class RecommendationService implements IRecommendationService {
 	private List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country) {
 		if(country != null) {
 			return icourseService.getTopRatedCoursesForCountryWorldRankingWise(country);
+		} else {
+			return new ArrayList<>();
+		}
+	}
+	
+	private List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(Country country) {
+		if(country != null) {
+			return icourseService.getTopRatedCourseIdForCountryWorldRankingWise(country);
 		} else {
 			return new ArrayList<>();
 		}
@@ -242,6 +290,26 @@ public class RecommendationService implements IRecommendationService {
 		}
 		
 		return icourseService.getCoursesById(allSearchCourses);
+	}
+
+	@Override
+	public Set<Course> displayRelatedCourseAsPerUserPastSearch(BigInteger userId) throws ValidationException{
+		// TODO Auto-generated method stub
+		List<BigInteger> userSearchCourseIdList = icourseService.getTopSearchedCoursesByUsers(userId);
+		
+		/**
+		 * Keeping this code to get related courses only for top 3 courses searched.
+		 */
+		if(userSearchCourseIdList.size() > 0) {
+			userSearchCourseIdList = userSearchCourseIdList.size() > 3 ? userSearchCourseIdList.subList(0, 2):userSearchCourseIdList.subList(0, userSearchCourseIdList.size()-1);
+		} else {
+			return new HashSet<Course>();
+		}
+		/**
+		 * Logic ends
+		 */
+		Set<Course> userRelatedCourses = icourseService.getRelatedCoursesBasedOnPastSearch(userSearchCourseIdList);
+		return userRelatedCourses;
 	}
 	
 }

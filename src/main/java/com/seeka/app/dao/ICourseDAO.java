@@ -91,4 +91,10 @@ public interface ICourseDAO {
 	List<BigInteger> getAllCourseForFacultyWorldRankingWise(BigInteger facultyId);
 
 	List<Course> getCoursesFromId(List<BigInteger> allSearchCourses);
+
+	 Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, BigInteger instituteId);
+
+	List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds);
+	
+	List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(Country country);
 }

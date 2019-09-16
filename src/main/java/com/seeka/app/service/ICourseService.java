@@ -3,6 +3,7 @@ package com.seeka.app.service;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -20,6 +21,7 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.UserCourse;
+import com.seeka.app.exception.ValidationException;
 
 public interface ICourseService {
 
@@ -96,4 +98,14 @@ public interface ICourseService {
 	List<BigInteger> getTopSearchedCoursesByOtherUsers(BigInteger userId);
 
 	List<Course> getCoursesById(List<BigInteger> allSearchCourses);
+
+	Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, BigInteger instituteId);
+
+	List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds);
+
+	List<BigInteger> getTopRatedCourseIdForCountryWorldRankingWise(Country country);
+
+	List<BigInteger> getTopSearchedCoursesByUsers(BigInteger userId);
+	
+	Set<Course> getRelatedCoursesBasedOnPastSearch(List<BigInteger> courseList) throws ValidationException;
 }
