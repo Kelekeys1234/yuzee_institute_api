@@ -2044,7 +2044,7 @@ public class CourseDAO implements ICourseDAO {
 		}
 		
 		Session session = sessionFactory.getCurrentSession();
-		List<Object[]> rows = session.createNativeQuery("Select course_id, faculty_id from course where institute_id = ? and faculty_id in ("+facultyIds+") and course_id is not null").
+		List<Object[]> rows = session.createNativeQuery("Select id, faculty_id from course where institute_id = ? and faculty_id in ("+facultyIds+") and id is not null").
     			setBigInteger(1, instituteId).getResultList();
 		
 		 for (Object[] row : rows) {
