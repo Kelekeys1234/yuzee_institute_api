@@ -1887,21 +1887,17 @@ public class CourseDAO implements ICourseDAO {
 		return sqlQuery;
 	}
 
-	@Override
-	public int findTotalCountCourseFilter(final CourseFilterDto courseFilter) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
-				+ "c.description, c.intake, c.duration, c.course_lang, c.domestic_fee, c.international_fee,"
-				+ "c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
-				+ " c.recognition_type, c.part_full, c.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM course c join institute inst"
-				+ " on c.institute_id = inst.id inner join country ctry  on ctry.id = c.country_id inner join "
-				+ " city ci  on ci.id = c.city_id inner join faculty f  on f.id = c.faculty_id "
-				+ " left join institute_service iis  on iis.institute_id = inst.id where c.is_active = 1 and c.deleted_on IS NULL ";
-		sqlQuery = addCourseFilterCondition(sqlQuery, courseFilter);
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		return rows.size();
-	}
+    @Override
+    public int findTotalCountCourseFilter(final CourseFilterDto courseFilter) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select count(*) FROM course c join institute inst" + " on c.institute_id = inst.id inner join country ctry  on ctry.id = c.country_id inner join "
+                        + " city ci  on ci.id = c.city_id inner join faculty f  on f.id = c.faculty_id "
+                        + " left join institute_service iis  on iis.institute_id = inst.id where c.is_active = 1 and c.deleted_on IS NULL ";
+        sqlQuery = addCourseFilterCondition(sqlQuery, courseFilter);
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        return rows.size();
+    }
 
 	@Override
 	public List<CourseRequest> autoSearch(final int pageNumber, final Integer pageSize, final String searchKey) {
@@ -1919,19 +1915,16 @@ public class CourseDAO implements ICourseDAO {
 		return courses;
 	}
 
-	@Override
-	public int autoSearchTotalCount(final String searchKey) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
-				+ "c.description, c.intake, c.duration, c.course_lang, c.domestic_fee, c.international_fee,"
-				+ "c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
-				+ " c.recognition_type, c.part_full, c.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM course c inner join institute ist on c.institute_id = ist.id"
-				+ " where c.is_active = 1 and c.deleted_on IS NULL and (c.name like '%" + searchKey + "%' or ist.name like '%" + searchKey
-				+ "%') ORDER BY c.created_on DESC ";
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		return rows.size();
-	}
+    @Override
+    public int autoSearchTotalCount(final String searchKey) {
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select count(*) FROM course c inner join institute ist on c.institute_id = ist.id"
+                        + " where c.is_active = 1 and c.deleted_on IS NULL and (c.name like '%" + searchKey + "%' or ist.name like '%" + searchKey
+                        + "%') ORDER BY c.created_on DESC ";
+        Query query = session.createSQLQuery(sqlQuery);
+        List<Object[]> rows = query.list();
+        return rows.size();
+    }
 
 	@Override
 	public List<Course> facultyWiseCourseForTopInstitute(final List<Faculty> facultyList, final Institute institute) {

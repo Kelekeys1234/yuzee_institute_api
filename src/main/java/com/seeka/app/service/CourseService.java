@@ -717,12 +717,7 @@ public class CourseService implements ICourseService {
 		PaginationUtilDto paginationUtilDto = null;
 		try {
 			totalCount = iCourseDAO.findTotalCountCourseFilter(courseFilter);
-			int startIndex;
-			if (courseFilter.getPageNumber() > 1) {
-				startIndex = (courseFilter.getPageNumber() - 1) * courseFilter.getMaxSizePerPage() + 1;
-			} else {
-				startIndex = courseFilter.getPageNumber();
-			}
+			int startIndex = (courseFilter.getPageNumber() - 1) * courseFilter.getMaxSizePerPage();
 			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseFilter.getMaxSizePerPage(), totalCount);
 			courses = iCourseDAO.courseFilter(startIndex, courseFilter.getMaxSizePerPage(), courseFilter);
 			if (courses != null && !courses.isEmpty()) {

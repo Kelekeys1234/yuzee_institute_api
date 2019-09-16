@@ -530,21 +530,27 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	}
 
-	@RequestMapping(value = "/minimumRequirement/{courseId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCourseMinRequirement(@PathVariable final BigInteger courseId) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			CourseMinRequirementDto courseMinRequirementDto = courseService.getCourseMinRequirement(courseId);
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", "Course minimum requirement fetch Successfully");
-			response.put("data", courseMinRequirementDto);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.NOT_FOUND.value());
-			response.put("message", "Error to fetch CourseMinRequirement");
-		}
-		return ResponseEntity.accepted().body(response);
-	}
+    @RequestMapping(value = "/minimumRequirement/{courseId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getCourseMinRequirement(@PathVariable final BigInteger courseId) throws Exception {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            CourseMinRequirementDto courseMinRequirementDto = courseService.getCourseMinRequirement(courseId);
+            if (courseMinRequirementDto.getGrade() != null && !courseMinRequirementDto.getGrade().isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Course minimum requirement fetch Successfully");
+                response.put("data", courseMinRequirementDto);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", "Course minimum requirement fetch Successfully");
+                response.put("data", courseMinRequirementDto);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception);
+        }
+        return ResponseEntity.accepted().body(response);
+    }
 
 	@RequestMapping(value = "/autoSearch/{searchKey}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> autoSearchByCharacter(@PathVariable final String searchKey) throws Exception {
