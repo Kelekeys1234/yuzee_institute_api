@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import com.seeka.app.dto.EnrollmentDto;
@@ -20,10 +21,13 @@ public interface IEnrollmentService {
 
 	List<EnrollmentStatusDto> getEnrollmentStatusDetail(BigInteger enrollmentId);
 
-	List<EnrollmentResponseDto> getEnrollmentList();
+	List<EnrollmentResponseDto> getEnrollmentList(BigInteger courseId, BigInteger instituteId, BigInteger enrollmentId, String status, Date updatedOn,
+			Integer startIndex, Integer pageSize);
 
 	void saveEnrollmentImage(BigInteger categoryId, String subCategory, String imageName) throws ValidationException;
 
 	String removeEnrollmentImage(BigInteger enrollmentImageId);
+
+	int countOfEnrollment();
 
 }

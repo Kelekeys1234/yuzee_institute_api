@@ -1,9 +1,13 @@
 package com.seeka.app.controller;
 
 import java.math.BigInteger;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,14 +17,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.EnrollmentDto;
 import com.seeka.app.dto.EnrollmentResponseDto;
 import com.seeka.app.dto.EnrollmentStatusDto;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IEnrollmentService;
+import com.seeka.app.util.PaginationUtil;
 
 /**
  *
@@ -62,11 +69,26 @@ public class EnrollmentController {
 				.create();
 	}
 
-	@GetMapping
-	public ResponseEntity<?> getEnrollmentList() throws ValidationException {
-		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList();
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentResponseList).setMessage("Get enrollment List successfully")
-				.create();
+	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getEnrollmentList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = false) final BigInteger courseId, @RequestParam(required = false) final BigInteger instituteId,
+			@RequestParam(required = false) final BigInteger enrollmentId, @RequestParam(required = false) final String status,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn) throws ValidationException {
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(courseId, instituteId, enrollmentId, status, updatedOn,
+				startIndex, pageSize);
+		int totalCount = iEnrollmentService.countOfEnrollment();
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(4);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get enrollment List successfully");
+		responseMap.put("data", enrollmentResponseList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@GetMapping("/status/{enrollmentId}")

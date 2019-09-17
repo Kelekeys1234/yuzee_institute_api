@@ -2,6 +2,7 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import com.seeka.app.bean.EnrollmentImage;
 import com.seeka.app.bean.EnrollmentStatus;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteType;
+import com.seeka.app.constant.BasicStatus;
 import com.seeka.app.dao.IEnrollmentDao;
 import com.seeka.app.dto.EnrollmentDto;
 import com.seeka.app.dto.EnrollmentImageDto;
@@ -58,6 +60,8 @@ public class EnrollmentService implements IEnrollmentService {
 		enrollment.setStatus("SUBMITTED");
 		enrollment.setCreatedBy("API");
 		enrollment.setCreatedOn(new Date());
+		enrollment.setUpdatedBy("API");
+		enrollment.setUpdatedOn(new Date());
 		Institute institute = iInstituteService.get(enrollmentDto.getInstituteId());
 		if (institute == null) {
 			throw new ValidationException("Institute not found for id: " + enrollmentDto.getInstituteId());
@@ -160,6 +164,19 @@ public class EnrollmentService implements IEnrollmentService {
 		if (enrollment == null) {
 			throw new ValidationException("enrollment not found for id" + enrollmentStatusDto.getEnrollmentId());
 		}
+
+		final com.seeka.app.constant.EnrollmentStatus newStatus = com.seeka.app.constant.EnrollmentStatus.getByValue(enrollmentStatusDto.getStatus());
+		final com.seeka.app.constant.EnrollmentStatus oldStatus = com.seeka.app.constant.EnrollmentStatus.getByValue(enrollment.getStatus());
+
+		List<BasicStatus<com.seeka.app.constant.EnrollmentStatus>> nextStatusList = null;
+		if (oldStatus.nextStatus() != null) {
+			nextStatusList = Arrays.asList(oldStatus.nextStatus());
+		}
+
+		if (nextStatusList == null || !nextStatusList.contains(newStatus)) {
+			throw new ValidationException(enrollmentStatusDto.getStatus() + " status is not allowed after " + enrollment.getStatus());
+		}
+
 		enrollment.setStatus(enrollmentStatusDto.getStatus());
 		enrollment.setUpdatedBy("API");
 		enrollment.setUpdatedOn(new Date());
@@ -215,8 +232,9 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public List<EnrollmentResponseDto> getEnrollmentList() {
-		List<Enrollment> enrollmenList = iEnrollmentDao.getEnrollmentList();
+	public List<EnrollmentResponseDto> getEnrollmentList(final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
+			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize) {
+		List<Enrollment> enrollmenList = iEnrollmentDao.getEnrollmentList(courseId, instituteId, enrollmentId, status, updatedOn, startIndex, pageSize);
 		List<EnrollmentResponseDto> resultList = new ArrayList<>();
 		for (Enrollment enrollment : enrollmenList) {
 			EnrollmentResponseDto enrollmentResponseDto = new EnrollmentResponseDto();
@@ -254,6 +272,11 @@ public class EnrollmentService implements IEnrollmentService {
 	@Override
 	public String removeEnrollmentImage(final BigInteger enrollmentImageId) {
 		return iEnrollmentDao.removeEnrollmentImage(enrollmentImageId);
+	}
+
+	@Override
+	public int countOfEnrollment() {
+		return iEnrollmentDao.countOfEnrollment();
 	}
 
 }

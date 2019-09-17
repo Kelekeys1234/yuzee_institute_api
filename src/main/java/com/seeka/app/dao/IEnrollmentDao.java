@@ -1,6 +1,7 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import com.seeka.app.bean.Enrollment;
@@ -23,8 +24,11 @@ public interface IEnrollmentDao {
 
 	List<EnrollmentStatus> getEnrollmentStatusDetail(BigInteger enrollmentId);
 
-	List<Enrollment> getEnrollmentList();
-
 	String removeEnrollmentImage(BigInteger enrollmentImageId);
+
+	List<Enrollment> getEnrollmentList(BigInteger courseId, BigInteger instituteId, BigInteger enrollmentId, String status, Date updatedOn, Integer startIndex,
+			Integer pageSize);
+
+	int countOfEnrollment();
 
 }

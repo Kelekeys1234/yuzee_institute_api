@@ -21,6 +21,7 @@ import com.seeka.app.enumeration.ReviewCategory;
 import com.seeka.app.enumeration.StudentCategory;
 import com.seeka.app.enumeration.StudentType;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.util.PaginationUtil;
 
 /**
  *
@@ -90,7 +91,7 @@ public class UserReviewService implements IUserReviewService {
 
 	@Override
 	public List<UserReviewResultDto> getUserReviewList(final BigInteger userId, final Integer pageNumber, final Integer pageSize) {
-		int startIndex = (pageNumber - 1) * pageSize;
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(userId, null, null, startIndex, pageSize);
 		List<UserReviewResultDto> resultList = new ArrayList<>();
 		for (UserReview userReview : userReviewList) {
