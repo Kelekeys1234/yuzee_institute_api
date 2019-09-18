@@ -22,6 +22,11 @@ public class HelpController {
     @Autowired
     private IHelpService helpService;
 
+    @RequestMapping(value = "pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getAll(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
+        return ResponseEntity.accepted().body(helpService.getAll(pageNumber, pageSize));
+    }
+
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> save(@Valid @RequestBody final HelpDto helpDto) throws Exception {
         return ResponseEntity.accepted().body(helpService.save(helpDto));

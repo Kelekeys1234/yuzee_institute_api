@@ -4,182 +4,196 @@ import java.math.BigInteger;
 
 public class CourseDto {
 
-	private BigInteger courseId;
-	private BigInteger levelId;
-	private String courseName;
-	private String courseLanguage;
-	private String languageShortKey;
-	private String cost;
-	private String duration;
-	private String durationTime;
-	private String localFees;
-	private String intlFees;
-	private String worldRanking;
-	private String stars;
-	private String facultyName;
-	private String levelName;
-	private String costOfLiving;
-	private String description;
-	private String delivery;
-	private String intakeDate;
-	private String remarks;
+    private BigInteger courseId;
+    private BigInteger levelId;
+    private String courseName;
+    private String courseLanguage;
+    private String languageShortKey;
+    private String cost;
+    private String duration;
+    private String durationTime;
+    private Double domasticFee;
+    private Double internationalFee;
+    private String worldRanking;
+    private String stars;
+    private String facultyName;
+    private String levelName;
+    private String costOfLiving;
+    private String description;
+    private String delivery;
+    private String intakeDate;
+    private String remarks;
 
-	public BigInteger getCourseId() {
-		return courseId;
-	}
+    public BigInteger getCourseId() {
+        return courseId;
+    }
 
-	public void setCourseId(final BigInteger courseId) {
-		this.courseId = courseId;
-	}
+    public void setCourseId(final BigInteger courseId) {
+        this.courseId = courseId;
+    }
 
-	public String getCourseName() {
-		return courseName;
-	}
+    public String getCourseName() {
+        return courseName;
+    }
 
-	public void setCourseName(final String courseName) {
-		this.courseName = courseName;
-	}
+    public void setCourseName(final String courseName) {
+        this.courseName = courseName;
+    }
 
-	public String getCourseLanguage() {
-		return courseLanguage;
-	}
+    public String getCourseLanguage() {
+        return courseLanguage;
+    }
 
-	public void setCourseLanguage(final String courseLanguage) {
-		this.courseLanguage = courseLanguage;
-	}
+    public void setCourseLanguage(final String courseLanguage) {
+        this.courseLanguage = courseLanguage;
+    }
 
-	public String getLanguageShortKey() {
-		return languageShortKey;
-	}
+    public String getLanguageShortKey() {
+        return languageShortKey;
+    }
 
-	public void setLanguageShortKey(final String languageShortKey) {
-		this.languageShortKey = languageShortKey;
-	}
+    public void setLanguageShortKey(final String languageShortKey) {
+        this.languageShortKey = languageShortKey;
+    }
 
-	public String getCost() {
-		return cost;
-	}
+    public String getCost() {
+        return cost;
+    }
 
-	public void setCost(final String cost) {
-		this.cost = cost;
-	}
+    public void setCost(final String cost) {
+        this.cost = cost;
+    }
 
-	public String getDuration() {
-		return duration;
-	}
+    public String getDuration() {
+        return duration;
+    }
 
-	public void setDuration(final String duration) {
-		this.duration = duration;
-	}
+    public void setDuration(final String duration) {
+        this.duration = duration;
+    }
 
-	public String getDurationTime() {
-		return durationTime;
-	}
+    public String getDurationTime() {
+        return durationTime;
+    }
 
-	public void setDurationTime(final String durationTime) {
-		this.durationTime = durationTime;
-	}
+    public void setDurationTime(final String durationTime) {
+        this.durationTime = durationTime;
+    }
 
-	public String getLocalFees() {
-		return localFees;
-	}
+    public String getWorldRanking() {
+        return worldRanking;
+    }
 
-	public void setLocalFees(final String localFees) {
-		this.localFees = localFees;
-	}
+    public void setWorldRanking(final String worldRanking) {
+        this.worldRanking = worldRanking;
+    }
 
-	public String getIntlFees() {
-		return intlFees;
-	}
+    public String getStars() {
+        return stars;
+    }
 
-	public void setIntlFees(final String intlFees) {
-		this.intlFees = intlFees;
-	}
+    public void setStars(final String stars) {
+        this.stars = stars;
+    }
 
-	public String getWorldRanking() {
-		return worldRanking;
-	}
+    public String getFacultyName() {
+        return facultyName;
+    }
 
-	public void setWorldRanking(final String worldRanking) {
-		this.worldRanking = worldRanking;
-	}
+    public void setFacultyName(final String facultyName) {
+        this.facultyName = facultyName;
+    }
 
-	public String getStars() {
-		return stars;
-	}
+    public String getLevelName() {
+        return levelName;
+    }
 
-	public void setStars(final String stars) {
-		this.stars = stars;
-	}
+    public void setLevelName(final String levelName) {
+        this.levelName = levelName;
+    }
 
-	public String getFacultyName() {
-		return facultyName;
-	}
+    public String getCostOfLiving() {
+        return costOfLiving;
+    }
 
-	public void setFacultyName(final String facultyName) {
-		this.facultyName = facultyName;
-	}
+    public void setCostOfLiving(final String costOfLiving) {
+        this.costOfLiving = costOfLiving;
+    }
 
-	public String getLevelName() {
-		return levelName;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setLevelName(final String levelName) {
-		this.levelName = levelName;
-	}
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public String getCostOfLiving() {
-		return costOfLiving;
-	}
+    public String getDelivery() {
+        if (null == delivery) {
+            delivery = "";
+        }
+        return delivery;
+    }
 
-	public void setCostOfLiving(final String costOfLiving) {
-		this.costOfLiving = costOfLiving;
-	}
+    public void setDelivery(final String delivery) {
+        this.delivery = delivery;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getIntakeDate() {
+        if (null == intakeDate) {
+            intakeDate = "";
+        }
+        return intakeDate;
+    }
 
-	public void setDescription(final String description) {
-		this.description = description;
-	}
+    public void setIntakeDate(final String intakeDate) {
+        this.intakeDate = intakeDate;
+    }
 
-	public String getDelivery() {
-		if (null == delivery) {
-			delivery = "";
-		}
-		return delivery;
-	}
+    public BigInteger getLevelId() {
+        return levelId;
+    }
 
-	public void setDelivery(final String delivery) {
-		this.delivery = delivery;
-	}
+    public void setLevelId(final BigInteger levelId) {
+        this.levelId = levelId;
+    }
 
-	public String getIntakeDate() {
-		if (null == intakeDate) {
-			intakeDate = "";
-		}
-		return intakeDate;
-	}
+    public String getRemarks() {
+        return remarks;
+    }
 
-	public void setIntakeDate(final String intakeDate) {
-		this.intakeDate = intakeDate;
-	}
+    public void setRemarks(final String remarks) {
+        this.remarks = remarks;
+    }
 
-	public BigInteger getLevelId() {
-		return levelId;
-	}
+    /**
+     * @return the domasticFee
+     */
+    public Double getDomasticFee() {
+        return domasticFee;
+    }
 
-	public void setLevelId(final BigInteger levelId) {
-		this.levelId = levelId;
-	}
+    /**
+     * @param domasticFee
+     *            the domasticFee to set
+     */
+    public void setDomasticFee(Double domasticFee) {
+        this.domasticFee = domasticFee;
+    }
 
-	public String getRemarks() {
-		return remarks;
-	}
+    /**
+     * @return the internationalFee
+     */
+    public Double getInternationalFee() {
+        return internationalFee;
+    }
 
-	public void setRemarks(final String remarks) {
-		this.remarks = remarks;
-	}
+    /**
+     * @param internationalFee
+     *            the internationalFee to set
+     */
+    public void setInternationalFee(Double internationalFee) {
+        this.internationalFee = internationalFee;
+    }
 
 }

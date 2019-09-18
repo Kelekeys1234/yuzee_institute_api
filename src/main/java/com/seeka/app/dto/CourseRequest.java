@@ -21,7 +21,6 @@ public class CourseRequest {
 	private Double domasticFee;
 	private Double internationalFee;
 	private String grades;
-	private List<CourseEnglishEligibility> englishEligibility;
 	private String partTime;
 	private String fullTime;
 	private String documentUrl;
@@ -42,11 +41,7 @@ public class CourseRequest {
 	private String cost;
 	private String durationTime;
 	private String totalCount;
-	private String localFees;
-	private String intlFees;
 	private String requirements;
-	private List<String> instituteImageUrls;
-	
 	private String courseCurrency;
 	private String facultyName;
 	private String studyMode;
@@ -54,7 +49,8 @@ public class CourseRequest {
 	private BigInteger levelId;
 	private String levelName;
 	private String availbility;
-
+	private List<CourseEnglishEligibility> englishEligibility;
+	private List<String> instituteImageUrls;
 	/**
 	 * @return the courseId
 	 */
@@ -521,35 +517,7 @@ public class CourseRequest {
 	public void setTotalCount(final String totalCount) {
 		this.totalCount = totalCount;
 	}
-
-	/**
-	 * @return the localFees
-	 */
-	public String getLocalFees() {
-		return localFees;
-	}
-
-	/**
-	 * @param localFees the localFees to set
-	 */
-	public void setLocalFees(final String localFees) {
-		this.localFees = localFees;
-	}
-
-	/**
-	 * @return the intlFees
-	 */
-	public String getIntlFees() {
-		return intlFees;
-	}
-
-	/**
-	 * @param intlFees the intlFees to set
-	 */
-	public void setIntlFees(final String intlFees) {
-		this.intlFees = intlFees;
-	}
-
+	
 	/**
 	 * @return the requirements
 	 */

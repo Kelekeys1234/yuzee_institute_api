@@ -20,6 +20,7 @@ public class AdvanceSearchDto {
     private Integer maxSizePerPage;
     private Integer pageNumber;
     private String currencyCode;
+    private BigInteger userId;
 
     /**
      * @return the faculties
@@ -224,6 +225,20 @@ public class AdvanceSearchDto {
      */
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
+    }
+
+    /**
+     * @return the userId
+     */
+    public BigInteger getUserId() {
+        return userId;
+    }
+
+    /**
+     * @param userId the userId to set
+     */
+    public void setUserId(BigInteger userId) {
+        this.userId = userId;
     }
 
 }

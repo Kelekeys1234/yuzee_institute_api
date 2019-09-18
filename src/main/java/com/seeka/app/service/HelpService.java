@@ -1,7 +1,9 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -14,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.seeka.app.bean.SeekaHelp;
 import com.seeka.app.dao.IHelpDAO;
 import com.seeka.app.dto.HelpDto;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
+import com.seeka.app.util.PaginationUtil;
 
 @Service
 @Transactional
@@ -28,7 +32,7 @@ public class HelpService implements IHelpService {
     public Map<String, Object> save(@Valid HelpDto helpDto) {
         Map<String, Object> response = new HashMap<>();
         try {
-            helpDAO.save(convertDtoToSeekaHelp(helpDto));
+            helpDAO.save(convertDtoToSeekaHelp(helpDto, null));
             response.put("status", HttpStatus.OK.value());
             response.put("message", IConstant.HELP_SUCCESS_MESSAGE);
         } catch (Exception exception) {
@@ -38,15 +42,20 @@ public class HelpService implements IHelpService {
         return response;
     }
 
-    public SeekaHelp convertDtoToSeekaHelp(HelpDto dto) {
-        SeekaHelp seekaHelp = new SeekaHelp();
+    public SeekaHelp convertDtoToSeekaHelp(HelpDto dto, BigInteger id) {
+        SeekaHelp seekaHelp = null;
+        if (id != null) {
+            seekaHelp = helpDAO.get(id);
+        } else {
+            seekaHelp = new SeekaHelp();
+            seekaHelp.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+        }
         seekaHelp.setCategory(helpDAO.getHelpCategory(dto.getCategoryId()));
         seekaHelp.setSubCategory(helpDAO.getHelpSubCategory(dto.getSubCategoryId()));
         seekaHelp.setCreatedBy(dto.getCreatedBy());
         seekaHelp.setUpdatedBy(dto.getUpdatedBy());
         seekaHelp.setTitle(dto.getTitle());
         seekaHelp.setDescritpion(dto.getDescription());
-        seekaHelp.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
         seekaHelp.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
         seekaHelp.setIsActive(true);
         return seekaHelp;
@@ -89,9 +98,7 @@ public class HelpService implements IHelpService {
     public Map<String, Object> update(HelpDto helpDto, BigInteger id) {
         Map<String, Object> response = new HashMap<>();
         try {
-            SeekaHelp seekaHelp = convertDtoToSeekaHelp(helpDto);
-            seekaHelp.setId(id);
-            helpDAO.update(seekaHelp);
+            helpDAO.update(convertDtoToSeekaHelp(helpDto, id));
             response.put("status", HttpStatus.OK.value());
             response.put("message", IConstant.HELP_UPDATE_MESSAGE);
         } catch (Exception exception) {
@@ -99,6 +106,32 @@ public class HelpService implements IHelpService {
             response.put("message", exception.getCause());
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getAll(Integer pageNumber, Integer pageSize) {
+        Map<String, Object> response = new HashMap<>();
+        String status = IConstant.SUCCESS;
+        List<SeekaHelp> helps = new ArrayList<>();
+        int totalCount = 0;
+        PaginationUtilDto paginationUtilDto = null;
+        try {
+            totalCount = helpDAO.findTotalHelpRecord();
+            int startIndex = (pageNumber - 1) * pageSize;
+            paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+            helps = helpDAO.getAll(startIndex, pageSize);
+        } catch (Exception exception) {
+            status = IConstant.FAIL;
+        }
+        response.put("status", HttpStatus.OK.value());
+        response.put("message", status);
+        response.put("courses", helps);
+        response.put("totalCount", totalCount);
+        response.put("pageNumber", paginationUtilDto.getPageNumber());
+        response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+        response.put("hasNextPage", paginationUtilDto.isHasNextPage());
+        response.put("totalPages", paginationUtilDto.getTotalPages());
         return response;
     }
 }

@@ -15,4 +15,6 @@ public interface IHelpService {
 
     public Map<String, Object> update(HelpDto helpDto, BigInteger id);
 
+    public Map<String, Object> getAll(Integer pageNumber, Integer pageSize);
+
 }
