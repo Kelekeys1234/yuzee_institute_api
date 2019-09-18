@@ -17,7 +17,7 @@ public interface IInstituteImagesService {
 
 	List<InstituteImages> getAll();
 
-	void saveInstituteImage(BigInteger instituteId, String imageName) throws ValidationException;
+	void saveInstituteImage(BigInteger instituteId, String imageName, String subCategory) throws ValidationException;
 
 	List<ImageResponseDto> getInstituteImageListBasedOnId(BigInteger instituteId);
 

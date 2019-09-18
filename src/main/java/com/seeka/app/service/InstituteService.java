@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import com.seeka.app.dao.IInstituteTypeDAO;
 import com.seeka.app.dao.IInstituteVideoDao;
 import com.seeka.app.dao.ServiceDetailsDAO;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.InstituteDetailsGetRequest;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteGetRequestDto;
@@ -36,6 +38,7 @@ import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.CommonUtil;
@@ -67,6 +70,12 @@ public class InstituteService implements IInstituteService {
 
 	@Autowired
 	private IAccreditedInstituteDetailDao accreditedInstituteDetailDao;
+
+	@Autowired
+	private InstituteImagesService instituteImagesService;
+
+	@Value("${s3.url}")
+	private String s3URL;
 
 	@Override
 	public void save(final Institute institute) {
@@ -586,5 +595,24 @@ public class InstituteService implements IInstituteService {
 		institute.setLogoImage(null);
 		dao.update(institute);
 		return imageName;
+	}
+
+	@Override
+	public List<ImageResponseDto> getInstituteImage(final BigInteger instituteId) {
+		Institute institute = dao.get(instituteId);
+		List<ImageResponseDto> imageList = new ArrayList<>();
+		if (institute.getLogoImage() != null) {
+			ImageResponseDto imageResponseDto = new ImageResponseDto();
+			imageResponseDto.setBaseUrl(s3URL);
+			imageResponseDto.setCategory(ImageCategory.INSTITUTE.name());
+			imageResponseDto.setSubCategory("LOGO");
+			imageResponseDto.setImageName(institute.getLogoImage());
+			imageResponseDto.setCategoryId(instituteId);
+			imageResponseDto.setId(instituteId);
+			imageList.add(imageResponseDto);
+		}
+		List<ImageResponseDto> imageResponseDtos = instituteImagesService.getInstituteImageListBasedOnId(instituteId);
+		imageList.addAll(imageResponseDtos);
+		return imageList;
 	}
 }

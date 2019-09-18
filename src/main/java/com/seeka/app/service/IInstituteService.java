@@ -10,6 +10,7 @@ import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
@@ -63,4 +64,6 @@ public interface IInstituteService {
 	void updateInstituteImage(BigInteger instituteId, String logoImage) throws ValidationException;
 
 	String deleteInstituteImage(BigInteger instituteId);
+
+	List<ImageResponseDto> getInstituteImage(BigInteger instituteId);
 }

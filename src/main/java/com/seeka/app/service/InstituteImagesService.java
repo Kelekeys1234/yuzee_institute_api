@@ -51,7 +51,7 @@ public class InstituteImagesService implements IInstituteImagesService {
 	}
 
 	@Override
-	public void saveInstituteImage(final BigInteger instituteId, final String imageName) throws ValidationException {
+	public void saveInstituteImage(final BigInteger instituteId, final String imageName, final String subCategory) throws ValidationException {
 		InstituteImages instituteImages = new InstituteImages();
 		Institute institute = iInstituteService.get(instituteId);
 		if (institute == null) {
@@ -60,6 +60,7 @@ public class InstituteImagesService implements IInstituteImagesService {
 		instituteImages.setInstitute(institute);
 		instituteImages.setImageName(imageName);
 		instituteImages.setIsActive(true);
+		instituteImages.setSubCategory(subCategory);
 		instituteImages.setCreatedOn(new Date());
 		instituteImages.setCreatedBy("API");
 		iInstituteImagesDAO.save(instituteImages);
@@ -76,6 +77,7 @@ public class InstituteImagesService implements IInstituteImagesService {
 			imageResponseDto.setImageName(instituteImages2.getImageName());
 			imageResponseDto.setBaseUrl(s3URL);
 			imageResponseDto.setCategory(ImageCategory.INSTITUTE.name());
+			imageResponseDto.setSubCategory(instituteImages2.getSubCategory());
 			resultList.add(imageResponseDto);
 		}
 		return resultList;

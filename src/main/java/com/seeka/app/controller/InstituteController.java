@@ -24,6 +24,7 @@ import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
 import com.seeka.app.bean.UserInfo;
+import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.ImageResponseDto;
@@ -551,5 +552,11 @@ public class InstituteController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	public ResponseEntity<?> delete(@Valid @PathVariable final BigInteger id) throws Exception {
 		return ResponseEntity.accepted().body(instituteService.deleteInstitute(id));
+	}
+
+	@RequestMapping(value = "/images/{instituteId}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getInstituteImage(@PathVariable final BigInteger instituteId) throws Exception {
+		List<ImageResponseDto> imageList = instituteService.getInstituteImage(instituteId);
+		return new GenericResponseHandlers.Builder().setData(imageList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
 	}
 }

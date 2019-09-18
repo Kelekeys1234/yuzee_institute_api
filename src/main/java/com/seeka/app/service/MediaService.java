@@ -98,7 +98,7 @@ public class MediaService implements IMediaService {
 			if (subCategory.equals("LOGO")) {
 				iInstituteService.updateInstituteImage(categoryId, imageName);
 			} else {
-				iInstituteImagesService.saveInstituteImage(categoryId, imageName);
+				iInstituteImagesService.saveInstituteImage(categoryId, imageName, subCategory);
 			}
 		} else if (category.equals(ImageCategory.CITY.name())) {
 			imageName = uploadImage(file, categoryId, ImageCategory.CITY.name(), subCategory);

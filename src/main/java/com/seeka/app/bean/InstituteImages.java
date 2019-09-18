@@ -1,4 +1,6 @@
-package com.seeka.app.bean;import static javax.persistence.GenerationType.IDENTITY;
+package com.seeka.app.bean;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -26,14 +28,14 @@ import javax.persistence.TemporalType;
 public class InstituteImages implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 7478538284327710921L;
 	private BigInteger id;
 	private Institute institute;
 	private int imageIndex;
 	private String imageName;
-	private String imagePath;
+	private String subCategory;
 	private String description;
 	private Boolean isActive;
 	private Date createdOn;
@@ -46,19 +48,18 @@ public class InstituteImages implements Serializable {
 	public InstituteImages() {
 	}
 
-	public InstituteImages(Institute institute, int imageIndex) {
+	public InstituteImages(final Institute institute, final int imageIndex) {
 		this.institute = institute;
 		this.imageIndex = imageIndex;
 	}
 
-	public InstituteImages(Institute institute, int imageIndex,
-			String imageName, String imagePath, String description,
-			Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn,
-			String createdBy, String updatedBy, Boolean isDeleted) {
+	public InstituteImages(final Institute institute, final int imageIndex, final String imageName, final String subCategory, final String description,
+			final Boolean isActive, final Date createdOn, final Date updatedOn, final Date deletedOn, final String createdBy, final String updatedBy,
+			final Boolean isDeleted) {
 		this.institute = institute;
 		this.imageIndex = imageIndex;
 		this.imageName = imageName;
-		this.imagePath = imagePath;
+		this.subCategory = subCategory;
 		this.description = description;
 		this.isActive = isActive;
 		this.createdOn = createdOn;
@@ -76,7 +77,7 @@ public class InstituteImages implements Serializable {
 		return this.id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(final BigInteger id) {
 		this.id = id;
 	}
 
@@ -86,7 +87,7 @@ public class InstituteImages implements Serializable {
 		return this.institute;
 	}
 
-	public void setInstitute(Institute institute) {
+	public void setInstitute(final Institute institute) {
 		this.institute = institute;
 	}
 
@@ -95,7 +96,7 @@ public class InstituteImages implements Serializable {
 		return this.imageIndex;
 	}
 
-	public void setImageIndex(int imageIndex) {
+	public void setImageIndex(final int imageIndex) {
 		this.imageIndex = imageIndex;
 	}
 
@@ -104,17 +105,17 @@ public class InstituteImages implements Serializable {
 		return this.imageName;
 	}
 
-	public void setImageName(String imageName) {
+	public void setImageName(final String imageName) {
 		this.imageName = imageName;
 	}
 
-	@Column(name = "image_path", length = 500)
-	public String getImagePath() {
-		return this.imagePath;
+	@Column(name = "sub_category", length = 500)
+	public String getSubCategory() {
+		return subCategory;
 	}
 
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
+	public void setSubCategory(final String subCategory) {
+		this.subCategory = subCategory;
 	}
 
 	@Column(name = "description", length = 500)
@@ -122,7 +123,7 @@ public class InstituteImages implements Serializable {
 		return this.description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -131,7 +132,7 @@ public class InstituteImages implements Serializable {
 		return this.isActive;
 	}
 
-	public void setIsActive(Boolean isActive) {
+	public void setIsActive(final Boolean isActive) {
 		this.isActive = isActive;
 	}
 
@@ -141,7 +142,7 @@ public class InstituteImages implements Serializable {
 		return this.createdOn;
 	}
 
-	public void setCreatedOn(Date createdOn) {
+	public void setCreatedOn(final Date createdOn) {
 		this.createdOn = createdOn;
 	}
 
@@ -151,7 +152,7 @@ public class InstituteImages implements Serializable {
 		return this.updatedOn;
 	}
 
-	public void setUpdatedOn(Date updatedOn) {
+	public void setUpdatedOn(final Date updatedOn) {
 		this.updatedOn = updatedOn;
 	}
 
@@ -161,7 +162,7 @@ public class InstituteImages implements Serializable {
 		return this.deletedOn;
 	}
 
-	public void setDeletedOn(Date deletedOn) {
+	public void setDeletedOn(final Date deletedOn) {
 		this.deletedOn = deletedOn;
 	}
 
@@ -170,7 +171,7 @@ public class InstituteImages implements Serializable {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(final String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -179,7 +180,7 @@ public class InstituteImages implements Serializable {
 		return this.updatedBy;
 	}
 
-	public void setUpdatedBy(String updatedBy) {
+	public void setUpdatedBy(final String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
@@ -188,119 +189,140 @@ public class InstituteImages implements Serializable {
 		return this.isDeleted;
 	}
 
-	public void setIsDeleted(Boolean isDeleted) {
+	public void setIsDeleted(final Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
-        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
-        result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + imageIndex;
-        result = prime * result + ((imageName == null) ? 0 : imageName.hashCode());
-        result = prime * result + ((imagePath == null) ? 0 : imagePath.hashCode());
-        result = prime * result + ((institute == null) ? 0 : institute.hashCode());
-        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
-        result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
-        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
-        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
+		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
+		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
+		result = prime * result + (description == null ? 0 : description.hashCode());
+		result = prime * result + (id == null ? 0 : id.hashCode());
+		result = prime * result + imageIndex;
+		result = prime * result + (imageName == null ? 0 : imageName.hashCode());
+		result = prime * result + (institute == null ? 0 : institute.hashCode());
+		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
+		result = prime * result + (isDeleted == null ? 0 : isDeleted.hashCode());
+		result = prime * result + (subCategory == null ? 0 : subCategory.hashCode());
+		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
+		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
+		return result;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        InstituteImages other = (InstituteImages) obj;
-        if (createdBy == null) {
-            if (other.createdBy != null)
-                return false;
-        } else if (!createdBy.equals(other.createdBy))
-            return false;
-        if (createdOn == null) {
-            if (other.createdOn != null)
-                return false;
-        } else if (!createdOn.equals(other.createdOn))
-            return false;
-        if (deletedOn == null) {
-            if (other.deletedOn != null)
-                return false;
-        } else if (!deletedOn.equals(other.deletedOn))
-            return false;
-        if (description == null) {
-            if (other.description != null)
-                return false;
-        } else if (!description.equals(other.description))
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (imageIndex != other.imageIndex)
-            return false;
-        if (imageName == null) {
-            if (other.imageName != null)
-                return false;
-        } else if (!imageName.equals(other.imageName))
-            return false;
-        if (imagePath == null) {
-            if (other.imagePath != null)
-                return false;
-        } else if (!imagePath.equals(other.imagePath))
-            return false;
-        if (institute == null) {
-            if (other.institute != null)
-                return false;
-        } else if (!institute.equals(other.institute))
-            return false;
-        if (isActive == null) {
-            if (other.isActive != null)
-                return false;
-        } else if (!isActive.equals(other.isActive))
-            return false;
-        if (isDeleted == null) {
-            if (other.isDeleted != null)
-                return false;
-        } else if (!isDeleted.equals(other.isDeleted))
-            return false;
-        if (updatedBy == null) {
-            if (other.updatedBy != null)
-                return false;
-        } else if (!updatedBy.equals(other.updatedBy))
-            return false;
-        if (updatedOn == null) {
-            if (other.updatedOn != null)
-                return false;
-        } else if (!updatedOn.equals(other.updatedOn))
-            return false;
-        return true;
-    }
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		InstituteImages other = (InstituteImages) obj;
+		if (createdBy == null) {
+			if (other.createdBy != null) {
+				return false;
+			}
+		} else if (!createdBy.equals(other.createdBy)) {
+			return false;
+		}
+		if (createdOn == null) {
+			if (other.createdOn != null) {
+				return false;
+			}
+		} else if (!createdOn.equals(other.createdOn)) {
+			return false;
+		}
+		if (deletedOn == null) {
+			if (other.deletedOn != null) {
+				return false;
+			}
+		} else if (!deletedOn.equals(other.deletedOn)) {
+			return false;
+		}
+		if (description == null) {
+			if (other.description != null) {
+				return false;
+			}
+		} else if (!description.equals(other.description)) {
+			return false;
+		}
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (imageIndex != other.imageIndex) {
+			return false;
+		}
+		if (imageName == null) {
+			if (other.imageName != null) {
+				return false;
+			}
+		} else if (!imageName.equals(other.imageName)) {
+			return false;
+		}
+		if (institute == null) {
+			if (other.institute != null) {
+				return false;
+			}
+		} else if (!institute.equals(other.institute)) {
+			return false;
+		}
+		if (isActive == null) {
+			if (other.isActive != null) {
+				return false;
+			}
+		} else if (!isActive.equals(other.isActive)) {
+			return false;
+		}
+		if (isDeleted == null) {
+			if (other.isDeleted != null) {
+				return false;
+			}
+		} else if (!isDeleted.equals(other.isDeleted)) {
+			return false;
+		}
+		if (subCategory == null) {
+			if (other.subCategory != null) {
+				return false;
+			}
+		} else if (!subCategory.equals(other.subCategory)) {
+			return false;
+		}
+		if (updatedBy == null) {
+			if (other.updatedBy != null) {
+				return false;
+			}
+		} else if (!updatedBy.equals(other.updatedBy)) {
+			return false;
+		}
+		if (updatedOn == null) {
+			if (other.updatedOn != null) {
+				return false;
+			}
+		} else if (!updatedOn.equals(other.updatedOn)) {
+			return false;
+		}
+		return true;
+	}
 
-    @Override
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("InstituteImages [id=").append(id).append(", institute=").append(institute)
-				.append(", imageIndex=").append(imageIndex).append(", imageName=").append(imageName)
-				.append(", imagePath=").append(imagePath).append(", description=").append(description)
-				.append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=")
-				.append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
-				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
+		builder.append("InstituteImages [id=").append(id).append(", institute=").append(institute).append(", imageIndex=").append(imageIndex)
+				.append(", imageName=").append(imageName).append(", subCategory=").append(subCategory).append(", description=").append(description)
+				.append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", deletedOn=")
+				.append(deletedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted)
+				.append("]");
 		return builder.toString();
 	}
 
