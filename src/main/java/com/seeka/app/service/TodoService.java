@@ -3,8 +3,10 @@ package com.seeka.app.service;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.seeka.app.bean.Todo;
 import com.seeka.app.dao.ITodoDao;
 import com.seeka.app.dto.TodoDto;
@@ -18,8 +20,7 @@ public class TodoService implements ITodoService {
 
     @Override
     public void save(TodoDto todoDto) {
-        Todo todo = CommonUtil.convertTodoDtoIntoTodo(todoDto);
-        iTodoDao.save(todo);
+        iTodoDao.save(CommonUtil.convertTodoDtoIntoTodo(todoDto));
     }
 
     @Override
@@ -31,9 +32,7 @@ public class TodoService implements ITodoService {
 
     @Override
     public TodoDto get(BigInteger id) {
-        Todo todo = iTodoDao.get(id);
-        TodoDto todoDto = CommonUtil.convertTodoIntoTodoDto(todo);
-        return todoDto;
+        return CommonUtil.convertTodoIntoTodoDto(iTodoDao.get(id));
     }
 
     @Override
@@ -41,8 +40,7 @@ public class TodoService implements ITodoService {
         List<Todo> list = iTodoDao.getByUserId(userId);
         List<TodoDto> todoDtos = new LinkedList<>();
         for (Todo todo : list) {
-            TodoDto todoDto = CommonUtil.convertTodoIntoTodoDto(todo);
-            todoDtos.add(todoDto);
+            todoDtos.add(CommonUtil.convertTodoIntoTodoDto(todo));
         }
         return todoDtos;
     }
@@ -52,10 +50,8 @@ public class TodoService implements ITodoService {
         List<Todo> list = iTodoDao.getAll();
         List<TodoDto> todoDtos = new LinkedList<>();
         for (Todo todo : list) {
-            TodoDto todoDto = CommonUtil.convertTodoIntoTodoDto(todo);
-            todoDtos.add(todoDto);
+            todoDtos.add(CommonUtil.convertTodoIntoTodoDto(todo));
         }
         return todoDtos;
     }
-
 }

@@ -229,8 +229,6 @@ public class CourseController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        // Currency userCurrency =
-        // CurrencyUtil.getCurrencyObjById(user.getCurrencyId());
         Currency currency = null;
         String message = "";
         if (null != courseSearchDto.getCurrencyId() && !user.getPreferredCurrencyId().equals(courseSearchDto.getCurrencyId())) {
@@ -259,18 +257,10 @@ public class CourseController {
         } else {
             showMore = false;
         }
-        /*
-         * CourseFilterCostResponseDto costResponseDto = courseService.getAllCoursesFilterCostInfo(courseSearchDto, currency,
-         * userCurrency.getCode()); costResponseDto.setCurrencyId(currency.getId());
-         * costResponseDto.setCurrencySymbol(currency.getSymbol()); costResponseDto.setCurrencyCode(currency.getCode());
-         * costResponseDto.setCurrencyName(currency.getName());
-         */
-
         response.put("status", 1);
         response.put("message", "Success.!");
         response.put("paginationObj", new PaginationDto(totalCount, showMore));
         response.put("courseList", courseList);
-        // response.put("costCurrency",costResponseDto);
         return ResponseEntity.accepted().body(response);
     }
 

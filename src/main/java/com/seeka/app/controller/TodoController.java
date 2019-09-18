@@ -81,7 +81,7 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getUserId(@PathVariable BigInteger userId) throws Exception {
+    public ResponseEntity<?> getTodoByUserId(@PathVariable BigInteger userId) throws Exception {
         Map<String, Object> response = new HashMap<>(3);
         try {
             List<TodoDto> todoDto = iTodoService.getByUserId(userId);

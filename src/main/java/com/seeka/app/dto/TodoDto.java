@@ -7,6 +7,7 @@ public class TodoDto {
     /**
      * 
      */
+    private BigInteger id;
     private String title;
     private String description;
     private BigInteger userId;
@@ -69,6 +70,20 @@ public class TodoDto {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    /**
+     * @return the id
+     */
+    public BigInteger getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(BigInteger id) {
+        this.id = id;
     }
 
 }
