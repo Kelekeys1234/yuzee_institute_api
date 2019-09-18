@@ -15,6 +15,7 @@ public class TodoDto {
     private BigInteger folderId;
     private String createdBy;
     private String updatedBy;
+    private String dueDate;
 
     public String getTitle() {
         return title;
@@ -84,6 +85,20 @@ public class TodoDto {
      */
     public void setId(BigInteger id) {
         this.id = id;
+    }
+
+    /**
+     * @return the dueDate
+     */
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    /**
+     * @param dueDate the dueDate to set
+     */
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
     }
 
 }

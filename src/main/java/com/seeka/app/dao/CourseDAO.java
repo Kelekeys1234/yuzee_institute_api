@@ -1257,7 +1257,7 @@ public class CourseDAO implements ICourseDAO {
         String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
                         + "c.description, c.intake,c.duration, c.course_lang,c.domestic_fee, c.international_fee,"
                         + " c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
-                        + " c.recognition_type, c.part_full, c.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM  user_my_course umc left join course c on umc.course_id = c.id "
+                        + " c.recognition_type, c.part_full, c.course_link, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency  FROM  user_my_course umc left join course c on umc.course_id = c.id "
                         + " where umc.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = " + userId + "  ORDER BY c.created_on DESC ";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
@@ -1351,6 +1351,9 @@ public class CourseDAO implements ICourseDAO {
             }
             if (row[26] != null) {
                 obj.setRequirements(row[26].toString());
+            }
+            if (row[27] != null) {
+                obj.setCourseCurrency(row[27].toString());
             }
             obj.setEnglishEligibility(getEnglishEligibility(session, new BigInteger(row[0].toString())));
             courses.add(obj);

@@ -3,7 +3,9 @@ package com.seeka.app.dao;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.transaction.Transactional;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,6 +17,7 @@ import com.seeka.app.bean.Todo;
 
 @Repository
 @Transactional
+@SuppressWarnings({ "deprecation", "unchecked" })
 public class TodoDao implements ITodoDao {
 
     @Autowired
@@ -59,6 +62,7 @@ public class TodoDao implements ITodoDao {
             Session session = sessionFactory.getCurrentSession();
             Criteria crit = session.createCriteria(Todo.class);
             crit.add(Restrictions.eq("userId", userId));
+            crit.add(Restrictions.eq("isActive", true));
             todos = crit.list();
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -72,11 +76,11 @@ public class TodoDao implements ITodoDao {
         try {
             Session session = sessionFactory.getCurrentSession();
             Criteria crit = session.createCriteria(Todo.class);
+            crit.add(Restrictions.eq("isActive", true));
             todos = crit.list();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
         return todos;
     }
-
 }

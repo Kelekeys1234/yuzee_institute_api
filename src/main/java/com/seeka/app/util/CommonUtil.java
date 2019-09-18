@@ -282,6 +282,10 @@ public class CommonUtil {
         todo.setFolderId(todoDto.getFolderId());
         todo.setCreatedBy(todoDto.getCreatedBy());
         todo.setUpdatedBy(todoDto.getUpdatedBy());
+        todo.setIsActive(true);
+        if (todoDto.getDueDate() != null) {
+            todo.setDueDate(DateUtil.convertStringDateToDate(todoDto.getDueDate()));
+        }
         return todo;
     }
 
@@ -295,6 +299,9 @@ public class CommonUtil {
         todoDto.setFolderId(todo.getFolderId());
         todoDto.setCreatedBy(todo.getCreatedBy());
         todoDto.setUpdatedBy(todo.getUpdatedBy());
+        if (todo.getDueDate() != null) {
+            todoDto.setDueDate(DateUtil.convertDateToString(todo.getDueDate()));
+        }
         return todoDto;
     }
 

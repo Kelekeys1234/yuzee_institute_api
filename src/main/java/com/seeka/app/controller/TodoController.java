@@ -30,7 +30,6 @@ public class TodoController {
             iTodoService.save(todoDto);
             response.put("message", "Todo type saved successfully");
             response.put("status", HttpStatus.OK.value());
-            response.put("data", todoDto);
         } catch (Exception exception) {
             exception.printStackTrace();
             response.put("message", "Error to save todo");
@@ -124,6 +123,11 @@ public class TodoController {
             response.put("data", "Error");
         }
         return ResponseEntity.accepted().body(response);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
+    public ResponseEntity<?> delete(@Valid @PathVariable final BigInteger id) throws Exception {
+        return ResponseEntity.accepted().body(iTodoService.delete(id));
     }
 
 }
