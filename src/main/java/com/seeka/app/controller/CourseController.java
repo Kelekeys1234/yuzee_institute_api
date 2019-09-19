@@ -52,7 +52,6 @@ import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IUserService;
 import com.seeka.app.service.InstituteLevelService;
 import com.seeka.app.service.UserRecommendationService;
-import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -292,9 +291,8 @@ public class CourseController {
         }
         courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
         Institute instituteObj = course.getInstitute();
-        if (instituteObj != null && instituteObj.getCountry() != null) {
-            courseRequest.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(instituteObj.getCountry().getName(), instituteObj.getName()));
-            courseRequest.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(instituteObj.getCountry().getName(), instituteObj.getName()));
+        if (instituteObj != null) {
+            courseRequest.setInstituteImages(iInstituteImagesService.getInstituteImageListBasedOnId(instituteObj.getId()));
         }
         List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
         if (!englishCriteriaList.isEmpty()) {

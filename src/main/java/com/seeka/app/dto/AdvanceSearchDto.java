@@ -10,6 +10,7 @@ public class AdvanceSearchDto {
     private List<BigInteger> serviceIds;
     private List<BigInteger> countryIds;
     private List<String> courseKeys;
+    private List<BigInteger> cityIds;
     private Double minCost;
     private Double maxCost;
     private Integer minDuration;
@@ -239,6 +240,20 @@ public class AdvanceSearchDto {
      */
     public void setUserId(BigInteger userId) {
         this.userId = userId;
+    }
+
+    /**
+     * @return the cityIds
+     */
+    public List<BigInteger> getCityIds() {
+        return cityIds;
+    }
+
+    /**
+     * @param cityIds the cityIds to set
+     */
+    public void setCityIds(List<BigInteger> cityIds) {
+        this.cityIds = cityIds;
     }
 
 }

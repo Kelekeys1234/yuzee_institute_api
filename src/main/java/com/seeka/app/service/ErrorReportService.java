@@ -86,7 +86,7 @@ public class ErrorReportService implements IErrorReportService {
         errorReport.setStatus(errorReportDto.getStatus());
         errorReport.setCourseArticleId(errorReportDto.getCourseArticleId());
         if(errorReportDto.getDueDate()!=null && !errorReportDto.getDueDate().isEmpty()){
-            errorReport.setDueDate(DateUtil.stringDateToDateYYYY_MM_DDFormat(errorReportDto.getDueDate()));
+            errorReport.setDueDate(DateUtil.convertStringDateToDate(errorReportDto.getDueDate()));
         }
         errorReport.setAssigneeUserId(errorReportDto.getAssigneeUserId());
         return errorReport;

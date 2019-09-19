@@ -49,48 +49,16 @@ public class DateUtil {
         return utcTime;
     }
 
-    public static Date stringDateToDateYYYY_MM_DDFormat(String StrDate) {
-        Date dateToReturn = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            dateToReturn = (Date) dateFormat.parse(StrDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return dateToReturn;
-    }
-
-    public static Date getDateFromString(String StrDate) {
-        Date dateToReturn = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            dateToReturn = (Date) dateFormat.parse(StrDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return dateToReturn;
-    }
-
     public static String getStringDateFromDate(Date datePostedUpdated) {
         final SimpleDateFormat sdf = new SimpleDateFormat(IConstant.DATE_FORMAT_YYYY_MM_DD);
         return sdf.format(datePostedUpdated);
     }
 
-    public static Date stringDateToDateDD_MM_YYYYYFormat(String StrDate) {
-        Date dateToReturn = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            dateToReturn = (Date) dateFormat.parse(StrDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return dateToReturn;
-    }
-
     public static Date convertStringDateToDate(String StrDate) {
         Date dateToReturn = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         try {
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             dateToReturn = (Date) dateFormat.parse(StrDate);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -99,7 +67,7 @@ public class DateUtil {
     }
 
     public static String convertDateToString(Date date) {
-        final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         return sdf.format(date);
     }
 }

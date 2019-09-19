@@ -230,6 +230,9 @@ public class CommonUtil {
         courseRequest.setPartFull(course.getPartFull());
         courseRequest.setStudyMode(course.getStudyMode());
         courseRequest.setAvailbility(course.getAvailbilty());
+        if(course.getInstitute()!=null) {
+            courseRequest.setInstituteLogoUrl(course.getInstitute().getInstituteLogoUrl());
+        }
         return courseRequest;
     }
 
@@ -308,9 +311,9 @@ public class CommonUtil {
     public static Double foundOff2Digit(final Double convertedRate) {
         System.out.println("double : " + convertedRate);
         BigDecimal bd = new BigDecimal(convertedRate).setScale(2, RoundingMode.HALF_UP);
-        Double salary = bd.doubleValue();
-        System.out.println("salary : " + salary);
-        return salary;
+        Double roundedDigit = bd.doubleValue();
+        System.out.println("rounded digit : " + roundedDigit);
+        return roundedDigit;
     }
 
     public static Date getDateWithoutTime(final Date date) {

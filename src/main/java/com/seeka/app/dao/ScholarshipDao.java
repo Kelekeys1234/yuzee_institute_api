@@ -462,7 +462,7 @@ public class ScholarshipDao implements IScholarshipDAO {
             sqlQuery += " and sch.type = '" + scholarshipFilterDto.getType() + "' ";
         }
         if (null != scholarshipFilterDto.getDatePosted() && !scholarshipFilterDto.getDatePosted().isEmpty()) {
-            Date datePosted = DateUtil.getDateFromString(scholarshipFilterDto.getDatePosted());
+            Date datePosted = DateUtil.convertStringDateToDate(scholarshipFilterDto.getDatePosted());
             Calendar c = Calendar.getInstance();
             c.setTime(datePosted);
             c.add(Calendar.DATE, 1);

@@ -69,4 +69,6 @@ public interface IEducationAgentDAO {
 
     public void deleteEducationAgentAccomplishment(BigInteger educationAgent);
 
+    public List<Skill> getAllSkill();
+
 }

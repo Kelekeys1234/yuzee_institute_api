@@ -31,11 +31,9 @@ public class CourseRequest {
 	private String website;
 	private String courseLink;
 	private String lastUpdated;
-
 	private String instituteName;
 	private String location;
 	private String instituteLogoUrl;
-	private String instituteImageUrl;
 	private String worldRanking;
 	private String stars;
 	private String cost;
@@ -50,7 +48,7 @@ public class CourseRequest {
 	private String levelName;
 	private String availbility;
 	private List<CourseEnglishEligibility> englishEligibility;
-	private List<String> instituteImageUrls;
+	private List<ImageResponseDto> instituteImages;
 	/**
 	 * @return the courseId
 	 */
@@ -421,34 +419,6 @@ public class CourseRequest {
 	}
 
 	/**
-	 * @return the instituteLogoUrl
-	 */
-	public String getInstituteLogoUrl() {
-		return instituteLogoUrl;
-	}
-
-	/**
-	 * @param instituteLogoUrl the instituteLogoUrl to set
-	 */
-	public void setInstituteLogoUrl(final String instituteLogoUrl) {
-		this.instituteLogoUrl = instituteLogoUrl;
-	}
-
-	/**
-	 * @return the instituteImageUrl
-	 */
-	public String getInstituteImageUrl() {
-		return instituteImageUrl;
-	}
-
-	/**
-	 * @param instituteImageUrl the instituteImageUrl to set
-	 */
-	public void setInstituteImageUrl(final String instituteImageUrl) {
-		this.instituteImageUrl = instituteImageUrl;
-	}
-
-	/**
 	 * @return the worldRanking
 	 */
 	public String getWorldRanking() {
@@ -530,20 +500,6 @@ public class CourseRequest {
 	 */
 	public void setRequirements(final String requirements) {
 		this.requirements = requirements;
-	}
-
-	/**
-	 * @return the instituteImageUrls
-	 */
-	public List<String> getInstituteImageUrls() {
-		return instituteImageUrls;
-	}
-
-	/**
-	 * @param instituteImageUrls the instituteImageUrls to set
-	 */
-	public void setInstituteImageUrls(final List<String> instituteImageUrls) {
-		this.instituteImageUrls = instituteImageUrls;
 	}
 
     /**
@@ -642,5 +598,33 @@ public class CourseRequest {
      */
     public void setAvailbility(String availbility) {
         this.availbility = availbility;
+    }
+
+    /**
+     * @return the instituteImages
+     */
+    public List<ImageResponseDto> getInstituteImages() {
+        return instituteImages;
+    }
+
+    /**
+     * @param instituteImages the instituteImages to set
+     */
+    public void setInstituteImages(List<ImageResponseDto> instituteImages) {
+        this.instituteImages = instituteImages;
+    }
+
+    /**
+     * @return the instituteLogoUrl
+     */
+    public String getInstituteLogoUrl() {
+        return instituteLogoUrl;
+    }
+
+    /**
+     * @param instituteLogoUrl the instituteLogoUrl to set
+     */
+    public void setInstituteLogoUrl(String instituteLogoUrl) {
+        this.instituteLogoUrl = instituteLogoUrl;
     }
 }

@@ -468,7 +468,7 @@ public class InstituteDAO implements IInstituteDAO {
 			sqlQuery += " and inst.institute_category_type_id = " + instituteFilterDto.getInstituteTypeId() + " ";
 		}
 		if (instituteFilterDto.getDatePosted() != null && !instituteFilterDto.getDatePosted().isEmpty()) {
-			Date postedDate = DateUtil.stringDateToDateDD_MM_YYYYYFormat(instituteFilterDto.getDatePosted());
+			Date postedDate = DateUtil.convertStringDateToDate(instituteFilterDto.getDatePosted());
 			Calendar c = Calendar.getInstance();
 			c.setTime(postedDate);
 			c.add(Calendar.DATE, 1);

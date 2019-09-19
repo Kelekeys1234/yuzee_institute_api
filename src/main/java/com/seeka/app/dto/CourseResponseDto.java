@@ -28,8 +28,8 @@ public class CourseResponseDto {
     private Boolean isFavourite;
     private String currencyCode;
     private String logoImage;
-    private List<String> imageUrlList;
     private List<ImageResponseDto> instituteImages;
+    private String instituteLogoUrl;
 
     public BigInteger getCourseId() {
         return courseId;
@@ -178,14 +178,6 @@ public class CourseResponseDto {
         this.cityName = cityName;
     }
 
-    public List<String> getImageUrlList() {
-        return imageUrlList;
-    }
-
-    public void setImageUrlList(final List<String> imageUrlList) {
-        this.imageUrlList = imageUrlList;
-    }
-
     public Boolean getIsFavourite() {
         if (null == isFavourite) {
             isFavourite = false;
@@ -256,6 +248,20 @@ public class CourseResponseDto {
      */
     public void setInternationalFee(Double internationalFee) {
         this.internationalFee = internationalFee;
+    }
+
+    /**
+     * @return the instituteLogoUrl
+     */
+    public String getInstituteLogoUrl() {
+        return instituteLogoUrl;
+    }
+
+    /**
+     * @param instituteLogoUrl the instituteLogoUrl to set
+     */
+    public void setInstituteLogoUrl(String instituteLogoUrl) {
+        this.instituteLogoUrl = instituteLogoUrl;
     }
 
 }

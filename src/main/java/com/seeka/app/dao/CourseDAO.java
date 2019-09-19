@@ -19,6 +19,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Country;
@@ -27,6 +28,7 @@ import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.InstituteImages;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
@@ -41,8 +43,10 @@ import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
 import com.seeka.app.dto.CurrencyConvertorRequest;
 import com.seeka.app.dto.GlobalSearchResponseDto;
+import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.enumeration.CourseSortBy;
+import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.jobs.CurrencyUtil;
 import com.seeka.app.service.CurrencyService;
 import com.seeka.app.util.CDNServerUtil;
@@ -61,6 +65,12 @@ public class CourseDAO implements ICourseDAO {
 
     @Autowired
     private CurrencyService currencyService;
+
+    @Autowired
+    private IInstituteImagesDAO iInstituteImagesDAO;
+
+    @Value("${s3.url}")
+    private String s3URL;
 
     @Override
     public void save(final Course obj) {
@@ -102,7 +112,7 @@ public class CourseDAO implements ICourseDAO {
         String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName,inst.id as instId,inst.name as instName, crs.cost_range, "
                         + "crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
                         + "ctry.name as countryName,crs.world_ranking,crs.course_lang,crs.stars,crs.recognition, crs.domestic_fee, crs.international_fee,crs.remarks, usd_domestic_fee, usd_international_fee "
-                        + " ,inst.logo_image from course crs inner join institute inst "
+                        + " , inst.logo_image from course crs inner join institute inst "
                         + " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
                         + "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id inner join level l on l.id=crs.level_id "
                         + "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
@@ -309,8 +319,6 @@ public class CourseDAO implements ICourseDAO {
                 } else {
                     courseResponseDto.setCost(localFees + " " + newCurrencyCode);
                 }
-                courseResponseDto.setDomasticFee(Double.valueOf(String.valueOf(localFees)));
-                courseResponseDto.setInternationalFee(Double.valueOf(String.valueOf(intlFees)));
                 courseResponseDto.setCourseId(new BigInteger(String.valueOf(row[0])));
                 courseResponseDto.setCourseName(String.valueOf(row[1]));
                 courseResponseDto.setInstituteId(new BigInteger(String.valueOf(row[2])));
@@ -356,8 +364,20 @@ public class CourseDAO implements ICourseDAO {
                             courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
                         }
                     }
+                } else {
+                    if (row[19] != null) {
+                        courseResponseDto.setDomasticFee(CommonUtil.foundOff2Digit(Double.valueOf(row[19].toString())));
+                    }
+                    if (row[20] != null) {
+                        courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(Double.valueOf(row[20].toString())));
+                    }
                 }
-
+                if (null != row[21]) {
+                    courseResponseDto.setInstituteLogoUrl(s3URL + String.valueOf(row[21]));
+                }
+                if (row[5] != null) {
+                    courseResponseDto.setCurrencyCode(row[5].toString());
+                }
                 list.add(courseResponseDto);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -843,8 +863,6 @@ public class CourseDAO implements ICourseDAO {
             obj.setCourseLanguage(String.valueOf(row[13]));
             obj.setLanguageShortKey(String.valueOf(row[13]));
             obj.setStars(Integer.valueOf(String.valueOf(row[14])));
-            // obj.setDomasticFee(String.valueOf(row[16]) + " " + String.valueOf(row[5]));
-            // obj.setInternationalFee(String.valueOf(row[17]) + " " + String.valueOf(row[5]));
             obj.setDomasticFee(Double.valueOf(String.valueOf(row[16])));
             obj.setInternationalFee(Double.valueOf(String.valueOf(row[17])));
             obj.setTotalCount(Integer.parseInt(String.valueOf(row[18])));
@@ -1030,9 +1048,8 @@ public class CourseDAO implements ICourseDAO {
                 obj.setInstituteName(institute.getName());
                 obj.setCost(getCost(row[2].toString(), session));
                 if (row[3] != null) {
-                    Country country = getCountry(row[3].toString(), session);
-                    obj.setInstituteLogoUrl(getInstituteLogo(country.getName(), institute.getName()));
-                    obj.setInstituteImageUrls(getInstituteImage(country.getName(), institute.getName()));
+                    obj.setInstituteLogoUrl(s3URL + institute.getInstituteLogoUrl());
+                    obj.setInstituteImages(getInstituteImage(new BigInteger(row[2].toString())));
                 }
             }
             if (row[3] != null) {
@@ -1168,10 +1185,9 @@ public class CourseDAO implements ICourseDAO {
                 obj.setInstituteId(new BigInteger(row[2].toString()));
                 obj.setInstituteName(institute.getName());
                 obj.setCost(getCost(row[2].toString(), session));
-                if (row[3] != null) {
-                    Country country = getCountry(row[3].toString(), session);
-                    obj.setInstituteLogoUrl(getInstituteLogo(country.getName(), institute.getName()));
-                    obj.setInstituteImageUrls(getInstituteImage(country.getName(), institute.getName()));
+                if (row[2] != null && institute != null) {
+                    obj.setInstituteLogoUrl(s3URL + institute.getInstituteLogoUrl());
+                    obj.setInstituteImages(getInstituteImage(new BigInteger(row[2].toString())));
                 }
             }
             if (row[3] != null) {
@@ -1273,10 +1289,9 @@ public class CourseDAO implements ICourseDAO {
                 obj.setInstituteId(new BigInteger(row[2].toString()));
                 obj.setInstituteName(institute.getName());
                 obj.setCost(getCost(row[2].toString(), session));
-                if (row[3] != null) {
-                    Country country = getCountry(row[3].toString(), session);
-                    obj.setInstituteLogoUrl(getInstituteLogo(country.getName(), institute.getName()));
-                    obj.setInstituteImageUrls(getInstituteImage(country.getName(), institute.getName()));
+                if (row[2] != null && institute != null) {
+                    obj.setInstituteLogoUrl(s3URL + institute.getInstituteLogoUrl());
+                    obj.setInstituteImages(getInstituteImage(new BigInteger(row[2].toString())));
                 }
             }
             if (row[3] != null) {
@@ -1373,12 +1388,20 @@ public class CourseDAO implements ICourseDAO {
         return cost;
     }
 
-    private List<String> getInstituteImage(final String countryName, final String instituteName) {
-        List<String> images = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
-            images.add(CDNServerUtil.getInstituteImages(countryName, instituteName, i));
+    private List<ImageResponseDto> getInstituteImage(BigInteger instituteId) {
+        List<InstituteImages> instituteImages = iInstituteImagesDAO.getInstituteImageListBasedOnId(instituteId);
+        List<ImageResponseDto> resultList = new ArrayList<>();
+        for (InstituteImages instituteImages2 : instituteImages) {
+            ImageResponseDto imageResponseDto = new ImageResponseDto();
+            imageResponseDto.setCategoryId(instituteImages2.getInstitute().getId());
+            imageResponseDto.setId(instituteImages2.getId());
+            imageResponseDto.setImageName(instituteImages2.getImageName());
+            imageResponseDto.setBaseUrl(s3URL);
+            imageResponseDto.setCategory(ImageCategory.INSTITUTE.name());
+            imageResponseDto.setSubCategory(instituteImages2.getSubCategory());
+            resultList.add(imageResponseDto);
         }
-        return images;
+        return resultList;
     }
 
     private String getInstituteLogo(final String countryName, final String instituteName) {
@@ -1452,7 +1475,7 @@ public class CourseDAO implements ICourseDAO {
                 if (row[3] != null) {
                     Country country = getCountry(row[3].toString(), session);
                     courseRequest.setInstituteLogoUrl(getInstituteLogo(country.getName(), institute.getName()));
-                    courseRequest.setInstituteImageUrls(getInstituteImage(country.getName(), institute.getName()));
+                    courseRequest.setInstituteImages(getInstituteImage(new BigInteger(row[2].toString())));
                 }
             }
             if (row[3] != null) {
@@ -1647,41 +1670,19 @@ public class CourseDAO implements ICourseDAO {
     private CourseResponseDto getCourseData(final Object[] row, final int totalCount, final AdvanceSearchDto courseSearchDto, final boolean showIntlCost,
                     final BigInteger baseCurrencyId, final BigInteger toCurrencyId) {
         CourseResponseDto courseResponseDto = null;
-        Long cost = 0l, localFees = 0l, intlFees = 0l;
+        Long cost = 0l;
         String newCurrencyCode = "";
         Double costRange = null;
-        Double localFeesD = null;
-        Double intlFeesD = null;
         if (row[4] != null) {
             costRange = Double.valueOf(String.valueOf(row[4]));
-        }
-        if (row[16] != null) {
-            localFeesD = Double.valueOf(String.valueOf(row[16]));
-        }
-        if (row[17] != null) {
-            intlFeesD = Double.valueOf(String.valueOf(row[17]));
         }
         newCurrencyCode = String.valueOf(row[5]);
         if (costRange != null) {
             cost = ConvertionUtil.roundOffToUpper(costRange);
+            System.out.println(newCurrencyCode);
             System.out.println(cost);
         }
-        if (localFeesD != null) {
-            localFees = ConvertionUtil.roundOffToUpper(localFeesD);
-        }
-        if (intlFeesD != null) {
-            intlFees = ConvertionUtil.roundOffToUpper(intlFeesD);
-        }
         courseResponseDto = new CourseResponseDto();
-        if (showIntlCost) {
-            courseResponseDto.setCost(intlFees + " " + newCurrencyCode);
-        } else {
-            courseResponseDto.setCost(localFees + " " + newCurrencyCode);
-        }
-        courseResponseDto.setDomasticFee(Double.valueOf(String.valueOf(localFees)));
-        courseResponseDto.setInternationalFee(Double.valueOf(String.valueOf(intlFees)));
-        // courseResponseDto.setDomasticFee(localFees + " " + newCurrencyCode);
-        // courseResponseDto.setInternationalFee(intlFees + " " + newCurrencyCode);
         courseResponseDto.setCourseId(new BigInteger(String.valueOf(row[0])));
         courseResponseDto.setCourseName(String.valueOf(row[1]));
         courseResponseDto.setInstituteId(new BigInteger(String.valueOf(row[2])));
@@ -1713,9 +1714,7 @@ public class CourseDAO implements ICourseDAO {
                 dto.setAmount(Double.valueOf(row[19].toString()));
                 Double convertedRate = currencyService.convertCurrency(dto);
                 if (convertedRate != null) {
-                    // courseResponseDto.setDomasticFee(String.valueOf(convertedRate) + " " +
-                    // courseSearchDto.getCurrencyCode());
-                    courseResponseDto.setDomasticFee(convertedRate);
+                    courseResponseDto.setDomasticFee(CommonUtil.foundOff2Digit(convertedRate));
                 }
             }
             if (row[20] != null) {
@@ -1725,16 +1724,23 @@ public class CourseDAO implements ICourseDAO {
                 dto.setAmount(Double.valueOf(row[20].toString()));
                 Double convertedRate = currencyService.convertCurrency(dto);
                 if (convertedRate != null) {
-                    // courseResponseDto.setInternationalFee(String.valueOf(convertedRate) + " " +
-                    // courseSearchDto.getCurrencyCode());
-                    courseResponseDto.setInternationalFee(convertedRate);
+                    courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
                 }
             }
+        } else {
+            if (row[19] != null) {
+                courseResponseDto.setDomasticFee(CommonUtil.foundOff2Digit(Double.valueOf(row[19].toString())));
+            }
+            if (row[20] != null) {
+                courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(Double.valueOf(row[20].toString())));
+            }
         }
-        // courseResponseDto.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(courseResponseDto.getCountryName(),
-        // courseResponseDto.getInstituteName()));
-        // courseResponseDto.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(courseResponseDto.getCountryName(),
-        // courseResponseDto.getInstituteName()));
+        if (row[21] != null) {
+            courseResponseDto.setInstituteLogoUrl(row[21].toString());
+        }
+        if (row[5] != null) {
+            courseResponseDto.setCurrencyCode(row[5].toString());
+        }
         return courseResponseDto;
     }
 
@@ -1774,6 +1780,9 @@ public class CourseDAO implements ICourseDAO {
     private String addCondition(String sqlQuery, final AdvanceSearchDto courseSearchDto) {
         if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
             sqlQuery += " and crs.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+        }
+        if (null != courseSearchDto.getCityIds() && !courseSearchDto.getCityIds().isEmpty()) {
+            sqlQuery += " and crs.city_id in (" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
         }
         if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
             sqlQuery += " and f.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";

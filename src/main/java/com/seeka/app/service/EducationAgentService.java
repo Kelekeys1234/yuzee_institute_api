@@ -380,4 +380,25 @@ public class EducationAgentService implements IEducationAgentService {
         }
         return response;
     }
+
+    @Override
+    public Map<String, Object> getAllSkill() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Skill> skills = educationAgentDao.getAllSkill();
+            if (skills != null) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Skill retrieve successfully");
+                response.put("data", skills);
+            } else {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Skill not found");
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("message", exception.getCause());
+        }
+        return response;
+    }
 }

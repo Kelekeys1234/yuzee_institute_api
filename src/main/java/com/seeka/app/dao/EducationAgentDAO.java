@@ -336,4 +336,11 @@ public class EducationAgentDAO implements IEducationAgentDAO {
         List<EducationAgentAccomplishment> agentAccomplishments = crit.add(Restrictions.eq("educationAgent.id", educationAgent)).list();
         return agentAccomplishments;
     }
+
+    @Override
+    public List<Skill> getAllSkill() {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(Skill.class);
+        return crit.list();
+    }
 }
