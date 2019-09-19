@@ -13,7 +13,6 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
-import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseFilterDto;
@@ -65,7 +64,7 @@ public interface ICourseDAO {
 
     Course getCourseData(BigInteger id);
 
-    List<CourseResponseDto> advanceSearch(AdvanceSearchDto courseSearchDto);
+	List<CourseResponseDto> advanceSearch(Object... values/* AdvanceSearchDto courseSearchDto */);
 
     List<Course> getAllCourse();
 

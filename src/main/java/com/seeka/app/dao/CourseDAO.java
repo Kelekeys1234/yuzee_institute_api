@@ -42,6 +42,7 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
 import com.seeka.app.dto.CurrencyConvertorRequest;
+import com.seeka.app.dto.GlobalFilterSearchDto;
 import com.seeka.app.dto.GlobalSearchResponseDto;
 import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.InstituteResponseDto;
@@ -1603,9 +1604,15 @@ public class CourseDAO implements ICourseDAO {
     }
 
     @Override
-    public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto) {
-        Session session = sessionFactory.getCurrentSession();
-
+    public List<CourseResponseDto> advanceSearch(final Object... values) {
+    	AdvanceSearchDto courseSearchDto = (AdvanceSearchDto)values[0];
+    	GlobalFilterSearchDto globalSearchFilterDto = null;
+    	
+    	if(values.length > 1) {
+    		globalSearchFilterDto = (GlobalFilterSearchDto)values[1];
+    	}
+    	Session session = sessionFactory.getCurrentSession();
+        
         String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName, crs.cost_range, "
                         + "crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
                         + "ctry.name as countryName,crs.world_ranking,crs.language,crs.stars,crs.recognition, crs.domestic_fee, crs.international_fee,crs.remarks, usd_domestic_fee, usd_international_fee "
@@ -1621,6 +1628,10 @@ public class CourseDAO implements ICourseDAO {
                         + "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
                         + courseSearchDto.getUserId() + ") ";
 
+        if(globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
+        	sqlQuery = addConditionForCourseList(sqlQuery, globalSearchFilterDto.getIds());
+        	sizeSqlQuery =  addConditionForCourseList(sizeSqlQuery, globalSearchFilterDto.getIds());
+        }
         boolean showIntlCost = false;
         sqlQuery = addCondition(sqlQuery, courseSearchDto);
         sqlQuery += " ";
@@ -1634,7 +1645,8 @@ public class CourseDAO implements ICourseDAO {
         }
         String sizeQuery = sizeSqlQuery;
         if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
-            sqlQuery += sortingQuery + " LIMIT " + courseSearchDto.getPageNumber() + " ," + courseSearchDto.getMaxSizePerPage();
+        	PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+            sqlQuery += sortingQuery + " LIMIT " + PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage()) + " ," + courseSearchDto.getMaxSizePerPage();
         } else {
             sqlQuery += sortingQuery;
         }
@@ -2066,6 +2078,14 @@ public class CourseDAO implements ICourseDAO {
         // }
 
         return courseIds;
+    }
+    
+    
+    private String addConditionForCourseList(String sqlQuery, List<BigInteger> courseIds) {
+        if (null != courseIds) {
+            sqlQuery += " and crs.id in (" + courseIds.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+        }
+        return sqlQuery;
     }
 
 }

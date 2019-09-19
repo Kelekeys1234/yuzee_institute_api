@@ -256,4 +256,19 @@ public class AdvanceSearchDto {
         this.cityIds = cityIds;
     }
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("AdvanceSearchDto [faculties=").append(faculties).append(", levelIds=").append(levelIds)
+				.append(", serviceIds=").append(serviceIds).append(", countryIds=").append(countryIds)
+				.append(", courseKeys=").append(courseKeys).append(", cityIds=").append(cityIds).append(", minCost=")
+				.append(minCost).append(", maxCost=").append(maxCost).append(", minDuration=").append(minDuration)
+				.append(", maxDuration=").append(maxDuration).append(", sortAsscending=").append(sortAsscending)
+				.append(", sortBy=").append(sortBy).append(", maxSizePerPage=").append(maxSizePerPage)
+				.append(", pageNumber=").append(pageNumber).append(", currencyCode=").append(currencyCode)
+				.append(", userId=").append(userId).append("]");
+		return builder.toString();
+	}
+
+    
 }
