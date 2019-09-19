@@ -122,7 +122,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Enrollment.class, "enrollment");
 		crit.setProjection(Projections.rowCount());
-		return (Integer) crit.uniqueResult();
+		return ((Long) crit.uniqueResult()).intValue();
 	}
 
 }
