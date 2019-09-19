@@ -33,6 +33,7 @@ public class EducationAgentPartnerships implements Serializable {
     private Date DeletedOn;
     private Boolean isDeleted;
     private EducationAgent educationAgent;
+    private Country country;
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -127,6 +128,16 @@ public class EducationAgentPartnerships implements Serializable {
 
     public void setEducationAgent(EducationAgent educationAgent) {
         this.educationAgent = educationAgent;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "country_id")
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
 }

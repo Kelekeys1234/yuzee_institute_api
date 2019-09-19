@@ -7,6 +7,7 @@ import com.seeka.app.bean.AgentEducationDetail;
 import com.seeka.app.bean.AgentMediaDocumentation;
 import com.seeka.app.bean.AgentServiceOffered;
 import com.seeka.app.bean.EducationAgent;
+import com.seeka.app.bean.EducationAgentAccomplishment;
 import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
 import com.seeka.app.bean.Skill;
@@ -29,6 +30,8 @@ public interface IEducationAgentDAO {
     public List<AgentEducationDetail> fetchAgentEducationDetail(BigInteger educationAgent);
 
     public List<AgentMediaDocumentation> fetchAgentMediaDocumentation(BigInteger educationAgent);
+
+    public List<EducationAgentAccomplishment> fetcheducationAgentAccomplishment(BigInteger educationAgent);
 
     public void saveSkill(Skill skill);
 
@@ -61,5 +64,9 @@ public interface IEducationAgentDAO {
     public void saveEducationAgentPartnerships(EducationAgentPartnerships educationAgentPartnerships);
 
     public void deleteEducationAgentPartnerships(BigInteger educationAgent);
+
+    public void saveEducationAgentAccomplishment(EducationAgentAccomplishment educationAgentAccomplishment);
+
+    public void deleteEducationAgentAccomplishment(BigInteger educationAgent);
 
 }

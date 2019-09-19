@@ -10,6 +10,7 @@ public class EducationAgentPartnershipsDto {
     private List<BigInteger> instituteId;
     private String createdBy;
     private String UpdatedBy;
+    private BigInteger country;
 
     public BigInteger getEducationAgentId() {
         return educationAgentId;
@@ -50,7 +51,13 @@ public class EducationAgentPartnershipsDto {
     public void setUpdatedBy(String updatedBy) {
         UpdatedBy = updatedBy;
     }
-    
-    
 
+    public BigInteger getCountry() {
+        return country;
+    }
+
+    public void setCountry(BigInteger country) {
+        this.country = country;
+    }
+    
 }

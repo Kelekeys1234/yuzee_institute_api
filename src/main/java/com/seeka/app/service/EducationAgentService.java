@@ -16,6 +16,7 @@ import com.seeka.app.bean.AgentEducationDetail;
 import com.seeka.app.bean.AgentMediaDocumentation;
 import com.seeka.app.bean.AgentServiceOffered;
 import com.seeka.app.bean.EducationAgent;
+import com.seeka.app.bean.EducationAgentAccomplishment;
 import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
 import com.seeka.app.bean.Skill;
@@ -104,6 +105,9 @@ public class EducationAgentService implements IEducationAgentService {
         if (educationAgentDto.getAgentMediaDocumentations() != null && !educationAgentDto.getAgentMediaDocumentations().isEmpty()) {
             saveAgentMediaDocumentation(educationAgentDto, educationAgent);
         }
+        if (educationAgentDto.getAccomplishment() != null && !educationAgentDto.getAccomplishment().isEmpty()) {
+            saveEducationAgentAccomplishment(educationAgentDto, educationAgent);
+        }
     }
 
     public void saveSkillAndEducationAgentSkill(EducationAgentDto educationAgentDto, EducationAgent educationAgent) {
@@ -156,6 +160,16 @@ public class EducationAgentService implements IEducationAgentService {
             agentEducationDetail.setDeletedBy(educationAgentDto.getDeletedBy());
             agentEducationDetail.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
             educationAgentDao.saveAgentEducationDetail(agentEducationDetail);
+        }
+    }
+
+    public void saveEducationAgentAccomplishment(EducationAgentDto educationAgentDto, EducationAgent educationAgent) {
+        educationAgentDao.deleteEducationAgentAccomplishment(educationAgent.getId());
+        for (String accomplishment : educationAgentDto.getAccomplishment()) {
+            EducationAgentAccomplishment educationAgentAccomplishment = new EducationAgentAccomplishment();
+            educationAgentAccomplishment.setAccomplishment(accomplishment);
+            educationAgentAccomplishment.setEducationAgent(educationAgent);
+            educationAgentDao.saveEducationAgentAccomplishment(educationAgentAccomplishment);
         }
     }
 
@@ -255,6 +269,15 @@ public class EducationAgentService implements IEducationAgentService {
                     }
                     agentDto.setAgentMediaDocumentations(agentMediaDocumentationDtos);
                 }
+                List<EducationAgentAccomplishment> agentAccomplishments = educationAgentDao.fetcheducationAgentAccomplishment(id);
+                if (agentAccomplishments != null && !agentAccomplishments.isEmpty()) {
+                    List<String> accomplishmentList = new ArrayList<>();
+                    for (EducationAgentAccomplishment accomplishment : agentAccomplishments) {
+                        accomplishmentList.add(accomplishment.getAccomplishment());
+                    }
+                    agentDto.setAccomplishment(accomplishmentList);
+                }
+
                 response.put("message", "Education agent fetched successfully");
                 response.put("status", HttpStatus.OK.value());
                 response.put("data", agentDto);
@@ -327,6 +350,7 @@ public class EducationAgentService implements IEducationAgentService {
                 agentPartnership.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
                 agentPartnership.setCreatedBy(agentPartnershipsDto.getCreatedBy());
                 agentPartnership.setUpdatedBy(agentPartnershipsDto.getUpdatedBy());
+                agentPartnership.setCountry(countryDao.get(agentPartnershipsDto.getCountry()));
                 educationAgentDao.saveEducationAgentPartnerships(agentPartnership);
                 i++;
             }

@@ -1,12 +1,8 @@
 package com.seeka.app.dto;
 
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.List;
 
-import com.seeka.app.bean.AgentEducationDetail;
-import com.seeka.app.bean.AgentMediaDocumentation;
-import com.seeka.app.bean.AgentServiceOffered;
 import com.seeka.app.bean.Skill;
 
 public class EducationAgentDto {
@@ -22,6 +18,7 @@ public class EducationAgentDto {
     private String updatedBy;
     private String deletedBy;
     private List<Skill> skill;
+    private List<String> accomplishment;
     private List<AgentServiceOfferedDto> agentServiceOffereds;
     private List<AgentEducationDetailDto> agentEducationDetails;
     private List<AgentMediaDocumentationDto> agentMediaDocumentations;
@@ -112,6 +109,14 @@ public class EducationAgentDto {
 
     public void setSkill(List<Skill> skill) {
         this.skill = skill;
+    }
+
+    public List<String> getAccomplishment() {
+        return accomplishment;
+    }
+
+    public void setAccomplishment(List<String> accomplishment) {
+        this.accomplishment = accomplishment;
     }
 
     public List<AgentServiceOfferedDto> getAgentServiceOffereds() {
