@@ -208,7 +208,7 @@ public class MigrateCourseController {
                             UAE_REG_DM_HSC = "", GLOB_DIPLOMA = "", GLOB_IF = "", GLOB_FIRST_YEAR = "", GLOB_SECOND_YEAR = "", GLOB_DEGREE = "", WR_Range = "", Website = "",
                             Local_Fees = "", UNION_FEES = "", Rec_Date = "", SAT_USA = "", UK_O_LEV2 = "", UK_O_LEV3 = "", UK_O_LEV4 = "", UK_O_LEV5 = "", GLOB_O_LEV2 = "",
                             GLOB_O_LEV3 = "", GLOB_O_LEV4 = "", GLOB_O_LEV5 = "", SG_O_LEV2 = "", SG_O_LEV3 = "", SG_O_LEV4 = "", SG_O_LEV5 = "", SRI_O_LEV2 = "", SRI_O_LEV3 = "",
-                            SRI_O_LEV4 = "", SRI_O_LEV5 = "", MAL_SPM2 = "", MAL_SPM3 = "", MAL_SPM4 = "", MAL_SPM5 = "", CITY_IMG_CNT = "", UNI_IMG_CNT = "", course_lang = "",
+                            SRI_O_LEV4 = "", SRI_O_LEV5 = "", MAL_SPM2 = "", MAL_SPM3 = "", MAL_SPM4 = "", MAL_SPM5 = "", CITY_IMG_CNT = "", UNI_IMG_CNT = "", language = "",
                             availbilty = "", part_full = "", study_mode = "", Cost_of_living = "", description = "", inst_id = "", abbreviation = "";
 
             while (cellIterator.hasNext()) {
@@ -646,7 +646,7 @@ public class MigrateCourseController {
                         UNI_IMG_CNT = cellStringValue;
                     }
                     if (i == 109) {
-                        course_lang = cellStringValue;
+                        language = cellStringValue;
                     }
                     if (i == 110) {
                         availbilty = cellStringValue;
@@ -789,7 +789,7 @@ public class MigrateCourseController {
                 courseDetails.setFacultyLevelObj(facultyLevel);
             }
             course.setAbbreviation(abbreviation);
-            course.setCourseLang(course_lang);
+            course.setLanguage(language);
             course.setDescription(description);
             course.setDuration(Duration);
             course.setDurationTime(Duration_Time);

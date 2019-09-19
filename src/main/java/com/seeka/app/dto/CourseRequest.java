@@ -7,7 +7,7 @@ import com.seeka.app.bean.CourseEnglishEligibility;
 
 public class CourseRequest {
 
-	private BigInteger courseId;
+	private BigInteger id;
 	private Integer cId;
 	private BigInteger instituteId;
 	private BigInteger cityId;
@@ -29,7 +29,7 @@ public class CourseRequest {
 	private String openingHourTo;
 	private String campusLocation;
 	private String website;
-	private String courseLink;
+	private String link;
 	private String lastUpdated;
 	private String instituteName;
 	private String location;
@@ -40,7 +40,7 @@ public class CourseRequest {
 	private String durationTime;
 	private String totalCount;
 	private String requirements;
-	private String courseCurrency;
+	private String currency;
 	private String facultyName;
 	private String studyMode;
 	private String partFull;
@@ -49,19 +49,7 @@ public class CourseRequest {
 	private String availbility;
 	private List<CourseEnglishEligibility> englishEligibility;
 	private List<ImageResponseDto> instituteImages;
-	/**
-	 * @return the courseId
-	 */
-	public BigInteger getCourseId() {
-		return courseId;
-	}
-
-	/**
-	 * @param courseId the courseId to set
-	 */
-	public void setCourseId(final BigInteger courseId) {
-		this.courseId = courseId;
-	}
+	
 
 	/**
 	 * @return the cId
@@ -174,15 +162,6 @@ public class CourseRequest {
 	public void setIntake(final String intake) {
 		this.intake = intake;
 	}
-
-
-	public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
 
     /**
 	 * @return the domasticFee
@@ -349,20 +328,6 @@ public class CourseRequest {
 	}
 
 	/**
-	 * @return the courseLink
-	 */
-	public String getCourseLink() {
-		return courseLink;
-	}
-
-	/**
-	 * @param courseLink the courseLink to set
-	 */
-	public void setCourseLink(final String courseLink) {
-		this.courseLink = courseLink;
-	}
-
-	/**
 	 * @return the countryId
 	 */
 	public BigInteger getCountryId() {
@@ -503,20 +468,6 @@ public class CourseRequest {
 	}
 
     /**
-     * @return the courseCurrency
-     */
-    public String getCourseCurrency() {
-        return courseCurrency;
-    }
-
-    /**
-     * @param courseCurrency the courseCurrency to set
-     */
-    public void setCourseCurrency(String courseCurrency) {
-        this.courseCurrency = courseCurrency;
-    }
-
-    /**
      * @return the facultyName
      */
     public String getFacultyName() {
@@ -626,5 +577,62 @@ public class CourseRequest {
      */
     public void setInstituteLogoUrl(String instituteLogoUrl) {
         this.instituteLogoUrl = instituteLogoUrl;
+    }
+
+    /**
+     * @return the id
+     */
+    public BigInteger getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(BigInteger id) {
+        this.id = id;
+    }
+
+
+    /**
+     * @return the currency
+     */
+    public String getCurrency() {
+        return currency;
+    }
+
+    /**
+     * @param currency the currency to set
+     */
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    /**
+     * @return the language
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    /**
+     * @param language the language to set
+     */
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    /**
+     * @return the link
+     */
+    public String getLink() {
+        return link;
+    }
+
+    /**
+     * @param link the link to set
+     */
+    public void setLink(String link) {
+        this.link = link;
     }
 }

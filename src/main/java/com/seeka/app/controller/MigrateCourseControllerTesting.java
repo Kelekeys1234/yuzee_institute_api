@@ -71,7 +71,7 @@ public class MigrateCourseControllerTesting {
                             Local_Fees = "", UNION_FEES = "", Rec_Date = "", SAT_USA = "", UK_O_LEV2 = "", UK_O_LEV3 = "", UK_O_LEV4 = "", UK_O_LEV5 = "", GLOB_O_LEV2 = "",
                             GLOB_O_LEV3 = "", GLOB_O_LEV4 = "", GLOB_O_LEV5 = "", SG_O_LEV2 = "", SG_O_LEV3 = "", SG_O_LEV4 = "", SG_O_LEV5 = "", SRI_O_LEV2 = "", SRI_O_LEV3 = "",
                             SRI_O_LEV4 = "", SRI_O_LEV5 = "", MAL_SPM2 = "", MAL_SPM3 = "", MAL_SPM4 = "", MAL_SPM5 = "", CITY_IMG_CNT = "", stars = "", UNI_IMG_CNT = "",
-                            course_lang = "", availbilty = "", part_full = "", study_mode = "", Cost_of_living = "", description = "", inst_id = "", abbreviation = "";
+                            language = "", availbilty = "", part_full = "", study_mode = "", Cost_of_living = "", description = "", inst_id = "", abbreviation = "";
 
             while (cellIterator.hasNext()) {
 
@@ -508,7 +508,7 @@ public class MigrateCourseControllerTesting {
                         UNI_IMG_CNT = cellStringValue;
                     }
                     if (i == 109) {
-                        course_lang = cellStringValue;
+                        language = cellStringValue;
                     }
                     if (i == 110) {
                         availbilty = cellStringValue;
@@ -545,7 +545,7 @@ public class MigrateCourseControllerTesting {
             courseDetails = new CourseDetails();
 
             course.setAbbreviation(abbreviation);
-            course.setCourseLang(course_lang);
+            course.setLanguage(language);
             course.setDescription(description);
            //course.setDuration(Duration);
             course.setDurationTime(Duration_Time);

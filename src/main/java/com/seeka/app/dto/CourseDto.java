@@ -4,10 +4,10 @@ import java.math.BigInteger;
 
 public class CourseDto {
 
-    private BigInteger courseId;
+    private BigInteger id;
     private BigInteger levelId;
-    private String courseName;
-    private String courseLanguage;
+    private String name;
+    private String language;
     private String languageShortKey;
     private String cost;
     private String duration;
@@ -23,30 +23,6 @@ public class CourseDto {
     private String delivery;
     private String intakeDate;
     private String remarks;
-
-    public BigInteger getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(final BigInteger courseId) {
-        this.courseId = courseId;
-    }
-
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public void setCourseName(final String courseName) {
-        this.courseName = courseName;
-    }
-
-    public String getCourseLanguage() {
-        return courseLanguage;
-    }
-
-    public void setCourseLanguage(final String courseLanguage) {
-        this.courseLanguage = courseLanguage;
-    }
 
     public String getLanguageShortKey() {
         return languageShortKey;
@@ -194,6 +170,51 @@ public class CourseDto {
      */
     public void setInternationalFee(Double internationalFee) {
         this.internationalFee = internationalFee;
+    }
+
+    /**
+     * @return the id
+     */
+    public BigInteger getId() {
+        return id;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(BigInteger id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the language
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    /**
+     * @param language
+     *            the language to set
+     */
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
 }

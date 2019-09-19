@@ -335,14 +335,14 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
         List<Course> courseList = getRelatedCourse(courseId);
         for (Course course : courseList) {
             CourseResponseDto courseResponseDto = new CourseResponseDto();
-            courseResponseDto.setCourseId(course.getId());
+            courseResponseDto.setId(course.getId());
             courseResponseDto.setCityId(course.getCity().getId());
             courseResponseDto.setCityName(course.getCity().getName());
             courseResponseDto.setCost(String.valueOf(course.getCostRange()));
             courseResponseDto.setCountryId(course.getCountry().getId());
             courseResponseDto.setCountryName(course.getCountry().getName());
-            courseResponseDto.setCourseLanguage(course.getCourseLang());
-            courseResponseDto.setCourseName(course.getName());
+            courseResponseDto.setLanguage(course.getLanguage());
+            courseResponseDto.setName(course.getName());
             courseResponseDto.setDuration(course.getDuration());
             courseResponseDto.setDurationTime(course.getDurationTime());
             courseResponseDto.setInstituteId(course.getInstitute().getId());
@@ -353,7 +353,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
             courseResponseDto.setRequirements(course.getRemarks());
             courseResponseDto.setStars(course.getStars());
             courseResponseDto.setWorldRanking(course.getWorldRanking());
-            courseResponseDto.setLanguageShortKey(course.getCourseLang());
+            courseResponseDto.setLanguageShortKey(course.getLanguage());
             courseResponseDto.setLogoImage(course.getInstitute().getLogoImage());
             List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(courseResponseDto.getInstituteId());
             courseResponseDto.setInstituteImages(imageResponseDtos);
@@ -367,14 +367,14 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
         List<Course> courseList = getRecommendCourse(courseId, null);
         for (Course course : courseList) {
             CourseResponseDto courseResponseDto = new CourseResponseDto();
-            courseResponseDto.setCourseId(course.getId());
+            courseResponseDto.setId(course.getId());
             courseResponseDto.setCityId(course.getCity().getId());
             courseResponseDto.setCityName(course.getCity().getName());
             courseResponseDto.setCost(String.valueOf(course.getCostRange()));
             courseResponseDto.setCountryId(course.getCountry().getId());
             courseResponseDto.setCountryName(course.getCountry().getName());
-            courseResponseDto.setCourseLanguage(course.getCourseLang());
-            courseResponseDto.setCourseName(course.getName());
+            courseResponseDto.setLanguage(course.getLanguage());
+            courseResponseDto.setName(course.getName());
             courseResponseDto.setDuration(course.getDuration());
             courseResponseDto.setDurationTime(course.getDurationTime());
             courseResponseDto.setInstituteId(course.getInstitute().getId());
@@ -385,7 +385,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
             courseResponseDto.setRequirements(course.getRemarks());
             courseResponseDto.setStars(course.getStars());
             courseResponseDto.setWorldRanking(course.getWorldRanking());
-            courseResponseDto.setLanguageShortKey(course.getCourseLang());
+            courseResponseDto.setLanguageShortKey(course.getLanguage());
             courseResponseDto.setLogoImage(course.getInstitute().getLogoImage());
             List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(courseResponseDto.getInstituteId());
             courseResponseDto.setInstituteImages(imageResponseDtos);

@@ -172,7 +172,7 @@ public class CourseController {
         List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
         for (CourseResponseDto obj : courseList) {
             try {
-                Boolean isFav = favouriteMap.get(obj.getCourseId());
+                Boolean isFav = favouriteMap.get(obj.getId());
                 if (null != isFav) {
                     obj.setIsFavourite(isFav);
                 }

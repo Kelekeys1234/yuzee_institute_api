@@ -56,8 +56,8 @@ public class ArticleCourseDAO {
             List<Object[]> rows = query.list();
             for (Object[] row : rows) {
                 CourseDto bean = new CourseDto();
-                bean.setCourseId(new BigInteger((row[1].toString())));
-                bean.setCourseName((row[2].toString()));
+                bean.setId(new BigInteger((row[1].toString())));
+                bean.setName((row[2].toString()));
                 courses.add(bean);
             }
         } catch (Exception exception) {

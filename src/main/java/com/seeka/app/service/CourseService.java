@@ -176,7 +176,7 @@ public class CourseService implements ICourseService {
 			}
 			course.setFaculty(getFaculty(courseDto.getFacultyId()));
 			course.setCity(getCity(courseDto.getCityId()));
-			course.setCourseLang(courseDto.getLanguage());
+			course.setLanguage(courseDto.getLanguage());
 			course.setCountry(getCountry(courseDto.getCountryId()));
 			course.setIsActive(true);
 			course.setCreatedBy("API");
@@ -188,12 +188,12 @@ public class CourseService implements ICourseService {
 			}
 			// Course Details
 			course.setIntake(courseDto.getIntake());
-			course.setCourseLink(courseDto.getCourseLink());
+			course.setLink(courseDto.getLink());
 			course.setDomesticFee(courseDto.getDomasticFee());
 			course.setInternationalFee(courseDto.getInternationalFee());
 			course.setCampusLocation(courseDto.getCampusLocation());
-			if (courseDto.getCourseCurrency() != null) {
-				course.setCurrency(courseDto.getCourseCurrency());
+			if (courseDto.getCurrency() != null) {
+				course.setCurrency(courseDto.getCurrency());
 				List<Currency> currencies = currencyDAO.getAll();
 				Currency toCurrency = currencyDAO.getCurrencyByCode("USD");
 				BigInteger toCurrencyId = null;
@@ -201,10 +201,10 @@ public class CourseService implements ICourseService {
 					toCurrencyId = toCurrency.getId();
 				}
 
-				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCourseCurrency(), currencies);
-				BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCourseCurrency());
+				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency(), currencies);
+				BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCurrency());
 				if (currencyRate == null) {
-					currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCourseCurrency());
+					currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCurrency());
 				}
 				if (currencyRate != null) {
 					if (toCurrencyId != null) {
@@ -256,7 +256,7 @@ public class CourseService implements ICourseService {
 			course.setcId(courseDto.getcId());
 			course.setFaculty(getFaculty(courseDto.getFacultyId()));
 			course.setCity(getCity(courseDto.getCityId()));
-			course.setCourseLang(courseDto.getLanguage());
+			course.setLanguage(courseDto.getLanguage());
 			course.setCountry(getCountry(courseDto.getCountryId()));
 			course.setIsActive(true);
 			course.setCreatedBy("API");
@@ -272,12 +272,12 @@ public class CourseService implements ICourseService {
 
 			// Course Details
 			course.setIntake(courseDto.getIntake());
-			course.setCourseLink(courseDto.getCourseLink());
+			course.setLink(courseDto.getLink());
 			course.setDomesticFee(courseDto.getDomasticFee());
 			course.setInternationalFee(courseDto.getInternationalFee());
 			course.setCampusLocation(courseDto.getCampusLocation());
-			if (courseDto.getCourseCurrency() != null) {
-				course.setCurrency(courseDto.getCourseCurrency());
+			if (courseDto.getCurrency() != null) {
+				course.setCurrency(courseDto.getCurrency());
 				List<Currency> currencies = currencyDAO.getAll();
 				Currency toCurrency = currencyDAO.getCurrencyByCode("USD");
 				BigInteger toCurrencyId = null;
@@ -285,10 +285,10 @@ public class CourseService implements ICourseService {
 					toCurrencyId = toCurrency.getId();
 				}
 
-				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCourseCurrency(), currencies);
-				BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCourseCurrency());
+				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency(), currencies);
+				BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCurrency());
 				if (currencyRate == null) {
-					currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCourseCurrency());
+					currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCurrency());
 				}
 				if (currencyRate != null) {
 					if (toCurrencyId != null) {
@@ -451,7 +451,7 @@ public class CourseService implements ICourseService {
 		List<CourseRequest> courses = new ArrayList<>();
 		try {
 			String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
-					+ "cd.description, cd.intake,c.duration, c.course_lang,cd.domestic_fee,cd.international_fee,"
+					+ "cd.description, cd.intake,c.duration, c.language,cd.domestic_fee,cd.international_fee,"
 					+ "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
 					+ " cd.job_part_time, cd.job_full_time , cd.course_link,c.updated_on, c.world_ranking, c.stars, c.duration_time  FROM course c inner join course_details cd "
 					+ " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL ";
@@ -464,7 +464,7 @@ public class CourseService implements ICourseService {
 			} else if (name != null && !name.isEmpty()) {
 				sqlQuery += " and c.name  = '" + name + "'";
 			} else if (languauge != null && !languauge.isEmpty()) {
-				sqlQuery += " and c.course_lang  = '" + languauge + "'";
+				sqlQuery += " and c.language  = '" + languauge + "'";
 			}
 			sqlQuery += " ORDER BY c.created_on DESC";
 			courses = iCourseDAO.searchCoursesBasedOnFilter(sqlQuery);

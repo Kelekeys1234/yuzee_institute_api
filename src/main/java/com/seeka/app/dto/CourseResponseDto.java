@@ -5,9 +5,9 @@ import java.util.List;
 
 public class CourseResponseDto {
 
-    private BigInteger courseId;
-    private String courseName;
-    private String courseLanguage;
+    private BigInteger id;
+    private String name;
+    private String language;
     private String languageShortKey;
     private BigInteger instituteId;
     private String instituteName;
@@ -30,22 +30,6 @@ public class CourseResponseDto {
     private String logoImage;
     private List<ImageResponseDto> instituteImages;
     private String instituteLogoUrl;
-
-    public BigInteger getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(final BigInteger courseId) {
-        this.courseId = courseId;
-    }
-
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public void setCourseName(final String courseName) {
-        this.courseName = courseName;
-    }
 
     public BigInteger getInstituteId() {
         return instituteId;
@@ -125,14 +109,6 @@ public class CourseResponseDto {
 
     public void setCityId(final BigInteger cityId) {
         this.cityId = cityId;
-    }
-
-    public String getCourseLanguage() {
-        return courseLanguage;
-    }
-
-    public void setCourseLanguage(final String courseLanguage) {
-        this.courseLanguage = courseLanguage;
     }
 
     public String getLanguageShortKey() {
@@ -258,10 +234,55 @@ public class CourseResponseDto {
     }
 
     /**
-     * @param instituteLogoUrl the instituteLogoUrl to set
+     * @param instituteLogoUrl
+     *            the instituteLogoUrl to set
      */
     public void setInstituteLogoUrl(String instituteLogoUrl) {
         this.instituteLogoUrl = instituteLogoUrl;
+    }
+
+    /**
+     * @return the id
+     */
+    public BigInteger getId() {
+        return id;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(BigInteger id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the language
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    /**
+     * @param language the language to set
+     */
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
 }
