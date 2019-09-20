@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "agent_service_offered")
 public class AgentServiceOffered {
-    
+
     /**
     *
     */
@@ -25,6 +25,7 @@ public class AgentServiceOffered {
     private BigInteger id;
     private Service service;
     private Double amount;
+    private BigInteger country;
     private EducationAgent educationAgent;
     private String createdBy;
     private Date createdOn;
@@ -32,44 +33,56 @@ public class AgentServiceOffered {
     private Date updatedOn;
     private String deletedBy;
     private Date deletedOn;
-    
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     public BigInteger getId() {
         return id;
     }
+
     public void setId(BigInteger id) {
         this.id = id;
     }
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "service")
     public Service getService() {
         return service;
     }
-    
+
     public void setService(Service service) {
         this.service = service;
     }
-    
+
     @Column(name = "amount")
     public Double getAmount() {
         return amount;
     }
+
     public void setAmount(Double amount) {
         this.amount = amount;
     }
-    
+
+    @Column(name = "country_id")
+    public BigInteger getCountry() {
+        return country;
+    }
+
+    public void setCountry(BigInteger country) {
+        this.country = country;
+    }
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "education_agent")
     public EducationAgent getEducationAgent() {
         return educationAgent;
     }
+
     public void setEducationAgent(EducationAgent educationAgent) {
         this.educationAgent = educationAgent;
     }
-    
+
     @Column(name = "created_by")
     public String getCreatedBy() {
         return createdBy;
@@ -123,6 +136,5 @@ public class AgentServiceOffered {
     public void setDeletedOn(Date deletedOn) {
         this.deletedOn = deletedOn;
     }
-    
 
 }

@@ -140,6 +140,7 @@ public class EducationAgentService implements IEducationAgentService {
             agentServiceOffered.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
             agentServiceOffered.setDeletedBy(educationAgentDto.getDeletedBy());
             agentServiceOffered.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
+            agentServiceOffered.setCountry(educationAgentDto.getCountry());
             educationAgentDao.saveAgentServiceOffered(agentServiceOffered);
         }
     }
@@ -308,6 +309,7 @@ public class EducationAgentService implements IEducationAgentService {
         AgentServiceOfferedDto agentServiceOfferedDto = new AgentServiceOfferedDto();
         agentServiceOfferedDto.setAmount(offered.getAmount());
         agentServiceOfferedDto.setService(offered.getService());
+        agentServiceOfferedDto.setCountry(offered.getCountry());
         return agentServiceOfferedDto;
     }
 
