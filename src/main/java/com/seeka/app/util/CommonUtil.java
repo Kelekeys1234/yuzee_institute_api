@@ -90,7 +90,7 @@ public class CommonUtil {
         instituteRequestDto.setCityId(institute.getCity().getId());
         instituteRequestDto.setCountryId(institute.getCountry().getId());
         instituteRequestDto.setDescription(institute.getDescription());
-        instituteRequestDto.setInstituteLogoUrl(institute.getInstituteLogoUrl());
+        instituteRequestDto.setInstituteLogoUrl(institute.getLogoUrl());
         instituteRequestDto.setInstituteId(institute.getId());
         if (institute.getInstituteType() != null) {
             instituteRequestDto.setInstituteTypeId(institute.getInstituteType().getId());
@@ -231,7 +231,7 @@ public class CommonUtil {
         courseRequest.setStudyMode(course.getStudyMode());
         courseRequest.setAvailbility(course.getAvailbilty());
         if(course.getInstitute()!=null) {
-            courseRequest.setInstituteLogoUrl(course.getInstitute().getInstituteLogoUrl());
+            courseRequest.setInstituteLogoUrl(course.getInstitute().getLogoUrl());
         }
         return courseRequest;
     }

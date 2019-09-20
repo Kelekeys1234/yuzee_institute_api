@@ -46,8 +46,8 @@ public class Institute implements Serializable {
 	private String updatedBy;
 	private Boolean isDeleted;
 
-	private String instituteLogoUrl;
-	private String instituteImageUrl;
+	private String logoUrl;
+	private String imageUrl;
 	private InstituteDetails instituteDetailsObj;
 	private List<InstituteService> serviceList;
 	private String description;
@@ -221,35 +221,35 @@ public class Institute implements Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-	/**
-	 * @return the instituteLogoUrl
-	 */
-	@Transient
-	public String getInstituteLogoUrl() {
-		return instituteLogoUrl;
-	}
+	   /**
+     * @return the logoUrl
+     */
+    @Transient
+    public String getLogoUrl() {
+        return logoUrl;
+    }
 
-	/**
-	 * @param instituteLogoUrl the instituteLogoUrl to set
-	 */
-	public void setInstituteLogoUrl(final String instituteLogoUrl) {
-		this.instituteLogoUrl = instituteLogoUrl;
-	}
+    /**
+     * @param logoUrl the logoUrl to set
+     */
+    public void setLogoUrl(final String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
 
-	/**
-	 * @return the instituteImageUrl
-	 */
-	@Transient
-	public String getInstituteImageUrl() {
-		return instituteImageUrl;
-	}
+    /**
+     * @return the imageUrl
+     */
+    @Transient
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
-	/**
-	 * @param instituteImageUrl the instituteImageUrl to set
-	 */
-	public void setInstituteImageUrl(final String instituteImageUrl) {
-		this.instituteImageUrl = instituteImageUrl;
-	}
+    /**
+     * @param imageUrl the imageUrl to set
+     */
+    public void setImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
 	/**
 	 * @return the instituteDetailsObj
@@ -312,8 +312,8 @@ public class Institute implements Serializable {
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (instituteCategoryType == null ? 0 : instituteCategoryType.hashCode());
 		result = prime * result + (instituteDetailsObj == null ? 0 : instituteDetailsObj.hashCode());
-		result = prime * result + (instituteImageUrl == null ? 0 : instituteImageUrl.hashCode());
-		result = prime * result + (instituteLogoUrl == null ? 0 : instituteLogoUrl.hashCode());
+		result = prime * result + (imageUrl == null ? 0 : imageUrl.hashCode());
+		result = prime * result + (logoUrl == null ? 0 : logoUrl.hashCode());
 		result = prime * result + (instituteType == null ? 0 : instituteType.hashCode());
 		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
 		result = prime * result + (isDeleted == null ? 0 : isDeleted.hashCode());
@@ -475,18 +475,18 @@ public class Institute implements Serializable {
 		} else if (!instituteDetailsObj.equals(other.instituteDetailsObj)) {
 			return false;
 		}
-		if (instituteImageUrl == null) {
-			if (other.instituteImageUrl != null) {
+		if (imageUrl == null) {
+			if (other.imageUrl != null) {
 				return false;
 			}
-		} else if (!instituteImageUrl.equals(other.instituteImageUrl)) {
+		} else if (!imageUrl.equals(other.imageUrl)) {
 			return false;
 		}
-		if (instituteLogoUrl == null) {
-			if (other.instituteLogoUrl != null) {
+		if (logoUrl == null) {
+			if (other.logoUrl != null) {
 				return false;
 			}
-		} else if (!instituteLogoUrl.equals(other.instituteLogoUrl)) {
+		} else if (!logoUrl.equals(other.logoUrl)) {
 			return false;
 		}
 		if (instituteType == null) {
@@ -638,8 +638,8 @@ public class Institute implements Serializable {
 		builder.append("Institute [id=").append(id).append(", city=").append(city).append(", country=").append(country).append(", instituteType=")
 				.append(instituteType).append(", name=").append(name).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
 				.append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
-				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", instituteLogoUrl=").append(instituteLogoUrl)
-				.append(", instituteImageUrl=").append(instituteImageUrl).append(", instituteDetailsObj=").append(instituteDetailsObj).append(", serviceList=")
+				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", logoUrl=").append(logoUrl)
+				.append(", imageUrl=").append(imageUrl).append(", instituteDetailsObj=").append(instituteDetailsObj).append(", serviceList=")
 				.append(serviceList).append(", description=").append(description).append(", worldRanking=").append(worldRanking).append(", accreditation=")
 				.append(accreditation).append(", website=").append(website).append(", address=").append(address).append(", totalStudent=").append(totalStudent)
 				.append(", latitute=").append(latitute).append(", longitude=").append(longitude).append(", email=").append(email).append(", avgCostOfLiving=")

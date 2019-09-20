@@ -59,8 +59,8 @@ public class SearchPageController {
 		List<InstituteResponseDto> recommendedInstList = instituteService.getAllInstitutesByFilter(courseSearchDto);
 
 		for (InstituteResponseDto obj : recommendedInstList) {
-			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(obj.getInstituteId());
-			obj.setInstituteImages(imageResponseDtos);
+			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(obj.getId());
+			obj.setImages(imageResponseDtos);
 		}
 		List<CountryDto> countryList = CountryLevelFacultyUtil.getCountryList();
 		List<Level> levelList = CountryLevelFacultyUtil.getLevelList();

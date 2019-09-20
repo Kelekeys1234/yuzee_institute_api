@@ -10,10 +10,8 @@ public class InstituteResponseDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 4673759147405801959L;
-	private BigInteger instituteId;
-	private String instituteName;
-//    private String instituteLogoUrl;
-//    private String instituteImageUrl;
+	private BigInteger id;
+	private String name;
 	private String worldRanking;
 	private String stars;
 	private String location;
@@ -36,39 +34,7 @@ public class InstituteResponseDto implements Serializable {
 	private String countryName;
 	private String cityName;
 	private String logoImage;
-	private List<ImageResponseDto> instituteImages;
-
-	public BigInteger getInstituteId() {
-		return instituteId;
-	}
-
-	public void setInstituteId(final BigInteger instituteId) {
-		this.instituteId = instituteId;
-	}
-
-	public String getInstituteName() {
-		return instituteName;
-	}
-
-	public void setInstituteName(final String instituteName) {
-		this.instituteName = instituteName;
-	}
-
-//    public String getInstituteLogoUrl() {
-//        return instituteLogoUrl;
-//    }
-//
-//    public void setInstituteLogoUrl(String instituteLogoUrl) {
-//        this.instituteLogoUrl = instituteLogoUrl;
-//    }
-//
-//    public String getInstituteImageUrl() {
-//        return instituteImageUrl;
-//    }
-//
-//    public void setInstituteImageUrl(String instituteImageUrl) {
-//        this.instituteImageUrl = instituteImageUrl;
-//    }
+	private List<ImageResponseDto> images;
 
 	public String getWorldRanking() {
 		return worldRanking;
@@ -252,12 +218,46 @@ public class InstituteResponseDto implements Serializable {
 		this.logoImage = logoImage;
 	}
 
-	public List<ImageResponseDto> getInstituteImages() {
-		return instituteImages;
-	}
+    /**
+     * @return the id
+     */
+    public BigInteger getId() {
+        return id;
+    }
 
-	public void setInstituteImages(final List<ImageResponseDto> instituteImages) {
-		this.instituteImages = instituteImages;
-	}
+    /**
+     * @param id the id to set
+     */
+    public void setId(BigInteger id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the images
+     */
+    public List<ImageResponseDto> getImages() {
+        return images;
+    }
+
+    /**
+     * @param images the images to set
+     */
+    public void setImages(List<ImageResponseDto> images) {
+        this.images = images;
+    }
 
 }

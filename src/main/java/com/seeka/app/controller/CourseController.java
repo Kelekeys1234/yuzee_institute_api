@@ -334,8 +334,8 @@ public class CourseController {
             response.put("error", errorDto);
             return ResponseEntity.badRequest().body(response);
         }
-        List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(instituteResponseDto.getInstituteId());
-        instituteResponseDto.setInstituteImages(imageResponseDtos);
+        List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(instituteResponseDto.getId());
+        instituteResponseDto.setImages(imageResponseDtos);
 
         List<CourseResponseDto> courseList = courseService.getAllCoursesByInstitute(instituteId, request);
 

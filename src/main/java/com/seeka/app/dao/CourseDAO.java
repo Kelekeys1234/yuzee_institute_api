@@ -29,6 +29,7 @@ import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteImages;
+import com.seeka.app.bean.Level;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
@@ -69,6 +70,13 @@ public class CourseDAO implements ICourseDAO {
 
     @Autowired
     private IInstituteImagesDAO iInstituteImagesDAO;
+    
+    @Autowired
+    private LevelDAO levelDAO;
+    
+    @Autowired
+    private IFacultyDAO dao;
+
 
     @Value("${s3.url}")
     private String s3URL;
@@ -919,10 +927,10 @@ public class CourseDAO implements ICourseDAO {
 
             instituteObj = new InstituteResponseDto();
             if (row[8] != null) {
-                instituteObj.setInstituteId(new BigInteger(String.valueOf(row[8])));
+                instituteObj.setId(new BigInteger(String.valueOf(row[8])));
             }
             instituteObj.setStars(String.valueOf(row[1]));
-            instituteObj.setInstituteName(String.valueOf(row[9]));
+            instituteObj.setName(String.valueOf(row[9]));
             instituteObj.setWorldRanking(String.valueOf(row[7]));
             instituteObj.setInterEmail(String.valueOf(row[10]));
             instituteObj.setInterPhoneNumber(String.valueOf(row[11]));
@@ -1049,7 +1057,7 @@ public class CourseDAO implements ICourseDAO {
                 obj.setInstituteName(institute.getName());
                 obj.setCost(getCost(row[2].toString(), session));
                 if (row[3] != null) {
-                    obj.setInstituteLogoUrl(s3URL + institute.getInstituteLogoUrl());
+                    obj.setInstituteLogoUrl(s3URL + institute.getLogoUrl());
                     obj.setInstituteImages(getInstituteImage(new BigInteger(row[2].toString())));
                 }
             }
@@ -1187,7 +1195,7 @@ public class CourseDAO implements ICourseDAO {
                 obj.setInstituteName(institute.getName());
                 obj.setCost(getCost(row[2].toString(), session));
                 if (row[2] != null && institute != null) {
-                    obj.setInstituteLogoUrl(s3URL + institute.getInstituteLogoUrl());
+                    obj.setInstituteLogoUrl(s3URL + institute.getLogoUrl());
                     obj.setInstituteImages(getInstituteImage(new BigInteger(row[2].toString())));
                 }
             }
@@ -1291,7 +1299,7 @@ public class CourseDAO implements ICourseDAO {
                 obj.setInstituteName(institute.getName());
                 obj.setCost(getCost(row[2].toString(), session));
                 if (row[2] != null && institute != null) {
-                    obj.setInstituteLogoUrl(s3URL + institute.getInstituteLogoUrl());
+                    obj.setInstituteLogoUrl(s3URL + institute.getLogoUrl());
                     obj.setInstituteImages(getInstituteImage(new BigInteger(row[2].toString())));
                 }
             }
@@ -1976,6 +1984,12 @@ public class CourseDAO implements ICourseDAO {
             if (row[1] != null) {
                 countryDto.setName(row[1].toString());
             }
+            List<Level> levels = levelDAO.getCountryLevel(countryDto.getId());
+            for (Level level : levels) {
+                List<Faculty> facultyList = dao.getCourseFaculty(countryDto.getId(), level.getId());
+                level.setFacultyList(facultyList);
+            }
+            countryDto.setLevelList(levels);
             countryDtos.add(countryDto);
         }
         return countryDtos;

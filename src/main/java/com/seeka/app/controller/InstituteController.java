@@ -346,8 +346,8 @@ public class InstituteController {
 
 		List<InstituteResponseDto> instituteList = instituteService.getAllInstitutesByFilter(request);
 		for (InstituteResponseDto instituteResponseDto : instituteList) {
-			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(instituteResponseDto.getInstituteId());
-			instituteResponseDto.setInstituteImages(imageResponseDtos);
+			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(instituteResponseDto.getId());
+			instituteResponseDto.setImages(imageResponseDtos);
 		}
 
 		Integer maxCount = 0, totalCount = 0;
@@ -403,8 +403,8 @@ public class InstituteController {
 
 		List<InstituteResponseDto> instituteResponseDtoList = instituteService.getAllInstitutesByFilter(request);
 		for (InstituteResponseDto instituteResponseDto : instituteResponseDtoList) {
-			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(instituteResponseDto.getInstituteId());
-			instituteResponseDto.setInstituteImages(imageResponseDtos);
+			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(instituteResponseDto.getId());
+			instituteResponseDto.setImages(imageResponseDtos);
 		}
 		Integer maxCount = 0, totalCount = 0;
 		if (null != instituteResponseDtoList && !instituteResponseDtoList.isEmpty()) {

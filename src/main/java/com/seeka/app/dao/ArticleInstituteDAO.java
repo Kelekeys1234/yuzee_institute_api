@@ -55,8 +55,8 @@ public class ArticleInstituteDAO {
             List<Object[]> rows = query.list();
             for (Object[] row : rows) {
                 InstituteResponseDto bean = new InstituteResponseDto();
-                bean.setInstituteName(row[2].toString());
-                bean.setInstituteId(new BigInteger((row[1].toString())));
+                bean.setName(row[2].toString());
+                bean.setId(new BigInteger((row[1].toString())));
                 institute.add(bean);
             }
         } catch (Exception exception) {

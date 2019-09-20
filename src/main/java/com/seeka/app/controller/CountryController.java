@@ -77,7 +77,7 @@ public class CountryController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/country/cities", method = RequestMethod.GET)
+    @RequestMapping(value = "/cities", method = RequestMethod.GET)
     public ResponseEntity<?> getWithCities() {
         Map<String, Object> response = new HashMap<String, Object>();
         List<CountryDto> countryList = null;
@@ -119,7 +119,7 @@ public class CountryController {
         return ResponseEntity.accepted().body(response);
     }
 
-    @RequestMapping(value = "/country/institute", method = RequestMethod.GET)
+    @RequestMapping(value = "/institute", method = RequestMethod.GET)
     public ResponseEntity<?> getAllUniversityCountries() {
         Map<String, Object> response = new HashMap<String, Object>();
         List<CountryDto> countryList = null;

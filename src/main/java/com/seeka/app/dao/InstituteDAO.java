@@ -174,8 +174,8 @@ public class InstituteDAO implements IInstituteDAO {
 		InstituteResponseDto instituteResponseDto = null;
 		for (Object[] row : rows) {
 			instituteResponseDto = new InstituteResponseDto();
-			instituteResponseDto.setInstituteId(new BigInteger(String.valueOf(row[0])));
-			instituteResponseDto.setInstituteName(String.valueOf(row[1]));
+			instituteResponseDto.setId(new BigInteger(String.valueOf(row[0])));
+			instituteResponseDto.setName(String.valueOf(row[1]));
 			instituteResponseDto.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
 			instituteResponseDto.setCityName(String.valueOf(row[2]));
 			instituteResponseDto.setCountryName(String.valueOf(row[3]));
@@ -209,8 +209,8 @@ public class InstituteDAO implements IInstituteDAO {
 		InstituteResponseDto obj = null;
 		for (Object[] row : rows) {
 			obj = new InstituteResponseDto();
-			obj.setInstituteId(new BigInteger(String.valueOf(row[0])));
-			obj.setInstituteName(String.valueOf(row[1]));
+			obj.setId(new BigInteger(String.valueOf(row[0])));
+			obj.setName(String.valueOf(row[1]));
 			obj.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
 			obj.setWorldRanking(String.valueOf(row[4]));
 			obj.setStars(String.valueOf(row[5]));
@@ -234,8 +234,8 @@ public class InstituteDAO implements IInstituteDAO {
 		InstituteResponseDto instituteResponseDto = null;
 		for (Object[] row : rows) {
 			instituteResponseDto = new InstituteResponseDto();
-			instituteResponseDto.setInstituteId(new BigInteger(String.valueOf(row[0])));
-			instituteResponseDto.setInstituteName(String.valueOf(row[1]));
+			instituteResponseDto.setId(new BigInteger(String.valueOf(row[0])));
+			instituteResponseDto.setName(String.valueOf(row[1]));
 			instituteResponseDtos.add(instituteResponseDto);
 		}
 		return instituteResponseDtos;
@@ -256,13 +256,13 @@ public class InstituteDAO implements IInstituteDAO {
 		InstituteResponseDto instituteResponseDto = null;
 		for (Object[] row : rows) {
 			instituteResponseDto = new InstituteResponseDto();
-			instituteResponseDto.setInstituteId(new BigInteger(String.valueOf(row[0])));
-			instituteResponseDto.setInstituteName(String.valueOf(row[1]));
+			instituteResponseDto.setId(new BigInteger(String.valueOf(row[0])));
+			instituteResponseDto.setName(String.valueOf(row[1]));
 			instituteResponseDtos.add(instituteResponseDto);
 		}
 		InstituteResponseDto instituteResponseDto1 = new InstituteResponseDto();
-		instituteResponseDto1.setInstituteId(new BigInteger("111111"));
-		instituteResponseDto1.setInstituteName("All");
+		instituteResponseDto1.setId(new BigInteger("111111"));
+		instituteResponseDto1.setName("All");
 		instituteResponseDtos.add(instituteResponseDto1);
 		return instituteResponseDtos;
 	}
