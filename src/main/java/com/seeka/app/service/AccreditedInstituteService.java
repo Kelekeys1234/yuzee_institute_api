@@ -25,7 +25,7 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 	private IAccreditedInstituteDao iAccreditedInstituteDao;
 
 	@Autowired
-	private IMediaService iImageService;
+	private IMediaService iMediaService;
 
 	@Value("${s3.url}")
 	private String s3URL;
@@ -73,7 +73,7 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 
 	@Override
 	public void addAccreditedLogo(final MultipartFile file, final AccreditedInstitute accreditedInstitute) {
-		String logoName = iImageService.uploadImage(file, accreditedInstitute.getId(), "ACCREDITED_INSTITUTE", null);
+		String logoName = iMediaService.uploadImage(file, accreditedInstitute.getId(), "ACCREDITED_INSTITUTE", null);
 		accreditedInstitute.setLogoImage(logoName);
 		iAccreditedInstituteDao.update(accreditedInstitute);
 	}
