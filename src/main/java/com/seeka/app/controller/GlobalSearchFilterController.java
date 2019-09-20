@@ -29,6 +29,9 @@ public class GlobalSearchFilterController {
 	@PostMapping(value = "/filter")
 	public ResponseEntity<?> filterEntityBasedOnParameters(@RequestBody GlobalFilterSearchDto globalFilterSearchDto) throws ValidationException{
 		Map<String,Object> responseEntityMap = globalSearchFilterService.filterByEntity(globalFilterSearchDto);
+		if(globalFilterSearchDto == null || globalFilterSearchDto.getIds() == null || globalFilterSearchDto.getIds().isEmpty()) {
+			throw new ValidationException("No Courses specified to Filter");
+		}
 		List<?> responseList = (List<?>)responseEntityMap.get("entity");
 		Integer count = (Integer)responseEntityMap.get("count");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(PaginationUtil.getStartIndex(globalFilterSearchDto.getPageNumber(), globalFilterSearchDto.getMaxSizePerPage()), globalFilterSearchDto.getMaxSizePerPage(), count.intValue());
