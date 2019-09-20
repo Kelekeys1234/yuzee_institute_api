@@ -90,24 +90,24 @@ public class CommonUtil {
         instituteRequestDto.setCityId(institute.getCity().getId());
         instituteRequestDto.setCountryId(institute.getCountry().getId());
         instituteRequestDto.setDescription(institute.getDescription());
-        instituteRequestDto.setInstituteLogoUrl(institute.getLogoUrl());
-        instituteRequestDto.setInstituteId(institute.getId());
+        instituteRequestDto.setLogoUrl(institute.getLogoUrl());
+        instituteRequestDto.setId(institute.getId());
         if (institute.getInstituteType() != null) {
-            instituteRequestDto.setInstituteTypeId(institute.getInstituteType().getId());
+            instituteRequestDto.setTypeId(institute.getInstituteType().getId());
         }
         if (institute.getLatitute() != null) {
-            instituteRequestDto.setLatitute(institute.getLatitute());
+            instituteRequestDto.setLatitude(institute.getLatitute());
         }
         if (institute.getLongitude() != null) {
             instituteRequestDto.setLongitude(institute.getLongitude());
         }
         instituteRequestDto.setAddress(institute.getAddress());
         instituteRequestDto.setPhoneNumber(institute.getPhoneNumber());
-        instituteRequestDto.setOpeningHour(institute.getOpeningFrom());
-        instituteRequestDto.setClosingHour(institute.getOpeningTo());
+        instituteRequestDto.setOpeningFrom(institute.getOpeningFrom());
+        instituteRequestDto.setOpeningTo(institute.getOpeningTo());
         instituteRequestDto.setTotalStudent(institute.getTotalStudent());
         instituteRequestDto.setWorldRanking(institute.getWorldRanking());
-        instituteRequestDto.setInstituteName(institute.getName());
+        instituteRequestDto.setName(institute.getName());
         instituteRequestDto.setCampusType(institute.getCampusType());
         instituteRequestDto.setCampusName(institute.getCampusName());
         instituteRequestDto.setEmail(institute.getEmail());

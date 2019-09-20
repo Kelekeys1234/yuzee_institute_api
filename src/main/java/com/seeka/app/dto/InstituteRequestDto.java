@@ -5,30 +5,30 @@ import java.util.List;
 
 public class InstituteRequestDto {
 
-    private BigInteger instituteId;
-    private String instituteName;
+    private BigInteger id;
+    private String name;
     private String description;
     private BigInteger cityId;
     private BigInteger countryId;
     private Integer worldRanking;
-    private String instituteLogoUrl;
+    private String logoUrl;
     private String averageCostFrom;
     private String averageCostTo;
-    private BigInteger instituteTypeId;
+    private BigInteger TypeId;
     private String enrolment;
     private String tuitionFessPaymentPlan;
     private String scholarshipFinancingAssistance;
     private String website;
-    private List<InstituteMedia> instituteMedias;
-    private BigInteger instituteCategoryTypeId;
+    private List<InstituteMedia> medias;
+    private BigInteger categoryTypeId;
     private String campusType;
 
     private String campusName;
     private Double latitude;
     private Double longitude;
     private Integer totalStudent;
-    private String openingHour;
-    private String closingHour;
+    private String openingFrom;
+    private String openingTo;
     private String email;
     private String phoneNumber;
     private String address;
@@ -40,33 +40,33 @@ public class InstituteRequestDto {
     private String worldRankingType;
 
     /**
-     * @return the instituteId
+     * @return the id
      */
-    public BigInteger getInstituteId() {
-        return instituteId;
+    public BigInteger getId() {
+        return id;
     }
 
     /**
-     * @param instituteId
-     *            the instituteId to set
+     * @param id
+     *            the id to set
      */
-    public void setInstituteId(BigInteger instituteId) {
-        this.instituteId = instituteId;
+    public void setId(BigInteger id) {
+        this.id = id;
     }
 
     /**
-     * @return the instituteName
+     * @return the name
      */
-    public String getInstituteName() {
-        return instituteName;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @param instituteName
-     *            the instituteName to set
+     * @param name
+     *            the name to set
      */
-    public void setInstituteName(String instituteName) {
-        this.instituteName = instituteName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -130,18 +130,18 @@ public class InstituteRequestDto {
     }
 
     /**
-     * @return the instituteLogoUrl
+     * @return the logoUrl
      */
-    public String getInstituteLogoUrl() {
-        return instituteLogoUrl;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
     /**
-     * @param instituteLogoUrl
-     *            the instituteLogoUrl to set
+     * @param logoUrl
+     *            the logoUrl to set
      */
-    public void setInstituteLogoUrl(String instituteLogoUrl) {
-        this.instituteLogoUrl = instituteLogoUrl;
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
     /**
@@ -175,18 +175,18 @@ public class InstituteRequestDto {
     }
 
     /**
-     * @return the instituteTypeId
+     * @return the typeId
      */
-    public BigInteger getInstituteTypeId() {
-        return instituteTypeId;
+    public BigInteger getTypeId() {
+        return TypeId;
     }
 
     /**
-     * @param instituteTypeId
-     *            the instituteTypeId to set
+     * @param typeId
+     *            the typeId to set
      */
-    public void setInstituteTypeId(BigInteger instituteTypeId) {
-        this.instituteTypeId = instituteTypeId;
+    public void setTypeId(BigInteger typeId) {
+        TypeId = typeId;
     }
 
     /**
@@ -250,33 +250,33 @@ public class InstituteRequestDto {
     }
 
     /**
-     * @return the instituteMedias
+     * @return the medias
      */
-    public List<InstituteMedia> getInstituteMedias() {
-        return instituteMedias;
+    public List<InstituteMedia> getMedias() {
+        return medias;
     }
 
     /**
-     * @param instituteMedias
-     *            the instituteMedias to set
+     * @param medias
+     *            the medias to set
      */
-    public void setInstituteMedias(List<InstituteMedia> instituteMedias) {
-        this.instituteMedias = instituteMedias;
+    public void setMedias(List<InstituteMedia> medias) {
+        this.medias = medias;
     }
 
     /**
-     * @return the instituteCategoryTypeId
+     * @return the categoryTypeId
      */
-    public BigInteger getInstituteCategoryTypeId() {
-        return instituteCategoryTypeId;
+    public BigInteger getCategoryTypeId() {
+        return categoryTypeId;
     }
 
     /**
-     * @param instituteCategoryTypeId
-     *            the instituteCategoryTypeId to set
+     * @param categoryTypeId
+     *            the categoryTypeId to set
      */
-    public void setInstituteCategoryTypeId(BigInteger instituteCategoryTypeId) {
-        this.instituteCategoryTypeId = instituteCategoryTypeId;
+    public void setCategoryTypeId(BigInteger categoryTypeId) {
+        this.categoryTypeId = categoryTypeId;
     }
 
     /**
@@ -310,17 +310,17 @@ public class InstituteRequestDto {
     }
 
     /**
-     * @return the latitute
+     * @return the latitude
      */
     public Double getLatitude() {
         return latitude;
     }
 
     /**
-     * @param latitute
-     *            the latitute to set
+     * @param latitude
+     *            the latitude to set
      */
-    public void setLatitute(Double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
@@ -355,33 +355,33 @@ public class InstituteRequestDto {
     }
 
     /**
-     * @return the openingHour
+     * @return the openingFrom
      */
-    public String getOpeningHour() {
-        return openingHour;
+    public String getOpeningFrom() {
+        return openingFrom;
     }
 
     /**
-     * @param openingHour
-     *            the openingHour to set
+     * @param openingFrom
+     *            the openingFrom to set
      */
-    public void setOpeningHour(String openingHour) {
-        this.openingHour = openingHour;
+    public void setOpeningFrom(String openingFrom) {
+        this.openingFrom = openingFrom;
     }
 
     /**
-     * @return the closingHour
+     * @return the openingTo
      */
-    public String getClosingHour() {
-        return closingHour;
+    public String getOpeningTo() {
+        return openingTo;
     }
 
     /**
-     * @param closingHour
-     *            the closingHour to set
+     * @param openingTo
+     *            the openingTo to set
      */
-    public void setClosingHour(String closingHour) {
-        this.closingHour = closingHour;
+    public void setOpeningTo(String openingTo) {
+        this.openingTo = openingTo;
     }
 
     /**
@@ -512,16 +512,11 @@ public class InstituteRequestDto {
     }
 
     /**
-     * @param worldRankingType the worldRankingType to set
+     * @param worldRankingType
+     *            the worldRankingType to set
      */
     public void setWorldRankingType(String worldRankingType) {
         this.worldRankingType = worldRankingType;
     }
 
-    /**
-     * @param latitude the latitude to set
-     */
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
 }

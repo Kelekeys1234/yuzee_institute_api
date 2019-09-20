@@ -932,19 +932,19 @@ public class CourseDAO implements ICourseDAO {
             instituteObj.setStars(String.valueOf(row[1]));
             instituteObj.setName(String.valueOf(row[9]));
             instituteObj.setWorldRanking(String.valueOf(row[7]));
-            instituteObj.setInterEmail(String.valueOf(row[10]));
-            instituteObj.setInterPhoneNumber(String.valueOf(row[11]));
+            instituteObj.setEmail(String.valueOf(row[10]));
+            instituteObj.setPhoneNumber(String.valueOf(row[11]));
             instituteObj.setLongitude(String.valueOf(row[12]));
             instituteObj.setLatitute(String.valueOf(row[13]));
             if (row[14] != null) {
-                instituteObj.setTotalNoOfStudents(Integer.parseInt(String.valueOf(row[14])));
+                instituteObj.setTotalStudent(Integer.parseInt(String.valueOf(row[14])));
             }
             instituteObj.setWebsite(String.valueOf(row[15]));
             instituteObj.setAddress(String.valueOf(row[16]));
             instituteObj.setVisaRequirement(String.valueOf(row[32]));
             instituteObj.setAboutUs(String.valueOf(row[28]));
-            instituteObj.setClosingHour(String.valueOf(row[29]));
-            instituteObj.setOpeningHour(String.valueOf(row[30]));
+            instituteObj.setOpeningFrom(String.valueOf(row[29]));
+            instituteObj.setOpeningTo(String.valueOf(row[30]));
             instituteObj.setLocation(String.valueOf(row[21]) + "," + String.valueOf(row[22]));
             instituteObj.setCountryName(String.valueOf(row[22]));
             instituteObj.setCityName(String.valueOf(row[21]));

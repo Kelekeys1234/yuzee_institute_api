@@ -143,8 +143,8 @@ public class InstituteService implements IInstituteService {
 		try {
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				Institute institute = saveInstitute(instituteRequest, null);
-				if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
-					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
+				if (instituteRequest.getMedias() != null && !instituteRequest.getMedias().isEmpty()) {
+					saveInstituteYoutubeVideos(instituteRequest.getMedias(), institute);
 				}
 			}
 			response.put("message", "Institute saved successfully");
@@ -162,8 +162,8 @@ public class InstituteService implements IInstituteService {
 		try {
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				Institute institute = saveInstitute(instituteRequest, id);
-				if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
-					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
+				if (instituteRequest.getMedias() != null && !instituteRequest.getMedias().isEmpty()) {
+					saveInstituteYoutubeVideos(instituteRequest.getMedias(), institute);
 				}
 			}
 			response.put("message", "Institute update successfully");
@@ -195,7 +195,7 @@ public class InstituteService implements IInstituteService {
 	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final BigInteger id) {
 		Institute institute = null;
 		if (id != null) {
-			institute = dao.get(instituteRequest.getInstituteId());
+			institute = dao.get(instituteRequest.getId());
 		} else {
 			institute = new Institute();
 			institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -203,15 +203,15 @@ public class InstituteService implements IInstituteService {
 		}
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setUpdatedBy(instituteRequest.getUpdatedBy());
-		institute.setName(instituteRequest.getInstituteName());
+		institute.setName(instituteRequest.getName());
 		institute.setDescription(instituteRequest.getDescription());
 		institute.setCountry(countryDAO.get(instituteRequest.getCountryId()));
 		institute.setCity(cityDAO.get(instituteRequest.getCityId()));
-		institute.setInstituteType(instituteTypeDAO.get(instituteRequest.getInstituteTypeId()));
+		institute.setInstituteType(instituteTypeDAO.get(instituteRequest.getTypeId()));
 		institute.setIsActive(true);
 		institute.setWorldRanking(instituteRequest.getWorldRanking());
 		institute.setWebsite(instituteRequest.getWebsite());
-		institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getInstituteCategoryTypeId()));
+		institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getCategoryTypeId()));
 		institute.setCampusType(instituteRequest.getCampusType());
 		institute.setAddress(instituteRequest.getAddress());
 		institute.setEmail(instituteRequest.getEmail());
@@ -219,8 +219,8 @@ public class InstituteService implements IInstituteService {
 		institute.setLatitute(instituteRequest.getLatitude());
 		institute.setLongitude(instituteRequest.getLongitude());
 		institute.setTotalStudent(instituteRequest.getTotalStudent());
-		institute.setOpeningFrom(instituteRequest.getOpeningHour());
-		institute.setOpeningTo(instituteRequest.getClosingHour());
+		institute.setOpeningFrom(instituteRequest.getOpeningFrom());
+		institute.setOpeningTo(instituteRequest.getOpeningTo());
 		institute.setCampusName(instituteRequest.getCampusName());
 		institute.setEnrolment(instituteRequest.getEnrolment());
 		institute.setTuitionFessPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());

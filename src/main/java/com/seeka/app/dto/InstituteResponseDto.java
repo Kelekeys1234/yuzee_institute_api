@@ -21,13 +21,13 @@ public class InstituteResponseDto implements Serializable {
 	private BigInteger countryId;
 	private String website;
 	private String aboutUs;
-	private String openingHour;
-	private String closingHour;
-	private Integer totalNoOfStudents;
+	private String openingFrom;
+	private String openingTo;
+	private Integer totalStudent;
 	private String latitute;
 	private String longitude;
-	private String interPhoneNumber;
-	private String interEmail;
+	private String phoneNumber;
+	private String email;
 	private String address;
 	private String visaRequirement;
 	private String totalAvailableJobs;
@@ -92,30 +92,6 @@ public class InstituteResponseDto implements Serializable {
 		this.aboutUs = aboutUs;
 	}
 
-	public String getOpeningHour() {
-		return openingHour;
-	}
-
-	public void setOpeningHour(final String openingHour) {
-		this.openingHour = openingHour;
-	}
-
-	public String getClosingHour() {
-		return closingHour;
-	}
-
-	public void setClosingHour(final String closingHour) {
-		this.closingHour = closingHour;
-	}
-
-	public Integer getTotalNoOfStudents() {
-		return totalNoOfStudents;
-	}
-
-	public void setTotalNoOfStudents(final Integer totalNoOfStudents) {
-		this.totalNoOfStudents = totalNoOfStudents;
-	}
-
 	public String getLatitute() {
 		return latitute;
 	}
@@ -130,22 +106,6 @@ public class InstituteResponseDto implements Serializable {
 
 	public void setLongitude(final String longitude) {
 		this.longitude = longitude;
-	}
-
-	public String getInterPhoneNumber() {
-		return interPhoneNumber;
-	}
-
-	public void setInterPhoneNumber(final String interPhoneNumber) {
-		this.interPhoneNumber = interPhoneNumber;
-	}
-
-	public String getInterEmail() {
-		return interEmail;
-	}
-
-	public void setInterEmail(final String interEmail) {
-		this.interEmail = interEmail;
 	}
 
 	public String getAddress() {
@@ -258,6 +218,76 @@ public class InstituteResponseDto implements Serializable {
      */
     public void setImages(List<ImageResponseDto> images) {
         this.images = images;
+    }
+
+    /**
+     * @return the totalStudent
+     */
+    public Integer getTotalStudent() {
+        return totalStudent;
+    }
+
+    /**
+     * @param totalStudent the totalStudent to set
+     */
+    public void setTotalStudent(Integer totalStudent) {
+        this.totalStudent = totalStudent;
+    }
+
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * @return the openingFrom
+     */
+    public String getOpeningFrom() {
+        return openingFrom;
+    }
+
+    /**
+     * @param openingFrom the openingFrom to set
+     */
+    public void setOpeningFrom(String openingFrom) {
+        this.openingFrom = openingFrom;
+    }
+
+    /**
+     * @return the openingTo
+     */
+    public String getOpeningTo() {
+        return openingTo;
+    }
+
+    /**
+     * @param openingTo the openingTo to set
+     */
+    public void setOpeningTo(String openingTo) {
+        this.openingTo = openingTo;
+    }
+
+    /**
+     * @return the phoneNumber
+     */
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    /**
+     * @param phoneNumber the phoneNumber to set
+     */
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
 }
