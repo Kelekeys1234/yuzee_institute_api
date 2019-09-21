@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -18,7 +19,7 @@ public interface IEducationAgentService {
 
     public Map<String, Object> get(@Valid BigInteger id);
 
-    public void savePartnership(EducationAgentPartnershipsDto agentPartnershipsDto);
+    public void savePartnership(List<EducationAgentPartnershipsDto> agentPartnershipsDto);
 
     public Map<String, Object> deleteEducationAgent(BigInteger id);
 

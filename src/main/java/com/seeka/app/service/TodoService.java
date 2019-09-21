@@ -80,4 +80,14 @@ public class TodoService implements ITodoService {
         }
         return response;
     }
+
+    @Override
+    public List<TodoDto> getByTitle(String title) {
+        List<Todo> list = iTodoDao.getByTitle(title);
+        List<TodoDto> todoDtos = new LinkedList<>();
+        for (Todo todo : list) {
+            todoDtos.add(CommonUtil.convertTodoIntoTodoDto(todo));
+        }
+        return todoDtos;
+    }
 }

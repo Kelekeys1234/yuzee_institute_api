@@ -257,18 +257,17 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     public List<AgentServiceOffered> fetchAgentServiceOffered(BigInteger educationAgent) {
         Session session = sessionFactory.getCurrentSession();
         List<AgentServiceOffered> agentServiceOffereds = new ArrayList<>();
-        List<Object[]> agentService = session.createSQLQuery("SELECT aso.amount, aso.service, aso.country_id FROM agent_service_offered as aso WHERE education_agent =" + educationAgent + "")
-                        .list();
+        List<Object[]> agentService = session
+                        .createSQLQuery("SELECT aso.amount, aso.service, aso.currency_id FROM agent_service_offered as aso WHERE education_agent =" + educationAgent + "").list();
         for (Object[] obj : agentService) {
             AgentServiceOffered agentServiceOffered = new AgentServiceOffered();
             Service service = new Service();
             agentServiceOffered.setAmount(Double.parseDouble(obj[0].toString()));
             service.setId(new BigInteger(obj[1].toString()));
             agentServiceOffered.setService(service);
-            agentServiceOffered.setCountry(new BigInteger(obj[2].toString()));
+            agentServiceOffered.setCurrency(new BigInteger(obj[2].toString()));
             agentServiceOffereds.add(agentServiceOffered);
         }
-
         return agentServiceOffereds;
     }
 

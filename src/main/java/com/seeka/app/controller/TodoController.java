@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.dto.TodoDto;
 import com.seeka.app.service.ITodoService;
@@ -130,4 +131,26 @@ public class TodoController {
         return ResponseEntity.accepted().body(iTodoService.delete(id));
     }
 
+    @RequestMapping(value = "/filter/title", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getTodoBytitle(@RequestParam(required = false) final String title) throws Exception {
+        Map<String, Object> response = new HashMap<>(3);
+        try {
+            List<TodoDto> todoDto = iTodoService.getByTitle(title);
+            if (!todoDto.isEmpty() && todoDto != null) {
+                response.put("message", "Todo fetch successfully");
+                response.put("status", HttpStatus.OK.value());
+                response.put("data", todoDto);
+            } else {
+                response.put("message", "Todo not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("data", todoDto);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("message", "Error to fetching todo");
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("data", "Error");
+        }
+        return ResponseEntity.accepted().body(response);
+    }
 }

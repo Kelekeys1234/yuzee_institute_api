@@ -83,4 +83,19 @@ public class TodoDao implements ITodoDao {
         }
         return todos;
     }
+
+    @Override
+    public List<Todo> getByTitle(String title) {
+        List<Todo> todos = new ArrayList<>();
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Criteria crit = session.createCriteria(Todo.class);
+            crit.add(Restrictions.eq("title", title));
+            crit.add(Restrictions.eq("isActive", true));
+            todos = crit.list();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return todos;
+    }
 }

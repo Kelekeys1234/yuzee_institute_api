@@ -17,14 +17,14 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "education_agent_skill")
-public class EducationAgentSkill implements Serializable{
-    
+public class EducationAgentSkill implements Serializable {
+
     /**
     *
     */
     private static final long serialVersionUID = 8492390790670110780L;
     private BigInteger id;
-    private Skill skillId;
+    private Skill skill;
     private EducationAgent educationAgent;
     private String createdBy;
     private Date createdOn;
@@ -32,46 +32,49 @@ public class EducationAgentSkill implements Serializable{
     private Date updatedOn;
     private String deletedBy;
     private Date deletedOn;
-    
+
     public EducationAgentSkill() {
         super();
     }
-    
-    public EducationAgentSkill(BigInteger id, Skill skillId, EducationAgent educationAgent) {
+
+    public EducationAgentSkill(BigInteger id, Skill skill, EducationAgent educationAgent) {
         super();
         this.id = id;
-        this.skillId = skillId;
+        this.skill = skill;
         this.educationAgent = educationAgent;
     }
-    
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     public BigInteger getId() {
         return id;
     }
+
     public void setId(BigInteger id) {
         this.id = id;
     }
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "skill_id")
-    public Skill getSkillId() {
-        return skillId;
+    public Skill getSkill() {
+        return skill;
     }
-    public void setSkillId(Skill skillId) {
-        this.skillId = skillId;
+
+    public void setSkill(Skill skill) {
+        this.skill = skill;
     }
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "education_agent")
     public EducationAgent getEducationAgent() {
         return educationAgent;
     }
+
     public void setEducationAgent(EducationAgent educationAgent) {
         this.educationAgent = educationAgent;
     }
-    
+
     @Column(name = "created_by")
     public String getCreatedBy() {
         return createdBy;
@@ -125,6 +128,5 @@ public class EducationAgentSkill implements Serializable{
     public void setDeletedOn(Date deletedOn) {
         this.deletedOn = deletedOn;
     }
-    
 
 }

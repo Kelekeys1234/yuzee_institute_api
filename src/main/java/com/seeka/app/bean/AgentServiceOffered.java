@@ -21,11 +21,10 @@ public class AgentServiceOffered {
     /**
     *
     */
-    private static final long serialVersionUID = 8492390790670110780L;
     private BigInteger id;
     private Service service;
     private Double amount;
-    private BigInteger country;
+    private BigInteger currency;
     private EducationAgent educationAgent;
     private String createdBy;
     private Date createdOn;
@@ -64,13 +63,13 @@ public class AgentServiceOffered {
         this.amount = amount;
     }
 
-    @Column(name = "country_id")
-    public BigInteger getCountry() {
-        return country;
+    @Column(name = "currency_id")
+    public BigInteger getCurrency() {
+        return currency;
     }
 
-    public void setCountry(BigInteger country) {
-        this.country = country;
+    public void setCurrency(BigInteger currency) {
+        this.currency = currency;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)

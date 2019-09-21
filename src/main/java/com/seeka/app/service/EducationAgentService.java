@@ -102,9 +102,6 @@ public class EducationAgentService implements IEducationAgentService {
         if (educationAgentDto.getAgentEducationDetails() != null && !educationAgentDto.getAgentEducationDetails().isEmpty()) {
             saveAgentEducationDetails(educationAgentDto, educationAgent);
         }
-        if (educationAgentDto.getAgentMediaDocumentations() != null && !educationAgentDto.getAgentMediaDocumentations().isEmpty()) {
-            saveAgentMediaDocumentation(educationAgentDto, educationAgent);
-        }
         if (educationAgentDto.getAccomplishment() != null && !educationAgentDto.getAccomplishment().isEmpty()) {
             saveEducationAgentAccomplishment(educationAgentDto, educationAgent);
         }
@@ -112,10 +109,10 @@ public class EducationAgentService implements IEducationAgentService {
 
     public void saveSkillAndEducationAgentSkill(EducationAgentDto educationAgentDto, EducationAgent educationAgent) {
         educationAgentDao.deleteEducationAgentSkill(educationAgent.getId());
-        for (Skill skills : educationAgentDto.getSkill()) {
+        for (BigInteger id : educationAgentDto.getSkill()) {
             EducationAgentSkill educationAgentSkill = new EducationAgentSkill();
-            Skill skill = educationAgentDao.fetchSkill(skills.getId());
-            educationAgentSkill.setSkillId(skill);
+            Skill skill = educationAgentDao.fetchSkill(id);
+            educationAgentSkill.setSkill(skill);
             educationAgentSkill.setEducationAgent(educationAgent);
             educationAgentSkill.setCreatedBy(educationAgentDto.getCreatedBy());
             educationAgentSkill.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -131,7 +128,7 @@ public class EducationAgentService implements IEducationAgentService {
         educationAgentDao.deleteAgentServiceOffered(educationAgent.getId());
         for (AgentServiceOfferedDto offeredDto : educationAgentDto.getAgentServiceOffereds()) {
             AgentServiceOffered agentServiceOffered = new AgentServiceOffered();
-            agentServiceOffered.setService(serviceDao.getServiceById(offeredDto.getService().getId()));
+            agentServiceOffered.setService(serviceDao.getServiceById(offeredDto.getService()));
             agentServiceOffered.setAmount(offeredDto.getAmount());
             agentServiceOffered.setEducationAgent(educationAgent);
             agentServiceOffered.setCreatedBy(educationAgentDto.getCreatedBy());
@@ -140,7 +137,7 @@ public class EducationAgentService implements IEducationAgentService {
             agentServiceOffered.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
             agentServiceOffered.setDeletedBy(educationAgentDto.getDeletedBy());
             agentServiceOffered.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
-            agentServiceOffered.setCountry(educationAgentDto.getCountry());
+            agentServiceOffered.setCurrency(offeredDto.getCurrency());
             educationAgentDao.saveAgentServiceOffered(agentServiceOffered);
         }
     }
@@ -171,23 +168,6 @@ public class EducationAgentService implements IEducationAgentService {
             educationAgentAccomplishment.setAccomplishment(accomplishment);
             educationAgentAccomplishment.setEducationAgent(educationAgent);
             educationAgentDao.saveEducationAgentAccomplishment(educationAgentAccomplishment);
-        }
-    }
-
-    public void saveAgentMediaDocumentation(EducationAgentDto educationAgentDto, EducationAgent educationAgent) {
-        educationAgentDao.deleteAgentMediaDocumentation(educationAgent.getId());
-        for (AgentMediaDocumentationDto agentMediaDocumentation : educationAgentDto.getAgentMediaDocumentations()) {
-            AgentMediaDocumentation agentMediaDocumentation2 = new AgentMediaDocumentation();
-            agentMediaDocumentation2.setDocumentName(agentMediaDocumentation.getDocumentName());
-            agentMediaDocumentation2.setEducationAgent(educationAgent);
-            agentMediaDocumentation2.setType(agentMediaDocumentation.getType());
-            agentMediaDocumentation2.setCreatedBy(educationAgentDto.getCreatedBy());
-            agentMediaDocumentation2.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-            agentMediaDocumentation2.setUpdatedBy(educationAgentDto.getUpdatedBy());
-            agentMediaDocumentation2.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-            agentMediaDocumentation2.setDeletedBy(educationAgentDto.getDeletedBy());
-            agentMediaDocumentation2.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
-            educationAgentDao.saveAgentMediaDocumentation(agentMediaDocumentation2);
         }
     }
 
@@ -236,13 +216,11 @@ public class EducationAgentService implements IEducationAgentService {
                     agentDto = convertEductaionAgentToDto(educationAgent);
                 }
                 List<EducationAgentSkill> agentSkills = educationAgentDao.fetchEducationAgentSkillByEducationAgentId(id);
-                List<Skill> skills = new ArrayList<>();
+                List<BigInteger> skills = new ArrayList<>();
                 for (EducationAgentSkill educationAgentSkill : agentSkills) {
-                    Skill skill = educationAgentDao.fetchSkill(educationAgentSkill.getSkillId().getId());
-                    skills.add(skill);
+                    skills.add(educationAgentSkill.getSkill().getId());
                 }
                 agentDto.setSkill(skills);
-
                 List<AgentServiceOffered> agentServiceOffereds = educationAgentDao.fetchAgentServiceOffered(id);
                 if (agentServiceOffereds != null && !agentServiceOffereds.isEmpty()) {
                     List<AgentServiceOfferedDto> agentServiceOfferedDtos = new ArrayList<>();
@@ -261,15 +239,6 @@ public class EducationAgentService implements IEducationAgentService {
                     }
                     agentDto.setAgentEducationDetails(agentEducationDetailDtos);
                 }
-                List<AgentMediaDocumentation> agentMediaDocumentations = educationAgentDao.fetchAgentMediaDocumentation(id);
-                if (agentMediaDocumentations != null && !agentMediaDocumentations.isEmpty()) {
-                    List<AgentMediaDocumentationDto> agentMediaDocumentationDtos = new ArrayList<>();
-                    for (AgentMediaDocumentation agentMediaDocumentation : agentMediaDocumentations) {
-                        AgentMediaDocumentationDto agentMediaDocumentationDto = convertAgentMediaDocumentationToDto(agentMediaDocumentation);
-                        agentMediaDocumentationDtos.add(agentMediaDocumentationDto);
-                    }
-                    agentDto.setAgentMediaDocumentations(agentMediaDocumentationDtos);
-                }
                 List<EducationAgentAccomplishment> agentAccomplishments = educationAgentDao.fetcheducationAgentAccomplishment(id);
                 if (agentAccomplishments != null && !agentAccomplishments.isEmpty()) {
                     List<String> accomplishmentList = new ArrayList<>();
@@ -278,7 +247,6 @@ public class EducationAgentService implements IEducationAgentService {
                     }
                     agentDto.setAccomplishment(accomplishmentList);
                 }
-
                 response.put("message", "Education agent fetched successfully");
                 response.put("status", HttpStatus.OK.value());
                 response.put("data", agentDto);
@@ -308,8 +276,10 @@ public class EducationAgentService implements IEducationAgentService {
     public AgentServiceOfferedDto convertAgentServiceOfferedToDto(AgentServiceOffered offered) {
         AgentServiceOfferedDto agentServiceOfferedDto = new AgentServiceOfferedDto();
         agentServiceOfferedDto.setAmount(offered.getAmount());
-        agentServiceOfferedDto.setService(offered.getService());
-        agentServiceOfferedDto.setCountry(offered.getCountry());
+        if (offered.getService() != null) {
+            agentServiceOfferedDto.setService(offered.getService().getId());
+        }
+        agentServiceOfferedDto.setCurrency(offered.getCurrency());
         return agentServiceOfferedDto;
     }
 
@@ -330,7 +300,7 @@ public class EducationAgentService implements IEducationAgentService {
     }
 
     @Override
-    public void savePartnership(EducationAgentPartnershipsDto agentPartnershipsDto) {
+    public void savePartnership(List<EducationAgentPartnershipsDto> agentPartnershipsDto) {
         try {
             convertDtoToEducationAgentPartnerships(agentPartnershipsDto);
         } catch (Exception exception) {
@@ -338,23 +308,23 @@ public class EducationAgentService implements IEducationAgentService {
         }
     }
 
-    public void convertDtoToEducationAgentPartnerships(EducationAgentPartnershipsDto agentPartnershipsDto) {
+    public void convertDtoToEducationAgentPartnerships(List<EducationAgentPartnershipsDto> agentPartnershipsDtos) {
         try {
-            Integer i = 0;
-            educationAgentDao.deleteEducationAgentPartnerships(agentPartnershipsDto.getEducationAgentId());
-            for (BigInteger institute : agentPartnershipsDto.getInstituteId()) {
+            if (agentPartnershipsDtos != null && !agentPartnershipsDtos.isEmpty()) {
+                educationAgentDao.deleteEducationAgentPartnerships(agentPartnershipsDtos.get(0).getAgentId());
+            }
+            for (EducationAgentPartnershipsDto dto : agentPartnershipsDtos) {
                 EducationAgentPartnerships agentPartnership = new EducationAgentPartnerships();
-                agentPartnership.setEducationAgent(educationAgentDao.get(agentPartnershipsDto.getEducationAgentId()));
-                agentPartnership.setInstitute(instituteDao.get(institute));
-                agentPartnership.setCourse(courseDao.get(agentPartnershipsDto.getCourseId().get(i)));
+                agentPartnership.setEducationAgent(educationAgentDao.get(dto.getAgentId()));
+                agentPartnership.setInstitute(instituteDao.get(dto.getInstituteId()));
+                agentPartnership.setCourse(courseDao.get(dto.getCourseId()));
                 agentPartnership.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
                 agentPartnership.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
                 agentPartnership.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
-                agentPartnership.setCreatedBy(agentPartnershipsDto.getCreatedBy());
-                agentPartnership.setUpdatedBy(agentPartnershipsDto.getUpdatedBy());
-                agentPartnership.setCountry(countryDao.get(agentPartnershipsDto.getCountry()));
+                agentPartnership.setCreatedBy(dto.getCreatedBy());
+                agentPartnership.setUpdatedBy(dto.getUpdatedBy());
+                agentPartnership.setCountry(countryDao.get(dto.getCountryId()));
                 educationAgentDao.saveEducationAgentPartnerships(agentPartnership);
-                i++;
             }
         } catch (Exception exception) {
             exception.printStackTrace();

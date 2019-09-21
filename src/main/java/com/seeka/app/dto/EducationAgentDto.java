@@ -3,8 +3,6 @@ package com.seeka.app.dto;
 import java.math.BigInteger;
 import java.util.List;
 
-import com.seeka.app.bean.Skill;
-
 public class EducationAgentDto {
 
     private String firstName;
@@ -17,11 +15,10 @@ public class EducationAgentDto {
     private String createdBy;
     private String updatedBy;
     private String deletedBy;
-    private List<Skill> skill;
+    private List<BigInteger> skill;
     private List<String> accomplishment;
     private List<AgentServiceOfferedDto> agentServiceOffereds;
     private List<AgentEducationDetailDto> agentEducationDetails;
-    private List<AgentMediaDocumentationDto> agentMediaDocumentations;
 
     public String getFirstName() {
         return firstName;
@@ -103,11 +100,11 @@ public class EducationAgentDto {
         this.deletedBy = deletedBy;
     }
 
-    public List<Skill> getSkill() {
+    public List<BigInteger> getSkill() {
         return skill;
     }
 
-    public void setSkill(List<Skill> skill) {
+    public void setSkill(List<BigInteger> skill) {
         this.skill = skill;
     }
 
@@ -133,13 +130,5 @@ public class EducationAgentDto {
 
     public void setAgentEducationDetails(List<AgentEducationDetailDto> agentEducationDetails) {
         this.agentEducationDetails = agentEducationDetails;
-    }
-
-    public List<AgentMediaDocumentationDto> getAgentMediaDocumentations() {
-        return agentMediaDocumentations;
-    }
-
-    public void setAgentMediaDocumentations(List<AgentMediaDocumentationDto> agentMediaDocumentations) {
-        this.agentMediaDocumentations = agentMediaDocumentations;
     }
 }

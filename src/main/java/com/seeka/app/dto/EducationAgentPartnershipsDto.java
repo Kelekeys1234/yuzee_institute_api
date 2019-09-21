@@ -1,63 +1,104 @@
 package com.seeka.app.dto;
 
 import java.math.BigInteger;
-import java.util.List;
 
 public class EducationAgentPartnershipsDto {
 
-    private BigInteger educationAgentId;
-    private List<BigInteger> courseId;
-    private List<BigInteger> instituteId;
+    private BigInteger agentId;
+    private BigInteger courseId;
+    private BigInteger instituteId;
     private String createdBy;
     private String UpdatedBy;
-    private BigInteger country;
+    private BigInteger countryId;
 
-    public BigInteger getEducationAgentId() {
-        return educationAgentId;
+    /**
+     * @return the agentId
+     */
+    public BigInteger getAgentId() {
+        return agentId;
     }
 
-    public void setEducationAgentId(BigInteger educationAgentId) {
-        this.educationAgentId = educationAgentId;
+    /**
+     * @param agentId
+     *            the agentId to set
+     */
+    public void setAgentId(BigInteger agentId) {
+        this.agentId = agentId;
     }
 
-    public List<BigInteger> getCourseId() {
+    /**
+     * @return the courseId
+     */
+    public BigInteger getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(List<BigInteger> courseId) {
+    /**
+     * @param courseId
+     *            the courseId to set
+     */
+    public void setCourseId(BigInteger courseId) {
         this.courseId = courseId;
     }
 
-    public List<BigInteger> getInstituteId() {
+    /**
+     * @return the instituteId
+     */
+    public BigInteger getInstituteId() {
         return instituteId;
     }
 
-    public void setInstituteId(List<BigInteger> instituteId) {
+    /**
+     * @param instituteId
+     *            the instituteId to set
+     */
+    public void setInstituteId(BigInteger instituteId) {
         this.instituteId = instituteId;
     }
 
+    /**
+     * @return the createdBy
+     */
     public String getCreatedBy() {
         return createdBy;
     }
 
+    /**
+     * @param createdBy
+     *            the createdBy to set
+     */
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
+    /**
+     * @return the updatedBy
+     */
     public String getUpdatedBy() {
         return UpdatedBy;
     }
 
+    /**
+     * @param updatedBy
+     *            the updatedBy to set
+     */
     public void setUpdatedBy(String updatedBy) {
         UpdatedBy = updatedBy;
     }
 
-    public BigInteger getCountry() {
-        return country;
+    /**
+     * @return the countryId
+     */
+    public BigInteger getCountryId() {
+        return countryId;
     }
 
-    public void setCountry(BigInteger country) {
-        this.country = country;
+    /**
+     * @param countryId
+     *            the countryId to set
+     */
+    public void setCountryId(BigInteger countryId) {
+        this.countryId = countryId;
     }
-    
+
 }

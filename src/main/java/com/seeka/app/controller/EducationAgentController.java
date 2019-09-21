@@ -2,6 +2,7 @@ package com.seeka.app.controller;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.transaction.Transactional;
@@ -39,7 +40,6 @@ public class EducationAgentController {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.put("message", exception.getCause());
         }
-
         return ResponseEntity.accepted().body(response);
     }
 
@@ -74,7 +74,7 @@ public class EducationAgentController {
     }
 
     @RequestMapping(value = "/partnership", method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<?> saveEducationAgentPartnership(@RequestBody final EducationAgentPartnershipsDto agentPartnershipsDto) throws Exception {
+    public ResponseEntity<?> saveEducationAgentPartnership(@RequestBody final List<EducationAgentPartnershipsDto> agentPartnershipsDto) throws Exception {
         Map<String, Object> response = new HashMap<>();
         try {
             educationService.savePartnership(agentPartnershipsDto);

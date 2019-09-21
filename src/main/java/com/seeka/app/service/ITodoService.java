@@ -21,4 +21,6 @@ public interface ITodoService {
     public List<TodoDto> getAll();
 
     public Map<String, Object> delete(@Valid BigInteger id);
+
+    public List<TodoDto> getByTitle(String title);
 }

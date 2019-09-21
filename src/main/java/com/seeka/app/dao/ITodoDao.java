@@ -15,4 +15,6 @@ public interface ITodoDao {
     List<Todo> getByUserId(BigInteger userId);
 
     List<Todo> getAll();
+
+    List<Todo> getByTitle(String title);
 }
