@@ -1,7 +1,5 @@
 package com.seeka.app.dto;
 
-import java.util.Date;
-
 public class HelpCategoryDto {
 
     private String name;

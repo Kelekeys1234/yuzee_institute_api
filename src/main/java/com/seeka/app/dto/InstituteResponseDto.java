@@ -12,8 +12,7 @@ public class InstituteResponseDto implements Serializable {
 	private static final long serialVersionUID = 4673759147405801959L;
 	private BigInteger id;
 	private String name;
-	private String worldRanking;
-	private String stars;
+	private Integer worldRanking;
 	private String location;
 	private Integer totalCourses;
 	private Integer totalCount;
@@ -36,20 +35,12 @@ public class InstituteResponseDto implements Serializable {
 	private String logoImage;
 	private List<ImageResponseDto> images;
 
-	public String getWorldRanking() {
+	public Integer getWorldRanking() {
 		return worldRanking;
 	}
 
-	public void setWorldRanking(final String worldRanking) {
+	public void setWorldRanking(final Integer worldRanking) {
 		this.worldRanking = worldRanking;
-	}
-
-	public String getStars() {
-		return stars;
-	}
-
-	public void setStars(final String stars) {
-		this.stars = stars;
 	}
 
 	public String getLocation() {

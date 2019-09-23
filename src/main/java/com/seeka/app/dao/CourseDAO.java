@@ -929,9 +929,10 @@ public class CourseDAO implements ICourseDAO {
             if (row[8] != null) {
                 instituteObj.setId(new BigInteger(String.valueOf(row[8])));
             }
-            instituteObj.setStars(String.valueOf(row[1]));
             instituteObj.setName(String.valueOf(row[9]));
-            instituteObj.setWorldRanking(String.valueOf(row[7]));
+            if (row[7] != null) {
+                instituteObj.setWorldRanking(Integer.valueOf(String.valueOf(row[7])));
+            }
             instituteObj.setEmail(String.valueOf(row[10]));
             instituteObj.setPhoneNumber(String.valueOf(row[11]));
             instituteObj.setLongitude(String.valueOf(row[12]));

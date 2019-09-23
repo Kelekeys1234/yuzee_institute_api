@@ -179,12 +179,11 @@ public class InstituteDAO implements IInstituteDAO {
 			instituteResponseDto.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
 			instituteResponseDto.setCityName(String.valueOf(row[2]));
 			instituteResponseDto.setCountryName(String.valueOf(row[3]));
-			Integer worldRanking = 0;
-			if (null != row[4]) {
-				worldRanking = Double.valueOf(String.valueOf(row[4])).intValue();
-			}
-			instituteResponseDto.setWorldRanking(worldRanking.toString());
-			instituteResponseDto.setStars(String.valueOf(row[5]));
+            Integer worldRanking = 0;
+            if (null != row[4]) {
+                worldRanking = Double.valueOf(String.valueOf(row[4])).intValue();
+            }
+            instituteResponseDto.setWorldRanking(worldRanking);
 			instituteResponseDto.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
 			instituteResponseDto.setCountryId(new BigInteger(String.valueOf(row[7])));
 			instituteResponseDto.setCityId(new BigInteger(String.valueOf(row[8])));
@@ -207,16 +206,17 @@ public class InstituteDAO implements IInstituteDAO {
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
 		InstituteResponseDto obj = null;
-		for (Object[] row : rows) {
-			obj = new InstituteResponseDto();
-			obj.setId(new BigInteger(String.valueOf(row[0])));
-			obj.setName(String.valueOf(row[1]));
-			obj.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
-			obj.setWorldRanking(String.valueOf(row[4]));
-			obj.setStars(String.valueOf(row[5]));
-			obj.setLogoImage(String.valueOf(row[9]));
-			obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
-		}
+        for (Object[] row : rows) {
+            obj = new InstituteResponseDto();
+            obj.setId(new BigInteger(String.valueOf(row[0])));
+            obj.setName(String.valueOf(row[1]));
+            obj.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
+            if (row[4] != null) {
+                obj.setWorldRanking(Integer.valueOf(String.valueOf(row[4])));
+            }
+            obj.setLogoImage(String.valueOf(row[9]));
+            obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
+        }
 		return obj;
 	}
 

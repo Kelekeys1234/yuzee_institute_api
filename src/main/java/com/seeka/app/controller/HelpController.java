@@ -43,22 +43,22 @@ public class HelpController {
     public ResponseEntity<?> update(@PathVariable BigInteger id, @RequestBody final HelpDto helpDto) {
         return ResponseEntity.accepted().body(helpService.update(helpDto, id));
     }
-    
-    @RequestMapping(value="/category",  method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+
+    @RequestMapping(value = "/category", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> saveCategory(@Valid @RequestBody final HelpCategoryDto categoryDto) throws Exception {
         return ResponseEntity.accepted().body(helpService.save(categoryDto));
     }
-    
-    @RequestMapping(value="/subCategory",  method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> saveSubCategory(@Valid @RequestBody final HelpSubCategoryDto subCategoryDto) throws Exception {
-        return ResponseEntity.accepted().body(helpService.save(subCategoryDto));
-    }
-    
+
     @RequestMapping(value = "/category/{id}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getCatgeory(@PathVariable BigInteger id) throws Exception {
         return ResponseEntity.accepted().body(helpService.getCategory(id));
     }
-    
+
+    @RequestMapping(value = "/subCategory", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> saveSubCategory(@Valid @RequestBody final HelpSubCategoryDto subCategoryDto) throws Exception {
+        return ResponseEntity.accepted().body(helpService.save(subCategoryDto));
+    }
+
     @RequestMapping(value = "/subCategory/{id}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getSubCatgeory(@PathVariable BigInteger id) throws Exception {
         return ResponseEntity.accepted().body(helpService.getSubCategory(id));
