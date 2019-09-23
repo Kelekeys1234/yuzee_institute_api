@@ -37,6 +37,7 @@ public class SeekaHelp implements Serializable {
     private String createdBy;
     private String updatedBy;
     private Boolean isActive;
+    private Boolean questioning;
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -140,5 +141,15 @@ public class SeekaHelp implements Serializable {
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
+
+    @Column(name = "questioning")
+    public Boolean getQuestioning() {
+        return questioning;
+    }
+
+    public void setQuestioning(Boolean questioning) {
+        this.questioning = questioning;
+    }
+    
 
 }
