@@ -8,14 +8,19 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.seeka.app.bean.HelpCategory;
+import com.seeka.app.bean.HelpSubCategory;
 import com.seeka.app.bean.SeekaHelp;
 import com.seeka.app.dao.IHelpDAO;
+import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
+import com.seeka.app.dto.HelpSubCategoryDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -58,6 +63,7 @@ public class HelpService implements IHelpService {
         seekaHelp.setDescritpion(dto.getDescription());
         seekaHelp.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
         seekaHelp.setIsActive(true);
+        seekaHelp.setQuestioning(dto.getQuestioning());
         return seekaHelp;
     }
 
@@ -91,6 +97,7 @@ public class HelpService implements IHelpService {
         dto.setSubCategoryId(seekaHelp.getSubCategory().getId());
         dto.setCreatedBy(seekaHelp.getCreatedBy());
         dto.setUpdatedBy(seekaHelp.getUpdatedBy());
+        dto.setQuestioning(seekaHelp.getQuestioning());
         return dto;
     }
 
@@ -133,5 +140,118 @@ public class HelpService implements IHelpService {
         response.put("hasNextPage", paginationUtilDto.isHasNextPage());
         response.put("totalPages", paginationUtilDto.getTotalPages());
         return response;
+    }
+
+    @Override
+    public Map<String, Object> save(@Valid HelpCategoryDto helpCategoryDto) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            helpDAO.save(convertHelpCategoryDtoToBean(helpCategoryDto));
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", IConstant.HELP_CATEGORY_SUCCESS_MESSAGE);
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
+    
+    public HelpCategory convertHelpCategoryDtoToBean(HelpCategoryDto helpCategoryDto){
+        HelpCategory helpCategory = new HelpCategory();
+        helpCategory.setName(helpCategoryDto.getName());
+        helpCategory.setCreatedBy(helpCategoryDto.getCreatedBy());
+        helpCategory.setUpdatedBy(helpCategoryDto.getUpdatedBy());
+        helpCategory.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+        helpCategory.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+        helpCategory.setIsActive(true);
+        return helpCategory;
+        
+    }
+
+    @Override
+    public Map<String, Object> save(@Valid HelpSubCategoryDto helpSubCategoryDto) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            helpDAO.save(convertHelpCategoryDtoToBean(helpSubCategoryDto));
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", IConstant.HELP_SUBCATEGORY_SUCCESS_MESSAGE);
+        } catch (Exception exception) {
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
+    
+    public HelpSubCategory convertHelpCategoryDtoToBean(HelpSubCategoryDto helpSubCategoryDto){
+        HelpSubCategory helpSubCategory = new HelpSubCategory();
+        helpSubCategory.setName(helpSubCategoryDto.getName());
+        helpSubCategory.setCreatedBy(helpSubCategoryDto.getCreatedBy());
+        helpSubCategory.setUpdatedBy(helpSubCategoryDto.getUpdatedBy());
+        helpSubCategory.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+        helpSubCategory.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+        helpSubCategory.setCategoryId(helpDAO.getHelpCategory(helpSubCategoryDto.getCategoryId()));
+        helpSubCategory.setIsActive(true);
+        return helpSubCategory;
+    }
+
+    @Override
+    public Map<String, Object> getCategory(BigInteger id) {
+        Map<String, Object> response = new HashMap<>();
+        HelpCategoryDto dto = null;
+        try {
+            dto = convertHelpCategoryToDto(helpDAO.getHelpCategory(id));
+            if (dto != null) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.HELP_CATEGORY_SUCCESS);
+                response.put("data", dto);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.HELP_CATEGORY_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
+    
+    public HelpCategoryDto convertHelpCategoryToDto(HelpCategory helpCategory){
+        HelpCategoryDto helpCategoryDto = new HelpCategoryDto();
+        helpCategoryDto.setCreatedBy(helpCategory.getCreatedBy());
+        helpCategoryDto.setName(helpCategory.getName());
+        helpCategoryDto.setUpdatedBy(helpCategory.getUpdatedBy());
+        return helpCategoryDto; 
+    }
+
+    @Override
+    public Map<String, Object> getSubCategory(BigInteger id) {
+        Map<String, Object> response = new HashMap<>();
+        HelpSubCategoryDto dto = null;
+        try {
+            dto = convertHelpSubCategoryToDto(helpDAO.getHelpSubCategory(id));
+            if (dto != null) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.HELP_SUBCATEGORY_SUCCESS);
+                response.put("data", dto);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.HELP_SUBCATEGORY_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
+    
+    public HelpSubCategoryDto convertHelpSubCategoryToDto(HelpSubCategory helpSubCategory){
+        HelpSubCategoryDto helpSubCategoryDto = new HelpSubCategoryDto();
+        helpSubCategoryDto.setCategoryId(helpSubCategory.getCategoryId().getId());
+        helpSubCategoryDto.setName(helpSubCategory.getName());
+        helpSubCategoryDto.setCreatedBy(helpSubCategory.getCreatedBy());
+        helpSubCategoryDto.setUpdatedBy(helpSubCategory.getUpdatedBy());
+        return helpSubCategoryDto;
     }
 }

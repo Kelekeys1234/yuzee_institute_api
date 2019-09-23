@@ -22,4 +22,8 @@ public interface IHelpDAO {
     public int findTotalHelpRecord();
 
     public List<SeekaHelp> getAll(int startIndex, Integer pageSize);
+
+    public void save(HelpCategory helpCategory);
+
+    public void save(HelpSubCategory helpSubCategory);
 }

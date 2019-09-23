@@ -59,9 +59,15 @@ public class IConstant {
 	public static final String DISCOVER_COUNTRY_NOT_FOUND = "Discover country not found";
 	public static final String COURSE_ADD_SUCCESS = "Course added successfully";
 	public static final String HELP_SUCCESS_MESSAGE = "Help added successfully";
+	public static final String HELP_CATEGORY_SUCCESS_MESSAGE = "Help Category added successfully";
+	public static final String HELP_SUBCATEGORY_SUCCESS_MESSAGE = "Help SubCategory added successfully";
 	public static final String HELP_UPDATE_MESSAGE = "Help updated successfully";
 	public static final String HELP_NOT_FOUND = "Help not found";
+	public static final String HELP_CATEGORY_NOT_FOUND = "Help Category not found";
+	public static final String HELP_SUBCATEGORY_NOT_FOUND = "Help Sub Category not found";
 	public static final String HELP_SUCCESS = "Help get Successfully";
+	public static final String HELP_CATEGORY_SUCCESS = "Help Category get Successfully";
+	public static final String HELP_SUBCATEGORY_SUCCESS = "Help SubCategory get Successfully";
 	public static final String COURSE_GET_SUCCESS_MESSAGE = "Course get successfully";
 	public static final String COURSE_GET_NOT_FOUND = "Course not found";
 	public static final String COURSE_DELETED_SUCCESS = "Course deleted successfully";

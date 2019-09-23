@@ -68,7 +68,7 @@ public class HelpDAO implements IHelpDAO {
     @Override
     public List<SeekaHelp> getAll(int pageNumber, Integer pageSize) {
         Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select sh.id , sh.category_id, sh.sub_category_id, sh.title , sh.descritpion FROM seeka_help sh "
+        String sqlQuery = "select sh.id , sh.category_id, sh.sub_category_id, sh.title , sh.descritpion , sh.questioning FROM seeka_help sh "
                         + " where sh.is_active = 1 and sh.deleted_on IS NULL ORDER BY sh.created_on DESC ";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
@@ -90,6 +90,9 @@ public class HelpDAO implements IHelpDAO {
             if (row[4] != null) {
                 help.setDescritpion(row[4].toString());
             }
+            if (row[5] != null) {
+                help.setQuestioning(Boolean.valueOf(row[5].toString()));
+            }
             helps.add(help);
         }
         return helps;
@@ -109,5 +112,17 @@ public class HelpDAO implements IHelpDAO {
             category = session.get(HelpCategory.class, id);
         }
         return category;
+    }
+
+    @Override
+    public void save(HelpCategory helpCategory) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(helpCategory);
+    }
+
+    @Override
+    public void save(HelpSubCategory helpSubCategory) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(helpSubCategory);
     }
 }

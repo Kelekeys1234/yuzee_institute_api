@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
+import com.seeka.app.dto.HelpSubCategoryDto;
 import com.seeka.app.service.IHelpService;
 
 @RestController
@@ -40,5 +42,25 @@ public class HelpController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> update(@PathVariable BigInteger id, @RequestBody final HelpDto helpDto) {
         return ResponseEntity.accepted().body(helpService.update(helpDto, id));
+    }
+    
+    @RequestMapping(value="/category",  method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> saveCategory(@Valid @RequestBody final HelpCategoryDto categoryDto) throws Exception {
+        return ResponseEntity.accepted().body(helpService.save(categoryDto));
+    }
+    
+    @RequestMapping(value="/subCategory",  method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> saveSubCategory(@Valid @RequestBody final HelpSubCategoryDto subCategoryDto) throws Exception {
+        return ResponseEntity.accepted().body(helpService.save(subCategoryDto));
+    }
+    
+    @RequestMapping(value = "/category/{id}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getCatgeory(@PathVariable BigInteger id) throws Exception {
+        return ResponseEntity.accepted().body(helpService.getCategory(id));
+    }
+    
+    @RequestMapping(value = "/subCategory/{id}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getSubCatgeory(@PathVariable BigInteger id) throws Exception {
+        return ResponseEntity.accepted().body(helpService.getSubCategory(id));
     }
 }

@@ -10,6 +10,7 @@ public class HelpDto {
     private String description;
     private String createdBy;
     private String updatedBy;
+    private Boolean questioning;
 
     public String getTitle() {
         return title;
@@ -60,4 +61,13 @@ public class HelpDto {
         this.updatedBy = updatedBy;
     }
 
+    public Boolean getQuestioning() {
+        return questioning;
+    }
+
+    public void setQuestioning(Boolean questioning) {
+        this.questioning = questioning;
+    }
+
+    
 }
