@@ -69,11 +69,12 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<Institute> getAllInstituteByCountry(final BigInteger countryId) {
+	public List<BigInteger> getTopInstituteByCountry(final BigInteger countryId, Long startIndex, Long pageSize) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Institute.class);
-		crit.add(Restrictions.eq("countryObj.id", countryId));
-		return crit.list();
+		List<BigInteger> idList = session.createNativeQuery("select id from institute where country_id = ? order by world_ranking LIMIT ?,?")
+			.setParameter(1, countryId).setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
+		
+		return idList;
 	}
 
 	@Override
@@ -218,6 +219,14 @@ public class InstituteDAO implements IInstituteDAO {
             obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
         }
 		return obj;
+	}
+	
+	@Override
+	public List<Institute> getAllInstituteByID(final List<BigInteger> instituteId) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Institute.class, "institute");
+		crit.add(Restrictions.in("id", instituteId));
+        return crit.list();
 	}
 
 	@Override

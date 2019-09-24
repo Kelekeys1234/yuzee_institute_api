@@ -23,7 +23,7 @@ public interface IInstituteDAO {
 
     Institute get(BigInteger id);
 
-    List<Institute> getAllInstituteByCountry(BigInteger countryId);
+    List<BigInteger> getTopInstituteByCountry(BigInteger countryId, Long startIndex, Long pageSize);
 
     List<Institute> getAll();
 
@@ -74,4 +74,6 @@ public interface IInstituteDAO {
     List<InstituteCategoryType> getAllCategories();
     
     List<Institute> ratingWiseInstituteListByCountry(Country country);
+
+	List<Institute> getAllInstituteByID(List<BigInteger> instituteId);
 }

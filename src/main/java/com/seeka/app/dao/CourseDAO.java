@@ -47,6 +47,7 @@ import com.seeka.app.dto.GlobalFilterSearchDto;
 import com.seeka.app.dto.GlobalSearchResponseDto;
 import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.CourseSortBy;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.jobs.CurrencyUtil;
@@ -2102,5 +2103,14 @@ public class CourseDAO implements ICourseDAO {
         }
         return sqlQuery;
     }
+
+	@Override
+	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		BigInteger count = (BigInteger)session.createNativeQuery("select count(*) from (Select count(*) from course where country_id = ? and is_active = ? group by country_id, institute_id) as temp_table")
+			.setParameter(1, country.getId()).setParameter(2, 1).uniqueResult();
+		return count != null ? count.longValue():0L;
+	}
 
 }

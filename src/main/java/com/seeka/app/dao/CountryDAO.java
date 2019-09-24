@@ -166,7 +166,6 @@ public class CountryDAO implements ICountryDAO {
 
 	@Override
 	public Country getCountryBasedOnCitizenship(String citizenship) {
-		// TODO Auto-generated method stub
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Country.class, "country");
 		System.out.println("citizenship-- "+citizenship);

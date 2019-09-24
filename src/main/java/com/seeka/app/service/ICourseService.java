@@ -21,6 +21,7 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.UserCourse;
+import com.seeka.app.dto.UserDto;
 import com.seeka.app.exception.ValidationException;
 
 public interface ICourseService {
@@ -108,4 +109,6 @@ public interface ICourseService {
 	List<BigInteger> getTopSearchedCoursesByUsers(BigInteger userId);
 	
 	Set<Course> getRelatedCoursesBasedOnPastSearch(List<BigInteger> courseList) throws ValidationException;
+
+	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto,Country country);
 }

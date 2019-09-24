@@ -55,6 +55,7 @@ import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
+import com.seeka.app.dto.UserDto;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -891,13 +892,11 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public List<BigInteger> getTopSearchedCoursesByOtherUsers(final BigInteger userId) {
-		// TODO Auto-generated method stub
 		return userRecommendationDao.getOtherUserWatchCourse(userId);
 	}
 
 	@Override
 	public List<Course> getCoursesById(final List<BigInteger> allSearchCourses) {
-		// TODO Auto-generated method stub
 		return iCourseDAO.getCoursesFromId(allSearchCourses);
 	}
 	
@@ -908,7 +907,6 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds) {
-		// TODO Auto-generated method stub
 		return iCourseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
 	}
 	
@@ -924,11 +922,15 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public Set<Course> getRelatedCoursesBasedOnPastSearch(List<BigInteger> courseList) throws ValidationException{
-		// TODO Auto-generated method stub
 		Set<Course> relatedCourses = new HashSet<>();
 		for (BigInteger courseId : courseList) {
 			relatedCourses.addAll(userRecommendationService.getRelatedCourse(courseId));
 		}
 		return relatedCourses;
+	}
+
+	@Override
+	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country) {
+		return iCourseDAO.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto, country);
 	}
 }

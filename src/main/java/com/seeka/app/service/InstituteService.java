@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -98,8 +99,8 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<Institute> getAllInstituteByCountry(final BigInteger countryId) {
-		return dao.getAllInstituteByCountry(countryId);
+	public List<BigInteger> getTopInstituteIdByCountry(final BigInteger countryId, Long startIndex, Long pageSize) {
+		return dao.getTopInstituteByCountry(countryId, startIndex, pageSize);
 	}
 
 	@Override
@@ -120,6 +121,30 @@ public class InstituteService implements IInstituteService {
 	@Override
 	public InstituteResponseDto getInstituteByID(final BigInteger instituteId) {
 		return dao.getInstituteByID(instituteId);
+	}
+	
+	@Override
+	public List<InstituteResponseDto> getAllInstituteByID(final List<BigInteger> listInstituteId) {
+		List<Institute> inistituteList = dao.getAllInstituteByID(listInstituteId);
+		List<InstituteResponseDto> instituteResponseDTOList = new ArrayList<>();
+		for (Institute institute : inistituteList) {
+			InstituteResponseDto instituteResponseDTO = new InstituteResponseDto();
+			BeanUtils.copyProperties(institute, instituteResponseDTO);
+			if(institute.getCountry() != null) {
+				instituteResponseDTO.setCountryId(institute.getCountry().getId());
+				instituteResponseDTO.setCountryName(institute.getCountry().getName());
+			}
+			if(institute.getCity() != null) {
+				instituteResponseDTO.setCityId(institute.getCity().getId());
+				instituteResponseDTO.setCityName(institute.getCity().getName());
+			}
+			instituteResponseDTO.setWorldRanking(institute.getWorldRanking());
+			instituteResponseDTO.setLocation(institute.getLatitute()+","+institute.getLongitude());
+			List<ImageResponseDto> imageResponseDtos = instituteImagesService.getInstituteImageListBasedOnId(instituteResponseDTO.getId());
+			instituteResponseDTO.setImages(imageResponseDtos);
+			instituteResponseDTOList.add(instituteResponseDTO);
+		}
+		return instituteResponseDTOList;
 	}
 
 	@Override

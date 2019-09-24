@@ -19,6 +19,7 @@ import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.UserDto;
 
 public interface ICourseDAO {
 
@@ -96,4 +97,6 @@ public interface ICourseDAO {
 	List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds);
 	
 	List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(Country country);
+
+	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
 }

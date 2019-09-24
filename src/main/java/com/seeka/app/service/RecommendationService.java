@@ -19,8 +19,11 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.dto.GlobalDataDto;
+import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.UserDto;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.message.MessageByLocaleService;
 
 @Service
 public class RecommendationService implements IRecommendationService {
@@ -35,10 +38,10 @@ public class RecommendationService implements IRecommendationService {
 	private IInstituteService iInstituteService;
 	
 	@Autowired
-	private ICourseService icourseService;
+	private ICourseService iCourseService;
 	
 	@Autowired
-	private ICountryService icountryService;
+	private ICountryService iCountryService;
 	
 	@Autowired
 	private IUsersService iUsersService;
@@ -46,10 +49,49 @@ public class RecommendationService implements IRecommendationService {
 	@Autowired
 	private IGlobalStudentData iGlobalStudentDataService;
 	
+	@Autowired
+	private MessageByLocaleService messageByLocalService;
+	
 	@Override
-	public void getRecommendedInstitutes() {
-		// TODO Auto-generated method stub
+	public List<InstituteResponseDto> getRecommendedInstitutes(BigInteger userId, Long startIndex, Long pageSize, Long pageNumber,
+			String language) throws ValidationException, NotFoundException{
+
+		List<BigInteger> instituteIdList = new ArrayList<>();
+		/**
+		 * Check for user country
+		 */
+		UserDto userDto = iUsersService.getUserById(userId);
+		if(userDto == null) {
+			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] {userId}, language));
+		} else if(userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present", new Object[] {userId}, language));
+		}
 		
+		/**
+		 * Get Country Id Based on citizenship
+		 */
+		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
+		if(country == null || country.getId() == null) {
+			throw new ValidationException(messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] {userDto.getCitizenship()}, language));
+		}
+		/**
+		 * Check if courses are available for user country
+		 */
+		Long count = iCourseService.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto,country);
+		if(count == null || count.equals(0L)) {
+			throw new ValidationException(messageByLocalService.getMessage("no.courses.present.for.country", new Object[] {userDto.getCitizenship()}, language));
+		}
+		/**
+		 * Display top universities for the country
+		 */
+		if(startIndex == null) {
+			startIndex = (pageNumber * pageSize) + 1;
+			instituteIdList = iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize);
+		} else {
+			instituteIdList = iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize);
+		}
+		
+		return iInstituteService.getAllInstituteByID(instituteIdList);
 	}
 
 	@Override
@@ -159,7 +201,7 @@ public class RecommendationService implements IRecommendationService {
 			}
 			System.out.println("insititute count -- "+allInstitutesRankingWise.size());
 			
-			listOfRecommendedCourses =  icourseService.getAllCoursesUsingId(listOfRecommendedCourseIds);
+			listOfRecommendedCourses =  iCourseService.getAllCoursesUsingId(listOfRecommendedCourseIds);
 			return listOfRecommendedCourses;
 		} else {
 			
@@ -224,7 +266,7 @@ public class RecommendationService implements IRecommendationService {
 				i++;
 			}
 			
-			recommendedCourseList = icourseService.getCoursesById(recommendedCourseListIds);
+			recommendedCourseList = iCourseService.getCoursesById(recommendedCourseListIds);
 			
 			System.out.println(recommendedCourseList);
 			
@@ -248,24 +290,24 @@ public class RecommendationService implements IRecommendationService {
 	}
 	
 	private List<Course> facultyWiseCourseForInstitute(List<Faculty> facultyList, Institute instituteId){
-		return icourseService.facultyWiseCourseForInstitute(facultyList, instituteId);
+		return iCourseService.facultyWiseCourseForInstitute(facultyList, instituteId);
 	}
 	
 	private Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, Institute instituteId){
-		return icourseService.facultyWiseCourseIdMapForInstitute(facultyList, instituteId.getId());
+		return iCourseService.facultyWiseCourseIdMapForInstitute(facultyList, instituteId.getId());
 	}
 	
 	private Country getCountryBasedOnCitizenship(String citizenship) {
-		return icountryService.getCountryBasedOnCitizenship(citizenship);
+		return iCountryService.getCountryBasedOnCitizenship(citizenship);
 	}
 	
 	private long checkIfCoursesPresentForCountry(Country country) {
-		return icourseService.checkIfCoursesPresentForCountry(country);
+		return iCourseService.checkIfCoursesPresentForCountry(country);
 	}
 	
 	private List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country) {
 		if(country != null) {
-			return icourseService.getTopRatedCoursesForCountryWorldRankingWise(country);
+			return iCourseService.getTopRatedCoursesForCountryWorldRankingWise(country);
 		} else {
 			return new ArrayList<>();
 		}
@@ -273,7 +315,7 @@ public class RecommendationService implements IRecommendationService {
 	
 	private List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(Country country) {
 		if(country != null) {
-			return icourseService.getTopRatedCourseIdForCountryWorldRankingWise(country);
+			return iCourseService.getTopRatedCourseIdForCountryWorldRankingWise(country);
 		} else {
 			return new ArrayList<>();
 		}
@@ -281,21 +323,21 @@ public class RecommendationService implements IRecommendationService {
 
 	@Override
 	public List<Course> getTopSearchedCoursesForFaculty(BigInteger facultyId, BigInteger userId) {
-		List<BigInteger> facultyWiseCourses = icourseService.getAllCourseUsingFaculty(facultyId);
-		List<BigInteger> allSearchCourses = icourseService.getTopSearchedCoursesByOtherUsers(userId);
+		List<BigInteger> facultyWiseCourses = iCourseService.getAllCourseUsingFaculty(facultyId);
+		List<BigInteger> allSearchCourses = iCourseService.getTopSearchedCoursesByOtherUsers(userId);
 		allSearchCourses.retainAll(facultyWiseCourses);
 		System.out.println("All Course Size -- "+allSearchCourses.size());
 		if(allSearchCourses == null || allSearchCourses.size()==0) {
 			allSearchCourses = facultyWiseCourses.size()>10 ? facultyWiseCourses.subList(0, 9):facultyWiseCourses;
 		}
 		
-		return icourseService.getCoursesById(allSearchCourses);
+		return iCourseService.getCoursesById(allSearchCourses);
 	}
 
 	@Override
 	public Set<Course> displayRelatedCourseAsPerUserPastSearch(BigInteger userId) throws ValidationException{
 		// TODO Auto-generated method stub
-		List<BigInteger> userSearchCourseIdList = icourseService.getTopSearchedCoursesByUsers(userId);
+		List<BigInteger> userSearchCourseIdList = iCourseService.getTopSearchedCoursesByUsers(userId);
 		
 		/**
 		 * Keeping this code to get related courses only for top 3 courses searched.
@@ -308,8 +350,8 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Logic ends
 		 */
-		Set<Course> userRelatedCourses = icourseService.getRelatedCoursesBasedOnPastSearch(userSearchCourseIdList);
+		Set<Course> userRelatedCourses = iCourseService.getRelatedCoursesBasedOnPastSearch(userSearchCourseIdList);
 		return userRelatedCourses;
 	}
-	
+
 }

@@ -25,7 +25,7 @@ public interface IInstituteService {
 
 	Institute get(BigInteger id);
 
-	List<Institute> getAllInstituteByCountry(BigInteger countryId);
+	List<BigInteger> getTopInstituteIdByCountry(BigInteger countryId, Long startIndex, Long pageSize);
 
 	List<Institute> getAll();
 
@@ -66,4 +66,6 @@ public interface IInstituteService {
 	String deleteInstituteImage(BigInteger instituteId);
 
 	List<ImageResponseDto> getInstituteImage(BigInteger instituteId);
+	
+	List<InstituteResponseDto> getAllInstituteByID(final List<BigInteger> listInstituteId);
 }
