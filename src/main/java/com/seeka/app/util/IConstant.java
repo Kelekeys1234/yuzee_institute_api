@@ -85,14 +85,19 @@ public class IConstant {
 	public static final String STORAGE_CONNECTION_URL = "http://" + STORAGE + "/api/v1/storage";
 	public static final String IDENTITY_CONNECTION_URL = "http://" + IDENTITY;
 	public static final String USER_DETAIL_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/api/v1/users/basic";
+	public static final String USER_DEVICE_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/api/v1/user/device/basic";
+
+	public static final String NOTIFICATION_CONNECTION_URL = "http://" + NOTIFICATION + "/push";
 
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH";
 	public static final String ELASTIC_SEARCH_INDEX = "seeka_dev";
 	public static final String ELASTIC_SEARCH_COURSE_TYPE = "course";
 	public static final String ELASTIC_SEARCH_ARTICLE_TYPE = "article";
 	public static final String COURSE_DEFAULT_DESCRPTION = "Seeka believes that every person deserves an equal opportunity in education, career aspirations and life. Our database is developed to match users no matter where they live. With over 200,000 scholarships available to choose from, we have carefully paired you with the best.";
-	
-	/***************CONSTANTS FOR DISPLAYING MESSAGES******************************************/
+
+	/***************
+	 * CONSTANTS FOR DISPLAYING MESSAGES
+	 ******************************************/
 	public static final String INSTITUTE = "Institute";
 	/***************************************************************************************/
 }

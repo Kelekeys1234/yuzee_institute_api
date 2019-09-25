@@ -14,6 +14,9 @@ public class EnrollmentChatConversationDto implements Serializable {
 	private BigInteger enrollmentChatId;
 	private String message;
 	private String status;
+	/**
+	 * USER/SEEKA
+	 */
 	private String initiateFrom;
 	private BigInteger initiateFromId;
 	private Date createdOn;

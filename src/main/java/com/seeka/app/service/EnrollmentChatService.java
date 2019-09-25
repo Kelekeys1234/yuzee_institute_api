@@ -16,6 +16,7 @@ import com.seeka.app.bean.Enrollment;
 import com.seeka.app.bean.EnrollmentChat;
 import com.seeka.app.bean.EnrollmentChatConversation;
 import com.seeka.app.bean.EnrollmentChatMedia;
+import com.seeka.app.constant.EnrollmentInitiator;
 import com.seeka.app.dao.IEnrollmentChatConversationDao;
 import com.seeka.app.dao.IEnrollmentChatDao;
 import com.seeka.app.dao.IEnrollmentChatMediaDao;
@@ -49,6 +50,9 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 	@Value("${s3.url}")
 	private String s3URL;
 
+	@Autowired
+	private IUsersService iUsersService;
+
 	@Override
 	public EnrollmentChatConversation startEnrollmentChat(final EnrollmentChatRequestDto enrollmentChatRequestDto) throws ValidationException {
 
@@ -81,6 +85,9 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 		enrollmentChatConversation.setMessage(enrollmentChatRequestDto.getMessage());
 		enrollmentChatConversation.setStatus("SENT");
 		iEnrollmentChatConversationDao.save(enrollmentChatConversation);
+		if (enrollmentChatRequestDto.getInitiateFrom().equals(EnrollmentInitiator.SEEKA.name())) {
+			sentPushNotificationForEnrollmentConversation(enrollmentChatRequestDto.getMessage(), enrollmentChatRequestDto.getUserId());
+		}
 		return enrollmentChatConversation;
 	}
 
@@ -99,7 +106,14 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 		enrollmentChatConversation.setMessage(enrollmentChatConversationDto.getMessage());
 		enrollmentChatConversation.setStatus("SENT");
 		iEnrollmentChatConversationDao.save(enrollmentChatConversation);
+		if (enrollmentChatConversationDto.getInitiateFrom().equals(EnrollmentInitiator.SEEKA.name())) {
+			sentPushNotificationForEnrollmentConversation(enrollmentChatConversationDto.getMessage(), enrollmentChat.getUserId());
+		}
 		return enrollmentChatConversation;
+	}
+
+	private void sentPushNotificationForEnrollmentConversation(final String message, final BigInteger userId) {
+		iUsersService.sendPushNotification(userId, message);
 	}
 
 	@Override
@@ -122,8 +136,11 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 	}
 
 	@Override
-	public EnrollmentChatResposneDto getEnrollmentChatListBasedOnEnrollment(final BigInteger enrollmentId) {
+	public EnrollmentChatResposneDto getEnrollmentChatListBasedOnEnrollment(final BigInteger enrollmentId) throws ValidationException {
 		EnrollmentChat enrollmentChat = iEnrollmentChatDao.getEnrollmentChatBasedOnEnrollmentId(enrollmentId);
+		if (enrollmentChat == null) {
+			throw new ValidationException("Enrollment chat not found for enrollment Id: " + enrollmentId);
+		}
 		EnrollmentChatResposneDto enrollmentChatResposneDto = new EnrollmentChatResposneDto();
 		BeanUtils.copyProperties(enrollmentChat, enrollmentChatResposneDto);
 		enrollmentChatResposneDto.setEnrollmentId(enrollmentChat.getEnrollment().getId());

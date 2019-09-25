@@ -5,18 +5,25 @@ import java.util.Map;
 
 public enum EnrollmentStatus implements BasicStatus<EnrollmentStatus> {
 
-	SUBMITTED("SUBMITTED"), SEEKA_REVIEWED("SEEKA_REVIEWED"), PREPARED("PREPARED"), INSTITUTE_SUBMITTED("INSTITUTE_SUBMITTED"),
-	INSTITUTE_REVIEWED("INSTITUTE_REVIEWED"), INSTITUTE_OFFERED("INSTITUTE_OFFERED"), APPLICANT_APPROVED("APPLICANT_APPROVED"), APPROVED("APPROVED"),
-	REJECTED("REJECTED");
+	SUBMITTED("SUBMITTED", "SUBMITTED"), SEEKA_REVIEWED("SEEKA_REVIEWED", "SEEKA REVIEWED"), PREPARED("PREPARED", "PREPARED"),
+	INSTITUTE_SUBMITTED("INSTITUTE_SUBMITTED", "INSTITUTE SUBMITTED"), INSTITUTE_REVIEWED("INSTITUTE_REVIEWED", "INSTITUTE REVIEWED"),
+	INSTITUTE_OFFERED("INSTITUTE_OFFERED", "INSTITUTE OFFERED"), APPLICANT_APPROVED("APPLICANT_APPROVED", "APPLICANT APPROVED"),
+	APPROVED("APPROVED", "APPROVED"), REJECTED("REJECTED", "REJECTED");
 
 	String statusValue;
+	String displayValue;
 
 	public String getValue() {
 		return statusValue;
 	}
 
-	EnrollmentStatus(final String statusValue) {
+	public String getDisplayValue() {
+		return displayValue;
+	}
+
+	EnrollmentStatus(final String statusValue, final String displayValue) {
 		this.statusValue = statusValue;
+		this.displayValue = displayValue;
 	}
 
 	private static final Map<String, EnrollmentStatus> STATUS_TYPE_MAP = new HashMap<>();

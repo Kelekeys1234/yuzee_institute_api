@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,10 +50,12 @@ public class EnrollmentService implements IEnrollmentService {
 	private ICountryService iCountryService;
 
 	@Autowired
-	private UsersService usersService;
+	private IUsersService iUsersService;
 
 	@Value("${s3.url}")
 	private String s3URL;
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public EnrollmentDto addEnrollment(final EnrollmentDto enrollmentDto) throws ValidationException {
@@ -159,7 +163,7 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public void updateEnrollmentStatus(final EnrollmentStatusDto enrollmentStatusDto) throws ValidationException {
+	public void updateEnrollmentStatus(final EnrollmentStatusDto enrollmentStatusDto, final BigInteger userId) throws ValidationException {
 		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentStatusDto.getEnrollmentId());
 		if (enrollment == null) {
 			throw new ValidationException("enrollment not found for id" + enrollmentStatusDto.getEnrollmentId());
@@ -189,6 +193,22 @@ public class EnrollmentService implements IEnrollmentService {
 		enrollmentStatus.setStatus(enrollmentStatusDto.getStatus());
 		enrollmentStatus.setDeadLine(enrollmentStatusDto.getDeadLine());
 		iEnrollmentDao.saveEnrollmentStatus(enrollmentStatus);
+
+		/**
+		 * Sent Notification to user regarding status of application.
+		 */
+		sentEnrollmentNotification(enrollmentStatus, userId);
+	}
+
+	private void sentEnrollmentNotification(final EnrollmentStatus enrollmentStatus, final BigInteger userId) {
+		if (userId.compareTo(enrollmentStatus.getEnrollment().getUserId()) != 0) {
+			String message = "Your application status changed to "
+					+ com.seeka.app.constant.EnrollmentStatus.getByValue(enrollmentStatus.getStatus()).getDisplayValue();
+			iUsersService.sendPushNotification(enrollmentStatus.getEnrollment().getUserId(), message);
+		} else {
+			logger.info("Message trigger by user");
+		}
+
 	}
 
 	@Override
@@ -212,7 +232,7 @@ public class EnrollmentService implements IEnrollmentService {
 		enrollmentResponseDto.setInstituteTypeName(enrollment.getInstituteType().getName());
 		enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
 		enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
-		UserDto userDto = usersService.getUserById(enrollment.getUserId());
+		UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
 		enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
 		enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
 		return enrollmentResponseDto;
@@ -232,9 +252,9 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public List<EnrollmentResponseDto> getEnrollmentList(final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
-			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize) {
-		List<Enrollment> enrollmenList = iEnrollmentDao.getEnrollmentList(courseId, instituteId, enrollmentId, status, updatedOn, startIndex, pageSize);
+	public List<EnrollmentResponseDto> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId,
+			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize) {
+		List<Enrollment> enrollmenList = iEnrollmentDao.getEnrollmentList(userId, courseId, instituteId, enrollmentId, status, updatedOn, startIndex, pageSize);
 		List<EnrollmentResponseDto> resultList = new ArrayList<>();
 		for (Enrollment enrollment : enrollmenList) {
 			EnrollmentResponseDto enrollmentResponseDto = new EnrollmentResponseDto();
@@ -248,7 +268,13 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
 			enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
 			enrollmentResponseDto.setEnrollmentImages(null);
-			UserDto userDto = usersService.getUserById(enrollment.getUserId());
+
+			EnrollmentStatus enrollmentStatus = iEnrollmentDao.getEnrollmentStatusDetailBasedOnFilter(enrollment.getId(), enrollment.getStatus());
+			if (enrollmentStatus != null) {
+				enrollmentResponseDto.setDeadLine(enrollmentStatus.getDeadLine());
+			}
+
+			UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
 			enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
 			enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
 			resultList.add(enrollmentResponseDto);

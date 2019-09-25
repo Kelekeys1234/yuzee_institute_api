@@ -41,6 +41,9 @@ public class EnrollmentChatConversation implements Serializable {
 	@Column(name = "status")
 	private String status;
 
+	/**
+	 * USER/SEEKA
+	 */
 	@Column(name = "initiate_from")
 	private String initiateFrom;
 

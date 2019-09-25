@@ -60,6 +60,7 @@ public class EnrollmentResponseDto implements Serializable {
 	private String updatedBy;
 
 	private List<EnrollmentImageDto> enrollmentImages;
+	private Date deadLine;
 
 	public BigInteger getId() {
 		return id;
@@ -397,6 +398,14 @@ public class EnrollmentResponseDto implements Serializable {
 		this.enrollmentImages = enrollmentImages;
 	}
 
+	public Date getDeadLine() {
+		return deadLine;
+	}
+
+	public void setDeadLine(final Date deadLine) {
+		this.deadLine = deadLine;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -412,6 +421,7 @@ public class EnrollmentResponseDto implements Serializable {
 		result = prime * result + (courseName == null ? 0 : courseName.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
+		result = prime * result + (deadLine == null ? 0 : deadLine.hashCode());
 		result = prime * result + (email == null ? 0 : email.hashCode());
 		result = prime * result + (englishQualificaitonTest == null ? 0 : englishQualificaitonTest.hashCode());
 		result = prime * result + (enrollmentImages == null ? 0 : enrollmentImages.hashCode());
@@ -533,6 +543,13 @@ public class EnrollmentResponseDto implements Serializable {
 				return false;
 			}
 		} else if (!createdOn.equals(other.createdOn)) {
+			return false;
+		}
+		if (deadLine == null) {
+			if (other.deadLine != null) {
+				return false;
+			}
+		} else if (!deadLine.equals(other.deadLine)) {
 			return false;
 		}
 		if (email == null) {
@@ -772,7 +789,8 @@ public class EnrollmentResponseDto implements Serializable {
 				.append(countryId).append(", countryName=").append(countryName).append(", zipCode=").append(zipCode).append(", phoneNumber=")
 				.append(phoneNumber).append(", email=").append(email).append(", assignee=").append(assignee).append(", assigneeName=").append(assigneeName)
 				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=").append(createdBy)
-				.append(", updatedBy=").append(updatedBy).append(", enrollmentImages=").append(enrollmentImages).append("]");
+				.append(", updatedBy=").append(updatedBy).append(", enrollmentImages=").append(enrollmentImages).append(", deadLine=").append(deadLine)
+				.append("]");
 		return builder.toString();
 	}
 

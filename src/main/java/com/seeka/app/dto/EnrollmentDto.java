@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 public class EnrollmentDto implements Serializable {
 
 	/**
@@ -13,10 +15,14 @@ public class EnrollmentDto implements Serializable {
 	private static final long serialVersionUID = -2176239464548120692L;
 
 	private BigInteger id;
+	@NotNull(message = "instituteId is Required")
 	private BigInteger instituteId;
+	@NotNull(message = "userId is Required")
 	private BigInteger userId;
+	@NotNull(message = "courseId is Required")
 	private BigInteger courseId;
 	private Boolean isInternationalStudent;
+	@NotNull(message = "instituteTypeId is Required")
 	private BigInteger instituteTypeId;
 	private String previousInstitute;
 	private String previousCourseName;

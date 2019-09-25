@@ -77,8 +77,18 @@ public class EnrollmentDao implements IEnrollmentDao {
 	}
 
 	@Override
-	public List<Enrollment> getEnrollmentList(final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId, final String status,
-			final Date updatedOn, final Integer startIndex, final Integer pageSize) {
+	public EnrollmentStatus getEnrollmentStatusDetailBasedOnFilter(final BigInteger enrollmentId, final String status) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(EnrollmentStatus.class, "enrollmentStatus");
+		crit.createAlias("enrollmentStatus.enrollment", "enrollment");
+		crit.add(Restrictions.eq("enrollment.id", enrollmentId));
+		crit.add(Restrictions.eq("enrollmentStatus.status", status));
+		return (EnrollmentStatus) crit.uniqueResult();
+	}
+
+	@Override
+	public List<Enrollment> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
+			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Enrollment.class, "enrollment");
 		if (instituteId != null) {
@@ -100,6 +110,9 @@ public class EnrollmentDao implements IEnrollmentDao {
 			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
 			crit.add(Restrictions.ge("enrollment.updatedOn", fromDate));
 			crit.add(Restrictions.le("enrollment.updatedOn", toDate));
+		}
+		if (userId != null) {
+			crit.add(Restrictions.eq("enrollment.userId", userId));
 		}
 
 		if (startIndex != null && pageSize != null) {

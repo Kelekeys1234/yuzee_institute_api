@@ -5,17 +5,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +48,12 @@ public class EnrollmentController {
 	private IEnrollmentService iEnrollmentService;
 
 	@PostMapping
-	public ResponseEntity<?> addEnrollment(@RequestBody final EnrollmentDto enrollmentDto) throws ValidationException {
+	public ResponseEntity<?> addEnrollment(@RequestBody @Valid final EnrollmentDto enrollmentDto, final BindingResult bindingResult)
+			throws ValidationException {
+		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+		if (!fieldErrors.isEmpty()) {
+			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
+		}
 		EnrollmentDto resultEnrollmentDto = iEnrollmentService.addEnrollment(enrollmentDto);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(resultEnrollmentDto).setMessage("Created enrollment successfully")
 				.create();
@@ -57,8 +68,9 @@ public class EnrollmentController {
 	}
 
 	@PostMapping("/status")
-	public ResponseEntity<?> updateEnrollmentStatus(@RequestBody final EnrollmentStatusDto enrollmentStatusDto) throws ValidationException {
-		iEnrollmentService.updateEnrollmentStatus(enrollmentStatusDto);
+	public ResponseEntity<?> updateEnrollmentStatus(@RequestHeader final BigInteger userId, @RequestBody final EnrollmentStatusDto enrollmentStatusDto)
+			throws ValidationException {
+		iEnrollmentService.updateEnrollmentStatus(enrollmentStatusDto, userId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Updated enrollment status successfully").create();
 	}
 
@@ -69,13 +81,21 @@ public class EnrollmentController {
 				.create();
 	}
 
+	@GetMapping("/user")
+	public ResponseEntity<?> getEnrollmentListBasedOnUserId(@RequestHeader final BigInteger userId) throws ValidationException {
+		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(userId, null, null, null, null, null, null, null);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentResponseList).setMessage("Get enrollment List successfully")
+				.create();
+	}
+
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getEnrollmentList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final BigInteger courseId, @RequestParam(required = false) final BigInteger instituteId,
 			@RequestParam(required = false) final BigInteger enrollmentId, @RequestParam(required = false) final String status,
-			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn) throws ValidationException {
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
+			@RequestParam(required = false) final BigInteger userId) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(courseId, instituteId, enrollmentId, status, updatedOn,
+		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(null, courseId, instituteId, enrollmentId, status, updatedOn,
 				startIndex, pageSize);
 		int totalCount = iEnrollmentService.countOfEnrollment();
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);

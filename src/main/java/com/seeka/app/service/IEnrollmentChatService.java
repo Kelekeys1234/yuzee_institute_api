@@ -21,7 +21,7 @@ public interface IEnrollmentChatService {
 
 	void changeEnrollmentChatAssignee(BigInteger enrollmentChatId, BigInteger assigneeId) throws ValidationException;
 
-	EnrollmentChatResposneDto getEnrollmentChatListBasedOnEnrollment(BigInteger enrollmentId);
+	EnrollmentChatResposneDto getEnrollmentChatListBasedOnEnrollment(BigInteger enrollmentId) throws ValidationException;
 
 	List<EnrollmentChatResposneDto> getEnrollmentChatList(Integer startIndex, Integer pageSize);
 

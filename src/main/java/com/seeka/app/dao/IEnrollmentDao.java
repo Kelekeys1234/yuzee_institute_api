@@ -26,9 +26,11 @@ public interface IEnrollmentDao {
 
 	String removeEnrollmentImage(BigInteger enrollmentImageId);
 
-	List<Enrollment> getEnrollmentList(BigInteger courseId, BigInteger instituteId, BigInteger enrollmentId, String status, Date updatedOn, Integer startIndex,
-			Integer pageSize);
+	List<Enrollment> getEnrollmentList(BigInteger userId, BigInteger courseId, BigInteger instituteId, BigInteger enrollmentId, String status, Date updatedOn,
+			Integer startIndex, Integer pageSize);
 
 	int countOfEnrollment();
+
+	EnrollmentStatus getEnrollmentStatusDetailBasedOnFilter(BigInteger enrollmentId, String status);
 
 }
