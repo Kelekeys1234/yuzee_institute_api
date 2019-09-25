@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -33,6 +34,7 @@ public class HelpSubCategory implements Serializable {
     private String updatedBy;
     private Boolean isActive;
     private HelpCategory categoryId;
+    private BigInteger count;
     
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -117,6 +119,15 @@ public class HelpSubCategory implements Serializable {
 
     public void setCategoryId(HelpCategory categoryId) {
         this.categoryId = categoryId;
+    }
+    
+    @Transient
+    public BigInteger getCount() {
+        return count;
+    }
+
+    public void setCount(BigInteger count) {
+        this.count = count;
     }
     
     

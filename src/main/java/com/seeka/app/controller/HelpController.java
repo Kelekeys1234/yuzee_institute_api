@@ -63,4 +63,19 @@ public class HelpController {
     public ResponseEntity<?> getSubCatgeory(@PathVariable BigInteger id) throws Exception {
         return ResponseEntity.accepted().body(helpService.getSubCategory(id));
     }
+    
+    @RequestMapping(value = "/subCategory/{categoryId}/category", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getSubCatgeoryByCategory(@PathVariable BigInteger categoryId) throws Exception {
+        return ResponseEntity.accepted().body(helpService.getSubCategoryByCategory(categoryId));
+    }
+    
+    @RequestMapping(value = "/{categoryId}/category", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getHelpByCategory(@PathVariable BigInteger categoryId) throws Exception {
+        return ResponseEntity.accepted().body(helpService.getHelpByCategory(categoryId));
+    }
+    
+    @RequestMapping(value = "/subCategory/count", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getSubCategoryCount() throws Exception {
+        return ResponseEntity.accepted().body(helpService.getSubCategoryCount());
+    }
 }

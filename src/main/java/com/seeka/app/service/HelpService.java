@@ -253,4 +253,80 @@ public class HelpService implements IHelpService {
         helpSubCategoryDto.setUpdatedBy(helpSubCategory.getUpdatedBy());
         return helpSubCategoryDto;
     }
+    
+
+    @Override
+    public Map<String, Object> getSubCategoryByCategory(BigInteger categoryId) {
+        Map<String, Object> response = new HashMap<>();
+        List<HelpSubCategoryDto> subCategoryDtos = new ArrayList<HelpSubCategoryDto>();
+        try {
+            List<HelpSubCategory> categories = helpDAO.getSubCategoryByCategory(categoryId);
+            for (HelpSubCategory helpSubCategory : categories) {
+                subCategoryDtos.add(convertHelpSubCategoryToDto(helpSubCategory));
+            }
+            if (subCategoryDtos != null && !subCategoryDtos.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.HELP_SUBCATEGORY_SUCCESS);
+                response.put("data", subCategoryDtos);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.HELP_SUBCATEGORY_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getHelpByCategory(BigInteger categoryId) {
+        Map<String, Object> response = new HashMap<>();
+        List<HelpDto> helpDtos = new ArrayList<>();
+        try {
+            List<SeekaHelp> seekHelps = helpDAO.getHelpByCategory(categoryId);
+            for (SeekaHelp seekaHelp : seekHelps)
+                helpDtos.add(convertSeekaHelpToDto(seekaHelp));
+            if (helpDtos != null && !helpDtos.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.HELP_SUCCESS);
+                response.put("data", helpDtos);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.HELP_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getSubCategoryCount() {
+        Map<String, Object> response = new HashMap<>();
+        List<HelpSubCategory> helpSubCategories = new ArrayList<HelpSubCategory>();
+        try {
+            List<HelpSubCategory> subCatgories = helpDAO.getAllHelpSubCategories();
+            for (HelpSubCategory helpSubCategory : subCatgories) {
+                helpSubCategory.setCount(helpDAO.findTotalHelpRecordBySubCategory(helpSubCategory.getId()));
+                helpSubCategories.add(helpSubCategory);
+            }
+            if (helpSubCategories != null && !helpSubCategories.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.HELP_SUBCATEGORY_SUCCESS);
+                response.put("data", helpSubCategories);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.HELP_SUBCATEGORY_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
 }

@@ -26,4 +26,12 @@ public interface IHelpDAO {
     public void save(HelpCategory helpCategory);
 
     public void save(HelpSubCategory helpSubCategory);
+    
+    public List<HelpSubCategory> getSubCategoryByCategory(BigInteger id);
+    
+    public BigInteger findTotalHelpRecordBySubCategory(BigInteger sub_category_id);
+    
+    public List<HelpSubCategory> getAllHelpSubCategories();
+    
+    public List<SeekaHelp> getHelpByCategory(BigInteger id);
 }

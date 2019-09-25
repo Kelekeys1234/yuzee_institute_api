@@ -4,8 +4,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -124,5 +126,39 @@ public class HelpDAO implements IHelpDAO {
     public void save(HelpSubCategory helpSubCategory) {
         Session session = sessionFactory.getCurrentSession();
         session.save(helpSubCategory);
+    }
+    
+    @Override
+    public List<HelpSubCategory> getSubCategoryByCategory(BigInteger categoryId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(HelpSubCategory.class, "helpSubCategory");
+        crit.createAlias("helpSubCategory.categoryId", "users");
+        return crit.add(Restrictions.eq("users.id", categoryId)).list();
+    }
+
+    @Override
+    public List<SeekaHelp> getHelpByCategory(BigInteger categoryId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+        crit.createAlias("seekaHelp.category", "category");
+        return crit.add(Restrictions.eq("category.id", categoryId)).list();
+    }
+
+    @Override
+    public BigInteger findTotalHelpRecordBySubCategory(BigInteger sub_category_id) {
+        int status = 1;
+        Session session = sessionFactory.getCurrentSession();
+        String sqlQuery = "select count(*) from seeka_help sa where sa.is_active = " + status + " and sa.deleted_on IS NULL and sub_category_id=" + sub_category_id;
+        System.out.println(sqlQuery);
+        Query query = session.createSQLQuery(sqlQuery);
+        BigInteger count =  (BigInteger) query.uniqueResult();
+        return count;
+    }
+
+    @Override
+    public List<HelpSubCategory> getAllHelpSubCategories() {
+        Session session = sessionFactory.getCurrentSession();
+        List<HelpSubCategory> list = session.createCriteria(HelpSubCategory.class).list();
+        return list;
     }
 }
