@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
 import com.seeka.app.dto.HelpSubCategoryDto;
@@ -32,5 +33,9 @@ public interface IHelpService {
 	public Map<String, Object> getHelpByCategory(BigInteger id);
 
 	public Map<String, Object> getSubCategoryCount();
+
+	public Map<String, Object> saveAnswer(@Valid HelpAnswerDto helpAnswerDto);
+	
+	public Map<String, Object> getAnswerByHelpId(BigInteger userId);
 
 }

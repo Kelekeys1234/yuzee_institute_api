@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
 import com.seeka.app.dto.HelpSubCategoryDto;
@@ -78,4 +79,14 @@ public class HelpController {
     public ResponseEntity<?> getSubCategoryCount() throws Exception {
         return ResponseEntity.accepted().body(helpService.getSubCategoryCount());
     }
+    
+    @RequestMapping(value = "/answer",  method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<?> saveAnswer(@RequestBody HelpAnswerDto helpAnswerDto) throws Exception {
+        return ResponseEntity.accepted().body(helpService.saveAnswer(helpAnswerDto));
+    }
+    
+    @RequestMapping(value = "/answer/{helpId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getAnswerByHelpId(@PathVariable BigInteger helpId) throws Exception {
+        return ResponseEntity.accepted().body(helpService.getAnswerByHelpId(helpId));
+    } 
 }
