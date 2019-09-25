@@ -153,13 +153,15 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 			enrollmentChatConversationDto.setEnrollmentChatId(enrollmentChatConversation.getEnrollmentChat().getId());
 
 			EnrollmentChatMedia enrollmentChatMedia = iEnrollmentChatImagesDao.getEnrollmentImage(enrollmentChatConversationDto.getId());
-			ImageResponseDto imageResponseDto = new ImageResponseDto();
-			imageResponseDto.setCategory(ImageCategory.ENROLLMENT.name());
-			imageResponseDto.setCategoryId(enrollmentChatConversationDto.getId());
-			imageResponseDto.setId(enrollmentChatMedia.getId());
-			imageResponseDto.setImageName(enrollmentChatMedia.getImageName());
-			imageResponseDto.setBaseUrl(s3URL);
-			enrollmentChatConversationDto.setImageResponseDto(imageResponseDto);
+			if (enrollmentChatMedia != null) {
+				ImageResponseDto imageResponseDto = new ImageResponseDto();
+				imageResponseDto.setCategory(ImageCategory.ENROLLMENT.name());
+				imageResponseDto.setCategoryId(enrollmentChatConversationDto.getId());
+				imageResponseDto.setId(enrollmentChatMedia.getId());
+				imageResponseDto.setImageName(enrollmentChatMedia.getImageName());
+				imageResponseDto.setBaseUrl(s3URL);
+				enrollmentChatConversationDto.setImageResponseDto(imageResponseDto);
+			}
 			chatConversationDtos.add(enrollmentChatConversationDto);
 		}
 		enrollmentChatResposneDto.setChatConversationDtos(chatConversationDtos);
