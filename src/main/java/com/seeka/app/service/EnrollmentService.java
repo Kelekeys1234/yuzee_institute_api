@@ -163,7 +163,7 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public void updateEnrollmentStatus(final EnrollmentStatusDto enrollmentStatusDto, final BigInteger userId) throws ValidationException {
+	public EnrollmentStatus updateEnrollmentStatus(final EnrollmentStatusDto enrollmentStatusDto, final BigInteger userId) throws ValidationException {
 		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentStatusDto.getEnrollmentId());
 		if (enrollment == null) {
 			throw new ValidationException("enrollment not found for id" + enrollmentStatusDto.getEnrollmentId());
@@ -194,13 +194,11 @@ public class EnrollmentService implements IEnrollmentService {
 		enrollmentStatus.setDeadLine(enrollmentStatusDto.getDeadLine());
 		iEnrollmentDao.saveEnrollmentStatus(enrollmentStatus);
 
-		/**
-		 * Sent Notification to user regarding status of application.
-		 */
-		sentEnrollmentNotification(enrollmentStatus, userId);
+		return enrollmentStatus;
 	}
 
-	private void sentEnrollmentNotification(final EnrollmentStatus enrollmentStatus, final BigInteger userId) {
+	@Override
+	public void sentEnrollmentNotification(final EnrollmentStatus enrollmentStatus, final BigInteger userId) throws ValidationException {
 		if (userId.compareTo(enrollmentStatus.getEnrollment().getUserId()) != 0) {
 			String message = "Your application status changed to "
 					+ com.seeka.app.constant.EnrollmentStatus.getByValue(enrollmentStatus.getStatus()).getDisplayValue();

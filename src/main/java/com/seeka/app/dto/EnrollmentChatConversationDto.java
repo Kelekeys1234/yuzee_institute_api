@@ -19,6 +19,7 @@ public class EnrollmentChatConversationDto implements Serializable {
 	 */
 	private String initiateFrom;
 	private BigInteger initiateFromId;
+	private String initiateFromName;
 	private Date createdOn;
 	private ImageResponseDto imageResponseDto;
 
@@ -68,6 +69,14 @@ public class EnrollmentChatConversationDto implements Serializable {
 
 	public void setInitiateFromId(final BigInteger initiateFromId) {
 		this.initiateFromId = initiateFromId;
+	}
+
+	public String getInitiateFromName() {
+		return initiateFromName;
+	}
+
+	public void setInitiateFromName(final String initiateFromName) {
+		this.initiateFromName = initiateFromName;
 	}
 
 	public Date getCreatedOn() {

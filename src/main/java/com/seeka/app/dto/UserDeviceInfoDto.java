@@ -8,11 +8,11 @@ import java.io.Serializable;
  *
  */
 public class UserDeviceInfoDto implements Serializable {
+
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 8262410197907696076L;
-
+	private static final long serialVersionUID = 8433234322653635466L;
 	private Long id;
 	private Long userId;
 	private String deviceId;
@@ -27,6 +27,7 @@ public class UserDeviceInfoDto implements Serializable {
 	private String lastName;
 	private String email;
 	private String mobileNo;
+	private Long userSessionId;
 
 	public Long getId() {
 		return id;
@@ -140,6 +141,25 @@ public class UserDeviceInfoDto implements Serializable {
 		this.mobileNo = mobileNo;
 	}
 
+	public Long getUserSessionId() {
+		return userSessionId;
+	}
+
+	public void setUserSessionId(final Long userSessionId) {
+		this.userSessionId = userSessionId;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserDeviceInfoDto [id=").append(id).append(", userId=").append(userId).append(", deviceId=").append(deviceId)
+				.append(", sdkVersionCode=").append(sdkVersionCode).append(", appVersion=").append(appVersion).append(", osVersion=").append(osVersion)
+				.append(", model=").append(model).append(", platform=").append(platform).append(", ipAddress=").append(ipAddress).append(", pushNotification=")
+				.append(pushNotification).append(", firstName=").append(firstName).append(", lastName=").append(lastName).append(", email=").append(email)
+				.append(", mobileNo=").append(mobileNo).append(", userSessionId=").append(userSessionId).append("]");
+		return builder.toString();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -158,6 +178,7 @@ public class UserDeviceInfoDto implements Serializable {
 		result = prime * result + (pushNotification ? 1231 : 1237);
 		result = prime * result + (sdkVersionCode == null ? 0 : sdkVersionCode.hashCode());
 		result = prime * result + (userId == null ? 0 : userId.hashCode());
+		result = prime * result + (userSessionId == null ? 0 : userSessionId.hashCode());
 		return result;
 	}
 
@@ -267,18 +288,14 @@ public class UserDeviceInfoDto implements Serializable {
 		} else if (!userId.equals(other.userId)) {
 			return false;
 		}
+		if (userSessionId == null) {
+			if (other.userSessionId != null) {
+				return false;
+			}
+		} else if (!userSessionId.equals(other.userSessionId)) {
+			return false;
+		}
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("UserDeviceInfoDto [id=").append(id).append(", userId=").append(userId).append(", deviceId=").append(deviceId)
-				.append(", sdkVersionCode=").append(sdkVersionCode).append(", appVersion=").append(appVersion).append(", osVersion=").append(osVersion)
-				.append(", model=").append(model).append(", platform=").append(platform).append(", ipAddress=").append(ipAddress).append(", pushNotification=")
-				.append(pushNotification).append(", firstName=").append(firstName).append(", lastName=").append(lastName).append(", email=").append(email)
-				.append(", mobileNo=").append(mobileNo).append("]");
-		return builder.toString();
 	}
 
 }

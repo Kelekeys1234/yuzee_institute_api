@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
+import com.seeka.app.bean.EnrollmentStatus;
 import com.seeka.app.dto.EnrollmentDto;
 import com.seeka.app.dto.EnrollmentResponseDto;
 import com.seeka.app.dto.EnrollmentStatusDto;
@@ -15,7 +16,7 @@ public interface IEnrollmentService {
 
 	EnrollmentDto updateEnrollment(EnrollmentDto enrollmentDto, BigInteger enrollmentId) throws ValidationException;
 
-	void updateEnrollmentStatus(EnrollmentStatusDto enrollmentStatusDto, BigInteger userId) throws ValidationException;
+	EnrollmentStatus updateEnrollmentStatus(EnrollmentStatusDto enrollmentStatusDto, BigInteger userId) throws ValidationException;
 
 	EnrollmentResponseDto getEnrollmentDetail(BigInteger enrollmentId);
 
@@ -29,5 +30,7 @@ public interface IEnrollmentService {
 	String removeEnrollmentImage(BigInteger enrollmentImageId);
 
 	int countOfEnrollment();
+
+	void sentEnrollmentNotification(EnrollmentStatus enrollmentStatus, BigInteger userId) throws ValidationException;
 
 }

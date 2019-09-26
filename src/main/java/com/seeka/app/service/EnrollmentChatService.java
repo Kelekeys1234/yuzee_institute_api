@@ -25,6 +25,7 @@ import com.seeka.app.dto.EnrollmentChatConversationDto;
 import com.seeka.app.dto.EnrollmentChatRequestDto;
 import com.seeka.app.dto.EnrollmentChatResposneDto;
 import com.seeka.app.dto.ImageResponseDto;
+import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 
@@ -112,7 +113,7 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 		return enrollmentChatConversation;
 	}
 
-	private void sentPushNotificationForEnrollmentConversation(final String message, final BigInteger userId) {
+	private void sentPushNotificationForEnrollmentConversation(final String message, final BigInteger userId) throws ValidationException {
 		iUsersService.sendPushNotification(userId, message);
 	}
 
@@ -144,6 +145,11 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 		EnrollmentChatResposneDto enrollmentChatResposneDto = new EnrollmentChatResposneDto();
 		BeanUtils.copyProperties(enrollmentChat, enrollmentChatResposneDto);
 		enrollmentChatResposneDto.setEnrollmentId(enrollmentChat.getEnrollment().getId());
+		if (enrollmentChat.getUserId() != null) {
+			UserDto userDto = iUsersService.getUserById(enrollmentChat.getUserId());
+			enrollmentChatResposneDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
+		}
+
 		List<EnrollmentChatConversationDto> chatConversationDtos = new ArrayList<>();
 		List<EnrollmentChatConversation> conversationList = iEnrollmentChatConversationDao
 				.getEnrollmentChatConversationBasedOnEnrollmentChatId(enrollmentChat.getId());
@@ -151,6 +157,10 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 			EnrollmentChatConversationDto enrollmentChatConversationDto = new EnrollmentChatConversationDto();
 			BeanUtils.copyProperties(enrollmentChatConversation, enrollmentChatConversationDto);
 			enrollmentChatConversationDto.setEnrollmentChatId(enrollmentChatConversation.getEnrollmentChat().getId());
+			if (enrollmentChatConversation.getInitiateFromId() != null) {
+				UserDto userDto = iUsersService.getUserById(enrollmentChatConversation.getInitiateFromId());
+				enrollmentChatConversationDto.setInitiateFromName(userDto.getFirstName() + " " + userDto.getLastName());
+			}
 
 			EnrollmentChatMedia enrollmentChatMedia = iEnrollmentChatImagesDao.getEnrollmentImage(enrollmentChatConversationDto.getId());
 			if (enrollmentChatMedia != null) {

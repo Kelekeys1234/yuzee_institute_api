@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.bean.EnrollmentStatus;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.EnrollmentDto;
 import com.seeka.app.dto.EnrollmentResponseDto;
@@ -70,7 +71,11 @@ public class EnrollmentController {
 	@PostMapping("/status")
 	public ResponseEntity<?> updateEnrollmentStatus(@RequestHeader final BigInteger userId, @RequestBody final EnrollmentStatusDto enrollmentStatusDto)
 			throws ValidationException {
-		iEnrollmentService.updateEnrollmentStatus(enrollmentStatusDto, userId);
+		EnrollmentStatus enrollmentStatus = iEnrollmentService.updateEnrollmentStatus(enrollmentStatusDto, userId);
+		/**
+		 * Sent Notification to user regarding status of application.
+		 */
+		iEnrollmentService.sentEnrollmentNotification(enrollmentStatus, userId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Updated enrollment status successfully").create();
 	}
 

@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.seeka.app.dto.NotificationBean;
 import com.seeka.app.dto.PayloadDto;
 import com.seeka.app.dto.UserDeviceInfoDto;
 import com.seeka.app.dto.UserDto;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.IConstant;
 
 @Service
@@ -37,22 +39,24 @@ public class UsersService implements IUsersService {
 		return userDto;
 	}
 
-	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public UserDeviceInfoDto getUserDeviceById(final BigInteger userId) {
+	private List<UserDeviceInfoDto> getUserDeviceById(final BigInteger userId) throws ValidationException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_DEVICE_CONNECTION_URL).pathSegment(String.valueOf(userId));
 		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
 		Map<String, Object> responseMap = result.getBody();
+		Integer status = (Integer) responseMap.get("status");
+		System.out.println(status);
+		if (status != 200) {
+			throw new ValidationException((String) responseMap.get("message"));
+		}
 		responseMap.get("data");
 		ObjectMapper mapper = new ObjectMapper();
-		UserDeviceInfoDto userDeviceInfoDto = mapper.convertValue(responseMap.get("data"), UserDeviceInfoDto.class);
-
+		List<UserDeviceInfoDto> userDeviceInfoDto = (List<UserDeviceInfoDto>) mapper.convertValue(responseMap.get("data"), List.class);
 		return userDeviceInfoDto;
 	}
 
 	@SuppressWarnings("rawtypes")
-	@Override
-	public void sendPushNotification(final UserDeviceInfoDto userDeviceInfoDto, final String message) {
+	private void sendPushNotification(final UserDeviceInfoDto userDeviceInfoDto, final String message) {
 		NotificationBean pushNotification = new NotificationBean();
 		PayloadDto payloadDto = new PayloadDto();
 
@@ -71,9 +75,14 @@ public class UsersService implements IUsersService {
 	}
 
 	@Override
-	public void sendPushNotification(final BigInteger userId, final String message) {
-		UserDeviceInfoDto userDeviceInfoDto = getUserDeviceById(userId);
-		sendPushNotification(userDeviceInfoDto, message);
+	public void sendPushNotification(final BigInteger userId, final String message) throws ValidationException {
+		List<UserDeviceInfoDto> userDeviceInfoDto = getUserDeviceById(userId);
+
+		ObjectMapper objMapper = new ObjectMapper();
+		for (Object obj : userDeviceInfoDto) {
+			UserDeviceInfoDto userDevInfoDto = objMapper.convertValue(obj, UserDeviceInfoDto.class);
+			sendPushNotification(userDevInfoDto, message);
+		}
 	}
 
 }

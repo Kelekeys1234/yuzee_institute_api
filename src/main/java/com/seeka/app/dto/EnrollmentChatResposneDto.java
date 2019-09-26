@@ -15,6 +15,7 @@ public class EnrollmentChatResposneDto implements Serializable {
 	private BigInteger enrollmentId;
 	private BigInteger assigneeId;
 	private BigInteger userId;
+	private String userName;
 	private Date createdOn;
 	private Date updatedOn;
 	private List<EnrollmentChatConversationDto> chatConversationDtos;
@@ -51,6 +52,14 @@ public class EnrollmentChatResposneDto implements Serializable {
 		this.userId = userId;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(final String userName) {
+		this.userName = userName;
+	}
+
 	public Date getCreatedOn() {
 		return createdOn;
 	}
@@ -80,11 +89,13 @@ public class EnrollmentChatResposneDto implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (assigneeId == null ? 0 : assigneeId.hashCode());
+		result = prime * result + (chatConversationDtos == null ? 0 : chatConversationDtos.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (enrollmentId == null ? 0 : enrollmentId.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
 		result = prime * result + (userId == null ? 0 : userId.hashCode());
+		result = prime * result + (userName == null ? 0 : userName.hashCode());
 		return result;
 	}
 
@@ -105,6 +116,13 @@ public class EnrollmentChatResposneDto implements Serializable {
 				return false;
 			}
 		} else if (!assigneeId.equals(other.assigneeId)) {
+			return false;
+		}
+		if (chatConversationDtos == null) {
+			if (other.chatConversationDtos != null) {
+				return false;
+			}
+		} else if (!chatConversationDtos.equals(other.chatConversationDtos)) {
 			return false;
 		}
 		if (createdOn == null) {
@@ -142,15 +160,22 @@ public class EnrollmentChatResposneDto implements Serializable {
 		} else if (!userId.equals(other.userId)) {
 			return false;
 		}
+		if (userName == null) {
+			if (other.userName != null) {
+				return false;
+			}
+		} else if (!userName.equals(other.userName)) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("EnrollmentChatDto [id=").append(id).append(", enrollmentId=").append(enrollmentId).append(", assigneeId=").append(assigneeId)
-				.append(", userId=").append(userId).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
-				.append(", chatConversationDtos=").append(chatConversationDtos).append("]");
+		builder.append("EnrollmentChatResposneDto [id=").append(id).append(", enrollmentId=").append(enrollmentId).append(", assigneeId=").append(assigneeId)
+				.append(", userId=").append(userId).append(", userName=").append(userName).append(", createdOn=").append(createdOn).append(", updatedOn=")
+				.append(updatedOn).append(", chatConversationDtos=").append(chatConversationDtos).append("]");
 		return builder.toString();
 	}
 
