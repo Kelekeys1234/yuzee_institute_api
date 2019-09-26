@@ -366,6 +366,11 @@ public class HelpService implements IHelpService {
 		helpAnswer.setAnswer(answerDto.getAnswer());
 		helpAnswer.setSeekaHelp(helpDAO.get(answerDto.getHelpId()));
 		helpAnswer.setUser(userDao.get(answerDto.getUserId()));
+		helpAnswer.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+		helpAnswer.setCreatedBy(answerDto.getCreatedBy());
+		helpAnswer.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+		helpAnswer.setUpdatedBy(answerDto.getUpdatedBy());
+		helpAnswer.setIsDeleted(false);
 		return helpAnswer;
 	}
 
@@ -378,7 +383,7 @@ public class HelpService implements IHelpService {
 			for (HelpAnswer helpAnswer : helpAnswers) {
 				dtos.add(convertBeanToHelpAnswerDto(helpAnswer));
 			}
-			if (dtos != null) {
+			if (dtos != null && !dtos.isEmpty()) {
 				response.put("status", HttpStatus.OK.value());
 				response.put("message", IConstant.HELP_ANSWER_SUCCESS);
 				response.put("data", dtos);
@@ -399,6 +404,8 @@ public class HelpService implements IHelpService {
 		helpAnswerDto.setAnswer(helpAnswer.getAnswer());
 		helpAnswerDto.setUserId(helpAnswer.getUser().getUserId());
 		helpAnswerDto.setHelpId(helpAnswer.getSeekaHelp().getId());
+		helpAnswerDto.setCreatedBy(helpAnswer.getCreatedBy());
+		helpAnswerDto.setUpdatedBy(helpAnswer.getUpdatedBy());
 		return helpAnswerDto;
 	}
 }

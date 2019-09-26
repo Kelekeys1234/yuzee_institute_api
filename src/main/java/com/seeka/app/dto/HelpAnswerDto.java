@@ -7,6 +7,8 @@ public class HelpAnswerDto {
 	private BigInteger userId;
 	private BigInteger helpId;
 	private String answer;
+	private String createdBy;
+	private String updatedBy;
 
 	public BigInteger getUserId() {
 		return userId;
@@ -30,6 +32,22 @@ public class HelpAnswerDto {
 
 	public void setAnswer(String answer) {
 		this.answer = answer;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 }
