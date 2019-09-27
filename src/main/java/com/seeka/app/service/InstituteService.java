@@ -604,4 +604,8 @@ public class InstituteService implements IInstituteService {
 		return dao.ratingWiseInstituteListByCountry(country);
 	}
 
+	@Override
+	public List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize) {
+		return dao.getInstituteIdsBasedOnGlobalRanking(startIndex, pageSize);
+	}
 }

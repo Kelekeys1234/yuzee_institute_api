@@ -76,4 +76,6 @@ public interface IInstituteDAO {
     List<Institute> ratingWiseInstituteListByCountry(Country country);
 
 	List<Institute> getAllInstituteByID(List<BigInteger> instituteId);
+	
+	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
 }

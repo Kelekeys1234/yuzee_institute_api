@@ -24,6 +24,7 @@ import com.seeka.app.dto.UserDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
+import com.seeka.app.util.IConstant;
 
 @Service
 public class RecommendationService implements IRecommendationService {
@@ -54,7 +55,7 @@ public class RecommendationService implements IRecommendationService {
 	
 	@Override
 	public List<InstituteResponseDto> getRecommendedInstitutes(BigInteger userId, Long startIndex, Long pageSize, Long pageNumber,
-			String language) throws ValidationException, NotFoundException{
+			String language) throws ValidationException, NotFoundException {
 
 		List<BigInteger> instituteIdList = new ArrayList<>();
 		/**
@@ -74,23 +75,48 @@ public class RecommendationService implements IRecommendationService {
 		if(country == null || country.getId() == null) {
 			throw new ValidationException(messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] {userDto.getCitizenship()}, language));
 		}
+		
+		/**
+		 * Check if user search history exists, if exists show institutes for the country in which he has
+		 * searched courses for based on his past search and pagination if no records found continue with the
+		 * below logic.
+		 */
+		
+//		List<BigInteger> courseIds = iCourseService.getTopSearchedCoursesByUsers(userId);
+//		getCountryCityFromCourse(courseIds);
+		
 		/**
 		 * Check if courses are available for user country
 		 */
 		Long count = iCourseService.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto,country);
-		if(count == null || count.equals(0L)) {
-			throw new ValidationException(messageByLocalService.getMessage("no.courses.present.for.country", new Object[] {userDto.getCitizenship()}, language));
+		
+		if(!(count == null || count.equals(0L))) {
+			
+			/**
+			 * Display top universities for the country
+			 */
+			if(startIndex == null) {
+				startIndex = ((pageNumber-1) * pageSize) + 1;
+				instituteIdList = iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize);
+			} else {
+				instituteIdList = iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize);
+			}
+			
+			
 		}
 		/**
-		 * Display top universities for the country
+		 * Logic to fetch international institutes for user
 		 */
-		if(startIndex == null) {
-			startIndex = (pageNumber * pageSize) + 1;
-			instituteIdList = iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize);
-		} else {
-			instituteIdList = iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize);
-		}
+		List<GlobalDataDto> globalDataDtoList = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
 		
+		if(pageNumber != null) {
+			instituteIdList.addAll(getInstitutesAsPerGlobalData(globalDataDtoList, (pageNumber-1)));
+		} else {
+			throw new ValidationException(messageByLocalService.getMessage("page.number.mandatory", new Object[] {}, language));
+		}
+		/**
+		 * Above line is written to merge both domestic and international institutes
+		 */
 		return iInstituteService.getAllInstituteByID(instituteIdList);
 	}
 
@@ -354,4 +380,60 @@ public class RecommendationService implements IRecommendationService {
 		return userRelatedCourses;
 	}
 
+	private List<BigInteger> getInstitutesAsPerGlobalData(List<GlobalDataDto> globalDataDtoList, Long pageNumber) throws ValidationException{
+		if(pageNumber == null) {
+			throw new ValidationException(messageByLocalService.getMessage("page.number.not.specified", new Object[] {}, "en"));
+		}
+		
+		Long startCountry = (pageNumber * IConstant.COUNTRY_PER_PAGE); // this is done as we display institutes corresponding to 10 countries in a page at a time
+		
+		if(globalDataDtoList.size() < startCountry+ 1) {
+			
+			/**
+			 * This condition if true indicates that 2 institutes have been displayed for all countries where the other user's from
+			 * users current country are willing to go, and now th institutes should be displayed based on random logic for the same.
+			 */
+			
+			/**
+			 * 
+			 * Display random institute.. we would start displaying top most institutes as per ranking of the institute...
+			 * this might result in case that insitutes are duplicated but would be displayed based on ranking of institute....
+			 */
+			
+			/**
+			 * Fetch as per country list obtained how many pages would be occupied by countries corresponding to institute.
+			 */
+			long pagesCorrespondingToAllCountries = (globalDataDtoList.size() / IConstant.COUNTRY_PER_PAGE); 
+			long pageNumberForInstitute = pageNumber - pagesCorrespondingToAllCountries;
+			
+			long startIndex = (pageNumberForInstitute * IConstant.COUNTRY_PER_PAGE);
+			List<BigInteger> listInstituteIds = iInstituteService.getInstituteIdsBasedOnGlobalRanking(startIndex, IConstant.COUNTRY_PER_PAGE.longValue());
+			return listInstituteIds;
+		} else {
+			List<BigInteger> insitituteIds = new ArrayList<>();
+			/**
+			 * fetch all insitute Ids : i.e. 2 insitutes per country in this for loop.
+			 * 
+			 */
+			for(Long i = pageNumber * IConstant.COUNTRY_PER_PAGE; (i < globalDataDtoList.size()) && (i < (pageNumber+1) * IConstant.INSITUTE_PER_COUNTRY); i++) {
+				/**
+				 * fetch country based on Name
+				 */
+				Country country = iCountryService.getCountryBasedOnCitizenship(globalDataDtoList.get(i.intValue()).getDestinationCountry());
+				/**
+				 * If country not found don't throw exception but countinue with next country.
+				 */
+				if(country == null || country.getId().equals(BigInteger.ZERO)) {
+					continue;
+				}
+				
+				/**
+				 * Get 2 institutes per country
+				 */
+				insitituteIds.addAll(iInstituteService.getTopInstituteIdByCountry(country.getId(), 0L, IConstant.INSITUTE_PER_COUNTRY.longValue()));
+			}
+			return insitituteIds;
+		}
+	}
+	
 }

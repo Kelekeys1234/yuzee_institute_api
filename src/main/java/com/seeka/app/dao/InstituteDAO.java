@@ -623,4 +623,11 @@ public class InstituteDAO implements IInstituteDAO {
 		crit.addOrder(Order.asc("worldRanking"));
 		return crit.list();
 	}
+
+	@Override
+	public List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize) {
+		Session session = sessionFactory.getCurrentSession();
+		List<BigInteger> insituteIds = (List<BigInteger>)session.createNativeQuery("SELECT ID FROM INSTITUTE ORDER BY WORLD_RANKING LIMIT ?,?").setParameter(1, startIndex).setParameter(2, pageSize).getResultList();
+		return insituteIds;
+	}
 }

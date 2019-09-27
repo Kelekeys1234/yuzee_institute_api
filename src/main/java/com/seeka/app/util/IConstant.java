@@ -98,6 +98,9 @@ public class IConstant {
 	public static final String ELASTIC_SEARCH_ARTICLE_TYPE = "article";
 	public static final String COURSE_DEFAULT_DESCRPTION = "Seeka believes that every person deserves an equal opportunity in education, career aspirations and life. Our database is developed to match users no matter where they live. With over 200,000 scholarships available to choose from, we have carefully paired you with the best.";
 
+	public static final Integer INSITUTE_PER_COUNTRY = 2;
+	
+	public static final Integer COUNTRY_PER_PAGE = 10;
 	/***************
 	 * CONSTANTS FOR DISPLAYING MESSAGES
 	 ******************************************/
