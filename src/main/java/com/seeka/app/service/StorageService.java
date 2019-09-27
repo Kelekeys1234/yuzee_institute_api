@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,32 +24,39 @@ public class StorageService implements IStorageService {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Autowired
 	private MessageByLocaleService messageByLocalService;
-	
+
 	@Override
-	public List<StorageDto> getStorageInformation(BigInteger entityId, String entityType, String type, String language) throws ValidationException{
-		
+	public List<StorageDto> getStorageInformation(BigInteger entityId, String entityType, String type, String language) throws ValidationException {
+
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL);
-		
-		if(entityId == null || entityId.equals(new BigInteger("0")) ) {
-			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] {entityId}, language));
-		} else if (entityType == null || entityType.isEmpty() ) {
-			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] {entityType}, language));
+
+		if (entityId == null || entityId.equals(new BigInteger("0"))) {
+			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] { entityId }, language));
+		} else if (entityType == null || entityType.isEmpty()) {
+			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] { entityType }, language));
 		}
-		
+
 		builder.queryParam("entityId", entityId);
 		builder.queryParam("entityType", entityType);
-		if(type!=null) {
+		if (type != null) {
 			builder.queryParam("type", type);
 		}
-		
+
 		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
 		Map<String, Object> responseMap = result.getBody();
 		responseMap.get("data");
 		ObjectMapper mapper = new ObjectMapper();
-		List<StorageDto> storageDtoList = (List<StorageDto>)mapper.convertValue(responseMap.get("data"), List.class);
-		return storageDtoList;
+		List<StorageDto> storageDtoList = mapper.convertValue(responseMap.get("data"), List.class);
+		List<StorageDto> resultList = new ArrayList<>();
+		ObjectMapper objMapper = new ObjectMapper();
+		for (Object obj : storageDtoList) {
+			StorageDto storageDto1 = objMapper.convertValue(obj, StorageDto.class);
+			resultList.add(storageDto1);
+		}
+
+		return resultList;
 	}
 }

@@ -32,7 +32,6 @@ public class InstituteResponseDto implements Serializable {
 	private String totalAvailableJobs;
 	private String countryName;
 	private String cityName;
-	private String logoImage;
 	private List<StorageDto> storageList;
 
 	public Integer getWorldRanking() {
@@ -159,14 +158,6 @@ public class InstituteResponseDto implements Serializable {
 
 	public void setCityName(final String cityName) {
 		this.cityName = cityName;
-	}
-
-	public String getLogoImage() {
-		return logoImage;
-	}
-
-	public void setLogoImage(final String logoImage) {
-		this.logoImage = logoImage;
 	}
 
 	/**
