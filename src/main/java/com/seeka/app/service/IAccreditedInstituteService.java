@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.AccreditedInstitute;
+import com.seeka.app.dto.AccreditedInstituteDto;
 import com.seeka.app.dto.AccreditedInstituteRequestDto;
 import com.seeka.app.exception.ValidationException;
 
@@ -13,9 +14,9 @@ public interface IAccreditedInstituteService {
 
 	AccreditedInstitute addAccreditedInstitute(AccreditedInstituteRequestDto accreditedInstituteRequestDto) throws ValidationException;
 
-	List<AccreditedInstitute> getAccreditedInstituteList(Integer pageNumber, Integer pageSize);
+	List<AccreditedInstituteDto> getAccreditedInstituteList(Integer pageNumber, Integer pageSize) throws ValidationException;
 
-	AccreditedInstitute getAccreditedInstituteDetail(BigInteger accreditedInstituteId);
+	AccreditedInstituteDto getAccreditedInstituteDetail(BigInteger accreditedInstituteId) throws ValidationException;
 
 	void addAccreditedLogo(MultipartFile file, AccreditedInstitute accreditedInstitute);
 
@@ -23,7 +24,7 @@ public interface IAccreditedInstituteService {
 			throws ValidationException;
 
 	void deleteAccreditedInstitute(BigInteger accreditedInstituteId) throws ValidationException;
-	
+
 	List<AccreditedInstituteRequestDto> getAllAccreditedInstitutes();
 
 }

@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,16 +14,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.seeka.app.bean.Enrollment;
 import com.seeka.app.bean.EnrollmentChat;
 import com.seeka.app.bean.EnrollmentChatConversation;
-import com.seeka.app.bean.EnrollmentChatMedia;
 import com.seeka.app.constant.EnrollmentInitiator;
 import com.seeka.app.dao.IEnrollmentChatConversationDao;
 import com.seeka.app.dao.IEnrollmentChatDao;
-import com.seeka.app.dao.IEnrollmentChatMediaDao;
 import com.seeka.app.dao.IEnrollmentDao;
 import com.seeka.app.dto.EnrollmentChatConversationDto;
 import com.seeka.app.dto.EnrollmentChatRequestDto;
 import com.seeka.app.dto.EnrollmentChatResposneDto;
-import com.seeka.app.dto.ImageResponseDto;
+import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
@@ -43,16 +40,13 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 	private IEnrollmentChatConversationDao iEnrollmentChatConversationDao;
 
 	@Autowired
-	private IMediaService iMediaService;
-
-	@Autowired
-	private IEnrollmentChatMediaDao iEnrollmentChatImagesDao;
-
-	@Value("${s3.url}")
-	private String s3URL;
+	private IStorageService iStorageService;
 
 	@Autowired
 	private IUsersService iUsersService;
+
+	@Autowired
+	private IMediaService iMediaService;
 
 	@Override
 	public EnrollmentChatConversation startEnrollmentChat(final EnrollmentChatRequestDto enrollmentChatRequestDto) throws ValidationException {
@@ -61,55 +55,50 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 		if (enrollment == null) {
 			throw new ValidationException("Enrollment not found for id " + enrollmentChatRequestDto.getEnrollmentId());
 		}
+		EnrollmentChatConversation enrollmentChatConversation;
 		/**
 		 * One Enrollment can have only one chat
 		 */
 		EnrollmentChat existingEnrollmentChat = iEnrollmentChatDao.getEnrollmentChatBasedOnEnrollmentId(enrollmentChatRequestDto.getEnrollmentId());
 		if (existingEnrollmentChat != null) {
-			throw new ValidationException("Enrollment chat exists for enrollment id " + enrollmentChatRequestDto.getEnrollmentId());
-		}
-		EnrollmentChat enrollmentChat = new EnrollmentChat();
-		enrollmentChat.setCreatedOn(new Date());
-		enrollmentChat.setUserId(enrollmentChatRequestDto.getUserId());
-		enrollmentChat.setEnrollment(enrollment);
-		iEnrollmentChatDao.save(enrollmentChat);
-		enrollmentChatRequestDto.setId(enrollmentChat.getId());
+			enrollmentChatConversation = addEnrollmentChatConversation(enrollmentChatRequestDto, existingEnrollmentChat);
+		} else {
+			EnrollmentChat enrollmentChat = new EnrollmentChat();
+			enrollmentChat.setCreatedOn(new Date());
+			enrollmentChat.setUserId(enrollmentChatRequestDto.getUserId());
+			enrollmentChat.setEnrollment(enrollment);
+			iEnrollmentChatDao.save(enrollmentChat);
+			enrollmentChatRequestDto.setId(enrollmentChat.getId());
 
-		/**
-		 * Add Enrollment chat conversation
-		 */
-		EnrollmentChatConversation enrollmentChatConversation = new EnrollmentChatConversation();
-		enrollmentChatConversation.setCreatedOn(new Date());
-		enrollmentChatConversation.setEnrollmentChat(enrollmentChat);
-		enrollmentChatConversation.setInitiateFrom(enrollmentChatRequestDto.getInitiateFrom());
-		enrollmentChatConversation.setInitiateFromId(enrollmentChatRequestDto.getInitiateFromId());
-		enrollmentChatConversation.setMessage(enrollmentChatRequestDto.getMessage());
-		enrollmentChatConversation.setStatus("SENT");
-		iEnrollmentChatConversationDao.save(enrollmentChatConversation);
+			/**
+			 * Add Enrollment chat conversation
+			 */
+			enrollmentChatConversation = new EnrollmentChatConversation();
+			enrollmentChatConversation.setCreatedOn(new Date());
+			enrollmentChatConversation.setEnrollmentChat(enrollmentChat);
+			enrollmentChatConversation.setInitiateFrom(enrollmentChatRequestDto.getInitiateFrom());
+			enrollmentChatConversation.setInitiateFromId(enrollmentChatRequestDto.getInitiateFromId());
+			enrollmentChatConversation.setMessage(enrollmentChatRequestDto.getMessage());
+			enrollmentChatConversation.setStatus("SENT");
+			iEnrollmentChatConversationDao.save(enrollmentChatConversation);
+		}
+
 		if (enrollmentChatRequestDto.getInitiateFrom().equals(EnrollmentInitiator.SEEKA.name())) {
 			sentPushNotificationForEnrollmentConversation(enrollmentChatRequestDto.getMessage(), enrollmentChatRequestDto.getUserId());
 		}
 		return enrollmentChatConversation;
 	}
 
-	@Override
-	public EnrollmentChatConversation addEnrollmentChatConversation(final EnrollmentChatConversationDto enrollmentChatConversationDto)
+	private EnrollmentChatConversation addEnrollmentChatConversation(EnrollmentChatRequestDto enrollmentChatRequestDto, EnrollmentChat existingEnrollmentChat)
 			throws ValidationException {
-		EnrollmentChat enrollmentChat = iEnrollmentChatDao.getEnrollmentChat(enrollmentChatConversationDto.getEnrollmentChatId());
-		if (enrollmentChat == null) {
-			throw new ValidationException("Enrollment chat not found for id " + enrollmentChatConversationDto.getEnrollmentChatId());
-		}
 		EnrollmentChatConversation enrollmentChatConversation = new EnrollmentChatConversation();
 		enrollmentChatConversation.setCreatedOn(new Date());
-		enrollmentChatConversation.setEnrollmentChat(enrollmentChat);
-		enrollmentChatConversation.setInitiateFrom(enrollmentChatConversationDto.getInitiateFrom());
-		enrollmentChatConversation.setInitiateFromId(enrollmentChatConversationDto.getInitiateFromId());
-		enrollmentChatConversation.setMessage(enrollmentChatConversationDto.getMessage());
+		enrollmentChatConversation.setEnrollmentChat(existingEnrollmentChat);
+		enrollmentChatConversation.setInitiateFrom(enrollmentChatRequestDto.getInitiateFrom());
+		enrollmentChatConversation.setInitiateFromId(enrollmentChatRequestDto.getInitiateFromId());
+		enrollmentChatConversation.setMessage(enrollmentChatRequestDto.getMessage());
 		enrollmentChatConversation.setStatus("SENT");
 		iEnrollmentChatConversationDao.save(enrollmentChatConversation);
-		if (enrollmentChatConversationDto.getInitiateFrom().equals(EnrollmentInitiator.SEEKA.name())) {
-			sentPushNotificationForEnrollmentConversation(enrollmentChatConversationDto.getMessage(), enrollmentChat.getUserId());
-		}
 		return enrollmentChatConversation;
 	}
 
@@ -125,15 +114,6 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 		}
 		enrollmentChat.setAssigneeId(assigneeId);
 		iEnrollmentChatDao.update(enrollmentChat);
-	}
-
-	@Override
-	public void addEnrollmentChatImage(final MultipartFile file, final EnrollmentChatConversation enrollmentChatConversation) {
-		String imageName = iMediaService.uploadImage(file, enrollmentChatConversation.getId(), ImageCategory.ENROLLMENT.name(), null);
-		EnrollmentChatMedia enrollmentChatImages = new EnrollmentChatMedia();
-		enrollmentChatImages.setEnrollmentChatConversation(enrollmentChatConversation);
-		enrollmentChatImages.setImageName(imageName);
-		iEnrollmentChatImagesDao.save(enrollmentChatImages);
 	}
 
 	@Override
@@ -161,17 +141,12 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 				UserDto userDto = iUsersService.getUserById(enrollmentChatConversation.getInitiateFromId());
 				enrollmentChatConversationDto.setInitiateFromName(userDto.getFirstName() + " " + userDto.getLastName());
 			}
-
-			EnrollmentChatMedia enrollmentChatMedia = iEnrollmentChatImagesDao.getEnrollmentImage(enrollmentChatConversationDto.getId());
-			if (enrollmentChatMedia != null) {
-				ImageResponseDto imageResponseDto = new ImageResponseDto();
-				imageResponseDto.setCategory(ImageCategory.ENROLLMENT.name());
-				imageResponseDto.setCategoryId(enrollmentChatConversationDto.getId());
-				imageResponseDto.setId(enrollmentChatMedia.getId());
-				imageResponseDto.setImageName(enrollmentChatMedia.getImageName());
-				imageResponseDto.setBaseUrl(s3URL);
-				enrollmentChatConversationDto.setImageResponseDto(imageResponseDto);
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(enrollmentChatConversationDto.getId(),
+					ImageCategory.ENROLLMENT_CHAT_CONVERSATION.name(), null, "en");
+			if (storageDTOList != null && !storageDTOList.isEmpty()) {
+				enrollmentChatConversationDto.setStorageDto(storageDTOList.get(0));
 			}
+
 			chatConversationDtos.add(enrollmentChatConversationDto);
 		}
 		enrollmentChatResposneDto.setChatConversationDtos(chatConversationDtos);
@@ -199,6 +174,13 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 		}
 		enrollmentChatConversation.setStatus("READ");
 		iEnrollmentChatConversationDao.update(enrollmentChatConversation);
+	}
+
+	@Override
+	public void addEnrollmentChatImage(MultipartFile file, EnrollmentChatConversation enrollmentChatConversation) {
+		String imageName = iMediaService.uploadImage(file, enrollmentChatConversation.getId(), ImageCategory.ENROLLMENT_CHAT_CONVERSATION.name(), null);
+		System.out.println(
+				"Enrollment chat conversation image upload for conversation id: " + enrollmentChatConversation.getId() + " and image name : " + imageName);
 	}
 
 }

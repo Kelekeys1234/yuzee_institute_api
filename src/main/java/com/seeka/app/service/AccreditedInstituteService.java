@@ -7,15 +7,18 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.AccreditedInstitute;
 import com.seeka.app.dao.IAccreditedInstituteDao;
+import com.seeka.app.dto.AccreditedInstituteDto;
 import com.seeka.app.dto.AccreditedInstituteRequestDto;
+import com.seeka.app.dto.StorageDto;
+import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.util.PaginationUtil;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -27,8 +30,8 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 	@Autowired
 	private IMediaService iMediaService;
 
-	@Value("${s3.url}")
-	private String s3URL;
+	@Autowired
+	private IStorageService iStorageService;
 
 	@Override
 	public AccreditedInstitute addAccreditedInstitute(final AccreditedInstituteRequestDto accreditedInstituteRequestDto) throws ValidationException {
@@ -48,34 +51,41 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 	}
 
 	@Override
-	public List<AccreditedInstitute> getAccreditedInstituteList(final Integer pageNumber, final Integer pageSize) {
-		int startIndex = (pageNumber - 1) * pageSize;
+	public List<AccreditedInstituteDto> getAccreditedInstituteList(final Integer pageNumber, final Integer pageSize) throws ValidationException {
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<AccreditedInstitute> accreditedInstitutes = iAccreditedInstituteDao.getAccreditedInstituteList(startIndex, pageSize);
-		List<AccreditedInstitute> resultList = new ArrayList<>();
+		List<AccreditedInstituteDto> resultList = new ArrayList<>();
 
 		for (AccreditedInstitute accreditedInstitute : accreditedInstitutes) {
-			if (accreditedInstitute.getLogoImage() != null) {
-				accreditedInstitute.setLogoUrl(s3URL + "" + accreditedInstitute.getLogoImage());
+			AccreditedInstituteDto accreditedInstituteDto = new AccreditedInstituteDto();
+			BeanUtils.copyProperties(accreditedInstitute, accreditedInstituteDto);
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(accreditedInstitute.getId(), ImageCategory.ACCREDITED_INSTITUTE.name(),
+					null, "en");
+			if (storageDTOList != null && !storageDTOList.isEmpty()) {
+				accreditedInstituteDto.setStorageDto(storageDTOList.get(0));
 			}
-			resultList.add(accreditedInstitute);
+			resultList.add(accreditedInstituteDto);
 		}
 		return resultList;
 	}
 
 	@Override
-	public AccreditedInstitute getAccreditedInstituteDetail(final BigInteger accreditedInstituteId) {
+	public AccreditedInstituteDto getAccreditedInstituteDetail(final BigInteger accreditedInstituteId) throws ValidationException {
 		AccreditedInstitute accreditedInstitute = iAccreditedInstituteDao.getAccreditedInstituteDetail(accreditedInstituteId);
-		if (accreditedInstitute.getLogoImage() != null) {
-			accreditedInstitute.setLogoUrl(s3URL + "" + accreditedInstitute.getLogoImage());
+		AccreditedInstituteDto accreditedInstituteDto = new AccreditedInstituteDto();
+		BeanUtils.copyProperties(accreditedInstitute, accreditedInstituteDto);
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(accreditedInstitute.getId(), ImageCategory.ACCREDITED_INSTITUTE.name(), null,
+				"en");
+		if (storageDTOList != null && !storageDTOList.isEmpty()) {
+			accreditedInstituteDto.setStorageDto(storageDTOList.get(0));
 		}
-		return accreditedInstitute;
+		return accreditedInstituteDto;
 	}
 
 	@Override
 	public void addAccreditedLogo(final MultipartFile file, final AccreditedInstitute accreditedInstitute) {
-		String logoName = iMediaService.uploadImage(file, accreditedInstitute.getId(), "ACCREDITED_INSTITUTE", null);
-		accreditedInstitute.setLogoImage(logoName);
-		iAccreditedInstituteDao.update(accreditedInstitute);
+		String logoName = iMediaService.uploadImage(file, accreditedInstitute.getId(), ImageCategory.ACCREDITED_INSTITUTE.name(), null);
+		System.out.println("Accredited institute media upload for id - >" + accreditedInstitute.getId() + " and Image name :" + logoName);
 	}
 
 	@Override

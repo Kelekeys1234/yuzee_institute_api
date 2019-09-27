@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.app.bean.AccreditedInstitute;
 import com.seeka.app.bean.AccreditedInstituteDetail;
 import com.seeka.app.dao.IAccreditedInstituteDetailDao;
+import com.seeka.app.dto.AccreditedInstituteDto;
 import com.seeka.app.enumeration.ReviewCategory;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.util.PaginationUtil;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -29,7 +30,7 @@ public class AccreditedInstituteDetailService implements IAccreditedInstituteDet
 				&& !ReviewCategory.INSTITUTE.name().equals(accreditedInstituteDetail.getEntityType())) {
 			throw new ValidationException("entity type Either COURSE or INSTITUTE");
 		}
-		AccreditedInstitute accreditedInstitute = iAccreditedInstituteService
+		AccreditedInstituteDto accreditedInstitute = iAccreditedInstituteService
 				.getAccreditedInstituteDetail(accreditedInstituteDetail.getAccreditedInstituteId());
 		if (accreditedInstitute == null) {
 			throw new ValidationException("Accredited Institute is not found for id : " + accreditedInstituteDetail.getAccreditedInstituteId());
@@ -48,7 +49,7 @@ public class AccreditedInstituteDetailService implements IAccreditedInstituteDet
 	@Override
 	public List<AccreditedInstituteDetail> getAccreditedInstituteDetailList(final BigInteger entityId, final String entityType, final Integer pageNumber,
 			final Integer pageSize) {
-		Integer startIndex = (pageNumber - 1) * pageSize;
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		return iAccreditedInstituteDetailDao.getAccreditedInstituteDetailList(entityId, entityType, startIndex, pageSize);
 	}
 

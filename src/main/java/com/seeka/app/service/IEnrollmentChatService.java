@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.EnrollmentChatConversation;
-import com.seeka.app.dto.EnrollmentChatConversationDto;
 import com.seeka.app.dto.EnrollmentChatRequestDto;
 import com.seeka.app.dto.EnrollmentChatResposneDto;
 import com.seeka.app.exception.ValidationException;
@@ -14,8 +13,6 @@ import com.seeka.app.exception.ValidationException;
 public interface IEnrollmentChatService {
 
 	EnrollmentChatConversation startEnrollmentChat(EnrollmentChatRequestDto enrollmentChatRequestDto) throws ValidationException;
-
-	EnrollmentChatConversation addEnrollmentChatConversation(EnrollmentChatConversationDto enrollmentChatConversationDto) throws ValidationException;
 
 	void addEnrollmentChatImage(MultipartFile file, EnrollmentChatConversation enrollmentChatConversation);
 

@@ -10,24 +10,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Enrollment;
-import com.seeka.app.bean.EnrollmentImage;
 import com.seeka.app.bean.EnrollmentStatus;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.constant.BasicStatus;
 import com.seeka.app.dao.IEnrollmentDao;
 import com.seeka.app.dto.EnrollmentDto;
-import com.seeka.app.dto.EnrollmentImageDto;
 import com.seeka.app.dto.EnrollmentResponseDto;
 import com.seeka.app.dto.EnrollmentStatusDto;
+import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserDto;
+import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 
 @Service
@@ -52,8 +51,8 @@ public class EnrollmentService implements IEnrollmentService {
 	@Autowired
 	private IUsersService iUsersService;
 
-	@Value("${s3.url}")
-	private String s3URL;
+	@Autowired
+	private IStorageService iStorageService;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -96,14 +95,6 @@ public class EnrollmentService implements IEnrollmentService {
 
 		iEnrollmentDao.addEnrollment(enrollment);
 		enrollmentDto.setId(enrollment.getId());
-		if (enrollmentDto.getEnrollmentImages() != null) {
-			for (EnrollmentImageDto enrollmentImageDto : enrollmentDto.getEnrollmentImages()) {
-				EnrollmentImage enrollmentImage = new EnrollmentImage();
-				BeanUtils.copyProperties(enrollmentImageDto, enrollmentImage);
-				enrollmentImage.setEnrollment(enrollment);
-				iEnrollmentDao.saveEnrollmentImage(enrollmentImage);
-			}
-		}
 
 		EnrollmentStatus enrollmentStatus = new EnrollmentStatus();
 		enrollmentStatus.setEnrollment(enrollment);
@@ -184,7 +175,6 @@ public class EnrollmentService implements IEnrollmentService {
 		enrollment.setStatus(enrollmentStatusDto.getStatus());
 		enrollment.setUpdatedBy("API");
 		enrollment.setUpdatedOn(new Date());
-		enrollment.setEnrollmentImages(new ArrayList<>());
 		iEnrollmentDao.updateEnrollment(enrollment);
 		EnrollmentStatus enrollmentStatus = new EnrollmentStatus();
 		enrollmentStatus.setEnrollment(enrollment);
@@ -210,18 +200,14 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public EnrollmentResponseDto getEnrollmentDetail(final BigInteger enrollmentId) {
+	public EnrollmentResponseDto getEnrollmentDetail(final BigInteger enrollmentId) throws ValidationException {
 		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentId);
 		EnrollmentResponseDto enrollmentResponseDto = new EnrollmentResponseDto();
 		BeanUtils.copyProperties(enrollment, enrollmentResponseDto);
-		List<EnrollmentImageDto> EnrollmentimageList = new ArrayList<>();
-		for (EnrollmentImage enrollmentImage : enrollment.getEnrollmentImages()) {
-			EnrollmentImageDto enrollmentImageDto = new EnrollmentImageDto();
-			BeanUtils.copyProperties(enrollmentImage, enrollmentImageDto);
-			enrollmentImageDto.setImageURL(s3URL + enrollmentImage.getImageName());
-			EnrollmentimageList.add(enrollmentImageDto);
-		}
-		enrollmentResponseDto.setEnrollmentImages(EnrollmentimageList);
+
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(enrollmentId, ImageCategory.ENROLLMENT.name(), null, "en");
+		enrollmentResponseDto.setEnrollmentImages(storageDTOList);
+
 		enrollmentResponseDto.setInstituteId(enrollment.getInstitute().getId());
 		enrollmentResponseDto.setInstituteName(enrollment.getInstitute().getName());
 		enrollmentResponseDto.setCourseId(enrollment.getCourse().getId());
@@ -278,24 +264,6 @@ public class EnrollmentService implements IEnrollmentService {
 			resultList.add(enrollmentResponseDto);
 		}
 		return resultList;
-	}
-
-	@Override
-	public void saveEnrollmentImage(final BigInteger enrollmentId, final String subCategory, final String imageName) throws ValidationException {
-		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentId);
-		if (enrollment == null) {
-			throw new ValidationException("enrollment not found for id" + enrollmentId);
-		}
-		EnrollmentImage enrollmentImage = new EnrollmentImage();
-		enrollmentImage.setImageName(imageName);
-		enrollmentImage.setImageType(subCategory);
-		enrollmentImage.setEnrollment(enrollment);
-		iEnrollmentDao.saveEnrollmentImage(enrollmentImage);
-	}
-
-	@Override
-	public String removeEnrollmentImage(final BigInteger enrollmentImageId) {
-		return iEnrollmentDao.removeEnrollmentImage(enrollmentImageId);
 	}
 
 	@Override

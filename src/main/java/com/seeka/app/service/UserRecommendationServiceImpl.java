@@ -16,9 +16,10 @@ import com.seeka.app.bean.UserWatchArticle;
 import com.seeka.app.bean.UserWatchCourse;
 import com.seeka.app.dao.UserRecommendationDao;
 import com.seeka.app.dto.CourseResponseDto;
-import com.seeka.app.dto.ImageResponseDto;
+import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserArticleRequestDto;
 import com.seeka.app.dto.UserCourseRequestDto;
+import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 
 @Service
@@ -35,7 +36,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	private IArticleService iArticleService;
 
 	@Autowired
-	private IInstituteImagesService iInstituteImagesService;
+	private IStorageService iStorageService;
 
 	@Override
 	public void createUserWatchCourse(final UserCourseRequestDto userCourseRequestDto) throws ValidationException {
@@ -370,9 +371,9 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setStars(course.getStars());
 			courseResponseDto.setWorldRanking(course.getWorldRanking());
 			courseResponseDto.setLanguageShortKey(course.getLanguage());
-			courseResponseDto.setLogoImage(course.getInstitute().getLogoImage());
-			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(courseResponseDto.getInstituteId());
-			courseResponseDto.setInstituteImages(imageResponseDtos);
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null,
+					"en");
+			courseResponseDto.setStorageList(storageDTOList);
 			resultList.add(courseResponseDto);
 		}
 		return resultList;
@@ -403,9 +404,9 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setStars(course.getStars());
 			courseResponseDto.setWorldRanking(course.getWorldRanking());
 			courseResponseDto.setLanguageShortKey(course.getLanguage());
-			courseResponseDto.setLogoImage(course.getInstitute().getLogoImage());
-			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(courseResponseDto.getInstituteId());
-			courseResponseDto.setInstituteImages(imageResponseDtos);
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null,
+					"en");
+			courseResponseDto.setStorageList(storageDTOList);
 			resultList.add(courseResponseDto);
 		}
 		return resultList;

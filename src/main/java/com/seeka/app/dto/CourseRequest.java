@@ -33,7 +33,6 @@ public class CourseRequest {
 	private String lastUpdated;
 	private String instituteName;
 	private String location;
-	private String instituteLogoUrl;
 	private String worldRanking;
 	private String stars;
 	private String cost;
@@ -48,8 +47,7 @@ public class CourseRequest {
 	private String levelName;
 	private String availbility;
 	private List<CourseEnglishEligibility> englishEligibility;
-	private List<ImageResponseDto> instituteImages;
-	
+	private List<StorageDto> storageList;
 
 	/**
 	 * @return the cId
@@ -163,7 +161,7 @@ public class CourseRequest {
 		this.intake = intake;
 	}
 
-    /**
+	/**
 	 * @return the domasticFee
 	 */
 	public Double getDomasticFee() {
@@ -205,17 +203,15 @@ public class CourseRequest {
 		this.grades = grades;
 	}
 
-	
-
 	public List<CourseEnglishEligibility> getEnglishEligibility() {
-        return englishEligibility;
-    }
+		return englishEligibility;
+	}
 
-    public void setEnglishEligibility(List<CourseEnglishEligibility> englishEligibility) {
-        this.englishEligibility = englishEligibility;
-    }
+	public void setEnglishEligibility(List<CourseEnglishEligibility> englishEligibility) {
+		this.englishEligibility = englishEligibility;
+	}
 
-    /**
+	/**
 	 * @return the partTime
 	 */
 	public String getPartTime() {
@@ -452,7 +448,7 @@ public class CourseRequest {
 	public void setTotalCount(final String totalCount) {
 		this.totalCount = totalCount;
 	}
-	
+
 	/**
 	 * @return the requirements
 	 */
@@ -467,172 +463,151 @@ public class CourseRequest {
 		this.requirements = requirements;
 	}
 
-    /**
-     * @return the facultyName
-     */
-    public String getFacultyName() {
-        return facultyName;
-    }
+	/**
+	 * @return the facultyName
+	 */
+	public String getFacultyName() {
+		return facultyName;
+	}
 
-    /**
-     * @param facultyName the facultyName to set
-     */
-    public void setFacultyName(String facultyName) {
-        this.facultyName = facultyName;
-    }
+	/**
+	 * @param facultyName the facultyName to set
+	 */
+	public void setFacultyName(String facultyName) {
+		this.facultyName = facultyName;
+	}
 
-    /**
-     * @return the studyMode
-     */
-    public String getStudyMode() {
-        return studyMode;
-    }
+	/**
+	 * @return the studyMode
+	 */
+	public String getStudyMode() {
+		return studyMode;
+	}
 
-    /**
-     * @param studyMode the studyMode to set
-     */
-    public void setStudyMode(String studyMode) {
-        this.studyMode = studyMode;
-    }
+	/**
+	 * @param studyMode the studyMode to set
+	 */
+	public void setStudyMode(String studyMode) {
+		this.studyMode = studyMode;
+	}
 
-    /**
-     * @return the partFull
-     */
-    public String getPartFull() {
-        return partFull;
-    }
+	/**
+	 * @return the partFull
+	 */
+	public String getPartFull() {
+		return partFull;
+	}
 
-    /**
-     * @param partFull the partFull to set
-     */
-    public void setPartFull(String partFull) {
-        this.partFull = partFull;
-    }
+	/**
+	 * @param partFull the partFull to set
+	 */
+	public void setPartFull(String partFull) {
+		this.partFull = partFull;
+	}
 
-    /**
-     * @return the levelId
-     */
-    public BigInteger getLevelId() {
-        return levelId;
-    }
+	/**
+	 * @return the levelId
+	 */
+	public BigInteger getLevelId() {
+		return levelId;
+	}
 
-    /**
-     * @param levelId the levelId to set
-     */
-    public void setLevelId(BigInteger levelId) {
-        this.levelId = levelId;
-    }
+	/**
+	 * @param levelId the levelId to set
+	 */
+	public void setLevelId(BigInteger levelId) {
+		this.levelId = levelId;
+	}
 
-    /**
-     * @return the levelName
-     */
-    public String getLevelName() {
-        return levelName;
-    }
+	/**
+	 * @return the levelName
+	 */
+	public String getLevelName() {
+		return levelName;
+	}
 
-    /**
-     * @param levelName the levelName to set
-     */
-    public void setLevelName(String levelName) {
-        this.levelName = levelName;
-    }
+	/**
+	 * @param levelName the levelName to set
+	 */
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
 
-    /**
-     * @return the availbility
-     */
-    public String getAvailbility() {
-        return availbility;
-    }
+	/**
+	 * @return the availbility
+	 */
+	public String getAvailbility() {
+		return availbility;
+	}
 
-    /**
-     * @param availbility the availbility to set
-     */
-    public void setAvailbility(String availbility) {
-        this.availbility = availbility;
-    }
+	/**
+	 * @param availbility the availbility to set
+	 */
+	public void setAvailbility(String availbility) {
+		this.availbility = availbility;
+	}
 
-    /**
-     * @return the instituteImages
-     */
-    public List<ImageResponseDto> getInstituteImages() {
-        return instituteImages;
-    }
+	public List<StorageDto> getStorageList() {
+		return storageList;
+	}
 
-    /**
-     * @param instituteImages the instituteImages to set
-     */
-    public void setInstituteImages(List<ImageResponseDto> instituteImages) {
-        this.instituteImages = instituteImages;
-    }
+	public void setStorageList(List<StorageDto> storageList) {
+		this.storageList = storageList;
+	}
 
-    /**
-     * @return the instituteLogoUrl
-     */
-    public String getInstituteLogoUrl() {
-        return instituteLogoUrl;
-    }
+	/**
+	 * @return the id
+	 */
+	public BigInteger getId() {
+		return id;
+	}
 
-    /**
-     * @param instituteLogoUrl the instituteLogoUrl to set
-     */
-    public void setInstituteLogoUrl(String instituteLogoUrl) {
-        this.instituteLogoUrl = instituteLogoUrl;
-    }
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(BigInteger id) {
+		this.id = id;
+	}
 
-    /**
-     * @return the id
-     */
-    public BigInteger getId() {
-        return id;
-    }
+	/**
+	 * @return the currency
+	 */
+	public String getCurrency() {
+		return currency;
+	}
 
-    /**
-     * @param id the id to set
-     */
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
+	/**
+	 * @param currency the currency to set
+	 */
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
 
+	/**
+	 * @return the language
+	 */
+	public String getLanguage() {
+		return language;
+	}
 
-    /**
-     * @return the currency
-     */
-    public String getCurrency() {
-        return currency;
-    }
+	/**
+	 * @param language the language to set
+	 */
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 
-    /**
-     * @param currency the currency to set
-     */
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
+	/**
+	 * @return the link
+	 */
+	public String getLink() {
+		return link;
+	}
 
-    /**
-     * @return the language
-     */
-    public String getLanguage() {
-        return language;
-    }
-
-    /**
-     * @param language the language to set
-     */
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    /**
-     * @return the link
-     */
-    public String getLink() {
-        return link;
-    }
-
-    /**
-     * @param link the link to set
-     */
-    public void setLink(String link) {
-        this.link = link;
-    }
+	/**
+	 * @param link the link to set
+	 */
+	public void setLink(String link) {
+		this.link = link;
+	}
 }

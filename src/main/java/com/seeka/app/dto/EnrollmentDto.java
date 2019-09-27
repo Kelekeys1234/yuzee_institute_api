@@ -3,7 +3,6 @@ package com.seeka.app.dto;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -57,8 +56,6 @@ public class EnrollmentDto implements Serializable {
 	private Date updatedOn;
 	private String createdBy;
 	private String updatedBy;
-
-	private List<EnrollmentImageDto> enrollmentImages;
 
 	public BigInteger getId() {
 		return id;
@@ -332,14 +329,6 @@ public class EnrollmentDto implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public List<EnrollmentImageDto> getEnrollmentImages() {
-		return enrollmentImages;
-	}
-
-	public void setEnrollmentImages(final List<EnrollmentImageDto> enrollmentImages) {
-		this.enrollmentImages = enrollmentImages;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -353,7 +342,6 @@ public class EnrollmentDto implements Serializable {
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (email == null ? 0 : email.hashCode());
 		result = prime * result + (englishQualificaitonTest == null ? 0 : englishQualificaitonTest.hashCode());
-		result = prime * result + (enrollmentImages == null ? 0 : enrollmentImages.hashCode());
 		result = prime * result + (firstName == null ? 0 : firstName.hashCode());
 		result = prime * result + (gender == null ? 0 : gender.hashCode());
 		result = prime * result + (graduationDate == null ? 0 : graduationDate.hashCode());
@@ -455,13 +443,6 @@ public class EnrollmentDto implements Serializable {
 				return false;
 			}
 		} else if (!englishQualificaitonTest.equals(other.englishQualificaitonTest)) {
-			return false;
-		}
-		if (enrollmentImages == null) {
-			if (other.enrollmentImages != null) {
-				return false;
-			}
-		} else if (!enrollmentImages.equals(other.enrollmentImages)) {
 			return false;
 		}
 		if (firstName == null) {
@@ -656,7 +637,7 @@ public class EnrollmentDto implements Serializable {
 				.append(otherName).append(", address=").append(address).append(", town=").append(town).append(", state=").append(state).append(", countryId=")
 				.append(countryId).append(", zipCode=").append(zipCode).append(", phoneNumber=").append(phoneNumber).append(", email=").append(email)
 				.append(", assignee=").append(assignee).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=")
-				.append(createdBy).append(", updatedBy=").append(updatedBy).append(", enrollmentImages=").append(enrollmentImages).append("]");
+				.append(createdBy).append(", updatedBy=").append(updatedBy).append("]");
 		return builder.toString();
 	}
 

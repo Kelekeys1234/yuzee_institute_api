@@ -21,11 +21,13 @@ import com.seeka.app.bean.UserInfo;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
-import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.StorageDto;
+import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.jobs.CountryLevelFacultyUtil;
-import com.seeka.app.service.IInstituteImagesService;
 import com.seeka.app.service.IInstituteService;
+import com.seeka.app.service.IStorageService;
 import com.seeka.app.service.IUserService;
 
 @RestController
@@ -37,11 +39,12 @@ public class SearchPageController {
 
 	@Autowired
 	private IInstituteService instituteService;
+
 	@Autowired
-	private IInstituteImagesService iInstituteImagesService;
+	private IStorageService iStorageService;
 
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-	public ResponseEntity<?> getAllCountries(@PathVariable("userId") final BigInteger userId) {
+	public ResponseEntity<?> getAllCountries(@PathVariable("userId") final BigInteger userId) throws ValidationException {
 		Map<String, Object> response = new HashMap<>();
 		Date now = new Date();
 		UserInfo user = userService.get(userId);
@@ -59,8 +62,8 @@ public class SearchPageController {
 		List<InstituteResponseDto> recommendedInstList = instituteService.getAllInstitutesByFilter(courseSearchDto);
 
 		for (InstituteResponseDto obj : recommendedInstList) {
-			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(obj.getId());
-			obj.setImages(imageResponseDtos);
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			obj.setStorageList(storageDTOList);
 		}
 		List<CountryDto> countryList = CountryLevelFacultyUtil.getCountryList();
 		List<Level> levelList = CountryLevelFacultyUtil.getLevelList();

@@ -1,52 +1,26 @@
-package com.seeka.app.bean;
-
-import static javax.persistence.GenerationType.IDENTITY;
+package com.seeka.app.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-@Entity
-@Table(name = "accredited_institute")
-public class AccreditedInstitute implements Serializable {
+public class AccreditedInstituteDto implements Serializable {
 
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 748946079064801464L;
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
+	private static final long serialVersionUID = -4421551292274187269L;
 	private BigInteger id;
-	@Column(name = "name", nullable = false)
 	private String name;
-	@Column(name = "description", nullable = false)
 	private String description;
-	@Column(name = "is_active")
 	private Boolean isActive;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
 	private Date createdOn;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on", length = 19)
 	private Date deletedOn;
-	@Column(name = "created_by", length = 50)
 	private String createdBy;
-	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
-	@Column(name = "deleted_by", length = 50)
 	private String deletedBy;
+	private StorageDto storageDto;
 
 	public BigInteger getId() {
 		return id;
@@ -128,6 +102,14 @@ public class AccreditedInstitute implements Serializable {
 		this.deletedBy = deletedBy;
 	}
 
+	public StorageDto getStorageDto() {
+		return storageDto;
+	}
+
+	public void setStorageDto(StorageDto storageDto) {
+		this.storageDto = storageDto;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -140,6 +122,7 @@ public class AccreditedInstitute implements Serializable {
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((storageDto == null) ? 0 : storageDto.hashCode());
 		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
 		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
 		return result;
@@ -153,7 +136,7 @@ public class AccreditedInstitute implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AccreditedInstitute other = (AccreditedInstitute) obj;
+		AccreditedInstituteDto other = (AccreditedInstituteDto) obj;
 		if (createdBy == null) {
 			if (other.createdBy != null)
 				return false;
@@ -194,6 +177,11 @@ public class AccreditedInstitute implements Serializable {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
+		if (storageDto == null) {
+			if (other.storageDto != null)
+				return false;
+		} else if (!storageDto.equals(other.storageDto))
+			return false;
 		if (updatedBy == null) {
 			if (other.updatedBy != null)
 				return false;
@@ -210,9 +198,10 @@ public class AccreditedInstitute implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AccreditedInstitute [id=").append(id).append(", name=").append(name).append(", description=").append(description).append(", isActive=")
-				.append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
-				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", deletedBy=").append(deletedBy).append("]");
+		builder.append("AccreditedInstituteDto [id=").append(id).append(", name=").append(name).append(", description=").append(description)
+				.append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", deletedOn=")
+				.append(deletedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", deletedBy=").append(deletedBy)
+				.append(", storageDto=").append(storageDto).append("]");
 		return builder.toString();
 	}
 

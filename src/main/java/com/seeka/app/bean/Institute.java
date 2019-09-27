@@ -76,7 +76,6 @@ public class Institute implements Serializable {
 
 	private Integer courseCount;
 	private String worldRankingType;
-	private String logoImage;
 
 	@Transient
 	public String getLastUpdated() {
@@ -221,35 +220,35 @@ public class Institute implements Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-	   /**
-     * @return the logoUrl
-     */
-    @Transient
-    public String getLogoUrl() {
-        return logoUrl;
-    }
+	/**
+	 * @return the logoUrl
+	 */
+	@Transient
+	public String getLogoUrl() {
+		return logoUrl;
+	}
 
-    /**
-     * @param logoUrl the logoUrl to set
-     */
-    public void setLogoUrl(final String logoUrl) {
-        this.logoUrl = logoUrl;
-    }
+	/**
+	 * @param logoUrl the logoUrl to set
+	 */
+	public void setLogoUrl(final String logoUrl) {
+		this.logoUrl = logoUrl;
+	}
 
-    /**
-     * @return the imageUrl
-     */
-    @Transient
-    public String getImageUrl() {
-        return imageUrl;
-    }
+	/**
+	 * @return the imageUrl
+	 */
+	@Transient
+	public String getImageUrl() {
+		return imageUrl;
+	}
 
-    /**
-     * @param imageUrl the imageUrl to set
-     */
-    public void setImageUrl(final String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+	/**
+	 * @param imageUrl the imageUrl to set
+	 */
+	public void setImageUrl(final String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
 
 	/**
 	 * @return the instituteDetailsObj
@@ -281,15 +280,6 @@ public class Institute implements Serializable {
 		this.serviceList = serviceList;
 	}
 
-	@Column(name = "logo_image")
-	public String getLogoImage() {
-		return logoImage;
-	}
-
-	public void setLogoImage(final String logoImage) {
-		this.logoImage = logoImage;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -319,7 +309,6 @@ public class Institute implements Serializable {
 		result = prime * result + (isDeleted == null ? 0 : isDeleted.hashCode());
 		result = prime * result + (lastUpdated == null ? 0 : lastUpdated.hashCode());
 		result = prime * result + (latitute == null ? 0 : latitute.hashCode());
-		result = prime * result + (logoImage == null ? 0 : logoImage.hashCode());
 		result = prime * result + (longitude == null ? 0 : longitude.hashCode());
 		result = prime * result + (name == null ? 0 : name.hashCode());
 		result = prime * result + (openingFrom == null ? 0 : openingFrom.hashCode());
@@ -524,13 +513,6 @@ public class Institute implements Serializable {
 		} else if (!latitute.equals(other.latitute)) {
 			return false;
 		}
-		if (logoImage == null) {
-			if (other.logoImage != null) {
-				return false;
-			}
-		} else if (!logoImage.equals(other.logoImage)) {
-			return false;
-		}
 		if (longitude == null) {
 			if (other.longitude != null) {
 				return false;
@@ -638,17 +620,17 @@ public class Institute implements Serializable {
 		builder.append("Institute [id=").append(id).append(", city=").append(city).append(", country=").append(country).append(", instituteType=")
 				.append(instituteType).append(", name=").append(name).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
 				.append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
-				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", logoUrl=").append(logoUrl)
-				.append(", imageUrl=").append(imageUrl).append(", instituteDetailsObj=").append(instituteDetailsObj).append(", serviceList=")
-				.append(serviceList).append(", description=").append(description).append(", worldRanking=").append(worldRanking).append(", accreditation=")
-				.append(accreditation).append(", website=").append(website).append(", address=").append(address).append(", totalStudent=").append(totalStudent)
-				.append(", latitute=").append(latitute).append(", longitude=").append(longitude).append(", email=").append(email).append(", avgCostOfLiving=")
-				.append(avgCostOfLiving).append(", campus=").append(campus).append(", phoneNumber=").append(phoneNumber).append(", campusType=")
-				.append(campusType).append(", lastUpdated=").append(lastUpdated).append(", openingFrom=").append(openingFrom).append(", openingTo=")
-				.append(openingTo).append(", campusName=").append(campusName).append(", instituteCategoryType=").append(instituteCategoryType)
-				.append(", enrolment=").append(enrolment).append(", tuitionFessPaymentPlan=").append(tuitionFessPaymentPlan)
-				.append(", scholarshipFinancingAssistance=").append(scholarshipFinancingAssistance).append(", courseCount=").append(courseCount)
-				.append(", worldRankingType=").append(worldRankingType).append(", logoImage=").append(logoImage).append("]");
+				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", logoUrl=").append(logoUrl).append(", imageUrl=")
+				.append(imageUrl).append(", instituteDetailsObj=").append(instituteDetailsObj).append(", serviceList=").append(serviceList)
+				.append(", description=").append(description).append(", worldRanking=").append(worldRanking).append(", accreditation=").append(accreditation)
+				.append(", website=").append(website).append(", address=").append(address).append(", totalStudent=").append(totalStudent).append(", latitute=")
+				.append(latitute).append(", longitude=").append(longitude).append(", email=").append(email).append(", avgCostOfLiving=").append(avgCostOfLiving)
+				.append(", campus=").append(campus).append(", phoneNumber=").append(phoneNumber).append(", campusType=").append(campusType)
+				.append(", lastUpdated=").append(lastUpdated).append(", openingFrom=").append(openingFrom).append(", openingTo=").append(openingTo)
+				.append(", campusName=").append(campusName).append(", instituteCategoryType=").append(instituteCategoryType).append(", enrolment=")
+				.append(enrolment).append(", tuitionFessPaymentPlan=").append(tuitionFessPaymentPlan).append(", scholarshipFinancingAssistance=")
+				.append(scholarshipFinancingAssistance).append(", courseCount=").append(courseCount).append(", worldRankingType=").append(worldRankingType)
+				.append("]");
 		return builder.toString();
 	}
 

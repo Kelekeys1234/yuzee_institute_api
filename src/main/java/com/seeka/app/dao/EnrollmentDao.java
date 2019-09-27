@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Enrollment;
-import com.seeka.app.bean.EnrollmentImage;
 import com.seeka.app.bean.EnrollmentStatus;
 import com.seeka.app.util.CommonUtil;
 
@@ -41,12 +40,6 @@ public class EnrollmentDao implements IEnrollmentDao {
 	}
 
 	@Override
-	public void saveEnrollmentImage(final EnrollmentImage enrollmentImage) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(enrollmentImage);
-	}
-
-	@Override
 	public void saveEnrollmentStatus(final EnrollmentStatus enrollmentStatus) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(enrollmentStatus);
@@ -56,15 +49,6 @@ public class EnrollmentDao implements IEnrollmentDao {
 	public Enrollment getEnrollment(final BigInteger enrollmentId) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.get(Enrollment.class, enrollmentId);
-	}
-
-	@Override
-	public List<EnrollmentImage> getEnrollmentImageList(final BigInteger enrollmentId) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(EnrollmentImage.class, "enrollmentImage");
-		crit.createAlias("enrollmentImage.enrollment", "enrollment");
-		crit.add(Restrictions.eq("enrollment.id", enrollmentId));
-		return crit.list();
 	}
 
 	@Override
@@ -120,14 +104,6 @@ public class EnrollmentDao implements IEnrollmentDao {
 			crit.setMaxResults(pageSize);
 		}
 		return crit.list();
-	}
-
-	@Override
-	public String removeEnrollmentImage(final BigInteger enrollmentImageId) {
-		Session session = sessionFactory.getCurrentSession();
-		EnrollmentImage enrollmentImage = session.get(EnrollmentImage.class, enrollmentImageId);
-		session.remove(enrollmentImage);
-		return enrollmentImage.getImageName();
 	}
 
 	@Override

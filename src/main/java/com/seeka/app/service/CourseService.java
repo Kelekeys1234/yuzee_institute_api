@@ -51,11 +51,12 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.GradeDto;
-import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
+import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -102,10 +103,10 @@ public class CourseService implements ICourseService {
 	private UserRecommendationDao userRecommendationDao;
 
 	@Autowired
-	private IInstituteImagesService iInstituteImagesService;
+	private UserRecommendationService userRecommendationService;
 
-    @Autowired
-    private UserRecommendationService userRecommendationService;
+	@Autowired
+	private IStorageService iStorageService;
 
 	@Override
 	public void save(final Course course) {
@@ -401,6 +402,14 @@ public class CourseService implements ICourseService {
 
 			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 			courses = iCourseDAO.getAll(startIndex, pageSize);
+			List<CourseRequest> resultList = new ArrayList<>();
+
+			for (CourseRequest courseRequest : courses) {
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(),
+						null, "en");
+				courseRequest.setStorageList(storageDTOList);
+				resultList.add(courseRequest);
+			}
 			if (courses != null && !courses.isEmpty()) {
 				response.put("status", HttpStatus.OK.value());
 				response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
@@ -450,6 +459,7 @@ public class CourseService implements ICourseService {
 			final String name, final String languauge) {
 		Map<String, Object> response = new HashMap<>();
 		List<CourseRequest> courses = new ArrayList<>();
+		List<CourseRequest> resultList = new ArrayList<>();
 		try {
 			String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
 					+ "cd.description, cd.intake,c.duration, c.language,cd.domestic_fee,cd.international_fee,"
@@ -469,7 +479,15 @@ public class CourseService implements ICourseService {
 			}
 			sqlQuery += " ORDER BY c.created_on DESC";
 			courses = iCourseDAO.searchCoursesBasedOnFilter(sqlQuery);
-			if (courses != null && !courses.isEmpty()) {
+
+			for (CourseRequest courseRequest : courses) {
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(),
+						null, "en");
+				courseRequest.setStorageList(storageDTOList);
+				resultList.add(courseRequest);
+			}
+
+			if (resultList != null && !resultList.isEmpty()) {
 				response.put("status", HttpStatus.OK.value());
 				response.put("message", "Course fetch successfully");
 			} else {
@@ -480,7 +498,7 @@ public class CourseService implements ICourseService {
 			response.put("message", exception.getCause());
 			response.put("status", HttpStatus.OK.value());
 		}
-		response.put("courses", courses);
+		response.put("courses", resultList);
 		return response;
 	}
 
@@ -518,6 +536,7 @@ public class CourseService implements ICourseService {
 		List<CourseRequest> courses = new ArrayList<>();
 		int totalCount = 0;
 		PaginationUtilDto paginationUtilDto = null;
+		List<CourseRequest> resultList = new ArrayList<>();
 		try {
 			totalCount = iCourseDAO.findTotalCountByUserId(userId);
 			int startIndex;
@@ -528,12 +547,18 @@ public class CourseService implements ICourseService {
 			}
 			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 			courses = iCourseDAO.getUserCourse(userId, startIndex, pageSize, currencyCode, sortBy, sortAsscending);
+			for (CourseRequest courseRequest : courses) {
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(),
+						null, "en");
+				courseRequest.setStorageList(storageDTOList);
+				resultList.add(courseRequest);
+			}
 		} catch (Exception exception) {
 			status = IConstant.FAIL;
 		}
 		response.put("status", HttpStatus.OK.value());
 		response.put("message", status);
-		response.put("courses", courses);
+		response.put("courses", resultList);
 		response.put("totalCount", totalCount);
 		response.put("pageNumber", paginationUtilDto.getPageNumber());
 		response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
@@ -606,11 +631,15 @@ public class CourseService implements ICourseService {
 		return response;
 	}
 
-	private List<CourseRequest> getCourses(final String compareValue) {
+	private List<CourseRequest> getCourses(final String compareValue) throws ValidationException {
 		List<CourseRequest> courses = new ArrayList<>();
 		String[] compareValues = compareValue.split(",");
 		for (String id : compareValues) {
-			courses.add(iCourseDAO.getCourseById(Integer.valueOf(id)));
+			CourseRequest courseRequest = iCourseDAO.getCourseById(Integer.valueOf(id));
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null,
+					"en");
+			courseRequest.setStorageList(storageDTOList);
+			courses.add(courseRequest);
 		}
 		return courses;
 	}
@@ -656,12 +685,13 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Map<String, Object> advanceSearch(final AdvanceSearchDto courseSearchDto) {
+	public Map<String, Object> advanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException {
 		Map<String, Object> response = new HashMap<>();
 		List<CourseResponseDto> courseResponseDtos = iCourseDAO.advanceSearch(courseSearchDto);
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
-			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(courseResponseDto.getInstituteId());
-			courseResponseDto.setInstituteImages(imageResponseDtos);
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseResponseDto.getInstituteId(), ImageCategory.INSTITUTE.toString(),
+					null, "en");
+			courseResponseDto.setStorageList(storageDTOList);
 		}
 		int totalCount = 0;
 		PaginationUtilDto paginationUtilDto = null;
@@ -726,10 +756,20 @@ public class CourseService implements ICourseService {
 			int startIndex = (courseFilter.getPageNumber() - 1) * courseFilter.getMaxSizePerPage();
 			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseFilter.getMaxSizePerPage(), totalCount);
 			courses = iCourseDAO.courseFilter(startIndex, courseFilter.getMaxSizePerPage(), courseFilter);
-			if (courses != null && !courses.isEmpty()) {
+
+			List<CourseRequest> resultList = new ArrayList<>();
+
+			for (CourseRequest courseRequest : courses) {
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(),
+						null, "en");
+				courseRequest.setStorageList(storageDTOList);
+				resultList.add(courseRequest);
+			}
+
+			if (resultList != null && !resultList.isEmpty()) {
 				response.put("status", HttpStatus.OK.value());
 				response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
-				response.put("courses", courses);
+				response.put("courses", resultList);
 				response.put("totalCount", totalCount);
 				response.put("pageNumber", paginationUtilDto.getPageNumber());
 				response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
@@ -750,6 +790,7 @@ public class CourseService implements ICourseService {
 	public Map<String, Object> autoSearch(final Integer pageNumber, final Integer pageSize, final String searchKey) {
 		Map<String, Object> response = new HashMap<>();
 		List<CourseRequest> courses = new ArrayList<>();
+		List<CourseRequest> resultList = new ArrayList<>();
 		int totalCount = 0;
 		PaginationUtilDto paginationUtilDto = null;
 		try {
@@ -757,10 +798,17 @@ public class CourseService implements ICourseService {
 			int startIndex = (pageNumber - 1) * pageSize;
 			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 			courses = iCourseDAO.autoSearch(startIndex, pageSize, searchKey);
-			if (courses != null && !courses.isEmpty()) {
+			for (CourseRequest courseRequest : courses) {
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(),
+						null, "en");
+				courseRequest.setStorageList(storageDTOList);
+				resultList.add(courseRequest);
+			}
+
+			if (resultList != null && !resultList.isEmpty()) {
 				response.put("status", HttpStatus.OK.value());
 				response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
-				response.put("courses", courses);
+				response.put("courses", resultList);
 				response.put("totalCount", totalCount);
 				response.put("pageNumber", paginationUtilDto.getPageNumber());
 				response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
@@ -899,29 +947,29 @@ public class CourseService implements ICourseService {
 	public List<Course> getCoursesById(final List<BigInteger> allSearchCourses) {
 		return iCourseDAO.getCoursesFromId(allSearchCourses);
 	}
-	
+
 	@Override
-	public Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty>facultyList, BigInteger instituteId){
+	public Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, BigInteger instituteId) {
 		return iCourseDAO.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
-}
+	}
 
 	@Override
 	public List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds) {
 		return iCourseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
 	}
-	
+
 	@Override
 	public List<BigInteger> getTopRatedCourseIdForCountryWorldRankingWise(Country country) {
 		return iCourseDAO.getTopRatedCourseIdsForCountryWorldRankingWise(country);
 	}
-	
+
 	@Override
 	public List<BigInteger> getTopSearchedCoursesByUsers(BigInteger userId) {
 		return userRecommendationDao.getUserWatchCourseIds(userId);
 	}
 
 	@Override
-	public Set<Course> getRelatedCoursesBasedOnPastSearch(List<BigInteger> courseList) throws ValidationException{
+	public Set<Course> getRelatedCoursesBasedOnPastSearch(List<BigInteger> courseList) throws ValidationException {
 		Set<Course> relatedCourses = new HashSet<>();
 		for (BigInteger courseId : courseList) {
 			relatedCourses.addAll(userRecommendationService.getRelatedCourse(courseId));

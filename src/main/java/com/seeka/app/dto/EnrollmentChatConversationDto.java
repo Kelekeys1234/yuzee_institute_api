@@ -21,7 +21,7 @@ public class EnrollmentChatConversationDto implements Serializable {
 	private BigInteger initiateFromId;
 	private String initiateFromName;
 	private Date createdOn;
-	private ImageResponseDto imageResponseDto;
+	private StorageDto storageDto;
 
 	public BigInteger getId() {
 		return id;
@@ -87,97 +87,84 @@ public class EnrollmentChatConversationDto implements Serializable {
 		this.createdOn = createdOn;
 	}
 
-	public ImageResponseDto getImageResponseDto() {
-		return imageResponseDto;
+	public StorageDto getStorageDto() {
+		return storageDto;
 	}
 
-	public void setImageResponseDto(final ImageResponseDto imageResponseDto) {
-		this.imageResponseDto = imageResponseDto;
+	public void setStorageDto(StorageDto storageDto) {
+		this.storageDto = storageDto;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
-		result = prime * result + (enrollmentChatId == null ? 0 : enrollmentChatId.hashCode());
-		result = prime * result + (id == null ? 0 : id.hashCode());
-		result = prime * result + (imageResponseDto == null ? 0 : imageResponseDto.hashCode());
-		result = prime * result + (initiateFrom == null ? 0 : initiateFrom.hashCode());
-		result = prime * result + (initiateFromId == null ? 0 : initiateFromId.hashCode());
-		result = prime * result + (message == null ? 0 : message.hashCode());
-		result = prime * result + (status == null ? 0 : status.hashCode());
+		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+		result = prime * result + ((enrollmentChatId == null) ? 0 : enrollmentChatId.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((initiateFrom == null) ? 0 : initiateFrom.hashCode());
+		result = prime * result + ((initiateFromId == null) ? 0 : initiateFromId.hashCode());
+		result = prime * result + ((initiateFromName == null) ? 0 : initiateFromName.hashCode());
+		result = prime * result + ((message == null) ? 0 : message.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((storageDto == null) ? 0 : storageDto.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
 		EnrollmentChatConversationDto other = (EnrollmentChatConversationDto) obj;
 		if (createdOn == null) {
-			if (other.createdOn != null) {
+			if (other.createdOn != null)
 				return false;
-			}
-		} else if (!createdOn.equals(other.createdOn)) {
+		} else if (!createdOn.equals(other.createdOn))
 			return false;
-		}
 		if (enrollmentChatId == null) {
-			if (other.enrollmentChatId != null) {
+			if (other.enrollmentChatId != null)
 				return false;
-			}
-		} else if (!enrollmentChatId.equals(other.enrollmentChatId)) {
+		} else if (!enrollmentChatId.equals(other.enrollmentChatId))
 			return false;
-		}
 		if (id == null) {
-			if (other.id != null) {
+			if (other.id != null)
 				return false;
-			}
-		} else if (!id.equals(other.id)) {
+		} else if (!id.equals(other.id))
 			return false;
-		}
-		if (imageResponseDto == null) {
-			if (other.imageResponseDto != null) {
-				return false;
-			}
-		} else if (!imageResponseDto.equals(other.imageResponseDto)) {
-			return false;
-		}
 		if (initiateFrom == null) {
-			if (other.initiateFrom != null) {
+			if (other.initiateFrom != null)
 				return false;
-			}
-		} else if (!initiateFrom.equals(other.initiateFrom)) {
+		} else if (!initiateFrom.equals(other.initiateFrom))
 			return false;
-		}
 		if (initiateFromId == null) {
-			if (other.initiateFromId != null) {
+			if (other.initiateFromId != null)
 				return false;
-			}
-		} else if (!initiateFromId.equals(other.initiateFromId)) {
+		} else if (!initiateFromId.equals(other.initiateFromId))
 			return false;
-		}
+		if (initiateFromName == null) {
+			if (other.initiateFromName != null)
+				return false;
+		} else if (!initiateFromName.equals(other.initiateFromName))
+			return false;
 		if (message == null) {
-			if (other.message != null) {
+			if (other.message != null)
 				return false;
-			}
-		} else if (!message.equals(other.message)) {
+		} else if (!message.equals(other.message))
 			return false;
-		}
 		if (status == null) {
-			if (other.status != null) {
+			if (other.status != null)
 				return false;
-			}
-		} else if (!status.equals(other.status)) {
+		} else if (!status.equals(other.status))
 			return false;
-		}
+		if (storageDto == null) {
+			if (other.storageDto != null)
+				return false;
+		} else if (!storageDto.equals(other.storageDto))
+			return false;
 		return true;
 	}
 
@@ -186,7 +173,8 @@ public class EnrollmentChatConversationDto implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("EnrollmentChatConversationDto [id=").append(id).append(", enrollmentChatId=").append(enrollmentChatId).append(", message=")
 				.append(message).append(", status=").append(status).append(", initiateFrom=").append(initiateFrom).append(", initiateFromId=")
-				.append(initiateFromId).append(", createdOn=").append(createdOn).append(", imageResponseDto=").append(imageResponseDto).append("]");
+				.append(initiateFromId).append(", initiateFromName=").append(initiateFromName).append(", createdOn=").append(createdOn).append(", storageDto=")
+				.append(storageDto).append("]");
 		return builder.toString();
 	}
 

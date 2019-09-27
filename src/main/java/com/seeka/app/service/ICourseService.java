@@ -68,34 +68,34 @@ public interface ICourseService {
 
 	Course getCourseData(BigInteger courseId);
 
-    Map<String, Object> getAllServices();
+	Map<String, Object> getAllServices();
 
-    Map<String, Object> advanceSearch(AdvanceSearchDto courseSearchDto);
+	Map<String, Object> advanceSearch(AdvanceSearchDto courseSearchDto) throws ValidationException;
 
-    Map<String, Object> getAllCourse();
+	Map<String, Object> getAllCourse();
 
-    Map<String, Object> update(@Valid CourseRequest courseDto, BigInteger id);
+	Map<String, Object> update(@Valid CourseRequest courseDto, BigInteger id);
 
 	Map<String, Object> courseFilter(CourseFilterDto courseFilter);
 
-    Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
-    
-    List<Course> facultyWiseCourseForInstitute(List<Faculty> facultyList, Institute institute);
-    
-    void saveCourseMinrequirement(CourseMinRequirementDto obj);
-    
-    CourseMinRequirementDto getCourseMinRequirement(BigInteger courseId);
+	Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
 
-    Map<String, Object> autoSearchByCharacter(String searchKey);
-    
-    long checkIfCoursesPresentForCountry(Country country);
-    
-    List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
+	List<Course> facultyWiseCourseForInstitute(List<Faculty> facultyList, Institute institute);
+
+	void saveCourseMinrequirement(CourseMinRequirementDto obj);
+
+	CourseMinRequirementDto getCourseMinRequirement(BigInteger courseId);
+
+	Map<String, Object> autoSearchByCharacter(String searchKey);
+
+	long checkIfCoursesPresentForCountry(Country country);
+
+	List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
 
 	List<Course> getAllCourseUsingFaculty(Long facultyId);
 
 	List<BigInteger> getAllCourseUsingFaculty(BigInteger facultyId);
-	
+
 	List<BigInteger> getTopSearchedCoursesByOtherUsers(BigInteger userId);
 
 	List<Course> getCoursesById(List<BigInteger> allSearchCourses);
@@ -107,8 +107,8 @@ public interface ICourseService {
 	List<BigInteger> getTopRatedCourseIdForCountryWorldRankingWise(Country country);
 
 	List<BigInteger> getTopSearchedCoursesByUsers(BigInteger userId);
-	
+
 	Set<Course> getRelatedCoursesBasedOnPastSearch(List<BigInteger> courseList) throws ValidationException;
 
-	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto,Country country);
+	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
 }

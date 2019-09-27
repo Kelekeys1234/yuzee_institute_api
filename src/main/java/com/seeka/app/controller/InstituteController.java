@@ -27,16 +27,18 @@ import com.seeka.app.bean.UserInfo;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
-import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.PaginationDto;
-import com.seeka.app.service.IInstituteImagesService;
+import com.seeka.app.dto.StorageDto;
+import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IInstituteTypeService;
 import com.seeka.app.service.IServiceDetailsService;
+import com.seeka.app.service.IStorageService;
 import com.seeka.app.service.IUserService;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -58,10 +60,10 @@ public class InstituteController {
 	private IInstituteServiceDetailsService instituteServiceDetailsService;
 
 	@Autowired
-	private IInstituteImagesService iInstituteImagesService;
+	private IUserService userService;
 
 	@Autowired
-	private IUserService userService;
+	private IStorageService iStorageService;
 
 	@RequestMapping(value = "/type", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> saveInstituteType(@Valid @RequestBody final InstituteType instituteTypeObj) throws Exception {
@@ -336,7 +338,7 @@ public class InstituteController {
 		return getInstitutesBySearchFilters(courseSearchDto);
 	}
 
-	private ResponseEntity<?> getInstitutesBySearchFilters(final CourseSearchDto request) {
+	private ResponseEntity<?> getInstitutesBySearchFilters(final CourseSearchDto request) throws ValidationException {
 		Map<String, Object> response = new HashMap<>();
 
 		List<BigInteger> countryIds = request.getCountryIds();
@@ -346,8 +348,9 @@ public class InstituteController {
 
 		List<InstituteResponseDto> instituteList = instituteService.getAllInstitutesByFilter(request);
 		for (InstituteResponseDto instituteResponseDto : instituteList) {
-			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(instituteResponseDto.getId());
-			instituteResponseDto.setImages(imageResponseDtos);
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null,
+					"en");
+			instituteResponseDto.setStorageList(storageDTOList);
 		}
 
 		Integer maxCount = 0, totalCount = 0;
@@ -403,8 +406,9 @@ public class InstituteController {
 
 		List<InstituteResponseDto> instituteResponseDtoList = instituteService.getAllInstitutesByFilter(request);
 		for (InstituteResponseDto instituteResponseDto : instituteResponseDtoList) {
-			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(instituteResponseDto.getId());
-			instituteResponseDto.setImages(imageResponseDtos);
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null,
+					"en");
+			instituteResponseDto.setStorageList(storageDTOList);
 		}
 		Integer maxCount = 0, totalCount = 0;
 		if (null != instituteResponseDtoList && !instituteResponseDtoList.isEmpty()) {
@@ -556,7 +560,7 @@ public class InstituteController {
 
 	@RequestMapping(value = "/images/{instituteId}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getInstituteImage(@PathVariable final BigInteger instituteId) throws Exception {
-		List<ImageResponseDto> imageList = instituteService.getInstituteImage(instituteId);
-		return new GenericResponseHandlers.Builder().setData(imageList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteId, ImageCategory.INSTITUTE.toString(), null, "en");
+		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
 	}
 }

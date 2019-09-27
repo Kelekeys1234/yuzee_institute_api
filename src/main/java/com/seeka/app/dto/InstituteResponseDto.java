@@ -33,7 +33,7 @@ public class InstituteResponseDto implements Serializable {
 	private String countryName;
 	private String cityName;
 	private String logoImage;
-	private List<ImageResponseDto> images;
+	private List<StorageDto> storageList;
 
 	public Integer getWorldRanking() {
 		return worldRanking;
@@ -169,116 +169,110 @@ public class InstituteResponseDto implements Serializable {
 		this.logoImage = logoImage;
 	}
 
-    /**
-     * @return the id
-     */
-    public BigInteger getId() {
-        return id;
-    }
+	/**
+	 * @return the id
+	 */
+	public BigInteger getId() {
+		return id;
+	}
 
-    /**
-     * @param id the id to set
-     */
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(BigInteger id) {
+		this.id = id;
+	}
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * @return the images
-     */
-    public List<ImageResponseDto> getImages() {
-        return images;
-    }
+	public List<StorageDto> getStorageList() {
+		return storageList;
+	}
 
-    /**
-     * @param images the images to set
-     */
-    public void setImages(List<ImageResponseDto> images) {
-        this.images = images;
-    }
+	public void setStorageList(List<StorageDto> storageList) {
+		this.storageList = storageList;
+	}
 
-    /**
-     * @return the totalStudent
-     */
-    public Integer getTotalStudent() {
-        return totalStudent;
-    }
+	/**
+	 * @return the totalStudent
+	 */
+	public Integer getTotalStudent() {
+		return totalStudent;
+	}
 
-    /**
-     * @param totalStudent the totalStudent to set
-     */
-    public void setTotalStudent(Integer totalStudent) {
-        this.totalStudent = totalStudent;
-    }
+	/**
+	 * @param totalStudent the totalStudent to set
+	 */
+	public void setTotalStudent(Integer totalStudent) {
+		this.totalStudent = totalStudent;
+	}
 
-    /**
-     * @return the email
-     */
-    public String getEmail() {
-        return email;
-    }
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
 
-    /**
-     * @param email the email to set
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    /**
-     * @return the openingFrom
-     */
-    public String getOpeningFrom() {
-        return openingFrom;
-    }
+	/**
+	 * @return the openingFrom
+	 */
+	public String getOpeningFrom() {
+		return openingFrom;
+	}
 
-    /**
-     * @param openingFrom the openingFrom to set
-     */
-    public void setOpeningFrom(String openingFrom) {
-        this.openingFrom = openingFrom;
-    }
+	/**
+	 * @param openingFrom the openingFrom to set
+	 */
+	public void setOpeningFrom(String openingFrom) {
+		this.openingFrom = openingFrom;
+	}
 
-    /**
-     * @return the openingTo
-     */
-    public String getOpeningTo() {
-        return openingTo;
-    }
+	/**
+	 * @return the openingTo
+	 */
+	public String getOpeningTo() {
+		return openingTo;
+	}
 
-    /**
-     * @param openingTo the openingTo to set
-     */
-    public void setOpeningTo(String openingTo) {
-        this.openingTo = openingTo;
-    }
+	/**
+	 * @param openingTo the openingTo to set
+	 */
+	public void setOpeningTo(String openingTo) {
+		this.openingTo = openingTo;
+	}
 
-    /**
-     * @return the phoneNumber
-     */
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+	/**
+	 * @return the phoneNumber
+	 */
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
 
-    /**
-     * @param phoneNumber the phoneNumber to set
-     */
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+	/**
+	 * @param phoneNumber the phoneNumber to set
+	 */
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 
 }

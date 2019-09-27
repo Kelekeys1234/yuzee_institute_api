@@ -13,7 +13,8 @@ import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.GlobalFilterSearchDto;
-import com.seeka.app.dto.ImageResponseDto;
+import com.seeka.app.dto.StorageDto;
+import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.ValidationException;
 
@@ -23,31 +24,33 @@ public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 
 	@Autowired
 	private ICourseDAO icourseDao;
-	
+
 	@Autowired
-	private IInstituteImagesService iInstituteImagesService;
-	
+	private IStorageService iStorageService;
+
 	@Override
-	public Map<String,Object> filterByEntity(GlobalFilterSearchDto globalSearchFilterDto) throws ValidationException {
-		if(SeekaEntityType.COURSE.equals(globalSearchFilterDto.getSeekaEntityType())) {
+	public Map<String, Object> filterByEntity(GlobalFilterSearchDto globalSearchFilterDto) throws ValidationException {
+		if (SeekaEntityType.COURSE.equals(globalSearchFilterDto.getSeekaEntityType())) {
 			AdvanceSearchDto advanceSearchDto = new AdvanceSearchDto();
 			BeanUtils.copyProperties(globalSearchFilterDto, advanceSearchDto);
-			 return filterCoursesByParameters(globalSearchFilterDto, advanceSearchDto);
+			return filterCoursesByParameters(globalSearchFilterDto, advanceSearchDto);
 		} else {
 			throw new ValidationException("Illegal Entity Type");
 		}
 	}
-	
-	private Map<String,Object> filterCoursesByParameters(GlobalFilterSearchDto globalSearchFilterDto, AdvanceSearchDto advacneSearchDto){
-		
+
+	private Map<String, Object> filterCoursesByParameters(GlobalFilterSearchDto globalSearchFilterDto, AdvanceSearchDto advacneSearchDto)
+			throws ValidationException {
+
 		List<CourseResponseDto> courseList = icourseDao.advanceSearch(advacneSearchDto, globalSearchFilterDto);
 		for (CourseResponseDto courseResponseDto : courseList) {
-			List<ImageResponseDto> imageResponseDtos = iInstituteImagesService.getInstituteImageListBasedOnId(courseResponseDto.getInstituteId());
-			courseResponseDto.setInstituteImages(imageResponseDtos);
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseResponseDto.getInstituteId(), ImageCategory.INSTITUTE.toString(),
+					null, "en");
+			courseResponseDto.setStorageList(storageDTOList);
 		}
 		Map<String, Object> returnMap = new HashMap<>();
 		returnMap.put("entity", courseList);
-		returnMap.put("count",courseList.get(0).getTotalCount());
+		returnMap.put("count", courseList.get(0).getTotalCount());
 		return returnMap;
 	}
 }

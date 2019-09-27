@@ -4,9 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -111,9 +108,6 @@ public class Enrollment implements Serializable {
 	private String createdBy;
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
-
-	@OneToMany(mappedBy = "enrollment")
-	private List<EnrollmentImage> enrollmentImages = new ArrayList<>();
 
 	public BigInteger getId() {
 		return id;
@@ -387,14 +381,6 @@ public class Enrollment implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public List<EnrollmentImage> getEnrollmentImages() {
-		return enrollmentImages;
-	}
-
-	public void setEnrollmentImages(final List<EnrollmentImage> enrollmentImages) {
-		this.enrollmentImages = enrollmentImages;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -408,7 +394,6 @@ public class Enrollment implements Serializable {
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (email == null ? 0 : email.hashCode());
 		result = prime * result + (englishQualificaitonTest == null ? 0 : englishQualificaitonTest.hashCode());
-		result = prime * result + (enrollmentImages == null ? 0 : enrollmentImages.hashCode());
 		result = prime * result + (firstName == null ? 0 : firstName.hashCode());
 		result = prime * result + (gender == null ? 0 : gender.hashCode());
 		result = prime * result + (graduationDate == null ? 0 : graduationDate.hashCode());
@@ -510,13 +495,6 @@ public class Enrollment implements Serializable {
 				return false;
 			}
 		} else if (!englishQualificaitonTest.equals(other.englishQualificaitonTest)) {
-			return false;
-		}
-		if (enrollmentImages == null) {
-			if (other.enrollmentImages != null) {
-				return false;
-			}
-		} else if (!enrollmentImages.equals(other.enrollmentImages)) {
 			return false;
 		}
 		if (firstName == null) {
@@ -711,7 +689,7 @@ public class Enrollment implements Serializable {
 				.append(otherName).append(", address=").append(address).append(", town=").append(town).append(", state=").append(state).append(", country=")
 				.append(country).append(", zipCode=").append(zipCode).append(", phoneNumber=").append(phoneNumber).append(", email=").append(email)
 				.append(", assignee=").append(assignee).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=")
-				.append(createdBy).append(", updatedBy=").append(updatedBy).append(", enrollmentImages=").append(enrollmentImages).append("]");
+				.append(createdBy).append(", updatedBy=").append(updatedBy).append("]");
 		return builder.toString();
 	}
 

@@ -20,8 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.seeka.app.enumeration.ImageCategory;
-import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.IConstant;
 
 @Service
@@ -31,21 +29,9 @@ public class MediaService implements IMediaService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Autowired
-	private IEnrollmentService iEnrollmentService;
-
-	@Autowired
-	private IInstituteImagesService iInstituteImagesService;
-
-	@Autowired
-	private IInstituteService iInstituteService;
-
-	@Autowired
-	private ICityImagesService iCityImagesService;
-
 	@SuppressWarnings("rawtypes")
 	@Override
-	public String uploadImage(final MultipartFile file, final BigInteger categoryId, final String category, final String subCategory) {
+	public String uploadImage(final MultipartFile file, final BigInteger entityId, final String entityType, final String type) {
 		/**
 		 * Set http headers
 		 */
@@ -59,10 +45,10 @@ public class MediaService implements IMediaService {
 		File newFile = convert(file);
 		formDate.add("file", new FileSystemResource(newFile));
 
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL).queryParam("categoryId", categoryId)
-				.queryParam("category", category);
-		if (subCategory != null) {
-			builder.queryParam("subCategory", subCategory);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL).queryParam("entityId", entityId)
+				.queryParam("entityType", entityType);
+		if (type != null) {
+			builder.queryParam("type", type);
 		}
 
 		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(formDate, headers);
@@ -84,55 +70,6 @@ public class MediaService implements IMediaService {
 		}
 
 		return convFile;
-	}
-
-	@Override
-	public String addCategoryImage(final MultipartFile file, final String category, final String subCategory, final BigInteger categoryId)
-			throws ValidationException {
-		String imageName = null;
-		if (category.equals(ImageCategory.ENROLLMENT.name())) {
-			imageName = uploadImage(file, categoryId, ImageCategory.ENROLLMENT.name(), subCategory);
-			iEnrollmentService.saveEnrollmentImage(categoryId, subCategory, imageName);
-		} else if (category.equals(ImageCategory.INSTITUTE.name())) {
-			imageName = uploadImage(file, categoryId, ImageCategory.INSTITUTE.name(), subCategory);
-			if (subCategory.equals("LOGO")) {
-				iInstituteService.updateInstituteImage(categoryId, imageName);
-			} else {
-				iInstituteImagesService.saveInstituteImage(categoryId, imageName, subCategory);
-			}
-		} else if (category.equals(ImageCategory.CITY.name())) {
-			imageName = uploadImage(file, categoryId, ImageCategory.CITY.name(), subCategory);
-			iCityImagesService.saveCityImage(categoryId, imageName);
-		}
-
-		return imageName;
-	}
-
-	@Override
-	public String deleteCategoryImage(final BigInteger id, final String category, final String subCategory, final BigInteger categoryId)
-			throws ValidationException {
-		String imageName = null;
-		if (category.equals(ImageCategory.ENROLLMENT.name())) {
-			imageName = iEnrollmentService.removeEnrollmentImage(id);
-			deleteImage(imageName);
-		} else if (category.equals(ImageCategory.INSTITUTE.name())) {
-			if (subCategory.equals("LOGO")) {
-				imageName = iInstituteService.deleteInstituteImage(categoryId);
-			} else {
-				imageName = iInstituteImagesService.deleteInstituteImage(id);
-			}
-			deleteImage(imageName);
-		} else if (category.equals(ImageCategory.CITY.name())) {
-			imageName = iCityImagesService.deleteCityImage(id);
-			deleteImage(imageName);
-		}
-
-		return imageName;
-	}
-
-	private void deleteImage(final String imageName) {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL).queryParam("fileName", imageName);
-		restTemplate.delete(builder.toUriString());
 	}
 
 }

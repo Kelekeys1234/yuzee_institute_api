@@ -18,16 +18,12 @@ public interface IEnrollmentService {
 
 	EnrollmentStatus updateEnrollmentStatus(EnrollmentStatusDto enrollmentStatusDto, BigInteger userId) throws ValidationException;
 
-	EnrollmentResponseDto getEnrollmentDetail(BigInteger enrollmentId);
+	EnrollmentResponseDto getEnrollmentDetail(BigInteger enrollmentId) throws ValidationException;
 
 	List<EnrollmentStatusDto> getEnrollmentStatusDetail(BigInteger enrollmentId);
 
 	List<EnrollmentResponseDto> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId,
 			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize);
-
-	void saveEnrollmentImage(BigInteger categoryId, String subCategory, String imageName) throws ValidationException;
-
-	String removeEnrollmentImage(BigInteger enrollmentImageId);
 
 	int countOfEnrollment();
 

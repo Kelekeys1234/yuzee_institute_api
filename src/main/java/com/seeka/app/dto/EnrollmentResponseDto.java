@@ -59,7 +59,7 @@ public class EnrollmentResponseDto implements Serializable {
 	private String createdBy;
 	private String updatedBy;
 
-	private List<EnrollmentImageDto> enrollmentImages;
+	private List<StorageDto> enrollmentImages;
 	private Date deadLine;
 
 	public BigInteger getId() {
@@ -390,11 +390,11 @@ public class EnrollmentResponseDto implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public List<EnrollmentImageDto> getEnrollmentImages() {
+	public List<StorageDto> getEnrollmentImages() {
 		return enrollmentImages;
 	}
 
-	public void setEnrollmentImages(final List<EnrollmentImageDto> enrollmentImages) {
+	public void setEnrollmentImages(final List<StorageDto> enrollmentImages) {
 		this.enrollmentImages = enrollmentImages;
 	}
 

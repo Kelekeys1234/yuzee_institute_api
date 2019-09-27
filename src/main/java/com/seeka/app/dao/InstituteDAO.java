@@ -72,8 +72,8 @@ public class InstituteDAO implements IInstituteDAO {
 	public List<BigInteger> getTopInstituteByCountry(final BigInteger countryId, Long startIndex, Long pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		List<BigInteger> idList = session.createNativeQuery("select id from institute where country_id = ? order by world_ranking LIMIT ?,?")
-			.setParameter(1, countryId).setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
-		
+				.setParameter(1, countryId).setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
+
 		return idList;
 	}
 
@@ -127,7 +127,7 @@ public class InstituteDAO implements IInstituteDAO {
 
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
 				+ "ctry.name as countryName,count(c.id) as courses, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars "
-				+ " ,ctry.id as countryId, ci.id as cityId, inst.logo_image "
+				+ " ,ctry.id as countryId, ci.id as cityId "
 				+ "from institute inst  inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
 				+ "inner join faculty_level f on f.institute_id = inst.id inner join institute_level l on l.institute_id = inst.id "
 				+ "inner join course c  on c.institute_id=inst.id where 1=1 ";
@@ -180,15 +180,14 @@ public class InstituteDAO implements IInstituteDAO {
 			instituteResponseDto.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
 			instituteResponseDto.setCityName(String.valueOf(row[2]));
 			instituteResponseDto.setCountryName(String.valueOf(row[3]));
-            Integer worldRanking = 0;
-            if (null != row[4]) {
-                worldRanking = Double.valueOf(String.valueOf(row[4])).intValue();
-            }
-            instituteResponseDto.setWorldRanking(worldRanking);
+			Integer worldRanking = 0;
+			if (null != row[4]) {
+				worldRanking = Double.valueOf(String.valueOf(row[4])).intValue();
+			}
+			instituteResponseDto.setWorldRanking(worldRanking);
 			instituteResponseDto.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
 			instituteResponseDto.setCountryId(new BigInteger(String.valueOf(row[7])));
 			instituteResponseDto.setCityId(new BigInteger(String.valueOf(row[8])));
-			instituteResponseDto.setLogoImage(String.valueOf(row[9]));
 			instituteResponseDto.setTotalCount(rows1.size());
 			list.add(instituteResponseDto);
 		}
@@ -199,7 +198,7 @@ public class InstituteDAO implements IInstituteDAO {
 	public InstituteResponseDto getInstituteByID(final BigInteger instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
-				+ "ctry.name as countryName,crs.world_ranking,crs.stars,crs.totalCourse ,inst.logo_image from institute inst  inner join country ctry  "
+				+ "ctry.name as countryName,crs.world_ranking,crs.stars,crs.totalCourse from institute inst  inner join country ctry  "
 				+ "on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
 				+ "CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from " + "course c where "
 				+ "c.institute_id = inst.id group by c.institute_id ) crs " + "where 1=1 and inst.id ='" + instituteId + "'";
@@ -207,26 +206,25 @@ public class InstituteDAO implements IInstituteDAO {
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
 		InstituteResponseDto obj = null;
-        for (Object[] row : rows) {
-            obj = new InstituteResponseDto();
-            obj.setId(new BigInteger(String.valueOf(row[0])));
-            obj.setName(String.valueOf(row[1]));
-            obj.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
-            if (row[4] != null) {
-                obj.setWorldRanking(Integer.valueOf(String.valueOf(row[4])));
-            }
-            obj.setLogoImage(String.valueOf(row[9]));
-            obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
-        }
+		for (Object[] row : rows) {
+			obj = new InstituteResponseDto();
+			obj.setId(new BigInteger(String.valueOf(row[0])));
+			obj.setName(String.valueOf(row[1]));
+			obj.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
+			if (row[4] != null) {
+				obj.setWorldRanking(Integer.valueOf(String.valueOf(row[4])));
+			}
+			obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
+		}
 		return obj;
 	}
-	
+
 	@Override
 	public List<Institute> getAllInstituteByID(final List<BigInteger> instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Institute.class, "institute");
 		crit.add(Restrictions.in("id", instituteId));
-        return crit.list();
+		return crit.list();
 	}
 
 	@Override

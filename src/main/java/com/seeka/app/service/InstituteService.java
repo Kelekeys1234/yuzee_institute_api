@@ -30,7 +30,6 @@ import com.seeka.app.dao.IInstituteTypeDAO;
 import com.seeka.app.dao.IInstituteVideoDao;
 import com.seeka.app.dao.ServiceDetailsDAO;
 import com.seeka.app.dto.CourseSearchDto;
-import com.seeka.app.dto.ImageResponseDto;
 import com.seeka.app.dto.InstituteDetailsGetRequest;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteGetRequestDto;
@@ -39,6 +38,7 @@ import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.CDNServerUtil;
@@ -73,7 +73,7 @@ public class InstituteService implements IInstituteService {
 	private IAccreditedInstituteDetailDao accreditedInstituteDetailDao;
 
 	@Autowired
-	private InstituteImagesService instituteImagesService;
+	private IStorageService iStorageService;
 
 	@Value("${s3.url}")
 	private String s3URL;
@@ -122,26 +122,27 @@ public class InstituteService implements IInstituteService {
 	public InstituteResponseDto getInstituteByID(final BigInteger instituteId) {
 		return dao.getInstituteByID(instituteId);
 	}
-	
+
 	@Override
-	public List<InstituteResponseDto> getAllInstituteByID(final List<BigInteger> listInstituteId) {
+	public List<InstituteResponseDto> getAllInstituteByID(final List<BigInteger> listInstituteId) throws ValidationException {
 		List<Institute> inistituteList = dao.getAllInstituteByID(listInstituteId);
 		List<InstituteResponseDto> instituteResponseDTOList = new ArrayList<>();
 		for (Institute institute : inistituteList) {
 			InstituteResponseDto instituteResponseDTO = new InstituteResponseDto();
 			BeanUtils.copyProperties(institute, instituteResponseDTO);
-			if(institute.getCountry() != null) {
+			if (institute.getCountry() != null) {
 				instituteResponseDTO.setCountryId(institute.getCountry().getId());
 				instituteResponseDTO.setCountryName(institute.getCountry().getName());
 			}
-			if(institute.getCity() != null) {
+			if (institute.getCity() != null) {
 				instituteResponseDTO.setCityId(institute.getCity().getId());
 				instituteResponseDTO.setCityName(institute.getCity().getName());
 			}
 			instituteResponseDTO.setWorldRanking(institute.getWorldRanking());
-			instituteResponseDTO.setLocation(institute.getLatitute()+","+institute.getLongitude());
-			List<ImageResponseDto> imageResponseDtos = instituteImagesService.getInstituteImageListBasedOnId(instituteResponseDTO.getId());
-			instituteResponseDTO.setImages(imageResponseDtos);
+			instituteResponseDTO.setLocation(institute.getLatitute() + "," + institute.getLongitude());
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDTO.getId(), ImageCategory.INSTITUTE.toString(), null,
+					"en");
+			instituteResponseDTO.setStorageList(storageDTOList);
 			instituteResponseDTOList.add(instituteResponseDTO);
 		}
 		return instituteResponseDTOList;
@@ -603,41 +604,4 @@ public class InstituteService implements IInstituteService {
 		return dao.ratingWiseInstituteListByCountry(country);
 	}
 
-	@Override
-	public void updateInstituteImage(final BigInteger instituteId, final String logoImage) throws ValidationException {
-		Institute institute = dao.get(instituteId);
-		if (institute == null) {
-			throw new ValidationException("Institute not found for id " + instituteId);
-		}
-		institute.setLogoImage(logoImage);
-		dao.update(institute);
-	}
-
-	@Override
-	public String deleteInstituteImage(final BigInteger instituteId) {
-		Institute institute = dao.get(instituteId);
-		String imageName = institute.getLogoImage();
-		institute.setLogoImage(null);
-		dao.update(institute);
-		return imageName;
-	}
-
-	@Override
-	public List<ImageResponseDto> getInstituteImage(final BigInteger instituteId) {
-		Institute institute = dao.get(instituteId);
-		List<ImageResponseDto> imageList = new ArrayList<>();
-		if (institute.getLogoImage() != null) {
-			ImageResponseDto imageResponseDto = new ImageResponseDto();
-			imageResponseDto.setBaseUrl(s3URL);
-			imageResponseDto.setCategory(ImageCategory.INSTITUTE.name());
-			imageResponseDto.setSubCategory("LOGO");
-			imageResponseDto.setImageName(institute.getLogoImage());
-			imageResponseDto.setCategoryId(instituteId);
-			imageResponseDto.setId(instituteId);
-			imageList.add(imageResponseDto);
-		}
-		List<ImageResponseDto> imageResponseDtos = instituteImagesService.getInstituteImageListBasedOnId(instituteId);
-		imageList.addAll(imageResponseDtos);
-		return imageList;
-	}
 }
