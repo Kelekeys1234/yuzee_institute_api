@@ -4,13 +4,18 @@ import java.math.BigInteger;
 
 public class HelpDto {
 
+    private BigInteger id;
     private String title;
     private BigInteger categoryId;
     private BigInteger subCategoryId;
     private String description;
     private String createdBy;
     private String updatedBy;
-    private Boolean questioning;
+    private Boolean isQuestioning;
+    private String createdUser;
+    private String Status;
+    private String assignedUser;
+    private String createdOn;
 
     public String getTitle() {
         return title;
@@ -43,7 +48,6 @@ public class HelpDto {
     public void setDescription(String description) {
         this.description = description;
     }
-    
 
     public String getCreatedBy() {
         return createdBy;
@@ -61,13 +65,86 @@ public class HelpDto {
         this.updatedBy = updatedBy;
     }
 
-    public Boolean getQuestioning() {
-        return questioning;
+    public Boolean getIsQuestioning() {
+        return isQuestioning;
     }
 
-    public void setQuestioning(Boolean questioning) {
-        this.questioning = questioning;
+    public void setIsQuestioning(Boolean isQuestioning) {
+        this.isQuestioning = isQuestioning;
     }
 
-    
+    /**
+     * @return the id
+     */
+    public BigInteger getId() {
+        return id;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(BigInteger id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the createdUser
+     */
+    public String getCreatedUser() {
+        return createdUser;
+    }
+
+    /**
+     * @param createdUser
+     *            the createdUser to set
+     */
+    public void setCreatedUser(String createdUser) {
+        this.createdUser = createdUser;
+    }
+
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return Status;
+    }
+
+    /**
+     * @param status
+     *            the status to set
+     */
+    public void setStatus(String status) {
+        Status = status;
+    }
+
+    /**
+     * @return the assignedUser
+     */
+    public String getAssignedUser() {
+        return assignedUser;
+    }
+
+    /**
+     * @param assignedUser
+     *            the assignedUser to set
+     */
+    public void setAssignedUser(String assignedUser) {
+        this.assignedUser = assignedUser;
+    }
+
+    /**
+     * @return the createdOn
+     */
+    public String getCreatedOn() {
+        return createdOn;
+    }
+
+    /**
+     * @param createdOn
+     *            the createdOn to set
+     */
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
+    }
 }

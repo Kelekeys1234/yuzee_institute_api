@@ -12,11 +12,11 @@ import com.seeka.app.dto.HelpSubCategoryDto;
 
 public interface IHelpService {
 
-	public Map<String, Object> save(@Valid HelpDto helpDto);
+	public Map<String, Object> save(@Valid HelpDto helpDto, BigInteger userId);
 
 	public Map<String, Object> get(BigInteger id);
 
-	public Map<String, Object> update(HelpDto helpDto, BigInteger id);
+	public Map<String, Object> update(HelpDto helpDto, BigInteger id, BigInteger userId);
 
 	public Map<String, Object> getAll(Integer pageNumber, Integer pageSize);
 
@@ -37,5 +37,11 @@ public interface IHelpService {
 	public Map<String, Object> saveAnswer(@Valid HelpAnswerDto helpAnswerDto);
 	
 	public Map<String, Object> getAnswerByHelpId(BigInteger userId);
+
+    public Map<String, Object> getCategory();
+
+    public Map<String, Object> delete(@Valid BigInteger id);
+
+    public Map<String, Object>  updateStatus(BigInteger id, BigInteger userId, String status);
 
 }

@@ -37,7 +37,10 @@ public class SeekaHelp implements Serializable {
     private String createdBy;
     private String updatedBy;
     private Boolean isActive;
-    private Boolean questioning;
+    private Boolean isQuestioning;
+    private BigInteger userId;
+    private String status;
+    private BigInteger assignedUserId;
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -142,14 +145,57 @@ public class SeekaHelp implements Serializable {
         this.isActive = isActive;
     }
 
-    @Column(name = "questioning")
-    public Boolean getQuestioning() {
-        return questioning;
+    @Column(name = "is_questioning")
+    public Boolean getIsQuestioning() {
+        return isQuestioning;
     }
 
-    public void setQuestioning(Boolean questioning) {
-        this.questioning = questioning;
+    public void setIsQuestioning(Boolean isQuestioning) {
+        this.isQuestioning = isQuestioning;
     }
-    
 
+    /**
+     * @return the userId
+     */
+    @Column(name = "user_id")
+    public BigInteger getUserId() {
+        return userId;
+    }
+
+    /**
+     * @param userId the userId to set
+     */
+    public void setUserId(BigInteger userId) {
+        this.userId = userId;
+    }
+
+    /**
+     * @return the status
+     */
+    @Column(name = "status")
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * @return the assignedUserId
+     */
+    @Column(name = "assigned_user_id")
+    public BigInteger getAssignedUserId() {
+        return assignedUserId;
+    }
+
+    /**
+     * @param assignedUserId the assignedUserId to set
+     */
+    public void setAssignedUserId(BigInteger assignedUserId) {
+        this.assignedUserId = assignedUserId;
+    }
 }
