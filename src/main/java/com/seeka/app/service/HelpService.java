@@ -24,6 +24,7 @@ import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
 import com.seeka.app.dto.HelpSubCategoryDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.HelpEnum;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -39,8 +40,8 @@ public class HelpService implements IHelpService {
     @Autowired
     private IUserDAO userDao;
 
-   /* @Autowired
-    private IUsersService iUsersService;*/
+    @Autowired
+    private IUsersService iUsersService;
 
     @Override
     public Map<String, Object> save(@Valid HelpDto helpDto, BigInteger userId) {
@@ -102,6 +103,7 @@ public class HelpService implements IHelpService {
 
     public HelpDto convertSeekaHelpToDto(SeekaHelp seekaHelp) {
         HelpDto dto = new HelpDto();
+
         dto.setId(seekaHelp.getId());
         dto.setTitle(seekaHelp.getTitle());
         dto.setDescription(seekaHelp.getDescritpion());
@@ -111,18 +113,21 @@ public class HelpService implements IHelpService {
         dto.setUpdatedBy(seekaHelp.getUpdatedBy());
         dto.setIsQuestioning(seekaHelp.getIsQuestioning());
         dto.setStatus(seekaHelp.getStatus());
-    /*    if (seekaHelp.getUserId() != null) {
-            UserDto userDto = iUsersService.getUserById(seekaHelp.getUserId());
-            if (userDto != null) {
-                if (userDto.getFirstName() != null) {
-                    dto.setCreatedUser(userDto.getFirstName());
+        if (seekaHelp.getUserId() != null) {
+            try {
+                UserDto userDto = iUsersService.getUserById(seekaHelp.getUserId());
+                if (userDto != null) {
+                    if (userDto.getFirstName() != null) {
+                        dto.setCreatedUser(userDto.getFirstName());
+                    }
+                    if (userDto.getFirstName() != null && userDto.getLastName() != null) {
+                        dto.setCreatedUser(userDto.getFirstName() + " " + userDto.getLastName());
+                    }
                 }
-                if (userDto.getFirstName() != null && userDto.getLastName() != null) {
-                    dto.setCreatedUser(userDto.getFirstName() + " " + userDto.getLastName());
-                }
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }*/
+        }
         if (seekaHelp.getCreatedOn() != null) {
             dto.setCreatedOn(DateUtil.convertDateToString(seekaHelp.getCreatedOn()));
         }
@@ -318,8 +323,12 @@ public class HelpService implements IHelpService {
         List<HelpDto> helpDtos = new ArrayList<>();
         try {
             List<SeekaHelp> seekHelps = helpDAO.getHelpByCategory(categoryId);
-            for (SeekaHelp seekaHelp : seekHelps)
-                helpDtos.add(convertSeekaHelpToDto(seekaHelp));
+            try {
+                for (SeekaHelp seekaHelp : seekHelps) {
+                    helpDtos.add(convertSeekaHelpToDto(seekaHelp));
+                }
+            } catch (Exception exception) {
+            }
             if (helpDtos != null && !helpDtos.isEmpty()) {
                 response.put("status", HttpStatus.OK.value());
                 response.put("message", IConstant.HELP_SUCCESS);
@@ -490,6 +499,42 @@ public class HelpService implements IHelpService {
                 helpDAO.update(help);
                 response.put("status", HttpStatus.OK.value());
                 response.put("message", "Help deleted successfully");
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("message", IConstant.HELP_NOT_FOUND);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("message", exception.getCause());
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> filter(String status, String mostRecent, BigInteger categoryId) {
+        Map<String, Object> response = new HashMap<>();
+        List<HelpDto> helpDtos = new ArrayList<>();
+        try {
+            List<SeekaHelp> seekaHelps = new ArrayList<>();
+            if (status != null && !status.isEmpty()) {
+                seekaHelps = helpDAO.findByStatus(status, categoryId);
+            }
+            if (mostRecent != null && !mostRecent.isEmpty()) {
+                seekaHelps = helpDAO.findByMostRecent(mostRecent, categoryId);
+            }
+            if ((status != null && !status.isEmpty()) && (mostRecent != null && !mostRecent.isEmpty())) {
+                seekaHelps = helpDAO.findByStatusAndMostRecent(status, mostRecent, categoryId);
+            }
+            if (status == null && mostRecent == null) {
+                seekaHelps = helpDAO.getHelpByCategory(categoryId);
+            }
+            for (SeekaHelp seekaHelp : seekaHelps)
+                helpDtos.add(convertSeekaHelpToDto(seekaHelp));
+            if (helpDtos != null && !helpDtos.isEmpty()) {
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", IConstant.HELP_SUCCESS);
+                response.put("data", helpDtos);
             } else {
                 response.put("status", HttpStatus.NOT_FOUND.value());
                 response.put("message", IConstant.HELP_NOT_FOUND);

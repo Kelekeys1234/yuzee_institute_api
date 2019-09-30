@@ -44,4 +44,6 @@ public interface IHelpService {
 
     public Map<String, Object>  updateStatus(BigInteger id, BigInteger userId, String status);
 
+    public Map<String, Object> filter(String status, String mostRecent, BigInteger categoryId);
+
 }

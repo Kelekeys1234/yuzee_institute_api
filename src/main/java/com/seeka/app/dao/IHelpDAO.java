@@ -41,4 +41,10 @@ public interface IHelpDAO {
     public List<HelpAnswer> getAnswerByHelpId(BigInteger userId);
 
     public List<HelpCategory> getAllCategory();
+
+    public List<SeekaHelp> findByStatus(String status, BigInteger categoryId);
+
+    public List<SeekaHelp> findByMostRecent(String status, BigInteger categoryId);
+
+    public List<SeekaHelp> findByStatusAndMostRecent(String status, String mostRecent, BigInteger categoryId);
 }

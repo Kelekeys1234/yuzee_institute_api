@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,5 +187,40 @@ public class HelpDAO implements IHelpDAO {
         Session session = sessionFactory.getCurrentSession();
         List<HelpCategory> list = session.createCriteria(HelpCategory.class).list();
         return list;
+    }
+
+    @Override
+    public List<SeekaHelp> findByStatus(String status, BigInteger categoryId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+        return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true)).list();
+    }
+
+    @Override
+    public List<SeekaHelp> findByMostRecent(String mostRecent, BigInteger categoryId) {
+        if (mostRecent != null && mostRecent.equals("asc")) {
+            Session session = sessionFactory.getCurrentSession();
+            Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+            return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("isActive", true)).addOrder(Order.asc("createdOn")).list();
+        } else {
+            Session session = sessionFactory.getCurrentSession();
+            Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+            return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("isActive", true)).addOrder(Order.desc("createdOn")).list();
+        }
+    }
+
+    @Override
+    public List<SeekaHelp> findByStatusAndMostRecent(String status, String mostRecent, BigInteger categoryId) {
+        if (mostRecent != null && mostRecent.equals("asc")) {
+            Session session = sessionFactory.getCurrentSession();
+            Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+            return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true))
+                            .addOrder(Order.asc("createdOn")).list();
+        } else {
+            Session session = sessionFactory.getCurrentSession();
+            Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+            return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true))
+                            .addOrder(Order.desc("createdOn")).list();
+        }
     }
 }

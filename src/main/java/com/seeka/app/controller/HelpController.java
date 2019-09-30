@@ -103,7 +103,13 @@ public class HelpController {
     }
 
     @RequestMapping(value = "/status/{id}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> updateStatus(@PathVariable BigInteger id, @RequestHeader(required = false) BigInteger userId, @RequestParam String status) throws Exception {
-        return ResponseEntity.accepted().body(helpService.updateStatus(id, userId, status));
+    public ResponseEntity<?> updateStatus(@PathVariable BigInteger id, @RequestHeader(required = false) BigInteger userId, @RequestParam String status,
+                    @RequestParam(required = false) BigInteger assignedUserId) throws Exception {
+        return ResponseEntity.accepted().body(helpService.updateStatus(id, assignedUserId, status));
+    }
+
+    @RequestMapping(value = "/filter", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> filter(@RequestParam(required = false) String status, @RequestParam(required = false) String mostRecent, @RequestParam BigInteger categoryId) throws Exception {
+        return ResponseEntity.accepted().body(helpService.filter(status, mostRecent, categoryId));
     }
 }
