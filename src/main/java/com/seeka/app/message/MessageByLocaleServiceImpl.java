@@ -28,4 +28,14 @@ public class MessageByLocaleServiceImpl implements MessageByLocaleService {
 		return messageSource.getMessage(id, arg, locale);
 	}
 	
+	/**
+	 * If no locale specified take english as local and display messages.
+	 */
+	@Override
+	public String getMessage(String id, Object[] arg) {
+		
+		Locale locale = LocaleUtils.toLocale("en");
+		return messageSource.getMessage(id, arg, locale);
+	}
+	
 }

@@ -58,6 +58,7 @@ import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -107,6 +108,9 @@ public class CourseService implements ICourseService {
 
 	@Autowired
 	private IStorageService iStorageService;
+	
+	@Autowired
+	private MessageByLocaleService messageByLocaleService;
 
 	@Override
 	public void save(final Course course) {
@@ -980,5 +984,13 @@ public class CourseService implements ICourseService {
 	@Override
 	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country) {
 		return iCourseDAO.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto, country);
+	}
+
+	@Override
+	public List<BigInteger> getCountryForTopSearchedCourses(List<BigInteger> topSearchedCourseIds) throws ValidationException{
+		if(topSearchedCourseIds == null || topSearchedCourseIds.isEmpty()) {
+			throw new ValidationException(messageByLocaleService.getMessage("no.course.id.specified", new Object[] {}));
+		}
+		return iCourseDAO.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
 	}
 }

@@ -99,4 +99,6 @@ public interface ICourseDAO {
 	List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(Country country);
 
 	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
+
+	List<BigInteger> getDistinctCountryBasedOnCourses(List<BigInteger> topSearchedCourseIds);
 }

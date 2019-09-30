@@ -2074,4 +2074,18 @@ public class CourseDAO implements ICourseDAO {
 		return count != null ? count.longValue() : 0L;
 	}
 
+	@Override
+	public List<BigInteger> getDistinctCountryBasedOnCourses(List<BigInteger> topSearchedCourseIds) {
+
+		Session session = sessionFactory.getCurrentSession();
+		
+		String ids = topSearchedCourseIds.stream().map(BigInteger::toString).
+				collect(Collectors.joining(","));
+		
+		System.out.println("IDs -- "+ids);
+		List<BigInteger> countryIds = session.createNativeQuery("Select distinct country_id from course where country_id is not null and "
+				+ "id in ("+ids+")").getResultList();
+		return countryIds;
+	}
+
 }

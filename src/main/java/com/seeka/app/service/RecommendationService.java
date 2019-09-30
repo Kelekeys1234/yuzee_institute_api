@@ -82,6 +82,42 @@ public class RecommendationService implements IRecommendationService {
 		 * below logic.
 		 */
 		
+		/**
+		 * Fetch all the institute Ids based on its past search history
+		 */
+		
+		List<BigInteger> instituteIdsBasedPastSearch = getInstituteIdsBasedOnPastSearch(userId);
+		if(!(instituteIdsBasedPastSearch == null || instituteIdsBasedPastSearch.isEmpty())) {
+			/**
+			 * Get the start index to display the instituteIds
+			 */
+			Long startI = (pageSize * (pageNumber-1)) + 1;
+			
+			
+			if(instituteIdsBasedPastSearch.size() > startI) {
+				Long endIndex = startI + pageSize;
+				/**
+				 * if the institutes are greater than the end index fetch all the instituteIds and return the
+				 * response back
+				 */
+				if(instituteIdsBasedPastSearch.size() > endIndex) {
+					instituteIdList.addAll(instituteIdsBasedPastSearch.subList((int)(startI -1), (int)(endIndex -1)));
+					return iInstituteService.getAllInstituteByID(instituteIdList);
+				} else {
+					/**
+					 * If not and there are left overs from previous search get them and then add other Ids as per other logic
+					 * to the existing Ids.
+					 */
+					instituteIdList.addAll(instituteIdsBasedPastSearch.subList((int)(startI -1), instituteIdsBasedPastSearch.size()-1));
+				}
+			}
+			
+			/**
+			 * Change the pageNumber for the below record as per the displayed records according to above logic.
+			 */
+			pageNumber = pageNumber - (int)instituteIdsBasedPastSearch.size()/pageSize;
+		}
+		
 //		List<BigInteger> courseIds = iCourseService.getTopSearchedCoursesByUsers(userId);
 //		getCountryCityFromCourse(courseIds);
 		
@@ -97,12 +133,10 @@ public class RecommendationService implements IRecommendationService {
 			 */
 			if(startIndex == null) {
 				startIndex = ((pageNumber-1) * pageSize) + 1;
-				instituteIdList = iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize);
+				instituteIdList.addAll(iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize));
 			} else {
-				instituteIdList = iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize);
+				instituteIdList.addAll(iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize));
 			}
-			
-			
 		}
 		/**
 		 * Logic to fetch international institutes for user
@@ -116,6 +150,18 @@ public class RecommendationService implements IRecommendationService {
 		}
 		/**
 		 * Above line is written to merge both domestic and international institutes
+		 */
+		
+		/**
+		 * if the obtained institutes are greater than the page size. strip off the remaining institutes and return the 
+		 * institutes equal to the page size specified.
+		 */
+		if(instituteIdList.size() > pageSize) {
+			instituteIdList.subList(0, pageSize.intValue());
+		}
+		
+		/**
+		 * fetch all the institute details corresponding to the ids obtained.
 		 */
 		return iInstituteService.getAllInstituteByID(instituteIdList);
 	}
@@ -435,5 +481,22 @@ public class RecommendationService implements IRecommendationService {
 			return insitituteIds;
 		}
 	}
+	
+	private List<BigInteger> getInstituteIdsBasedOnPastSearch(BigInteger userId) throws ValidationException{
+		
+		List<BigInteger> instituteList = new ArrayList<>();
+		
+		List<BigInteger> topSearchedCourseIds = iCourseService.getTopSearchedCoursesByUsers(userId);
+		if(topSearchedCourseIds != null && !topSearchedCourseIds.isEmpty()) {
+			List<BigInteger> countryForTopSearchedCourses = iCourseService.getCountryForTopSearchedCourses(topSearchedCourseIds);
+			for(BigInteger countryId : countryForTopSearchedCourses) {
+				List<BigInteger> insituteId = iInstituteService.getTopInstituteIdByCountry(countryId, 0L, 1L);
+				instituteList.addAll(insituteId);
+			}
+		}
+		
+		return instituteList;
+	}
+	
 	
 }
