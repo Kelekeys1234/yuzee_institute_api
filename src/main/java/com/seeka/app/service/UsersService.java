@@ -47,7 +47,8 @@ public class UsersService implements IUsersService {
 		Integer status = (Integer) responseMap.get("status");
 		System.out.println(status);
 		if (status != 200) {
-			throw new ValidationException((String) responseMap.get("message"));
+			System.out.println((String) responseMap.get("message"));
+			return null;
 		}
 		responseMap.get("data");
 		ObjectMapper mapper = new ObjectMapper();
@@ -78,10 +79,12 @@ public class UsersService implements IUsersService {
 	public void sendPushNotification(final BigInteger userId, final String message) throws ValidationException {
 		List<UserDeviceInfoDto> userDeviceInfoDto = getUserDeviceById(userId);
 
-		ObjectMapper objMapper = new ObjectMapper();
-		for (Object obj : userDeviceInfoDto) {
-			UserDeviceInfoDto userDevInfoDto = objMapper.convertValue(obj, UserDeviceInfoDto.class);
-			sendPushNotification(userDevInfoDto, message);
+		if (userDeviceInfoDto != null) {
+			ObjectMapper objMapper = new ObjectMapper();
+			for (Object obj : userDeviceInfoDto) {
+				UserDeviceInfoDto userDevInfoDto = objMapper.convertValue(obj, UserDeviceInfoDto.class);
+				sendPushNotification(userDevInfoDto, message);
+			}
 		}
 	}
 
