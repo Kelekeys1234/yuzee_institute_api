@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.HelpAnswer;
 import com.seeka.app.bean.HelpCategory;
@@ -26,6 +27,7 @@ import com.seeka.app.dto.HelpSubCategoryDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.HelpEnum;
+import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -42,6 +44,9 @@ public class HelpService implements IHelpService {
 
     @Autowired
     private IUsersService iUsersService;
+
+    @Autowired
+    private IMediaService iMediaService;
 
     @Override
     public Map<String, Object> save(@Valid HelpDto helpDto, BigInteger userId) {
@@ -372,10 +377,18 @@ public class HelpService implements IHelpService {
     }
 
     @Override
-    public Map<String, Object> saveAnswer(@Valid HelpAnswerDto helpAnswerDto) {
+    public Map<String, Object> saveAnswer(@Valid HelpAnswerDto helpAnswerDto, MultipartFile file) {
         Map<String, Object> response = new HashMap<>();
         try {
-            helpDAO.save(convertDtoToHelpAnswerBeans(helpAnswerDto));
+            HelpAnswer helpAnswer = helpDAO.save(convertDtoToHelpAnswerBeans(helpAnswerDto));
+            if (helpAnswer != null && file != null) {
+                String logoName = iMediaService.uploadImage(file, helpAnswer.getId(), ImageCategory.HELP_SUPPORT.name(), null);
+                System.out.println("Help answer media upload for id - >" + helpAnswer.getId() + " and Image name :" + logoName);
+                if(logoName!=null) {
+                    helpAnswer.setFileName(logoName);
+                    helpDAO.updateAnwser(helpAnswer);
+                }
+            }
             response.put("status", HttpStatus.OK.value());
             response.put("message", IConstant.HELP_ANSWER_SUCCESS_MESSAGE);
         } catch (Exception exception) {
@@ -432,6 +445,9 @@ public class HelpService implements IHelpService {
         helpAnswerDto.setUpdatedBy(helpAnswer.getUpdatedBy());
         if (helpAnswer.getCreatedOn() != null) {
             helpAnswerDto.setCreatedOn(DateUtil.convertDateToString(helpAnswer.getCreatedOn()));
+        }
+        if(helpAnswer.getFileName()!=null) {
+            helpAnswerDto.setFileName(helpAnswer.getFileName());
         }
         return helpAnswerDto;
     }

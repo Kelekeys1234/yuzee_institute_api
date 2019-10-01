@@ -35,6 +35,7 @@ public class HelpAnswer implements Serializable {
     private String createdBy;
     private String updatedBy;
     private Boolean isDeleted;
+    private String fileName;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -228,5 +229,20 @@ public class HelpAnswer implements Serializable {
 				+ ", createdBy=" + createdBy + ", updatedBy=" + updatedBy
 				+ ", isDeleted=" + isDeleted + "]";
 	}
+
+    /**
+     * @return the fileName
+     */
+	@Column(name = "file_name")
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * @param fileName the fileName to set
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 	
 }

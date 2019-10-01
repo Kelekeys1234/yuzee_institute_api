@@ -10,6 +10,7 @@ public class HelpAnswerDto {
     private String createdBy;
     private String updatedBy;
     private String createdOn;
+    private String fileName;
 
     public BigInteger getUserId() {
         return userId;
@@ -64,6 +65,20 @@ public class HelpAnswerDto {
      */
     public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
+    }
+
+    /**
+     * @return the fileName
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * @param fileName the fileName to set
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
 }

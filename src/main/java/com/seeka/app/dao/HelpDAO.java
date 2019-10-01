@@ -169,9 +169,10 @@ public class HelpDAO implements IHelpDAO {
     }
 
     @Override
-    public void save(HelpAnswer helpAnswer) {
+    public HelpAnswer save(HelpAnswer helpAnswer) {
         Session session = sessionFactory.getCurrentSession();
         session.save(helpAnswer);
+        return helpAnswer;
     }
 
     @Override
@@ -222,5 +223,11 @@ public class HelpDAO implements IHelpDAO {
             return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true))
                             .addOrder(Order.desc("createdOn")).list();
         }
+    }
+
+    @Override
+    public void updateAnwser(HelpAnswer helpAnswer) {
+        Session session = sessionFactory.getCurrentSession();
+        session.update(helpAnswer);
     }
 }

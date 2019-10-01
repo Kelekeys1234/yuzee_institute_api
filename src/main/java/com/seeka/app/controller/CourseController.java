@@ -131,7 +131,7 @@ public class CourseController {
 			@RequestParam(required = false) final Integer minDuration, @RequestParam(required = false) final Integer maxDuration,
 			@RequestParam(required = false) final String courseName, @RequestParam(required = false) final String currencyCode,
 			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final boolean sortAsscending,
-			@RequestHeader(required = true) BigInteger userId) throws Exception {
+			@RequestHeader(required = true) BigInteger userId, @RequestParam(required = false) final String date) throws Exception {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryIds(countryIds);
 		courseSearchDto.setInstituteId(instituteId);
@@ -150,12 +150,14 @@ public class CourseController {
 		courseSearchDto.setCurrencyCode(currencyCode);
 		courseSearchDto.setSortAsscending(sortAsscending);
 		courseSearchDto.setUserId(userId);
+		courseSearchDto.setDate(date);
 		return courseSearch(courseSearchDto);
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) BigInteger userId, @RequestBody final CourseSearchDto courseSearchDto)
 			throws Exception {
+	    
 		courseSearchDto.setUserId(userId);
 		return courseSearch(courseSearchDto);
 	}

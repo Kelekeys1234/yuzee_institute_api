@@ -36,7 +36,7 @@ public interface IHelpDAO {
 
     public List<SeekaHelp> getHelpByCategory(BigInteger id);
 
-    public void save(HelpAnswer helpAnswer);
+    public HelpAnswer save(HelpAnswer helpAnswer);
 
     public List<HelpAnswer> getAnswerByHelpId(BigInteger userId);
 
@@ -47,4 +47,6 @@ public interface IHelpDAO {
     public List<SeekaHelp> findByMostRecent(String status, BigInteger categoryId);
 
     public List<SeekaHelp> findByStatusAndMostRecent(String status, String mostRecent, BigInteger categoryId);
+
+    public void updateAnwser(HelpAnswer helpAnswer);
 }

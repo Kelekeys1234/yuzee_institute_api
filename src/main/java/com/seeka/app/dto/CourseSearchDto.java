@@ -27,6 +27,7 @@ public class CourseSearchDto {
 	private boolean sortAsscending;
 	private String sortBy;
 	private String currencyCode;
+	private String date;
 
 	public String getSearchKey() {
 		return searchKey;
@@ -233,6 +234,20 @@ public class CourseSearchDto {
      */
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
+    }
+
+    /**
+     * @return the date
+     */
+    public String getDate() {
+        return date;
+    }
+
+    /**
+     * @param date the date to set
+     */
+    public void setDate(String date) {
+        this.date = date;
     }
 
 }

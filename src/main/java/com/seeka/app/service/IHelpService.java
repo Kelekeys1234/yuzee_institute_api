@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
@@ -34,7 +36,7 @@ public interface IHelpService {
 
 	public Map<String, Object> getSubCategoryCount();
 
-	public Map<String, Object> saveAnswer(@Valid HelpAnswerDto helpAnswerDto);
+	public Map<String, Object> saveAnswer(@Valid HelpAnswerDto helpAnswerDto, MultipartFile file);
 	
 	public Map<String, Object> getAnswerByHelpId(BigInteger userId);
 

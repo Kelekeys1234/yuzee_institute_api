@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
@@ -82,9 +84,10 @@ public class HelpController {
         return ResponseEntity.accepted().body(helpService.getSubCategoryCount());
     }
 
-    @RequestMapping(value = "/answer", method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<?> saveAnswer(@RequestBody HelpAnswerDto helpAnswerDto) throws Exception {
-        return ResponseEntity.accepted().body(helpService.saveAnswer(helpAnswerDto));
+    @RequestMapping(value = "/answer", method = RequestMethod.POST)
+    public ResponseEntity<?> saveAnswer(@RequestParam(name = "file", required = false) final MultipartFile file, @ModelAttribute final HelpAnswerDto helpAnswerDto)
+                    throws Exception {
+        return ResponseEntity.accepted().body(helpService.saveAnswer(helpAnswerDto, file));
     }
 
     @RequestMapping(value = "/answer/{helpId}", method = RequestMethod.GET, produces = "application/json")
@@ -109,7 +112,8 @@ public class HelpController {
     }
 
     @RequestMapping(value = "/filter", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> filter(@RequestParam(required = false) String status, @RequestParam(required = false) String mostRecent, @RequestParam BigInteger categoryId) throws Exception {
+    public ResponseEntity<?> filter(@RequestParam(required = false) String status, @RequestParam(required = false) String mostRecent, @RequestParam BigInteger categoryId)
+                    throws Exception {
         return ResponseEntity.accepted().body(helpService.filter(status, mostRecent, categoryId));
     }
 }
