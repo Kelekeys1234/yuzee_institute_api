@@ -120,7 +120,9 @@ public class EnrollmentChatService implements IEnrollmentChatService {
 	public EnrollmentChatResposneDto getEnrollmentChatListBasedOnEnrollment(final BigInteger enrollmentId) throws ValidationException {
 		EnrollmentChat enrollmentChat = iEnrollmentChatDao.getEnrollmentChatBasedOnEnrollmentId(enrollmentId);
 		if (enrollmentChat == null) {
-			throw new ValidationException("Enrollment chat not found for enrollment Id: " + enrollmentId);
+			EnrollmentChatResposneDto enrollmentChatResposneDto = new EnrollmentChatResposneDto();
+			enrollmentChatResposneDto.setEnrollmentId(enrollmentId);
+			return enrollmentChatResposneDto;
 		}
 		EnrollmentChatResposneDto enrollmentChatResposneDto = new EnrollmentChatResposneDto();
 		BeanUtils.copyProperties(enrollmentChat, enrollmentChatResposneDto);
