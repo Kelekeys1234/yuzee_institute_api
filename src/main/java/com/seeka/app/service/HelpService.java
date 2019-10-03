@@ -19,15 +19,16 @@ import com.seeka.app.bean.HelpCategory;
 import com.seeka.app.bean.HelpSubCategory;
 import com.seeka.app.bean.SeekaHelp;
 import com.seeka.app.dao.IHelpDAO;
-import com.seeka.app.dao.IUserDAO;
 import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
 import com.seeka.app.dto.HelpSubCategoryDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.HelpEnum;
 import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -40,13 +41,13 @@ public class HelpService implements IHelpService {
     private IHelpDAO helpDAO;
 
     @Autowired
-    private IUserDAO userDao;
-
-    @Autowired
     private IUsersService iUsersService;
 
     @Autowired
     private IMediaService iMediaService;
+
+    @Autowired
+    private IStorageService iStorageService;
 
     @Override
     public Map<String, Object> save(@Valid HelpDto helpDto, BigInteger userId) {
@@ -383,8 +384,8 @@ public class HelpService implements IHelpService {
             HelpAnswer helpAnswer = helpDAO.save(convertDtoToHelpAnswerBeans(helpAnswerDto));
             if (helpAnswer != null && file != null) {
                 String logoName = iMediaService.uploadImage(file, helpAnswer.getId(), ImageCategory.HELP_SUPPORT.name(), null);
-                System.out.println("Help answer media upload for id - >" + helpAnswer.getId() + " and Image name :" + logoName);
-                if(logoName!=null) {
+                System.out.println("Help answer media upload for id - >" + helpAnswer.getId() + " and Image  name :" + logoName);
+                if (logoName != null && !logoName.isEmpty() && !logoName.equals("null")) {
                     helpAnswer.setFileName(logoName);
                     helpDAO.updateAnwser(helpAnswer);
                 }
@@ -402,7 +403,7 @@ public class HelpService implements IHelpService {
         HelpAnswer helpAnswer = new HelpAnswer();
         helpAnswer.setAnswer(answerDto.getAnswer());
         helpAnswer.setSeekaHelp(helpDAO.get(answerDto.getHelpId()));
-        helpAnswer.setUser(userDao.get(answerDto.getUserId()));
+        helpAnswer.setUser((answerDto.getUserId()));
         helpAnswer.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
         helpAnswer.setCreatedBy(answerDto.getCreatedBy());
         helpAnswer.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -439,15 +440,25 @@ public class HelpService implements IHelpService {
     public HelpAnswerDto convertBeanToHelpAnswerDto(HelpAnswer helpAnswer) {
         HelpAnswerDto helpAnswerDto = new HelpAnswerDto();
         helpAnswerDto.setAnswer(helpAnswer.getAnswer());
-        helpAnswerDto.setUserId(helpAnswer.getUser().getUserId());
+        helpAnswerDto.setUserId(helpAnswer.getUser());
         helpAnswerDto.setHelpId(helpAnswer.getSeekaHelp().getId());
         helpAnswerDto.setCreatedBy(helpAnswer.getCreatedBy());
         helpAnswerDto.setUpdatedBy(helpAnswer.getUpdatedBy());
         if (helpAnswer.getCreatedOn() != null) {
             helpAnswerDto.setCreatedOn(DateUtil.convertDateToString(helpAnswer.getCreatedOn()));
         }
-        if(helpAnswer.getFileName()!=null) {
-            helpAnswerDto.setFileName(helpAnswer.getFileName());
+        if (helpAnswer.getFileName() != null) {
+            try {
+                List<StorageDto> storageDTOList = iStorageService.getStorageInformation(helpAnswer.getId(), ImageCategory.HELP_SUPPORT.toString(), null, "en");
+                if (storageDTOList != null && !storageDTOList.isEmpty()) {
+                    StorageDto storageDto = storageDTOList.get(0);
+                    if (storageDto != null) {
+                        helpAnswerDto.setFileUrl(storageDto.getImageURL());
+                    }
+                }
+            } catch (ValidationException e) {
+                e.printStackTrace();
+            }
         }
         return helpAnswerDto;
     }

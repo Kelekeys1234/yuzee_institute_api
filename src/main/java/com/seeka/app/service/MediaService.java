@@ -50,7 +50,6 @@ public class MediaService implements IMediaService {
 		if (type != null) {
 			builder.queryParam("type", type);
 		}
-
 		HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(formDate, headers);
 		ResponseEntity<Map> response = restTemplate.postForEntity(builder.toUriString(), request, Map.class);
 		newFile.delete();

@@ -10,7 +10,7 @@ public class HelpAnswerDto {
     private String createdBy;
     private String updatedBy;
     private String createdOn;
-    private String fileName;
+    private String fileUrl;
 
     public BigInteger getUserId() {
         return userId;
@@ -68,17 +68,18 @@ public class HelpAnswerDto {
     }
 
     /**
-     * @return the fileName
+     * @return the fileUrl
      */
-    public String getFileName() {
-        return fileName;
+    public String getFileUrl() {
+        return fileUrl;
     }
 
     /**
-     * @param fileName the fileName to set
+     * @param fileUrl the fileUrl to set
      */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 
+   
 }
