@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -29,6 +30,7 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.bean.UserInfo;
 import com.seeka.app.bean.YoutubeVideo;
+import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
@@ -42,7 +44,9 @@ import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.jobs.CurrencyUtil;
+import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.service.ICourseEnglishEligibilityService;
 import com.seeka.app.service.ICourseGradeEligibilityService;
 import com.seeka.app.service.ICourseKeywordService;
@@ -91,6 +95,9 @@ public class CourseController {
 	@Autowired
 	private IStorageService iStorageService;
 
+	@Autowired
+	private MessageByLocaleService messageByLocalService;
+	
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws Exception {
 		return ResponseEntity.accepted().body(courseService.save(course));
@@ -553,4 +560,16 @@ public class CourseController {
 		return ResponseEntity.accepted().body(courseService.autoSearchByCharacter(searchKey));
 	}
 
+	@GetMapping(value = "/myCourse/filter")
+	public ResponseEntity<?> getUserListForMyCourseFilter(@RequestHeader(required = true) String language,
+			@RequestParam(name="courseId", required = false) final BigInteger courseId, @RequestParam(name="facultyId", required=false) final BigInteger facultyId,
+			@RequestParam(name="instituteId",required=false) final BigInteger instituteId) throws ValidationException {
+		if (courseId == null && facultyId == null && instituteId == null) {
+			throw new ValidationException(messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}, language));
+		}
+		List<Long> userList = courseService.getUserListBasedForCourseOnParameters(courseId, instituteId,
+				facultyId);
+		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK)
+				.create();
+	}
 }

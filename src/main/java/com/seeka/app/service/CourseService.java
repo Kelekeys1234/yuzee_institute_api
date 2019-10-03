@@ -993,4 +993,19 @@ public class CourseService implements ICourseService {
 		}
 		return iCourseDAO.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
 	}
+	
+	private List<BigInteger> getCourseListBasedForCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId) {
+		List<BigInteger> courseIdList = iCourseDAO.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId);
+		return courseIdList;
+	}
+	
+	@Override
+	public List<Long> getUserListBasedForCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId) {
+		List<BigInteger> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId);
+		if(courseIdList == null || courseIdList.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<Long> userIdList = iCourseDAO.getUserListFromMyCoursesBasedOnCourses(courseIdList);
+		return userIdList;
+	}
 }

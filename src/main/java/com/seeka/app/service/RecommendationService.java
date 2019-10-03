@@ -118,9 +118,6 @@ public class RecommendationService implements IRecommendationService {
 			pageNumber = pageNumber - (int)instituteIdsBasedPastSearch.size()/pageSize;
 		}
 		
-//		List<BigInteger> courseIds = iCourseService.getTopSearchedCoursesByUsers(userId);
-//		getCountryCityFromCourse(courseIds);
-		
 		/**
 		 * Check if courses are available for user country
 		 */

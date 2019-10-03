@@ -101,4 +101,8 @@ public interface ICourseDAO {
 	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
 
 	List<BigInteger> getDistinctCountryBasedOnCourses(List<BigInteger> topSearchedCourseIds);
+
+	List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId);
+
+	List<Long> getUserListFromMyCoursesBasedOnCourses(List<BigInteger> courseIds);
 }

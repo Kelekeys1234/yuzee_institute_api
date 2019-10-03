@@ -2100,4 +2100,35 @@ public class CourseDAO implements ICourseDAO {
 		return countryIds;
 	}
 
+	@Override
+	public List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId,
+			BigInteger facultyId) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder query = new StringBuilder();
+		query.append("Select id from course where 1=1");
+		if(courseId !=null) {
+			query.append(" and id = "+courseId);
+		}
+		if(instituteId != null) {
+			query.append(" and institute_id ="+instituteId);
+		}
+		if(facultyId != null) {
+			query.append(" and faculty_id = "+facultyId);
+		}
+		
+		List<BigInteger> courseIds = session.createNativeQuery(query.toString()).getResultList();
+		return courseIds;
+	}
+
+	@Override
+	public List<Long> getUserListFromMyCoursesBasedOnCourses(List<BigInteger> courseIds) {
+
+		Session session = sessionFactory.getCurrentSession();
+		String ids = courseIds.stream().map(BigInteger::toString).
+				collect(Collectors.joining(","));
+		List<Long> userIds = session.createNativeQuery("select distinct user_id from user_my_course where course_id in ("+ids+")").getResultList();
+		return userIds;
+	}
+
 }
