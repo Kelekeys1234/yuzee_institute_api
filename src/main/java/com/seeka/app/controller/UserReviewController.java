@@ -50,9 +50,9 @@ public class UserReviewController {
 	}
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getUserReviewBasedOnData(@RequestParam(name = "entityId") final BigInteger entityId,
-			@RequestParam(name = "entityType") final String entityType, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize)
-			throws ValidationException {
+	public ResponseEntity<?> getUserReviewBasedOnData(@RequestParam(name = "entityId", required = false) final BigInteger entityId,
+			@RequestParam(name = "entityType", required = false) final String entityType, @PathVariable final Integer pageNumber,
+			@PathVariable final Integer pageSize) throws ValidationException {
 		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewBasedOnData(entityId, entityType, pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReviewList).setMessage("Get user review successfully").create();
 	}
