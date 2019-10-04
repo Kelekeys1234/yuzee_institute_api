@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
@@ -56,7 +57,7 @@ public class RecommendationController {
 	@GetMapping("/courses")
 	public ResponseEntity<?> getRecommendedCourses(@RequestHeader(value = "userId") BigInteger userId)
 			throws ValidationException {
-		List<Course> recomendedCourses = iRecommendationService.getRecommendedCourses(userId);
+		List<CourseResponseDto> recomendedCourses = iRecommendationService.getRecommendedCourses(userId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recomendedCourses)
 				.setMessage("Recommended Course Displayed Successfully").create();
 	}

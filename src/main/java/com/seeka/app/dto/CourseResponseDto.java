@@ -13,14 +13,14 @@ public class CourseResponseDto {
 	private String instituteName;
 	private Integer worldRanking;
 	private Integer stars;
-	private String cost;
+	private Double costRange;
 	private Integer duration;
 	private String durationTime;
 	private String location;
 	private BigInteger countryId;
 	private BigInteger cityId;
 	private Integer totalCount;
-	private Double domasticFee;
+	private Double domesticFee;
 	private Double internationalFee;
 	private String requirements;
 	private String countryName;
@@ -28,7 +28,9 @@ public class CourseResponseDto {
 	private Boolean isFavourite;
 	private String currencyCode;
 	private List<StorageDto> storageList;
-
+	private Boolean isCourseWatchedBefore = false;
+	private String cost;
+	
 	public BigInteger getInstituteId() {
 		return instituteId;
 	}
@@ -61,14 +63,7 @@ public class CourseResponseDto {
 		this.stars = stars;
 	}
 
-	public String getCost() {
-		return cost;
-	}
-
-	public void setCost(final String cost) {
-		this.cost = cost;
-	}
-
+	
 	public Integer getDuration() {
 		return duration;
 	}
@@ -188,15 +183,15 @@ public class CourseResponseDto {
 	/**
 	 * @return the domasticFee
 	 */
-	public Double getDomasticFee() {
-		return domasticFee;
+	public Double getDomesticFee() {
+		return domesticFee;
 	}
 
 	/**
 	 * @param domasticFee the domasticFee to set
 	 */
-	public void setDomasticFee(Double domasticFee) {
-		this.domasticFee = domasticFee;
+	public void setDomesticFee(Double domasticFee) {
+		this.domesticFee = domasticFee;
 	}
 
 	/**
@@ -253,6 +248,38 @@ public class CourseResponseDto {
 	 */
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	/**
+	 * 
+	 * @return gives details if course is watched before by user
+	 */
+	public Boolean getIsCourseWatchedBefore() {
+		return isCourseWatchedBefore;
+	}
+
+	/**
+	 * 
+	 * @param isCourseWatchedBefore
+	 */
+	public void setIsCourseWatchedBefore(Boolean isCourseWatchedBefore) {
+		this.isCourseWatchedBefore = isCourseWatchedBefore;
+	}
+
+	public Double getCostRange() {
+		return costRange;
+	}
+
+	public void setCostRange(Double costRange) {
+		this.costRange = costRange;
+	}
+
+	public String getCost() {
+		return cost;
+	}
+
+	public void setCost(String cost) {
+		this.cost = cost;
 	}
 
 }

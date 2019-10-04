@@ -364,7 +364,7 @@ public class CourseDAO implements ICourseDAO {
 						dto.setAmount(Double.valueOf(row[19].toString()));
 						Double convertedRate = currencyService.convertCurrency(dto);
 						if (convertedRate != null) {
-							courseResponseDto.setDomasticFee(CommonUtil.foundOff2Digit(convertedRate));
+							courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
 						}
 					}
 					if (row[20] != null) {
@@ -379,7 +379,7 @@ public class CourseDAO implements ICourseDAO {
 					}
 				} else {
 					if (row[19] != null) {
-						courseResponseDto.setDomasticFee(CommonUtil.foundOff2Digit(Double.valueOf(row[19].toString())));
+						courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(Double.valueOf(row[19].toString())));
 					}
 					if (row[20] != null) {
 						courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(Double.valueOf(row[20].toString())));
@@ -761,7 +761,7 @@ public class CourseDAO implements ICourseDAO {
 			// obj.setDomasticFee(String.valueOf(row[16]) + " " + String.valueOf(row[5]));
 			// obj.setInternationalFee(String.valueOf(row[17]) + " " +
 			// String.valueOf(row[5]));
-			obj.setDomasticFee(Double.valueOf(String.valueOf(row[16])));
+			obj.setDomesticFee(Double.valueOf(String.valueOf(row[16])));
 			obj.setInternationalFee(Double.valueOf(String.valueOf(row[17])));
 			obj.setTotalCount(Integer.parseInt(String.valueOf(row[18])));
 			list.add(obj);
@@ -882,7 +882,7 @@ public class CourseDAO implements ICourseDAO {
 			obj.setLanguage(String.valueOf(row[13]));
 			obj.setLanguageShortKey(String.valueOf(row[13]));
 			obj.setStars(Integer.valueOf(String.valueOf(row[14])));
-			obj.setDomasticFee(Double.valueOf(String.valueOf(row[16])));
+			obj.setDomesticFee(Double.valueOf(String.valueOf(row[16])));
 			obj.setInternationalFee(Double.valueOf(String.valueOf(row[17])));
 			obj.setTotalCount(Integer.parseInt(String.valueOf(row[18])));
 			list.add(obj);
@@ -1709,7 +1709,7 @@ public class CourseDAO implements ICourseDAO {
 				dto.setAmount(Double.valueOf(row[19].toString()));
 				Double convertedRate = currencyService.convertCurrency(dto);
 				if (convertedRate != null) {
-					courseResponseDto.setDomasticFee(CommonUtil.foundOff2Digit(convertedRate));
+					courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
 				}
 			}
 			if (row[20] != null) {
@@ -1724,7 +1724,7 @@ public class CourseDAO implements ICourseDAO {
 			}
 		} else {
 			if (row[19] != null) {
-				courseResponseDto.setDomasticFee(CommonUtil.foundOff2Digit(Double.valueOf(row[19].toString())));
+				courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(Double.valueOf(row[19].toString())));
 			}
 			if (row[20] != null) {
 				courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(Double.valueOf(row[20].toString())));
@@ -2131,4 +2131,18 @@ public class CourseDAO implements ICourseDAO {
 		return userIds;
 	}
 
+	@Override
+	public List<BigInteger> getCourseIdsForCountry(final Country country) {
+		Session session = sessionFactory.getCurrentSession();
+		List<BigInteger> courseList = session.createNativeQuery("select id from course where country_id = ?").setParameter(1, country.getId()).getResultList();
+		return courseList;
+	}
+
+	@Override
+	public List<BigInteger> getAllCoursesForCountry(List<BigInteger> otherCountryIds) {
+		Session session = sessionFactory.getCurrentSession();
+		String ids = otherCountryIds.stream().map(BigInteger::toString).collect(Collectors.joining(","));
+		List<BigInteger> courseIdList = session.createNativeQuery("Select id from course where country_id in ("+ids+")").getResultList();
+		return courseIdList;
+	}
 }

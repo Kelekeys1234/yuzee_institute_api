@@ -115,4 +115,8 @@ public interface ICourseService {
 	List<BigInteger> getCountryForTopSearchedCourses(List<BigInteger> topSearchedCourseIds) throws ValidationException;
 	
 	List<Long> getUserListBasedForCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId);
+	
+	List<BigInteger> courseIdsForCountry(final Country country);
+	
+	List<BigInteger> courseIdsForMigratedCountries(final Country country);
 }

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,6 +51,7 @@ import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.GlobalDataDto;
 import com.seeka.app.dto.GradeDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
@@ -111,6 +113,12 @@ public class CourseService implements ICourseService {
 	
 	@Autowired
 	private MessageByLocaleService messageByLocaleService;
+	
+	@Autowired
+	private IGlobalStudentData iGlobalStudentDataService;
+	
+	@Autowired
+	private ICountryService iCountryService;
 
 	@Override
 	public void save(final Course course) {
@@ -1007,5 +1015,31 @@ public class CourseService implements ICourseService {
 		}
 		List<Long> userIdList = iCourseDAO.getUserListFromMyCoursesBasedOnCourses(courseIdList);
 		return userIdList;
+	}
+	
+	@Override
+	public List<BigInteger> courseIdsForCountry(final Country country) {
+		return iCourseDAO.getCourseIdsForCountry(country);
+	}
+
+	@Override
+	public List<BigInteger> courseIdsForMigratedCountries(Country country) {
+		List<GlobalDataDto> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
+		List<BigInteger> otherCountryIds = new ArrayList<>();
+		if(countryWiseStudentCountListForUserCountry == null || countryWiseStudentCountListForUserCountry.isEmpty()) {
+			countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList("China");
+		}
+		
+		for (GlobalDataDto globalDataDto : countryWiseStudentCountListForUserCountry) {
+			Country con = iCountryService.getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry());
+			if(!(con == null || con.getId() == null)) {
+				otherCountryIds.add(con.getId());
+			}
+		}
+		if(!otherCountryIds.isEmpty()) {
+			List<BigInteger> courseIds = iCourseDAO.getAllCoursesForCountry(otherCountryIds);
+			return courseIds;
+		}
+		return new ArrayList<>();
 	}
 }

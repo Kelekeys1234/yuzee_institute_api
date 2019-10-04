@@ -355,7 +355,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setId(course.getId());
 			courseResponseDto.setCityId(course.getCity().getId());
 			courseResponseDto.setCityName(course.getCity().getName());
-			courseResponseDto.setCost(String.valueOf(course.getCostRange()));
+			courseResponseDto.setCostRange(course.getCostRange());
 			courseResponseDto.setCountryId(course.getCountry().getId());
 			courseResponseDto.setCountryName(course.getCountry().getName());
 			courseResponseDto.setLanguage(course.getLanguage());
@@ -365,7 +365,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setInstituteId(course.getInstitute().getId());
 			courseResponseDto.setInstituteName(course.getInstitute().getName());
 			courseResponseDto.setInternationalFee(course.getInternationalFee());
-			courseResponseDto.setDomasticFee(course.getDomesticFee());
+			courseResponseDto.setDomesticFee(course.getDomesticFee());
 			courseResponseDto.setLocation(course.getCity().getName() + "," + course.getCountry().getName());
 			courseResponseDto.setRequirements(course.getRemarks());
 			courseResponseDto.setStars(course.getStars());
@@ -388,7 +388,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setId(course.getId());
 			courseResponseDto.setCityId(course.getCity().getId());
 			courseResponseDto.setCityName(course.getCity().getName());
-			courseResponseDto.setCost(String.valueOf(course.getCostRange()));
+			courseResponseDto.setCostRange(course.getCostRange());
 			courseResponseDto.setCountryId(course.getCountry().getId());
 			courseResponseDto.setCountryName(course.getCountry().getName());
 			courseResponseDto.setLanguage(course.getLanguage());
@@ -398,7 +398,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setInstituteId(course.getInstitute().getId());
 			courseResponseDto.setInstituteName(course.getInstitute().getName());
 			courseResponseDto.setInternationalFee(course.getInternationalFee());
-			courseResponseDto.setDomasticFee(course.getDomesticFee());
+			courseResponseDto.setDomesticFee(course.getDomesticFee());
 			courseResponseDto.setLocation(course.getCity().getName() + "," + course.getCountry().getName());
 			courseResponseDto.setRequirements(course.getRemarks());
 			courseResponseDto.setStars(course.getStars());

@@ -105,4 +105,8 @@ public interface ICourseDAO {
 	List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId);
 
 	List<Long> getUserListFromMyCoursesBasedOnCourses(List<BigInteger> courseIds);
+	
+	List<BigInteger> getCourseIdsForCountry(final Country country);
+	
+	List<BigInteger> getAllCoursesForCountry(List<BigInteger> otherCountryIds);
 }
