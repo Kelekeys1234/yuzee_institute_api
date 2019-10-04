@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.seeka.app.dto.TodoDto;
+import com.seeka.app.dto.TodoFolder;
 
 public interface ITodoService {
 
@@ -23,4 +24,6 @@ public interface ITodoService {
     public Map<String, Object> delete(@Valid BigInteger id);
 
     public List<TodoDto> getByTitle(String title);
+
+    public List<TodoFolder> getTodoFolder();
 }

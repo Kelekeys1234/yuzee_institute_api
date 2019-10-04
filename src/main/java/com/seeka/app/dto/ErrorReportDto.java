@@ -15,6 +15,7 @@ public class ErrorReportDto {
     private BigInteger courseArticleId;
     private String dueDate;
     private BigInteger assigneeUserId;
+    private String severity;
 
     /**
      * @return the userId
@@ -161,6 +162,20 @@ public class ErrorReportDto {
 	public void setAssigneeUserId(BigInteger assigneeUserId) {
 		this.assigneeUserId = assigneeUserId;
 	}
+
+    /**
+     * @return the severity
+     */
+    public String getSeverity() {
+        return severity;
+    }
+
+    /**
+     * @param severity the severity to set
+     */
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
     
     
 

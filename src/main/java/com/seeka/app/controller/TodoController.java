@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.dto.TodoDto;
+import com.seeka.app.dto.TodoFolder;
 import com.seeka.app.service.ITodoService;
 
 @RestController
@@ -144,6 +145,29 @@ public class TodoController {
                 response.put("message", "Todo not found");
                 response.put("status", HttpStatus.NOT_FOUND.value());
                 response.put("data", todoDto);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.put("message", "Error to fetching todo");
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("data", "Error");
+        }
+        return ResponseEntity.accepted().body(response);
+    }
+
+    @RequestMapping(value = "/folder", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getTodoFolder() throws Exception {
+        Map<String, Object> response = new HashMap<>(3);
+        try {
+            List<TodoFolder> todoFolderDto = iTodoService.getTodoFolder();
+            if (!todoFolderDto.isEmpty() && todoFolderDto != null) {
+                response.put("message", "Todo folder fetch successfully");
+                response.put("status", HttpStatus.OK.value());
+                response.put("data", todoFolderDto);
+            } else {
+                response.put("message", "Todo folder not found");
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("data", todoFolderDto);
             }
         } catch (Exception exception) {
             exception.printStackTrace();

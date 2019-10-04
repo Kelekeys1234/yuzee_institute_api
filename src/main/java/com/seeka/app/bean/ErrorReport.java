@@ -41,6 +41,7 @@ public class ErrorReport implements java.io.Serializable {
     private BigInteger courseArticleId;
     private Date dueDate;
     private BigInteger assigneeUserId;
+    private String severity;
 
     /**
      * @return the id
@@ -246,6 +247,21 @@ public class ErrorReport implements java.io.Serializable {
 	public void setAssigneeUserId(BigInteger assigneeUserId) {
 		this.assigneeUserId = assigneeUserId;
 	}
+
+    /**
+     * @return the severity
+     */
+	@Column(name = "severity")
+    public String getSeverity() {
+        return severity;
+    }
+
+    /**
+     * @param severity the severity to set
+     */
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
     
     
 }

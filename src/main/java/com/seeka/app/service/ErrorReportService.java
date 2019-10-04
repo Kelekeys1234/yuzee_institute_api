@@ -89,6 +89,7 @@ public class ErrorReportService implements IErrorReportService {
             errorReport.setDueDate(DateUtil.convertStringDateToDate(errorReportDto.getDueDate()));
         }
         errorReport.setAssigneeUserId(errorReportDto.getAssigneeUserId());
+        errorReport.setSeverity(errorReportDto.getSeverity());
         return errorReport;
     }
 

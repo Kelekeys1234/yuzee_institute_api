@@ -5,13 +5,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import com.seeka.app.bean.Todo;
 import com.seeka.app.dao.ITodoDao;
 import com.seeka.app.dto.TodoDto;
+import com.seeka.app.dto.TodoFolder;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
 
@@ -89,5 +93,10 @@ public class TodoService implements ITodoService {
             todoDtos.add(CommonUtil.convertTodoIntoTodoDto(todo));
         }
         return todoDtos;
+    }
+
+    @Override
+    public List<TodoFolder> getTodoFolder() {
+        return iTodoDao.getTodoFolder();
     }
 }
