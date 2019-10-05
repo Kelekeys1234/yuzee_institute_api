@@ -1002,14 +1002,14 @@ public class CourseService implements ICourseService {
 		return iCourseDAO.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
 	}
 	
-	private List<BigInteger> getCourseListBasedForCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId) {
-		List<BigInteger> courseIdList = iCourseDAO.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId);
+	private List<BigInteger> getCourseListBasedForCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId) {
+		List<BigInteger> courseIdList = iCourseDAO.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId, countryId, cityId);
 		return courseIdList;
 	}
 	
 	@Override
-	public List<Long> getUserListBasedForCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId) {
-		List<BigInteger> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId);
+	public List<Long> getUserListBasedForCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId) {
+		List<BigInteger> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
 		if(courseIdList == null || courseIdList.isEmpty()) {
 			return new ArrayList<>();
 		}

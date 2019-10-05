@@ -102,7 +102,7 @@ public interface ICourseDAO {
 
 	List<BigInteger> getDistinctCountryBasedOnCourses(List<BigInteger> topSearchedCourseIds);
 
-	List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId);
+	List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId);
 
 	List<Long> getUserListFromMyCoursesBasedOnCourses(List<BigInteger> courseIds);
 	

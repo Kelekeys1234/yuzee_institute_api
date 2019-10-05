@@ -564,11 +564,13 @@ public class CourseController {
 	public ResponseEntity<?> getUserListForMyCourseFilter(@RequestHeader(required = false) String language,
 			@RequestParam(name = "courseId", required = false) final BigInteger courseId,
 			@RequestParam(name = "facultyId", required = false) final BigInteger facultyId,
-			@RequestParam(name = "instituteId", required = false) final BigInteger instituteId) throws ValidationException {
-		if (courseId == null && facultyId == null && instituteId == null) {
+			@RequestParam(name = "instituteId", required = false) final BigInteger instituteId,
+			@RequestParam(name = "countryId", required = false) final BigInteger countryId,
+			@RequestParam(name = "cityId", required = false) final BigInteger cityId) throws ValidationException {
+		if (courseId == null && facultyId == null && instituteId == null && countryId == null && cityId == null) {
 			throw new ValidationException(messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));
 		}
-		List<Long> userList = courseService.getUserListBasedForCourseOnParameters(courseId, instituteId, facultyId);
+		List<Long> userList = courseService.getUserListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
 		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK).create();
 	}
 }

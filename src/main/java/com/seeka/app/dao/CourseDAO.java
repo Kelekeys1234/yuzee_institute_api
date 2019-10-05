@@ -2102,7 +2102,7 @@ public class CourseDAO implements ICourseDAO {
 
 	@Override
 	public List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId,
-			BigInteger facultyId) {
+			BigInteger facultyId, BigInteger countryId, BigInteger cityId) {
 		// TODO Auto-generated method stub
 		Session session = sessionFactory.getCurrentSession();
 		StringBuilder query = new StringBuilder();
@@ -2115,6 +2115,12 @@ public class CourseDAO implements ICourseDAO {
 		}
 		if(facultyId != null) {
 			query.append(" and faculty_id = "+facultyId);
+		}
+		if(countryId != null) {
+			query.append(" and country_id = "+countryId);
+		}
+		if(cityId != null) {
+			query.append(" and city_id = "+cityId);
 		}
 		
 		List<BigInteger> courseIds = session.createNativeQuery(query.toString()).getResultList();
