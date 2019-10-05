@@ -86,7 +86,7 @@ public class Enrollment implements Serializable {
 	private String town;
 	@Column(name = "state")
 	private String state;
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = true)
 	@JoinColumn(name = "country_id", nullable = false)
 	private Country country;
 	@Column(name = "zip_code")

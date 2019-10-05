@@ -86,11 +86,13 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollment.setInstituteType(instituteType);
 		}
 
-		Country country = iCountryService.get(enrollmentDto.getCountryId());
-		if (country == null) {
-			throw new ValidationException("Country type not found for id: " + enrollmentDto.getCountryId());
-		} else {
-			enrollment.setCountry(country);
+		if (enrollmentDto.getCountryId() != null) {
+			Country country = iCountryService.get(enrollmentDto.getCountryId());
+			if (country == null) {
+				throw new ValidationException("Country not found for id: " + enrollmentDto.getCountryId());
+			} else {
+				enrollment.setCountry(country);
+			}
 		}
 
 		iEnrollmentDao.addEnrollment(enrollment);
@@ -141,11 +143,13 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollment.setInstituteType(instituteType);
 		}
 
-		Country country = iCountryService.get(enrollmentDto.getCountryId());
-		if (country == null) {
-			throw new ValidationException("Country type not found for id: " + enrollmentDto.getCountryId());
-		} else {
-			enrollment.setCountry(country);
+		if (enrollmentDto.getCountryId() != null) {
+			Country country = iCountryService.get(enrollmentDto.getCountryId());
+			if (country == null) {
+				throw new ValidationException("Country not found for id: " + enrollmentDto.getCountryId());
+			} else {
+				enrollment.setCountry(country);
+			}
 		}
 
 		iEnrollmentDao.updateEnrollment(enrollment);
@@ -202,6 +206,9 @@ public class EnrollmentService implements IEnrollmentService {
 	@Override
 	public EnrollmentResponseDto getEnrollmentDetail(final BigInteger enrollmentId) throws ValidationException {
 		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentId);
+		if (enrollment == null) {
+			throw new ValidationException("Enrollment not found for id :" + enrollmentId);
+		}
 		EnrollmentResponseDto enrollmentResponseDto = new EnrollmentResponseDto();
 		BeanUtils.copyProperties(enrollment, enrollmentResponseDto);
 
@@ -214,8 +221,10 @@ public class EnrollmentService implements IEnrollmentService {
 		enrollmentResponseDto.setCourseName(enrollment.getCourse().getName());
 		enrollmentResponseDto.setInstituteTypeId(enrollment.getInstituteType().getId());
 		enrollmentResponseDto.setInstituteTypeName(enrollment.getInstituteType().getName());
-		enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
-		enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
+		if (enrollment.getCountry() != null) {
+			enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
+			enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
+		}
 		UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
 		enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
 		enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
@@ -249,8 +258,10 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollmentResponseDto.setCourseName(enrollment.getCourse().getName());
 			enrollmentResponseDto.setInstituteTypeId(enrollment.getInstituteType().getId());
 			enrollmentResponseDto.setInstituteTypeName(enrollment.getInstituteType().getName());
-			enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
-			enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
+			if (enrollment.getCountry() != null) {
+				enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
+				enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
+			}
 			enrollmentResponseDto.setEnrollmentImages(null);
 
 			EnrollmentStatus enrollmentStatus = iEnrollmentDao.getEnrollmentStatusDetailBasedOnFilter(enrollment.getId(), enrollment.getStatus());
