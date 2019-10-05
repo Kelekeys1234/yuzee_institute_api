@@ -97,7 +97,7 @@ public class CourseController {
 
 	@Autowired
 	private MessageByLocaleService messageByLocalService;
-	
+
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws Exception {
 		return ResponseEntity.accepted().body(courseService.save(course));
@@ -164,7 +164,7 @@ public class CourseController {
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) BigInteger userId, @RequestBody final CourseSearchDto courseSearchDto)
 			throws Exception {
-	    
+
 		courseSearchDto.setUserId(userId);
 		return courseSearch(courseSearchDto);
 	}
@@ -561,15 +561,14 @@ public class CourseController {
 	}
 
 	@GetMapping(value = "/myCourse/filter")
-	public ResponseEntity<?> getUserListForMyCourseFilter(@RequestHeader(required = true) String language,
-			@RequestParam(name="courseId", required = false) final BigInteger courseId, @RequestParam(name="facultyId", required=false) final BigInteger facultyId,
-			@RequestParam(name="instituteId",required=false) final BigInteger instituteId) throws ValidationException {
+	public ResponseEntity<?> getUserListForMyCourseFilter(@RequestHeader(required = false) String language,
+			@RequestParam(name = "courseId", required = false) final BigInteger courseId,
+			@RequestParam(name = "facultyId", required = false) final BigInteger facultyId,
+			@RequestParam(name = "instituteId", required = false) final BigInteger instituteId) throws ValidationException {
 		if (courseId == null && facultyId == null && instituteId == null) {
-			throw new ValidationException(messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}, language));
+			throw new ValidationException(messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));
 		}
-		List<Long> userList = courseService.getUserListBasedForCourseOnParameters(courseId, instituteId,
-				facultyId);
-		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK)
-				.create();
+		List<Long> userList = courseService.getUserListBasedForCourseOnParameters(courseId, instituteId, facultyId);
+		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK).create();
 	}
 }
