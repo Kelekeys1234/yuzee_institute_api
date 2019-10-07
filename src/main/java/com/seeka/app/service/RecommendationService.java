@@ -267,6 +267,12 @@ public class RecommendationService implements IRecommendationService {
 				}
 			}
 		}
+		/**
+		 * If no recommended courses are available, return an empty array.
+		 */
+		if(courseListToRecommend == null || courseListToRecommend.isEmpty()) {
+			return new ArrayList<>();
+		}
 		List<Course> courseList = iCourseService.getCoursesById(courseListToRecommend);
 		List<CourseResponseDto> courseResponseDTOList = new ArrayList<>(); 
 		for (Course course : courseList) {
