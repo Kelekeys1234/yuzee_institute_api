@@ -78,4 +78,6 @@ public interface IInstituteDAO {
 	List<Institute> getAllInstituteByID(List<BigInteger> instituteId);
 	
 	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
+
+	List<BigInteger> getInstitudeByCountry(List<BigInteger> distinctCountryIds);
 }

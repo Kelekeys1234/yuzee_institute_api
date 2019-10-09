@@ -63,4 +63,7 @@ public interface IInstituteService {
 	List<InstituteResponseDto> getAllInstituteByID(final List<BigInteger> listInstituteId) throws ValidationException;
 	
 	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
+
+	List<BigInteger> getInstituteIdsFromCountry(List<BigInteger> distinctCountryIds);
+	
 }

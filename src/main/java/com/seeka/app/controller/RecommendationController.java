@@ -54,12 +54,24 @@ public class RecommendationController {
 		return null;
 	}
 
+	@GetMapping("/otherPeopleInstituteSearch")
+	public ResponseEntity<?> getInsituteBasedOnOtherPeopleSearch(@RequestHeader(value = "userId") BigInteger userId,
+			@RequestHeader(value = "language") String language) {
+		List<InstituteResponseDto> institutesBasedOnOtherPeopleSearch = iRecommendationService
+				.getinstitutesBasedOnOtherPeopleSearch(userId);
+		return new GenericResponseHandlers.Builder()
+				.setData(institutesBasedOnOtherPeopleSearch).setMessage(messageByLocalService
+						.getMessage("list.display.successfully", new Object[] { IConstant.INSTITUTE }, language))
+				.setStatus(HttpStatus.OK).create();
+	}
+	
 	@GetMapping("/courses")
-	public ResponseEntity<?> getRecommendedCourses(@RequestHeader(value = "userId") BigInteger userId)
+	public ResponseEntity<?> getRecommendedCourses(@RequestHeader(value = "userId") BigInteger userId,
+			@RequestHeader(value = "language", required = false) String language)
 			throws ValidationException {
 		List<CourseResponseDto> recomendedCourses = iRecommendationService.getRecommendedCourses(userId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recomendedCourses)
-				.setMessage("Recommended Course Displayed Successfully").create();
+				.setMessage(messageByLocalService.getMessage("list.display.successfully", new Object[] {IConstant.COURSE}, language)).create();
 	}
 
 	@GetMapping("/topSearchedCourses/{facultyId}")

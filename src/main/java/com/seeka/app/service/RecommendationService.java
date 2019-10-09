@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.hibernate.mapping.Array;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -258,12 +259,14 @@ public class RecommendationService implements IRecommendationService {
 		 * Select remaining random courses from most migrated countries as per users current country.
 		 */
 		if(coursesBasedOnUserMigrationCountry != null) {
-			for (int i = 0; i < (20 - courseListToRecommend.size()); i++) {
+			while((20-courseListToRecommend.size()) > 0) {
 				if(coursesBasedOnUserMigrationCountry.size() > 0) {
 					int randomIndex = rand.nextInt(coursesBasedOnUserMigrationCountry.size());
 					BigInteger randomElement = coursesBasedOnUserMigrationCountry.get(randomIndex);
 					coursesBasedOnUserMigrationCountry.remove(randomIndex);
 					courseListToRecommend.add(randomElement);
+				} else {
+					break;
 				}
 			}
 		}
@@ -586,6 +589,61 @@ public class RecommendationService implements IRecommendationService {
 			System.out.println(recommendedCourseList);
 			
 			return recommendedCourseList;
+		}
+	}
+
+	@Override
+	public List<InstituteResponseDto> getinstitutesBasedOnOtherPeopleSearch(BigInteger userId) {
+
+		/**
+		 * Get all distinct courseIds searched by other users
+		 */
+		List<BigInteger> distinctCourseIds = iCourseService.getTopSearchedCoursesByOtherUsers(userId);
+		try {
+			/**
+			 * Get all distinct country Ids for the course ids
+			 */
+			List<BigInteger> distinctCountryIds = iCourseService.getCountryForTopSearchedCourses(distinctCourseIds);
+			
+			/**
+			 * Get all institutes for the various countries that other users have searched for
+			 */
+			List<BigInteger> allInstituteIds = iInstituteService.getInstituteIdsFromCountry(distinctCountryIds);
+			
+			/**
+			 * If we dont get any institutes return an empty list
+			 */
+			if(allInstituteIds == null || allInstituteIds.isEmpty()) {
+				return new ArrayList<>();
+			}
+			
+			/**
+			 * If the list is less than 20 return all the institutes available
+			 */
+			if(allInstituteIds.size() < 20) {
+				return iInstituteService.getAllInstituteByID(allInstituteIds);
+			} 
+			/**
+			 * If greater than 20 have a random logic for the same
+			 */
+			else {
+				List<BigInteger> randomInstituteIds = new ArrayList<>();
+				Random rand = new Random();
+					while(randomInstituteIds.size() <= 20) {
+						if(allInstituteIds.size() > 0) {
+							int randomIndex = rand.nextInt(allInstituteIds.size());
+							BigInteger randomElement = allInstituteIds.get(randomIndex);
+							allInstituteIds.remove(randomIndex);
+							randomInstituteIds.add(randomElement);
+						} else {
+							break;
+						}
+					}
+				return iInstituteService.getAllInstituteByID(randomInstituteIds);
+			}
+			
+		} catch (ValidationException e) {
+			return new ArrayList<>();
 		}
 	}
 }

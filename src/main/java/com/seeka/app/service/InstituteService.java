@@ -608,4 +608,11 @@ public class InstituteService implements IInstituteService {
 	public List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize) {
 		return dao.getInstituteIdsBasedOnGlobalRanking(startIndex, pageSize);
 	}
+
+	@Override
+	public List<BigInteger> getInstituteIdsFromCountry(List<BigInteger> distinctCountryIds) {
+
+		List<BigInteger> instituteIds = dao.getInstitudeByCountry(distinctCountryIds);
+		return instituteIds;
+	}
 }

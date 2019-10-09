@@ -21,4 +21,6 @@ public interface IRecommendationService {
 	List<Course> getTopSearchedCoursesForFaculty(BigInteger facultyId, BigInteger userId);
 	
 	Set<Course> displayRelatedCourseAsPerUserPastSearch(BigInteger userId) throws ValidationException;
+
+	List<InstituteResponseDto> getinstitutesBasedOnOtherPeopleSearch(BigInteger userId);
 }

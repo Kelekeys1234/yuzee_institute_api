@@ -630,4 +630,12 @@ public class InstituteDAO implements IInstituteDAO {
 		List<BigInteger> insituteIds = (List<BigInteger>)session.createNativeQuery("SELECT ID FROM INSTITUTE ORDER BY WORLD_RANKING LIMIT ?,?").setParameter(1, startIndex).setParameter(2, pageSize).getResultList();
 		return insituteIds;
 	}
+
+	@Override
+	public List<BigInteger> getInstitudeByCountry(List<BigInteger> distinctCountryIds) {
+		Session session = sessionFactory.getCurrentSession();
+		String ids = distinctCountryIds.stream().map(BigInteger :: toString).collect(Collectors.joining(","));
+		List<BigInteger> instituteIds = session.createNativeQuery("SELECT ID FROM INSTITUTE WHERE COUNTRY_ID IN ("+ids+")").getResultList();
+		return instituteIds;
+	}
 }

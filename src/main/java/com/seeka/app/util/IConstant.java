@@ -105,5 +105,6 @@ public class IConstant {
 	 * CONSTANTS FOR DISPLAYING MESSAGES
 	 ******************************************/
 	public static final String INSTITUTE = "Institute";
+	public static final String COURSE = "Course";
 	/***************************************************************************************/
 }

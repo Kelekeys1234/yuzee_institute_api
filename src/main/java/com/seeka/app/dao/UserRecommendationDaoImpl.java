@@ -53,6 +53,14 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 			.setParameter(1, userId).getResultList();
 		return courseIds;
 	}
+	
+	@Override
+	public List<BigInteger> getOtherUserWatchCourseIds(final BigInteger userId) {
+		Session session = sessionFactory.getCurrentSession();
+		List<BigInteger> courseIds = session.createNativeQuery("Select course_id from user_watch_course where user_id not in( ?) group by course_id order by count(*) desc")
+			.setParameter(1, userId).getResultList();
+		return courseIds;
+	}
 
 	@Override
 	public void save(final UserWatchArticle userWatchArticle) {
@@ -132,14 +140,7 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 	public List<BigInteger> getOtherUserWatchCourse(BigInteger userId) {
 		Session session = sessionFactory.getCurrentSession();
 		List<BigInteger> courseList = (List<BigInteger>)session.createNativeQuery("select course_id from user_watch_course userwatchcourse where userwatchcourse.user_Id not in (?) group by userwatchcourse.course_id order by count(*) desc").
-		setBigInteger(1, userId).getResultList();
-		
-//		Criteria crit = session.createCriteria(UserWatchCourse.class, "userWatchCourse");
-//		crit.add(Restrictions.ne("userId", userId));
-//		crit.setProjection(Projections.projectionList().add(Projections.groupProperty("course"))
-//				.add(Projections.property("course"))
-//				.add(Projections.rowCount(),"count"));
-//		crit.addOrder(Order.desc("count"));
+		setParameter(1, userId).getResultList();
 		return courseList;
 	}
 

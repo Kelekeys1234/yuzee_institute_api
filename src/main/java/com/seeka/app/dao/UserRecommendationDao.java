@@ -30,5 +30,7 @@ public interface UserRecommendationDao {
 	List<BigInteger> getOtherUserWatchCourse(BigInteger userId);
 
 	List<BigInteger> getUserWatchCourseIds(BigInteger userId);
+	
+	List<BigInteger> getOtherUserWatchCourseIds(final BigInteger userId);
 
 }

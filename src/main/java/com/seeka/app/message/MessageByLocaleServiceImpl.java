@@ -24,6 +24,12 @@ public class MessageByLocaleServiceImpl implements MessageByLocaleService {
 	@Override
 	public String getMessage(String id, Object[] arg, String language) {
 		
+		/**
+		 * If language is passed empty call the overloaded version of method with default locale as en
+		 */
+		if(language == null || language.isEmpty()) {
+			return getMessage(id, arg);
+		}
 		Locale locale = LocaleUtils.toLocale(language);
 		return messageSource.getMessage(id, arg, locale);
 	}
