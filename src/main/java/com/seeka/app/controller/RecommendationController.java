@@ -56,7 +56,7 @@ public class RecommendationController {
 
 	@GetMapping("/otherPeopleInstituteSearch")
 	public ResponseEntity<?> getInsituteBasedOnOtherPeopleSearch(@RequestHeader(value = "userId") BigInteger userId,
-			@RequestHeader(value = "language") String language) {
+			@RequestHeader(value = "language", required = false) String language) {
 		List<InstituteResponseDto> institutesBasedOnOtherPeopleSearch = iRecommendationService
 				.getinstitutesBasedOnOtherPeopleSearch(userId);
 		return new GenericResponseHandlers.Builder()
