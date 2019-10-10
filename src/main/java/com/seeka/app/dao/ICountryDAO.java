@@ -28,4 +28,6 @@ public interface ICountryDAO {
     public List<CountryDto> autoSearch(int i, int j, String searchKey);
 
 	Country getCountryBasedOnCitizenship(String citizenship);
+
+	List<Country> getCountryIdsBasedOnCitizenships(List<String> citizenships);
 }

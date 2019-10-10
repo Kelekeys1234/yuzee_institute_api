@@ -8,9 +8,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -506,4 +508,30 @@ public class ScholarshipDao implements IScholarshipDAO {
         List<Object[]> rows = query.list();
         return rows.size();
     }
+
+	@Override
+	public List<BigInteger> getRandomScholarShipsForCountry(List<BigInteger> countryId, Integer limit) {
+
+		Session session = sessionFactory.getCurrentSession();
+		String query = "Select id from scholarship where country_id in (?) order by Rand() LIMIT ?";
+		List<BigInteger> scholarshipIds = (List<BigInteger>)session.createNativeQuery(query).setParameter(1, countryId).setParameter(2, limit).getResultList();
+		return scholarshipIds;
+	}
+
+	@Override
+	public List<Scholarship> getAllScholarshipDetailsFromId(List<BigInteger> recommendedScholarships) {
+
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Scholarship.class,"scholarship");
+		criteria.add(Restrictions.in("id", recommendedScholarships));
+		return (List<Scholarship>)criteria.list();
+	}
+
+	@Override
+	public List<BigInteger> getRandomScholarships(int i) {
+		Session session = sessionFactory.getCurrentSession();
+		String query = "Select id from scholarship order by Rand() LIMIT ?";
+		List<BigInteger> scholarshipIds = (List<BigInteger>)session.createNativeQuery(query).setParameter(1, i).getResultList();
+		return scholarshipIds;
+	}
 }

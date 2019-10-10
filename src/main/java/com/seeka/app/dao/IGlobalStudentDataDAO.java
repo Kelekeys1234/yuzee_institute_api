@@ -13,4 +13,6 @@ public interface IGlobalStudentDataDAO {
 	List<GlobalDataDto> getCountryWiseStudentList(String countryName);
 	
 	long getNonZeroCountOfStudentsForCountry(String countryName);
+	
+	List<String> getDistinctMigratedCountryForStudentCountry(String countryName);
 }

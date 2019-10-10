@@ -1,5 +1,6 @@
 package com.seeka.app.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -48,5 +49,13 @@ public class GlobalStudentDataDAO implements IGlobalStudentDataDAO {
 		crit.setProjection(Projections.rowCount());
 		return (long)crit.uniqueResult();
 	}
+	@Override
+	public List<String> getDistinctMigratedCountryForStudentCountry(String countryName) {
 	
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(GlobalDataDto.class,"global_data");
+		crit.add(Restrictions.eq("sourceCountry", countryName));
+		crit.setProjection(Projections.property("destinationCountry"));
+		return (List<String>)(crit.list()!=null ? crit.list() : new ArrayList<>());
+	}
 }

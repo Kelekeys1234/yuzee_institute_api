@@ -101,10 +101,15 @@ public class IConstant {
 	public static final Integer INSITUTE_PER_COUNTRY = 2;
 	
 	public static final Integer COUNTRY_PER_PAGE = 10;
+	
+	public static final Integer SCHOLARSHIPS_PER_COUNTRY_FOR_RECOMMENDATION = 4;
+	
+	public static final Integer TOTAL_SCHOLARSHIPS_PER_PAGE = 20;
 	/***************
 	 * CONSTANTS FOR DISPLAYING MESSAGES
 	 ******************************************/
 	public static final String INSTITUTE = "Institute";
 	public static final String COURSE = "Course";
+	public static final String SCHOLARSHIP = "Scholarship";
 	/***************************************************************************************/
 }

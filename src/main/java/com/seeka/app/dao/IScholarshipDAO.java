@@ -32,4 +32,10 @@ public interface IScholarshipDAO {
     public List<Scholarship> autoSearch(int startIndex, Integer pageSize, String searchKey);
 
     public int findTotalCountOfScholarshipAutoSearch(String searchKey);
+
+	List<BigInteger> getRandomScholarShipsForCountry(List<BigInteger> countryId, Integer limit);
+
+	List<Scholarship> getAllScholarshipDetailsFromId(List<BigInteger> recommendedScholarships);
+
+	List<BigInteger> getRandomScholarships(int i);
 }
