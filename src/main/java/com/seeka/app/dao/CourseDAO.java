@@ -174,16 +174,16 @@ public class CourseDAO implements ICourseDAO {
 		if (null != courseSearchDto.getCourseName() && !courseSearchDto.getCourseName().isEmpty()) {
 			sqlQuery += " and crs.name like '%" + courseSearchDto.getCourseName().trim() + "%'";
 		}
-		
+
 		if (null != courseSearchDto.getDate() && !courseSearchDto.getDate().isEmpty()) {
-            Date postedDate = DateUtil.convertStringDateToDate(courseSearchDto.getDate());
-            Calendar c = Calendar.getInstance();
-            c.setTime(postedDate);
-            c.add(Calendar.DATE, 1);
-            postedDate = c.getTime();
-            String updatedDate = DateUtil.getStringDateFromDate(postedDate);
-            sqlQuery += " and (crs.created_on >= '" + courseSearchDto.getDate() + "' and crs.created_on < '" + updatedDate + "')";
-        }
+			Date postedDate = DateUtil.convertStringDateToDate(courseSearchDto.getDate());
+			Calendar c = Calendar.getInstance();
+			c.setTime(postedDate);
+			c.add(Calendar.DATE, 1);
+			postedDate = c.getTime();
+			String updatedDate = DateUtil.getStringDateFromDate(postedDate);
+			sqlQuery += " and (crs.created_on >= '" + courseSearchDto.getDate() + "' and crs.created_on < '" + updatedDate + "')";
+		}
 
 		sqlQuery += " ";
 		String sortingQuery = "";
@@ -2016,7 +2016,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, BigInteger instituteId) {
+	public Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final BigInteger instituteId) {
 		// TODO Auto-generated method stub
 		Map<BigInteger, BigInteger> mapOfCourseIdFacultyId = new HashMap<>();
 		StringBuilder facultyIds = new StringBuilder();
@@ -2049,7 +2049,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds) {
+	public List<Course> getAllCoursesUsingId(final List<BigInteger> listOfRecommendedCourseIds) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
 		crit.add(Restrictions.in("id", listOfRecommendedCourseIds));
@@ -2057,7 +2057,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(Country country) {
+	public List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(final Country country) {
 		Session session = sessionFactory.getCurrentSession();
 		List<BigInteger> rows = session.createNativeQuery("select id from course where country_id = ? order by world_ranking desc")
 				.setBigInteger(1, country.getId()).getResultList();
@@ -2069,7 +2069,7 @@ public class CourseDAO implements ICourseDAO {
 		return courseIds;
 	}
 
-	private String addConditionForCourseList(String sqlQuery, List<BigInteger> courseIds) {
+	private String addConditionForCourseList(String sqlQuery, final List<BigInteger> courseIds) {
 		if (null != courseIds) {
 			sqlQuery += " and crs.id in (" + courseIds.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
@@ -2077,7 +2077,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country) {
+	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final Country country) {
 		Session session = sessionFactory.getCurrentSession();
 
 		BigInteger count = (BigInteger) session.createNativeQuery(
@@ -2087,53 +2087,60 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<BigInteger> getDistinctCountryBasedOnCourses(List<BigInteger> topSearchedCourseIds) {
+	public List<BigInteger> getDistinctCountryBasedOnCourses(final List<BigInteger> topSearchedCourseIds) {
 
 		Session session = sessionFactory.getCurrentSession();
-		
-		String ids = topSearchedCourseIds.stream().map(BigInteger::toString).
-				collect(Collectors.joining(","));
-		
-		System.out.println("IDs -- "+ids);
-		List<BigInteger> countryIds = session.createNativeQuery("Select distinct country_id from course where country_id is not null and "
-				+ "id in ("+ids+")").getResultList();
+
+		String ids = topSearchedCourseIds.stream().map(BigInteger::toString).collect(Collectors.joining(","));
+
+		System.out.println("IDs -- " + ids);
+		List<BigInteger> countryIds = session
+				.createNativeQuery("Select distinct country_id from course where country_id is not null and " + "id in (" + ids + ")").getResultList();
 		return countryIds;
 	}
 
 	@Override
-	public List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId,
-			BigInteger facultyId, BigInteger countryId, BigInteger cityId) {
+	public List<BigInteger> getCourseListForCourseBasedOnParameters(final BigInteger courseId, final BigInteger instituteId, final BigInteger facultyId,
+			final BigInteger countryId, final BigInteger cityId) {
 		// TODO Auto-generated method stub
 		Session session = sessionFactory.getCurrentSession();
 		StringBuilder query = new StringBuilder();
 		query.append("Select id from course where 1=1");
-		if(courseId !=null) {
-			query.append(" and id = "+courseId);
+		if (courseId != null) {
+			query.append(" and id = " + courseId);
 		}
-		if(instituteId != null) {
-			query.append(" and institute_id ="+instituteId);
+		if (instituteId != null) {
+			query.append(" and institute_id =" + instituteId);
 		}
-		if(facultyId != null) {
-			query.append(" and faculty_id = "+facultyId);
+		if (facultyId != null) {
+			query.append(" and faculty_id = " + facultyId);
 		}
-		if(countryId != null) {
-			query.append(" and country_id = "+countryId);
+		if (countryId != null) {
+			query.append(" and country_id = " + countryId);
 		}
-		if(cityId != null) {
-			query.append(" and city_id = "+cityId);
+		if (cityId != null) {
+			query.append(" and city_id = " + cityId);
 		}
-		
+
 		List<BigInteger> courseIds = session.createNativeQuery(query.toString()).getResultList();
 		return courseIds;
 	}
 
 	@Override
-	public List<Long> getUserListFromMyCoursesBasedOnCourses(List<BigInteger> courseIds) {
+	public List<Long> getUserListFromMyCoursesBasedOnCourses(final List<BigInteger> courseIds) {
 
 		Session session = sessionFactory.getCurrentSession();
-		String ids = courseIds.stream().map(BigInteger::toString).
-				collect(Collectors.joining(","));
-		List<Long> userIds = session.createNativeQuery("select distinct user_id from user_my_course where course_id in ("+ids+")").getResultList();
+		String ids = courseIds.stream().map(BigInteger::toString).collect(Collectors.joining(","));
+		List<Long> userIds = session.createNativeQuery("select distinct user_id from user_my_course where course_id in (" + ids + ")").getResultList();
+		return userIds;
+	}
+
+	@Override
+	public List<Long> getUserListFromUserWatchCoursesBasedOnCourses(final List<BigInteger> courseIds) {
+
+		Session session = sessionFactory.getCurrentSession();
+		String ids = courseIds.stream().map(BigInteger::toString).collect(Collectors.joining(","));
+		List<Long> userIds = session.createNativeQuery("select distinct user_id from user_watch_course where course_id in (" + ids + ")").getResultList();
 		return userIds;
 	}
 
@@ -2145,10 +2152,10 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<BigInteger> getAllCoursesForCountry(List<BigInteger> otherCountryIds) {
+	public List<BigInteger> getAllCoursesForCountry(final List<BigInteger> otherCountryIds) {
 		Session session = sessionFactory.getCurrentSession();
 		String ids = otherCountryIds.stream().map(BigInteger::toString).collect(Collectors.joining(","));
-		List<BigInteger> courseIdList = session.createNativeQuery("Select id from course where country_id in ("+ids+")").getResultList();
+		List<BigInteger> courseIdList = session.createNativeQuery("Select id from course where country_id in (" + ids + ")").getResultList();
 		return courseIdList;
 	}
 }

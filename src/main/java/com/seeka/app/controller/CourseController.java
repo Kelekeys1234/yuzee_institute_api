@@ -138,7 +138,7 @@ public class CourseController {
 			@RequestParam(required = false) final Integer minDuration, @RequestParam(required = false) final Integer maxDuration,
 			@RequestParam(required = false) final String courseName, @RequestParam(required = false) final String currencyCode,
 			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final boolean sortAsscending,
-			@RequestHeader(required = true) BigInteger userId, @RequestParam(required = false) final String date) throws Exception {
+			@RequestHeader(required = true) final BigInteger userId, @RequestParam(required = false) final String date) throws Exception {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryIds(countryIds);
 		courseSearchDto.setInstituteId(instituteId);
@@ -162,7 +162,7 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) BigInteger userId, @RequestBody final CourseSearchDto courseSearchDto)
+	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final BigInteger userId, @RequestBody final CourseSearchDto courseSearchDto)
 			throws Exception {
 
 		courseSearchDto.setUserId(userId);
@@ -213,7 +213,7 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/advanceSearch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) BigInteger userId, @RequestBody final AdvanceSearchDto courseSearchDto)
+	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) final BigInteger userId, @RequestBody final AdvanceSearchDto courseSearchDto)
 			throws Exception {
 		courseSearchDto.setUserId(userId);
 		return ResponseEntity.ok().body(courseService.advanceSearch(courseSearchDto));
@@ -561,7 +561,7 @@ public class CourseController {
 	}
 
 	@GetMapping(value = "/myCourse/filter")
-	public ResponseEntity<?> getUserListForMyCourseFilter(@RequestHeader(required = false) String language,
+	public ResponseEntity<?> getUserListForMyCourseFilter(@RequestHeader(required = false) final String language,
 			@RequestParam(name = "courseId", required = false) final BigInteger courseId,
 			@RequestParam(name = "facultyId", required = false) final BigInteger facultyId,
 			@RequestParam(name = "instituteId", required = false) final BigInteger instituteId,
@@ -570,7 +570,21 @@ public class CourseController {
 		if (courseId == null && facultyId == null && instituteId == null && countryId == null && cityId == null) {
 			throw new ValidationException(messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));
 		}
-		List<Long> userList = courseService.getUserListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
+		List<Long> userList = courseService.getUserListBasedOnLikedCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
+		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK).create();
+	}
+
+	@GetMapping(value = "/viewCourse/filter")
+	public ResponseEntity<?> getUserListForUserWatchCourseFilter(@RequestHeader(required = false) final String language,
+			@RequestParam(name = "courseId", required = false) final BigInteger courseId,
+			@RequestParam(name = "facultyId", required = false) final BigInteger facultyId,
+			@RequestParam(name = "instituteId", required = false) final BigInteger instituteId,
+			@RequestParam(name = "countryId", required = false) final BigInteger countryId,
+			@RequestParam(name = "cityId", required = false) final BigInteger cityId) throws ValidationException {
+		if (courseId == null && facultyId == null && instituteId == null && countryId == null && cityId == null) {
+			throw new ValidationException(messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));
+		}
+		List<Long> userList = courseService.getUserListForUserWatchCourseFilter(courseId, instituteId, facultyId, countryId, cityId);
 		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK).create();
 	}
 }

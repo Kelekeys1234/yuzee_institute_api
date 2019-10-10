@@ -23,90 +23,94 @@ import com.seeka.app.dto.UserDto;
 
 public interface ICourseDAO {
 
-    void save(Course obj);
+	void save(Course obj);
 
-    void update(Course obj);
+	void update(Course obj);
 
-    Course get(BigInteger id);
+	Course get(BigInteger id);
 
-    List<Course> getAll();
+	List<Course> getAll();
 
-    List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
+	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
 
-    CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
+	CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
 
-    List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
+	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
-    Map<String, Object> getCourse(BigInteger courseid);
+	Map<String, Object> getCourse(BigInteger courseid);
 
-    List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
+	List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
 
-    List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
+	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
-    int findTotalCount();
+	int findTotalCount();
 
-    List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
+	List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
 
-    List<CourseRequest> searchCoursesBasedOnFilter(String query);
+	List<CourseRequest> searchCoursesBasedOnFilter(String query);
 
-    List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType);
+	List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType);
 
-    int findTotalCountByUserId(BigInteger userId);
+	int findTotalCountByUserId(BigInteger userId);
 
-    void saveUserCompareCourse(UserCompareCourse compareCourse);
+	void saveUserCompareCourse(UserCompareCourse compareCourse);
 
-    void saveUserCompareCourseBundle(UserCompareCourseBundle compareCourseBundle);
+	void saveUserCompareCourseBundle(UserCompareCourseBundle compareCourseBundle);
 
-    List<UserCompareCourse> getUserCompareCourse(BigInteger userId);
+	List<UserCompareCourse> getUserCompareCourse(BigInteger userId);
 
-    CourseRequest getCourseById(Integer valueOf);
+	CourseRequest getCourseById(Integer valueOf);
 
-    List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, Set<String> keyword);
+	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, Set<String> keyword);
 
-    Course getCourseData(BigInteger id);
+	Course getCourseData(BigInteger id);
 
 	List<CourseResponseDto> advanceSearch(Object... values/* AdvanceSearchDto courseSearchDto */);
 
-    List<Course> getAllCourse();
+	List<Course> getAllCourse();
 
-    List<CourseRequest> courseFilter(int pageNumber, Integer pageSize, CourseFilterDto courseFilter);
+	List<CourseRequest> courseFilter(int pageNumber, Integer pageSize, CourseFilterDto courseFilter);
 
-    int findTotalCountCourseFilter(CourseFilterDto courseFilter);
+	int findTotalCountCourseFilter(CourseFilterDto courseFilter);
 
-    List<CourseRequest> autoSearch(int startIndex, Integer pageSize, String searchKey);
+	List<CourseRequest> autoSearch(int startIndex, Integer pageSize, String searchKey);
 
-    int autoSearchTotalCount(String searchKey);
+	int autoSearchTotalCount(String searchKey);
 
-    List<Course> facultyWiseCourseForTopInstitute(List<Faculty> facultyList, Institute institute);
-    List<CourseRequest> autoSearchByCharacter(int pageNumber, Integer pageSize, String searchKey);
+	List<Course> facultyWiseCourseForTopInstitute(List<Faculty> facultyList, Institute institute);
 
-    List<CountryDto> getCourseCountry();
+	List<CourseRequest> autoSearchByCharacter(int pageNumber, Integer pageSize, String searchKey);
 
-    long getCourseCountForCountry(Country country);
-    
-    List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
+	List<CountryDto> getCourseCountry();
+
+	long getCourseCountForCountry(Country country);
+
+	List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
 
 	List<Course> getAllCourseForFacultyWorldRankingWise(Long facultyId);
-	
+
 	List<BigInteger> getAllCourseForFacultyWorldRankingWise(BigInteger facultyId);
 
 	List<Course> getCoursesFromId(List<BigInteger> allSearchCourses);
 
-	 Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, BigInteger instituteId);
+	Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, BigInteger instituteId);
 
 	List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds);
-	
+
 	List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(Country country);
 
 	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
 
 	List<BigInteger> getDistinctCountryBasedOnCourses(List<BigInteger> topSearchedCourseIds);
 
-	List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId);
+	List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId,
+			BigInteger cityId);
 
 	List<Long> getUserListFromMyCoursesBasedOnCourses(List<BigInteger> courseIds);
-	
+
 	List<BigInteger> getCourseIdsForCountry(final Country country);
-	
+
 	List<BigInteger> getAllCoursesForCountry(List<BigInteger> otherCountryIds);
+
+	List<Long> getUserListFromUserWatchCoursesBasedOnCourses(List<BigInteger> courseIds);
 }

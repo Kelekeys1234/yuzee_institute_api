@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -110,13 +109,13 @@ public class CourseService implements ICourseService {
 
 	@Autowired
 	private IStorageService iStorageService;
-	
+
 	@Autowired
 	private MessageByLocaleService messageByLocaleService;
-	
+
 	@Autowired
 	private IGlobalStudentData iGlobalStudentDataService;
-	
+
 	@Autowired
 	private ICountryService iCountryService;
 
@@ -961,27 +960,27 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, BigInteger instituteId) {
+	public Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final BigInteger instituteId) {
 		return iCourseDAO.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
 	}
 
 	@Override
-	public List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds) {
+	public List<Course> getAllCoursesUsingId(final List<BigInteger> listOfRecommendedCourseIds) {
 		return iCourseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
 	}
 
 	@Override
-	public List<BigInteger> getTopRatedCourseIdForCountryWorldRankingWise(Country country) {
+	public List<BigInteger> getTopRatedCourseIdForCountryWorldRankingWise(final Country country) {
 		return iCourseDAO.getTopRatedCourseIdsForCountryWorldRankingWise(country);
 	}
 
 	@Override
-	public List<BigInteger> getTopSearchedCoursesByUsers(BigInteger userId) {
+	public List<BigInteger> getTopSearchedCoursesByUsers(final BigInteger userId) {
 		return userRecommendationDao.getUserWatchCourseIds(userId);
 	}
 
 	@Override
-	public Set<Course> getRelatedCoursesBasedOnPastSearch(List<BigInteger> courseList) throws ValidationException {
+	public Set<Course> getRelatedCoursesBasedOnPastSearch(final List<BigInteger> courseList) throws ValidationException {
 		Set<Course> relatedCourses = new HashSet<>();
 		for (BigInteger courseId : courseList) {
 			relatedCourses.addAll(userRecommendationService.getRelatedCourse(courseId));
@@ -990,53 +989,66 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country) {
+	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final Country country) {
 		return iCourseDAO.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto, country);
 	}
 
 	@Override
-	public List<BigInteger> getCountryForTopSearchedCourses(List<BigInteger> topSearchedCourseIds) throws ValidationException{
-		if(topSearchedCourseIds == null || topSearchedCourseIds.isEmpty()) {
+	public List<BigInteger> getCountryForTopSearchedCourses(final List<BigInteger> topSearchedCourseIds) throws ValidationException {
+		if (topSearchedCourseIds == null || topSearchedCourseIds.isEmpty()) {
 			throw new ValidationException(messageByLocaleService.getMessage("no.course.id.specified", new Object[] {}));
 		}
 		return iCourseDAO.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
 	}
-	
-	private List<BigInteger> getCourseListBasedForCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId) {
+
+	private List<BigInteger> getCourseListBasedForCourseOnParameters(final BigInteger courseId, final BigInteger instituteId, final BigInteger facultyId,
+			final BigInteger countryId, final BigInteger cityId) {
 		List<BigInteger> courseIdList = iCourseDAO.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId, countryId, cityId);
 		return courseIdList;
 	}
-	
+
 	@Override
-	public List<Long> getUserListBasedForCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId) {
+	public List<Long> getUserListBasedOnLikedCourseOnParameters(final BigInteger courseId, final BigInteger instituteId, final BigInteger facultyId,
+			final BigInteger countryId, final BigInteger cityId) {
 		List<BigInteger> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
-		if(courseIdList == null || courseIdList.isEmpty()) {
+		if (courseIdList == null || courseIdList.isEmpty()) {
 			return new ArrayList<>();
 		}
 		List<Long> userIdList = iCourseDAO.getUserListFromMyCoursesBasedOnCourses(courseIdList);
 		return userIdList;
 	}
-	
+
+	@Override
+	public List<Long> getUserListForUserWatchCourseFilter(final BigInteger courseId, final BigInteger instituteId, final BigInteger facultyId,
+			final BigInteger countryId, final BigInteger cityId) {
+		List<BigInteger> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
+		if (courseIdList == null || courseIdList.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<Long> userIdList = iCourseDAO.getUserListFromUserWatchCoursesBasedOnCourses(courseIdList);
+		return userIdList;
+	}
+
 	@Override
 	public List<BigInteger> courseIdsForCountry(final Country country) {
 		return iCourseDAO.getCourseIdsForCountry(country);
 	}
 
 	@Override
-	public List<BigInteger> courseIdsForMigratedCountries(Country country) {
+	public List<BigInteger> courseIdsForMigratedCountries(final Country country) {
 		List<GlobalDataDto> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
 		List<BigInteger> otherCountryIds = new ArrayList<>();
-		if(countryWiseStudentCountListForUserCountry == null || countryWiseStudentCountListForUserCountry.isEmpty()) {
+		if (countryWiseStudentCountListForUserCountry == null || countryWiseStudentCountListForUserCountry.isEmpty()) {
 			countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList("China");
 		}
-		
+
 		for (GlobalDataDto globalDataDto : countryWiseStudentCountListForUserCountry) {
 			Country con = iCountryService.getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry());
-			if(!(con == null || con.getId() == null)) {
+			if (!(con == null || con.getId() == null)) {
 				otherCountryIds.add(con.getId());
 			}
 		}
-		if(!otherCountryIds.isEmpty()) {
+		if (!otherCountryIds.isEmpty()) {
 			List<BigInteger> courseIds = iCourseDAO.getAllCoursesForCountry(otherCountryIds);
 			return courseIds;
 		}

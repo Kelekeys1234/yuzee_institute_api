@@ -111,12 +111,16 @@ public interface ICourseService {
 	Set<Course> getRelatedCoursesBasedOnPastSearch(List<BigInteger> courseList) throws ValidationException;
 
 	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
-	
+
 	List<BigInteger> getCountryForTopSearchedCourses(List<BigInteger> topSearchedCourseIds) throws ValidationException;
-	
-	List<Long> getUserListBasedForCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId);
-	
+
+	List<Long> getUserListBasedOnLikedCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId,
+			BigInteger cityId);
+
 	List<BigInteger> courseIdsForCountry(final Country country);
-	
+
 	List<BigInteger> courseIdsForMigratedCountries(final Country country);
+
+	List<Long> getUserListForUserWatchCourseFilter(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId,
+			BigInteger cityId);
 }
