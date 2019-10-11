@@ -24,6 +24,7 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.GlobalDataDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.ImageCategory;
@@ -61,6 +62,9 @@ public class RecommendationService implements IRecommendationService {
 	
 	@Autowired
 	private IStorageService iStorageService;
+	
+	@Autowired
+	private IScholarshipService iScholarshipService;
 	
 	@Override
 	public List<InstituteResponseDto> getRecommendedInstitutes(BigInteger userId, Long startIndex, Long pageSize, Long pageNumber,
@@ -378,6 +382,95 @@ public class RecommendationService implements IRecommendationService {
 		return userRelatedCourses;
 	}
 
+	@Override
+	public List<ScholarshipDto> getRecommendedScholarships(BigInteger userId, String language) throws ValidationException, NotFoundException{
+		
+		/**
+		 * Get user details from userId
+		 */
+		UserDto userDto = iUsersService.getUserById(userId);
+		if(userDto == null) {
+			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] {userId}, language));
+		}
+		else if(userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present", new Object[] {userId}, language));
+		}
+		/**
+		 * Get courses based on Past User Search based on country of courses
+		 */
+		List<BigInteger> coursesBasedOnPastSearch = iCourseService.getTopSearchedCoursesByUsers(userId);
+		
+		List<BigInteger> recommendedScholarships = new ArrayList<>();
+		if(coursesBasedOnPastSearch == null || coursesBasedOnPastSearch.isEmpty()) {
+			/**
+			 * If users donot have past search history run the below logic
+			 */
+			
+			/**
+			 * Get Lis of all countries that users as interested to migrate to based on user's country
+			 */
+			List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
+			if(distinctCountryList != null && ! distinctCountryList.isEmpty()) {
+				List<Country> countries= iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
+				List<BigInteger> countryIdList = countries.stream().map(Country :: getId).collect(Collectors.toList());
+				/**
+				 * Get all scholarshipIds based on country
+				 */
+				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(countryIdList, IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE));
+			} 
+			
+			/**
+			 * If recommended scholarships are not equal to 20 then fetch more on random basis from the database
+			 */
+			if(recommendedScholarships.size() < IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE) {
+				recommendedScholarships.addAll(iScholarshipService.getRandomScholarShipIds(IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE - recommendedScholarships.size()));
+			}
+		} else {
+			/**
+			 * If users have past search history run the below logic.
+			 */
+			List<BigInteger> countryList = iCourseService.getCountryForTopSearchedCourses(coursesBasedOnPastSearch);
+			
+			/**
+			 * Convert the countryList to Set to make it more random.
+			 */
+			Set<BigInteger> countrySet = new HashSet<>(countryList);
+			for (BigInteger countryId : countrySet) {
+				/**
+				 * Add all scholarship Ids obtained to recommended scholarships
+				 */
+				List<BigInteger> countryListForScholarship = new ArrayList<>();
+				countryListForScholarship.add(countryId);
+				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(countryListForScholarship, IConstant.SCHOLARSHIPS_PER_COUNTRY_FOR_RECOMMENDATION));
+				/**
+				 * If recommended scholarships size exceeds 20, no need to consider other countries
+				 */
+				if(recommendedScholarships.size() >= IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE) {
+					break;
+				}
+			}
+			
+			/**
+			 * If the recommended scholarship list is less than 20, then we need to consider more scholarships 
+			 * as per the Global Student Data file.
+			 */
+			if(recommendedScholarships.size() < IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE) {
+				List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
+				List<Country> countries= iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
+				// countries.stream().map(country -> country.getId()).collect(Collectors.toList());
+				List<BigInteger> countryIdList = countries.stream().map(Country :: getId).collect(Collectors.toList());
+				
+				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(countryIdList, IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE-recommendedScholarships.size()));
+			}
+		}
+		/**
+		 *  Get Scholarship details for recommended scholarships
+		 */
+		List<ScholarshipDto> scholarshipDtoList = iScholarshipService.getAllScholarshipDetailsFromId(recommendedScholarships);
+		
+		return scholarshipDtoList;
+	}
+	
 	private List<BigInteger> getInstitutesAsPerGlobalData(List<GlobalDataDto> globalDataDtoList, Long pageNumber) throws ValidationException{
 		if(pageNumber == null) {
 			throw new ValidationException(messageByLocalService.getMessage("page.number.not.specified", new Object[] {}, "en"));

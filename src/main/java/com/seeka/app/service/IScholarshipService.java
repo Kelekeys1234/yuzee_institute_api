@@ -29,4 +29,10 @@ public interface IScholarshipService {
     Map<String, Object> scholarshipFilter(ScholarshipFilterDto scholarshipFilterDto);
 
     Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
+
+	List<BigInteger> getScholarshipIdsByCountryId(List<BigInteger> countryId, Integer limit);
+
+	List<ScholarshipDto> getAllScholarshipDetailsFromId(List<BigInteger> recommendedScholarships);
+
+	List<BigInteger> getRandomScholarShipIds(int i);
 }

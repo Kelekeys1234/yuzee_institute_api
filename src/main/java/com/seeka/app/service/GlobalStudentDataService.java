@@ -18,7 +18,6 @@ public class GlobalStudentDataService implements IGlobalStudentData {
 	
 	@Override
 	public void saveGlobalStudentData(GlobalDataDto globalStudentDataDto) {
-		// TODO Auto-generated method stub
 		
 		globalStudentDataDto.setUpdatedBy("API");
 		globalStudentDataDto.setCreatedBy("API");
@@ -29,20 +28,21 @@ public class GlobalStudentDataService implements IGlobalStudentData {
 	
 	@Override
 	public void deleteAllGlobalStudentData() {
-		// TODO Auto-generated method stub
 		globalStudentDataDao.deleteAll();
 	}
 
 	@Override
 	public List<GlobalDataDto> getCountryWiseStudentList(String countryName) {
-		// TODO Auto-generated method stub
 		return globalStudentDataDao.getCountryWiseStudentList(countryName);
 	}
 
 	@Override
 	public long checkForPresenceOfUserCountryInGlobalDataFile(String countryName) {
-		// TODO Auto-generated method stub
 		return globalStudentDataDao.getNonZeroCountOfStudentsForCountry(countryName);
 	}
 	
+	@Override
+	public List<String> getDistinctMigratedCountryForUserCountry (String countryName) {
+		return globalStudentDataDao.getDistinctMigratedCountryForStudentCountry(countryName);
+	}
 }

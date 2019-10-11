@@ -7,6 +7,7 @@ import java.util.Set;
 import com.seeka.app.bean.Course;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 
@@ -23,4 +24,6 @@ public interface IRecommendationService {
 	Set<Course> displayRelatedCourseAsPerUserPastSearch(BigInteger userId) throws ValidationException;
 
 	List<InstituteResponseDto> getinstitutesBasedOnOtherPeopleSearch(BigInteger userId);
+	
+	List<ScholarshipDto> getRecommendedScholarships(BigInteger userId, String language) throws ValidationException, NotFoundException;
 }

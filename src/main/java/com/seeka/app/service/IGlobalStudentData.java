@@ -13,4 +13,6 @@ public interface IGlobalStudentData {
 	List<GlobalDataDto> getCountryWiseStudentList(String countryName);
 	
 	long checkForPresenceOfUserCountryInGlobalDataFile(String countryName);
+	
+	List<String> getDistinctMigratedCountryForUserCountry (String countryName);
 }

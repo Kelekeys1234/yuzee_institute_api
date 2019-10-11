@@ -266,4 +266,9 @@ public class CountryService implements ICountryService {
 	public Country getCountryBasedOnCitizenship(String citizenship) {
 		return countryDAO.getCountryBasedOnCitizenship(citizenship);
 	}
+	
+	@Override
+	public List<Country> getCountryListBasedOnCitizenship(List<String> citizenships) {
+		return countryDAO.getCountryIdsBasedOnCitizenships(citizenships);
+	}
 }

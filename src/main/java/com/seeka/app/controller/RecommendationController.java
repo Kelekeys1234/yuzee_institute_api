@@ -18,6 +18,7 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
@@ -88,6 +89,15 @@ public class RecommendationController {
 		Set<Course> listOfRelatedCourses = iRecommendationService.displayRelatedCourseAsPerUserPastSearch(userId);
 		return new GenericResponseHandlers.Builder().setData(listOfRelatedCourses)
 				.setMessage("Related Courses Display Successfully").setStatus(HttpStatus.OK).create();
+	}
+	
+	@GetMapping("/scholarship")
+	public ResponseEntity<?> getRecommendedScholarship(@RequestHeader(value = "userId") BigInteger userId,
+			@RequestHeader(value = "language", required = false) String language)
+			throws ValidationException,NotFoundException {
+		List<ScholarshipDto> scholarshipDtoList = iRecommendationService.getRecommendedScholarships(userId, language);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(scholarshipDtoList)
+				.setMessage(messageByLocalService.getMessage("list.display.successfully", new Object[] {IConstant.SCHOLARSHIP}, language)).create();
 	}
 
 	private void paginationValidations(String language, Long startIndex, Long pageSize, Long pageNumber)

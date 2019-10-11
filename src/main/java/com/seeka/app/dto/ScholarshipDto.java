@@ -1,9 +1,14 @@
 package com.seeka.app.dto;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
-public class ScholarshipDto {
+public class ScholarshipDto implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2633639341414502096L;
 	private BigInteger id;
     private BigInteger countryId;
     private BigInteger instituteId;
@@ -12,7 +17,6 @@ public class ScholarshipDto {
     private String student;
     private String website;
     private String scholarshipTitle;
-    private String offeredBy;
     private String benefits;
     private String requirements;
     private String eligibility;
@@ -34,7 +38,44 @@ public class ScholarshipDto {
     private BigInteger offeredByCourse;
     private String award;
     private String howToApply;
+    private String offeredByInstituteName;
+    private String offerByCourseName;
+    private String instituteName;
+    private String countryName;
+    private String levelName;
+    private String name;
+    private String amount;
     
+	public String getOfferedByInstituteName() {
+		return offeredByInstituteName;
+	}
+	public void setOfferedByInstituteName(String offeredByInstituteName) {
+		this.offeredByInstituteName = offeredByInstituteName;
+	}
+	public String getOfferByCourseName() {
+		return offerByCourseName;
+	}
+	public void setOfferByCourseName(String offerByCourseName) {
+		this.offerByCourseName = offerByCourseName;
+	}
+	public String getInstituteName() {
+		return instituteName;
+	}
+	public void setInstituteName(String instituteName) {
+		this.instituteName = instituteName;
+	}
+	public String getCountryName() {
+		return countryName;
+	}
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+	public String getLevelName() {
+		return levelName;
+	}
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
 	public BigInteger getId() {
 		return id;
 	}
@@ -83,12 +124,6 @@ public class ScholarshipDto {
 	}
 	public void setScholarshipTitle(String scholarshipTitle) {
 		this.scholarshipTitle = scholarshipTitle;
-	}
-	public String getOfferedBy() {
-		return offeredBy;
-	}
-	public void setOfferedBy(String offeredBy) {
-		this.offeredBy = offeredBy;
 	}
 	public String getBenefits() {
 		return benefits;
@@ -252,6 +287,18 @@ public class ScholarshipDto {
     public void setHowToApply(String howToApply) {
         this.howToApply = howToApply;
     }
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getAmount() {
+		return amount;
+	}
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
 
     
     

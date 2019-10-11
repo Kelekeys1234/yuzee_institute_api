@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -285,4 +286,36 @@ public class ScholarshipService implements IScholarshipService {
         response.put("totalPages", paginationUtilDto.getTotalPages());
         return response;
     }
+
+	@Override
+	public List<BigInteger> getScholarshipIdsByCountryId(List<BigInteger> countryIds, Integer limit) {
+		List<BigInteger> scholarshipIds = new ArrayList<>();
+		if(limit != null && !limit.equals(0)) {
+			scholarshipIds = iScholarshipDAO.getRandomScholarShipsForCountry(countryIds, limit);
+			return scholarshipIds;
+		}
+		return null;
+	}
+
+	@Override
+	public List<ScholarshipDto> getAllScholarshipDetailsFromId(List<BigInteger> recommendedScholarships) {
+		List<Scholarship> scholarshipList = iScholarshipDAO.getAllScholarshipDetailsFromId(recommendedScholarships);
+		List<ScholarshipDto> scholarshipDtoList = new ArrayList<>();
+		for (Scholarship scholarship : scholarshipList) {
+			ScholarshipDto scholarshipDto = new ScholarshipDto();
+			BeanUtils.copyProperties(scholarship, scholarshipDto);
+			scholarshipDto.setCountryId(scholarship.getCountry()!=null ? scholarship.getCountry().getId():null);
+			scholarshipDto.setLevelId(scholarship.getLevel() != null ? scholarship.getLevel().getId():null);
+			scholarshipDto.setInstituteId(scholarship.getInstitute() !=null ? scholarship.getInstitute().getId() : null);
+			scholarshipDto.setOfferedByInstituteName(scholarship.getOfferedByInstitute()!=null ? iInstituteDAO.get(scholarship.getOfferedByInstitute()).getName(): null);
+			scholarshipDto.setOfferByCourseName(scholarship.getOfferedByCourse() !=null ? iCountryDAO.get(scholarship.getOfferedByCourse()).getName(): null);
+			scholarshipDtoList.add(scholarshipDto);
+		}
+		return scholarshipDtoList;
+	}
+
+	@Override
+	public List<BigInteger> getRandomScholarShipIds(int i) {
+		return iScholarshipDAO.getRandomScholarships(i);
+	}
 }
