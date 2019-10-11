@@ -278,8 +278,9 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public int countOfEnrollment() {
-		return iEnrollmentDao.countOfEnrollment();
+	public int countOfEnrollment(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
+			final String status, final Date updatedOn) {
+		return iEnrollmentDao.countOfEnrollment(userId, courseId, instituteId, enrollmentId, status, updatedOn);
 	}
 
 }

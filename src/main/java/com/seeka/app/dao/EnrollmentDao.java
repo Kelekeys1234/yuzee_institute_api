@@ -107,9 +107,33 @@ public class EnrollmentDao implements IEnrollmentDao {
 	}
 
 	@Override
-	public int countOfEnrollment() {
+	public int countOfEnrollment(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
+			final String status, final Date updatedOn) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Enrollment.class, "enrollment");
+		if (instituteId != null) {
+			crit.createAlias("enrollment.institute", "institute");
+			crit.add(Restrictions.eq("institute.id", instituteId));
+		}
+		if (courseId != null) {
+			crit.createAlias("enrollment.course", "course");
+			crit.add(Restrictions.eq("course.id", courseId));
+		}
+		if (enrollmentId != null) {
+			crit.add(Restrictions.eq("enrollment.id", enrollmentId));
+		}
+		if (status != null && !status.isEmpty()) {
+			crit.add(Restrictions.eq("enrollment.status", status));
+		}
+		if (updatedOn != null) {
+			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
+			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
+			crit.add(Restrictions.ge("enrollment.updatedOn", fromDate));
+			crit.add(Restrictions.le("enrollment.updatedOn", toDate));
+		}
+		if (userId != null) {
+			crit.add(Restrictions.eq("enrollment.userId", userId));
+		}
 		crit.setProjection(Projections.rowCount());
 		return ((Long) crit.uniqueResult()).intValue();
 	}

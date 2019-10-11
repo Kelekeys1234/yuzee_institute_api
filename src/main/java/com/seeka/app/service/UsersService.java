@@ -52,7 +52,7 @@ public class UsersService implements IUsersService {
 		}
 		responseMap.get("data");
 		ObjectMapper mapper = new ObjectMapper();
-		List<UserDeviceInfoDto> userDeviceInfoDto = (List<UserDeviceInfoDto>) mapper.convertValue(responseMap.get("data"), List.class);
+		List<UserDeviceInfoDto> userDeviceInfoDto = mapper.convertValue(responseMap.get("data"), List.class);
 		return userDeviceInfoDto;
 	}
 
@@ -64,12 +64,13 @@ public class UsersService implements IUsersService {
 		payloadDto.setPlatform(userDeviceInfoDto.getPlatform());
 		payloadDto.setDeviceId(userDeviceInfoDto.getDeviceId());
 		payloadDto.setContent(message);
-		payloadDto.setTitle("SEEKA");
+		payloadDto.setTitle("APPLICATION");
 
 		pushNotification.setChannel("PUSH");
 		pushNotification.setTenantCode("SEEKA-DEGREE");
 		pushNotification.setUser(userDeviceInfoDto.getFirstName() + " " + userDeviceInfoDto.getLastName());
 		pushNotification.setPayload(payloadDto);
+		pushNotification.setUserId(userDeviceInfoDto.getUserId());
 
 		ResponseEntity<Map> result = restTemplate.postForEntity(IConstant.NOTIFICATION_CONNECTION_URL, pushNotification, Map.class);
 		System.out.println(result.getStatusCode());

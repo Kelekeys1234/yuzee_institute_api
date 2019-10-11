@@ -101,9 +101,9 @@ public class EnrollmentController {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(null, courseId, instituteId, enrollmentId, status, updatedOn,
 				startIndex, pageSize);
-		int totalCount = iEnrollmentService.countOfEnrollment();
+		int totalCount = iEnrollmentService.countOfEnrollment(null, courseId, instituteId, enrollmentId, status, updatedOn);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-		Map<String, Object> responseMap = new HashMap<>(4);
+		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
 		responseMap.put("message", "Get enrollment List successfully");
 		responseMap.put("data", enrollmentResponseList);
