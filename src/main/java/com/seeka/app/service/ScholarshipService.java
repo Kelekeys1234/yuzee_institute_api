@@ -294,7 +294,7 @@ public class ScholarshipService implements IScholarshipService {
 			scholarshipIds = iScholarshipDAO.getRandomScholarShipsForCountry(countryIds, limit);
 			return scholarshipIds;
 		}
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override

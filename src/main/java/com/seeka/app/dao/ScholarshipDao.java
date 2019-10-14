@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -513,8 +514,10 @@ public class ScholarshipDao implements IScholarshipDAO {
 	public List<BigInteger> getRandomScholarShipsForCountry(List<BigInteger> countryId, Integer limit) {
 
 		Session session = sessionFactory.getCurrentSession();
-		String query = "Select id from scholarship where country_id in (?) order by Rand() LIMIT ?";
-		List<BigInteger> scholarshipIds = (List<BigInteger>)session.createNativeQuery(query).setParameter(1, countryId).setParameter(2, limit).getResultList();
+		String ids = countryId.stream().map(BigInteger :: toString).collect(Collectors.joining(","));
+				
+		String query = "Select id from scholarship where country_id in ("+ids+") order by Rand() LIMIT ?";
+		List<BigInteger> scholarshipIds = (List<BigInteger>)session.createNativeQuery(query).setParameter(1, limit).getResultList();
 		return scholarshipIds;
 	}
 

@@ -178,7 +178,7 @@ public class CountryDAO implements ICountryDAO {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Country.class, "country");
 		System.out.println("citizenship-- "+citizenships);
-		crit.add(Restrictions.eq("name", citizenships));
+		crit.add(Restrictions.in("name", citizenships));
 		return (List<Country>) (crit.list().size() > 0 ? crit.list(): new ArrayList());
 	}
 }
