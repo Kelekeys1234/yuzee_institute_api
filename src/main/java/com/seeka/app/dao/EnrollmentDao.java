@@ -7,7 +7,6 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +31,8 @@ public class EnrollmentDao implements IEnrollmentDao {
 
 	@Override
 	public void updateEnrollment(final Enrollment enrollment) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = session.beginTransaction();
-		session.update(enrollment);
-		tx.commit();
-		session.close();
+		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(enrollment);
 	}
 
 	@Override

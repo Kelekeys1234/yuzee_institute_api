@@ -113,34 +113,34 @@ public class EnrollmentService implements IEnrollmentService {
 		if (existingEnrollment == null) {
 			throw new ValidationException("enrollment not found for id" + enrollmentId);
 		}
-
-		Enrollment enrollment = new Enrollment();
-		BeanUtils.copyProperties(enrollmentDto, enrollment);
-		enrollment.setId(enrollmentId);
-		enrollment.setStatus(existingEnrollment.getStatus());
-		enrollment.setCreatedBy(existingEnrollment.getCreatedBy());
-		enrollment.setCreatedOn(existingEnrollment.getCreatedOn());
-		enrollment.setUpdatedBy("API");
-		enrollment.setUpdatedOn(new Date());
+		String existingStatus = existingEnrollment.getStatus();
+		String createdBy = existingEnrollment.getCreatedBy();
+		Date createdOn = existingEnrollment.getCreatedOn();
+		BeanUtils.copyProperties(enrollmentDto, existingEnrollment);
+		existingEnrollment.setState(existingStatus);
+		existingEnrollment.setCreatedBy(createdBy);
+		existingEnrollment.setCreatedOn(createdOn);
+		existingEnrollment.setUpdatedBy("API");
+		existingEnrollment.setUpdatedOn(new Date());
 		Institute institute = iInstituteService.get(enrollmentDto.getInstituteId());
 		if (institute == null) {
 			throw new ValidationException("Institute not found for id: " + enrollmentDto.getInstituteId());
 		} else {
-			enrollment.setInstitute(institute);
+			existingEnrollment.setInstitute(institute);
 		}
 
 		Course course = iCourseService.getCourseData(enrollmentDto.getCourseId());
 		if (course == null) {
 			throw new ValidationException("Course not found for id: " + enrollmentDto.getCourseId());
 		} else {
-			enrollment.setCourse(course);
+			existingEnrollment.setCourse(course);
 		}
 
 		InstituteType instituteType = iInstituteTypeService.get(enrollmentDto.getInstituteTypeId());
 		if (instituteType == null) {
 			throw new ValidationException("Institute type not found for id: " + enrollmentDto.getInstituteTypeId());
 		} else {
-			enrollment.setInstituteType(instituteType);
+			existingEnrollment.setInstituteType(instituteType);
 		}
 
 		if (enrollmentDto.getCountryId() != null) {
@@ -148,11 +148,11 @@ public class EnrollmentService implements IEnrollmentService {
 			if (country == null) {
 				throw new ValidationException("Country not found for id: " + enrollmentDto.getCountryId());
 			} else {
-				enrollment.setCountry(country);
+				existingEnrollment.setCountry(country);
 			}
 		}
 
-		iEnrollmentDao.updateEnrollment(enrollment);
+		iEnrollmentDao.updateEnrollment(existingEnrollment);
 		return enrollmentDto;
 
 	}
