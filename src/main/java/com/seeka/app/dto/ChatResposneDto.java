@@ -1,52 +1,25 @@
-package com.seeka.app.bean;
-
-import static javax.persistence.GenerationType.IDENTITY;
+package com.seeka.app.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-@Entity
-@Table(name = "enrollment_chat")
-public class EnrollmentChat implements Serializable {
+public class ChatResposneDto implements Serializable {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 7590305810325611394L;
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
 	private BigInteger id;
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-	@JoinColumn(name = "enrollment_id", nullable = false)
-	private Enrollment enrollment;
-
-	@Column(name = "assignee_id")
+	private BigInteger entityId;
+	private String entityType;
 	private BigInteger assigneeId;
-
-	@Column(name = "user_id")
 	private BigInteger userId;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
+	private String userName;
 	private Date createdOn;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
+	private List<ChatConversationDto> chatConversationDtos;
 
 	public BigInteger getId() {
 		return id;
@@ -56,12 +29,20 @@ public class EnrollmentChat implements Serializable {
 		this.id = id;
 	}
 
-	public Enrollment getEnrollment() {
-		return enrollment;
+	public BigInteger getEntityId() {
+		return entityId;
 	}
 
-	public void setEnrollment(final Enrollment enrollment) {
-		this.enrollment = enrollment;
+	public void setEntityId(final BigInteger entityId) {
+		this.entityId = entityId;
+	}
+
+	public String getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(final String entityType) {
+		this.entityType = entityType;
 	}
 
 	public BigInteger getAssigneeId() {
@@ -80,6 +61,14 @@ public class EnrollmentChat implements Serializable {
 		this.userId = userId;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(final String userName) {
+		this.userName = userName;
+	}
+
 	public Date getCreatedOn() {
 		return createdOn;
 	}
@@ -96,16 +85,27 @@ public class EnrollmentChat implements Serializable {
 		this.updatedOn = updatedOn;
 	}
 
+	public List<ChatConversationDto> getChatConversationDtos() {
+		return chatConversationDtos;
+	}
+
+	public void setChatConversationDtos(final List<ChatConversationDto> chatConversationDtos) {
+		this.chatConversationDtos = chatConversationDtos;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (assigneeId == null ? 0 : assigneeId.hashCode());
+		result = prime * result + (chatConversationDtos == null ? 0 : chatConversationDtos.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
-		result = prime * result + (enrollment == null ? 0 : enrollment.hashCode());
+		result = prime * result + (entityId == null ? 0 : entityId.hashCode());
+		result = prime * result + (entityType == null ? 0 : entityType.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
 		result = prime * result + (userId == null ? 0 : userId.hashCode());
+		result = prime * result + (userName == null ? 0 : userName.hashCode());
 		return result;
 	}
 
@@ -120,12 +120,19 @@ public class EnrollmentChat implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		EnrollmentChat other = (EnrollmentChat) obj;
+		ChatResposneDto other = (ChatResposneDto) obj;
 		if (assigneeId == null) {
 			if (other.assigneeId != null) {
 				return false;
 			}
 		} else if (!assigneeId.equals(other.assigneeId)) {
+			return false;
+		}
+		if (chatConversationDtos == null) {
+			if (other.chatConversationDtos != null) {
+				return false;
+			}
+		} else if (!chatConversationDtos.equals(other.chatConversationDtos)) {
 			return false;
 		}
 		if (createdOn == null) {
@@ -135,11 +142,18 @@ public class EnrollmentChat implements Serializable {
 		} else if (!createdOn.equals(other.createdOn)) {
 			return false;
 		}
-		if (enrollment == null) {
-			if (other.enrollment != null) {
+		if (entityId == null) {
+			if (other.entityId != null) {
 				return false;
 			}
-		} else if (!enrollment.equals(other.enrollment)) {
+		} else if (!entityId.equals(other.entityId)) {
+			return false;
+		}
+		if (entityType == null) {
+			if (other.entityType != null) {
+				return false;
+			}
+		} else if (!entityType.equals(other.entityType)) {
 			return false;
 		}
 		if (id == null) {
@@ -163,14 +177,22 @@ public class EnrollmentChat implements Serializable {
 		} else if (!userId.equals(other.userId)) {
 			return false;
 		}
+		if (userName == null) {
+			if (other.userName != null) {
+				return false;
+			}
+		} else if (!userName.equals(other.userName)) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("EnrollmentChat [id=").append(id).append(", enrollment=").append(enrollment).append(", assigneeId=").append(assigneeId)
-				.append(", userId=").append(userId).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append("]");
+		builder.append("ChatResposneDto [id=").append(id).append(", entityId=").append(entityId).append(", entityType=").append(entityType)
+				.append(", assigneeId=").append(assigneeId).append(", userId=").append(userId).append(", userName=").append(userName).append(", createdOn=")
+				.append(createdOn).append(", updatedOn=").append(updatedOn).append(", chatConversationDtos=").append(chatConversationDtos).append("]");
 		return builder.toString();
 	}
 

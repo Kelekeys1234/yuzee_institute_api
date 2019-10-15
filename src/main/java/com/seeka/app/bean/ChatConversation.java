@@ -19,8 +19,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "enrollment_chat_conversation")
-public class EnrollmentChatConversation implements Serializable {
+@Table(name = "chat_conversation")
+public class ChatConversation implements Serializable {
 
 	/**
 	 *
@@ -32,8 +32,8 @@ public class EnrollmentChatConversation implements Serializable {
 	private BigInteger id;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-	@JoinColumn(name = "enrollment_chat_id", nullable = false)
-	private EnrollmentChat enrollmentChat;
+	@JoinColumn(name = "chat_id", nullable = false)
+	private Chat chat;
 
 	@Column(name = "message")
 	private String message;
@@ -50,6 +50,12 @@ public class EnrollmentChatConversation implements Serializable {
 	@Column(name = "initiate_from_id")
 	private BigInteger initiateFromId;
 
+	@Column(name = "initiate_to")
+	private String initiateTo;
+
+	@Column(name = "initiate_to_id")
+	private BigInteger initiateToId;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
 	private Date createdOn;
@@ -62,12 +68,12 @@ public class EnrollmentChatConversation implements Serializable {
 		this.id = id;
 	}
 
-	public EnrollmentChat getEnrollmentChat() {
-		return enrollmentChat;
+	public Chat getChat() {
+		return chat;
 	}
 
-	public void setEnrollmentChat(final EnrollmentChat enrollmentChat) {
-		this.enrollmentChat = enrollmentChat;
+	public void setChat(final Chat chat) {
+		this.chat = chat;
 	}
 
 	public String getMessage() {
@@ -102,6 +108,22 @@ public class EnrollmentChatConversation implements Serializable {
 		this.initiateFromId = initiateFromId;
 	}
 
+	public String getInitiateTo() {
+		return initiateTo;
+	}
+
+	public void setInitiateTo(final String initiateTo) {
+		this.initiateTo = initiateTo;
+	}
+
+	public BigInteger getInitiateToId() {
+		return initiateToId;
+	}
+
+	public void setInitiateToId(final BigInteger initiateToId) {
+		this.initiateToId = initiateToId;
+	}
+
 	public Date getCreatedOn() {
 		return createdOn;
 	}
@@ -114,12 +136,15 @@ public class EnrollmentChatConversation implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (chat == null ? 0 : chat.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
-		result = prime * result + (enrollmentChat == null ? 0 : enrollmentChat.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (initiateFrom == null ? 0 : initiateFrom.hashCode());
 		result = prime * result + (initiateFromId == null ? 0 : initiateFromId.hashCode());
+		result = prime * result + (initiateTo == null ? 0 : initiateTo.hashCode());
+		result = prime * result + (initiateToId == null ? 0 : initiateToId.hashCode());
 		result = prime * result + (message == null ? 0 : message.hashCode());
+		result = prime * result + (status == null ? 0 : status.hashCode());
 		return result;
 	}
 
@@ -134,19 +159,19 @@ public class EnrollmentChatConversation implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		EnrollmentChatConversation other = (EnrollmentChatConversation) obj;
+		ChatConversation other = (ChatConversation) obj;
+		if (chat == null) {
+			if (other.chat != null) {
+				return false;
+			}
+		} else if (!chat.equals(other.chat)) {
+			return false;
+		}
 		if (createdOn == null) {
 			if (other.createdOn != null) {
 				return false;
 			}
 		} else if (!createdOn.equals(other.createdOn)) {
-			return false;
-		}
-		if (enrollmentChat == null) {
-			if (other.enrollmentChat != null) {
-				return false;
-			}
-		} else if (!enrollmentChat.equals(other.enrollmentChat)) {
 			return false;
 		}
 		if (id == null) {
@@ -170,11 +195,32 @@ public class EnrollmentChatConversation implements Serializable {
 		} else if (!initiateFromId.equals(other.initiateFromId)) {
 			return false;
 		}
+		if (initiateTo == null) {
+			if (other.initiateTo != null) {
+				return false;
+			}
+		} else if (!initiateTo.equals(other.initiateTo)) {
+			return false;
+		}
+		if (initiateToId == null) {
+			if (other.initiateToId != null) {
+				return false;
+			}
+		} else if (!initiateToId.equals(other.initiateToId)) {
+			return false;
+		}
 		if (message == null) {
 			if (other.message != null) {
 				return false;
 			}
 		} else if (!message.equals(other.message)) {
+			return false;
+		}
+		if (status == null) {
+			if (other.status != null) {
+				return false;
+			}
+		} else if (!status.equals(other.status)) {
 			return false;
 		}
 		return true;
@@ -183,9 +229,9 @@ public class EnrollmentChatConversation implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("EnrollmentChatConversation [id=").append(id).append(", enrollmentChat=").append(enrollmentChat).append(", message=").append(message)
-				.append(", initiateFrom=").append(initiateFrom).append(", initiateFromId=").append(initiateFromId).append(", createdOn=").append(createdOn)
-				.append("]");
+		builder.append("ChatConversation [id=").append(id).append(", chat=").append(chat).append(", message=").append(message).append(", status=")
+				.append(status).append(", initiateFrom=").append(initiateFrom).append(", initiateFromId=").append(initiateFromId).append(", initiateTo=")
+				.append(initiateTo).append(", initiateToId=").append(initiateToId).append(", createdOn=").append(createdOn).append("]");
 		return builder.toString();
 	}
 

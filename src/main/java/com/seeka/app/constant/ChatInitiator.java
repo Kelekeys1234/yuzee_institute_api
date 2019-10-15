@@ -1,6 +1,6 @@
 package com.seeka.app.constant;
 
-public enum EnrollmentInitiator {
+public enum ChatInitiator {
 
 	SEEKA, USER
 

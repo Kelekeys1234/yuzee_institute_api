@@ -29,7 +29,7 @@ public class EnrollmentChatMedia implements Serializable {
 	private BigInteger id;
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "enrollment_chat_conversation_id", nullable = false)
-	private EnrollmentChatConversation enrollmentChatConversation;
+	private ChatConversation enrollmentChatConversation;
 	@Column(name = "image_name", nullable = false)
 	private String imageName;
 
@@ -41,11 +41,11 @@ public class EnrollmentChatMedia implements Serializable {
 		this.id = id;
 	}
 
-	public EnrollmentChatConversation getEnrollmentChatConversation() {
+	public ChatConversation getEnrollmentChatConversation() {
 		return enrollmentChatConversation;
 	}
 
-	public void setEnrollmentChatConversation(final EnrollmentChatConversation enrollmentChatConversation) {
+	public void setEnrollmentChatConversation(final ChatConversation enrollmentChatConversation) {
 		this.enrollmentChatConversation = enrollmentChatConversation;
 	}
 

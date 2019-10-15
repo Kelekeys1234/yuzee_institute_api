@@ -47,6 +47,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 		return session.get(Enrollment.class, enrollmentId);
 	}
 
+	@SuppressWarnings({ "deprecation", "unchecked" })
 	@Override
 	public List<EnrollmentStatus> getEnrollmentStatusDetail(final BigInteger enrollmentId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -56,6 +57,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 		return crit.list();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public EnrollmentStatus getEnrollmentStatusDetailBasedOnFilter(final BigInteger enrollmentId, final String status) {
 		Session session = sessionFactory.getCurrentSession();
@@ -66,6 +68,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 		return (EnrollmentStatus) crit.uniqueResult();
 	}
 
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
 	public List<Enrollment> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
 			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize) {
@@ -102,6 +105,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 		return crit.list();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public int countOfEnrollment(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
 			final String status, final Date updatedOn) {

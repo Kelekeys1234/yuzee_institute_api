@@ -3,23 +3,33 @@ package com.seeka.app.dto;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-public class EnrollmentChatRequestDto implements Serializable {
+import javax.validation.constraints.NotNull;
+
+public class ChatRequestDto implements Serializable {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 7590305810325611394L;
 	private BigInteger id;
-	private BigInteger enrollmentId;
+	private BigInteger entityId;
+	@NotNull(message = "entityType is required")
+	private String entityType;
 	private BigInteger userId;
 	/**
 	 * SEEKA/USER
 	 */
+	@NotNull(message = "initiateFrom is required")
 	private String initiateFrom;
 	/**
 	 * UserId
 	 */
 	private BigInteger initiateFromId;
+	private String initiateTo;
+	/**
+	 * UserId
+	 */
+	private BigInteger initiateToId;
 	private String message;
 
 	public BigInteger getId() {
@@ -30,12 +40,20 @@ public class EnrollmentChatRequestDto implements Serializable {
 		this.id = id;
 	}
 
-	public BigInteger getEnrollmentId() {
-		return enrollmentId;
+	public BigInteger getEntityId() {
+		return entityId;
 	}
 
-	public void setEnrollmentId(final BigInteger enrollmentId) {
-		this.enrollmentId = enrollmentId;
+	public void setEntityId(final BigInteger entityId) {
+		this.entityId = entityId;
+	}
+
+	public String getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(final String entityType) {
+		this.entityType = entityType;
 	}
 
 	public BigInteger getUserId() {
@@ -74,13 +92,32 @@ public class EnrollmentChatRequestDto implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (enrollmentId == null ? 0 : enrollmentId.hashCode());
+		result = prime * result + (entityId == null ? 0 : entityId.hashCode());
+		result = prime * result + (entityType == null ? 0 : entityType.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (initiateFrom == null ? 0 : initiateFrom.hashCode());
 		result = prime * result + (initiateFromId == null ? 0 : initiateFromId.hashCode());
+		result = prime * result + (initiateTo == null ? 0 : initiateTo.hashCode());
+		result = prime * result + (initiateToId == null ? 0 : initiateToId.hashCode());
 		result = prime * result + (message == null ? 0 : message.hashCode());
 		result = prime * result + (userId == null ? 0 : userId.hashCode());
 		return result;
+	}
+
+	public String getInitiateTo() {
+		return initiateTo;
+	}
+
+	public void setInitiateTo(final String initiateTo) {
+		this.initiateTo = initiateTo;
+	}
+
+	public BigInteger getInitiateToId() {
+		return initiateToId;
+	}
+
+	public void setInitiateToId(final BigInteger initiateToId) {
+		this.initiateToId = initiateToId;
 	}
 
 	@Override
@@ -94,12 +131,19 @@ public class EnrollmentChatRequestDto implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		EnrollmentChatRequestDto other = (EnrollmentChatRequestDto) obj;
-		if (enrollmentId == null) {
-			if (other.enrollmentId != null) {
+		ChatRequestDto other = (ChatRequestDto) obj;
+		if (entityId == null) {
+			if (other.entityId != null) {
 				return false;
 			}
-		} else if (!enrollmentId.equals(other.enrollmentId)) {
+		} else if (!entityId.equals(other.entityId)) {
+			return false;
+		}
+		if (entityType == null) {
+			if (other.entityType != null) {
+				return false;
+			}
+		} else if (!entityType.equals(other.entityType)) {
 			return false;
 		}
 		if (id == null) {
@@ -123,6 +167,20 @@ public class EnrollmentChatRequestDto implements Serializable {
 		} else if (!initiateFromId.equals(other.initiateFromId)) {
 			return false;
 		}
+		if (initiateTo == null) {
+			if (other.initiateTo != null) {
+				return false;
+			}
+		} else if (!initiateTo.equals(other.initiateTo)) {
+			return false;
+		}
+		if (initiateToId == null) {
+			if (other.initiateToId != null) {
+				return false;
+			}
+		} else if (!initiateToId.equals(other.initiateToId)) {
+			return false;
+		}
 		if (message == null) {
 			if (other.message != null) {
 				return false;
@@ -143,9 +201,9 @@ public class EnrollmentChatRequestDto implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("EnrollmentChatRequestDto [id=").append(id).append(", enrollmentId=").append(enrollmentId).append(", userId=").append(userId)
-				.append(", initiateFrom=").append(initiateFrom).append(", initiateFromId=").append(initiateFromId).append(", message=").append(message)
-				.append("]");
+		builder.append("ChatRequestDto [id=").append(id).append(", entityId=").append(entityId).append(", entityType=").append(entityType).append(", userId=")
+				.append(userId).append(", initiateFrom=").append(initiateFrom).append(", initiateFromId=").append(initiateFromId).append(", message=")
+				.append(message).append("]");
 		return builder.toString();
 	}
 
