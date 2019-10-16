@@ -10,43 +10,44 @@ import com.seeka.app.bean.SeekaHelp;
 
 public interface IHelpDAO {
 
-    public void save(SeekaHelp seekaHelp);
+	void save(SeekaHelp seekaHelp);
 
-    public HelpCategory getHelpCategory(BigInteger id);
+	HelpCategory getHelpCategory(BigInteger id);
 
-    public HelpSubCategory getHelpSubCategory(BigInteger id);
+	HelpSubCategory getHelpSubCategory(BigInteger id);
 
-    public SeekaHelp get(BigInteger id);
+	SeekaHelp get(BigInteger id);
 
-    public void update(SeekaHelp seekaHelp);
+	void update(SeekaHelp seekaHelp);
 
-    public int findTotalHelpRecord();
+	int findTotalHelpRecord(BigInteger userId);
 
-    public List<SeekaHelp> getAll(int startIndex, Integer pageSize);
+	List<SeekaHelp> getAll(int startIndex, Integer pageSize, BigInteger userId);
 
-    public void save(HelpCategory helpCategory);
+	void save(HelpCategory helpCategory);
 
-    public void save(HelpSubCategory helpSubCategory);
+	void save(HelpSubCategory helpSubCategory);
 
-    public List<HelpSubCategory> getSubCategoryByCategory(BigInteger id);
+	List<HelpSubCategory> getSubCategoryByCategory(BigInteger id);
 
-    public Integer findTotalHelpRecordBySubCategory(BigInteger sub_category_id);
+	Integer findTotalHelpRecordBySubCategory(BigInteger sub_category_id);
 
-    public List<HelpSubCategory> getAllHelpSubCategories();
+	List<HelpSubCategory> getAllHelpSubCategories();
 
-    public List<SeekaHelp> getHelpByCategory(BigInteger id);
+	List<SeekaHelp> getHelpByCategory(BigInteger id);
 
-    public HelpAnswer save(HelpAnswer helpAnswer);
+	HelpAnswer save(HelpAnswer helpAnswer);
 
-    public List<HelpAnswer> getAnswerByHelpId(BigInteger userId);
+	List<HelpAnswer> getAnswerByHelpId(BigInteger userId);
 
-    public List<HelpCategory> getAllCategory();
+	List<HelpCategory> getAllCategory();
 
-    public List<SeekaHelp> findByStatus(String status, BigInteger categoryId);
+	List<SeekaHelp> findByStatus(String status, BigInteger categoryId);
 
-    public List<SeekaHelp> findByMostRecent(String status, BigInteger categoryId);
+	List<SeekaHelp> findByMostRecent(String status, BigInteger categoryId);
 
-    public List<SeekaHelp> findByStatusAndMostRecent(String status, String mostRecent, BigInteger categoryId);
+	List<SeekaHelp> findByStatusAndMostRecent(String status, String mostRecent, BigInteger categoryId);
 
-    public void updateAnwser(HelpAnswer helpAnswer);
+	void updateAnwser(HelpAnswer helpAnswer);
+
 }
