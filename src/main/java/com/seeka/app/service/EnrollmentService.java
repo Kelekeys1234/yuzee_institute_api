@@ -20,6 +20,7 @@ import com.seeka.app.bean.EnrollmentStatus;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.constant.BasicStatus;
+import com.seeka.app.constant.NotificationType;
 import com.seeka.app.dao.IEnrollmentDao;
 import com.seeka.app.dto.EnrollmentDto;
 import com.seeka.app.dto.EnrollmentResponseDto;
@@ -196,7 +197,7 @@ public class EnrollmentService implements IEnrollmentService {
 		if (userId.compareTo(enrollmentStatus.getEnrollment().getUserId()) != 0) {
 			String message = "Your application status changed to "
 					+ com.seeka.app.constant.EnrollmentStatus.getByValue(enrollmentStatus.getStatus()).getDisplayValue();
-			iUsersService.sendPushNotification(enrollmentStatus.getEnrollment().getUserId(), message);
+			iUsersService.sendPushNotification(enrollmentStatus.getEnrollment().getUserId(), message, NotificationType.ENROLLMENT.name());
 		} else {
 			logger.info("Message trigger by user");
 		}

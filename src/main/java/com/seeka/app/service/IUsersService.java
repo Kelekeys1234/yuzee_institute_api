@@ -9,6 +9,6 @@ public interface IUsersService {
 
 	UserDto getUserById(BigInteger userId);
 
-	void sendPushNotification(BigInteger userId, String message) throws ValidationException;
+	void sendPushNotification(BigInteger userId, String message, String notificationType) throws ValidationException;
 
 }

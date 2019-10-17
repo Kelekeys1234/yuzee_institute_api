@@ -18,6 +18,7 @@ public class NotificationBean implements Serializable {
 	private String user;
 	private Long userId;
 	private String tenantCode;
+	private String notificationType;
 
 	/**
 	 * @return the payload
@@ -80,7 +81,15 @@ public class NotificationBean implements Serializable {
 	 * @param tenantCode the tenantCode to set
 	 */
 	public void setTenantCode(final String tenantCode) {
-		this.tenantCode = tenantCode;
+
+	}
+
+	public String getNotificationType() {
+		return notificationType;
+	}
+
+	public void setNotificationType(final String notificationType) {
+		this.notificationType = notificationType;
 	}
 
 	@Override
@@ -88,6 +97,7 @@ public class NotificationBean implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (channel == null ? 0 : channel.hashCode());
+		result = prime * result + (notificationType == null ? 0 : notificationType.hashCode());
 		result = prime * result + (payload == null ? 0 : payload.hashCode());
 		result = prime * result + (tenantCode == null ? 0 : tenantCode.hashCode());
 		result = prime * result + (user == null ? 0 : user.hashCode());
@@ -112,6 +122,13 @@ public class NotificationBean implements Serializable {
 				return false;
 			}
 		} else if (!channel.equals(other.channel)) {
+			return false;
+		}
+		if (notificationType == null) {
+			if (other.notificationType != null) {
+				return false;
+			}
+		} else if (!notificationType.equals(other.notificationType)) {
 			return false;
 		}
 		if (payload == null) {
@@ -149,7 +166,7 @@ public class NotificationBean implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("NotificationBean [payload=").append(payload).append(", channel=").append(channel).append(", user=").append(user).append(", userId=")
-				.append(userId).append(", tenantCode=").append(tenantCode).append("]");
+				.append(userId).append(", tenantCode=").append(tenantCode).append(", notificationType=").append(notificationType).append("]");
 		return builder.toString();
 	}
 

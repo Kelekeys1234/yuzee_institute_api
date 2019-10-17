@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.seeka.app.bean.Chat;
 import com.seeka.app.bean.ChatConversation;
 import com.seeka.app.constant.ChatInitiator;
+import com.seeka.app.constant.NotificationType;
 import com.seeka.app.dao.IChatConversationDao;
 import com.seeka.app.dao.IChatDao;
 import com.seeka.app.dto.ChatConversationDto;
@@ -106,7 +107,7 @@ public class ChatService implements IChatService {
 	}
 
 	private void sentPushNotificationForChatConversation(final String message, final BigInteger userId) throws ValidationException {
-		iUsersService.sendPushNotification(userId, message);
+		iUsersService.sendPushNotification(userId, message, NotificationType.CHAT_CONVERSATION.name());
 	}
 
 	@Override

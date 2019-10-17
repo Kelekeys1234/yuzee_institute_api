@@ -57,34 +57,34 @@ public class UsersService implements IUsersService {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void sendPushNotification(final UserDeviceInfoDto userDeviceInfoDto, final String message) {
+	private void sendPushNotification(final UserDeviceInfoDto userDeviceInfoDto, final String message, final String notificationType) {
 		NotificationBean pushNotification = new NotificationBean();
 		PayloadDto payloadDto = new PayloadDto();
 
 		payloadDto.setPlatform(userDeviceInfoDto.getPlatform());
 		payloadDto.setDeviceId(userDeviceInfoDto.getDeviceId());
 		payloadDto.setContent(message);
-		payloadDto.setTitle("APPLICATION");
+		payloadDto.setTitle("Application Update");
 
 		pushNotification.setChannel("PUSH");
 		pushNotification.setTenantCode("SEEKA-DEGREE");
 		pushNotification.setUser(userDeviceInfoDto.getFirstName() + " " + userDeviceInfoDto.getLastName());
 		pushNotification.setPayload(payloadDto);
 		pushNotification.setUserId(userDeviceInfoDto.getUserId());
-
+		pushNotification.setNotificationType(notificationType);
 		ResponseEntity<Map> result = restTemplate.postForEntity(IConstant.NOTIFICATION_CONNECTION_URL, pushNotification, Map.class);
 		System.out.println(result.getStatusCode());
 	}
 
 	@Override
-	public void sendPushNotification(final BigInteger userId, final String message) throws ValidationException {
+	public void sendPushNotification(final BigInteger userId, final String message, final String notificationType) throws ValidationException {
 		List<UserDeviceInfoDto> userDeviceInfoDto = getUserDeviceById(userId);
 
 		if (userDeviceInfoDto != null) {
 			ObjectMapper objMapper = new ObjectMapper();
 			for (Object obj : userDeviceInfoDto) {
 				UserDeviceInfoDto userDevInfoDto = objMapper.convertValue(obj, UserDeviceInfoDto.class);
-				sendPushNotification(userDevInfoDto, message);
+				sendPushNotification(userDevInfoDto, message, notificationType);
 			}
 		}
 	}

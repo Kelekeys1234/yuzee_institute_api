@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -75,7 +76,7 @@ public class HelpDAO implements IHelpDAO {
 	@Override
 	public List<SeekaHelp> getAll(final int pageNumber, final Integer pageSize, final BigInteger userId) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select sh.id , sh.category_id, sh.sub_category_id, sh.title , sh.descritpion , sh.is_questioning FROM seeka_help sh "
+		String sqlQuery = "select sh.id , sh.category_id, sh.sub_category_id, sh.title , sh.descritpion , sh.is_questioning , sh.created_on FROM seeka_help sh "
 				+ " where sh.is_active = 1 and sh.deleted_on IS NULL ";
 		if (userId != null) {
 			sqlQuery = sqlQuery + " and sh.user_id = " + userId;
@@ -103,6 +104,9 @@ public class HelpDAO implements IHelpDAO {
 			}
 			if (row[5] != null) {
 				help.setIsQuestioning(Boolean.valueOf(row[5].toString()));
+			}
+			if (row[6] != null) {
+				help.setCreatedOn(new Date(row[6].toString()));
 			}
 			helps.add(help);
 		}
