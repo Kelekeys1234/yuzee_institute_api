@@ -13,21 +13,21 @@ import com.seeka.app.exception.NotFoundException;
 
 public interface IErrorReportService {
 
-    public ResponseEntity<?> save(ErrorReportDto errorReport);
-    
-    public ResponseEntity<?> update(ErrorReportDto errorReport, BigInteger id);
+	ResponseEntity<?> save(ErrorReportDto errorReport);
 
-    public ResponseEntity<?> getErrorReportByUserId(BigInteger userId);
-    
-    public ResponseEntity<?> getErrorReportById(BigInteger id);
+	ResponseEntity<?> update(ErrorReportDto errorReport, BigInteger id);
 
-    public ResponseEntity<?> getAllErrorReport();
+//    public ResponseEntity<?> getErrorReportByUserId(BigInteger userId);
 
-    public ResponseEntity<?> deleteByUserId(@Valid BigInteger userId);
+	ResponseEntity<?> getErrorReportById(BigInteger id);
 
-    public ResponseEntity<?> getAllErrorCategory(String errorCategoryType);
+	ResponseEntity<?> getAllErrorReport();
 
-	List<ErrorReport> getAllErrorReportForUser(BigInteger userId);
+	ResponseEntity<?> deleteByUserId(@Valid BigInteger userId);
+
+	ResponseEntity<?> getAllErrorCategory(String errorCategoryType);
+
+	List<ErrorReport> getAllErrorReportForUser(BigInteger userId, Integer startIndex, Integer pageSize);
 
 	int getErrorReportCount(BigInteger userId);
 

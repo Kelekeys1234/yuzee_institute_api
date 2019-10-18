@@ -20,257 +20,251 @@ import javax.persistence.TemporalType;
 @Table(name = "error_report")
 public class ErrorReport implements java.io.Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -4896547771928499529L;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -4896547771928499529L;
 
-    private BigInteger id;
-    private BigInteger userId;
-    private ErrorReportCategory errorReportCategory;
-    private String description;
-    private Date createdOn;
-    private Date updatedOn;
-    private String createdBy;
-    private String updatedBy;
-    private Date deletedOn;
-    private Boolean isActive;
-    
-    private String caseNumber;
-    private String status;
-    private BigInteger courseArticleId;
-    private Date dueDate;
-    private BigInteger assigneeUserId;
-    private String severity;
-    private boolean isFavourite;
+	private BigInteger id;
+	private BigInteger userId;
+	private ErrorReportCategory errorReportCategory;
+	private String description;
+	private Date createdOn;
+	private Date updatedOn;
+	private String createdBy;
+	private String updatedBy;
+	private Date deletedOn;
+	private Boolean isActive;
 
-    /**
-     * @return the id
-     */
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public BigInteger getId() {
-        return id;
-    }
+	private String caseNumber;
+	private String status;
+	private BigInteger courseArticleId;
+	private Date dueDate;
+	private BigInteger assigneeUserId;
+	private String severity;
+	private Boolean isFavourite;
 
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
+	public BigInteger getId() {
+		return id;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_on", length = 19)
-    public Date getCreatedOn() {
-        return this.createdOn;
-    }
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(final BigInteger id) {
+		this.id = id;
+	}
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on", length = 19)
+	public Date getCreatedOn() {
+		return this.createdOn;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_on", length = 19)
-    public Date getUpdatedOn() {
-        return this.updatedOn;
-    }
+	public void setCreatedOn(final Date createdOn) {
+		this.createdOn = createdOn;
+	}
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on", length = 19)
+	public Date getUpdatedOn() {
+		return this.updatedOn;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "deleted_on", length = 19)
-    public Date getDeletedOn() {
-        return this.deletedOn;
-    }
+	public void setUpdatedOn(final Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
 
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deleted_on", length = 19)
+	public Date getDeletedOn() {
+		return this.deletedOn;
+	}
 
-    @Column(name = "created_by", length = 50)
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
+	public void setDeletedOn(final Date deletedOn) {
+		this.deletedOn = deletedOn;
+	}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	@Column(name = "created_by", length = 50)
+	public String getCreatedBy() {
+		return this.createdBy;
+	}
 
-    @Column(name = "updated_by", length = 50)
-    public String getUpdatedBy() {
-        return this.updatedBy;
-    }
+	public void setCreatedBy(final String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+	@Column(name = "updated_by", length = 50)
+	public String getUpdatedBy() {
+		return this.updatedBy;
+	}
 
-    /**
-     * @return the isActive
-     */
-    @Column(name = "is_active")
-    public Boolean getIsActive() {
-        return isActive;
-    }
+	public void setUpdatedBy(final String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
-    /**
-     * @param isActive
-     *            the isActive to set
-     */
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
+	/**
+	 * @return the isActive
+	 */
+	@Column(name = "is_active")
+	public Boolean getIsActive() {
+		return isActive;
+	}
 
-    /**
-     * @return the userId
-     */
-    @Column(name = "user_id")
-    public BigInteger getUserId() {
-        return userId;
-    }
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(final Boolean isActive) {
+		this.isActive = isActive;
+	}
 
-    /**
-     * @param userId
-     *            the userId to set
-     */
-    public void setUserId(BigInteger userId) {
-        this.userId = userId;
-    }
+	/**
+	 * @return the userId
+	 */
+	@Column(name = "user_id")
+	public BigInteger getUserId() {
+		return userId;
+	}
 
-    /**
-     * @return the errorReportCategory
-     */
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id", nullable = false)
-    public ErrorReportCategory getErrorReportCategory() {
-        return errorReportCategory;
-    }
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(final BigInteger userId) {
+		this.userId = userId;
+	}
 
-    /**
-     * @param errorReportCategory
-     *            the errorReportCategory to set
-     */
-    public void setErrorReportCategory(ErrorReportCategory errorReportCategory) {
-        this.errorReportCategory = errorReportCategory;
-    }
+	/**
+	 * @return the errorReportCategory
+	 */
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "category_id", nullable = false)
+	public ErrorReportCategory getErrorReportCategory() {
+		return errorReportCategory;
+	}
 
-    /**
-     * @return the description
-     */
-    @Column(name = "description")
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * @param errorReportCategory the errorReportCategory to set
+	 */
+	public void setErrorReportCategory(final ErrorReportCategory errorReportCategory) {
+		this.errorReportCategory = errorReportCategory;
+	}
 
-    /**
-     * @param description
-     *            the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	/**
+	 * @return the description
+	 */
+	@Column(name = "description")
+	public String getDescription() {
+		return description;
+	}
 
-    /**
-     * @return the cashNumber
-     */
-    @Column(name = "case_number")
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @return the cashNumber
+	 */
+	@Column(name = "case_number")
 	public String getCaseNumber() {
 		return caseNumber;
 	}
-    
-    /**
-     * @param cashNumber
-     */
-	public void setCaseNumber(String caseNumber) {
+
+	/**
+	 * @param cashNumber
+	 */
+	public void setCaseNumber(final String caseNumber) {
 		this.caseNumber = caseNumber;
 	}
 
-	 /**
-     * @return the status
-     */
-    @Column(name = "status")
+	/**
+	 * @return the status
+	 */
+	@Column(name = "status")
 	public String getStatus() {
 		return status;
 	}
 
-    /**
-     * @param status
-     */
-	public void setStatus(String status) {
+	/**
+	 * @param status
+	 */
+	public void setStatus(final String status) {
 		this.status = status;
 	}
 
-	
-	 /**
-     * @return the coreArticalDetail
-     */
-    @Column(name = "course_article_id")
+	/**
+	 * @return the coreArticalDetail
+	 */
+	@Column(name = "course_article_id")
 	public BigInteger getCourseArticleId() {
 		return courseArticleId;
 	}
 
-	 /**
-     * @param coreArticalDetail
-     */
-	public void setCourseArticleId(BigInteger courseArticleId) {
+	/**
+	 * @param coreArticalDetail
+	 */
+	public void setCourseArticleId(final BigInteger courseArticleId) {
 		this.courseArticleId = courseArticleId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "due_date", length = 19)
+	@Column(name = "due_date", length = 19)
 	public Date getDueDate() {
 		return dueDate;
 	}
 
-	 /**
-     * @param dueDate
-     */
-	public void setDueDate(Date dueDate) {
+	/**
+	 * @param dueDate
+	 */
+	public void setDueDate(final Date dueDate) {
 		this.dueDate = dueDate;
 	}
 
-	 /**
-     * @return the assigneeUserId
-     */
-    @Column(name = "assignee_user_id")
+	/**
+	 * @return the assigneeUserId
+	 */
+	@Column(name = "assignee_user_id")
 	public BigInteger getAssigneeUserId() {
 		return assigneeUserId;
 	}
 
-    /**
-     * @param dueDate
-     */
-	public void setAssigneeUserId(BigInteger assigneeUserId) {
+	/**
+	 * @param dueDate
+	 */
+	public void setAssigneeUserId(final BigInteger assigneeUserId) {
 		this.assigneeUserId = assigneeUserId;
 	}
 
-    /**
-     * @return the severity
-     */
+	/**
+	 * @return the severity
+	 */
 	@Column(name = "severity")
-    public String getSeverity() {
-        return severity;
-    }
+	public String getSeverity() {
+		return severity;
+	}
 
-    /**
-     * @param severity the severity to set
-     */
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
+	/**
+	 * @param severity the severity to set
+	 */
+	public void setSeverity(final String severity) {
+		this.severity = severity;
+	}
 
-	public boolean isFavourite() {
+	@Column(name = "is_favourite")
+	public Boolean getIsFavourite() {
 		return isFavourite;
 	}
 
-	public void setFavourite(boolean isFavourite) {
+	public void setIsFavourite(final Boolean isFavourite) {
 		this.isFavourite = isFavourite;
 	}
-    
-    
+
 }

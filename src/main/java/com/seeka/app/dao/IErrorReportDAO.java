@@ -9,23 +9,21 @@ import com.seeka.app.exception.NotFoundException;
 
 public interface IErrorReportDAO {
 
-    public void save(ErrorReport errorReport);
+	void save(ErrorReport errorReport);
 
-    public ErrorReportCategory getErrorCategory(BigInteger errorReportCategoryId);
+	ErrorReportCategory getErrorCategory(BigInteger errorReportCategoryId);
 
-    public List<ErrorReport> getAllErrorReport();
+	List<ErrorReport> getAllErrorReport();
 
-    public List<ErrorReport> getErrorReportByUserId(BigInteger userId);
-    
-    public ErrorReport getErrorReportById(BigInteger id);
+	List<ErrorReport> getErrorReportByUserId(BigInteger userId, Integer startIndex, Integer pageSize);
 
-    public void update(ErrorReport errorReport);
+	ErrorReport getErrorReportById(BigInteger id);
 
-    public List<ErrorReportCategory> getAllErrorCategory(String errorCategoryType);
+	void update(ErrorReport errorReport);
 
-    public void addErrorRepoerAudit(BigInteger id);
+	List<ErrorReportCategory> getAllErrorCategory(String errorCategoryType);
 
-	List<ErrorReport> getAllErrorReportForUser(BigInteger userId);
+	void addErrorRepoerAudit(BigInteger id);
 
 	int getErrorReportCountForUser(BigInteger userId);
 

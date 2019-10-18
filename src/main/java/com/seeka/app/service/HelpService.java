@@ -28,6 +28,7 @@ import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.HelpEnum;
 import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -583,5 +584,10 @@ public class HelpService implements IHelpService {
 	@Override
 	public int getUserHelpCount(final BigInteger userId) {
 		return helpDAO.findTotalHelpRecord(userId);
+	}
+
+	@Override
+	public void setIsFavouriteFlag(final BigInteger id, final boolean isFavourite) throws NotFoundException {
+		helpDAO.setIsFavouriteFlag(id, isFavourite);
 	}
 }

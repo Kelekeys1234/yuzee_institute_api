@@ -22,180 +22,352 @@ import javax.persistence.Table;
 @Table(name = "seeka_help")
 public class SeekaHelp implements Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 6922844940897956622L;
-    private BigInteger id;
-    private HelpCategory category;
-    private HelpSubCategory subCategory;
-    private String title;
-    private String descritpion;
-    private Date createdOn;
-    private Date updatedOn;
-    private Date deletedOn;
-    private String createdBy;
-    private String updatedBy;
-    private Boolean isActive;
-    private Boolean isQuestioning;
-    private BigInteger userId;
-    private String status;
-    private BigInteger assignedUserId;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 6922844940897956622L;
+	private BigInteger id;
+	private HelpCategory category;
+	private HelpSubCategory subCategory;
+	private String title;
+	private String descritpion;
+	private Date createdOn;
+	private Date updatedOn;
+	private Date deletedOn;
+	private String createdBy;
+	private String updatedBy;
+	private Boolean isActive;
+	private Boolean isQuestioning;
+	private BigInteger userId;
+	private String status;
+	private BigInteger assignedUserId;
+	private Boolean isFavourite;
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public BigInteger getId() {
-        return id;
-    }
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
+	public BigInteger getId() {
+		return id;
+	}
 
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
-    
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    public HelpCategory getCategory() {
-        return category;
-    }
+	public void setId(final BigInteger id) {
+		this.id = id;
+	}
 
-    public void setCategory(HelpCategory category) {
-        this.category = category;
-    }
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "category_id")
+	public HelpCategory getCategory() {
+		return category;
+	}
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "sub_category_id")
-    public HelpSubCategory getSubCategory() {
-        return subCategory;
-    }
+	public void setCategory(final HelpCategory category) {
+		this.category = category;
+	}
 
-    public void setSubCategory(HelpSubCategory subCategory) {
-        this.subCategory = subCategory;
-    }
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "sub_category_id")
+	public HelpSubCategory getSubCategory() {
+		return subCategory;
+	}
 
-    @Column(name = "title")
-    public String getTitle() {
-        return title;
-    }
+	public void setSubCategory(final HelpSubCategory subCategory) {
+		this.subCategory = subCategory;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	@Column(name = "title")
+	public String getTitle() {
+		return title;
+	}
 
-    @Column(name = "descritpion")
-    public String getDescritpion() {
-        return descritpion;
-    }
+	public void setTitle(final String title) {
+		this.title = title;
+	}
 
-    public void setDescritpion(String descritpion) {
-        this.descritpion = descritpion;
-    }
+	@Column(name = "descritpion")
+	public String getDescritpion() {
+		return descritpion;
+	}
 
-    @Column(name = "created_on")
-    public Date getCreatedOn() {
-        return createdOn;
-    }
+	public void setDescritpion(final String descritpion) {
+		this.descritpion = descritpion;
+	}
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+	@Column(name = "created_on")
+	public Date getCreatedOn() {
+		return createdOn;
+	}
 
-    @Column(name = "updated_on")
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
+	public void setCreatedOn(final Date createdOn) {
+		this.createdOn = createdOn;
+	}
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
+	@Column(name = "updated_on")
+	public Date getUpdatedOn() {
+		return updatedOn;
+	}
 
-    @Column(name = "deleted_on")
-    public Date getDeletedOn() {
-        return deletedOn;
-    }
+	public void setUpdatedOn(final Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
 
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
+	@Column(name = "deleted_on")
+	public Date getDeletedOn() {
+		return deletedOn;
+	}
 
-    @Column(name = "created_by")
-    public String getCreatedBy() {
-        return createdBy;
-    }
+	public void setDeletedOn(final Date deletedOn) {
+		this.deletedOn = deletedOn;
+	}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	@Column(name = "created_by")
+	public String getCreatedBy() {
+		return createdBy;
+	}
 
-    @Column(name = "updated_by")
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
+	public void setCreatedBy(final String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+	@Column(name = "updated_by")
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
 
-    @Column(name = "is_active")
-    public Boolean getIsActive() {
-        return isActive;
-    }
+	public void setUpdatedBy(final String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
+	@Column(name = "is_active")
+	public Boolean getIsActive() {
+		return isActive;
+	}
 
-    @Column(name = "is_questioning")
-    public Boolean getIsQuestioning() {
-        return isQuestioning;
-    }
+	public void setIsActive(final Boolean isActive) {
+		this.isActive = isActive;
+	}
 
-    public void setIsQuestioning(Boolean isQuestioning) {
-        this.isQuestioning = isQuestioning;
-    }
+	@Column(name = "is_questioning")
+	public Boolean getIsQuestioning() {
+		return isQuestioning;
+	}
 
-    /**
-     * @return the userId
-     */
-    @Column(name = "user_id")
-    public BigInteger getUserId() {
-        return userId;
-    }
+	public void setIsQuestioning(final Boolean isQuestioning) {
+		this.isQuestioning = isQuestioning;
+	}
 
-    /**
-     * @param userId the userId to set
-     */
-    public void setUserId(BigInteger userId) {
-        this.userId = userId;
-    }
+	/**
+	 * @return the userId
+	 */
+	@Column(name = "user_id")
+	public BigInteger getUserId() {
+		return userId;
+	}
 
-    /**
-     * @return the status
-     */
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(final BigInteger userId) {
+		this.userId = userId;
+	}
 
-    /**
-     * @param status the status to set
-     */
-    public void setStatus(String status) {
-        this.status = status;
-    }
+	/**
+	 * @return the status
+	 */
+	@Column(name = "status")
+	public String getStatus() {
+		return status;
+	}
 
-    /**
-     * @return the assignedUserId
-     */
-    @Column(name = "assigned_user_id")
-    public BigInteger getAssignedUserId() {
-        return assignedUserId;
-    }
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(final String status) {
+		this.status = status;
+	}
 
-    /**
-     * @param assignedUserId the assignedUserId to set
-     */
-    public void setAssignedUserId(BigInteger assignedUserId) {
-        this.assignedUserId = assignedUserId;
-    }
+	/**
+	 * @return the assignedUserId
+	 */
+	@Column(name = "assigned_user_id")
+	public BigInteger getAssignedUserId() {
+		return assignedUserId;
+	}
+
+	/**
+	 * @param assignedUserId the assignedUserId to set
+	 */
+	public void setAssignedUserId(final BigInteger assignedUserId) {
+		this.assignedUserId = assignedUserId;
+	}
+
+	@Column(name = "is_favourite")
+	public Boolean getIsFavourite() {
+		return isFavourite;
+	}
+
+	public void setIsFavourite(final Boolean isFavourite) {
+		this.isFavourite = isFavourite;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (assignedUserId == null ? 0 : assignedUserId.hashCode());
+		result = prime * result + (category == null ? 0 : category.hashCode());
+		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
+		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
+		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
+		result = prime * result + (descritpion == null ? 0 : descritpion.hashCode());
+		result = prime * result + (id == null ? 0 : id.hashCode());
+		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
+		result = prime * result + (isFavourite == null ? 0 : isFavourite.hashCode());
+		result = prime * result + (isQuestioning == null ? 0 : isQuestioning.hashCode());
+		result = prime * result + (status == null ? 0 : status.hashCode());
+		result = prime * result + (subCategory == null ? 0 : subCategory.hashCode());
+		result = prime * result + (title == null ? 0 : title.hashCode());
+		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
+		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
+		result = prime * result + (userId == null ? 0 : userId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		SeekaHelp other = (SeekaHelp) obj;
+		if (assignedUserId == null) {
+			if (other.assignedUserId != null) {
+				return false;
+			}
+		} else if (!assignedUserId.equals(other.assignedUserId)) {
+			return false;
+		}
+		if (category == null) {
+			if (other.category != null) {
+				return false;
+			}
+		} else if (!category.equals(other.category)) {
+			return false;
+		}
+		if (createdBy == null) {
+			if (other.createdBy != null) {
+				return false;
+			}
+		} else if (!createdBy.equals(other.createdBy)) {
+			return false;
+		}
+		if (createdOn == null) {
+			if (other.createdOn != null) {
+				return false;
+			}
+		} else if (!createdOn.equals(other.createdOn)) {
+			return false;
+		}
+		if (deletedOn == null) {
+			if (other.deletedOn != null) {
+				return false;
+			}
+		} else if (!deletedOn.equals(other.deletedOn)) {
+			return false;
+		}
+		if (descritpion == null) {
+			if (other.descritpion != null) {
+				return false;
+			}
+		} else if (!descritpion.equals(other.descritpion)) {
+			return false;
+		}
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (isActive == null) {
+			if (other.isActive != null) {
+				return false;
+			}
+		} else if (!isActive.equals(other.isActive)) {
+			return false;
+		}
+		if (isFavourite == null) {
+			if (other.isFavourite != null) {
+				return false;
+			}
+		} else if (!isFavourite.equals(other.isFavourite)) {
+			return false;
+		}
+		if (isQuestioning == null) {
+			if (other.isQuestioning != null) {
+				return false;
+			}
+		} else if (!isQuestioning.equals(other.isQuestioning)) {
+			return false;
+		}
+		if (status == null) {
+			if (other.status != null) {
+				return false;
+			}
+		} else if (!status.equals(other.status)) {
+			return false;
+		}
+		if (subCategory == null) {
+			if (other.subCategory != null) {
+				return false;
+			}
+		} else if (!subCategory.equals(other.subCategory)) {
+			return false;
+		}
+		if (title == null) {
+			if (other.title != null) {
+				return false;
+			}
+		} else if (!title.equals(other.title)) {
+			return false;
+		}
+		if (updatedBy == null) {
+			if (other.updatedBy != null) {
+				return false;
+			}
+		} else if (!updatedBy.equals(other.updatedBy)) {
+			return false;
+		}
+		if (updatedOn == null) {
+			if (other.updatedOn != null) {
+				return false;
+			}
+		} else if (!updatedOn.equals(other.updatedOn)) {
+			return false;
+		}
+		if (userId == null) {
+			if (other.userId != null) {
+				return false;
+			}
+		} else if (!userId.equals(other.userId)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SeekaHelp [id=").append(id).append(", category=").append(category).append(", subCategory=").append(subCategory).append(", title=")
+				.append(title).append(", descritpion=").append(descritpion).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
+				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
+				.append(", isActive=").append(isActive).append(", isQuestioning=").append(isQuestioning).append(", userId=").append(userId).append(", status=")
+				.append(status).append(", assignedUserId=").append(assignedUserId).append(", isFavourite=").append(isFavourite).append("]");
+		return builder.toString();
+	}
+
 }

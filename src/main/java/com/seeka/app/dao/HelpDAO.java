@@ -1,7 +1,6 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -17,6 +16,7 @@ import com.seeka.app.bean.HelpAnswer;
 import com.seeka.app.bean.HelpCategory;
 import com.seeka.app.bean.HelpSubCategory;
 import com.seeka.app.bean.SeekaHelp;
+import com.seeka.app.exception.NotFoundException;
 
 @Repository
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
@@ -73,56 +73,22 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<SeekaHelp> getAll(final int pageNumber, final Integer pageSize, final BigInteger userId) {
+	public List<SeekaHelp> getAll(final Integer startIndex, final Integer pageSize, final BigInteger userId) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select sh.id , sh.category_id, sh.sub_category_id, sh.title , sh.descritpion , sh.is_questioning FROM seeka_help sh "
-				+ " where sh.is_active = 1 and sh.deleted_on IS NULL ";
+		Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
 		if (userId != null) {
-			sqlQuery = sqlQuery + " and sh.user_id = " + userId;
+			crit.add(Restrictions.eq("seekaHelp.userId", userId));
 		}
-		sqlQuery = sqlQuery + " ORDER BY sh.created_on DESC ";
-		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		List<SeekaHelp> helps = new ArrayList<>();
-		SeekaHelp help = null;
-		for (Object[] row : rows) {
-			help = new SeekaHelp();
-			help.setId(new BigInteger(row[0].toString()));
-			if (row[1] != null) {
-				help.setCategory(getHelpCategory(new BigInteger(row[1].toString()), session));
-			}
-			if (row[2] != null) {
-				help.setSubCategory(getHelpSubCategory(new BigInteger(row[2].toString()), session));
-			}
-			if (row[3] != null) {
-				help.setTitle(row[3].toString());
-			}
-			if (row[4] != null) {
-				help.setDescritpion(row[4].toString());
-			}
-			if (row[5] != null) {
-				help.setIsQuestioning(Boolean.valueOf(row[5].toString()));
-			}
-			helps.add(help);
-		}
-		return helps;
-	}
+		crit.add(Restrictions.eq("seekaHelp.isActive", true));
 
-	private HelpSubCategory getHelpSubCategory(final BigInteger id, final Session session) {
-		HelpSubCategory subCategory = null;
-		if (id != null) {
-			subCategory = session.get(HelpSubCategory.class, id);
+		if (startIndex != null && pageSize != null) {
+			crit.setFirstResult(startIndex);
+			crit.setMaxResults(pageSize);
 		}
-		return subCategory;
-	}
+		crit.addOrder(Order.desc("seekaHelp.isFavourite"));
+		crit.addOrder(Order.desc("seekaHelp.createdOn"));
+		return crit.list();
 
-	private HelpCategory getHelpCategory(final BigInteger id, final Session session) {
-		HelpCategory category = null;
-		if (id != null) {
-			category = session.get(HelpCategory.class, id);
-		}
-		return category;
 	}
 
 	@Override
@@ -238,4 +204,16 @@ public class HelpDAO implements IHelpDAO {
 		Session session = sessionFactory.getCurrentSession();
 		session.update(helpAnswer);
 	}
+
+	@Override
+	public void setIsFavouriteFlag(final BigInteger id, final boolean isFavourite) throws NotFoundException {
+		Session session = sessionFactory.getCurrentSession();
+		String sqlQuery = "update seeka_help set is_favourite = ? where id = ?";
+		int updateCount = session.createNativeQuery(sqlQuery).setParameter(1, isFavourite).setParameter(2, id).executeUpdate();
+		if (updateCount == 0) {
+			throw new NotFoundException("No Help Found with Id : " + id);
+		}
+
+	}
+
 }

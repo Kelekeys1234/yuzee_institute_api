@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.SeekaHelp;
+import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
 import com.seeka.app.dto.HelpSubCategoryDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.service.IHelpService;
 import com.seeka.app.util.PaginationUtil;
 
@@ -141,5 +144,12 @@ public class HelpController {
 		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
 		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
 		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+	}
+
+	@PutMapping(value = "/{id}/isFavourite/{isFavourite}")
+	public ResponseEntity<?> setiIsFavourite(@RequestHeader(value = "userId") final BigInteger userId, @PathVariable(value = "id") final BigInteger id,
+			@PathVariable(value = "isFavourite") final boolean isFavourite) throws NotFoundException {
+		helpService.setIsFavouriteFlag(id, isFavourite);
+		return new GenericResponseHandlers.Builder().setMessage("Updated Successfuly").setStatus(HttpStatus.OK).create();
 	}
 }

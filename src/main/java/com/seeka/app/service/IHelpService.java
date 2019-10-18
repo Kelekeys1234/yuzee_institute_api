@@ -13,6 +13,7 @@ import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
 import com.seeka.app.dto.HelpSubCategoryDto;
+import com.seeka.app.exception.NotFoundException;
 
 public interface IHelpService {
 
@@ -53,5 +54,7 @@ public interface IHelpService {
 	List<SeekaHelp> getUserHelpList(BigInteger userId, int startIndex, Integer pageSize);
 
 	int getUserHelpCount(BigInteger userId);
+
+	void setIsFavouriteFlag(BigInteger id, boolean isFavourite) throws NotFoundException;
 
 }

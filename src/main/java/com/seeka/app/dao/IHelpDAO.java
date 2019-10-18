@@ -7,6 +7,7 @@ import com.seeka.app.bean.HelpAnswer;
 import com.seeka.app.bean.HelpCategory;
 import com.seeka.app.bean.HelpSubCategory;
 import com.seeka.app.bean.SeekaHelp;
+import com.seeka.app.exception.NotFoundException;
 
 public interface IHelpDAO {
 
@@ -22,7 +23,7 @@ public interface IHelpDAO {
 
 	int findTotalHelpRecord(BigInteger userId);
 
-	List<SeekaHelp> getAll(int startIndex, Integer pageSize, BigInteger userId);
+	List<SeekaHelp> getAll(Integer startIndex, Integer pageSize, BigInteger userId);
 
 	void save(HelpCategory helpCategory);
 
@@ -49,5 +50,7 @@ public interface IHelpDAO {
 	List<SeekaHelp> findByStatusAndMostRecent(String status, String mostRecent, BigInteger categoryId);
 
 	void updateAnwser(HelpAnswer helpAnswer);
+
+	void setIsFavouriteFlag(BigInteger id, boolean isFavourite) throws NotFoundException;
 
 }
