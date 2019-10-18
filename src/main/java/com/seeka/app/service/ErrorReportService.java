@@ -17,6 +17,7 @@ import com.seeka.app.bean.ErrorReport;
 import com.seeka.app.bean.ErrorReportCategory;
 import com.seeka.app.dao.IErrorReportDAO;
 import com.seeka.app.dto.ErrorReportDto;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.util.DateUtil;
 
 @Service
@@ -198,4 +199,19 @@ public class ErrorReportService implements IErrorReportService {
         return ResponseEntity.ok().body(response);
     }
 
+	@Override
+	public List<ErrorReport> getAllErrorReportForUser(BigInteger userId) {
+		return errorReportDAO.getAllErrorReportForUser(userId);
+	}
+	        
+		
+	@Override
+	public int getErrorReportCount(BigInteger userId) {
+		return errorReportDAO.getErrorReportCountForUser(userId);
+	}
+
+	@Override
+	public void setIsFavouriteFlag(BigInteger errorRepoetId, boolean isFavourite) throws NotFoundException {
+		errorReportDAO.setIsFavouriteFlag(errorRepoetId, isFavourite);
+	}
 }

@@ -42,6 +42,7 @@ public class ErrorReport implements java.io.Serializable {
     private Date dueDate;
     private BigInteger assigneeUserId;
     private String severity;
+    private boolean isFavourite;
 
     /**
      * @return the id
@@ -262,6 +263,14 @@ public class ErrorReport implements java.io.Serializable {
     public void setSeverity(String severity) {
         this.severity = severity;
     }
+
+	public boolean isFavourite() {
+		return isFavourite;
+	}
+
+	public void setFavourite(boolean isFavourite) {
+		this.isFavourite = isFavourite;
+	}
     
     
 }

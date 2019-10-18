@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.AuditErrorReport;
 import com.seeka.app.bean.ErrorReport;
 import com.seeka.app.bean.ErrorReportCategory;
+import com.seeka.app.exception.NotFoundException;
 
 @Repository
 @SuppressWarnings({ "deprecation", "unchecked" })
@@ -102,5 +103,32 @@ public class ErrorReportDAO implements IErrorReportDAO {
         auditErrorReport.setAuditUpdatedBy("");
         session.save(auditErrorReport);
     }
+
+	@Override
+	public List<ErrorReport> getAllErrorReportForUser(BigInteger userId) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(ErrorReport.class,"error_report");
+		criteria.add(Restrictions.eq("userId", userId));
+		
+		return criteria.list();
+	}
+
+	@Override
+	public int getErrorReportCountForUser(BigInteger userId) {
+		Session session = sessionFactory.getCurrentSession();
+		String sqlQuery = "select count(*) from error_report where user_id = ? order by is_favourite desc";
+		BigInteger count = (BigInteger)session.createSQLQuery(sqlQuery).setParameter(1, userId).uniqueResult();
+		return count !=null ? count.intValue():0;
+	}
+
+	@Override
+	public void setIsFavouriteFlag(BigInteger errorReportId, boolean isFavourite) throws NotFoundException {
+		Session session = sessionFactory.getCurrentSession();
+		String sqlQuery = "select count(*) from error_report where user_id = ? order by is_favourite desc";
+		int updateCount = session.createNativeQuery(sqlQuery).setParameter(1, isFavourite).setParameter(2, errorReportId).executeUpdate();
+		if(updateCount == 0) {
+			throw new NotFoundException("No Error Report Found with Id : "+errorReportId);
+		}
+	}
 
 }
