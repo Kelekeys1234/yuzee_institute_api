@@ -299,29 +299,14 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> getSubCategoryByCategory(final BigInteger categoryId) {
-		Map<String, Object> response = new HashMap<>();
+	public List<HelpSubCategoryDto> getSubCategoryByCategory(final BigInteger categoryId) {
 		List<HelpSubCategoryDto> subCategoryDtos = new ArrayList<>();
-		try {
-			List<HelpSubCategory> categories = helpDAO.getSubCategoryByCategory(categoryId);
-			for (HelpSubCategory helpSubCategory : categories) {
-				helpSubCategory.setHelpCount(helpDAO.findTotalHelpRecordBySubCategory(helpSubCategory.getId()));
-				subCategoryDtos.add(convertHelpSubCategoryToDto(helpSubCategory));
-			}
-			if (subCategoryDtos != null && !subCategoryDtos.isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.HELP_SUBCATEGORY_SUCCESS);
-				response.put("data", subCategoryDtos);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_SUBCATEGORY_NOT_FOUND);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+		List<HelpSubCategory> categories = helpDAO.getSubCategoryByCategory(categoryId);
+		for (HelpSubCategory helpSubCategory : categories) {
+			helpSubCategory.setHelpCount(helpDAO.findTotalHelpRecordBySubCategory(helpSubCategory.getId()));
+			subCategoryDtos.add(convertHelpSubCategoryToDto(helpSubCategory));
 		}
-		return response;
+		return subCategoryDtos;
 	}
 
 	@Override
@@ -465,28 +450,13 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> getCategory() {
-		Map<String, Object> response = new HashMap<>();
+	public List<HelpCategoryDto> getCategory(final Integer startIndex, final Integer pageSize) {
 		List<HelpCategoryDto> dtos = new ArrayList<>();
-		try {
-			List<HelpCategory> categories = helpDAO.getAllCategory();
-			for (HelpCategory category : categories) {
-				dtos.add(convertHelpCategoryToDto(category));
-			}
-			if (dtos != null && !dtos.isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.HELP_CATEGORY_SUCCESS);
-				response.put("data", dtos);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_CATEGORY_NOT_FOUND);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+		List<HelpCategory> categories = helpDAO.getAllCategory(startIndex, pageSize);
+		for (HelpCategory category : categories) {
+			dtos.add(convertHelpCategoryToDto(category));
 		}
-		return response;
+		return dtos;
 	}
 
 	@Override
@@ -589,5 +559,15 @@ public class HelpService implements IHelpService {
 	@Override
 	public void setIsFavouriteFlag(final BigInteger id, final boolean isFavourite) throws NotFoundException {
 		helpDAO.setIsFavouriteFlag(id, isFavourite);
+	}
+
+	@Override
+	public int getCategoryCount() {
+		return helpDAO.getCategoryCount();
+	}
+
+	@Override
+	public int getSubCategoryCount(final BigInteger categoryId) {
+		return helpDAO.getSubCategoryCount(categoryId);
 	}
 }

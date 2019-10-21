@@ -84,9 +84,23 @@ public class HelpController {
 		return ResponseEntity.accepted().body(helpService.getSubCategory(id));
 	}
 
-	@RequestMapping(value = "/category/{categoryId}/subCategory", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getSubCatgeoryByCategory(@PathVariable final BigInteger categoryId) throws Exception {
-		return ResponseEntity.accepted().body(helpService.getSubCategoryByCategory(categoryId));
+	@RequestMapping(value = "/category/{categoryId}/subCategory/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getSubCatgeoryByCategory(@PathVariable final BigInteger categoryId, @PathVariable final Integer pageNumber,
+			@PathVariable final Integer pageSize) throws Exception {
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<HelpSubCategoryDto> subCategoryDtos = helpService.getSubCategoryByCategory(categoryId);
+		int totalCount = helpService.getSubCategoryCount(categoryId);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get help sub category list successfully");
+		responseMap.put("data", subCategoryDtos);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/subCategory/count", method = RequestMethod.GET, produces = "application/json")
@@ -105,9 +119,22 @@ public class HelpController {
 		return ResponseEntity.accepted().body(helpService.getAnswerByHelpId(helpId));
 	}
 
-	@RequestMapping(value = "/category", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCategory() throws Exception {
-		return ResponseEntity.accepted().body(helpService.getCategory());
+	@RequestMapping(value = "/category/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getCategory(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<HelpCategoryDto> helpCategoryDtos = helpService.getCategory(startIndex, pageSize);
+		int totalCount = helpService.getCategoryCount();
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get Help Category list successfully");
+		responseMap.put("data", helpCategoryDtos);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")

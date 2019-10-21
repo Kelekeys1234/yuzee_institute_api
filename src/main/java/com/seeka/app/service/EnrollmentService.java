@@ -226,9 +226,12 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
 			enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
 		}
-		UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
-		enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
-		enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
+		if (enrollment.getUserId() != null) {
+			UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
+			enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
+			enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
+		}
+
 		return enrollmentResponseDto;
 	}
 
@@ -269,10 +272,11 @@ public class EnrollmentService implements IEnrollmentService {
 			if (enrollmentStatus != null) {
 				enrollmentResponseDto.setDeadLine(enrollmentStatus.getDeadLine());
 			}
-
-			UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
-			enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
-			enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
+			if (enrollment.getUserId() != null) {
+				UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
+				enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
+				enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
+			}
 			resultList.add(enrollmentResponseDto);
 		}
 		return resultList;

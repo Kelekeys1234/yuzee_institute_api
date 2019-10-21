@@ -41,7 +41,7 @@ public interface IHelpDAO {
 
 	List<HelpAnswer> getAnswerByHelpId(BigInteger userId);
 
-	List<HelpCategory> getAllCategory();
+	List<HelpCategory> getAllCategory(Integer startIndex, Integer pageSize);
 
 	List<SeekaHelp> findByStatus(String status, BigInteger categoryId);
 
@@ -52,5 +52,9 @@ public interface IHelpDAO {
 	void updateAnwser(HelpAnswer helpAnswer);
 
 	void setIsFavouriteFlag(BigInteger id, boolean isFavourite) throws NotFoundException;
+
+	int getCategoryCount();
+
+	int getSubCategoryCount(BigInteger categoryId);
 
 }

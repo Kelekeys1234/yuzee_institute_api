@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,8 +108,11 @@ public class HelpDAO implements IHelpDAO {
 	public List<HelpSubCategory> getSubCategoryByCategory(final BigInteger categoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(HelpSubCategory.class, "helpSubCategory");
-		crit.createAlias("helpSubCategory.categoryId", "users");
-		return crit.add(Restrictions.eq("users.id", categoryId)).list();
+		crit.createAlias("helpSubCategory.categoryId", "helpCategory");
+		crit.add(Restrictions.eq("helpCategory.id", categoryId));
+		crit.add(Restrictions.eq("helpCategory.isActive", true));
+		return crit.list();
+
 	}
 
 	@Override
@@ -158,10 +162,15 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<HelpCategory> getAllCategory() {
+	public List<HelpCategory> getAllCategory(final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
-		List<HelpCategory> list = session.createCriteria(HelpCategory.class).list();
-		return list;
+		Criteria crit = session.createCriteria(HelpCategory.class, "helpCategory");
+		crit.add(Restrictions.eq("helpCategory.isActive", true));
+		if (startIndex != null && pageSize != null) {
+			crit.setFirstResult(startIndex);
+			crit.setMaxResults(pageSize);
+		}
+		return crit.list();
 	}
 
 	@Override
@@ -214,6 +223,27 @@ public class HelpDAO implements IHelpDAO {
 			throw new NotFoundException("No Help Found with Id : " + id);
 		}
 
+	}
+
+	@Override
+	public int getCategoryCount() {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(HelpCategory.class, "helpCategory");
+		crit.add(Restrictions.eq("helpCategory.isActive", true));
+		crit.setProjection(Projections.rowCount());
+		return ((Long) crit.uniqueResult()).intValue();
+	}
+
+	@Override
+	public int getSubCategoryCount(final BigInteger categoryId) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(HelpSubCategory.class, "helpSubCategory");
+		crit.createAlias("helpSubCategory.categoryId", "helpCategory");
+		crit.add(Restrictions.eq("helpSubCategory.isActive", true));
+		crit.add(Restrictions.eq("helpCategory.isActive", true));
+		crit.add(Restrictions.eq("helpCategory.id", categoryId));
+		crit.setProjection(Projections.rowCount());
+		return ((Long) crit.uniqueResult()).intValue();
 	}
 
 }

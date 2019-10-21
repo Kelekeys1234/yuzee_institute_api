@@ -33,7 +33,7 @@ public interface IHelpService {
 
 	Map<String, Object> getSubCategory(BigInteger id);
 
-	Map<String, Object> getSubCategoryByCategory(BigInteger id);
+	List<HelpSubCategoryDto> getSubCategoryByCategory(BigInteger id);
 
 	Map<String, Object> getHelpByCategory(BigInteger id);
 
@@ -43,7 +43,7 @@ public interface IHelpService {
 
 	Map<String, Object> getAnswerByHelpId(BigInteger userId);
 
-	Map<String, Object> getCategory();
+	List<HelpCategoryDto> getCategory(Integer startIndex, Integer pageSize);
 
 	Map<String, Object> delete(@Valid BigInteger id);
 
@@ -56,5 +56,9 @@ public interface IHelpService {
 	int getUserHelpCount(BigInteger userId);
 
 	void setIsFavouriteFlag(BigInteger id, boolean isFavourite) throws NotFoundException;
+
+	int getCategoryCount();
+
+	int getSubCategoryCount(BigInteger categoryId);
 
 }
