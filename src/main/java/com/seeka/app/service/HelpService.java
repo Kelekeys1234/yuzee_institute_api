@@ -299,9 +299,9 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public List<HelpSubCategoryDto> getSubCategoryByCategory(final BigInteger categoryId) {
+	public List<HelpSubCategoryDto> getSubCategoryByCategory(final BigInteger categoryId, final Integer startIndex, final Integer pageSize) {
 		List<HelpSubCategoryDto> subCategoryDtos = new ArrayList<>();
-		List<HelpSubCategory> categories = helpDAO.getSubCategoryByCategory(categoryId);
+		List<HelpSubCategory> categories = helpDAO.getSubCategoryByCategory(categoryId, startIndex, pageSize);
 		for (HelpSubCategory helpSubCategory : categories) {
 			helpSubCategory.setHelpCount(helpDAO.findTotalHelpRecordBySubCategory(helpSubCategory.getId()));
 			subCategoryDtos.add(convertHelpSubCategoryToDto(helpSubCategory));

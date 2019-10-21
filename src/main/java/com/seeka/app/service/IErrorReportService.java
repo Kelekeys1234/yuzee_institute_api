@@ -33,4 +33,6 @@ public interface IErrorReportService {
 
 	void setIsFavouriteFlag(BigInteger errorRepoetId, boolean isFavourite) throws NotFoundException;
 
+	void deleteByErrorReportId(BigInteger errorReportId);
+
 }

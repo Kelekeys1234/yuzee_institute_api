@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -206,5 +207,14 @@ public class ErrorReportService implements IErrorReportService {
 	@Override
 	public void setIsFavouriteFlag(final BigInteger errorRepoetId, final boolean isFavourite) throws NotFoundException {
 		errorReportDAO.setIsFavouriteFlag(errorRepoetId, isFavourite);
+	}
+
+	@Override
+	public void deleteByErrorReportId(final BigInteger errorReportId) {
+		ErrorReport errorReport = errorReportDAO.getErrorReportById(errorReportId);
+		errorReport.setIsActive(false);
+		errorReport.setDeletedOn(new Date());
+		errorReport.setUpdatedOn(new Date());
+		errorReportDAO.update(errorReport);
 	}
 }

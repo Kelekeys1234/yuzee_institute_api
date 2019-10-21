@@ -33,7 +33,7 @@ public interface IHelpService {
 
 	Map<String, Object> getSubCategory(BigInteger id);
 
-	List<HelpSubCategoryDto> getSubCategoryByCategory(BigInteger id);
+	List<HelpSubCategoryDto> getSubCategoryByCategory(BigInteger id, Integer startIndex, Integer pageSize);
 
 	Map<String, Object> getHelpByCategory(BigInteger id);
 

@@ -29,7 +29,7 @@ public interface IHelpDAO {
 
 	void save(HelpSubCategory helpSubCategory);
 
-	List<HelpSubCategory> getSubCategoryByCategory(BigInteger id);
+	List<HelpSubCategory> getSubCategoryByCategory(BigInteger id, Integer startIndex, Integer pageSize);
 
 	Integer findTotalHelpRecordBySubCategory(BigInteger sub_category_id);
 

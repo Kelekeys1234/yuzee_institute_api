@@ -105,12 +105,16 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<HelpSubCategory> getSubCategoryByCategory(final BigInteger categoryId) {
+	public List<HelpSubCategory> getSubCategoryByCategory(final BigInteger categoryId, final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(HelpSubCategory.class, "helpSubCategory");
 		crit.createAlias("helpSubCategory.categoryId", "helpCategory");
 		crit.add(Restrictions.eq("helpCategory.id", categoryId));
 		crit.add(Restrictions.eq("helpCategory.isActive", true));
+		if (startIndex != null && pageSize != null) {
+			crit.setFirstResult(startIndex);
+			crit.setMaxResults(pageSize);
+		}
 		return crit.list();
 
 	}

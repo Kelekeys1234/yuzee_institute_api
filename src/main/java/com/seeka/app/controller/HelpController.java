@@ -88,7 +88,7 @@ public class HelpController {
 	public ResponseEntity<?> getSubCatgeoryByCategory(@PathVariable final BigInteger categoryId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<HelpSubCategoryDto> subCategoryDtos = helpService.getSubCategoryByCategory(categoryId);
+		List<HelpSubCategoryDto> subCategoryDtos = helpService.getSubCategoryByCategory(categoryId, startIndex, pageSize);
 		int totalCount = helpService.getSubCategoryCount(categoryId);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
