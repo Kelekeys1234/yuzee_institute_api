@@ -70,7 +70,7 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(EducationSystem.class, "educationSystem");
 		criteria.createAlias("educationSystem.country", "country");
-		criteria.add(Restrictions.eq("country.id", "countryId"));
+		criteria.add(Restrictions.eq("country.id", countryId));
 		/*
 		 *
 		 * Query query = session

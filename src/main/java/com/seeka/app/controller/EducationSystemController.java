@@ -28,7 +28,7 @@ public class EducationSystemController {
 	@Autowired
 	private IEducationSystemService educationSystemService;
 
-	@RequestMapping(value = "{countryId}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/{countryId}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getEducationSystems(@PathVariable final BigInteger countryId) throws Exception {
 		List<EducationSystem> educationSystemList = educationSystemService.getEducationSystemsByCountryId(countryId);
 		return new GenericResponseHandlers.Builder().setData(educationSystemList).setMessage("Fetch Education system list successfully")
