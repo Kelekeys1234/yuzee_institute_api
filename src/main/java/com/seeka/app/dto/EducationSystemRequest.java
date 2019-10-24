@@ -5,102 +5,94 @@ import java.util.List;
 
 public class EducationSystemRequest {
 
-    private BigInteger userId;
+	private BigInteger userId;
+	private EducationDetailRequestDto educationDetail;
+	private List<EnglishScoresDto> englishScoresList;
+	private List<EducationAOLevelSubjectDto> educationAOLevelSubjectList;
+	private String createdBy;
+	private String updatedBy;
 
-    private EducationDetailDto educationDetail;
+	/**
+	 * @return the userId
+	 */
+	public BigInteger getUserId() {
+		return userId;
+	}
 
-    private List<EnglishScoresDto> englishScoresList;
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(final BigInteger userId) {
+		this.userId = userId;
+	}
 
-    private List<EducationAOLevelSubjectDto> educationAOLevelSubjectList;
-    
-    private String createdBy;
-    private String updatedBy;
+	/**
+	 * @return the educationDetail
+	 */
+	public EducationDetailRequestDto getEducationDetail() {
+		return educationDetail;
+	}
 
-    /**
-     * @return the userId
-     */
-    public BigInteger getUserId() {
-        return userId;
-    }
+	/**
+	 * @param educationDetail the educationDetail to set
+	 */
+	public void setEducationDetail(final EducationDetailRequestDto educationDetail) {
+		this.educationDetail = educationDetail;
+	}
 
-    /**
-     * @param userId
-     *            the userId to set
-     */
-    public void setUserId(BigInteger userId) {
-        this.userId = userId;
-    }
+	/**
+	 * @return the englishScoresList
+	 */
+	public List<EnglishScoresDto> getEnglishScoresList() {
+		return englishScoresList;
+	}
 
-    /**
-     * @return the educationDetail
-     */
-    public EducationDetailDto getEducationDetail() {
-        return educationDetail;
-    }
+	/**
+	 * @param englishScoresList the englishScoresList to set
+	 */
+	public void setEnglishScoresList(final List<EnglishScoresDto> englishScoresList) {
+		this.englishScoresList = englishScoresList;
+	}
 
-    /**
-     * @param educationDetail
-     *            the educationDetail to set
-     */
-    public void setEducationDetail(EducationDetailDto educationDetail) {
-        this.educationDetail = educationDetail;
-    }
+	/**
+	 * @return the educationAOLevelSubjectList
+	 */
+	public List<EducationAOLevelSubjectDto> getEducationAOLevelSubjectList() {
+		return educationAOLevelSubjectList;
+	}
 
-    /**
-     * @return the englishScoresList
-     */
-    public List<EnglishScoresDto> getEnglishScoresList() {
-        return englishScoresList;
-    }
+	/**
+	 * @param educationAOLevelSubjectList the educationAOLevelSubjectList to set
+	 */
+	public void setEducationAOLevelSubjectList(final List<EducationAOLevelSubjectDto> educationAOLevelSubjectList) {
+		this.educationAOLevelSubjectList = educationAOLevelSubjectList;
+	}
 
-    /**
-     * @param englishScoresList
-     *            the englishScoresList to set
-     */
-    public void setEnglishScoresList(List<EnglishScoresDto> englishScoresList) {
-        this.englishScoresList = englishScoresList;
-    }
+	/**
+	 * @return the createdBy
+	 */
+	public String getCreatedBy() {
+		return createdBy;
+	}
 
-    /**
-     * @return the educationAOLevelSubjectList
-     */
-    public List<EducationAOLevelSubjectDto> getEducationAOLevelSubjectList() {
-        return educationAOLevelSubjectList;
-    }
+	/**
+	 * @param createdBy the createdBy to set
+	 */
+	public void setCreatedBy(final String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    /**
-     * @param educationAOLevelSubjectList
-     *            the educationAOLevelSubjectList to set
-     */
-    public void setEducationAOLevelSubjectList(List<EducationAOLevelSubjectDto> educationAOLevelSubjectList) {
-        this.educationAOLevelSubjectList = educationAOLevelSubjectList;
-    }
+	/**
+	 * @return the updatedBy
+	 */
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
 
-    /**
-     * @return the createdBy
-     */
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    /**
-     * @param createdBy the createdBy to set
-     */
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    /**
-     * @return the updatedBy
-     */
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    /**
-     * @param updatedBy the updatedBy to set
-     */
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+	/**
+	 * @param updatedBy the updatedBy to set
+	 */
+	public void setUpdatedBy(final String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 }

@@ -10,30 +10,33 @@ import org.springframework.http.ResponseEntity;
 import com.seeka.app.bean.EducationSystem;
 import com.seeka.app.dto.EducationSystemDto;
 import com.seeka.app.dto.EducationSystemRequest;
+import com.seeka.app.dto.EducationSystemResponse;
 import com.seeka.app.dto.GradeDto;
 
 public interface IEducationSystemService {
-    public void save(EducationSystem hobbiesObj);
+	void save(EducationSystem hobbiesObj);
 
-    public void update(EducationSystem hobbiesObj);
+	void update(EducationSystem hobbiesObj);
 
-    public EducationSystem get(BigInteger id);
+	EducationSystem get(BigInteger id);
 
-    public List<EducationSystem> getAll();
+	List<EducationSystem> getAll();
 
-    public List<EducationSystem> getAllGlobeEducationSystems();
+	List<EducationSystem> getAllGlobeEducationSystems();
 
-    public ResponseEntity<?> getEducationSystemsByCountryId(BigInteger countryId);
+	List<EducationSystem> getEducationSystemsByCountryId(BigInteger countryId);
 
-    public ResponseEntity<?> save(@Valid EducationSystemDto educationSystem);
+	ResponseEntity<?> saveEducationSystems(@Valid EducationSystemDto educationSystem);
 
-    public ResponseEntity<?> saveEducationDetails(@Valid EducationSystemRequest educationSystemDetails);
+//	ResponseEntity<?> saveEducationDetails(@Valid EducationSystemRequest educationSystemDetails);
 
-    public ResponseEntity<?> getEducationSystemsDetailByUserId(BigInteger userId);
+	EducationSystemResponse getEducationSystemsDetailByUserId(BigInteger userId);
 
-    public ResponseEntity<?> deleteEducationSystemDetailByUserId(@Valid BigInteger userId);
+	ResponseEntity<?> deleteEducationSystemDetailByUserId(@Valid BigInteger userId);
 
-    public ResponseEntity<?> calculate(@Valid GradeDto gradeDto);
+	ResponseEntity<?> calculate(@Valid GradeDto gradeDto);
 
-    public ResponseEntity<?> getGrades(BigInteger countryId, BigInteger systemId);
+	ResponseEntity<?> getGrades(BigInteger countryId, BigInteger systemId);
+
+	void saveUserEducationDetails(EducationSystemRequest educationSystemDetails);
 }

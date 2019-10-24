@@ -1,102 +1,102 @@
 package com.seeka.app.dto;
 
-public class EnglishScoresDto {
+import java.io.Serializable;
 
-    private String englishType;
-    private Double reading;
-    private Double writing;
-    private Double speaking;
-    private Double listening;
-    private Double overall;
+public class EnglishScoresDto implements Serializable {
 
-    /**
-     * @return the englishType
-     */
-    public String getEnglishType() {
-        return englishType;
-    }
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -8118493380744357383L;
+	private String englishType;
+	private Double reading;
+	private Double writing;
+	private Double speaking;
+	private Double listening;
+	private Double overall;
 
-    /**
-     * @param englishType
-     *            the englishType to set
-     */
-    public void setEnglishType(String englishType) {
-        this.englishType = englishType;
-    }
+	/**
+	 * @return the englishType
+	 */
+	public String getEnglishType() {
+		return englishType;
+	}
 
-    /**
-     * @return the reading
-     */
-    public Double getReading() {
-        return reading;
-    }
+	/**
+	 * @param englishType the englishType to set
+	 */
+	public void setEnglishType(final String englishType) {
+		this.englishType = englishType;
+	}
 
-    /**
-     * @param reading
-     *            the reading to set
-     */
-    public void setReading(Double reading) {
-        this.reading = reading;
-    }
+	/**
+	 * @return the reading
+	 */
+	public Double getReading() {
+		return reading;
+	}
 
-    /**
-     * @return the writing
-     */
-    public Double getWriting() {
-        return writing;
-    }
+	/**
+	 * @param reading the reading to set
+	 */
+	public void setReading(final Double reading) {
+		this.reading = reading;
+	}
 
-    /**
-     * @param writing
-     *            the writing to set
-     */
-    public void setWriting(Double writing) {
-        this.writing = writing;
-    }
+	/**
+	 * @return the writing
+	 */
+	public Double getWriting() {
+		return writing;
+	}
 
-    /**
-     * @return the speaking
-     */
-    public Double getSpeaking() {
-        return speaking;
-    }
+	/**
+	 * @param writing the writing to set
+	 */
+	public void setWriting(final Double writing) {
+		this.writing = writing;
+	}
 
-    /**
-     * @param speaking
-     *            the speaking to set
-     */
-    public void setSpeaking(Double speaking) {
-        this.speaking = speaking;
-    }
+	/**
+	 * @return the speaking
+	 */
+	public Double getSpeaking() {
+		return speaking;
+	}
 
-    /**
-     * @return the listening
-     */
-    public Double getListening() {
-        return listening;
-    }
+	/**
+	 * @param speaking the speaking to set
+	 */
+	public void setSpeaking(final Double speaking) {
+		this.speaking = speaking;
+	}
 
-    /**
-     * @param listening
-     *            the listening to set
-     */
-    public void setListening(Double listening) {
-        this.listening = listening;
-    }
+	/**
+	 * @return the listening
+	 */
+	public Double getListening() {
+		return listening;
+	}
 
-    /**
-     * @return the overall
-     */
-    public Double getOverall() {
-        return overall;
-    }
+	/**
+	 * @param listening the listening to set
+	 */
+	public void setListening(final Double listening) {
+		this.listening = listening;
+	}
 
-    /**
-     * @param overall
-     *            the overall to set
-     */
-    public void setOverall(Double overall) {
-        this.overall = overall;
-    }
+	/**
+	 * @return the overall
+	 */
+	public Double getOverall() {
+		return overall;
+	}
+
+	/**
+	 * @param overall the overall to set
+	 */
+	public void setOverall(final Double overall) {
+		this.overall = overall;
+	}
 
 }

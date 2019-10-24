@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seeka.app.dto.NotificationBean;
 import com.seeka.app.dto.PayloadDto;
+import com.seeka.app.dto.UserAchivements;
 import com.seeka.app.dto.UserDeviceInfoDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.exception.ValidationException;
@@ -28,15 +30,42 @@ public class UsersService implements IUsersService {
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public UserDto getUserById(final BigInteger userId) {
+	public UserDto getUserById(final BigInteger userId) throws ValidationException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_DETAIL_CONNECTION_URL).pathSegment(String.valueOf(userId));
 		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
 		Map<String, Object> responseMap = result.getBody();
+		Integer status = (Integer) responseMap.get("status");
+		System.out.println(status);
+		if (status != 200) {
+			throw new ValidationException((String) responseMap.get("message"));
+		}
 		responseMap.get("data");
 		ObjectMapper mapper = new ObjectMapper();
 		UserDto userDto = mapper.convertValue(responseMap.get("data"), UserDto.class);
 
 		return userDto;
+	}
+
+	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<UserAchivements> getUserAchivementsByUserId(final BigInteger userId) throws ValidationException {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_ACHIVEMENT_CONNECTION_URL).pathSegment(String.valueOf(userId));
+		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
+		Map<String, Object> responseMap = result.getBody();
+		Integer status = (Integer) responseMap.get("status");
+		System.out.println(status);
+		if (status != 200) {
+			throw new ValidationException((String) responseMap.get("message"));
+		}
+		responseMap.get("data");
+		ObjectMapper mapper = new ObjectMapper();
+		List<UserAchivements> userAchivementList = mapper.convertValue(responseMap.get("data"), List.class);
+		List<UserAchivements> resultList = new ArrayList<>();
+		for (Object obj : userAchivementList) {
+			UserAchivements userAchivements = mapper.convertValue(obj, UserAchivements.class);
+			resultList.add(userAchivements);
+		}
+		return resultList;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

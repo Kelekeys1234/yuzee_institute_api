@@ -29,7 +29,8 @@ public class StorageService implements IStorageService {
 	private MessageByLocaleService messageByLocalService;
 
 	@Override
-	public List<StorageDto> getStorageInformation(BigInteger entityId, String entityType, String type, String language) throws ValidationException {
+	public List<StorageDto> getStorageInformation(final BigInteger entityId, final String entityType, final String type, final String language)
+			throws ValidationException {
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL);
 
@@ -51,9 +52,8 @@ public class StorageService implements IStorageService {
 		ObjectMapper mapper = new ObjectMapper();
 		List<StorageDto> storageDtoList = mapper.convertValue(responseMap.get("data"), List.class);
 		List<StorageDto> resultList = new ArrayList<>();
-		ObjectMapper objMapper = new ObjectMapper();
 		for (Object obj : storageDtoList) {
-			StorageDto storageDto1 = objMapper.convertValue(obj, StorageDto.class);
+			StorageDto storageDto1 = mapper.convertValue(obj, StorageDto.class);
 			resultList.add(storageDto1);
 		}
 

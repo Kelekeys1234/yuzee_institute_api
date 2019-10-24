@@ -7,18 +7,20 @@ import com.seeka.app.bean.EducationSystem;
 import com.seeka.app.bean.Subject;
 
 public interface IEducationSystemDAO {
-    public void save(EducationSystem hobbiesObj);
+	void save(EducationSystem hobbiesObj);
 
-    public void update(EducationSystem hobbiesObj);
+	void update(EducationSystem hobbiesObj);
 
-    public EducationSystem get(BigInteger id);
+	EducationSystem get(BigInteger id);
 
-    public List<EducationSystem> getAll();
+	List<EducationSystem> getAll();
 
-    public List<EducationSystem> getAllGlobeEducationSystems();
+	List<EducationSystem> getAllGlobeEducationSystems();
 
-    public List<EducationSystem> getEducationSystemsByCountryId(BigInteger countryId);
+	List<EducationSystem> getEducationSystemsByCountryId(BigInteger countryId);
 
-    public List<Subject> getSubjectByEducationSystem(BigInteger educationSystemId);
+	List<Subject> getSubjectByEducationSystem(BigInteger educationSystemId);
+
+	List<Subject> getSubject();
 
 }
