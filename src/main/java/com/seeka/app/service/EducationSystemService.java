@@ -176,6 +176,16 @@ public class EducationSystemService implements IEducationSystemService {
 
 		systemResponse.setEducationDetail(userEducationDetailResponseDto);
 		systemResponse.setEnglishScoresList(englishScoreDAO.getEnglishEligibiltyByUserID(userId));
+		List<UserEducationAOLevelSubjects> educationAOLevelSubjects = educationAOLevelSubjectDAO.getUserLevelSubjectGrades(userId);
+		List<Subject> subjectList = iEducationSystemDAO.getSubject();
+		Map<BigInteger, String> subjectMap = new HashMap<>();
+		for (Subject subject : subjectList) {
+			subjectMap.put(subject.getId(), subject.getSubjectName());
+		}
+		for (UserEducationAOLevelSubjects userEducationAOLevelSubjects : educationAOLevelSubjects) {
+			userEducationAOLevelSubjects.setSubjectName(subjectMap.get(userEducationAOLevelSubjects.getSubjectId()));
+		}
+
 		systemResponse.setEducationAOLevelSubjectList(educationAOLevelSubjectDAO.getUserLevelSubjectGrades(userId));
 
 		return systemResponse;
