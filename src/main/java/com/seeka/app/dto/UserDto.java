@@ -11,6 +11,7 @@ public class UserDto implements Serializable {
 	private static final long serialVersionUID = 3262142846479885854L;
 	private Long id;
 	private String firstName;
+	private String middleName;
 	private String lastName;
 	private String gender;
 	private Date dob;
@@ -62,6 +63,14 @@ public class UserDto implements Serializable {
 
 	public void setFirstName(final String firstName) {
 		this.firstName = firstName;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(final String middleName) {
+		this.middleName = middleName;
 	}
 
 	public String getLastName() {
@@ -337,6 +346,7 @@ public class UserDto implements Serializable {
 		result = prime * result + (imageURL == null ? 0 : imageURL.hashCode());
 		result = prime * result + (isTempPassword ? 1231 : 1237);
 		result = prime * result + (lastName == null ? 0 : lastName.hashCode());
+		result = prime * result + (middleName == null ? 0 : middleName.hashCode());
 		result = prime * result + (mobileNo == null ? 0 : mobileNo.hashCode());
 		result = prime * result + (password == null ? 0 : password.hashCode());
 		result = prime * result + (postalCode == null ? 0 : postalCode.hashCode());
@@ -491,6 +501,13 @@ public class UserDto implements Serializable {
 		} else if (!lastName.equals(other.lastName)) {
 			return false;
 		}
+		if (middleName == null) {
+			if (other.middleName != null) {
+				return false;
+			}
+		} else if (!middleName.equals(other.middleName)) {
+			return false;
+		}
 		if (mobileNo == null) {
 			if (other.mobileNo != null) {
 				return false;
@@ -581,17 +598,17 @@ public class UserDto implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserDto [id=").append(id).append(", firstName=").append(firstName).append(", lastName=").append(lastName).append(", gender=")
-				.append(gender).append(", dob=").append(dob).append(", countryOrgin=").append(countryOrgin).append(", citizenship=").append(citizenship)
-				.append(", email=").append(email).append(", username=").append(username).append(", password=").append(password).append(", mobileNo=")
-				.append(mobileNo).append(", skypeId=").append(skypeId).append(", userEduInfo=").append(userEduInfo).append(", status=").append(status)
-				.append(", dobStr=").append(dobStr).append(", signUpType=").append(signUpType).append(", socialAccountId=").append(socialAccountId)
-				.append(", userType=").append(userType).append(", enabled=").append(enabled).append(", account_expired=").append(account_expired)
-				.append(", credentials_expired=").append(credentials_expired).append(", account_locked=").append(account_locked).append(", whattsappNo=")
-				.append(whattsappNo).append(", city=").append(city).append(", state=").append(state).append(", postalCode=").append(postalCode)
-				.append(", address=").append(address).append(", imageName=").append(imageName).append(", isTempPassword=").append(isTempPassword)
-				.append(", currencyCode=").append(currencyCode).append(", imageURL=").append(imageURL).append(", adminRole=").append(adminRole)
-				.append(", adminRoleId=").append(adminRoleId).append("]");
+		builder.append("UserDto [id=").append(id).append(", firstName=").append(firstName).append(", middleName=").append(middleName).append(", lastName=")
+				.append(lastName).append(", gender=").append(gender).append(", dob=").append(dob).append(", countryOrgin=").append(countryOrgin)
+				.append(", citizenship=").append(citizenship).append(", email=").append(email).append(", username=").append(username).append(", password=")
+				.append(password).append(", mobileNo=").append(mobileNo).append(", skypeId=").append(skypeId).append(", userEduInfo=").append(userEduInfo)
+				.append(", status=").append(status).append(", dobStr=").append(dobStr).append(", signUpType=").append(signUpType).append(", socialAccountId=")
+				.append(socialAccountId).append(", userType=").append(userType).append(", enabled=").append(enabled).append(", account_expired=")
+				.append(account_expired).append(", credentials_expired=").append(credentials_expired).append(", account_locked=").append(account_locked)
+				.append(", whattsappNo=").append(whattsappNo).append(", city=").append(city).append(", state=").append(state).append(", postalCode=")
+				.append(postalCode).append(", address=").append(address).append(", imageName=").append(imageName).append(", isTempPassword=")
+				.append(isTempPassword).append(", currencyCode=").append(currencyCode).append(", imageURL=").append(imageURL).append(", adminRole=")
+				.append(adminRole).append(", adminRoleId=").append(adminRoleId).append("]");
 		return builder.toString();
 	}
 
