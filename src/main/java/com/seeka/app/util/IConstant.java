@@ -88,7 +88,7 @@ public class IConstant {
 	public static final String STORAGE_CONNECTION_URL = "http://" + STORAGE + "/api";
 	public static final String IDENTITY_CONNECTION_URL = "http://" + IDENTITY;
 	public static final String USER_DETAIL_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/api/v1/users/basic";
-	public static final String USER_ACHIVEMENT_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/user/achivement/user";
+	public static final String USER_ACHIVEMENT_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/api/v1/user/achivement/user";
 	public static final String USER_DEVICE_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/api/v1/user/device/basic";
 
 	public static final String NOTIFICATION_CONNECTION_URL = "http://" + NOTIFICATION + "/push";
