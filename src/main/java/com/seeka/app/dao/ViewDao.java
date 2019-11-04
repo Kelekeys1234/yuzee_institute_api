@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.UserViewData;
 
 @Repository
-public class UserViewDataDao implements IUserViewDataDao {
+public class ViewDao implements IViewDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;

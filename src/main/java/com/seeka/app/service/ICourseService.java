@@ -62,9 +62,9 @@ public interface ICourseService {
 
 	Map<String, Object> getUserCompareCourse(BigInteger userId);
 
-	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger courseId);
+	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger courseId, Integer startIndex, final Integer pageSize);
 
-	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, String courseName);
+	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, String courseName, Integer startIndex, Integer pageSize);
 
 	Course getCourseData(BigInteger courseId);
 
@@ -121,6 +121,5 @@ public interface ICourseService {
 
 	List<BigInteger> courseIdsForMigratedCountries(final Country country);
 
-	List<Long> getUserListForUserWatchCourseFilter(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId,
-			BigInteger cityId);
+	List<Long> getUserListForUserWatchCourseFilter(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId);
 }

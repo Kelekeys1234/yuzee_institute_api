@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.UserViewData;
-import com.seeka.app.dao.IUserViewDataDao;
+import com.seeka.app.dao.IViewDao;
 import com.seeka.app.dto.UserViewDataRequestDto;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
-public class UserViewService implements IUserViewService {
+public class ViewService implements IViewService {
 
 	@Autowired
-	private IUserViewDataDao iUserViewDataDao;
+	private IViewDao iViewDataDao;
 
 	@Override
 	public void createUserViewData(final UserViewDataRequestDto userViewDataRequestDto) {
@@ -27,13 +27,13 @@ public class UserViewService implements IUserViewService {
 		BeanUtils.copyProperties(userViewDataRequestDto, userViewData);
 		userViewData.setCreatedBy("API");
 		userViewData.setCreatedOn(new Date());
-		iUserViewDataDao.createUserViewData(userViewData);
+		iViewDataDao.createUserViewData(userViewData);
 	}
 
 	@Override
 	public List<UserViewData> getUserViewData(final BigInteger userId, final String entityType, final boolean isUnique) {
 		List<UserViewData> resultList = new ArrayList<>();
-		List<Object> objectList = iUserViewDataDao.getUserViewData(userId, entityType, isUnique);
+		List<Object> objectList = iViewDataDao.getUserViewData(userId, entityType, isUnique);
 		for (Object object : objectList) {
 			Object[] obj1 = (Object[]) object;
 			UserViewData UserViewData = new UserViewData();
@@ -50,12 +50,12 @@ public class UserViewService implements IUserViewService {
 
 	@Override
 	public int getUserViewDataCountBasedOnUserId(final BigInteger userId, final BigInteger entityId, final String entityType) {
-		return iUserViewDataDao.getUserViewDataCountBasedOnUserId(userId, entityId, entityType);
+		return iViewDataDao.getUserViewDataCountBasedOnUserId(userId, entityId, entityType);
 	}
 
 	@Override
 	public int getUserViewDataCountBasedOnEntityId(final BigInteger entityId, final String entityType) {
-		return iUserViewDataDao.getUserViewDataCountBasedOnEntityId(entityId, entityType);
+		return iViewDataDao.getUserViewDataCountBasedOnEntityId(entityId, entityType);
 	}
 
 }

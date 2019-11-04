@@ -61,7 +61,7 @@ public interface ICourseDAO {
 
 	CourseRequest getCourseById(Integer valueOf);
 
-	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, Set<String> keyword);
+	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, Set<String> keyword, Integer startIndex, Integer pageSize);
 
 	Course getCourseData(BigInteger id);
 

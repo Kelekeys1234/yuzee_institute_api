@@ -1,16 +1,15 @@
-package com.seeka.app.service;
+package com.seeka.app.dao;
 
 import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.UserViewData;
-import com.seeka.app.dto.UserViewDataRequestDto;
 
-public interface IUserViewService {
+public interface IViewDao {
 
-	void createUserViewData(UserViewDataRequestDto userViewDataRequestDto);
+	void createUserViewData(UserViewData userViewData);
 
-	List<UserViewData> getUserViewData(BigInteger userId, String entityType, boolean isUnique);
+	List<Object> getUserViewData(BigInteger userId, String entityType, boolean isUnique);
 
 	int getUserViewDataCountBasedOnUserId(BigInteger userId, BigInteger entityId, String entityType);
 

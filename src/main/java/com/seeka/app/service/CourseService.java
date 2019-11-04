@@ -656,22 +656,22 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<YoutubeVideo> getYoutubeDataforCourse(final BigInteger courseId) {
+	public List<YoutubeVideo> getYoutubeDataforCourse(final BigInteger courseId, final Integer startIndex, final Integer pageSize) {
 		Course courseData = iCourseDAO.getCourseData(courseId);
 		if (courseData == null) {
 			return new ArrayList<>();
 		}
 		String courseName = courseData.getName();
 		BigInteger instituteId = courseData.getInstitute().getId();
-		return getYoutubeDataforCourse(instituteId, courseName);
+		return getYoutubeDataforCourse(instituteId, courseName, startIndex, pageSize);
 	}
 
 	@Override
-	public List<YoutubeVideo> getYoutubeDataforCourse(final BigInteger instituteId, final String courseName) {
+	public List<YoutubeVideo> getYoutubeDataforCourse(final BigInteger instituteId, final String courseName, final Integer startIndex, final Integer pageSize) {
 		List<String> skipWords = Arrays.asList("Master`s", "Master", "International", "Bachelor", "of", "Bachelor's", "degree", "&", "and");
-		List<String> courseKeyword = Arrays.asList(courseName.split("\\s|,|\\.|-|:"));
+		List<String> courseKeyword = Arrays.asList(courseName.split("\\s|,|\\.|-|:|\\(|\\)"));
 		Set<String> keyword = courseKeyword.stream().filter(i -> !i.isEmpty() && !skipWords.contains(i)).collect(Collectors.toSet());
-		return iCourseDAO.getYoutubeDataforCourse(instituteId, keyword);
+		return iCourseDAO.getYoutubeDataforCourse(instituteId, keyword, startIndex, pageSize);
 	}
 
 	@Override

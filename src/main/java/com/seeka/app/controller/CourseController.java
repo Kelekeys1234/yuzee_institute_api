@@ -40,6 +40,7 @@ import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.enumeration.EnglishType;
@@ -312,7 +313,7 @@ public class CourseController {
 		if (!englishCriteriaList.isEmpty()) {
 			courseRequest.setEnglishEligibility(englishCriteriaList);
 		}
-		List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName());
+		List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
 		List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
 		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(id);
 		if (course.getInstitute() != null) {
@@ -324,14 +325,14 @@ public class CourseController {
 				}
 			}
 		}
-		response.put("status", 1);
+		response.put("status", HttpStatus.OK.value());
 		response.put("message", "Success.!");
 		response.put("courseObj", courseRequest);
 		response.put("recommendCourse", recommendCourse);
 		response.put("relatedCourse", relatedCourse);
 		response.put("instituteObj", instituteObj);
 		response.put("youtubeData", youtubeData);
-		return ResponseEntity.accepted().body(response);
+		return ResponseEntity.ok().body(response);
 	}
 
 	@RequestMapping(value = "/institute/{instituteId}", method = RequestMethod.PUT, produces = "application/json")
@@ -509,9 +510,23 @@ public class CourseController {
 		return ResponseEntity.accepted().body(courseService.getUserCompareCourse(userId));
 	}
 
-	@RequestMapping(value = "/youtube/{courseId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final BigInteger courseId) throws Exception {
-		return ResponseEntity.accepted().body(courseService.getYoutubeDataforCourse(courseId));
+	@RequestMapping(value = "/youtube/{courseId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final BigInteger courseId, @PathVariable final Integer pageNumber,
+			@PathVariable final Integer pageSize) throws Exception {
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(courseId, startIndex, pageSize);
+		int totalCount = courseService.getYoutubeDataforCourse(courseId, null, null).size();
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get Youtube  List successfully");
+		responseMap.put("data", youtubeData);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")

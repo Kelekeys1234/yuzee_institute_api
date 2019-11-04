@@ -1541,7 +1541,8 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<YoutubeVideo> getYoutubeDataforCourse(final BigInteger instituteId, final Set<String> keyword) {
+	public List<YoutubeVideo> getYoutubeDataforCourse(final BigInteger instituteId, final Set<String> keyword, final Integer startIndex,
+			final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		StringBuilder sqlQuery = new StringBuilder("select * from youtube_video where type ='Institution'");
 
@@ -1549,18 +1550,13 @@ public class CourseDAO implements ICourseDAO {
 			String queryString = keyword.stream().collect(Collectors.joining("%' or '%"));
 			sqlQuery.append(" and ( (video_title like '%").append(queryString).append("%'").append(")");
 			sqlQuery.append(" or ( description like '%").append(queryString).append("%'").append("))");
-			sqlQuery.append(" LIMIT 0,10");
-		}
 
-		Query query = session.createSQLQuery(sqlQuery.toString());
-		List<Object[]> rows;
-		rows = query.list();
-		if (rows.size() == 0) {
-			StringBuilder sqlQuery1 = new StringBuilder("select * from youtube_video where type ='Institution'");
-			sqlQuery.append(" LIMIT 0,10");
-			Query query1 = session.createSQLQuery(sqlQuery1.toString());
-			rows = query1.list();
 		}
+		if (startIndex != null && pageSize != null) {
+			sqlQuery.append(" LIMIT ").append(startIndex).append(",").append(pageSize);
+		}
+		Query query = session.createSQLQuery(sqlQuery.toString());
+		List<Object[]> rows = query.list();
 		List<YoutubeVideo> resultList = new ArrayList<>();
 		for (Object[] row : rows) {
 			YoutubeVideo youtubeVideo = new YoutubeVideo();
