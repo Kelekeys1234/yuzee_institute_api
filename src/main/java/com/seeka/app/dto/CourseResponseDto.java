@@ -14,7 +14,7 @@ public class CourseResponseDto {
 	private Integer worldRanking;
 	private Integer stars;
 	private Double costRange;
-	private Integer duration;
+	private Double duration;
 	private String durationTime;
 	private String location;
 	private BigInteger countryId;
@@ -30,7 +30,7 @@ public class CourseResponseDto {
 	private List<StorageDto> storageList;
 	private Boolean isCourseWatchedBefore = false;
 	private String cost;
-	
+
 	public BigInteger getInstituteId() {
 		return instituteId;
 	}
@@ -63,12 +63,11 @@ public class CourseResponseDto {
 		this.stars = stars;
 	}
 
-	
-	public Integer getDuration() {
+	public Double getDuration() {
 		return duration;
 	}
 
-	public void setDuration(final Integer duration) {
+	public void setDuration(final Double duration) {
 		this.duration = duration;
 	}
 
@@ -176,7 +175,7 @@ public class CourseResponseDto {
 		return storageList;
 	}
 
-	public void setStorageList(List<StorageDto> storageList) {
+	public void setStorageList(final List<StorageDto> storageList) {
 		this.storageList = storageList;
 	}
 
@@ -190,7 +189,7 @@ public class CourseResponseDto {
 	/**
 	 * @param domasticFee the domasticFee to set
 	 */
-	public void setDomesticFee(Double domasticFee) {
+	public void setDomesticFee(final Double domasticFee) {
 		this.domesticFee = domasticFee;
 	}
 
@@ -204,7 +203,7 @@ public class CourseResponseDto {
 	/**
 	 * @param internationalFee the internationalFee to set
 	 */
-	public void setInternationalFee(Double internationalFee) {
+	public void setInternationalFee(final Double internationalFee) {
 		this.internationalFee = internationalFee;
 	}
 
@@ -218,7 +217,7 @@ public class CourseResponseDto {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(BigInteger id) {
+	public void setId(final BigInteger id) {
 		this.id = id;
 	}
 
@@ -232,7 +231,7 @@ public class CourseResponseDto {
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -246,12 +245,12 @@ public class CourseResponseDto {
 	/**
 	 * @param language the language to set
 	 */
-	public void setLanguage(String language) {
+	public void setLanguage(final String language) {
 		this.language = language;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return gives details if course is watched before by user
 	 */
 	public Boolean getIsCourseWatchedBefore() {
@@ -259,10 +258,10 @@ public class CourseResponseDto {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param isCourseWatchedBefore
 	 */
-	public void setIsCourseWatchedBefore(Boolean isCourseWatchedBefore) {
+	public void setIsCourseWatchedBefore(final Boolean isCourseWatchedBefore) {
 		this.isCourseWatchedBefore = isCourseWatchedBefore;
 	}
 
@@ -270,7 +269,7 @@ public class CourseResponseDto {
 		return costRange;
 	}
 
-	public void setCostRange(Double costRange) {
+	public void setCostRange(final Double costRange) {
 		this.costRange = costRange;
 	}
 
@@ -278,7 +277,7 @@ public class CourseResponseDto {
 		return cost;
 	}
 
-	public void setCost(String cost) {
+	public void setCost(final String cost) {
 		this.cost = cost;
 	}
 

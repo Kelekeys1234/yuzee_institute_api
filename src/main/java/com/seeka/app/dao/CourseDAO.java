@@ -337,7 +337,7 @@ public class CourseDAO implements ICourseDAO {
 				courseResponseDto.setName(String.valueOf(row[1]));
 				courseResponseDto.setInstituteId(new BigInteger(String.valueOf(row[2])));
 				courseResponseDto.setInstituteName(String.valueOf(row[3]));
-				courseResponseDto.setDuration(Integer.valueOf(String.valueOf(row[6])));
+				courseResponseDto.setDuration(Double.valueOf(String.valueOf(row[6])));
 				courseResponseDto.setDurationTime(String.valueOf(row[7]));
 				courseResponseDto.setCityId(new BigInteger(String.valueOf(row[8])));
 				courseResponseDto.setCountryId(new BigInteger(String.valueOf(row[9])));
@@ -346,7 +346,7 @@ public class CourseDAO implements ICourseDAO {
 				courseResponseDto.setCityName(String.valueOf(row[10]));
 
 				Integer worldRanking = 0;
-				if (null != row[4]) {
+				if (null != row[12]) {
 					worldRanking = Double.valueOf(String.valueOf(row[12])).intValue();
 				}
 				courseResponseDto.setWorldRanking(Integer.valueOf(worldRanking.toString()));
@@ -623,7 +623,7 @@ public class CourseDAO implements ICourseDAO {
 			obj.setInstituteId(new BigInteger(String.valueOf(row[2])));
 			obj.setInstituteName(String.valueOf(row[3]));
 			obj.setCost(String.valueOf(row[4]) + " " + String.valueOf(row[5]));
-			obj.setDuration(Integer.valueOf(String.valueOf(row[6])));
+			obj.setDuration(Double.valueOf(String.valueOf(row[6])));
 			obj.setDurationTime(String.valueOf(row[7]));
 			obj.setCityId(new BigInteger(String.valueOf(row[8])));
 			obj.setCountryId(new BigInteger(String.valueOf(row[9])));
@@ -748,7 +748,7 @@ public class CourseDAO implements ICourseDAO {
 			obj.setId(new BigInteger(String.valueOf(row[0])));
 			obj.setName(String.valueOf(row[1]));
 			obj.setCost(String.valueOf(row[4]) + " " + String.valueOf(row[5]));
-			obj.setDuration(Integer.valueOf(String.valueOf(row[6])));
+			obj.setDuration(Double.valueOf(String.valueOf(row[6])));
 			obj.setDurationTime(String.valueOf(row[7]));
 			Integer worldRanking = 0;
 			if (null != row[12]) {
@@ -876,7 +876,7 @@ public class CourseDAO implements ICourseDAO {
 			obj.setId(new BigInteger(String.valueOf(row[0])));
 			obj.setName(String.valueOf(row[1]));
 			obj.setCost(String.valueOf(row[4]) + " " + String.valueOf(row[5]));
-			obj.setDuration(Integer.valueOf(String.valueOf(row[6])));
+			obj.setDuration(Double.valueOf(String.valueOf(row[6])));
 			obj.setDurationTime(String.valueOf(row[7]));
 			obj.setWorldRanking(Integer.valueOf(String.valueOf(row[12])));
 			obj.setLanguage(String.valueOf(row[13]));
@@ -1146,14 +1146,6 @@ public class CourseDAO implements ICourseDAO {
 			name = obj.getName();
 		}
 		return name;
-	}
-
-	private Country getCountry(final String id, final Session session) {
-		Country obj = null;
-		if (id != null) {
-			obj = session.get(Country.class, new BigInteger(id));
-		}
-		return obj;
 	}
 
 	private String getInstituteName(final String id, final Session session) {
@@ -1679,7 +1671,7 @@ public class CourseDAO implements ICourseDAO {
 		courseResponseDto.setName(String.valueOf(row[1]));
 		courseResponseDto.setInstituteId(new BigInteger(String.valueOf(row[2])));
 		courseResponseDto.setInstituteName(String.valueOf(row[3]));
-		courseResponseDto.setDuration(Integer.valueOf(String.valueOf(row[6])));
+		courseResponseDto.setDuration(Double.valueOf(String.valueOf(row[6])));
 		courseResponseDto.setDurationTime(String.valueOf(row[7]));
 		courseResponseDto.setCityId(new BigInteger(String.valueOf(row[8])));
 		courseResponseDto.setCountryId(new BigInteger(String.valueOf(row[9])));
@@ -1773,7 +1765,7 @@ public class CourseDAO implements ICourseDAO {
 			sqlQuery += " and crs.city_id in (" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
-			sqlQuery += " and f.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+			sqlQuery += " and crs.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
 		if (null != courseSearchDto.getFaculties() && !courseSearchDto.getFaculties().isEmpty()) {

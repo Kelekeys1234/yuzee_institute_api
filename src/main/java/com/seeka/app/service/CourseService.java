@@ -185,7 +185,7 @@ public class CourseService implements ICourseService {
 			course.setName(courseDto.getName());
 			course.setcId(courseDto.getcId());
 			if (courseDto.getDuration() != null && !courseDto.getDuration().isEmpty()) {
-				course.setDuration(Integer.valueOf(courseDto.getDuration()));
+				course.setDuration(Double.valueOf(courseDto.getDuration()));
 			}
 			course.setFaculty(getFaculty(courseDto.getFacultyId()));
 			course.setCity(getCity(courseDto.getCityId()));
@@ -277,7 +277,7 @@ public class CourseService implements ICourseService {
 			course.setUpdatedBy("API");
 			course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 			if (courseDto.getDuration() != null && !courseDto.getDuration().isEmpty()) {
-				course.setDuration(Integer.valueOf(courseDto.getDuration()));
+				course.setDuration(Double.valueOf(courseDto.getDuration()));
 			}
 			if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
 				course.setStars(Integer.valueOf(courseDto.getStars()));
