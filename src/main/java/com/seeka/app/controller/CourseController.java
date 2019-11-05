@@ -165,12 +165,12 @@ public class CourseController {
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final BigInteger userId, @RequestBody final CourseSearchDto courseSearchDto)
 			throws Exception {
-
 		courseSearchDto.setUserId(userId);
 		return courseSearch(courseSearchDto);
 	}
 
 	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto) {
+		courseSearchDto.setCurrencyCode(null);
 		Map<String, Object> response = new HashMap<>();
 		ErrorDto errorDto = null;
 		if (courseSearchDto.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
@@ -217,6 +217,7 @@ public class CourseController {
 	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) final BigInteger userId, @RequestBody final AdvanceSearchDto courseSearchDto)
 			throws Exception {
 		courseSearchDto.setUserId(userId);
+		courseSearchDto.setCurrencyCode(null);
 		return ResponseEntity.ok().body(courseService.advanceSearch(courseSearchDto));
 	}
 
