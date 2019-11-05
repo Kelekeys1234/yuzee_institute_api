@@ -15,4 +15,6 @@ public interface IViewDao {
 
 	int getUserViewDataCountBasedOnEntityId(BigInteger entityId, String entityType);
 
+	List<Object> getUserViewDataBasedOnEntityIdList(BigInteger userId, String entityType, boolean isUnique, List<BigInteger> entityIds);
+
 }

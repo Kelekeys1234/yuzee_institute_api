@@ -73,4 +73,23 @@ public class ViewDao implements IViewDao {
 		return ((Long) crit.uniqueResult()).intValue();
 	}
 
+	@Override
+	public List<Object> getUserViewDataBasedOnEntityIdList(final BigInteger userId, final String entityType, final boolean isUnique,
+			final List<BigInteger> entityIds) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(UserViewData.class, "userViewData");
+		crit.add(Restrictions.and(Restrictions.eq("userViewData.userId", userId)));
+		crit.add(Restrictions.and(Restrictions.eq("userViewData.entityType", entityType)));
+		crit.add(Restrictions.in("userViewData.entityId", entityIds));
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("userViewData.entityId"), "entityId");
+		if (isUnique) {
+			projList.add(Projections.groupProperty("userViewData.entityId"));
+			projList.add(Projections.groupProperty("userViewData.entityType"));
+		}
+		crit.setProjection(projList);
+
+		return crit.list();
+	}
+
 }

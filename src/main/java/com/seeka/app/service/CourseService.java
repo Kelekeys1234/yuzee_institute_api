@@ -119,6 +119,9 @@ public class CourseService implements ICourseService {
 	@Autowired
 	private ICountryService iCountryService;
 
+	@Autowired
+	private IViewService iViewService;
+
 	@Override
 	public void save(final Course course) {
 		iCourseDAO.save(course);
@@ -141,7 +144,18 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto) {
-		return iCourseDAO.getAllCoursesByFilter(courseSearchDto);
+		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto);
+		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
+				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
+		if (viewedCourseIds.isEmpty()) {
+			return courseResponseDtos;
+		}
+		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
+			if (viewedCourseIds.contains(courseResponseDto.getId())) {
+				courseResponseDto.setIsViewed(true);
+			}
+		}
+		return courseResponseDtos;
 	}
 
 	@Override
@@ -703,6 +717,17 @@ public class CourseService implements ICourseService {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseResponseDto.getInstituteId(), ImageCategory.INSTITUTE.toString(),
 					null, "en");
 			courseResponseDto.setStorageList(storageDTOList);
+		}
+		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
+				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
+		if (!viewedCourseIds.isEmpty()) {
+
+			for (CourseResponseDto courseResponseDto : courseResponseDtos) {
+				if (viewedCourseIds.contains(courseResponseDto.getId())) {
+					courseResponseDto.setIsViewed(true);
+				}
+			}
+
 		}
 		int totalCount = 0;
 		PaginationUtilDto paginationUtilDto = null;

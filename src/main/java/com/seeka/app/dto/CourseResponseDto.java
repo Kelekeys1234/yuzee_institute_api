@@ -28,7 +28,7 @@ public class CourseResponseDto {
 	private Boolean isFavourite;
 	private String currencyCode;
 	private List<StorageDto> storageList;
-	private Boolean isCourseWatchedBefore = false;
+	private Boolean isViewed = false;
 	private String cost;
 
 	public BigInteger getInstituteId() {
@@ -253,16 +253,12 @@ public class CourseResponseDto {
 	 *
 	 * @return gives details if course is watched before by user
 	 */
-	public Boolean getIsCourseWatchedBefore() {
-		return isCourseWatchedBefore;
+	public Boolean getIsViewed() {
+		return isViewed;
 	}
 
-	/**
-	 *
-	 * @param isCourseWatchedBefore
-	 */
-	public void setIsCourseWatchedBefore(final Boolean isCourseWatchedBefore) {
-		this.isCourseWatchedBefore = isCourseWatchedBefore;
+	public void setIsViewed(final Boolean isViewed) {
+		this.isViewed = isViewed;
 	}
 
 	public Double getCostRange() {
