@@ -10,22 +10,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.dto.CurrencyConvertorRequest;
-import com.seeka.app.service.ICurrencyService;
+import com.seeka.app.service.ICurrencyRateService;
 
 @RestController
 @RequestMapping("/currency")
 public class CurrencyController {
 
     @Autowired
-    private ICurrencyService currencyService;
+    private ICurrencyRateService currencyService;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getAllCurrencies() throws Exception {
         return ResponseEntity.accepted().body(currencyService.getAllCurrencies());
     }
 
-    @RequestMapping(value = "/conversion", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> currencyConversion(@Valid @RequestBody final CurrencyConvertorRequest convertorRequest) throws Exception {
-        return ResponseEntity.accepted().body(currencyService.currencyConversion(convertorRequest));
-    }
+//    @RequestMapping(value = "/conversion", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+//    public ResponseEntity<?> currencyConversion(@Valid @RequestBody final CurrencyConvertorRequest convertorRequest) throws Exception {
+//        return ResponseEntity.accepted().body(currencyService.currencyConversion(convertorRequest));
+//    }
 }

@@ -8,6 +8,7 @@ import java.util.Set;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserCompareCourse;
@@ -33,7 +34,7 @@ public interface ICourseDAO {
 
 	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
 
-	CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
+	CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, CurrencyRate currency, String oldCurrencyCode);
 
 	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
@@ -113,4 +114,6 @@ public interface ICourseDAO {
 	List<BigInteger> getAllCoursesForCountry(List<BigInteger> otherCountryIds);
 
 	List<Long> getUserListFromUserWatchCoursesBasedOnCourses(List<BigInteger> courseIds);
+
+	int updateCourseForCurrency(CurrencyRate currencyRate);
 }

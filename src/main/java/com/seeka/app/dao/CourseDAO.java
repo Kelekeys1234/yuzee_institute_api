@@ -27,6 +27,7 @@ import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Level;
@@ -49,7 +50,7 @@ import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.CourseSortBy;
 import com.seeka.app.jobs.CurrencyUtil;
-import com.seeka.app.service.CurrencyService;
+import com.seeka.app.service.CurrencyRateService;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.ConvertionUtil;
 import com.seeka.app.util.DateUtil;
@@ -65,13 +66,16 @@ public class CourseDAO implements ICourseDAO {
 	private SessionFactory sessionFactory;
 
 	@Autowired
-	private CurrencyService currencyService;
+	private CurrencyRateService currencyService;
 
 	@Autowired
 	private LevelDAO levelDAO;
 
 	@Autowired
 	private IFacultyDAO dao;
+	
+	@Autowired
+	private CurrencyRateDAO currencyRateDao;
 
 	@Value("${s3.url}")
 	private String s3URL;
@@ -358,21 +362,29 @@ public class CourseDAO implements ICourseDAO {
 				if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
 					courseResponseDto.setCurrencyCode(courseSearchDto.getCurrencyCode());
 					if (row[19] != null) {
-						CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
-						dto.setFromCurrencyId(baseCurrencyId);
-						dto.setToCurrencyId(toCurrencyId);
-						dto.setAmount(Double.valueOf(row[19].toString()));
-						Double convertedRate = currencyService.convertCurrency(dto);
+//						CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
+//						dto.setFromCurrencyId(baseCurrencyId);
+//						dto.setToCurrencyId(toCurrencyId);
+//						dto.setAmount(Double.valueOf(row[19].toString()));
+//						// Double convertedRate = currencyService.convertCurrency(dto);
+						
+						CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
+						Double amt = Double.valueOf(row[19].toString());
+						Double convertedRate = amt/currencyRate.getConversionRate();
 						if (convertedRate != null) {
 							courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
 						}
 					}
 					if (row[20] != null) {
-						CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
-						dto.setFromCurrencyId(baseCurrencyId);
-						dto.setToCurrencyId(toCurrencyId);
-						dto.setAmount(Double.valueOf(row[20].toString()));
-						Double convertedRate = currencyService.convertCurrency(dto);
+//						CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
+//						dto.setFromCurrencyId(baseCurrencyId);
+//						dto.setToCurrencyId(toCurrencyId);
+//						dto.setAmount(Double.valueOf(row[20].toString()));
+//						Double convertedRate = currencyService.convertCurrency(dto);
+						
+						CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
+						Double amt = Double.valueOf(row[20].toString());
+						Double convertedRate = amt/currencyRate.getConversionRate();
 						if (convertedRate != null) {
 							courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
 						}
@@ -397,7 +409,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(final CourseSearchDto courseSearchDto, final Currency currency,
+	public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(final CourseSearchDto courseSearchDto, final CurrencyRate currency,
 			final String oldCurrencyCode) {
 
 		Session session = sessionFactory.getCurrentSession();
@@ -507,7 +519,7 @@ public class CourseDAO implements ICourseDAO {
 		List<Object[]> rows = query.list();
 		CourseFilterCostResponseDto responseDto = new CourseFilterCostResponseDto();
 
-		Currency oldCurrency = null;
+		CurrencyRate oldCurrency = null;
 		Double usdConv = 0.00;
 		Long minLocalFeesl = 0l, maxLocalFeesl = 0l, minIntlFeesl = 0l, maxIntlFeesl = 0l;
 		String newCurrencyCode = "";
@@ -531,10 +543,10 @@ public class CourseDAO implements ICourseDAO {
 				if (row[3] != null) {
 					maxIntlFees = Double.valueOf(String.valueOf(row[3]));
 				}
-				if (oldCurrencyCode != null && !currency.getCode().toLowerCase().equals(oldCurrencyCode.toLowerCase())) {
+				if (oldCurrencyCode != null && !currency.getToCurrencyCode().toLowerCase().equals(oldCurrencyCode.toLowerCase())) {
 					oldCurrency = CurrencyUtil.getCurrencyObjByCode(oldCurrencyCode);
 					usdConv = 1 / oldCurrency.getConversionRate();
-					newCurrencyCode = currency.getCode();
+					newCurrencyCode = currency.getToCurrencyCode();
 					if (minLocalFees != null) {
 						minLocalFees = minLocalFees * usdConv * currency.getConversionRate();
 					}
@@ -1691,21 +1703,29 @@ public class CourseDAO implements ICourseDAO {
 		courseResponseDto.setTotalCount(totalCount);
 		if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
 			if (row[19] != null) {
-				CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
-				dto.setFromCurrencyId(baseCurrencyId);
-				dto.setToCurrencyId(toCurrencyId);
-				dto.setAmount(Double.valueOf(row[19].toString()));
-				Double convertedRate = currencyService.convertCurrency(dto);
+//				CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
+//				dto.setFromCurrencyId(baseCurrencyId);
+//				dto.setToCurrencyId(toCurrencyId);
+//				dto.setAmount(Double.valueOf(row[19].toString()));
+//				Double convertedRate = currencyService.convertCurrency(dto);
+				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
+				Double amt = Double.valueOf(row[19].toString());
+				Double convertedRate = amt/currencyRate.getConversionRate();
 				if (convertedRate != null) {
 					courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
 				}
 			}
 			if (row[20] != null) {
-				CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
-				dto.setFromCurrencyId(baseCurrencyId);
-				dto.setToCurrencyId(toCurrencyId);
-				dto.setAmount(Double.valueOf(row[20].toString()));
-				Double convertedRate = currencyService.convertCurrency(dto);
+//				CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
+//				dto.setFromCurrencyId(baseCurrencyId);
+//				dto.setToCurrencyId(toCurrencyId);
+//				dto.setAmount(Double.valueOf(row[20].toString()));
+//				Double convertedRate = currencyService.convertCurrency(dto);
+				
+				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
+				Double amt = Double.valueOf(row[19].toString());
+				Double convertedRate = amt/currencyRate.getConversionRate();
+				
 				if (convertedRate != null) {
 					courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
 				}
@@ -2145,5 +2165,15 @@ public class CourseDAO implements ICourseDAO {
 		String ids = otherCountryIds.stream().map(BigInteger::toString).collect(Collectors.joining(","));
 		List<BigInteger> courseIdList = session.createNativeQuery("Select id from course where country_id in (" + ids + ")").getResultList();
 		return courseIdList;
+	}
+
+	@Override
+	public int updateCourseForCurrency(CurrencyRate currencyRate) {
+		Session session = sessionFactory.getCurrentSession();
+		System.out.println(currencyRate);
+		Integer count = session.createNativeQuery("update course set usd_domestic_fee = domestic_fee * ?, usd_international_fee = international_fee * ? where currency =?")
+		.setParameter(1, 1/currencyRate.getConversionRate()).setParameter(2, 1/currencyRate.getConversionRate()).setParameter(3, currencyRate.getToCurrencyCode()).executeUpdate();
+		System.out.println("courses updated for "+currencyRate.getToCurrencyCode()+"-"+count);
+		return count;
 	}
 }

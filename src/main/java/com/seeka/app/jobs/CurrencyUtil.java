@@ -1,27 +1,25 @@
 package com.seeka.app.jobs;
 
-import java.math.BigInteger;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.seeka.app.bean.Currency;
-import com.seeka.app.service.ICurrencyService;
+import com.seeka.app.bean.CurrencyRate;
+import com.seeka.app.service.ICurrencyRateService;
 
 @Component
 public class CurrencyUtil implements InitializingBean {
 	
 	@Autowired
-	ICurrencyService currencyService;
+	ICurrencyRateService currencyService;
     
-    private static Map<BigInteger, Currency> currencyIdMap = new HashMap<BigInteger, Currency>();
-    private static Map<String, Currency> currencyCodeMap = new HashMap<String, Currency>();
+    // private static Map<BigInteger, Currency> currencyIdMap = new HashMap<BigInteger, Currency>();
+    // private static Map<String, Currency> currencyCodeMap = new HashMap<String, Currency>();
+    private static Map<String, CurrencyRate> currencyCodeMap = new HashMap<>();
 	
     
 	@Override
@@ -29,31 +27,32 @@ public class CurrencyUtil implements InitializingBean {
 		run();
 	}
 	
-	public static Currency getCurrencyObjById(BigInteger currencyId) {
-		return currencyIdMap.get(currencyId);
-	}
+//	public static Currency getCurrencyObjById(BigInteger currencyId) {
+//		return currencyIdMap.get(currencyId);
+//	}
 	
-	public static Currency getCurrencyObjByCode(String currencyCode) {
+	public static CurrencyRate getCurrencyObjByCode(String currencyCode) {
 		return currencyCodeMap.get(currencyCode.toLowerCase());
 	}
 	
-	public static Collection<Currency> getAllCurrencies() {
-		return currencyIdMap.values();
-	}
+//	public static Collection<Currency> getAllCurrencies() {
+//		return currencyIdMap.values();
+//	}
 	
     public void run() {
-    	List<Currency> list = currencyService.getAll();
-    	Map<BigInteger, Currency> currencyIdMapTemp = new HashMap<BigInteger, Currency>();
-    	Map<String, Currency> currencyCodeMapTemp = new HashMap<String, Currency>();
-    	for (Currency currency : list) {
-    		if(null == currency.getName() || currency.getName().isEmpty()) {
+    	//List<Currency> list = currencyService.getAll();
+    	List<CurrencyRate> currencyRateList = currencyService.getAllCurrencyRate();
+    	
+    	Map<String, CurrencyRate> currencyCodeMapTemp = new HashMap<>();
+    	for (CurrencyRate currency : currencyRateList) {
+    		if(null == currency.getToCurrencyName() || currency.getToCurrencyName().isEmpty()) {
     			continue;
     		}
-    		currencyIdMapTemp.put(currency.getId(), currency);
-    		currencyCodeMapTemp.put(currency.getCode().toLowerCase(), currency);
+    		// currencyIdMapTemp.put(currency.getId(), currency);
+    		currencyCodeMapTemp.put(currency.getToCurrencyCode().toLowerCase(), currency);
 		}
-    	currencyIdMap.clear();
-    	currencyIdMap.putAll(currencyIdMapTemp);
+    	// currencyIdMap.clear();
+    	// currencyIdMap.putAll(currencyIdMapTemp);
     	currencyCodeMap.clear();
     	currencyCodeMap.putAll(currencyCodeMapTemp);
     }

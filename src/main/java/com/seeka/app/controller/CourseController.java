@@ -26,6 +26,7 @@ import com.seeka.app.bean.CourseGradeEligibility;
 import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.bean.UserInfo;
@@ -243,14 +244,18 @@ public class CourseController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		Currency currency = null;
+		CurrencyRate currency = null;
 		String message = "";
-		if (null != courseSearchDto.getCurrencyId() && !user.getPreferredCurrencyId().equals(courseSearchDto.getCurrencyId())) {
-			currency = CurrencyUtil.getCurrencyObjById(courseSearchDto.getCurrencyId());
+		/**
+		 * Need to look into this logic
+		 */
+		
+		if (null != courseSearchDto.getCurrencyCode() && !user.getPreferredCurrencyName().equals(courseSearchDto.getCurrencyCode())) {
+			currency = CurrencyUtil.getCurrencyObjByCode(courseSearchDto.getCurrencyCode());
 			response.put("showCurrencyPopup", true);
-			message = "Do you want to change " + currency.getName() + " (" + currency.getCode() + ") as your currency.?";
+			message = "Do you want to change " + currency.getToCurrencyName()+ " (" + currency.getToCurrencyCode() + ") as your currency.?";
 		} else {
-			currency = CurrencyUtil.getCurrencyObjById(user.getPreferredCurrencyId());
+			currency = CurrencyUtil.getCurrencyObjByCode(user.getPreferredCurrencyName());
 			response.put("showCurrencyPopup", false);
 		}
 		response.put("currencyPopupMsg", message);
@@ -278,17 +283,17 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	}
 
-	@RequestMapping(value = "/name", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> search(@Valid @RequestParam("searchkey") final String searchkey) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		CourseSearchDto courseSearchDto = new CourseSearchDto();
-		courseSearchDto.setSearchKey(searchkey);
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("courseList", courseList);
-		return ResponseEntity.accepted().body(response);
-	}
+//	@RequestMapping(value = "/name", method = RequestMethod.GET, produces = "application/json")
+//	public ResponseEntity<?> search(@Valid @RequestParam("searchkey") final String searchkey) throws Exception {
+//		Map<String, Object> response = new HashMap<>();
+//		CourseSearchDto courseSearchDto = new CourseSearchDto();
+//		courseSearchDto.setSearchKey(searchkey);
+//		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
+//		response.put("status", 1);
+//		response.put("message", "Success.!");
+//		response.put("courseList", courseList);
+//		return ResponseEntity.accepted().body(response);
+//	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> get(@Valid @PathVariable final BigInteger id) throws Exception {

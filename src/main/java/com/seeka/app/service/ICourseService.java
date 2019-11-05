@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Currency;
+import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.YoutubeVideo;
@@ -36,7 +37,7 @@ public interface ICourseService {
 
 	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
 
-	CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, Currency currency, String oldCurrencyCode);
+	CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, CurrencyRate currency, String oldCurrencyCode);
 
 	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
@@ -122,4 +123,6 @@ public interface ICourseService {
 	List<BigInteger> courseIdsForMigratedCountries(final Country country);
 
 	List<Long> getUserListForUserWatchCourseFilter(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId);
+
+	void updateCourseForCurrency(CurrencyRate currencyRate);
 }

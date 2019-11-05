@@ -10,6 +10,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
@@ -234,7 +236,7 @@ public class CommonUtil {
 		return courseRequest;
 	}
 
-	public static String getCurrencyDetails(final String baseCurrency) {
+	public static /*String*/Map<String, Double> getCurrencyDetails(final String baseCurrency) {
 		String currencyResponse = null;
 		URL url = null;
 		try {
@@ -245,6 +247,11 @@ public class CommonUtil {
 			JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
 			JsonObject jsonobj = root.getAsJsonObject();
 			currencyResponse = jsonobj.toString();
+	        JsonObject rateObject = jsonobj.get("rates").getAsJsonObject();
+	        ObjectMapper mapper = new ObjectMapper();
+	        
+	        Map<String, Double> ratesMap = mapper.readValue(rateObject.getAsString(), HashMap.class);
+	        return /* currencyResponse */ratesMap;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e2) {
@@ -254,7 +261,8 @@ public class CommonUtil {
 		} catch (JsonSyntaxException e) {
 			e.printStackTrace();
 		}
-		return currencyResponse;
+		return new HashMap<String, Double>();
+		
 	}
 
 	public static InstituteCampusDto convertInstituteCampusToInstituteCampusDto(final Institute campus) {

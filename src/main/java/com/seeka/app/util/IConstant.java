@@ -2,7 +2,8 @@ package com.seeka.app.util;
 
 public class IConstant {
 	public static final String CURRENCY_URL = "https://data.fixer.io/api/";
-	public static final String API_KEY = "95bdc53aa11d07169765f1b413275ba2";
+	public static final String API_KEY = "30c3311abac5d7016332d637bade7b54";
+	public static final String USD_CODE = "USD";
 
 	static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
 	public static final String CORRELATION_ID = "correlationId";
@@ -113,4 +114,6 @@ public class IConstant {
 	public static final String COURSE = "Course";
 	public static final String SCHOLARSHIP = "Scholarship";
 	/***************************************************************************************/
+	
+	public static final Integer CURRENCY_THRESHOLD = 0;
 }

@@ -27,7 +27,7 @@ import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.service.ICityService;
 import com.seeka.app.service.ICountryService;
-import com.seeka.app.service.ICurrencyService;
+import com.seeka.app.service.ICurrencyRateService;
 
 @RestController
 @RequestMapping("/migrate")
@@ -40,7 +40,7 @@ public class MigrateController {
     private ICityService cityService;
 
     @Autowired
-    private ICurrencyService currencyService;
+    private ICurrencyRateService currencyService;
 
     public static Map<String, Country> getCountryMasterData() {
         String csvFile = "E:\\Softwares\\Seeka\\March-2019\\Country\\Country.csv";
@@ -449,7 +449,7 @@ public class MigrateController {
                 }
                 obj.setBaseCurrency("USD");
                 obj.setUpdatedDate(updatedDate);
-                currencyService.save(obj);
+				//currencyService.save(/* obj */);
                 i++;
                 System.out.println(i + "-------------------------------" + j + "--------------------------------" + k);
             } catch (Exception e) {

@@ -159,7 +159,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(final CourseSearchDto courseSearchDto, final Currency currency,
+	public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(final CourseSearchDto courseSearchDto, final CurrencyRate currency,
 			final String oldCurrencyCode) {
 		return iCourseDAO.getAllCoursesFilterCostInfo(courseSearchDto, currency, oldCurrencyCode);
 	}
@@ -221,29 +221,32 @@ public class CourseService implements ICourseService {
 			course.setCampusLocation(courseDto.getCampusLocation());
 			if (courseDto.getCurrency() != null) {
 				course.setCurrency(courseDto.getCurrency());
-				List<Currency> currencies = currencyDAO.getAll();
-				Currency toCurrency = currencyDAO.getCurrencyByCode("USD");
-				BigInteger toCurrencyId = null;
-				if (toCurrency != null) {
-					toCurrencyId = toCurrency.getId();
-				}
+//				List<Currency> currencies = currencyDAO.getAll();
+//				Currency toCurrency = currencyDAO.getCurrencyByCode("USD");
+//				BigInteger toCurrencyId = null;
+//				if (toCurrency != null) {
+//					toCurrencyId = toCurrency.getId();
+//				}
 
-				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency(), currencies);
-				BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCurrency());
+				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency()/* , currencies */);
+				// BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCurrency());
 				if (currencyRate == null) {
-					currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCurrency());
+					throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
+					//currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCurrency());
 				}
 				if (currencyRate != null) {
-					if (toCurrencyId != null) {
+					if (/*toCurrencyId*/courseDto.getCurrency() != null) {
 						if (courseDto.getDomasticFee() != null) {
-							Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
+							// Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
+							Double convertedRate  = Double.valueOf(courseDto.getDomasticFee())/currencyRate.getConversionRate();
 							if (convertedRate != null) {
 								course.setUsdDomasticFee(convertedRate);
 							}
 						}
 						if (courseDto.getInternationalFee() != null) {
-							Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId,
-									Double.valueOf(courseDto.getInternationalFee()));
+							Double convertedRate  = Double.valueOf(courseDto.getInternationalFee())/currencyRate.getConversionRate();
+//							Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId,
+//									Double.valueOf(courseDto.getInternationalFee()));
 							if (convertedRate != null) {
 								course.setUsdInternationFee(convertedRate);
 							}
@@ -312,22 +315,25 @@ public class CourseService implements ICourseService {
 					toCurrencyId = toCurrency.getId();
 				}
 
-				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency(), currencies);
-				BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCurrency());
+				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency()/* , currencies */);
+				// BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCurrency());
 				if (currencyRate == null) {
-					currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCurrency());
+					throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
+					// currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCurrency());
 				}
 				if (currencyRate != null) {
 					if (toCurrencyId != null) {
 						if (courseDto.getDomasticFee() != null) {
-							Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
+							Double convertedRate  = Double.valueOf(courseDto.getInternationalFee())/currencyRate.getConversionRate();
+							// Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
 							if (convertedRate != null) {
 								course.setUsdDomasticFee(convertedRate);
 							}
 						}
 						if (courseDto.getInternationalFee() != null) {
-							Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId,
-									Double.valueOf(courseDto.getInternationalFee()));
+							Double convertedRate  = Double.valueOf(courseDto.getInternationalFee())/currencyRate.getConversionRate();
+//							Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId,
+//									Double.valueOf(courseDto.getInternationalFee()));
 							if (convertedRate != null) {
 								course.setUsdInternationFee(convertedRate);
 							}
@@ -365,9 +371,9 @@ public class CourseService implements ICourseService {
 		return response;
 	}
 
-	private CurrencyRate getCurrencyRate(final String courseCurrency, final List<Currency> currencies) {
-		BigInteger fromCurrencyId = getCurrencyId(currencies, courseCurrency);
-		CurrencyRate currencyRate = currencyDAO.getCurrencyRate(fromCurrencyId);
+	private CurrencyRate getCurrencyRate(final String courseCurrency/* , final List<Currency> currencies */) {
+		// BigInteger fromCurrencyId = getCurrencyId(currencies, courseCurrency);
+		CurrencyRate currencyRate = currencyDAO.getCurrencyRate(/* fromCurrencyId */courseCurrency);
 		return currencyRate;
 	}
 
@@ -1078,5 +1084,10 @@ public class CourseService implements ICourseService {
 			return courseIds;
 		}
 		return new ArrayList<>();
+	}
+
+	@Override
+	public void updateCourseForCurrency(CurrencyRate currencyRate) {
+		iCourseDAO.updateCourseForCurrency(currencyRate);
 	}
 }

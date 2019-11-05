@@ -1,18 +1,15 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
-
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import com.seeka.app.bean.Currency;
-import com.seeka.app.dto.CurrencyConvertorRequest;
+import com.seeka.app.bean.CurrencyRate;
 
-public interface ICurrencyService {
+public interface ICurrencyRateService {
 
-    public void save(Currency obj);
+    public void save(CurrencyRate obj);
 
     public void update(Currency obj);
 
@@ -28,5 +25,10 @@ public interface ICurrencyService {
 
     public Map<String, Object> getAllCurrencies();
 
-    public Map<String, Object> currencyConversion(@Valid CurrencyConvertorRequest convertorRequest);
+    List<CurrencyRate> getAllCurrencyRate();
+    // public Map<String, Object> currencyConversion(@Valid CurrencyConvertorRequest convertorRequest);
+
+	CurrencyRate getCurrencyRate(String currencyCode);
+
+	List<CurrencyRate> getChangedCurrency();
 }
