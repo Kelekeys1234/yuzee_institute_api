@@ -66,11 +66,11 @@ public class CurrencyConversionRateUtil {
 			for (Map.Entry<String, Double> currency : map.entrySet()) {
 				String currencyCode = currency.getKey();
 				CurrencyRate currencyRate = currencyRateService.getCurrencyRate(currencyCode);
+				Double oldRate = currencyRate.getConversionRate();
 				currencyRate.setConversionRate(Double.parseDouble(String.valueOf(currency.getValue())));
 				currencyRate.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
 				Integer thresholdValue = IConstant.CURRENCY_THRESHOLD;
 				if (thresholdValue != null && thresholdValue != 0) {
-					Double oldRate = currencyRate.getConversionRate();
 					boolean isGreaterThanThreshold = checkForDifferenceGreaterThanThreshold(oldRate,
 							Double.valueOf(String.valueOf(currency.getValue())), thresholdValue);
 					if (isGreaterThanThreshold) {
