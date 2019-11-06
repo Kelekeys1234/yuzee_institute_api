@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.bean.UserViewData;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.UserViewDataRequestDto;
+import com.seeka.app.dto.ViewEntityDto;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IViewService;
 
@@ -62,6 +63,13 @@ public class ViewsController {
 		int count = iViewService.getUserViewDataCountBasedOnUserId(userId, entityId, entityType);
 		boolean flag = count > 0;
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(" visited entity.").setData(flag).create();
+	}
+
+	@PostMapping(value = "/visit/entity")
+	public ResponseEntity<?> userVisitedBasedonEntityId(@RequestHeader final BigInteger userId, @RequestBody final ViewEntityDto viewEntityDto)
+			throws ValidationException {
+		List<BigInteger> viewedEntityIds = iViewService.getUserViewDataBasedOnEntityIdList(userId, viewEntityDto.getEntityType(), viewEntityDto.getEntityIds());
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(" visited entity.").setData(viewedEntityIds).create();
 	}
 
 }
