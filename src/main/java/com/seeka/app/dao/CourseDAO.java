@@ -353,7 +353,7 @@ public class CourseDAO implements ICourseDAO {
 				if (null != row[12]) {
 					worldRanking = Double.valueOf(String.valueOf(row[12])).intValue();
 				}
-				courseResponseDto.setWorldRanking(Integer.valueOf(worldRanking.toString()));
+				courseResponseDto.setCourseRanking(Integer.valueOf(worldRanking.toString()));
 				courseResponseDto.setLanguage(String.valueOf(row[13]));
 				courseResponseDto.setLanguageShortKey(String.valueOf(row[13]));
 				courseResponseDto.setStars(Integer.valueOf(String.valueOf(row[14])));
@@ -640,7 +640,7 @@ public class CourseDAO implements ICourseDAO {
 			obj.setCityId(new BigInteger(String.valueOf(row[8])));
 			obj.setCountryId(new BigInteger(String.valueOf(row[9])));
 			obj.setLocation(String.valueOf(row[10]) + ", " + String.valueOf(row[11]));
-			obj.setWorldRanking(Integer.valueOf(String.valueOf(row[12])));
+			obj.setCourseRanking(Integer.valueOf(String.valueOf(row[12])));
 			obj.setLanguage(String.valueOf(row[13]));
 			obj.setLanguageShortKey(String.valueOf(row[13]));
 			obj.setStars(Integer.valueOf(String.valueOf(row[14])));
@@ -766,7 +766,7 @@ public class CourseDAO implements ICourseDAO {
 			if (null != row[12]) {
 				worldRanking = Double.valueOf(String.valueOf(row[12])).intValue();
 			}
-			obj.setWorldRanking(Integer.valueOf(worldRanking.toString()));
+			obj.setCourseRanking(Integer.valueOf(worldRanking.toString()));
 			obj.setLanguage(String.valueOf(row[13]));
 			obj.setLanguageShortKey(String.valueOf(row[13]));
 			obj.setStars(Integer.valueOf(String.valueOf(row[14])));
@@ -890,7 +890,7 @@ public class CourseDAO implements ICourseDAO {
 			obj.setCost(String.valueOf(row[4]) + " " + String.valueOf(row[5]));
 			obj.setDuration(Double.valueOf(String.valueOf(row[6])));
 			obj.setDurationTime(String.valueOf(row[7]));
-			obj.setWorldRanking(Integer.valueOf(String.valueOf(row[12])));
+			obj.setCourseRanking(Integer.valueOf(String.valueOf(row[12])));
 			obj.setLanguage(String.valueOf(row[13]));
 			obj.setLanguageShortKey(String.valueOf(row[13]));
 			obj.setStars(Integer.valueOf(String.valueOf(row[14])));
@@ -1010,7 +1010,7 @@ public class CourseDAO implements ICourseDAO {
 			courseObj.setLanguage(course.getLanguage());
 			courseObj.setDuration(course.getDuration());
 			courseObj.setDurationTime(course.getDurationTime());
-			courseObj.setWorldRanking(course.getWorldRanking());
+			courseObj.setCourseRanking(course.getWorldRanking());
 			dtos.add(courseObj);
 		}
 		return dtos;
@@ -1695,7 +1695,7 @@ public class CourseDAO implements ICourseDAO {
 		if (null != row[4]) {
 			worldRanking = Double.valueOf(String.valueOf(row[12])).intValue();
 		}
-		courseResponseDto.setWorldRanking(Integer.valueOf(worldRanking.toString()));
+		courseResponseDto.setCourseRanking(Integer.valueOf(worldRanking.toString()));
 		courseResponseDto.setLanguage(String.valueOf(row[13]));
 		courseResponseDto.setLanguageShortKey(String.valueOf(row[13]));
 		courseResponseDto.setStars(Integer.valueOf(String.valueOf(row[14])));

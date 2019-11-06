@@ -369,7 +369,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setLocation(course.getCity().getName() + "," + course.getCountry().getName());
 			courseResponseDto.setRequirements(course.getRemarks());
 			courseResponseDto.setStars(course.getStars());
-			courseResponseDto.setWorldRanking(course.getWorldRanking());
+			courseResponseDto.setCourseRanking(course.getWorldRanking());
 			courseResponseDto.setLanguageShortKey(course.getLanguage());
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null,
 					"en");
@@ -402,7 +402,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setLocation(course.getCity().getName() + "," + course.getCountry().getName());
 			courseResponseDto.setRequirements(course.getRemarks());
 			courseResponseDto.setStars(course.getStars());
-			courseResponseDto.setWorldRanking(course.getWorldRanking());
+			courseResponseDto.setCourseRanking(course.getWorldRanking());
 			courseResponseDto.setLanguageShortKey(course.getLanguage());
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null,
 					"en");
