@@ -283,12 +283,12 @@ public class EducationSystemService implements IEducationSystemService {
 			userEducationDetails = getUpdatedUserEducationDetails(educationSystemRequest, new UserEducationDetails(), false);
 			educationDetailDAO.save(userEducationDetails);
 		}
+		englishScoreDAO.deleteEnglishScoreByUserId(educationSystemRequest.getUserId());
 		if (educationSystemRequest.getEnglishScoresList() != null && !educationSystemRequest.getEnglishScoresList().isEmpty()) {
-			englishScoreDAO.deleteEnglishScoreByUserId(educationSystemRequest.getUserId());
 			saveEnglishScore(educationSystemRequest);
 		}
+		educationAOLevelSubjectDAO.deleteEducationAOLevelByUserId(educationSystemRequest.getUserId());
 		if (educationSystemRequest.getEducationAOLevelSubjectList() != null && !educationSystemRequest.getEducationAOLevelSubjectList().isEmpty()) {
-			educationAOLevelSubjectDAO.deleteEducationAOLevelByUserId(educationSystemRequest.getUserId());
 			saveEducationAOLevelSubject(educationSystemRequest);
 		}
 	}

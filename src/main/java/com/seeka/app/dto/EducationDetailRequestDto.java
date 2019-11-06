@@ -22,6 +22,7 @@ public class EducationDetailRequestDto implements Serializable {
 	private String eduLevel;
 	private String educationSystemName;
 	private String educationCountryName;
+	private String educationQualification;
 
 	public BigInteger getEducationCountryId() {
 		return educationCountryId;
@@ -127,6 +128,14 @@ public class EducationDetailRequestDto implements Serializable {
 		this.educationCountryName = educationCountryName;
 	}
 
+	public String getEducationQualification() {
+		return educationQualification;
+	}
+
+	public void setEducationQualification(final String educationQualification) {
+		this.educationQualification = educationQualification;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -137,6 +146,7 @@ public class EducationDetailRequestDto implements Serializable {
 		result = prime * result + (educationCountryName == null ? 0 : educationCountryName.hashCode());
 		result = prime * result + (educationInstitue == null ? 0 : educationInstitue.hashCode());
 		result = prime * result + (educationLevelId == null ? 0 : educationLevelId.hashCode());
+		result = prime * result + (educationQualification == null ? 0 : educationQualification.hashCode());
 		result = prime * result + (educationSystemId == null ? 0 : educationSystemId.hashCode());
 		result = prime * result + (educationSystemName == null ? 0 : educationSystemName.hashCode());
 		result = prime * result + (englishLevel == null ? 0 : englishLevel.hashCode());
@@ -201,6 +211,13 @@ public class EducationDetailRequestDto implements Serializable {
 		} else if (!educationLevelId.equals(other.educationLevelId)) {
 			return false;
 		}
+		if (educationQualification == null) {
+			if (other.educationQualification != null) {
+				return false;
+			}
+		} else if (!educationQualification.equals(other.educationQualification)) {
+			return false;
+		}
 		if (educationSystemId == null) {
 			if (other.educationSystemId != null) {
 				return false;
@@ -261,7 +278,7 @@ public class EducationDetailRequestDto implements Serializable {
 				.append(gpaScore).append(", isEnglishMedium=").append(isEnglishMedium).append(", englishLevel=").append(englishLevel).append(", eduSysScore=")
 				.append(eduSysScore).append(", fromDuration=").append(fromDuration).append(", toDuration=").append(toDuration).append(", eduLevel=")
 				.append(eduLevel).append(", educationSystemName=").append(educationSystemName).append(", educationCountryName=").append(educationCountryName)
-				.append("]");
+				.append(", educationQualification=").append(educationQualification).append("]");
 		return builder.toString();
 	}
 

@@ -45,42 +45,6 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
 
 	@Override
 	public UserEducationDetails getUserEducationDetails(final BigInteger userId) {
-		/*
-		 * Session session = sessionFactory.getCurrentSession(); String sqlQuery =
-		 * "SELECT ed.user_id, ed.edu_country,c.name as CountryName, ed.edu_system_id,"
-		 * +
-		 * "s.name as SystemName, ed.edu_institue, ed.gpa_score, ed.is_english_medium,"
-		 * +
-		 * "ed.english_level, ed.edu_sys_score, ed.edu_level, ed.id, ed.is_active, ed.created_on, ed.created_by FROM user_education_details ed "
-		 * + "left join education_system s on s.id = ed.edu_system_id left join " +
-		 * "country c on c.id=ed.edu_country where ed.is_active = 1 and ed.user_id = '"
-		 * + userId + "'"; Query query = session.createSQLQuery(sqlQuery);
-		 * List<Object[]> rows = query.list(); UserEducationDetails userEducationDetails
-		 * = null; for (Object[] row : rows) { userEducationDetails = new
-		 * UserEducationDetails(); userEducationDetails.setUserId(new
-		 * BigInteger(row[0].toString())); if (row[1] != null) {
-		 * userEducationDetails.setEduCountry(new BigInteger(row[1].toString())); } if
-		 * (row[2] != null) {
-		 * userEducationDetails.setEducationCountryName(row[2].toString()); } if (row[3]
-		 * != null) { userEducationDetails.setEduSystemId(new
-		 * BigInteger(row[3].toString())); } if (row[4] != null) {
-		 * userEducationDetails.setEducationSystemName(row[4].toString()); } if (row[5]
-		 * != null) { userEducationDetails.setEduInstitue(row[5].toString()); } if (null
-		 * != row[6]) { userEducationDetails.setGpaScore(row[6].toString()); } if (null
-		 * != row[7]) { userEducationDetails.setIsEnglishMedium(row[7].toString()); } if
-		 * (null != row[8]) { userEducationDetails.setEnglishLevel(row[8].toString()); }
-		 * if (null != row[9]) { userEducationDetails.setEduSysScore(row[9].toString());
-		 * } if (null != row[10]) {
-		 * userEducationDetails.setEduLevel(row[10].toString()); }
-		 * userEducationDetails.setId(new BigInteger(row[11].toString())); if (row[12]
-		 * != null) { if (row[12].toString().equals("1")) {
-		 * userEducationDetails.setIsActive(true); } else {
-		 * userEducationDetails.setIsActive(false); } } if (row[13] != null) { Date
-		 * createdDate = (Date) row[13]; System.out.println(createdDate);
-		 * userEducationDetails.setCreatedOn(createdDate); } if (row[14] != null) {
-		 * userEducationDetails.setCreatedBy(row[14].toString()); } }
-		 */
-
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserEducationDetails.class, "userEducationDetails");
 		criteria.add(Restrictions.eq("userEducationDetails.userId", userId));

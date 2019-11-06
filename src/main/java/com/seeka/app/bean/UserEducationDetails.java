@@ -77,6 +77,8 @@ public class UserEducationDetails implements Serializable {
 	private Integer fromDuration;
 	@Column(name = "to_duration")
 	private Integer toDuration;
+	@Column(name = "education_qualification")
+	private String educationQualification;
 
 	public BigInteger getId() {
 		return id;
@@ -230,6 +232,14 @@ public class UserEducationDetails implements Serializable {
 		this.toDuration = toDuration;
 	}
 
+	public String getEducationQualification() {
+		return educationQualification;
+	}
+
+	public void setEducationQualification(final String educationQualification) {
+		this.educationQualification = educationQualification;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -241,6 +251,7 @@ public class UserEducationDetails implements Serializable {
 		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
 		result = prime * result + (eduSysScore == null ? 0 : eduSysScore.hashCode());
 		result = prime * result + (educationInstitue == null ? 0 : educationInstitue.hashCode());
+		result = prime * result + (educationQualification == null ? 0 : educationQualification.hashCode());
 		result = prime * result + (educationSystem == null ? 0 : educationSystem.hashCode());
 		result = prime * result + (englishLevel == null ? 0 : englishLevel.hashCode());
 		result = prime * result + (fromDuration == null ? 0 : fromDuration.hashCode());
@@ -315,6 +326,13 @@ public class UserEducationDetails implements Serializable {
 				return false;
 			}
 		} else if (!educationInstitue.equals(other.educationInstitue)) {
+			return false;
+		}
+		if (educationQualification == null) {
+			if (other.educationQualification != null) {
+				return false;
+			}
+		} else if (!educationQualification.equals(other.educationQualification)) {
 			return false;
 		}
 		if (educationSystem == null) {
@@ -413,7 +431,7 @@ public class UserEducationDetails implements Serializable {
 				.append(eduSysScore).append(", level=").append(level).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
 				.append(", updatedOn=").append(updatedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
 				.append(", deletedBy=").append(deletedBy).append(", deletedOn=").append(deletedOn).append(", fromDuration=").append(fromDuration)
-				.append(", toDuration=").append(toDuration).append("]");
+				.append(", toDuration=").append(toDuration).append(", educationQualification=").append(educationQualification).append("]");
 		return builder.toString();
 	}
 
