@@ -34,22 +34,41 @@ public class City implements Serializable {
 	private BigInteger id;
 	private Country country;
 	private String name;
-	private String tripAdvisorLink;
-	private int cityImgCnt;
-	private String description;
+	// private String tripAdvisorLink;
+	// private int cityImgCnt;
+	// private String description;
 	private Date createdOn;
 	private Date updatedOn;
 	private Date deletedOn;
 	private String createdBy;
 	private String updatedBy;
 	private Boolean isDeleted;
-	private Integer availableJobs;
+	// private Integer availableJobs;
+	
+	private String latitude;
+	private String longitude;
+	private String matchAddress;
+	
 
-	public City() {
+	@Column(name = "latitude")
+	public String getLatitude() {
+		return latitude;
 	}
 
-	public City(int cityImgCnt) {
-		this.cityImgCnt = cityImgCnt;
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	@Column(name = "longitude")
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public City() {
 	}
 
 	public City(Country country, String name, String tripAdvisorLink, int cityImgCnt, String description,
@@ -57,16 +76,12 @@ public class City implements Serializable {
 			Integer availableJobs) {
 		this.country = country;
 		this.name = name;
-		this.tripAdvisorLink = tripAdvisorLink;
-		this.cityImgCnt = cityImgCnt;
-		this.description = description;
 		this.createdOn = createdOn;
 		this.updatedOn = updatedOn;
 		this.deletedOn = deletedOn;
 		this.createdBy = createdBy;
 		this.updatedBy = updatedBy;
 		this.isDeleted = isDeleted;
-		this.availableJobs = availableJobs;
 	}
 
 	@Id
@@ -97,33 +112,6 @@ public class City implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@Column(name = "trip_advisor_link", length = 1000)
-	public String getTripAdvisorLink() {
-		return this.tripAdvisorLink;
-	}
-
-	public void setTripAdvisorLink(String tripAdvisorLink) {
-		this.tripAdvisorLink = tripAdvisorLink;
-	}
-
-	@Column(name = "city_img_cnt", nullable = false)
-	public int getCityImgCnt() {
-		return this.cityImgCnt;
-	}
-
-	public void setCityImgCnt(int cityImgCnt) {
-		this.cityImgCnt = cityImgCnt;
-	}
-
-	@Column(name = "description", length = 5000)
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -183,45 +171,34 @@ public class City implements Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-	@Column(name = "available_jobs")
-	public Integer getAvailableJobs() {
-		return this.availableJobs;
+	@Column(name = "match_address")
+	public String getMatchAddress() {
+		return matchAddress;
 	}
 
-	public void setAvailableJobs(Integer availableJobs) {
-		this.availableJobs = availableJobs;
+	public void setMatchAddress(String matchAddress) {
+		this.matchAddress = matchAddress;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((availableJobs == null) ? 0 : availableJobs.hashCode());
-		result = prime * result + cityImgCnt;
 		result = prime * result + ((country == null) ? 0 : country.hashCode());
 		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
 		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
 		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+		result = prime * result + ((latitude == null) ? 0 : latitude.hashCode());
+		result = prime * result + ((longitude == null) ? 0 : longitude.hashCode());
+		result = prime * result + ((matchAddress == null) ? 0 : matchAddress.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((tripAdvisorLink == null) ? 0 : tripAdvisorLink.hashCode());
 		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
 		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -231,13 +208,6 @@ public class City implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		City other = (City) obj;
-		if (availableJobs == null) {
-			if (other.availableJobs != null)
-				return false;
-		} else if (!availableJobs.equals(other.availableJobs))
-			return false;
-		if (cityImgCnt != other.cityImgCnt)
-			return false;
 		if (country == null) {
 			if (other.country != null)
 				return false;
@@ -258,11 +228,6 @@ public class City implements Serializable {
 				return false;
 		} else if (!deletedOn.equals(other.deletedOn))
 			return false;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -273,15 +238,25 @@ public class City implements Serializable {
 				return false;
 		} else if (!isDeleted.equals(other.isDeleted))
 			return false;
+		if (latitude == null) {
+			if (other.latitude != null)
+				return false;
+		} else if (!latitude.equals(other.latitude))
+			return false;
+		if (longitude == null) {
+			if (other.longitude != null)
+				return false;
+		} else if (!longitude.equals(other.longitude))
+			return false;
+		if (matchAddress == null) {
+			if (other.matchAddress != null)
+				return false;
+		} else if (!matchAddress.equals(other.matchAddress))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
-			return false;
-		if (tripAdvisorLink == null) {
-			if (other.tripAdvisorLink != null)
-				return false;
-		} else if (!tripAdvisorLink.equals(other.tripAdvisorLink))
 			return false;
 		if (updatedBy == null) {
 			if (other.updatedBy != null)
@@ -300,11 +275,11 @@ public class City implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("City [id=").append(id).append(", country=").append(country).append(", name=").append(name)
-				.append(", tripAdvisorLink=").append(tripAdvisorLink).append(", cityImgCnt=").append(cityImgCnt)
-				.append(", description=").append(description).append(", createdOn=").append(createdOn)
-				.append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
-				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
-				.append(", isDeleted=").append(isDeleted).append(", availableJobs=").append(availableJobs).append("]");
+				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
+				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
+				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", latitude=")
+				.append(latitude).append(", longitude=").append(longitude).append(", matchAddress=")
+				.append(matchAddress).append("]");
 		return builder.toString();
 	}
 

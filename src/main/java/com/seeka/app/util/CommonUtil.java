@@ -75,12 +75,8 @@ public class CommonUtil {
 
 	public static City convertCityDTOToBean(final CityDto cityObj, final Country country) {
 		City city = new City();
-		city.setCityImgCnt(cityObj.getCityImgCnt());
-		city.setAvailableJobs(cityObj.getAvailableJobs());
 		city.setCountry(country);
-		city.setDescription(cityObj.getDescription());
 		city.setName(cityObj.getName());
-		city.setTripAdvisorLink(cityObj.getTripAdvisorLink());
 		city.setCreatedOn(new Date());
 		city.setUpdatedOn(new Date());
 		return city;
