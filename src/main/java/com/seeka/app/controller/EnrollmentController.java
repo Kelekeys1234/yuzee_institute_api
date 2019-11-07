@@ -86,8 +86,9 @@ public class EnrollmentController {
 	}
 
 	@GetMapping("/user")
-	public ResponseEntity<?> getEnrollmentListBasedOnUserId(@RequestHeader final BigInteger userId) throws ValidationException {
-		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(userId, null, null, null, null, null, null, null);
+	public ResponseEntity<?> getEnrollmentListBasedOnUserId(@RequestHeader final BigInteger userId,
+			@RequestParam(name = "isArchive", required = false) final boolean isArchive) throws ValidationException {
+		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(userId, null, null, null, null, null, null, null, isArchive);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentResponseList).setMessage("Get enrollment List successfully")
 				.create();
 	}
@@ -100,7 +101,7 @@ public class EnrollmentController {
 			@RequestParam(required = false) final BigInteger userId) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(null, courseId, instituteId, enrollmentId, status, updatedOn,
-				startIndex, pageSize);
+				startIndex, pageSize, null);
 		int totalCount = iEnrollmentService.countOfEnrollment(null, courseId, instituteId, enrollmentId, status, updatedOn);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);

@@ -42,6 +42,7 @@ public class SeekaHelp implements Serializable {
 	private String status;
 	private BigInteger assignedUserId;
 	private Boolean isFavourite;
+	private Boolean isArchive = false;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -209,6 +210,15 @@ public class SeekaHelp implements Serializable {
 		this.isFavourite = isFavourite;
 	}
 
+	@Column(name = "is_archive")
+	public Boolean getIsArchive() {
+		return isArchive;
+	}
+
+	public void setIsArchive(final Boolean isArchive) {
+		this.isArchive = isArchive;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -221,6 +231,7 @@ public class SeekaHelp implements Serializable {
 		result = prime * result + (descritpion == null ? 0 : descritpion.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
+		result = prime * result + (isArchive == null ? 0 : isArchive.hashCode());
 		result = prime * result + (isFavourite == null ? 0 : isFavourite.hashCode());
 		result = prime * result + (isQuestioning == null ? 0 : isQuestioning.hashCode());
 		result = prime * result + (status == null ? 0 : status.hashCode());
@@ -300,6 +311,13 @@ public class SeekaHelp implements Serializable {
 		} else if (!isActive.equals(other.isActive)) {
 			return false;
 		}
+		if (isArchive == null) {
+			if (other.isArchive != null) {
+				return false;
+			}
+		} else if (!isArchive.equals(other.isArchive)) {
+			return false;
+		}
 		if (isFavourite == null) {
 			if (other.isFavourite != null) {
 				return false;
@@ -366,7 +384,8 @@ public class SeekaHelp implements Serializable {
 				.append(title).append(", descritpion=").append(descritpion).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
 				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
 				.append(", isActive=").append(isActive).append(", isQuestioning=").append(isQuestioning).append(", userId=").append(userId).append(", status=")
-				.append(status).append(", assignedUserId=").append(assignedUserId).append(", isFavourite=").append(isFavourite).append("]");
+				.append(status).append(", assignedUserId=").append(assignedUserId).append(", isFavourite=").append(isFavourite).append(", isArchive=")
+				.append(isArchive).append("]");
 		return builder.toString();
 	}
 

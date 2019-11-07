@@ -156,10 +156,10 @@ public class HelpController {
 
 	@RequestMapping(value = "/user/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getUserHelpList(@RequestHeader final BigInteger userId, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize) throws Exception {
+			@PathVariable final Integer pageSize, @RequestParam(name = "isArchive", required = false) final boolean isArchive) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<SeekaHelp> helps = helpService.getUserHelpList(userId, startIndex, pageSize);
-		int totalCount = helpService.getUserHelpCount(userId);
+		List<SeekaHelp> helps = helpService.getUserHelpList(userId, startIndex, pageSize, isArchive);
+		int totalCount = helpService.getUserHelpCount(userId, isArchive);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
@@ -174,7 +174,7 @@ public class HelpController {
 	}
 
 	@PutMapping(value = "/{id}/isFavourite/{isFavourite}")
-	public ResponseEntity<?> setiIsFavourite(@RequestHeader(value = "userId") final BigInteger userId, @PathVariable(value = "id") final BigInteger id,
+	public ResponseEntity<?> setIsFavourite(@RequestHeader(value = "userId") final BigInteger userId, @PathVariable(value = "id") final BigInteger id,
 			@PathVariable(value = "isFavourite") final boolean isFavourite) throws NotFoundException {
 		helpService.setIsFavouriteFlag(id, isFavourite);
 		return new GenericResponseHandlers.Builder().setMessage("Updated Successfuly").setStatus(HttpStatus.OK).create();

@@ -250,9 +250,10 @@ public class EnrollmentService implements IEnrollmentService {
 
 	@Override
 	public List<EnrollmentResponseDto> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId,
-			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize)
+			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive)
 			throws ValidationException {
-		List<Enrollment> enrollmenList = iEnrollmentDao.getEnrollmentList(userId, courseId, instituteId, enrollmentId, status, updatedOn, startIndex, pageSize);
+		List<Enrollment> enrollmenList = iEnrollmentDao.getEnrollmentList(userId, courseId, instituteId, enrollmentId, status, updatedOn, startIndex, pageSize,
+				isArchive);
 		List<EnrollmentResponseDto> resultList = new ArrayList<>();
 		for (Enrollment enrollment : enrollmenList) {
 			EnrollmentResponseDto enrollmentResponseDto = new EnrollmentResponseDto();
@@ -287,6 +288,18 @@ public class EnrollmentService implements IEnrollmentService {
 	public int countOfEnrollment(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
 			final String status, final Date updatedOn) {
 		return iEnrollmentDao.countOfEnrollment(userId, courseId, instituteId, enrollmentId, status, updatedOn);
+	}
+
+	@Override
+	public void archiveEnrollment(final BigInteger enrollmentId, final boolean isArchive) throws ValidationException {
+		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentId);
+		if (enrollment == null) {
+			throw new ValidationException("Enrollment not found for id :" + enrollmentId);
+		}
+		enrollment.setIsArchive(isArchive);
+		enrollment.setUpdatedBy("API");
+		enrollment.setUpdatedOn(new Date());
+		iEnrollmentDao.updateEnrollment(enrollment);
 	}
 
 }

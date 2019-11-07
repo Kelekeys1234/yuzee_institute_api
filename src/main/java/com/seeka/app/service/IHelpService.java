@@ -51,14 +51,16 @@ public interface IHelpService {
 
 	Map<String, Object> filter(String status, String mostRecent, BigInteger categoryId);
 
-	List<SeekaHelp> getUserHelpList(BigInteger userId, int startIndex, Integer pageSize);
+	List<SeekaHelp> getUserHelpList(BigInteger userId, int startIndex, Integer pageSize, Boolean isArchive);
 
-	int getUserHelpCount(BigInteger userId);
+	int getUserHelpCount(BigInteger userId, Boolean isArchive);
 
 	void setIsFavouriteFlag(BigInteger id, boolean isFavourite) throws NotFoundException;
 
 	int getCategoryCount();
 
 	int getSubCategoryCount(BigInteger categoryId);
+
+	void archiveHelpSupport(BigInteger entityId, boolean isArchive);
 
 }

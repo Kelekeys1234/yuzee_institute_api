@@ -108,6 +108,8 @@ public class Enrollment implements Serializable {
 	private String createdBy;
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
+	@Column(name = "is_archive")
+	private Boolean isArchive = false;
 
 	public BigInteger getId() {
 		return id;
@@ -381,6 +383,14 @@ public class Enrollment implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	public Boolean getIsArchive() {
+		return isArchive;
+	}
+
+	public void setIsArchive(final Boolean isArchive) {
+		this.isArchive = isArchive;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -400,6 +410,7 @@ public class Enrollment implements Serializable {
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (institute == null ? 0 : institute.hashCode());
 		result = prime * result + (instituteType == null ? 0 : instituteType.hashCode());
+		result = prime * result + (isArchive == null ? 0 : isArchive.hashCode());
 		result = prime * result + (isInternationalStudent == null ? 0 : isInternationalStudent.hashCode());
 		result = prime * result + (lastName == null ? 0 : lastName.hashCode());
 		result = prime * result + (latestAcademicQualification == null ? 0 : latestAcademicQualification.hashCode());
@@ -537,6 +548,13 @@ public class Enrollment implements Serializable {
 				return false;
 			}
 		} else if (!instituteType.equals(other.instituteType)) {
+			return false;
+		}
+		if (isArchive == null) {
+			if (other.isArchive != null) {
+				return false;
+			}
+		} else if (!isArchive.equals(other.isArchive)) {
 			return false;
 		}
 		if (isInternationalStudent == null) {
@@ -689,7 +707,7 @@ public class Enrollment implements Serializable {
 				.append(otherName).append(", address=").append(address).append(", town=").append(town).append(", state=").append(state).append(", country=")
 				.append(country).append(", zipCode=").append(zipCode).append(", phoneNumber=").append(phoneNumber).append(", email=").append(email)
 				.append(", assignee=").append(assignee).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=")
-				.append(createdBy).append(", updatedBy=").append(updatedBy).append("]");
+				.append(createdBy).append(", updatedBy=").append(updatedBy).append(", isArchive=").append(isArchive).append("]");
 		return builder.toString();
 	}
 

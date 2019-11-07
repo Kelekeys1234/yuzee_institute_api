@@ -71,7 +71,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
 	public List<Enrollment> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
-			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize) {
+			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Enrollment.class, "enrollment");
 		if (instituteId != null) {
@@ -96,6 +96,9 @@ public class EnrollmentDao implements IEnrollmentDao {
 		}
 		if (userId != null) {
 			crit.add(Restrictions.eq("enrollment.userId", userId));
+		}
+		if (isArchive != null) {
+			crit.add(Restrictions.eq("enrollment.isArchive", isArchive));
 		}
 
 		if (startIndex != null && pageSize != null) {

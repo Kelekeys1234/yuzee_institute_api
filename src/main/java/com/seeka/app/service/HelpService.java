@@ -2,6 +2,7 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +121,7 @@ public class HelpService implements IHelpService {
 		dto.setUpdatedBy(seekaHelp.getUpdatedBy());
 		dto.setIsQuestioning(seekaHelp.getIsQuestioning());
 		dto.setStatus(seekaHelp.getStatus());
+		dto.setIsArchive(seekaHelp.getIsArchive());
 		if (seekaHelp.getUserId() != null) {
 			try {
 				UserDto userDto = iUsersService.getUserById(seekaHelp.getUserId());
@@ -164,10 +166,10 @@ public class HelpService implements IHelpService {
 		int totalCount = 0;
 		PaginationUtilDto paginationUtilDto = null;
 		try {
-			totalCount = helpDAO.findTotalHelpRecord(null);
+			totalCount = helpDAO.findTotalHelpRecord(null, null);
 			int startIndex = (pageNumber - 1) * pageSize;
 			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-			helps = helpDAO.getAll(startIndex, pageSize, null);
+			helps = helpDAO.getAll(startIndex, pageSize, null, null);
 		} catch (Exception exception) {
 			status = IConstant.FAIL;
 		}
@@ -547,13 +549,13 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public List<SeekaHelp> getUserHelpList(final BigInteger userId, final int startIndex, final Integer pageSize) {
-		return helpDAO.getAll(startIndex, pageSize, userId);
+	public List<SeekaHelp> getUserHelpList(final BigInteger userId, final int startIndex, final Integer pageSize, final Boolean isArchive) {
+		return helpDAO.getAll(startIndex, pageSize, userId, isArchive);
 	}
 
 	@Override
-	public int getUserHelpCount(final BigInteger userId) {
-		return helpDAO.findTotalHelpRecord(userId);
+	public int getUserHelpCount(final BigInteger userId, final Boolean isArchive) {
+		return helpDAO.findTotalHelpRecord(userId, isArchive);
 	}
 
 	@Override
@@ -570,4 +572,14 @@ public class HelpService implements IHelpService {
 	public int getSubCategoryCount(final BigInteger categoryId) {
 		return helpDAO.getSubCategoryCount(categoryId);
 	}
+
+	@Override
+	public void archiveHelpSupport(final BigInteger entityId, final boolean isArchive) {
+		SeekaHelp seekaHelp = helpDAO.get(entityId);
+		seekaHelp.setIsArchive(isArchive);
+		seekaHelp.setUpdatedBy("API");
+		seekaHelp.setUpdatedOn(new Date());
+		helpDAO.update(seekaHelp);
+	}
+
 }

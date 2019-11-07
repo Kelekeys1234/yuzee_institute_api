@@ -60,12 +60,15 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public int findTotalHelpRecord(final BigInteger userId) {
+	public int findTotalHelpRecord(final BigInteger userId, final Boolean isArchive) {
 		int status = 1;
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select count(*) from seeka_help sa where sa.is_active = " + status + " and sa.deleted_on IS NULL";
 		if (userId != null) {
 			sqlQuery = sqlQuery + " and sa.user_id = " + userId;
+		}
+		if (isArchive != null) {
+			sqlQuery = sqlQuery + " and sa.is_archive = " + isArchive;
 		}
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
@@ -74,13 +77,16 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<SeekaHelp> getAll(final Integer startIndex, final Integer pageSize, final BigInteger userId) {
+	public List<SeekaHelp> getAll(final Integer startIndex, final Integer pageSize, final BigInteger userId, final Boolean isArchive) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
 		if (userId != null) {
 			crit.add(Restrictions.eq("seekaHelp.userId", userId));
 		}
 		crit.add(Restrictions.eq("seekaHelp.isActive", true));
+		if (isArchive != null) {
+			crit.add(Restrictions.eq("seekaHelp.isArchive", isArchive));
+		}
 
 		if (startIndex != null && pageSize != null) {
 			crit.setFirstResult(startIndex);

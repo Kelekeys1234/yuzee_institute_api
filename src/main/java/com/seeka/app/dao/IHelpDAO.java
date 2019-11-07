@@ -21,9 +21,9 @@ public interface IHelpDAO {
 
 	void update(SeekaHelp seekaHelp);
 
-	int findTotalHelpRecord(BigInteger userId);
+	int findTotalHelpRecord(BigInteger userId, Boolean isArchive);
 
-	List<SeekaHelp> getAll(Integer startIndex, Integer pageSize, BigInteger userId);
+	List<SeekaHelp> getAll(Integer startIndex, Integer pageSize, BigInteger userId, Boolean isArchive);
 
 	void save(HelpCategory helpCategory);
 
