@@ -26,7 +26,8 @@ public interface IErrorReportDAO {
 
 	void addErrorRepoerAudit(AuditErrorReport auditErrorReport);
 
-	int getErrorReportCountForUser(BigInteger userId, BigInteger errorReportCategoryId, String errorReportStatus, Date updatedOn);
+	int getErrorReportCountForUser(BigInteger userId, BigInteger errorReportCategoryId, String errorReportStatus, Date updatedOn, Boolean isFavourite,
+			Boolean isArchive);
 
 	void setIsFavouriteFlag(BigInteger errorRepoetId, boolean isFavourite) throws NotFoundException;
 

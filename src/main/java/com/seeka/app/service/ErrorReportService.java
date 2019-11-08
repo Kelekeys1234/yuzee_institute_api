@@ -79,10 +79,8 @@ public class ErrorReportService implements IErrorReportService {
 		if (null == errorReportDto.getStatus()) {
 			throw new ValidationException("Status is required.");
 		}
-		if (null == errorReportDto.getCaseNumber()) {
-			throw new ValidationException("Case number is required.");
-		}
 		ErrorReport errorReport = errorReportDAO.getErrorReportById(id);
+		String caseNumber = errorReport.getCaseNumber();
 		BeanUtils.copyProperties(errorReportDto, errorReport);
 		if (errorReportDto.getErrorReportCategoryId() != null) {
 			errorReport.setErrorReportCategory(errorReportDAO.getErrorCategory(errorReportDto.getErrorReportCategoryId()));
@@ -92,6 +90,7 @@ public class ErrorReportService implements IErrorReportService {
 		errorReport.setId(id);
 		errorReport.setUpdatedBy("API");
 		errorReport.setUpdatedOn(new Date());
+		errorReport.setCaseNumber(caseNumber);
 		errorReportDAO.update(errorReport);
 		AuditErrorReport auditErrorReport = new AuditErrorReport();
 		auditErrorReport.setErrorReport(errorReport);
@@ -178,8 +177,9 @@ public class ErrorReportService implements IErrorReportService {
 	}
 
 	@Override
-	public int getErrorReportCount(final BigInteger userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn) {
-		return errorReportDAO.getErrorReportCountForUser(userId, errorReportCategoryId, errorReportStatus, updatedOn);
+	public int getErrorReportCount(final BigInteger userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
+			final Boolean isFavourite, final Boolean isArchive) {
+		return errorReportDAO.getErrorReportCountForUser(userId, errorReportCategoryId, errorReportStatus, updatedOn, isFavourite, isArchive);
 	}
 
 	@Override

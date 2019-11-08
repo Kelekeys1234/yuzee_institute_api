@@ -95,7 +95,7 @@ public class ErrorReportController {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<ErrorReportResponseDto> errorReports = errorReportService.getAllErrorReport(null, startIndex, pageSize, errorReportCategoryId, errorReportStatus,
 				updatedOn, isFavourite, null);
-		int totalCount = errorReportService.getErrorReportCount(null, errorReportCategoryId, errorReportStatus, updatedOn);
+		int totalCount = errorReportService.getErrorReportCount(null, errorReportCategoryId, errorReportStatus, updatedOn, isFavourite, null);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
@@ -116,7 +116,7 @@ public class ErrorReportController {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<ErrorReportResponseDto> errorReportList = errorReportService.getAllErrorReport(userId, startIndex, pageSize, null, null, null, isFavourite,
 				isArchive);
-		int totalCount = errorReportService.getErrorReportCount(userId, null, null, null);
+		int totalCount = errorReportService.getErrorReportCount(userId, null, null, null, isFavourite, isArchive);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);

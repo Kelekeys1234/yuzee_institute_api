@@ -111,8 +111,8 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	}
 
 	@Override
-	public int getErrorReportCountForUser(final BigInteger userId, final BigInteger errorReportCategoryId, final String errorReportStatus,
-			final Date updatedOn) {
+	public int getErrorReportCountForUser(final BigInteger userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
+			final Boolean isFavourite, final Boolean isArchive) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ErrorReport.class, "errorReport");
 		crit.createAlias("errorReport.errorReportCategory", "errorReportCategory");
@@ -125,6 +125,12 @@ public class ErrorReportDAO implements IErrorReportDAO {
 		}
 		if (errorReportStatus != null) {
 			crit.add(Restrictions.eq("errorReport.status", errorReportStatus));
+		}
+		if (isFavourite != null) {
+			crit.add(Restrictions.eq("errorReport.isFavourite", isFavourite));
+		}
+		if (isArchive != null) {
+			crit.add(Restrictions.eq("errorReport.isArchive", isArchive));
 		}
 		if (updatedOn != null) {
 			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
