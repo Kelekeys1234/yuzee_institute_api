@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.DateUtil;
+import com.seeka.app.util.IConstant;
 
 @Repository
 @SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
@@ -69,10 +71,11 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<BigInteger> getTopInstituteByCountry(final BigInteger countryId, Long startIndex, Long pageSize) {
+	public List<BigInteger> getTopInstituteByCountry(final BigInteger countryId/* , Long startIndex, Long pageSize */) {
 		Session session = sessionFactory.getCurrentSession();
-		List<BigInteger> idList = session.createNativeQuery("select id from institute where country_id = ? order by world_ranking LIMIT ?,?")
-				.setParameter(1, countryId).setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
+		List<BigInteger> idList = session.createNativeQuery("select id from institute where country_id = ? order by world_ranking")
+				.setParameter(1, countryId).getResultList();
+				// .setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
 
 		return idList;
 	}
@@ -220,7 +223,7 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<Institute> getAllInstituteByID(final List<BigInteger> instituteId) {
+	public List<Institute> getAllInstituteByID(final Collection<BigInteger> instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Institute.class, "institute");
 		crit.add(Restrictions.in("id", instituteId));
@@ -637,5 +640,17 @@ public class InstituteDAO implements IInstituteDAO {
 		String ids = distinctCountryIds.stream().map(BigInteger :: toString).collect(Collectors.joining(","));
 		List<BigInteger> instituteIds = session.createNativeQuery("SELECT ID FROM INSTITUTE WHERE COUNTRY_ID IN ("+ids+")").getResultList();
 		return instituteIds;
+	}
+
+	@Override
+	public List<BigInteger> getRandomInstituteByCountry(List<BigInteger> countryIdList) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		String countryIds = countryIdList.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(","));
+		List<BigInteger> idList = session.createNativeQuery("select id from institute where country_id in (?) order by Rand() LIMIT ?")
+				.setParameter(1, countryIds).setParameter(2, IConstant.TOTAL_INSTITUTES_PER_PAGE).getResultList();
+				// .setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
+
+		return idList;
 	}
 }

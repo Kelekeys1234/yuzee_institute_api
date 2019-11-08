@@ -13,7 +13,8 @@ import com.seeka.app.exception.ValidationException;
 
 public interface IRecommendationService {
 
-	List<InstituteResponseDto> getRecommendedInstitutes(BigInteger userId, Long startIndex, Long pageSize, Long pageNumber, String language) throws ValidationException, NotFoundException;
+	List<InstituteResponseDto> getRecommendedInstitutes(BigInteger userId,
+			/* Long startIndex, Long pageSize, Long pageNumber, */ String language) throws ValidationException, NotFoundException;
 	
 	void getOtherPeopleSearch();
 

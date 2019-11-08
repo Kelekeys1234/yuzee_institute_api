@@ -1,6 +1,7 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -23,7 +24,7 @@ public interface IInstituteDAO {
 
     Institute get(BigInteger id);
 
-    List<BigInteger> getTopInstituteByCountry(BigInteger countryId, Long startIndex, Long pageSize);
+	List<BigInteger> getTopInstituteByCountry(BigInteger countryId/* , Long startIndex, Long pageSize */);
 
     List<Institute> getAll();
 
@@ -75,9 +76,11 @@ public interface IInstituteDAO {
     
     List<Institute> ratingWiseInstituteListByCountry(Country country);
 
-	List<Institute> getAllInstituteByID(List<BigInteger> instituteId);
+	List<Institute> getAllInstituteByID(Collection<BigInteger> instituteId);
 	
 	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
 
 	List<BigInteger> getInstitudeByCountry(List<BigInteger> distinctCountryIds);
+
+	List<BigInteger> getRandomInstituteByCountry(List<BigInteger> countryIdList);
 }

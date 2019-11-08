@@ -107,6 +107,8 @@ public class IConstant {
 	public static final Integer SCHOLARSHIPS_PER_COUNTRY_FOR_RECOMMENDATION = 4;
 
 	public static final Integer TOTAL_SCHOLARSHIPS_PER_PAGE = 20;
+	
+	public static final Integer TOTAL_INSTITUTES_PER_PAGE = 20;
 	/***************
 	 * CONSTANTS FOR DISPLAYING MESSAGES
 	 ******************************************/

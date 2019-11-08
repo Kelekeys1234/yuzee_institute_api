@@ -41,4 +41,6 @@ public interface ICountryService {
 	Country getCountryBasedOnCitizenship(String citizenship);
 	
 	List<Country> getCountryListBasedOnCitizenship(List<String> citizenships);
+
+	List<BigInteger> getCountryBasedOnCitizenship(List<String> countryNames);
 }

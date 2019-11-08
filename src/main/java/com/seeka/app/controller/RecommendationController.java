@@ -37,13 +37,13 @@ public class RecommendationController {
 
 	@GetMapping("/institute")
 	public ResponseEntity<?> getRecommendedInstitutes(@RequestHeader(value = "userId") BigInteger userId,
-			@RequestHeader(value = "language") String language, @RequestParam(value = "startIndex", required = false) Long startIndex,
-			@RequestParam(value = "pageSize") Long pageSize, @RequestParam(value = "pageNumber", required=false) Long pageNumber)
+			@RequestHeader(value = "language") String language/*, @RequestParam(value = "startIndex", required = false) Long startIndex,
+			@RequestParam(value = "pageSize") Long pageSize, @RequestParam(value = "pageNumber", required=false) Long pageNumber*/)
 			throws ValidationException, NotFoundException {
 
-		paginationValidations(language, startIndex, pageSize, pageNumber);
+		// paginationValidations(language, startIndex, pageSize, pageNumber);
 		List<InstituteResponseDto> instituteResponseList = iRecommendationService.getRecommendedInstitutes(userId,
-				startIndex, pageSize, pageNumber, language);
+				/* startIndex, pageSize, pageNumber, */language);
 
 		return new GenericResponseHandlers.Builder().setData(instituteResponseList).setMessage(messageByLocalService
 				.getMessage("list.display.successfully", new Object[] { IConstant.INSTITUTE }, language))

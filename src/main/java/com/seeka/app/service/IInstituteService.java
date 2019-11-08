@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +25,10 @@ public interface IInstituteService {
 
 	Institute get(BigInteger id);
 
-	List<BigInteger> getTopInstituteIdByCountry(BigInteger countryId, Long startIndex, Long pageSize);
+	List<BigInteger> getTopInstituteIdByCountry(BigInteger countryId/* , Long startIndex, Long pageSize */);
 
+	List<BigInteger> getRandomInstituteIdByCountry(List<BigInteger> countryId);
+	
 	List<Institute> getAll();
 
 	List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
@@ -60,7 +63,7 @@ public interface IInstituteService {
 
 	List<Institute> ratingWiseInstituteListByCountry(Country country);
 
-	List<InstituteResponseDto> getAllInstituteByID(final List<BigInteger> listInstituteId) throws ValidationException;
+	List<InstituteResponseDto> getAllInstituteByID(final Collection<BigInteger> listInstituteId) throws ValidationException;
 	
 	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
 

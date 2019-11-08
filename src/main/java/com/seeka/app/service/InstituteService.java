@@ -2,6 +2,7 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -99,8 +100,15 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<BigInteger> getTopInstituteIdByCountry(final BigInteger countryId, Long startIndex, Long pageSize) {
-		return dao.getTopInstituteByCountry(countryId, startIndex, pageSize);
+	public List<BigInteger> getTopInstituteIdByCountry(
+			final BigInteger countryId/* , Long startIndex, Long pageSize */) {
+		return dao.getTopInstituteByCountry(countryId/* , startIndex, pageSize */);
+	}
+	
+	@Override
+	public List<BigInteger> getRandomInstituteIdByCountry(
+			final List<BigInteger> countryIdList/* , Long startIndex, Long pageSize */) {
+		return dao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
 	}
 
 	@Override
@@ -124,7 +132,7 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<InstituteResponseDto> getAllInstituteByID(final List<BigInteger> listInstituteId) throws ValidationException {
+	public List<InstituteResponseDto> getAllInstituteByID(final Collection<BigInteger> listInstituteId) throws ValidationException {
 		List<Institute> inistituteList = dao.getAllInstituteByID(listInstituteId);
 		List<InstituteResponseDto> instituteResponseDTOList = new ArrayList<>();
 		for (Institute institute : inistituteList) {
