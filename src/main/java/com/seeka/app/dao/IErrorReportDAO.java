@@ -1,8 +1,10 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
+import com.seeka.app.bean.AuditErrorReport;
 import com.seeka.app.bean.ErrorReport;
 import com.seeka.app.bean.ErrorReportCategory;
 import com.seeka.app.exception.NotFoundException;
@@ -13,9 +15,8 @@ public interface IErrorReportDAO {
 
 	ErrorReportCategory getErrorCategory(BigInteger errorReportCategoryId);
 
-	List<ErrorReport> getAllErrorReport();
-
-	List<ErrorReport> getErrorReportByUserId(BigInteger userId, Integer startIndex, Integer pageSize);
+	List<ErrorReport> getAllErrorReport(BigInteger userId, Integer startIndex, Integer pageSize, BigInteger errorReportCategoryId, String errorReportStatus,
+			Date updatedOn, Boolean isFavourite, Boolean isArchive);
 
 	ErrorReport getErrorReportById(BigInteger id);
 
@@ -23,10 +24,13 @@ public interface IErrorReportDAO {
 
 	List<ErrorReportCategory> getAllErrorCategory(String errorCategoryType);
 
-	void addErrorRepoerAudit(BigInteger id);
+	void addErrorRepoerAudit(AuditErrorReport auditErrorReport);
 
-	int getErrorReportCountForUser(BigInteger userId);
+	int getErrorReportCountForUser(BigInteger userId, BigInteger errorReportCategoryId, String errorReportStatus, Date updatedOn);
 
 	void setIsFavouriteFlag(BigInteger errorRepoetId, boolean isFavourite) throws NotFoundException;
 
+	void saveErrorReportCategory(ErrorReportCategory errorReportCategory);
+
+	List<AuditErrorReport> getAuditListByErrorReport(BigInteger errorReportId);
 }

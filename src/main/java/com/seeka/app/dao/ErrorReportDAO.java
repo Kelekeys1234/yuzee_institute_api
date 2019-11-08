@@ -1,12 +1,14 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -15,6 +17,7 @@ import com.seeka.app.bean.AuditErrorReport;
 import com.seeka.app.bean.ErrorReport;
 import com.seeka.app.bean.ErrorReportCategory;
 import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.util.CommonUtil;
 
 @Repository
 @SuppressWarnings({ "deprecation", "unchecked" })
@@ -24,6 +27,12 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	private SessionFactory sessionFactory;
 
 	@Override
+	public void saveErrorReportCategory(final ErrorReportCategory errorReportCategory) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(errorReportCategory);
+	}
+
+	@Override
 	public void save(final ErrorReport errorReport) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(errorReport);
@@ -31,28 +40,38 @@ public class ErrorReportDAO implements IErrorReportDAO {
 
 	@Override
 	public ErrorReportCategory getErrorCategory(final BigInteger errorReportCategoryId) {
-		ErrorReportCategory errorReportCategory = null;
-		if (errorReportCategoryId != null) {
-			Session session = sessionFactory.getCurrentSession();
-			errorReportCategory = session.get(ErrorReportCategory.class, errorReportCategoryId);
-		}
-		return errorReportCategory;
-	}
-
-	@Override
-	public List<ErrorReport> getAllErrorReport() {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(ErrorReport.class);
-		crit.add(Restrictions.eq("isActive", true));
-		return crit.list();
+		return session.get(ErrorReportCategory.class, errorReportCategoryId);
 	}
 
 	@Override
-	public List<ErrorReport> getErrorReportByUserId(final BigInteger userId, final Integer startIndex, final Integer pageSize) {
+	public List<ErrorReport> getAllErrorReport(final BigInteger userId, final Integer startIndex, final Integer pageSize,
+			final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ErrorReport.class, "errorReport");
-		crit.add(Restrictions.eq("errorReport.userId", userId)).add(Restrictions.eq("errorReport.isActive", true));
-
+		crit.createAlias("errorReport.errorReportCategory", "errorReportCategory");
+		if (userId != null) {
+			crit.add(Restrictions.eq("errorReport.userId", userId));
+		}
+		crit.add(Restrictions.eq("errorReport.isActive", true));
+		if (errorReportCategoryId != null) {
+			crit.add(Restrictions.eq("errorReportCategory.id", errorReportCategoryId));
+		}
+		if (errorReportStatus != null) {
+			crit.add(Restrictions.eq("errorReport.status", errorReportStatus));
+		}
+		if (isFavourite != null) {
+			crit.add(Restrictions.eq("errorReport.isFavourite", isFavourite));
+		}
+		if (isArchive != null) {
+			crit.add(Restrictions.eq("errorReport.isArchive", isArchive));
+		}
+		if (updatedOn != null) {
+			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
+			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
+			crit.add(Restrictions.ge("errorReport.updatedOn", fromDate));
+			crit.add(Restrictions.le("errorReport.updatedOn", toDate));
+		}
 		if (startIndex != null && pageSize != null) {
 			crit.setFirstResult(startIndex);
 			crit.setMaxResults(pageSize);
@@ -86,38 +105,35 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	}
 
 	@Override
-	public void addErrorRepoerAudit(final BigInteger id) {
+	public void addErrorRepoerAudit(final AuditErrorReport auditErrorReport) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(ErrorReport.class);
-		System.out.println("The errorReport Id" + id);
-		crit.add(Restrictions.eq("id", id)).add(Restrictions.eq("isActive", true));
-		ErrorReport errorReport2 = (ErrorReport) crit.uniqueResult();
-		AuditErrorReport auditErrorReport = new AuditErrorReport();
-		auditErrorReport.setDescription(errorReport2.getDescription());
-		auditErrorReport.setErrorReportCategory(errorReport2.getErrorReportCategory());
-		auditErrorReport.setUserId(errorReport2.getUserId());
-		auditErrorReport.setCreatedBy(errorReport2.getCreatedBy());
-		auditErrorReport.setCreatedOn(errorReport2.getCreatedOn());
-		auditErrorReport.setUpdatedBy(errorReport2.getUpdatedBy());
-		auditErrorReport.setUpdatedOn(errorReport2.getUpdatedOn());
-		auditErrorReport.setIsActive(errorReport2.getIsActive());
-		auditErrorReport.setCaseNumber(errorReport2.getCaseNumber());
-		auditErrorReport.setStatus(errorReport2.getStatus());
-		auditErrorReport.setCourseArticleId(errorReport2.getCourseArticleId());
-		auditErrorReport.setDueDate(errorReport2.getDueDate());
-		auditErrorReport.setAssigneeUserId(errorReport2.getAssigneeUserId());
-		auditErrorReport.setErrorReportId(errorReport2.getId());
-		auditErrorReport.setAuditCreatedBy("");
-		auditErrorReport.setAuditUpdatedBy("");
 		session.save(auditErrorReport);
 	}
 
 	@Override
-	public int getErrorReportCountForUser(final BigInteger userId) {
+	public int getErrorReportCountForUser(final BigInteger userId, final BigInteger errorReportCategoryId, final String errorReportStatus,
+			final Date updatedOn) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select count(*) from error_report where user_id = ? order by is_favourite desc";
-		BigInteger count = (BigInteger) session.createSQLQuery(sqlQuery).setParameter(1, userId).uniqueResult();
-		return count != null ? count.intValue() : 0;
+		Criteria crit = session.createCriteria(ErrorReport.class, "errorReport");
+		crit.createAlias("errorReport.errorReportCategory", "errorReportCategory");
+		if (userId != null) {
+			crit.add(Restrictions.eq("errorReport.userId", userId));
+		}
+		crit.add(Restrictions.eq("errorReport.isActive", true));
+		if (errorReportCategoryId != null) {
+			crit.add(Restrictions.eq("errorReportCategory.id", errorReportCategoryId));
+		}
+		if (errorReportStatus != null) {
+			crit.add(Restrictions.eq("errorReport.status", errorReportStatus));
+		}
+		if (updatedOn != null) {
+			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
+			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
+			crit.add(Restrictions.ge("errorReport.updatedOn", fromDate));
+			crit.add(Restrictions.le("errorReport.updatedOn", toDate));
+		}
+		crit.setProjection(Projections.rowCount());
+		return ((Long) crit.uniqueResult()).intValue();
 	}
 
 	@Override
@@ -128,6 +144,15 @@ public class ErrorReportDAO implements IErrorReportDAO {
 		if (updateCount == 0) {
 			throw new NotFoundException("No Error Report Found with Id : " + errorReportId);
 		}
+	}
+
+	@Override
+	public List<AuditErrorReport> getAuditListByErrorReport(final BigInteger errorReportId) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(AuditErrorReport.class, "auditErrorReport");
+		criteria.createAlias("auditErrorReport.errorReport", "errorReport");
+		criteria.add(Restrictions.eq("errorReport.id", errorReportId));
+		return criteria.list();
 	}
 
 }

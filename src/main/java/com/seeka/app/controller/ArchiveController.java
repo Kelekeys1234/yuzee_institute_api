@@ -15,6 +15,7 @@ import com.seeka.app.constant.ArchiveEntityType;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IEnrollmentService;
+import com.seeka.app.service.IErrorReportService;
 import com.seeka.app.service.IHelpService;
 
 @RestController
@@ -27,17 +28,19 @@ public class ArchiveController {
 	@Autowired
 	private IHelpService iHelpService;
 
+	@Autowired
+	private IErrorReportService iErrorReportService;
+
 	@PostMapping("/entityType/{entityType}/entityId/{entityId}")
 	public ResponseEntity<Object> addArchive(@PathVariable final String entityType, @PathVariable final BigInteger entityId,
 			@RequestParam final boolean isArchive) throws ValidationException {
 		if (entityType.equals(ArchiveEntityType.ENROLLMENT.name())) {
 			iEnrollmentService.archiveEnrollment(entityId, isArchive);
 		} else if (entityType.equals(ArchiveEntityType.ERROR_REPORT.name())) {
-
+			iErrorReportService.archiveErrorReport(entityId, isArchive);
 		} else if (entityType.equals(ArchiveEntityType.HELP_SUPPORT.name())) {
 			iHelpService.archiveHelpSupport(entityId, isArchive);
 		}
-
 		return new GenericResponseHandlers.Builder().setMessage("Archive successfully").setStatus(HttpStatus.OK).create();
 
 	}
