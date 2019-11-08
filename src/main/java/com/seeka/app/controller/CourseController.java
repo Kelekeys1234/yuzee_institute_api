@@ -25,7 +25,6 @@ import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseGradeEligibility;
 import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.bean.CoursePricing;
-import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteLevel;
@@ -249,11 +248,11 @@ public class CourseController {
 		/**
 		 * Need to look into this logic
 		 */
-		
+
 		if (null != courseSearchDto.getCurrencyCode() && !user.getPreferredCurrencyName().equals(courseSearchDto.getCurrencyCode())) {
 			currency = CurrencyUtil.getCurrencyObjByCode(courseSearchDto.getCurrencyCode());
 			response.put("showCurrencyPopup", true);
-			message = "Do you want to change " + currency.getToCurrencyName()+ " (" + currency.getToCurrencyCode() + ") as your currency.?";
+			message = "Do you want to change " + currency.getToCurrencyName() + " (" + currency.getToCurrencyCode() + ") as your currency.?";
 		} else {
 			currency = CurrencyUtil.getCurrencyObjByCode(user.getPreferredCurrencyName());
 			response.put("showCurrencyPopup", false);
@@ -499,6 +498,18 @@ public class CourseController {
 		return ResponseEntity.accepted().body(courseService.addUserCourses(userCourse));
 	}
 
+	/**
+	 * Get My course List
+	 *
+	 * @param userId
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param currencyCode
+	 * @param sortBy
+	 * @param sortAsscending
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getUserCourses(@PathVariable final BigInteger userId, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final String currencyCode, @RequestParam(required = false) final String sortBy,

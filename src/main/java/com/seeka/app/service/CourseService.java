@@ -118,10 +118,10 @@ public class CourseService implements ICourseService {
 
 	@Autowired
 	private ViewDao viewDao;
-	
+
 	@Autowired
 	private UserRecommendationService userRecommedationService;
-	
+
 	@Override
 	public void save(final Course course) {
 		iCourseDAO.save(course);
@@ -229,22 +229,25 @@ public class CourseService implements ICourseService {
 //				}
 
 				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency()/* , currencies */);
-				// BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCurrency());
+				// BigInteger fromCurrencyId = getCurrencyId(currencies,
+				// courseDto.getCurrency());
 				if (currencyRate == null) {
 					throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
-					//currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCurrency());
+					// currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId,
+					// courseDto.getCurrency());
 				}
 				if (currencyRate != null) {
-					if (/*toCurrencyId*/courseDto.getCurrency() != null) {
+					if (/* toCurrencyId */courseDto.getCurrency() != null) {
 						if (courseDto.getDomasticFee() != null) {
-							// Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
-							Double convertedRate  = Double.valueOf(courseDto.getDomasticFee())/currencyRate.getConversionRate();
+							// Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate,
+							// toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
+							Double convertedRate = Double.valueOf(courseDto.getDomasticFee()) / currencyRate.getConversionRate();
 							if (convertedRate != null) {
 								course.setUsdDomasticFee(convertedRate);
 							}
 						}
 						if (courseDto.getInternationalFee() != null) {
-							Double convertedRate  = Double.valueOf(courseDto.getInternationalFee())/currencyRate.getConversionRate();
+							Double convertedRate = Double.valueOf(courseDto.getInternationalFee()) / currencyRate.getConversionRate();
 //							Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId,
 //									Double.valueOf(courseDto.getInternationalFee()));
 							if (convertedRate != null) {
@@ -316,22 +319,25 @@ public class CourseService implements ICourseService {
 				}
 
 				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency()/* , currencies */);
-				// BigInteger fromCurrencyId = getCurrencyId(currencies, courseDto.getCurrency());
+				// BigInteger fromCurrencyId = getCurrencyId(currencies,
+				// courseDto.getCurrency());
 				if (currencyRate == null) {
 					throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
-					// currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId, courseDto.getCurrency());
+					// currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId,
+					// courseDto.getCurrency());
 				}
 				if (currencyRate != null) {
 					if (toCurrencyId != null) {
 						if (courseDto.getDomasticFee() != null) {
-							Double convertedRate  = Double.valueOf(courseDto.getInternationalFee())/currencyRate.getConversionRate();
-							// Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
+							Double convertedRate = Double.valueOf(courseDto.getInternationalFee()) / currencyRate.getConversionRate();
+							// Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate,
+							// toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
 							if (convertedRate != null) {
 								course.setUsdDomasticFee(convertedRate);
 							}
 						}
 						if (courseDto.getInternationalFee() != null) {
-							Double convertedRate  = Double.valueOf(courseDto.getInternationalFee())/currencyRate.getConversionRate();
+							Double convertedRate = Double.valueOf(courseDto.getInternationalFee()) / currencyRate.getConversionRate();
 //							Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId,
 //									Double.valueOf(courseDto.getInternationalFee()));
 							if (convertedRate != null) {
@@ -570,12 +576,7 @@ public class CourseService implements ICourseService {
 		List<CourseRequest> resultList = new ArrayList<>();
 		try {
 			totalCount = iCourseDAO.findTotalCountByUserId(userId);
-			int startIndex;
-			if (pageNumber > 1) {
-				startIndex = (pageNumber - 1) * pageSize + 1;
-			} else {
-				startIndex = pageNumber;
-			}
+			int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 			courses = iCourseDAO.getUserCourse(userId, startIndex, pageSize, currencyCode, sortBy, sortAsscending);
 			for (CourseRequest courseRequest : courses) {
@@ -1007,14 +1008,14 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public List<BigInteger> getTopSearchedCoursesByUsers(final BigInteger userId) {
-		return viewDao.getUserWatchCourseIds(userId,"COURSE");
+		return viewDao.getUserWatchCourseIds(userId, "COURSE");
 	}
 
 	@Override
 	public Set<Course> getRelatedCoursesBasedOnPastSearch(final List<BigInteger> courseList) throws ValidationException {
 		Set<Course> relatedCourses = new HashSet<>();
 		for (BigInteger courseId : courseList) {
-			 relatedCourses.addAll(userRecommedationService.getRelatedCourse(courseId));
+			relatedCourses.addAll(userRecommedationService.getRelatedCourse(courseId));
 		}
 		return relatedCourses;
 	}
@@ -1087,7 +1088,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public void updateCourseForCurrency(CurrencyRate currencyRate) {
+	public void updateCourseForCurrency(final CurrencyRate currencyRate) {
 		iCourseDAO.updateCourseForCurrency(currencyRate);
 	}
 }
