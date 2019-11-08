@@ -42,7 +42,7 @@ import com.seeka.app.dao.ICourseMinRequirementDao;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IUserMyCourseDAO;
-import com.seeka.app.dao.UserRecommendationDao;
+import com.seeka.app.dao.ViewDao;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseFilterDto;
@@ -102,12 +102,6 @@ public class CourseService implements ICourseService {
 	private CourseGradeEligibilityDAO courseGradeEligibilityDao;
 
 	@Autowired
-	private UserRecommendationDao userRecommendationDao;
-
-	@Autowired
-	private UserRecommendationService userRecommendationService;
-
-	@Autowired
 	private IStorageService iStorageService;
 
 	@Autowired
@@ -122,6 +116,12 @@ public class CourseService implements ICourseService {
 	@Autowired
 	private IViewService iViewService;
 
+	@Autowired
+	private ViewDao viewDao;
+	
+	@Autowired
+	private UserRecommendationService userRecommedationService;
+	
 	@Override
 	public void save(final Course course) {
 		iCourseDAO.save(course);
@@ -982,7 +982,7 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public List<BigInteger> getTopSearchedCoursesByOtherUsers(final BigInteger userId) {
-		return userRecommendationDao.getOtherUserWatchCourse(userId);
+		return viewDao.getOtherUserWatchCourse(userId, "COURSE");
 	}
 
 	@Override
@@ -1007,14 +1007,14 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public List<BigInteger> getTopSearchedCoursesByUsers(final BigInteger userId) {
-		return userRecommendationDao.getUserWatchCourseIds(userId);
+		return viewDao.getUserWatchCourseIds(userId,"COURSE");
 	}
 
 	@Override
 	public Set<Course> getRelatedCoursesBasedOnPastSearch(final List<BigInteger> courseList) throws ValidationException {
 		Set<Course> relatedCourses = new HashSet<>();
 		for (BigInteger courseId : courseList) {
-			relatedCourses.addAll(userRecommendationService.getRelatedCourse(courseId));
+			 relatedCourses.addAll(userRecommedationService.getRelatedCourse(courseId));
 		}
 		return relatedCourses;
 	}

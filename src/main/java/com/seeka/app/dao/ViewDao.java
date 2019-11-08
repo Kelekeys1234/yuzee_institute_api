@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -92,4 +93,28 @@ public class ViewDao implements IViewDao {
 		return crit.list();
 	}
 
+	@Override
+	public List<BigInteger> getUserWatchCourseIds(final BigInteger userId, String entityType) {
+		Session session = sessionFactory.getCurrentSession();
+//		Criteria crit = session.createCriteria(UserViewData.class, "userViewData");
+//		crit.add(Restrictions.and(Restrictions.eq("userViewData.userId", userId)));
+//		crit.add(Restrictions.and(Restrictions.eq("userViewData.entityType", entityType)));
+//		ProjectionList projList = Projections.projectionList();
+//		projList.add(Projections.property("userViewData.entityId"), "entityId");
+//		projList.add(Projections.groupProperty("userViewData.entityId"), "entityId");
+//		projList.add(Projections.count("userViewData.entityId"), "count");
+//		crit.addOrder(Order.desc("count"));
+//		crit.setProjection(projList);
+		List<BigInteger> courseIds = session.createNativeQuery("Select entity_id from user_view_data where user_id = ? and entity_type = ? group by entity_id order by count(*) desc")
+			.setParameter(1, userId).setParameter(2, entityType).getResultList();
+		return courseIds;
+	}
+	
+	@Override
+	public List<BigInteger> getOtherUserWatchCourse(BigInteger userId, String entityType) {
+		Session session = sessionFactory.getCurrentSession();
+		List<BigInteger> courseList = (List<BigInteger>)session.createNativeQuery("select entity_id from user_view_data userwatchcourse where userwatchcourse.user_Id not in (?) and userwatchcourse.entity_type = ? group by userwatchcourse.entity_id order by count(*) desc").
+		setParameter(1, userId).getResultList();
+		return courseList;
+	}
 }

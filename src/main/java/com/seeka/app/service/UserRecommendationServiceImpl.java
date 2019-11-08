@@ -2,7 +2,6 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,14 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.SeekaArticles;
-import com.seeka.app.bean.UserWatchArticle;
-import com.seeka.app.bean.UserWatchCourse;
 import com.seeka.app.dao.UserRecommendationDao;
+import com.seeka.app.dao.ViewDao;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.StorageDto;
-import com.seeka.app.dto.UserArticleRequestDto;
-import com.seeka.app.dto.UserCourseRequestDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 
@@ -33,70 +28,70 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	private ICourseService iCourseService;
 
 	@Autowired
-	private IArticleService iArticleService;
-
-	@Autowired
 	private IStorageService iStorageService;
+	
+	@Autowired
+	private ViewDao viewDao;
 
-	@Override
-	public void createUserWatchCourse(final UserCourseRequestDto userCourseRequestDto) throws ValidationException {
-		UserWatchCourse existingUserWatchCourse = userRecommendationDao.getUserWatchCourseByUserIdAndCourseId(userCourseRequestDto.getUserId(),
-				userCourseRequestDto.getCourseId());
-		Date now = new Date();
-		if (existingUserWatchCourse != null) {
-			existingUserWatchCourse.setUpdatedBy("API");
-			existingUserWatchCourse.setUpdatedOn(now);
-			userRecommendationDao.save(existingUserWatchCourse);
-		} else {
-			Course existingCourse = iCourseService.getCourseData(userCourseRequestDto.getCourseId());
-			if (existingCourse == null) {
-				throw new ValidationException("Course not found for Id : " + userCourseRequestDto.getCourseId());
-			}
-			UserWatchCourse userWatchCourse = new UserWatchCourse();
-			userWatchCourse.setCourse(existingCourse);
-			userWatchCourse.setUserId(userCourseRequestDto.getUserId());
-			userWatchCourse.setCreatedBy("API");
-			userWatchCourse.setCreatedOn(now);
-			userWatchCourse.setUpdatedBy("API");
-			userWatchCourse.setUpdatedOn(now);
-			userRecommendationDao.save(userWatchCourse);
-		}
-	}
-
-	@Override
-	public List<UserWatchCourse> getUserWatchCourse(final BigInteger userId) {
-		return userRecommendationDao.getUserWatchCourse(userId);
-	}
-
-	@Override
-	public void createUserWatchArticle(final UserArticleRequestDto userArticleRequestDto) throws ValidationException {
-		UserWatchArticle existingUserWatchArticle = userRecommendationDao.getUserWatchArticleByUserIdAndArticleId(userArticleRequestDto.getUserId(),
-				userArticleRequestDto.getArticleId());
-		Date now = new Date();
-		if (existingUserWatchArticle != null) {
-			existingUserWatchArticle.setUpdatedBy("API");
-			existingUserWatchArticle.setUpdatedOn(now);
-			userRecommendationDao.save(existingUserWatchArticle);
-		} else {
-			SeekaArticles seekaArticles = iArticleService.findByArticleId(userArticleRequestDto.getArticleId());
-			if (seekaArticles == null) {
-				throw new ValidationException("Article not found for Id : " + userArticleRequestDto.getArticleId());
-			}
-			UserWatchArticle userWatchArticle = new UserWatchArticle();
-			userWatchArticle.setSeekaArticles(seekaArticles);
-			userWatchArticle.setUserId(userArticleRequestDto.getUserId());
-			userWatchArticle.setCreatedBy("API");
-			userWatchArticle.setCreatedOn(now);
-			userWatchArticle.setUpdatedBy("API");
-			userWatchArticle.setUpdatedOn(now);
-			userRecommendationDao.save(userWatchArticle);
-		}
-	}
-
-	@Override
-	public List<UserWatchArticle> getUserWatchArticle(final BigInteger userId) {
-		return userRecommendationDao.getUserWatchArticle(userId);
-	}
+//	@Override
+//	public void createUserWatchCourse(final UserCourseRequestDto userCourseRequestDto) throws ValidationException {
+//		UserWatchCourse existingUserWatchCourse = userRecommendationDao.getUserWatchCourseByUserIdAndCourseId(userCourseRequestDto.getUserId(),
+//				userCourseRequestDto.getCourseId());
+//		Date now = new Date();
+//		if (existingUserWatchCourse != null) {
+//			existingUserWatchCourse.setUpdatedBy("API");
+//			existingUserWatchCourse.setUpdatedOn(now);
+//			userRecommendationDao.save(existingUserWatchCourse);
+//		} else {
+//			Course existingCourse = iCourseService.getCourseData(userCourseRequestDto.getCourseId());
+//			if (existingCourse == null) {
+//				throw new ValidationException("Course not found for Id : " + userCourseRequestDto.getCourseId());
+//			}
+//			UserWatchCourse userWatchCourse = new UserWatchCourse();
+//			userWatchCourse.setCourse(existingCourse);
+//			userWatchCourse.setUserId(userCourseRequestDto.getUserId());
+//			userWatchCourse.setCreatedBy("API");
+//			userWatchCourse.setCreatedOn(now);
+//			userWatchCourse.setUpdatedBy("API");
+//			userWatchCourse.setUpdatedOn(now);
+//			userRecommendationDao.save(userWatchCourse);
+//		}
+//	}
+//
+//	@Override
+//	public List<UserWatchCourse> getUserWatchCourse(final BigInteger userId) {
+//		return userRecommendationDao.getUserWatchCourse(userId);
+//	}
+//
+//	@Override
+//	public void createUserWatchArticle(final UserArticleRequestDto userArticleRequestDto) throws ValidationException {
+//		UserWatchArticle existingUserWatchArticle = userRecommendationDao.getUserWatchArticleByUserIdAndArticleId(userArticleRequestDto.getUserId(),
+//				userArticleRequestDto.getArticleId());
+//		Date now = new Date();
+//		if (existingUserWatchArticle != null) {
+//			existingUserWatchArticle.setUpdatedBy("API");
+//			existingUserWatchArticle.setUpdatedOn(now);
+//			userRecommendationDao.save(existingUserWatchArticle);
+//		} else {
+//			SeekaArticles seekaArticles = iArticleService.findByArticleId(userArticleRequestDto.getArticleId());
+//			if (seekaArticles == null) {
+//				throw new ValidationException("Article not found for Id : " + userArticleRequestDto.getArticleId());
+//			}
+//			UserWatchArticle userWatchArticle = new UserWatchArticle();
+//			userWatchArticle.setSeekaArticles(seekaArticles);
+//			userWatchArticle.setUserId(userArticleRequestDto.getUserId());
+//			userWatchArticle.setCreatedBy("API");
+//			userWatchArticle.setCreatedOn(now);
+//			userWatchArticle.setUpdatedBy("API");
+//			userWatchArticle.setUpdatedOn(now);
+//			userRecommendationDao.save(userWatchArticle);
+//		}
+//	}
+//
+//	@Override
+//	public List<UserWatchArticle> getUserWatchArticle(final BigInteger userId) {
+//		return userRecommendationDao.getUserWatchArticle(userId);
+//	}
 
 	@Override
 	public List<Course> getRecommendCourse(final BigInteger courseId, final BigInteger userId) throws ValidationException {
@@ -201,10 +196,13 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		remainingCourse = 4 - resultList.size();
 
 		if (remainingCourse < 5 && userId != null) {
-			List<UserWatchCourse> userWatchCourses = userRecommendationDao.getUserWatchCourse(userId);
+			// List<BigInteger> userWatchCourseId = viewDao.getUserWatchCourseIds(userId, "COURSE"); 
+					// userRecommendationDao.getUserWatchCourse(userId);
 			courseIds = resultList.stream().map(i -> i.getId()).collect(Collectors.toList());
 			courseIds.add(courseId);
-			List<Course> courseWatchList = userWatchCourses.stream().map(i -> i.getCourse()).collect(Collectors.toList());
+			List<Course> courseWatchList = iCourseService.getAllCoursesUsingId(courseIds);
+					
+					 // userWatchCourses.stream().map(i -> i.getCourse()).collect(Collectors.toList());
 
 			while (remainingCourse != 0) {
 				for (Course course : courseWatchList) {
@@ -412,10 +410,10 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		return resultList;
 	}
 
-	@Override
-	public List<BigInteger> getTopSearchedCoursesByOtherUsers(final BigInteger userId) {
-
-		return userRecommendationDao.getOtherUserWatchCourse(userId);
-	}
+//	@Override
+//	public List<BigInteger> getTopSearchedCoursesByOtherUsers(final BigInteger userId) {
+//
+//		return userRecommendationDao.getOtherUserWatchCourse(userId);
+//	}
 
 }
