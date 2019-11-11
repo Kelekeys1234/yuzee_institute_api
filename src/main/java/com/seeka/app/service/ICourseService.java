@@ -9,13 +9,11 @@ import javax.validation.Valid;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
-import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseRequest;
@@ -35,9 +33,7 @@ public interface ICourseService {
 
 	List<Course> getAll();
 
-	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
-
-	CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, CurrencyRate currency, String oldCurrencyCode);
+	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Integer startIndex, Integer pageSize);
 
 	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
@@ -125,4 +121,6 @@ public interface ICourseService {
 	List<Long> getUserListForUserWatchCourseFilter(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId);
 
 	void updateCourseForCurrency(CurrencyRate currencyRate);
+
+	int getCountforNormalCourse(CourseSearchDto courseSearchDto);
 }

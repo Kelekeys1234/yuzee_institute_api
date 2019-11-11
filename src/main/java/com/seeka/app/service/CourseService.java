@@ -44,7 +44,6 @@ import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dao.ViewDao;
 import com.seeka.app.dto.AdvanceSearchDto;
-import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseRequest;
@@ -143,7 +142,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto) {
+	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize) {
 		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto);
 		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
 				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
@@ -159,9 +158,8 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public CourseFilterCostResponseDto getAllCoursesFilterCostInfo(final CourseSearchDto courseSearchDto, final CurrencyRate currency,
-			final String oldCurrencyCode) {
-		return iCourseDAO.getAllCoursesFilterCostInfo(courseSearchDto, currency, oldCurrencyCode);
+	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto) {
+		return iCourseDAO.getCountforNormalCourse(courseSearchDto);
 	}
 
 	@Override
@@ -381,17 +379,6 @@ public class CourseService implements ICourseService {
 		// BigInteger fromCurrencyId = getCurrencyId(currencies, courseCurrency);
 		CurrencyRate currencyRate = currencyDAO.getCurrencyRate(/* fromCurrencyId */courseCurrency);
 		return currencyRate;
-	}
-
-	private BigInteger getCurrencyId(final List<Currency> currencies, final String currency) {
-		BigInteger id = null;
-		for (Currency c : currencies) {
-			if (c.getCode().equalsIgnoreCase(currency)) {
-				id = c.getId();
-				break;
-			}
-		}
-		return id;
 	}
 
 	private Country getCountry(final BigInteger countryId) {

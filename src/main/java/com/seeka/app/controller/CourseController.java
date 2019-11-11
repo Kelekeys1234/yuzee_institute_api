@@ -25,10 +25,8 @@ import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseGradeEligibility;
 import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.bean.CoursePricing;
-import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteLevel;
-import com.seeka.app.bean.UserInfo;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.AdvanceSearchDto;
@@ -46,7 +44,6 @@ import com.seeka.app.dto.UserCourse;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.jobs.CurrencyUtil;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.service.ICourseEnglishEligibilityService;
 import com.seeka.app.service.ICourseGradeEligibilityService;
@@ -169,48 +166,25 @@ public class CourseController {
 		return courseSearch(courseSearchDto);
 	}
 
-	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto) {
-		courseSearchDto.setCurrencyCode(null);
-		Map<String, Object> response = new HashMap<>();
-		ErrorDto errorDto = null;
-		if (courseSearchDto.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
-			errorDto = new ErrorDto();
-			errorDto.setCode("400");
-			errorDto.setMessage("Maximum course limit per is " + PaginationUtil.courseResultPageMaxSize);
-			response.put("status", 0);
-			response.put("error", errorDto);
-			return ResponseEntity.badRequest().body(response);
-		}
-		Map<BigInteger, Boolean> favouriteMap = new HashMap<>();
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
+	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto) throws ValidationException {
+		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage());
 		for (CourseResponseDto obj : courseList) {
-			try {
-				Boolean isFav = favouriteMap.get(obj.getId());
-				if (null != isFav) {
-					obj.setIsFavourite(isFav);
-				}
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
-				obj.setStorageList(storageDTOList);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			obj.setStorageList(storageDTOList);
 		}
-		Integer maxCount = 0, totalCount = 0;
-		if (null != courseList && !courseList.isEmpty()) {
-			totalCount = courseList.get(0).getTotalCount();
-			maxCount = courseList.size();
-		}
-		boolean showMore;
-		if (courseSearchDto.getMaxSizePerPage() == maxCount) {
-			showMore = true;
-		} else {
-			showMore = false;
-		}
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("paginationObj", new PaginationDto(totalCount, showMore));
-		response.put("courseList", courseList);
-		return ResponseEntity.ok().body(response);
+		int totalCount = courseService.getCountforNormalCourse(courseSearchDto);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get course List successfully");
+		responseMap.put("data", courseList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/advanceSearch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -221,78 +195,53 @@ public class CourseController {
 		return ResponseEntity.ok().body(courseService.advanceSearch(courseSearchDto));
 	}
 
-	@RequestMapping(value = "/mycourses", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> getAllMyCourses(@RequestBody final CourseSearchDto courseSearchDto) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		ErrorDto errorDto = null;
-		if (courseSearchDto.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
-			errorDto = new ErrorDto();
-			errorDto.setCode("400");
-			errorDto.setMessage("Maximum course limit per is " + PaginationUtil.courseResultPageMaxSize);
-			response.put("status", 0);
-			response.put("error", errorDto);
-			return ResponseEntity.badRequest().body(response);
-		}
-		UserInfo user = userService.get(courseSearchDto.getUserId());
-		if (null == user) {
-			errorDto = new ErrorDto();
-			errorDto.setCode("400");
-			errorDto.setMessage("Invalid user.!");
-			response.put("status", 0);
-			response.put("error", errorDto);
-			return ResponseEntity.badRequest().body(response);
-		}
-
-		CurrencyRate currency = null;
-		String message = "";
-		/**
+	/*
+	 * @RequestMapping(value = "/mycourses", method = RequestMethod.POST, consumes =
+	 * "application/json", produces = "application/json") public ResponseEntity<?>
+	 * getAllMyCourses(@RequestBody final CourseSearchDto courseSearchDto) throws
+	 * Exception { Map<String, Object> response = new HashMap<>(); ErrorDto errorDto
+	 * = null; if (courseSearchDto.getPageNumber() >
+	 * PaginationUtil.courseResultPageMaxSize) { errorDto = new ErrorDto();
+	 * errorDto.setCode("400"); errorDto.setMessage("Maximum course limit per is " +
+	 * PaginationUtil.courseResultPageMaxSize); response.put("status", 0);
+	 * response.put("error", errorDto); return
+	 * ResponseEntity.badRequest().body(response); } UserInfo user =
+	 * userService.get(courseSearchDto.getUserId()); if (null == user) { errorDto =
+	 * new ErrorDto(); errorDto.setCode("400");
+	 * errorDto.setMessage("Invalid user.!"); response.put("status", 0);
+	 * response.put("error", errorDto); return
+	 * ResponseEntity.badRequest().body(response); }
+	 *
+	 * CurrencyRate currency = null; String message = "";
+	 *//**
 		 * Need to look into this logic
-		 */
-
-		if (null != courseSearchDto.getCurrencyCode() && !user.getPreferredCurrencyName().equals(courseSearchDto.getCurrencyCode())) {
-			currency = CurrencyUtil.getCurrencyObjByCode(courseSearchDto.getCurrencyCode());
-			response.put("showCurrencyPopup", true);
-			message = "Do you want to change " + currency.getToCurrencyName() + " (" + currency.getToCurrencyCode() + ") as your currency.?";
-		} else {
-			currency = CurrencyUtil.getCurrencyObjByCode(user.getPreferredCurrencyName());
-			response.put("showCurrencyPopup", false);
-		}
-		response.put("currencyPopupMsg", message);
-
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
-		for (CourseResponseDto obj : courseList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
-			obj.setStorageList(storageDTOList);
-		}
-		Integer maxCount = 0, totalCount = 0;
-		if (null != courseList && !courseList.isEmpty()) {
-			totalCount = courseList.get(0).getTotalCount();
-			maxCount = courseList.size();
-		}
-		boolean showMore;
-		if (courseSearchDto.getMaxSizePerPage() == maxCount) {
-			showMore = true;
-		} else {
-			showMore = false;
-		}
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("paginationObj", new PaginationDto(totalCount, showMore));
-		response.put("courseList", courseList);
-		return ResponseEntity.accepted().body(response);
-	}
-
-//	@RequestMapping(value = "/name", method = RequestMethod.GET, produces = "application/json")
-//	public ResponseEntity<?> search(@Valid @RequestParam("searchkey") final String searchkey) throws Exception {
-//		Map<String, Object> response = new HashMap<>();
-//		CourseSearchDto courseSearchDto = new CourseSearchDto();
-//		courseSearchDto.setSearchKey(searchkey);
-//		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
-//		response.put("status", 1);
-//		response.put("message", "Success.!");
-//		response.put("courseList", courseList);
-//		return ResponseEntity.accepted().body(response);
-//	}
+		 *//*
+			 *
+			 * if (null != courseSearchDto.getCurrencyCode() &&
+			 * !user.getPreferredCurrencyName().equals(courseSearchDto.getCurrencyCode())) {
+			 * currency =
+			 * CurrencyUtil.getCurrencyObjByCode(courseSearchDto.getCurrencyCode());
+			 * response.put("showCurrencyPopup", true); message = "Do you want to change " +
+			 * currency.getToCurrencyName() + " (" + currency.getToCurrencyCode() +
+			 * ") as your currency.?"; } else { currency =
+			 * CurrencyUtil.getCurrencyObjByCode(user.getPreferredCurrencyName());
+			 * response.put("showCurrencyPopup", false); } response.put("currencyPopupMsg",
+			 * message);
+			 *
+			 * List<CourseResponseDto> courseList =
+			 * courseService.getAllCoursesByFilter(courseSearchDto); for (CourseResponseDto
+			 * obj : courseList) { List<StorageDto> storageDTOList =
+			 * iStorageService.getStorageInformation(obj.getInstituteId(),
+			 * ImageCategory.INSTITUTE.toString(), null, "en");
+			 * obj.setStorageList(storageDTOList); } Integer maxCount = 0, totalCount = 0;
+			 * if (null != courseList && !courseList.isEmpty()) { totalCount =
+			 * courseList.get(0).getTotalCount(); maxCount = courseList.size(); } boolean
+			 * showMore; if (courseSearchDto.getMaxSizePerPage() == maxCount) { showMore =
+			 * true; } else { showMore = false; } response.put("status", 1);
+			 * response.put("message", "Success.!"); response.put("paginationObj", new
+			 * PaginationDto(totalCount, showMore)); response.put("courseList", courseList);
+			 * return ResponseEntity.accepted().body(response); }
+			 */
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> get(@Valid @PathVariable final BigInteger id) throws Exception {

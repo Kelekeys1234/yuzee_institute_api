@@ -7,7 +7,6 @@ import java.util.Set;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
@@ -15,7 +14,6 @@ import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.CountryDto;
-import com.seeka.app.dto.CourseFilterCostResponseDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
@@ -33,8 +31,6 @@ public interface ICourseDAO {
 	List<Course> getAll();
 
 	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
-
-	CourseFilterCostResponseDto getAllCoursesFilterCostInfo(CourseSearchDto filterObj, CurrencyRate currency, String oldCurrencyCode);
 
 	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
@@ -116,4 +112,8 @@ public interface ICourseDAO {
 	List<Long> getUserListFromUserWatchCoursesBasedOnCourses(List<BigInteger> courseIds);
 
 	int updateCourseForCurrency(CurrencyRate currencyRate);
+
+	int getCountforNormalCourse(CourseSearchDto courseSearchDto);
+
+	List<CourseResponseDto> getAllCoursesByNormalSearch(CourseSearchDto courseSearchDto, Integer startIndex, Integer pageSize);
 }
