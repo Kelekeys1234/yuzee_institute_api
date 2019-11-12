@@ -14,12 +14,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -108,10 +106,11 @@ public class CourseDAO implements ICourseDAO {
 	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto) {
 		Session session = sessionFactory.getCurrentSession();
 
-		String sqlQuery = "select count(*)" + " from course crs inner join institute inst "
+		String sqlQuery = "select count(*) from course crs inner join institute inst "
 				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
 				+ "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id inner join level l on l.id=crs.level_id "
-				+ "where 1=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id=" + courseSearchDto.getUserId() + ")";
+				+ "where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
+				+ courseSearchDto.getUserId() + ")";
 		if (null != courseSearchDto.getInstituteId()) {
 			sqlQuery += " and inst.id =" + courseSearchDto.getInstituteId();
 		}
@@ -151,7 +150,8 @@ public class CourseDAO implements ICourseDAO {
 				+ "crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
 				+ "ctry.name as countryName,crs.world_ranking,crs.language,crs.stars,crs.recognition, crs.domestic_fee, crs.international_fee,crs.remarks, crs.usd_domestic_fee, crs.usd_international_fee "
 				+ " from course crs inner join institute inst  on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join city ci  on ci.id = crs.city_id "
-				+ "where 1=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id=" + courseSearchDto.getUserId() + ")";
+				+ "where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
+				+ courseSearchDto.getUserId() + ")";
 
 		boolean showIntlCost = false;
 		if (null != courseSearchDto.getInstituteId()) {
@@ -938,8 +938,8 @@ public class CourseDAO implements ICourseDAO {
 		String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
 				+ "c.description, c.intake,c.duration, c.language,c.domestic_fee, c.international_fee,"
 				+ " c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
-				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency  FROM  user_my_course umc left join course c on umc.course_id = c.id "
-				+ " where umc.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = " + userId + "  ORDER BY c.created_on DESC ";
+				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency  FROM  user_my_course umc inner join course c on umc.course_id = c.id "
+				+ " where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = " + userId + "  ORDER BY c.created_on DESC ";
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
@@ -1051,13 +1051,12 @@ public class CourseDAO implements ICourseDAO {
 
 	@Override
 	public int findTotalCountByUserId(final BigInteger userId) {
-		int status = 1;
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select sa.id from user_my_course sa where sa.is_active = " + status + " and sa.deleted_on IS NULL and sa.user_id=" + userId;
+		String sqlQuery = "select count(*) from  user_my_course umc inner join course c on umc.course_id = c.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id="
+				+ userId;
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		return rows.size();
+		return ((Number) query.uniqueResult()).intValue();
 	}
 
 	@Override
@@ -1235,6 +1234,26 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
+	public int getCountOfAdvanceSearch(final Object... values) {
+		AdvanceSearchDto courseSearchDto = (AdvanceSearchDto) values[0];
+		GlobalFilterSearchDto globalSearchFilterDto = null;
+
+		if (values.length > 1) {
+			globalSearchFilterDto = (GlobalFilterSearchDto) values[1];
+		}
+		String sizeSqlQuery = "select count(*) from course crs inner join institute inst "
+				+ " on crs.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
+				+ courseSearchDto.getUserId() + ") ";
+		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
+			sizeSqlQuery = addConditionForCourseList(sizeSqlQuery, globalSearchFilterDto.getIds());
+		}
+		sizeSqlQuery = addCondition(sizeSqlQuery, courseSearchDto);
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery(sizeSqlQuery);
+		return ((Number) query.getSingleResult()).intValue();
+	}
+
+	@Override
 	public List<CourseResponseDto> advanceSearch(final Object... values) {
 		AdvanceSearchDto courseSearchDto = (AdvanceSearchDto) values[0];
 		GlobalFilterSearchDto globalSearchFilterDto = null;
@@ -1250,31 +1269,20 @@ public class CourseDAO implements ICourseDAO {
 				+ " from course crs inner join institute inst "
 				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
 				+ "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
-				+ "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
-				+ courseSearchDto.getUserId() + ") ";
-
-		String sizeSqlQuery = "select count(distinct crs.id) " + "from course crs inner join institute inst "
-				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
-				+ "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
-				+ "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
+				+ "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
 				+ courseSearchDto.getUserId() + ") ";
 
 		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
 			sqlQuery = addConditionForCourseList(sqlQuery, globalSearchFilterDto.getIds());
-			sizeSqlQuery = addConditionForCourseList(sizeSqlQuery, globalSearchFilterDto.getIds());
 		}
 		boolean showIntlCost = false;
 		sqlQuery = addCondition(sqlQuery, courseSearchDto);
 		sqlQuery += " ";
 
-		sizeSqlQuery = addCondition(sizeSqlQuery, courseSearchDto);
-		sizeSqlQuery += " ";
-
 		String sortingQuery = "";
 		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
 			sortingQuery = addSorting(sortingQuery, courseSearchDto);
 		}
-		String sizeQuery = sizeSqlQuery;
 		if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
 			PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 			sqlQuery += sortingQuery + " LIMIT " + PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage()) + " ,"
@@ -1286,12 +1294,6 @@ public class CourseDAO implements ICourseDAO {
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
 
-		int totalCount = 0;
-		Query query1 = session.createSQLQuery(sizeQuery);
-		List<BigInteger> rows1 = query1.list();
-		if (rows1 != null && !rows1.isEmpty()) {
-			totalCount = rows1.get(0).intValue();
-		}
 		List<CourseResponseDto> list = new ArrayList<>();
 		CourseResponseDto courseResponseDto = null;
 		BigInteger baseCurrencyId = null;
@@ -1301,17 +1303,13 @@ public class CourseDAO implements ICourseDAO {
 			toCurrencyId = getCurrencyByCode(courseSearchDto.getCurrencyCode()).getId();
 		}
 		for (Object[] row : rows) {
-			try {
-				courseResponseDto = getCourseData(row, totalCount, courseSearchDto, showIntlCost, baseCurrencyId, toCurrencyId);
-				list.add(courseResponseDto);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			courseResponseDto = getCourseData(row, courseSearchDto, showIntlCost, baseCurrencyId, toCurrencyId);
+			list.add(courseResponseDto);
 		}
 		return list;
 	}
 
-	private CourseResponseDto getCourseData(final Object[] row, final int totalCount, final AdvanceSearchDto courseSearchDto, final boolean showIntlCost,
+	private CourseResponseDto getCourseData(final Object[] row, final AdvanceSearchDto courseSearchDto, final boolean showIntlCost,
 			final BigInteger baseCurrencyId, final BigInteger toCurrencyId) {
 		CourseResponseDto courseResponseDto = null;
 		Long cost = 0l;
@@ -1343,19 +1341,13 @@ public class CourseDAO implements ICourseDAO {
 		if (null != row[4]) {
 			worldRanking = Double.valueOf(String.valueOf(row[12])).intValue();
 		}
-		courseResponseDto.setCourseRanking(Integer.valueOf(worldRanking.toString()));
+		courseResponseDto.setCourseRanking(worldRanking);
 		courseResponseDto.setLanguage(String.valueOf(row[13]));
 		courseResponseDto.setLanguageShortKey(String.valueOf(row[13]));
 		courseResponseDto.setStars(Integer.valueOf(String.valueOf(row[14])));
 		courseResponseDto.setRequirements(String.valueOf(row[18]));
-		courseResponseDto.setTotalCount(totalCount);
 		if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
 			if (row[19] != null) {
-//				CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
-//				dto.setFromCurrencyId(baseCurrencyId);
-//				dto.setToCurrencyId(toCurrencyId);
-//				dto.setAmount(Double.valueOf(row[19].toString()));
-//				Double convertedRate = currencyService.convertCurrency(dto);
 				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[19].toString());
 				Double convertedRate = amt / currencyRate.getConversionRate();
@@ -1364,11 +1356,6 @@ public class CourseDAO implements ICourseDAO {
 				}
 			}
 			if (row[20] != null) {
-//				CurrencyConvertorRequest dto = new CurrencyConvertorRequest();
-//				dto.setFromCurrencyId(baseCurrencyId);
-//				dto.setToCurrencyId(toCurrencyId);
-//				dto.setAmount(Double.valueOf(row[20].toString()));
-//				Double convertedRate = currencyService.convertCurrency(dto);
 
 				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[19].toString());
@@ -1399,15 +1386,6 @@ public class CourseDAO implements ICourseDAO {
 		}
 		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.NAME.toString())) {
 			sortingQuery = sortingQuery + " ORDER BY crs.name " + sortTypeValue + " ";
-		}
-		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DOMESTIC_PRICE.toString())) {
-			sortingQuery = sortingQuery + " ORDER BY crs.domestic_fee " + sortTypeValue + " ";
-		}
-		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.INTERNATION_PRICE.toString())) {
-			sortingQuery = sortingQuery + " ORDER BY crs.international_fee " + sortTypeValue + " ";
-		}
-		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.CREATED_DATE.toString())) {
-			sortingQuery = sortingQuery + " ORDER BY crs.created_on " + sortTypeValue + " ";
 		}
 		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DURATION.toString())) {
 			sortingQuery = sortingQuery + " ORDER BY crs.duration " + sortTypeValue + " ";
@@ -1673,13 +1651,8 @@ public class CourseDAO implements ICourseDAO {
 
 	@Override
 	public Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final BigInteger instituteId) {
-		// TODO Auto-generated method stub
 		Map<BigInteger, BigInteger> mapOfCourseIdFacultyId = new HashMap<>();
 		StringBuilder facultyIds = new StringBuilder();
-		//
-		// facultyIds = facultyList.stream().collect(f -> f.getId()+",");
-		//
-		// System.out.println("facutlyId -- "+facultyIds);
 		int count = 0;
 
 		facultyIds = new StringBuilder();
@@ -1718,9 +1691,6 @@ public class CourseDAO implements ICourseDAO {
 		List<BigInteger> rows = session.createNativeQuery("select id from course where country_id = ? order by world_ranking desc")
 				.setBigInteger(1, country.getId()).getResultList();
 		List<BigInteger> courseIds = rows;
-		// for (BigInteger[] row : rows) {
-		// courseIds.add(new BigInteger(row[0].toString()));
-		// }
 
 		return courseIds;
 	}
@@ -1758,7 +1728,6 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public List<BigInteger> getCourseListForCourseBasedOnParameters(final BigInteger courseId, final BigInteger instituteId, final BigInteger facultyId,
 			final BigInteger countryId, final BigInteger cityId) {
-		// TODO Auto-generated method stub
 		Session session = sessionFactory.getCurrentSession();
 		StringBuilder query = new StringBuilder();
 		query.append("Select id from course where 1=1");
@@ -1827,96 +1796,4 @@ public class CourseDAO implements ICourseDAO {
 		return count;
 	}
 
-	@Override
-	public List<CourseResponseDto> getAllCoursesByNormalSearch(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(Course.class, "course");
-		criteria.createAlias("course.institute", "institute");
-		criteria.createAlias("course.faculty", "faculty");
-		criteria.createAlias("course.country", "country");
-		criteria.createAlias("course.city", "city");
-		criteria.createAlias("course.level", "level");
-
-		if (courseSearchDto.getInstituteId() != null) {
-			criteria.add(Restrictions.eq("institute.id", courseSearchDto.getInstituteId()));
-		}
-		if (courseSearchDto.getCountryIds() != null) {
-			criteria.add(Restrictions.eq("country.id", courseSearchDto.getCountryIds()));
-		}
-		if (courseSearchDto.getCityIds() != null) {
-			criteria.add(Restrictions.eq("city.id", courseSearchDto.getCityIds()));
-		}
-		if (courseSearchDto.getFacultyIds() != null) {
-			criteria.add(Restrictions.eq("faculty.id", courseSearchDto.getFacultyIds()));
-		}
-		if (courseSearchDto.getLevelIds() != null) {
-			criteria.add(Restrictions.eq("level.id", courseSearchDto.getLevelIds()));
-		}
-		if (courseSearchDto.getCourseName() != null) {
-			criteria.add(Restrictions.like("course.name", courseSearchDto.getCourseName(), MatchMode.ANYWHERE));
-		}
-
-		if (courseSearchDto.getSortAsscending() && courseSearchDto.getSortBy().equals("PRICE")) {
-			if (courseSearchDto.getCurrencyCode() != null) {
-				criteria.addOrder(Order.asc("course.usdDomasticFee"));
-			} else {
-				criteria.addOrder(Order.desc("course.usdInternationFee"));
-			}
-		} else {
-			criteria.addOrder(Order.asc("course.internationalFee"));
-		}
-
-		if (startIndex != null && pageSize != null) {
-			criteria.setFirstResult(startIndex);
-			criteria.setMaxResults(pageSize);
-		}
-		List<Course> courseList = criteria.list();
-
-		List<CourseResponseDto> resultList = new ArrayList<>();
-		for (Course course : courseList) {
-			CourseResponseDto courseResponseDto = new CourseResponseDto();
-			BeanUtils.copyProperties(course, courseResponseDto);
-			courseResponseDto.setInstituteId(course.getInstitute().getId());
-			courseResponseDto.setInstituteName(course.getInstitute().getName());
-			courseResponseDto.setCityId(course.getCity().getId());
-			courseResponseDto.setCountryId(course.getCountry().getId());
-			courseResponseDto.setCountryName(course.getCountry().getName());
-			courseResponseDto.setCityName(course.getCity().getName());
-			courseResponseDto.setLocation(courseResponseDto.getCityName() + ", " + courseResponseDto.getCountryName());
-			courseResponseDto.setLanguageShortKey(course.getLanguage());
-			courseResponseDto.setRequirements(course.getRemarks());
-			courseResponseDto.setCurrencyCode(course.getCurrency());
-
-			if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
-				if (course.getUsdDomasticFee() != null) {
-					CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
-					Double amt = Double.valueOf(course.getUsdDomasticFee());
-					Double convertedRate = amt / currencyRate.getConversionRate();
-					if (convertedRate != null) {
-						courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
-					}
-				}
-				if (course.getUsdInternationFee() != null) {
-					CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
-					Double amt = Double.valueOf(course.getUsdInternationFee());
-					Double convertedRate = amt / currencyRate.getConversionRate();
-					if (convertedRate != null) {
-						courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
-					}
-				}
-			} else {
-				if (course.getUsdDomasticFee() != null) {
-					courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(course.getUsdDomasticFee()));
-				}
-				if (course.getUsdInternationFee() != null) {
-					courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(course.getUsdInternationFee()));
-				}
-			}
-			resultList.add(courseResponseDto);
-
-		}
-
-		return resultList;
-
-	}
 }

@@ -52,7 +52,6 @@ import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IStorageService;
-import com.seeka.app.service.IUserService;
 import com.seeka.app.service.InstituteLevelService;
 import com.seeka.app.service.UserRecommendationService;
 import com.seeka.app.util.CommonUtil;
@@ -74,9 +73,6 @@ public class CourseController {
 
 	@Autowired
 	private ICourseKeywordService courseKeywordService;
-
-	@Autowired
-	private IUserService userService;
 
 	@Autowired
 	private ICourseEnglishEligibilityService courseEnglishService;
@@ -190,58 +186,26 @@ public class CourseController {
 	@RequestMapping(value = "/advanceSearch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) final BigInteger userId, @RequestBody final AdvanceSearchDto courseSearchDto)
 			throws Exception {
+		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
-		courseSearchDto.setCurrencyCode(null);
-		return ResponseEntity.ok().body(courseService.advanceSearch(courseSearchDto));
+		List<CourseResponseDto> courseList = courseService.advanceSearch(courseSearchDto);
+		for (CourseResponseDto obj : courseList) {
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			obj.setStorageList(storageDTOList);
+		}
+		int totalCount = courseService.getCountOfAdvanceSearch(courseSearchDto);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get course List successfully");
+		responseMap.put("data", courseList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
-
-	/*
-	 * @RequestMapping(value = "/mycourses", method = RequestMethod.POST, consumes =
-	 * "application/json", produces = "application/json") public ResponseEntity<?>
-	 * getAllMyCourses(@RequestBody final CourseSearchDto courseSearchDto) throws
-	 * Exception { Map<String, Object> response = new HashMap<>(); ErrorDto errorDto
-	 * = null; if (courseSearchDto.getPageNumber() >
-	 * PaginationUtil.courseResultPageMaxSize) { errorDto = new ErrorDto();
-	 * errorDto.setCode("400"); errorDto.setMessage("Maximum course limit per is " +
-	 * PaginationUtil.courseResultPageMaxSize); response.put("status", 0);
-	 * response.put("error", errorDto); return
-	 * ResponseEntity.badRequest().body(response); } UserInfo user =
-	 * userService.get(courseSearchDto.getUserId()); if (null == user) { errorDto =
-	 * new ErrorDto(); errorDto.setCode("400");
-	 * errorDto.setMessage("Invalid user.!"); response.put("status", 0);
-	 * response.put("error", errorDto); return
-	 * ResponseEntity.badRequest().body(response); }
-	 *
-	 * CurrencyRate currency = null; String message = "";
-	 *//**
-		 * Need to look into this logic
-		 *//*
-			 *
-			 * if (null != courseSearchDto.getCurrencyCode() &&
-			 * !user.getPreferredCurrencyName().equals(courseSearchDto.getCurrencyCode())) {
-			 * currency =
-			 * CurrencyUtil.getCurrencyObjByCode(courseSearchDto.getCurrencyCode());
-			 * response.put("showCurrencyPopup", true); message = "Do you want to change " +
-			 * currency.getToCurrencyName() + " (" + currency.getToCurrencyCode() +
-			 * ") as your currency.?"; } else { currency =
-			 * CurrencyUtil.getCurrencyObjByCode(user.getPreferredCurrencyName());
-			 * response.put("showCurrencyPopup", false); } response.put("currencyPopupMsg",
-			 * message);
-			 *
-			 * List<CourseResponseDto> courseList =
-			 * courseService.getAllCoursesByFilter(courseSearchDto); for (CourseResponseDto
-			 * obj : courseList) { List<StorageDto> storageDTOList =
-			 * iStorageService.getStorageInformation(obj.getInstituteId(),
-			 * ImageCategory.INSTITUTE.toString(), null, "en");
-			 * obj.setStorageList(storageDTOList); } Integer maxCount = 0, totalCount = 0;
-			 * if (null != courseList && !courseList.isEmpty()) { totalCount =
-			 * courseList.get(0).getTotalCount(); maxCount = courseList.size(); } boolean
-			 * showMore; if (courseSearchDto.getMaxSizePerPage() == maxCount) { showMore =
-			 * true; } else { showMore = false; } response.put("status", 1);
-			 * response.put("message", "Success.!"); response.put("paginationObj", new
-			 * PaginationDto(totalCount, showMore)); response.put("courseList", courseList);
-			 * return ResponseEntity.accepted().body(response); }
-			 */
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> get(@Valid @PathVariable final BigInteger id) throws Exception {
@@ -457,12 +421,13 @@ public class CourseController {
 	 * @param sortBy
 	 * @param sortAsscending
 	 * @return
+	 * @throws ValidationException
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getUserCourses(@PathVariable final BigInteger userId, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final String currencyCode, @RequestParam(required = false) final String sortBy,
-			@RequestParam(required = false) final boolean sortAsscending) throws Exception {
+			@RequestParam(required = false) final boolean sortAsscending) throws ValidationException {
 		return ResponseEntity.accepted().body(courseService.getUserCourse(userId, pageNumber, pageSize, currencyCode, sortBy, sortAsscending));
 	}
 

@@ -115,5 +115,5 @@ public interface ICourseDAO {
 
 	int getCountforNormalCourse(CourseSearchDto courseSearchDto);
 
-	List<CourseResponseDto> getAllCoursesByNormalSearch(CourseSearchDto courseSearchDto, Integer startIndex, Integer pageSize);
+	int getCountOfAdvanceSearch(Object... values);
 }

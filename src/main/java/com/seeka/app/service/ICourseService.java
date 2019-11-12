@@ -53,7 +53,8 @@ public interface ICourseService {
 
 	Map<String, Object> addUserCourses(@Valid UserCourse userCourse);
 
-	Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, Boolean sortAsscending);
+	Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, Boolean sortAsscending)
+			throws ValidationException;
 
 	Map<String, Object> addUserCompareCourse(@Valid UserCourse userCourse);
 
@@ -67,7 +68,7 @@ public interface ICourseService {
 
 	Map<String, Object> getAllServices();
 
-	Map<String, Object> advanceSearch(AdvanceSearchDto courseSearchDto) throws ValidationException;
+	List<CourseResponseDto> advanceSearch(AdvanceSearchDto courseSearchDto) throws ValidationException;
 
 	Map<String, Object> getAllCourse();
 
@@ -123,4 +124,6 @@ public interface ICourseService {
 	void updateCourseForCurrency(CurrencyRate currencyRate);
 
 	int getCountforNormalCourse(CourseSearchDto courseSearchDto);
+
+	int getCountOfAdvanceSearch(AdvanceSearchDto courseSearchDto);
 }

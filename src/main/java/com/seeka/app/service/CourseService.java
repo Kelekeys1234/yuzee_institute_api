@@ -309,7 +309,6 @@ public class CourseService implements ICourseService {
 			course.setCampusLocation(courseDto.getCampusLocation());
 			if (courseDto.getCurrency() != null) {
 				course.setCurrency(courseDto.getCurrency());
-				List<Currency> currencies = currencyDAO.getAll();
 				Currency toCurrency = currencyDAO.getCurrencyByCode("USD");
 				BigInteger toCurrencyId = null;
 				if (toCurrency != null) {
@@ -554,26 +553,22 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public Map<String, Object> getUserCourse(final BigInteger userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
-			final String sortBy, final Boolean sortAsscending) {
+			final String sortBy, final Boolean sortAsscending) throws ValidationException {
 		Map<String, Object> response = new HashMap<>();
 		String status = IConstant.SUCCESS;
 		List<CourseRequest> courses = new ArrayList<>();
 		int totalCount = 0;
 		PaginationUtilDto paginationUtilDto = null;
 		List<CourseRequest> resultList = new ArrayList<>();
-		try {
-			totalCount = iCourseDAO.findTotalCountByUserId(userId);
-			int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-			courses = iCourseDAO.getUserCourse(userId, startIndex, pageSize, currencyCode, sortBy, sortAsscending);
-			for (CourseRequest courseRequest : courses) {
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(),
-						null, "en");
-				courseRequest.setStorageList(storageDTOList);
-				resultList.add(courseRequest);
-			}
-		} catch (Exception exception) {
-			status = IConstant.FAIL;
+		totalCount = iCourseDAO.findTotalCountByUserId(userId);
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		courses = iCourseDAO.getUserCourse(userId, startIndex, pageSize, currencyCode, sortBy, sortAsscending);
+		for (CourseRequest courseRequest : courses) {
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null,
+					"en");
+			courseRequest.setStorageList(storageDTOList);
+			resultList.add(courseRequest);
 		}
 		response.put("status", HttpStatus.OK.value());
 		response.put("message", status);
@@ -704,14 +699,8 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Map<String, Object> advanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException {
-		Map<String, Object> response = new HashMap<>();
+	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException {
 		List<CourseResponseDto> courseResponseDtos = iCourseDAO.advanceSearch(courseSearchDto);
-		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseResponseDto.getInstituteId(), ImageCategory.INSTITUTE.toString(),
-					null, "en");
-			courseResponseDto.setStorageList(storageDTOList);
-		}
 		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
 				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
 		if (!viewedCourseIds.isEmpty()) {
@@ -721,37 +710,9 @@ public class CourseService implements ICourseService {
 					courseResponseDto.setIsViewed(true);
 				}
 			}
+		}
 
-		}
-		int totalCount = 0;
-		PaginationUtilDto paginationUtilDto = null;
-		try {
-			if (courseResponseDtos != null && !courseResponseDtos.isEmpty()) {
-				totalCount = courseResponseDtos.get(0).getTotalCount();
-				int startIndex;
-				if (courseSearchDto.getPageNumber() > 1) {
-					startIndex = (courseSearchDto.getPageNumber() - 1) * courseSearchDto.getMaxSizePerPage() + 1;
-				} else {
-					startIndex = courseSearchDto.getPageNumber();
-				}
-				paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", "Course retrieved successfully");
-				response.put("courses", courseResponseDtos);
-				response.put("totalCount", totalCount);
-				response.put("pageNumber", paginationUtilDto.getPageNumber());
-				response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-				response.put("hasNextPage", paginationUtilDto.isHasNextPage());
-				response.put("totalPages", paginationUtilDto.getTotalPages());
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", "Course Not Found");
-			}
-		} catch (Exception exception) {
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", exception.getCause());
-		}
-		return response;
+		return courseResponseDtos;
 	}
 
 	@Override
@@ -1077,5 +1038,10 @@ public class CourseService implements ICourseService {
 	@Override
 	public void updateCourseForCurrency(final CurrencyRate currencyRate) {
 		iCourseDAO.updateCourseForCurrency(currencyRate);
+	}
+
+	@Override
+	public int getCountOfAdvanceSearch(final AdvanceSearchDto courseSearchDto) {
+		return iCourseDAO.getCountOfAdvanceSearch(courseSearchDto);
 	}
 }
