@@ -63,6 +63,16 @@ public class CountryDAO implements ICountryDAO {
         return countries;
 
     }
+    
+    
+    
+    @Override
+    public List<Country> getAllCountryByIds(List<BigInteger>  countryIds) {
+        Session session = sessionFactory.getCurrentSession();
+        List<Country> countries = session.createQuery("SELECT c FROM country c WHERE c.id IN :ids").setParameter("ids", countryIds).getResultList();
+        return countries;
+
+    }
 
     @Override
     public List<CountryDto> searchInterestByCountry(String name) {

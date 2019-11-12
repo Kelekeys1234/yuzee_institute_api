@@ -8,11 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.dto.ArticleDto;
-import com.seeka.app.dto.ArticleDto2;
 import com.seeka.app.dto.ArticleFolderDto;
 import com.seeka.app.dto.ArticleFolderMapDto;
+import com.seeka.app.dto.ArticleResponseDetailsDto;
 import com.seeka.app.dto.PageLookupDto;
 import com.seeka.app.dto.SearchDto;
+import com.seeka.app.dto.SeekaArticleDto;
 
 public interface IArticleService {
 
@@ -22,7 +23,7 @@ public interface IArticleService {
 
 	Map<String, Object> deleteArticle(String articleId);
 
-	Map<String, Object> getArticleById(String articleId);
+	ArticleResponseDetailsDto getArticleById(String articleId);
 
 	Map<String, Object> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status, BigInteger categoryId, String tag,
 			String status2);
@@ -31,7 +32,7 @@ public interface IArticleService {
 
 	Map<String, Object> searchArticle(SearchDto article);
 
-	Map<String, Object> saveMultiArticle(ArticleDto2 article, MultipartFile file);
+	SeekaArticleDto saveMultiArticle(SeekaArticleDto article, BigInteger userId) throws Throwable, Exception;
 
 	Map<String, Object> saveArticleFolder(ArticleFolderDto articleFolder);
 
@@ -54,4 +55,6 @@ public interface IArticleService {
     Map<String, Object> unMappedFolder(BigInteger articleId, BigInteger folderId);
 
     Map<String, Object> getArticleByFolderId(BigInteger folderId);
+
+	List<ArticleResponseDetailsDto> getArticleList();
 }

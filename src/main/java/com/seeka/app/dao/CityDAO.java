@@ -82,4 +82,11 @@ public class CityDAO implements ICityDAO {
         citis.add(allObj);
         return citis;
     }
+
+    @Override
+	public List<City> getAllCityByIds(List<BigInteger> cityIds) {
+    	Session session = sessionFactory.getCurrentSession();
+        List<City> cities = session.createQuery("SELECT c FROM city c WHERE c.id IN :ids").setParameter("ids", cityIds).getResultList();
+        return cities;
+	}
 }

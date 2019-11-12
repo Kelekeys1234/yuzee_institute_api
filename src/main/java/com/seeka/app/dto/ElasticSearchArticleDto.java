@@ -33,7 +33,7 @@ public class ElasticSearchArticleDto {
     private String companyName;
     private String companyWebsite;
     private Integer totalCount;
-
+    
     private String author;
     private Date postDate;
     private Date expireyDate;
@@ -46,14 +46,14 @@ public class ElasticSearchArticleDto {
     private String tags;
     private String status;
 
-    private Category category;
-    private SubCategory subCategory;
-    private List<Country> country;
-    private List<City> city;
-    private List<Faculty> faculty;
-    private List<Institute> institute;
-    private List<Course> courses;
-    private List<String> gender;
+    private String category;
+    private String subCategory;
+    private String country;
+    private String city;
+    private String faculty;
+    private String institute;
+    private String courses;
+    private String gender;
     private City userCity;
     private Country userCountry;
 
@@ -492,127 +492,72 @@ public class ElasticSearchArticleDto {
         this.status = status;
     }
 
-    /**
-     * @return the category
-     */
-    public Category getCategory() {
-        return category;
-    }
+   
+    public String getCategory() {
+		return category;
+	}
 
-    /**
-     * @param category
-     *            the category to set
-     */
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
-    /**
-     * @return the subCategory
-     */
-    public SubCategory getSubCategory() {
-        return subCategory;
-    }
+	public String getSubCategory() {
+		return subCategory;
+	}
 
-    /**
-     * @param subCategory
-     *            the subCategory to set
-     */
-    public void setSubCategory(SubCategory subCategory) {
-        this.subCategory = subCategory;
-    }
+	public void setSubCategory(String subCategory) {
+		this.subCategory = subCategory;
+	}
 
-    /**
-     * @return the country
-     */
-    public List<Country> getCountry() {
-        return country;
-    }
+	public String getCountry() {
+		return country;
+	}
 
-    /**
-     * @param country
-     *            the country to set
-     */
-    public void setCountry(List<Country> country) {
-        this.country = country;
-    }
+	public void setCountry(String country) {
+		this.country = country;
+	}
 
-    /**
-     * @return the city
-     */
-    public List<City> getCity() {
-        return city;
-    }
+	public String getCity() {
+		return city;
+	}
 
-    /**
-     * @param city
-     *            the city to set
-     */
-    public void setCity(List<City> city) {
-        this.city = city;
-    }
+	public void setCity(String city) {
+		this.city = city;
+	}
 
-    /**
-     * @return the faculty
-     */
-    public List<Faculty> getFaculty() {
-        return faculty;
-    }
+	public String getFaculty() {
+		return faculty;
+	}
 
-    /**
-     * @param faculty
-     *            the faculty to set
-     */
-    public void setFaculty(List<Faculty> faculty) {
-        this.faculty = faculty;
-    }
+	public void setFaculty(String faculty) {
+		this.faculty = faculty;
+	}
 
-    /**
-     * @return the institute
-     */
-    public List<Institute> getInstitute() {
-        return institute;
-    }
+	public String getInstitute() {
+		return institute;
+	}
 
-    /**
-     * @param institute
-     *            the institute to set
-     */
-    public void setInstitute(List<Institute> institute) {
-        this.institute = institute;
-    }
+	public void setInstitute(String institute) {
+		this.institute = institute;
+	}
 
-    /**
-     * @return the courses
-     */
-    public List<Course> getCourses() {
-        return courses;
-    }
+	public String getCourses() {
+		return courses;
+	}
 
-    /**
-     * @param courses
-     *            the courses to set
-     */
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
-    }
+	public void setCourses(String courses) {
+		this.courses = courses;
+	}
 
-    /**
-     * @return the gender
-     */
-    public List<String> getGender() {
-        return gender;
-    }
+	public String getGender() {
+		return gender;
+	}
 
-    /**
-     * @param gender
-     *            the gender to set
-     */
-    public void setGender(List<String> gender) {
-        this.gender = gender;
-    }
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 
-    /**
+	/**
      * @return the userCity
      */
     public City getUserCity() {

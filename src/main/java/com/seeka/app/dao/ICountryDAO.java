@@ -30,4 +30,6 @@ public interface ICountryDAO {
 	Country getCountryBasedOnCitizenship(String citizenship);
 
 	List<Country> getCountryIdsBasedOnCitizenships(List<String> citizenships);
+
+	List<Country> getAllCountryByIds(List<BigInteger> countryIds);
 }

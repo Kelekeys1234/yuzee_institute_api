@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -28,9 +32,10 @@ public class ArticleDAO implements IArticleDAO {
     @Override
     public List<SeekaArticles> getAll() {
         Session session = sessionFactory.getCurrentSession();
-        List<SeekaArticles> list = session.createCriteria(SeekaArticles.class).list();
-        System.out.println("The List Of list: "+list.size());
-        return list;
+        Criteria criteria = session.createCriteria(SeekaArticles.class,"seeka_article");
+        criteria.setFirstResult(0);
+        criteria.setMaxResults(20);
+        return criteria.list();
     }
 
     @Override
@@ -59,7 +64,7 @@ public class ArticleDAO implements IArticleDAO {
             obj.setContent(String.valueOf(row[2]));
             obj.setUrl(String.valueOf(row[3]));
             obj.setImagepath(String.valueOf(row[4]));
-            obj.setTotalCount(rows1.size());
+//            obj.setTotalCount(rows1.size());
 
             if (String.valueOf(row[6]) != null && !String.valueOf(row[6]).equals("null")) {
                 obj.setCategory(session.get(Category.class, new BigInteger((String.valueOf(row[6])))));
@@ -82,24 +87,15 @@ public class ArticleDAO implements IArticleDAO {
 
     @Override
     public SeekaArticles findById(BigInteger uId) {
-        SeekaArticles article = null;
         Session session = sessionFactory.getCurrentSession();
-        try {
-            article = session.get(SeekaArticles.class, uId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return article;
+         return session.get(SeekaArticles.class, uId);
     }
 
     @Override
     public void deleteArticle(SeekaArticles article) {
         Session session = sessionFactory.getCurrentSession();
-        try {
-            session.update(article);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        session.update(article);
+
     }
 
     @Override
@@ -138,19 +134,19 @@ public class ArticleDAO implements IArticleDAO {
             }
 
             article.setLink(String.valueOf(row[9]));
-            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
-                article.setCountry(new BigInteger((String.valueOf(row[11]))));
-            }
-            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
-                article.setCity(new BigInteger((String.valueOf(row[12]))));
-            }
-            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
-                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
-            }
-            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
-                article.setCourses(new BigInteger((String.valueOf(row[14]))));
-            }
-            article.setGender(String.valueOf(row[15]));
+//            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
+//                article.setCountry(new BigInteger((String.valueOf(row[11]))));
+//            }
+//            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
+//                article.setCity(new BigInteger((String.valueOf(row[12]))));
+//            }
+//            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
+//                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
+//            }
+//            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
+//                article.setCourses(new BigInteger((String.valueOf(row[14]))));
+//            }
+            // article.setGender(String.valueOf(row[15]));
             articles.add(article);
         }
         return articles;
@@ -169,13 +165,9 @@ public class ArticleDAO implements IArticleDAO {
 
     @Override
     public SeekaArticles save(SeekaArticles article) {
-        try {
-            Session session = sessionFactory.getCurrentSession();
-            session.save(article);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return article;
+       Session session = sessionFactory.getCurrentSession();
+       session.save(article);
+       return article;
     }
 
     @Override
@@ -245,19 +237,19 @@ public class ArticleDAO implements IArticleDAO {
             }
 
             article.setLink(String.valueOf(row[9]));
-            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
-                article.setCountry(new BigInteger((String.valueOf(row[11]))));
-            }
-            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
-                article.setCity(new BigInteger((String.valueOf(row[12]))));
-            }
-            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
-                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
-            }
-            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
-                article.setCourses(new BigInteger((String.valueOf(row[14]))));
-            }
-            article.setGender(String.valueOf(row[15]));
+//            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
+//                article.setCountry(new BigInteger((String.valueOf(row[11]))));
+//            }
+//            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
+//                article.setCity(new BigInteger((String.valueOf(row[12]))));
+//            }
+//            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
+//                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
+//            }
+//            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
+//                article.setCourses(new BigInteger((String.valueOf(row[14]))));
+//            }
+//            article.setGender(String.valueOf(row[15]));
             articles.add(article);
         }
         return articles;
@@ -292,19 +284,19 @@ public class ArticleDAO implements IArticleDAO {
             }
 
             article.setLink(String.valueOf(row[9]));
-            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
-                article.setCountry(new BigInteger((String.valueOf(row[11]))));
-            }
-            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
-                article.setCity(new BigInteger((String.valueOf(row[12]))));
-            }
-            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
-                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
-            }
-            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
-                article.setCourses(new BigInteger((String.valueOf(row[14]))));
-            }
-            article.setGender(String.valueOf(row[15]));
+//            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
+//                article.setCountry(new BigInteger((String.valueOf(row[11]))));
+//            }
+//            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
+//                article.setCity(new BigInteger((String.valueOf(row[12]))));
+//            }
+//            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
+//                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
+//            }
+//            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
+//                article.setCourses(new BigInteger((String.valueOf(row[14]))));
+//            }
+//            article.setGender(String.valueOf(row[15]));
             articles.add(article);
         }
         return articles;
@@ -351,19 +343,19 @@ public class ArticleDAO implements IArticleDAO {
             }
 
             article.setLink(String.valueOf(row[9]));
-            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
-                article.setCountry(new BigInteger((String.valueOf(row[11]))));
-            }
-            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
-                article.setCity(new BigInteger((String.valueOf(row[12]))));
-            }
-            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
-                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
-            }
-            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
-                article.setCourses(new BigInteger((String.valueOf(row[14]))));
-            }
-            article.setGender(String.valueOf(row[15]));
+//            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
+//                article.setCountry(new BigInteger((String.valueOf(row[11]))));
+//            }
+//            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
+//                article.setCity(new BigInteger((String.valueOf(row[12]))));
+//            }
+//            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
+//                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
+//            }
+//            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
+//                article.setCourses(new BigInteger((String.valueOf(row[14]))));
+//            }
+//            article.setGender(String.valueOf(row[15]));
             articles.add(article);
         }
         return articles;

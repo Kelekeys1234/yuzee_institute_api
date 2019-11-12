@@ -16,4 +16,6 @@ public interface ICityDAO {
      void save(City obj);
 
      List<City> getAllMultipleCitiesByCountry(String BigIntegers);
+
+	List<City> getAllCityByIds(List<BigInteger> cityIds);
 }

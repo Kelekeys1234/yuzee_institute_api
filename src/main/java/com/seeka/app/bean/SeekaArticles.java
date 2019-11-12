@@ -38,7 +38,7 @@ public class SeekaArticles implements Serializable {
     private BigInteger id;
     private Category category;
     private SubCategory subcategory;
-    private UserInfo userInfo;
+    private BigInteger userId;    
     private String addType;
     private String heading;
     private String content;
@@ -47,34 +47,33 @@ public class SeekaArticles implements Serializable {
     private BigInteger type;
     private Boolean active;
     private Date deletedOn;
-    private Date createdAt;
     private BigInteger shared;
     private BigInteger reviewed;
-    private BigInteger likes;
+    private BigInteger likes;    
     private String link;
+    private Date createdAt;
     private Date updatedAt;
-    private BigInteger country;
-    private BigInteger city;
-    private BigInteger faculty;
-    private BigInteger institute;
-    private BigInteger courses;
-    private String gender;
+    private Country country;
+    private City city;
+    private Faculty faculty;
+    private Institute institute;
+    private Course courses;    
     private String articleType;
     private String companyName;
     private String companyWebsite;
-    private Integer totalCount;
-
     private SubCategoryDto subCategoryDropDownDto;
-
-    private CategoryDto categoryobj;
-
+    private CategoryDto categoryobj;    
     private String author;
+    
+    @Temporal(TemporalType.TIMESTAMP)
     private Date postDate;
+    
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expireyDate;
     private Boolean enabled;
+    private Boolean published;
     private Boolean featured;
-    private String notes;
-    
+    private String notes;    
     private String websiteUrl;
     private Boolean seekaRecommended;
     private String tags;
@@ -83,13 +82,13 @@ public class SeekaArticles implements Serializable {
     public SeekaArticles() {
     }
 
-    public SeekaArticles(Category category, SubCategory subcategory, UserInfo userInfo, String addType, String heading, String content, String url, String imagepath,
+    public SeekaArticles(Category category, SubCategory subcategory, BigInteger userInfo, String addType, String heading, String content, String url, String imagepath,
                     BigInteger type, Boolean active, Date deletedOn, Date createdAt, BigInteger shared, BigInteger reviewed, BigInteger likes, String link, Date updatedAt,
-                    BigInteger country, BigInteger city, BigInteger faculty, BigInteger institute, BigInteger courses, String gender, String articleType, String companyName,
+                    Country country, City city, Faculty faculty, Institute institute, Course courses, String gender, String articleType, String companyName,
                     String companyWebsite) {
         this.category = category;
         this.subcategory = subcategory;
-        this.userInfo = userInfo;
+        this.userId = userInfo;
         this.addType = addType;
         this.heading = heading;
         this.content = content;
@@ -109,7 +108,6 @@ public class SeekaArticles implements Serializable {
         this.faculty = faculty;
         this.institute = institute;
         this.courses = courses;
-        this.gender = gender;
         this.articleType = articleType;
         this.companyName = companyName;
         this.companyWebsite = companyWebsite;
@@ -146,14 +144,13 @@ public class SeekaArticles implements Serializable {
         this.subcategory = subcategory;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    public UserInfo getUserInfo() {
-        return this.userInfo;
+    @Column(name = "user_id")
+    public BigInteger getUserId() {
+        return this.userId;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
+    public void setUserId(BigInteger userInfo) {
+        this.userId = userInfo;
     }
 
     @Column(name = "add_type", length = 100)
@@ -285,58 +282,54 @@ public class SeekaArticles implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    @Column(name = "country")
-    public BigInteger getCountry() {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "country")
+    public Country getCountry() {
         return this.country;
     }
 
-    public void setCountry(BigInteger country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 
-    @Column(name = "city")
-    public BigInteger getCity() {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name =  "city")
+    public City getCity() {
         return this.city;
     }
 
-    public void setCity(BigInteger city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
-    @Column(name = "faculty")
-    public BigInteger getFaculty() {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "faculty")
+    public Faculty getFaculty() {
         return this.faculty;
     }
 
-    public void setFaculty(BigInteger faculty) {
+    public void setFaculty(Faculty faculty) {
         this.faculty = faculty;
     }
 
-    @Column(name = "institute")
-    public BigInteger getInstitute() {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "institute")
+    public Institute getInstitute() {
         return this.institute;
     }
 
-    public void setInstitute(BigInteger institute) {
+    public void setInstitute(Institute institute) {
         this.institute = institute;
     }
 
-    @Column(name = "courses")
-    public BigInteger getCourses() {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "courses")
+    public Course getCourses() {
         return this.courses;
     }
 
-    public void setCourses(BigInteger courses) {
+    public void setCourses(Course courses) {
         this.courses = courses;
-    }
-
-    @Column(name = "gender", length = 100)
-    public String getGender() {
-        return this.gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
     }
 
     @Column(name = "article_type", length = 100)
@@ -364,15 +357,6 @@ public class SeekaArticles implements Serializable {
 
     public void setCompanyWebsite(String companyWebsite) {
         this.companyWebsite = companyWebsite;
-    }
-
-    @Transient
-    public Integer getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(Integer totalCount) {
-        this.totalCount = totalCount;
     }
 
     /**
@@ -425,7 +409,6 @@ public class SeekaArticles implements Serializable {
         result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
         result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
         result = prime * result + ((faculty == null) ? 0 : faculty.hashCode());
-        result = prime * result + ((gender == null) ? 0 : gender.hashCode());
         result = prime * result + ((heading == null) ? 0 : heading.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((imagepath == null) ? 0 : imagepath.hashCode());
@@ -436,11 +419,10 @@ public class SeekaArticles implements Serializable {
         result = prime * result + ((shared == null) ? 0 : shared.hashCode());
         result = prime * result + ((subCategoryDropDownDto == null) ? 0 : subCategoryDropDownDto.hashCode());
         result = prime * result + ((subcategory == null) ? 0 : subcategory.hashCode());
-        result = prime * result + ((totalCount == null) ? 0 : totalCount.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
         result = prime * result + ((url == null) ? 0 : url.hashCode());
-        result = prime * result + ((userInfo == null) ? 0 : userInfo.hashCode());
+        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
         return result;
     }
 
@@ -523,11 +505,6 @@ public class SeekaArticles implements Serializable {
                 return false;
         } else if (!faculty.equals(other.faculty))
             return false;
-        if (gender == null) {
-            if (other.gender != null)
-                return false;
-        } else if (!gender.equals(other.gender))
-            return false;
         if (heading == null) {
             if (other.heading != null)
                 return false;
@@ -578,12 +555,7 @@ public class SeekaArticles implements Serializable {
                 return false;
         } else if (!subcategory.equals(other.subcategory))
             return false;
-        if (totalCount == null) {
-            if (other.totalCount != null)
-                return false;
-        } else if (!totalCount.equals(other.totalCount))
-            return false;
-        if (type == null) {
+       if (type == null) {
             if (other.type != null)
                 return false;
         } else if (!type.equals(other.type))
@@ -598,28 +570,36 @@ public class SeekaArticles implements Serializable {
                 return false;
         } else if (!url.equals(other.url))
             return false;
-        if (userInfo == null) {
-            if (other.userInfo != null)
+        if (userId == null) {
+            if (other.userId != null)
                 return false;
-        } else if (!userInfo.equals(other.userInfo))
+        } else if (!userId.equals(other.userId))
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("SeekaArticles [id=").append(id).append(", category=").append(category).append(", subcategory=").append(subcategory).append(", userInfo=").append(userInfo)
-                        .append(", addType=").append(addType).append(", heading=").append(heading).append(", content=").append(content).append(", url=").append(url)
-                        .append(", imagepath=").append(imagepath).append(", type=").append(type).append(", active=").append(active).append(", deletedOn=").append(deletedOn)
-                        .append(", createdAt=").append(createdAt).append(", shared=").append(shared).append(", reviewed=").append(reviewed).append(", likes=").append(likes)
-                        .append(", link=").append(link).append(", updatedAt=").append(updatedAt).append(", country=").append(country).append(", city=").append(city)
-                        .append(", faculty=").append(faculty).append(", institute=").append(institute).append(", courses=").append(courses).append(", gender=").append(gender)
-                        .append(", articleType=").append(articleType).append(", companyName=").append(companyName).append(", companyWebsite=").append(companyWebsite)
-                        .append(", totalCount=").append(totalCount).append(", subCategoryDropDownDto=").append(subCategoryDropDownDto).append(", categoryobj=").append(categoryobj)
-                        .append("]");
-        return builder.toString();
-    }
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SeekaArticles [id=").append(id).append(", category=").append(category).append(", subcategory=")
+				.append(subcategory).append(", userId=").append(userId).append(", addType=").append(addType)
+				.append(", heading=").append(heading).append(", content=").append(content).append(", url=").append(url)
+				.append(", imagepath=").append(imagepath).append(", type=").append(type).append(", active=")
+				.append(active).append(", deletedOn=").append(deletedOn).append(", createdAt=").append(createdAt)
+				.append(", shared=").append(shared).append(", reviewed=").append(reviewed).append(", likes=")
+				.append(likes).append(", link=").append(link).append(", updatedAt=").append(updatedAt)
+				.append(", country=").append(country).append(", city=").append(city).append(", faculty=")
+				.append(faculty).append(", institute=").append(institute).append(", courses=").append(courses)
+				.append(", articleType=").append(articleType).append(", companyName=").append(companyName)
+				.append(", companyWebsite=").append(companyWebsite).append(", subCategoryDropDownDto=")
+				.append(subCategoryDropDownDto).append(", categoryobj=").append(categoryobj).append(", author=")
+				.append(author).append(", postDate=").append(postDate).append(", expireyDate=").append(expireyDate)
+				.append(", enabled=").append(enabled).append(", published=").append(published).append(", featured=")
+				.append(featured).append(", notes=").append(notes).append(", websiteUrl=").append(websiteUrl)
+				.append(", seekaRecommended=").append(seekaRecommended).append(", tags=").append(tags)
+				.append(", status=").append(status).append("]");
+		return builder.toString();
+	}
 
     /**
      * @return the author
@@ -684,8 +664,16 @@ public class SeekaArticles implements Serializable {
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
+    @Column(name = "published")
+    public Boolean getPublished() {
+		return published;
+	}
 
-    /**
+	public void setPublished(Boolean published) {
+		this.published = published;
+	}
+
+	/**
      * @return the featured
      */
     @Column(name = "featured")

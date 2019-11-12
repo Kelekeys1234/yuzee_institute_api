@@ -69,4 +69,17 @@ public class ArticleCountryDAO {
         }
         return countryDtos;
     }
+
+	public void addArticleCountry(List<Country> countryList, SeekaArticles article) {
+		 Session session = sessionFactory.getCurrentSession();
+		 for (Country country : countryList) {
+			  ArticleCountry bean = new ArticleCountry();
+			  bean.setCountry(country);
+			  bean.setSeekaArticles(article);
+             session.save(bean);
+         }  
+		
+	}
+
+
 }

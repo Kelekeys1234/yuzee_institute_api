@@ -11,7 +11,9 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.ArticleCity;
+import com.seeka.app.bean.ArticleCountry;
 import com.seeka.app.bean.City;
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.SeekaArticles;
 
 @Repository
@@ -65,4 +67,15 @@ public class ArticleCityDAO {
         }
         return city;
     }
+
+	public void addArticleCity(List<City> cityList, SeekaArticles article) {
+		 Session session = sessionFactory.getCurrentSession();
+		 for (City city : cityList) {
+			  ArticleCity bean = new ArticleCity();
+			  bean.setCity(city);
+			  bean.setSeekaArticles(article);
+             session.save(bean);
+         }  
+		
+	}
 }
