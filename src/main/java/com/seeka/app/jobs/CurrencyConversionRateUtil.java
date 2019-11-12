@@ -47,7 +47,7 @@ public class CurrencyConversionRateUtil {
 		log.info("CurrencyConversionRateUtil: The time is now {}", dateFormat.format(new Date()));
 		System.out.println("CurrencyConversionRateUtil: The time is now {}" + dateFormat.format(new Date()));
         run();
-		updateCourses();
+		// updateCourses();
 	}
 
 	public void run() {
@@ -73,13 +73,14 @@ public class CurrencyConversionRateUtil {
 					CurrencyRate currRate = new CurrencyRate();
 					currRate.setFromCurrencyCode(IConstant.USD_CODE);
 					currRate.setToCurrencyCode(currencyCode);
-					currRate.setConversionRate(currency.getValue());
+					currRate.setConversionRate(Double.parseDouble(String.valueOf(currency.getValue())));
 					currRate.setToCurrencyName(CommonUtil.currencyNameMap.get(currency.getKey()));
 					currRate.setFromCurrencyName(CommonUtil.currencyNameMap.get(IConstant.USD_CODE));
 					currRate.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
 					currRate.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
 					currRate.setHasChanged(false);
 					currencyRateService.save(currRate);
+					currencyRate = currRate;
 				}
 				Double oldRate = currencyRate.getConversionRate();
 				currencyRate.setConversionRate(Double.parseDouble(String.valueOf(currency.getValue())));
