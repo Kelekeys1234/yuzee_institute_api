@@ -7,6 +7,8 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,15 +73,16 @@ public class EnrollmentDao implements IEnrollmentDao {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
 	public List<Enrollment> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
-			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive) {
+			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive, final String sortByField,
+			final String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Enrollment.class, "enrollment");
+		crit.createAlias("enrollment.institute", "institute");
+		crit.createAlias("enrollment.course", "course");
 		if (instituteId != null) {
-			crit.createAlias("enrollment.institute", "institute");
 			crit.add(Restrictions.eq("institute.id", instituteId));
 		}
 		if (courseId != null) {
-			crit.createAlias("enrollment.course", "course");
 			crit.add(Restrictions.eq("course.id", courseId));
 		}
 		if (enrollmentId != null) {
@@ -100,7 +103,27 @@ public class EnrollmentDao implements IEnrollmentDao {
 		if (isArchive != null) {
 			crit.add(Restrictions.eq("enrollment.isArchive", isArchive));
 		}
-
+		if (searchKeyword != null) {
+			crit.add(Restrictions.disjunction().add(Restrictions.ilike("course.name", searchKeyword, MatchMode.ANYWHERE))
+					.add(Restrictions.ilike("institute.name", searchKeyword, MatchMode.ANYWHERE)));
+		}
+		if (sortByField != null && sortByType != null) {
+			if ("courseId".equals(sortByField)) {
+				if ("ASC".equals(sortByType)) {
+					crit.addOrder(Order.asc("course.name"));
+				} else if ("DESC".equals(sortByType)) {
+					crit.addOrder(Order.desc("course.name"));
+				}
+			} else if ("instituteId".equals(sortByField)) {
+				if ("ASC".equals(sortByType)) {
+					crit.addOrder(Order.asc("institute.name"));
+				} else if ("DESC".equals(sortByType)) {
+					crit.addOrder(Order.desc("institute.name"));
+				}
+			}
+		} else {
+			crit.addOrder(Order.desc("enrollment.id"));
+		}
 		if (startIndex != null && pageSize != null) {
 			crit.setFirstResult(startIndex);
 			crit.setMaxResults(pageSize);
@@ -111,15 +134,15 @@ public class EnrollmentDao implements IEnrollmentDao {
 	@SuppressWarnings("deprecation")
 	@Override
 	public int countOfEnrollment(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
-			final String status, final Date updatedOn) {
+			final String status, final Date updatedOn, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Enrollment.class, "enrollment");
+		crit.createAlias("enrollment.institute", "institute");
+		crit.createAlias("enrollment.course", "course");
 		if (instituteId != null) {
-			crit.createAlias("enrollment.institute", "institute");
 			crit.add(Restrictions.eq("institute.id", instituteId));
 		}
 		if (courseId != null) {
-			crit.createAlias("enrollment.course", "course");
 			crit.add(Restrictions.eq("course.id", courseId));
 		}
 		if (enrollmentId != null) {
@@ -133,6 +156,10 @@ public class EnrollmentDao implements IEnrollmentDao {
 			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
 			crit.add(Restrictions.ge("enrollment.updatedOn", fromDate));
 			crit.add(Restrictions.le("enrollment.updatedOn", toDate));
+		}
+		if (searchKeyword != null) {
+			crit.add(Restrictions.disjunction().add(Restrictions.ilike("course.name", searchKeyword, MatchMode.ANYWHERE))
+					.add(Restrictions.ilike("institute.name", searchKeyword, MatchMode.ANYWHERE)));
 		}
 		if (userId != null) {
 			crit.add(Restrictions.eq("enrollment.userId", userId));

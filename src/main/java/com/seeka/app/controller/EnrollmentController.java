@@ -85,12 +85,24 @@ public class EnrollmentController {
 				.create();
 	}
 
-	@GetMapping("/user")
-	public ResponseEntity<?> getEnrollmentListBasedOnUserId(@RequestHeader final BigInteger userId,
-			@RequestParam(name = "isArchive", required = false) final boolean isArchive) throws ValidationException {
-		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(userId, null, null, null, null, null, null, null, isArchive);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentResponseList).setMessage("Get enrollment List successfully")
-				.create();
+	@GetMapping("/user/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getEnrollmentListBasedOnUserId(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestHeader final BigInteger userId, @RequestParam(name = "isArchive", required = false) final boolean isArchive) throws ValidationException {
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(userId, null, null, null, null, null, startIndex, pageSize,
+				isArchive, null, null, null);
+		int totalCount = iEnrollmentService.countOfEnrollment(userId, null, null, null, null, null, null);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get enrollment List successfully");
+		responseMap.put("data", enrollmentResponseList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
@@ -98,11 +110,12 @@ public class EnrollmentController {
 			@RequestParam(required = false) final BigInteger courseId, @RequestParam(required = false) final BigInteger instituteId,
 			@RequestParam(required = false) final BigInteger enrollmentId, @RequestParam(required = false) final String status,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
-			@RequestParam(required = false) final BigInteger userId) throws ValidationException {
+			@RequestParam(required = false) final BigInteger userId, @RequestParam(required = false) final String sortByField,
+			@RequestParam(required = false) final String sortByType, @RequestParam(required = false) final String searchKeyword) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(null, courseId, instituteId, enrollmentId, status, updatedOn,
-				startIndex, pageSize, null);
-		int totalCount = iEnrollmentService.countOfEnrollment(null, courseId, instituteId, enrollmentId, status, updatedOn);
+				startIndex, pageSize, null, sortByField, sortByType, searchKeyword);
+		int totalCount = iEnrollmentService.countOfEnrollment(null, courseId, instituteId, enrollmentId, status, updatedOn, searchKeyword);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);

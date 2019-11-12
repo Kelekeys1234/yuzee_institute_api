@@ -250,10 +250,10 @@ public class EnrollmentService implements IEnrollmentService {
 
 	@Override
 	public List<EnrollmentResponseDto> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId,
-			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive)
-			throws ValidationException {
+			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive,
+			final String sortByField, final String sortByType, final String searchKeyword) throws ValidationException {
 		List<Enrollment> enrollmenList = iEnrollmentDao.getEnrollmentList(userId, courseId, instituteId, enrollmentId, status, updatedOn, startIndex, pageSize,
-				isArchive);
+				isArchive, sortByField, sortByType, searchKeyword);
 		List<EnrollmentResponseDto> resultList = new ArrayList<>();
 		for (Enrollment enrollment : enrollmenList) {
 			EnrollmentResponseDto enrollmentResponseDto = new EnrollmentResponseDto();
@@ -286,8 +286,8 @@ public class EnrollmentService implements IEnrollmentService {
 
 	@Override
 	public int countOfEnrollment(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
-			final String status, final Date updatedOn) {
-		return iEnrollmentDao.countOfEnrollment(userId, courseId, instituteId, enrollmentId, status, updatedOn);
+			final String status, final Date updatedOn, final String searchKeyword) {
+		return iEnrollmentDao.countOfEnrollment(userId, courseId, instituteId, enrollmentId, status, updatedOn, searchKeyword);
 	}
 
 	@Override
