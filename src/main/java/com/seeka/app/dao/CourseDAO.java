@@ -95,13 +95,6 @@ public class CourseDAO implements ICourseDAO {
 		return crit.list();
 	}
 
-	public Currency getCurrencyByCode(final String currencyCode) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Currency.class);
-		crit.add(Restrictions.eq("code", currencyCode));
-		return (Currency) crit.list().get(0);
-	}
-
 	@Override
 	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto) {
 		Session session = sessionFactory.getCurrentSession();
@@ -1296,21 +1289,21 @@ public class CourseDAO implements ICourseDAO {
 
 		List<CourseResponseDto> list = new ArrayList<>();
 		CourseResponseDto courseResponseDto = null;
-		BigInteger baseCurrencyId = null;
-		BigInteger toCurrencyId = null;
-		if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
-			baseCurrencyId = getCurrencyByCode(IConstant.DEFAULT_BASE_CURRENCY).getId();
-			toCurrencyId = getCurrencyByCode(courseSearchDto.getCurrencyCode()).getId();
-		}
+//		BigInteger baseCurrencyId = null;
+//		BigInteger toCurrencyId = null;
+//		if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
+//			baseCurrencyId = getCurrencyByCode(IConstant.DEFAULT_BASE_CURRENCY).getId();
+//			toCurrencyId = getCurrencyByCode(courseSearchDto.getCurrencyCode()).getId();
+//		}
 		for (Object[] row : rows) {
-			courseResponseDto = getCourseData(row, courseSearchDto, showIntlCost, baseCurrencyId, toCurrencyId);
+			courseResponseDto = getCourseData(row, courseSearchDto, showIntlCost /*baseCurrencyId, toCurrencyId*/);
 			list.add(courseResponseDto);
 		}
 		return list;
 	}
 
-	private CourseResponseDto getCourseData(final Object[] row, final AdvanceSearchDto courseSearchDto, final boolean showIntlCost,
-			final BigInteger baseCurrencyId, final BigInteger toCurrencyId) {
+	private CourseResponseDto getCourseData(final Object[] row, final AdvanceSearchDto courseSearchDto, final boolean showIntlCost
+			/*final BigInteger baseCurrencyId, final BigInteger toCurrencyId*/) {
 		CourseResponseDto courseResponseDto = null;
 		Long cost = 0l;
 		String newCurrencyCode = "";

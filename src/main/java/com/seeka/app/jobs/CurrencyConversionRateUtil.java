@@ -23,6 +23,7 @@ import com.google.gson.JsonParser;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.ICurrencyRateService;
+import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 
@@ -45,7 +46,7 @@ public class CurrencyConversionRateUtil {
 	public void reportCurrentTime() {
 		log.info("CurrencyConversionRateUtil: The time is now {}", dateFormat.format(new Date()));
 		System.out.println("CurrencyConversionRateUtil: The time is now {}" + dateFormat.format(new Date()));
-//         run();
+        run();
 		updateCourses();
 	}
 
@@ -62,9 +63,24 @@ public class CurrencyConversionRateUtil {
 			JsonObject obj = jsonElement.getAsJsonObject().get("rates").getAsJsonObject();
 			Map<String, Double> map = objectMapper.readValue(obj.toString(), HashMap.class);
 
+			if(CommonUtil.currencyNameMap.isEmpty()) {
+				CommonUtil.setCurrencyNames();
+			}
 			for (Map.Entry<String, Double> currency : map.entrySet()) {
 				String currencyCode = currency.getKey();
 				CurrencyRate currencyRate = currencyRateService.getCurrencyRate(currencyCode);
+				if(currencyRate == null) {
+					CurrencyRate currRate = new CurrencyRate();
+					currRate.setFromCurrencyCode(IConstant.USD_CODE);
+					currRate.setToCurrencyCode(currencyCode);
+					currRate.setConversionRate(currency.getValue());
+					currRate.setToCurrencyName(CommonUtil.currencyNameMap.get(currency.getKey()));
+					currRate.setFromCurrencyName(CommonUtil.currencyNameMap.get(IConstant.USD_CODE));
+					currRate.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
+					currRate.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
+					currRate.setHasChanged(false);
+					currencyRateService.save(currRate);
+				}
 				Double oldRate = currencyRate.getConversionRate();
 				currencyRate.setConversionRate(Double.parseDouble(String.valueOf(currency.getValue())));
 				currencyRate.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
