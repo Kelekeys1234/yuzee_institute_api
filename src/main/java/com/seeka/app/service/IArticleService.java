@@ -55,14 +55,14 @@ public interface IArticleService {
 
 	Map<String, Object> getArticleByFolderId(BigInteger folderId);
 
-	List<ArticleResponseDetailsDto> getArticleList(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword, BigInteger categoryId, String tags, String status) throws ValidationException;
+	List<ArticleResponseDetailsDto> getArticleList(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword, BigInteger categoryId, String tags, Boolean status) throws ValidationException;
 
 	List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, List<BigInteger> categoryId, List<String> tags, String status) throws ValidationException;
+			final String searchKeyword, List<BigInteger> categoryId, List<String> tags, Boolean status) throws ValidationException;
 	
 	Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, BigInteger categoryId, String tags, String status);
+			final String searchKeyword, BigInteger categoryId, String tags, Boolean status);
 	
 	Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, String status);
+			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, Boolean status);
 }

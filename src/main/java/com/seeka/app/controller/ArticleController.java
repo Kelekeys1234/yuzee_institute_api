@@ -47,7 +47,7 @@ public class ArticleController {
 			@RequestParam(required = false) final String searchKeyword,
 			@RequestParam(required = false) final BigInteger categoryId,
 			@RequestParam(required = false) final String tags,
-			@RequestParam(required = false) final String status
+			@RequestParam(required = false) final Boolean status
 			) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<ArticleResponseDetailsDto> articleList = articleService.getArticleList(startIndex, pageSize, sortByField,

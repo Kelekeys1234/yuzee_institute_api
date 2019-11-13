@@ -18,7 +18,7 @@ public class ArticleFilterDto implements Serializable{
 	private String searchKeyword;
 	private List<BigInteger> categoryId;
 	private List<String> tags;
-	private String status;
+	private Boolean status;
 	public Integer getPageNumber() {
 		return pageNumber;
 	}
@@ -61,10 +61,10 @@ public class ArticleFilterDto implements Serializable{
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}
-	public String getStatus() {
+	public Boolean getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 	

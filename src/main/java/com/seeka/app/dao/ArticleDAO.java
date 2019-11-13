@@ -31,7 +31,7 @@ public class ArticleDAO implements IArticleDAO {
 
 	@Override
 	public List<SeekaArticles> getAll(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, final List<BigInteger> categoryId, List<String> tags, String status) {
+			final String searchKeyword, final List<BigInteger> categoryId, List<String> tags, Boolean status) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 
@@ -396,7 +396,7 @@ public class ArticleDAO implements IArticleDAO {
 
 	@Override
 	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, String status) {
+			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, Boolean status) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 		if (searchKeyword != null) {
