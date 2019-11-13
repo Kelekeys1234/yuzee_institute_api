@@ -131,8 +131,9 @@ public class CourseController {
 			@RequestParam(required = false) final Double minCost, @RequestParam(required = false) final Double maxCost,
 			@RequestParam(required = false) final Integer minDuration, @RequestParam(required = false) final Integer maxDuration,
 			@RequestParam(required = false) final String courseName, @RequestParam(required = false) final String currencyCode,
-			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final boolean sortAsscending,
-			@RequestHeader(required = true) final BigInteger userId, @RequestParam(required = false) final String date) throws Exception {
+			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String sortBy,
+			@RequestParam(required = false) final boolean sortAsscending, @RequestHeader(required = true) final BigInteger userId,
+			@RequestParam(required = false) final String date) throws Exception {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryIds(countryIds);
 		courseSearchDto.setInstituteId(instituteId);
@@ -152,24 +153,25 @@ public class CourseController {
 		courseSearchDto.setSortAsscending(sortAsscending);
 		courseSearchDto.setUserId(userId);
 		courseSearchDto.setDate(date);
-		return courseSearch(courseSearchDto);
+		return courseSearch(courseSearchDto, searchKeyword);
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final BigInteger userId, @RequestBody final CourseSearchDto courseSearchDto)
 			throws Exception {
 		courseSearchDto.setUserId(userId);
-		return courseSearch(courseSearchDto);
+		return courseSearch(courseSearchDto, null);
 	}
 
-	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto) throws ValidationException {
+	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto, final String searchKeyword) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage());
+		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage(),
+				searchKeyword);
 		for (CourseResponseDto obj : courseList) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			obj.setStorageList(storageDTOList);
 		}
-		int totalCount = courseService.getCountforNormalCourse(courseSearchDto);
+		int totalCount = courseService.getCountforNormalCourse(courseSearchDto, searchKeyword);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);

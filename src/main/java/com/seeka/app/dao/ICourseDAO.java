@@ -30,7 +30,7 @@ public interface ICourseDAO {
 
 	List<Course> getAll();
 
-	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj);
+	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, String searchKeyword);
 
 	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
@@ -113,7 +113,7 @@ public interface ICourseDAO {
 
 	int updateCourseForCurrency(CurrencyRate currencyRate);
 
-	int getCountforNormalCourse(CourseSearchDto courseSearchDto);
+	int getCountforNormalCourse(CourseSearchDto courseSearchDto, String searchKeyword);
 
 	int getCountOfAdvanceSearch(Object... values);
 }

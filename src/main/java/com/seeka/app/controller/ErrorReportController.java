@@ -57,7 +57,7 @@ public class ErrorReportController {
 		return new GenericResponseHandlers.Builder().setMessage("Create Error Report Category Successfully.").setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/category/{errorCategoryType}", method = RequestMethod.GET, produces = "application/json")
+	@GetMapping("/category/{errorCategoryType}")
 	public ResponseEntity<?> getAllErrorCategory(@PathVariable final String errorCategoryType) throws Exception {
 		List<ErrorReportCategory> errorReportCategories = errorReportService.getAllErrorCategory(errorCategoryType);
 		return new GenericResponseHandlers.Builder().setMessage("Get Error Report Category List Successfully").setData(errorReportCategories)

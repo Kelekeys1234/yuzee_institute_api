@@ -31,6 +31,7 @@ import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
@@ -322,53 +323,49 @@ public class InstituteController {
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> instituteSearch(@RequestBody final CourseSearchDto request) throws Exception {
-		return getInstitutesBySearchFilters(request);
+		return getInstitutesBySearchFilters(request, null, null, null);
 	}
 
 	@RequestMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> instituteSearch(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final List<BigInteger> countryIds, @RequestParam(required = false) final List<BigInteger> facultyIds,
-			@RequestParam(required = false) final List<BigInteger> levelIds) throws Exception {
+			@RequestParam(required = false) final List<BigInteger> levelIds, @RequestParam(required = false) final String sortByField,
+			@RequestParam(required = false) final String sortByType, @RequestParam(required = false) final String searchKeyword) throws Exception {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryIds(countryIds);
 		courseSearchDto.setFacultyIds(facultyIds);
 		courseSearchDto.setLevelIds(levelIds);
 		courseSearchDto.setPageNumber(pageNumber);
 		courseSearchDto.setMaxSizePerPage(pageSize);
-		return getInstitutesBySearchFilters(courseSearchDto);
+		return getInstitutesBySearchFilters(courseSearchDto, sortByField, sortByType, searchKeyword);
 	}
 
-	private ResponseEntity<?> getInstitutesBySearchFilters(final CourseSearchDto request) throws ValidationException {
-		Map<String, Object> response = new HashMap<>();
-
+	private ResponseEntity<?> getInstitutesBySearchFilters(final CourseSearchDto request, final String sortByField, final String sortByType,
+			final String searchKeyword) throws ValidationException {
 		List<BigInteger> countryIds = request.getCountryIds();
 		if (null == countryIds || countryIds.isEmpty()) {
 			countryIds = new ArrayList<>();
 		}
-
-		List<InstituteResponseDto> instituteList = instituteService.getAllInstitutesByFilter(request);
+		int startIndex = PaginationUtil.getStartIndex(request.getPageNumber(), request.getMaxSizePerPage());
+		List<InstituteResponseDto> instituteList = instituteService.getAllInstitutesByFilter(request, sortByField, sortByType, searchKeyword, startIndex);
 		for (InstituteResponseDto instituteResponseDto : instituteList) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null,
 					"en");
 			instituteResponseDto.setStorageList(storageDTOList);
 		}
 
-		Integer maxCount = 0, totalCount = 0;
-		if (null != instituteList && !instituteList.isEmpty()) {
-			totalCount = instituteList.get(0).getTotalCount();
-			maxCount = instituteList.size();
-		}
-		boolean showMore;
-		if (request.getMaxSizePerPage() == maxCount) {
-			showMore = true;
-		} else {
-			showMore = false;
-		}
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("paginationObj", new PaginationDto(totalCount, showMore));
-		response.put("instituteList", instituteList);
-		return ResponseEntity.accepted().body(response);
+		int totalCount = instituteService.getCountOfInstitute(request, searchKeyword);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, request.getMaxSizePerPage(), totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get Institute List successfully");
+		responseMap.put("data", instituteList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/recommended", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -404,7 +401,7 @@ public class InstituteController {
 			request.setCountryIds(countryIds);
 		}
 
-		List<InstituteResponseDto> instituteResponseDtoList = instituteService.getAllInstitutesByFilter(request);
+		List<InstituteResponseDto> instituteResponseDtoList = instituteService.getAllInstitutesByFilter(request, null, null, null, null);
 		for (InstituteResponseDto instituteResponseDto : instituteResponseDtoList) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null,
 					"en");

@@ -25,7 +25,6 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
-import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
@@ -47,7 +46,6 @@ import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.CourseSortBy;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.ConvertionUtil;
-import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
 @Repository
@@ -96,7 +94,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto) {
+	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 
 		String sqlQuery = "select count(*) from course crs inner join institute inst "
@@ -131,12 +129,17 @@ public class CourseDAO implements ICourseDAO {
 			sqlQuery += " and crs.name like '%" + courseSearchDto.getCourseName().trim() + "%'";
 		}
 
+		if (searchKeyword != null) {
+			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
+			sqlQuery += " or ctry.name like '%" + searchKeyword.trim() + "%'";
+			sqlQuery += " or crs.name like '%" + searchKeyword.trim() + "%' )";
+		}
 		Query query = session.createSQLQuery(sqlQuery);
 		return ((Number) query.getSingleResult()).intValue();
 	}
 
 	@Override
-	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto) {
+	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 
 		String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName,inst.id as instId,inst.name as instName, crs.cost_range, "
@@ -171,6 +174,12 @@ public class CourseDAO implements ICourseDAO {
 			sqlQuery += " and crs.name like '%" + courseSearchDto.getCourseName().trim() + "%'";
 		}
 
+		if (searchKeyword != null) {
+			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
+			sqlQuery += " or ctry.name like '%" + searchKeyword.trim() + "%'";
+			sqlQuery += " or crs.name like '%" + searchKeyword.trim() + "%' )";
+		}
+
 		sqlQuery += " ";
 		String sortingQuery = "";
 		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
@@ -180,16 +189,19 @@ public class CourseDAO implements ICourseDAO {
 			}
 			if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DURATION.toString())) {
 				sortingQuery = sortingQuery + " ORDER BY crs.duration " + sortTypeValue + " ";
-			}
-			if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.RECOGNITION.toString())) {
+			} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.RECOGNITION.toString())) {
 				sortingQuery = sortingQuery + " ORDER BY crs.recognition " + sortTypeValue + " ";
-			}
-			if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.LOCATION.toString())) {
+			} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.LOCATION.toString())) {
 				sortingQuery = sortingQuery + " ORDER BY ctry.name " + sortTypeValue + " ";
-			}
-			if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.PRICE.toString())) {
+			} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.PRICE.toString())) {
 				sortingQuery = sortingQuery + " ORDER BY IF(crs.currency='" + courseSearchDto.getCurrencyCode()
 						+ "', crs.usd_domestic_fee, crs.usd_international_fee) " + sortTypeValue + " ";
+			} else if (courseSearchDto.getSortBy().equalsIgnoreCase("instituteName")) {
+				sortingQuery = " order by inst.name " + sortTypeValue.toLowerCase();
+			} else if (courseSearchDto.getSortBy().equalsIgnoreCase("countryName")) {
+				sortingQuery = " order by ctry.name " + sortTypeValue.toLowerCase();
+			} else if (courseSearchDto.getSortBy().equalsIgnoreCase("name")) {
+				sortingQuery = " order by crs.name " + sortTypeValue.toLowerCase();
 			}
 		} else {
 			sortingQuery = " order by crs.international_fee asc";
@@ -1296,14 +1308,14 @@ public class CourseDAO implements ICourseDAO {
 //			toCurrencyId = getCurrencyByCode(courseSearchDto.getCurrencyCode()).getId();
 //		}
 		for (Object[] row : rows) {
-			courseResponseDto = getCourseData(row, courseSearchDto, showIntlCost /*baseCurrencyId, toCurrencyId*/);
+			courseResponseDto = getCourseData(row, courseSearchDto, showIntlCost /* baseCurrencyId, toCurrencyId */);
 			list.add(courseResponseDto);
 		}
 		return list;
 	}
 
 	private CourseResponseDto getCourseData(final Object[] row, final AdvanceSearchDto courseSearchDto, final boolean showIntlCost
-			/*final BigInteger baseCurrencyId, final BigInteger toCurrencyId*/) {
+	/* final BigInteger baseCurrencyId, final BigInteger toCurrencyId */) {
 		CourseResponseDto courseResponseDto = null;
 		Long cost = 0l;
 		String newCurrencyCode = "";

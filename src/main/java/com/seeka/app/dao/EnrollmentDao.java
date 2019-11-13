@@ -74,7 +74,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 	@Override
 	public List<Enrollment> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
 			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive, final String sortByField,
-			final String sortByType, final String searchKeyword) {
+			String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Enrollment.class, "enrollment");
 		crit.createAlias("enrollment.institute", "institute");
@@ -107,14 +107,17 @@ public class EnrollmentDao implements IEnrollmentDao {
 			crit.add(Restrictions.disjunction().add(Restrictions.ilike("course.name", searchKeyword, MatchMode.ANYWHERE))
 					.add(Restrictions.ilike("institute.name", searchKeyword, MatchMode.ANYWHERE)));
 		}
-		if (sortByField != null && sortByType != null) {
-			if ("courseId".equals(sortByField)) {
+		if (sortByType == null) {
+			sortByType = "DESC";
+		}
+		if (sortByField != null) {
+			if ("courseName".equals(sortByField)) {
 				if ("ASC".equals(sortByType)) {
 					crit.addOrder(Order.asc("course.name"));
 				} else if ("DESC".equals(sortByType)) {
 					crit.addOrder(Order.desc("course.name"));
 				}
-			} else if ("instituteId".equals(sortByField)) {
+			} else if ("instituteName".equals(sortByField)) {
 				if ("ASC".equals(sortByType)) {
 					crit.addOrder(Order.asc("institute.name"));
 				} else if ("DESC".equals(sortByType)) {

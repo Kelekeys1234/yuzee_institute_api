@@ -52,12 +52,8 @@ public class UserReviewDao implements IUserReviewDao {
 		if (userId != null) {
 			crit.add(Restrictions.eq("userId", userId));
 		}
-		if (sortByType != null) {
-			if ("ASC".equals(sortByType)) {
-				crit.addOrder(Order.asc("userReview.id"));
-			} else if ("DESC".equals(sortByType)) {
-				crit.addOrder(Order.desc("userReview.id"));
-			}
+		if (sortByType != null && "ASC".equals(sortByType)) {
+			crit.addOrder(Order.asc("userReview.id"));
 		} else {
 			crit.addOrder(Order.desc("userReview.id"));
 		}

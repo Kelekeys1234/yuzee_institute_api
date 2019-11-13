@@ -100,14 +100,12 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<BigInteger> getTopInstituteIdByCountry(
-			final BigInteger countryId/* , Long startIndex, Long pageSize */) {
+	public List<BigInteger> getTopInstituteIdByCountry(final BigInteger countryId/* , Long startIndex, Long pageSize */) {
 		return dao.getTopInstituteByCountry(countryId/* , startIndex, pageSize */);
 	}
-	
+
 	@Override
-	public List<BigInteger> getRandomInstituteIdByCountry(
-			final List<BigInteger> countryIdList/* , Long startIndex, Long pageSize */) {
+	public List<BigInteger> getRandomInstituteIdByCountry(final List<BigInteger> countryIdList/* , Long startIndex, Long pageSize */) {
 		return dao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
 	}
 
@@ -122,8 +120,9 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto filterObj) {
-		return dao.getAllInstitutesByFilter(filterObj);
+	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto filterObj, final String sortByField, final String sortByType,
+			final String searchKeyword, final Integer startIndex) {
+		return dao.getAllInstitutesByFilter(filterObj, sortByField, sortByType, searchKeyword, startIndex);
 	}
 
 	@Override
@@ -613,14 +612,19 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize) {
+	public List<BigInteger> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
 		return dao.getInstituteIdsBasedOnGlobalRanking(startIndex, pageSize);
 	}
 
 	@Override
-	public List<BigInteger> getInstituteIdsFromCountry(List<BigInteger> distinctCountryIds) {
+	public List<BigInteger> getInstituteIdsFromCountry(final List<BigInteger> distinctCountryIds) {
 
 		List<BigInteger> instituteIds = dao.getInstitudeByCountry(distinctCountryIds);
 		return instituteIds;
+	}
+
+	@Override
+	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword) {
+		return dao.getCountOfInstitute(courseSearchDto, searchKeyword);
 	}
 }

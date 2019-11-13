@@ -142,8 +142,9 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize) {
-		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto);
+	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
+			final String searchKeyword) {
+		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword);
 		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
 				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
 		if (viewedCourseIds.isEmpty()) {
@@ -158,8 +159,8 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto) {
-		return iCourseDAO.getCountforNormalCourse(courseSearchDto);
+	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword) {
+		return iCourseDAO.getCountforNormalCourse(courseSearchDto, searchKeyword);
 	}
 
 	@Override

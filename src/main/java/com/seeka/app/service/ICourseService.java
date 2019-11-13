@@ -33,7 +33,7 @@ public interface ICourseService {
 
 	List<Course> getAll();
 
-	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Integer startIndex, Integer pageSize);
+	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Integer startIndex, Integer pageSize, String searchKeyword);
 
 	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
@@ -123,7 +123,7 @@ public interface ICourseService {
 
 	void updateCourseForCurrency(CurrencyRate currencyRate);
 
-	int getCountforNormalCourse(CourseSearchDto courseSearchDto);
+	int getCountforNormalCourse(CourseSearchDto courseSearchDto, String searchKeyword);
 
 	int getCountOfAdvanceSearch(AdvanceSearchDto courseSearchDto);
 }

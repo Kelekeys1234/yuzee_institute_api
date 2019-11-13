@@ -28,12 +28,13 @@ public interface IInstituteService {
 	List<BigInteger> getTopInstituteIdByCountry(BigInteger countryId/* , Long startIndex, Long pageSize */);
 
 	List<BigInteger> getRandomInstituteIdByCountry(List<BigInteger> countryId);
-	
+
 	List<Institute> getAll();
 
 	List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
 
-	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj);
+	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
+			Integer startIndex);
 
 	InstituteResponseDto getInstituteByID(BigInteger instituteId);
 
@@ -64,9 +65,11 @@ public interface IInstituteService {
 	List<Institute> ratingWiseInstituteListByCountry(Country country);
 
 	List<InstituteResponseDto> getAllInstituteByID(final Collection<BigInteger> listInstituteId) throws ValidationException;
-	
+
 	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
 
 	List<BigInteger> getInstituteIdsFromCountry(List<BigInteger> distinctCountryIds);
-	
+
+	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword);
+
 }

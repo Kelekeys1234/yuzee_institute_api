@@ -48,7 +48,7 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	@Override
 	public List<ErrorReport> getAllErrorReport(final BigInteger userId, final Integer startIndex, final Integer pageSize,
 			final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive,
-			final String sortByField, final String sortByType, final String searchKeyword) {
+			final String sortByField, String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ErrorReport.class, "errorReport");
 		crit.createAlias("errorReport.errorReportCategory", "errorReportCategory");
@@ -78,7 +78,10 @@ public class ErrorReportDAO implements IErrorReportDAO {
 			crit.add(Restrictions.disjunction().add(Restrictions.ilike("errorReport.description", searchKeyword, MatchMode.ANYWHERE))
 					.add(Restrictions.ilike("errorReport.phoneName", searchKeyword, MatchMode.ANYWHERE)));
 		}
-		if (sortByField != null && sortByType != null) {
+		if (sortByType == null) {
+			sortByType = "DESC";
+		}
+		if (sortByField != null) {
 			if ("description".equals(sortByField)) {
 				if ("ASC".equals(sortByType)) {
 					crit.addOrder(Order.asc("errorReport.description"));
