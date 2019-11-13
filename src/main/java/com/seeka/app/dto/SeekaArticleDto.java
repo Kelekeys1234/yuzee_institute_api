@@ -11,8 +11,8 @@ public class SeekaArticleDto {
 	private String heading;
 	private String content;
 	private String imagepath;
-	private BigInteger category;
-	private BigInteger subcategory;
+	private BigInteger categoryId;
+	private BigInteger subcategoryId;
 	private String author;
 	private Timestamp postDate;
 	private Timestamp expireDate;
@@ -21,11 +21,11 @@ public class SeekaArticleDto {
 	private String websiteUrl;
 	private String url;
 	private String tags;
-	private BigInteger country;
-	private BigInteger city;
-	private BigInteger faculty;
-	private BigInteger institute;
-	private BigInteger courses;
+	private BigInteger countryId;
+	private BigInteger cityId;
+	private BigInteger facultyId;
+	private BigInteger instituteId;
+	private BigInteger courseId;
 
 	private List<String> userDemographicString;
 
@@ -61,20 +61,20 @@ public class SeekaArticleDto {
 		this.imagepath = imagepath;
 	}
 
-	public BigInteger getCategory() {
-		return category;
+	public BigInteger getCategoryId() {
+		return categoryId;
 	}
 
-	public void setCategory(BigInteger category) {
-		this.category = category;
+	public void setCategoryId(BigInteger categoryId) {
+		this.categoryId = categoryId;
 	}
 
-	public BigInteger getSubcategory() {
-		return subcategory;
+	public BigInteger getSubcategoryId() {
+		return subcategoryId;
 	}
 
-	public void setSubcategory(BigInteger subcategory) {
-		this.subcategory = subcategory;
+	public void setSubcategoryId(BigInteger subcategoryId) {
+		this.subcategoryId = subcategoryId;
 	}
 
 	public String getAuthor() {
@@ -141,44 +141,44 @@ public class SeekaArticleDto {
 		this.tags = tags;
 	}
 
-	public BigInteger getCountry() {
-		return country;
+	public BigInteger getCountryId() {
+		return countryId;
 	}
 
-	public void setCountry(BigInteger country) {
-		this.country = country;
+	public void setCountryId(BigInteger country) {
+		this.countryId = country;
 	}
 
-	public BigInteger getCity() {
-		return city;
+	public BigInteger getCityId() {
+		return cityId;
 	}
 
-	public void setCity(BigInteger city) {
-		this.city = city;
+	public void setCityId(BigInteger city) {
+		this.cityId = city;
 	}
 
-	public BigInteger getFaculty() {
-		return faculty;
+	public BigInteger getFacultyId() {
+		return facultyId;
 	}
 
-	public void setFaculty(BigInteger faculty) {
-		this.faculty = faculty;
+	public void setFacultyId(BigInteger faculty) {
+		this.facultyId = faculty;
 	}
 
-	public BigInteger getInstitute() {
-		return institute;
+	public BigInteger getInstituteId() {
+		return instituteId;
 	}
 
-	public void setInstitute(BigInteger institute) {
-		this.institute = institute;
+	public void setInstituteId(BigInteger institute) {
+		this.instituteId = institute;
 	}
 
-	public BigInteger getCourses() {
-		return courses;
+	public BigInteger getCourseId() {
+		return courseId;
 	}
 
-	public void setCourses(BigInteger courses) {
-		this.courses = courses;
+	public void setCourseId(BigInteger courses) {
+		this.courseId = courses;
 	}
 
 	public List<String> getUserDemographicString() {

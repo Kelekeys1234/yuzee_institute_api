@@ -96,6 +96,7 @@ public class IConstant {
 
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH";
 	public static final String ELASTIC_SEARCH_INDEX = "seeka_dev";
+	public static final String ELASTIC_SEARCH_INDEX_ARTICLE = "seeka_dev_article";
 	public static final String ELASTIC_SEARCH_COURSE_TYPE = "course";
 	public static final String ELASTIC_SEARCH_ARTICLE_TYPE = "article";
 	public static final String COURSE_DEFAULT_DESCRPTION = "Seeka believes that every person deserves an equal opportunity in education, career aspirations and life. Our database is developed to match users no matter where they live. With over 200,000 scholarships available to choose from, we have carefully paired you with the best.";

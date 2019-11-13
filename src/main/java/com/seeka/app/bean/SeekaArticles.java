@@ -57,7 +57,7 @@ public class SeekaArticles implements Serializable {
     private City city;
     private Faculty faculty;
     private Institute institute;
-    private Course courses;    
+    private Course course;    
     private String articleType;
     private String companyName;
     private String companyWebsite;
@@ -107,7 +107,7 @@ public class SeekaArticles implements Serializable {
         this.city = city;
         this.faculty = faculty;
         this.institute = institute;
-        this.courses = courses;
+        this.course = courses;
         this.articleType = articleType;
         this.companyName = companyName;
         this.companyWebsite = companyWebsite;
@@ -324,12 +324,12 @@ public class SeekaArticles implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "courses")
-    public Course getCourses() {
-        return this.courses;
+    public Course getCourse() {
+        return this.course;
     }
 
-    public void setCourses(Course courses) {
-        this.courses = courses;
+    public void setCourse(Course courses) {
+        this.course = courses;
     }
 
     @Column(name = "article_type", length = 100)
@@ -405,7 +405,7 @@ public class SeekaArticles implements Serializable {
         result = prime * result + ((companyWebsite == null) ? 0 : companyWebsite.hashCode());
         result = prime * result + ((content == null) ? 0 : content.hashCode());
         result = prime * result + ((country == null) ? 0 : country.hashCode());
-        result = prime * result + ((courses == null) ? 0 : courses.hashCode());
+        result = prime * result + ((course == null) ? 0 : course.hashCode());
         result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
         result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
         result = prime * result + ((faculty == null) ? 0 : faculty.hashCode());
@@ -485,10 +485,10 @@ public class SeekaArticles implements Serializable {
                 return false;
         } else if (!country.equals(other.country))
             return false;
-        if (courses == null) {
-            if (other.courses != null)
+        if (course == null) {
+            if (other.course != null)
                 return false;
-        } else if (!courses.equals(other.courses))
+        } else if (!course.equals(other.course))
             return false;
         if (createdAt == null) {
             if (other.createdAt != null)
@@ -589,7 +589,7 @@ public class SeekaArticles implements Serializable {
 				.append(", shared=").append(shared).append(", reviewed=").append(reviewed).append(", likes=")
 				.append(likes).append(", link=").append(link).append(", updatedAt=").append(updatedAt)
 				.append(", country=").append(country).append(", city=").append(city).append(", faculty=")
-				.append(faculty).append(", institute=").append(institute).append(", courses=").append(courses)
+				.append(faculty).append(", institute=").append(institute).append(", courses=").append(course)
 				.append(", articleType=").append(articleType).append(", companyName=").append(companyName)
 				.append(", companyWebsite=").append(companyWebsite).append(", subCategoryDropDownDto=")
 				.append(subCategoryDropDownDto).append(", categoryobj=").append(categoryobj).append(", author=")

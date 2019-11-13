@@ -2,7 +2,6 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seeka.app.bean.ArticleFolder;
 import com.seeka.app.bean.ArticleFolderMap;
-import com.seeka.app.bean.ArticleUserCitizenship;
 import com.seeka.app.bean.ArticleUserDemographic;
 import com.seeka.app.bean.Category;
 import com.seeka.app.bean.City;
@@ -32,14 +30,8 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.bean.SubCategory;
-import com.seeka.app.dao.ArticleCityDAO;
-import com.seeka.app.dao.ArticleCountryDAO;
-import com.seeka.app.dao.ArticleCourseDAO;
-import com.seeka.app.dao.ArticleFacultyDAO;
 import com.seeka.app.dao.ArticleFolderDao;
 import com.seeka.app.dao.ArticleFolderMapDao;
-import com.seeka.app.dao.ArticleGenderDAO;
-import com.seeka.app.dao.ArticleInstituteDAO;
 import com.seeka.app.dao.CityDAO;
 import com.seeka.app.dao.CountryDAO;
 import com.seeka.app.dao.CourseDAO;
@@ -48,24 +40,18 @@ import com.seeka.app.dao.IArticleDAO;
 import com.seeka.app.dao.IArticleUserDemographicDao;
 import com.seeka.app.dao.ICategoryDAO;
 import com.seeka.app.dao.ISubCategoryDAO;
-import com.seeka.app.dao.IUserArticleDAO;
 import com.seeka.app.dao.InstituteDAO;
-import com.seeka.app.dto.ArticleDto;
+import com.seeka.app.dto.ArticleElasticSearchDto;
 import com.seeka.app.dto.ArticleFolderDto;
 import com.seeka.app.dto.ArticleFolderMapDto;
 import com.seeka.app.dto.ArticleNameDto;
 import com.seeka.app.dto.ArticleResponseDetailsDto;
-import com.seeka.app.dto.ArticleResposeDto;
 import com.seeka.app.dto.ArticleUserDemographicDto;
-import com.seeka.app.dto.CategoryDto;
-import com.seeka.app.dto.CountryDto;
-import com.seeka.app.dto.ElasticSearchArticleDto;
 import com.seeka.app.dto.ElasticSearchDTO;
 import com.seeka.app.dto.PageLookupDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.SearchDto;
 import com.seeka.app.dto.SeekaArticleDto;
-import com.seeka.app.dto.SubCategoryDto;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -95,27 +81,6 @@ public class ArticleService implements IArticleService {
 
 	@Autowired
 	private ISubCategoryDAO subCategoryDAO;
-
-	@Autowired
-	private IUserArticleDAO userArticleDAO;
-
-	@Autowired
-	private ArticleCountryDAO articleCountryDAO;
-
-	@Autowired
-	private ArticleCityDAO articleCityDAO;
-
-	@Autowired
-	private ArticleCourseDAO articleCourseDAO;
-
-	@Autowired
-	private ArticleFacultyDAO articleFacultyDAO;
-
-	@Autowired
-	private ArticleInstituteDAO articleInstituteDAO;
-
-	@Autowired
-	private ArticleGenderDAO articleGenderDAO;
 
 	@Autowired
 	private ArticleFolderDao articleFolderDao;
@@ -232,9 +197,9 @@ public class ArticleService implements IArticleService {
 					articleResponseDetailsDto.setInstituteId(article.getInstitute().getId());
 					articleResponseDetailsDto.setInstituteName(article.getInstitute().getName());
 				}
-				if (article.getCourses() != null) {
-					articleResponseDetailsDto.setCourseId(article.getCourses().getId());
-					articleResponseDetailsDto.setCourseName(article.getCourses().getName());
+				if (article.getCourse() != null) {
+					articleResponseDetailsDto.setCourseId(article.getCourse().getId());
+					articleResponseDetailsDto.setCourseName(article.getCourse().getName());
 				}
 			}
 	//			List<ArticleUserDemographicDto> userDemographicDtoList  = new ArrayList<>();
@@ -286,9 +251,9 @@ public class ArticleService implements IArticleService {
 					articleResponseDetailsDto.setInstituteId(article.getInstitute().getId());
 					articleResponseDetailsDto.setInstituteName(article.getInstitute().getName());
 				}
-				if (article.getCourses() != null) {
-					articleResponseDetailsDto.setCourseId(article.getCourses().getId());
-					articleResponseDetailsDto.setCourseName(article.getCourses().getName());
+				if (article.getCourse() != null) {
+					articleResponseDetailsDto.setCourseId(article.getCourse().getId());
+					articleResponseDetailsDto.setCourseName(article.getCourse().getName());
 				}
 			}
 			articleResponseDetailsDtoList.add(articleResponseDetailsDto);
@@ -365,68 +330,6 @@ public class ArticleService implements IArticleService {
 			response.put("message", IConstant.ARTICLE_NOT_FOUND);
 			response.put("data", articles);
 		}
-		return response;
-	}
-
-	@Override
-	public Map<String, Object> saveArticle(final MultipartFile file, final ArticleDto articledto) {
-		Map<String, Object> response = new HashMap<>();
-		String ResponseStatus = IConstant.SUCCESS;
-		try {
-			// save data
-			SeekaArticles article = new SeekaArticles();
-			if (articledto != null && articledto.getId() != null) {
-				article = articleDAO.findById(articledto.getId());
-				if (article != null) {
-					article.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
-				}
-			} else {
-				article = new SeekaArticles();
-				article.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
-			}
-			article.setImagepath(articledto.getImageUrl());
-			article.setHeading(articledto.getHeading());
-			article.setContent(articledto.getContent());
-			article.setActive(true);
-			if (articledto.getCategory() != null) {
-				Category category = categoryDAO.findCategoryById(articledto.getCategory());
-				if (category != null) {
-					article.setCategory(category);
-				}
-			}
-			SubCategory subcategory = new SubCategory();
-			subcategory.setId(articledto.getSubcategory());
-			article.setSubcategory(subcategory);
-			article.setLink(articledto.getLink());
-//			article.setCountry(articledto.getCountry());
-//			article.setCity(articledto.getCity());
-//			article.setInstitute(articledto.getInstitute());
-//			article.setFaculty(articledto.getFaculty());
-//			article.setCourses(articledto.getCourses());
-			// article.setGender(articledto.getGender());
-			article = articleDAO.save(article);
-			BigInteger subCAtegory = article.getSubcategory().getId();
-			articleDAO.updateArticle(subCAtegory, article.getId());
-			if (articledto.getUserCountry() != null && articledto.getUserCity() != null) {
-				ArticleUserCitizenship userCitizenship = new ArticleUserCitizenship();
-				City city = new City();
-				city.setId(articledto.getUserCity());
-				userCitizenship.setCity(city);
-
-				Country country = new Country();
-				country.setId(articledto.getUserCountry());
-				userCitizenship.setCountry(country);
-				userCitizenship.setSeekaArticles(article);
-				userCitizenship.setCreatedDate(DateUtil.getUTCdatetimeAsDate());
-				userCitizenship.setUpdatedDate(DateUtil.getUTCdatetimeAsDate());
-				userArticleDAO.saveArticleUserCitizenship(userCitizenship);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			ResponseStatus = IConstant.DELETE_FAILURE;
-		}
-		response.put("status", 1);
-		response.put("message", ResponseStatus);
 		return response;
 	}
 
@@ -652,8 +555,10 @@ public class ArticleService implements IArticleService {
 		countryMap.put(article.getCountry().getId(), article.getCountry().getName());
 		cityMap.put(article.getCity().getId(), article.getCity().getName());
 		
+		StringBuilder countryCSVString = new StringBuilder();
+		StringBuilder cityCSVString = new StringBuilder();
+		
 		List<ArticleUserDemographicDto> articleUserDemoDtoList = new ArrayList<>();
-
 		if (articleDto.getUserDemographicString() != null) {
 			for (String userString : articleDto.getUserDemographicString()) {
 				ObjectMapper mapper = new ObjectMapper();
@@ -670,8 +575,10 @@ public class ArticleService implements IArticleService {
 					Country country = countryDAO.get(articleUserDemographicDto.getCountry());
 					countryMap.put(articleUserDemographicDto.getCountry(), country.getName());
 					articleUserDemographic.setCountry(country);
+					countryCSVString.append(country.getName()+", ");
 					City city = cityDAO.get(cityId);
 					cityMap.put(cityId, city.getName());
+					cityCSVString.append(city.getName()+", ");
 					articleUserDemographic.setCity(city);
 					articleUserDemographic.setGender(articleUserDemographicDto.getGender());
 					articleUserDemographic.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
@@ -680,64 +587,62 @@ public class ArticleService implements IArticleService {
 				}
 			}
 		}
-//			ElasticSearchArticleDto elasticSearchArticleDto = getElasticSearchDto(articleDto);
-//			elasticSearchArticleDto.setCreatedAt(article.getCreatedAt());
-//			elasticSearchArticleDto.setUpdatedAt(article.getUpdatedAt());
-//		elasticSearchArticleDto.setCity(articleData.getCityName());
-//		elasticSearchArticleDto.setCategory(articleData.getCategoryName());
-//		elasticSearchArticleDto.setSubCategory(articleData.getSubcategoryName());
-//		elasticSearchArticleDto.setCourses(articleData.getCourseName());
-//		elasticSearchArticleDto.setFaculty(articleData.getFacultyName());
-//		elasticSearchArticleDto.setInstitute(articleData.getInstituteName());
-//		elasticSearchArticleDto.setCountry(articleData.getCountryName());
-//			response.put("articleId", article.getId());
-//			saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
-//					elasticSearchArticleDto, IConstant.ELASTIC_SEARCH);
-
 		articleDto.setId(article.getId());
+		
+		ArticleElasticSearchDto articleElasticSearchDTO = new ArticleElasticSearchDto();
+		BeanUtils.copyProperties(articleDto, articleElasticSearchDTO);
+		articleElasticSearchDTO.setCategory(article.getCategory()!=null ? article.getCategory().getName():null);
+		articleElasticSearchDTO.setSubCategory(article.getSubcategory()!=null ? article.getSubcategory().getName():null);
+		articleElasticSearchDTO.setCountry(article.getCountry()!=null ? article.getCountry().getName():null);
+		articleElasticSearchDTO.setCity(article.getCity()!=null ? article.getCity().getName():null);
+		articleElasticSearchDTO.setFaculty(article.getFaculty()!=null ? article.getFaculty().getName():null);
+		articleElasticSearchDTO.setInstitute(article.getInstitute()!=null ? article.getInstitute().getName():null);
+		articleElasticSearchDTO.setCourse(article.getCourse()!=null ? article.getCourse().getName():null);
+		saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
+				articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
 		return articleDto;
 	}
 
 	private SeekaArticles setEntityArticle(SeekaArticleDto articleDto, SeekaArticles article) throws ParseException {
 		BeanUtils.copyProperties(articleDto, article);
-		if (articleDto.getCategory() != null) {
-			Category category = categoryDAO.findCategoryById(articleDto.getCategory());
+		if (articleDto.getCategoryId() != null) {
+			Category category = categoryDAO.findCategoryById(articleDto.getCategoryId());
 			if (category != null) {
 				article.setCategory(category);
 			}
 		}
-		if (articleDto.getSubcategory() != null) {
-			SubCategory subCategory = subCategoryDAO.findById(articleDto.getSubcategory());
+		if (articleDto.getSubcategoryId() != null) {
+			SubCategory subCategory = subCategoryDAO.findById(articleDto.getSubcategoryId());
 			if (subCategory != null) {
 				article.setSubcategory(subCategory);
 			}
 		}
-		if (articleDto.getCountry() != null) {
-			Country country = countryDAO.get(articleDto.getCountry());
+		if (articleDto.getCountryId() != null) {
+			Country country = countryDAO.get(articleDto.getCountryId());
 			if (country != null) {
 				article.setCountry(country);
 			}
 		}
-		if (articleDto.getCity() != null) {
-			City city = cityDAO.get(articleDto.getCity());
+		if (articleDto.getCityId() != null) {
+			City city = cityDAO.get(articleDto.getCityId());
 			if (city != null) {
 				article.setCity(city);
 			}
 		}
-		if (articleDto.getCourses() != null) {
-			Course course = courseDAO.get(articleDto.getCourses());
+		if (articleDto.getCourseId() != null) {
+			Course course = courseDAO.get(articleDto.getCourseId());
 			if (course != null) {
-				article.setCourses(course);
+				article.setCourse(course);
 			}
 		}
-		if (articleDto.getFaculty() != null) {
-			Faculty faculty = facultyDAO.get(articleDto.getFaculty());
+		if (articleDto.getFacultyId() != null) {
+			Faculty faculty = facultyDAO.get(articleDto.getFacultyId());
 			if (faculty != null) {
 				article.setFaculty(faculty);
 			}
 		}
-		if (articleDto.getInstitute() != null) {
-			Institute institute = instituteDAO.get(articleDto.getInstitute());
+		if (articleDto.getInstituteId() != null) {
+			Institute institute = instituteDAO.get(articleDto.getInstituteId());
 			if (institute != null) {
 				article.setInstitute(institute);
 			}
@@ -752,20 +657,6 @@ public class ArticleService implements IArticleService {
 		}
 
 		return article;
-	}
-
-	private ElasticSearchArticleDto getElasticSearchDto(final SeekaArticleDto articleData) {
-		ElasticSearchArticleDto elasticSearchArticleDto = new ElasticSearchArticleDto();
-		elasticSearchArticleDto.setImagepath(articleData.getImagepath());
-		elasticSearchArticleDto.setHeading(articleData.getHeading());
-		elasticSearchArticleDto.setContent(articleData.getContent());
-		elasticSearchArticleDto.setActive(true);
-		elasticSearchArticleDto.setTags(articleData.getTags());
-		elasticSearchArticleDto.setWebsiteUrl(articleData.getWebsiteUrl());
-		elasticSearchArticleDto.setAuthor(articleData.getAuthor());
-//		elasticSearchArticleDto.setPostDate(articleData.getPostDate());
-//		elasticSearchArticleDto.setExpireyDate(articleData.getExpireyDate());
-		return elasticSearchArticleDto;
 	}
 
 	@Override
@@ -953,15 +844,13 @@ public class ArticleService implements IArticleService {
 			response.put("status", HttpStatus.NOT_FOUND.value());
 			response.put("message", IConstant.ARTICLE_NOT_FOUND);
 		} else {
-			// String imageName = iImageService.uploadImage(file, articleId, "ARTICLE",
-			// null);
-			// article.setImagepath(s3URL + imageName);
+			String imageName = iImageService.uploadImage(file, articleId, "ARTICLE", null);
+			article.setImagepath(s3URL + imageName);
 			articleDAO.save(article);
 			response.put("status", HttpStatus.OK.value());
 			response.put("message", "file uploading successfully.");
-			// response.put("data", imageName);
+			response.put("data", imageName);
 		}
-
 		return response;
 	}
 
@@ -1007,7 +896,7 @@ public class ArticleService implements IArticleService {
 	}
 
 	public void saveArticleOnElasticSearch(final String elasticSearchIndex, final String type,
-			final ElasticSearchArticleDto articleDto, final String elasticSearchName) {
+			final ArticleElasticSearchDto articleDto, final String elasticSearchName) {
 		ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 		elasticSearchDto.setIndex(elasticSearchIndex);
 		elasticSearchDto.setType(type);
@@ -1018,4 +907,5 @@ public class ArticleService implements IArticleService {
 				elasticSearchDto, Object.class);
 		System.out.println(object);
 	}
+	
 }
