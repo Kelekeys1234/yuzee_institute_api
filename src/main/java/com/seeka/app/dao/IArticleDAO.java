@@ -13,7 +13,7 @@ public interface IArticleDAO {
 
      SeekaArticles findById(BigInteger uId);
 
-     void deleteArticle(SeekaArticles article);
+     SeekaArticles deleteArticle(SeekaArticles article);
 
      List<SeekaArticles> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status);
 

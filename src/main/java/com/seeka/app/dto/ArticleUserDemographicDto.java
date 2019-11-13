@@ -14,11 +14,9 @@ public class ArticleUserDemographicDto implements Serializable {
 
 	private Long id;
 	private BigInteger article;
-	private BigInteger country;
-	private List<BigInteger> city;
+	private ArticleCountryDto citizenship;
+	private List<ArticleCityDto> cities;
 	private String gender;
-	
-	
 	
 	public Long getId() {
 		return id;
@@ -32,17 +30,17 @@ public class ArticleUserDemographicDto implements Serializable {
 	public void setArticle(BigInteger article) {
 		this.article = article;
 	}
-	public BigInteger getCountry() {
-		return country;
+	public ArticleCountryDto getCitizenship() {
+		return citizenship;
 	}
-	public void setCountry(BigInteger country) {
-		this.country = country;
+	public void setCitizenship(ArticleCountryDto citizenship) {
+		this.citizenship = citizenship;
 	}
-	public List<BigInteger> getCity() {
-		return city;
+	public List<ArticleCityDto> getCities() {
+		return cities;
 	}
-	public void setCity(List<BigInteger> city) {
-		this.city = city;
+	public void setCities(List<ArticleCityDto> cities) {
+		this.cities = cities;
 	}
 	public String getGender() {
 		return gender;
@@ -50,11 +48,9 @@ public class ArticleUserDemographicDto implements Serializable {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-
-
-	
-	
-	
-	
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+		
 	
 }

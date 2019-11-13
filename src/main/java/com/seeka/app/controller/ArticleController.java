@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -17,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.ArticleFolderDto;
 import com.seeka.app.dto.ArticleFolderMapDto;
@@ -55,13 +54,23 @@ public class ArticleController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteArticle(@PathVariable final String id) {
-		return ResponseEntity.accepted().body(articleService.deleteArticle(id));
+		SeekaArticles article = articleService.deleteArticle(id);
+		return new GenericResponseHandlers.Builder().setData(article).setMessage("Article deleted Successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getArticleById(@PathVariable final String id) {
 		ArticleResponseDetailsDto articleDto = articleService.getArticleById(id);
 		return new GenericResponseHandlers.Builder().setData(articleDto).setMessage("Data Displayed Successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<?> saveMultiArticle(@RequestBody SeekaArticleDto article,	@RequestHeader(name = "userId") BigInteger userId) throws Exception, Throwable {
+         //	,@RequestParam(name = "file", required = false) final MultipartFile file,		
+		article = articleService.saveMultiArticle(article, userId);//articleService.addArticleImage(file, article.getId());
+		return new GenericResponseHandlers.Builder().setData(article).setMessage("Article Created Successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -82,16 +91,6 @@ public class ArticleController {
 	@RequestMapping(value = "/search/content/{searchText}", method = RequestMethod.GET)
 	public ResponseEntity<?> contentSearch(@PathVariable final String searchText) {
 		return ResponseEntity.accepted().body(articleService.searchBasedOnNameAndContent(searchText));
-	}
-
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> saveMultiArticle(@RequestParam(name = "file", required = false) final MultipartFile file,
-			@ModelAttribute SeekaArticleDto article, @RequestHeader(name = "userId") BigInteger userId)
-			throws Exception, Throwable {
-		article = articleService.saveMultiArticle(article, userId);
-		articleService.addArticleImage(file, article.getId());
-		return new GenericResponseHandlers.Builder().setData(article).setMessage("Article Created Successfully")
-				.setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/folder", method = RequestMethod.POST)

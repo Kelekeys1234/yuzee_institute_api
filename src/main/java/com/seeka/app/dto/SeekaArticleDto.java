@@ -14,8 +14,8 @@ public class SeekaArticleDto {
 	private BigInteger categoryId;
 	private BigInteger subcategoryId;
 	private String author;
-	private Timestamp postDate;
-	private Timestamp expireDate;
+	private Date postDate;
+	private Date expireDate;
 	private boolean enabled;
 	private boolean published;
 	private String websiteUrl;
@@ -27,7 +27,7 @@ public class SeekaArticleDto {
 	private BigInteger instituteId;
 	private BigInteger courseId;
 
-	private List<String> userDemographicString;
+	private List<ArticleUserDemographicDto> userDemographic;
 
 	public BigInteger getId() {
 		return id;
@@ -85,19 +85,19 @@ public class SeekaArticleDto {
 		this.author = author;
 	}
 
-	public Timestamp getPostDate() {
+	public Date getPostDate() {
 		return postDate;
 	}
 
-	public void setPostDate(Timestamp postDate) {
+	public void setPostDate(Date postDate) {
 		this.postDate = postDate;
 	}
 
-	public Timestamp getExpireDate() {
+	public Date getExpireDate() {
 		return expireDate;
 	}
 
-	public void setExpireDate(Timestamp expireDate) {
+	public void setExpireDate(Date expireDate) {
 		this.expireDate = expireDate;
 	}
 
@@ -181,13 +181,15 @@ public class SeekaArticleDto {
 		this.courseId = courses;
 	}
 
-	public List<String> getUserDemographicString() {
-		return userDemographicString;
+	public List<ArticleUserDemographicDto> getUserDemographic() {
+		return userDemographic;
 	}
 
-	public void setUserDemographicString(List<String> userDemographicString) {
-		this.userDemographicString = userDemographicString;
+	public void setUserDemographic(List<ArticleUserDemographicDto> userDemographic) {
+		this.userDemographic = userDemographic;
 	}
+
+
 
 	
 	

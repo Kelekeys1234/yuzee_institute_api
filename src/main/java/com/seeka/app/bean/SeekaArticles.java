@@ -69,7 +69,7 @@ public class SeekaArticles implements Serializable {
     private Date postDate;
     
     @Temporal(TemporalType.TIMESTAMP)
-    private Date expireyDate;
+    private Date expireDate;
     private Boolean enabled;
     private Boolean published;
     private Boolean featured;
@@ -593,7 +593,7 @@ public class SeekaArticles implements Serializable {
 				.append(", articleType=").append(articleType).append(", companyName=").append(companyName)
 				.append(", companyWebsite=").append(companyWebsite).append(", subCategoryDropDownDto=")
 				.append(subCategoryDropDownDto).append(", categoryobj=").append(categoryobj).append(", author=")
-				.append(author).append(", postDate=").append(postDate).append(", expireyDate=").append(expireyDate)
+				.append(author).append(", postDate=").append(postDate).append(", expireyDate=").append(expireDate)
 				.append(", enabled=").append(enabled).append(", published=").append(published).append(", featured=")
 				.append(featured).append(", notes=").append(notes).append(", websiteUrl=").append(websiteUrl)
 				.append(", seekaRecommended=").append(seekaRecommended).append(", tags=").append(tags)
@@ -637,16 +637,16 @@ public class SeekaArticles implements Serializable {
      * @return the expireyDate
      */
     @Column(name = "expire_date")
-    public Date getExpireyDate() {
-        return expireyDate;
+    public Date getExpireDate() {
+        return expireDate;
     }
 
     /**
      * @param expireyDate
      *            the expireyDate to set
      */
-    public void setExpireyDate(Date expireyDate) {
-        this.expireyDate = expireyDate;
+    public void setExpireDate(Date expireyDate) {
+        this.expireDate = expireyDate;
     }
 
     /**

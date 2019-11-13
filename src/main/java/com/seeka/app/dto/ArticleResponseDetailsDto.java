@@ -2,6 +2,7 @@ package com.seeka.app.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -34,10 +35,17 @@ public class ArticleResponseDetailsDto implements Serializable {
     private String status;
    	private String imagepath;
 	private String author;
-	private Timestamp postDate;
-	private Timestamp expireDate;
+	private Date postDate;
+	private Date expireDate;
 	private Boolean enabled;
 	private Boolean published;
+	private String websiteUrl;
+	private String url;
+	private String tags;	
+	
+	private List<ArticleUserDemographicDto> userDemographic;
+
+	
 	public Boolean getEnabled() {
 		return enabled;
 	}
@@ -53,13 +61,7 @@ public class ArticleResponseDetailsDto implements Serializable {
 	public void setPublished(Boolean published) {
 		this.published = published;
 	}
-
-	private String websiteUrl;
-	private String url;
-	private String tags;	
 	
-	private List<ArticleUserDemographicDto> userDemographicList;
-
 	public BigInteger getId() {
 		return id;
 	}
@@ -124,19 +126,19 @@ public class ArticleResponseDetailsDto implements Serializable {
 		this.author = author;
 	}
 
-	public Timestamp getPostDate() {
+	public Date getPostDate() {
 		return postDate;
 	}
 
-	public void setPostDate(Timestamp postDate) {
+	public void setPostDate(Date postDate) {
 		this.postDate = postDate;
 	}
 
-	public Timestamp getExpireDate() {
+	public Date getExpireDate() {
 		return expireDate;
 	}
 
-	public void setExpireDate(Timestamp expireDate) {
+	public void setExpireDate(Date expireDate) {
 		this.expireDate = expireDate;
 	}
 
@@ -164,12 +166,13 @@ public class ArticleResponseDetailsDto implements Serializable {
 		this.tags = tags;
 	}
 
-	public List<ArticleUserDemographicDto> getUserDemographicList() {
-		return userDemographicList;
+
+	public List<ArticleUserDemographicDto> getUserDemographic() {
+		return userDemographic;
 	}
 
-	public void setUserDemographicList(List<ArticleUserDemographicDto> userDemographicList) {
-		this.userDemographicList = userDemographicList;
+	public void setUserDemographic(List<ArticleUserDemographicDto> userDemographic) {
+		this.userDemographic = userDemographic;
 	}
 
 	public static long getSerialversionuid() {

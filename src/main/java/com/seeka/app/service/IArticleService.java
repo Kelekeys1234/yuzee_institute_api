@@ -20,7 +20,7 @@ public interface IArticleService {
 
 	List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto);
 
-	Map<String, Object> deleteArticle(String articleId);
+	SeekaArticles deleteArticle(String articleId);
 
 	ArticleResponseDetailsDto getArticleById(String articleId);
 
