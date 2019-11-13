@@ -1,7 +1,9 @@
 package com.seeka.app.controller;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -19,10 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.UserReview;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.UserReviewDto;
 import com.seeka.app.dto.UserReviewResultDto;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IUserReviewService;
+import com.seeka.app.util.PaginationUtil;
 
 /**
  *
@@ -45,16 +49,40 @@ public class UserReviewController {
 	@GetMapping("/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getUserReview(@PathVariable final BigInteger userId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) {
-		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewList(userId, pageNumber, pageSize);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReviewList).setMessage("Get user review successfully").create();
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewList(userId, startIndex, pageSize);
+		int totalCount = iUserReview.getUserReviewCount(userId, null, null);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get User Review List successfully");
+		responseMap.put("data", userReviewList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getUserReviewBasedOnData(@RequestParam(name = "entityId", required = false) final BigInteger entityId,
 			@RequestParam(name = "entityType", required = false) final String entityType, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize) throws ValidationException {
-		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewBasedOnData(entityId, entityType, pageNumber, pageSize);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReviewList).setMessage("Get user review successfully").create();
+			@PathVariable final Integer pageSize, @RequestParam(required = false) final String sortByType) throws ValidationException {
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewBasedOnData(entityId, entityType, startIndex, pageSize, sortByType);
+		int totalCount = iUserReview.getUserReviewCount(null, entityId, entityType);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get User Review List successfully");
+		responseMap.put("data", userReviewList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@GetMapping("/list")

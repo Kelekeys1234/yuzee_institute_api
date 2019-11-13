@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -46,7 +47,8 @@ public class ErrorReportDAO implements IErrorReportDAO {
 
 	@Override
 	public List<ErrorReport> getAllErrorReport(final BigInteger userId, final Integer startIndex, final Integer pageSize,
-			final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive) {
+			final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive,
+			final String sortByField, final String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ErrorReport.class, "errorReport");
 		crit.createAlias("errorReport.errorReportCategory", "errorReportCategory");
@@ -71,6 +73,27 @@ public class ErrorReportDAO implements IErrorReportDAO {
 			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
 			crit.add(Restrictions.ge("errorReport.updatedOn", fromDate));
 			crit.add(Restrictions.le("errorReport.updatedOn", toDate));
+		}
+		if (searchKeyword != null) {
+			crit.add(Restrictions.disjunction().add(Restrictions.ilike("errorReport.description", searchKeyword, MatchMode.ANYWHERE))
+					.add(Restrictions.ilike("errorReport.phoneName", searchKeyword, MatchMode.ANYWHERE)));
+		}
+		if (sortByField != null && sortByType != null) {
+			if ("description".equals(sortByField)) {
+				if ("ASC".equals(sortByType)) {
+					crit.addOrder(Order.asc("errorReport.description"));
+				} else if ("DESC".equals(sortByType)) {
+					crit.addOrder(Order.desc("errorReport.description"));
+				}
+			} else if ("phoneName".equals(sortByField)) {
+				if ("ASC".equals(sortByType)) {
+					crit.addOrder(Order.asc("errorReport.phoneName"));
+				} else if ("DESC".equals(sortByType)) {
+					crit.addOrder(Order.desc("errorReport.phoneName"));
+				}
+			}
+		} else {
+			crit.addOrder(Order.desc("errorReport.id"));
 		}
 		if (startIndex != null && pageSize != null) {
 			crit.setFirstResult(startIndex);
@@ -112,7 +135,7 @@ public class ErrorReportDAO implements IErrorReportDAO {
 
 	@Override
 	public int getErrorReportCountForUser(final BigInteger userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
-			final Boolean isFavourite, final Boolean isArchive) {
+			final Boolean isFavourite, final Boolean isArchive, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ErrorReport.class, "errorReport");
 		crit.createAlias("errorReport.errorReportCategory", "errorReportCategory");
@@ -131,6 +154,10 @@ public class ErrorReportDAO implements IErrorReportDAO {
 		}
 		if (isArchive != null) {
 			crit.add(Restrictions.eq("errorReport.isArchive", isArchive));
+		}
+		if (searchKeyword != null) {
+			crit.add(Restrictions.disjunction().add(Restrictions.ilike("errorReport.description", searchKeyword, MatchMode.ANYWHERE))
+					.add(Restrictions.ilike("errorReport.phoneName", searchKeyword, MatchMode.ANYWHERE)));
 		}
 		if (updatedOn != null) {
 			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);

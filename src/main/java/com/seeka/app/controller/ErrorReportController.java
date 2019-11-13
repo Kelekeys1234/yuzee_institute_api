@@ -90,12 +90,13 @@ public class ErrorReportController {
 	public ResponseEntity<?> getAllErrorReport(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final BigInteger errorReportCategoryId,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
-			@RequestParam(required = false) final String errorReportStatus, @RequestParam(required = false) final Boolean isFavourite)
-			throws ValidationException {
+			@RequestParam(required = false) final String errorReportStatus, @RequestParam(required = false) final Boolean isFavourite,
+			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
+			@RequestParam(required = false) final String searchKeyword) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<ErrorReportResponseDto> errorReports = errorReportService.getAllErrorReport(null, startIndex, pageSize, errorReportCategoryId, errorReportStatus,
-				updatedOn, isFavourite, null);
-		int totalCount = errorReportService.getErrorReportCount(null, errorReportCategoryId, errorReportStatus, updatedOn, isFavourite, null);
+				updatedOn, isFavourite, null, sortByField, sortByType, searchKeyword);
+		int totalCount = errorReportService.getErrorReportCount(null, errorReportCategoryId, errorReportStatus, updatedOn, isFavourite, null, searchKeyword);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
@@ -115,8 +116,8 @@ public class ErrorReportController {
 			@RequestParam(required = false) final boolean isArchive) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<ErrorReportResponseDto> errorReportList = errorReportService.getAllErrorReport(userId, startIndex, pageSize, null, null, null, isFavourite,
-				isArchive);
-		int totalCount = errorReportService.getErrorReportCount(userId, null, null, null, isFavourite, isArchive);
+				isArchive, null, null, null);
+		int totalCount = errorReportService.getErrorReportCount(userId, null, null, null, isFavourite, isArchive, null);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);

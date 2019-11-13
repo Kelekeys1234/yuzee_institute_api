@@ -119,10 +119,10 @@ public class ErrorReportService implements IErrorReportService {
 
 	@Override
 	public List<ErrorReportResponseDto> getAllErrorReport(final BigInteger userId, final Integer startIndex, final Integer pageSize,
-			final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive)
-			throws ValidationException {
+			final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive,
+			final String sortByField, final String sortByType, final String searchKeyword) throws ValidationException {
 		List<ErrorReport> errorReports = errorReportDAO.getAllErrorReport(userId, startIndex, pageSize, errorReportCategoryId, errorReportStatus, updatedOn,
-				isFavourite, isArchive);
+				isFavourite, isArchive, sortByField, sortByType, searchKeyword);
 		List<ErrorReportResponseDto> errorReportResponseDtos = new ArrayList<>();
 		for (ErrorReport errorReport : errorReports) {
 			ErrorReportResponseDto errorReportResponseDto = new ErrorReportResponseDto();
@@ -150,7 +150,7 @@ public class ErrorReportService implements IErrorReportService {
 	public ResponseEntity<?> deleteByUserId(@Valid final BigInteger userId) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-			List<ErrorReport> errorReports = errorReportDAO.getAllErrorReport(userId, null, null, null, null, null, null, null);
+			List<ErrorReport> errorReports = errorReportDAO.getAllErrorReport(userId, null, null, null, null, null, null, null, null, null, null);
 			if (errorReports != null && !errorReports.isEmpty()) {
 				for (ErrorReport errorReport : errorReports) {
 					errorReport.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -178,8 +178,8 @@ public class ErrorReportService implements IErrorReportService {
 
 	@Override
 	public int getErrorReportCount(final BigInteger userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
-			final Boolean isFavourite, final Boolean isArchive) {
-		return errorReportDAO.getErrorReportCountForUser(userId, errorReportCategoryId, errorReportStatus, updatedOn, isFavourite, isArchive);
+			final Boolean isFavourite, final Boolean isArchive, final String searchKeyword) {
+		return errorReportDAO.getErrorReportCountForUser(userId, errorReportCategoryId, errorReportStatus, updatedOn, isFavourite, isArchive, searchKeyword);
 	}
 
 	@Override

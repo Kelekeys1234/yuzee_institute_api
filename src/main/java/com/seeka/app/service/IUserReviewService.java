@@ -21,12 +21,15 @@ public interface IUserReviewService {
 
 	UserReviewResultDto getUserReviewDetails(BigInteger userId) throws ValidationException;
 
-	List<UserReviewResultDto> getUserReviewBasedOnData(BigInteger entityId, String entityType, Integer pageNumber, Integer pageSize) throws ValidationException;
+	List<UserReviewResultDto> getUserReviewBasedOnData(BigInteger entityId, String entityType, Integer startIndex, Integer pageSize, String sortByType)
+			throws ValidationException;
 
 	UserReviewResultDto getUserAverageReviewBasedOnData(BigInteger entityId, String entityType) throws ValidationException;
 
 	void deleteUserReview(BigInteger userReviewId) throws ValidationException;
 
 	List<UserReviewResultDto> getUserReviewList() throws ValidationException;
+
+	int getUserReviewCount(BigInteger userId, BigInteger entityId, String entityType);
 
 }

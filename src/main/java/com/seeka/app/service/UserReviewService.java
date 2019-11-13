@@ -21,7 +21,6 @@ import com.seeka.app.enumeration.ReviewCategory;
 import com.seeka.app.enumeration.StudentCategory;
 import com.seeka.app.enumeration.StudentType;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.util.PaginationUtil;
 
 /**
  *
@@ -66,7 +65,7 @@ public class UserReviewService implements IUserReviewService {
 		UserReview userReview = new UserReview();
 
 		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(userReviewDto.getUserId(), userReviewDto.getEntityId(),
-				userReviewDto.getEntityType(), null, null);
+				userReviewDto.getEntityType(), null, null, null);
 		if (!userReviewList.isEmpty()) {
 			throw new ValidationException("User review exists for same " + userReviewDto.getEntityType());
 		}
@@ -90,9 +89,8 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public List<UserReviewResultDto> getUserReviewList(final BigInteger userId, final Integer pageNumber, final Integer pageSize) {
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(userId, null, null, startIndex, pageSize);
+	public List<UserReviewResultDto> getUserReviewList(final BigInteger userId, final Integer startIndex, final Integer pageSize) {
+		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(userId, null, null, startIndex, pageSize, null);
 		List<UserReviewResultDto> resultList = new ArrayList<>();
 		for (UserReview userReview : userReviewList) {
 			UserReviewResultDto reviewResultDto = new UserReviewResultDto();
@@ -132,10 +130,9 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public List<UserReviewResultDto> getUserReviewBasedOnData(final BigInteger entityId, final String entityType, final Integer pageNumber,
-			final Integer pageSize) throws ValidationException {
-		int startIndex = (pageNumber - 1) * pageSize;
-		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, entityId, entityType, startIndex, pageSize);
+	public List<UserReviewResultDto> getUserReviewBasedOnData(final BigInteger entityId, final String entityType, final Integer startIndex,
+			final Integer pageSize, final String sortByType) throws ValidationException {
+		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, entityId, entityType, startIndex, pageSize, sortByType);
 		List<UserReviewResultDto> resultList = new ArrayList<>();
 		for (UserReview userReview : userReviewList) {
 			UserReviewResultDto reviewResultDto = new UserReviewResultDto();
@@ -155,7 +152,7 @@ public class UserReviewService implements IUserReviewService {
 
 	@Override
 	public List<UserReviewResultDto> getUserReviewList() throws ValidationException {
-		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, null, null, null, null);
+		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, null, null, null, null, null);
 		List<UserReviewResultDto> resultList = new ArrayList<>();
 		for (UserReview userReview : userReviewList) {
 			UserReviewResultDto reviewResultDto = new UserReviewResultDto();
@@ -196,6 +193,11 @@ public class UserReviewService implements IUserReviewService {
 			throw new ValidationException("User review is not found for id " + userReviewId);
 		}
 
+	}
+
+	@Override
+	public int getUserReviewCount(final BigInteger userId, final BigInteger entityId, final String entityType) {
+		return iUserReviewDao.getUserReviewCount(userId, entityId, entityType);
 	}
 
 }

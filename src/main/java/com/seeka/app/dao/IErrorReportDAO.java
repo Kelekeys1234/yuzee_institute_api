@@ -16,7 +16,7 @@ public interface IErrorReportDAO {
 	ErrorReportCategory getErrorCategory(BigInteger errorReportCategoryId);
 
 	List<ErrorReport> getAllErrorReport(BigInteger userId, Integer startIndex, Integer pageSize, BigInteger errorReportCategoryId, String errorReportStatus,
-			Date updatedOn, Boolean isFavourite, Boolean isArchive);
+			Date updatedOn, Boolean isFavourite, Boolean isArchive, String sortByField, String sortByType, String searchKeyword);
 
 	ErrorReport getErrorReportById(BigInteger id);
 
@@ -27,7 +27,7 @@ public interface IErrorReportDAO {
 	void addErrorRepoerAudit(AuditErrorReport auditErrorReport);
 
 	int getErrorReportCountForUser(BigInteger userId, BigInteger errorReportCategoryId, String errorReportStatus, Date updatedOn, Boolean isFavourite,
-			Boolean isArchive);
+			Boolean isArchive, String searchKeyword);
 
 	void setIsFavouriteFlag(BigInteger errorRepoetId, boolean isFavourite) throws NotFoundException;
 
