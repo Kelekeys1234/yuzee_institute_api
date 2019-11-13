@@ -32,7 +32,6 @@ public class ArticleResponseDetailsDto implements Serializable {
     private BigInteger courseId;
     private String courseName;
     private String status;
-   	private String imagepath;
 	private String author;
 	private Date postDate;
 	private Date expireDate;
@@ -43,6 +42,7 @@ public class ArticleResponseDetailsDto implements Serializable {
     private Date updatedAt;
 	private String url;
 	private String tags;	
+	private List<StorageDto> storageList;
 	
 	private List<ArticleUserDemographicDto> userDemographic;
 
@@ -109,14 +109,6 @@ public class ArticleResponseDetailsDto implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public String getImagepath() {
-		return imagepath;
-	}
-
-	public void setImagepath(String imagepath) {
-		this.imagepath = imagepath;
 	}
 
 	public String getAuthor() {
@@ -306,6 +298,14 @@ public class ArticleResponseDetailsDto implements Serializable {
 
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public List<StorageDto> getStorageList() {
+		return storageList;
+	}
+
+	public void setStorageList(List<StorageDto> storageList) {
+		this.storageList = storageList;
 	}
 	
 	

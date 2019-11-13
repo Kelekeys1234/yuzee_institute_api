@@ -43,7 +43,7 @@ public class ArticleController {
 	public ResponseEntity<?> getAllArticles(@PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(required = false) final String sortByField,
 			@RequestParam(required = false) final String sortByType,
-			@RequestParam(required = false) final String searchKeyword) {
+			@RequestParam(required = false) final String searchKeyword) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<ArticleResponseDetailsDto> articleList = articleService.getArticleList(startIndex, pageSize, sortByField,
 				sortByType, searchKeyword);
@@ -69,7 +69,7 @@ public class ArticleController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getArticleById(@PathVariable final String id) {
+	public ResponseEntity<?> getArticleById(@PathVariable final String id) throws ValidationException {
 		ArticleResponseDetailsDto articleDto = articleService.getArticleById(id);
 		return new GenericResponseHandlers.Builder().setData(articleDto).setMessage("Data Displayed Successfully")
 				.setStatus(HttpStatus.OK).create();

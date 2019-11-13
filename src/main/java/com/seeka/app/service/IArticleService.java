@@ -24,7 +24,7 @@ public interface IArticleService {
 
 	SeekaArticles deleteArticle(String articleId);
 
-	ArticleResponseDetailsDto getArticleById(String articleId);
+	ArticleResponseDetailsDto getArticleById(String articleId) throws ValidationException;
 
 	Map<String, Object> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status, BigInteger categoryId, String tag,
 			String status2);
@@ -55,7 +55,7 @@ public interface IArticleService {
 
 	Map<String, Object> getArticleByFolderId(BigInteger folderId);
 
-	List<ArticleResponseDetailsDto> getArticleList(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword);
+	List<ArticleResponseDetailsDto> getArticleList(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword) throws ValidationException;
 
 	Integer getTotalSearchCount(String searchKeyword);
 }

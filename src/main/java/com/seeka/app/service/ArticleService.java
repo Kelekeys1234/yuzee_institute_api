@@ -53,6 +53,8 @@ import com.seeka.app.dto.PageLookupDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.SearchDto;
 import com.seeka.app.dto.SeekaArticleDto;
+import com.seeka.app.dto.StorageDto;
+import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -109,6 +111,9 @@ public class ArticleService implements IArticleService {
 
 	@Autowired
 	private IArticleUserDemographicDao iArticleUserDemographicDao;
+	
+	@Autowired
+	private IStorageService iStorageService;
 
 	@Override
 	public List<SeekaArticles> getAll() {
@@ -132,20 +137,29 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public ArticleResponseDetailsDto getArticleById(final String articleId) {
+	public ArticleResponseDetailsDto getArticleById(final String articleId) throws ValidationException{
 		SeekaArticles article = articleDAO.findById(new BigInteger(articleId));
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(),
+				null, "en");
 		ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
+		articleResponseDetailsDto.setStorageList(storageDTOList);
 		return articleResponseDetailsDto;
 	}
 
 	@Override
 	public List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword) {
+			final String searchKeyword) throws ValidationException {
 		List<SeekaArticles> articleList = articleDAO.getAll(startIndex, pageSize, sortByField, sortByType, searchKeyword);
 		List<ArticleResponseDetailsDto> articleResponseDetailsDtoList = new ArrayList<>();
 		for (SeekaArticles article : articleList) {
 			ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
 			articleResponseDetailsDtoList.add(articleResponseDetailsDto);
+			/**
+			 * Remove this once there is API available to get storage based on all articles in list with a single API.
+			 */
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(),
+					null, "en");
+			articleResponseDetailsDto.setStorageList(storageDTOList);
 		}
 		return articleResponseDetailsDtoList;
 	}
@@ -625,6 +639,9 @@ public class ArticleService implements IArticleService {
 			response.put("message", IConstant.ARTICLE_NOT_FOUND);
 		} else {
 //			String imageName = iImageService.uploadImage(file, articleId, "ARTICLE", null);
+//			
+//			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(),
+//					null, "en");
 //			article.setImagepath(s3URL + imageName);
 //			articleDAO.save(article);
 //			response.put("status", HttpStatus.OK.value());
