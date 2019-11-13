@@ -31,18 +31,32 @@ public class ArticleDAO implements IArticleDAO {
 
 	@Override
 	public List<SeekaArticles> getAll(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword) {
+			final String searchKeyword, final List<BigInteger> categoryId, List<String> tags, String status) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
 		}
+		
+		if(categoryId != null && !categoryId.isEmpty()) {
+			criteria.createAlias("category", "category");
+			criteria.add(Restrictions.in("category.id", categoryId));
+		}
+		
+		if(tags != null && !tags.isEmpty()) {
+			criteria.add(Restrictions.in("tags", tags));
+		}
+		
+		if(status != null) {
+			criteria.add(Restrictions.in("published", status));
+		}
+
 		if ( sortByType != null) {
 			if ("ASC".equals(sortByType)) {
-					criteria.addOrder(Order.asc("heading"));
+					criteria.addOrder(Order.asc(sortByField));
 				} else {
-					criteria.addOrder(Order.desc("heading"));
+					criteria.addOrder(Order.desc(sortByField));
 				}
 		}
 		if (startIndex != null && pageSize != null) {
@@ -381,11 +395,36 @@ public class ArticleDAO implements IArticleDAO {
 	}
 
 	@Override
-	public Integer getTotalSearchCount(String searchKeyword) {
+	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
+			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, String status) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
+		}
+		if(categoryIdList != null && !categoryIdList.isEmpty()) {
+			criteria.createAlias("category", "category");
+			criteria.add(Restrictions.in("category.id", categoryIdList));
+		}
+		
+		if(tagList != null && !tagList.isEmpty()) {
+			criteria.add(Restrictions.in("tags", tagList));
+		}
+		
+		if(status != null) {
+			criteria.add(Restrictions.in("published", status));
+		}
+		
+		if ( sortByType != null) {
+			if ("ASC".equals(sortByType)) {
+					criteria.addOrder(Order.asc(sortByField));
+				} else {
+					criteria.addOrder(Order.desc(sortByField));
+				}
+		}
+		if (startIndex != null && pageSize != null) {
+			criteria.setFirstResult(startIndex);
+			criteria.setMaxResults(pageSize);
 		}
 		List<Object[]> rows = criteria.list();
 		return rows.size();

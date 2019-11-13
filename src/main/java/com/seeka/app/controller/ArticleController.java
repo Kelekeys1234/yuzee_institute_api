@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.dto.ArticleFilterDto;
 import com.seeka.app.dto.ArticleFolderDto;
 import com.seeka.app.dto.ArticleFolderMapDto;
 import com.seeka.app.dto.ArticleResponseDetailsDto;
@@ -43,12 +44,48 @@ public class ArticleController {
 	public ResponseEntity<?> getAllArticles(@PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(required = false) final String sortByField,
 			@RequestParam(required = false) final String sortByType,
-			@RequestParam(required = false) final String searchKeyword) throws ValidationException {
+			@RequestParam(required = false) final String searchKeyword,
+			@RequestParam(required = false) final BigInteger categoryId,
+			@RequestParam(required = false) final String tags,
+			@RequestParam(required = false) final String status
+			) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<ArticleResponseDetailsDto> articleList = articleService.getArticleList(startIndex, pageSize, sortByField,
-				sortByType, searchKeyword);
-		Integer totalCount = articleService.getTotalSearchCount(searchKeyword);
+				sortByType, searchKeyword, categoryId, tags, status);
+		Integer totalCount = articleService.getTotalSearchCount(startIndex, pageSize, sortByField,
+				sortByType, searchKeyword, categoryId, tags, status);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get Article List successfully");
+		responseMap.put("data", articleList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+	}
+	
+	@PostMapping("/filter")
+	public ResponseEntity<?> getAllArticlesByFilter(@RequestBody ArticleFilterDto articleFilterDTO) throws ValidationException {
+		if(articleFilterDTO.getPageNumber() == null ) {
+			throw new ValidationException("Please Specify Page Number");
+		}
+		if(articleFilterDTO.getPageSize() == null) {
+			throw new ValidationException("Please Specify Page Size");
+		}
+		if(articleFilterDTO.getPageSize() == 0) {
+			throw new ValidationException("Page Size Cannot Be 0");
+		}
+		int startIndex = PaginationUtil.getStartIndex(articleFilterDTO.getPageNumber(), articleFilterDTO.getPageSize());
+		List<ArticleResponseDetailsDto> articleList = articleService.getArticleList(startIndex, articleFilterDTO.getPageSize(), 
+				articleFilterDTO.getSortByField(), articleFilterDTO.getSortByType(), articleFilterDTO.getSearchKeyword(), articleFilterDTO.getCategoryId(), 
+				articleFilterDTO.getTags(), articleFilterDTO.getStatus());
+		Integer totalCount = articleService.getTotalSearchCount(startIndex, articleFilterDTO.getPageSize(), 
+				articleFilterDTO.getSortByField(), articleFilterDTO.getSortByType(), articleFilterDTO.getSearchKeyword(), articleFilterDTO.getCategoryId(), 
+				articleFilterDTO.getTags(), articleFilterDTO.getStatus());
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, articleFilterDTO.getPageSize(), totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
 		responseMap.put("message", "Get Article List successfully");

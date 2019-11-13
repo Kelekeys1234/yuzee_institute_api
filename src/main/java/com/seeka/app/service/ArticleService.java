@@ -148,8 +148,26 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword) throws ValidationException {
-		List<SeekaArticles> articleList = articleDAO.getAll(startIndex, pageSize, sortByField, sortByType, searchKeyword);
+			final String searchKeyword, BigInteger categoryId, String tags, String status) throws ValidationException {
+		
+		List<BigInteger> categoryIdList = new ArrayList<>();
+		List<String> tagList = new ArrayList<>();
+		
+		if(categoryId != null) {
+			categoryIdList.add(categoryId);
+		}
+		if(tags != null) {
+			tagList.add(tags);
+		}
+		return getArticleList(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status);
+	}
+	
+	@Override
+	public List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
+			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, String status) throws ValidationException {
+		
+		List<SeekaArticles> articleList = articleDAO.getAll(startIndex, pageSize, sortByField, sortByType, searchKeyword, 
+				categoryIdList, tagList, status);
 		List<ArticleResponseDetailsDto> articleResponseDetailsDtoList = new ArrayList<>();
 		for (SeekaArticles article : articleList) {
 			ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
@@ -705,8 +723,24 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public Integer getTotalSearchCount(String searchKeyword) {
-		return articleDAO.getTotalSearchCount(searchKeyword);
+	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
+			final String searchKeyword, BigInteger categoryId, String tags, String status) {
+		List<BigInteger> categoryIdList = new ArrayList<>();
+		List<String> tagList = new ArrayList<>();
+		
+		if(categoryId != null) {
+			categoryIdList.add(categoryId);
+		}
+		if(tags != null) {
+			tagList.add(tags);
+		}
+		return articleDAO.getTotalSearchCount(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status);
+	}
+	
+	@Override
+	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
+			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, String status) {
+		return articleDAO.getTotalSearchCount(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status);
 	}
 
 }

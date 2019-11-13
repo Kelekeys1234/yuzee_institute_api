@@ -9,7 +9,8 @@ import com.seeka.app.dto.SearchDto;
 
 public interface IArticleDAO {
 
-	List<SeekaArticles> getAll(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword);
+	List<SeekaArticles> getAll(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword, 
+			List<BigInteger> categoryId, List<String> tags, String status);
 
 	List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto);
 
@@ -33,5 +34,6 @@ public interface IArticleDAO {
 
 	List<SeekaArticles> searchBasedOnNameAndContent(String searchText);
 
-	Integer getTotalSearchCount(String searchKeyword);
+	Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
+			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, String status);
 }
