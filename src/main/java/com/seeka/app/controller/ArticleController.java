@@ -35,8 +35,12 @@ public class ArticleController {
 	private IArticleService articleService;
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
-	public ResponseEntity<?> getAllArticles() {
-		List<ArticleResponseDetailsDto> articleList = articleService.getArticleList();
+	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getAllArticles(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
+			@RequestParam(required = false) final String searchKeyword) {
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<ArticleResponseDetailsDto> articleList = articleService.getArticleList(startIndex, pageSize, sortByField, sortByType, searchKeyword);
 		int totalCount = 20;
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(0, 20, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
@@ -55,32 +59,28 @@ public class ArticleController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteArticle(@PathVariable final String id) {
 		SeekaArticles article = articleService.deleteArticle(id);
-		return new GenericResponseHandlers.Builder().setData(article).setMessage("Article deleted Successfully")
-				.setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(article).setMessage("Article deleted Successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getArticleById(@PathVariable final String id) {
 		ArticleResponseDetailsDto articleDto = articleService.getArticleById(id);
-		return new GenericResponseHandlers.Builder().setData(articleDto).setMessage("Data Displayed Successfully")
-				.setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(articleDto).setMessage("Data Displayed Successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> saveMultiArticle(@RequestBody SeekaArticleDto article,	@RequestHeader(name = "userId") BigInteger userId) throws Exception, Throwable {
-         //	,@RequestParam(name = "file", required = false) final MultipartFile file,		
-		article = articleService.saveMultiArticle(article, userId);//articleService.addArticleImage(file, article.getId());
-		return new GenericResponseHandlers.Builder().setData(article).setMessage("Article Created Successfully")
-				.setStatus(HttpStatus.OK).create();
+	public ResponseEntity<?> saveMultiArticle(@RequestBody SeekaArticleDto article, @RequestHeader(name = "userId") final BigInteger userId)
+			throws Exception, Throwable {
+		// ,@RequestParam(name = "file", required = false) final MultipartFile file,
+		article = articleService.saveMultiArticle(article, userId);// articleService.addArticleImage(file, article.getId());
+		return new GenericResponseHandlers.Builder().setData(article).setMessage("Article Created Successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET)
-	public ResponseEntity<?> getArticleByPageWise(@PathVariable final BigInteger pageNumber,
-			@PathVariable final BigInteger pageSize, @RequestParam(required = false, name = "query") final String query,
-			@RequestParam(required = false) final BigInteger categoryId,
+	public ResponseEntity<?> getArticleByPageWise(@PathVariable final BigInteger pageNumber, @PathVariable final BigInteger pageSize,
+			@RequestParam(required = false, name = "query") final String query, @RequestParam(required = false) final BigInteger categoryId,
 			@RequestParam(required = false) final String tag, @RequestParam(required = false) final String status) {
-		return ResponseEntity.accepted()
-				.body(articleService.fetchAllArticleByPage(pageNumber, pageSize, query, true, categoryId, tag, status));
+		return ResponseEntity.accepted().body(articleService.fetchAllArticleByPage(pageNumber, pageSize, query, true, categoryId, tag, status));
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
@@ -129,8 +129,7 @@ public class ArticleController {
 	}
 
 	@RequestMapping(value = "/{articleId}/folder/{folderId}/unmapp", method = RequestMethod.GET)
-	public ResponseEntity<?> umMappedArticle(@PathVariable final BigInteger articleId,
-			@PathVariable final BigInteger folderId) {
+	public ResponseEntity<?> umMappedArticle(@PathVariable final BigInteger articleId, @PathVariable final BigInteger folderId) {
 		return ResponseEntity.accepted().body(articleService.unMappedFolder(articleId, folderId));
 	}
 }

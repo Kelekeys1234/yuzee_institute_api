@@ -32,7 +32,7 @@ public interface IArticleService {
 	Map<String, Object> saveArticleFolder(ArticleFolderDto articleFolder);
 
 	Map<String, Object> searchArticle(final SearchDto article);
-	 
+
 	Map<String, Object> getArticleFolderById(BigInteger articleFolderId);
 
 	Map<String, Object> getAllArticleFolder();
@@ -49,9 +49,9 @@ public interface IArticleService {
 
 	SeekaArticles findByArticleId(BigInteger articleId);
 
-    Map<String, Object> unMappedFolder(BigInteger articleId, BigInteger folderId);
+	Map<String, Object> unMappedFolder(BigInteger articleId, BigInteger folderId);
 
-    Map<String, Object> getArticleByFolderId(BigInteger folderId);
+	Map<String, Object> getArticleByFolderId(BigInteger folderId);
 
-	List<ArticleResponseDetailsDto> getArticleList();
+	List<ArticleResponseDetailsDto> getArticleList(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword);
 }

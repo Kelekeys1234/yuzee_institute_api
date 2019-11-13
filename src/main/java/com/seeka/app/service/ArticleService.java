@@ -112,7 +112,7 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public List<SeekaArticles> getAll() {
-		return articleDAO.getAll();
+		return null;
 	}
 
 	@Override
@@ -122,12 +122,12 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public SeekaArticles deleteArticle(final String articleId) {
-     		SeekaArticles article = articleDAO.findById(new BigInteger(articleId));
-			if (article != null) {
-				article.setActive(false);
-				article.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
-				article = articleDAO.deleteArticle(article);
-			}
+		SeekaArticles article = articleDAO.findById(new BigInteger(articleId));
+		if (article != null) {
+			article.setActive(false);
+			article.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
+			article = articleDAO.deleteArticle(article);
+		}
 		return article;
 	}
 
@@ -139,18 +139,19 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public List<ArticleResponseDetailsDto> getArticleList() {
-		List<SeekaArticles> articleList = articleDAO.getAll();
+	public List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
+			final String searchKeyword) {
+		List<SeekaArticles> articleList = articleDAO.getAll(startIndex, pageSize, sortByField, sortByType, searchKeyword);
 		List<ArticleResponseDetailsDto> articleResponseDetailsDtoList = new ArrayList<>();
 		for (SeekaArticles article : articleList) {
-			ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);				
+			ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
 			articleResponseDetailsDtoList.add(articleResponseDetailsDto);
 		}
 		return articleResponseDetailsDtoList;
 	}
 
-	private ArticleResponseDetailsDto getResponseObject(SeekaArticles article) {
-		ArticleResponseDetailsDto articleResponseDetailsDto = new ArticleResponseDetailsDto();    		
+	private ArticleResponseDetailsDto getResponseObject(final SeekaArticles article) {
+		ArticleResponseDetailsDto articleResponseDetailsDto = new ArticleResponseDetailsDto();
 		if (article != null) {
 			BeanUtils.copyProperties(article, articleResponseDetailsDto);
 			articleResponseDetailsDto.setId(article.getId());
@@ -183,11 +184,10 @@ public class ArticleService implements IArticleService {
 				articleResponseDetailsDto.setCourseId(article.getCourse().getId());
 				articleResponseDetailsDto.setCourseName(article.getCourse().getName());
 			}
-			
+
 			List<ArticleUserDemographicDto> userDemographicDtoList = new ArrayList<>();
-			Map<BigInteger, ArticleUserDemographic> countyList = new HashMap<BigInteger, ArticleUserDemographic>();
-			List<ArticleUserDemographic> userDemographicList = iArticleUserDemographicDao
-					.getbyArticleId(article.getId());
+			Map<BigInteger, ArticleUserDemographic> countyList = new HashMap<>();
+			List<ArticleUserDemographic> userDemographicList = iArticleUserDemographicDao.getbyArticleId(article.getId());
 
 			for (ArticleUserDemographic articleUserDemographic : userDemographicList) {
 				countyList.put(articleUserDemographic.getCountry().getId(), articleUserDemographic);
@@ -202,8 +202,8 @@ public class ArticleService implements IArticleService {
 				demographicDto.setCitizenship(countrydto);
 
 				List<ArticleCityDto> articleCityDtoList = new ArrayList<>();
-				List<ArticleUserDemographic> articleUserDemographicCityList = iArticleUserDemographicDao
-						.getArticleCityListbyCountryId(countrydto.getId(),article.getId());
+				List<ArticleUserDemographic> articleUserDemographicCityList = iArticleUserDemographicDao.getArticleCityListbyCountryId(countrydto.getId(),
+						article.getId());
 				for (ArticleUserDemographic cityObj : articleUserDemographicCityList) {
 					ArticleCityDto cityDto = new ArticleCityDto();
 					BeanUtils.copyProperties(cityObj.getCity(), cityDto);
@@ -213,7 +213,7 @@ public class ArticleService implements IArticleService {
 				userDemographicDtoList.add(demographicDto);
 			}
 			articleResponseDetailsDto.setUserDemographic(userDemographicDtoList);
-			
+
 		}
 		return articleResponseDetailsDto;
 	}
@@ -224,8 +224,8 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public Map<String, Object> fetchAllArticleByPage(final BigInteger page, final BigInteger size, final String query,
-			final boolean status, final BigInteger categoryId, final String tag, final String status2) {
+	public Map<String, Object> fetchAllArticleByPage(final BigInteger page, final BigInteger size, final String query, final boolean status,
+			final BigInteger categoryId, final String tag, final String status2) {
 		Map<String, Object> response = new HashMap<>();
 		List<SeekaArticles> articles = null;
 		PaginationUtilDto paginationUtilDto = null;
@@ -301,10 +301,8 @@ public class ArticleService implements IArticleService {
 		return response;
 	}
 
-
 	@Override
-	public SeekaArticleDto saveMultiArticle(final SeekaArticleDto articleDto, BigInteger userId)
-			throws Throwable, ValidationException {
+	public SeekaArticleDto saveMultiArticle(final SeekaArticleDto articleDto, final BigInteger userId) throws Throwable, ValidationException {
 		Map<BigInteger, String> countryMap = new HashMap<>();
 		Map<BigInteger, String> cityMap = new HashMap<>();
 
@@ -337,7 +335,7 @@ public class ArticleService implements IArticleService {
 
 		List<ArticleUserDemographicDto> articleUserDemoDtoList = articleDto.getUserDemographic();
 
-		if (articleUserDemoDtoList != null && !(articleUserDemoDtoList.isEmpty())) {
+		if (articleUserDemoDtoList != null && !articleUserDemoDtoList.isEmpty()) {
 			for (ArticleUserDemographicDto articleUserDemographicDto : articleUserDemoDtoList) {
 				Country country = new Country();
 				BeanUtils.copyProperties(articleUserDemographicDto.getCitizenship(), country);
@@ -375,8 +373,7 @@ public class ArticleService implements IArticleService {
 		ArticleElasticSearchDto articleElasticSearchDTO = new ArticleElasticSearchDto();
 		BeanUtils.copyProperties(articleDto, articleElasticSearchDTO);
 		articleElasticSearchDTO.setCategory(article.getCategory() != null ? article.getCategory().getName() : null);
-		articleElasticSearchDTO
-				.setSubCategory(article.getSubcategory() != null ? article.getSubcategory().getName() : null);
+		articleElasticSearchDTO.setSubCategory(article.getSubcategory() != null ? article.getSubcategory().getName() : null);
 		articleElasticSearchDTO.setCountry(article.getCountry() != null ? article.getCountry().getName() : null);
 		articleElasticSearchDTO.setCity(article.getCity() != null ? article.getCity().getName() : null);
 		articleElasticSearchDTO.setFaculty(article.getFaculty() != null ? article.getFaculty().getName() : null);
@@ -387,7 +384,7 @@ public class ArticleService implements IArticleService {
 		return articleDto;
 	}
 
-	private SeekaArticles setEntityArticle(SeekaArticleDto articleDto, SeekaArticles article) throws ParseException {
+	private SeekaArticles setEntityArticle(final SeekaArticleDto articleDto, final SeekaArticles article) throws ParseException {
 		BeanUtils.copyProperties(articleDto, article);
 		if (articleDto.getCategoryId() != null) {
 			Category category = categoryDAO.findCategoryById(articleDto.getCategoryId());
@@ -678,16 +675,15 @@ public class ArticleService implements IArticleService {
 		return response;
 	}
 
-	public void saveArticleOnElasticSearch(final String elasticSearchIndex, final String type,
-			final ArticleElasticSearchDto articleDto, final String elasticSearchName) {
+	public void saveArticleOnElasticSearch(final String elasticSearchIndex, final String type, final ArticleElasticSearchDto articleDto,
+			final String elasticSearchName) {
 		ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 		elasticSearchDto.setIndex(elasticSearchIndex);
 		elasticSearchDto.setType(type);
 		elasticSearchDto.setEntityId(String.valueOf(articleDto.getId()));
 		elasticSearchDto.setObject(articleDto);
 		System.out.println(elasticSearchDto);
-		ResponseEntity<Object> object = restTemplate.postForEntity("http://" + elasticSearchName + "/elasticSearch/",
-				elasticSearchDto, Object.class);
+		ResponseEntity<Object> object = restTemplate.postForEntity("http://" + elasticSearchName + "/elasticSearch/", elasticSearchDto, Object.class);
 		System.out.println(object);
 	}
 
