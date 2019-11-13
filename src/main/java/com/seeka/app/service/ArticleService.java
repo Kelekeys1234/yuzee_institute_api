@@ -302,7 +302,7 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public SeekaArticleDto saveMultiArticle(final SeekaArticleDto articleDto, final BigInteger userId) throws Throwable, ValidationException {
+	public SeekaArticleDto saveMultiArticle(final SeekaArticleDto articleDto, final BigInteger userId) throws ValidationException, ParseException {
 		Map<BigInteger, String> countryMap = new HashMap<>();
 		Map<BigInteger, String> cityMap = new HashMap<>();
 
@@ -685,6 +685,11 @@ public class ArticleService implements IArticleService {
 		System.out.println(elasticSearchDto);
 		ResponseEntity<Object> object = restTemplate.postForEntity("http://" + elasticSearchName + "/elasticSearch/", elasticSearchDto, Object.class);
 		System.out.println(object);
+	}
+
+	@Override
+	public Integer getTotalSearchCount(String searchKeyword) {
+		return articleDAO.getTotalSearchCount(searchKeyword);
 	}
 
 }

@@ -32,4 +32,6 @@ public interface IArticleDAO {
 	int findTotalCountBasedOnCondition(String countQuery);
 
 	List<SeekaArticles> searchBasedOnNameAndContent(String searchText);
+
+	Integer getTotalSearchCount(String searchKeyword);
 }

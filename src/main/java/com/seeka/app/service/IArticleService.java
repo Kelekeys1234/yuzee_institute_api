@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import com.seeka.app.dto.ArticleResponseDetailsDto;
 import com.seeka.app.dto.PageLookupDto;
 import com.seeka.app.dto.SearchDto;
 import com.seeka.app.dto.SeekaArticleDto;
+import com.seeka.app.exception.ValidationException;
 
 public interface IArticleService {
 
@@ -27,7 +29,7 @@ public interface IArticleService {
 	Map<String, Object> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status, BigInteger categoryId, String tag,
 			String status2);
 
-	SeekaArticleDto saveMultiArticle(SeekaArticleDto article, BigInteger userId) throws Throwable, Exception;
+	SeekaArticleDto saveMultiArticle(SeekaArticleDto article, BigInteger userId) throws ValidationException, ParseException;
 
 	Map<String, Object> saveArticleFolder(ArticleFolderDto articleFolder);
 
@@ -54,4 +56,6 @@ public interface IArticleService {
 	Map<String, Object> getArticleByFolderId(BigInteger folderId);
 
 	List<ArticleResponseDetailsDto> getArticleList(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword);
+
+	Integer getTotalSearchCount(String searchKeyword);
 }

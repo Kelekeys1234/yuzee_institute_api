@@ -10,6 +10,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -36,6 +37,13 @@ public class ArticleDAO implements IArticleDAO {
 
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
+		}
+		if ( sortByType != null) {
+			if ("ASC".equals(sortByType)) {
+					criteria.addOrder(Order.asc("heading"));
+				} else {
+					criteria.addOrder(Order.desc("heading"));
+				}
 		}
 		if (startIndex != null && pageSize != null) {
 			criteria.setFirstResult(startIndex);
@@ -370,5 +378,16 @@ public class ArticleDAO implements IArticleDAO {
 			articles.add(article);
 		}
 		return articles;
+	}
+
+	@Override
+	public Integer getTotalSearchCount(String searchKeyword) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
+		if (searchKeyword != null) {
+			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
+		}
+		List<Object[]> rows = criteria.list();
+		return rows.size();
 	}
 }

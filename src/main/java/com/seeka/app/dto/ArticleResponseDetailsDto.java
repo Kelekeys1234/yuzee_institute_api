@@ -3,7 +3,6 @@ package com.seeka.app.dto;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 public class ArticleResponseDetailsDto implements Serializable {
@@ -40,6 +39,8 @@ public class ArticleResponseDetailsDto implements Serializable {
 	private Boolean enabled;
 	private Boolean published;
 	private String websiteUrl;
+    private Date createdAt;
+    private Date updatedAt;
 	private String url;
 	private String tags;	
 	
@@ -290,5 +291,22 @@ public class ArticleResponseDetailsDto implements Serializable {
 	public void setSubcategoryName(String subcategoryName) {
 		this.subcategoryName = subcategoryName;
 	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	
 	
 }
