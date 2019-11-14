@@ -11,12 +11,10 @@ import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.ArticleFolder;
 import com.seeka.app.bean.ArticleFolderMap;
@@ -29,13 +27,13 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.bean.SubCategory;
-import com.seeka.app.dao.ArticleFolderDao;
 import com.seeka.app.dao.ArticleFolderMapDao;
 import com.seeka.app.dao.CityDAO;
 import com.seeka.app.dao.CountryDAO;
 import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dao.FacultyDAO;
 import com.seeka.app.dao.IArticleDAO;
+import com.seeka.app.dao.IArticleFolderDao;
 import com.seeka.app.dao.IArticleUserDemographicDao;
 import com.seeka.app.dao.ICategoryDAO;
 import com.seeka.app.dao.ISubCategoryDAO;
@@ -45,33 +43,20 @@ import com.seeka.app.dto.ArticleCountryDto;
 import com.seeka.app.dto.ArticleElasticSearchDto;
 import com.seeka.app.dto.ArticleFolderDto;
 import com.seeka.app.dto.ArticleFolderMapDto;
-import com.seeka.app.dto.ArticleNameDto;
 import com.seeka.app.dto.ArticleResponseDetailsDto;
 import com.seeka.app.dto.ArticleUserDemographicDto;
 import com.seeka.app.dto.ElasticSearchDTO;
-import com.seeka.app.dto.PageLookupDto;
-import com.seeka.app.dto.PaginationUtilDto;
-import com.seeka.app.dto.SearchDto;
 import com.seeka.app.dto.SeekaArticleDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.util.DateUtil;
-import com.seeka.app.util.IConstant;
-import com.seeka.app.util.PaginationUtil;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
 public class ArticleService implements IArticleService {
-
-//    @Value("${storage.connection.url}")
-//    private String storageURL;
-
-//    @Value("${elastic.search.host.port}")
-//    private String elasticSearchPort;
-//
-//    @Value("${elastic.search.host.ip}")
-//    private String elasticSearchHost;
 
 	@Value("${s3.url}")
 	private String s3URL;
@@ -86,7 +71,7 @@ public class ArticleService implements IArticleService {
 	private ISubCategoryDAO subCategoryDAO;
 
 	@Autowired
-	private ArticleFolderDao articleFolderDao;
+	private IArticleFolderDao iArticleFolderDao;
 
 	@Autowired
 	private ArticleFolderMapDao articleFolderMapDao;
@@ -114,16 +99,11 @@ public class ArticleService implements IArticleService {
 	
 	@Autowired
 	private IStorageService iStorageService;
+	
+	@Autowired
+	private MessageByLocaleService messageByLocalService;
 
-	@Override
-	public List<SeekaArticles> getAll() {
-		return null;
-	}
 
-	@Override
-	public List<SeekaArticles> getArticlesByLookup(final PageLookupDto pageLookupDto) {
-		return articleDAO.getArticlesByLookup(pageLookupDto);
-	}
 
 	@Override
 	public SeekaArticles deleteArticle(final String articleId) {
@@ -251,95 +231,10 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public SeekaArticles findByArticleId(final BigInteger articleId) {
-		return articleDAO.findById(articleId);
-	}
-
-	@Override
-	public Map<String, Object> fetchAllArticleByPage(final BigInteger page, final BigInteger size, final String query, final boolean status,
-			final BigInteger categoryId, final String tag, final String status2) {
-		Map<String, Object> response = new HashMap<>();
-		List<SeekaArticles> articles = null;
-		PaginationUtilDto paginationUtilDto = null;
-		int totalCount = 0;
-		String sqlQuery = null;
-		try {
-			if (categoryId == null && status2 == null && tag == null) {
-				totalCount = articleDAO.findTotalCount();
-				paginationUtilDto = PaginationUtil.calculatePagination(page.intValue(), size.intValue(), totalCount);
-				articles = articleDAO.fetchAllArticleByPage(page, size, query, status);
-			} else {
-				String countQuery = "select sa.id from seeka_articles sa where sa.active = 1 and sa.deleted_on IS NULL ";
-				sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.active = "
-						+ "1 and sa.deleted_on IS NULL";
-				if (categoryId != null) {
-					sqlQuery += " and sa.category_id = " + categoryId;
-					countQuery += " and sa.category_id = " + categoryId;
-				}
-				if (tag != null && !tag.isEmpty()) {
-					sqlQuery += " and sa.tags  = '" + tag + "'";
-					countQuery += " and sa.tags  = '" + tag + "'";
-				}
-				if (status2 != null && !status2.isEmpty()) {
-					sqlQuery += " and sa.status  = '" + status2 + "'";
-					countQuery += " and sa.status  = '" + status2 + "'";
-				}
-				sqlQuery += " ORDER BY sa.created_at DESC";
-				sqlQuery = sqlQuery + " LIMIT " + page + " ," + size;
-				articles = articleDAO.articleByFilter(sqlQuery);
-				totalCount = articleDAO.findTotalCountBasedOnCondition(countQuery);
-				paginationUtilDto = PaginationUtil.calculatePagination(page.intValue(), size.intValue(), totalCount);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", IConstant.SQL_ERROR);
-		}
-		if (articles != null && !articles.isEmpty()) {
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", IConstant.ARTICLE_GET_SUCCESS);
-			response.put("data", articles);
-			response.put("totalCount", totalCount);
-			response.put("pageNumber", paginationUtilDto.getPageNumber());
-			response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-			response.put("hasNextPage", paginationUtilDto.isHasNextPage());
-			response.put("totalPages", paginationUtilDto.getTotalPages());
-		} else {
-			response.put("status", HttpStatus.NOT_FOUND.value());
-			response.put("message", IConstant.ARTICLE_NOT_FOUND);
-			response.put("data", articles);
-		}
-		return response;
-	}
-
-	@Override
-	public Map<String, Object> searchArticle(final SearchDto article) {
-		Map<String, Object> response = new HashMap<>();
-		String ResponseStatus = IConstant.ARTICLE_GET_SUCCESS;
-		List<SeekaArticles> articles = null;
-		int totalCount = 0;
-		try {
-			totalCount = articleDAO.findTotalCount();
-			articles = articleDAO.searchArticle(article);
-			response.put("status", HttpStatus.OK.value());
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			ResponseStatus = IConstant.SQL_ERROR;
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-		}
-		response.put("message", ResponseStatus);
-		response.put("data", articles);
-		response.put("totalCount", totalCount);
-		return response;
-	}
-
-	@Override
 	public SeekaArticleDto saveMultiArticle(final SeekaArticleDto articleDto, final BigInteger userId) throws ValidationException, ParseException {
 		Map<BigInteger, String> countryMap = new HashMap<>();
 		Map<BigInteger, String> cityMap = new HashMap<>();
-
 		SeekaArticles article = new SeekaArticles();
-
 		if (articleDto != null && articleDto.getId() != null) {
 			article = articleDAO.findById(articleDto.getId());
 			if (article != null) {
@@ -361,9 +256,6 @@ public class ArticleService implements IArticleService {
 		if (article.getCity() != null) {
 			cityMap.put(article.getCity().getId(), article.getCity().getName());
 		}
-
-		StringBuilder countryCSVString = new StringBuilder();
-		StringBuilder cityCSVString = new StringBuilder();
 
 		List<ArticleUserDemographicDto> articleUserDemoDtoList = articleDto.getUserDemographic();
 
@@ -394,10 +286,6 @@ public class ArticleService implements IArticleService {
 					iArticleUserDemographicDao.save(articleUserDemographic);
 				}
 
-//				countryMap.put(articleUserDemographicDto.getCountry(), country.getName());
-//				countryCSVString.append(country.getName()+", ");
-//				cityMap.put(cityId, city.getName());
-//				cityCSVString.append(city.getName()+", ");
 			}
 		}
 		articleDto.setId(article.getId());
@@ -472,243 +360,100 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public Map<String, Object> saveArticleFolder(final ArticleFolderDto articleFolderDto) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			ArticleFolder result = null;
-			if (articleFolderDto.getId() != null) {
-				result = articleFolderDao.findById(articleFolderDto.getId());
+	public ArticleFolderDto saveArticleFolder(final ArticleFolderDto articleFolderDto, String language) throws NotFoundException, ValidationException {
+			/**
+			 * Update case
+			 */
+			if(articleFolderDto.getFolderName() == null || "".equals(articleFolderDto.getFolderName().trim())) {
+				throw new ValidationException("Invalid Folder Name");
 			}
-			if (result != null) {
-				result.setFolderName(articleFolderDto.getFolderName());
-				result.setUpdatedAt(new Date());
-				result.setUserId(articleFolderDto.getUserId());
-				articleFolderDao.save(result);
-				response.put("id", result.getId());
-				response.put("message", IConstant.UPDATE_ARTICLE_FOLDER_SUCCESS);
-			} else {
-				ArticleFolder articleFolder = new ArticleFolder();
+		
+			if (articleFolderDto.getId() != null) {
+				ArticleFolder articleFolder = iArticleFolderDao.findById(articleFolderDto.getId());
+				if(articleFolder == null) {
+					throw new NotFoundException(messageByLocalService.getMessage("article.not.found", new Object[] {articleFolderDto.getId()}, language));
+				}
 				articleFolder.setFolderName(articleFolderDto.getFolderName());
-				articleFolder.setCreatedAt(new Date());
-				articleFolder.setDeleted(true);
 				articleFolder.setUpdatedAt(new Date());
 				articleFolder.setUserId(articleFolderDto.getUserId());
-				articleFolderDao.save(articleFolder);
-				response.put("message", IConstant.ADD_ARTICLE_FOLDER_SUCCESS);
-				response.put("id", articleFolder.getId());
+				iArticleFolderDao.save(articleFolder);
+				return articleFolderDto;
 			}
-			response.put("status", HttpStatus.OK.value());
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", IConstant.SQL_ERROR);
-		}
-		return response;
+			/**
+			 * Insert case
+			 */
+			ArticleFolder articleFolder = new ArticleFolder();
+			BeanUtils.copyProperties(articleFolderDto, articleFolder);
+			articleFolder.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
+			articleFolder.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
+			articleFolder.setDeleted(true);
+			iArticleFolderDao.save(articleFolder);
+			articleFolderDto.setId(articleFolder.getId());
+			
+		return articleFolderDto;
 	}
-
+	
 	@Override
-	public Map<String, Object> getArticleFolderById(final BigInteger articleFolderId) {
-		Map<String, Object> response = new HashMap<>();
-		ArticleFolder result = null;
-		try {
-			result = articleFolderDao.findById(articleFolderId);
-			if (result != null) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.GET_ARTICLE_FOLDER_SUCCESS);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.GET_ARTICLE_FOLDER_NOT_FOUND);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", IConstant.SQL_ERROR);
-		}
-		response.put("data", result);
-		return response;
-	}
-
-	@Override
-	public Map<String, Object> getAllArticleFolder() {
-		Map<String, Object> response = new HashMap<>();
+	public List<ArticleFolder> getFolderByUserId(final BigInteger userId) throws ValidationException {
 		List<ArticleFolder> articleFolders = new ArrayList<>();
-		try {
-			articleFolders = articleFolderDao.getAllArticleFolder();
-			if (articleFolders != null && !articleFolders.isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.GET_ARTICLE_FOLDER_SUCCESS);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.GET_ARTICLE_FOLDER_NOT_FOUND);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", IConstant.SQL_ERROR);
-		}
-		response.put("data", articleFolders);
-		return response;
+			articleFolders = iArticleFolderDao.getAllFolderByUserId(userId);
+			if (!articleFolders.isEmpty()) {
+					return articleFolders;
+				}
+			throw new ValidationException(messageByLocalService.getMessage("article.folder.user.not.found", new Object[] {userId}, "en"));
 	}
 
 	@Override
-	public Map<String, Object> deleteArticleFolderById(final BigInteger articleFolderId) {
-		Map<String, Object> response = new HashMap<>();
-		String ResponseStatus = IConstant.SUCCESS;
-		try {
-			ArticleFolder result = articleFolderDao.findById(articleFolderId);
-			if (result != null) {
-				result.setDeleted(false);
-				result.setUpdatedAt(new Date());
-				articleFolderDao.save(result);
-				ResponseStatus = IConstant.ARTICLE_FOLDER_DELETED;
-				response.put("status", HttpStatus.OK.value());
-			} else {
-				ResponseStatus = IConstant.GET_ARTICLE_FOLDER_NOT_FOUND;
-				response.put("status", HttpStatus.NOT_FOUND.value());
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			ResponseStatus = IConstant.SQL_ERROR;
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-		}
-		response.put("message", ResponseStatus);
-		return response;
+	public ArticleFolder getArticleFolderById(final BigInteger articleFolderId) throws ValidationException {
+		ArticleFolder articleFolder  = iArticleFolderDao.findById(articleFolderId);
+		if (articleFolder == null)
+			throw new ValidationException(messageByLocalService.getMessage("article.folder.not.found", new Object[] {articleFolderId}, "en"));
+		return articleFolder;
+		
 	}
 
 	@Override
-	public Map<String, Object> mapArticleFolder(final ArticleFolderMapDto articleFolderMapDto) {
-		Map<String, Object> response = new HashMap<>();
-		String ResponseStatus = IConstant.FOLDER_ARTICLE_MAP_SUCCESS;
-		try {
+	public List<ArticleFolder> getAllArticleFolder() {
+	return iArticleFolderDao.getAllArticleFolder();
+	}
+
+	@Override
+	public ArticleFolder deleteArticleFolderById(final BigInteger articleFolderId) throws ValidationException {
+			ArticleFolder articleFolder = iArticleFolderDao.findById(articleFolderId);
+			if (articleFolder != null) {
+				articleFolder.setDeleted(false);
+				articleFolder.setUpdatedAt(new Date());
+				iArticleFolderDao.save(articleFolder);
+				return articleFolder;
+			}
+            throw new ValidationException(messageByLocalService.getMessage("article.folder.not.found", new Object[] {articleFolderId}, "en"));
+	}
+
+	@Override
+	public ArticleFolderMapDto mapArticleFolder(final ArticleFolderMapDto articleFolderMapDto) {
 			ArticleFolderMap articleFolderMap = new ArticleFolderMap();
 			articleFolderMap.setFolderId(articleFolderMapDto.getFolderId());
 			articleFolderMap.setArticleId(articleFolderMapDto.getArticleId());
-			articleFolderMap.setUserId(articleFolderMapDto.getUserId());
 			articleFolderMapDao.save(articleFolderMap);
-			response.put("status", HttpStatus.OK.value());
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			ResponseStatus = IConstant.SQL_ERROR;
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-		}
-		response.put("message", ResponseStatus);
-		return response;
+			articleFolderMapDto.setId(articleFolderMap.getId());
+	return articleFolderMapDto;
 	}
 
 	@Override
-	public Map<String, Object> getFolderWithArticle(final BigInteger userId) {
-		Map<String, Object> response = new HashMap<>();
-		List<ArticleFolder> articleFolders = new ArrayList<>();
-		try {
-			articleFolders = articleFolderDao.getAllArticleFolderByUserId(userId);
-			if (!articleFolders.isEmpty()) {
-				for (ArticleFolder articleFolder : articleFolders) {
-					List<ArticleNameDto> articles = articleFolderMapDao.getFolderArticles(articleFolder.getId());
-					String imageUrl = articleFolderMapDao.getFolderImageUrl(articleFolder.getId());
-					articleFolder.setFolderImage(imageUrl);
-					articleFolder.setArticles(articles);
-					articleFolder.setUserId(userId);
-				}
-				response.put("message", IConstant.GET_ARTICLE_FOLDER_SUCCESS);
-				response.put("status", HttpStatus.OK.value());
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.GET_ARTICLE_FOLDER_NOT_FOUND);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", IConstant.SQL_ERROR);
+	public List<ArticleResponseDetailsDto> getArticleByFolderId(Integer startIndex,Integer pageSize,final BigInteger folderId) throws ValidationException {
+			List<ArticleFolderMap> articleFolderMaps = articleFolderMapDao.getArticleByFolderId(startIndex, pageSize,folderId);
+			List<SeekaArticles> articleList = new ArrayList<>();
+           for (ArticleFolderMap articleFolderMap : articleFolderMaps) {      	   
+        	   articleList.add(articleDAO.findById(articleFolderMap.getArticleId()));
+           }   
+       		List<ArticleResponseDetailsDto> articleResponseDetailsDtoList = new ArrayList<>();
+       		for (SeekaArticles article : articleList) {
+       			ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
+       			articleResponseDetailsDtoList.add(articleResponseDetailsDto);
+       		}
+       		return articleResponseDetailsDtoList;
 		}
-		response.put("data", articleFolders);
-		return response;
-	}
-
-	@Override
-	public Map<String, Object> searchBasedOnNameAndContent(final String searchText) {
-		Map<String, Object> response = new HashMap<>();
-		String responseStatus = IConstant.ARTICLE_GET_SUCCESS;
-		List<SeekaArticles> articles = null;
-		try {
-			articles = articleDAO.searchBasedOnNameAndContent(searchText);
-			if (articles != null && !articles.isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				responseStatus = IConstant.ARTICLE_NOT_FOUND;
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			responseStatus = IConstant.SQL_ERROR;
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-		}
-		response.put("message", responseStatus);
-		response.put("data", articles);
-		return response;
-	}
-
-	@Override
-	public Map<String, Object> addArticleImage(final MultipartFile file, final BigInteger articleId) {
-		Map<String, Object> response = new HashMap<>();
-
-		SeekaArticles article = articleDAO.findById(articleId);
-		if (null == article) {
-			response.put("status", HttpStatus.NOT_FOUND.value());
-			response.put("message", IConstant.ARTICLE_NOT_FOUND);
-		} else {
-//			String imageName = iImageService.uploadImage(file, articleId, "ARTICLE", null);
-//			
-//			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(),
-//					null, "en");
-//			article.setImagepath(s3URL + imageName);
-//			articleDAO.save(article);
-//			response.put("status", HttpStatus.OK.value());
-//			response.put("message", "file uploading successfully.");
-//			response.put("data", imageName);
-		}
-		return response;
-	}
-
-	@Override
-	public Map<String, Object> unMappedFolder(final BigInteger articleId, final BigInteger folderId) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			articleFolderDao.unMappedFolder(articleId, folderId);
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", "Article unmapped successfully");
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", exception.getCause());
-		}
-		return response;
-	}
-
-	@Override
-	public Map<String, Object> getArticleByFolderId(final BigInteger folderId) {
-		Map<String, Object> response = new HashMap<>();
-//		List<ArticleResposeDto> articleDto3s = new ArrayList<>();
-//		try {
-//			List<ArticleFolderMap> articleFolderMaps = articleFolderMapDao.getArticleByFolderId(folderId);
-//			if (!articleFolderMaps.isEmpty()) {
-//				for (ArticleFolderMap articleFolder : articleFolderMaps) {
-//					Map<String, Object> articleResponse = getArticleById(String.valueOf(articleFolder.getArticleId()));
-//					articleDto3s.add((ArticleResposeDto) articleResponse.get("articleDto"));
-//				}
-//				response.put("message", IConstant.GET_ARTICLE_FOLDER_SUCCESS);
-//				response.put("status", HttpStatus.OK.value());
-//			} else {
-//				response.put("status", HttpStatus.NOT_FOUND.value());
-//				response.put("message", IConstant.GET_ARTICLE_FOLDER_NOT_FOUND);
-//			}
-//		} catch (Exception exception) {
-//			exception.printStackTrace();
-//			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-//			response.put("message", IConstant.SQL_ERROR);
-//		}
-//		response.put("data", articleDto3s);
-		return response;
-	}
+	
 
 	public void saveArticleOnElasticSearch(final String elasticSearchIndex, final String type, final ArticleElasticSearchDto articleDto,
 			final String elasticSearchName) {
@@ -720,6 +465,11 @@ public class ArticleService implements IArticleService {
 		System.out.println(elasticSearchDto);
 		ResponseEntity<Object> object = restTemplate.postForEntity("http://" + elasticSearchName + "/elasticSearch/", elasticSearchDto, Object.class);
 		System.out.println(object);
+	}
+
+	@Override
+	public Integer getTotalSearchCount(String searchKeyword) {
+		return articleDAO.getTotalSearchCount(searchKeyword);
 	}
 
 	@Override
@@ -743,4 +493,8 @@ public class ArticleService implements IArticleService {
 		return articleDAO.getTotalSearchCount(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status);
 	}
 
-}
+}	
+	
+
+	
+
