@@ -1,34 +1,27 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import javax.validation.Valid;
-
-import com.seeka.app.bean.Scholarship;
 import com.seeka.app.dto.ScholarshipDto;
-import com.seeka.app.dto.ScholarshipFilterDto;
+import com.seeka.app.dto.ScholarshipResponseDTO;
+import com.seeka.app.exception.ValidationException;
 
 public interface IScholarshipService {
 
-    Map<String, Object> save(ScholarshipDto scholarship);
+	void saveScholarship(ScholarshipDto scholarshipDto) throws ValidationException;
 
-    void save(Scholarship obj);
+	ScholarshipResponseDTO getScholarshipById(BigInteger id);
 
-    Map<String, Object> getAllScholarship(Integer pageNumber, Integer pageSize);
+	void updateScholarship(ScholarshipDto scholarshipDto, BigInteger scholarshipId) throws ValidationException;
 
-    Map<String, Object> get(BigInteger id);
-  
-    Map<String, Object> deleteScholarship(BigInteger id);
+	List<ScholarshipResponseDTO> getScholarshipList(Integer startIndex, Integer pageSize, BigInteger countryId, BigInteger instituteId, String validity,
+			Boolean isActive, Date filterDate, String searchKeyword, String sortByField, String sortByType);
 
-    Map<String, Object> updateScholarship(@Valid BigInteger id, ScholarshipDto scholarshipDto);
+	int countScholarshipList(BigInteger countryId, BigInteger instituteId, String validity, Boolean isActive, Date filterDate, String searchKeyword);
 
-    List<ScholarshipDto> getScholarshipBySearchKey(String searchKey);
-
-    Map<String, Object> scholarshipFilter(ScholarshipFilterDto scholarshipFilterDto);
-
-    Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
+	void deleteScholarship(BigInteger scholarshipId) throws ValidationException;
 
 	List<BigInteger> getScholarshipIdsByCountryId(List<BigInteger> countryId, Integer limit);
 

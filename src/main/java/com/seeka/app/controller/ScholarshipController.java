@@ -1,80 +1,98 @@
 package com.seeka.app.controller;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.validation.Valid;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.ScholarshipDto;
-import com.seeka.app.dto.ScholarshipFilterDto;
+import com.seeka.app.dto.ScholarshipResponseDTO;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IScholarshipService;
+import com.seeka.app.util.PaginationUtil;
 
 @RestController
 @RequestMapping("/scholarship")
 public class ScholarshipController {
 
-    @Autowired
-    private IScholarshipService scholarshipService;
+	@Autowired
+	private IScholarshipService iScholarshipService;
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> saveScholarship(@RequestBody ScholarshipDto scholarship) throws Exception {
-        return ResponseEntity.accepted().body(scholarshipService.save(scholarship));
-    }
+	@PostMapping()
+	public ResponseEntity<?> saveScholarship(@RequestBody final ScholarshipDto scholarshipDto, final BindingResult bindingResult) throws Exception {
+		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+		if (!fieldErrors.isEmpty()) {
+			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
+		}
+		iScholarshipService.saveScholarship(scholarshipDto);
+		return new GenericResponseHandlers.Builder().setMessage("Create Scholarship Successfully.").setStatus(HttpStatus.OK).create();
+	}
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> get(@PathVariable BigInteger id) throws Exception {
-        return ResponseEntity.accepted().body(scholarshipService.get(id));
-    }
+	@PutMapping("/{id}")
+	public ResponseEntity<?> updateScholarship(@RequestBody final ScholarshipDto scholarshipDto, final BindingResult bindingResult,
+			@PathVariable final BigInteger id) throws Exception {
+		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+		if (!fieldErrors.isEmpty()) {
+			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
+		}
+		iScholarshipService.updateScholarship(scholarshipDto, id);
+		return new GenericResponseHandlers.Builder().setMessage("Update Scholarship Successfully.").setStatus(HttpStatus.OK).create();
+	}
 
-    @RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getAllScholarship(@PathVariable Integer pageNumber, @PathVariable Integer pageSize) throws Exception {
-        return ResponseEntity.accepted().body(scholarshipService.getAllScholarship(pageNumber, pageSize));
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<?> get(@PathVariable final BigInteger id) throws Exception {
+		return new GenericResponseHandlers.Builder().setMessage("Get Scholarship Successfully.").setStatus(HttpStatus.OK).create();
+	}
 
-    @RequestMapping(value = "/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> autoSearch(@PathVariable final String searchKey, @PathVariable Integer pageNumber, @PathVariable Integer pageSize) throws Exception {
-        return ResponseEntity.accepted().body(scholarshipService.autoSearch(pageNumber, pageSize, searchKey));
-    }
+	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getAllScholarship(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
+			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final BigInteger countryId,
+			@RequestParam(required = false) final BigInteger instituteId, @RequestParam(required = false) final String validity,
+			@RequestParam(required = false) final Boolean isActive,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn) throws Exception {
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteScholarship(@PathVariable BigInteger id) {
-        return ResponseEntity.accepted().body(scholarshipService.deleteScholarship(id));
-    }
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<ScholarshipResponseDTO> scholarshipResponseDTOs = iScholarshipService.getScholarshipList(startIndex, pageSize, countryId, instituteId, validity,
+				isActive, updatedOn, searchKeyword, sortByField, sortByType);
+		int totalCount = iScholarshipService.countScholarshipList(countryId, instituteId, validity, isActive, updatedOn, searchKeyword);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get Scholarship List successfully");
+		responseMap.put("data", scholarshipResponseDTOs);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+	}
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> updateScolarship(@Valid @PathVariable BigInteger id, @RequestBody ScholarshipDto scholarshipDto) throws Exception {
-        return ResponseEntity.accepted().body(scholarshipService.updateScholarship(id, scholarshipDto));
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteScholarship(@PathVariable final BigInteger id) throws Exception {
+		iScholarshipService.deleteScholarship(id);
+		return new GenericResponseHandlers.Builder().setMessage("delete Scholarship Successfully.").setStatus(HttpStatus.OK).create();
+	}
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> search(@Valid @RequestParam("searchkey") String searchkey) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        List<ScholarshipDto> scholarshipList = scholarshipService.getScholarshipBySearchKey(searchkey);
-        if (scholarshipList != null && !scholarshipList.isEmpty()) {
-            response.put("message", "Scholarship fetched successfully");
-            response.put("status", HttpStatus.OK.value());
-        } else {
-            response.put("message", "Scholarship not found");
-            response.put("status", HttpStatus.NOT_FOUND.value());
-        }
-        response.put("data", scholarshipList);
-        return ResponseEntity.accepted().body(response);
-    }
-
-    @RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> scholarshipFilter(@RequestBody final ScholarshipFilterDto scholarshipFilterDto) throws Exception {
-        return ResponseEntity.ok().body(scholarshipService.scholarshipFilter(scholarshipFilterDto));
-    }
 }
