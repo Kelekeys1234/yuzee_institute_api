@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +54,7 @@ import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.util.DateUtil;
+import com.seeka.app.util.IConstant;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
