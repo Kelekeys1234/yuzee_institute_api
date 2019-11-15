@@ -3,8 +3,6 @@ package com.seeka.app.dto;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-import com.seeka.app.bean.Country;
-
 public class ArticleElasticSearchDto implements Serializable{
 
 	
@@ -27,7 +25,7 @@ public class ArticleElasticSearchDto implements Serializable{
 
     private String gender;
     private String demographicCity;
-    private Country demographicCountry;
+    // private Country demographicCountry;
 
     /**
      * @return the id
@@ -56,13 +54,13 @@ public class ArticleElasticSearchDto implements Serializable{
 		this.demographicCity = demographicCity;
 	}
 
-	public Country getDemographicCountry() {
-		return demographicCountry;
-	}
-
-	public void setDemographicCountry(Country demographicCountry) {
-		this.demographicCountry = demographicCountry;
-	}
+//	public Country getDemographicCountry() {
+//		return demographicCountry;
+//	}
+//
+//	public void setDemographicCountry(Country demographicCountry) {
+//		this.demographicCountry = demographicCountry;
+//	}
 
 	public String getHeading() {
 		return heading;

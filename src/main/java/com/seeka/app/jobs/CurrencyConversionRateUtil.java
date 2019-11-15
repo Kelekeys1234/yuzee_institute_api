@@ -42,12 +42,12 @@ public class CurrencyConversionRateUtil {
 	@Autowired
 	private ICourseService courseService;
 
-	@Scheduled(fixedRate = 86400000, initialDelay = 5000)
+	@Scheduled(cron = "0 30 0 * * ?")
 	public void reportCurrentTime() {
 		log.info("CurrencyConversionRateUtil: The time is now {}", dateFormat.format(new Date()));
 		System.out.println("CurrencyConversionRateUtil: The time is now {}" + dateFormat.format(new Date()));
-        // run();
-		// updateCourses();
+        run();
+		updateCourses();
 	}
 
 	public void run() {
@@ -123,9 +123,7 @@ public class CurrencyConversionRateUtil {
 	public void updateCourses() {
 		List<CurrencyRate> currencyRateList = currencyRateService.getChangedCurrency();
 		for (CurrencyRate currencyRate : currencyRateList) {
-			if (currencyRate.getToCurrencyCode().equalsIgnoreCase("AUD")) {
-				courseService.updateCourseForCurrency(currencyRate);
-			}
+			courseService.updateCourseForCurrency(currencyRate);
 		}
 	}
 }

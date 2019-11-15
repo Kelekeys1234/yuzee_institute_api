@@ -120,10 +120,6 @@ public class ArticleDAO implements IArticleDAO {
 					criteria.addOrder(Order.desc(sortByField));
 				}
 		}
-		if (startIndex != null && pageSize != null) {
-			criteria.setFirstResult(startIndex);
-			criteria.setMaxResults(pageSize);
-		}
 		List<Object[]> rows = criteria.list();
 		return rows.size();
 	}
