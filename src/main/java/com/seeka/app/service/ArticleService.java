@@ -8,9 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -430,13 +432,17 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public ArticleFolderMapDto mapArticleFolder(final ArticleFolderMapDto articleFolderMapDto) {
+	public ArticleFolderMapDto mapArticleFolder(final ArticleFolderMapDto articleFolderMapDto, String language) throws ValidationException{
+		try {
 			ArticleFolderMap articleFolderMap = new ArticleFolderMap();
 			articleFolderMap.setFolderId(articleFolderMapDto.getFolderId());
 			articleFolderMap.setArticleId(articleFolderMapDto.getArticleId());
 			articleFolderMapDao.save(articleFolderMap);
 			articleFolderMapDto.setId(articleFolderMap.getId());
-	return articleFolderMapDto;
+			return articleFolderMapDto;// ConstraintViolationException
+		}catch (DataIntegrityViolationException e) {
+			throw new ValidationException(messageByLocalService.getMessage("article.exists.in.folder", new Object[] {}, language));
+		}
 	}
 
 	@Override

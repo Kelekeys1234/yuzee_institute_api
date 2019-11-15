@@ -5,10 +5,15 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -171,8 +176,13 @@ public class ArticleController {
 	}
 
 	@PostMapping(value = "/folder/user/mapping")
-	public ResponseEntity<?> mapArticleFolder(@RequestBody ArticleFolderMapDto articleFolderMapDto) {
-		articleFolderMapDto = articleService.mapArticleFolder(articleFolderMapDto);
+	public ResponseEntity<Object> mapArticleFolder(@RequestHeader String language, @RequestBody @Valid ArticleFolderMapDto articleFolderMapDto, BindingResult result) throws ValidationException{
+		
+		List<FieldError> fieldErrors = result.getFieldErrors();
+		if(!fieldErrors.isEmpty()) {
+			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
+		}
+		articleFolderMapDto = articleService.mapArticleFolder(articleFolderMapDto,language);
 		return new GenericResponseHandlers.Builder().setData(articleFolderMapDto).setMessage("User mapping Inserted Successfully").setStatus(HttpStatus.OK).create();
 		
 	}

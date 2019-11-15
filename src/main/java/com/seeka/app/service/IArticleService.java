@@ -34,7 +34,7 @@ public interface IArticleService {
 	
 	Integer getTotalSearchCount(String searchKeyword);
 	
-	ArticleFolderMapDto mapArticleFolder(final ArticleFolderMapDto articleFolderMapDto);
+	ArticleFolderMapDto mapArticleFolder(final ArticleFolderMapDto articleFolderMapDto, String language) throws ValidationException;
 	
 	ArticleFolder deleteArticleFolderById(final BigInteger articleFolderId) throws ValidationException;
 	

@@ -1,9 +1,13 @@
 package com.seeka.app.dto;import java.math.BigInteger;
 
+import javax.validation.constraints.NotNull;
+
 public class ArticleFolderMapDto {
 
     private BigInteger id;
+    @NotNull(message="Folder Id is required")
     private BigInteger folderId;
+    @NotNull(message="Article Id is required")
     private BigInteger articleId;
 
     /**
