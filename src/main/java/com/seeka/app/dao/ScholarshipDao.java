@@ -108,7 +108,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 			criteria.add(Restrictions.eq("country.id", countryId));
 		}
 		if (instituteId != null) {
-			criteria.add(Restrictions.eq("institute.id", countryId));
+			criteria.add(Restrictions.eq("institute.id", instituteId));
 		}
 		if (validity != null) {
 			criteria.add(Restrictions.eq("scholarship.validity", validity));
@@ -177,7 +177,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 			criteria.add(Restrictions.eq("country.id", countryId));
 		}
 		if (instituteId != null) {
-			criteria.add(Restrictions.eq("institute.id", countryId));
+			criteria.add(Restrictions.eq("institute.id", instituteId));
 		}
 		if (validity != null) {
 			criteria.add(Restrictions.eq("scholarship.validity", validity));

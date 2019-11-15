@@ -110,6 +110,9 @@ public class ScholarshipService implements IScholarshipService {
 			}
 			scholarshipResponseDTO.setLanguages(languages);
 		}
+		scholarshipResponseDTO.setCountryId(scholarship.getCountry().getId());
+		scholarshipResponseDTO.setLevelId(scholarship.getLevel().getId());
+		scholarshipResponseDTO.setInstituteId(scholarship.getInstitute().getId());
 		scholarshipResponseDTO.setCountryName(scholarship.getCountry().getName());
 		scholarshipResponseDTO.setLevelName(scholarship.getLevel().getName());
 		scholarshipResponseDTO.setInstituteName(scholarship.getInstitute().getName());
@@ -180,6 +183,7 @@ public class ScholarshipService implements IScholarshipService {
 		List<ScholarshipResponseDTO> scholarshipResponseDTOs = new ArrayList<>();
 		for (Scholarship scholarship : scholarships) {
 			ScholarshipResponseDTO scholarshipResponseDTO = new ScholarshipResponseDTO();
+			BeanUtils.copyProperties(scholarship, scholarshipResponseDTO);
 			List<ScholarshipIntakes> scholarshipIntakes = iScholarshipDAO.getIntakeByScholarship(scholarship.getId());
 			if (scholarshipIntakes != null && !scholarshipIntakes.isEmpty()) {
 				List<String> intakes = new ArrayList<>();
@@ -196,6 +200,9 @@ public class ScholarshipService implements IScholarshipService {
 				}
 				scholarshipResponseDTO.setLanguages(languages);
 			}
+			scholarshipResponseDTO.setCountryId(scholarship.getCountry().getId());
+			scholarshipResponseDTO.setLevelId(scholarship.getLevel().getId());
+			scholarshipResponseDTO.setInstituteId(scholarship.getInstitute().getId());
 			scholarshipResponseDTO.setCountryName(scholarship.getCountry().getName());
 			scholarshipResponseDTO.setLevelName(scholarship.getLevel().getName());
 			scholarshipResponseDTO.setInstituteName(scholarship.getInstitute().getName());

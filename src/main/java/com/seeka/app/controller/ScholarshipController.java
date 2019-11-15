@@ -61,7 +61,8 @@ public class ScholarshipController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> get(@PathVariable final BigInteger id) throws Exception {
-		return new GenericResponseHandlers.Builder().setMessage("Get Scholarship Successfully.").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setMessage("Get Scholarship Successfully.").setData(iScholarshipService.getScholarshipById(id))
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")

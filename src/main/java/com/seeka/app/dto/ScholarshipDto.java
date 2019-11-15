@@ -11,7 +11,6 @@ public class ScholarshipDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 2633639341414502096L;
-	private BigInteger id;
 	private String name;
 	private String offeredByInstitute;
 	private String offeredByCourse;
@@ -34,14 +33,6 @@ public class ScholarshipDto implements Serializable {
 	private Date applicationDeadline;
 	private List<String> intakes;
 	private List<String> languages;
-
-	public BigInteger getId() {
-		return id;
-	}
-
-	public void setId(final BigInteger id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
@@ -233,7 +224,6 @@ public class ScholarshipDto implements Serializable {
 		result = prime * result + (gender == null ? 0 : gender.hashCode());
 		result = prime * result + (headquaters == null ? 0 : headquaters.hashCode());
 		result = prime * result + (howToApply == null ? 0 : howToApply.hashCode());
-		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (instituteId == null ? 0 : instituteId.hashCode());
 		result = prime * result + (intakes == null ? 0 : intakes.hashCode());
 		result = prime * result + (languages == null ? 0 : languages.hashCode());
@@ -331,13 +321,6 @@ public class ScholarshipDto implements Serializable {
 		} else if (!howToApply.equals(other.howToApply)) {
 			return false;
 		}
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
-			return false;
-		}
 		if (instituteId == null) {
 			if (other.instituteId != null) {
 				return false;
@@ -427,12 +410,12 @@ public class ScholarshipDto implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ScholarshipDto [id=" + id + ", name=" + name + ", offeredByInstitute=" + offeredByInstitute + ", offeredByCourse=" + offeredByCourse
-				+ ", description=" + description + ", scholarshipAward=" + scholarshipAward + ", countryId=" + countryId + ", levelId=" + levelId
-				+ ", numberOfAvaliability=" + numberOfAvaliability + ", currency=" + currency + ", scholarshipAmount=" + scholarshipAmount + ", validity="
-				+ validity + ", howToApply=" + howToApply + ", gender=" + gender + ", eligibleNationality=" + eligibleNationality + ", headquaters="
-				+ headquaters + ", email=" + email + ", address=" + address + ", website=" + website + ", instituteId=" + instituteId + ", applicationDeadline="
-				+ applicationDeadline + ", intakes=" + intakes + ", languages=" + languages + "]";
+		return "ScholarshipDto [name=" + name + ", offeredByInstitute=" + offeredByInstitute + ", offeredByCourse=" + offeredByCourse + ", description="
+				+ description + ", scholarshipAward=" + scholarshipAward + ", countryId=" + countryId + ", levelId=" + levelId + ", numberOfAvaliability="
+				+ numberOfAvaliability + ", currency=" + currency + ", scholarshipAmount=" + scholarshipAmount + ", validity=" + validity + ", howToApply="
+				+ howToApply + ", gender=" + gender + ", eligibleNationality=" + eligibleNationality + ", headquaters=" + headquaters + ", email=" + email
+				+ ", address=" + address + ", website=" + website + ", instituteId=" + instituteId + ", applicationDeadline=" + applicationDeadline
+				+ ", intakes=" + intakes + ", languages=" + languages + "]";
 	}
 
 }
