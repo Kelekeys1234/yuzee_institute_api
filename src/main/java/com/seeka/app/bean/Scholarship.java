@@ -94,6 +94,8 @@ public class Scholarship implements java.io.Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "application_deadline", length = 19)
 	private Date applicationDeadline;
+	@Column(name = "content")
+	private String content;
 
 	public BigInteger getId() {
 		return id;
@@ -311,12 +313,21 @@ public class Scholarship implements java.io.Serializable {
 		this.applicationDeadline = applicationDeadline;
 	}
 
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(final String content) {
+		this.content = content;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (address == null ? 0 : address.hashCode());
 		result = prime * result + (applicationDeadline == null ? 0 : applicationDeadline.hashCode());
+		result = prime * result + (content == null ? 0 : content.hashCode());
 		result = prime * result + (country == null ? 0 : country.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
@@ -369,6 +380,13 @@ public class Scholarship implements java.io.Serializable {
 				return false;
 			}
 		} else if (!applicationDeadline.equals(other.applicationDeadline)) {
+			return false;
+		}
+		if (content == null) {
+			if (other.content != null) {
+				return false;
+			}
+		} else if (!content.equals(other.content)) {
 			return false;
 		}
 		if (country == null) {
@@ -551,13 +569,18 @@ public class Scholarship implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "Scholarship [id=" + id + ", offeredByInstitute=" + offeredByInstitute + ", offeredByCourse=" + offeredByCourse + ", description=" + description
-				+ ", scholarshipAward=" + scholarshipAward + ", country=" + country + ", level=" + level + ", numberOfAvaliability=" + numberOfAvaliability
-				+ ", currency=" + currency + ", scholarshipAmount=" + scholarshipAmount + ", validity=" + validity + ", howToApply=" + howToApply + ", gender="
-				+ gender + ", eligibleNationality=" + eligibleNationality + ", headquaters=" + headquaters + ", email=" + email + ", address=" + address
-				+ ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", deletedOn=" + deletedOn
-				+ ", isActive=" + isActive + ", website=" + website + ", institute=" + institute + ", name=" + name + ", applicationDeadline="
-				+ applicationDeadline + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Scholarship [id=").append(id).append(", offeredByInstitute=").append(offeredByInstitute).append(", offeredByCourse=")
+				.append(offeredByCourse).append(", description=").append(description).append(", scholarshipAward=").append(scholarshipAward)
+				.append(", country=").append(country).append(", level=").append(level).append(", numberOfAvaliability=").append(numberOfAvaliability)
+				.append(", currency=").append(currency).append(", scholarshipAmount=").append(scholarshipAmount).append(", validity=").append(validity)
+				.append(", howToApply=").append(howToApply).append(", gender=").append(gender).append(", eligibleNationality=").append(eligibleNationality)
+				.append(", headquaters=").append(headquaters).append(", email=").append(email).append(", address=").append(address).append(", createdOn=")
+				.append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
+				.append(", deletedOn=").append(deletedOn).append(", isActive=").append(isActive).append(", website=").append(website).append(", institute=")
+				.append(institute).append(", name=").append(name).append(", applicationDeadline=").append(applicationDeadline).append(", content=")
+				.append(content).append("]");
+		return builder.toString();
 	}
 
 }
