@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.Scholarship;
 import com.seeka.app.bean.ScholarshipIntakes;
 import com.seeka.app.bean.ScholarshipLanguage;
+import com.seeka.app.util.CommonUtil;
 
 @Repository
 @SuppressWarnings({ "deprecation", "unchecked" })
@@ -98,12 +99,12 @@ public class ScholarshipDao implements IScholarshipDAO {
 
 	@Override
 	public List<Scholarship> getScholarshipList(final Integer startIndex, final Integer pageSize, final BigInteger countryId, final BigInteger instituteId,
-			final String validity, final Boolean isActive, final Date filterDate, final String searchKeyword, final String sortByField, String sortByType) {
+			final String validity, final Boolean isActive, final Date updatedOn, final String searchKeyword, final String sortByField, String sortByType) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Scholarship.class, "scholarship");
 		criteria.createAlias("scholarship.country", "country");
 		criteria.createAlias("scholarship.institute", "institute");
-		criteria.add(Restrictions.eq("scholarship.isActive", true));
+
 		if (countryId != null) {
 			criteria.add(Restrictions.eq("country.id", countryId));
 		}
@@ -115,9 +116,14 @@ public class ScholarshipDao implements IScholarshipDAO {
 		}
 		if (isActive != null) {
 			criteria.add(Restrictions.eq("scholarship.isActive", isActive));
+		} else {
+			criteria.add(Restrictions.eq("scholarship.isActive", true));
 		}
-		if (filterDate != null) {
-			criteria.add(Restrictions.eq("scholarship.updatedOn", isActive));
+		if (updatedOn != null) {
+			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
+			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
+			criteria.add(Restrictions.ge("scholarship.updatedOn", fromDate));
+			criteria.add(Restrictions.le("scholarship.updatedOn", toDate));
 		}
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.disjunction().add(Restrictions.ilike("scholarship.name", searchKeyword, MatchMode.ANYWHERE))
@@ -154,6 +160,8 @@ public class ScholarshipDao implements IScholarshipDAO {
 				} else if ("DESC".equals(sortByType)) {
 					criteria.addOrder(Order.desc("scholarship.validity"));
 				}
+			} else {
+				criteria.addOrder(Order.desc("scholarship.id"));
 			}
 		} else {
 			criteria.addOrder(Order.desc("scholarship.id"));
@@ -167,12 +175,11 @@ public class ScholarshipDao implements IScholarshipDAO {
 
 	@Override
 	public int countScholarshipList(final BigInteger countryId, final BigInteger instituteId, final String validity, final Boolean isActive,
-			final Date filterDate, final String searchKeyword) {
+			final Date updatedOn, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Scholarship.class, "scholarship");
 		criteria.createAlias("scholarship.country", "country");
 		criteria.createAlias("scholarship.institute", "institute");
-		criteria.add(Restrictions.eq("scholarship.isActive", true));
 		if (countryId != null) {
 			criteria.add(Restrictions.eq("country.id", countryId));
 		}
@@ -184,9 +191,14 @@ public class ScholarshipDao implements IScholarshipDAO {
 		}
 		if (isActive != null) {
 			criteria.add(Restrictions.eq("scholarship.isActive", isActive));
+		} else {
+			criteria.add(Restrictions.eq("scholarship.isActive", true));
 		}
-		if (filterDate != null) {
-			criteria.add(Restrictions.eq("scholarship.updatedOn", isActive));
+		if (updatedOn != null) {
+			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
+			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
+			criteria.add(Restrictions.ge("scholarship.updatedOn", fromDate));
+			criteria.add(Restrictions.le("scholarship.updatedOn", toDate));
 		}
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.disjunction().add(Restrictions.ilike("scholarship.name", searchKeyword, MatchMode.ANYWHERE))
