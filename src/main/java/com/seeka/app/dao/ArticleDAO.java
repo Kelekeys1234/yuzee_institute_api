@@ -1,6 +1,8 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -56,7 +58,7 @@ public class ArticleDAO implements IArticleDAO {
 	
 	@Override
 	public List<SeekaArticles> getAll(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, final List<BigInteger> categoryId, List<String> tags, Boolean status) {
+			final String searchKeyword, final List<BigInteger> categoryId, List<String> tags, Boolean status, Date filterDate) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 
@@ -76,6 +78,11 @@ public class ArticleDAO implements IArticleDAO {
 		if(status != null) {
 			criteria.add(Restrictions.in("published", status));
 		}
+		
+		if(filterDate != null) {
+			criteria.add(Restrictions.ge("createdAt", filterDate));
+			criteria.add(Restrictions.ge("createdAt", LocalDateTime.from(filterDate.toInstant()).plusDays(1)));
+		}
 
 		if ( sortByType != null) {
 			if ("ASC".equals(sortByType)) {
@@ -94,7 +101,7 @@ public class ArticleDAO implements IArticleDAO {
 	
 	@Override
 	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, Boolean status) {
+			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, Boolean status, Date date) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 		if (searchKeyword != null) {
@@ -113,6 +120,10 @@ public class ArticleDAO implements IArticleDAO {
 			criteria.add(Restrictions.in("published", status));
 		}
 		
+		if(date != null) {
+			criteria.add(Restrictions.ge("createdAt", date));
+			criteria.add(Restrictions.ge("createdAt", LocalDateTime.from(date.toInstant()).plusDays(1)));
+		}
 		if ( sortByType != null) {
 			if ("ASC".equals(sortByType)) {
 					criteria.addOrder(Order.asc(sortByField));

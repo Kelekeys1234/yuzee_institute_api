@@ -2,6 +2,8 @@ package com.seeka.app.controller;
 
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,13 +55,19 @@ public class ArticleController {
 			@RequestParam(required = false) final String searchKeyword,
 			@RequestParam(required = false) final BigInteger categoryId,
 			@RequestParam(required = false) final String tags,
-			@RequestParam(required = false) final Boolean status
-			) throws ValidationException {
+			@RequestParam(required = false) final Boolean status,
+			@RequestParam(required = false) final String date
+			) throws ValidationException, ParseException {
+		Date filterDate = null;
+		if(date != null) {
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			filterDate = df.parse(date);
+		}
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<ArticleResponseDetailsDto> articleList = articleService.getArticleList(startIndex, pageSize, sortByField,
-				sortByType, searchKeyword, categoryId, tags, status);
+				sortByType, searchKeyword, categoryId, tags, status, filterDate);
 		Integer totalCount = articleService.getTotalSearchCount(startIndex, pageSize, sortByField,
-				sortByType, searchKeyword, categoryId, tags, status);
+				sortByType, searchKeyword, categoryId, tags, status, filterDate);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
@@ -87,10 +95,10 @@ public class ArticleController {
 		int startIndex = PaginationUtil.getStartIndex(articleFilterDTO.getPageNumber(), articleFilterDTO.getPageSize());
 		List<ArticleResponseDetailsDto> articleList = articleService.getArticleList(startIndex, articleFilterDTO.getPageSize(), 
 				articleFilterDTO.getSortByField(), articleFilterDTO.getSortByType(), articleFilterDTO.getSearchKeyword(), articleFilterDTO.getCategoryId(), 
-				articleFilterDTO.getTags(), articleFilterDTO.getStatus());
+				articleFilterDTO.getTags(), articleFilterDTO.getStatus(), null);
 		Integer totalCount = articleService.getTotalSearchCount(startIndex, articleFilterDTO.getPageSize(), 
 				articleFilterDTO.getSortByField(), articleFilterDTO.getSortByType(), articleFilterDTO.getSearchKeyword(), articleFilterDTO.getCategoryId(), 
-				articleFilterDTO.getTags(), articleFilterDTO.getStatus());
+				articleFilterDTO.getTags(), articleFilterDTO.getStatus(), null);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, articleFilterDTO.getPageSize(), totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);

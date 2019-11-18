@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,8 @@ public class ScholarshipService implements IScholarshipService {
 
 	@Autowired
 	private ILevelDAO iLevelDAO;
+
+    private static Logger LOGGER = LoggerFactory.getLogger(ScholarshipService.class);
 
 	@Override
 	public void saveScholarship(final ScholarshipDto scholarshipDto) throws ValidationException {

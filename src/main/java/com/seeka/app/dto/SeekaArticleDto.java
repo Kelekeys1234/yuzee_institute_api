@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.math.BigInteger;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 

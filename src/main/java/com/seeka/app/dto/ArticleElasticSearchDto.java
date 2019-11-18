@@ -2,6 +2,7 @@ package com.seeka.app.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Date;
 
 public class ArticleElasticSearchDto implements Serializable{
 
@@ -22,7 +23,7 @@ public class ArticleElasticSearchDto implements Serializable{
     private String faculty;
     private String institute;
     private String course;
-
+    private Date postDate;
     private String gender;
     private String demographicCity;
     // private Country demographicCountry;
@@ -156,6 +157,14 @@ public class ArticleElasticSearchDto implements Serializable{
 
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+
+	public Date getPostDate() {
+		return postDate;
+	}
+
+	public void setPostDate(Date postDate) {
+		this.postDate = postDate;
 	}
 	
 	
