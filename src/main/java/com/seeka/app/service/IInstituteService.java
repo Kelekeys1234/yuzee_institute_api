@@ -2,6 +2,7 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,8 @@ public interface IInstituteService {
 	List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
 
 	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
-			Integer startIndex);
+			Integer startIndex, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
+			Integer toWorldRanking);
 
 	InstituteResponseDto getInstituteByID(BigInteger instituteId);
 
@@ -70,6 +72,7 @@ public interface IInstituteService {
 
 	List<BigInteger> getInstituteIdsFromCountry(List<BigInteger> distinctCountryIds);
 
-	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword);
+	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive,
+			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking);
 
 }

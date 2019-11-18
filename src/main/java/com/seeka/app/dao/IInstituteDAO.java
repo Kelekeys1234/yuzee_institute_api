@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -31,7 +32,8 @@ public interface IInstituteDAO {
 	List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
 
 	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
-			Integer startIndex);
+			Integer startIndex, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
+			Integer toWorldRanking);
 
 	InstituteResponseDto getInstituteByID(BigInteger instituteId);
 
@@ -85,5 +87,6 @@ public interface IInstituteDAO {
 
 	List<BigInteger> getRandomInstituteByCountry(List<BigInteger> countryIdList);
 
-	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword);
+	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive,
+			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking);
 }

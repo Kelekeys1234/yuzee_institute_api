@@ -123,6 +123,8 @@ public class EnrollmentDao implements IEnrollmentDao {
 				} else if ("DESC".equals(sortByType)) {
 					crit.addOrder(Order.desc("institute.name"));
 				}
+			} else {
+				crit.addOrder(Order.desc("enrollment.id"));
 			}
 		} else {
 			crit.addOrder(Order.desc("enrollment.id"));

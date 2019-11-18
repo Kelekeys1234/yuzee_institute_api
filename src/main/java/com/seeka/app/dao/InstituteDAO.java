@@ -124,7 +124,8 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword) {
+	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final BigInteger cityId, final BigInteger instituteId,
+			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
 		Session session = sessionFactory.getCurrentSession();
 
 		String sqlQuery = "select count(distinct inst.id) from institute inst  inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
@@ -146,6 +147,18 @@ public class InstituteDAO implements IInstituteDAO {
 		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
 			sqlQuery += " and inst.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
 		}
+		if (null != cityId) {
+			sqlQuery += " and ci.id =" + cityId;
+		}
+		if (null != isActive) {
+			sqlQuery += " and inst.is_active =" + isActive;
+		}
+		if (null != updatedOn) {
+			sqlQuery += " and Date(inst.updated_on) ='" + new java.sql.Date(updatedOn.getTime()).toLocalDate() + "'";
+		}
+		if (null != fromWorldRanking && null != toWorldRanking) {
+			sqlQuery += " and inst.world_ranking between " + fromWorldRanking + " and " + toWorldRanking;
+		}
 
 		if (null != searchKeyword && !searchKeyword.isEmpty()) {
 			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
@@ -159,7 +172,8 @@ public class InstituteDAO implements IInstituteDAO {
 
 	@Override
 	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto courseSearchDto, final String sortByField, String sortByType,
-			final String searchKeyword, final Integer startIndex) {
+			final String searchKeyword, final Integer startIndex, final BigInteger cityId, final BigInteger instituteId, final Boolean isActive,
+			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
 		Session session = sessionFactory.getCurrentSession();
 
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
@@ -184,6 +198,19 @@ public class InstituteDAO implements IInstituteDAO {
 		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
 			sqlQuery += " and inst.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
 		}
+		if (null != cityId) {
+			sqlQuery += " and ci.id =" + cityId;
+		}
+		if (null != isActive) {
+			sqlQuery += " and inst.is_active =" + isActive;
+		}
+		if (null != updatedOn) {
+			sqlQuery += " and Date(inst.updated_on) ='" + new java.sql.Date(updatedOn.getTime()).toLocalDate() + "'";
+		}
+		if (null != fromWorldRanking && null != toWorldRanking) {
+			sqlQuery += " and inst.world_ranking between " + fromWorldRanking + " and " + toWorldRanking;
+		}
+
 		if (null != searchKeyword && !searchKeyword.isEmpty()) {
 			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ctry.name like '%" + searchKeyword.trim() + "%'";
@@ -205,6 +232,8 @@ public class InstituteDAO implements IInstituteDAO {
 				sortingQuery = " order by ci.name " + sortByType.toLowerCase();
 			} else if (sortByField.equalsIgnoreCase("instituteType")) {
 				sortingQuery = " order by it.name " + sortByType.toLowerCase();
+			} else {
+				sortingQuery = " order by inst.id desc";
 			}
 
 		} else {

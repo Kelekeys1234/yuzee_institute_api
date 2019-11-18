@@ -121,8 +121,10 @@ public class InstituteService implements IInstituteService {
 
 	@Override
 	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto filterObj, final String sortByField, final String sortByType,
-			final String searchKeyword, final Integer startIndex) {
-		return dao.getAllInstitutesByFilter(filterObj, sortByField, sortByType, searchKeyword, startIndex);
+			final String searchKeyword, final Integer startIndex, final BigInteger cityId, final BigInteger instituteTypeId, final Boolean isActive,
+			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
+		return dao.getAllInstitutesByFilter(filterObj, sortByField, sortByType, searchKeyword, startIndex, cityId, instituteTypeId, isActive, updatedOn,
+				fromWorldRanking, toWorldRanking);
 	}
 
 	@Override
@@ -624,7 +626,8 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword) {
-		return dao.getCountOfInstitute(courseSearchDto, searchKeyword);
+	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final BigInteger cityId, final BigInteger instituteTypeId,
+			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
+		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
 	}
 }
