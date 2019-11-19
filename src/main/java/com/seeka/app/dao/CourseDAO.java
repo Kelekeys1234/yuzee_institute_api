@@ -1801,4 +1801,15 @@ public class CourseDAO implements ICourseDAO {
 		return count;
 	}
 
+	@Override
+	public Integer getTotalCourseCountForInstitute(BigInteger instituteId) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Course.class,"course");
+		criteria.createAlias("institute", "institute");
+		criteria.add(Restrictions.eq("institute.id", instituteId));
+		criteria.setProjection(Projections.rowCount());
+		Long count = (Long)criteria.uniqueResult();
+		return count ==null?0:count.intValue();
+	}
+
 }

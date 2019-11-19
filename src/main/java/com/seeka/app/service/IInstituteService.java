@@ -75,4 +75,6 @@ public interface IInstituteService {
 	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive,
 			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking);
 
+	Integer getTotalCourseCountForInstitute(BigInteger instituteId);
+
 }

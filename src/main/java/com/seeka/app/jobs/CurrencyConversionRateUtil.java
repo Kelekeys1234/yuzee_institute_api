@@ -44,10 +44,12 @@ public class CurrencyConversionRateUtil {
 
 	@Scheduled(cron = "0 30 0 * * ?")
 	public void reportCurrentTime() {
-		log.info("CurrencyConversionRateUtil: The time is now {}", dateFormat.format(new Date()));
-		System.out.println("CurrencyConversionRateUtil: The time is now {}" + dateFormat.format(new Date()));
+		log.info("CurrencyConversionRateUtil -- Start: The time is now {}", dateFormat.format(new Date()));
+		System.out.println("CurrencyConversionRateUtil -- Start: The time is now {}" + dateFormat.format(new Date()));
         run();
 		updateCourses();
+		log.info("CurrencyConversionRateUtil -- End: The time is now {}", dateFormat.format(new Date()));
+		System.out.println("CurrencyConversionRateUtil -- End: The time is now {}" + dateFormat.format(new Date()));
 	}
 
 	public void run() {

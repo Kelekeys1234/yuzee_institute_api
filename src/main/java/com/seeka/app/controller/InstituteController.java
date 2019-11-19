@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -570,4 +571,11 @@ public class InstituteController {
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteId, ImageCategory.INSTITUTE.toString(), null, "en");
 		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
 	}
+	
+	@GetMapping(value = "/totalCourseCount", produces = "application/json")
+	public ResponseEntity<?> getTotalCourseForInstitute(@RequestParam(value="instituteId", required=true) final BigInteger instituteId) throws ValidationException {
+		Integer courseCount = instituteService.getTotalCourseCountForInstitute(instituteId);
+		return new GenericResponseHandlers.Builder().setData(courseCount).setMessage("Course Count returned successfully").setStatus(HttpStatus.OK).create();
+	}
+	
 }

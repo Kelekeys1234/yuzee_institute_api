@@ -472,7 +472,7 @@ public class ArticleService implements IArticleService {
 		elasticSearchDto.setEntityId(String.valueOf(articleDto.getId()));
 		elasticSearchDto.setObject(articleDto);
 		System.out.println(elasticSearchDto);
-		ResponseEntity<Object> object = restTemplate.postForEntity("http://" + elasticSearchName + "/elasticSearch/", elasticSearchDto, Object.class);
+		ResponseEntity<Object> object = restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Object.class);
 		System.out.println(object);
 	}
 

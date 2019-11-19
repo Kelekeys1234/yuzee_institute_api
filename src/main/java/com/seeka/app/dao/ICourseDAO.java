@@ -116,4 +116,6 @@ public interface ICourseDAO {
 	int getCountforNormalCourse(CourseSearchDto courseSearchDto, String searchKeyword);
 
 	int getCountOfAdvanceSearch(Object... values);
+
+	Integer getTotalCourseCountForInstitute(BigInteger instituteId);
 }

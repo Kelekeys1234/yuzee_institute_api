@@ -13,9 +13,14 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.bean.AccreditedInstituteDetail;
 import com.seeka.app.bean.Country;
@@ -26,12 +31,15 @@ import com.seeka.app.bean.InstituteVideos;
 import com.seeka.app.dao.IAccreditedInstituteDetailDao;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
+import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IInstituteTypeDAO;
 import com.seeka.app.dao.IInstituteVideoDao;
 import com.seeka.app.dao.ServiceDetailsDAO;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.ElasticSearchDTO;
 import com.seeka.app.dto.InstituteDetailsGetRequest;
+import com.seeka.app.dto.InstituteElasticSearchDTO;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteMedia;
@@ -41,6 +49,7 @@ import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.CommonUtil;
@@ -78,6 +87,12 @@ public class InstituteService implements IInstituteService {
 
 	@Value("${s3.url}")
 	private String s3URL;
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	@Autowired
+	private ICourseDAO courseDao;
 
 	@Override
 	public void save(final Institute institute) {
@@ -263,8 +278,24 @@ public class InstituteService implements IInstituteService {
 		institute.setWorldRankingType(instituteRequest.getWorldRankingType());
 		if (id != null) {
 			dao.update(institute);
+			/**
+			 * Add this institute in elastic search
+			 */
+			InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
+			List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
+			BeanUtils.copyProperties(institute, instituteElasticDto);
+			instituteElasticDTOList.add(instituteElasticDto);
+			saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE , SeekaEntityType.INSTITUTE.name().toLowerCase() ,instituteElasticDTOList, IConstant.ELASTIC_SEARCH);
 		} else {
 			dao.save(institute);
+			/**
+			 * Update this institute in elastic search
+			 */
+			InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
+			List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
+			BeanUtils.copyProperties(institute, instituteElasticDto);
+			instituteElasticDTOList.add(instituteElasticDto);
+			updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE , SeekaEntityType.INSTITUTE.name().toLowerCase() ,instituteElasticDTOList, IConstant.ELASTIC_SEARCH);
 		}
 		if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
 			saveInstituteService(institute, instituteRequest.getOfferService());
@@ -629,5 +660,38 @@ public class InstituteService implements IInstituteService {
 	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final BigInteger cityId, final BigInteger instituteTypeId,
 			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
 		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
+	}
+	
+	public void saveInsituteOnElasticSearch(String elasticSearchIndex, String type, List<InstituteElasticSearchDTO> instituteList, String elasticSearchName) {
+        for (InstituteElasticSearchDTO insitute : instituteList) {
+            ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+            elasticSearchDto.setIndex(elasticSearchIndex);
+            elasticSearchDto.setType(type);
+            elasticSearchDto.setEntityId(String.valueOf(insitute.getId()));
+            elasticSearchDto.setObject(insitute);
+            System.out.println(elasticSearchDto);
+            ResponseEntity<Object> object = restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Object.class);
+            System.out.println(object);
+        }
+    }
+    
+    public void updateInsituteOnElasticSearch(String elasticSearchIndex, String type, List<InstituteElasticSearchDTO> instituteList, String elasticSearchName) {
+        for (InstituteElasticSearchDTO insitute : instituteList) {
+            ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+            elasticSearchDto.setIndex(elasticSearchIndex);
+            elasticSearchDto.setType(type);
+            elasticSearchDto.setEntityId(String.valueOf(insitute.getId()));
+            elasticSearchDto.setObject(insitute);
+            System.out.println(elasticSearchDto);
+            HttpHeaders headers = new HttpHeaders();
+            HttpEntity<ElasticSearchDTO> httpEntity = new HttpEntity<>(elasticSearchDto, headers);
+            ResponseEntity<Object> object = restTemplate.exchange("http://" + IConstant.ELASTIC_SEARCH_URL,HttpMethod.PUT, httpEntity, Object.class, new Object[] {});
+            System.out.println(object);
+        }
+    }
+
+	@Override
+	public Integer getTotalCourseCountForInstitute(BigInteger instituteId) {
+		return courseDao.getTotalCourseCountForInstitute(instituteId);
 	}
 }
