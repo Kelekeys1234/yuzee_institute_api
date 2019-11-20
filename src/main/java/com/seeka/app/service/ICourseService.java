@@ -1,6 +1,7 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -126,4 +127,8 @@ public interface ICourseService {
 	int getCountforNormalCourse(CourseSearchDto courseSearchDto, String searchKeyword);
 
 	int getCountOfAdvanceSearch(AdvanceSearchDto courseSearchDto);
+
+	List<Course> getUpdatedCourses(Date date, Integer startIndex, Integer limit);
+
+	Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate);
 }

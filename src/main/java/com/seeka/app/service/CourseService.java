@@ -1051,4 +1051,14 @@ public class CourseService implements ICourseService {
 	public int getCountOfAdvanceSearch(final AdvanceSearchDto courseSearchDto) {
 		return iCourseDAO.getCountOfAdvanceSearch(courseSearchDto);
 	}
+
+	@Override
+	public List<Course> getUpdatedCourses(Date date, Integer startIndex, Integer limit) {
+		return iCourseDAO.getUpdatedCourses(date, startIndex, limit);
+	}
+
+	@Override
+	public Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate) {
+		return iCourseDAO.getCountOfTotalUpdatedCourses(utCdatetimeAsOnlyDate);
+	}
 }

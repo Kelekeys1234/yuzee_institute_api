@@ -1,6 +1,7 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -118,4 +119,8 @@ public interface ICourseDAO {
 	int getCountOfAdvanceSearch(Object... values);
 
 	Integer getTotalCourseCountForInstitute(BigInteger instituteId);
+
+	List<Course> getUpdatedCourses(Date date,Integer startIndex, Integer limit);
+
+	Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate);
 }

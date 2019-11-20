@@ -1812,4 +1812,24 @@ public class CourseDAO implements ICourseDAO {
 		return count ==null?0:count.intValue();
 	}
 
+	@Override
+	public List<Course> getUpdatedCourses(Date updatedOn, Integer startIndex, Integer limit) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Course.class,"course");
+		criteria.add(Restrictions.ge("updatedOn", updatedOn));
+		criteria.setFirstResult(startIndex);
+		criteria.setMaxResults(limit);
+		return criteria.list();
+	}
+
+	@Override
+	public Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Course.class,"course");
+		criteria.add(Restrictions.ge("updatedOn", utCdatetimeAsOnlyDate));
+		criteria.setProjection(Projections.rowCount());
+		Long count = (Long)criteria.uniqueResult();
+		return count !=null? count.intValue():0;
+	}
+
 }
