@@ -142,9 +142,12 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
-			final String searchKeyword) {
+	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer starcourseResponseDtostIndex,
+			final Integer pageSize, final String searchKeyword) {
 		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword);
+		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
+			return new ArrayList<>();
+		}
 		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
 				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
 		if (viewedCourseIds.isEmpty()) {
@@ -702,6 +705,9 @@ public class CourseService implements ICourseService {
 	@Override
 	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException {
 		List<CourseResponseDto> courseResponseDtos = iCourseDAO.advanceSearch(courseSearchDto);
+		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
+			return new ArrayList<>();
+		}
 		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
 				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
 		if (!viewedCourseIds.isEmpty()) {
