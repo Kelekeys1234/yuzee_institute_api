@@ -123,12 +123,15 @@ public class EnrollmentDao implements IEnrollmentDao {
 				} else if ("DESC".equals(sortByType)) {
 					crit.addOrder(Order.desc("institute.name"));
 				}
-			} else {
-				crit.addOrder(Order.desc("enrollment.id"));
 			}
 		} else {
-			crit.addOrder(Order.desc("enrollment.id"));
+			if ("ASC".equals(sortByType)) {
+				crit.addOrder(Order.asc("institute.id"));
+			} else if ("DESC".equals(sortByType)) {
+				crit.addOrder(Order.desc("institute.id"));
+			}
 		}
+
 		if (startIndex != null && pageSize != null) {
 			crit.setFirstResult(startIndex);
 			crit.setMaxResults(pageSize);

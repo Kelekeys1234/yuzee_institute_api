@@ -2,6 +2,7 @@ package com.seeka.app.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 public class InstituteResponseDto implements Serializable {
@@ -32,6 +33,9 @@ public class InstituteResponseDto implements Serializable {
 	private String totalAvailableJobs;
 	private String countryName;
 	private String cityName;
+	private Date updatedOn;
+	private String instituteType;
+	private String campusType;
 	private List<StorageDto> storageList;
 
 	public Integer getWorldRanking() {
@@ -160,6 +164,30 @@ public class InstituteResponseDto implements Serializable {
 		this.cityName = cityName;
 	}
 
+	public Date getUpdatedOn() {
+		return updatedOn;
+	}
+
+	public void setUpdatedOn(final Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
+
+	public String getInstituteType() {
+		return instituteType;
+	}
+
+	public void setInstituteType(final String instituteType) {
+		this.instituteType = instituteType;
+	}
+
+	public String getCampusType() {
+		return campusType;
+	}
+
+	public void setCampusType(final String campusType) {
+		this.campusType = campusType;
+	}
+
 	/**
 	 * @return the id
 	 */
@@ -170,7 +198,7 @@ public class InstituteResponseDto implements Serializable {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(BigInteger id) {
+	public void setId(final BigInteger id) {
 		this.id = id;
 	}
 
@@ -184,7 +212,7 @@ public class InstituteResponseDto implements Serializable {
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -192,7 +220,7 @@ public class InstituteResponseDto implements Serializable {
 		return storageList;
 	}
 
-	public void setStorageList(List<StorageDto> storageList) {
+	public void setStorageList(final List<StorageDto> storageList) {
 		this.storageList = storageList;
 	}
 
@@ -206,7 +234,7 @@ public class InstituteResponseDto implements Serializable {
 	/**
 	 * @param totalStudent the totalStudent to set
 	 */
-	public void setTotalStudent(Integer totalStudent) {
+	public void setTotalStudent(final Integer totalStudent) {
 		this.totalStudent = totalStudent;
 	}
 
@@ -220,7 +248,7 @@ public class InstituteResponseDto implements Serializable {
 	/**
 	 * @param email the email to set
 	 */
-	public void setEmail(String email) {
+	public void setEmail(final String email) {
 		this.email = email;
 	}
 
@@ -234,7 +262,7 @@ public class InstituteResponseDto implements Serializable {
 	/**
 	 * @param openingFrom the openingFrom to set
 	 */
-	public void setOpeningFrom(String openingFrom) {
+	public void setOpeningFrom(final String openingFrom) {
 		this.openingFrom = openingFrom;
 	}
 
@@ -248,7 +276,7 @@ public class InstituteResponseDto implements Serializable {
 	/**
 	 * @param openingTo the openingTo to set
 	 */
-	public void setOpeningTo(String openingTo) {
+	public void setOpeningTo(final String openingTo) {
 		this.openingTo = openingTo;
 	}
 
@@ -262,7 +290,7 @@ public class InstituteResponseDto implements Serializable {
 	/**
 	 * @param phoneNumber the phoneNumber to set
 	 */
-	public void setPhoneNumber(String phoneNumber) {
+	public void setPhoneNumber(final String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 

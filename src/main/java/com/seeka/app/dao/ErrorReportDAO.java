@@ -96,7 +96,11 @@ public class ErrorReportDAO implements IErrorReportDAO {
 				}
 			}
 		} else {
-			crit.addOrder(Order.desc("errorReport.id"));
+			if ("ASC".equals(sortByType)) {
+				crit.addOrder(Order.asc("errorReport.id"));
+			} else if ("DESC".equals(sortByType)) {
+				crit.addOrder(Order.desc("errorReport.id"));
+			}
 		}
 		if (startIndex != null && pageSize != null) {
 			crit.setFirstResult(startIndex);

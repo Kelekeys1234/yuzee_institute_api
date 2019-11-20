@@ -178,8 +178,8 @@ public class InstituteDAO implements IInstituteDAO {
 
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
 				+ "ctry.name as countryName,count(c.id) as courses, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars "
-				+ " ,ctry.id as countryId, ci.id as cityId "
-				+ "from institute inst  inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
+				+ " ,ctry.id as countryId, ci.id as cityId,inst.updated_on as updatedOn, it.name as instituteType, inst.campus_type "
+				+ " from institute inst  inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
 				+ "inner join faculty_level f on f.institute_id = inst.id inner join institute_level l on l.institute_id = inst.id "
 				+ "inner join course c  on c.institute_id=inst.id inner join institute_type it on inst.institute_type_id=it.id where 1=1 ";
 
@@ -233,11 +233,11 @@ public class InstituteDAO implements IInstituteDAO {
 			} else if (sortByField.equalsIgnoreCase("instituteType")) {
 				sortingQuery = " order by it.name " + sortByType.toLowerCase();
 			} else {
-				sortingQuery = " order by inst.id desc";
+				sortingQuery = " order by inst.id " + sortByType.toLowerCase();
 			}
 
 		} else {
-			sortingQuery = " order by inst.id desc";
+			sortingQuery = " order by inst.id " + sortByType.toLowerCase();
 		}
 
 		if (startIndex != null && courseSearchDto.getMaxSizePerPage() != null) {
@@ -264,6 +264,9 @@ public class InstituteDAO implements IInstituteDAO {
 			instituteResponseDto.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
 			instituteResponseDto.setCountryId(new BigInteger(String.valueOf(row[7])));
 			instituteResponseDto.setCityId(new BigInteger(String.valueOf(row[8])));
+			instituteResponseDto.setUpdatedOn((Date) row[9]);
+			instituteResponseDto.setInstituteType(String.valueOf(row[10]));
+			instituteResponseDto.setCampusType(String.valueOf(row[11]));
 			list.add(instituteResponseDto);
 		}
 		return list;

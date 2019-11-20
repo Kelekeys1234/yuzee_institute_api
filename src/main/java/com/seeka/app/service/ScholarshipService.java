@@ -42,7 +42,7 @@ public class ScholarshipService implements IScholarshipService {
 	@Autowired
 	private ILevelDAO iLevelDAO;
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ScholarshipService.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(ScholarshipService.class);
 
 	@Override
 	public void saveScholarship(final ScholarshipDto scholarshipDto) throws ValidationException {
@@ -204,12 +204,19 @@ public class ScholarshipService implements IScholarshipService {
 				}
 				scholarshipResponseDTO.setLanguages(languages);
 			}
-			scholarshipResponseDTO.setCountryId(scholarship.getCountry().getId());
-			scholarshipResponseDTO.setLevelId(scholarship.getLevel().getId());
-			scholarshipResponseDTO.setInstituteId(scholarship.getInstitute().getId());
-			scholarshipResponseDTO.setCountryName(scholarship.getCountry().getName());
-			scholarshipResponseDTO.setLevelName(scholarship.getLevel().getName());
-			scholarshipResponseDTO.setInstituteName(scholarship.getInstitute().getName());
+			if (scholarship.getCountry() != null) {
+				scholarshipResponseDTO.setCountryId(scholarship.getCountry().getId());
+				scholarshipResponseDTO.setCountryName(scholarship.getCountry().getName());
+			}
+			if (scholarship.getLevel() != null) {
+				scholarshipResponseDTO.setLevelId(scholarship.getLevel().getId());
+				scholarshipResponseDTO.setLevelName(scholarship.getLevel().getName());
+			}
+			if (scholarship.getInstitute() != null) {
+				scholarshipResponseDTO.setInstituteId(scholarship.getInstitute().getId());
+				scholarshipResponseDTO.setInstituteName(scholarship.getInstitute().getName());
+			}
+
 			scholarshipResponseDTOs.add(scholarshipResponseDTO);
 		}
 		return scholarshipResponseDTOs;
