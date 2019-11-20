@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seeka.app.dto.StorageDto;
+import com.seeka.app.dto.StorageRequestDto;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.util.IConstant;
@@ -57,6 +58,36 @@ public class StorageService implements IStorageService {
 			resultList.add(storageDto1);
 		}
 
+		return resultList;
+	}
+
+	@Override
+	public List<StorageDto> getStorageInformationBasedOnEntityIdList(final List<BigInteger> entityIds, final String entityType, final String type,
+			final String language) throws ValidationException {
+		String url = IConstant.STORAGE_CONNECTION_URL + "/get";
+
+		if (entityIds == null || entityIds.isEmpty()) {
+			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] { entityIds }, language));
+		} else if (entityType == null || entityType.isEmpty()) {
+			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] { entityType }, language));
+		}
+
+		StorageRequestDto storageRequestDto = new StorageRequestDto();
+		storageRequestDto.setEntityIds(entityIds);
+		storageRequestDto.setEntityType(entityType);
+		if (type != null) {
+			storageRequestDto.setType(type);
+		}
+		ResponseEntity<Map> result = restTemplate.postForEntity(url, storageRequestDto, Map.class);
+		Map<String, Object> responseMap = result.getBody();
+		responseMap.get("data");
+		ObjectMapper mapper = new ObjectMapper();
+		List<StorageDto> storageDtoList = mapper.convertValue(responseMap.get("data"), List.class);
+		List<StorageDto> resultList = new ArrayList<>();
+		for (Object obj : storageDtoList) {
+			StorageDto storageDto1 = mapper.convertValue(obj, StorageDto.class);
+			resultList.add(storageDto1);
+		}
 		return resultList;
 	}
 }

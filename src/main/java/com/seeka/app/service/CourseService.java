@@ -143,18 +143,25 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer starcourseResponseDtostIndex,
-			final Integer pageSize, final String searchKeyword) {
+			final Integer pageSize, final String searchKeyword) throws ValidationException {
 		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword);
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			return new ArrayList<>();
 		}
 		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
 				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
-		if (viewedCourseIds.isEmpty()) {
-			return courseResponseDtos;
-		}
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
+				courseResponseDtos.stream().map(i -> i.getInstituteId()).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
-			if (viewedCourseIds.contains(courseResponseDto.getId())) {
+			if (storageDTOList != null && !storageDTOList.isEmpty()) {
+				List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))
+						.collect(Collectors.toList());
+				courseResponseDto.setStorageList(storageDTO);
+				storageDTOList.removeAll(storageDTO);
+			} else {
+				courseResponseDto.setStorageList(new ArrayList<>(1));
+			}
+			if (!viewedCourseIds.isEmpty() && viewedCourseIds.contains(courseResponseDto.getId())) {
 				courseResponseDto.setIsViewed(true);
 			}
 		}
@@ -710,15 +717,19 @@ public class CourseService implements ICourseService {
 		}
 		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
 				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
-		if (!viewedCourseIds.isEmpty()) {
-
-			for (CourseResponseDto courseResponseDto : courseResponseDtos) {
-				if (viewedCourseIds.contains(courseResponseDto.getId())) {
-					courseResponseDto.setIsViewed(true);
-				}
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
+				courseResponseDtos.stream().map(i -> i.getInstituteId()).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
+		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
+			if (storageDTOList != null && !storageDTOList.isEmpty()) {
+				List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))
+						.collect(Collectors.toList());
+				courseResponseDto.setStorageList(storageDTO);
+				storageDTOList.removeAll(storageDTO);
+			}
+			if (!viewedCourseIds.isEmpty() && viewedCourseIds.contains(courseResponseDto.getId())) {
+				courseResponseDto.setIsViewed(true);
 			}
 		}
-
 		return courseResponseDtos;
 	}
 

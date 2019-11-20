@@ -167,10 +167,6 @@ public class CourseController {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage(),
 				searchKeyword);
-		for (CourseResponseDto obj : courseList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
-			obj.setStorageList(storageDTOList);
-		}
 		int totalCount = courseService.getCountforNormalCourse(courseSearchDto, searchKeyword);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
@@ -191,10 +187,12 @@ public class CourseController {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
 		List<CourseResponseDto> courseList = courseService.advanceSearch(courseSearchDto);
-		for (CourseResponseDto obj : courseList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
-			obj.setStorageList(storageDTOList);
-		}
+		/*
+		 * for (CourseResponseDto obj : courseList) { List<StorageDto> storageDTOList =
+		 * iStorageService.getStorageInformation(obj.getInstituteId(),
+		 * ImageCategory.INSTITUTE.toString(), null, "en");
+		 * obj.setStorageList(storageDTOList); }
+		 */
 		int totalCount = courseService.getCountOfAdvanceSearch(courseSearchDto);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
