@@ -502,6 +502,16 @@ public class ArticleService implements IArticleService {
 		return articleDAO.getTotalSearchCount(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status, date);
 	}
 
+	@Override
+	public List<String> getAuthors(int startIndex, Integer pageSize, String searchString) {
+		return articleDAO.getAuthors(startIndex, pageSize, searchString);
+	}
+
+	@Override
+	public int getTotalAuthorCount(String searchString) {
+		return articleDAO.getTotalAuthorCount(searchString);
+	}
+
 }	
 	
 

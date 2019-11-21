@@ -209,4 +209,29 @@ public class ArticleController {
 
 	}
 
+	@GetMapping(value = "/getAuthors")
+	public ResponseEntity<?> getAuthors(@RequestParam(required = false) final String searchString, @RequestParam final Integer pageSize,
+			@RequestParam final Integer pageNumber) throws ValidationException {
+		if(pageSize == null || pageSize == 0) {
+			throw new ValidationException("Please Specify Proper Page Size");
+		}
+		if(pageNumber == null || pageNumber <= 0) {
+			throw new ValidationException("Please Specify Proper Page Number");
+		}
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		int totalCount = articleService.getTotalAuthorCount(searchString);
+		List<String> authorList  = articleService.getAuthors(startIndex, pageSize,searchString);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get Author List successfully");
+		responseMap.put("data", authorList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+
+	}
 }

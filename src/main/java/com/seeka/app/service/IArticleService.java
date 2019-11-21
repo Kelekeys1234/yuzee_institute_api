@@ -49,4 +49,8 @@ public interface IArticleService {
 	
 	Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
 			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, Boolean status, Date date);
+
+	List<String> getAuthors(int startIndex, Integer pageSize, String searchString);
+
+	int getTotalAuthorCount(String searchString);
 }

@@ -5,16 +5,21 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.tomcat.util.digester.SetPropertiesRule;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.SeekaArticles;
+import com.seeka.app.dto.ArticleResponseDetailsDto;
 
 @Repository
 @SuppressWarnings({ "unchecked", "deprecation"})
@@ -135,4 +140,38 @@ public class ArticleDAO implements IArticleDAO {
 		return rows.size();
 	}
 
+	@Override
+	public List<String> getAuthors(int startIndex, Integer pageSize, String searchString) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
+		if(searchString != null && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
+			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
+		}
+		criteria.setFirstResult(startIndex);
+		criteria.setMaxResults(pageSize);
+		criteria.add(Restrictions.isNotNull("article.author"));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.distinct(Projections.property("article.author")));
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		criteria.addOrder(Order.desc("article.postDate"));
+		return (List<String>)criteria.list();
+	}
+
+	@Override
+	public int getTotalAuthorCount(String searchString) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
+		if(searchString != null && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
+			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
+		}
+		criteria.add(Restrictions.isNotNull("article.author"));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.distinct(Projections.property("article.author")));
+		criteria.setProjection(projectionList);
+		List<String> count = (List<String>)criteria.list();
+		return count!=null?count.size():0;
+	}
+
+	
 }
