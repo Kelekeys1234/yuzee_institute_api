@@ -1,7 +1,9 @@
 package com.seeka.app.jobs;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,7 +23,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CurrencyRate;
+import com.seeka.app.dto.CourseDTOElasticSearch;
+import com.seeka.app.enumeration.SeekaEntityType;
+import com.seeka.app.service.ElasticSearchService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.ICurrencyRateService;
 import com.seeka.app.util.CommonUtil;
@@ -41,7 +48,13 @@ public class CurrencyConversionRateUtil {
 
 	@Autowired
 	private ICourseService courseService;
+	
+	@Autowired
+	private ElasticSearchService elasticSearchService;
+	
+	private static List<BigInteger> failedRecordsInElasticSearch = new ArrayList<>();
 
+	// @Scheduled(fixedRate = 86400000, initialDelay = 10000)
 	@Scheduled(cron = "0 30 0 * * ?")
 	public void reportCurrentTime() {
 		log.info("CurrencyConversionRateUtil -- Start: The time is now {}", dateFormat.format(new Date()));
@@ -50,6 +63,12 @@ public class CurrencyConversionRateUtil {
 		updateCourses();
 		log.info("CurrencyConversionRateUtil -- End: The time is now {}", dateFormat.format(new Date()));
 		System.out.println("CurrencyConversionRateUtil -- End: The time is now {}" + dateFormat.format(new Date()));
+		
+		log.info("Update COurses In Elastic Search Started -- Start: The time is now {}", dateFormat.format(new Date()));
+		System.out.println("Update COurses In Elastic Search Started -- Start: The time is now {}" + dateFormat.format(new Date()));
+		updateCoursesInElasticSearch();
+		log.info("Update COurses In Elastic Search End -- End: The time is now {}", dateFormat.format(new Date()));
+		System.out.println("Update COurses In Elastic Search End -- End: The time is now {}" + dateFormat.format(new Date()));
 	}
 
 	public void run() {
@@ -128,4 +147,42 @@ public class CurrencyConversionRateUtil {
 			courseService.updateCourseForCurrency(currencyRate);
 		}
 	}
+	
+	public void updateCoursesInElasticSearch() {
+		Integer totalUpdatedCourses = courseService.getCountOfTotalUpdatedCourses(DateUtil.getUTCdatetimeAsOnlyDate());
+		System.out.println("Total COurses to be updated --- "+totalUpdatedCourses);
+		
+		for (int i = 0; i < totalUpdatedCourses; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
+			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseService.getUpdatedCourses(DateUtil.getUTCdatetimeAsOnlyDate(), i, IConstant.COURSES_PER_SCHEDULER_LOOP);
+			// List<CourseDTOElasticSearch> courseDtoElasticSearchList = new ArrayList<>();
+//			for (Course course : courseList) {
+//				CourseDTOElasticSearch courseDtoElasticSearch = new CourseDTOElasticSearch();
+//				BeanUtils.copyProperties(course, courseDtoElasticSearch);
+//				courseDtoElasticSearch.setFacultyName(course.getFaculty()!=null?course.getFaculty().getName():null);
+//				courseDtoElasticSearch.setCountryName(course.getCountry()!=null?course.getCountry().getName():null);
+//				courseDtoElasticSearch.setCityName(course.getCity()!=null?course.getCity().getName():null);
+//				courseDtoElasticSearch.setInstituteName(course.getInstitute()!=null?course.getInstitute().getName():null);
+//				courseDtoElasticSearch.setLevelCode(course.getLevel()!=null?course.getLevel().getCode():null);
+//				courseDtoElasticSearch.setLevelName(course.getLevel()!=null?course.getLevel().getName():null);
+//				courseDtoElasticSearchList.add(courseDtoElasticSearch);
+//			}
+			Map<String, List<BigInteger>> courseUpdateStatus = elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+			failedRecordsInElasticSearch.addAll(courseUpdateStatus.get("failed"));
+		}
+	}
+	
+	// @Scheduled(fixedRate = 86400000, initialDelay = 10000)
+	@Scheduled(cron = "0 30 3 * * ?")
+	public void retryForFailedIds() {
+		Integer totalCourseToBeRetried = failedRecordsInElasticSearch.size();
+		
+		for (int i = 0; i < totalCourseToBeRetried; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
+			List<BigInteger> courseIds = failedRecordsInElasticSearch.subList(i, i+IConstant.COURSES_PER_SCHEDULER_LOOP < totalCourseToBeRetried ? i+IConstant.COURSES_PER_SCHEDULER_LOOP: totalCourseToBeRetried);
+			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseService.getCoursesToBeRetriedForElasticSearch(courseIds, i, IConstant.COURSES_PER_SCHEDULER_LOOP);
+			elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+		}
+		
+		failedRecordsInElasticSearch.clear();
+	}
+	
 }

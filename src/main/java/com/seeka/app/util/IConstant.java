@@ -122,4 +122,6 @@ public class IConstant {
 	/***************************************************************************************/
 	
 	public static final Integer CURRENCY_THRESHOLD = 0;
+	
+	public static final int COURSES_PER_SCHEDULER_LOOP = 30;
 }

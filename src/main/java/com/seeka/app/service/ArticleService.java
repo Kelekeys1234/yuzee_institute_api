@@ -106,6 +106,9 @@ public class ArticleService implements IArticleService {
 	
 	@Autowired
 	private MessageByLocaleService messageByLocalService;
+	
+	@Autowired
+	private ElasticSearchService elasticSearchService;
 
 
 
@@ -239,8 +242,10 @@ public class ArticleService implements IArticleService {
 		Map<BigInteger, String> countryMap = new HashMap<>();
 		Map<BigInteger, String> cityMap = new HashMap<>();
 		SeekaArticles article = new SeekaArticles();
+		Boolean updateCase = false;
 		if (articleDto != null && articleDto.getId() != null) {
 			article = articleDAO.findById(articleDto.getId());
+			updateCase = true;
 			if (article != null) {
 				article = setEntityArticle(articleDto, article);
 				article.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
@@ -304,8 +309,13 @@ public class ArticleService implements IArticleService {
 		articleElasticSearchDTO.setInstitute(article.getInstitute() != null ? article.getInstitute().getName() : null);
 		articleElasticSearchDTO.setCourse(article.getCourse() != null ? article.getCourse().getName() : null);
 		articleElasticSearchDTO.setPostDate(CommonUtil.getDateWithoutTime(articleDto.getPostDate()));
-		saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
-				articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
+		if(updateCase) {
+			elasticSearchService.updateArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
+					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
+		} else {
+			elasticSearchService.saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
+					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
+		}
 		return articleDto;
 	}
 
@@ -464,17 +474,7 @@ public class ArticleService implements IArticleService {
 		}
 	
 
-	public void saveArticleOnElasticSearch(final String elasticSearchIndex, final String type, final ArticleElasticSearchDto articleDto,
-			final String elasticSearchName) {
-		ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-		elasticSearchDto.setIndex(elasticSearchIndex);
-		elasticSearchDto.setType(type);
-		elasticSearchDto.setEntityId(String.valueOf(articleDto.getId()));
-		elasticSearchDto.setObject(articleDto);
-		System.out.println(elasticSearchDto);
-		ResponseEntity<Object> object = restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Object.class);
-		System.out.println(object);
-	}
+	
 
 	@Override
 	public Integer getTotalSearchCount(String searchKeyword) {

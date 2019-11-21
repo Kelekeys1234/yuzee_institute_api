@@ -1,6 +1,7 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.CountryDto;
+import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
@@ -120,7 +122,10 @@ public interface ICourseDAO {
 
 	Integer getTotalCourseCountForInstitute(BigInteger instituteId);
 
-	List<Course> getUpdatedCourses(Date date,Integer startIndex, Integer limit);
+	List<CourseDTOElasticSearch> getUpdatedCourses(Date date,Integer startIndex, Integer limit);
 
 	Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate);
+
+	List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds, Integer startIndex,
+			Integer limit);
 }

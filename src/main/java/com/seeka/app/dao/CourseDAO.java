@@ -1,6 +1,7 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +35,7 @@ import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CountryDto;
+import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
@@ -1813,13 +1815,168 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<Course> getUpdatedCourses(Date updatedOn, Integer startIndex, Integer limit) {
+	public List<CourseDTOElasticSearch> getUpdatedCourses(Date updatedOn, Integer startIndex, Integer limit) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(Course.class,"course");
-		criteria.add(Restrictions.ge("updatedOn", updatedOn));
-		criteria.setFirstResult(startIndex);
-		criteria.setMaxResults(limit);
-		return criteria.list();
+		 Query query = session.createNativeQuery("select crs.id, crs.name, crs.world_ranking as courseRanking, \r\n" + 
+				"crs.stars,crs.recognition,\r\n" + 
+				"crs.duration, \r\n" + 
+				"crs.website, crs.language, crs.abbreviation,\r\n" + 
+				"crs.rec_date ,crs.remarks, crs.description,\r\n" + 
+				"crs.is_active, crs.created_on, crs.updated_on,\r\n" + 
+				"crs.deleted_on, crs.created_by, crs.updated_by, crs.is_deleted,\r\n" + 
+				"crs.availbilty, crs.part_full, crs.study_mode, crs.international_fee,\r\n" + 
+				"crs.domestic_fee, crs.currency, crs.currency_time, crs.usd_international_fee,\r\n" + 
+				"crs.usd_domestic_fee, crs.cost_range, crs.content, \r\n" + 
+				"inst.name as institute_name, fac.name as faculty_name,\r\n" + 
+				"fac.description as faculty_description, cntry.name as country_name,\r\n" + 
+				"ct.name as city_name, lev.code as level_code, lev.name as level_name, crs.c_id, crs.recognition_type,"
+				+ "crs.duration_time from course crs \r\n" + 
+				"inner join institute inst on crs.institute_id = inst.id\r\n" + 
+				"inner join faculty fac on crs.faculty_id = fac.id\r\n" + 
+				"inner join country cntry on crs.country_id = cntry.id\r\n" + 
+				"inner join city ct on crs.city_id = ct.id\r\n" + 
+				"inner join level lev on crs.level_id = lev.id\r\n" + 
+				"where crs.updated_on >= ? \r\n" + 
+				"limit ?,?;");
+		 query.setParameter(1, updatedOn).setParameter(2, startIndex).setParameter(3, limit);
+		 
+		 List<Object[]> rows = query.list();
+		 List<CourseDTOElasticSearch> courseElasticSearchList = new ArrayList<>();
+		 for (Object[] objects : rows) {
+			CourseDTOElasticSearch courseDtoElasticSearch = new CourseDTOElasticSearch();
+			courseDtoElasticSearch.setId(new BigInteger(String.valueOf(objects[0])));
+			courseDtoElasticSearch.setName(String.valueOf(objects[1]));
+			if(String.valueOf(objects[2]) !=null && !String.valueOf(objects[2]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
+				courseDtoElasticSearch.setCourseRanking(Integer.valueOf(String.valueOf(objects[2])));
+			} else {
+				courseDtoElasticSearch.setCourseRanking(null);
+			}
+			
+			if(String.valueOf(objects[3]) !=null && !String.valueOf(objects[3]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[3]))) {
+				courseDtoElasticSearch.setStars(Integer.valueOf(String.valueOf(objects[3])));
+			} else {
+				courseDtoElasticSearch.setStars(null);
+			}
+			
+			courseDtoElasticSearch.setRecognition(String.valueOf(objects[4]));
+			if(String.valueOf(objects[5]) !=null && !String.valueOf(objects[5]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[5]))) {
+				courseDtoElasticSearch.setDuration(Double.valueOf(String.valueOf(objects[5])));
+			} else {
+				courseDtoElasticSearch.setDuration(null);
+			}
+			
+			courseDtoElasticSearch.setWebsite(String.valueOf(objects[6]));
+			courseDtoElasticSearch.setLanguage(String.valueOf(objects[7]));
+			courseDtoElasticSearch.setAbbreviation(String.valueOf(objects[8]));
+			if(String.valueOf(objects[9]) !=null && ! String.valueOf(objects[9]).isEmpty()) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+				Date recDate;
+				try {
+					recDate = formatter.parse(String.valueOf(objects[9]));
+				} catch (ParseException e) {
+					recDate = null;
+				}
+				courseDtoElasticSearch.setRecDate(recDate);
+			}
+			courseDtoElasticSearch.setRemarks(String.valueOf(objects[10]));
+			courseDtoElasticSearch.setDescription(String.valueOf(objects[11]));
+			courseDtoElasticSearch.setIsActive(Boolean.valueOf(String.valueOf(objects[12])));
+			
+			if(String.valueOf(objects[13]) !=null && ! String.valueOf(objects[13]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[13]))) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+				Date createDate;
+				try {
+					createDate = formatter.parse(String.valueOf(objects[13]));
+				} catch (ParseException e) {
+					createDate = null;
+				}
+				courseDtoElasticSearch.setCreatedOn(createDate);
+			}
+			
+			if(String.valueOf(objects[14]) !=null && ! String.valueOf(objects[14]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[14]))) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+				Date updateDate;
+				try {
+					updateDate = formatter.parse(String.valueOf(objects[14]));
+				} catch (ParseException e) {
+					updateDate = null;
+				}
+				courseDtoElasticSearch.setUpdatedOn(updateDate);
+			}
+			
+			if(String.valueOf(objects[15]) !=null && ! String.valueOf(objects[15]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[15]))) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+				Date delDate;
+				try {
+					delDate = formatter.parse(String.valueOf(objects[15]));
+				} catch (ParseException e) {
+					delDate = null;
+				}
+				courseDtoElasticSearch.setDeletedOn(delDate);
+			}
+			
+			courseDtoElasticSearch.setCreatedBy(String.valueOf(objects[16]));
+			courseDtoElasticSearch.setUpdatedBy(String.valueOf(objects[17]));
+			courseDtoElasticSearch.setIsDeleted(Boolean.valueOf(String.valueOf(objects[18])));
+			courseDtoElasticSearch.setAvailbilty(String.valueOf(objects[19]));
+			courseDtoElasticSearch.setPartFull(String.valueOf(objects[20]));
+			
+			courseDtoElasticSearch.setStudyMode(String.valueOf(objects[21]));
+			if(String.valueOf(objects[22]) !=null && !String.valueOf(objects[22]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[22]))) {
+				courseDtoElasticSearch.setInternationalFee(Double.valueOf(String.valueOf(objects[22])));
+			} else {
+				courseDtoElasticSearch.setInternationalFee(null);
+			}
+			
+			if(String.valueOf(objects[23]) !=null && !String.valueOf(objects[23]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[23]))) {
+				courseDtoElasticSearch.setDomesticFee(Double.valueOf(String.valueOf(objects[23])));
+			} else {
+				courseDtoElasticSearch.setDomesticFee(null);
+			}
+			
+			courseDtoElasticSearch.setCurrency(String.valueOf(objects[24]));
+			courseDtoElasticSearch.setCurrencyTime(String.valueOf(objects[25]));
+			
+			if(String.valueOf(objects[26]) !=null && !String.valueOf(objects[26]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[26]))) {
+				courseDtoElasticSearch.setUsdInternationFee(Double.valueOf(String.valueOf(objects[26])));
+			} else {
+				courseDtoElasticSearch.setUsdInternationFee(null);
+			}
+			
+			if(String.valueOf(objects[27]) !=null && !String.valueOf(objects[27]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[27]))) {
+				courseDtoElasticSearch.setUsdDomasticFee(Double.valueOf(String.valueOf(objects[27])));
+			} else {
+				courseDtoElasticSearch.setUsdDomasticFee(null);
+			}
+			
+			
+			
+			if(String.valueOf(objects[28]) !=null && !String.valueOf(objects[28]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[28]))) {
+				courseDtoElasticSearch.setCostRange(Double.valueOf(String.valueOf(objects[28])));
+			} else {
+				courseDtoElasticSearch.setCostRange(null);
+			}
+			
+			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
+			
+			courseDtoElasticSearch.setInstituteName(String.valueOf(objects[30]));
+			courseDtoElasticSearch.setFacultyName(String.valueOf(objects[31]));
+			courseDtoElasticSearch.setFacultyDescription(String.valueOf(objects[32]));
+			courseDtoElasticSearch.setCountryName(String.valueOf(objects[33]));
+			courseDtoElasticSearch.setCityName(String.valueOf(objects[34]));
+			
+			courseDtoElasticSearch.setLevelCode(String.valueOf(objects[35]));
+			courseDtoElasticSearch.setLevelName(String.valueOf(objects[36]));
+			if(String.valueOf(objects[37]) !=null && !String.valueOf(objects[37]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[37]))) {
+				courseDtoElasticSearch.setcId(Integer.valueOf(String.valueOf(objects[37])));
+			} else {
+				courseDtoElasticSearch.setcId(null);
+			}
+			courseDtoElasticSearch.setRecognitionType(String.valueOf(objects[38]));
+			courseDtoElasticSearch.setDurationTime(String.valueOf(objects[39]));
+			courseElasticSearchList.add(courseDtoElasticSearch);
+		 }
+		return courseElasticSearchList;
 	}
 
 	@Override
@@ -1830,6 +1987,189 @@ public class CourseDAO implements ICourseDAO {
 		criteria.setProjection(Projections.rowCount());
 		Long count = (Long)criteria.uniqueResult();
 		return count !=null? count.intValue():0;
+	}
+
+	@Override
+	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds,
+			Integer startIndex, Integer limit) {
+		String courseIdString = "";
+		if(courseIds == null || courseIds.isEmpty()) {
+			return new ArrayList<>();
+		} else {
+			courseIdString = courseIds.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(","));
+		}
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder queryString = new StringBuilder("select crs.id, crs.name, crs.world_ranking as courseRanking, \r\n" + 
+				"crs.stars,crs.recognition,\r\n" + 
+				"crs.duration, \r\n" + 
+				"crs.website, crs.language, crs.abbreviation,\r\n" + 
+				"crs.rec_date ,crs.remarks, crs.description,\r\n" + 
+				"crs.is_active, crs.created_on, crs.updated_on,\r\n" + 
+				"crs.deleted_on, crs.created_by, crs.updated_by, crs.is_deleted,\r\n" + 
+				"crs.availbilty, crs.part_full, crs.study_mode, crs.international_fee,\r\n" + 
+				"crs.domestic_fee, crs.currency, crs.currency_time, crs.usd_international_fee,\r\n" + 
+				"crs.usd_domestic_fee, crs.cost_range, crs.content, \r\n" + 
+				"inst.name as institute_name, fac.name as faculty_name,\r\n" + 
+				"fac.description as faculty_description, cntry.name as country_name,\r\n" + 
+				"ct.name as city_name, lev.code as level_code, lev.name as level_name, crs.c_id, crs.recognition_type,"
+				+ "crs.duration_time from course crs \r\n" + 
+				"inner join institute inst on crs.institute_id = inst.id\r\n" + 
+				"inner join faculty fac on crs.faculty_id = fac.id\r\n" + 
+				"inner join country cntry on crs.country_id = cntry.id\r\n" + 
+				"inner join city ct on crs.city_id = ct.id\r\n" + 
+				"inner join level lev on crs.level_id = lev.id\r\n" + 
+				"where crs.id in (");
+		 
+				
+		for (int i=0; i<courseIds.size(); i++) {
+			queryString.append("?");
+			if(!(i == courseIds.size()-1)) {
+				queryString.append(",");
+			}
+		}
+		queryString.append(")");
+		Query query = session.createNativeQuery(queryString.toString());
+		for (int i=0; i<courseIds.size(); i++) {
+			query.setParameter(i+1, courseIds.get(i));
+		}
+		 
+		 List<Object[]> rows = query.list();
+		 List<CourseDTOElasticSearch> courseElasticSearchList = new ArrayList<>();
+		 for (Object[] objects : rows) {
+			CourseDTOElasticSearch courseDtoElasticSearch = new CourseDTOElasticSearch();
+			courseDtoElasticSearch.setId(new BigInteger(String.valueOf(objects[0])));
+			courseDtoElasticSearch.setName(String.valueOf(objects[1]));
+			if(String.valueOf(objects[2]) !=null && !String.valueOf(objects[2]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
+				courseDtoElasticSearch.setCourseRanking(Integer.valueOf(String.valueOf(objects[2])));
+			} else {
+				courseDtoElasticSearch.setCourseRanking(null);
+			}
+			
+			if(String.valueOf(objects[3]) !=null && !String.valueOf(objects[3]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[3]))) {
+				courseDtoElasticSearch.setStars(Integer.valueOf(String.valueOf(objects[3])));
+			} else {
+				courseDtoElasticSearch.setStars(null);
+			}
+			
+			courseDtoElasticSearch.setRecognition(String.valueOf(objects[4]));
+			if(String.valueOf(objects[5]) !=null && !String.valueOf(objects[5]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[5]))) {
+				courseDtoElasticSearch.setDuration(Double.valueOf(String.valueOf(objects[5])));
+			} else {
+				courseDtoElasticSearch.setDuration(null);
+			}
+			
+			courseDtoElasticSearch.setWebsite(String.valueOf(objects[6]));
+			courseDtoElasticSearch.setLanguage(String.valueOf(objects[7]));
+			courseDtoElasticSearch.setAbbreviation(String.valueOf(objects[8]));
+			if(String.valueOf(objects[9]) !=null && ! String.valueOf(objects[9]).isEmpty()) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+				Date recDate;
+				try {
+					recDate = formatter.parse(String.valueOf(objects[9]));
+				} catch (ParseException e) {
+					recDate = null;
+				}
+				courseDtoElasticSearch.setRecDate(recDate);
+			}
+			courseDtoElasticSearch.setRemarks(String.valueOf(objects[10]));
+			courseDtoElasticSearch.setDescription(String.valueOf(objects[11]));
+			courseDtoElasticSearch.setIsActive(Boolean.valueOf(String.valueOf(objects[12])));
+			
+			if(String.valueOf(objects[13]) !=null && ! String.valueOf(objects[13]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[13]))) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+				Date createDate;
+				try {
+					createDate = formatter.parse(String.valueOf(objects[13]));
+				} catch (ParseException e) {
+					createDate = null;
+				}
+				courseDtoElasticSearch.setCreatedOn(createDate);
+			}
+			
+			if(String.valueOf(objects[14]) !=null && ! String.valueOf(objects[14]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[14]))) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+				Date updateDate;
+				try {
+					updateDate = formatter.parse(String.valueOf(objects[14]));
+				} catch (ParseException e) {
+					updateDate = null;
+				}
+				courseDtoElasticSearch.setUpdatedOn(updateDate);
+			}
+			
+			if(String.valueOf(objects[15]) !=null && ! String.valueOf(objects[15]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[15]))) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+				Date delDate;
+				try {
+					delDate = formatter.parse(String.valueOf(objects[15]));
+				} catch (ParseException e) {
+					delDate = null;
+				}
+				courseDtoElasticSearch.setDeletedOn(delDate);
+			}
+			
+			courseDtoElasticSearch.setCreatedBy(String.valueOf(objects[16]));
+			courseDtoElasticSearch.setUpdatedBy(String.valueOf(objects[17]));
+			courseDtoElasticSearch.setIsDeleted(Boolean.valueOf(String.valueOf(objects[18])));
+			courseDtoElasticSearch.setAvailbilty(String.valueOf(objects[19]));
+			courseDtoElasticSearch.setPartFull(String.valueOf(objects[20]));
+			
+			courseDtoElasticSearch.setStudyMode(String.valueOf(objects[21]));
+			if(String.valueOf(objects[22]) !=null && !String.valueOf(objects[22]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[22]))) {
+				courseDtoElasticSearch.setInternationalFee(Double.valueOf(String.valueOf(objects[22])));
+			} else {
+				courseDtoElasticSearch.setInternationalFee(null);
+			}
+			
+			if(String.valueOf(objects[23]) !=null && !String.valueOf(objects[23]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[23]))) {
+				courseDtoElasticSearch.setDomesticFee(Double.valueOf(String.valueOf(objects[23])));
+			} else {
+				courseDtoElasticSearch.setDomesticFee(null);
+			}
+			
+			courseDtoElasticSearch.setCurrency(String.valueOf(objects[24]));
+			courseDtoElasticSearch.setCurrencyTime(String.valueOf(objects[25]));
+			
+			if(String.valueOf(objects[26]) !=null && !String.valueOf(objects[26]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[26]))) {
+				courseDtoElasticSearch.setUsdInternationFee(Double.valueOf(String.valueOf(objects[26])));
+			} else {
+				courseDtoElasticSearch.setUsdInternationFee(null);
+			}
+			
+			if(String.valueOf(objects[27]) !=null && !String.valueOf(objects[27]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[27]))) {
+				courseDtoElasticSearch.setUsdDomasticFee(Double.valueOf(String.valueOf(objects[27])));
+			} else {
+				courseDtoElasticSearch.setUsdDomasticFee(null);
+			}
+			
+			
+			
+			if(String.valueOf(objects[28]) !=null && !String.valueOf(objects[28]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[28]))) {
+				courseDtoElasticSearch.setCostRange(Double.valueOf(String.valueOf(objects[28])));
+			} else {
+				courseDtoElasticSearch.setCostRange(null);
+			}
+			
+			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
+			
+			courseDtoElasticSearch.setInstituteName(String.valueOf(objects[30]));
+			courseDtoElasticSearch.setFacultyName(String.valueOf(objects[31]));
+			courseDtoElasticSearch.setFacultyDescription(String.valueOf(objects[32]));
+			courseDtoElasticSearch.setCountryName(String.valueOf(objects[33]));
+			courseDtoElasticSearch.setCityName(String.valueOf(objects[34]));
+			
+			courseDtoElasticSearch.setLevelCode(String.valueOf(objects[35]));
+			courseDtoElasticSearch.setLevelName(String.valueOf(objects[36]));
+			if(String.valueOf(objects[37]) !=null && !String.valueOf(objects[37]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[37]))) {
+				courseDtoElasticSearch.setcId(Integer.valueOf(String.valueOf(objects[37])));
+			} else {
+				courseDtoElasticSearch.setcId(null);
+			}
+			courseDtoElasticSearch.setRecognitionType(String.valueOf(objects[38]));
+			courseDtoElasticSearch.setDurationTime(String.valueOf(objects[39]));
+			courseElasticSearchList.add(courseDtoElasticSearch);
+		 }
+		return courseElasticSearchList;
 	}
 
 }

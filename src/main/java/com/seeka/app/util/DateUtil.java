@@ -8,7 +8,8 @@ import java.util.TimeZone;
 public class DateUtil {
 
     static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
+    static final String ONLY_DATE_FORMAT = "yyyy-MM-dd";
+    
     public static Date getUTCdatetimeAsDate() {
         return stringDateToDate(getUTCdatetimeAsString());
     }
@@ -19,7 +20,29 @@ public class DateUtil {
         final String utcTime = sdf.format(new Date());
         return utcTime;
     }
+    
+    public static Date getUTCdatetimeAsOnlyDate() {
+        return stringDateToOnlyDate(getUTCdateAsString());
+    }
 
+    public static String getUTCdateAsString() {
+        final SimpleDateFormat sdf = new SimpleDateFormat(ONLY_DATE_FORMAT);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        final String utcTime = sdf.format(new Date());
+        return utcTime;
+    }
+
+    public static Date stringDateToOnlyDate(String StrDate) {
+        Date dateToReturn = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(ONLY_DATE_FORMAT);
+        try {
+            dateToReturn = (Date) dateFormat.parse(StrDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateToReturn;
+    }
+    
     public static Date stringDateToDate(String StrDate) {
         Date dateToReturn = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);

@@ -15,6 +15,7 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
+import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseRequest;
@@ -129,7 +130,9 @@ public interface ICourseService {
 
 	int getCountOfAdvanceSearch(AdvanceSearchDto courseSearchDto);
 
-	List<Course> getUpdatedCourses(Date date, Integer startIndex, Integer limit);
+	List<CourseDTOElasticSearch> getUpdatedCourses(Date date, Integer startIndex, Integer limit);
 
 	Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate);
+	
+	List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds,  Integer startIndex, Integer limit);
 }

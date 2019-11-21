@@ -44,6 +44,7 @@ import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dao.ViewDao;
 import com.seeka.app.dto.AdvanceSearchDto;
+import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseRequest;
@@ -1064,12 +1065,17 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<Course> getUpdatedCourses(Date date, Integer startIndex, Integer limit) {
+	public List<CourseDTOElasticSearch> getUpdatedCourses(Date date, Integer startIndex, Integer limit) {
 		return iCourseDAO.getUpdatedCourses(date, startIndex, limit);
 	}
 
 	@Override
 	public Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate) {
 		return iCourseDAO.getCountOfTotalUpdatedCourses(utCdatetimeAsOnlyDate);
+	}
+	
+	@Override
+	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds,  Integer startIndex, Integer limit){
+		return iCourseDAO.getCoursesToBeRetriedForElasticSearch(courseIds, startIndex, limit);
 	}
 }
