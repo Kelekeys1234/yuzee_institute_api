@@ -209,7 +209,7 @@ public class ArticleController {
 
 	}
 
-	@GetMapping(value = "/getAuthors")
+	@GetMapping(value = "/authors")
 	public ResponseEntity<?> getAuthors(@RequestParam(required = false) final String searchString, @RequestParam final Integer pageSize,
 			@RequestParam final Integer pageNumber) throws ValidationException {
 		if(pageSize == null || pageSize == 0) {
