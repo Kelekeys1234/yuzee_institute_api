@@ -1,7 +1,6 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +8,8 @@ import java.util.Set;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.CourseDeliveryMethod;
+import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
@@ -46,8 +47,6 @@ public interface ICourseDAO {
 	int findTotalCount();
 
 	List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
-
-	List<CourseRequest> searchCoursesBasedOnFilter(String query);
 
 	List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType);
 
@@ -122,10 +121,25 @@ public interface ICourseDAO {
 
 	Integer getTotalCourseCountForInstitute(BigInteger instituteId);
 
-	List<CourseDTOElasticSearch> getUpdatedCourses(Date date,Integer startIndex, Integer limit);
+	List<CourseDTOElasticSearch> getUpdatedCourses(Date date, Integer startIndex, Integer limit);
 
 	Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate);
 
-	List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds, Integer startIndex,
-			Integer limit);
+	List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds, Integer startIndex, Integer limit);
+
+	void saveCourseIntake(CourseIntake courseIntake);
+
+	void deleteCourseIntake(BigInteger courseId);
+
+	List<CourseIntake> getCourseIntakeBasedOnCourseId(BigInteger courseId);
+
+	List<CourseIntake> getCourseIntakeBasedOnCourseIdList(List<BigInteger> courseIds);
+
+	void saveCourseDeliveryMethod(CourseDeliveryMethod courseDeliveryMethod);
+
+	void deleteCourseDeliveryMethod(BigInteger courseId);
+
+	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(BigInteger courseId);
+
+	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseIdList(List<BigInteger> courseIds);
 }

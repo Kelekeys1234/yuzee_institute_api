@@ -135,7 +135,7 @@ public class CommonUtil {
 
 		courseRequest.setName(course.getName());
 		courseRequest.setLink(course.getLink());
-		courseRequest.setIntake(course.getIntake());
+//		courseRequest.setIntake(course.getIntake());
 		courseRequest.setLanguage(course.getLanguage());
 		if (course.getFaculty() != null) {
 			courseRequest.setFacultyId(course.getFaculty().getId());
@@ -158,7 +158,7 @@ public class CommonUtil {
 		return courseRequest;
 	}
 
-	public static /* String */Map<String, Double> getCurrencyDetails(final String baseCurrency) {
+	public static Map<String, Double> getCurrencyDetails(final String baseCurrency) {
 		String currencyResponse = null;
 		URL url = null;
 		try {

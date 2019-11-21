@@ -10,6 +10,8 @@ import javax.validation.Valid;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.CourseDeliveryMethod;
+import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
@@ -46,13 +48,11 @@ public interface ICourseService {
 
 	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
-	Map<String, Object> save(@Valid CourseRequest courseDto);
+	void save(@Valid CourseRequest courseDto) throws ValidationException;
 
 	Map<String, Object> getAllCourse(Integer pageNumber, Integer pageSize);
 
 	Map<String, Object> deleteCourse(@Valid BigInteger courseId);
-
-	Map<String, Object> searchCourseBasedOnFilter(BigInteger countryId, BigInteger instituteId, BigInteger facultyId, String name, String languauge);
 
 	Map<String, Object> addUserCourses(@Valid UserCourse userCourse);
 
@@ -133,6 +133,10 @@ public interface ICourseService {
 	List<CourseDTOElasticSearch> getUpdatedCourses(Date date, Integer startIndex, Integer limit);
 
 	Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate);
-	
-	List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds,  Integer startIndex, Integer limit);
+
+	List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds, Integer startIndex, Integer limit);
+
+	List<CourseIntake> getCourseIntakeBasedOnCourseId(BigInteger courseId);
+
+	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(BigInteger courseId);
 }

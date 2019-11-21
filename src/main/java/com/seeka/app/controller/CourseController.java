@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -93,8 +94,9 @@ public class CourseController {
 	private MessageByLocaleService messageByLocalService;
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws Exception {
-		return ResponseEntity.accepted().body(courseService.save(course));
+	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException {
+		courseService.save(course);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Course Created successfully").create();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
@@ -187,12 +189,6 @@ public class CourseController {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
 		List<CourseResponseDto> courseList = courseService.advanceSearch(courseSearchDto);
-		/*
-		 * for (CourseResponseDto obj : courseList) { List<StorageDto> storageDTOList =
-		 * iStorageService.getStorageInformation(obj.getInstituteId(),
-		 * ImageCategory.INSTITUTE.toString(), null, "en");
-		 * obj.setStorageList(storageDTOList); }
-		 */
 		int totalCount = courseService.getCountOfAdvanceSearch(courseSearchDto);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
@@ -222,6 +218,9 @@ public class CourseController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
+		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream().map(x -> x.getName()).collect(Collectors.toList()));
+		courseRequest.setDeliveryMethod(courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream().map(x -> x.getName()).collect(Collectors.toList()));
+
 		Institute instituteObj = course.getInstitute();
 		if (instituteObj != null) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");

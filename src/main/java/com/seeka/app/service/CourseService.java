@@ -22,8 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseGradeEligibility;
+import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseMinRequirement;
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.CurrencyRate;
@@ -123,11 +125,10 @@ public class CourseService implements ICourseService {
 
 	@Autowired
 	private UserRecommendationService userRecommedationService;
-	
+
 	@Autowired
 	private ElasticSearchService elasticSearchService;
-	
-	
+
 	@Override
 	public void save(final Course course) {
 		iCourseDAO.save(course);
@@ -155,10 +156,11 @@ public class CourseService implements ICourseService {
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
-				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
+		List<BigInteger> courseIds = courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList());
+		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
 				courseResponseDtos.stream().map(i -> i.getInstituteId()).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
+		List<CourseIntake> courseIntake = iCourseDAO.getCourseIntakeBasedOnCourseIdList(courseIds);
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
 			if (storageDTOList != null && !storageDTOList.isEmpty()) {
 				List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))
@@ -170,6 +172,13 @@ public class CourseService implements ICourseService {
 			}
 			if (!viewedCourseIds.isEmpty() && viewedCourseIds.contains(courseResponseDto.getId())) {
 				courseResponseDto.setIsViewed(true);
+			}
+
+			if (courseIntake != null && !courseIntake.isEmpty()) {
+				List<CourseIntake> courseIntakeList = courseIntake.stream().filter(x -> courseResponseDto.getId().equals(x.getCourse().getId()))
+						.collect(Collectors.toList());
+				courseResponseDto.setIntake(courseIntakeList.stream().map(x -> x.getName()).collect(Collectors.toList()));
+				courseIntake.removeAll(courseIntakeList);
 			}
 		}
 		return courseResponseDtos;
@@ -206,109 +215,103 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Map<String, Object> save(@Valid final CourseRequest courseDto) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			Course course = new Course();
-			course.setInstitute(getInstititute(courseDto.getInstituteId()));
-			course.setDescription(courseDto.getDescription());
-			course.setName(courseDto.getName());
-			course.setcId(courseDto.getcId());
-			if (courseDto.getDuration() != null && !courseDto.getDuration().isEmpty()) {
-				course.setDuration(Double.valueOf(courseDto.getDuration()));
-			}
-			course.setFaculty(getFaculty(courseDto.getFacultyId()));
-			course.setCity(getCity(courseDto.getCityId()));
-			course.setLanguage(courseDto.getLanguage());
-			course.setCountry(getCountry(courseDto.getCountryId()));
-			course.setIsActive(true);
-			course.setCreatedBy("API");
-			course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-			course.setUpdatedBy("API");
-			course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-			if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
-				course.setStars(Integer.valueOf(courseDto.getStars()));
-			}
-			// Course Details
-			course.setIntake(courseDto.getIntake());
-			course.setLink(courseDto.getLink());
-			course.setDomesticFee(courseDto.getDomasticFee());
-			course.setInternationalFee(courseDto.getInternationalFee());
-			course.setCampusLocation(courseDto.getCampusLocation());
-			if (courseDto.getCurrency() != null) {
-				course.setCurrency(courseDto.getCurrency());
-//				List<Currency> currencies = currencyDAO.getAll();
-//				Currency toCurrency = currencyDAO.getCurrencyByCode("USD");
-//				BigInteger toCurrencyId = null;
-//				if (toCurrency != null) {
-//					toCurrencyId = toCurrency.getId();
-//				}
+	public void save(@Valid final CourseRequest courseDto) throws ValidationException {
+		Course course = new Course();
+		course.setInstitute(getInstititute(courseDto.getInstituteId()));
+		course.setDescription(courseDto.getDescription());
+		course.setName(courseDto.getName());
+		course.setcId(courseDto.getcId());
+		if (courseDto.getDuration() != null && !courseDto.getDuration().isEmpty()) {
+			course.setDuration(Double.valueOf(courseDto.getDuration()));
+		}
+		course.setFaculty(getFaculty(courseDto.getFacultyId()));
+		course.setCity(getCity(courseDto.getCityId()));
+		course.setLanguage(courseDto.getLanguage());
+		course.setCountry(getCountry(courseDto.getCountryId()));
+		course.setIsActive(true);
+		course.setCreatedBy("API");
+		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+		course.setUpdatedBy("API");
+		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+		if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
+			course.setStars(Integer.valueOf(courseDto.getStars()));
+		}
+		// Course Details
+		course.setLink(courseDto.getLink());
+		course.setDomesticFee(courseDto.getDomasticFee());
+		course.setInternationalFee(courseDto.getInternationalFee());
+		course.setCampusLocation(courseDto.getCampusLocation());
+		course.setPartFull(courseDto.getPartFull());
+		if (courseDto.getCurrency() != null) {
+			course.setCurrency(courseDto.getCurrency());
 
-				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency()/* , currencies */);
-				// BigInteger fromCurrencyId = getCurrencyId(currencies,
-				// courseDto.getCurrency());
-				if (currencyRate == null) {
-					throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
-					// currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId,
-					// courseDto.getCurrency());
-				}
-				if (currencyRate != null) {
-					if (/* toCurrencyId */courseDto.getCurrency() != null) {
-						if (courseDto.getDomasticFee() != null) {
-							// Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate,
-							// toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
-							Double convertedRate = Double.valueOf(courseDto.getDomasticFee()) / currencyRate.getConversionRate();
-							if (convertedRate != null) {
-								course.setUsdDomasticFee(convertedRate);
-							}
+			CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency()/* , currencies */);
+			if (currencyRate == null) {
+				throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
+			}
+			if (currencyRate != null) {
+				if (courseDto.getCurrency() != null) {
+					if (courseDto.getDomasticFee() != null) {
+						Double convertedRate = Double.valueOf(courseDto.getDomasticFee()) / currencyRate.getConversionRate();
+						if (convertedRate != null) {
+							course.setUsdDomasticFee(convertedRate);
 						}
-						if (courseDto.getInternationalFee() != null) {
-							Double convertedRate = Double.valueOf(courseDto.getInternationalFee()) / currencyRate.getConversionRate();
-//							Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId,
-//									Double.valueOf(courseDto.getInternationalFee()));
-							if (convertedRate != null) {
-								course.setUsdInternationFee(convertedRate);
-							}
+					}
+					if (courseDto.getInternationalFee() != null) {
+						Double convertedRate = Double.valueOf(courseDto.getInternationalFee()) / currencyRate.getConversionRate();
+						if (convertedRate != null) {
+							course.setUsdInternationFee(convertedRate);
 						}
 					}
 				}
 			}
-			iCourseDAO.save(course);
-			CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
-			BeanUtils.copyProperties(course, courseElasticSearch);
-			courseElasticSearch.setCountryName(course.getCountry()!=null?course.getCountry().getName():null);
-			courseElasticSearch.setCityName(course.getCity()!=null?course.getCity().getName():null);
-			courseElasticSearch.setFacultyName(course.getFaculty()!=null?course.getFaculty().getName():null);
-			courseElasticSearch.setFacultyDescription(course.getFaculty()!=null?course.getFaculty().getDescription():null);
-			courseElasticSearch.setInstituteName(course.getInstitute()!=null?course.getInstitute().getName():null);
-			courseElasticSearch.setLevelCode(course.getLevel()!=null?course.getLevel().getCode():null);
-			courseElasticSearch.setLevelName(course.getLevel()!=null?course.getLevel().getName():null);
-			
-			List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
-			courseListElasticDTO.add(courseElasticSearch);
-			elasticSearchService.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseListElasticDTO, IConstant.ELASTIC_SEARCH);
-			
-			if (courseDto.getEnglishEligibility() != null) {
-				for (CourseEnglishEligibility e : courseDto.getEnglishEligibility()) {
-					e.setCourse(course);
-					e.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-					courseEnglishEligibilityDAO.save(e);
-				}
-			}
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", IConstant.COURSE_ADD_SUCCESS);
-		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
-		return response;
+		iCourseDAO.save(course);
+		if (courseDto.getIntake() != null) {
+			for (String intake : courseDto.getIntake()) {
+				CourseIntake courseIntake = new CourseIntake();
+				courseIntake.setCourse(course);
+				courseIntake.setName(intake);
+				iCourseDAO.saveCourseIntake(courseIntake);
+			}
+		}
+		if (courseDto.getDeliveryMethod() != null) {
+			for (String deliveryMethod : courseDto.getDeliveryMethod()) {
+				CourseDeliveryMethod courseDeliveryMethod = new CourseDeliveryMethod();
+				courseDeliveryMethod.setCourse(course);
+				courseDeliveryMethod.setName(deliveryMethod);
+				iCourseDAO.saveCourseDeliveryMethod(courseDeliveryMethod);
+			}
+		}
+
+		CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
+		BeanUtils.copyProperties(course, courseElasticSearch);
+		courseElasticSearch.setCountryName(course.getCountry() != null ? course.getCountry().getName() : null);
+		courseElasticSearch.setCityName(course.getCity() != null ? course.getCity().getName() : null);
+		courseElasticSearch.setFacultyName(course.getFaculty() != null ? course.getFaculty().getName() : null);
+		courseElasticSearch.setFacultyDescription(course.getFaculty() != null ? course.getFaculty().getDescription() : null);
+		courseElasticSearch.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
+		courseElasticSearch.setLevelCode(course.getLevel() != null ? course.getLevel().getCode() : null);
+		courseElasticSearch.setLevelName(course.getLevel() != null ? course.getLevel().getName() : null);
+
+		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
+		courseListElasticDTO.add(courseElasticSearch);
+		elasticSearchService.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseListElasticDTO,
+				IConstant.ELASTIC_SEARCH);
+
+		if (courseDto.getEnglishEligibility() != null) {
+			for (CourseEnglishEligibility e : courseDto.getEnglishEligibility()) {
+				e.setCourse(course);
+				e.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+				courseEnglishEligibilityDAO.save(e);
+			}
+		}
 	}
 
 	@Override
 	public Map<String, Object> update(@Valid final CourseRequest courseDto, final BigInteger id) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-			// Fetching the previous object
 			Course course = new Course();
 			course = iCourseDAO.get(id);
 			course.setId(id);
@@ -333,11 +336,11 @@ public class CourseService implements ICourseService {
 			}
 
 			// Course Details
-			course.setIntake(courseDto.getIntake());
 			course.setLink(courseDto.getLink());
 			course.setDomesticFee(courseDto.getDomasticFee());
 			course.setInternationalFee(courseDto.getInternationalFee());
 			course.setCampusLocation(courseDto.getCampusLocation());
+			course.setPartFull(courseDto.getPartFull());
 			if (courseDto.getCurrency() != null) {
 				course.setCurrency(courseDto.getCurrency());
 				Currency toCurrency = currencyDAO.getCurrencyByCode("USD");
@@ -347,27 +350,19 @@ public class CourseService implements ICourseService {
 				}
 
 				CurrencyRate currencyRate = getCurrencyRate(courseDto.getCurrency()/* , currencies */);
-				// BigInteger fromCurrencyId = getCurrencyId(currencies,
-				// courseDto.getCurrency());
 				if (currencyRate == null) {
 					throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
-					// currencyRate = currencyDAO.saveCurrencyRate(fromCurrencyId,
-					// courseDto.getCurrency());
 				}
 				if (currencyRate != null) {
 					if (toCurrencyId != null) {
 						if (courseDto.getDomasticFee() != null) {
 							Double convertedRate = Double.valueOf(courseDto.getInternationalFee()) / currencyRate.getConversionRate();
-							// Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate,
-							// toCurrencyId, Double.valueOf(courseDto.getDomasticFee()));
 							if (convertedRate != null) {
 								course.setUsdDomasticFee(convertedRate);
 							}
 						}
 						if (courseDto.getInternationalFee() != null) {
 							Double convertedRate = Double.valueOf(courseDto.getInternationalFee()) / currencyRate.getConversionRate();
-//							Double convertedRate = currencyDAO.getConvertedCurrency(currencyRate, toCurrencyId,
-//									Double.valueOf(courseDto.getInternationalFee()));
 							if (convertedRate != null) {
 								course.setUsdInternationFee(convertedRate);
 							}
@@ -376,22 +371,37 @@ public class CourseService implements ICourseService {
 				}
 			}
 			iCourseDAO.update(course);
-			
+			iCourseDAO.deleteCourseIntake(id);
+			iCourseDAO.deleteCourseDeliveryMethod(id);
+			for (String intake : courseDto.getIntake()) {
+				CourseIntake courseIntake = new CourseIntake();
+				courseIntake.setCourse(course);
+				course.setName(intake);
+				iCourseDAO.saveCourseIntake(courseIntake);
+			}
+
+			for (String deliveryMethod : courseDto.getDeliveryMethod()) {
+				CourseDeliveryMethod courseDeliveryMethod = new CourseDeliveryMethod();
+				courseDeliveryMethod.setCourse(course);
+				course.setName(deliveryMethod);
+				iCourseDAO.saveCourseDeliveryMethod(courseDeliveryMethod);
+			}
+
 			CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
 			BeanUtils.copyProperties(course, courseElasticSearch);
-			courseElasticSearch.setCountryName(course.getCountry()!=null?course.getCountry().getName():null);
-			courseElasticSearch.setCityName(course.getCity()!=null?course.getCity().getName():null);
-			courseElasticSearch.setFacultyName(course.getFaculty()!=null?course.getFaculty().getName():null);
-			courseElasticSearch.setFacultyDescription(course.getFaculty()!=null?course.getFaculty().getDescription():null);
-			courseElasticSearch.setInstituteName(course.getInstitute()!=null?course.getInstitute().getName():null);
-			courseElasticSearch.setLevelCode(course.getLevel()!=null?course.getLevel().getCode():null);
-			courseElasticSearch.setLevelName(course.getLevel()!=null?course.getLevel().getName():null);
-			
+			courseElasticSearch.setCountryName(course.getCountry() != null ? course.getCountry().getName() : null);
+			courseElasticSearch.setCityName(course.getCity() != null ? course.getCity().getName() : null);
+			courseElasticSearch.setFacultyName(course.getFaculty() != null ? course.getFaculty().getName() : null);
+			courseElasticSearch.setFacultyDescription(course.getFaculty() != null ? course.getFaculty().getDescription() : null);
+			courseElasticSearch.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
+			courseElasticSearch.setLevelCode(course.getLevel() != null ? course.getLevel().getCode() : null);
+			courseElasticSearch.setLevelName(course.getLevel() != null ? course.getLevel().getName() : null);
+
 			List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
 			courseListElasticDTO.add(courseElasticSearch);
-			elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseListElasticDTO, IConstant.ELASTIC_SEARCH);
-			
-			
+			elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(),
+					courseListElasticDTO, IConstant.ELASTIC_SEARCH);
+
 			System.out.println("courseDto.getEnglishEligibility(): " + courseDto.getEnglishEligibility());
 			if (courseDto.getEnglishEligibility() != null) {
 				List<CourseEnglishEligibility> courseEnglishEligibilityList = courseEnglishEligibilityDAO.getAllEnglishEligibilityByCourse(id);
@@ -521,54 +531,6 @@ public class CourseService implements ICourseService {
 			response.put("message", exception.getCause());
 			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
-		return response;
-	}
-
-	@Override
-	public Map<String, Object> searchCourseBasedOnFilter(final BigInteger countryId, final BigInteger instituteId, final BigInteger facultyId,
-			final String name, final String languauge) {
-		Map<String, Object> response = new HashMap<>();
-		List<CourseRequest> courses = new ArrayList<>();
-		List<CourseRequest> resultList = new ArrayList<>();
-		try {
-			String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
-					+ "cd.description, cd.intake,c.duration, c.language,cd.domestic_fee,cd.international_fee,"
-					+ "cd.grade, cd.file_url, cd.contact, cd.opening_hours, cd.campus_location, cd.website,"
-					+ " cd.job_part_time, cd.job_full_time , cd.course_link,c.updated_on, c.world_ranking, c.stars, c.duration_time  FROM course c inner join course_details cd "
-					+ " on c.id = cd.course_id where c.is_active = 1 and c.deleted_on IS NULL ";
-			if (countryId != null) {
-				sqlQuery += " and c.country_id = " + countryId;
-			} else if (instituteId != null) {
-				sqlQuery += " and c.institute_id = " + instituteId;
-			} else if (facultyId != null) {
-				sqlQuery += " and inst.faculty_id = " + facultyId;
-			} else if (name != null && !name.isEmpty()) {
-				sqlQuery += " and c.name  = '" + name + "'";
-			} else if (languauge != null && !languauge.isEmpty()) {
-				sqlQuery += " and c.language  = '" + languauge + "'";
-			}
-			sqlQuery += " ORDER BY c.created_on DESC";
-			courses = iCourseDAO.searchCoursesBasedOnFilter(sqlQuery);
-
-			for (CourseRequest courseRequest : courses) {
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(),
-						null, "en");
-				courseRequest.setStorageList(storageDTOList);
-				resultList.add(courseRequest);
-			}
-
-			if (resultList != null && !resultList.isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", "Course fetch successfully");
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", "Course not found");
-			}
-		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.OK.value());
-		}
-		response.put("courses", resultList);
 		return response;
 	}
 
@@ -751,8 +713,8 @@ public class CourseService implements ICourseService {
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE",
-				courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList()));
+		List<BigInteger> courseIds = courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList());
+		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
 				courseResponseDtos.stream().map(i -> i.getInstituteId()).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
@@ -872,7 +834,6 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public List<Course> facultyWiseCourseForInstitute(final List<Faculty> facultyList, final Institute institute) {
-		// TODO Auto-generated method stub
 		return iCourseDAO.facultyWiseCourseForTopInstitute(facultyList, institute);
 	}
 
@@ -1100,17 +1061,27 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<CourseDTOElasticSearch> getUpdatedCourses(Date date, Integer startIndex, Integer limit) {
+	public List<CourseDTOElasticSearch> getUpdatedCourses(final Date date, final Integer startIndex, final Integer limit) {
 		return iCourseDAO.getUpdatedCourses(date, startIndex, limit);
 	}
 
 	@Override
-	public Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate) {
+	public Integer getCountOfTotalUpdatedCourses(final Date utCdatetimeAsOnlyDate) {
 		return iCourseDAO.getCountOfTotalUpdatedCourses(utCdatetimeAsOnlyDate);
 	}
-	
+
 	@Override
-	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds,  Integer startIndex, Integer limit){
+	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<BigInteger> courseIds, final Integer startIndex, final Integer limit) {
 		return iCourseDAO.getCoursesToBeRetriedForElasticSearch(courseIds, startIndex, limit);
+	}
+
+	@Override
+	public List<CourseIntake> getCourseIntakeBasedOnCourseId(final BigInteger courseId) {
+		return iCourseDAO.getCourseIntakeBasedOnCourseId(courseId);
+	}
+
+	@Override
+	public List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(final BigInteger courseId) {
+		return iCourseDAO.getCourseDeliveryMethodBasedOnCourseId(courseId);
 	}
 }
