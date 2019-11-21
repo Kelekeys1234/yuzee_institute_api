@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,7 @@ import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.util.DateUtil;
@@ -121,7 +123,11 @@ public class CourseService implements ICourseService {
 
 	@Autowired
 	private UserRecommendationService userRecommedationService;
-
+	
+	@Autowired
+	private ElasticSearchService elasticSearchService;
+	
+	
 	@Override
 	public void save(final Course course) {
 		iCourseDAO.save(course);
@@ -268,7 +274,20 @@ public class CourseService implements ICourseService {
 				}
 			}
 			iCourseDAO.save(course);
-
+			CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
+			BeanUtils.copyProperties(course, courseElasticSearch);
+			courseElasticSearch.setCountryName(course.getCountry()!=null?course.getCountry().getName():null);
+			courseElasticSearch.setCityName(course.getCity()!=null?course.getCity().getName():null);
+			courseElasticSearch.setFacultyName(course.getFaculty()!=null?course.getFaculty().getName():null);
+			courseElasticSearch.setFacultyDescription(course.getFaculty()!=null?course.getFaculty().getDescription():null);
+			courseElasticSearch.setInstituteName(course.getInstitute()!=null?course.getInstitute().getName():null);
+			courseElasticSearch.setLevelCode(course.getLevel()!=null?course.getLevel().getCode():null);
+			courseElasticSearch.setLevelName(course.getLevel()!=null?course.getLevel().getName():null);
+			
+			List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
+			courseListElasticDTO.add(courseElasticSearch);
+			elasticSearchService.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseListElasticDTO, IConstant.ELASTIC_SEARCH);
+			
 			if (courseDto.getEnglishEligibility() != null) {
 				for (CourseEnglishEligibility e : courseDto.getEnglishEligibility()) {
 					e.setCourse(course);
@@ -357,6 +376,22 @@ public class CourseService implements ICourseService {
 				}
 			}
 			iCourseDAO.update(course);
+			
+			CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
+			BeanUtils.copyProperties(course, courseElasticSearch);
+			courseElasticSearch.setCountryName(course.getCountry()!=null?course.getCountry().getName():null);
+			courseElasticSearch.setCityName(course.getCity()!=null?course.getCity().getName():null);
+			courseElasticSearch.setFacultyName(course.getFaculty()!=null?course.getFaculty().getName():null);
+			courseElasticSearch.setFacultyDescription(course.getFaculty()!=null?course.getFaculty().getDescription():null);
+			courseElasticSearch.setInstituteName(course.getInstitute()!=null?course.getInstitute().getName():null);
+			courseElasticSearch.setLevelCode(course.getLevel()!=null?course.getLevel().getCode():null);
+			courseElasticSearch.setLevelName(course.getLevel()!=null?course.getLevel().getName():null);
+			
+			List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
+			courseListElasticDTO.add(courseElasticSearch);
+			elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseListElasticDTO, IConstant.ELASTIC_SEARCH);
+			
+			
 			System.out.println("courseDto.getEnglishEligibility(): " + courseDto.getEnglishEligibility());
 			if (courseDto.getEnglishEligibility() != null) {
 				List<CourseEnglishEligibility> courseEnglishEligibilityList = courseEnglishEligibilityDAO.getAllEnglishEligibilityByCourse(id);

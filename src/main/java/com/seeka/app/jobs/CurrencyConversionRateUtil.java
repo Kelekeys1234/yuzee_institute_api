@@ -166,7 +166,7 @@ public class CurrencyConversionRateUtil {
 //				courseDtoElasticSearch.setLevelName(course.getLevel()!=null?course.getLevel().getName():null);
 //				courseDtoElasticSearchList.add(courseDtoElasticSearch);
 //			}
-			Map<String, List<BigInteger>> courseUpdateStatus = elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+			Map<String, List<BigInteger>> courseUpdateStatus = elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
 			failedRecordsInElasticSearch.addAll(courseUpdateStatus.get("failed"));
 		}
 	}
@@ -179,7 +179,7 @@ public class CurrencyConversionRateUtil {
 		for (int i = 0; i < totalCourseToBeRetried; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
 			List<BigInteger> courseIds = failedRecordsInElasticSearch.subList(i, i+IConstant.COURSES_PER_SCHEDULER_LOOP < totalCourseToBeRetried ? i+IConstant.COURSES_PER_SCHEDULER_LOOP: totalCourseToBeRetried);
 			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseService.getCoursesToBeRetriedForElasticSearch(courseIds, i, IConstant.COURSES_PER_SCHEDULER_LOOP);
-			elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+			elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
 		}
 		
 		failedRecordsInElasticSearch.clear();

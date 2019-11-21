@@ -18,6 +18,7 @@ import com.seeka.app.dto.ArticleElasticSearchDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.ElasticSearchDTO;
 import com.seeka.app.dto.InstituteElasticSearchDTO;
+import com.seeka.app.dto.ScholarshipElasticDTO;
 import com.seeka.app.util.IConstant;
 
 @Service
@@ -112,6 +113,31 @@ public class ElasticSearchService {
             elasticSearchDto.setType(type);
             elasticSearchDto.setEntityId(String.valueOf(articleDto.getId()));
             elasticSearchDto.setObject(articleDto);
+            System.out.println(elasticSearchDto);
+            HttpHeaders headers = new HttpHeaders();
+            HttpEntity<ElasticSearchDTO> httpEntity = new HttpEntity<>(elasticSearchDto, headers);
+            ResponseEntity<Object> object = restTemplate.exchange("http://" + IConstant.ELASTIC_SEARCH_URL,HttpMethod.PUT, httpEntity, Object.class, new Object[] {});
+            System.out.println(object);
+    }
+    
+    public void saveScholarshipOnElasticSearch(final String elasticSearchIndex, final String type, final ScholarshipElasticDTO scholarshipDto,
+			final String elasticSearchName) {
+		ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+		elasticSearchDto.setIndex(elasticSearchIndex);
+		elasticSearchDto.setType(type);
+		elasticSearchDto.setEntityId(String.valueOf(scholarshipDto.getId()));
+		elasticSearchDto.setObject(scholarshipDto);
+		System.out.println(elasticSearchDto);
+		ResponseEntity<Object> object = restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Object.class);
+		System.out.println(object);
+	}
+    
+    public void updateScholarshipOnElasticSearch(String elasticSearchIndex, String type, final ScholarshipElasticDTO scholarshipDto, String elasticSearchName) {
+            ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+            elasticSearchDto.setIndex(elasticSearchIndex);
+            elasticSearchDto.setType(type);
+            elasticSearchDto.setEntityId(String.valueOf(scholarshipDto.getId()));
+            elasticSearchDto.setObject(scholarshipDto);
             System.out.println(elasticSearchDto);
             HttpHeaders headers = new HttpHeaders();
             HttpEntity<ElasticSearchDTO> httpEntity = new HttpEntity<>(elasticSearchDto, headers);

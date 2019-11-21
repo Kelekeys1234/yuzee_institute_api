@@ -96,6 +96,8 @@ public class Scholarship implements java.io.Serializable {
 	private Date applicationDeadline;
 	@Column(name = "content")
 	private String content;
+	@Column(name="requirements")
+	private String requirements;
 
 	public BigInteger getId() {
 		return id;
@@ -325,262 +327,221 @@ public class Scholarship implements java.io.Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (address == null ? 0 : address.hashCode());
-		result = prime * result + (applicationDeadline == null ? 0 : applicationDeadline.hashCode());
-		result = prime * result + (content == null ? 0 : content.hashCode());
-		result = prime * result + (country == null ? 0 : country.hashCode());
-		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
-		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
-		result = prime * result + (currency == null ? 0 : currency.hashCode());
-		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
-		result = prime * result + (description == null ? 0 : description.hashCode());
-		result = prime * result + (eligibleNationality == null ? 0 : eligibleNationality.hashCode());
-		result = prime * result + (email == null ? 0 : email.hashCode());
-		result = prime * result + (gender == null ? 0 : gender.hashCode());
-		result = prime * result + (headquaters == null ? 0 : headquaters.hashCode());
-		result = prime * result + (howToApply == null ? 0 : howToApply.hashCode());
-		result = prime * result + (id == null ? 0 : id.hashCode());
-		result = prime * result + (institute == null ? 0 : institute.hashCode());
-		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
-		result = prime * result + (level == null ? 0 : level.hashCode());
-		result = prime * result + (name == null ? 0 : name.hashCode());
-		result = prime * result + (numberOfAvaliability == null ? 0 : numberOfAvaliability.hashCode());
-		result = prime * result + (offeredByCourse == null ? 0 : offeredByCourse.hashCode());
-		result = prime * result + (offeredByInstitute == null ? 0 : offeredByInstitute.hashCode());
-		result = prime * result + (scholarshipAmount == null ? 0 : scholarshipAmount.hashCode());
-		result = prime * result + (scholarshipAward == null ? 0 : scholarshipAward.hashCode());
-		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
-		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
-		result = prime * result + (validity == null ? 0 : validity.hashCode());
-		result = prime * result + (website == null ? 0 : website.hashCode());
+		result = prime * result + ((address == null) ? 0 : address.hashCode());
+		result = prime * result + ((applicationDeadline == null) ? 0 : applicationDeadline.hashCode());
+		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+		result = prime * result + ((currency == null) ? 0 : currency.hashCode());
+		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((eligibleNationality == null) ? 0 : eligibleNationality.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result + ((headquaters == null) ? 0 : headquaters.hashCode());
+		result = prime * result + ((howToApply == null) ? 0 : howToApply.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((institute == null) ? 0 : institute.hashCode());
+		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+		result = prime * result + ((level == null) ? 0 : level.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((numberOfAvaliability == null) ? 0 : numberOfAvaliability.hashCode());
+		result = prime * result + ((offeredByCourse == null) ? 0 : offeredByCourse.hashCode());
+		result = prime * result + ((offeredByInstitute == null) ? 0 : offeredByInstitute.hashCode());
+		result = prime * result + ((requirements == null) ? 0 : requirements.hashCode());
+		result = prime * result + ((scholarshipAmount == null) ? 0 : scholarshipAmount.hashCode());
+		result = prime * result + ((scholarshipAward == null) ? 0 : scholarshipAward.hashCode());
+		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+		result = prime * result + ((validity == null) ? 0 : validity.hashCode());
+		result = prime * result + ((website == null) ? 0 : website.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
 		Scholarship other = (Scholarship) obj;
 		if (address == null) {
-			if (other.address != null) {
+			if (other.address != null)
 				return false;
-			}
-		} else if (!address.equals(other.address)) {
+		} else if (!address.equals(other.address))
 			return false;
-		}
 		if (applicationDeadline == null) {
-			if (other.applicationDeadline != null) {
+			if (other.applicationDeadline != null)
 				return false;
-			}
-		} else if (!applicationDeadline.equals(other.applicationDeadline)) {
+		} else if (!applicationDeadline.equals(other.applicationDeadline))
 			return false;
-		}
 		if (content == null) {
-			if (other.content != null) {
+			if (other.content != null)
 				return false;
-			}
-		} else if (!content.equals(other.content)) {
+		} else if (!content.equals(other.content))
 			return false;
-		}
 		if (country == null) {
-			if (other.country != null) {
+			if (other.country != null)
 				return false;
-			}
-		} else if (!country.equals(other.country)) {
+		} else if (!country.equals(other.country))
 			return false;
-		}
 		if (createdBy == null) {
-			if (other.createdBy != null) {
+			if (other.createdBy != null)
 				return false;
-			}
-		} else if (!createdBy.equals(other.createdBy)) {
+		} else if (!createdBy.equals(other.createdBy))
 			return false;
-		}
 		if (createdOn == null) {
-			if (other.createdOn != null) {
+			if (other.createdOn != null)
 				return false;
-			}
-		} else if (!createdOn.equals(other.createdOn)) {
+		} else if (!createdOn.equals(other.createdOn))
 			return false;
-		}
 		if (currency == null) {
-			if (other.currency != null) {
+			if (other.currency != null)
 				return false;
-			}
-		} else if (!currency.equals(other.currency)) {
+		} else if (!currency.equals(other.currency))
 			return false;
-		}
 		if (deletedOn == null) {
-			if (other.deletedOn != null) {
+			if (other.deletedOn != null)
 				return false;
-			}
-		} else if (!deletedOn.equals(other.deletedOn)) {
+		} else if (!deletedOn.equals(other.deletedOn))
 			return false;
-		}
 		if (description == null) {
-			if (other.description != null) {
+			if (other.description != null)
 				return false;
-			}
-		} else if (!description.equals(other.description)) {
+		} else if (!description.equals(other.description))
 			return false;
-		}
 		if (eligibleNationality == null) {
-			if (other.eligibleNationality != null) {
+			if (other.eligibleNationality != null)
 				return false;
-			}
-		} else if (!eligibleNationality.equals(other.eligibleNationality)) {
+		} else if (!eligibleNationality.equals(other.eligibleNationality))
 			return false;
-		}
 		if (email == null) {
-			if (other.email != null) {
+			if (other.email != null)
 				return false;
-			}
-		} else if (!email.equals(other.email)) {
+		} else if (!email.equals(other.email))
 			return false;
-		}
 		if (gender == null) {
-			if (other.gender != null) {
+			if (other.gender != null)
 				return false;
-			}
-		} else if (!gender.equals(other.gender)) {
+		} else if (!gender.equals(other.gender))
 			return false;
-		}
 		if (headquaters == null) {
-			if (other.headquaters != null) {
+			if (other.headquaters != null)
 				return false;
-			}
-		} else if (!headquaters.equals(other.headquaters)) {
+		} else if (!headquaters.equals(other.headquaters))
 			return false;
-		}
 		if (howToApply == null) {
-			if (other.howToApply != null) {
+			if (other.howToApply != null)
 				return false;
-			}
-		} else if (!howToApply.equals(other.howToApply)) {
+		} else if (!howToApply.equals(other.howToApply))
 			return false;
-		}
 		if (id == null) {
-			if (other.id != null) {
+			if (other.id != null)
 				return false;
-			}
-		} else if (!id.equals(other.id)) {
+		} else if (!id.equals(other.id))
 			return false;
-		}
 		if (institute == null) {
-			if (other.institute != null) {
+			if (other.institute != null)
 				return false;
-			}
-		} else if (!institute.equals(other.institute)) {
+		} else if (!institute.equals(other.institute))
 			return false;
-		}
 		if (isActive == null) {
-			if (other.isActive != null) {
+			if (other.isActive != null)
 				return false;
-			}
-		} else if (!isActive.equals(other.isActive)) {
+		} else if (!isActive.equals(other.isActive))
 			return false;
-		}
 		if (level == null) {
-			if (other.level != null) {
+			if (other.level != null)
 				return false;
-			}
-		} else if (!level.equals(other.level)) {
+		} else if (!level.equals(other.level))
 			return false;
-		}
 		if (name == null) {
-			if (other.name != null) {
+			if (other.name != null)
 				return false;
-			}
-		} else if (!name.equals(other.name)) {
+		} else if (!name.equals(other.name))
 			return false;
-		}
 		if (numberOfAvaliability == null) {
-			if (other.numberOfAvaliability != null) {
+			if (other.numberOfAvaliability != null)
 				return false;
-			}
-		} else if (!numberOfAvaliability.equals(other.numberOfAvaliability)) {
+		} else if (!numberOfAvaliability.equals(other.numberOfAvaliability))
 			return false;
-		}
 		if (offeredByCourse == null) {
-			if (other.offeredByCourse != null) {
+			if (other.offeredByCourse != null)
 				return false;
-			}
-		} else if (!offeredByCourse.equals(other.offeredByCourse)) {
+		} else if (!offeredByCourse.equals(other.offeredByCourse))
 			return false;
-		}
 		if (offeredByInstitute == null) {
-			if (other.offeredByInstitute != null) {
+			if (other.offeredByInstitute != null)
 				return false;
-			}
-		} else if (!offeredByInstitute.equals(other.offeredByInstitute)) {
+		} else if (!offeredByInstitute.equals(other.offeredByInstitute))
 			return false;
-		}
+		if (requirements == null) {
+			if (other.requirements != null)
+				return false;
+		} else if (!requirements.equals(other.requirements))
+			return false;
 		if (scholarshipAmount == null) {
-			if (other.scholarshipAmount != null) {
+			if (other.scholarshipAmount != null)
 				return false;
-			}
-		} else if (!scholarshipAmount.equals(other.scholarshipAmount)) {
+		} else if (!scholarshipAmount.equals(other.scholarshipAmount))
 			return false;
-		}
 		if (scholarshipAward == null) {
-			if (other.scholarshipAward != null) {
+			if (other.scholarshipAward != null)
 				return false;
-			}
-		} else if (!scholarshipAward.equals(other.scholarshipAward)) {
+		} else if (!scholarshipAward.equals(other.scholarshipAward))
 			return false;
-		}
 		if (updatedBy == null) {
-			if (other.updatedBy != null) {
+			if (other.updatedBy != null)
 				return false;
-			}
-		} else if (!updatedBy.equals(other.updatedBy)) {
+		} else if (!updatedBy.equals(other.updatedBy))
 			return false;
-		}
 		if (updatedOn == null) {
-			if (other.updatedOn != null) {
+			if (other.updatedOn != null)
 				return false;
-			}
-		} else if (!updatedOn.equals(other.updatedOn)) {
+		} else if (!updatedOn.equals(other.updatedOn))
 			return false;
-		}
 		if (validity == null) {
-			if (other.validity != null) {
+			if (other.validity != null)
 				return false;
-			}
-		} else if (!validity.equals(other.validity)) {
+		} else if (!validity.equals(other.validity))
 			return false;
-		}
 		if (website == null) {
-			if (other.website != null) {
+			if (other.website != null)
 				return false;
-			}
-		} else if (!website.equals(other.website)) {
+		} else if (!website.equals(other.website))
 			return false;
-		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Scholarship [id=").append(id).append(", offeredByInstitute=").append(offeredByInstitute).append(", offeredByCourse=")
-				.append(offeredByCourse).append(", description=").append(description).append(", scholarshipAward=").append(scholarshipAward)
-				.append(", country=").append(country).append(", level=").append(level).append(", numberOfAvaliability=").append(numberOfAvaliability)
-				.append(", currency=").append(currency).append(", scholarshipAmount=").append(scholarshipAmount).append(", validity=").append(validity)
-				.append(", howToApply=").append(howToApply).append(", gender=").append(gender).append(", eligibleNationality=").append(eligibleNationality)
-				.append(", headquaters=").append(headquaters).append(", email=").append(email).append(", address=").append(address).append(", createdOn=")
-				.append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
-				.append(", deletedOn=").append(deletedOn).append(", isActive=").append(isActive).append(", website=").append(website).append(", institute=")
-				.append(institute).append(", name=").append(name).append(", applicationDeadline=").append(applicationDeadline).append(", content=")
-				.append(content).append("]");
+		builder.append("Scholarship [id=").append(id).append(", offeredByInstitute=").append(offeredByInstitute)
+				.append(", offeredByCourse=").append(offeredByCourse).append(", description=").append(description)
+				.append(", scholarshipAward=").append(scholarshipAward).append(", country=").append(country)
+				.append(", level=").append(level).append(", numberOfAvaliability=").append(numberOfAvaliability)
+				.append(", currency=").append(currency).append(", scholarshipAmount=").append(scholarshipAmount)
+				.append(", validity=").append(validity).append(", howToApply=").append(howToApply).append(", gender=")
+				.append(gender).append(", eligibleNationality=").append(eligibleNationality).append(", headquaters=")
+				.append(headquaters).append(", email=").append(email).append(", address=").append(address)
+				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
+				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
+				.append(", deletedOn=").append(deletedOn).append(", isActive=").append(isActive).append(", website=")
+				.append(website).append(", institute=").append(institute).append(", name=").append(name)
+				.append(", applicationDeadline=").append(applicationDeadline).append(", content=").append(content)
+				.append(", requirements=").append(requirements).append("]");
 		return builder.toString();
+	}
+
+	public String getRequirements() {
+		return requirements;
+	}
+
+	public void setRequirements(String requirements) {
+		this.requirements = requirements;
 	}
 
 }

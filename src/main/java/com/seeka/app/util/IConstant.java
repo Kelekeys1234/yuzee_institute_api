@@ -95,9 +95,10 @@ public class IConstant {
 	public static final String NOTIFICATION_CONNECTION_URL = "http://" + NOTIFICATION + "/push";
 
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";
-	public static final String ELASTIC_SEARCH_INDEX = "seeka_dev";
+	public static final String ELASTIC_SEARCH_INDEX_COURSE = "seeka_dev";
 	public static final String ELASTIC_SEARCH_INDEX_ARTICLE = "seeka_dev_article";
 	public static final String ELASTIC_SEARCH_INDEX_INSTITUTE = "seeka_dev_institute";
+	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP = "seeka_dev_scholarship";
 	public static final String ELASTIC_SEARCH_URL = ELASTIC_SEARCH+"/";
 	
 	public static final String ELASTIC_SEARCH_COURSE_TYPE = "course";

@@ -23,8 +23,11 @@ import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.IScholarshipDAO;
 import com.seeka.app.dto.ScholarshipDto;
+import com.seeka.app.dto.ScholarshipElasticDTO;
 import com.seeka.app.dto.ScholarshipResponseDTO;
+import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.util.IConstant;
 
 @Service
 @Transactional
@@ -41,6 +44,9 @@ public class ScholarshipService implements IScholarshipService {
 
 	@Autowired
 	private ILevelDAO iLevelDAO;
+	
+	@Autowired
+	private ElasticSearchService elasticSearchService;
 
 	private static Logger LOGGER = LoggerFactory.getLogger(ScholarshipService.class);
 
@@ -75,6 +81,17 @@ public class ScholarshipService implements IScholarshipService {
 			scholarship.setInstitute(institute);
 		}
 		iScholarshipDAO.saveScholarship(scholarship);
+		
+		ScholarshipElasticDTO scholarshipElasticDto = new ScholarshipElasticDTO();
+		BeanUtils.copyProperties(scholarship, scholarshipElasticDto);
+		scholarshipElasticDto.setCountryName(scholarship.getCountry()!=null?scholarship.getCountry().getName():null);
+		scholarshipElasticDto.setOfferedBy(scholarshipDto.getOfferedByInstitute());
+		scholarshipElasticDto.setInstituteName(scholarship.getInstitute()!=null?scholarship.getInstitute().getName():null);
+		scholarshipElasticDto.setLevelName(scholarship.getLevel()!=null?scholarship.getLevel().getName():null);
+		scholarshipElasticDto.setLevelCode(scholarship.getLevel()!=null?scholarship.getLevel().getCode():null);
+		
+		elasticSearchService.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
+				scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 		if (scholarshipDto.getIntakes() != null && !scholarshipDto.getIntakes().isEmpty()) {
 			for (String intake : scholarshipDto.getIntakes()) {
 				ScholarshipIntakes scholarshipIntakes = new ScholarshipIntakes();
@@ -176,6 +193,16 @@ public class ScholarshipService implements IScholarshipService {
 			}
 		}
 		iScholarshipDAO.updateScholarship(existingScholarship);
+		ScholarshipElasticDTO scholarshipElasticDto = new ScholarshipElasticDTO();
+		BeanUtils.copyProperties(existingScholarship, scholarshipElasticDto);
+		scholarshipElasticDto.setCountryName(existingScholarship.getCountry()!=null?existingScholarship.getCountry().getName():null);
+		scholarshipElasticDto.setOfferedBy(existingScholarship.getOfferedByInstitute());
+		scholarshipElasticDto.setInstituteName(existingScholarship.getInstitute()!=null?existingScholarship.getInstitute().getName():null);
+		scholarshipElasticDto.setLevelName(existingScholarship.getLevel()!=null?existingScholarship.getLevel().getName():null);
+		scholarshipElasticDto.setLevelCode(existingScholarship.getLevel()!=null?existingScholarship.getLevel().getCode():null);
+		
+		elasticSearchService.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
+				scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 	}
 
 	@Override

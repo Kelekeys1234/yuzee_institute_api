@@ -93,6 +93,9 @@ public class InstituteService implements IInstituteService {
 	
 	@Autowired
 	private ICourseDAO courseDao;
+	
+	@Autowired
+	private ElasticSearchService elasticSearchService;
 
 	@Override
 	public void save(final Institute institute) {
@@ -191,12 +194,21 @@ public class InstituteService implements IInstituteService {
 	public Map<String, Object> save(@Valid final List<InstituteRequestDto> instituteRequests) {
 		Map<String, Object> response = new HashMap<>();
 		try {
+			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				Institute institute = saveInstitute(instituteRequest, null);
 				if (instituteRequest.getMedias() != null && !instituteRequest.getMedias().isEmpty()) {
 					saveInstituteYoutubeVideos(instituteRequest.getMedias(), institute);
 				}
+				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
+				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
+				instituteElasticSearchDto.setCountryName(institute.getCountry()!=null ? institute.getCountry().getName():null);
+				instituteElasticSearchDto.setCityName(institute.getCity()!=null ? institute.getCity().getName():null);
+				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType()!=null?institute.getInstituteType().getName():null);
+				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
+			
+			elasticSearchService.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 			response.put("message", "Institute saved successfully");
 			response.put("status", HttpStatus.OK.value());
 		} catch (Exception exception) {
@@ -210,12 +222,20 @@ public class InstituteService implements IInstituteService {
 	public Map<String, Object> update(final List<InstituteRequestDto> instituteRequests, @Valid final BigInteger id) {
 		Map<String, Object> response = new HashMap<>();
 		try {
+			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				Institute institute = saveInstitute(instituteRequest, id);
 				if (instituteRequest.getMedias() != null && !instituteRequest.getMedias().isEmpty()) {
 					saveInstituteYoutubeVideos(instituteRequest.getMedias(), institute);
 				}
+				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
+				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
+				instituteElasticSearchDto.setCountryName(institute.getCountry()!=null ? institute.getCountry().getName():null);
+				instituteElasticSearchDto.setCityName(institute.getCity()!=null ? institute.getCity().getName():null);
+				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType()!=null?institute.getInstituteType().getName():null);
+				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
+			elasticSearchService.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 			response.put("message", "Institute update successfully");
 			response.put("status", HttpStatus.OK.value());
 		} catch (Exception exception) {
