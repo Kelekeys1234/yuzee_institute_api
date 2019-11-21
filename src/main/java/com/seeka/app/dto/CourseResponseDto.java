@@ -1,6 +1,7 @@
 package com.seeka.app.dto;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 public class CourseResponseDto {
@@ -11,14 +12,13 @@ public class CourseResponseDto {
 	private Integer stars;
 	private Double duration;
 	private String durationTime;
-	
+
 	private String language;
-	
+
 	private String languageShortKey;
 	private BigInteger instituteId;
 	private String instituteName;
-	
-	
+
 	private Double costRange;
 
 	private String location;
@@ -35,6 +35,9 @@ public class CourseResponseDto {
 	private List<StorageDto> storageList;
 	private Boolean isViewed = false;
 	private String cost;
+	private Boolean isActive;
+	private Date updatedOn;
+	private List<String> intake;
 
 	public BigInteger getInstituteId() {
 		return instituteId;
@@ -56,7 +59,7 @@ public class CourseResponseDto {
 		return courseRanking;
 	}
 
-	public void setCourseRanking(Integer courseRanking) {
+	public void setCourseRanking(final Integer courseRanking) {
 		this.courseRanking = courseRanking;
 	}
 
@@ -280,6 +283,30 @@ public class CourseResponseDto {
 
 	public void setCost(final String cost) {
 		this.cost = cost;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(final Boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public Date getUpdatedOn() {
+		return updatedOn;
+	}
+
+	public void setUpdatedOn(final Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
+
+	public List<String> getIntake() {
+		return intake;
+	}
+
+	public void setIntake(final List<String> intake) {
+		this.intake = intake;
 	}
 
 }

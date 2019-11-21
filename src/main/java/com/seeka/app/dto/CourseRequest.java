@@ -16,13 +16,12 @@ public class CourseRequest {
 	private String name;
 	private String description;
 	private String duration;
-	private String intake;
+	private List<String> intake;
+	private List<String> deliveryMethod;
 	private String language;
 	private Double domasticFee;
 	private Double internationalFee;
 	private String grades;
-	private String partTime;
-	private String fullTime;
 	private String documentUrl;
 	private String contact;
 	private String openingHourFrom;
@@ -150,14 +149,14 @@ public class CourseRequest {
 	/**
 	 * @return the intake
 	 */
-	public String getIntake() {
+	public List<String> getIntake() {
 		return intake;
 	}
 
 	/**
 	 * @param intake the intake to set
 	 */
-	public void setIntake(final String intake) {
+	public void setIntake(final List<String> intake) {
 		this.intake = intake;
 	}
 
@@ -207,36 +206,8 @@ public class CourseRequest {
 		return englishEligibility;
 	}
 
-	public void setEnglishEligibility(List<CourseEnglishEligibility> englishEligibility) {
+	public void setEnglishEligibility(final List<CourseEnglishEligibility> englishEligibility) {
 		this.englishEligibility = englishEligibility;
-	}
-
-	/**
-	 * @return the partTime
-	 */
-	public String getPartTime() {
-		return partTime;
-	}
-
-	/**
-	 * @param partTime the partTime to set
-	 */
-	public void setPartTime(final String partTime) {
-		this.partTime = partTime;
-	}
-
-	/**
-	 * @return the fullTime
-	 */
-	public String getFullTime() {
-		return fullTime;
-	}
-
-	/**
-	 * @param fullTime the fullTime to set
-	 */
-	public void setFullTime(final String fullTime) {
-		this.fullTime = fullTime;
 	}
 
 	/**
@@ -473,7 +444,7 @@ public class CourseRequest {
 	/**
 	 * @param facultyName the facultyName to set
 	 */
-	public void setFacultyName(String facultyName) {
+	public void setFacultyName(final String facultyName) {
 		this.facultyName = facultyName;
 	}
 
@@ -487,7 +458,7 @@ public class CourseRequest {
 	/**
 	 * @param studyMode the studyMode to set
 	 */
-	public void setStudyMode(String studyMode) {
+	public void setStudyMode(final String studyMode) {
 		this.studyMode = studyMode;
 	}
 
@@ -501,7 +472,7 @@ public class CourseRequest {
 	/**
 	 * @param partFull the partFull to set
 	 */
-	public void setPartFull(String partFull) {
+	public void setPartFull(final String partFull) {
 		this.partFull = partFull;
 	}
 
@@ -515,7 +486,7 @@ public class CourseRequest {
 	/**
 	 * @param levelId the levelId to set
 	 */
-	public void setLevelId(BigInteger levelId) {
+	public void setLevelId(final BigInteger levelId) {
 		this.levelId = levelId;
 	}
 
@@ -529,7 +500,7 @@ public class CourseRequest {
 	/**
 	 * @param levelName the levelName to set
 	 */
-	public void setLevelName(String levelName) {
+	public void setLevelName(final String levelName) {
 		this.levelName = levelName;
 	}
 
@@ -543,7 +514,7 @@ public class CourseRequest {
 	/**
 	 * @param availbility the availbility to set
 	 */
-	public void setAvailbility(String availbility) {
+	public void setAvailbility(final String availbility) {
 		this.availbility = availbility;
 	}
 
@@ -551,7 +522,7 @@ public class CourseRequest {
 		return storageList;
 	}
 
-	public void setStorageList(List<StorageDto> storageList) {
+	public void setStorageList(final List<StorageDto> storageList) {
 		this.storageList = storageList;
 	}
 
@@ -565,7 +536,7 @@ public class CourseRequest {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(BigInteger id) {
+	public void setId(final BigInteger id) {
 		this.id = id;
 	}
 
@@ -579,7 +550,7 @@ public class CourseRequest {
 	/**
 	 * @param currency the currency to set
 	 */
-	public void setCurrency(String currency) {
+	public void setCurrency(final String currency) {
 		this.currency = currency;
 	}
 
@@ -593,7 +564,7 @@ public class CourseRequest {
 	/**
 	 * @param language the language to set
 	 */
-	public void setLanguage(String language) {
+	public void setLanguage(final String language) {
 		this.language = language;
 	}
 
@@ -607,7 +578,16 @@ public class CourseRequest {
 	/**
 	 * @param link the link to set
 	 */
-	public void setLink(String link) {
+	public void setLink(final String link) {
 		this.link = link;
 	}
+
+	public List<String> getDeliveryMethod() {
+		return deliveryMethod;
+	}
+
+	public void setDeliveryMethod(final List<String> deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
+	}
+
 }
