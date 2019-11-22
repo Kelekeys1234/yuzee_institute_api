@@ -95,8 +95,8 @@ public class CourseController {
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException {
-		courseService.save(course);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Course Created successfully").create();
+		BigInteger courseId = courseService.save(course);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId).setMessage("Course Created successfully").create();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
@@ -465,39 +465,18 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/minimumRequirement", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> saveCourseMinRequirement(@Valid @RequestBody final CourseMinRequirementDto courseMinRequirementDto) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			courseService.saveCourseMinrequirement(courseMinRequirementDto);
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", "CourseMinRequirement Save Successfully");
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.NOT_FOUND.value());
-			response.put("message", "Error to save CourseMinRequirement");
+	public ResponseEntity<?> saveCourseMinRequirement(@Valid @RequestBody final List<CourseMinRequirementDto> courseMinRequirementDtoList) throws Exception {
+		for (CourseMinRequirementDto courseMinRequirementDto2 : courseMinRequirementDtoList) {
+			courseService.saveCourseMinrequirement(courseMinRequirementDto2);
 		}
-		return ResponseEntity.accepted().body(response);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Created Course Minimum Requirement").create();
 	}
 
 	@RequestMapping(value = "/minimumRequirement/{courseId}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getCourseMinRequirement(@PathVariable final BigInteger courseId) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			CourseMinRequirementDto courseMinRequirementDto = courseService.getCourseMinRequirement(courseId);
-			if (courseMinRequirementDto.getGrade() != null && !courseMinRequirementDto.getGrade().isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", "Course minimum requirement fetch Successfully");
-				response.put("data", courseMinRequirementDto);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", "Course minimum requirement Not Found");
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", exception);
-		}
-		return ResponseEntity.accepted().body(response);
+		List<CourseMinRequirementDto> courseMinRequirementDto = courseService.getCourseMinRequirement(courseId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Get Course Minimum Requirement").setData(courseMinRequirementDto)
+				.create();
 	}
 
 	@RequestMapping(value = "/autoSearch/{searchKey}", method = RequestMethod.GET, produces = "application/json")

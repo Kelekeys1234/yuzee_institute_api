@@ -215,7 +215,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public void save(@Valid final CourseRequest courseDto) throws ValidationException {
+	public BigInteger save(@Valid final CourseRequest courseDto) throws ValidationException {
 		Course course = new Course();
 		course.setInstitute(getInstititute(courseDto.getInstituteId()));
 		course.setDescription(courseDto.getDescription());
@@ -306,6 +306,7 @@ public class CourseService implements ICourseService {
 				courseEnglishEligibilityDAO.save(e);
 			}
 		}
+		return course.getId();
 	}
 
 	@Override
@@ -839,11 +840,7 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public void saveCourseMinrequirement(final CourseMinRequirementDto courseMinRequirementDto) {
-		try {
-			convertDtoToCourseMinRequirement(courseMinRequirementDto);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		convertDtoToCourseMinRequirement(courseMinRequirementDto);
 	}
 
 	public void convertDtoToCourseMinRequirement(final CourseMinRequirementDto courseMinRequirementDto) {
@@ -883,24 +880,32 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public CourseMinRequirementDto getCourseMinRequirement(final BigInteger course) {
+	public List<CourseMinRequirementDto> getCourseMinRequirement(final BigInteger course) {
 		return convertCourseMinRequirementToDto(courseMinRequirementDao.get(course));
 	}
 
-	public CourseMinRequirementDto convertCourseMinRequirementToDto(final List<CourseMinRequirement> courseMinRequirement) {
-		List<String> subject = new ArrayList<>();
-		List<String> grade = new ArrayList<>();
-		CourseMinRequirementDto courseMinRequirementDto = new CourseMinRequirementDto();
-		for (CourseMinRequirement courseMinRequirements : courseMinRequirement) {
-			subject.add(courseMinRequirements.getSubject());
-			grade.add(courseMinRequirements.getGrade());
-			courseMinRequirementDto.setCountry(courseMinRequirements.getCountry().getId());
-			courseMinRequirementDto.setSystem(courseMinRequirements.getSystem());
-			courseMinRequirementDto.setCourse(courseMinRequirements.getCourse().getId());
+	public List<CourseMinRequirementDto> convertCourseMinRequirementToDto(final List<CourseMinRequirement> courseMinRequirement) {
+		List<CourseMinRequirementDto> resultList = new ArrayList<>();
+		Set<BigInteger> countryIds = courseMinRequirement.stream().map(c -> c.getCountry().getId()).collect(Collectors.toSet());
+		for (BigInteger countryId : countryIds) {
+			List<String> subject = new ArrayList<>();
+			List<String> grade = new ArrayList<>();
+			List<CourseMinRequirement> filterList = courseMinRequirement.stream().filter(x -> x.getCountry().getId().equals(countryId))
+					.collect(Collectors.toList());
+			CourseMinRequirementDto courseMinRequirementDto = new CourseMinRequirementDto();
+			for (CourseMinRequirement courseMinRequirements : filterList) {
+				subject.add(courseMinRequirements.getSubject());
+				grade.add(courseMinRequirements.getGrade());
+				courseMinRequirementDto.setCountry(courseMinRequirements.getCountry().getId());
+				courseMinRequirementDto.setSystem(courseMinRequirements.getSystem());
+				courseMinRequirementDto.setCourse(courseMinRequirements.getCourse().getId());
+			}
+			courseMinRequirementDto.setSubject(subject);
+			courseMinRequirementDto.setGrade(grade);
+			resultList.add(courseMinRequirementDto);
 		}
-		courseMinRequirementDto.setSubject(subject);
-		courseMinRequirementDto.setGrade(grade);
-		return courseMinRequirementDto;
+
+		return resultList;
 	}
 
 	@Override
