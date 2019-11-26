@@ -155,7 +155,7 @@ public class CourseService implements ICourseService {
 	@Override
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer starcourseResponseDtostIndex,
 			final Integer pageSize, final String searchKeyword) throws ValidationException {
-		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword);
+		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword, null);
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			return new ArrayList<>();
 		}

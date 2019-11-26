@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.UserViewData;
+import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IViewDao;
+import com.seeka.app.dto.CourseResponseDto;
+import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.UserViewDataRequestDto;
 
 @Service
@@ -20,6 +24,9 @@ public class ViewService implements IViewService {
 
 	@Autowired
 	private IViewDao iViewDataDao;
+
+	@Autowired
+	private ICourseDAO iCourseDAO;
 
 	@Override
 	public void createUserViewData(final UserViewDataRequestDto userViewDataRequestDto) {
@@ -31,9 +38,10 @@ public class ViewService implements IViewService {
 	}
 
 	@Override
-	public List<UserViewData> getUserViewData(final BigInteger userId, final String entityType, final boolean isUnique) {
+	public List<UserViewData> getUserViewData(final BigInteger userId, final String entityType, final boolean isUnique, final Integer startIndex,
+			final Integer pageSize) {
 		List<UserViewData> resultList = new ArrayList<>();
-		List<Object> objectList = iViewDataDao.getUserViewData(userId, entityType, isUnique);
+		List<Object> objectList = iViewDataDao.getUserViewData(userId, entityType, isUnique, startIndex, pageSize);
 		for (Object object : objectList) {
 			Object[] obj1 = (Object[]) object;
 			UserViewData UserViewData = new UserViewData();
@@ -46,6 +54,13 @@ public class ViewService implements IViewService {
 			resultList.add(UserViewData);
 		}
 		return resultList;
+	}
+
+	@Override
+	public List<CourseResponseDto> getUserViewDataCourse(final BigInteger userId, final boolean isUnique, final Integer startIndex, final Integer pageSize) {
+		List<UserViewData> userViewDatas = getUserViewData(userId, "COURSE", isUnique, startIndex, pageSize);
+		return iCourseDAO.getAllCoursesByFilter(new CourseSearchDto(), null, userViewDatas.stream().map(x -> x.getEntityId()).collect(Collectors.toList()));
+
 	}
 
 	@Override

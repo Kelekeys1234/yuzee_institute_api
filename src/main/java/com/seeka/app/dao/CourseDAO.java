@@ -142,7 +142,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final String searchKeyword) {
+	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final String searchKeyword, final List<BigInteger> courseIds) {
 		Session session = sessionFactory.getCurrentSession();
 
 		String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName,inst.id as instId,inst.name as instName, crs.cost_range, "
@@ -176,6 +176,10 @@ public class CourseDAO implements ICourseDAO {
 
 		if (null != courseSearchDto.getCourseName() && !courseSearchDto.getCourseName().isEmpty()) {
 			sqlQuery += " and crs.name like '%" + courseSearchDto.getCourseName().trim() + "%'";
+		}
+
+		if (courseIds != null) {
+			sqlQuery += " and crs.id in (" + courseIds.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
 		if (searchKeyword != null) {
