@@ -34,7 +34,7 @@ public interface ICourseDAO {
 
 	List<Course> getAll();
 
-	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, String searchKeyword);
+	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, String searchKeyword, List<BigInteger> courseIds);
 
 	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
@@ -142,4 +142,5 @@ public interface ICourseDAO {
 	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(BigInteger courseId);
 
 	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseIdList(List<BigInteger> courseIds);
+
 }

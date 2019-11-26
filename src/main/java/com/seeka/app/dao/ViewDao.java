@@ -6,7 +6,6 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -28,7 +27,8 @@ public class ViewDao implements IViewDao {
 	}
 
 	@Override
-	public List<Object> getUserViewData(final BigInteger userId, final String entityType, final boolean isUnique) {
+	public List<Object> getUserViewData(final BigInteger userId, final String entityType, final boolean isUnique, final Integer startIndex,
+			final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserViewData.class, "userViewData");
 		crit.add(Restrictions.and(Restrictions.eq("userViewData.userId", userId)));
@@ -45,7 +45,10 @@ public class ViewDao implements IViewDao {
 			projList.add(Projections.groupProperty("userViewData.entityType"));
 		}
 		crit.setProjection(projList);
-
+		if (startIndex != null && pageSize != null) {
+			crit.setFirstResult(startIndex);
+			crit.setMaxResults(pageSize);
+		}
 		return crit.list();
 	}
 
@@ -94,7 +97,7 @@ public class ViewDao implements IViewDao {
 	}
 
 	@Override
-	public List<BigInteger> getUserWatchCourseIds(final BigInteger userId, String entityType) {
+	public List<BigInteger> getUserWatchCourseIds(final BigInteger userId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 //		Criteria crit = session.createCriteria(UserViewData.class, "userViewData");
 //		crit.add(Restrictions.and(Restrictions.eq("userViewData.userId", userId)));
@@ -105,16 +108,18 @@ public class ViewDao implements IViewDao {
 //		projList.add(Projections.count("userViewData.entityId"), "count");
 //		crit.addOrder(Order.desc("count"));
 //		crit.setProjection(projList);
-		List<BigInteger> courseIds = session.createNativeQuery("Select entity_id from user_view_data where user_id = ? and entity_type = ? group by entity_id order by count(*) desc")
-			.setParameter(1, userId).setParameter(2, entityType).getResultList();
+		List<BigInteger> courseIds = session
+				.createNativeQuery("Select entity_id from user_view_data where user_id = ? and entity_type = ? group by entity_id order by count(*) desc")
+				.setParameter(1, userId).setParameter(2, entityType).getResultList();
 		return courseIds;
 	}
-	
+
 	@Override
-	public List<BigInteger> getOtherUserWatchCourse(BigInteger userId, String entityType) {
+	public List<BigInteger> getOtherUserWatchCourse(final BigInteger userId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
-		List<BigInteger> courseList = (List<BigInteger>)session.createNativeQuery("select entity_id from user_view_data userwatchcourse where userwatchcourse.user_Id not in (?) and userwatchcourse.entity_type = ? group by userwatchcourse.entity_id order by count(*) desc").
-		setParameter(1, userId).getResultList();
+		List<BigInteger> courseList = session.createNativeQuery(
+				"select entity_id from user_view_data userwatchcourse where userwatchcourse.user_Id not in (?) and userwatchcourse.entity_type = ? group by userwatchcourse.entity_id order by count(*) desc")
+				.setParameter(1, userId).getResultList();
 		return courseList;
 	}
 }
