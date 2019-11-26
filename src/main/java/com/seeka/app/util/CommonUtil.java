@@ -155,6 +155,22 @@ public class CommonUtil {
 		courseRequest.setPartFull(course.getPartFull());
 		courseRequest.setStudyMode(course.getStudyMode());
 		courseRequest.setAvailbility(course.getAvailbilty());
+		courseRequest.setJobFullTime(course.getJobFullTime());
+		courseRequest.setJobPartTime(course.getJobPartTime());
+		courseRequest.setOpeningHourFrom(course.getOpeningHourFrom());
+		courseRequest.setOpeningHourTo(course.getOpeningHourTo());
+		if (course.getInstitute() != null) {
+			courseRequest.setInstituteId(course.getInstitute().getId());
+		}
+		if (course.getLevel() != null) {
+			courseRequest.setLevelId(course.getLevel().getId());
+		}
+		if (course.getCountry() != null) {
+			courseRequest.setCountryId(course.getCountry().getId());
+		}
+		if (course.getCity() != null) {
+			courseRequest.setCityId(course.getCity().getId());
+		}
 		return courseRequest;
 	}
 

@@ -26,6 +26,8 @@ public class CourseRequest {
 	private String contact;
 	private String openingHourFrom;
 	private String openingHourTo;
+	private String jobFullTime;
+	private String jobPartTime;
 	private String campusLocation;
 	private String website;
 	private String link;
@@ -588,6 +590,22 @@ public class CourseRequest {
 
 	public void setDeliveryMethod(final List<String> deliveryMethod) {
 		this.deliveryMethod = deliveryMethod;
+	}
+
+	public String getJobFullTime() {
+		return jobFullTime;
+	}
+
+	public void setJobFullTime(final String jobFullTime) {
+		this.jobFullTime = jobFullTime;
+	}
+
+	public String getJobPartTime() {
+		return jobPartTime;
+	}
+
+	public void setJobPartTime(final String jobPartTime) {
+		this.jobPartTime = jobPartTime;
 	}
 
 }

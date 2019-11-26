@@ -37,7 +37,7 @@ public class ViewsController {
 	}
 
 	@GetMapping
-	public ResponseEntity<?> getUserViewData(@RequestHeader final BigInteger userId, @RequestParam final String entityType,
+	public ResponseEntity<?> getUserViewData(@RequestParam(name = "userId") final BigInteger userId, @RequestParam final String entityType,
 			@RequestParam(name = "isUnique", required = false) final boolean isUnique) throws ValidationException {
 		List<UserViewData> userViewDatas = iViewService.getUserViewData(userId, entityType, isUnique);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Get user view data.").setData(userViewDatas).create();

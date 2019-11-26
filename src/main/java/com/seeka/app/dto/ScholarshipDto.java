@@ -33,8 +33,8 @@ public class ScholarshipDto implements Serializable {
 	private Date applicationDeadline;
 	private List<String> intakes;
 	private List<String> languages;
-	private String reqirements;
-	
+	private String requirements;
+
 	public String getName() {
 		return name;
 	}
@@ -215,182 +215,228 @@ public class ScholarshipDto implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((address == null) ? 0 : address.hashCode());
-		result = prime * result + ((applicationDeadline == null) ? 0 : applicationDeadline.hashCode());
-		result = prime * result + ((countryId == null) ? 0 : countryId.hashCode());
-		result = prime * result + ((currency == null) ? 0 : currency.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((eligibleNationality == null) ? 0 : eligibleNationality.hashCode());
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
-		result = prime * result + ((headquaters == null) ? 0 : headquaters.hashCode());
-		result = prime * result + ((howToApply == null) ? 0 : howToApply.hashCode());
-		result = prime * result + ((instituteId == null) ? 0 : instituteId.hashCode());
-		result = prime * result + ((intakes == null) ? 0 : intakes.hashCode());
-		result = prime * result + ((languages == null) ? 0 : languages.hashCode());
-		result = prime * result + ((levelId == null) ? 0 : levelId.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((numberOfAvaliability == null) ? 0 : numberOfAvaliability.hashCode());
-		result = prime * result + ((offeredByCourse == null) ? 0 : offeredByCourse.hashCode());
-		result = prime * result + ((offeredByInstitute == null) ? 0 : offeredByInstitute.hashCode());
-		result = prime * result + ((reqirements == null) ? 0 : reqirements.hashCode());
-		result = prime * result + ((scholarshipAmount == null) ? 0 : scholarshipAmount.hashCode());
-		result = prime * result + ((scholarshipAward == null) ? 0 : scholarshipAward.hashCode());
-		result = prime * result + ((validity == null) ? 0 : validity.hashCode());
-		result = prime * result + ((website == null) ? 0 : website.hashCode());
+		result = prime * result + (address == null ? 0 : address.hashCode());
+		result = prime * result + (applicationDeadline == null ? 0 : applicationDeadline.hashCode());
+		result = prime * result + (countryId == null ? 0 : countryId.hashCode());
+		result = prime * result + (currency == null ? 0 : currency.hashCode());
+		result = prime * result + (description == null ? 0 : description.hashCode());
+		result = prime * result + (eligibleNationality == null ? 0 : eligibleNationality.hashCode());
+		result = prime * result + (email == null ? 0 : email.hashCode());
+		result = prime * result + (gender == null ? 0 : gender.hashCode());
+		result = prime * result + (headquaters == null ? 0 : headquaters.hashCode());
+		result = prime * result + (howToApply == null ? 0 : howToApply.hashCode());
+		result = prime * result + (instituteId == null ? 0 : instituteId.hashCode());
+		result = prime * result + (intakes == null ? 0 : intakes.hashCode());
+		result = prime * result + (languages == null ? 0 : languages.hashCode());
+		result = prime * result + (levelId == null ? 0 : levelId.hashCode());
+		result = prime * result + (name == null ? 0 : name.hashCode());
+		result = prime * result + (numberOfAvaliability == null ? 0 : numberOfAvaliability.hashCode());
+		result = prime * result + (offeredByCourse == null ? 0 : offeredByCourse.hashCode());
+		result = prime * result + (offeredByInstitute == null ? 0 : offeredByInstitute.hashCode());
+		result = prime * result + (requirements == null ? 0 : requirements.hashCode());
+		result = prime * result + (scholarshipAmount == null ? 0 : scholarshipAmount.hashCode());
+		result = prime * result + (scholarshipAward == null ? 0 : scholarshipAward.hashCode());
+		result = prime * result + (validity == null ? 0 : validity.hashCode());
+		result = prime * result + (website == null ? 0 : website.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		ScholarshipDto other = (ScholarshipDto) obj;
 		if (address == null) {
-			if (other.address != null)
+			if (other.address != null) {
 				return false;
-		} else if (!address.equals(other.address))
+			}
+		} else if (!address.equals(other.address)) {
 			return false;
+		}
 		if (applicationDeadline == null) {
-			if (other.applicationDeadline != null)
+			if (other.applicationDeadline != null) {
 				return false;
-		} else if (!applicationDeadline.equals(other.applicationDeadline))
+			}
+		} else if (!applicationDeadline.equals(other.applicationDeadline)) {
 			return false;
+		}
 		if (countryId == null) {
-			if (other.countryId != null)
+			if (other.countryId != null) {
 				return false;
-		} else if (!countryId.equals(other.countryId))
+			}
+		} else if (!countryId.equals(other.countryId)) {
 			return false;
+		}
 		if (currency == null) {
-			if (other.currency != null)
+			if (other.currency != null) {
 				return false;
-		} else if (!currency.equals(other.currency))
+			}
+		} else if (!currency.equals(other.currency)) {
 			return false;
+		}
 		if (description == null) {
-			if (other.description != null)
+			if (other.description != null) {
 				return false;
-		} else if (!description.equals(other.description))
+			}
+		} else if (!description.equals(other.description)) {
 			return false;
+		}
 		if (eligibleNationality == null) {
-			if (other.eligibleNationality != null)
+			if (other.eligibleNationality != null) {
 				return false;
-		} else if (!eligibleNationality.equals(other.eligibleNationality))
+			}
+		} else if (!eligibleNationality.equals(other.eligibleNationality)) {
 			return false;
+		}
 		if (email == null) {
-			if (other.email != null)
+			if (other.email != null) {
 				return false;
-		} else if (!email.equals(other.email))
+			}
+		} else if (!email.equals(other.email)) {
 			return false;
+		}
 		if (gender == null) {
-			if (other.gender != null)
+			if (other.gender != null) {
 				return false;
-		} else if (!gender.equals(other.gender))
+			}
+		} else if (!gender.equals(other.gender)) {
 			return false;
+		}
 		if (headquaters == null) {
-			if (other.headquaters != null)
+			if (other.headquaters != null) {
 				return false;
-		} else if (!headquaters.equals(other.headquaters))
+			}
+		} else if (!headquaters.equals(other.headquaters)) {
 			return false;
+		}
 		if (howToApply == null) {
-			if (other.howToApply != null)
+			if (other.howToApply != null) {
 				return false;
-		} else if (!howToApply.equals(other.howToApply))
+			}
+		} else if (!howToApply.equals(other.howToApply)) {
 			return false;
+		}
 		if (instituteId == null) {
-			if (other.instituteId != null)
+			if (other.instituteId != null) {
 				return false;
-		} else if (!instituteId.equals(other.instituteId))
+			}
+		} else if (!instituteId.equals(other.instituteId)) {
 			return false;
+		}
 		if (intakes == null) {
-			if (other.intakes != null)
+			if (other.intakes != null) {
 				return false;
-		} else if (!intakes.equals(other.intakes))
+			}
+		} else if (!intakes.equals(other.intakes)) {
 			return false;
+		}
 		if (languages == null) {
-			if (other.languages != null)
+			if (other.languages != null) {
 				return false;
-		} else if (!languages.equals(other.languages))
+			}
+		} else if (!languages.equals(other.languages)) {
 			return false;
+		}
 		if (levelId == null) {
-			if (other.levelId != null)
+			if (other.levelId != null) {
 				return false;
-		} else if (!levelId.equals(other.levelId))
+			}
+		} else if (!levelId.equals(other.levelId)) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		if (numberOfAvaliability == null) {
-			if (other.numberOfAvaliability != null)
+			if (other.numberOfAvaliability != null) {
 				return false;
-		} else if (!numberOfAvaliability.equals(other.numberOfAvaliability))
+			}
+		} else if (!numberOfAvaliability.equals(other.numberOfAvaliability)) {
 			return false;
+		}
 		if (offeredByCourse == null) {
-			if (other.offeredByCourse != null)
+			if (other.offeredByCourse != null) {
 				return false;
-		} else if (!offeredByCourse.equals(other.offeredByCourse))
+			}
+		} else if (!offeredByCourse.equals(other.offeredByCourse)) {
 			return false;
+		}
 		if (offeredByInstitute == null) {
-			if (other.offeredByInstitute != null)
+			if (other.offeredByInstitute != null) {
 				return false;
-		} else if (!offeredByInstitute.equals(other.offeredByInstitute))
+			}
+		} else if (!offeredByInstitute.equals(other.offeredByInstitute)) {
 			return false;
-		if (reqirements == null) {
-			if (other.reqirements != null)
+		}
+		if (requirements == null) {
+			if (other.requirements != null) {
 				return false;
-		} else if (!reqirements.equals(other.reqirements))
+			}
+		} else if (!requirements.equals(other.requirements)) {
 			return false;
+		}
 		if (scholarshipAmount == null) {
-			if (other.scholarshipAmount != null)
+			if (other.scholarshipAmount != null) {
 				return false;
-		} else if (!scholarshipAmount.equals(other.scholarshipAmount))
+			}
+		} else if (!scholarshipAmount.equals(other.scholarshipAmount)) {
 			return false;
+		}
 		if (scholarshipAward == null) {
-			if (other.scholarshipAward != null)
+			if (other.scholarshipAward != null) {
 				return false;
-		} else if (!scholarshipAward.equals(other.scholarshipAward))
+			}
+		} else if (!scholarshipAward.equals(other.scholarshipAward)) {
 			return false;
+		}
 		if (validity == null) {
-			if (other.validity != null)
+			if (other.validity != null) {
 				return false;
-		} else if (!validity.equals(other.validity))
+			}
+		} else if (!validity.equals(other.validity)) {
 			return false;
+		}
 		if (website == null) {
-			if (other.website != null)
+			if (other.website != null) {
 				return false;
-		} else if (!website.equals(other.website))
+			}
+		} else if (!website.equals(other.website)) {
 			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ScholarshipDto [name=").append(name).append(", offeredByInstitute=").append(offeredByInstitute)
-				.append(", offeredByCourse=").append(offeredByCourse).append(", description=").append(description)
-				.append(", scholarshipAward=").append(scholarshipAward).append(", countryId=").append(countryId)
-				.append(", levelId=").append(levelId).append(", numberOfAvaliability=").append(numberOfAvaliability)
-				.append(", currency=").append(currency).append(", scholarshipAmount=").append(scholarshipAmount)
-				.append(", validity=").append(validity).append(", howToApply=").append(howToApply).append(", gender=")
-				.append(gender).append(", eligibleNationality=").append(eligibleNationality).append(", headquaters=")
-				.append(headquaters).append(", email=").append(email).append(", address=").append(address)
-				.append(", website=").append(website).append(", instituteId=").append(instituteId)
-				.append(", applicationDeadline=").append(applicationDeadline).append(", intakes=").append(intakes)
-				.append(", languages=").append(languages).append(", reqirements=").append(reqirements).append("]");
+		builder.append("ScholarshipDto [name=").append(name).append(", offeredByInstitute=").append(offeredByInstitute).append(", offeredByCourse=")
+				.append(offeredByCourse).append(", description=").append(description).append(", scholarshipAward=").append(scholarshipAward)
+				.append(", countryId=").append(countryId).append(", levelId=").append(levelId).append(", numberOfAvaliability=").append(numberOfAvaliability)
+				.append(", currency=").append(currency).append(", scholarshipAmount=").append(scholarshipAmount).append(", validity=").append(validity)
+				.append(", howToApply=").append(howToApply).append(", gender=").append(gender).append(", eligibleNationality=").append(eligibleNationality)
+				.append(", headquaters=").append(headquaters).append(", email=").append(email).append(", address=").append(address).append(", website=")
+				.append(website).append(", instituteId=").append(instituteId).append(", applicationDeadline=").append(applicationDeadline).append(", intakes=")
+				.append(intakes).append(", languages=").append(languages).append(", requirements=").append(requirements).append("]");
 		return builder.toString();
 	}
 
-	public String getReqirements() {
-		return reqirements;
+	public String getRequirements() {
+		return requirements;
 	}
 
-	public void setReqirements(String reqirements) {
-		this.reqirements = reqirements;
+	public void setRequirements(final String requirements) {
+		this.requirements = requirements;
 	}
 
 }

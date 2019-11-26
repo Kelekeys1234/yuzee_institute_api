@@ -67,7 +67,8 @@ public class Course implements Serializable {
 	private String fileUrl;
 	private String grades;
 	private String contact;
-	private String openingHour;
+	private String openingHourFrom;
+	private String openingHourTo;
 	private String campusLocation;
 	private String jobFullTime;
 	private String jobPartTime;
@@ -500,7 +501,7 @@ public class Course implements Serializable {
 	/**
 	 * @return the contact
 	 */
-	@Transient
+	@Column(name = "contact")
 	public String getContact() {
 		return contact;
 	}
@@ -512,19 +513,22 @@ public class Course implements Serializable {
 		this.contact = contact;
 	}
 
-	/**
-	 * @return the openingHour
-	 */
-	@Transient
-	public String getOpeningHour() {
-		return openingHour;
+	@Column(name = "opening_hour_from")
+	public String getOpeningHourFrom() {
+		return openingHourFrom;
 	}
 
-	/**
-	 * @param openingHour the openingHour to set
-	 */
-	public void setOpeningHour(final String openingHour) {
-		this.openingHour = openingHour;
+	public void setOpeningHourFrom(final String openingHourFrom) {
+		this.openingHourFrom = openingHourFrom;
+	}
+
+	@Column(name = "opening_hour_to")
+	public String getOpeningHourTo() {
+		return openingHourTo;
+	}
+
+	public void setOpeningHourTo(final String openingHourTo) {
+		this.openingHourTo = openingHourTo;
 	}
 
 	/**
@@ -545,7 +549,7 @@ public class Course implements Serializable {
 	/**
 	 * @return the jobFullTime
 	 */
-	@Transient
+	@Column(name = "job_full_time")
 	public String getJobFullTime() {
 		return jobFullTime;
 	}
@@ -560,7 +564,7 @@ public class Course implements Serializable {
 	/**
 	 * @return the jobPartTime
 	 */
-	@Transient
+	@Column(name = "job_part_time")
 	public String getJobPartTime() {
 		return jobPartTime;
 	}
@@ -638,8 +642,6 @@ public class Course implements Serializable {
 		result = prime * result + (contact == null ? 0 : contact.hashCode());
 		result = prime * result + (costRange == null ? 0 : costRange.hashCode());
 		result = prime * result + (country == null ? 0 : country.hashCode());
-		result = prime * result + (language == null ? 0 : language.hashCode());
-		result = prime * result + (link == null ? 0 : link.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (currency == null ? 0 : currency.hashCode());
@@ -660,9 +662,12 @@ public class Course implements Serializable {
 		result = prime * result + (isDeleted == null ? 0 : isDeleted.hashCode());
 		result = prime * result + (jobFullTime == null ? 0 : jobFullTime.hashCode());
 		result = prime * result + (jobPartTime == null ? 0 : jobPartTime.hashCode());
+		result = prime * result + (language == null ? 0 : language.hashCode());
 		result = prime * result + (level == null ? 0 : level.hashCode());
+		result = prime * result + (link == null ? 0 : link.hashCode());
 		result = prime * result + (name == null ? 0 : name.hashCode());
-		result = prime * result + (openingHour == null ? 0 : openingHour.hashCode());
+		result = prime * result + (openingHourFrom == null ? 0 : openingHourFrom.hashCode());
+		result = prime * result + (openingHourTo == null ? 0 : openingHourTo.hashCode());
 		result = prime * result + (partFull == null ? 0 : partFull.hashCode());
 		result = prime * result + (recDate == null ? 0 : recDate.hashCode());
 		result = prime * result + (recognition == null ? 0 : recognition.hashCode());
@@ -745,20 +750,6 @@ public class Course implements Serializable {
 				return false;
 			}
 		} else if (!country.equals(other.country)) {
-			return false;
-		}
-		if (language == null) {
-			if (other.language != null) {
-				return false;
-			}
-		} else if (!language.equals(other.language)) {
-			return false;
-		}
-		if (link == null) {
-			if (other.link != null) {
-				return false;
-			}
-		} else if (!link.equals(other.link)) {
 			return false;
 		}
 		if (createdBy == null) {
@@ -901,11 +892,25 @@ public class Course implements Serializable {
 		} else if (!jobPartTime.equals(other.jobPartTime)) {
 			return false;
 		}
+		if (language == null) {
+			if (other.language != null) {
+				return false;
+			}
+		} else if (!language.equals(other.language)) {
+			return false;
+		}
 		if (level == null) {
 			if (other.level != null) {
 				return false;
 			}
 		} else if (!level.equals(other.level)) {
+			return false;
+		}
+		if (link == null) {
+			if (other.link != null) {
+				return false;
+			}
+		} else if (!link.equals(other.link)) {
 			return false;
 		}
 		if (name == null) {
@@ -915,11 +920,18 @@ public class Course implements Serializable {
 		} else if (!name.equals(other.name)) {
 			return false;
 		}
-		if (openingHour == null) {
-			if (other.openingHour != null) {
+		if (openingHourFrom == null) {
+			if (other.openingHourFrom != null) {
 				return false;
 			}
-		} else if (!openingHour.equals(other.openingHour)) {
+		} else if (!openingHourFrom.equals(other.openingHourFrom)) {
+			return false;
+		}
+		if (openingHourTo == null) {
+			if (other.openingHourTo != null) {
+				return false;
+			}
+		} else if (!openingHourTo.equals(other.openingHourTo)) {
 			return false;
 		}
 		if (partFull == null) {
@@ -1029,11 +1041,11 @@ public class Course implements Serializable {
 				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", cId=").append(cId).append(", level=").append(level)
 				.append(", availbilty=").append(availbilty).append(", partFull=").append(partFull).append(", studyMode=").append(studyMode).append(", intake=")
 				.append(intake).append(", fileUrl=").append(fileUrl).append(", grades=").append(grades).append(", contact=").append(contact)
-				.append(", openingHour=").append(openingHour).append(", campusLocation=").append(campusLocation).append(", jobFullTime=").append(jobFullTime)
-				.append(", jobPartTime=").append(jobPartTime).append(", link=").append(link).append(", domesticFee=").append(domesticFee)
-				.append(", internationalFee=").append(internationalFee).append(", currency=").append(currency).append(", currencyTime=").append(currencyTime)
-				.append(", usdInternationFee=").append(usdInternationFee).append(", usdDomasticFee=").append(usdDomasticFee).append(", costRange=")
-				.append(costRange).append("]");
+				.append(", openingHourFrom=").append(openingHourFrom).append(", openingHourTo=").append(openingHourTo).append(", campusLocation=")
+				.append(campusLocation).append(", jobFullTime=").append(jobFullTime).append(", jobPartTime=").append(jobPartTime).append(", link=").append(link)
+				.append(", domesticFee=").append(domesticFee).append(", internationalFee=").append(internationalFee).append(", currency=").append(currency)
+				.append(", currencyTime=").append(currencyTime).append(", usdInternationFee=").append(usdInternationFee).append(", usdDomasticFee=")
+				.append(usdDomasticFee).append(", costRange=").append(costRange).append("]");
 		return builder.toString();
 	}
 }

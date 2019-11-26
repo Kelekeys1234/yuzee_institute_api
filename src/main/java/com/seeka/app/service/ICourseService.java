@@ -48,7 +48,7 @@ public interface ICourseService {
 
 	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
-	void save(@Valid CourseRequest courseDto) throws ValidationException;
+	BigInteger save(@Valid CourseRequest courseDto) throws ValidationException;
 
 	Map<String, Object> getAllCourse(Integer pageNumber, Integer pageSize);
 
@@ -85,7 +85,7 @@ public interface ICourseService {
 
 	void saveCourseMinrequirement(CourseMinRequirementDto obj);
 
-	CourseMinRequirementDto getCourseMinRequirement(BigInteger courseId);
+	List<CourseMinRequirementDto> getCourseMinRequirement(BigInteger courseId);
 
 	Map<String, Object> autoSearchByCharacter(String searchKey);
 
