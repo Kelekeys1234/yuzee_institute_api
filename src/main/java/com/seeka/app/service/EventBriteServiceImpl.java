@@ -48,7 +48,7 @@ public class EventBriteServiceImpl implements EventBriteService {
 		eventBiteDto1.setShort_name_localized("Family & Education");
 
 		EventBriteDto eventBiteDto2 = new EventBriteDto();
-		eventBiteDto2.setId(115);
+		eventBiteDto2.setId(120);
 		eventBiteDto2.setName("School Activities");
 		eventBiteDto2.setName_localized("School Activities");
 		eventBiteDto2.setResourceUri( "https://www.eventbriteapi.com/v3/categories/120/");
@@ -56,7 +56,7 @@ public class EventBriteServiceImpl implements EventBriteService {
 		eventBiteDto2.setShort_name_localized("School Activities");
 		
 		EventBriteDto eventBiteDto3 = new EventBriteDto();
-		eventBiteDto3.setId(115);
+		eventBiteDto3.setId(107);
 		eventBiteDto3.setName("Health & Wellness");
 		eventBiteDto3.setName_localized("Health & Wellness");
 		eventBiteDto3.setResourceUri( "https://www.eventbriteapi.com/v3/categories/107/");
