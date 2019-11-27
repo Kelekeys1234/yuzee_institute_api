@@ -1709,7 +1709,7 @@ public class CourseDAO implements ICourseDAO {
 		Session session = sessionFactory.getCurrentSession();
 		System.out.println(currencyRate);
 		Integer count = session
-				.createNativeQuery("update course set usd_domestic_fee = domestic_fee * ?, usd_international_fee = international_fee * ? where currency =?")
+				.createNativeQuery("update course set usd_domestic_fee = domestic_fee * ?, usd_international_fee = international_fee * ?, updated_on = now() where currency =?")
 				.setParameter(1, 1 / currencyRate.getConversionRate()).setParameter(2, 1 / currencyRate.getConversionRate())
 				.setParameter(3, currencyRate.getToCurrencyCode()).executeUpdate();
 		System.out.println("courses updated for " + currencyRate.getToCurrencyCode() + "-" + count);
