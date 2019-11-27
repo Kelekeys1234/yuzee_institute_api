@@ -36,7 +36,7 @@ public interface IInstituteService {
 
 	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
 			Integer startIndex, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
-			Integer toWorldRanking);
+			Integer toWorldRanking, String campusType);
 
 	InstituteResponseDto getInstituteByID(BigInteger instituteId);
 
@@ -44,11 +44,11 @@ public interface IInstituteService {
 
 	List<InstituteResponseDto> getInstituteByListOfCityId(String cityId);
 
-	Map<String, Object> save(@Valid List<InstituteRequestDto> institute);
+	Map<String, Object> save(List<InstituteRequestDto> institute);
 
 	Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize);
 
-	Map<String, Object> getById(@Valid BigInteger id);
+	Map<String, Object> getById(BigInteger id);
 
 	Map<String, Object> searchInstitute(@Valid String searchText);
 
@@ -73,7 +73,7 @@ public interface IInstituteService {
 	List<BigInteger> getInstituteIdsFromCountry(List<BigInteger> distinctCountryIds);
 
 	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive,
-			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking);
+			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
 
 	Integer getTotalCourseCountForInstitute(BigInteger instituteId);
 

@@ -812,10 +812,6 @@ public class MigrateCourseController {
 
 			course.setWebsite(Website);
 
-			if (null != World_Ranking) {
-				course.setWorldRanking(World_Ranking);
-			}
-
 			courseDetails.setAvailbilty(availbilty);
 			// courseDetails.setCourseId(courseId);
 			courseDetails.setDescription(description);

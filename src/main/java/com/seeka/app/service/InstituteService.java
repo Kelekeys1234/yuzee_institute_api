@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -24,10 +25,14 @@ import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.bean.AccreditedInstituteDetail;
 import com.seeka.app.bean.Country;
+import com.seeka.app.bean.Faculty;
+import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteIntake;
+import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.bean.InstituteVideos;
+import com.seeka.app.bean.Level;
 import com.seeka.app.dao.IAccreditedInstituteDetailDao;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
@@ -87,15 +92,27 @@ public class InstituteService implements IInstituteService {
 
 	@Value("${s3.url}")
 	private String s3URL;
-	
+
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Autowired
 	private ICourseDAO courseDao;
-	
+
 	@Autowired
 	private ElasticSearchService elasticSearchService;
+
+	@Autowired
+	private IFacultyService iFacultyService;
+
+	@Autowired
+	private IFacultyLevelService iFacultyLevelService;
+
+	@Autowired
+	private LevelService levelService;
+
+	@Autowired
+	private IInstituteLevelService iInstituteLevelService;
 
 	@Override
 	public void save(final Institute institute) {
@@ -140,9 +157,9 @@ public class InstituteService implements IInstituteService {
 	@Override
 	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto filterObj, final String sortByField, final String sortByType,
 			final String searchKeyword, final Integer startIndex, final BigInteger cityId, final BigInteger instituteTypeId, final Boolean isActive,
-			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
+			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) {
 		return dao.getAllInstitutesByFilter(filterObj, sortByField, sortByType, searchKeyword, startIndex, cityId, instituteTypeId, isActive, updatedOn,
-				fromWorldRanking, toWorldRanking);
+				fromWorldRanking, toWorldRanking, campusType);
 	}
 
 	@Override
@@ -191,24 +208,31 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public Map<String, Object> save(@Valid final List<InstituteRequestDto> instituteRequests) {
+	public Map<String, Object> save(final List<InstituteRequestDto> instituteRequests) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				Institute institute = saveInstitute(instituteRequest, null);
-				if (instituteRequest.getMedias() != null && !instituteRequest.getMedias().isEmpty()) {
-					saveInstituteYoutubeVideos(instituteRequest.getMedias(), institute);
+				if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
+					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
+				}
+				if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
+					saveFacultyLevel(institute, instituteRequest.getFacultyIds());
+				}
+				if (instituteRequest.getLevelIds() != null && !instituteRequest.getLevelIds().isEmpty()) {
+					saveInstituteLevel(institute, instituteRequest.getLevelIds());
 				}
 				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
 				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
-				instituteElasticSearchDto.setCountryName(institute.getCountry()!=null ? institute.getCountry().getName():null);
-				instituteElasticSearchDto.setCityName(institute.getCity()!=null ? institute.getCity().getName():null);
-				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType()!=null?institute.getInstituteType().getName():null);
+				instituteElasticSearchDto.setCountryName(institute.getCountry() != null ? institute.getCountry().getName() : null);
+				instituteElasticSearchDto.setCityName(institute.getCity() != null ? institute.getCity().getName() : null);
+				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType().getName() : null);
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
-			
-			elasticSearchService.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+
+			elasticSearchService.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(),
+					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 			response.put("message", "Institute saved successfully");
 			response.put("status", HttpStatus.OK.value());
 		} catch (Exception exception) {
@@ -218,6 +242,41 @@ public class InstituteService implements IInstituteService {
 		return response;
 	}
 
+	private void saveInstituteLevel(final Institute institute, final List<BigInteger> levelIds) {
+		iInstituteLevelService.deleteInstituteLevel(institute.getId());
+		for (BigInteger levelId : levelIds) {
+			Level level = levelService.get(levelId);
+			InstituteLevel instituteLevel = new InstituteLevel();
+			instituteLevel.setLevel(level);
+			instituteLevel.setCountry(institute.getCountry());
+			instituteLevel.setCity(institute.getCity());
+			instituteLevel.setInstitute(institute);
+			instituteLevel.setCreatedBy("API");
+			instituteLevel.setCreatedOn(new Date());
+			instituteLevel.setUpdatedBy("API");
+			instituteLevel.setUpdatedOn(new Date());
+			instituteLevel.setIsActive(true);
+			iInstituteLevelService.save(instituteLevel);
+		}
+	}
+
+	private void saveFacultyLevel(final Institute institute, final List<BigInteger> facultyIds) {
+		iFacultyLevelService.deleteFacultyLevel(institute.getId());
+		for (BigInteger facultyId : facultyIds) {
+			Faculty faculty = iFacultyService.get(facultyId);
+			FacultyLevel facultyLevel = new FacultyLevel();
+			facultyLevel.setFaculty(faculty);
+			facultyLevel.setInstitute(institute);
+			facultyLevel.setCreatedBy("API");
+			facultyLevel.setCreatedOn(new Date());
+			facultyLevel.setUpdatedBy("API");
+			facultyLevel.setUpdatedOn(new Date());
+			facultyLevel.setIsActive(true);
+			iFacultyLevelService.save(facultyLevel);
+		}
+
+	}
+
 	@Override
 	public Map<String, Object> update(final List<InstituteRequestDto> instituteRequests, @Valid final BigInteger id) {
 		Map<String, Object> response = new HashMap<>();
@@ -225,17 +284,25 @@ public class InstituteService implements IInstituteService {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				Institute institute = saveInstitute(instituteRequest, id);
-				if (instituteRequest.getMedias() != null && !instituteRequest.getMedias().isEmpty()) {
-					saveInstituteYoutubeVideos(instituteRequest.getMedias(), institute);
+				if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
+					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
+				}
+
+				if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
+					saveFacultyLevel(institute, instituteRequest.getFacultyIds());
+				}
+				if (instituteRequest.getLevelIds() != null && !instituteRequest.getLevelIds().isEmpty()) {
+					saveInstituteLevel(institute, instituteRequest.getLevelIds());
 				}
 				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
 				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
-				instituteElasticSearchDto.setCountryName(institute.getCountry()!=null ? institute.getCountry().getName():null);
-				instituteElasticSearchDto.setCityName(institute.getCity()!=null ? institute.getCity().getName():null);
-				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType()!=null?institute.getInstituteType().getName():null);
+				instituteElasticSearchDto.setCountryName(institute.getCountry() != null ? institute.getCountry().getName() : null);
+				instituteElasticSearchDto.setCityName(institute.getCity() != null ? institute.getCity().getName() : null);
+				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType().getName() : null);
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
-			elasticSearchService.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+			elasticSearchService.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(),
+					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 			response.put("message", "Institute update successfully");
 			response.put("status", HttpStatus.OK.value());
 		} catch (Exception exception) {
@@ -262,10 +329,21 @@ public class InstituteService implements IInstituteService {
 		}
 	}
 
-	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final BigInteger id) {
+	private List<InstituteMedia> getInstituteMedia(final BigInteger instituteId) {
+		List<InstituteVideos> instituteVideos = instituteVideoDao.findByInstituteId(instituteId);
+		List<InstituteMedia> instituteMedias = new ArrayList<>();
+		for (InstituteVideos instituteVideos2 : instituteVideos) {
+			InstituteMedia instituteMedia = new InstituteMedia();
+			BeanUtils.copyProperties(instituteVideos2, instituteMedia);
+			instituteMedias.add(instituteMedia);
+		}
+		return instituteMedias;
+	}
+
+	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final BigInteger id) throws ValidationException {
 		Institute institute = null;
 		if (id != null) {
-			institute = dao.get(instituteRequest.getId());
+			institute = dao.get(id);
 		} else {
 			institute = new Institute();
 			institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -275,13 +353,32 @@ public class InstituteService implements IInstituteService {
 		institute.setUpdatedBy(instituteRequest.getUpdatedBy());
 		institute.setName(instituteRequest.getName());
 		institute.setDescription(instituteRequest.getDescription());
-		institute.setCountry(countryDAO.get(instituteRequest.getCountryId()));
-		institute.setCity(cityDAO.get(instituteRequest.getCityId()));
-		institute.setInstituteType(instituteTypeDAO.get(instituteRequest.getTypeId()));
+		if (instituteRequest.getCountryId() != null) {
+			institute.setCountry(countryDAO.get(instituteRequest.getCountryId()));
+		} else {
+			throw new ValidationException("countryId is required");
+		}
+		if (instituteRequest.getCountryId() != null) {
+			institute.setCity(cityDAO.get(instituteRequest.getCityId()));
+		} else {
+			throw new ValidationException("cityId is required");
+		}
+
+		if (instituteRequest.getInstituteTypeId() != null) {
+			institute.setInstituteType(instituteTypeDAO.get(instituteRequest.getInstituteTypeId()));
+		} else {
+			throw new ValidationException("instituteTypeId is required");
+		}
+
 		institute.setIsActive(true);
 		institute.setWorldRanking(instituteRequest.getWorldRanking());
 		institute.setWebsite(instituteRequest.getWebsite());
-		institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getCategoryTypeId()));
+		if (instituteRequest.getInstituteCategoryTypeId() != null) {
+			institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getInstituteCategoryTypeId()));
+		} else {
+			throw new ValidationException("instituteCategoryTypeId is required");
+		}
+
 		institute.setCampusType(instituteRequest.getCampusType());
 		institute.setAddress(instituteRequest.getAddress());
 		institute.setEmail(instituteRequest.getEmail());
@@ -292,10 +389,13 @@ public class InstituteService implements IInstituteService {
 		institute.setOpeningFrom(instituteRequest.getOpeningFrom());
 		institute.setOpeningTo(instituteRequest.getOpeningTo());
 		institute.setCampusName(instituteRequest.getCampusName());
-		institute.setEnrolment(instituteRequest.getEnrolment());
+		institute.setEnrolmentLink(instituteRequest.getEnrolmentLink());
 		institute.setTuitionFessPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
 		institute.setScholarshipFinancingAssistance(instituteRequest.getScholarshipFinancingAssistance());
-		institute.setWorldRankingType(instituteRequest.getWorldRankingType());
+		institute.setAvgCostOfLiving(instituteRequest.getAvgCostOfLiving());
+		institute.setWhatsNo(instituteRequest.getWhatsNo());
+		institute.setAboutInfo(instituteRequest.getAboutInfo());
+		institute.setCourseStart(instituteRequest.getCourseStart());
 		if (id != null) {
 			dao.update(institute);
 			/**
@@ -305,7 +405,8 @@ public class InstituteService implements IInstituteService {
 			List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
 			BeanUtils.copyProperties(institute, instituteElasticDto);
 			instituteElasticDTOList.add(instituteElasticDto);
-			saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE , SeekaEntityType.INSTITUTE.name().toLowerCase() ,instituteElasticDTOList, IConstant.ELASTIC_SEARCH);
+			saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(), instituteElasticDTOList,
+					IConstant.ELASTIC_SEARCH);
 		} else {
 			dao.save(institute);
 			/**
@@ -315,7 +416,8 @@ public class InstituteService implements IInstituteService {
 			List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
 			BeanUtils.copyProperties(institute, instituteElasticDto);
 			instituteElasticDTOList.add(instituteElasticDto);
-			updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE , SeekaEntityType.INSTITUTE.name().toLowerCase() ,instituteElasticDTOList, IConstant.ELASTIC_SEARCH);
+			updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(), instituteElasticDTOList,
+					IConstant.ELASTIC_SEARCH);
 		}
 		if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
 			saveInstituteService(institute, instituteRequest.getOfferService());
@@ -344,10 +446,9 @@ public class InstituteService implements IInstituteService {
 		accreditedInstituteDetailDao.deleteAccreditedInstitueDetailByEntityId(institute.getId());
 		for (BigInteger accreditedInstituteDetail2 : accreditation) {
 			AccreditedInstituteDetail accreditedInstituteDetail = new AccreditedInstituteDetail();
-			BigInteger accreditationId = new BigInteger(accreditedInstituteDetail2.toString());
 			accreditedInstituteDetail.setEntityId(institute.getId());
 			accreditedInstituteDetail.setEntityType("INSTITUTE");
-			accreditedInstituteDetail.setAccreditedInstituteId(accreditationId);
+			accreditedInstituteDetail.setAccreditedInstituteId(accreditedInstituteDetail2);
 			accreditedInstituteDetailDao.addAccreditedInstituteDetail(accreditedInstituteDetail);
 		}
 	}
@@ -425,7 +526,6 @@ public class InstituteService implements IInstituteService {
 		dto.setUpdatedBy(institute.getUpdatedBy());
 		dto.setInstituteDetails(getInstituteDetails(institute.getId()));
 		dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountry(), institute.getName()));
-		dto.setLastUpdated(institute.getLastUpdated());
 		dto.setCourseCount(institute.getCourseCount());
 		dto.setCampusType(institute.getCampusType());
 		return dto;
@@ -453,7 +553,6 @@ public class InstituteService implements IInstituteService {
 		}
 		instituteDetail.setTotalStudent(dto.getTotalStudent());
 		instituteDetail.setWorldRanking(dto.getWorldRanking());
-		instituteDetail.setAccreditation(dto.getAccreditation());
 		instituteDetail.setEmail(dto.getEmail());
 		instituteDetail.setPhoneNumber(dto.getPhoneNumber());
 		instituteDetail.setWebsite(dto.getWebsite());
@@ -464,7 +563,7 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public Map<String, Object> getById(@Valid final BigInteger id) {
+	public Map<String, Object> getById(final BigInteger id) {
 		Map<String, Object> response = new HashMap<>();
 		InstituteRequestDto instituteRequestDto = null;
 		List<InstituteRequestDto> instituteRequestDtos = new ArrayList<>();
@@ -473,7 +572,11 @@ public class InstituteService implements IInstituteService {
 			instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
 			instituteRequestDto.setOfferService(getOfferServices(id));
 			instituteRequestDto.setAccreditation(getAccreditation(id));
+			instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
 			instituteRequestDto.setIntakes(getIntakes(id));
+			instituteRequestDto.setFacultyIds(getFacultyLevelData(id));
+			instituteRequestDto.setLevelIds(getInstituteLevelData(id));
+			instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
 			instituteRequestDtos.add(instituteRequestDto);
 			if (institute != null && institute.getCampusType() != null && institute.getCampusType().equals("PRIMARY")) {
 				if (institute.getCountry() != null && institute.getCity() != null && institute.getName() != null) {
@@ -482,24 +585,42 @@ public class InstituteService implements IInstituteService {
 						instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(campus);
 						instituteRequestDto.setOfferService(getOfferServices(campus.getId()));
 						instituteRequestDto.setAccreditation(getAccreditation(campus.getId()));
+						instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
 						instituteRequestDto.setIntakes(getIntakes(campus.getId()));
+						instituteRequestDto.setFacultyIds(getFacultyLevelData(id));
+						instituteRequestDto.setLevelIds(getInstituteLevelData(id));
+						instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
 						instituteRequestDtos.add(instituteRequestDto);
 					}
 				}
 			}
-			if (institute == null) {
-				response.put("message", "Institute not found");
-				response.put("status", HttpStatus.NOT_FOUND.value());
-			} else {
-				response.put("message", "Institute fetched successfully");
-				response.put("status", HttpStatus.OK.value());
-			}
+
+			response.put("message", "Institute fetched successfully");
+			response.put("status", HttpStatus.OK.value());
 		} catch (Exception exception) {
 			response.put("message", exception.getCause());
 			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 		response.put("data", instituteRequestDtos);
 		return response;
+	}
+
+	private List<BigInteger> getFacultyLevelData(final BigInteger id) {
+		List<FacultyLevel> facultyLevel = iFacultyLevelService.getAllFacultyLevelByInstituteId(id);
+		if (facultyLevel != null && !facultyLevel.isEmpty()) {
+			return facultyLevel.stream().map(i -> i.getFaculty().getId()).collect(Collectors.toList());
+		} else {
+			return new ArrayList<>();
+		}
+	}
+
+	private List<BigInteger> getInstituteLevelData(final BigInteger id) {
+		List<InstituteLevel> instituteLevel = iInstituteLevelService.getAllLevelByInstituteId(id);
+		if (instituteLevel != null && !instituteLevel.isEmpty()) {
+			return instituteLevel.stream().map(i -> i.getLevel().getId()).collect(Collectors.toList());
+		} else {
+			return new ArrayList<>();
+		}
 	}
 
 	private List<String> getIntakes(@Valid final BigInteger id) {
@@ -678,40 +799,44 @@ public class InstituteService implements IInstituteService {
 
 	@Override
 	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final BigInteger cityId, final BigInteger instituteTypeId,
-			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
-		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
+			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) {
+		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking,
+				campusType);
 	}
-	
-	public void saveInsituteOnElasticSearch(String elasticSearchIndex, String type, List<InstituteElasticSearchDTO> instituteList, String elasticSearchName) {
-        for (InstituteElasticSearchDTO insitute : instituteList) {
-            ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-            elasticSearchDto.setIndex(elasticSearchIndex);
-            elasticSearchDto.setType(type);
-            elasticSearchDto.setEntityId(String.valueOf(insitute.getId()));
-            elasticSearchDto.setObject(insitute);
-            System.out.println(elasticSearchDto);
-            ResponseEntity<Object> object = restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Object.class);
-            System.out.println(object);
-        }
-    }
-    
-    public void updateInsituteOnElasticSearch(String elasticSearchIndex, String type, List<InstituteElasticSearchDTO> instituteList, String elasticSearchName) {
-        for (InstituteElasticSearchDTO insitute : instituteList) {
-            ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-            elasticSearchDto.setIndex(elasticSearchIndex);
-            elasticSearchDto.setType(type);
-            elasticSearchDto.setEntityId(String.valueOf(insitute.getId()));
-            elasticSearchDto.setObject(insitute);
-            System.out.println(elasticSearchDto);
-            HttpHeaders headers = new HttpHeaders();
-            HttpEntity<ElasticSearchDTO> httpEntity = new HttpEntity<>(elasticSearchDto, headers);
-            ResponseEntity<Object> object = restTemplate.exchange("http://" + IConstant.ELASTIC_SEARCH_URL,HttpMethod.PUT, httpEntity, Object.class, new Object[] {});
-            System.out.println(object);
-        }
-    }
+
+	public void saveInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDTO> instituteList,
+			final String elasticSearchName) {
+		for (InstituteElasticSearchDTO insitute : instituteList) {
+			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+			elasticSearchDto.setIndex(elasticSearchIndex);
+			elasticSearchDto.setType(type);
+			elasticSearchDto.setEntityId(String.valueOf(insitute.getId()));
+			elasticSearchDto.setObject(insitute);
+			System.out.println(elasticSearchDto);
+			ResponseEntity<Object> object = restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Object.class);
+			System.out.println(object);
+		}
+	}
+
+	public void updateInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDTO> instituteList,
+			final String elasticSearchName) {
+		for (InstituteElasticSearchDTO insitute : instituteList) {
+			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+			elasticSearchDto.setIndex(elasticSearchIndex);
+			elasticSearchDto.setType(type);
+			elasticSearchDto.setEntityId(String.valueOf(insitute.getId()));
+			elasticSearchDto.setObject(insitute);
+			System.out.println(elasticSearchDto);
+			HttpHeaders headers = new HttpHeaders();
+			HttpEntity<ElasticSearchDTO> httpEntity = new HttpEntity<>(elasticSearchDto, headers);
+			ResponseEntity<Object> object = restTemplate.exchange("http://" + IConstant.ELASTIC_SEARCH_URL, HttpMethod.PUT, httpEntity, Object.class,
+					new Object[] {});
+			System.out.println(object);
+		}
+	}
 
 	@Override
-	public Integer getTotalCourseCountForInstitute(BigInteger instituteId) {
+	public Integer getTotalCourseCountForInstitute(final BigInteger instituteId) {
 		return courseDao.getTotalCourseCountForInstitute(instituteId);
 	}
 }

@@ -81,14 +81,14 @@ public class CommonUtil {
 
 	public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(final Institute institute) {
 		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
-		instituteRequestDto.setAverageCostFrom(institute.getAvgCostOfLiving());
+		instituteRequestDto.setAvgCostOfLiving(institute.getAvgCostOfLiving());
 		instituteRequestDto.setCityId(institute.getCity().getId());
 		instituteRequestDto.setCountryId(institute.getCountry().getId());
 		instituteRequestDto.setDescription(institute.getDescription());
-		instituteRequestDto.setLogoUrl(institute.getLogoUrl());
 		instituteRequestDto.setId(institute.getId());
+		instituteRequestDto.setWebsite(institute.getWebsite());
 		if (institute.getInstituteType() != null) {
-			instituteRequestDto.setTypeId(institute.getInstituteType().getId());
+			instituteRequestDto.setInstituteTypeId(institute.getInstituteType().getId());
 		}
 		if (institute.getLatitute() != null) {
 			instituteRequestDto.setLatitude(institute.getLatitute());
@@ -106,10 +106,12 @@ public class CommonUtil {
 		instituteRequestDto.setCampusType(institute.getCampusType());
 		instituteRequestDto.setCampusName(institute.getCampusName());
 		instituteRequestDto.setEmail(institute.getEmail());
-		instituteRequestDto.setEnrolment(institute.getEnrolment());
+		instituteRequestDto.setEnrolmentLink(institute.getEnrolmentLink());
 		instituteRequestDto.setScholarshipFinancingAssistance(institute.getScholarshipFinancingAssistance());
 		instituteRequestDto.setTuitionFessPaymentPlan(institute.getTuitionFessPaymentPlan());
-		instituteRequestDto.setWorldRankingType(institute.getWorldRankingType());
+		instituteRequestDto.setWhatsNo(institute.getWhatsNo());
+		instituteRequestDto.setAboutInfo(institute.getAboutInfo());
+		instituteRequestDto.setCourseStart(institute.getCourseStart());
 		return instituteRequestDto;
 	}
 
@@ -135,7 +137,6 @@ public class CommonUtil {
 
 		courseRequest.setName(course.getName());
 		courseRequest.setLink(course.getLink());
-//		courseRequest.setIntake(course.getIntake());
 		courseRequest.setLanguage(course.getLanguage());
 		if (course.getFaculty() != null) {
 			courseRequest.setFacultyId(course.getFaculty().getId());

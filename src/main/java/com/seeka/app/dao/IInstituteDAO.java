@@ -33,7 +33,7 @@ public interface IInstituteDAO {
 
 	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
 			Integer startIndex, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
-			Integer toWorldRanking);
+			Integer toWorldRanking, String campusType);
 
 	InstituteResponseDto getInstituteByID(BigInteger instituteId);
 
@@ -88,5 +88,5 @@ public interface IInstituteDAO {
 	List<BigInteger> getRandomInstituteByCountry(List<BigInteger> countryIdList);
 
 	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive,
-			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking);
+			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
 }
