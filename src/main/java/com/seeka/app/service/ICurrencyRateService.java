@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.CurrencyRate;
+import com.seeka.app.exception.NotFoundException;
 
 public interface ICurrencyRateService {
 
@@ -31,4 +32,6 @@ public interface ICurrencyRateService {
 	CurrencyRate getCurrencyRate(String currencyCode);
 
 	List<CurrencyRate> getChangedCurrency();
+	
+	Double getConversionRate(String currencyCode) throws NotFoundException;
 }

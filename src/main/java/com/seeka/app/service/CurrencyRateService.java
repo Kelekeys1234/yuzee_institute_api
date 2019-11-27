@@ -20,6 +20,7 @@ import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.dao.CurrencyRateDAO;
 import com.seeka.app.dao.ICurrencyDAO;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.util.IConstant;
 
 @Service
@@ -125,6 +126,15 @@ public class CurrencyRateService implements ICurrencyRateService {
 	@Override
 	public List<CurrencyRate> getChangedCurrency() {
 		return currencyRateDAO.getChangedCurrency();
+	}
+
+	@Override
+	public Double getConversionRate(String currencyCode) throws NotFoundException {
+		CurrencyRate currencyRate = currencyRateDAO.getCurrencyRate(currencyCode);
+		if(currencyRate == null || currencyRate.getId() == null || currencyRate.getConversionRate() == 0) {
+			throw new NotFoundException("Currency Rate not availbale for currency - "+currencyCode);
+		}
+		return currencyRate.getConversionRate();
 	}
 
 //    @Override

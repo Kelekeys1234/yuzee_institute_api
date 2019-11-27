@@ -11,7 +11,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.enumeration.SeekaEntityType;
@@ -56,7 +54,7 @@ public class CurrencyConversionRateUtil {
 
 	// @Scheduled(fixedRate = 86400000, initialDelay = 10000)
 	@Scheduled(cron = "0 30 0 * * ?")
-	public void reportCurrentTime() {
+	public void curencySchedulerMethod() {
 		log.info("CurrencyConversionRateUtil -- Start: The time is now {}", dateFormat.format(new Date()));
 		System.out.println("CurrencyConversionRateUtil -- Start: The time is now {}" + dateFormat.format(new Date()));
         run();
