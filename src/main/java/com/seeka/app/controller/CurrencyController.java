@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.service.ICurrencyRateService;
 
 @RestController
@@ -25,7 +26,7 @@ public class CurrencyController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/rate", produces = "application/json")
 	public ResponseEntity<?> getConversionRateForCurrency(@RequestParam(value = "currencyCode") String currencyCode)
-			throws Exception {
+			throws NotFoundException {
 		return new GenericResponseHandlers.Builder().setData(currencyService.getConversionRate(currencyCode))
 				.setMessage("Conversion Rate Fetched successfully").setStatus(HttpStatus.OK).create();
 	}

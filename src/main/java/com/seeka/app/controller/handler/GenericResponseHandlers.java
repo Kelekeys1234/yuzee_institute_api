@@ -68,7 +68,7 @@ public class GenericResponseHandlers {
 			if (handler.totalCount != null) {
 				responseMap.put(TOTAL_COUNT_CONST, handler.totalCount);
 			}
-			return new ResponseEntity<>(responseMap, status);
+			return new ResponseEntity<>(responseMap, HttpStatus.OK);
 		}
 
 	}

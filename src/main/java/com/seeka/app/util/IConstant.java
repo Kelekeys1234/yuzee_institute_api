@@ -96,6 +96,7 @@ public class IConstant {
 
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";
 	public static final String ELASTIC_SEARCH_INDEX_COURSE = "seeka_dev";
+	// public static final String ELASTIC_SEARCH_INDEX_COURSE_TEST = "seeka_dev_course_test";
 	public static final String ELASTIC_SEARCH_INDEX_ARTICLE = "seeka_dev_article";
 	public static final String ELASTIC_SEARCH_INDEX_INSTITUTE = "seeka_dev_institute";
 	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP = "seeka_dev_scholarship";
@@ -122,7 +123,7 @@ public class IConstant {
 	public static final String SCHOLARSHIP = "Scholarship";
 	/***************************************************************************************/
 	
-	public static final Integer CURRENCY_THRESHOLD = 0;
+	public static final Integer CURRENCY_THRESHOLD = 2;
 	
 	public static final int COURSES_PER_SCHEDULER_LOOP = 30;
 }
