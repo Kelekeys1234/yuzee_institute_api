@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -41,7 +42,7 @@ public class UserReviewDao implements IUserReviewDao {
 
 	@Override
 	public List<UserReview> getUserReviewList(final BigInteger userId, final BigInteger entityId, final String entityType, final Integer startIndex,
-			final Integer pageSize, final String sortByType) {
+			final Integer pageSize, final String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReview.class, "userReview");
 		if (entityId != null && entityType != null) {
@@ -52,11 +53,16 @@ public class UserReviewDao implements IUserReviewDao {
 		if (userId != null) {
 			crit.add(Restrictions.eq("userId", userId));
 		}
+
+		if (searchKeyword != null) {
+			crit.add(Restrictions.ilike("userReview.comments", searchKeyword, MatchMode.ANYWHERE));
+		}
 		if (sortByType != null && "ASC".equals(sortByType)) {
 			crit.addOrder(Order.asc("userReview.id"));
 		} else {
 			crit.addOrder(Order.desc("userReview.id"));
 		}
+
 		if (startIndex != null && pageSize != null) {
 			crit.setFirstResult(startIndex);
 			crit.setMaxResults(pageSize);
@@ -117,12 +123,16 @@ public class UserReviewDao implements IUserReviewDao {
 	}
 
 	@Override
-	public int getUserReviewCount(final BigInteger userId, final BigInteger entityId, final String entityType) {
+	public int getUserReviewCount(final BigInteger userId, final BigInteger entityId, final String entityType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReview.class, "userReview");
 		if (entityId != null && entityType != null) {
 			crit.add(Restrictions.eq("userReview.entityId", entityId));
 			crit.add(Restrictions.eq("userReview.entityType", entityType));
+		}
+
+		if (searchKeyword != null) {
+			crit.add(Restrictions.ilike("userReview.comments", searchKeyword, MatchMode.ANYWHERE));
 		}
 
 		if (userId != null) {

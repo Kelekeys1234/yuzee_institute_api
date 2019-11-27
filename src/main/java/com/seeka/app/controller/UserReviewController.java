@@ -51,7 +51,7 @@ public class UserReviewController {
 			@PathVariable final Integer pageSize) {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewList(userId, startIndex, pageSize);
-		int totalCount = iUserReview.getUserReviewCount(userId, null, null);
+		int totalCount = iUserReview.getUserReviewCount(userId, null, null, null);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
@@ -68,10 +68,11 @@ public class UserReviewController {
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getUserReviewBasedOnData(@RequestParam(name = "entityId", required = false) final BigInteger entityId,
 			@RequestParam(name = "entityType", required = false) final String entityType, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = false) final String sortByType) throws ValidationException {
+			@PathVariable final Integer pageSize, @RequestParam(required = false) final String sortByType,
+			@RequestParam(required = false) final String searchKeyword) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewBasedOnData(entityId, entityType, startIndex, pageSize, sortByType);
-		int totalCount = iUserReview.getUserReviewCount(null, entityId, entityType);
+		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewBasedOnData(entityId, entityType, startIndex, pageSize, sortByType, searchKeyword);
+		int totalCount = iUserReview.getUserReviewCount(null, entityId, entityType, searchKeyword);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);

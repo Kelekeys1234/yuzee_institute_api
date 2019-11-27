@@ -21,8 +21,8 @@ public interface IUserReviewService {
 
 	UserReviewResultDto getUserReviewDetails(BigInteger userId) throws ValidationException;
 
-	List<UserReviewResultDto> getUserReviewBasedOnData(BigInteger entityId, String entityType, Integer startIndex, Integer pageSize, String sortByType)
-			throws ValidationException;
+	List<UserReviewResultDto> getUserReviewBasedOnData(BigInteger entityId, String entityType, Integer startIndex, Integer pageSize, String sortByType,
+			String searchKeyword) throws ValidationException;
 
 	UserReviewResultDto getUserAverageReviewBasedOnData(BigInteger entityId, String entityType) throws ValidationException;
 
@@ -30,6 +30,6 @@ public interface IUserReviewService {
 
 	List<UserReviewResultDto> getUserReviewList() throws ValidationException;
 
-	int getUserReviewCount(BigInteger userId, BigInteger entityId, String entityType);
+	int getUserReviewCount(BigInteger userId, BigInteger entityId, String entityType, String searchKeyword);
 
 }
