@@ -18,7 +18,8 @@ public class CourseRequest {
 	private String duration;
 	private List<String> intake;
 	private List<String> deliveryMethod;
-	private String language;
+//	private String language;
+	private List<String> language;
 	private Double domasticFee;
 	private Double internationalFee;
 	private String grades;
@@ -559,14 +560,14 @@ public class CourseRequest {
 	/**
 	 * @return the language
 	 */
-	public String getLanguage() {
+	public List<String> getLanguage() {
 		return language;
 	}
 
 	/**
 	 * @param language the language to set
 	 */
-	public void setLanguage(final String language) {
+	public void setLanguage(final List<String> language) {
 		this.language = language;
 	}
 

@@ -15,12 +15,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "course_delivery_method")
-public class CourseDeliveryMethod implements Serializable {
+@Table(name = "Course_language")
+public class CourseLanguage implements Serializable {
+
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 6549666149894604387L;
+	private static final long serialVersionUID = -1526350494847396850L;
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -76,7 +77,7 @@ public class CourseDeliveryMethod implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		CourseDeliveryMethod other = (CourseDeliveryMethod) obj;
+		CourseLanguage other = (CourseLanguage) obj;
 		if (course == null) {
 			if (other.course != null) {
 				return false;
@@ -104,7 +105,7 @@ public class CourseDeliveryMethod implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("CourseDeliveryMethod [id=").append(id).append(", name=").append(name).append(", course=").append(course).append("]");
+		builder.append("CourseLanguage [id=").append(id).append(", name=").append(name).append(", course=").append(course).append("]");
 		return builder.toString();
 	}
 

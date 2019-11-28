@@ -137,7 +137,7 @@ public class CommonUtil {
 
 		courseRequest.setName(course.getName());
 		courseRequest.setLink(course.getLink());
-		courseRequest.setLanguage(course.getLanguage());
+//		courseRequest.setLanguage(course.getLanguage());
 		if (course.getFaculty() != null) {
 			courseRequest.setFacultyId(course.getFaculty().getId());
 			courseRequest.setFacultyName(course.getFaculty().getName());

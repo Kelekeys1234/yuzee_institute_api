@@ -12,6 +12,7 @@ import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseIntake;
+import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
@@ -75,7 +76,7 @@ public interface ICourseService {
 
 	Map<String, Object> getAllCourse();
 
-	Map<String, Object> update(@Valid CourseRequest courseDto, BigInteger id);
+	BigInteger update(CourseRequest courseDto, BigInteger id) throws ValidationException;
 
 	Map<String, Object> courseFilter(CourseFilterDto courseFilter);
 
@@ -139,4 +140,6 @@ public interface ICourseService {
 	List<CourseIntake> getCourseIntakeBasedOnCourseId(BigInteger courseId);
 
 	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(BigInteger courseId);
+
+	List<CourseLanguage> getCourseLanguageBasedOnCourseId(BigInteger courseId);
 }

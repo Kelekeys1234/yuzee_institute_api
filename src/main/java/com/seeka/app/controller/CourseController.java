@@ -100,8 +100,9 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@Valid @RequestBody final CourseRequest course, @PathVariable final BigInteger id) throws Exception {
-		return ResponseEntity.accepted().body(courseService.update(course, id));
+	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final BigInteger id) throws ValidationException {
+		BigInteger courseId = courseService.update(course, id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId).setMessage("Course Updated successfully").create();
 	}
 
 	@RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
@@ -220,7 +221,7 @@ public class CourseController {
 		courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
 		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream().map(x -> x.getName()).collect(Collectors.toList()));
 		courseRequest.setDeliveryMethod(courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream().map(x -> x.getName()).collect(Collectors.toList()));
-
+		courseRequest.setLanguage(courseService.getCourseLanguageBasedOnCourseId(id).stream().map(x -> x.getName()).collect(Collectors.toList()));
 		Institute instituteObj = course.getInstitute();
 		if (instituteObj != null) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");

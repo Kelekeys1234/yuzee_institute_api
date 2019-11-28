@@ -10,6 +10,7 @@ import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseIntake;
+import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
@@ -142,5 +143,11 @@ public interface ICourseDAO {
 	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(BigInteger courseId);
 
 	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseIdList(List<BigInteger> courseIds);
+
+	void saveCourseLanguage(CourseLanguage courseLanguage);
+
+	void deleteCourseLanguage(BigInteger courseId);
+
+	List<CourseLanguage> getCourseLanguageBasedOnCourseId(BigInteger courseId);
 
 }

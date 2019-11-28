@@ -28,6 +28,7 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseIntake;
+import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
@@ -190,11 +191,12 @@ public class CourseDAO implements ICourseDAO {
 
 		sqlQuery += " ";
 		String sortingQuery = "";
+		String sortTypeValue = "ASC";
+		if (!courseSearchDto.getSortAsscending()) {
+			sortTypeValue = "DESC";
+		}
 		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
-			String sortTypeValue = "ASC";
-			if (!courseSearchDto.getSortAsscending()) {
-				sortTypeValue = "DESC";
-			}
+
 			if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DURATION.toString())) {
 				sortingQuery = sortingQuery + " ORDER BY crs.duration " + sortTypeValue + " ";
 			} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.RECOGNITION.toString())) {
@@ -212,7 +214,7 @@ public class CourseDAO implements ICourseDAO {
 				sortingQuery = " order by crs.name " + sortTypeValue.toLowerCase();
 			}
 		} else {
-			sortingQuery = " order by crs.international_fee asc";
+			sortingQuery = " order by crs.international_fee " + sortTypeValue.toLowerCase();
 
 		}
 
@@ -281,7 +283,7 @@ public class CourseDAO implements ICourseDAO {
 
 						CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
 						Double amt = Double.valueOf(row[19].toString());
-						Double convertedRate = amt / currencyRate.getConversionRate();
+						Double convertedRate = amt * currencyRate.getConversionRate();
 						if (convertedRate != null) {
 							courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
 						}
@@ -289,7 +291,7 @@ public class CourseDAO implements ICourseDAO {
 					if (row[20] != null) {
 						CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
 						Double amt = Double.valueOf(row[20].toString());
-						Double convertedRate = amt / currencyRate.getConversionRate();
+						Double convertedRate = amt * currencyRate.getConversionRate();
 						if (convertedRate != null) {
 							courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
 						}
@@ -766,9 +768,9 @@ public class CourseDAO implements ICourseDAO {
 			if (row[9] != null) {
 				obj.setDuration(row[9].toString());
 			}
-			if (row[10] != null) {
-				obj.setLanguage(row[10].toString());
-			}
+			/*
+			 * if (row[10] != null) { obj.setLanguage(row[10].toString()); }
+			 */
 			if (row[11] != null) {
 				obj.setDomasticFee(Double.valueOf(row[11].toString()));
 			}
@@ -890,9 +892,9 @@ public class CourseDAO implements ICourseDAO {
 			if (row[9] != null) {
 				obj.setDuration(row[9].toString());
 			}
-			if (row[10] != null) {
-				obj.setLanguage(row[10].toString());
-			}
+			/*
+			 * if (row[10] != null) { obj.setLanguage(row[10].toString()); }
+			 */
 			if (row[11] != null) {
 				obj.setDomasticFee(Double.valueOf(row[11].toString()));
 			}
@@ -1049,9 +1051,9 @@ public class CourseDAO implements ICourseDAO {
 			if (row[9] != null) {
 				courseRequest.setDuration(row[9].toString());
 			}
-			if (row[10] != null) {
-				courseRequest.setLanguage(row[10].toString());
-			}
+			/*
+			 * if (row[10] != null) { courseRequest.setLanguage(row[10].toString()); }
+			 */
 			if (row[11] != null) {
 				courseRequest.setDomasticFee(Double.valueOf(row[11].toString()));
 			}
@@ -1216,12 +1218,6 @@ public class CourseDAO implements ICourseDAO {
 
 		List<CourseResponseDto> list = new ArrayList<>();
 		CourseResponseDto courseResponseDto = null;
-//		BigInteger baseCurrencyId = null;
-//		BigInteger toCurrencyId = null;
-//		if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
-//			baseCurrencyId = getCurrencyByCode(IConstant.DEFAULT_BASE_CURRENCY).getId();
-//			toCurrencyId = getCurrencyByCode(courseSearchDto.getCurrencyCode()).getId();
-//		}
 		for (Object[] row : rows) {
 			courseResponseDto = getCourseData(row, courseSearchDto, showIntlCost /* baseCurrencyId, toCurrencyId */);
 			list.add(courseResponseDto);
@@ -1270,7 +1266,7 @@ public class CourseDAO implements ICourseDAO {
 			if (row[19] != null) {
 				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[19].toString());
-				Double convertedRate = amt / currencyRate.getConversionRate();
+				Double convertedRate = amt * currencyRate.getConversionRate();
 				if (convertedRate != null) {
 					courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
 				}
@@ -1279,7 +1275,7 @@ public class CourseDAO implements ICourseDAO {
 
 				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[19].toString());
-				Double convertedRate = amt / currencyRate.getConversionRate();
+				Double convertedRate = amt * currencyRate.getConversionRate();
 
 				if (convertedRate != null) {
 					courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
@@ -1708,8 +1704,8 @@ public class CourseDAO implements ICourseDAO {
 	public int updateCourseForCurrency(final CurrencyRate currencyRate) {
 		Session session = sessionFactory.getCurrentSession();
 		System.out.println(currencyRate);
-		Integer count = session
-				.createNativeQuery("update course set usd_domestic_fee = domestic_fee * ?, usd_international_fee = international_fee * ?, updated_on = now() where currency =?")
+		Integer count = session.createNativeQuery(
+				"update course set usd_domestic_fee = domestic_fee * ?, usd_international_fee = international_fee * ?, updated_on = now() where currency =?")
 				.setParameter(1, 1 / currencyRate.getConversionRate()).setParameter(2, 1 / currencyRate.getConversionRate())
 				.setParameter(3, currencyRate.getToCurrencyCode()).executeUpdate();
 		System.out.println("courses updated for " + currencyRate.getToCurrencyCode() + "-" + count);
@@ -2070,9 +2066,10 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public void deleteCourseIntake(final BigInteger courseId) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "delete CourseIntake where courseId = :courseId";
+		String hql = "delete CourseIntake where course_id = :courseId";
 		Query q = session.createQuery(hql).setParameter("courseId", courseId);
 		q.executeUpdate();
+
 	}
 
 	@Override
@@ -2102,7 +2099,7 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public void deleteCourseDeliveryMethod(final BigInteger courseId) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "delete CourseDeliveryMethod where courseId = :courseId";
+		String hql = "delete CourseDeliveryMethod where course_id = :courseId";
 		Query q = session.createQuery(hql).setParameter("courseId", courseId);
 		q.executeUpdate();
 	}
@@ -2122,6 +2119,31 @@ public class CourseDAO implements ICourseDAO {
 		Criteria crit = session.createCriteria(CourseDeliveryMethod.class, "courseDeliveryMethod");
 		crit.createAlias("courseDeliveryMethod.course", "course");
 		crit.add(Restrictions.in("course.id", courseIds));
+		return crit.list();
+	}
+
+	@Override
+	public void saveCourseLanguage(final CourseLanguage courseLanguage) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(courseLanguage);
+
+	}
+
+	@Override
+	public void deleteCourseLanguage(final BigInteger courseId) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "delete CourseLanguage where course_id = :courseId";
+		Query q = session.createQuery(hql).setParameter("courseId", courseId);
+		q.executeUpdate();
+
+	}
+
+	@Override
+	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(final BigInteger courseId) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(CourseLanguage.class, "courseLanguage");
+		crit.createAlias("courseLanguage.course", "course");
+		crit.add(Restrictions.eq("course.id", courseId));
 		return crit.list();
 	}
 
