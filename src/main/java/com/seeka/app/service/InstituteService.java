@@ -563,46 +563,44 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public Map<String, Object> getById(final BigInteger id) {
-		Map<String, Object> response = new HashMap<>();
+	public List<InstituteRequestDto> getById(final BigInteger id) throws ValidationException {
 		InstituteRequestDto instituteRequestDto = null;
 		List<InstituteRequestDto> instituteRequestDtos = new ArrayList<>();
-		try {
-			Institute institute = dao.get(id);
-			instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
-			instituteRequestDto.setOfferService(getOfferServices(id));
-			instituteRequestDto.setAccreditation(getAccreditation(id));
-			instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
-			instituteRequestDto.setIntakes(getIntakes(id));
-			instituteRequestDto.setFacultyIds(getFacultyLevelData(id));
-			instituteRequestDto.setLevelIds(getInstituteLevelData(id));
+		Institute institute = dao.get(id);
+		if (institute == null) {
+			throw new ValidationException("Institute not found for id" + id);
+		}
+		instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
+		instituteRequestDto.setOfferService(getOfferServices(id));
+		instituteRequestDto.setAccreditation(getAccreditation(id));
+		instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
+		instituteRequestDto.setIntakes(getIntakes(id));
+		instituteRequestDto.setFacultyIds(getFacultyLevelData(id));
+		instituteRequestDto.setLevelIds(getInstituteLevelData(id));
+		if (institute.getInstituteCategoryType() != null) {
 			instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
-			instituteRequestDtos.add(instituteRequestDto);
-			if (institute != null && institute.getCampusType() != null && institute.getCampusType().equals("PRIMARY")) {
-				if (institute.getCountry() != null && institute.getCity() != null && institute.getName() != null) {
-					List<Institute> institutes = dao.getSecondayCampus(institute.getCountry().getId(), institute.getCity().getId(), institute.getName());
-					for (Institute campus : institutes) {
-						instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(campus);
-						instituteRequestDto.setOfferService(getOfferServices(campus.getId()));
-						instituteRequestDto.setAccreditation(getAccreditation(campus.getId()));
-						instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
-						instituteRequestDto.setIntakes(getIntakes(campus.getId()));
-						instituteRequestDto.setFacultyIds(getFacultyLevelData(id));
-						instituteRequestDto.setLevelIds(getInstituteLevelData(id));
+		}
+
+		instituteRequestDtos.add(instituteRequestDto);
+		if (institute != null && institute.getCampusType() != null && institute.getCampusType().equals("PRIMARY")) {
+			if (institute.getCountry() != null && institute.getCity() != null && institute.getName() != null) {
+				List<Institute> institutes = dao.getSecondayCampus(institute.getCountry().getId(), institute.getCity().getId(), institute.getName());
+				for (Institute campus : institutes) {
+					instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(campus);
+					instituteRequestDto.setOfferService(getOfferServices(campus.getId()));
+					instituteRequestDto.setAccreditation(getAccreditation(campus.getId()));
+					instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
+					instituteRequestDto.setIntakes(getIntakes(campus.getId()));
+					instituteRequestDto.setFacultyIds(getFacultyLevelData(campus.getId()));
+					instituteRequestDto.setLevelIds(getInstituteLevelData(campus.getId()));
+					if (institute.getInstituteCategoryType() != null) {
 						instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
-						instituteRequestDtos.add(instituteRequestDto);
 					}
+					instituteRequestDtos.add(instituteRequestDto);
 				}
 			}
-
-			response.put("message", "Institute fetched successfully");
-			response.put("status", HttpStatus.OK.value());
-		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
-		response.put("data", instituteRequestDtos);
-		return response;
+		return instituteRequestDtos;
 	}
 
 	private List<BigInteger> getFacultyLevelData(final BigInteger id) {
@@ -758,26 +756,16 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public Map<String, Object> deleteInstitute(@Valid final BigInteger id) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			Institute institute = dao.get(id);
-			if (institute != null) {
-				institute.setIsActive(false);
-				institute.setIsDeleted(true);
-				institute.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
-				dao.update(institute);
-				response.put("message", "Institute deleted successfully");
-				response.put("status", HttpStatus.OK.value());
-			} else {
-				response.put("message", IConstant.INSTITUDE_NOT_FOUND);
-				response.put("status", HttpStatus.NOT_FOUND.value());
-			}
-		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+	public void deleteInstitute(final BigInteger id) throws ValidationException {
+		Institute institute = dao.get(id);
+		if (institute != null) {
+			institute.setIsActive(false);
+			institute.setIsDeleted(true);
+			institute.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
+			dao.update(institute);
+		} else {
+			throw new ValidationException("Institute not found for id" + id);
 		}
-		return response;
 	}
 
 	@Override

@@ -488,8 +488,10 @@ public class InstituteController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@Valid @PathVariable final BigInteger id) throws Exception {
-		return ResponseEntity.accepted().body(instituteService.getById(id));
+	public ResponseEntity<?> get(@PathVariable final BigInteger id) throws ValidationException {
+		List<InstituteRequestDto> instituteRequestDtos = instituteService.getById(id);
+		return new GenericResponseHandlers.Builder().setData(instituteRequestDtos).setMessage("Institute details get successfully").setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@RequestMapping(value = "search/{searchText}", method = RequestMethod.GET, produces = "application/json")
@@ -561,9 +563,10 @@ public class InstituteController {
 		return ResponseEntity.ok().body(response);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<?> delete(@Valid @PathVariable final BigInteger id) throws Exception {
-		return ResponseEntity.accepted().body(instituteService.deleteInstitute(id));
+	@RequestMapping(value = "/{instituteId}", method = RequestMethod.DELETE, produces = "application/json")
+	public ResponseEntity<?> delete(@PathVariable final BigInteger instituteId) throws ValidationException {
+		instituteService.deleteInstitute(instituteId);
+		return new GenericResponseHandlers.Builder().setMessage("Institute deleted successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/images/{instituteId}", method = RequestMethod.GET, produces = "application/json")

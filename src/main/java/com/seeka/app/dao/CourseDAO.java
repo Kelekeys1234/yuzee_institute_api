@@ -210,7 +210,7 @@ public class CourseDAO implements ICourseDAO {
 				sortingQuery = " order by inst.name " + sortTypeValue.toLowerCase();
 			} else if (courseSearchDto.getSortBy().equalsIgnoreCase("countryName")) {
 				sortingQuery = " order by ctry.name " + sortTypeValue.toLowerCase();
-			} else if (courseSearchDto.getSortBy().equalsIgnoreCase("name")) {
+			} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.NAME.name())) {
 				sortingQuery = " order by crs.name " + sortTypeValue.toLowerCase();
 			}
 		} else {
@@ -1254,7 +1254,7 @@ public class CourseDAO implements ICourseDAO {
 		courseResponseDto.setCityName(String.valueOf(row[10]));
 
 		Integer worldRanking = 0;
-		if (null != row[4]) {
+		if (null != row[12]) {
 			worldRanking = Double.valueOf(String.valueOf(row[12])).intValue();
 		}
 		courseResponseDto.setCourseRanking(worldRanking);
@@ -1302,19 +1302,19 @@ public class CourseDAO implements ICourseDAO {
 		}
 		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.NAME.toString())) {
 			sortingQuery = sortingQuery + " ORDER BY crs.name " + sortTypeValue + " ";
-		}
-		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DURATION.toString())) {
+		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DURATION.toString())) {
 			sortingQuery = sortingQuery + " ORDER BY crs.duration " + sortTypeValue + " ";
-		}
-		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.RECOGNITION.toString())) {
+		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.RECOGNITION.toString())) {
 			sortingQuery = sortingQuery + " ORDER BY crs.recognition " + sortTypeValue + " ";
-		}
-		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.LOCATION.toString())) {
+		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.LOCATION.toString())) {
 			sortingQuery = sortingQuery + " ORDER BY ctry.name " + sortTypeValue + " ";
-		}
-		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.PRICE.toString())) {
+		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.PRICE.toString())) {
 			sortingQuery = sortingQuery + " ORDER BY IF(crs.currency='" + courseSearchDto.getCurrencyCode()
 					+ "', crs.usd_domestic_fee, crs.usd_international_fee) " + sortTypeValue + " ";
+		} else if (courseSearchDto.getSortBy().equalsIgnoreCase("instituteName")) {
+			sortingQuery = " order by inst.name " + sortTypeValue.toLowerCase();
+		} else if (courseSearchDto.getSortBy().equalsIgnoreCase("countryName")) {
+			sortingQuery = " order by ctry.name " + sortTypeValue.toLowerCase();
 		}
 		return sortingQuery;
 	}

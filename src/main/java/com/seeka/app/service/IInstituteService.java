@@ -48,7 +48,7 @@ public interface IInstituteService {
 
 	Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize);
 
-	Map<String, Object> getById(BigInteger id);
+	List<InstituteRequestDto> getById(BigInteger id) throws ValidationException;
 
 	Map<String, Object> searchInstitute(@Valid String searchText);
 
@@ -62,7 +62,7 @@ public interface IInstituteService {
 
 	List<InstituteCategoryType> getAllCategories();
 
-	Map<String, Object> deleteInstitute(@Valid BigInteger id);
+	void deleteInstitute(BigInteger id) throws ValidationException;
 
 	List<Institute> ratingWiseInstituteListByCountry(Country country);
 
