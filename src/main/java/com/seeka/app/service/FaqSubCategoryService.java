@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.seeka.app.bean.FaqCategory;
 import com.seeka.app.bean.FaqSubCategory;
 import com.seeka.app.dao.IFaqSubCategoryDao;
+import com.seeka.app.dto.FaqResponseDto;
 import com.seeka.app.dto.FaqSubCategoryDto;
 import com.seeka.app.exception.ValidationException;
 
@@ -25,6 +27,9 @@ public class FaqSubCategoryService implements IFaqSubCategoryService {
 	@Autowired
 	private IFaqCategoryService iFaqCategoryService;
 
+	@Autowired
+	private IFaqService iFaqService;
+
 	@Override
 	public void addFaqSubCategory(final FaqSubCategoryDto faqSubCategoryDto) throws ValidationException {
 		/**
@@ -37,7 +42,11 @@ public class FaqSubCategoryService implements IFaqSubCategoryService {
 		}
 		FaqSubCategory faqSubCategory = new FaqSubCategory();
 		BeanUtils.copyProperties(faqSubCategoryDto, faqSubCategory);
-		faqSubCategory.setFaqCategory(iFaqCategoryService.getFaqCategoryDetail(faqSubCategoryDto.getFaqCategoryId()));
+		FaqCategory faqCategory = iFaqCategoryService.getFaqCategoryDetail(faqSubCategoryDto.getFaqCategoryId());
+		if (faqCategory == null) {
+			throw new ValidationException("faq Category not found for id: " + faqSubCategoryDto.getFaqCategoryId());
+		}
+		faqSubCategory.setFaqCategory(faqCategory);
 		faqSubCategory.setIsActive(true);
 		faqSubCategory.setCreatedBy("API");
 		faqSubCategory.setUpdatedBy("API");
@@ -61,10 +70,14 @@ public class FaqSubCategoryService implements IFaqSubCategoryService {
 		 */
 		existingFaqSubCategory = iFaqSubCategoryDao.getFaqSubCategoryDetail(faqSubCategoryId);
 		if (existingFaqSubCategory == null) {
-			throw new ValidationException("Sub Category not found for id" + faqSubCategoryId);
+			throw new ValidationException("Sub Category not found for id: " + faqSubCategoryId);
 		}
 		existingFaqSubCategory.setName(faqSubCategoryDto.getName());
-		existingFaqSubCategory.setFaqCategory(iFaqCategoryService.getFaqCategoryDetail(faqSubCategoryDto.getFaqCategoryId()));
+		FaqCategory faqCategory = iFaqCategoryService.getFaqCategoryDetail(faqSubCategoryDto.getFaqCategoryId());
+		if (faqCategory == null) {
+			throw new ValidationException("faq Category not found for id: " + faqSubCategoryDto.getFaqCategoryId());
+		}
+		existingFaqSubCategory.setFaqCategory(faqCategory);
 		existingFaqSubCategory.setUpdatedBy("API");
 		existingFaqSubCategory.setUpdatedOn(new Date());
 		iFaqSubCategoryDao.updateFaqSubCategory(existingFaqSubCategory);
@@ -78,17 +91,22 @@ public class FaqSubCategoryService implements IFaqSubCategoryService {
 		 */
 		FaqSubCategory existingFaqSubCategory = iFaqSubCategoryDao.getFaqSubCategoryDetail(faqSubCategoryId);
 		if (existingFaqSubCategory == null) {
-			throw new ValidationException("Sub Category not found for id" + faqSubCategoryId);
+			throw new ValidationException("Sub Category not found for id: " + faqSubCategoryId);
 		}
 		existingFaqSubCategory.setIsActive(false);
 		existingFaqSubCategory.setUpdatedBy("API");
 		existingFaqSubCategory.setUpdatedOn(new Date());
 		iFaqSubCategoryDao.updateFaqSubCategory(existingFaqSubCategory);
+
+		List<FaqResponseDto> faqResponseDtos = iFaqService.getFaqList(null, null, null, faqSubCategoryId, null, null, null);
+		for (FaqResponseDto faqResponseDto : faqResponseDtos) {
+			iFaqService.deleteFaq(faqResponseDto.getId());
+		}
 	}
 
 	@Override
-	public List<FaqSubCategoryDto> getFaqSubCategoryList(final Integer startIndex, final Integer pageSize) {
-		List<FaqSubCategory> faqSubCategories = iFaqSubCategoryDao.getFaqSubCategoryList(startIndex, pageSize);
+	public List<FaqSubCategoryDto> getFaqSubCategoryList(final Integer startIndex, final Integer pageSize, final BigInteger faqCategoryId) {
+		List<FaqSubCategory> faqSubCategories = iFaqSubCategoryDao.getFaqSubCategoryList(startIndex, pageSize, faqCategoryId);
 		List<FaqSubCategoryDto> faqSubCategoryDtos = new ArrayList<>();
 		for (FaqSubCategory faqSubCategory : faqSubCategories) {
 			FaqSubCategoryDto faqSubCategoryDto = new FaqSubCategoryDto();
@@ -101,15 +119,15 @@ public class FaqSubCategoryService implements IFaqSubCategoryService {
 	}
 
 	@Override
-	public int getFaqSubCategoryCount() {
-		return iFaqSubCategoryDao.getFaqSubCategoryCount();
+	public int getFaqSubCategoryCount(final BigInteger faqCategoryId) {
+		return iFaqSubCategoryDao.getFaqSubCategoryCount(faqCategoryId);
 	}
 
 	@Override
 	public FaqSubCategoryDto getFaqSubCategoryDetail(final BigInteger faqSubCategoryId) throws ValidationException {
 		FaqSubCategory faqSubCategory = iFaqSubCategoryDao.getFaqSubCategoryDetail(faqSubCategoryId);
 		if (faqSubCategory == null) {
-			throw new ValidationException("Sub Category not found for id" + faqSubCategoryId);
+			throw new ValidationException("Sub Category not found for id: " + faqSubCategoryId);
 		}
 		FaqSubCategoryDto faqSubCategoryDto = new FaqSubCategoryDto();
 		BeanUtils.copyProperties(faqSubCategory, faqSubCategoryDto);

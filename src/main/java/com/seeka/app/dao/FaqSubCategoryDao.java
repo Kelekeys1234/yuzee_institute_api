@@ -42,10 +42,14 @@ public class FaqSubCategoryDao implements IFaqSubCategoryDao {
 	}
 
 	@Override
-	public List<FaqSubCategory> getFaqSubCategoryList(final Integer startIndex, final Integer pageSize) {
+	public List<FaqSubCategory> getFaqSubCategoryList(final Integer startIndex, final Integer pageSize, final BigInteger faqCategoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(FaqSubCategory.class, "faqSubCategory");
+		criteria.createAlias("faqSubCategory.faqCategory", "faqCategory");
 		criteria.add(Restrictions.eq("faqSubCategory.isActive", true));
+		if (faqCategoryId != null) {
+			criteria.add(Restrictions.eq("faqCategory.id", faqCategoryId));
+		}
 		if (startIndex != null && pageSize != null) {
 			criteria.setFirstResult(startIndex);
 			criteria.setMaxResults(pageSize);
@@ -55,10 +59,14 @@ public class FaqSubCategoryDao implements IFaqSubCategoryDao {
 	}
 
 	@Override
-	public int getFaqSubCategoryCount() {
+	public int getFaqSubCategoryCount(final BigInteger faqCategoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(FaqSubCategory.class, "faqSubCategory");
+		criteria.createAlias("faqSubCategory.faqCategory", "faqCategory");
 		criteria.add(Restrictions.eq("faqSubCategory.isActive", true));
+		if (faqCategoryId != null) {
+			criteria.add(Restrictions.eq("faqCategory.id", faqCategoryId));
+		}
 		criteria.setProjection(Projections.rowCount());
 		return ((Long) criteria.uniqueResult()).intValue();
 	}

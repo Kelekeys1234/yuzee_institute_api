@@ -13,9 +13,9 @@ public interface IFaqSubCategoryDao {
 
 	void updateFaqSubCategory(FaqSubCategory faqSubCategory);
 
-	List<FaqSubCategory> getFaqSubCategoryList(Integer startIndex, Integer pageSize);
+	List<FaqSubCategory> getFaqSubCategoryList(Integer startIndex, Integer pageSize, BigInteger faqCategoryId);
 
-	int getFaqSubCategoryCount();
+	int getFaqSubCategoryCount(BigInteger faqCategoryId);
 
 	FaqSubCategory getFaqSubCategoryBasedOnName(String name, BigInteger faqCategoryId, BigInteger faqSubCategoryId);
 }

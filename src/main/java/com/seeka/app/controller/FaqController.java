@@ -24,58 +24,61 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.controller.handler.GenericResponseHandlers;
-import com.seeka.app.dto.FaqSubCategoryDto;
+import com.seeka.app.dto.FaqRequestDto;
+import com.seeka.app.dto.FaqResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.service.IFaqSubCategoryService;
+import com.seeka.app.service.IFaqService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController
-@RequestMapping("/faq/sub/category")
-public class FaqSubCategroyController {
+@RequestMapping("/faq")
+public class FaqController {
 
 	@Autowired
-	private IFaqSubCategoryService iFaqSubCategoryService;
+	private IFaqService iFaqService;
 
 	@PostMapping
-	public ResponseEntity<?> addFaqSubCategory(@RequestBody @Valid final FaqSubCategoryDto faqSubCategoryDto, final BindingResult bindingResult)
-			throws ValidationException {
+	public ResponseEntity<?> addFaq(@RequestBody @Valid final FaqRequestDto faqRequestDto, final BindingResult bindingResult) throws ValidationException {
 		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		if (!fieldErrors.isEmpty()) {
 			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
 		}
-		iFaqSubCategoryService.addFaqSubCategory(faqSubCategoryDto);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Created faq sub category successfully").create();
+		iFaqService.addFaq(faqRequestDto);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Created faq successfully").create();
 	}
 
-	@PutMapping("/{faqSubCategoryId}")
-	public ResponseEntity<?> updateFaqSubCategory(@PathVariable final BigInteger faqSubCategoryId,
-			@RequestBody @Valid final FaqSubCategoryDto faqSubCategoryDto, final BindingResult bindingResult) throws ValidationException {
+	@PutMapping("/{faqId}")
+	public ResponseEntity<?> updateFaq(@PathVariable final BigInteger faqId, @RequestBody @Valid final FaqRequestDto faqRequestDto,
+			final BindingResult bindingResult) throws ValidationException {
 		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		if (!fieldErrors.isEmpty()) {
 			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
 		}
-		iFaqSubCategoryService.updateFaqSubCategory(faqSubCategoryDto, faqSubCategoryId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Updated faq sub category successfully").create();
+		iFaqService.updateFaq(faqRequestDto, faqId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Updated faq successfully").create();
 	}
 
-	@DeleteMapping("/{faqSubCategoryId}")
-	public ResponseEntity<?> deleteFaqSubCategory(@PathVariable final BigInteger faqSubCategoryId) throws ValidationException {
-		iFaqSubCategoryService.deleteFaqSubCategory(faqSubCategoryId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted faq sub category successfully").create();
+	@DeleteMapping("/{faqId}")
+	public ResponseEntity<?> deleteFaq(@PathVariable final BigInteger faqId) throws ValidationException {
+		iFaqService.deleteFaq(faqId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted faq successfully").create();
 	}
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getFaqSubCategoryList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = false) final BigInteger faqCategoryId) throws ValidationException {
+	public ResponseEntity<?> getFaqList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = false) final BigInteger faqCategoryId, @RequestParam(required = false) final BigInteger faqSubCategoryId,
+			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
+			@RequestParam(required = false) final String searchKeyword) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<FaqSubCategoryDto> faqSubCategoryDtos = iFaqSubCategoryService.getFaqSubCategoryList(startIndex, pageSize, faqCategoryId);
-		int totalCount = iFaqSubCategoryService.getFaqSubCategoryCount(faqCategoryId);
+		List<FaqResponseDto> faqRequestDtos = iFaqService.getFaqList(startIndex, pageSize, faqCategoryId, faqSubCategoryId, sortByField, sortByType,
+				searchKeyword);
+		int totalCount = iFaqService.getFaqCount(faqCategoryId, faqSubCategoryId, searchKeyword);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
-		responseMap.put("message", "Get faq sub category list successfully");
-		responseMap.put("data", faqSubCategoryDtos);
+		responseMap.put("message", "Get faq list successfully");
+		responseMap.put("data", faqRequestDtos);
 		responseMap.put("totalCount", totalCount);
 		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
 		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
@@ -84,11 +87,10 @@ public class FaqSubCategroyController {
 		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
-	@GetMapping("/{faqSubCategoryId}")
-	public ResponseEntity<?> getFaqSubCategoryDetail(@PathVariable final BigInteger faqSubCategoryId) throws ValidationException {
-		FaqSubCategoryDto faqSubCategoryDto = iFaqSubCategoryService.getFaqSubCategoryDetail(faqSubCategoryId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(faqSubCategoryDto).setMessage("Get faq sub category successfully")
-				.create();
+	@GetMapping("/{faqId}")
+	public ResponseEntity<?> getFaqDetail(@PathVariable final BigInteger faqId) throws ValidationException {
+		FaqResponseDto faqResponseDto = iFaqService.getFaqDetail(faqId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(faqResponseDto).setMessage("Get faq successfully").create();
 	}
 
 }

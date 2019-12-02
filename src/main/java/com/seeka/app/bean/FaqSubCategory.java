@@ -20,18 +20,26 @@ import javax.persistence.Table;
 public class FaqSubCategory implements Serializable {
 
 	private static final long serialVersionUID = 6922844940897956622L;
-	private BigInteger id;
-	private String name;
-	private Date createdOn;
-	private Date updatedOn;
-	private String createdBy;
-	private String updatedBy;
-	private Boolean isActive;
-	private FaqCategory faqCategory;
-
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
+	private BigInteger id;
+	@Column(name = "name")
+	private String name;
+	@Column(name = "created_on")
+	private Date createdOn;
+	@Column(name = "updated_on")
+	private Date updatedOn;
+	@Column(name = "created_by")
+	private String createdBy;
+	@Column(name = "updated_by")
+	private String updatedBy;
+	@Column(name = "is_active")
+	private Boolean isActive;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "faq_category_id")
+	private FaqCategory faqCategory;
+
 	public BigInteger getId() {
 		return id;
 	}
@@ -40,7 +48,6 @@ public class FaqSubCategory implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "name")
 	public String getName() {
 		return name;
 	}
@@ -49,7 +56,6 @@ public class FaqSubCategory implements Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "created_on")
 	public Date getCreatedOn() {
 		return createdOn;
 	}
@@ -58,7 +64,6 @@ public class FaqSubCategory implements Serializable {
 		this.createdOn = createdOn;
 	}
 
-	@Column(name = "updated_on")
 	public Date getUpdatedOn() {
 		return updatedOn;
 	}
@@ -67,7 +72,6 @@ public class FaqSubCategory implements Serializable {
 		this.updatedOn = updatedOn;
 	}
 
-	@Column(name = "created_by")
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -76,7 +80,6 @@ public class FaqSubCategory implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	@Column(name = "updated_by")
 	public String getUpdatedBy() {
 		return updatedBy;
 	}
@@ -85,7 +88,6 @@ public class FaqSubCategory implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	@Column(name = "is_active")
 	public Boolean getIsActive() {
 		return isActive;
 	}
@@ -94,8 +96,6 @@ public class FaqSubCategory implements Serializable {
 		this.isActive = isActive;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "faq_category_id")
 	public FaqCategory getFaqCategory() {
 		return faqCategory;
 	}

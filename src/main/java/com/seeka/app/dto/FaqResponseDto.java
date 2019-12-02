@@ -1,54 +1,28 @@
-package com.seeka.app.bean;
-
-import static javax.persistence.GenerationType.IDENTITY;
+package com.seeka.app.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "faq")
-public class Faq implements Serializable {
+public class FaqResponseDto implements Serializable {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 5744814923342867841L;
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
 	private BigInteger id;
-	@Column(name = "title")
 	private String title;
-	@Column(name = "description")
 	private String description;
-	@Column(name = "votes")
 	private Integer votes;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "faq_category_id")
-	private FaqCategory faqCategory;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "faq_sub_category_id")
-	private FaqSubCategory faqSubCategory;
-	@Column(name = "created_on")
+	private BigInteger faqCategoryId;
+	private String faqCategoryName;
+	private BigInteger faqSubCategoryId;
+	private String faqSubCategoryName;
 	private Date createdOn;
-	@Column(name = "updated_on")
 	private Date updatedOn;
-	@Column(name = "created_by")
 	private String createdBy;
-	@Column(name = "updated_by")
 	private String updatedBy;
-	@Column(name = "is_active")
 	private Boolean isActive;
 
 	public BigInteger getId() {
@@ -83,20 +57,36 @@ public class Faq implements Serializable {
 		this.votes = votes;
 	}
 
-	public FaqCategory getFaqCategory() {
-		return faqCategory;
+	public BigInteger getFaqCategoryId() {
+		return faqCategoryId;
 	}
 
-	public void setFaqCategory(final FaqCategory faqCategory) {
-		this.faqCategory = faqCategory;
+	public void setFaqCategoryId(final BigInteger faqCategoryId) {
+		this.faqCategoryId = faqCategoryId;
 	}
 
-	public FaqSubCategory getFaqSubCategory() {
-		return faqSubCategory;
+	public String getFaqCategoryName() {
+		return faqCategoryName;
 	}
 
-	public void setFaqSubCategory(final FaqSubCategory faqSubCategory) {
-		this.faqSubCategory = faqSubCategory;
+	public void setFaqCategoryName(final String faqCategoryName) {
+		this.faqCategoryName = faqCategoryName;
+	}
+
+	public BigInteger getFaqSubCategoryId() {
+		return faqSubCategoryId;
+	}
+
+	public void setFaqSubCategoryId(final BigInteger faqSubCategoryId) {
+		this.faqSubCategoryId = faqSubCategoryId;
+	}
+
+	public String getFaqSubCategoryName() {
+		return faqSubCategoryName;
+	}
+
+	public void setFaqSubCategoryName(final String faqSubCategoryName) {
+		this.faqSubCategoryName = faqSubCategoryName;
 	}
 
 	public Date getCreatedOn() {
@@ -146,8 +136,10 @@ public class Faq implements Serializable {
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (description == null ? 0 : description.hashCode());
-		result = prime * result + (faqCategory == null ? 0 : faqCategory.hashCode());
-		result = prime * result + (faqSubCategory == null ? 0 : faqSubCategory.hashCode());
+		result = prime * result + (faqCategoryId == null ? 0 : faqCategoryId.hashCode());
+		result = prime * result + (faqCategoryName == null ? 0 : faqCategoryName.hashCode());
+		result = prime * result + (faqSubCategoryId == null ? 0 : faqSubCategoryId.hashCode());
+		result = prime * result + (faqSubCategoryName == null ? 0 : faqSubCategoryName.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
 		result = prime * result + (title == null ? 0 : title.hashCode());
@@ -168,7 +160,7 @@ public class Faq implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Faq other = (Faq) obj;
+		FaqResponseDto other = (FaqResponseDto) obj;
 		if (createdBy == null) {
 			if (other.createdBy != null) {
 				return false;
@@ -190,18 +182,32 @@ public class Faq implements Serializable {
 		} else if (!description.equals(other.description)) {
 			return false;
 		}
-		if (faqCategory == null) {
-			if (other.faqCategory != null) {
+		if (faqCategoryId == null) {
+			if (other.faqCategoryId != null) {
 				return false;
 			}
-		} else if (!faqCategory.equals(other.faqCategory)) {
+		} else if (!faqCategoryId.equals(other.faqCategoryId)) {
 			return false;
 		}
-		if (faqSubCategory == null) {
-			if (other.faqSubCategory != null) {
+		if (faqCategoryName == null) {
+			if (other.faqCategoryName != null) {
 				return false;
 			}
-		} else if (!faqSubCategory.equals(other.faqSubCategory)) {
+		} else if (!faqCategoryName.equals(other.faqCategoryName)) {
+			return false;
+		}
+		if (faqSubCategoryId == null) {
+			if (other.faqSubCategoryId != null) {
+				return false;
+			}
+		} else if (!faqSubCategoryId.equals(other.faqSubCategoryId)) {
+			return false;
+		}
+		if (faqSubCategoryName == null) {
+			if (other.faqSubCategoryName != null) {
+				return false;
+			}
+		} else if (!faqSubCategoryName.equals(other.faqSubCategoryName)) {
 			return false;
 		}
 		if (id == null) {
@@ -252,9 +258,10 @@ public class Faq implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Faq [id=").append(id).append(", title=").append(title).append(", description=").append(description).append(", votes=").append(votes)
-				.append(", faqCategory=").append(faqCategory).append(", faqSubCategory=").append(faqSubCategory).append(", createdOn=").append(createdOn)
-				.append(", updatedOn=").append(updatedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
+		builder.append("FaqResponseDto [id=").append(id).append(", title=").append(title).append(", description=").append(description).append(", votes=")
+				.append(votes).append(", faqCategoryId=").append(faqCategoryId).append(", faqCategoryName=").append(faqCategoryName)
+				.append(", faqSubCategoryId=").append(faqSubCategoryId).append(", faqSubCategoryName=").append(faqSubCategoryName).append(", createdOn=")
+				.append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
 				.append(", isActive=").append(isActive).append("]");
 		return builder.toString();
 	}

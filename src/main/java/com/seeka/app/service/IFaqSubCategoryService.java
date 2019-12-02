@@ -14,9 +14,9 @@ public interface IFaqSubCategoryService {
 
 	void deleteFaqSubCategory(BigInteger faqSubCategoryId) throws ValidationException;
 
-	List<FaqSubCategoryDto> getFaqSubCategoryList(Integer startIndex, Integer pageSize);
+	List<FaqSubCategoryDto> getFaqSubCategoryList(Integer startIndex, Integer pageSize, BigInteger faqCategoryId);
 
-	int getFaqSubCategoryCount();
+	int getFaqSubCategoryCount(BigInteger faqCategoryId);
 
 	FaqSubCategoryDto getFaqSubCategoryDetail(BigInteger faqSubCategoryId) throws ValidationException;
 

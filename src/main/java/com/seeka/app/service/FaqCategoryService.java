@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.FaqCategory;
 import com.seeka.app.dao.IFaqCategoryDao;
+import com.seeka.app.dto.FaqResponseDto;
+import com.seeka.app.dto.FaqSubCategoryDto;
 import com.seeka.app.exception.ValidationException;
 
 @Service
@@ -18,6 +20,12 @@ public class FaqCategoryService implements IFaqCategoryService {
 
 	@Autowired
 	private IFaqCategoryDao iFaqCategoryDao;
+
+	@Autowired
+	private IFaqSubCategoryService iFaqSubCategoryService;
+
+	@Autowired
+	private IFaqService iFaqService;
 
 	@Override
 	public void addFaqCategory(final FaqCategory faqCategory) throws ValidationException {
@@ -72,6 +80,16 @@ public class FaqCategoryService implements IFaqCategoryService {
 		existingFaqCategory.setUpdatedBy("API");
 		existingFaqCategory.setUpdatedOn(new Date());
 		iFaqCategoryDao.updateFaqCategory(existingFaqCategory);
+
+		List<FaqSubCategoryDto> faqSubCategoryDtos = iFaqSubCategoryService.getFaqSubCategoryList(null, null, faqCategoryId);
+		for (FaqSubCategoryDto faqSubCategoryDto : faqSubCategoryDtos) {
+			iFaqSubCategoryService.deleteFaqSubCategory(faqSubCategoryDto.getId());
+		}
+
+		List<FaqResponseDto> faqResponseDtos = iFaqService.getFaqList(null, null, faqCategoryId, null, null, null, null);
+		for (FaqResponseDto faqResponseDto : faqResponseDtos) {
+			iFaqService.deleteFaq(faqResponseDto.getId());
+		}
 	}
 
 	@Override
