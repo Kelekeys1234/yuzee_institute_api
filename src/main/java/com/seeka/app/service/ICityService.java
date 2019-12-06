@@ -22,4 +22,8 @@ public interface ICityService {
 	Map<String, Object> save(CityDto city);
 
 	Map<String, Object> update(BigInteger id, UpdateCityDto city);
+
+	List<String> getAllCityNames(Integer pageNumber, Integer pageSize, String searchString);
+	
+	Integer getAllCityNamesCount(String searchString);
 }

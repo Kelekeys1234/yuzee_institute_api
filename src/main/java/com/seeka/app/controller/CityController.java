@@ -15,17 +15,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.dto.CityDto;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.UpdateCityDto;
 import com.seeka.app.jobs.CountryUtil;
 import com.seeka.app.service.ICityService;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.NumbeoWebServiceClient;
+import com.seeka.app.util.PaginationUtil;
 
 @RestController
 @RequestMapping("/city")
@@ -162,5 +166,24 @@ public class CityController {
         response.put("message", "City get successfully");
         response.put("data", cityList);
         return ResponseEntity.accepted().body(response);
+    }
+    
+    @RequestMapping(value = "/all", method=RequestMethod.GET)
+    public ResponseEntity<?> getAllCity(@RequestParam(value = "pageNumber", required= true) final Integer pageNumber, @RequestParam(value="pageSize", required=true) final Integer pageSize,
+			@RequestHeader final BigInteger userId, @RequestParam(name = "searchString", required = false) final String searchString){
+    	int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+    	List<String> cityList = cityService.getAllCityNames(pageNumber, pageSize, searchString);
+		int totalCount = cityService.getAllCityNamesCount(searchString);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+    	Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "List Displayed Successfully");
+		responseMap.put("data", cityList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+    	return new ResponseEntity<>(responseMap, HttpStatus.OK);
     }
 }

@@ -18,4 +18,8 @@ public interface ICityDAO {
      List<City> getAllMultipleCitiesByCountry(String BigIntegers);
 
 	List<City> getAllCityByIds(List<BigInteger> cityIds);
+
+	List<String> getAllCityNames(Integer pageNumber, Integer pageSize, String searchString);
+	
+	Integer getAllCityNamesCount(String searchString);
 }

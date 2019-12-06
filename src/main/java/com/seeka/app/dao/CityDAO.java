@@ -2,11 +2,19 @@ package com.seeka.app.dao;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -88,5 +96,33 @@ public class CityDAO implements ICityDAO {
     	Session session = sessionFactory.getCurrentSession();
         List<City> cities = session.createQuery("SELECT c FROM city c WHERE c.id IN :ids").setParameter("ids", cityIds).getResultList();
         return cities;
+	}
+
+	@Override
+	public List<String> getAllCityNames(Integer startIndex, Integer pageSize, String searchString) {
+		
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(City.class, "city");
+		if (searchString != null) {
+			criteria.add(Restrictions.ilike("city.name", searchString, MatchMode.ANYWHERE));
+		}
+		criteria.setFirstResult(startIndex);
+		criteria.setMaxResults(pageSize);
+		criteria.setProjection(Projections.property("city.name"));
+		return criteria.list();
+	}
+	
+	@Override
+	public Integer getAllCityNamesCount(String searchString) {
+		
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(City.class, "city");
+		if (searchString != null) {
+			criteria.add(Restrictions.ilike("city.name", searchString, MatchMode.ANYWHERE));
+		}
+		criteria.setProjection(Projections.property("city.name"));
+		List<String> cityNameList = criteria.list();
+		Set<String> cityNameSet = cityNameList == null?null:new HashSet<String>(cityNameList);
+		return cityNameSet !=null ? cityNameSet.size() : 0;
 	}
 }
