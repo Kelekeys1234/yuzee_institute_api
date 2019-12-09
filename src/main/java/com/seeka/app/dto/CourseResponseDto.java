@@ -38,6 +38,7 @@ public class CourseResponseDto {
 	private Boolean isActive;
 	private Date updatedOn;
 	private List<String> intake;
+	private List<String> deliveryMethod;
 
 	public BigInteger getInstituteId() {
 		return instituteId;
@@ -307,6 +308,14 @@ public class CourseResponseDto {
 
 	public void setIntake(final List<String> intake) {
 		this.intake = intake;
+	}
+
+	public List<String> getDeliveryMethod() {
+		return deliveryMethod;
+	}
+
+	public void setDeliveryMethod(final List<String> deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
 	}
 
 }

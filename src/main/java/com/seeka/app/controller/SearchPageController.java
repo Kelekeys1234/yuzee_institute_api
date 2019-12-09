@@ -1,7 +1,6 @@
 package com.seeka.app.controller;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Level;
-import com.seeka.app.bean.UserInfo;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
@@ -28,14 +26,10 @@ import com.seeka.app.exception.ValidationException;
 import com.seeka.app.jobs.CountryLevelFacultyUtil;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IStorageService;
-import com.seeka.app.service.IUserService;
 
 @RestController
 @RequestMapping("/search")
 public class SearchPageController {
-
-	@Autowired
-	private IUserService userService;
 
 	@Autowired
 	private IInstituteService instituteService;
@@ -47,13 +41,7 @@ public class SearchPageController {
 	public ResponseEntity<?> getAllCountries(@PathVariable("userId") final BigInteger userId) throws ValidationException {
 		Map<String, Object> response = new HashMap<>();
 		Date now = new Date();
-		UserInfo user = userService.get(userId);
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
-		List<BigInteger> countryIds = new ArrayList<>();
-		if (null != user.getPreferredCountryId()) {
-			countryIds.add(user.getPreferredCountryId());
-			courseSearchDto.setCountryIds(countryIds);
-		}
 		CourseSearchFilterDto sortingObj = new CourseSearchFilterDto();
 		sortingObj.setWorldRanking("DSC");
 		courseSearchDto.setSortingObj(sortingObj);

@@ -165,6 +165,7 @@ public class CourseService implements ICourseService {
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
 				courseResponseDtos.stream().map(i -> i.getInstituteId()).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
 		List<CourseIntake> courseIntake = iCourseDAO.getCourseIntakeBasedOnCourseIdList(courseIds);
+		List<CourseDeliveryMethod> courseDeliveryMethods = iCourseDAO.getCourseDeliveryMethodBasedOnCourseIdList(courseIds);
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
 			if (storageDTOList != null && !storageDTOList.isEmpty()) {
 				List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))
@@ -183,6 +184,12 @@ public class CourseService implements ICourseService {
 						.collect(Collectors.toList());
 				courseResponseDto.setIntake(courseIntakeList.stream().map(x -> x.getName()).collect(Collectors.toList()));
 				courseIntake.removeAll(courseIntakeList);
+			}
+			if (courseDeliveryMethods != null && !courseDeliveryMethods.isEmpty()) {
+				List<CourseDeliveryMethod> courseDeliveryMethodsList = courseDeliveryMethods.stream()
+						.filter(x -> courseResponseDto.getId().equals(x.getCourse().getId())).collect(Collectors.toList());
+				courseResponseDto.setDeliveryMethod(courseDeliveryMethodsList.stream().map(x -> x.getName()).collect(Collectors.toList()));
+				courseDeliveryMethods.removeAll(courseDeliveryMethodsList);
 			}
 		}
 		return courseResponseDtos;
@@ -764,6 +771,7 @@ public class CourseService implements ICourseService {
 		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
 				courseResponseDtos.stream().map(i -> i.getInstituteId()).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
+		List<CourseDeliveryMethod> courseDeliveryMethods = iCourseDAO.getCourseDeliveryMethodBasedOnCourseIdList(courseIds);
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
 			if (storageDTOList != null && !storageDTOList.isEmpty()) {
 				List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))
@@ -773,6 +781,13 @@ public class CourseService implements ICourseService {
 			}
 			if (!viewedCourseIds.isEmpty() && viewedCourseIds.contains(courseResponseDto.getId())) {
 				courseResponseDto.setIsViewed(true);
+			}
+
+			if (courseDeliveryMethods != null && !courseDeliveryMethods.isEmpty()) {
+				List<CourseDeliveryMethod> courseDeliveryMethodsList = courseDeliveryMethods.stream()
+						.filter(x -> courseResponseDto.getId().equals(x.getCourse().getId())).collect(Collectors.toList());
+				courseResponseDto.setDeliveryMethod(courseDeliveryMethodsList.stream().map(x -> x.getName()).collect(Collectors.toList()));
+				courseDeliveryMethods.removeAll(courseDeliveryMethodsList);
 			}
 		}
 		return courseResponseDtos;

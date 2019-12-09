@@ -25,7 +25,6 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
-import com.seeka.app.bean.UserInfo;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
@@ -42,7 +41,6 @@ import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IInstituteTypeService;
 import com.seeka.app.service.IServiceDetailsService;
 import com.seeka.app.service.IStorageService;
-import com.seeka.app.service.IUserService;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
@@ -61,9 +59,6 @@ public class InstituteController {
 
 	@Autowired
 	private IInstituteServiceDetailsService instituteServiceDetailsService;
-
-	@Autowired
-	private IUserService userService;
 
 	@Autowired
 	private IStorageService iStorageService;
@@ -400,15 +395,9 @@ public class InstituteController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		UserInfo user = userService.get(request.getUserId());
-
 		List<BigInteger> countryIds = request.getCountryIds();
 		if (null == countryIds || countryIds.isEmpty()) {
 			countryIds = new ArrayList<>();
-		}
-		if (null != user.getPreferredCountryId()) {
-			countryIds.add(user.getPreferredCountryId());
-			request.setCountryIds(countryIds);
 		}
 
 		List<InstituteResponseDto> instituteResponseDtoList = instituteService.getAllInstitutesByFilter(request, null, null, null, null, null, null, null, null,
