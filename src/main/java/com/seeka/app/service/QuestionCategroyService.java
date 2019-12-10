@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.QuestionCategroy;
 import com.seeka.app.dao.IQuestionCategroyDao;
+import com.seeka.app.exception.ValidationException;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -35,6 +36,17 @@ public class QuestionCategroyService implements IQuestionCategroyService {
 	@Override
 	public QuestionCategroy getQuestionCategory(final BigInteger questionCategoryId, final Boolean isActive) {
 		return iQuestionCategroyDao.getQuestionCategory(questionCategoryId, isActive);
+	}
+
+	@Override
+	public void deleteQuestionCategory(final BigInteger questionCategoryId) throws ValidationException {
+		QuestionCategroy questionCategroy = iQuestionCategroyDao.getQuestionCategory(questionCategoryId, true);
+		if (questionCategroy == null) {
+			throw new ValidationException("QuestionCategroy is not found for id" + questionCategoryId);
+		}
+		questionCategroy.setIsActive(false);
+		iQuestionCategroyDao.update(questionCategroy);
+
 	}
 
 }

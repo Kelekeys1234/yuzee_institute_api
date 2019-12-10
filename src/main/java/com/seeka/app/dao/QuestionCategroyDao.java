@@ -25,6 +25,12 @@ public class QuestionCategroyDao implements IQuestionCategroyDao {
 	}
 
 	@Override
+	public void update(final QuestionCategroy questionCategroy) {
+		Session session = sessionFactory.getCurrentSession();
+		session.update(questionCategroy);
+	}
+
+	@Override
 	public List<QuestionCategroy> getQuestionCategoryList() {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(QuestionCategroy.class, "questionCategory");

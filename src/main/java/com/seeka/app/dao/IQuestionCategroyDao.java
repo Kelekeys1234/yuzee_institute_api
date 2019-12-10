@@ -12,4 +12,6 @@ public interface IQuestionCategroyDao {
 	List<QuestionCategroy> getQuestionCategoryList();
 
 	QuestionCategroy getQuestionCategory(BigInteger questionCategoryId, Boolean isActive);
+
+	void update(QuestionCategroy questionCategroy);
 }
