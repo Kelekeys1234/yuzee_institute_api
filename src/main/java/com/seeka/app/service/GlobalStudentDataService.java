@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.dao.IGlobalStudentDataDAO;
-import com.seeka.app.dto.GlobalDataDto;
+import com.seeka.app.dto.GlobalData;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -17,7 +17,7 @@ public class GlobalStudentDataService implements IGlobalStudentData {
 	private IGlobalStudentDataDAO globalStudentDataDao;
 	
 	@Override
-	public void saveGlobalStudentData(GlobalDataDto globalStudentDataDto) {
+	public void saveGlobalStudentData(GlobalData globalStudentDataDto) {
 		
 		globalStudentDataDto.setUpdatedBy("API");
 		globalStudentDataDto.setCreatedBy("API");
@@ -32,7 +32,7 @@ public class GlobalStudentDataService implements IGlobalStudentData {
 	}
 
 	@Override
-	public List<GlobalDataDto> getCountryWiseStudentList(String countryName) {
+	public List<GlobalData> getCountryWiseStudentList(String countryName) {
 		return globalStudentDataDao.getCountryWiseStudentList(countryName);
 	}
 
@@ -43,6 +43,11 @@ public class GlobalStudentDataService implements IGlobalStudentData {
 	
 	@Override
 	public List<String> getDistinctMigratedCountryForUserCountry (String countryName) {
+		return globalStudentDataDao.getDistinctMigratedCountryForStudentCountry(countryName);
+	}
+	
+	@Override
+	public List<String> getDistinctMigratedCountryForUserCountryOrderbyStudentCount (String countryName) {
 		return globalStudentDataDao.getDistinctMigratedCountryForStudentCountry(countryName);
 	}
 }

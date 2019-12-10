@@ -4,6 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,8 +26,8 @@ public class CourseIntake implements Serializable {
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private BigInteger id;
-	@Column(name = "name")
-	private String name;
+	@Column(name = "intake_date")
+	private Date intakeDates;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "course_id")
 	private Course course;
@@ -39,12 +40,12 @@ public class CourseIntake implements Serializable {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public Date getIntakeDates() {
+		return intakeDates;
 	}
 
-	public void setName(final String name) {
-		this.name = name;
+	public void setIntakeDates(final Date intakeDates) {
+		this.intakeDates = intakeDates;
 	}
 
 	public Course getCourse() {
@@ -59,9 +60,9 @@ public class CourseIntake implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (course == null ? 0 : course.hashCode());
-		result = prime * result + (id == null ? 0 : id.hashCode());
-		result = prime * result + (name == null ? 0 : name.hashCode());
+		result = (prime * result) + (course == null ? 0 : course.hashCode());
+		result = (prime * result) + (id == null ? 0 : id.hashCode());
+		result = (prime * result) + (intakeDates == null ? 0 : intakeDates.hashCode());
 		return result;
 	}
 
@@ -91,11 +92,11 @@ public class CourseIntake implements Serializable {
 		} else if (!id.equals(other.id)) {
 			return false;
 		}
-		if (name == null) {
-			if (other.name != null) {
+		if (intakeDates == null) {
+			if (other.intakeDates != null) {
 				return false;
 			}
-		} else if (!name.equals(other.name)) {
+		} else if (!intakeDates.equals(other.intakeDates)) {
 			return false;
 		}
 		return true;
@@ -104,7 +105,7 @@ public class CourseIntake implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("CourseIntake [id=").append(id).append(", name=").append(name).append(", course=").append(course).append("]");
+		builder.append("CourseIntake [id=").append(id).append(", name=").append(intakeDates).append(", course=").append(course).append("]");
 		return builder.toString();
 	}
 

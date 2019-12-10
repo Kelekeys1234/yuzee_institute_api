@@ -1,7 +1,6 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -110,26 +109,26 @@ public class CourseDAO implements ICourseDAO {
 			sqlQuery += " and inst.id =" + courseSearchDto.getInstituteId();
 		}
 
-		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
+		if ((null != courseSearchDto.getCountryIds()) && !courseSearchDto.getCountryIds().isEmpty()) {
 			sqlQuery += " and crs.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getCityIds() && !courseSearchDto.getCityIds().isEmpty()) {
+		if ((null != courseSearchDto.getCityIds()) && !courseSearchDto.getCityIds().isEmpty()) {
 			sqlQuery += " and crs.city_id in (" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
+		if ((null != courseSearchDto.getLevelIds()) && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and crs.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
+		if ((null != courseSearchDto.getFacultyIds()) && !courseSearchDto.getFacultyIds().isEmpty()) {
 			sqlQuery += " and crs.faculty_id in (" + courseSearchDto.getFacultyIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
+		if ((null != courseSearchDto.getCourseKeys()) && !courseSearchDto.getCourseKeys().isEmpty()) {
 			sqlQuery += " and crs.name in (" + courseSearchDto.getCourseKeys().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
-		if (null != courseSearchDto.getCourseName() && !courseSearchDto.getCourseName().isEmpty()) {
+		if ((null != courseSearchDto.getCourseName()) && !courseSearchDto.getCourseName().isEmpty()) {
 			sqlQuery += " and crs.name like '%" + courseSearchDto.getCourseName().trim() + "%'";
 		}
 
@@ -159,23 +158,23 @@ public class CourseDAO implements ICourseDAO {
 			sqlQuery += " and inst.id =" + courseSearchDto.getInstituteId();
 		}
 
-		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
+		if ((null != courseSearchDto.getCountryIds()) && !courseSearchDto.getCountryIds().isEmpty()) {
 			sqlQuery += " and crs.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getCityIds() && !courseSearchDto.getCityIds().isEmpty()) {
+		if ((null != courseSearchDto.getCityIds()) && !courseSearchDto.getCityIds().isEmpty()) {
 			sqlQuery += " and crs.city_id in (" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
+		if ((null != courseSearchDto.getLevelIds()) && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and crs.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
+		if ((null != courseSearchDto.getFacultyIds()) && !courseSearchDto.getFacultyIds().isEmpty()) {
 			sqlQuery += " and crs.faculty_id in (" + courseSearchDto.getFacultyIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getCourseName() && !courseSearchDto.getCourseName().isEmpty()) {
+		if ((null != courseSearchDto.getCourseName()) && !courseSearchDto.getCourseName().isEmpty()) {
 			sqlQuery += " and crs.name like '%" + courseSearchDto.getCourseName().trim() + "%'";
 		}
 
@@ -195,7 +194,7 @@ public class CourseDAO implements ICourseDAO {
 		if (!courseSearchDto.getSortAsscending()) {
 			sortTypeValue = "DESC";
 		}
-		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
+		if ((courseSearchDto.getSortBy() != null) && !courseSearchDto.getSortBy().isEmpty()) {
 
 			if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DURATION.toString())) {
 				sortingQuery = sortingQuery + " ORDER BY crs.duration " + sortTypeValue + " ";
@@ -218,7 +217,7 @@ public class CourseDAO implements ICourseDAO {
 
 		}
 
-		if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
+		if ((courseSearchDto.getPageNumber() != null) && (courseSearchDto.getMaxSizePerPage() != null)) {
 			int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 			sqlQuery += sortingQuery + " LIMIT " + startIndex + " ," + courseSearchDto.getMaxSizePerPage();
 		} else {
@@ -277,7 +276,7 @@ public class CourseDAO implements ICourseDAO {
 				courseResponseDto.setLanguageShortKey(String.valueOf(row[13]));
 				courseResponseDto.setStars(Integer.valueOf(String.valueOf(row[14])));
 				courseResponseDto.setRequirements(String.valueOf(row[18]));
-				if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
+				if ((courseSearchDto.getCurrencyCode() != null) && !courseSearchDto.getCurrencyCode().isEmpty()) {
 					courseResponseDto.setCurrencyCode(courseSearchDto.getCurrencyCode());
 					if (row[19] != null) {
 
@@ -329,19 +328,19 @@ public class CourseDAO implements ICourseDAO {
 				+ "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
 				+ "left join institute_service iis  on iis.institute_id = inst.id where crs.institute_id = '" + instituteId + "'";
 
-		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
+		if ((null != courseSearchDto.getLevelIds()) && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and f.level_id in (" + StringUtils.join(courseSearchDto.getLevelIds(), ',') + ")";
 		}
 
-		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
+		if ((null != courseSearchDto.getFacultyIds()) && !courseSearchDto.getFacultyIds().isEmpty()) {
 			sqlQuery += " and crs.faculty_id in (" + StringUtils.join(courseSearchDto.getFacultyIds(), ',') + ")";
 		}
 
-		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
+		if ((null != courseSearchDto.getCourseKeys()) && !courseSearchDto.getCourseKeys().isEmpty()) {
 			String value = "";
 			int i = 0;
 			for (String key : courseSearchDto.getCourseKeys()) {
-				if (null == key || key.isEmpty()) {
+				if ((null == key) || key.isEmpty()) {
 					continue;
 				}
 				if (i == 0) {
@@ -354,23 +353,23 @@ public class CourseDAO implements ICourseDAO {
 			sqlQuery += " and crs.name in (" + value + ")";
 		}
 
-		if (null != courseSearchDto.getMinCost() && courseSearchDto.getMinCost() >= 0) {
+		if ((null != courseSearchDto.getMinCost()) && (courseSearchDto.getMinCost() >= 0)) {
 			sqlQuery += " and crs.cost_range >= " + courseSearchDto.getMinCost();
 		}
 
-		if (null != courseSearchDto.getMaxCost() && courseSearchDto.getMaxCost() >= 0) {
+		if ((null != courseSearchDto.getMaxCost()) && (courseSearchDto.getMaxCost() >= 0)) {
 			sqlQuery += " and crs.cost_range <= " + courseSearchDto.getMaxCost();
 		}
 
-		if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
+		if ((null != courseSearchDto.getMinDuration()) && (courseSearchDto.getMinDuration() >= 0)) {
 			sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) >= " + courseSearchDto.getMinDuration();
 		}
 
-		if (null != courseSearchDto.getMaxDuration() && courseSearchDto.getMaxDuration() >= 0) {
+		if ((null != courseSearchDto.getMaxDuration()) && (courseSearchDto.getMaxDuration() >= 0)) {
 			sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) <= " + courseSearchDto.getMaxDuration();
 		}
 
-		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
+		if ((null != courseSearchDto.getSearchKey()) && !courseSearchDto.getSearchKey().isEmpty()) {
 			sqlQuery += " and crs.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
 		}
 		sqlQuery += ") A ";
@@ -378,7 +377,7 @@ public class CourseDAO implements ICourseDAO {
 		String sortingQuery = "";
 		if (null != courseSearchDto.getSortingObj()) {
 			CourseSearchFilterDto sortingObj = courseSearchDto.getSortingObj();
-			if (null != sortingObj.getPrice() && !sortingObj.getPrice().isEmpty()) {
+			if ((null != sortingObj.getPrice()) && !sortingObj.getPrice().isEmpty()) {
 				if (sortingObj.getPrice().equals("ASC")) {
 					sortingQuery = " order by A.cost_range asc";
 				} else {
@@ -386,7 +385,7 @@ public class CourseDAO implements ICourseDAO {
 				}
 			}
 
-			if (null != sortingObj.getLocation() && !sortingObj.getLocation().isEmpty()) {
+			if ((null != sortingObj.getLocation()) && !sortingObj.getLocation().isEmpty()) {
 				if (sortingObj.getLocation().equals("ASC")) {
 					sortingQuery = " order by A.countryName, A.cityName asc";
 				} else {
@@ -394,7 +393,7 @@ public class CourseDAO implements ICourseDAO {
 				}
 			}
 
-			if (null != sortingObj.getDuration() && !sortingObj.getDuration().isEmpty()) {
+			if ((null != sortingObj.getDuration()) && !sortingObj.getDuration().isEmpty()) {
 				if (sortingObj.getDuration().equals("ASC")) {
 					sortingQuery = " order by A.duration asc";
 				} else {
@@ -402,7 +401,7 @@ public class CourseDAO implements ICourseDAO {
 				}
 			}
 
-			if (null != sortingObj.getRecognition() && !sortingObj.getRecognition().isEmpty()) {
+			if ((null != sortingObj.getRecognition()) && !sortingObj.getRecognition().isEmpty()) {
 				if (sortingObj.getRecognition().equals("ASC")) {
 					sortingQuery = " order by A.recognition asc";
 				} else {
@@ -457,19 +456,19 @@ public class CourseDAO implements ICourseDAO {
 				+ "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
 				+ "left join institute_service iis  on iis.institute_id = inst.id where crs.institute_id = " + instituteId;
 
-		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
+		if ((null != courseSearchDto.getLevelIds()) && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and f.level_id in (" + StringUtils.join(courseSearchDto.getLevelIds(), ',') + ")";
 		}
 
-		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
+		if ((null != courseSearchDto.getFacultyIds()) && !courseSearchDto.getFacultyIds().isEmpty()) {
 			sqlQuery += " and crs.faculty_id in (" + StringUtils.join(courseSearchDto.getFacultyIds(), ',') + ")";
 		}
 
-		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
+		if ((null != courseSearchDto.getCourseKeys()) && !courseSearchDto.getCourseKeys().isEmpty()) {
 			String value = "";
 			int i = 0;
 			for (String key : courseSearchDto.getCourseKeys()) {
-				if (null == key || key.isEmpty()) {
+				if ((null == key) || key.isEmpty()) {
 					continue;
 				}
 				if (i == 0) {
@@ -482,23 +481,23 @@ public class CourseDAO implements ICourseDAO {
 			sqlQuery += " and crs.name in (" + value + ")";
 		}
 
-		if (null != courseSearchDto.getMinCost() && courseSearchDto.getMinCost() >= 0) {
+		if ((null != courseSearchDto.getMinCost()) && (courseSearchDto.getMinCost() >= 0)) {
 			sqlQuery += " and crs.cost_range >= " + courseSearchDto.getMinCost();
 		}
 
-		if (null != courseSearchDto.getMaxCost() && courseSearchDto.getMaxCost() >= 0) {
+		if ((null != courseSearchDto.getMaxCost()) && (courseSearchDto.getMaxCost() >= 0)) {
 			sqlQuery += " and crs.cost_range <= " + courseSearchDto.getMaxCost();
 		}
 
-		if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
+		if ((null != courseSearchDto.getMinDuration()) && (courseSearchDto.getMinDuration() >= 0)) {
 			sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) >= " + courseSearchDto.getMinDuration();
 		}
 
-		if (null != courseSearchDto.getMaxDuration() && courseSearchDto.getMaxDuration() >= 0) {
+		if ((null != courseSearchDto.getMaxDuration()) && (courseSearchDto.getMaxDuration() >= 0)) {
 			sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) <= " + courseSearchDto.getMaxDuration();
 		}
 
-		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
+		if ((null != courseSearchDto.getSearchKey()) && !courseSearchDto.getSearchKey().isEmpty()) {
 			sqlQuery += " and crs.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
 		}
 		sqlQuery += ") A ";
@@ -506,7 +505,7 @@ public class CourseDAO implements ICourseDAO {
 		String sortingQuery = "";
 		if (null != courseSearchDto.getSortingObj()) {
 			CourseSearchFilterDto sortingObj = courseSearchDto.getSortingObj();
-			if (null != sortingObj.getPrice() && !sortingObj.getPrice().isEmpty()) {
+			if ((null != sortingObj.getPrice()) && !sortingObj.getPrice().isEmpty()) {
 				if (sortingObj.getPrice().equals("ASC")) {
 					sortingQuery = " order by A.cost_range asc";
 				} else {
@@ -514,7 +513,7 @@ public class CourseDAO implements ICourseDAO {
 				}
 			}
 
-			if (null != sortingObj.getLocation() && !sortingObj.getLocation().isEmpty()) {
+			if ((null != sortingObj.getLocation()) && !sortingObj.getLocation().isEmpty()) {
 				if (sortingObj.getLocation().equals("ASC")) {
 					sortingQuery = " order by A.countryName, A.cityName asc";
 				} else {
@@ -522,7 +521,7 @@ public class CourseDAO implements ICourseDAO {
 				}
 			}
 
-			if (null != sortingObj.getDuration() && !sortingObj.getDuration().isEmpty()) {
+			if ((null != sortingObj.getDuration()) && !sortingObj.getDuration().isEmpty()) {
 				if (sortingObj.getDuration().equals("ASC")) {
 					sortingQuery = " order by A.duration asc";
 				} else {
@@ -530,7 +529,7 @@ public class CourseDAO implements ICourseDAO {
 				}
 			}
 
-			if (null != sortingObj.getRecognition() && !sortingObj.getRecognition().isEmpty()) {
+			if ((null != sortingObj.getRecognition()) && !sortingObj.getRecognition().isEmpty()) {
 				if (sortingObj.getRecognition().equals("ASC")) {
 					sortingQuery = " order by A.recognition asc";
 				} else {
@@ -887,7 +886,7 @@ public class CourseDAO implements ICourseDAO {
 				obj.setDescription(row[7].toString());
 			}
 			if (row[8] != null) {
-				obj.setIntake(getCourseIntakeBasedOnCourseId(obj.getId()).stream().map(x -> x.getName()).collect(Collectors.toList()));
+				obj.setIntake(getCourseIntakeBasedOnCourseId(obj.getId()).stream().map(x -> x.getIntakeDates()).collect(Collectors.toList()));
 			}
 			if (row[9] != null) {
 				obj.setDuration(row[9].toString());
@@ -1046,7 +1045,7 @@ public class CourseDAO implements ICourseDAO {
 			}
 			if (row[8] != null) {
 //				courseRequest.setIntake(row[8].toString());
-				courseRequest.setIntake(getCourseIntakeBasedOnCourseId(courseRequest.getId()).stream().map(x -> x.getName()).collect(Collectors.toList()));
+				courseRequest.setIntake(getCourseIntakeBasedOnCourseId(courseRequest.getId()).stream().map(x -> x.getIntakeDates()).collect(Collectors.toList()));
 			}
 			if (row[9] != null) {
 				courseRequest.setDuration(row[9].toString());
@@ -1125,7 +1124,7 @@ public class CourseDAO implements ICourseDAO {
 			sqlQuery.append(" or ( description like '%").append(queryString).append("%'").append("))");
 
 		}
-		if (startIndex != null && pageSize != null) {
+		if ((startIndex != null) && (pageSize != null)) {
 			sqlQuery.append(" LIMIT ").append(startIndex).append(",").append(pageSize);
 		}
 		Query query = session.createSQLQuery(sqlQuery.toString());
@@ -1166,7 +1165,7 @@ public class CourseDAO implements ICourseDAO {
 		String sizeSqlQuery = "select count(*) from course crs inner join institute inst "
 				+ " on crs.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
 				+ courseSearchDto.getUserId() + ") ";
-		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
+		if ((globalSearchFilterDto != null) && (globalSearchFilterDto.getIds() != null) && (globalSearchFilterDto.getIds().size() > 0)) {
 			sizeSqlQuery = addConditionForCourseList(sizeSqlQuery, globalSearchFilterDto.getIds());
 		}
 		sizeSqlQuery = addCondition(sizeSqlQuery, courseSearchDto);
@@ -1194,7 +1193,7 @@ public class CourseDAO implements ICourseDAO {
 				+ "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
 				+ courseSearchDto.getUserId() + ") ";
 
-		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
+		if ((globalSearchFilterDto != null) && (globalSearchFilterDto.getIds() != null) && (globalSearchFilterDto.getIds().size() > 0)) {
 			sqlQuery = addConditionForCourseList(sqlQuery, globalSearchFilterDto.getIds());
 		}
 		boolean showIntlCost = false;
@@ -1202,10 +1201,10 @@ public class CourseDAO implements ICourseDAO {
 		sqlQuery += " ";
 
 		String sortingQuery = "";
-		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
+		if ((courseSearchDto.getSortBy() != null) && !courseSearchDto.getSortBy().isEmpty()) {
 			sortingQuery = addSorting(sortingQuery, courseSearchDto);
 		}
-		if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
+		if ((courseSearchDto.getPageNumber() != null) && (courseSearchDto.getMaxSizePerPage() != null)) {
 			PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 			sqlQuery += sortingQuery + " LIMIT " + PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage()) + " ,"
 					+ courseSearchDto.getMaxSizePerPage();
@@ -1262,7 +1261,7 @@ public class CourseDAO implements ICourseDAO {
 		courseResponseDto.setLanguageShortKey(String.valueOf(row[13]));
 		courseResponseDto.setStars(Integer.valueOf(String.valueOf(row[14])));
 		courseResponseDto.setRequirements(String.valueOf(row[18]));
-		if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
+		if ((courseSearchDto.getCurrencyCode() != null) && !courseSearchDto.getCurrencyCode().isEmpty()) {
 			if (row[19] != null) {
 				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[19].toString());
@@ -1320,41 +1319,41 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	private String addCondition(String sqlQuery, final AdvanceSearchDto courseSearchDto) {
-		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
+		if ((null != courseSearchDto.getCountryIds()) && !courseSearchDto.getCountryIds().isEmpty()) {
 			sqlQuery += " and crs.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
-		if (null != courseSearchDto.getCityIds() && !courseSearchDto.getCityIds().isEmpty()) {
+		if ((null != courseSearchDto.getCityIds()) && !courseSearchDto.getCityIds().isEmpty()) {
 			sqlQuery += " and crs.city_id in (" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
-		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
+		if ((null != courseSearchDto.getLevelIds()) && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and crs.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getFaculties() && !courseSearchDto.getFaculties().isEmpty()) {
+		if ((null != courseSearchDto.getFaculties()) && !courseSearchDto.getFaculties().isEmpty()) {
 			sqlQuery += " and crs.faculty_id in (" + courseSearchDto.getFaculties().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
+		if ((null != courseSearchDto.getCourseKeys()) && !courseSearchDto.getCourseKeys().isEmpty()) {
 			sqlQuery += " and crs.name in (" + courseSearchDto.getCourseKeys().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getServiceIds() && !courseSearchDto.getServiceIds().isEmpty()) {
+		if ((null != courseSearchDto.getServiceIds()) && !courseSearchDto.getServiceIds().isEmpty()) {
 			sqlQuery += " and iis.service_id in (" + courseSearchDto.getServiceIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getMinCost() && courseSearchDto.getMinCost() >= 0) {
+		if ((null != courseSearchDto.getMinCost()) && (courseSearchDto.getMinCost() >= 0)) {
 			sqlQuery += " and crs.cost_range >= " + courseSearchDto.getMinCost();
 		}
 
-		if (null != courseSearchDto.getMaxCost() && courseSearchDto.getMaxCost() >= 0) {
+		if ((null != courseSearchDto.getMaxCost()) && (courseSearchDto.getMaxCost() >= 0)) {
 			sqlQuery += " and crs.cost_range <= " + courseSearchDto.getMaxCost();
 		}
 
-		if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
+		if ((null != courseSearchDto.getMinDuration()) && (courseSearchDto.getMinDuration() >= 0)) {
 			sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) >= " + courseSearchDto.getMinDuration();
 		}
 
-		if (null != courseSearchDto.getMaxDuration() && courseSearchDto.getMaxDuration() >= 0) {
+		if ((null != courseSearchDto.getMaxDuration()) && (courseSearchDto.getMaxDuration() >= 0)) {
 			sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) <= " + courseSearchDto.getMaxDuration();
 		}
 		return sqlQuery;
@@ -1399,26 +1398,26 @@ public class CourseDAO implements ICourseDAO {
 
 	private String addCourseFilterCondition(String sqlQuery, final CourseFilterDto courseFilter) {
 
-		if (null != courseFilter.getCountryId() && courseFilter.getCountryId().intValue() > 0) {
+		if ((null != courseFilter.getCountryId()) && (courseFilter.getCountryId().intValue() > 0)) {
 			sqlQuery += " and c.country_id = " + courseFilter.getCountryId() + " ";
 		}
-		if (null != courseFilter.getInstituteId() && courseFilter.getInstituteId().intValue() > 0) {
+		if ((null != courseFilter.getInstituteId()) && (courseFilter.getInstituteId().intValue() > 0)) {
 			sqlQuery += " and c.institute_id =" + courseFilter.getInstituteId() + " ";
 		}
 
-		if (null != courseFilter.getFacultyId() && courseFilter.getFacultyId().intValue() > 0) {
+		if ((null != courseFilter.getFacultyId()) && (courseFilter.getFacultyId().intValue() > 0)) {
 			sqlQuery += " and c.faculty_id = " + courseFilter.getFacultyId() + " ";
 		}
 
-		if (null != courseFilter.getLanguage() && !courseFilter.getLanguage().isEmpty()) {
+		if ((null != courseFilter.getLanguage()) && !courseFilter.getLanguage().isEmpty()) {
 			sqlQuery += " and c.language = '" + courseFilter.getLanguage() + "' ";
 		}
 
-		if (null != courseFilter.getMinRanking() && courseFilter.getMinRanking() >= 0) {
+		if ((null != courseFilter.getMinRanking()) && (courseFilter.getMinRanking() >= 0)) {
 			sqlQuery += " and c.cost_range >= " + courseFilter.getMinRanking();
 		}
 
-		if (null != courseFilter.getMaxRanking() && courseFilter.getMaxRanking() >= 0) {
+		if ((null != courseFilter.getMaxRanking()) && (courseFilter.getMaxRanking() >= 0)) {
 			sqlQuery += " and c.cost_range <= " + courseFilter.getMaxRanking();
 		}
 		return sqlQuery;
@@ -1576,7 +1575,7 @@ public class CourseDAO implements ICourseDAO {
 			count++;
 
 			facultyIds.append(faculty.getId());
-			if (count < facultyList.size() - 1) {
+			if (count < (facultyList.size() - 1)) {
 				facultyIds.append(",");
 			}
 		}
@@ -1746,89 +1745,40 @@ public class CourseDAO implements ICourseDAO {
 			CourseDTOElasticSearch courseDtoElasticSearch = new CourseDTOElasticSearch();
 			courseDtoElasticSearch.setId(new BigInteger(String.valueOf(objects[0])));
 			courseDtoElasticSearch.setName(String.valueOf(objects[1]));
-			if (String.valueOf(objects[2]) != null && !String.valueOf(objects[2]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
-				courseDtoElasticSearch.setCourseRanking(Integer.valueOf(String.valueOf(objects[2])));
+			if ((String.valueOf(objects[2]) != null) && !String.valueOf(objects[2]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
+				courseDtoElasticSearch.setWorldRanking(Integer.valueOf(String.valueOf(objects[2])));
 			} else {
-				courseDtoElasticSearch.setCourseRanking(null);
+				courseDtoElasticSearch.setWorldRanking(null);
 			}
 
-			if (String.valueOf(objects[3]) != null && !String.valueOf(objects[3]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[3]))) {
+			if ((String.valueOf(objects[3]) != null) && !String.valueOf(objects[3]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[3]))) {
 				courseDtoElasticSearch.setStars(Integer.valueOf(String.valueOf(objects[3])));
 			} else {
 				courseDtoElasticSearch.setStars(null);
 			}
 
 			courseDtoElasticSearch.setRecognition(String.valueOf(objects[4]));
-			if (String.valueOf(objects[5]) != null && !String.valueOf(objects[5]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[5]))) {
+			if ((String.valueOf(objects[5]) != null) && !String.valueOf(objects[5]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[5]))) {
 				courseDtoElasticSearch.setDuration(Double.valueOf(String.valueOf(objects[5])));
 			} else {
 				courseDtoElasticSearch.setDuration(null);
 			}
 
 			courseDtoElasticSearch.setWebsite(String.valueOf(objects[6]));
-			courseDtoElasticSearch.setLanguage(String.valueOf(objects[7]));
 			courseDtoElasticSearch.setAbbreviation(String.valueOf(objects[8]));
-			if (String.valueOf(objects[9]) != null && !String.valueOf(objects[9]).isEmpty()) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-				Date recDate;
-				try {
-					recDate = formatter.parse(String.valueOf(objects[9]));
-				} catch (ParseException e) {
-					recDate = null;
-				}
-				courseDtoElasticSearch.setRecDate(recDate);
-			}
 			courseDtoElasticSearch.setRemarks(String.valueOf(objects[10]));
 			courseDtoElasticSearch.setDescription(String.valueOf(objects[11]));
-			courseDtoElasticSearch.setIsActive(Boolean.valueOf(String.valueOf(objects[12])));
-
-			if (String.valueOf(objects[13]) != null && !String.valueOf(objects[13]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[13]))) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-				Date createDate;
-				try {
-					createDate = formatter.parse(String.valueOf(objects[13]));
-				} catch (ParseException e) {
-					createDate = null;
-				}
-				courseDtoElasticSearch.setCreatedOn(createDate);
-			}
-
-			if (String.valueOf(objects[14]) != null && !String.valueOf(objects[14]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[14]))) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-				Date updateDate;
-				try {
-					updateDate = formatter.parse(String.valueOf(objects[14]));
-				} catch (ParseException e) {
-					updateDate = null;
-				}
-				courseDtoElasticSearch.setUpdatedOn(updateDate);
-			}
-
-			if (String.valueOf(objects[15]) != null && !String.valueOf(objects[15]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[15]))) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-				Date delDate;
-				try {
-					delDate = formatter.parse(String.valueOf(objects[15]));
-				} catch (ParseException e) {
-					delDate = null;
-				}
-				courseDtoElasticSearch.setDeletedOn(delDate);
-			}
-
-			courseDtoElasticSearch.setCreatedBy(String.valueOf(objects[16]));
-			courseDtoElasticSearch.setUpdatedBy(String.valueOf(objects[17]));
-			courseDtoElasticSearch.setIsDeleted(Boolean.valueOf(String.valueOf(objects[18])));
 			courseDtoElasticSearch.setAvailbilty(String.valueOf(objects[19]));
 			courseDtoElasticSearch.setPartFull(String.valueOf(objects[20]));
 
 			courseDtoElasticSearch.setStudyMode(String.valueOf(objects[21]));
-			if (String.valueOf(objects[22]) != null && !String.valueOf(objects[22]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[22]))) {
+			if ((String.valueOf(objects[22]) != null) && !String.valueOf(objects[22]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[22]))) {
 				courseDtoElasticSearch.setInternationalFee(Double.valueOf(String.valueOf(objects[22])));
 			} else {
 				courseDtoElasticSearch.setInternationalFee(null);
 			}
 
-			if (String.valueOf(objects[23]) != null && !String.valueOf(objects[23]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[23]))) {
+			if ((String.valueOf(objects[23]) != null) && !String.valueOf(objects[23]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[23]))) {
 				courseDtoElasticSearch.setDomesticFee(Double.valueOf(String.valueOf(objects[23])));
 			} else {
 				courseDtoElasticSearch.setDomesticFee(null);
@@ -1837,19 +1787,19 @@ public class CourseDAO implements ICourseDAO {
 			courseDtoElasticSearch.setCurrency(String.valueOf(objects[24]));
 			courseDtoElasticSearch.setCurrencyTime(String.valueOf(objects[25]));
 
-			if (String.valueOf(objects[26]) != null && !String.valueOf(objects[26]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[26]))) {
+			if ((String.valueOf(objects[26]) != null) && !String.valueOf(objects[26]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[26]))) {
 				courseDtoElasticSearch.setUsdInternationFee(Double.valueOf(String.valueOf(objects[26])));
 			} else {
 				courseDtoElasticSearch.setUsdInternationFee(null);
 			}
 
-			if (String.valueOf(objects[27]) != null && !String.valueOf(objects[27]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[27]))) {
+			if ((String.valueOf(objects[27]) != null) && !String.valueOf(objects[27]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[27]))) {
 				courseDtoElasticSearch.setUsdDomasticFee(Double.valueOf(String.valueOf(objects[27])));
 			} else {
 				courseDtoElasticSearch.setUsdDomasticFee(null);
 			}
 
-			if (String.valueOf(objects[28]) != null && !String.valueOf(objects[28]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[28]))) {
+			if ((String.valueOf(objects[28]) != null) && !String.valueOf(objects[28]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[28]))) {
 				courseDtoElasticSearch.setCostRange(Double.valueOf(String.valueOf(objects[28])));
 			} else {
 				courseDtoElasticSearch.setCostRange(null);
@@ -1865,7 +1815,7 @@ public class CourseDAO implements ICourseDAO {
 
 			courseDtoElasticSearch.setLevelCode(String.valueOf(objects[35]));
 			courseDtoElasticSearch.setLevelName(String.valueOf(objects[36]));
-			if (String.valueOf(objects[37]) != null && !String.valueOf(objects[37]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[37]))) {
+			if ((String.valueOf(objects[37]) != null) && !String.valueOf(objects[37]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[37]))) {
 				courseDtoElasticSearch.setcId(Integer.valueOf(String.valueOf(objects[37])));
 			} else {
 				courseDtoElasticSearch.setcId(null);
@@ -1890,7 +1840,7 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<BigInteger> courseIds, final Integer startIndex, final Integer limit) {
 		String courseIdString = "";
-		if (courseIds == null || courseIds.isEmpty()) {
+		if ((courseIds == null) || courseIds.isEmpty()) {
 			return new ArrayList<>();
 		} else {
 			courseIdString = courseIds.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(","));
@@ -1910,7 +1860,7 @@ public class CourseDAO implements ICourseDAO {
 
 		for (int i = 0; i < courseIds.size(); i++) {
 			queryString.append("?");
-			if (!(i == courseIds.size() - 1)) {
+			if (!(i == (courseIds.size() - 1))) {
 				queryString.append(",");
 			}
 		}
@@ -1926,89 +1876,40 @@ public class CourseDAO implements ICourseDAO {
 			CourseDTOElasticSearch courseDtoElasticSearch = new CourseDTOElasticSearch();
 			courseDtoElasticSearch.setId(new BigInteger(String.valueOf(objects[0])));
 			courseDtoElasticSearch.setName(String.valueOf(objects[1]));
-			if (String.valueOf(objects[2]) != null && !String.valueOf(objects[2]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
-				courseDtoElasticSearch.setCourseRanking(Integer.valueOf(String.valueOf(objects[2])));
+			if ((String.valueOf(objects[2]) != null) && !String.valueOf(objects[2]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
+				courseDtoElasticSearch.setWorldRanking(Integer.valueOf(String.valueOf(objects[2])));
 			} else {
-				courseDtoElasticSearch.setCourseRanking(null);
+				courseDtoElasticSearch.setWorldRanking(null);
 			}
 
-			if (String.valueOf(objects[3]) != null && !String.valueOf(objects[3]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[3]))) {
+			if ((String.valueOf(objects[3]) != null) && !String.valueOf(objects[3]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[3]))) {
 				courseDtoElasticSearch.setStars(Integer.valueOf(String.valueOf(objects[3])));
 			} else {
 				courseDtoElasticSearch.setStars(null);
 			}
 
 			courseDtoElasticSearch.setRecognition(String.valueOf(objects[4]));
-			if (String.valueOf(objects[5]) != null && !String.valueOf(objects[5]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[5]))) {
+			if ((String.valueOf(objects[5]) != null) && !String.valueOf(objects[5]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[5]))) {
 				courseDtoElasticSearch.setDuration(Double.valueOf(String.valueOf(objects[5])));
 			} else {
 				courseDtoElasticSearch.setDuration(null);
 			}
 
 			courseDtoElasticSearch.setWebsite(String.valueOf(objects[6]));
-			courseDtoElasticSearch.setLanguage(String.valueOf(objects[7]));
 			courseDtoElasticSearch.setAbbreviation(String.valueOf(objects[8]));
-			if (String.valueOf(objects[9]) != null && !String.valueOf(objects[9]).isEmpty()) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-				Date recDate;
-				try {
-					recDate = formatter.parse(String.valueOf(objects[9]));
-				} catch (ParseException e) {
-					recDate = null;
-				}
-				courseDtoElasticSearch.setRecDate(recDate);
-			}
 			courseDtoElasticSearch.setRemarks(String.valueOf(objects[10]));
 			courseDtoElasticSearch.setDescription(String.valueOf(objects[11]));
-			courseDtoElasticSearch.setIsActive(Boolean.valueOf(String.valueOf(objects[12])));
-
-			if (String.valueOf(objects[13]) != null && !String.valueOf(objects[13]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[13]))) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-				Date createDate;
-				try {
-					createDate = formatter.parse(String.valueOf(objects[13]));
-				} catch (ParseException e) {
-					createDate = null;
-				}
-				courseDtoElasticSearch.setCreatedOn(createDate);
-			}
-
-			if (String.valueOf(objects[14]) != null && !String.valueOf(objects[14]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[14]))) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-				Date updateDate;
-				try {
-					updateDate = formatter.parse(String.valueOf(objects[14]));
-				} catch (ParseException e) {
-					updateDate = null;
-				}
-				courseDtoElasticSearch.setUpdatedOn(updateDate);
-			}
-
-			if (String.valueOf(objects[15]) != null && !String.valueOf(objects[15]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[15]))) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-				Date delDate;
-				try {
-					delDate = formatter.parse(String.valueOf(objects[15]));
-				} catch (ParseException e) {
-					delDate = null;
-				}
-				courseDtoElasticSearch.setDeletedOn(delDate);
-			}
-
-			courseDtoElasticSearch.setCreatedBy(String.valueOf(objects[16]));
-			courseDtoElasticSearch.setUpdatedBy(String.valueOf(objects[17]));
-			courseDtoElasticSearch.setIsDeleted(Boolean.valueOf(String.valueOf(objects[18])));
 			courseDtoElasticSearch.setAvailbilty(String.valueOf(objects[19]));
 			courseDtoElasticSearch.setPartFull(String.valueOf(objects[20]));
 
 			courseDtoElasticSearch.setStudyMode(String.valueOf(objects[21]));
-			if (String.valueOf(objects[22]) != null && !String.valueOf(objects[22]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[22]))) {
+			if ((String.valueOf(objects[22]) != null) && !String.valueOf(objects[22]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[22]))) {
 				courseDtoElasticSearch.setInternationalFee(Double.valueOf(String.valueOf(objects[22])));
 			} else {
 				courseDtoElasticSearch.setInternationalFee(null);
 			}
 
-			if (String.valueOf(objects[23]) != null && !String.valueOf(objects[23]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[23]))) {
+			if ((String.valueOf(objects[23]) != null) && !String.valueOf(objects[23]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[23]))) {
 				courseDtoElasticSearch.setDomesticFee(Double.valueOf(String.valueOf(objects[23])));
 			} else {
 				courseDtoElasticSearch.setDomesticFee(null);
@@ -2017,19 +1918,19 @@ public class CourseDAO implements ICourseDAO {
 			courseDtoElasticSearch.setCurrency(String.valueOf(objects[24]));
 			courseDtoElasticSearch.setCurrencyTime(String.valueOf(objects[25]));
 
-			if (String.valueOf(objects[26]) != null && !String.valueOf(objects[26]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[26]))) {
+			if ((String.valueOf(objects[26]) != null) && !String.valueOf(objects[26]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[26]))) {
 				courseDtoElasticSearch.setUsdInternationFee(Double.valueOf(String.valueOf(objects[26])));
 			} else {
 				courseDtoElasticSearch.setUsdInternationFee(null);
 			}
 
-			if (String.valueOf(objects[27]) != null && !String.valueOf(objects[27]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[27]))) {
+			if ((String.valueOf(objects[27]) != null) && !String.valueOf(objects[27]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[27]))) {
 				courseDtoElasticSearch.setUsdDomasticFee(Double.valueOf(String.valueOf(objects[27])));
 			} else {
 				courseDtoElasticSearch.setUsdDomasticFee(null);
 			}
 
-			if (String.valueOf(objects[28]) != null && !String.valueOf(objects[28]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[28]))) {
+			if ((String.valueOf(objects[28]) != null) && !String.valueOf(objects[28]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[28]))) {
 				courseDtoElasticSearch.setCostRange(Double.valueOf(String.valueOf(objects[28])));
 			} else {
 				courseDtoElasticSearch.setCostRange(null);
@@ -2045,7 +1946,7 @@ public class CourseDAO implements ICourseDAO {
 
 			courseDtoElasticSearch.setLevelCode(String.valueOf(objects[35]));
 			courseDtoElasticSearch.setLevelName(String.valueOf(objects[36]));
-			if (String.valueOf(objects[37]) != null && !String.valueOf(objects[37]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[37]))) {
+			if ((String.valueOf(objects[37]) != null) && !String.valueOf(objects[37]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[37]))) {
 				courseDtoElasticSearch.setcId(Integer.valueOf(String.valueOf(objects[37])));
 			} else {
 				courseDtoElasticSearch.setcId(null);

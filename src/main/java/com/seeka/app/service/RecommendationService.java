@@ -22,7 +22,7 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.dto.CourseResponseDto;
-import com.seeka.app.dto.GlobalDataDto;
+import com.seeka.app.dto.GlobalData;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.dto.StorageDto;
@@ -109,7 +109,7 @@ public class RecommendationService implements IRecommendationService {
 		 * most interested to migrate to.
 		 */
 		
-		List<GlobalDataDto> globalDataDtoList = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
+		List<GlobalData> globalDataDtoList = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
 		
 		List<String> countryNames = globalDataDtoList.stream().map(i -> i.getDestinationCountry()).collect(Collectors.toList());
 		List<BigInteger> allCountryIds = iCountryService.getCountryBasedOnCitizenship(countryNames);
@@ -627,9 +627,9 @@ public class RecommendationService implements IRecommendationService {
 			 * in moving to. This data will be obtained from the table that contains the
 			 * data from GlobalStudentData.xlsx file uploaded.
 			 */
-			List<GlobalDataDto> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
+			List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
 
-			for (GlobalDataDto globalDataDto : countryWiseStudentCountListForUserCountry) {
+			for (GlobalData globalDataDto : countryWiseStudentCountListForUserCountry) {
 				// List<Course> courseList =
 				// getTopRatedCoursesForCountryWorldRankingWise(getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry()));
 				List<BigInteger> courseList = getTopRatedCourseIdsForCountryWorldRankingWise(

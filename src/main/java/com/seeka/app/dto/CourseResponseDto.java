@@ -37,7 +37,7 @@ public class CourseResponseDto {
 	private String cost;
 	private Boolean isActive;
 	private Date updatedOn;
-	private List<String> intake;
+	private List<Date> intake;
 	private List<String> deliveryMethod;
 
 	public BigInteger getInstituteId() {
@@ -129,7 +129,7 @@ public class CourseResponseDto {
 	}
 
 	public String getRequirements() {
-		if (null == requirements || requirements.isEmpty() || requirements.contains("0.0") || requirements.contains("0.00")) {
+		if ((null == requirements) || requirements.isEmpty() || requirements.contains("0.0") || requirements.contains("0.00")) {
 			requirements = "No Requirements";
 		}
 		return requirements;
@@ -302,11 +302,11 @@ public class CourseResponseDto {
 		this.updatedOn = updatedOn;
 	}
 
-	public List<String> getIntake() {
+	public List<Date> getIntake() {
 		return intake;
 	}
 
-	public void setIntake(final List<String> intake) {
+	public void setIntake(final List<Date> intake) {
 		this.intake = intake;
 	}
 

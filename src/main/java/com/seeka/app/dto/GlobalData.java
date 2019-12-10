@@ -16,7 +16,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "global_student_data")
-public class GlobalDataDto implements Serializable{
+public class GlobalData implements Serializable{
 
 	/**
 	 * 

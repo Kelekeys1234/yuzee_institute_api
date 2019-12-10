@@ -96,12 +96,14 @@ public class IConstant {
 
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";
 	public static final String ELASTIC_SEARCH_INDEX_COURSE = "seeka_dev";
-	// public static final String ELASTIC_SEARCH_INDEX_COURSE_TEST = "seeka_dev_course_test";
+	// temp for testing
+	public static final String ELASTIC_SEARCH_INDEX_COURSE_TEST = "seeka_dev_course_temp";
+
 	public static final String ELASTIC_SEARCH_INDEX_ARTICLE = "seeka_dev_article";
 	public static final String ELASTIC_SEARCH_INDEX_INSTITUTE = "seeka_dev_institute";
 	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP = "seeka_dev_scholarship";
-	public static final String ELASTIC_SEARCH_URL = ELASTIC_SEARCH+"/";
-	
+	public static final String ELASTIC_SEARCH_URL = ELASTIC_SEARCH + "/";
+
 	public static final String ELASTIC_SEARCH_COURSE_TYPE = "course";
 	public static final String ELASTIC_SEARCH_ARTICLE_TYPE = "article";
 	public static final String COURSE_DEFAULT_DESCRPTION = "Seeka believes that every person deserves an equal opportunity in education, career aspirations and life. Our database is developed to match users no matter where they live. With over 200,000 scholarships available to choose from, we have carefully paired you with the best.";
@@ -113,7 +115,7 @@ public class IConstant {
 	public static final Integer SCHOLARSHIPS_PER_COUNTRY_FOR_RECOMMENDATION = 4;
 
 	public static final Integer TOTAL_SCHOLARSHIPS_PER_PAGE = 20;
-	
+
 	public static final Integer TOTAL_INSTITUTES_PER_PAGE = 20;
 	/***************
 	 * CONSTANTS FOR DISPLAYING MESSAGES
@@ -122,8 +124,10 @@ public class IConstant {
 	public static final String COURSE = "Course";
 	public static final String SCHOLARSHIP = "Scholarship";
 	/***************************************************************************************/
-	
+
 	public static final Integer CURRENCY_THRESHOLD = 2;
-	
+
 	public static final int COURSES_PER_SCHEDULER_LOOP = 30;
+
+	public static final String EVENT_BRITE_API_KEY = "6I6BHL5TKXEYXU3PTFYO";
 }

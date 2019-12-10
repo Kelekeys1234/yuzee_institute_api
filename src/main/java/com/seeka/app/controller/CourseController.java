@@ -219,7 +219,7 @@ public class CourseController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
-		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream().map(x -> x.getName()).collect(Collectors.toList()));
+		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream().map(x -> x.getIntakeDates()).collect(Collectors.toList()));
 		courseRequest.setDeliveryMethod(courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream().map(x -> x.getName()).collect(Collectors.toList()));
 		courseRequest.setLanguage(courseService.getCourseLanguageBasedOnCourseId(id).stream().map(x -> x.getName()).collect(Collectors.toList()));
 		Institute instituteObj = course.getInstitute();

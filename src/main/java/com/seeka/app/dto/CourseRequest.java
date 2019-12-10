@@ -1,6 +1,7 @@
 package com.seeka.app.dto;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import com.seeka.app.bean.CourseEnglishEligibility;
@@ -16,7 +17,7 @@ public class CourseRequest {
 	private String name;
 	private String description;
 	private String duration;
-	private List<String> intake;
+	private List<Date> intake;
 	private List<String> deliveryMethod;
 //	private String language;
 	private List<String> language;
@@ -152,14 +153,14 @@ public class CourseRequest {
 	/**
 	 * @return the intake
 	 */
-	public List<String> getIntake() {
+	public List<Date> getIntake() {
 		return intake;
 	}
 
 	/**
 	 * @param intake the intake to set
 	 */
-	public void setIntake(final List<String> intake) {
+	public void setIntake(final List<Date> intake) {
 		this.intake = intake;
 	}
 

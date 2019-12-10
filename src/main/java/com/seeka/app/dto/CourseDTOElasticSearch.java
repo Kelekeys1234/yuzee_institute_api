@@ -5,545 +5,248 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
-public class CourseDTOElasticSearch implements Serializable{
+public class CourseDTOElasticSearch implements Serializable {
 
-	
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3521506877760833299L;
-	
+
 	private BigInteger id;
-    private Integer cId;
-    private String name;
-    private Integer courseRanking;
+	private Integer cId;
+	private String name;
+	private Integer worldRanking;
 	private Integer stars;
-    private String recognition;
-    private String recognitionType;
-    private Double duration;
-    private String durationTime;
-    private String website;
-    private String language;
-    private String abbreviation;
-    private Date recDate;
-    private String remarks;
-    private String description;
-    private Boolean isActive;
-    private Date createdOn;
-    private Date updatedOn;
-    private Date deletedOn;
-    private String createdBy;
-    private String updatedBy;
-    private Boolean isDeleted;
+	private String recognition;
+	private String recognitionType;
+	private Double duration;
+	private String durationTime;
+	private String website;
+	private List<String> language;
+	private String abbreviation;
+	private String remarks;
+	private String description;
 
-    private String facultyName;
-    private String instituteName;
-    private String countryName;
-    private String cityName;
-    private String levelCode;
-    private String levelName;
+	private String facultyName;
+	private String instituteName;
+	private String countryName;
+	private String cityName;
+	private String levelCode;
+	private String levelName;
 
-    // Course Details fields
+	// Course Details fields
 
-    private String availbilty;
-    private String partFull;
-    private String studyMode;
-    private Double internationalFee;
-    private Double domesticFee;
-    private String currency;
-    private String currencyTime;
-    private Double usdInternationFee;
-    private Double usdDomasticFee;
-    private Double costRange;
-    private String content;
-    private String facultyDescription;
-    private List<String> instituteImageUrl;
-    private String instituteLogoUrl;
-    private String latitute;
-    private String longitude;
-    
+	private String availbilty;
+	private String partFull;
+	private String studyMode;
+	private Double internationalFee;
+	private Double domesticFee;
+	private String currency;
+	private String currencyTime;
+	private Double usdInternationFee;
+	private Double usdDomasticFee;
+	private Double costRange;
+	private String content;
+	private String facultyDescription;
+	private List<String> instituteImageUrl;
+	private String instituteLogoUrl;
+	private String latitute;
+	private String longitude;
 
-    public String getLatitute() {
-		return latitute;
+	private String openingHourFrom;
+	private String openingHourTo;
+	private List<Date> intake;
+	private List<String> deliveryMethod;
+
+	public BigInteger getId() {
+		return id;
 	}
 
-	public void setLatitute(String latitute) {
-		this.latitute = latitute;
+	public void setId(final BigInteger id) {
+		this.id = id;
 	}
 
-	public String getLongitude() {
-		return longitude;
+	public Integer getcId() {
+		return cId;
 	}
 
-	public void setLongitude(String longitude) {
-		this.longitude = longitude;
+	public void setcId(final Integer cId) {
+		this.cId = cId;
 	}
 
-	public List<String> getInstituteImageUrl() {
-		return instituteImageUrl;
+	public String getName() {
+		return name;
 	}
 
-	public void setInstituteImageUrl(List<String> instituteImageUrl) {
-		this.instituteImageUrl = instituteImageUrl;
+	public void setName(final String name) {
+		this.name = name;
 	}
 
-	public String getInstituteLogoUrl() {
-		return instituteLogoUrl;
+	public Integer getWorldRanking() {
+		return worldRanking;
 	}
 
-	public void setInstituteLogoUrl(String instituteLogoUrl) {
-		this.instituteLogoUrl = instituteLogoUrl;
+	public void setWorldRanking(final Integer worldRanking) {
+		this.worldRanking = worldRanking;
 	}
 
-	/**
-     * @return the id
-     */
-    public BigInteger getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
-
-    public String getLevelName() {
-		return levelName;
+	public Integer getStars() {
+		return stars;
 	}
 
-	public void setLevelName(String levelName) {
-		this.levelName = levelName;
+	public void setStars(final Integer stars) {
+		this.stars = stars;
 	}
-    /**
-     * @return the cId
-     */
-    public Integer getcId() {
-        return cId;
-    }
 
-    /**
-     * @param cId
-     *            the cId to set
-     */
-    public void setcId(Integer cId) {
-        this.cId = cId;
-    }
+	public String getRecognition() {
+		return recognition;
+	}
 
-   /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+	public void setRecognition(final String recognition) {
+		this.recognition = recognition;
+	}
 
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getRecognitionType() {
+		return recognitionType;
+	}
 
+	public void setRecognitionType(final String recognitionType) {
+		this.recognitionType = recognitionType;
+	}
 
-    /**
-     * @return the stars
-     */
-    public Integer getStars() {
-        return stars;
-    }
-
-    /**
-     * @param stars
-     *            the stars to set
-     */
-    public void setStars(Integer stars) {
-        this.stars = stars;
-    }
-
-    /**
-     * @return the recognition
-     */
-    public String getRecognition() {
-        return recognition;
-    }
-
-    /**
-     * @param recognition
-     *            the recognition to set
-     */
-    public void setRecognition(String recognition) {
-        this.recognition = recognition;
-    }
-
-    /**
-     * @return the recognitionType
-     */
-    public String getRecognitionType() {
-        return recognitionType;
-    }
-
-    /**
-     * @param recognitionType
-     *            the recognitionType to set
-     */
-    public void setRecognitionType(String recognitionType) {
-        this.recognitionType = recognitionType;
-    }
-
-    public Double getDuration() {
+	public Double getDuration() {
 		return duration;
 	}
 
-	public void setDuration(Double duration) {
+	public void setDuration(final Double duration) {
 		this.duration = duration;
 	}
 
-	/**
-     * @return the durationTime
-     */
-    public String getDurationTime() {
-        return durationTime;
-    }
-
-    /**
-     * @param durationTime
-     *            the durationTime to set
-     */
-    public void setDurationTime(String durationTime) {
-        this.durationTime = durationTime;
-    }
-
-    /**
-     * @return the website
-     */
-    public String getWebsite() {
-        return website;
-    }
-
-    /**
-     * @param website
-     *            the website to set
-     */
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    /**
-     * @return the language
-     */
-    public String getLanguage() {
-        return language;
-    }
-
-    /**
-     * @param language
-     *            the language to set
-     */
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    /**
-     * @return the abbreviation
-     */
-    public String getAbbreviation() {
-        return abbreviation;
-    }
-
-    /**
-     * @param abbreviation
-     *            the abbreviation to set
-     */
-    public void setAbbreviation(String abbreviation) {
-        this.abbreviation = abbreviation;
-    }
-
-    /**
-     * @return the recDate
-     */
-    public Date getRecDate() {
-        return recDate;
-    }
-
-    /**
-     * @param recDate
-     *            the recDate to set
-     */
-    public void setRecDate(Date recDate) {
-        this.recDate = recDate;
-    }
-
-    /**
-     * @return the remarks
-     */
-    public String getRemarks() {
-        return remarks;
-    }
-
-    /**
-     * @param remarks
-     *            the remarks to set
-     */
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description
-     *            the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * @return the isActive
-     */
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    /**
-     * @param isActive
-     *            the isActive to set
-     */
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    /**
-     * @return the createdOn
-     */
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    /**
-     * @param createdOn
-     *            the createdOn to set
-     */
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    /**
-     * @return the updatedOn
-     */
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    /**
-     * @param updatedOn
-     *            the updatedOn to set
-     */
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    /**
-     * @return the deletedOn
-     */
-    public Date getDeletedOn() {
-        return deletedOn;
-    }
-
-    /**
-     * @param deletedOn
-     *            the deletedOn to set
-     */
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
-
-    /**
-     * @return the createdBy
-     */
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    /**
-     * @param createdBy
-     *            the createdBy to set
-     */
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    /**
-     * @return the updatedBy
-     */
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    /**
-     * @param updatedBy
-     *            the updatedBy to set
-     */
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    /**
-     * @return the isDeleted
-     */
-    public Boolean getIsDeleted() {
-        return isDeleted;
-    }
-
-    /**
-     * @param isDeleted
-     *            the isDeleted to set
-     */
-    public void setIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
-    /**
-     * @return the facultyName
-     */
-    public String getFacultyName() {
-        return facultyName;
-    }
-
-    /**
-     * @param facultyName
-     *            the facultyName to set
-     */
-    public void setFacultyName(String facultyName) {
-        this.facultyName = facultyName;
-    }
-
-    /**
-     * @return the instituteName
-     */
-    public String getInstituteName() {
-        return instituteName;
-    }
-
-    /**
-     * @param instituteName
-     *            the instituteName to set
-     */
-    public void setInstituteName(String instituteName) {
-        this.instituteName = instituteName;
-    }
-
-    /**
-     * @return the countryName
-     */
-    public String getCountryName() {
-        return countryName;
-    }
-
-    /**
-     * @param countryName
-     *            the countryName to set
-     */
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
-    /**
-     * @return the cityName
-     */
-    public String getCityName() {
-        return cityName;
-    }
-
-    /**
-     * @param cityName
-     *            the cityName to set
-     */
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    /**
-     * @return the levelCode
-     */
-    public String getLevelCode() {
-        return levelCode;
-    }
-
-    /**
-     * @param levelCode
-     *            the levelCode to set
-     */
-    public void setLevelCode(String levelCode) {
-        this.levelCode = levelCode;
-    }
-
-    /**
-     * @return the availbilty
-     */
-    public String getAvailbilty() {
-        return availbilty;
-    }
-
-    /**
-     * @param availbilty
-     *            the availbilty to set
-     */
-    public void setAvailbilty(String availbilty) {
-        this.availbilty = availbilty;
-    }
-
-    /**
-     * @return the partFull
-     */
-    public String getPartFull() {
-        return partFull;
-    }
-
-    /**
-     * @param partFull
-     *            the partFull to set
-     */
-    public void setPartFull(String partFull) {
-        this.partFull = partFull;
-    }
-
-    /**
-     * @return the studyMode
-     */
-    public String getStudyMode() {
-        return studyMode;
-    }
-
-    /**
-     * @param studyMode
-     *            the studyMode to set
-     */
-    public void setStudyMode(String studyMode) {
-        this.studyMode = studyMode;
-    }
-
-    public Integer getCourseRanking() {
-		return courseRanking;
+	public String getDurationTime() {
+		return durationTime;
 	}
 
-	public void setCourseRanking(Integer courseRanking) {
-		this.courseRanking = courseRanking;
+	public void setDurationTime(final String durationTime) {
+		this.durationTime = durationTime;
 	}
-	
-    public Double getInternationalFee() {
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(final String website) {
+		this.website = website;
+	}
+
+	public List<String> getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(final List<String> language) {
+		this.language = language;
+	}
+
+	public String getAbbreviation() {
+		return abbreviation;
+	}
+
+	public void setAbbreviation(final String abbreviation) {
+		this.abbreviation = abbreviation;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(final String remarks) {
+		this.remarks = remarks;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	public String getFacultyName() {
+		return facultyName;
+	}
+
+	public void setFacultyName(final String facultyName) {
+		this.facultyName = facultyName;
+	}
+
+	public String getInstituteName() {
+		return instituteName;
+	}
+
+	public void setInstituteName(final String instituteName) {
+		this.instituteName = instituteName;
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(final String countryName) {
+		this.countryName = countryName;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(final String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getLevelCode() {
+		return levelCode;
+	}
+
+	public void setLevelCode(final String levelCode) {
+		this.levelCode = levelCode;
+	}
+
+	public String getLevelName() {
+		return levelName;
+	}
+
+	public void setLevelName(final String levelName) {
+		this.levelName = levelName;
+	}
+
+	public String getAvailbilty() {
+		return availbilty;
+	}
+
+	public void setAvailbilty(final String availbilty) {
+		this.availbilty = availbilty;
+	}
+
+	public String getPartFull() {
+		return partFull;
+	}
+
+	public void setPartFull(final String partFull) {
+		this.partFull = partFull;
+	}
+
+	public String getStudyMode() {
+		return studyMode;
+	}
+
+	public void setStudyMode(final String studyMode) {
+		this.studyMode = studyMode;
+	}
+
+	public Double getInternationalFee() {
 		return internationalFee;
 	}
 
-	public void setInternationalFee(Double internationalFee) {
+	public void setInternationalFee(final Double internationalFee) {
 		this.internationalFee = internationalFee;
 	}
 
@@ -551,132 +254,147 @@ public class CourseDTOElasticSearch implements Serializable{
 		return domesticFee;
 	}
 
-	public void setDomesticFee(Double domesticFee) {
+	public void setDomesticFee(final Double domesticFee) {
 		this.domesticFee = domesticFee;
 	}
 
-	/**
-     * @return the currency
-     */
-    public String getCurrency() {
-        return currency;
-    }
+	public String getCurrency() {
+		return currency;
+	}
 
-    /**
-     * @param currency
-     *            the currency to set
-     */
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
+	public void setCurrency(final String currency) {
+		this.currency = currency;
+	}
 
-    /**
-     * @return the currencyTime
-     */
-    public String getCurrencyTime() {
-        return currencyTime;
-    }
+	public String getCurrencyTime() {
+		return currencyTime;
+	}
 
-    /**
-     * @param currencyTime
-     *            the currencyTime to set
-     */
-    public void setCurrencyTime(String currencyTime) {
-        this.currencyTime = currencyTime;
-    }
+	public void setCurrencyTime(final String currencyTime) {
+		this.currencyTime = currencyTime;
+	}
 
-    /**
-     * @return the usdInternationFee
-     */
-    public Double getUsdInternationFee() {
-        return usdInternationFee;
-    }
+	public Double getUsdInternationFee() {
+		return usdInternationFee;
+	}
 
-    /**
-     * @param usdInternationFee
-     *            the usdInternationFee to set
-     */
-    public void setUsdInternationFee(Double usdInternationFee) {
-        this.usdInternationFee = usdInternationFee;
-    }
+	public void setUsdInternationFee(final Double usdInternationFee) {
+		this.usdInternationFee = usdInternationFee;
+	}
 
-    /**
-     * @return the usdDomasticFee
-     */
-    public Double getUsdDomasticFee() {
-        return usdDomasticFee;
-    }
+	public Double getUsdDomasticFee() {
+		return usdDomasticFee;
+	}
 
-    /**
-     * @param usdDomasticFee
-     *            the usdDomasticFee to set
-     */
-    public void setUsdDomasticFee(Double usdDomasticFee) {
-        this.usdDomasticFee = usdDomasticFee;
-    }
+	public void setUsdDomasticFee(final Double usdDomasticFee) {
+		this.usdDomasticFee = usdDomasticFee;
+	}
 
-    /**
-     * @return the costRange
-     */
-    public Double getCostRange() {
-        return costRange;
-    }
+	public Double getCostRange() {
+		return costRange;
+	}
 
-    /**
-     * @param costRange
-     *            the costRange to set
-     */
-    public void setCostRange(Double costRange) {
-        this.costRange = costRange;
-    }
+	public void setCostRange(final Double costRange) {
+		this.costRange = costRange;
+	}
 
-    /**
-     * @return the content
-     */
-    public String getContent() {
-        return content;
-    }
+	public String getContent() {
+		return content;
+	}
 
-    /**
-     * @param content the content to set
-     */
-    public void setContent(String content) {
-        this.content = content;
-    }
-    
+	public void setContent(final String content) {
+		this.content = content;
+	}
+
 	public String getFacultyDescription() {
 		return facultyDescription;
 	}
 
-	public void setFacultyDescription(String facultyDescription) {
+	public void setFacultyDescription(final String facultyDescription) {
 		this.facultyDescription = facultyDescription;
+	}
+
+	public List<String> getInstituteImageUrl() {
+		return instituteImageUrl;
+	}
+
+	public void setInstituteImageUrl(final List<String> instituteImageUrl) {
+		this.instituteImageUrl = instituteImageUrl;
+	}
+
+	public String getInstituteLogoUrl() {
+		return instituteLogoUrl;
+	}
+
+	public void setInstituteLogoUrl(final String instituteLogoUrl) {
+		this.instituteLogoUrl = instituteLogoUrl;
+	}
+
+	public String getLatitute() {
+		return latitute;
+	}
+
+	public void setLatitute(final String latitute) {
+		this.latitute = latitute;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(final String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getOpeningHourFrom() {
+		return openingHourFrom;
+	}
+
+	public void setOpeningHourFrom(final String openingHourFrom) {
+		this.openingHourFrom = openingHourFrom;
+	}
+
+	public String getOpeningHourTo() {
+		return openingHourTo;
+	}
+
+	public void setOpeningHourTo(final String openingHourTo) {
+		this.openingHourTo = openingHourTo;
+	}
+
+	public List<Date> getIntake() {
+		return intake;
+	}
+
+	public void setIntake(final List<Date> intake) {
+		this.intake = intake;
+	}
+
+	public List<String> getDeliveryMethod() {
+		return deliveryMethod;
+	}
+
+	public void setDeliveryMethod(final List<String> deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("CourseDTOElasticSearch [id=").append(id).append(", cId=").append(cId).append(", name=")
-				.append(name).append(", courseRanking=").append(courseRanking).append(", stars=").append(stars)
-				.append(", recognition=").append(recognition).append(", recognitionType=").append(recognitionType)
-				.append(", duration=").append(duration).append(", durationTime=").append(durationTime)
-				.append(", website=").append(website).append(", language=").append(language).append(", abbreviation=")
-				.append(abbreviation).append(", recDate=").append(recDate).append(", remarks=").append(remarks)
-				.append(", description=").append(description).append(", isActive=").append(isActive)
-				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
-				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
-				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted)
-				.append(", facultyName=").append(facultyName).append(", instituteName=").append(instituteName)
-				.append(", countryName=").append(countryName).append(", cityName=").append(cityName)
-				.append(", levelCode=").append(levelCode).append(", levelName=").append(levelName)
-				.append(", availbilty=").append(availbilty).append(", partFull=").append(partFull)
-				.append(", studyMode=").append(studyMode).append(", internationalFee=").append(internationalFee)
-				.append(", domesticFee=").append(domesticFee).append(", currency=").append(currency)
-				.append(", currencyTime=").append(currencyTime).append(", usdInternationFee=").append(usdInternationFee)
-				.append(", usdDomasticFee=").append(usdDomasticFee).append(", costRange=").append(costRange)
-				.append(", content=").append(content).append(", facultyDescription=").append(facultyDescription)
-				.append(", instituteImageUrl=").append(instituteImageUrl).append(", instituteLogoUrl=")
-				.append(instituteLogoUrl).append(", latitute=").append(latitute).append(", longitude=")
-				.append(longitude).append("]");
+		builder.append("CourseDTOElasticSearch [id=").append(id).append(", cId=").append(cId).append(", name=").append(name).append(", worldRanking=")
+				.append(worldRanking).append(", stars=").append(stars).append(", recognition=").append(recognition).append(", recognitionType=")
+				.append(recognitionType).append(", duration=").append(duration).append(", durationTime=").append(durationTime).append(", website=")
+				.append(website).append(", language=").append(language).append(", abbreviation=").append(abbreviation).append(", remarks=").append(remarks)
+				.append(", description=").append(description).append(", facultyName=").append(facultyName).append(", instituteName=").append(instituteName)
+				.append(", countryName=").append(countryName).append(", cityName=").append(cityName).append(", levelCode=").append(levelCode)
+				.append(", levelName=").append(levelName).append(", availbilty=").append(availbilty).append(", partFull=").append(partFull)
+				.append(", studyMode=").append(studyMode).append(", internationalFee=").append(internationalFee).append(", domesticFee=").append(domesticFee)
+				.append(", currency=").append(currency).append(", currencyTime=").append(currencyTime).append(", usdInternationFee=").append(usdInternationFee)
+				.append(", usdDomasticFee=").append(usdDomasticFee).append(", costRange=").append(costRange).append(", content=").append(content)
+				.append(", facultyDescription=").append(facultyDescription).append(", instituteImageUrl=").append(instituteImageUrl)
+				.append(", instituteLogoUrl=").append(instituteLogoUrl).append(", latitute=").append(latitute).append(", longitude=").append(longitude)
+				.append(", openingHourFrom=").append(openingHourFrom).append(", openingHourTo=").append(openingHourTo).append(", intake=").append(intake)
+				.append(", deliveryMethod=").append(deliveryMethod).append("]");
 		return builder.toString();
 	}
 
