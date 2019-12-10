@@ -11,6 +11,8 @@ import javax.validation.Valid;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
+import com.seeka.app.bean.InstituteDomesticRankingHistory;
+import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
@@ -76,5 +78,9 @@ public interface IInstituteService {
 			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
 
 	Integer getTotalCourseCountForInstitute(BigInteger instituteId);
+
+	InstituteDomesticRankingHistory getHistoryOfDomesticRanking(BigInteger instituteId);
+
+	InstituteWorldRankingHistory getHistoryOfWorldRanking(BigInteger instituteId);
 
 }

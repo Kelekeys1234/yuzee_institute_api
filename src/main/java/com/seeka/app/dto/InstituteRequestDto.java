@@ -36,6 +36,7 @@ public class InstituteRequestDto {
 	private String createdBy;
 	private String updatedBy;
 	private String whatsNo;
+	private Integer domesticRanking;
 	/**
 	 * There is no use of below fields in Admin panel.
 	 */
@@ -57,6 +58,14 @@ public class InstituteRequestDto {
 	 */
 	public void setId(final BigInteger id) {
 		this.id = id;
+	}
+
+	public Integer getDomesticRanking() {
+		return domesticRanking;
+	}
+
+	public void setDomesticRanking(final Integer domesticRanking) {
+		this.domesticRanking = domesticRanking;
 	}
 
 	/**

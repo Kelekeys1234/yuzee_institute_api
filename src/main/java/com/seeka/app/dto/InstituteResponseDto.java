@@ -39,6 +39,15 @@ public class InstituteResponseDto implements Serializable {
 	private List<StorageDto> storageList;
 	private Boolean isActive;
 	private Integer stars;
+	public Integer domesticRanking;
+
+	public Integer getDomesticRanking() {
+		return domesticRanking;
+	}
+
+	public void setDomesticRanking(final Integer domesticRanking) {
+		this.domesticRanking = domesticRanking;
+	}
 
 	public Integer getWorldRanking() {
 		return worldRanking;

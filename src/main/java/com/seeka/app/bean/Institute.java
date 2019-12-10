@@ -73,6 +73,7 @@ public class Institute implements Serializable {
 	private String aboutInfo;
 	private String courseStart;
 	private String lastUpdated;
+	private Integer domesticRanking;
 
 	public Institute() {
 	}
@@ -546,6 +547,15 @@ public class Institute implements Serializable {
 		this.lastUpdated = lastUpdated;
 	}
 
+	@Column(name = "domestic_ranking")
+	public Integer getDomesticRanking() {
+		return domesticRanking;
+	}
+
+	public void setDomesticRanking(final Integer domesticRanking) {
+		this.domesticRanking = domesticRanking;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -563,6 +573,7 @@ public class Institute implements Serializable {
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
 		result = prime * result + (description == null ? 0 : description.hashCode());
+		result = prime * result + (domesticRanking == null ? 0 : domesticRanking.hashCode());
 		result = prime * result + (email == null ? 0 : email.hashCode());
 		result = prime * result + (enrolmentLink == null ? 0 : enrolmentLink.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
@@ -570,6 +581,7 @@ public class Institute implements Serializable {
 		result = prime * result + (instituteType == null ? 0 : instituteType.hashCode());
 		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
 		result = prime * result + (isDeleted == null ? 0 : isDeleted.hashCode());
+		result = prime * result + (lastUpdated == null ? 0 : lastUpdated.hashCode());
 		result = prime * result + (latitute == null ? 0 : latitute.hashCode());
 		result = prime * result + (longitude == null ? 0 : longitude.hashCode());
 		result = prime * result + (name == null ? 0 : name.hashCode());
@@ -691,6 +703,13 @@ public class Institute implements Serializable {
 		} else if (!description.equals(other.description)) {
 			return false;
 		}
+		if (domesticRanking == null) {
+			if (other.domesticRanking != null) {
+				return false;
+			}
+		} else if (!domesticRanking.equals(other.domesticRanking)) {
+			return false;
+		}
 		if (email == null) {
 			if (other.email != null) {
 				return false;
@@ -738,6 +757,13 @@ public class Institute implements Serializable {
 				return false;
 			}
 		} else if (!isDeleted.equals(other.isDeleted)) {
+			return false;
+		}
+		if (lastUpdated == null) {
+			if (other.lastUpdated != null) {
+				return false;
+			}
+		} else if (!lastUpdated.equals(other.lastUpdated)) {
 			return false;
 		}
 		if (latitute == null) {
@@ -863,7 +889,7 @@ public class Institute implements Serializable {
 				.append(instituteCategoryType).append(", enrolmentLink=").append(enrolmentLink).append(", tuitionFessPaymentPlan=")
 				.append(tuitionFessPaymentPlan).append(", scholarshipFinancingAssistance=").append(scholarshipFinancingAssistance).append(", courseCount=")
 				.append(courseCount).append(", whatsNo=").append(whatsNo).append(", aboutInfo=").append(aboutInfo).append(", courseStart=").append(courseStart)
-				.append("]");
+				.append(", lastUpdated=").append(lastUpdated).append(", domesticRanking=").append(domesticRanking).append("]");
 		return builder.toString();
 	}
 

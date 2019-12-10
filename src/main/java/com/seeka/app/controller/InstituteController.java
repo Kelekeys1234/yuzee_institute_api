@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
+import com.seeka.app.bean.InstituteDomesticRankingHistory;
 import com.seeka.app.bean.InstituteType;
+import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.bean.Service;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.CourseSearchDto;
@@ -569,6 +571,22 @@ public class InstituteController {
 			throws ValidationException {
 		Integer courseCount = instituteService.getTotalCourseCountForInstitute(instituteId);
 		return new GenericResponseHandlers.Builder().setData(courseCount).setMessage("Course Count returned successfully").setStatus(HttpStatus.OK).create();
+	}
+
+	@GetMapping(value = "/history/domestic/ranking", produces = "application/json")
+	public ResponseEntity<?> getHistoryOfDomesticRanking(@RequestParam(value = "instituteId", required = true) final BigInteger instituteId)
+			throws ValidationException {
+		InstituteDomesticRankingHistory instituteDomesticRankingHistory = instituteService.getHistoryOfDomesticRanking(instituteId);
+		return new GenericResponseHandlers.Builder().setData(instituteDomesticRankingHistory).setMessage("Get institute domestic ranking successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@GetMapping(value = "/history/world/ranking", produces = "application/json")
+	public ResponseEntity<?> getHistoryOfWorldRanking(@RequestParam(value = "instituteId", required = true) final BigInteger instituteId)
+			throws ValidationException {
+		InstituteWorldRankingHistory instituteWorldRankingHistory = instituteService.getHistoryOfWorldRanking(instituteId);
+		return new GenericResponseHandlers.Builder().setData(instituteWorldRankingHistory).setMessage("Get institute world ranking successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
 }

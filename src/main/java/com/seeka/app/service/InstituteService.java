@@ -29,17 +29,21 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
+import com.seeka.app.bean.InstituteDomesticRankingHistory;
 import com.seeka.app.bean.InstituteIntake;
 import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.bean.InstituteVideos;
+import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.bean.Level;
 import com.seeka.app.dao.IAccreditedInstituteDetailDao;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IInstituteDAO;
+import com.seeka.app.dao.IInstituteDomesticRankingHistoryDAO;
 import com.seeka.app.dao.IInstituteTypeDAO;
 import com.seeka.app.dao.IInstituteVideoDao;
+import com.seeka.app.dao.IInstituteWorldRankingHistoryDAO;
 import com.seeka.app.dao.ServiceDetailsDAO;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ElasticSearchDTO;
@@ -71,6 +75,12 @@ public class InstituteService implements IInstituteService {
 
 	@Autowired
 	private ICountryDAO countryDAO;
+
+	@Autowired
+	private IInstituteWorldRankingHistoryDAO institudeWorldRankingHistoryDAO;
+
+	@Autowired
+	private IInstituteDomesticRankingHistoryDAO instituteDomesticRankingHistoryDAO;
 
 	@Autowired
 	private ICityDAO cityDAO;
@@ -214,6 +224,12 @@ public class InstituteService implements IInstituteService {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				Institute institute = saveInstitute(instituteRequest, null);
+				if (instituteRequest.getDomesticRanking() != null) {
+					saveDomesticRankingHistory(institute, null);
+				}
+				if (instituteRequest.getWorldRanking() != null) {
+					saveWorldRankingHistory(institute, null);
+				}
 				if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
 					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
 				}
@@ -231,8 +247,11 @@ public class InstituteService implements IInstituteService {
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
 
-			elasticSearchService.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(),
-					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+			/*
+			 * elasticSearchService.saveInsituteOnElasticSearch(IConstant.
+			 * ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(),
+			 * instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+			 */
 			response.put("message", "Institute saved successfully");
 			response.put("status", HttpStatus.OK.value());
 		} catch (Exception exception) {
@@ -240,6 +259,33 @@ public class InstituteService implements IInstituteService {
 			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 		return response;
+	}
+
+	private void saveWorldRankingHistory(final Institute institute, final Institute oldInstitute) {
+		InstituteWorldRankingHistory worldRanking = new InstituteWorldRankingHistory();
+		worldRanking.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+		worldRanking.setCreatedBy(institute.getCreatedBy());
+		worldRanking.setWorldRanking(institute.getWorldRanking());
+		if (oldInstitute != null) {
+			worldRanking.setInstitute(oldInstitute);
+		} else {
+			worldRanking.setInstitute(institute);
+		}
+		institudeWorldRankingHistoryDAO.save(worldRanking);
+
+	}
+
+	private void saveDomesticRankingHistory(final Institute institute, final Institute oldInstitute) {
+		InstituteDomesticRankingHistory domesticRanking = new InstituteDomesticRankingHistory();
+		domesticRanking.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+		domesticRanking.setCreatedBy(institute.getCreatedBy());
+		domesticRanking.setDomesticRanking(institute.getDomesticRanking());
+		if (oldInstitute != null) {
+			domesticRanking.setInstitute(oldInstitute);
+		} else {
+			domesticRanking.setInstitute(institute);
+		}
+		instituteDomesticRankingHistoryDAO.save(domesticRanking);
 	}
 
 	private void saveInstituteLevel(final Institute institute, final List<BigInteger> levelIds) {
@@ -283,11 +329,19 @@ public class InstituteService implements IInstituteService {
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
+				Institute oldInstitute = dao.get(id);
+				Institute newInstitute = new Institute();
+				BeanUtils.copyProperties(instituteRequest, newInstitute);
+				if (instituteRequest.getDomesticRanking() != null && !instituteRequest.getDomesticRanking().equals(oldInstitute.getDomesticRanking())) {
+					saveDomesticRankingHistory(newInstitute, oldInstitute);
+				}
+				if (instituteRequest.getWorldRanking() != null && !instituteRequest.getWorldRanking().equals(oldInstitute.getWorldRanking())) {
+					saveWorldRankingHistory(newInstitute, oldInstitute);
+				}
 				Institute institute = saveInstitute(instituteRequest, id);
 				if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
 					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
 				}
-
 				if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
 					saveFacultyLevel(institute, instituteRequest.getFacultyIds());
 				}
@@ -371,6 +425,7 @@ public class InstituteService implements IInstituteService {
 		}
 
 		institute.setIsActive(true);
+		institute.setDomesticRanking(instituteRequest.getDomesticRanking());
 		institute.setWorldRanking(instituteRequest.getWorldRanking());
 		institute.setWebsite(instituteRequest.getWebsite());
 		if (instituteRequest.getInstituteCategoryTypeId() != null) {
@@ -405,8 +460,8 @@ public class InstituteService implements IInstituteService {
 			List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
 			BeanUtils.copyProperties(institute, instituteElasticDto);
 			instituteElasticDTOList.add(instituteElasticDto);
-			saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(), instituteElasticDTOList,
-					IConstant.ELASTIC_SEARCH);
+//			saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(), instituteElasticDTOList,
+//					IConstant.ELASTIC_SEARCH);
 		} else {
 			dao.save(institute);
 			/**
@@ -416,8 +471,8 @@ public class InstituteService implements IInstituteService {
 			List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
 			BeanUtils.copyProperties(institute, instituteElasticDto);
 			instituteElasticDTOList.add(instituteElasticDto);
-			updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(), instituteElasticDTOList,
-					IConstant.ELASTIC_SEARCH);
+//			updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(), instituteElasticDTOList,
+//					IConstant.ELASTIC_SEARCH);
 		}
 		if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
 			saveInstituteService(institute, instituteRequest.getOfferService());
@@ -826,5 +881,15 @@ public class InstituteService implements IInstituteService {
 	@Override
 	public Integer getTotalCourseCountForInstitute(final BigInteger instituteId) {
 		return courseDao.getTotalCourseCountForInstitute(instituteId);
+	}
+
+	@Override
+	public InstituteDomesticRankingHistory getHistoryOfDomesticRanking(final BigInteger instituteId) {
+		return instituteDomesticRankingHistoryDAO.getHistoryOfDomesticRanking(instituteId);
+	}
+
+	@Override
+	public InstituteWorldRankingHistory getHistoryOfWorldRanking(final BigInteger instituteId) {
+		return institudeWorldRankingHistoryDAO.getHistoryOfWorldRanking(instituteId);
 	}
 }

@@ -87,24 +87,6 @@ public class InstituteDAO implements IInstituteDAO {
 		return crit.list();
 	}
 
-	/*
-	 * @Override public Institute getUserByEmail(String email) { Session session =
-	 * sessionFactory.getCurrentSession(); Criteria crit =
-	 * session.createCriteria(UserInfo.class);
-	 * crit.add(Restrictions.eq("emailId",email)); List<UserInfo> users =
-	 * crit.list(); return users !=null && !users.isEmpty()?users.get(0):null; }
-	 */
-
-	/*
-	 * private void retrieveEmployee() {
-	 *
-	 * try{ String sqlQuery="select e from Employee e inner join e.addList"; Session
-	 * session=sessionFactory.getCurrentSession(); Query
-	 * query=session.createQuery(sqlQuery); List<Institute> list=query.list();
-	 * list.stream().forEach((p)->{System.out.println(p.getName());});
-	 * }catch(Exception e){ e.printStackTrace(); } }
-	 */
-
 	@Override
 	public List<InstituteSearchResultDto> getInstitueBySearchKey(final String searchKey) {
 		Session session = sessionFactory.getCurrentSession();
@@ -182,7 +164,8 @@ public class InstituteDAO implements IInstituteDAO {
 
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
 				+ "ctry.name as countryName,count(c.id) as courses, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars "
-				+ " ,ctry.id as countryId, ci.id as cityId,inst.updated_on as updatedOn, it.name as instituteType, inst.campus_type, inst.is_active "
+				+ " ,ctry.id as countryId, ci.id as cityId,inst.updated_on as updatedOn, it.name as instituteType, inst.campus_type,"
+				+ " inst.is_active, inst.domestic_ranking "
 				+ " from institute inst  inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id inner join institute_type it on inst.institute_type_id=it.id where 1=1 ";
@@ -281,6 +264,7 @@ public class InstituteDAO implements IInstituteDAO {
 			instituteResponseDto.setInstituteType(String.valueOf(row[10]));
 			instituteResponseDto.setCampusType(String.valueOf(row[11]));
 			instituteResponseDto.setIsActive(Boolean.valueOf(String.valueOf(row[12])));
+			instituteResponseDto.setDomesticRanking(Integer.valueOf(String.valueOf(row[13])));
 			list.add(instituteResponseDto);
 		}
 		return list;
@@ -518,7 +502,9 @@ public class InstituteDAO implements IInstituteDAO {
 			if (row[7] != null) {
 				obj.setCampusType(row[7].toString());
 			}
-			obj.setCourseCount(getCourseCount(new BigInteger(row[0].toString())));
+			if (row[8] != null) {
+				obj.setDomesticRanking((Integer) row[8]);
+			}
 			instituteList.add(obj);
 		}
 		return instituteList;
@@ -542,7 +528,8 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	private String getFilterInstituteSqlQuery(final InstituteFilterDto instituteFilterDto) {
-		String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on, inst.campus_type FROM institute as inst "
+		String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id,"
+				+ " inst.description, inst.updated_on, inst.campus_type, inst.domestic_ranking FROM institute as inst "
 				+ " left join country ctry  on ctry.id = inst.country_id left join city ci  on ci.id = inst.city_id "
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id where inst.is_active = 1 and inst.deleted_on IS NULL  ";
@@ -612,7 +599,7 @@ public class InstituteDAO implements IInstituteDAO {
 	@Override
 	public List<Institute> autoSearch(final int pageNumber, final Integer pageSize, final String searchKey) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on, inst.campus_type FROM institute as inst  "
+		String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id, inst.description, inst.updated_on, inst.campus_type, inst.domestic_ranking FROM institute as inst  "
 				+ " inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
 				+ " inner join institute_type instType on instType.id = inst.institute_type_id " + " where  inst.deleted_on IS NULL and (inst.name like '%"
 				+ searchKey + "%' or inst.description like '%" + searchKey + "%' or ctry.name like '%" + searchKey + "%' or ci.name like '%" + searchKey
