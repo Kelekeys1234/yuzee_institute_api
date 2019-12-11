@@ -19,7 +19,6 @@ public class CourseRequest {
 	private String duration;
 	private List<Date> intake;
 	private List<String> deliveryMethod;
-//	private String language;
 	private List<String> language;
 	private Double domasticFee;
 	private Double internationalFee;
