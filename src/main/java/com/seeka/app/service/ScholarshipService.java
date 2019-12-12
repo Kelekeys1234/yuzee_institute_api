@@ -44,7 +44,7 @@ public class ScholarshipService implements IScholarshipService {
 
 	@Autowired
 	private ILevelDAO iLevelDAO;
-	
+
 	@Autowired
 	private ElasticSearchService elasticSearchService;
 
@@ -81,18 +81,17 @@ public class ScholarshipService implements IScholarshipService {
 			scholarship.setInstitute(institute);
 		}
 		iScholarshipDAO.saveScholarship(scholarship);
-		
+
 		ScholarshipElasticDTO scholarshipElasticDto = new ScholarshipElasticDTO();
 		BeanUtils.copyProperties(scholarship, scholarshipElasticDto);
-		scholarshipElasticDto.setCountryName(scholarship.getCountry()!=null?scholarship.getCountry().getName():null);
-		scholarshipElasticDto.setOfferedBy(scholarshipDto.getOfferedByInstitute());
-		scholarshipElasticDto.setInstituteName(scholarship.getInstitute()!=null?scholarship.getInstitute().getName():null);
-		scholarshipElasticDto.setLevelName(scholarship.getLevel()!=null?scholarship.getLevel().getName():null);
-		scholarshipElasticDto.setLevelCode(scholarship.getLevel()!=null?scholarship.getLevel().getCode():null);
-		
-		elasticSearchService.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
-				scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
-		if (scholarshipDto.getIntakes() != null && !scholarshipDto.getIntakes().isEmpty()) {
+		scholarshipElasticDto.setCountryName(scholarship.getCountry() != null ? scholarship.getCountry().getName() : null);
+		scholarshipElasticDto.setOfferedBy(scholarshipDto.getOfferedBy());
+		scholarshipElasticDto.setInstituteName(scholarship.getInstitute() != null ? scholarship.getInstitute().getName() : null);
+		scholarshipElasticDto.setLevelName(scholarship.getLevel() != null ? scholarship.getLevel().getName() : null);
+		scholarshipElasticDto.setLevelCode(scholarship.getLevel() != null ? scholarship.getLevel().getCode() : null);
+		scholarshipElasticDto.setAmount(scholarship.getScholarshipAmount());
+
+		if ((scholarshipDto.getIntakes() != null) && !scholarshipDto.getIntakes().isEmpty()) {
 			for (String intake : scholarshipDto.getIntakes()) {
 				ScholarshipIntakes scholarshipIntakes = new ScholarshipIntakes();
 				scholarshipIntakes.setScholarship(scholarship);
@@ -100,7 +99,7 @@ public class ScholarshipService implements IScholarshipService {
 				iScholarshipDAO.saveScholarshipIntake(scholarshipIntakes);
 			}
 		}
-		if (scholarshipDto.getLanguages() != null && !scholarshipDto.getLanguages().isEmpty()) {
+		if ((scholarshipDto.getLanguages() != null) && !scholarshipDto.getLanguages().isEmpty()) {
 			for (String language : scholarshipDto.getLanguages()) {
 				ScholarshipLanguage scholarshipLanguage = new ScholarshipLanguage();
 				scholarshipLanguage.setScholarship(scholarship);
@@ -108,6 +107,11 @@ public class ScholarshipService implements IScholarshipService {
 				iScholarshipDAO.saveScholarshipLanguage(scholarshipLanguage);
 			}
 		}
+		scholarshipElasticDto.setIntake(scholarshipDto.getIntakes());
+		scholarshipElasticDto.setLanguages(scholarshipDto.getLanguages());
+
+		elasticSearchService.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP_TEST, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
+				scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 	}
 
 	@Override
@@ -116,7 +120,7 @@ public class ScholarshipService implements IScholarshipService {
 		Scholarship scholarship = iScholarshipDAO.getScholarshipById(id);
 		BeanUtils.copyProperties(scholarship, scholarshipResponseDTO);
 		List<ScholarshipIntakes> scholarshipIntakes = iScholarshipDAO.getIntakeByScholarship(id);
-		if (scholarshipIntakes != null && !scholarshipIntakes.isEmpty()) {
+		if ((scholarshipIntakes != null) && !scholarshipIntakes.isEmpty()) {
 			List<String> intakes = new ArrayList<>();
 			for (ScholarshipIntakes schIntakes : scholarshipIntakes) {
 				intakes.add(schIntakes.getName());
@@ -124,7 +128,7 @@ public class ScholarshipService implements IScholarshipService {
 			scholarshipResponseDTO.setIntakes(intakes);
 		}
 		List<ScholarshipLanguage> scholarshipLanguages = iScholarshipDAO.getLanguageByScholarship(id);
-		if (scholarshipLanguages != null && !scholarshipLanguages.isEmpty()) {
+		if ((scholarshipLanguages != null) && !scholarshipLanguages.isEmpty()) {
 			List<String> languages = new ArrayList<>();
 			for (ScholarshipLanguage scholarshipLanguage : scholarshipLanguages) {
 				languages.add(scholarshipLanguage.getName());
@@ -176,7 +180,7 @@ public class ScholarshipService implements IScholarshipService {
 			}
 			existingScholarship.setInstitute(institute);
 		}
-		if (scholarshipDto.getIntakes() != null && !scholarshipDto.getIntakes().isEmpty()) {
+		if ((scholarshipDto.getIntakes() != null) && !scholarshipDto.getIntakes().isEmpty()) {
 			for (String intake : scholarshipDto.getIntakes()) {
 				ScholarshipIntakes scholarshipIntakes = new ScholarshipIntakes();
 				scholarshipIntakes.setScholarship(existingScholarship);
@@ -184,7 +188,7 @@ public class ScholarshipService implements IScholarshipService {
 				iScholarshipDAO.saveScholarshipIntake(scholarshipIntakes);
 			}
 		}
-		if (scholarshipDto.getLanguages() != null && !scholarshipDto.getLanguages().isEmpty()) {
+		if ((scholarshipDto.getLanguages() != null) && !scholarshipDto.getLanguages().isEmpty()) {
 			for (String language : scholarshipDto.getLanguages()) {
 				ScholarshipLanguage scholarshipLanguage = new ScholarshipLanguage();
 				scholarshipLanguage.setScholarship(existingScholarship);
@@ -195,13 +199,16 @@ public class ScholarshipService implements IScholarshipService {
 		iScholarshipDAO.updateScholarship(existingScholarship);
 		ScholarshipElasticDTO scholarshipElasticDto = new ScholarshipElasticDTO();
 		BeanUtils.copyProperties(existingScholarship, scholarshipElasticDto);
-		scholarshipElasticDto.setCountryName(existingScholarship.getCountry()!=null?existingScholarship.getCountry().getName():null);
-		scholarshipElasticDto.setOfferedBy(existingScholarship.getOfferedByInstitute());
-		scholarshipElasticDto.setInstituteName(existingScholarship.getInstitute()!=null?existingScholarship.getInstitute().getName():null);
-		scholarshipElasticDto.setLevelName(existingScholarship.getLevel()!=null?existingScholarship.getLevel().getName():null);
-		scholarshipElasticDto.setLevelCode(existingScholarship.getLevel()!=null?existingScholarship.getLevel().getCode():null);
-		
-		elasticSearchService.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
+		scholarshipElasticDto.setCountryName(existingScholarship.getCountry() != null ? existingScholarship.getCountry().getName() : null);
+		scholarshipElasticDto.setOfferedBy(existingScholarship.getOfferedBy());
+		scholarshipElasticDto.setInstituteName(existingScholarship.getInstitute() != null ? existingScholarship.getInstitute().getName() : null);
+		scholarshipElasticDto.setLevelName(existingScholarship.getLevel() != null ? existingScholarship.getLevel().getName() : null);
+		scholarshipElasticDto.setLevelCode(existingScholarship.getLevel() != null ? existingScholarship.getLevel().getCode() : null);
+		scholarshipElasticDto.setAmount(existingScholarship.getScholarshipAmount());
+		scholarshipElasticDto.setLanguages(scholarshipDto.getLanguages());
+		scholarshipElasticDto.setIntake(scholarshipDto.getIntakes());
+
+		elasticSearchService.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP_TEST, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
 				scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 	}
 
@@ -216,7 +223,7 @@ public class ScholarshipService implements IScholarshipService {
 			ScholarshipResponseDTO scholarshipResponseDTO = new ScholarshipResponseDTO();
 			BeanUtils.copyProperties(scholarship, scholarshipResponseDTO);
 			List<ScholarshipIntakes> scholarshipIntakes = iScholarshipDAO.getIntakeByScholarship(scholarship.getId());
-			if (scholarshipIntakes != null && !scholarshipIntakes.isEmpty()) {
+			if ((scholarshipIntakes != null) && !scholarshipIntakes.isEmpty()) {
 				List<String> intakes = new ArrayList<>();
 				for (ScholarshipIntakes schIntakes : scholarshipIntakes) {
 					intakes.add(schIntakes.getName());
@@ -224,7 +231,7 @@ public class ScholarshipService implements IScholarshipService {
 				scholarshipResponseDTO.setIntakes(intakes);
 			}
 			List<ScholarshipLanguage> scholarshipLanguages = iScholarshipDAO.getLanguageByScholarship(scholarship.getId());
-			if (scholarshipLanguages != null && !scholarshipLanguages.isEmpty()) {
+			if ((scholarshipLanguages != null) && !scholarshipLanguages.isEmpty()) {
 				List<String> languages = new ArrayList<>();
 				for (ScholarshipLanguage scholarshipLanguage : scholarshipLanguages) {
 					languages.add(scholarshipLanguage.getName());
@@ -271,7 +278,7 @@ public class ScholarshipService implements IScholarshipService {
 	@Override
 	public List<BigInteger> getScholarshipIdsByCountryId(final List<BigInteger> countryIds, final Integer limit) {
 		List<BigInteger> scholarshipIds = new ArrayList<>();
-		if (limit != null && !limit.equals(0)) {
+		if ((limit != null) && !limit.equals(0)) {
 			scholarshipIds = iScholarshipDAO.getRandomScholarShipsForCountry(countryIds, limit);
 		}
 		return scholarshipIds;

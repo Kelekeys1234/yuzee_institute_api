@@ -127,8 +127,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 		}
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.disjunction().add(Restrictions.ilike("scholarship.name", searchKeyword, MatchMode.ANYWHERE))
-					.add(Restrictions.ilike("scholarship.offeredByInstitute", searchKeyword, MatchMode.ANYWHERE))
-					.add(Restrictions.ilike("scholarship.offeredByCourse", searchKeyword, MatchMode.ANYWHERE))
+					.add(Restrictions.ilike("scholarship.offeredBy", searchKeyword, MatchMode.ANYWHERE))
 					.add(Restrictions.ilike("country.name", searchKeyword, MatchMode.ANYWHERE))
 					.add(Restrictions.ilike("scholarship.validity", searchKeyword, MatchMode.ANYWHERE)));
 		}
@@ -142,11 +141,11 @@ public class ScholarshipDao implements IScholarshipDAO {
 				} else if ("DESC".equals(sortByType)) {
 					criteria.addOrder(Order.desc("scholarship.name"));
 				}
-			} else if ("offeredByInstitute".equals(sortByField)) {
+			} else if ("offeredBy".equals(sortByField)) {
 				if ("ASC".equals(sortByType)) {
-					criteria.addOrder(Order.asc("scholarship.offeredByInstitute"));
+					criteria.addOrder(Order.asc("scholarship.offeredBy"));
 				} else if ("DESC".equals(sortByType)) {
-					criteria.addOrder(Order.desc("scholarship.offeredByInstitute"));
+					criteria.addOrder(Order.desc("scholarship.offeredBy"));
 				}
 			} else if ("countryId".equals(sortByField)) {
 				if ("ASC".equals(sortByType)) {
@@ -166,7 +165,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 		} else {
 			criteria.addOrder(Order.desc("scholarship.id"));
 		}
-		if (startIndex != null && pageSize != null) {
+		if ((startIndex != null) && (pageSize != null)) {
 			criteria.setFirstResult(startIndex);
 			criteria.setMaxResults(pageSize);
 		}
@@ -202,8 +201,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 		}
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.disjunction().add(Restrictions.ilike("scholarship.name", searchKeyword, MatchMode.ANYWHERE))
-					.add(Restrictions.ilike("scholarship.offeredByInstitute", searchKeyword, MatchMode.ANYWHERE))
-					.add(Restrictions.ilike("scholarship.offeredByCourse", searchKeyword, MatchMode.ANYWHERE))
+					.add(Restrictions.ilike("scholarship.offeredBy", searchKeyword, MatchMode.ANYWHERE))
 					.add(Restrictions.ilike("country.name", searchKeyword, MatchMode.ANYWHERE))
 					.add(Restrictions.ilike("scholarship.validity", searchKeyword, MatchMode.ANYWHERE)));
 		}
