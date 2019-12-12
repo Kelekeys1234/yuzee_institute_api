@@ -15,10 +15,27 @@ public class InstituteElasticSearchDTO {
 	private String longitude;
 	private String description;
 	private String campus;
-	private String levelCode;
+	private List<String> levelCode;
 	private Integer stars;
 	private List<String> facultyNames;
 	private List<String> intakes;
+	private List<String> levelName;
+
+	public List<String> getLevelName() {
+		return levelName;
+	}
+
+	public void setLevelName(final List<String> levelName) {
+		this.levelName = levelName;
+	}
+
+	public void setLevelCode(final List<String> levelCode) {
+		this.levelCode = levelCode;
+	}
+
+	public List<String> getLevelCode() {
+		return levelCode;
+	}
 
 	public List<String> getIntakes() {
 		return intakes;
@@ -108,14 +125,6 @@ public class InstituteElasticSearchDTO {
 		this.campus = campus;
 	}
 
-	public String getLevelCode() {
-		return levelCode;
-	}
-
-	public void setLevelCode(final String levelCode) {
-		this.levelCode = levelCode;
-	}
-
 	public Integer getStars() {
 		return stars;
 	}
@@ -131,7 +140,7 @@ public class InstituteElasticSearchDTO {
 				.append(", instituteTypeName=").append(instituteTypeName).append(", name=").append(name).append(", worldRanking=").append(worldRanking)
 				.append(", latitude=").append(latitude).append(", longitude=").append(longitude).append(", description=").append(description)
 				.append(", campus=").append(campus).append(", levelCode=").append(levelCode).append(", stars=").append(stars).append(", facultyNames=")
-				.append(facultyNames).append(", intakes=").append(intakes).append("]");
+				.append(facultyNames).append(", intakes=").append(intakes).append(", levelName=").append(levelName).append("]");
 		return builder.toString();
 	}
 
@@ -149,6 +158,7 @@ public class InstituteElasticSearchDTO {
 		result = (prime * result) + ((intakes == null) ? 0 : intakes.hashCode());
 		result = (prime * result) + ((latitude == null) ? 0 : latitude.hashCode());
 		result = (prime * result) + ((levelCode == null) ? 0 : levelCode.hashCode());
+		result = (prime * result) + ((levelName == null) ? 0 : levelName.hashCode());
 		result = (prime * result) + ((longitude == null) ? 0 : longitude.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((stars == null) ? 0 : stars.hashCode());
@@ -236,6 +246,13 @@ public class InstituteElasticSearchDTO {
 				return false;
 			}
 		} else if (!levelCode.equals(other.levelCode)) {
+			return false;
+		}
+		if (levelName == null) {
+			if (other.levelName != null) {
+				return false;
+			}
+		} else if (!levelName.equals(other.levelName)) {
 			return false;
 		}
 		if (longitude == null) {

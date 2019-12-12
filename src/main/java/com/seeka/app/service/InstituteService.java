@@ -224,6 +224,7 @@ public class InstituteService implements IInstituteService {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				Institute institute = saveInstitute(instituteRequest, null);
+				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
 				if (instituteRequest.getDomesticRanking() != null) {
 					saveDomesticRankingHistory(institute, null);
 				}
@@ -234,13 +235,17 @@ public class InstituteService implements IInstituteService {
 					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
 				}
 				if ((instituteRequest.getFacultyIds() != null) && !instituteRequest.getFacultyIds().isEmpty()) {
-					saveFacultyLevel(institute, instituteRequest.getFacultyIds());
+					Map<BigInteger, String> facultyIdNameMap = saveFacultyLevel(institute, instituteRequest.getFacultyIds());
+					List<String> facultyNames = new ArrayList<>(facultyIdNameMap.values());
+					instituteElasticSearchDto.setFacultyNames(facultyNames);
 				}
 				if ((instituteRequest.getLevelIds() != null) && !instituteRequest.getLevelIds().isEmpty()) {
-					saveInstituteLevel(institute, instituteRequest.getLevelIds());
+					Map<String, String> levelNameLevelCodeMap = saveInstituteLevel(institute, instituteRequest.getLevelIds());
+					instituteElasticSearchDto.setLevelName(new ArrayList<>(levelNameLevelCodeMap.keySet()));
+					instituteElasticSearchDto.setLevelCode(new ArrayList<>(levelNameLevelCodeMap.values()));
 				}
-				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
-				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
+
+				BeanUtils.copyProperties(institute, instituteElasticSearchDto);
 				instituteElasticSearchDto.setCountryName(institute.getCountry() != null ? institute.getCountry().getName() : null);
 				instituteElasticSearchDto.setCityName(institute.getCity() != null ? institute.getCity().getName() : null);
 				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType().getName() : null);
@@ -287,8 +292,10 @@ public class InstituteService implements IInstituteService {
 		instituteDomesticRankingHistoryDAO.save(domesticRanking);
 	}
 
-	private void saveInstituteLevel(final Institute institute, final List<BigInteger> levelIds) {
+	private Map<String, String> saveInstituteLevel(final Institute institute, final List<BigInteger> levelIds) {
 		iInstituteLevelService.deleteInstituteLevel(institute.getId());
+		Map<String, String> levelNameLevelCodeMap = new HashMap<>(); // contains Map<LevelName, LevelCode>
+
 		for (BigInteger levelId : levelIds) {
 			Level level = levelService.get(levelId);
 			InstituteLevel instituteLevel = new InstituteLevel();
@@ -301,8 +308,10 @@ public class InstituteService implements IInstituteService {
 			instituteLevel.setUpdatedBy("API");
 			instituteLevel.setUpdatedOn(new Date());
 			instituteLevel.setIsActive(true);
+			levelNameLevelCodeMap.put(level.getName(), level.getCode());
 			iInstituteLevelService.save(instituteLevel);
 		}
+		return levelNameLevelCodeMap;
 	}
 
 	private Map<BigInteger, String> saveFacultyLevel(final Institute institute, final List<BigInteger> facultyIds) {
@@ -350,7 +359,9 @@ public class InstituteService implements IInstituteService {
 					instituteElasticSearchDto.setFacultyNames(facultyNames);
 				}
 				if ((instituteRequest.getLevelIds() != null) && !instituteRequest.getLevelIds().isEmpty()) {
-					saveInstituteLevel(institute, instituteRequest.getLevelIds());
+					Map<String, String> levelNameLevelCodeMap = saveInstituteLevel(institute, instituteRequest.getLevelIds());
+					instituteElasticSearchDto.setLevelName(new ArrayList<>(levelNameLevelCodeMap.keySet()));
+					instituteElasticSearchDto.setLevelCode(new ArrayList<>(levelNameLevelCodeMap.values()));
 				}
 
 				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
@@ -467,13 +478,6 @@ public class InstituteService implements IInstituteService {
 			instituteElasticDTOList.add(instituteElasticDto);
 		} else {
 			dao.save(institute);
-			/**
-			 * Update this institute in elastic search
-			 */
-			InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
-			List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
-			BeanUtils.copyProperties(institute, instituteElasticDto);
-			instituteElasticDTOList.add(instituteElasticDto);
 		}
 		if ((instituteRequest.getOfferService() != null) && !instituteRequest.getOfferService().isEmpty()) {
 			saveInstituteService(institute, instituteRequest.getOfferService());
