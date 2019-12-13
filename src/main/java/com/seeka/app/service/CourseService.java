@@ -345,8 +345,8 @@ public class CourseService implements ICourseService {
 		courseElasticSearch.setLanguage(courseDto.getLanguage());
 		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
 		courseListElasticDTO.add(courseElasticSearch);
-		elasticSearchService.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE_TEST, SeekaEntityType.COURSE.name().toLowerCase(),
-				courseListElasticDTO, IConstant.ELASTIC_SEARCH);
+		elasticSearchService.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseListElasticDTO,
+				IConstant.ELASTIC_SEARCH);
 
 		return course.getId();
 	}
@@ -492,7 +492,7 @@ public class CourseService implements ICourseService {
 
 		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
 		courseListElasticDTO.add(courseElasticSearch);
-		elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE_TEST, SeekaEntityType.COURSE.name().toLowerCase(),
+		elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(),
 				courseListElasticDTO, IConstant.ELASTIC_SEARCH);
 
 		return id;
@@ -593,7 +593,7 @@ public class CourseService implements ICourseService {
 				elasticSearchCourseDto.setId(courseId);
 				List<CourseDTOElasticSearch> courseDtoESList = new ArrayList<>();
 				courseDtoESList.add(elasticSearchCourseDto);
-				elasticSearchService.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE_TEST, SeekaEntityType.COURSE.name().toLowerCase(),
+				elasticSearchService.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(),
 						courseDtoESList, IConstant.ELASTIC_SEARCH);
 
 				response.put("status", HttpStatus.OK.value());

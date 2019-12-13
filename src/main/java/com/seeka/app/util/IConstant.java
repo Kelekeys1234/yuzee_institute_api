@@ -97,17 +97,20 @@ public class IConstant {
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";
 	public static final String ELASTIC_SEARCH_INDEX_COURSE = "seeka_dev";
 	// temp for testing
-	public static final String ELASTIC_SEARCH_INDEX_COURSE_TEST = "seeka_dev_course_temp";
+	// public static final String ELASTIC_SEARCH_INDEX_COURSE_TEST =
+	// "seeka_dev_course_temp";
 
 	public static final String ELASTIC_SEARCH_INDEX_ARTICLE = "seeka_dev_article";
 	public static final String ELASTIC_SEARCH_INDEX_INSTITUTE = "seeka_dev_institute";
 	// temp for testing
-	public static final String ELASTIC_SEARCH_INDEX_INSTITUTE_TEST = "seeka_dev_institute_temp_tet";
+	// public static final String ELASTIC_SEARCH_INDEX_INSTITUTE_TEST =
+	// "seeka_dev_institute_temp_tet";
 
 	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP = "seeka_dev_scholarship";
 
 	// For testing pupose only
-	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP_TEST = "seeka_dev_scholarship_temp";
+	// public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP_TEST =
+	// "seeka_dev_scholarship_temp";
 
 	public static final String ELASTIC_SEARCH_URL = ELASTIC_SEARCH + "/";
 

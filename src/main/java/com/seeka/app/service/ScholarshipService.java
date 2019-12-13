@@ -110,7 +110,7 @@ public class ScholarshipService implements IScholarshipService {
 		scholarshipElasticDto.setIntake(scholarshipDto.getIntakes());
 		scholarshipElasticDto.setLanguages(scholarshipDto.getLanguages());
 
-		elasticSearchService.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP_TEST, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
+		elasticSearchService.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
 				scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 	}
 
@@ -208,7 +208,7 @@ public class ScholarshipService implements IScholarshipService {
 		scholarshipElasticDto.setLanguages(scholarshipDto.getLanguages());
 		scholarshipElasticDto.setIntake(scholarshipDto.getIntakes());
 
-		elasticSearchService.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP_TEST, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
+		elasticSearchService.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
 				scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 	}
 

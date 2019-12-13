@@ -253,7 +253,7 @@ public class InstituteService implements IInstituteService {
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
 
-			elasticSearchService.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE_TEST, SeekaEntityType.INSTITUTE.name().toLowerCase(),
+			elasticSearchService.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(),
 					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 
 			response.put("message", "Institute saved successfully");
@@ -371,7 +371,7 @@ public class InstituteService implements IInstituteService {
 				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
-			elasticSearchService.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE_TEST, SeekaEntityType.INSTITUTE.name().toLowerCase(),
+			elasticSearchService.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(),
 					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 			response.put("message", "Institute update successfully");
 			response.put("status", HttpStatus.OK.value());
