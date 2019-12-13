@@ -2,7 +2,6 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -68,8 +67,7 @@ public class RecommendationService implements IRecommendationService {
 
 	@Override
 	public List<InstituteResponseDto> getRecommendedInstitutes(final BigInteger userId, /*
-																						 * Long startIndex, final Long
-																						 * pageSize, Long pageNumber,
+																						 * Long startIndex, final Long pageSize, Long pageNumber,
 																						 */
 			final String language) throws ValidationException, NotFoundException {
 
@@ -88,7 +86,7 @@ public class RecommendationService implements IRecommendationService {
 			throw new ValidationException(
 					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
 		}
-		
+
 		/**
 		 * Final institute list to recommend
 		 */
@@ -108,9 +106,9 @@ public class RecommendationService implements IRecommendationService {
 		 * Get courses based on the country that other users from user's country are
 		 * most interested to migrate to.
 		 */
-		
+
 		List<GlobalData> globalDataDtoList = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
-		
+
 		List<String> countryNames = globalDataDtoList.stream().map(i -> i.getDestinationCountry()).collect(Collectors.toList());
 		List<BigInteger> allCountryIds = iCountryService.getCountryBasedOnCitizenship(countryNames);
 		List<BigInteger> institutesById = iInstituteService.getRandomInstituteIdByCountry(allCountryIds);
@@ -120,22 +118,22 @@ public class RecommendationService implements IRecommendationService {
 		instituteListToRecommend.addAll(instituteBasedOnPastSearch);
 		instituteListToRecommend.addAll(institutesBasedOnUserCountry);
 		instituteListToRecommend.addAll(institutesById);
-		
+
 		List<BigInteger> instList = new ArrayList<>();
-		
+
 		int count = 0;
 		for (BigInteger id : instituteListToRecommend) {
 			instList.add(id);
-			if(count >= 20) {
+			if (count >= 20) {
 				break;
 			}
-			count ++;
+			count++;
 		}
-		
+
 		return iInstituteService.getAllInstituteByID(instList);
-		
-		
-		// return oldInstituteRecommendationLogic(userId, startIndex, pageSize, pageNumber, language);
+
+		// return oldInstituteRecommendationLogic(userId, startIndex, pageSize,
+		// pageNumber, language);
 	}
 
 	@Override
@@ -345,7 +343,7 @@ public class RecommendationService implements IRecommendationService {
 		 * Logic ends
 		 */
 		Set<Course> userRelatedCourses = iCourseService.getRelatedCoursesBasedOnPastSearch(userSearchCourseIdList);
-		return  userRelatedCourses ;
+		return userRelatedCourses;
 	}
 
 	@Override
@@ -637,7 +635,7 @@ public class RecommendationService implements IRecommendationService {
 				mapOfCountryToItsCoursesList.put(globalDataDto.getDestinationCountry(), courseList);
 			}
 			List<Integer> requiredCoursesPerCountry = new ArrayList<>();
-			requiredCoursesPerCountry.add(new Integer(2));
+			requiredCoursesPerCountry.add(2);
 			requiredCoursesPerCountry.add(new Integer(5));
 			requiredCoursesPerCountry.add(new Integer(10));
 			requiredCoursesPerCountry.add(new Integer(20));
@@ -724,9 +722,9 @@ public class RecommendationService implements IRecommendationService {
 			return new ArrayList<>();
 		}
 	}
-	
-	private List<InstituteResponseDto> oldInstituteRecommendationLogic(final BigInteger userId, Long startIndex,
-			final Long pageSize, Long pageNumber, final String language) {
+
+	private List<InstituteResponseDto> oldInstituteRecommendationLogic(final BigInteger userId, final Long startIndex, final Long pageSize,
+			final Long pageNumber, final String language) {
 //		List<BigInteger> instituteIdList = new ArrayList<>();
 //		/**
 //		 * Check for user country
@@ -835,5 +833,5 @@ public class RecommendationService implements IRecommendationService {
 //		return iInstituteService.getAllInstituteByID(instituteIdList);
 		return null;
 	}
-	
+
 }

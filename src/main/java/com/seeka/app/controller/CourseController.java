@@ -1,6 +1,7 @@
 package com.seeka.app.controller;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +23,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseGradeEligibility;
+import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseKeywords;
+import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteLevel;
@@ -136,7 +140,7 @@ public class CourseController {
 			@RequestParam(required = false) final String courseName, @RequestParam(required = false) final String currencyCode,
 			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String sortBy,
 			@RequestParam(required = false) final boolean sortAsscending, @RequestHeader(required = true) final BigInteger userId,
-			@RequestParam(required = false) final String date) throws Exception {
+			@RequestParam(required = false) final String date) throws ValidationException {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryIds(countryIds);
 		courseSearchDto.setInstituteId(instituteId);
@@ -204,8 +208,8 @@ public class CourseController {
 		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@Valid @PathVariable final BigInteger id) throws Exception {
+	@GetMapping("/{id}")
+	public ResponseEntity<Object> get(@Valid @PathVariable final BigInteger id) throws ValidationException {
 		ErrorDto errorDto = null;
 		CourseRequest courseRequest = null;
 		Map<String, Object> response = new HashMap<>();
@@ -219,19 +223,22 @@ public class CourseController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
-		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream().map(x -> x.getIntakeDates()).collect(Collectors.toList()));
-		courseRequest.setDeliveryMethod(courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream().map(x -> x.getName()).collect(Collectors.toList()));
-		courseRequest.setLanguage(courseService.getCourseLanguageBasedOnCourseId(id).stream().map(x -> x.getName()).collect(Collectors.toList()));
+		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+		courseRequest.setDeliveryMethod(
+				courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream().map(CourseDeliveryMethod::getName).collect(Collectors.toList()));
+		courseRequest.setLanguage(courseService.getCourseLanguageBasedOnCourseId(id).stream().map(CourseLanguage::getName).collect(Collectors.toList()));
 		Institute instituteObj = course.getInstitute();
+		List<YoutubeVideo> youtubeData = new ArrayList<>();
 		if (instituteObj != null) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setStorageList(storageDTOList);
+			youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
 		}
 		List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
 		if (!englishCriteriaList.isEmpty()) {
 			courseRequest.setEnglishEligibility(englishCriteriaList);
 		}
-		List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
+
 		List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
 		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(id);
 		if (course.getInstitute() != null) {
@@ -511,5 +518,15 @@ public class CourseController {
 		}
 		List<Long> userList = courseService.getUserListForUserWatchCourseFilter(courseId, instituteId, facultyId, countryId, cityId);
 		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK).create();
+	}
+
+	@GetMapping(value = "/noResult/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<Object> getCourseNoResultRecommendation(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
+			@RequestParam(required = true) final String userCountry) throws ValidationException {
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<CourseResponseDto> courseResponseDtos = courseService.getCourseNoResultRecommendation(userCountry, facultyId, countryId, startIndex, pageSize);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get course list displayed successfully").setStatus(HttpStatus.OK)
+				.create();
 	}
 }

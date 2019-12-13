@@ -16,5 +16,8 @@ public interface UserRecommendationService {
 	List<CourseResponseDto> getCourseRelated(BigInteger courseId) throws ValidationException;
 
 	List<CourseResponseDto> getCourseRecommended(BigInteger courseId) throws ValidationException;
-	
+
+	List<CourseResponseDto> getCourseNoResultRecommendation(BigInteger facultyId, BigInteger countryId, Integer startIndex, Integer pageSize)
+			throws ValidationException;
+
 }

@@ -18,64 +18,7 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-//
-//	@Override
-//	public void save(final UserWatchCourse userWatchCourse) {
-//		Session session = sessionFactory.getCurrentSession();
-//		session.save(userWatchCourse);
-//	}
-//
-//	@Override
-//	public UserWatchCourse getUserWatchCourseByUserIdAndCourseId(final BigInteger userId, final BigInteger courseId) {
-//		Session session = sessionFactory.getCurrentSession();
-//		Criteria crit = session.createCriteria(UserWatchCourse.class, "userWatchCourse");
-//		crit.createAlias("userWatchCourse.course", "course");
-//		crit.add(Restrictions.eq("course.id", courseId));
-//		crit.add(Restrictions.eq("userId", userId));
-//		return (UserWatchCourse) crit.uniqueResult();
-//	}
-//
-//	@Override
-//	public List<UserWatchCourse> getUserWatchCourse(final BigInteger userId) {
-//		Session session = sessionFactory.getCurrentSession();
-//		Criteria crit = session.createCriteria(UserWatchCourse.class, "userWatchCourse");
-//		crit.add(Restrictions.eq("userId", userId));
-//		crit.addOrder(Order.desc("userWatchCourse.updatedOn"));
-//		return crit.list();
-//	}
-//	
-//	@Override
-//	public List<BigInteger> getOtherUserWatchCourseIds(final BigInteger userId) {
-//		Session session = sessionFactory.getCurrentSession();
-//		List<BigInteger> courseIds = session.createNativeQuery("Select course_id from user_watch_course where user_id not in( ?) group by course_id order by count(*) desc")
-//			.setParameter(1, userId).getResultList();
-//		return courseIds;
-//	}
-//
-//	@Override
-//	public void save(final UserWatchArticle userWatchArticle) {
-//		Session session = sessionFactory.getCurrentSession();
-//		session.save(userWatchArticle);
-//	}
-//
-//	@Override
-//	public UserWatchArticle getUserWatchArticleByUserIdAndArticleId(final BigInteger userId, final BigInteger articleId) {
-//		Session session = sessionFactory.getCurrentSession();
-//		Criteria crit = session.createCriteria(UserWatchArticle.class, "userWatchArticle");
-//		crit.createAlias("userWatchArticle.seekaArticles", "seekaArticles");
-//		crit.add(Restrictions.eq("seekaArticles.id", articleId));
-//		crit.add(Restrictions.eq("userId", userId));
-//		return (UserWatchArticle) crit.uniqueResult();
-//	}
-//
-//	@Override
-//	public List<UserWatchArticle> getUserWatchArticle(final BigInteger userId) {
-//		Session session = sessionFactory.getCurrentSession();
-//		Criteria crit = session.createCriteria(UserWatchArticle.class, "userWatchArticle");
-//		crit.add(Restrictions.eq("userId", userId));
-//		return crit.list();
-//	}
-//
+
 	@Override
 	public List<Course> getRecommendCourse(final BigInteger facultyId, final BigInteger instituteId, final BigInteger countryId, final BigInteger cityId,
 			final Double price, final Double variablePrice, final int pageSize, final List<BigInteger> courseIds) {
@@ -123,6 +66,31 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 		crit.setFirstResult(0);
 		crit.setMaxResults(pageSize);
 
+		return crit.list();
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public List<Course> getCourseNoResultRecommendation(final BigInteger facultyId, final BigInteger countryId, final List<BigInteger> courseIds,
+			final Integer startIndex, final Integer pageSize) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Course.class, "course");
+		crit.createAlias("course.faculty", "faculty");
+		crit.createAlias("course.country", "country");
+		if (facultyId != null) {
+			crit.add(Restrictions.eq("faculty.id", facultyId));
+		}
+		if (countryId != null) {
+			crit.add(Restrictions.eq("country.id", countryId));
+		}
+
+		if (courseIds != null && !courseIds.isEmpty()) {
+			crit.add(Restrictions.not(Restrictions.in("course.id", courseIds.toArray())));
+		}
+		if (startIndex != null && pageSize != null) {
+			crit.setFirstResult(startIndex);
+			crit.setMaxResults(pageSize);
+		}
 		return crit.list();
 	}
 

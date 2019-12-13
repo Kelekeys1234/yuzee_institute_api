@@ -142,4 +142,7 @@ public interface ICourseService {
 	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(BigInteger courseId);
 
 	List<CourseLanguage> getCourseLanguageBasedOnCourseId(BigInteger courseId);
+
+	List<CourseResponseDto> getCourseNoResultRecommendation(String userCountry, BigInteger facultyId, BigInteger countryId, Integer startIndex,
+			Integer pageSize) throws ValidationException;
 }

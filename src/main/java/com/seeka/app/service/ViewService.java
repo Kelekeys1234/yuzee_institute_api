@@ -71,7 +71,8 @@ public class ViewService implements IViewService {
 	@Override
 	public List<CourseResponseDto> getUserViewDataCourse(final BigInteger userId, final boolean isUnique, final Integer startIndex, final Integer pageSize) {
 		List<UserViewData> userViewDatas = getUserViewData(userId, "COURSE", isUnique, startIndex, pageSize);
-		return iCourseDAO.getAllCoursesByFilter(new CourseSearchDto(), null, userViewDatas.stream().map(x -> x.getEntityId()).collect(Collectors.toList()));
+		return iCourseDAO.getAllCoursesByFilter(new CourseSearchDto(), null, userViewDatas.stream().map(x -> x.getEntityId()).collect(Collectors.toList()),
+				null);
 
 	}
 

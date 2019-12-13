@@ -25,47 +25,49 @@ public class GlobalStudentDataDAO implements IGlobalStudentDataDAO {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(globalDataDato);
 	}
+
 	@Override
 	public void deleteAll() {
 		Session session = sessionFactory.getCurrentSession();
 		session.createSQLQuery("delete from global_student_data").executeUpdate();
 	}
+
 	@Override
-	public List<GlobalData> getCountryWiseStudentList(String countryName) {
-		// TODO Auto-generated method stub
+	public List<GlobalData> getCountryWiseStudentList(final String countryName) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(GlobalData.class, "global_data");
 		crit.add(Restrictions.eq("sourceCountry", countryName));
 		crit.add(Restrictions.ne("totalNumberOfStudent", 0D));
 		crit.addOrder(Order.desc("totalNumberOfStudent"));
-		return (List<GlobalData>) crit.list();
+		return crit.list();
 	}
+
 	@Override
-	public long getNonZeroCountOfStudentsForCountry(String countryName) {
-		// TODO Auto-generated method stub
+	public long getNonZeroCountOfStudentsForCountry(final String countryName) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(GlobalData.class, "global_data");
 		crit.add(Restrictions.eq("sourceCountry", countryName));
 		crit.setProjection(Projections.rowCount());
-		return (long)crit.uniqueResult();
+		return (long) crit.uniqueResult();
 	}
+
 	@Override
-	public List<String> getDistinctMigratedCountryForStudentCountry(String countryName) {
-	
+	public List<String> getDistinctMigratedCountryForStudentCountry(final String countryName) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(GlobalData.class,"global_data");
+		Criteria crit = session.createCriteria(GlobalData.class, "global_data");
 		crit.add(Restrictions.eq("sourceCountry", countryName));
 		crit.setProjection(Projections.property("destinationCountry"));
-		return (List<String>)(crit.list()!=null ? crit.list() : new ArrayList<>());
+		return crit.list() != null ? crit.list() : new ArrayList<>();
 	}
+
 	@Override
-	public List<String> getDistinctMigratedCountryForStudentCountryOrderByNumberOfStudents(String countryName) {
-	
+	public List<String> getDistinctMigratedCountryForStudentCountryOrderByNumberOfStudents(final String countryName) {
+
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(GlobalData.class,"global_data");
+		Criteria crit = session.createCriteria(GlobalData.class, "global_data");
 		crit.add(Restrictions.eq("sourceCountry", countryName));
 		crit.addOrder(Order.desc("totalNumberOfStudent"));
 		crit.setProjection(Projections.property("destinationCountry"));
-		return (List<String>)(crit.list()!=null ? crit.list() : new ArrayList<>());
+		return crit.list() != null ? crit.list() : new ArrayList<>();
 	}
 }
