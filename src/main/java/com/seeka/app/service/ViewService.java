@@ -11,12 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.seeka.app.bean.City;
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.UserViewData;
+import com.seeka.app.dao.ICityDAO;
+import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IViewDao;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.UserCourseView;
 import com.seeka.app.dto.UserViewDataRequestDto;
+import com.seeka.app.exception.ValidationException;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -27,6 +33,12 @@ public class ViewService implements IViewService {
 
 	@Autowired
 	private ICourseDAO iCourseDAO;
+
+	@Autowired
+	private ICityDAO iCityDAO;
+
+	@Autowired
+	private ICountryDAO iCountryDAO;
 
 	@Override
 	public void createUserViewData(final UserViewDataRequestDto userViewDataRequestDto) {
@@ -82,6 +94,26 @@ public class ViewService implements IViewService {
 	@Override
 	public int getUserViewDataCountBasedOnEntityId(final BigInteger entityId, final String entityType) {
 		return iViewDataDao.getUserViewDataCountBasedOnEntityId(entityId, entityType);
+	}
+
+	@Override
+	public List<UserCourseView> userVisistedCourseBasedOncity(final String cityName, final Date fromDate, final Date toDate) throws ValidationException {
+		City city = iCityDAO.getCityByName(cityName);
+		if (city != null) {
+			return iViewDataDao.userVisistedCourseBasedOncity(city.getId(), fromDate, toDate);
+		} else {
+			throw new ValidationException("Users city not found");
+		}
+	}
+
+	@Override
+	public List<UserCourseView> userVisistedCourseBasedOnCountry(final String countryName, final Date fromDate, final Date toDate) throws ValidationException {
+		Country country = iCountryDAO.getCountryByName(countryName);
+		if (country != null) {
+			return iViewDataDao.userVisistedCourseBasedOnCountry(country.getId(), fromDate, toDate);
+		} else {
+			throw new ValidationException("Users country not found");
+		}
 	}
 
 }

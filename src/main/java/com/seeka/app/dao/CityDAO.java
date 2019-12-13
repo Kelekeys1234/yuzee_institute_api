@@ -11,8 +11,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,83 +22,84 @@ import com.seeka.app.bean.City;
 @SuppressWarnings("unchecked")
 public class CityDAO implements ICityDAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+	@Autowired
+	private SessionFactory sessionFactory;
 
-    @Override
-    public void save(City obj) {
-        Session session = sessionFactory.getCurrentSession();
-        session.save(obj);
-    }
-
-    @Override
-    public List<City> getAll() {
-        List<City> citis = new ArrayList<>();
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select c.id, c.name as name from city c  ORDER BY c.name");
-        List<Object[]> rows = query.list();
-        City obj = null;
-        for (Object[] row : rows) {
-            obj = new City();
-            obj.setId(new BigInteger(row[0].toString()));
-            obj.setName(row[1].toString());
-            citis.add(obj);
-        }
-        return citis;
-    }
-
-    @Override
-    public City get(BigInteger id) {
-        Session session = sessionFactory.getCurrentSession();
-        City city = session.get(City.class, id);
-        return city;
-    }
-
-    public List<City> getAllCitiesByCountry(BigInteger countryId) {
-        List<City> citis = new ArrayList<>();
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select c.id, c.name as name from city c  where c.country_id = " + countryId + " ORDER BY c.name");
-        List<Object[]> rows = query.list();
-        City obj = null;
-        for (Object[] row : rows) {
-            obj = new City();
-            obj.setId(new BigInteger(row[0].toString()));
-            obj.setName(row[1].toString());
-            citis.add(obj);
-        }
-        return citis;
-    }
-
-    @Override
-    public List<City> getAllMultipleCitiesByCountry(String BigIntegers) {
-        List<City> citis = new ArrayList<>();
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select c.id, c.name as name from city c  where c.country_id in (" + BigIntegers + ") ORDER BY c.name");
-        List<Object[]> rows = query.list();
-        City obj = null;
-        for (Object[] row : rows) {
-            obj = new City();
-            obj.setId(new BigInteger(row[0].toString()));
-            obj.setName(row[1].toString());
-            citis.add(obj);
-        }
-        City allObj = new City();
-        allObj.setId(new BigInteger("111111"));
-        allObj.setName("All");
-        citis.add(allObj);
-        return citis;
-    }
-
-    @Override
-	public List<City> getAllCityByIds(List<BigInteger> cityIds) {
-    	Session session = sessionFactory.getCurrentSession();
-        List<City> cities = session.createQuery("SELECT c FROM city c WHERE c.id IN :ids").setParameter("ids", cityIds).getResultList();
-        return cities;
+	@Override
+	public void save(final City obj) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(obj);
 	}
 
 	@Override
-	public List<String> getAllCityNames(Integer startIndex, Integer pageSize, String searchString) {
-		
+	public List<City> getAll() {
+		List<City> citis = new ArrayList<>();
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery("select c.id, c.name as name from city c  ORDER BY c.name");
+		List<Object[]> rows = query.list();
+		City obj = null;
+		for (Object[] row : rows) {
+			obj = new City();
+			obj.setId(new BigInteger(row[0].toString()));
+			obj.setName(row[1].toString());
+			citis.add(obj);
+		}
+		return citis;
+	}
+
+	@Override
+	public City get(final BigInteger id) {
+		Session session = sessionFactory.getCurrentSession();
+		City city = session.get(City.class, id);
+		return city;
+	}
+
+	@Override
+	public List<City> getAllCitiesByCountry(final BigInteger countryId) {
+		List<City> citis = new ArrayList<>();
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery("select c.id, c.name as name from city c  where c.country_id = " + countryId + " ORDER BY c.name");
+		List<Object[]> rows = query.list();
+		City obj = null;
+		for (Object[] row : rows) {
+			obj = new City();
+			obj.setId(new BigInteger(row[0].toString()));
+			obj.setName(row[1].toString());
+			citis.add(obj);
+		}
+		return citis;
+	}
+
+	@Override
+	public List<City> getAllMultipleCitiesByCountry(final String BigIntegers) {
+		List<City> citis = new ArrayList<>();
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery("select c.id, c.name as name from city c  where c.country_id in (" + BigIntegers + ") ORDER BY c.name");
+		List<Object[]> rows = query.list();
+		City obj = null;
+		for (Object[] row : rows) {
+			obj = new City();
+			obj.setId(new BigInteger(row[0].toString()));
+			obj.setName(row[1].toString());
+			citis.add(obj);
+		}
+		City allObj = new City();
+		allObj.setId(new BigInteger("111111"));
+		allObj.setName("All");
+		citis.add(allObj);
+		return citis;
+	}
+
+	@Override
+	public List<City> getAllCityByIds(final List<BigInteger> cityIds) {
+		Session session = sessionFactory.getCurrentSession();
+		List<City> cities = session.createQuery("SELECT c FROM city c WHERE c.id IN :ids").setParameter("ids", cityIds).getResultList();
+		return cities;
+	}
+
+	@Override
+	public List<String> getAllCityNames(final Integer startIndex, final Integer pageSize, final String searchString) {
+
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(City.class, "city");
 		if (searchString != null) {
@@ -111,10 +110,10 @@ public class CityDAO implements ICityDAO {
 		criteria.setProjection(Projections.property("city.name"));
 		return criteria.list();
 	}
-	
+
 	@Override
-	public Integer getAllCityNamesCount(String searchString) {
-		
+	public Integer getAllCityNamesCount(final String searchString) {
+
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(City.class, "city");
 		if (searchString != null) {
@@ -122,7 +121,17 @@ public class CityDAO implements ICityDAO {
 		}
 		criteria.setProjection(Projections.property("city.name"));
 		List<String> cityNameList = criteria.list();
-		Set<String> cityNameSet = cityNameList == null?null:new HashSet<String>(cityNameList);
-		return cityNameSet !=null ? cityNameSet.size() : 0;
+		Set<String> cityNameSet = cityNameList == null ? null : new HashSet<>(cityNameList);
+		return cityNameSet != null ? cityNameSet.size() : 0;
+	}
+
+	@Override
+	public City getCityByName(final String cityName) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(City.class, "city");
+		if (cityName != null) {
+			criteria.add(Restrictions.eq("city.name", cityName));
+		}
+		return (City) criteria.uniqueResult();
 	}
 }

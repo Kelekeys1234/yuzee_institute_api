@@ -1,11 +1,13 @@
 package com.seeka.app.controller;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import com.seeka.app.bean.UserViewData;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.dto.UserCourseView;
 import com.seeka.app.dto.UserViewDataRequestDto;
 import com.seeka.app.dto.ViewEntityDto;
 import com.seeka.app.exception.ValidationException;
@@ -52,7 +55,7 @@ public class ViewsController {
 	@GetMapping("/user/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getUserViewDataCourse(@RequestParam(name = "userId") final BigInteger userId,
 			@RequestParam(name = "isUnique", required = false) final boolean isUnique, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize) throws ValidationException {
+			@PathVariable final Integer pageSize) {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> userViewDatas = iViewService.getUserViewDataCourse(userId, isUnique, startIndex, pageSize);
 		int totalCount = iViewService.getUserViewData(userId, "COURSE", isUnique, null, null).size();
@@ -92,10 +95,25 @@ public class ViewsController {
 	}
 
 	@PostMapping(value = "/visit/entity")
-	public ResponseEntity<?> userVisitedBasedonEntityId(@RequestHeader final BigInteger userId, @RequestBody final ViewEntityDto viewEntityDto)
-			throws ValidationException {
+	public ResponseEntity<?> userVisitedBasedonEntityId(@RequestHeader final BigInteger userId, @RequestBody final ViewEntityDto viewEntityDto) {
 		List<BigInteger> viewedEntityIds = iViewService.getUserViewDataBasedOnEntityIdList(userId, viewEntityDto.getEntityType(), viewEntityDto.getEntityIds());
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(" visited entity.").setData(viewedEntityIds).create();
+	}
+
+	@PostMapping(value = "/city")
+	public ResponseEntity<Object> userVisistedCourseBasedOncity(@RequestParam final String cityName,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") final Date fromDate, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") final Date toDate)
+			throws ValidationException {
+		List<UserCourseView> count = iViewService.userVisistedCourseBasedOncity(cityName, fromDate, toDate);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(" visited entity.").setData(count).create();
+	}
+
+	@PostMapping(value = "/country")
+	public ResponseEntity<Object> userVisistedCourseBasedOnCountry(@RequestParam final String countryName,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") final Date fromDate, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") final Date toDate)
+			throws ValidationException {
+		List<UserCourseView> userCourseViews = iViewService.userVisistedCourseBasedOnCountry(countryName, fromDate, toDate);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(" visited entity.").setData(userCourseViews).create();
 	}
 
 }

@@ -1,9 +1,11 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import com.seeka.app.bean.UserViewData;
+import com.seeka.app.dto.UserCourseView;
 
 public interface IViewDao {
 
@@ -20,4 +22,8 @@ public interface IViewDao {
 	List<BigInteger> getUserWatchCourseIds(final BigInteger userId, final String entityType);
 
 	List<BigInteger> getOtherUserWatchCourse(BigInteger userId, String entityType);
+
+	List<UserCourseView> userVisistedCourseBasedOncity(BigInteger cityId, Date fromDate, Date toDate);
+
+	List<UserCourseView> userVisistedCourseBasedOnCountry(BigInteger countryId, Date fromDate, Date toDate);
 }
