@@ -83,4 +83,6 @@ public interface IInstituteService {
 
 	InstituteWorldRankingHistory getHistoryOfWorldRanking(BigInteger instituteId);
 
+	Map<BigInteger, Integer> getDomesticRanking(List<BigInteger> instituteIdList);
+
 }

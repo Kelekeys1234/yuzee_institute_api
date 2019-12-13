@@ -897,4 +897,10 @@ public class InstituteService implements IInstituteService {
 	public InstituteWorldRankingHistory getHistoryOfWorldRanking(final BigInteger instituteId) {
 		return institudeWorldRankingHistoryDAO.getHistoryOfWorldRanking(instituteId);
 	}
+
+	@Override
+	public Map<BigInteger, Integer> getDomesticRanking(final List<BigInteger> courseIdList) {
+		Map<BigInteger, Integer> courseDomesticRanking = dao.getDomesticRanking(courseIdList);
+		return courseDomesticRanking;
+	}
 }

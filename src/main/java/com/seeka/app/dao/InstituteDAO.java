@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -15,6 +17,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,7 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
+import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteIntake;
@@ -115,19 +120,19 @@ public class InstituteDAO implements IInstituteDAO {
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id inner join institute_type it on inst.institute_type_id=it.id where 1=1 ";
 
-		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
+		if ((null != courseSearchDto.getCountryIds()) && !courseSearchDto.getCountryIds().isEmpty()) {
 			sqlQuery += " and inst.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
+		if ((null != courseSearchDto.getLevelIds()) && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and l.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
+		if ((null != courseSearchDto.getFacultyIds()) && !courseSearchDto.getFacultyIds().isEmpty()) {
 			sqlQuery += " and f.faculty_id in (" + courseSearchDto.getFacultyIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
+		if ((null != courseSearchDto.getSearchKey()) && !courseSearchDto.getSearchKey().isEmpty()) {
 			sqlQuery += " and inst.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
 		}
 		if (null != cityId) {
@@ -142,11 +147,11 @@ public class InstituteDAO implements IInstituteDAO {
 		if (null != updatedOn) {
 			sqlQuery += " and Date(inst.updated_on) ='" + new java.sql.Date(updatedOn.getTime()).toLocalDate() + "'";
 		}
-		if (null != fromWorldRanking && null != toWorldRanking) {
+		if ((null != fromWorldRanking) && (null != toWorldRanking)) {
 			sqlQuery += " and inst.world_ranking between " + fromWorldRanking + " and " + toWorldRanking;
 		}
 
-		if (null != searchKeyword && !searchKeyword.isEmpty()) {
+		if ((null != searchKeyword) && !searchKeyword.isEmpty()) {
 			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ctry.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ci.name like '%" + searchKeyword.trim() + "%'";
@@ -170,19 +175,19 @@ public class InstituteDAO implements IInstituteDAO {
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id inner join institute_type it on inst.institute_type_id=it.id where 1=1 ";
 
-		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
+		if ((null != courseSearchDto.getCountryIds()) && !courseSearchDto.getCountryIds().isEmpty()) {
 			sqlQuery += " and inst.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
+		if ((null != courseSearchDto.getLevelIds()) && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and l.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
+		if ((null != courseSearchDto.getFacultyIds()) && !courseSearchDto.getFacultyIds().isEmpty()) {
 			sqlQuery += " and f.faculty_id in (" + courseSearchDto.getFacultyIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
+		if ((null != courseSearchDto.getSearchKey()) && !courseSearchDto.getSearchKey().isEmpty()) {
 			sqlQuery += " and inst.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
 		}
 		if (null != cityId) {
@@ -197,11 +202,11 @@ public class InstituteDAO implements IInstituteDAO {
 		if (null != updatedOn) {
 			sqlQuery += " and Date(inst.updated_on) ='" + new java.sql.Date(updatedOn.getTime()).toLocalDate() + "'";
 		}
-		if (null != fromWorldRanking && null != toWorldRanking) {
+		if ((null != fromWorldRanking) && (null != toWorldRanking)) {
 			sqlQuery += " and inst.world_ranking between " + fromWorldRanking + " and " + toWorldRanking;
 		}
 
-		if (null != searchKeyword && !searchKeyword.isEmpty()) {
+		if ((null != searchKeyword) && !searchKeyword.isEmpty()) {
 			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ctry.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ci.name like '%" + searchKeyword.trim() + "%'";
@@ -230,7 +235,7 @@ public class InstituteDAO implements IInstituteDAO {
 			sortingQuery = " order by inst.id " + sortByType.toLowerCase();
 		}
 
-		if (startIndex != null && courseSearchDto.getMaxSizePerPage() != null) {
+		if ((startIndex != null) && (courseSearchDto.getMaxSizePerPage() != null)) {
 			sqlQuery += sortingQuery + " LIMIT " + startIndex + " ," + courseSearchDto.getMaxSizePerPage();
 		}
 
@@ -534,26 +539,26 @@ public class InstituteDAO implements IInstituteDAO {
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id where inst.is_active = 1 and inst.deleted_on IS NULL  ";
 
-		if (instituteFilterDto.getCountryId() != null && instituteFilterDto.getCountryId().intValue() > 0) {
+		if ((instituteFilterDto.getCountryId() != null) && (instituteFilterDto.getCountryId().intValue() > 0)) {
 			sqlQuery += " and inst.country_id = " + instituteFilterDto.getCountryId() + " ";
 		}
 
-		if (instituteFilterDto.getCityId() != null && instituteFilterDto.getCityId().intValue() > 0) {
+		if ((instituteFilterDto.getCityId() != null) && (instituteFilterDto.getCityId().intValue() > 0)) {
 			sqlQuery += " and inst.city_id = " + instituteFilterDto.getCityId().intValue() + " ";
 		}
 
-		if (instituteFilterDto.getInstituteId() != null && instituteFilterDto.getInstituteId().intValue() > 0) {
+		if ((instituteFilterDto.getInstituteId() != null) && (instituteFilterDto.getInstituteId().intValue() > 0)) {
 			sqlQuery += " and inst.id =" + instituteFilterDto.getInstituteId() + " ";
 		}
 
-		if (instituteFilterDto.getWorldRanking() != null && instituteFilterDto.getWorldRanking() > 0) {
+		if ((instituteFilterDto.getWorldRanking() != null) && (instituteFilterDto.getWorldRanking() > 0)) {
 			sqlQuery += " and inst.world_ranking = " + instituteFilterDto.getWorldRanking() + " ";
 		}
 
-		if (instituteFilterDto.getInstituteTypeId() != null && instituteFilterDto.getInstituteTypeId().intValue() > 0) {
+		if ((instituteFilterDto.getInstituteTypeId() != null) && (instituteFilterDto.getInstituteTypeId().intValue() > 0)) {
 			sqlQuery += " and inst.institute_category_type_id = " + instituteFilterDto.getInstituteTypeId() + " ";
 		}
-		if (instituteFilterDto.getDatePosted() != null && !instituteFilterDto.getDatePosted().isEmpty()) {
+		if ((instituteFilterDto.getDatePosted() != null) && !instituteFilterDto.getDatePosted().isEmpty()) {
 			Date postedDate = DateUtil.convertStringDateToDate(instituteFilterDto.getDatePosted());
 			Calendar c = Calendar.getInstance();
 			c.setTime(postedDate);
@@ -729,5 +734,26 @@ public class InstituteDAO implements IInstituteDAO {
 		// .setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
 
 		return idList;
+	}
+
+	@Override
+	public Map<BigInteger, Integer> getDomesticRanking(final List<BigInteger> courseIdList) {
+		Session session = sessionFactory.getCurrentSession();
+
+		Criteria criteria = session.createCriteria(Course.class, "course");
+		criteria.createAlias("institute", "institute");
+		criteria.add(Restrictions.in("course.id", courseIdList));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("course.id"));
+		projectionList.add(Projections.property("institute.domesticRanking"));
+		criteria.setProjection(projectionList);
+
+		List<Object[]> resultList = criteria.list();
+		Map<BigInteger, Integer> courseDomesticRanking = new HashMap<>();
+		for (Object[] result : resultList) {
+			courseDomesticRanking.put((BigInteger) result[0], (Integer) result[1]);
+		}
+
+		return courseDomesticRanking;
 	}
 }

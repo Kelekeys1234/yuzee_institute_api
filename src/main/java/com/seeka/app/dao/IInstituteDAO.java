@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -89,4 +90,6 @@ public interface IInstituteDAO {
 
 	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive,
 			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
+
+	Map<BigInteger, Integer> getDomesticRanking(List<BigInteger> instituteIdList);
 }
