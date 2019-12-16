@@ -100,6 +100,16 @@ public class ViewService implements IViewService {
 	@Override
 	public List<UserCourseView> userVisistedCourseBasedOncity(final String cityName, final Date fromDate, final Date toDate) throws ValidationException {
 		City city = iCityDAO.getCityByName(cityName);
+		/**
+		 * Find unique courses viewed by how many unique users based on city.
+		 *
+		 * It is not required that the user's citizenship must be the same city.
+		 *
+		 * For Example, someone is logged in with new york city, then we will display,
+		 * how many users visited courses of new york irrespective of whether visited
+		 * the user is lived anywhere in the world.
+		 *
+		 */
 		if (city != null) {
 			return iViewDataDao.userVisistedCourseBasedOncity(city.getId(), fromDate, toDate);
 		} else {
@@ -110,6 +120,16 @@ public class ViewService implements IViewService {
 	@Override
 	public List<UserCourseView> userVisistedCourseBasedOnCountry(final String countryName, final Date fromDate, final Date toDate) throws ValidationException {
 		Country country = iCountryDAO.getCountryByName(countryName);
+		/**
+		 * Find unique courses viewed by how many unique users based on country.
+		 *
+		 * It is not required that the user's citizenship must be the same country.
+		 *
+		 * For Example, someone is logged in with USA country, then we will display, how
+		 * many users visited courses of USA irrespective of whether visited the user is
+		 * lived anywhere in the world.
+		 *
+		 */
 		if (country != null) {
 			return iViewDataDao.userVisistedCourseBasedOnCountry(country.getId(), fromDate, toDate);
 		} else {

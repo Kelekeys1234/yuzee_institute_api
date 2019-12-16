@@ -324,10 +324,21 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		return resultList;
 	}
 
+	/**
+	 * First we find based on faculty and country
+	 */
 	@Override
 	public List<CourseResponseDto> getCourseNoResultRecommendation(final BigInteger facultyId, final BigInteger countryId, final Integer startIndex,
 			final Integer pageSize) throws ValidationException {
+		/**
+		 * Find courses with the same faculty and country
+		 */
 		List<Course> courseList = userRecommendationDao.getCourseNoResultRecommendation(facultyId, countryId, null, startIndex, pageSize);
+		/**
+		 * If required courses are not found then we will find courses with any faculty
+		 * but with the same country.
+		 *
+		 */
 		if (!courseList.isEmpty() && courseList.size() <= pageSize) {
 			List<Course> courseCountryList = userRecommendationDao.getCourseNoResultRecommendation(null, countryId,
 					courseList.stream().map(Course::getId).collect(Collectors.toList()), startIndex, pageSize - courseList.size());

@@ -1200,8 +1200,23 @@ public class CourseService implements ICourseService {
 	@Override
 	public List<CourseResponseDto> getCourseNoResultRecommendation(final String userCountry, final BigInteger facultyId, final BigInteger countryId,
 			final Integer startIndex, final Integer pageSize) throws ValidationException {
+		/**
+		 * Find course based on faculty and country.
+		 */
 		List<CourseResponseDto> courseResponseDtos = userRecommedationService.getCourseNoResultRecommendation(facultyId, countryId, startIndex, pageSize);
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
+		/**
+		 * If the desired result not found with faculty and country then find based on
+		 * global_student_data.
+		 *
+		 * Courses find based on user's citizenship -> based on citizenship will find
+		 * from user citizenship(country)'s students are migrated in which country. and
+		 * based on that we will find courses for that migrated country.
+		 *
+		 * For Example Users' citizenship is India & Indian students are most migrated
+		 * in the USA. So, as a result, we will fetch the USA's courses.
+		 *
+		 */
 		if (courseResponseDtos.size() <= pageSize) {
 			List<GlobalData> globalDatas = iGlobalStudentDataDAO.getCountryWiseStudentList(userCountry);
 			if (!globalDatas.isEmpty()) {
@@ -1220,9 +1235,21 @@ public class CourseService implements ICourseService {
 	public List<String> getCourseKeywordRecommendation(final BigInteger facultyId, final BigInteger countryId, final BigInteger levelId,
 			final Integer startIndex, final Integer pageSize) {
 		List<String> courseKeywordRecommended = new ArrayList<>();
+		/**
+		 * We will find course keyword based on faculty in top10Course.
+		 *
+		 */
 		if (startIndex < 10) {
 			courseKeywordRecommended = iTop10CourseService.getTop10CourseKeyword(facultyId);
 		}
+		/**
+		 * If we want more result or no result found from top10Course then we will find
+		 * based on faculty in course table.
+		 *
+		 * In that we will find unique course's name from course tables for same
+		 * faculty,country and level.
+		 *
+		 */
 		if (courseKeywordRecommended.isEmpty()) {
 			CourseSearchDto courseSearchDto = new CourseSearchDto();
 			courseSearchDto.setCountryIds(Arrays.asList(countryId));

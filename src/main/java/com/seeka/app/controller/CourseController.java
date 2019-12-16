@@ -520,6 +520,18 @@ public class CourseController {
 		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK).create();
 	}
 
+	/**
+	 * This API is used when in normal or global search if data is not available
+	 * based on filter.
+	 *
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param facultyId
+	 * @param countryId
+	 * @param userCountry
+	 * @return
+	 * @throws ValidationException
+	 */
 	@GetMapping(value = "/noResult/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<Object> getCourseNoResultRecommendation(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
@@ -530,6 +542,18 @@ public class CourseController {
 				.create();
 	}
 
+	/**
+	 * This API is used for course Info page for related course keyword
+	 * recommendation.
+	 *
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param facultyId
+	 * @param countryId
+	 * @param levelId
+	 * @return
+	 * @throws ValidationException
+	 */
 	@GetMapping(value = "/keyword/recommendatation/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<Object> getCourseKeywordRecommendation(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
