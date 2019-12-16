@@ -145,4 +145,6 @@ public interface ICourseService {
 
 	List<CourseResponseDto> getCourseNoResultRecommendation(String userCountry, BigInteger facultyId, BigInteger countryId, Integer startIndex,
 			Integer pageSize) throws ValidationException;
+
+	List<String> getCourseKeywordRecommendation(BigInteger facultyId, BigInteger countryId, BigInteger levelId, Integer startIndex, Integer pageSize);
 }

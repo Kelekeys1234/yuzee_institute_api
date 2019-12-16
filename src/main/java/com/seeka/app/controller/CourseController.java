@@ -529,4 +529,14 @@ public class CourseController {
 		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get course list displayed successfully").setStatus(HttpStatus.OK)
 				.create();
 	}
+
+	@GetMapping(value = "/keyword/recommendatation/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<Object> getCourseKeywordRecommendation(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
+			@RequestParam(required = true) final BigInteger levelId) throws ValidationException {
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<String> courseResponseDtos = courseService.getCourseKeywordRecommendation(facultyId, countryId, levelId, startIndex, pageSize);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get course keyword recommendation list displayed successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
 }

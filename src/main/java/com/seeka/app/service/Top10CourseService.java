@@ -1,60 +1,50 @@
 package com.seeka.app.service;
 
-import java.util.HashMap;
+import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Top10Course;
-import com.seeka.app.dao.Top10CourseDAO;
+import com.seeka.app.dao.ITop10CourseDAO;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
 public class Top10CourseService implements ITop10CourseService {
 
 	@Autowired
-    private SessionFactory sessionFactory;
-	
+	private ITop10CourseDAO iTop10CourseDao;
+
 	@Autowired
-	private Top10CourseDAO top10CourseDao;
-	
+	private IFacultyService iFacultyService;
+
 	@Override
-	public void saveTop10Courses(Top10Course top10Course) {
-		// TODO Auto-generated method stub
+	public void saveTop10Courses(final Top10Course top10Course) {
 		top10Course.setUpdatedBy("API");
 		top10Course.setCreatedBy("API");
-		top10Course.setCreatedOn(new java.util.Date(System.currentTimeMillis()));
-		top10Course.setUpdatedOn(new java.util.Date(System.currentTimeMillis()));
-		top10CourseDao.save(top10Course);
+		top10Course.setCreatedOn(new Date());
+		top10Course.setUpdatedOn(new Date());
+		iTop10CourseDao.save(top10Course);
 	}
 
+	@Override
 	public void deleteAllTop10Courses() {
-		// TODO Auto-generated method stub
-		top10CourseDao.deleteAll();
+		iTop10CourseDao.deleteAll();
 	}
 
 	@Override
 	public List<String> getAllDistinctFaculty() {
-		// TODO Auto-generated method stub
-		Session session = sessionFactory.getCurrentSession();
-    	
-    	Criteria crit = session.createCriteria(Top10Course.class, "top10Course");
-    	ProjectionList projList = Projections.projectionList();
-    	projList.add(Projections.groupProperty("top10Course.faculty"));
-		crit.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
-		crit.setProjection(projList);
-		return (List<String>)crit.list();
+		return iTop10CourseDao.getAllDistinctFaculty();
+	}
+
+	@Override
+	public List<String> getTop10CourseKeyword(final BigInteger facultyId) {
+		Faculty faculty = iFacultyService.get(facultyId);
+		return iTop10CourseDao.getTop10CourseKeyword(faculty.getName()).stream().map(Top10Course::getCourse).collect(Collectors.toList());
 	}
 }

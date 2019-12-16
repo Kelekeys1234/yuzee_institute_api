@@ -35,7 +35,8 @@ public interface ICourseDAO {
 
 	List<Course> getAll();
 
-	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, String searchKeyword, List<BigInteger> courseIds, Integer startIndex);
+	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, String searchKeyword, List<BigInteger> courseIds, Integer startIndex,
+			boolean uniqueCourseName);
 
 	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 

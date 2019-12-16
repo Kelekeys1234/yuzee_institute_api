@@ -137,6 +137,9 @@ public class CourseService implements ICourseService {
 	@Autowired
 	private IGlobalStudentDataDAO iGlobalStudentDataDAO;
 
+	@Autowired
+	private ITop10CourseService iTop10CourseService;
+
 	@Override
 	public void save(final Course course) {
 		iCourseDAO.save(course);
@@ -160,7 +163,7 @@ public class CourseService implements ICourseService {
 	@Override
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
 			final String searchKeyword) throws ValidationException {
-		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword, null, startIndex);
+		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword, null, startIndex, false);
 		return getExtraInfoOfCourseFilter(courseSearchDto, courseResponseDtos);
 	}
 
@@ -1205,11 +1208,31 @@ public class CourseService implements ICourseService {
 				Country country = countryDAO.getCountryByName(globalDatas.get(0).getDestinationCountry());
 				courseSearchDto.setCountryIds(Arrays.asList(country.getId()));
 				courseSearchDto.setMaxSizePerPage(pageSize - courseResponseDtos.size());
-				List<CourseResponseDto> courseResponseDtos2 = iCourseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex);
+				List<CourseResponseDto> courseResponseDtos2 = iCourseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, false);
 				courseResponseDtos.addAll(courseResponseDtos2);
 			}
 		}
 		return getExtraInfoOfCourseFilter(courseSearchDto, courseResponseDtos);
 
+	}
+
+	@Override
+	public List<String> getCourseKeywordRecommendation(final BigInteger facultyId, final BigInteger countryId, final BigInteger levelId,
+			final Integer startIndex, final Integer pageSize) {
+		List<String> courseKeywordRecommended = new ArrayList<>();
+		if (startIndex < 10) {
+			courseKeywordRecommended = iTop10CourseService.getTop10CourseKeyword(facultyId);
+		}
+		if (courseKeywordRecommended.isEmpty()) {
+			CourseSearchDto courseSearchDto = new CourseSearchDto();
+			courseSearchDto.setCountryIds(Arrays.asList(countryId));
+			courseSearchDto.setFacultyIds(Arrays.asList(facultyId));
+			courseSearchDto.setLevelIds(Arrays.asList(levelId));
+			courseSearchDto.setMaxSizePerPage(pageSize);
+			courseSearchDto.setSortBy("instituteName");
+			List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, true);
+			courseKeywordRecommended = courseResponseDtos.stream().map(CourseResponseDto::getName).collect(Collectors.toList());
+		}
+		return courseKeywordRecommended;
 	}
 }

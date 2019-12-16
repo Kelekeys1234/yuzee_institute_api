@@ -143,7 +143,7 @@ public class CourseDAO implements ICourseDAO {
 
 	@Override
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final String searchKeyword, final List<BigInteger> courseIds,
-			final Integer startIndex) {
+			final Integer startIndex, final boolean uniqueCourseName) {
 		Session session = sessionFactory.getCurrentSession();
 
 		String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName,inst.id as instId,inst.name as instName, crs.cost_range, "
@@ -187,6 +187,10 @@ public class CourseDAO implements ICourseDAO {
 			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ctry.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or crs.name like '%" + searchKeyword.trim() + "%' )";
+		}
+
+		if (uniqueCourseName) {
+			sqlQuery += " group by crs.name ";
 		}
 
 		sqlQuery += " ";
