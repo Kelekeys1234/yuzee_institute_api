@@ -14,6 +14,7 @@ import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
 import com.seeka.app.dto.HelpSubCategoryDto;
 import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.exception.ValidationException;
 
 public interface IHelpService {
 
@@ -62,5 +63,7 @@ public interface IHelpService {
 	int getSubCategoryCount(BigInteger categoryId);
 
 	void archiveHelpSupport(BigInteger entityId, boolean isArchive);
+
+	List<String> getRelatedSearchQuestions(String searchString) throws ValidationException;
 
 }

@@ -57,4 +57,6 @@ public interface IHelpDAO {
 
 	int getSubCategoryCount(BigInteger categoryId);
 
+	List<String> getRelatedSearchQuestions(List<String> searchKeywords);
+
 }

@@ -6,6 +6,9 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -88,7 +91,7 @@ public class HelpDAO implements IHelpDAO {
 			crit.add(Restrictions.eq("seekaHelp.isArchive", isArchive));
 		}
 
-		if (startIndex != null && pageSize != null) {
+		if ((startIndex != null) && (pageSize != null)) {
 			crit.setFirstResult(startIndex);
 			crit.setMaxResults(pageSize);
 		}
@@ -117,7 +120,7 @@ public class HelpDAO implements IHelpDAO {
 		crit.createAlias("helpSubCategory.categoryId", "helpCategory");
 		crit.add(Restrictions.eq("helpCategory.id", categoryId));
 		crit.add(Restrictions.eq("helpCategory.isActive", true));
-		if (startIndex != null && pageSize != null) {
+		if ((startIndex != null) && (pageSize != null)) {
 			crit.setFirstResult(startIndex);
 			crit.setMaxResults(pageSize);
 		}
@@ -176,7 +179,7 @@ public class HelpDAO implements IHelpDAO {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(HelpCategory.class, "helpCategory");
 		crit.add(Restrictions.eq("helpCategory.isActive", true));
-		if (startIndex != null && pageSize != null) {
+		if ((startIndex != null) && (pageSize != null)) {
 			crit.setFirstResult(startIndex);
 			crit.setMaxResults(pageSize);
 		}
@@ -192,7 +195,7 @@ public class HelpDAO implements IHelpDAO {
 
 	@Override
 	public List<SeekaHelp> findByMostRecent(final String mostRecent, final BigInteger categoryId) {
-		if (mostRecent != null && mostRecent.equals("asc")) {
+		if ((mostRecent != null) && mostRecent.equals("asc")) {
 			Session session = sessionFactory.getCurrentSession();
 			Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
 			return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("isActive", true)).addOrder(Order.asc("createdOn")).list();
@@ -205,7 +208,7 @@ public class HelpDAO implements IHelpDAO {
 
 	@Override
 	public List<SeekaHelp> findByStatusAndMostRecent(final String status, final String mostRecent, final BigInteger categoryId) {
-		if (mostRecent != null && mostRecent.equals("asc")) {
+		if ((mostRecent != null) && mostRecent.equals("asc")) {
 			Session session = sessionFactory.getCurrentSession();
 			Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
 			return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true))
@@ -254,6 +257,22 @@ public class HelpDAO implements IHelpDAO {
 		crit.add(Restrictions.eq("helpCategory.id", categoryId));
 		crit.setProjection(Projections.rowCount());
 		return ((Long) crit.uniqueResult()).intValue();
+	}
+
+	@Override
+	public List<String> getRelatedSearchQuestions(final List<String> searchKeywords) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(SeekaHelp.class, "seeka_help");
+		Disjunction disjunction = Restrictions.disjunction();
+		for (String string : searchKeywords) {
+			Criterion keywordCriteria = Restrictions.ilike("seeka_help.descritpion", string, MatchMode.ANYWHERE);
+			disjunction.add(keywordCriteria);
+		}
+		crit.add(disjunction);
+		crit.add(Restrictions.sqlRestriction("1=1 order by rand()"));
+		crit.setMaxResults(3);
+		crit.setProjection(Projections.property("seeka_help.title"));
+		return crit.list();
 	}
 
 }
