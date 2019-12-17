@@ -37,6 +37,7 @@ import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -120,19 +121,19 @@ public class InstituteDAO implements IInstituteDAO {
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id inner join institute_type it on inst.institute_type_id=it.id where 1=1 ";
 
-		if ((null != courseSearchDto.getCountryIds()) && !courseSearchDto.getCountryIds().isEmpty()) {
+		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
 			sqlQuery += " and inst.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if ((null != courseSearchDto.getLevelIds()) && !courseSearchDto.getLevelIds().isEmpty()) {
+		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and l.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if ((null != courseSearchDto.getFacultyIds()) && !courseSearchDto.getFacultyIds().isEmpty()) {
+		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
 			sqlQuery += " and f.faculty_id in (" + courseSearchDto.getFacultyIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if ((null != courseSearchDto.getSearchKey()) && !courseSearchDto.getSearchKey().isEmpty()) {
+		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
 			sqlQuery += " and inst.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
 		}
 		if (null != cityId) {
@@ -147,11 +148,11 @@ public class InstituteDAO implements IInstituteDAO {
 		if (null != updatedOn) {
 			sqlQuery += " and Date(inst.updated_on) ='" + new java.sql.Date(updatedOn.getTime()).toLocalDate() + "'";
 		}
-		if ((null != fromWorldRanking) && (null != toWorldRanking)) {
+		if (null != fromWorldRanking && null != toWorldRanking) {
 			sqlQuery += " and inst.world_ranking between " + fromWorldRanking + " and " + toWorldRanking;
 		}
 
-		if ((null != searchKeyword) && !searchKeyword.isEmpty()) {
+		if (null != searchKeyword && !searchKeyword.isEmpty()) {
 			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ctry.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ci.name like '%" + searchKeyword.trim() + "%'";
@@ -175,19 +176,19 @@ public class InstituteDAO implements IInstituteDAO {
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id inner join institute_type it on inst.institute_type_id=it.id where 1=1 ";
 
-		if ((null != courseSearchDto.getCountryIds()) && !courseSearchDto.getCountryIds().isEmpty()) {
+		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
 			sqlQuery += " and inst.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if ((null != courseSearchDto.getLevelIds()) && !courseSearchDto.getLevelIds().isEmpty()) {
+		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and l.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if ((null != courseSearchDto.getFacultyIds()) && !courseSearchDto.getFacultyIds().isEmpty()) {
+		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
 			sqlQuery += " and f.faculty_id in (" + courseSearchDto.getFacultyIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
 
-		if ((null != courseSearchDto.getSearchKey()) && !courseSearchDto.getSearchKey().isEmpty()) {
+		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
 			sqlQuery += " and inst.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
 		}
 		if (null != cityId) {
@@ -202,11 +203,11 @@ public class InstituteDAO implements IInstituteDAO {
 		if (null != updatedOn) {
 			sqlQuery += " and Date(inst.updated_on) ='" + new java.sql.Date(updatedOn.getTime()).toLocalDate() + "'";
 		}
-		if ((null != fromWorldRanking) && (null != toWorldRanking)) {
+		if (null != fromWorldRanking && null != toWorldRanking) {
 			sqlQuery += " and inst.world_ranking between " + fromWorldRanking + " and " + toWorldRanking;
 		}
 
-		if ((null != searchKeyword) && !searchKeyword.isEmpty()) {
+		if (null != searchKeyword && !searchKeyword.isEmpty()) {
 			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ctry.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ci.name like '%" + searchKeyword.trim() + "%'";
@@ -235,7 +236,7 @@ public class InstituteDAO implements IInstituteDAO {
 			sortingQuery = " order by inst.id " + sortByType.toLowerCase();
 		}
 
-		if ((startIndex != null) && (courseSearchDto.getMaxSizePerPage() != null)) {
+		if (startIndex != null && courseSearchDto.getMaxSizePerPage() != null) {
 			sqlQuery += sortingQuery + " LIMIT " + startIndex + " ," + courseSearchDto.getMaxSizePerPage();
 		}
 
@@ -539,26 +540,26 @@ public class InstituteDAO implements IInstituteDAO {
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id where inst.is_active = 1 and inst.deleted_on IS NULL  ";
 
-		if ((instituteFilterDto.getCountryId() != null) && (instituteFilterDto.getCountryId().intValue() > 0)) {
+		if (instituteFilterDto.getCountryId() != null && instituteFilterDto.getCountryId().intValue() > 0) {
 			sqlQuery += " and inst.country_id = " + instituteFilterDto.getCountryId() + " ";
 		}
 
-		if ((instituteFilterDto.getCityId() != null) && (instituteFilterDto.getCityId().intValue() > 0)) {
+		if (instituteFilterDto.getCityId() != null && instituteFilterDto.getCityId().intValue() > 0) {
 			sqlQuery += " and inst.city_id = " + instituteFilterDto.getCityId().intValue() + " ";
 		}
 
-		if ((instituteFilterDto.getInstituteId() != null) && (instituteFilterDto.getInstituteId().intValue() > 0)) {
+		if (instituteFilterDto.getInstituteId() != null && instituteFilterDto.getInstituteId().intValue() > 0) {
 			sqlQuery += " and inst.id =" + instituteFilterDto.getInstituteId() + " ";
 		}
 
-		if ((instituteFilterDto.getWorldRanking() != null) && (instituteFilterDto.getWorldRanking() > 0)) {
+		if (instituteFilterDto.getWorldRanking() != null && instituteFilterDto.getWorldRanking() > 0) {
 			sqlQuery += " and inst.world_ranking = " + instituteFilterDto.getWorldRanking() + " ";
 		}
 
-		if ((instituteFilterDto.getInstituteTypeId() != null) && (instituteFilterDto.getInstituteTypeId().intValue() > 0)) {
+		if (instituteFilterDto.getInstituteTypeId() != null && instituteFilterDto.getInstituteTypeId().intValue() > 0) {
 			sqlQuery += " and inst.institute_category_type_id = " + instituteFilterDto.getInstituteTypeId() + " ";
 		}
-		if ((instituteFilterDto.getDatePosted() != null) && !instituteFilterDto.getDatePosted().isEmpty()) {
+		if (instituteFilterDto.getDatePosted() != null && !instituteFilterDto.getDatePosted().isEmpty()) {
 			Date postedDate = DateUtil.convertStringDateToDate(instituteFilterDto.getDatePosted());
 			Calendar c = Calendar.getInstance();
 			c.setTime(postedDate);
@@ -755,5 +756,31 @@ public class InstituteDAO implements IInstituteDAO {
 		}
 
 		return courseDomesticRanking;
+	}
+
+	@Override
+	public List<NearestInstituteDTO> getNearestInstituteList(final Integer startIndex, final Integer pageSize, final Double latitude, final Double longitude) {
+		Session session = sessionFactory.getCurrentSession();
+
+		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(course.usd_international_fee),max(course.usd_international_fee), 111.045 * DEGREES(ACOS(COS(RADIANS('"
+				+ latitude + "'))" + "* COS(RADIANS(institute.latitute))\r\n" + "* COS(RADIANS(institute.longitute) - RADIANS('" + longitude + "'))\r\n"
+				+ "+ SIN(RADIANS('" + latitude + "'))\r\n" + "* SIN(RADIANS(institute.latitute))))\r\n" + "AS distance_in_km\r\n"
+				+ "FROM institute inner join course on institute.id = course.institute_id where institute.latitute is not null and institute.longitute is not null \r\n"
+				+ "and institute.latitute!=" + latitude + " and institute.longitute!=" + longitude + "\r\n" + "group by institute.id\r\n"
+				+ "ORDER BY distance_in_km ASC\r\n" + "LIMIT " + startIndex + "," + pageSize;
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+
+		List<NearestInstituteDTO> nearestInstituteDTOs = new ArrayList<>();
+		for (Object[] row : rows) {
+			NearestInstituteDTO nearestInstituteDTO = new NearestInstituteDTO();
+			nearestInstituteDTO.setInstituteId(new BigInteger(String.valueOf(row[0])));
+			nearestInstituteDTO.setInstituteName(String.valueOf(row[1]));
+			nearestInstituteDTO.setTotalCourseCount(((BigInteger) row[2]).intValue());
+			nearestInstituteDTO.setMinPriceRange((Double) row[3]);
+			nearestInstituteDTO.setMaxPriceRange((Double) row[4]);
+			nearestInstituteDTOs.add(nearestInstituteDTO);
+		}
+		return nearestInstituteDTOs;
 	}
 }

@@ -35,6 +35,7 @@ import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.bean.InstituteVideos;
 import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.bean.Level;
+import com.seeka.app.constant.Type;
 import com.seeka.app.dao.IAccreditedInstituteDetailDao;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
@@ -55,6 +56,7 @@ import com.seeka.app.dto.InstituteMedia;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
@@ -231,15 +233,15 @@ public class InstituteService implements IInstituteService {
 				if (instituteRequest.getWorldRanking() != null) {
 					saveWorldRankingHistory(institute, null);
 				}
-				if ((instituteRequest.getInstituteMedias() != null) && !instituteRequest.getInstituteMedias().isEmpty()) {
+				if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
 					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
 				}
-				if ((instituteRequest.getFacultyIds() != null) && !instituteRequest.getFacultyIds().isEmpty()) {
+				if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
 					Map<BigInteger, String> facultyIdNameMap = saveFacultyLevel(institute, instituteRequest.getFacultyIds());
 					List<String> facultyNames = new ArrayList<>(facultyIdNameMap.values());
 					instituteElasticSearchDto.setFacultyNames(facultyNames);
 				}
-				if ((instituteRequest.getLevelIds() != null) && !instituteRequest.getLevelIds().isEmpty()) {
+				if (instituteRequest.getLevelIds() != null && !instituteRequest.getLevelIds().isEmpty()) {
 					Map<String, String> levelNameLevelCodeMap = saveInstituteLevel(institute, instituteRequest.getLevelIds());
 					instituteElasticSearchDto.setLevelName(new ArrayList<>(levelNameLevelCodeMap.keySet()));
 					instituteElasticSearchDto.setLevelCode(new ArrayList<>(levelNameLevelCodeMap.values()));
@@ -343,22 +345,22 @@ public class InstituteService implements IInstituteService {
 				Institute newInstitute = new Institute();
 				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
 				BeanUtils.copyProperties(instituteRequest, newInstitute);
-				if ((instituteRequest.getDomesticRanking() != null) && !instituteRequest.getDomesticRanking().equals(oldInstitute.getDomesticRanking())) {
+				if (instituteRequest.getDomesticRanking() != null && !instituteRequest.getDomesticRanking().equals(oldInstitute.getDomesticRanking())) {
 					saveDomesticRankingHistory(newInstitute, oldInstitute);
 				}
-				if ((instituteRequest.getWorldRanking() != null) && !instituteRequest.getWorldRanking().equals(oldInstitute.getWorldRanking())) {
+				if (instituteRequest.getWorldRanking() != null && !instituteRequest.getWorldRanking().equals(oldInstitute.getWorldRanking())) {
 					saveWorldRankingHistory(newInstitute, oldInstitute);
 				}
 				Institute institute = saveInstitute(instituteRequest, id);
-				if ((instituteRequest.getInstituteMedias() != null) && !instituteRequest.getInstituteMedias().isEmpty()) {
+				if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
 					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
 				}
-				if ((instituteRequest.getFacultyIds() != null) && !instituteRequest.getFacultyIds().isEmpty()) {
+				if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
 					Map<BigInteger, String> facultyIdNameMap = saveFacultyLevel(institute, instituteRequest.getFacultyIds());
 					List<String> facultyNames = (List<String>) facultyIdNameMap.values();
 					instituteElasticSearchDto.setFacultyNames(facultyNames);
 				}
-				if ((instituteRequest.getLevelIds() != null) && !instituteRequest.getLevelIds().isEmpty()) {
+				if (instituteRequest.getLevelIds() != null && !instituteRequest.getLevelIds().isEmpty()) {
 					Map<String, String> levelNameLevelCodeMap = saveInstituteLevel(institute, instituteRequest.getLevelIds());
 					instituteElasticSearchDto.setLevelName(new ArrayList<>(levelNameLevelCodeMap.keySet()));
 					instituteElasticSearchDto.setLevelCode(new ArrayList<>(levelNameLevelCodeMap.values()));
@@ -479,13 +481,13 @@ public class InstituteService implements IInstituteService {
 		} else {
 			dao.save(institute);
 		}
-		if ((instituteRequest.getOfferService() != null) && !instituteRequest.getOfferService().isEmpty()) {
+		if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
 			saveInstituteService(institute, instituteRequest.getOfferService());
 		}
-		if ((instituteRequest.getAccreditation() != null) && !instituteRequest.getAccreditation().isEmpty()) {
+		if (instituteRequest.getAccreditation() != null && !instituteRequest.getAccreditation().isEmpty()) {
 			saveAccreditedInstituteDetails(institute, instituteRequest.getAccreditation());
 		}
-		if ((instituteRequest.getIntakes() != null) && !instituteRequest.getIntakes().isEmpty()) {
+		if (instituteRequest.getIntakes() != null && !instituteRequest.getIntakes().isEmpty()) {
 			saveIntakesInstituteDetails(institute, instituteRequest.getIntakes());
 		}
 		return institute;
@@ -543,7 +545,7 @@ public class InstituteService implements IInstituteService {
 			totalCount = dao.findTotalCount();
 			int startIndex;
 			if (pageNumber > 1) {
-				startIndex = ((pageNumber - 1) * pageSize) + 1;
+				startIndex = (pageNumber - 1) * pageSize + 1;
 			} else {
 				startIndex = pageNumber;
 			}
@@ -552,7 +554,7 @@ public class InstituteService implements IInstituteService {
 			for (Institute institute : institutes) {
 				instituteGetRequestDtos.add(getInstitute(institute));
 			}
-			if ((institutes != null) && !institutes.isEmpty()) {
+			if (institutes != null && !institutes.isEmpty()) {
 				response.put("message", "Institute fetched successfully");
 				response.put("status", HttpStatus.OK.value());
 			} else {
@@ -593,7 +595,7 @@ public class InstituteService implements IInstituteService {
 
 	private List<String> getInstituteYoutube(final Country country, final String instituteName) {
 		List<String> images = new ArrayList<>();
-		if ((country != null) && (country.getName() != null)) {
+		if (country != null && country.getName() != null) {
 			for (int i = 1; i <= 20; i++) {
 				images.add(CDNServerUtil.getInstituteImages(country.getName(), instituteName, i));
 			}
@@ -642,8 +644,8 @@ public class InstituteService implements IInstituteService {
 		}
 
 		instituteRequestDtos.add(instituteRequestDto);
-		if ((institute != null) && (institute.getCampusType() != null) && institute.getCampusType().equals("PRIMARY")) {
-			if ((institute.getCountry() != null) && (institute.getCity() != null) && (institute.getName() != null)) {
+		if (institute != null && institute.getCampusType() != null && institute.getCampusType().equals("PRIMARY")) {
+			if (institute.getCountry() != null && institute.getCity() != null && institute.getName() != null) {
 				List<Institute> institutes = dao.getSecondayCampus(institute.getCountry().getId(), institute.getCity().getId(), institute.getName());
 				for (Institute campus : institutes) {
 					instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(campus);
@@ -665,7 +667,7 @@ public class InstituteService implements IInstituteService {
 
 	private List<BigInteger> getFacultyLevelData(final BigInteger id) {
 		List<FacultyLevel> facultyLevel = iFacultyLevelService.getAllFacultyLevelByInstituteId(id);
-		if ((facultyLevel != null) && !facultyLevel.isEmpty()) {
+		if (facultyLevel != null && !facultyLevel.isEmpty()) {
 			return facultyLevel.stream().map(i -> i.getFaculty().getId()).collect(Collectors.toList());
 		} else {
 			return new ArrayList<>();
@@ -674,7 +676,7 @@ public class InstituteService implements IInstituteService {
 
 	private List<BigInteger> getInstituteLevelData(final BigInteger id) {
 		List<InstituteLevel> instituteLevel = iInstituteLevelService.getAllLevelByInstituteId(id);
-		if ((instituteLevel != null) && !instituteLevel.isEmpty()) {
+		if (instituteLevel != null && !instituteLevel.isEmpty()) {
 			return instituteLevel.stream().map(i -> i.getLevel().getId()).collect(Collectors.toList());
 		} else {
 			return new ArrayList<>();
@@ -698,7 +700,7 @@ public class InstituteService implements IInstituteService {
 		Map<String, Object> response = new HashMap<>();
 		List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
 		try {
-			if ((searchText != null) && !searchText.isEmpty()) {
+			if (searchText != null && !searchText.isEmpty()) {
 				String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id FROM institute inst where inst.is_active = 1  ";
 				String countryId = searchText.split(",")[0];
 				String name = searchText.split(",")[1];
@@ -706,17 +708,17 @@ public class InstituteService implements IInstituteService {
 				String worldRanking = searchText.split(",")[3];
 				String typeId = searchText.split(",")[4];
 				String postDate = searchText.split(",")[5];
-				if ((countryId != null) && !countryId.isEmpty()) {
+				if (countryId != null && !countryId.isEmpty()) {
 					sqlQuery += " and inst.country_id = " + Integer.valueOf(countryId);
-				} else if ((name != null) && !name.isEmpty()) {
+				} else if (name != null && !name.isEmpty()) {
 					sqlQuery += " and inst.name = '" + name + "'";
-				} else if ((cityId != null) && !cityId.isEmpty()) {
+				} else if (cityId != null && !cityId.isEmpty()) {
 					sqlQuery += " and inst.city_id = " + Integer.valueOf(cityId);
-				} else if ((worldRanking != null) && !worldRanking.isEmpty()) {
+				} else if (worldRanking != null && !worldRanking.isEmpty()) {
 					sqlQuery += " and inst.world_ranking = " + Integer.valueOf(worldRanking);
-				} else if ((typeId != null) && !typeId.isEmpty()) {
+				} else if (typeId != null && !typeId.isEmpty()) {
 					sqlQuery += " and inst.institute_type_id = " + Integer.valueOf(typeId);
-				} else if ((postDate != null) && !postDate.isEmpty()) {
+				} else if (postDate != null && !postDate.isEmpty()) {
 
 				}
 				List<Institute> institutes = dao.searchInstitute(sqlQuery);
@@ -751,7 +753,7 @@ public class InstituteService implements IInstituteService {
 			for (Institute institute : institutes) {
 				instituteGetRequestDtos.add(getInstitute(institute));
 			}
-			if ((institutes != null) && !institutes.isEmpty()) {
+			if (institutes != null && !institutes.isEmpty()) {
 				response.put("message", "Institute fetched successfully");
 				response.put("status", HttpStatus.OK.value());
 			} else {
@@ -785,7 +787,7 @@ public class InstituteService implements IInstituteService {
 			for (Institute institute : institutes) {
 				instituteGetRequestDtos.add(getInstitute(institute));
 			}
-			if ((institutes != null) && !institutes.isEmpty()) {
+			if (institutes != null && !institutes.isEmpty()) {
 				response.put("message", "Institute fetched successfully");
 				response.put("status", HttpStatus.OK.value());
 			} else {
@@ -902,5 +904,18 @@ public class InstituteService implements IInstituteService {
 	public Map<BigInteger, Integer> getDomesticRanking(final List<BigInteger> courseIdList) {
 		Map<BigInteger, Integer> courseDomesticRanking = dao.getDomesticRanking(courseIdList);
 		return courseDomesticRanking;
+	}
+
+	@Override
+	public List<NearestInstituteDTO> getNearestInstituteList(final Integer pageNumber, final Integer pageSize, final Double latitude, final Double longitude)
+			throws ValidationException {
+		int startIndex = (pageNumber - 1) * pageSize;
+		List<NearestInstituteDTO> nearestInstituteDTOs = dao.getNearestInstituteList(startIndex, pageSize, latitude, longitude);
+		for (NearestInstituteDTO nearestInstituteDTO : nearestInstituteDTOs) {
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getInstituteId(), ImageCategory.INSTITUTE.toString(),
+					Type.LOGO.name(), "en");
+			nearestInstituteDTO.setInstituteLogoImages(storageDTOList);
+		}
+		return nearestInstituteDTOs;
 	}
 }

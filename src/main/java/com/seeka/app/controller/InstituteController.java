@@ -34,6 +34,7 @@ import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
@@ -310,7 +311,7 @@ public class InstituteController {
 	public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable final BigInteger id) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<String> serviceNames = instituteServiceDetailsService.getAllServices(id);
-		if ((serviceNames != null) && !serviceNames.isEmpty()) {
+		if (serviceNames != null && !serviceNames.isEmpty()) {
 			response.put("message", "Service fetched successfully");
 			response.put("status", HttpStatus.OK.value());
 		} else {
@@ -349,7 +350,7 @@ public class InstituteController {
 			final String searchKeyword, final BigInteger cityId, final BigInteger instituteTypeId, final Boolean isActive, final Date updatedOn,
 			final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) throws ValidationException {
 		List<BigInteger> countryIds = request.getCountryIds();
-		if ((null == countryIds) || countryIds.isEmpty()) {
+		if (null == countryIds || countryIds.isEmpty()) {
 			countryIds = new ArrayList<>();
 		}
 		int startIndex = PaginationUtil.getStartIndex(request.getPageNumber(), request.getMaxSizePerPage());
@@ -399,7 +400,7 @@ public class InstituteController {
 		}
 
 		List<BigInteger> countryIds = request.getCountryIds();
-		if ((null == countryIds) || countryIds.isEmpty()) {
+		if (null == countryIds || countryIds.isEmpty()) {
 			countryIds = new ArrayList<>();
 		}
 
@@ -411,7 +412,7 @@ public class InstituteController {
 			instituteResponseDto.setStorageList(storageDTOList);
 		}
 		Integer maxCount = 0, totalCount = 0;
-		if ((null != instituteResponseDtoList) && !instituteResponseDtoList.isEmpty()) {
+		if (null != instituteResponseDtoList && !instituteResponseDtoList.isEmpty()) {
 			totalCount = instituteResponseDtoList.get(0).getTotalCount();
 			maxCount = instituteResponseDtoList.size();
 		}
@@ -432,7 +433,7 @@ public class InstituteController {
 	public ResponseEntity<?> getInstituteByCityId(@Valid @PathVariable final BigInteger cityId) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<InstituteResponseDto> institutes = instituteService.getInstitudeByCityId(cityId);
-		if ((institutes != null) && !institutes.isEmpty()) {
+		if (institutes != null && !institutes.isEmpty()) {
 			response.put("message", "Institute fetched successfully");
 			response.put("status", HttpStatus.OK.value());
 		} else {
@@ -447,7 +448,7 @@ public class InstituteController {
 	public ResponseEntity<?> getInstituteByListOfCityId(@Valid @PathVariable final String cityId) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<InstituteResponseDto> institutes = instituteService.getInstituteByListOfCityId(cityId);
-		if ((institutes != null) && !institutes.isEmpty()) {
+		if (institutes != null && !institutes.isEmpty()) {
 			response.put("message", "Institute fetched successfully");
 			response.put("status", HttpStatus.OK.value());
 		} else {
@@ -495,7 +496,7 @@ public class InstituteController {
 	public ResponseEntity<?> getAllInstitute() throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<Institute> institutes = instituteService.getAll();
-		if ((institutes != null) && !institutes.isEmpty()) {
+		if (institutes != null && !institutes.isEmpty()) {
 			response.put("message", "Institute fetched successfully");
 			response.put("status", HttpStatus.OK.value());
 		} else {
@@ -516,7 +517,7 @@ public class InstituteController {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			List<InstituteCategoryType> categoryTypes = instituteService.getAllCategories();
-			if ((categoryTypes != null) && !categoryTypes.isEmpty()) {
+			if (categoryTypes != null && !categoryTypes.isEmpty()) {
 				response.put("message", "CategoryType fetched successfully");
 				response.put("status", HttpStatus.OK.value());
 				response.put("data", categoryTypes);
@@ -539,7 +540,7 @@ public class InstituteController {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			List<InstituteType> instituteTypes = instituteTypeService.getAllInstituteType();
-			if ((instituteTypes != null) && !instituteTypes.isEmpty()) {
+			if (instituteTypes != null && !instituteTypes.isEmpty()) {
 				response.put("message", "Institute type fetched successfully");
 				response.put("status", HttpStatus.OK.value());
 				response.put("data", instituteTypes);
@@ -594,6 +595,15 @@ public class InstituteController {
 	public ResponseEntity<?> getDomesticRanking(@RequestBody final List<BigInteger> courseIds) throws ValidationException {
 		Map<BigInteger, Integer> instituteIdDomesticRanking = instituteService.getDomesticRanking(courseIds);
 		return new GenericResponseHandlers.Builder().setData(instituteIdDomesticRanking).setMessage("Domestic Ranking Displayed Successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@GetMapping(value = "/nearest/pageNumber/{pageNumber}/pageSize/{pageSize}", produces = "application/json")
+	public ResponseEntity<?> getNearestInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(value = "latitude", required = true) final Double latitude,
+			@RequestParam(value = "longitude", required = true) final Double longitude) throws ValidationException {
+		List<NearestInstituteDTO> nearestInstituteDTOs = instituteService.getNearestInstituteList(pageNumber, pageSize, latitude, longitude);
+		return new GenericResponseHandlers.Builder().setData(nearestInstituteDTOs).setMessage("Nearest Institute Displayed Successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}
 

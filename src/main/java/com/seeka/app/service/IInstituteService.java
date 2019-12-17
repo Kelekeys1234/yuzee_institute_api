@@ -18,6 +18,7 @@ import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.exception.ValidationException;
 
 public interface IInstituteService {
@@ -84,5 +85,7 @@ public interface IInstituteService {
 	InstituteWorldRankingHistory getHistoryOfWorldRanking(BigInteger instituteId);
 
 	Map<BigInteger, Integer> getDomesticRanking(List<BigInteger> instituteIdList);
+
+	List<NearestInstituteDTO> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitude, Double longitude) throws ValidationException;
 
 }
