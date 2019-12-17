@@ -40,6 +40,25 @@ public class CourseResponseDto {
 	private List<Date> intake;
 	private List<String> deliveryMethod;
 
+	private String facultyName;
+	private BigInteger facultyId;
+
+	public String getFacultyName() {
+		return facultyName;
+	}
+
+	public void setFacultyName(final String facultyName) {
+		this.facultyName = facultyName;
+	}
+
+	public BigInteger getFacultyId() {
+		return facultyId;
+	}
+
+	public void setFacultyId(final BigInteger facultyId) {
+		this.facultyId = facultyId;
+	}
+
 	public BigInteger getInstituteId() {
 		return instituteId;
 	}

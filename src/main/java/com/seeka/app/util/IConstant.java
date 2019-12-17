@@ -1,5 +1,8 @@
 package com.seeka.app.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class IConstant {
 	public static final String CURRENCY_URL = "https://data.fixer.io/api/";
 	public static final String API_KEY = "30c3311abac5d7016332d637bade7b54";
@@ -140,4 +143,9 @@ public class IConstant {
 	public static final int COURSES_PER_SCHEDULER_LOOP = 30;
 
 	public static final String EVENT_BRITE_API_KEY = "6I6BHL5TKXEYXU3PTFYO";
+
+	public static final List<String> COUNTRY_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE = Arrays
+			.asList(new String[] { "Australia", "Canada", "United Kingdom", "United States", "New Zealand" });
+
+	public static final List<String> LEVEL_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE = Arrays.asList(new String[] { "Undergraduate", "Postgraduate" });
 }

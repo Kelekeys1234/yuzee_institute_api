@@ -1,5 +1,6 @@
 package com.seeka.app.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -12,6 +13,7 @@ import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Top10Course;
 
 @Repository
@@ -50,5 +52,35 @@ public class Top10CourseDAO implements ITop10CourseDAO {
 		Criteria crit = session.createCriteria(Top10Course.class, "top10Course");
 		crit.add(Restrictions.eq("faculty", faculty).ignoreCase());
 		return crit.list();
+	}
+
+	@Override
+	public List<BigInteger> getCourseIdsOfTop10CoursesFromEveryFaculty() {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Top10Course.class, "top10Course");
+		crit.setProjection(Projections.property("course"));
+		List<String> courseNames = crit.list();
+
+		Criteria criteria = session.createCriteria(Course.class);
+		criteria.add(Restrictions.in("name", courseNames));
+		criteria.setProjection(Projections.property("id"));
+		return criteria.list();
+	}
+
+	@Override
+	public List<Course> getRandomCourseFromTop10Course(final String countryName, final List<String> levelList, final List<BigInteger> top10CourseIds) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Course.class, "course");
+		crit.createAlias("faculty", "faculty");
+		crit.createAlias("institute", "institute");
+		crit.createAlias("level", "level");
+		crit.createAlias("country", "country");
+		crit.add(Restrictions.in("country.name", countryName));
+		crit.add(Restrictions.in("level.name", levelList));
+		crit.add(Restrictions.in("course.id", top10CourseIds));
+		crit.add(Restrictions.sqlRestriction("1=1 order by rand()"));
+		crit.setMaxResults(2);
+		return crit.list();
+
 	}
 }
