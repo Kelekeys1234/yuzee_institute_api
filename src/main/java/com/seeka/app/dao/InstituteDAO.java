@@ -270,7 +270,9 @@ public class InstituteDAO implements IInstituteDAO {
 			instituteResponseDto.setInstituteType(String.valueOf(row[10]));
 			instituteResponseDto.setCampusType(String.valueOf(row[11]));
 			instituteResponseDto.setIsActive(Boolean.valueOf(String.valueOf(row[12])));
-			instituteResponseDto.setDomesticRanking(Integer.valueOf(String.valueOf(row[13])));
+			if (row[13] != null) {
+				instituteResponseDto.setDomesticRanking(Integer.valueOf(String.valueOf(row[13])));
+			}
 			list.add(instituteResponseDto);
 		}
 		return list;
