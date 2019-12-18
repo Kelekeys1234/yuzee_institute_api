@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -29,6 +30,7 @@ import com.seeka.app.dto.HelpDto;
 import com.seeka.app.dto.HelpSubCategoryDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IHelpService;
 import com.seeka.app.util.PaginationUtil;
 
@@ -178,5 +180,13 @@ public class HelpController {
 			@PathVariable(value = "isFavourite") final boolean isFavourite) throws NotFoundException {
 		helpService.setIsFavouriteFlag(id, isFavourite);
 		return new GenericResponseHandlers.Builder().setMessage("Updated Successfuly").setStatus(HttpStatus.OK).create();
+	}
+
+	@PostMapping(value = "/relatedQuestions")
+	public ResponseEntity<?> getOptionOnUserSearch(@RequestHeader(value = "userId") final BigInteger userId,
+			@RequestBody(required = true) final String searchString) throws ValidationException {
+		List<String> questionList = helpService.getRelatedSearchQuestions(searchString);
+		return new GenericResponseHandlers.Builder().setMessage("Related Questions Displayed Successfully").setStatus(HttpStatus.OK).setData(questionList)
+				.create();
 	}
 }
