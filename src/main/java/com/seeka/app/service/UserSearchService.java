@@ -15,4 +15,6 @@ public interface UserSearchService {
 
 	int getUserSearchEntryCount(BigInteger userId, String entityType);
 
+	List<String> getUserSearchKeyword(Integer startIndex, Integer pageSize, String searchKeyword);
+
 }

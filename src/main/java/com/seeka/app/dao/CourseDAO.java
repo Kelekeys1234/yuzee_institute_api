@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -2051,6 +2052,21 @@ public class CourseDAO implements ICourseDAO {
 		crit.createAlias("courseLanguage.course", "course");
 		crit.add(Restrictions.eq("course.id", courseId));
 		return crit.list();
+	}
+
+	@Override
+	public List<String> getUserSearchCourseRecommendation(final Integer startIndex, final Integer pageSize, final String searchKeyword) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Course.class);
+		criteria.setProjection(Projections.property("name"));
+		if (searchKeyword != null && !searchKeyword.isEmpty()) {
+			criteria.add(Restrictions.ilike("name", searchKeyword, MatchMode.ANYWHERE));
+		}
+		if (startIndex != null && pageSize != null) {
+			criteria.setFirstResult(startIndex);
+			criteria.setMaxResults(pageSize);
+		}
+		return criteria.list();
 	}
 
 }

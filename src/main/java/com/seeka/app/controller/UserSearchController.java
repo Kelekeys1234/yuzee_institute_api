@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -63,5 +64,14 @@ public class UserSearchController {
 			throws ValidationException {
 		iUserSearchService.deleteUserSearchEntry(userId, entityType);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("User search history deleted successfully.").create();
+	}
+
+	@GetMapping(value = "/recommendation/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getUserSearchRecommendation(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(name = "searchKeyword", required = true) final String searchKeyword) {
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("get UserSearch recommendation successfully.")
+				.setData(iUserSearchService.getUserSearchKeyword(startIndex, pageSize, searchKeyword)).create();
+
 	}
 }

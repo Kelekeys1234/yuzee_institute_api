@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -784,5 +785,20 @@ public class InstituteDAO implements IInstituteDAO {
 			nearestInstituteDTOs.add(nearestInstituteDTO);
 		}
 		return nearestInstituteDTOs;
+	}
+
+	@Override
+	public List<String> getUserSearchInstituteRecommendation(final Integer startIndex, final Integer pageSize, final String searchKeyword) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Institute.class);
+		criteria.setProjection(Projections.property("name"));
+		if (searchKeyword != null && !searchKeyword.isEmpty()) {
+			criteria.add(Restrictions.ilike("name", searchKeyword, MatchMode.ANYWHERE));
+		}
+		if (startIndex != null && pageSize != null) {
+			criteria.setFirstResult(startIndex);
+			criteria.setMaxResults(pageSize);
+		}
+		return criteria.list();
 	}
 }

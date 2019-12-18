@@ -95,4 +95,6 @@ public interface IInstituteDAO {
 	Map<BigInteger, Integer> getDomesticRanking(List<BigInteger> instituteIdList);
 
 	List<NearestInstituteDTO> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitude, Double longitude);
+
+	List<String> getUserSearchInstituteRecommendation(Integer startIndex, Integer pageSize, String searchKeyword);
 }

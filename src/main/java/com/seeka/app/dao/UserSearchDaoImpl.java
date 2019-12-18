@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -58,6 +59,21 @@ public class UserSearchDaoImpl implements UserSearchDao {
 		List<UserSearch> userSearchList = criteria.list();
 		return userSearchList == null ? 0 : userSearchList.size();
 
+	}
+
+	@Override
+	public List<String> getUserSearchKeyword(final Integer startIndex, final Integer pageSize, final String searchKeyword) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(UserSearch.class);
+		criteria.setProjection(Projections.property("searchString"));
+		if (searchKeyword != null && !searchKeyword.isEmpty()) {
+			criteria.add(Restrictions.ilike("searchString", searchKeyword, MatchMode.ANYWHERE));
+		}
+		if (startIndex != null && pageSize != null) {
+			criteria.setFirstResult(startIndex);
+			criteria.setMaxResults(pageSize);
+		}
+		return criteria.list();
 	}
 
 }
