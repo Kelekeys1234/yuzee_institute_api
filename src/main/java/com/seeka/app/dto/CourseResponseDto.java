@@ -43,6 +43,16 @@ public class CourseResponseDto {
 	private String facultyName;
 	private BigInteger facultyId;
 
+	private Double distance;
+
+	public Double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(final Double distance) {
+		this.distance = distance;
+	}
+
 	public String getFacultyName() {
 		return facultyName;
 	}
@@ -335,6 +345,23 @@ public class CourseResponseDto {
 
 	public void setDeliveryMethod(final List<String> deliveryMethod) {
 		this.deliveryMethod = deliveryMethod;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("CourseResponseDto [id=").append(id).append(", name=").append(name).append(", courseRanking=").append(courseRanking).append(", stars=")
+				.append(stars).append(", duration=").append(duration).append(", durationTime=").append(durationTime).append(", language=").append(language)
+				.append(", languageShortKey=").append(languageShortKey).append(", instituteId=").append(instituteId).append(", instituteName=")
+				.append(instituteName).append(", costRange=").append(costRange).append(", location=").append(location).append(", countryId=").append(countryId)
+				.append(", cityId=").append(cityId).append(", totalCount=").append(totalCount).append(", domesticFee=").append(domesticFee)
+				.append(", internationalFee=").append(internationalFee).append(", requirements=").append(requirements).append(", countryName=")
+				.append(countryName).append(", cityName=").append(cityName).append(", isFavourite=").append(isFavourite).append(", currencyCode=")
+				.append(currencyCode).append(", storageList=").append(storageList).append(", isViewed=").append(isViewed).append(", cost=").append(cost)
+				.append(", isActive=").append(isActive).append(", updatedOn=").append(updatedOn).append(", intake=").append(intake).append(", deliveryMethod=")
+				.append(deliveryMethod).append(", facultyName=").append(facultyName).append(", facultyId=").append(facultyId).append(", distance=")
+				.append(distance).append("]");
+		return builder.toString();
 	}
 
 }
