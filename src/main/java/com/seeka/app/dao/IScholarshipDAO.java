@@ -7,6 +7,7 @@ import java.util.List;
 import com.seeka.app.bean.Scholarship;
 import com.seeka.app.bean.ScholarshipIntakes;
 import com.seeka.app.bean.ScholarshipLanguage;
+import com.seeka.app.dto.ScholarshipResponseDTO;
 
 public interface IScholarshipDAO {
 
@@ -28,8 +29,8 @@ public interface IScholarshipDAO {
 
 	void updateScholarship(Scholarship scholarship);
 
-	List<Scholarship> getScholarshipList(Integer startIndex, Integer pageSize, BigInteger countryId, BigInteger instituteId, String validity, Boolean isActive,
-			Date filterDate, String searchKeyword, String sortByField, String sortByType);
+	List<ScholarshipResponseDTO> getScholarshipList(Integer startIndex, Integer pageSize, BigInteger countryId, BigInteger instituteId, String validity,
+			Boolean isActive, Date filterDate, String searchKeyword, String sortByField, String sortByType);
 
 	int countScholarshipList(BigInteger countryId, BigInteger instituteId, String validity, Boolean isActive, Date filterDate, String searchKeyword);
 

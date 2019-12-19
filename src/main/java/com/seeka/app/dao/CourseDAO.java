@@ -314,7 +314,11 @@ public class CourseDAO implements ICourseDAO {
 					courseResponseDto.setCurrencyCode(row[5].toString());
 				}
 				courseResponseDto.setUpdatedOn((Date) row[21]);
-				courseResponseDto.setIsActive(Boolean.valueOf(String.valueOf(row[22])));
+				if (String.valueOf(row[22]) != null && String.valueOf(row[22]).equals("1")) {
+					courseResponseDto.setIsActive(true);
+				} else {
+					courseResponseDto.setIsActive(false);
+				}
 				list.add(courseResponseDto);
 			} catch (Exception e) {
 				e.printStackTrace();
