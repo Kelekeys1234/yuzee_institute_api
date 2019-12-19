@@ -20,6 +20,9 @@ import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.SeekaArticles;
+import com.seeka.app.bean.UserViewData;
+import com.seeka.app.dto.ArticleResposeDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.GlobalData;
 import com.seeka.app.dto.InstituteResponseDto;
@@ -39,6 +42,12 @@ public class RecommendationService implements IRecommendationService {
 	private IFacultyService iFacultyService;
 
 	@Autowired
+	private IArticleService iArticleService;
+
+	@Autowired
+	private IGlobalStudentData iGlobalStudentData;
+
+	@Autowired
 	private ITop10CourseService iTop10CourseService;
 
 	@Autowired
@@ -52,6 +61,9 @@ public class RecommendationService implements IRecommendationService {
 
 	@Autowired
 	private IUsersService iUsersService;
+
+	@Autowired
+	private IViewService viewService;
 
 	@Autowired
 	private IGlobalStudentData iGlobalStudentDataService;
@@ -832,6 +844,129 @@ public class RecommendationService implements IRecommendationService {
 //		 */
 //		return iInstituteService.getAllInstituteByID(instituteIdList);
 		return null;
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public List<ArticleResposeDto> getRecommendedArticles(final BigInteger userId) throws ValidationException {
+		/**
+		 * Query Identity to get UserDto from userId.
+		 */
+
+		UserDto userDto = iUsersService.getUserById(userId);
+		/**
+		 * Validations of for user.
+		 */
+		if (userDto == null) {
+			throw new ValidationException("Invalid User");
+		}
+
+		/**
+		 * Get List of all user viewd articles
+		 */
+		List<UserViewData> userViewDataList = viewService.getUserViewData(BigInteger.valueOf(userDto.getId()), "ARTICLE", false, null, null);
+		List<BigInteger> viewArticleIds = new ArrayList<>();
+		for (UserViewData userViewData : userViewDataList) {
+			viewArticleIds.add(userViewData.getEntityId());
+		}
+
+		Country country;
+		List<ArticleResposeDto> articleResposeDtolist = new ArrayList<>();
+		List<SeekaArticles> seekaArticlelist = new ArrayList<>();
+
+		if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+			/**
+			 * If user citizenship doesn't exists use United States as a country by default.
+			 */
+			country = getCountryBasedOnCitizenship("United States");
+
+			/**
+			 * Get 2 articles per category from static list of categories provided by
+			 * stakeholders.
+			 */
+			for (String categoryName : IConstant.LIST_OF_ARTICLE_CATEGORY) {
+				List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId(country.getId(), categoryName,
+						IConstant.ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION, viewArticleIds);
+				seekaArticlelist.addAll(articlelist);
+			}
+		} else {
+			country = getCountryBasedOnCitizenship(userDto.getCitizenship());
+			/**
+			 * If the citizenship obtained from user doesn't exists in database
+			 */
+			if (country == null) {
+				throw new ValidationException("Invalid country citizenship for the user");
+			}
+
+			/**
+			 * Get 2 articles per category from static list of categories provided by
+			 * stakeholders.
+			 */
+			for (String categoryName : IConstant.LIST_OF_ARTICLE_CATEGORY) {
+				List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId(country.getId(), categoryName,
+						IConstant.ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION, viewArticleIds);
+				seekaArticlelist.addAll(articlelist);
+			}
+
+			/**
+			 * If No articles are obtained get the country from the global data student list
+			 * and start displaying the articles
+			 */
+			if (seekaArticlelist.isEmpty() || seekaArticlelist == null) {
+				List<GlobalData> globalDataList = iGlobalStudentData.getCountryWiseStudentList(country.getName());
+				if (globalDataList != null && !globalDataList.isEmpty()) {
+
+					/**
+					 * if first globalData destination country has no record for article then it's
+					 * check for second globalData destination country and so on..
+					 */
+					for (GlobalData globalData : globalDataList) {
+						country = getCountryBasedOnCitizenship(globalData.getDestinationCountry());
+						for (String categoryName : IConstant.LIST_OF_ARTICLE_CATEGORY) {
+							List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId(country.getId(), categoryName, 2, viewArticleIds);
+							seekaArticlelist.addAll(articlelist);
+						}
+
+						/**
+						 * If articles are found break the loop
+						 */
+						if (!seekaArticlelist.isEmpty()) {
+							break;
+						}
+					}
+
+				}
+			}
+		}
+		/**
+		 * bean converted into response Dto.
+		 */
+		for (SeekaArticles seekaArticles : seekaArticlelist) {
+			ArticleResposeDto articleResposeDto = new ArticleResposeDto();
+			BeanUtils.copyProperties(seekaArticles, articleResposeDto);
+			if (seekaArticles.getCategory() != null) {
+				articleResposeDto.setCategory(seekaArticles.getCategory().getName());
+			}
+			if (seekaArticles.getSubcategory() != null) {
+				articleResposeDto.setSubcategory(seekaArticles.getSubcategory().getName());
+			}
+			if (seekaArticles.getCountry() != null) {
+				articleResposeDto.setCountry(seekaArticles.getCountry().getName());
+			}
+			if (seekaArticles.getCity() != null) {
+				articleResposeDto.setCity(seekaArticles.getCity().getName());
+			}
+			if (seekaArticles.getFaculty() != null) {
+				articleResposeDto.setFaculty(seekaArticles.getFaculty().getName());
+			}
+			if (seekaArticles.getInstitute() != null) {
+				articleResposeDto.setInstitute(seekaArticles.getInstitute().getName());
+			}
+			articleResposeDtolist.add(articleResposeDto);
+		}
+		return articleResposeDtolist;
 	}
 
 }

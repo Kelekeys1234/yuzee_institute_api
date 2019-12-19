@@ -135,6 +135,7 @@ public class IConstant {
 	 ******************************************/
 	public static final String INSTITUTE = "Institute";
 	public static final String COURSE = "Course";
+	public static final String ARTICLE = "Article";
 	public static final String SCHOLARSHIP = "Scholarship";
 	/***************************************************************************************/
 
@@ -144,8 +145,13 @@ public class IConstant {
 
 	public static final String EVENT_BRITE_API_KEY = "6I6BHL5TKXEYXU3PTFYO";
 
-	public static final List<String> COUNTRY_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE = Arrays
-			.asList(new String[] { "Australia", "Canada", "United Kingdom", "United States", "New Zealand" });
+	public static final List<String> COUNTRY_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE = Arrays.asList("Australia", "Canada", "United Kingdom",
+			"United States", "New Zealand");
 
-	public static final List<String> LEVEL_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE = Arrays.asList(new String[] { "Undergraduate", "Postgraduate" });
+	public static final List<String> LEVEL_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE = Arrays.asList("Undergraduate", "Postgraduate");
+
+	public static final List<String> LIST_OF_ARTICLE_CATEGORY = Arrays.asList("Campus Life", "Academic Help", "Career and Trends",
+			"Personal Experiences and Inspirations", "Work and Internships", "Financial", "Self-Help", "News");
+
+	public static final Integer ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION = 2;
 }

@@ -5,13 +5,11 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.tomcat.util.digester.SetPropertiesRule;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -19,18 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.SeekaArticles;
-import com.seeka.app.dto.ArticleResponseDetailsDto;
 
 @Repository
-@SuppressWarnings({ "unchecked", "deprecation"})
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class ArticleDAO implements IArticleDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	
 	@Override
-	public Integer getTotalSearchCount(String searchKeyword) {
+	public Integer getTotalSearchCount(final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 		if (searchKeyword != null) {
@@ -39,14 +35,14 @@ public class ArticleDAO implements IArticleDAO {
 		List<Object[]> rows = criteria.list();
 		return rows.size();
 	}
-	
+
 	@Override
 	public SeekaArticles save(final SeekaArticles article) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(article);
 		return article;
-	}	
-	
+	}
+
 	@Override
 	public SeekaArticles findById(final BigInteger uId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -59,42 +55,42 @@ public class ArticleDAO implements IArticleDAO {
 		session.update(article);
 		return article;
 
-	}	
-	
+	}
+
 	@Override
 	public List<SeekaArticles> getAll(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, final List<BigInteger> categoryId, List<String> tags, Boolean status, Date filterDate) {
+			final String searchKeyword, final List<BigInteger> categoryId, final List<String> tags, final Boolean status, final Date filterDate) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
 		}
-		
-		if(categoryId != null && !categoryId.isEmpty()) {
+
+		if (categoryId != null && !categoryId.isEmpty()) {
 			criteria.createAlias("category", "category");
 			criteria.add(Restrictions.in("category.id", categoryId));
 		}
-		
-		if(tags != null && !tags.isEmpty()) {
+
+		if (tags != null && !tags.isEmpty()) {
 			criteria.add(Restrictions.in("tags", tags));
 		}
-		
-		if(status != null) {
+
+		if (status != null) {
 			criteria.add(Restrictions.in("published", status));
 		}
-		
-		if(filterDate != null) {
+
+		if (filterDate != null) {
 			criteria.add(Restrictions.ge("createdAt", filterDate));
 			criteria.add(Restrictions.ge("createdAt", LocalDateTime.from(filterDate.toInstant()).plusDays(1)));
 		}
 
-		if ( sortByType != null) {
+		if (sortByType != null) {
 			if ("ASC".equals(sortByType)) {
-					criteria.addOrder(Order.asc(sortByField));
-				} else {
-					criteria.addOrder(Order.desc(sortByField));
-				}
+				criteria.addOrder(Order.asc(sortByField));
+			} else {
+				criteria.addOrder(Order.desc(sortByField));
+			}
 		}
 		if (startIndex != null && pageSize != null) {
 			criteria.setFirstResult(startIndex);
@@ -103,48 +99,48 @@ public class ArticleDAO implements IArticleDAO {
 
 		return criteria.list();
 	}
-	
+
 	@Override
 	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, Boolean status, Date date) {
+			final String searchKeyword, final List<BigInteger> categoryIdList, final List<String> tagList, final Boolean status, final Date date) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
 		}
-		if(categoryIdList != null && !categoryIdList.isEmpty()) {
+		if (categoryIdList != null && !categoryIdList.isEmpty()) {
 			criteria.createAlias("category", "category");
 			criteria.add(Restrictions.in("category.id", categoryIdList));
 		}
-		
-		if(tagList != null && !tagList.isEmpty()) {
+
+		if (tagList != null && !tagList.isEmpty()) {
 			criteria.add(Restrictions.in("tags", tagList));
 		}
-		
-		if(status != null) {
+
+		if (status != null) {
 			criteria.add(Restrictions.in("published", status));
 		}
-		
-		if(date != null) {
+
+		if (date != null) {
 			criteria.add(Restrictions.ge("createdAt", date));
 			criteria.add(Restrictions.ge("createdAt", LocalDateTime.from(date.toInstant()).plusDays(1)));
 		}
-		if ( sortByType != null) {
+		if (sortByType != null) {
 			if ("ASC".equals(sortByType)) {
-					criteria.addOrder(Order.asc(sortByField));
-				} else {
-					criteria.addOrder(Order.desc(sortByField));
-				}
+				criteria.addOrder(Order.asc(sortByField));
+			} else {
+				criteria.addOrder(Order.desc(sortByField));
+			}
 		}
 		List<Object[]> rows = criteria.list();
 		return rows.size();
 	}
 
 	@Override
-	public List<String> getAuthors(int startIndex, Integer pageSize, String searchString) {
+	public List<String> getAuthors(final int startIndex, final Integer pageSize, final String searchString) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
-		if(searchString != null && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
+		if (searchString != null && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
 			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
 		}
 		criteria.setFirstResult(startIndex);
@@ -155,23 +151,38 @@ public class ArticleDAO implements IArticleDAO {
 		criteria.setProjection(projectionList);
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		criteria.addOrder(Order.desc("article.postDate"));
-		return (List<String>)criteria.list();
+		return criteria.list();
 	}
 
 	@Override
-	public int getTotalAuthorCount(String searchString) {
+	public int getTotalAuthorCount(final String searchString) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
-		if(searchString != null && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
+		if (searchString != null && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
 			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
 		}
 		criteria.add(Restrictions.isNotNull("article.author"));
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.distinct(Projections.property("article.author")));
 		criteria.setProjection(projectionList);
-		List<String> count = (List<String>)criteria.list();
-		return count!=null?count.size():0;
+		List<String> count = criteria.list();
+		return count != null ? count.size() : 0;
 	}
 
-	
+	@Override
+	public List<SeekaArticles> findArticleByCountryId(final BigInteger countryId, final String categoryName, final Integer count,
+			final List<BigInteger> viewArticleIds) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
+		criteria.createAlias("article.country", "country");
+		criteria.createAlias("article.category", "category");
+		criteria.add(Restrictions.in("country.id", countryId));
+		criteria.add(Restrictions.in("category.name", categoryName));
+		criteria.add(Restrictions.not(Restrictions.in("article.id", viewArticleIds)));
+		criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
+		criteria.setFirstResult(0);
+		criteria.setMaxResults(count);
+		return criteria.list();
+	}
+
 }

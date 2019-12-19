@@ -2,7 +2,6 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -47,7 +45,6 @@ import com.seeka.app.dto.ArticleFolderDto;
 import com.seeka.app.dto.ArticleFolderMapDto;
 import com.seeka.app.dto.ArticleResponseDetailsDto;
 import com.seeka.app.dto.ArticleUserDemographicDto;
-import com.seeka.app.dto.ElasticSearchDTO;
 import com.seeka.app.dto.SeekaArticleDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
@@ -100,17 +97,15 @@ public class ArticleService implements IArticleService {
 
 	@Autowired
 	private IArticleUserDemographicDao iArticleUserDemographicDao;
-	
+
 	@Autowired
 	private IStorageService iStorageService;
-	
+
 	@Autowired
 	private MessageByLocaleService messageByLocalService;
-	
+
 	@Autowired
 	private ElasticSearchService elasticSearchService;
-
-
 
 	@Override
 	public SeekaArticles deleteArticle(final String articleId) {
@@ -124,10 +119,9 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public ArticleResponseDetailsDto getArticleById(final String articleId) throws ValidationException{
+	public ArticleResponseDetailsDto getArticleById(final String articleId) throws ValidationException {
 		SeekaArticles article = articleDAO.findById(new BigInteger(articleId));
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(),
-				null, "en");
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
 		ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
 		articleResponseDetailsDto.setStorageList(storageDTOList);
 		return articleResponseDetailsDto;
@@ -135,35 +129,36 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, BigInteger categoryId, String tags, Boolean status, Date date) throws ValidationException {
-		
+			final String searchKeyword, final BigInteger categoryId, final String tags, final Boolean status, final Date date) throws ValidationException {
+
 		List<BigInteger> categoryIdList = new ArrayList<>();
 		List<String> tagList = new ArrayList<>();
-		
-		if(categoryId != null) {
+
+		if (categoryId != null) {
 			categoryIdList.add(categoryId);
 		}
-		if(tags != null) {
+		if (tags != null) {
 			tagList.add(tags);
 		}
 		return getArticleList(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status, date);
 	}
-	
+
 	@Override
 	public List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, Boolean status, Date filterDate) throws ValidationException {
-		
-		List<SeekaArticles> articleList = articleDAO.getAll(startIndex, pageSize, sortByField, sortByType, searchKeyword, 
-				categoryIdList, tagList, status, null);
+			final String searchKeyword, final List<BigInteger> categoryIdList, final List<String> tagList, final Boolean status, final Date filterDate)
+			throws ValidationException {
+
+		List<SeekaArticles> articleList = articleDAO.getAll(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status,
+				null);
 		List<ArticleResponseDetailsDto> articleResponseDetailsDtoList = new ArrayList<>();
 		for (SeekaArticles article : articleList) {
 			ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
 			articleResponseDetailsDtoList.add(articleResponseDetailsDto);
 			/**
-			 * Remove this once there is API available to get storage based on all articles in list with a single API.
+			 * Remove this once there is API available to get storage based on all articles
+			 * in list with a single API.
 			 */
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(),
-					null, "en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
 			articleResponseDetailsDto.setStorageList(storageDTOList);
 		}
 		return articleResponseDetailsDtoList;
@@ -309,7 +304,7 @@ public class ArticleService implements IArticleService {
 		articleElasticSearchDTO.setInstitute(article.getInstitute() != null ? article.getInstitute().getName() : null);
 		articleElasticSearchDTO.setCourse(article.getCourse() != null ? article.getCourse().getName() : null);
 		articleElasticSearchDTO.setPostDate(CommonUtil.getDateWithoutTime(articleDto.getPostDate()));
-		if(updateCase) {
+		if (updateCase) {
 			elasticSearchService.updateArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
 					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
 		} else {
@@ -375,77 +370,78 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public ArticleFolderDto saveArticleFolder(final ArticleFolderDto articleFolderDto, String language) throws NotFoundException, ValidationException {
-			/**
-			 * Update case
-			 */
-			if(articleFolderDto.getFolderName() == null || "".equals(articleFolderDto.getFolderName().trim())) {
-				throw new ValidationException("Invalid Folder Name");
+	public ArticleFolderDto saveArticleFolder(final ArticleFolderDto articleFolderDto, final String language) throws NotFoundException, ValidationException {
+		/**
+		 * Update case
+		 */
+		if (articleFolderDto.getFolderName() == null || "".equals(articleFolderDto.getFolderName().trim())) {
+			throw new ValidationException("Invalid Folder Name");
+		}
+
+		if (articleFolderDto.getId() != null) {
+			ArticleFolder articleFolder = iArticleFolderDao.findById(articleFolderDto.getId());
+			if (articleFolder == null) {
+				throw new NotFoundException(messageByLocalService.getMessage("article.not.found", new Object[] { articleFolderDto.getId() }, language));
 			}
-		
-			if (articleFolderDto.getId() != null) {
-				ArticleFolder articleFolder = iArticleFolderDao.findById(articleFolderDto.getId());
-				if(articleFolder == null) {
-					throw new NotFoundException(messageByLocalService.getMessage("article.not.found", new Object[] {articleFolderDto.getId()}, language));
-				}
-				articleFolder.setFolderName(articleFolderDto.getFolderName());
-				articleFolder.setUpdatedAt(new Date());
-				articleFolder.setUserId(articleFolderDto.getUserId());
-				iArticleFolderDao.save(articleFolder);
-				return articleFolderDto;
-			}
-			/**
-			 * Insert case
-			 */
-			ArticleFolder articleFolder = new ArticleFolder();
-			BeanUtils.copyProperties(articleFolderDto, articleFolder);
-			articleFolder.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
-			articleFolder.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
-			articleFolder.setDeleted(true);
+			articleFolder.setFolderName(articleFolderDto.getFolderName());
+			articleFolder.setUpdatedAt(new Date());
+			articleFolder.setUserId(articleFolderDto.getUserId());
 			iArticleFolderDao.save(articleFolder);
-			articleFolderDto.setId(articleFolder.getId());
-			
+			return articleFolderDto;
+		}
+		/**
+		 * Insert case
+		 */
+		ArticleFolder articleFolder = new ArticleFolder();
+		BeanUtils.copyProperties(articleFolderDto, articleFolder);
+		articleFolder.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
+		articleFolder.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
+		articleFolder.setDeleted(true);
+		iArticleFolderDao.save(articleFolder);
+		articleFolderDto.setId(articleFolder.getId());
+
 		return articleFolderDto;
 	}
-	
+
 	@Override
 	public List<ArticleFolder> getFolderByUserId(final BigInteger userId) throws ValidationException {
 		List<ArticleFolder> articleFolders = new ArrayList<>();
-			articleFolders = iArticleFolderDao.getAllFolderByUserId(userId);
-			if (!articleFolders.isEmpty()) {
-					return articleFolders;
-				}
-			throw new ValidationException(messageByLocalService.getMessage("article.folder.user.not.found", new Object[] {userId}, "en"));
+		articleFolders = iArticleFolderDao.getAllFolderByUserId(userId);
+		if (!articleFolders.isEmpty()) {
+			return articleFolders;
+		}
+		throw new ValidationException(messageByLocalService.getMessage("article.folder.user.not.found", new Object[] { userId }, "en"));
 	}
 
 	@Override
 	public ArticleFolder getArticleFolderById(final BigInteger articleFolderId) throws ValidationException {
-		ArticleFolder articleFolder  = iArticleFolderDao.findById(articleFolderId);
-		if (articleFolder == null)
-			throw new ValidationException(messageByLocalService.getMessage("article.folder.not.found", new Object[] {articleFolderId}, "en"));
+		ArticleFolder articleFolder = iArticleFolderDao.findById(articleFolderId);
+		if (articleFolder == null) {
+			throw new ValidationException(messageByLocalService.getMessage("article.folder.not.found", new Object[] { articleFolderId }, "en"));
+		}
 		return articleFolder;
-		
+
 	}
 
 	@Override
 	public List<ArticleFolder> getAllArticleFolder() {
-	return iArticleFolderDao.getAllArticleFolder();
+		return iArticleFolderDao.getAllArticleFolder();
 	}
 
 	@Override
 	public ArticleFolder deleteArticleFolderById(final BigInteger articleFolderId) throws ValidationException {
-			ArticleFolder articleFolder = iArticleFolderDao.findById(articleFolderId);
-			if (articleFolder != null) {
-				articleFolder.setDeleted(false);
-				articleFolder.setUpdatedAt(new Date());
-				iArticleFolderDao.save(articleFolder);
-				return articleFolder;
-			}
-            throw new ValidationException(messageByLocalService.getMessage("article.folder.not.found", new Object[] {articleFolderId}, "en"));
+		ArticleFolder articleFolder = iArticleFolderDao.findById(articleFolderId);
+		if (articleFolder != null) {
+			articleFolder.setDeleted(false);
+			articleFolder.setUpdatedAt(new Date());
+			iArticleFolderDao.save(articleFolder);
+			return articleFolder;
+		}
+		throw new ValidationException(messageByLocalService.getMessage("article.folder.not.found", new Object[] { articleFolderId }, "en"));
 	}
 
 	@Override
-	public ArticleFolderMapDto mapArticleFolder(final ArticleFolderMapDto articleFolderMapDto, String language) throws ValidationException{
+	public ArticleFolderMapDto mapArticleFolder(final ArticleFolderMapDto articleFolderMapDto, final String language) throws ValidationException {
 		try {
 			ArticleFolderMap articleFolderMap = new ArticleFolderMap();
 			articleFolderMap.setFolderId(articleFolderMapDto.getFolderId());
@@ -453,67 +449,67 @@ public class ArticleService implements IArticleService {
 			articleFolderMapDao.save(articleFolderMap);
 			articleFolderMapDto.setId(articleFolderMap.getId());
 			return articleFolderMapDto;// ConstraintViolationException
-		}catch (DataIntegrityViolationException e) {
+		} catch (DataIntegrityViolationException e) {
 			throw new ValidationException(messageByLocalService.getMessage("article.exists.in.folder", new Object[] {}, language));
 		}
 	}
 
 	@Override
-	public List<ArticleResponseDetailsDto> getArticleByFolderId(Integer startIndex,Integer pageSize,final BigInteger folderId) throws ValidationException {
-			List<ArticleFolderMap> articleFolderMaps = articleFolderMapDao.getArticleByFolderId(startIndex, pageSize,folderId);
-			List<SeekaArticles> articleList = new ArrayList<>();
-           for (ArticleFolderMap articleFolderMap : articleFolderMaps) {      	   
-        	   articleList.add(articleDAO.findById(articleFolderMap.getArticleId()));
-           }   
-       		List<ArticleResponseDetailsDto> articleResponseDetailsDtoList = new ArrayList<>();
-       		for (SeekaArticles article : articleList) {
-       			ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
-       			articleResponseDetailsDtoList.add(articleResponseDetailsDto);
-       		}
-       		return articleResponseDetailsDtoList;
+	public List<ArticleResponseDetailsDto> getArticleByFolderId(final Integer startIndex, final Integer pageSize, final BigInteger folderId)
+			throws ValidationException {
+		List<ArticleFolderMap> articleFolderMaps = articleFolderMapDao.getArticleByFolderId(startIndex, pageSize, folderId);
+		List<SeekaArticles> articleList = new ArrayList<>();
+		for (ArticleFolderMap articleFolderMap : articleFolderMaps) {
+			articleList.add(articleDAO.findById(articleFolderMap.getArticleId()));
 		}
-	
-
-	
+		List<ArticleResponseDetailsDto> articleResponseDetailsDtoList = new ArrayList<>();
+		for (SeekaArticles article : articleList) {
+			ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
+			articleResponseDetailsDtoList.add(articleResponseDetailsDto);
+		}
+		return articleResponseDetailsDtoList;
+	}
 
 	@Override
-	public Integer getTotalSearchCount(String searchKeyword) {
+	public Integer getTotalSearchCount(final String searchKeyword) {
 		return articleDAO.getTotalSearchCount(searchKeyword);
 	}
 
 	@Override
 	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, BigInteger categoryId, String tags, Boolean status, Date filterDate) {
+			final String searchKeyword, final BigInteger categoryId, final String tags, final Boolean status, final Date filterDate) {
 		List<BigInteger> categoryIdList = new ArrayList<>();
 		List<String> tagList = new ArrayList<>();
-		
-		if(categoryId != null) {
+
+		if (categoryId != null) {
 			categoryIdList.add(categoryId);
 		}
-		if(tags != null) {
+		if (tags != null) {
 			tagList.add(tags);
 		}
 		return articleDAO.getTotalSearchCount(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status, filterDate);
 	}
-	
+
 	@Override
 	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, List<BigInteger> categoryIdList, List<String> tagList, Boolean status, Date date) {
+			final String searchKeyword, final List<BigInteger> categoryIdList, final List<String> tagList, final Boolean status, final Date date) {
 		return articleDAO.getTotalSearchCount(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status, date);
 	}
 
 	@Override
-	public List<String> getAuthors(int startIndex, Integer pageSize, String searchString) {
+	public List<String> getAuthors(final int startIndex, final Integer pageSize, final String searchString) {
 		return articleDAO.getAuthors(startIndex, pageSize, searchString);
 	}
 
 	@Override
-	public int getTotalAuthorCount(String searchString) {
+	public int getTotalAuthorCount(final String searchString) {
 		return articleDAO.getTotalAuthorCount(searchString);
 	}
 
-}	
-	
+	@Override
+	public List<SeekaArticles> findArticleByCountryId(final BigInteger countryId, final String categoryName, final Integer count,
+			final List<BigInteger> viewArticleIds) {
+		return articleDAO.findArticleByCountryId(countryId, categoryName, count, viewArticleIds);
+	}
 
-	
-
+}
