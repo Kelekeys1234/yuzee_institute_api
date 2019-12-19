@@ -150,7 +150,7 @@ public class CourseDAO implements ICourseDAO {
 		String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName,inst.id as instId,inst.name as instName, crs.cost_range, "
 				+ "crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
 				+ "ctry.name as countryName,crs.world_ranking,crs.language,crs.stars,crs.recognition, crs.domestic_fee, crs.international_fee,crs.remarks, crs.usd_domestic_fee, crs.usd_international_fee "
-				+ " ,crs.updated_on, crs.is_active "
+				+ " ,crs.updated_on, crs.is_active ,inst.latitute as latitude,inst.longitute as longitute "
 				+ " from course crs inner join institute inst  on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join city ci  on ci.id = crs.city_id "
 				+ "where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
 				+ courseSearchDto.getUserId() + ")";
@@ -260,6 +260,8 @@ public class CourseDAO implements ICourseDAO {
 				} else {
 					courseResponseDto.setCost(localFees + " " + newCurrencyCode);
 				}
+				courseResponseDto.setLatitude((Double) row[23]);
+				courseResponseDto.setLongitude((Double) row[24]);
 				courseResponseDto.setId(new BigInteger(String.valueOf(row[0])));
 				courseResponseDto.setName(String.valueOf(row[1]));
 				courseResponseDto.setInstituteId(new BigInteger(String.valueOf(row[2])));
@@ -1190,9 +1192,10 @@ public class CourseDAO implements ICourseDAO {
 		}
 		Session session = sessionFactory.getCurrentSession();
 
-		String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName," + "inst.id as instId,inst.name as instName, crs.cost_range, "
+		String sqlQuery = "select distinct crs.id as courseId,crs.name as courseName, inst.id as instId,inst.name as instName, crs.cost_range, "
 				+ "crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
-				+ "ctry.name as countryName,crs.world_ranking,crs.language,crs.stars,crs.recognition, crs.domestic_fee, crs.international_fee,crs.remarks, usd_domestic_fee, usd_international_fee "
+				+ "ctry.name as countryName,crs.world_ranking,crs.language,crs.stars,crs.recognition, crs.domestic_fee, crs.international_fee,"
+				+ "crs.remarks, usd_domestic_fee, usd_international_fee,inst.latitute as latitude,inst.longitute as longitute  "
 				+ " from course crs inner join institute inst "
 				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join "
 				+ "city ci  on ci.id = crs.city_id inner join faculty f  on f.id = crs.faculty_id "
@@ -1272,19 +1275,14 @@ public class CourseDAO implements ICourseDAO {
 				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[19].toString());
 				Double convertedRate = amt * currencyRate.getConversionRate();
-				if (convertedRate != null) {
-					courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
-				}
+				courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
 			}
 			if (row[20] != null) {
 
 				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
-				Double amt = Double.valueOf(row[19].toString());
+				Double amt = Double.valueOf(row[20].toString());
 				Double convertedRate = amt * currencyRate.getConversionRate();
-
-				if (convertedRate != null) {
-					courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
-				}
+				courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
 			}
 		} else {
 			if (row[19] != null) {
@@ -1297,6 +1295,8 @@ public class CourseDAO implements ICourseDAO {
 		if (row[5] != null) {
 			courseResponseDto.setCurrencyCode(row[5].toString());
 		}
+		courseResponseDto.setLatitude((Double) row[21]);
+		courseResponseDto.setLongitude((Double) row[22]);
 		return courseResponseDto;
 	}
 

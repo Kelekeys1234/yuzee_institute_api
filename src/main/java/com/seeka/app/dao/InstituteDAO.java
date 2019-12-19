@@ -765,7 +765,7 @@ public class InstituteDAO implements IInstituteDAO {
 	public List<NearestInstituteDTO> getNearestInstituteList(final Integer startIndex, final Integer pageSize, final Double latitude, final Double longitude) {
 		Session session = sessionFactory.getCurrentSession();
 
-		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(course.usd_international_fee),max(course.usd_international_fee), 111.045 * DEGREES(ACOS(COS(RADIANS('"
+		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(course.usd_international_fee),max(course.usd_international_fee),institute.latitute,institute.longitute, 111.045 * DEGREES(ACOS(COS(RADIANS('"
 				+ latitude + "'))" + "* COS(RADIANS(institute.latitute))\r\n" + "* COS(RADIANS(institute.longitute) - RADIANS('" + longitude + "'))\r\n"
 				+ "+ SIN(RADIANS('" + latitude + "'))\r\n" + "* SIN(RADIANS(institute.latitute))))\r\n" + "AS distance_in_km\r\n"
 				+ "FROM institute inner join course on institute.id = course.institute_id where institute.latitute is not null and institute.longitute is not null \r\n"
@@ -782,6 +782,8 @@ public class InstituteDAO implements IInstituteDAO {
 			nearestInstituteDTO.setTotalCourseCount(((BigInteger) row[2]).intValue());
 			nearestInstituteDTO.setMinPriceRange((Double) row[3]);
 			nearestInstituteDTO.setMaxPriceRange((Double) row[4]);
+			nearestInstituteDTO.setLatitute((Double) row[5]);
+			nearestInstituteDTO.setLongitude((Double) row[6]);
 			nearestInstituteDTOs.add(nearestInstituteDTO);
 		}
 		return nearestInstituteDTOs;

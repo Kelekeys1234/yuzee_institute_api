@@ -45,6 +45,9 @@ public class CourseResponseDto {
 
 	private Double distance;
 
+	private Double latitude;
+	private Double longitude;
+
 	public Double getDistance() {
 		return distance;
 	}
@@ -158,7 +161,7 @@ public class CourseResponseDto {
 	}
 
 	public String getRequirements() {
-		if ((null == requirements) || requirements.isEmpty() || requirements.contains("0.0") || requirements.contains("0.00")) {
+		if (null == requirements || requirements.isEmpty() || requirements.contains("0.0") || requirements.contains("0.00")) {
 			requirements = "No Requirements";
 		}
 		return requirements;
@@ -347,6 +350,22 @@ public class CourseResponseDto {
 		this.deliveryMethod = deliveryMethod;
 	}
 
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(final Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(final Double longitude) {
+		this.longitude = longitude;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -360,7 +379,7 @@ public class CourseResponseDto {
 				.append(currencyCode).append(", storageList=").append(storageList).append(", isViewed=").append(isViewed).append(", cost=").append(cost)
 				.append(", isActive=").append(isActive).append(", updatedOn=").append(updatedOn).append(", intake=").append(intake).append(", deliveryMethod=")
 				.append(deliveryMethod).append(", facultyName=").append(facultyName).append(", facultyId=").append(facultyId).append(", distance=")
-				.append(distance).append("]");
+				.append(distance).append(", latitude=").append(latitude).append(", longitude=").append(longitude).append("]");
 		return builder.toString();
 	}
 
