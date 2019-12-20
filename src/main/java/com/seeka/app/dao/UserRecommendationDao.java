@@ -15,4 +15,7 @@ public interface UserRecommendationDao {
 
 	List<Course> getCourseNoResultRecommendation(BigInteger facultyId, BigInteger countryId, List<BigInteger> courseIds, Integer startIndex, Integer pageSize);
 
+	List<Course> getCheapestCourse(BigInteger facultyId, BigInteger countryId, BigInteger levelId, BigInteger cityId, List<BigInteger> courseIds,
+			Integer startIndex, Integer pageSize);
+
 }

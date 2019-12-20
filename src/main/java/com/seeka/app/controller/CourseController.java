@@ -563,4 +563,26 @@ public class CourseController {
 		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get course keyword recommendation list displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
+
+	/**
+	 * This API is used for course Info page for related course keyword
+	 * recommendation.
+	 *
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param facultyId
+	 * @param countryId
+	 * @param levelId
+	 * @return
+	 * @throws ValidationException
+	 */
+	@GetMapping(value = "/cheapest/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<Object> getCheapestCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
+			@RequestParam(required = true) final BigInteger levelId, @RequestParam(required = true) final BigInteger cityId) throws ValidationException {
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<CourseResponseDto> courseResponseDtos = userRecommendationService.getCheapestCourse(facultyId, countryId, levelId, cityId, startIndex, pageSize);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get cheapest course recommendation list displayed successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
 }

@@ -94,4 +94,39 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 		return crit.list();
 	}
 
+	@Override
+	public List<Course> getCheapestCourse(final BigInteger facultyId, final BigInteger countryId, final BigInteger levelId, final BigInteger cityId,
+			final List<BigInteger> courseIds, final Integer startIndex, final Integer pageSize) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Course.class, "course");
+		crit.createAlias("course.faculty", "faculty");
+		crit.createAlias("course.country", "country");
+		crit.createAlias("course.level", "level");
+		crit.createAlias("course.city", "city");
+		if (facultyId != null) {
+			crit.add(Restrictions.eq("faculty.id", facultyId));
+		}
+		if (countryId != null) {
+			crit.add(Restrictions.eq("country.id", countryId));
+		}
+		if (levelId != null) {
+			crit.add(Restrictions.eq("level.id", levelId));
+		}
+
+		if (cityId != null) {
+			crit.add(Restrictions.ne("city.id", cityId));
+		}
+
+		if (courseIds != null && !courseIds.isEmpty()) {
+			crit.add(Restrictions.not(Restrictions.in("course.id", courseIds.toArray())));
+		}
+		crit.addOrder(Order.asc("course.usdInternationFee"));
+
+		if (startIndex != null && pageSize != null) {
+			crit.setFirstResult(startIndex);
+			crit.setMaxResults(pageSize);
+		}
+		return crit.list();
+	}
+
 }

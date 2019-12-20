@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Course;
-import com.seeka.app.dao.IGlobalStudentDataDAO;
 import com.seeka.app.dao.UserRecommendationDao;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.StorageDto;
@@ -29,9 +28,6 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 
 	@Autowired
 	private IStorageService iStorageService;
-
-	@Autowired
-	private IGlobalStudentDataDAO iGlobalStudentDataDAO;
 
 	@Override
 	public List<Course> getRecommendCourse(final BigInteger courseId, final BigInteger userId) throws ValidationException {
@@ -347,6 +343,41 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			List<Course> courseCountryList = userRecommendationDao.getCourseNoResultRecommendation(null, countryId, null, startIndex, pageSize);
 			courseList.addAll(courseCountryList);
 		}
+		return convertCourseToCourseRespone(courseList);
+	}
+
+	@Override
+	public List<CourseResponseDto> getCheapestCourse(final BigInteger facultyId, final BigInteger countryId, final BigInteger levelId, final BigInteger cityId,
+			final Integer startIndex, final Integer pageSize) throws ValidationException {
+		/**
+		 * First we find courses based on same faculty, same country and same level but
+		 * different city
+		 *
+		 */
+		List<Course> courseList = userRecommendationDao.getCheapestCourse(facultyId, countryId, levelId, cityId, null, startIndex, pageSize);
+
+		/**
+		 * if required courses not found then other courses find based on same faculty,
+		 * same country but different city
+		 *
+		 */
+		if (!courseList.isEmpty() && courseList.size() <= pageSize) {
+			List<Course> moreCourses = userRecommendationDao.getCheapestCourse(facultyId, countryId, null, cityId,
+					courseList.stream().map(Course::getId).collect(Collectors.toList()), startIndex, pageSize - courseList.size());
+			courseList.addAll(moreCourses);
+		}
+
+		/**
+		 * if required courses not found then other courses find based on same faculty,
+		 * same country but different city
+		 *
+		 */
+		if (!courseList.isEmpty() && courseList.size() <= pageSize) {
+			List<Course> moreCourses = userRecommendationDao.getCheapestCourse(null, countryId, null, cityId,
+					courseList.stream().map(Course::getId).collect(Collectors.toList()), startIndex, pageSize - courseList.size());
+			courseList.addAll(moreCourses);
+		}
+
 		return convertCourseToCourseRespone(courseList);
 	}
 
