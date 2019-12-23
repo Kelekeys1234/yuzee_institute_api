@@ -15,11 +15,27 @@ public class CourseFilterDto {
 	private Integer pageNumber;
 	private String currencyCode;
 
+	/**
+	 * This is used to get user country Id, as it will be used to determine which
+	 * courses to show based on user country like courses with availability A,D,I ,
+	 * the above mentioned country will be available as filter while this will be
+	 * derived based on logged in user country
+	 */
+	private BigInteger userCountryId;
+
+	public BigInteger getUserCountryId() {
+		return userCountryId;
+	}
+
+	public void setUserCountryId(final BigInteger userCountryId) {
+		this.userCountryId = userCountryId;
+	}
+
 	public BigInteger getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(BigInteger countryId) {
+	public void setCountryId(final BigInteger countryId) {
 		this.countryId = countryId;
 	}
 
@@ -27,7 +43,7 @@ public class CourseFilterDto {
 		return instituteId;
 	}
 
-	public void setInstituteId(BigInteger instituteId) {
+	public void setInstituteId(final BigInteger instituteId) {
 		this.instituteId = instituteId;
 	}
 
@@ -35,7 +51,7 @@ public class CourseFilterDto {
 		return facultyId;
 	}
 
-	public void setFacultyId(BigInteger facultyId) {
+	public void setFacultyId(final BigInteger facultyId) {
 		this.facultyId = facultyId;
 	}
 
@@ -43,7 +59,7 @@ public class CourseFilterDto {
 		return courseId;
 	}
 
-	public void setCourseId(BigInteger courseId) {
+	public void setCourseId(final BigInteger courseId) {
 		this.courseId = courseId;
 	}
 
@@ -51,7 +67,7 @@ public class CourseFilterDto {
 		return language;
 	}
 
-	public void setLanguage(String language) {
+	public void setLanguage(final String language) {
 		this.language = language;
 	}
 
@@ -59,7 +75,7 @@ public class CourseFilterDto {
 		return minRanking;
 	}
 
-	public void setMinRanking(Integer minRanking) {
+	public void setMinRanking(final Integer minRanking) {
 		this.minRanking = minRanking;
 	}
 
@@ -67,7 +83,7 @@ public class CourseFilterDto {
 		return maxRanking;
 	}
 
-	public void setMaxRanking(Integer maxRanking) {
+	public void setMaxRanking(final Integer maxRanking) {
 		this.maxRanking = maxRanking;
 	}
 
@@ -75,7 +91,7 @@ public class CourseFilterDto {
 		return maxSizePerPage;
 	}
 
-	public void setMaxSizePerPage(Integer maxSizePerPage) {
+	public void setMaxSizePerPage(final Integer maxSizePerPage) {
 		this.maxSizePerPage = maxSizePerPage;
 	}
 
@@ -83,7 +99,7 @@ public class CourseFilterDto {
 		return pageNumber;
 	}
 
-	public void setPageNumber(Integer pageNumber) {
+	public void setPageNumber(final Integer pageNumber) {
 		this.pageNumber = pageNumber;
 	}
 
@@ -91,7 +107,7 @@ public class CourseFilterDto {
 		return currencyCode;
 	}
 
-	public void setCurrencyCode(String currencyCode) {
+	public void setCurrencyCode(final String currencyCode) {
 		this.currencyCode = currencyCode;
 	}
 }

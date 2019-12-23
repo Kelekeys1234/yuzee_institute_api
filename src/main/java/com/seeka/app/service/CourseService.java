@@ -64,6 +64,7 @@ import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.enumeration.SeekaEntityType;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.util.DateUtil;
@@ -140,6 +141,12 @@ public class CourseService implements ICourseService {
 	@Autowired
 	private ITop10CourseService iTop10CourseService;
 
+	@Autowired
+	private IUsersService iUsersService;
+
+	@Autowired
+	private MessageByLocaleService messageByLocalService;
+
 	@Override
 	public void save(final Course course) {
 		iCourseDAO.save(course);
@@ -169,7 +176,7 @@ public class CourseService implements ICourseService {
 
 	private List<CourseResponseDto> getExtraInfoOfCourseFilter(final CourseSearchDto courseSearchDto, final List<CourseResponseDto> courseResponseDtos)
 			throws ValidationException {
-		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
+		if ((courseResponseDtos == null) || courseResponseDtos.isEmpty()) {
 			return new ArrayList<>();
 		}
 		List<BigInteger> courseIds = courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
@@ -183,7 +190,7 @@ public class CourseService implements ICourseService {
 		List<CourseIntake> courseIntake = iCourseDAO.getCourseIntakeBasedOnCourseIdList(courseIds);
 		List<CourseDeliveryMethod> courseDeliveryMethods = iCourseDAO.getCourseDeliveryMethodBasedOnCourseIdList(courseIds);
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
-			if (storageDTOList != null && !storageDTOList.isEmpty()) {
+			if ((storageDTOList != null) && !storageDTOList.isEmpty()) {
 				List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))
 						.collect(Collectors.toList());
 				courseResponseDto.setStorageList(storageDTO);
@@ -195,7 +202,7 @@ public class CourseService implements ICourseService {
 				courseResponseDto.setIsViewed(true);
 			}
 
-			if (courseIntake != null && !courseIntake.isEmpty()) {
+			if ((courseIntake != null) && !courseIntake.isEmpty()) {
 				List<CourseIntake> courseIntakeList = courseIntake.stream().filter(x -> courseResponseDto.getId().equals(x.getCourse().getId()))
 						.collect(Collectors.toList());
 				courseResponseDto.setIntake(courseIntakeList.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -203,7 +210,7 @@ public class CourseService implements ICourseService {
 			} else {
 				courseResponseDto.setIntake(new ArrayList<>());
 			}
-			if (courseDeliveryMethods != null && !courseDeliveryMethods.isEmpty()) {
+			if ((courseDeliveryMethods != null) && !courseDeliveryMethods.isEmpty()) {
 				List<CourseDeliveryMethod> courseDeliveryMethodsList = courseDeliveryMethods.stream()
 						.filter(x -> courseResponseDto.getId().equals(x.getCourse().getId())).collect(Collectors.toList());
 				courseResponseDto.setDeliveryMethod(courseDeliveryMethodsList.stream().map(CourseDeliveryMethod::getName).collect(Collectors.toList()));
@@ -252,7 +259,7 @@ public class CourseService implements ICourseService {
 		course.setDescription(courseDto.getDescription());
 		course.setName(courseDto.getName());
 		course.setcId(courseDto.getcId());
-		if (courseDto.getDuration() != null && !courseDto.getDuration().isEmpty()) {
+		if ((courseDto.getDuration() != null) && !courseDto.getDuration().isEmpty()) {
 			course.setDuration(Double.valueOf(courseDto.getDuration()));
 		}
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
@@ -264,7 +271,7 @@ public class CourseService implements ICourseService {
 		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		course.setUpdatedBy("API");
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
+		if ((courseDto.getStars() != null) && !courseDto.getStars().isEmpty()) {
 			course.setStars(Integer.valueOf(courseDto.getStars()));
 		}
 		// Course Details
@@ -273,7 +280,7 @@ public class CourseService implements ICourseService {
 		course.setInternationalFee(courseDto.getInternationalFee());
 		course.setCampusLocation(courseDto.getCampusLocation());
 		course.setPartFull(courseDto.getPartFull());
-		if (courseDto.getWorldRanking() != null && !courseDto.getWorldRanking().isEmpty()) {
+		if ((courseDto.getWorldRanking() != null) && !courseDto.getWorldRanking().isEmpty()) {
 			course.setWorldRanking(Integer.valueOf(courseDto.getWorldRanking()));
 		}
 		course.setDurationTime(courseDto.getDurationTime());
@@ -332,7 +339,7 @@ public class CourseService implements ICourseService {
 			}
 		}
 
-		if (courseDto.getLanguage() != null && !courseDto.getLanguage().isEmpty()) {
+		if ((courseDto.getLanguage() != null) && !courseDto.getLanguage().isEmpty()) {
 			for (String language : courseDto.getLanguage()) {
 				CourseLanguage courseLanguage = new CourseLanguage();
 				courseLanguage.setCourse(course);
@@ -389,10 +396,10 @@ public class CourseService implements ICourseService {
 		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		course.setUpdatedBy("API");
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		if (courseDto.getDuration() != null && !courseDto.getDuration().isEmpty()) {
+		if ((courseDto.getDuration() != null) && !courseDto.getDuration().isEmpty()) {
 			course.setDuration(Double.valueOf(courseDto.getDuration()));
 		}
-		if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
+		if ((courseDto.getStars() != null) && !courseDto.getStars().isEmpty()) {
 			course.setStars(Integer.valueOf(courseDto.getStars()));
 		}
 
@@ -402,7 +409,7 @@ public class CourseService implements ICourseService {
 		course.setInternationalFee(courseDto.getInternationalFee());
 		course.setCampusLocation(courseDto.getCampusLocation());
 		course.setPartFull(courseDto.getPartFull());
-		if (courseDto.getWorldRanking() != null && !courseDto.getWorldRanking().isEmpty()) {
+		if ((courseDto.getWorldRanking() != null) && !courseDto.getWorldRanking().isEmpty()) {
 			course.setWorldRanking(Integer.valueOf(courseDto.getWorldRanking()));
 		}
 		course.setDurationTime(courseDto.getDurationTime());
@@ -465,7 +472,7 @@ public class CourseService implements ICourseService {
 			iCourseDAO.saveCourseDeliveryMethod(courseDeliveryMethod);
 		}
 
-		if (courseDto.getLanguage() != null && !courseDto.getLanguage().isEmpty()) {
+		if ((courseDto.getLanguage() != null) && !courseDto.getLanguage().isEmpty()) {
 			for (String language : courseDto.getLanguage()) {
 				CourseLanguage courseLanguage = new CourseLanguage();
 				courseLanguage.setCourse(course);
@@ -577,7 +584,7 @@ public class CourseService implements ICourseService {
 				courseRequest.setStorageList(storageDTOList);
 				resultList.add(courseRequest);
 			}
-			if (courses != null && !courses.isEmpty()) {
+			if ((courses != null) && !courses.isEmpty()) {
 				response.put("status", HttpStatus.OK.value());
 				response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
 				response.put("courses", courses);
@@ -633,7 +640,7 @@ public class CourseService implements ICourseService {
 	public Map<String, Object> addUserCourses(@Valid final UserCourse userCourse) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-			if (userCourse.getCourses() != null && !userCourse.getCourses().isEmpty()) {
+			if ((userCourse.getCourses() != null) && !userCourse.getCourses().isEmpty()) {
 				for (BigInteger courseId : userCourse.getCourses()) {
 					UserMyCourse myCourse = new UserMyCourse();
 					myCourse.setCourse(iCourseDAO.get(courseId));
@@ -689,7 +696,7 @@ public class CourseService implements ICourseService {
 	public Map<String, Object> addUserCompareCourse(@Valid final UserCourse userCourse) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-			if (userCourse.getCourses() != null && !userCourse.getCourses().isEmpty()) {
+			if ((userCourse.getCourses() != null) && !userCourse.getCourses().isEmpty()) {
 				String compareValue = "";
 				for (BigInteger courseId : userCourse.getCourses()) {
 					compareValue += courseId + ",";
@@ -734,7 +741,7 @@ public class CourseService implements ICourseService {
 				courseResponse.setCourses(getCourses(compareCourse.getCompareValue()));
 				compareCourseResponses.add(courseResponse);
 			}
-			if (compareCourses != null && !compareCourses.isEmpty()) {
+			if ((compareCourses != null) && !compareCourses.isEmpty()) {
 				response.put("status", HttpStatus.OK.value());
 				response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
 			} else {
@@ -805,7 +812,7 @@ public class CourseService implements ICourseService {
 	@Override
 	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException {
 		List<CourseResponseDto> courseResponseDtos = iCourseDAO.advanceSearch(courseSearchDto);
-		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
+		if ((courseResponseDtos == null) || courseResponseDtos.isEmpty()) {
 			return new ArrayList<>();
 		}
 		List<BigInteger> courseIds = courseResponseDtos.stream().map(i -> i.getId()).collect(Collectors.toList());
@@ -814,7 +821,7 @@ public class CourseService implements ICourseService {
 				courseResponseDtos.stream().map(i -> i.getInstituteId()).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
 		List<CourseDeliveryMethod> courseDeliveryMethods = iCourseDAO.getCourseDeliveryMethodBasedOnCourseIdList(courseIds);
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
-			if (storageDTOList != null && !storageDTOList.isEmpty()) {
+			if ((storageDTOList != null) && !storageDTOList.isEmpty()) {
 				List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))
 						.collect(Collectors.toList());
 				courseResponseDto.setStorageList(storageDTO);
@@ -824,7 +831,7 @@ public class CourseService implements ICourseService {
 				courseResponseDto.setIsViewed(true);
 			}
 
-			if (courseDeliveryMethods != null && !courseDeliveryMethods.isEmpty()) {
+			if ((courseDeliveryMethods != null) && !courseDeliveryMethods.isEmpty()) {
 				List<CourseDeliveryMethod> courseDeliveryMethodsList = courseDeliveryMethods.stream()
 						.filter(x -> courseResponseDto.getId().equals(x.getCourse().getId())).collect(Collectors.toList());
 				courseResponseDto.setDeliveryMethod(courseDeliveryMethodsList.stream().map(x -> x.getName()).collect(Collectors.toList()));
@@ -840,7 +847,7 @@ public class CourseService implements ICourseService {
 		List<Course> courses = new ArrayList<>();
 		try {
 			courses = iCourseDAO.getAllCourse();
-			if (courses != null && !courses.isEmpty()) {
+			if ((courses != null) && !courses.isEmpty()) {
 				response.put("status", HttpStatus.OK);
 				response.put("message", "Course retrieve succesfully");
 				response.put("courses", courses);
@@ -876,7 +883,7 @@ public class CourseService implements ICourseService {
 				resultList.add(courseRequest);
 			}
 
-			if (resultList != null && !resultList.isEmpty()) {
+			if ((resultList != null) && !resultList.isEmpty()) {
 				response.put("status", HttpStatus.OK.value());
 				response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
 				response.put("courses", resultList);
@@ -915,7 +922,7 @@ public class CourseService implements ICourseService {
 				resultList.add(courseRequest);
 			}
 
-			if (resultList != null && !resultList.isEmpty()) {
+			if ((resultList != null) && !resultList.isEmpty()) {
 				response.put("status", HttpStatus.OK.value());
 				response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
 				response.put("courses", resultList);
@@ -1016,7 +1023,7 @@ public class CourseService implements ICourseService {
 		List<CourseRequest> courses = new ArrayList<>();
 		try {
 			courses = iCourseDAO.autoSearchByCharacter(1, 50, searchKey);
-			if (courses != null && !courses.isEmpty()) {
+			if ((courses != null) && !courses.isEmpty()) {
 				response.put("status", HttpStatus.OK.value());
 				response.put("message", IConstant.COURSE_GET_SUCCESS_MESSAGE);
 				response.put("courses", courses);
@@ -1097,7 +1104,7 @@ public class CourseService implements ICourseService {
 
 	@Override
 	public List<BigInteger> getCountryForTopSearchedCourses(final List<BigInteger> topSearchedCourseIds) throws ValidationException {
-		if (topSearchedCourseIds == null || topSearchedCourseIds.isEmpty()) {
+		if ((topSearchedCourseIds == null) || topSearchedCourseIds.isEmpty()) {
 			throw new ValidationException(messageByLocaleService.getMessage("no.course.id.specified", new Object[] {}));
 		}
 		return iCourseDAO.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
@@ -1113,7 +1120,7 @@ public class CourseService implements ICourseService {
 	public List<Long> getUserListBasedOnLikedCourseOnParameters(final BigInteger courseId, final BigInteger instituteId, final BigInteger facultyId,
 			final BigInteger countryId, final BigInteger cityId) {
 		List<BigInteger> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
-		if (courseIdList == null || courseIdList.isEmpty()) {
+		if ((courseIdList == null) || courseIdList.isEmpty()) {
 			return new ArrayList<>();
 		}
 		List<Long> userIdList = iCourseDAO.getUserListFromMyCoursesBasedOnCourses(courseIdList);
@@ -1124,7 +1131,7 @@ public class CourseService implements ICourseService {
 	public List<Long> getUserListForUserWatchCourseFilter(final BigInteger courseId, final BigInteger instituteId, final BigInteger facultyId,
 			final BigInteger countryId, final BigInteger cityId) {
 		List<BigInteger> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
-		if (courseIdList == null || courseIdList.isEmpty()) {
+		if ((courseIdList == null) || courseIdList.isEmpty()) {
 			return new ArrayList<>();
 		}
 		List<Long> userIdList = iCourseDAO.getUserListFromUserWatchCoursesBasedOnCourses(courseIdList);
@@ -1140,13 +1147,13 @@ public class CourseService implements ICourseService {
 	public List<BigInteger> courseIdsForMigratedCountries(final Country country) {
 		List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
 		List<BigInteger> otherCountryIds = new ArrayList<>();
-		if (countryWiseStudentCountListForUserCountry == null || countryWiseStudentCountListForUserCountry.isEmpty()) {
+		if ((countryWiseStudentCountListForUserCountry == null) || countryWiseStudentCountListForUserCountry.isEmpty()) {
 			countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList("China");
 		}
 
 		for (GlobalData globalDataDto : countryWiseStudentCountListForUserCountry) {
 			Country con = iCountryService.getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry());
-			if (!(con == null || con.getId() == null)) {
+			if (!((con == null) || (con.getId() == null))) {
 				otherCountryIds.add(con.getId());
 			}
 		}
@@ -1163,7 +1170,8 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public int getCountOfAdvanceSearch(final AdvanceSearchDto courseSearchDto) {
+	public int getCountOfAdvanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException, NotFoundException {
+
 		return iCourseDAO.getCountOfAdvanceSearch(courseSearchDto);
 	}
 

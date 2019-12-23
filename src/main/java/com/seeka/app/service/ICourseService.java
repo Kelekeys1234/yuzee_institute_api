@@ -26,6 +26,7 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 
 public interface ICourseService {
@@ -129,7 +130,7 @@ public interface ICourseService {
 
 	int getCountforNormalCourse(CourseSearchDto courseSearchDto, String searchKeyword);
 
-	int getCountOfAdvanceSearch(AdvanceSearchDto courseSearchDto);
+	int getCountOfAdvanceSearch(AdvanceSearchDto courseSearchDto) throws ValidationException, NotFoundException;
 
 	List<CourseDTOElasticSearch> getUpdatedCourses(Date date, Integer startIndex, Integer limit);
 
