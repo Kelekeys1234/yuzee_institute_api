@@ -86,16 +86,19 @@ public class Top10CourseService implements ITop10CourseService {
 				}
 			}
 		}
-		List<StorageDto> storageList = iStorageService.getStorageInformationBasedOnEntityIdList(responseCourseIds, "COURSE", null, "en");
-		for (CourseResponseDto courseResponseDto : listOfTop10Course) {
-			List<StorageDto> s = new ArrayList<>();
-			for (StorageDto storageDto : storageList) {
-				if (courseResponseDto.getId().equals(storageDto.getEntityId())) {
-					s.add(storageDto);
+		if ((responseCourseIds != null) && !responseCourseIds.isEmpty()) {
+			List<StorageDto> storageList = iStorageService.getStorageInformationBasedOnEntityIdList(responseCourseIds, "COURSE", null, "en");
+			for (CourseResponseDto courseResponseDto : listOfTop10Course) {
+				List<StorageDto> s = new ArrayList<>();
+				for (StorageDto storageDto : storageList) {
+					if (courseResponseDto.getId().equals(storageDto.getEntityId())) {
+						s.add(storageDto);
+					}
 				}
+				courseResponseDto.setStorageList(storageList);
 			}
-			courseResponseDto.setStorageList(storageList);
 		}
+
 		return listOfTop10Course;
 	}
 
