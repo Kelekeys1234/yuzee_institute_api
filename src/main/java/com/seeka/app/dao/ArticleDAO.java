@@ -67,12 +67,12 @@ public class ArticleDAO implements IArticleDAO {
 			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
 		}
 
-		if (categoryId != null && !categoryId.isEmpty()) {
+		if ((categoryId != null) && !categoryId.isEmpty()) {
 			criteria.createAlias("category", "category");
 			criteria.add(Restrictions.in("category.id", categoryId));
 		}
 
-		if (tags != null && !tags.isEmpty()) {
+		if ((tags != null) && !tags.isEmpty()) {
 			criteria.add(Restrictions.in("tags", tags));
 		}
 
@@ -91,8 +91,14 @@ public class ArticleDAO implements IArticleDAO {
 			} else {
 				criteria.addOrder(Order.desc(sortByField));
 			}
+		} else {
+			if ("ASC".equals(sortByType)) {
+				criteria.addOrder(Order.asc("seeka_article.heading"));
+			} else {
+				criteria.addOrder(Order.desc("seeka_article.heading"));
+			}
 		}
-		if (startIndex != null && pageSize != null) {
+		if ((startIndex != null) && (pageSize != null)) {
 			criteria.setFirstResult(startIndex);
 			criteria.setMaxResults(pageSize);
 		}
@@ -108,12 +114,12 @@ public class ArticleDAO implements IArticleDAO {
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
 		}
-		if (categoryIdList != null && !categoryIdList.isEmpty()) {
+		if ((categoryIdList != null) && !categoryIdList.isEmpty()) {
 			criteria.createAlias("category", "category");
 			criteria.add(Restrictions.in("category.id", categoryIdList));
 		}
 
-		if (tagList != null && !tagList.isEmpty()) {
+		if ((tagList != null) && !tagList.isEmpty()) {
 			criteria.add(Restrictions.in("tags", tagList));
 		}
 
@@ -140,7 +146,7 @@ public class ArticleDAO implements IArticleDAO {
 	public List<String> getAuthors(final int startIndex, final Integer pageSize, final String searchString) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
-		if (searchString != null && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
+		if ((searchString != null) && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
 			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
 		}
 		criteria.setFirstResult(startIndex);
@@ -158,7 +164,7 @@ public class ArticleDAO implements IArticleDAO {
 	public int getTotalAuthorCount(final String searchString) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
-		if (searchString != null && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
+		if ((searchString != null) && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
 			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
 		}
 		criteria.add(Restrictions.isNotNull("article.author"));

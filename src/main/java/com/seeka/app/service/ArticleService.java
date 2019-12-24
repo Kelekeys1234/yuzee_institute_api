@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.bean.ArticleFolder;
 import com.seeka.app.bean.ArticleFolderMap;
@@ -91,9 +90,6 @@ public class ArticleService implements IArticleService {
 
 	@Autowired
 	private FacultyDAO facultyDAO;
-
-	@Autowired
-	private RestTemplate restTemplate;
 
 	@Autowired
 	private IArticleUserDemographicDao iArticleUserDemographicDao;
@@ -238,7 +234,7 @@ public class ArticleService implements IArticleService {
 		Map<BigInteger, String> cityMap = new HashMap<>();
 		SeekaArticles article = new SeekaArticles();
 		Boolean updateCase = false;
-		if (articleDto != null && articleDto.getId() != null) {
+		if ((articleDto != null) && (articleDto.getId() != null)) {
 			article = articleDAO.findById(articleDto.getId());
 			updateCase = true;
 			if (article != null) {
@@ -263,7 +259,7 @@ public class ArticleService implements IArticleService {
 
 		List<ArticleUserDemographicDto> articleUserDemoDtoList = articleDto.getUserDemographic();
 
-		if (articleUserDemoDtoList != null && !articleUserDemoDtoList.isEmpty()) {
+		if ((articleUserDemoDtoList != null) && !articleUserDemoDtoList.isEmpty()) {
 			for (ArticleUserDemographicDto articleUserDemographicDto : articleUserDemoDtoList) {
 				Country country = new Country();
 				BeanUtils.copyProperties(articleUserDemographicDto.getCitizenship(), country);
@@ -374,7 +370,7 @@ public class ArticleService implements IArticleService {
 		/**
 		 * Update case
 		 */
-		if (articleFolderDto.getFolderName() == null || "".equals(articleFolderDto.getFolderName().trim())) {
+		if ((articleFolderDto.getFolderName() == null) || "".equals(articleFolderDto.getFolderName().trim())) {
 			throw new ValidationException("Invalid Folder Name");
 		}
 
