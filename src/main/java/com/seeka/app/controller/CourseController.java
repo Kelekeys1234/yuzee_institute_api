@@ -48,6 +48,7 @@ import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
+import com.seeka.app.dto.UserReviewResultDto;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.NotFoundException;
@@ -59,9 +60,12 @@ import com.seeka.app.service.ICourseGradeEligibilityService;
 import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
+import com.seeka.app.service.IEnrollmentService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IStorageService;
+import com.seeka.app.service.IUserReviewService;
 import com.seeka.app.service.IUsersService;
+import com.seeka.app.service.IViewService;
 import com.seeka.app.service.InstituteLevelService;
 import com.seeka.app.service.UserRecommendationService;
 import com.seeka.app.util.CommonUtil;
@@ -107,6 +111,15 @@ public class CourseController {
 
 	@Autowired
 	private ICountryService iCountryService;
+
+	@Autowired
+	private IEnrollmentService iEnrolmentService;
+
+	@Autowired
+	private IViewService iViewService;
+
+	@Autowired
+	private IUserReviewService iUserReviewService;
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException {
@@ -242,7 +255,8 @@ public class CourseController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Object> get(@Valid @PathVariable final BigInteger id) throws ValidationException {
+	public ResponseEntity<Object> get(@RequestHeader(required = false) final BigInteger userId, @Valid @PathVariable final BigInteger id)
+			throws ValidationException {
 		ErrorDto errorDto = null;
 		CourseRequest courseRequest = null;
 		Map<String, Object> response = new HashMap<>();
@@ -283,6 +297,38 @@ public class CourseController {
 				}
 			}
 		}
+
+		if (course.getInstitute() != null) {
+			courseRequest.setLatitude(course.getInstitute().getLatitute());
+			courseRequest.setLongitude(course.getInstitute().getLongitude());
+		}
+
+		/**
+		 * Get Enrollment details for the course
+		 */
+		if (userId != null) {
+			int count = iEnrolmentService.countOfEnrollment(userId, id, null, null, null, null, null);
+			courseRequest.setApplied(count == 0 ? false : true);
+		} else {
+			courseRequest.setApplied(false);
+		}
+
+		/**
+		 * Get User View Course Details
+		 */
+		if (userId != null) {
+			int count = iViewService.getUserViewDataCountBasedOnUserId(userId, id, "COURSE");
+			courseRequest.setViewCourse(count == 0 ? false : true);
+		} else {
+			courseRequest.setViewCourse(false);
+		}
+
+		/**
+		 * Add User Review to the course info response
+		 */
+		List<UserReviewResultDto> userReviewResultList = iUserReviewService.getUserReviewBasedOnData(id, "COURSE", 1, 5, null, null);
+		courseRequest.setUserReviewResult(userReviewResultList);
+
 		response.put("status", HttpStatus.OK.value());
 		response.put("message", "Success.!");
 		response.put("courseObj", courseRequest);

@@ -51,6 +51,60 @@ public class CourseRequest {
 	private List<CourseEnglishEligibility> englishEligibility;
 	private List<StorageDto> storageList;
 
+	private Boolean applied;
+	private Boolean viewCourse;
+	private Double latitude;
+	private Double longitude;
+	private List<UserReviewResultDto> userReviewResult;
+
+	public List<UserReviewResultDto> getUserReviewResult() {
+		return userReviewResult;
+	}
+
+	public void setUserReviewResult(final List<UserReviewResultDto> userReviewResult) {
+		this.userReviewResult = userReviewResult;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(final Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(final Double longitude) {
+		this.longitude = longitude;
+	}
+
+	public Boolean getViewCourse() {
+		return viewCourse;
+	}
+
+	public void setViewCourse(final Boolean viewCourse) {
+		this.viewCourse = viewCourse;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public Boolean getApplied() {
+		return applied;
+	}
+
+	/**
+	 *
+	 * @param applied
+	 */
+	public void setApplied(final Boolean applied) {
+		this.applied = applied;
+	}
+
 	/**
 	 * @return the cId
 	 */

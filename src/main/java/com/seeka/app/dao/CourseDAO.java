@@ -870,7 +870,12 @@ public class CourseDAO implements ICourseDAO {
 				+ "c.description, c.intake,c.duration, c.language,c.domestic_fee, c.international_fee,"
 				+ " c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency  FROM  user_my_course umc inner join course c on umc.course_id = c.id "
-				+ " where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = " + userId + "  ORDER BY c.created_on DESC ";
+				+ " where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = " + userId + "  ";
+		if (sortBy != null) {
+			sqlQuery = sqlQuery + " ORDER BY c." + sortBy + " " + (sortType ? "ASC" : "DESC");
+		} else {
+			sqlQuery = "ORDER BY c.created_on DESC";
+		}
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
