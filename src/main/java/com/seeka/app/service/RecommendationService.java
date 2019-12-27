@@ -86,7 +86,7 @@ public class RecommendationService implements IRecommendationService {
 		UserDto userDto = iUsersService.getUserById(userId);
 		if (userDto == null) {
 			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] { userId }, language));
-		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+		} else if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
 			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present", new Object[] { userId }, language));
 		}
 
@@ -94,7 +94,7 @@ public class RecommendationService implements IRecommendationService {
 		 * Get Country Id Based on citizenship
 		 */
 		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
-		if (country == null || country.getId() == null) {
+		if ((country == null) || (country.getId() == null)) {
 			throw new ValidationException(
 					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
 		}
@@ -168,7 +168,7 @@ public class RecommendationService implements IRecommendationService {
 		 */
 		if (userDto == null) {
 			throw new ValidationException("Invalid User");
-		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+		} else if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
 			throw new ValidationException("User needs to have a citizenship");
 		}
 
@@ -177,7 +177,7 @@ public class RecommendationService implements IRecommendationService {
 		 */
 		Country country = getCountryBasedOnCitizenship(userDto.getCitizenship());
 
-		if (country == null || country.getId() == null) {
+		if ((country == null) || (country.getId() == null)) {
 			throw new ValidationException("Invalid country citizenship for the user");
 		}
 		/**
@@ -237,7 +237,7 @@ public class RecommendationService implements IRecommendationService {
 		 * current country.
 		 */
 		if (coursesBasedOnUserMigrationCountry != null) {
-			while (20 - courseListToRecommend.size() > 0) {
+			while ((20 - courseListToRecommend.size()) > 0) {
 				if (coursesBasedOnUserMigrationCountry.size() > 0) {
 					int randomIndex = rand.nextInt(coursesBasedOnUserMigrationCountry.size());
 					BigInteger randomElement = coursesBasedOnUserMigrationCountry.get(randomIndex);
@@ -251,7 +251,7 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * If no recommended courses are available, return an empty array.
 		 */
-		if (courseListToRecommend == null || courseListToRecommend.isEmpty()) {
+		if ((courseListToRecommend == null) || courseListToRecommend.isEmpty()) {
 			return new ArrayList<>();
 		}
 		List<Course> courseList = iCourseService.getCoursesById(courseListToRecommend);
@@ -269,7 +269,7 @@ public class RecommendationService implements IRecommendationService {
 			courseResponseDto.setStorageList(storageDTOList);
 			courseResponseDto.setCityId(course.getCity().getId());
 			courseResponseDto.setCityName(course.getCity().getName());
-			if (coursesBasedOnPastSearch != null && coursesBasedOnPastSearch.contains(course.getId())) {
+			if ((coursesBasedOnPastSearch != null) && coursesBasedOnPastSearch.contains(course.getId())) {
 				courseResponseDto.setIsViewed(true);
 			}
 			courseResponseDTOList.add(courseResponseDto);
@@ -330,7 +330,7 @@ public class RecommendationService implements IRecommendationService {
 		List<BigInteger> allSearchCourses = iCourseService.getTopSearchedCoursesByOtherUsers(userId);
 		allSearchCourses.retainAll(facultyWiseCourses);
 		System.out.println("All Course Size -- " + allSearchCourses.size());
-		if (allSearchCourses == null || allSearchCourses.size() == 0) {
+		if ((allSearchCourses == null) || (allSearchCourses.size() == 0)) {
 			allSearchCourses = facultyWiseCourses.size() > 10 ? facultyWiseCourses.subList(0, 9) : facultyWiseCourses;
 		}
 
@@ -367,7 +367,7 @@ public class RecommendationService implements IRecommendationService {
 		UserDto userDto = iUsersService.getUserById(userId);
 		if (userDto == null) {
 			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] { userId }, language));
-		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+		} else if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
 			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present", new Object[] { userId }, language));
 		}
 		/**
@@ -376,7 +376,7 @@ public class RecommendationService implements IRecommendationService {
 		List<BigInteger> coursesBasedOnPastSearch = iCourseService.getTopSearchedCoursesByUsers(userId);
 
 		List<BigInteger> recommendedScholarships = new ArrayList<>();
-		if (coursesBasedOnPastSearch == null || coursesBasedOnPastSearch.isEmpty()) {
+		if ((coursesBasedOnPastSearch == null) || coursesBasedOnPastSearch.isEmpty()) {
 			/**
 			 * If users donot have past search history run the below logic
 			 */
@@ -386,7 +386,7 @@ public class RecommendationService implements IRecommendationService {
 			 * user's country
 			 */
 			List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
-			if (distinctCountryList != null && !distinctCountryList.isEmpty()) {
+			if ((distinctCountryList != null) && !distinctCountryList.isEmpty()) {
 				List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
 				List<BigInteger> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
 				/**
@@ -448,7 +448,10 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get Scholarship details for recommended scholarships
 		 */
-		List<ScholarshipDto> scholarshipDtoList = iScholarshipService.getAllScholarshipDetailsFromId(recommendedScholarships);
+		List<ScholarshipDto> scholarshipDtoList = new ArrayList<>();
+		if (!recommendedScholarships.isEmpty()) {
+			scholarshipDtoList = iScholarshipService.getAllScholarshipDetailsFromId(recommendedScholarships);
+		}
 
 		return scholarshipDtoList;
 	}
@@ -520,7 +523,7 @@ public class RecommendationService implements IRecommendationService {
 		List<BigInteger> instituteList = new ArrayList<>();
 
 		List<BigInteger> topSearchedCourseIds = iCourseService.getTopSearchedCoursesByUsers(userId);
-		if (topSearchedCourseIds != null && !topSearchedCourseIds.isEmpty()) {
+		if ((topSearchedCourseIds != null) && !topSearchedCourseIds.isEmpty()) {
 			List<BigInteger> countryForTopSearchedCourses = iCourseService.getCountryForTopSearchedCourses(topSearchedCourseIds);
 			for (BigInteger countryId : countryForTopSearchedCourses) {
 				List<BigInteger> insituteId = iInstituteService.getTopInstituteIdByCountry(countryId/* , 0L, 1L */);
@@ -538,7 +541,7 @@ public class RecommendationService implements IRecommendationService {
 		 */
 		if (userDto == null) {
 			throw new ValidationException("Invalid User");
-		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+		} else if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
 			throw new ValidationException("User needs to have a citizenship");
 		}
 
@@ -547,7 +550,7 @@ public class RecommendationService implements IRecommendationService {
 		 */
 		Country country = getCountryBasedOnCitizenship(userDto.getCitizenship());
 
-		if (country == null || country.getId() == null) {
+		if ((country == null) || (country.getId() == null)) {
 			throw new ValidationException("Invalid country citizenship for the user");
 		}
 
@@ -652,7 +655,7 @@ public class RecommendationService implements IRecommendationService {
 			requiredCoursesPerCountry.add(new Integer(10));
 			requiredCoursesPerCountry.add(new Integer(20));
 			int i = 0;
-			while (recommendedCourseList.size() < 20 && i < 3) {
+			while ((recommendedCourseList.size() < 20) && (i < 3)) {
 				int courseCountPerCountry = requiredCoursesPerCountry.get(i);
 				recommendedCourseList = new ArrayList<>();
 
@@ -701,7 +704,7 @@ public class RecommendationService implements IRecommendationService {
 			/**
 			 * If we dont get any institutes return an empty list
 			 */
-			if (allInstituteIds == null || allInstituteIds.isEmpty()) {
+			if ((allInstituteIds == null) || allInstituteIds.isEmpty()) {
 				return new ArrayList<>();
 			}
 
@@ -876,7 +879,7 @@ public class RecommendationService implements IRecommendationService {
 		List<ArticleResposeDto> articleResposeDtolist = new ArrayList<>();
 		List<SeekaArticles> seekaArticlelist = new ArrayList<>();
 
-		if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+		if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
 			/**
 			 * If user citizenship doesn't exists use United States as a country by default.
 			 */
@@ -914,9 +917,9 @@ public class RecommendationService implements IRecommendationService {
 			 * If No articles are obtained get the country from the global data student list
 			 * and start displaying the articles
 			 */
-			if (seekaArticlelist.isEmpty() || seekaArticlelist == null) {
+			if (seekaArticlelist.isEmpty() || (seekaArticlelist == null)) {
 				List<GlobalData> globalDataList = iGlobalStudentData.getCountryWiseStudentList(country.getName());
-				if (globalDataList != null && !globalDataList.isEmpty()) {
+				if ((globalDataList != null) && !globalDataList.isEmpty()) {
 
 					/**
 					 * if first globalData destination country has no record for article then it's

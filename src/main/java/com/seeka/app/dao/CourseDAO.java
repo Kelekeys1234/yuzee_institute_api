@@ -1379,8 +1379,8 @@ public class CourseDAO implements ICourseDAO {
 		 *
 		 */
 		if ((null != courseSearchDto.getUserCountryId()) && (courseSearchDto.getUserCountryId().intValue() > 0)) {
-			sqlQuery += " and ((country_id =" + courseSearchDto.getUserCountryId() + " and availbilty = 'D') OR (country_id <>"
-					+ courseSearchDto.getUserCountryId() + " and availbilty = 'I') OR availbilty = 'A')";
+			sqlQuery += " and ((crs.country_id =" + courseSearchDto.getUserCountryId() + " and crs.availbilty = 'D') OR (crs.country_id <>"
+					+ courseSearchDto.getUserCountryId() + " and crs.availbilty = 'I') OR crs.availbilty = 'A')";
 		}
 		return sqlQuery;
 	}
@@ -1413,7 +1413,7 @@ public class CourseDAO implements ICourseDAO {
 				+ " city ci  on ci.id = c.city_id inner join faculty f  on f.id = c.faculty_id "
 				+ " left join institute_service iis  on iis.institute_id = inst.id where c.is_active = 1 and c.deleted_on IS NULL "
 
-				+ " and (  (availbilty = 'D' and country_id = 39790) " + "  OR (availbilty = 'I' and country_id <> 39790) OR availbilty = 'A' ) ";
+				+ " and (  (c.availbilty = 'D' and c.country_id = 39790) " + "  OR (c.availbilty = 'I' and c.country_id <> 39790) OR c.availbilty = 'A' ) ";
 
 		sqlQuery = addCourseFilterCondition(sqlQuery, courseFilter);
 		sqlQuery += " ";
