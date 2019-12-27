@@ -874,7 +874,7 @@ public class CourseDAO implements ICourseDAO {
 		if (sortBy != null) {
 			sqlQuery = sqlQuery + " ORDER BY c." + sortBy + " " + (sortType ? "ASC" : "DESC");
 		} else {
-			sqlQuery = "ORDER BY c.created_on DESC";
+			sqlQuery = sqlQuery + " ORDER BY c.created_on DESC";
 		}
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery);
