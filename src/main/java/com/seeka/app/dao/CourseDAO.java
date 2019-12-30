@@ -1351,6 +1351,13 @@ public class CourseDAO implements ICourseDAO {
 		if ((null != courseSearchDto.getCourseKeys()) && !courseSearchDto.getCourseKeys().isEmpty()) {
 			sqlQuery += " and crs.name in (\"" + courseSearchDto.getCourseKeys().stream().map(String::valueOf).collect(Collectors.joining(",")) + "\")";
 		}
+		/**
+		 * This is added as in advanced search names are to be passed now, so not
+		 * disturbing the already existing code, this condition has been kept in place.
+		 */
+		else if ((null != courseSearchDto.getNames()) && !courseSearchDto.getNames().isEmpty()) {
+			sqlQuery += " and crs.name in (\"" + courseSearchDto.getNames().stream().map(String::valueOf).collect(Collectors.joining(",")) + "\")";
+		}
 
 		if ((null != courseSearchDto.getServiceIds()) && !courseSearchDto.getServiceIds().isEmpty()) {
 			sqlQuery += " and iis.service_id in (" + courseSearchDto.getServiceIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";

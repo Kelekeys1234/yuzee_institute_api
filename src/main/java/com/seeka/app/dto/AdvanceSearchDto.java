@@ -25,6 +25,24 @@ public class AdvanceSearchDto {
 
 	private BigInteger userCountryId;
 
+	private List<String> names;
+
+	/**
+	 *
+	 * @return
+	 */
+	public List<String> getNames() {
+		return names;
+	}
+
+	/**
+	 *
+	 * @param names
+	 */
+	public void setNames(final List<String> names) {
+		this.names = names;
+	}
+
 	/**
 	 *
 	 * @return
