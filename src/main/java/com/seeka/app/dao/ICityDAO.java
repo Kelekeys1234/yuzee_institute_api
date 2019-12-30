@@ -18,7 +18,7 @@ public interface ICityDAO {
 
 	List<City> getAllCityByIds(List<BigInteger> cityIds);
 
-	List<String> getAllCityNames(Integer pageNumber, Integer pageSize, String searchString);
+	List<City> getAllCityNames(Integer pageNumber, Integer pageSize, String searchString);
 
 	Integer getAllCityNamesCount(String searchString);
 

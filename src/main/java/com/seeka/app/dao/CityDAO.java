@@ -98,7 +98,7 @@ public class CityDAO implements ICityDAO {
 	}
 
 	@Override
-	public List<String> getAllCityNames(final Integer startIndex, final Integer pageSize, final String searchString) {
+	public List<City> getAllCityNames(final Integer startIndex, final Integer pageSize, final String searchString) {
 
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(City.class, "city");
@@ -107,7 +107,7 @@ public class CityDAO implements ICityDAO {
 		}
 		criteria.setFirstResult(startIndex);
 		criteria.setMaxResults(pageSize);
-		criteria.setProjection(Projections.property("city.name"));
+		// criteria.setProjection(Projections.property("city.name"));
 		return criteria.list();
 	}
 

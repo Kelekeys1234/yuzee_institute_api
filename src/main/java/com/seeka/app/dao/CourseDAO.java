@@ -874,7 +874,7 @@ public class CourseDAO implements ICourseDAO {
 				+ " left join institute i on c.institute_id = i.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = "
 				+ userId + "  ";
 		if ((sortBy != null) && ("institute_name").contentEquals(sortBy)) {
-			sqlQuery = sqlQuery + " ORDER BY i.name" + (sortType ? "ASC" : "DESC");
+			sqlQuery = sqlQuery + " ORDER BY i.name " + (sortType ? "ASC" : "DESC");
 		} else if (sortBy != null) {
 			sqlQuery = sqlQuery + " ORDER BY c." + sortBy + " " + (sortType ? "ASC" : "DESC");
 		} else {

@@ -95,7 +95,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	public List<String> getAllCityNames(Integer pageNumber, Integer pageSize, String searchString) {
+	public List<City> getAllCityNames(Integer pageNumber, Integer pageSize, String searchString) {
 		return iCityDAO.getAllCityNames(pageNumber, pageSize, searchString);
 	}
 
