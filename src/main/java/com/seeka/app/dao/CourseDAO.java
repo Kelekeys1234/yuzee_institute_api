@@ -49,6 +49,7 @@ import com.seeka.app.dto.GlobalFilterSearchDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.CourseSortBy;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.ConvertionUtil;
 import com.seeka.app.util.PaginationUtil;
@@ -864,14 +865,17 @@ public class CourseDAO implements ICourseDAO {
 
 	@Override
 	public List<CourseRequest> getUserCourse(final BigInteger userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
-			final String sortBy, final boolean sortType) {
+			final String sortBy, final boolean sortType) throws ValidationException {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
-				+ "c.description, c.intake,c.duration, c.language,c.domestic_fee, c.international_fee,"
+				+ "c.description, c.intake,c.duration, c.language,c.usd_domestic_fee, c.usd_international_fee,"
 				+ " c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency  FROM  user_my_course umc inner join course c on umc.course_id = c.id "
-				+ " where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = " + userId + "  ";
-		if (sortBy != null) {
+				+ " left join institute i on c.institute_id = i.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = "
+				+ userId + "  ";
+		if ((sortBy != null) && ("institute_name").contentEquals(sortBy)) {
+			sqlQuery = sqlQuery + " ORDER BY i.name" + (sortType ? "ASC" : "DESC");
+		} else if (sortBy != null) {
 			sqlQuery = sqlQuery + " ORDER BY c." + sortBy + " " + (sortType ? "ASC" : "DESC");
 		} else {
 			sqlQuery = sqlQuery + " ORDER BY c.created_on DESC";
@@ -881,6 +885,13 @@ public class CourseDAO implements ICourseDAO {
 		List<Object[]> rows = query.list();
 		List<CourseRequest> courses = new ArrayList<>();
 		CourseRequest obj = null;
+
+		CurrencyRate curencyRate = currencyRateDao.getCurrencyRate(currencyCode);
+		if ((curencyRate == null) || (curencyRate.getConversionRate() == null) || (curencyRate.getConversionRate() == 0)) {
+			throw new ValidationException("Either No Currency found or Conversion rate is 0 for specified currency - " + currencyCode);
+		}
+		double conversionRate = curencyRate.getConversionRate();
+
 		for (Object[] row : rows) {
 			obj = new CourseRequest();
 			obj.setId(new BigInteger(row[0].toString()));
@@ -911,10 +922,10 @@ public class CourseDAO implements ICourseDAO {
 			 * if (row[10] != null) { obj.setLanguage(row[10].toString()); }
 			 */
 			if (row[11] != null) {
-				obj.setDomasticFee(Double.valueOf(row[11].toString()));
+				obj.setDomasticFee(Double.valueOf(row[11].toString()) * conversionRate);
 			}
 			if (row[12] != null) {
-				obj.setInternationalFee(Double.valueOf(row[12].toString()));
+				obj.setInternationalFee(Double.valueOf(row[12].toString()) * conversionRate);
 			}
 			if (row[13] != null) {
 				obj.setGrades(row[13].toString());

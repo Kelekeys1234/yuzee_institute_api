@@ -24,6 +24,7 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.UserDto;
+import com.seeka.app.exception.ValidationException;
 
 public interface ICourseDAO {
 
@@ -50,7 +51,8 @@ public interface ICourseDAO {
 
 	List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
 
-	List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType);
+	List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType)
+			throws ValidationException;
 
 	int findTotalCountByUserId(BigInteger userId);
 
