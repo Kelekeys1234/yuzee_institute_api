@@ -870,7 +870,8 @@ public class CourseDAO implements ICourseDAO {
 		String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
 				+ "c.description, c.intake,c.duration, c.language,c.usd_domestic_fee, c.usd_international_fee,"
 				+ " c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
-				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency  FROM  user_my_course umc inner join course c on umc.course_id = c.id "
+				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency,"
+				+ " i.latitude, i.longitude  FROM  user_my_course umc inner join course c on umc.course_id = c.id "
 				+ " left join institute i on c.institute_id = i.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = "
 				+ userId + "  ";
 		if ((sortBy != null) && ("institute_name").contentEquals(sortBy)) {
@@ -977,6 +978,14 @@ public class CourseDAO implements ICourseDAO {
 			}
 			if (row[27] != null) {
 				obj.setCurrency(row[27].toString());
+			}
+			if ((row[28] != null) && !row[28].toString().isEmpty()) {
+				obj.setLatitude(Double.parseDouble(row[27].toString()));
+			} else {
+				obj.setLatitude(null);
+			}
+			if ((row[29] != null) && !row[29].toString().isEmpty()) {
+				obj.setLongitude(Double.parseDouble(row[29].toString()));
 			}
 			obj.setEnglishEligibility(getEnglishEligibility(session, new BigInteger(row[0].toString())));
 			courses.add(obj);
