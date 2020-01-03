@@ -137,13 +137,12 @@ public class CommonUtil {
 
 		courseRequest.setName(course.getName());
 		courseRequest.setLink(course.getLink());
-//		courseRequest.setLanguage(course.getLanguage());
 		if (course.getFaculty() != null) {
 			courseRequest.setFacultyId(course.getFaculty().getId());
 			courseRequest.setFacultyName(course.getFaculty().getName());
 		}
-		courseRequest.setDomasticFee(course.getDomesticFee());
-		courseRequest.setInternationalFee(course.getInternationalFee());
+		courseRequest.setDomasticFee(course.getUsdDomasticFee());
+		courseRequest.setInternationalFee(course.getUsdInternationFee());
 		if (course.getCountry() != null) {
 			courseRequest.setCountryId(course.getCountry().getId());
 		}

@@ -224,7 +224,7 @@ public class CourseController {
 		UserDto userDto = iUsersService.getUserById(courseSearchDto.getUserId());
 		if (userDto == null) {
 			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] { courseSearchDto.getUserId() }, language));
-		} else if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
+		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
 			throw new ValidationException(
 					messageByLocalService.getMessage("user.citizenship.not.present", new Object[] { courseSearchDto.getUserId() }, language));
 		}
@@ -233,7 +233,7 @@ public class CourseController {
 		 * Get Country Id Based on citizenship
 		 */
 		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
-		if ((country == null) || (country.getId() == null)) {
+		if (country == null || country.getId() == null) {
 			throw new ValidationException(
 					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
 		}
@@ -278,19 +278,22 @@ public class CourseController {
 		List<YoutubeVideo> youtubeData = new ArrayList<>();
 		if (instituteObj != null) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
 			youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
 		}
 		List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
 		if (!englishCriteriaList.isEmpty()) {
 			courseRequest.setEnglishEligibility(englishCriteriaList);
+		} else {
+			courseRequest.setEnglishEligibility(new ArrayList<>());
 		}
 
 		List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
 		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(id);
 		if (course.getInstitute() != null) {
 			List<InstituteLevel> instituteLevels = instituteLevelService.getAllLevelByInstituteId(course.getInstitute().getId());
-			if ((instituteLevels != null) && !instituteLevels.isEmpty()) {
+			if (instituteLevels != null && !instituteLevels.isEmpty()) {
 				if (instituteLevels.get(0).getLevel() != null) {
 					courseRequest.setLevelId(instituteLevels.get(0).getLevel().getId());
 					courseRequest.setLevelName(instituteLevels.get(0).getLevel().getName());
@@ -360,7 +363,7 @@ public class CourseController {
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByInstitute(instituteId, request);
 
 		Integer maxCount = 0, totalCount = 0;
-		if ((null != courseList) && !courseList.isEmpty()) {
+		if (null != courseList && !courseList.isEmpty()) {
 			totalCount = courseList.get(0).getTotalCount();
 			maxCount = courseList.size();
 		}
@@ -401,7 +404,7 @@ public class CourseController {
 	public ResponseEntity<?> getCouresesByFacultyId(@Valid @PathVariable final BigInteger facultyId) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<CourseResponseDto> courseDtos = courseService.getCouresesByFacultyId(facultyId);
-		if ((courseDtos != null) && !courseDtos.isEmpty()) {
+		if (courseDtos != null && !courseDtos.isEmpty()) {
 			response.put("status", IConstant.SUCCESS_CODE);
 			response.put("message", IConstant.SUCCESS_MESSAGE);
 		} else {
@@ -416,7 +419,7 @@ public class CourseController {
 	public ResponseEntity<?> getCouresesByListOfFacultyId(@Valid @PathVariable final String facultyId) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<CourseResponseDto> courseDtos = courseService.getCouresesByListOfFacultyId(facultyId);
-		if ((courseDtos != null) && !courseDtos.isEmpty()) {
+		if (courseDtos != null && !courseDtos.isEmpty()) {
 			response.put("status", IConstant.SUCCESS_CODE);
 			response.put("message", IConstant.SUCCESS_MESSAGE);
 		} else {
@@ -556,7 +559,7 @@ public class CourseController {
 		UserDto userDto = iUsersService.getUserById(userId);
 		if (userDto == null) {
 			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] { userId }, language));
-		} else if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
+		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
 			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present", new Object[] { userId }, language));
 		}
 
@@ -564,7 +567,7 @@ public class CourseController {
 		 * Get Country Id Based on citizenship
 		 */
 		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
-		if ((country == null) || (country.getId() == null)) {
+		if (country == null || country.getId() == null) {
 			throw new ValidationException(
 					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
 		}
@@ -594,20 +597,6 @@ public class CourseController {
 		return ResponseEntity.accepted().body(courseService.autoSearchByCharacter(searchKey));
 	}
 
-	@GetMapping(value = "/myCourse/filter")
-	public ResponseEntity<?> getUserListForMyCourseFilter(@RequestHeader(required = false) final String language,
-			@RequestParam(name = "courseId", required = false) final BigInteger courseId,
-			@RequestParam(name = "facultyId", required = false) final BigInteger facultyId,
-			@RequestParam(name = "instituteId", required = false) final BigInteger instituteId,
-			@RequestParam(name = "countryId", required = false) final BigInteger countryId,
-			@RequestParam(name = "cityId", required = false) final BigInteger cityId) throws ValidationException {
-		if ((courseId == null) && (facultyId == null) && (instituteId == null) && (countryId == null) && (cityId == null)) {
-			throw new ValidationException(messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));
-		}
-		List<Long> userList = courseService.getUserListBasedOnLikedCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
-		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK).create();
-	}
-
 	@GetMapping(value = "/viewCourse/filter")
 	public ResponseEntity<?> getUserListForUserWatchCourseFilter(@RequestHeader(required = false) final String language,
 			@RequestParam(name = "courseId", required = false) final BigInteger courseId,
@@ -615,7 +604,7 @@ public class CourseController {
 			@RequestParam(name = "instituteId", required = false) final BigInteger instituteId,
 			@RequestParam(name = "countryId", required = false) final BigInteger countryId,
 			@RequestParam(name = "cityId", required = false) final BigInteger cityId) throws ValidationException {
-		if ((courseId == null) && (facultyId == null) && (instituteId == null) && (countryId == null) && (cityId == null)) {
+		if (courseId == null && facultyId == null && instituteId == null && countryId == null && cityId == null) {
 			throw new ValidationException(messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));
 		}
 		List<Long> userList = courseService.getUserListForUserWatchCourseFilter(courseId, instituteId, facultyId, countryId, cityId);

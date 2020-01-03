@@ -26,6 +26,10 @@ public class AdvanceSearchDto {
 	private BigInteger userCountryId;
 
 	private List<String> names;
+	private String searchKeyword;
+	private String partFull;
+	private String deliveryMethod;
+	private String instituteId;
 
 	/**
 	 *
@@ -283,6 +287,38 @@ public class AdvanceSearchDto {
 		this.cityIds = cityIds;
 	}
 
+	public String getSearchKeyword() {
+		return searchKeyword;
+	}
+
+	public void setSearchKeyword(final String searchKeyword) {
+		this.searchKeyword = searchKeyword;
+	}
+
+	public String getPartFull() {
+		return partFull;
+	}
+
+	public void setPartFull(final String partFull) {
+		this.partFull = partFull;
+	}
+
+	public String getDeliveryMethod() {
+		return deliveryMethod;
+	}
+
+	public void setDeliveryMethod(final String deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
+	}
+
+	public String getInstituteId() {
+		return instituteId;
+	}
+
+	public void setInstituteId(final String instituteId) {
+		this.instituteId = instituteId;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -290,7 +326,10 @@ public class AdvanceSearchDto {
 				.append(", countryIds=").append(countryIds).append(", courseKeys=").append(courseKeys).append(", cityIds=").append(cityIds).append(", minCost=")
 				.append(minCost).append(", maxCost=").append(maxCost).append(", minDuration=").append(minDuration).append(", maxDuration=").append(maxDuration)
 				.append(", sortAsscending=").append(sortAsscending).append(", sortBy=").append(sortBy).append(", maxSizePerPage=").append(maxSizePerPage)
-				.append(", pageNumber=").append(pageNumber).append(", currencyCode=").append(currencyCode).append(", userId=").append(userId).append("]");
+				.append(", pageNumber=").append(pageNumber).append(", currencyCode=").append(currencyCode).append(", userId=").append(userId)
+				.append(", userCountryId=").append(userCountryId).append(", names=").append(names).append(", searchKeyword=").append(searchKeyword)
+				.append(", partFull=").append(partFull).append(", deliveryMethod=").append(deliveryMethod).append(", instituteId=").append(instituteId)
+				.append("]");
 		return builder.toString();
 	}
 

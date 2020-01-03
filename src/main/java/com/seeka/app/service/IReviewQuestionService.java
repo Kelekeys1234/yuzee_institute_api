@@ -15,7 +15,7 @@ public interface IReviewQuestionService {
 
 	ReviewQuestionsDto getReviewQuestion(BigInteger questionId) throws ValidationException;
 
-	ReviewQuestions deleteReviewQuestion(BigInteger questionId);
+	ReviewQuestions deleteReviewQuestion(BigInteger questionId) throws ValidationException;
 
 	List<ReviewQuestions> getReviewQuestionList();
 

@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.validation.Valid;
-
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
@@ -31,10 +29,6 @@ import com.seeka.app.exception.ValidationException;
 
 public interface ICourseService {
 
-	void save(Course obj);
-
-	void update(Course obj);
-
 	Course get(BigInteger id);
 
 	List<Course> getAll();
@@ -50,18 +44,18 @@ public interface ICourseService {
 
 	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
-	BigInteger save(@Valid CourseRequest courseDto) throws ValidationException;
+	BigInteger save(CourseRequest courseDto) throws ValidationException;
 
 	Map<String, Object> getAllCourse(Integer pageNumber, Integer pageSize);
 
-	Map<String, Object> deleteCourse(@Valid BigInteger courseId);
+	Map<String, Object> deleteCourse(BigInteger courseId);
 
-	Map<String, Object> addUserCourses(@Valid UserCourse userCourse);
+	Map<String, Object> addUserCourses(UserCourse userCourse);
 
 	Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, Boolean sortAsscending)
 			throws ValidationException;
 
-	Map<String, Object> addUserCompareCourse(@Valid UserCourse userCourse);
+	Map<String, Object> addUserCompareCourse(UserCourse userCourse);
 
 	Map<String, Object> getUserCompareCourse(BigInteger userId);
 
@@ -77,6 +71,14 @@ public interface ICourseService {
 
 	Map<String, Object> getAllCourse();
 
+	/**
+	 * Update Course based on request
+	 *
+	 * @param courseDto
+	 * @param id
+	 * @return
+	 * @throws ValidationException
+	 */
 	BigInteger update(CourseRequest courseDto, BigInteger id) throws ValidationException;
 
 	Map<String, Object> courseFilter(CourseFilterDto courseFilter);
@@ -116,9 +118,6 @@ public interface ICourseService {
 	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
 
 	List<BigInteger> getCountryForTopSearchedCourses(List<BigInteger> topSearchedCourseIds) throws ValidationException;
-
-	List<Long> getUserListBasedOnLikedCourseOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId,
-			BigInteger cityId);
 
 	List<BigInteger> courseIdsForCountry(final Country country);
 

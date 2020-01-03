@@ -24,8 +24,8 @@ public class InstituteResponseDto implements Serializable {
 	private String openingFrom;
 	private String openingTo;
 	private Integer totalStudent;
-	private String latitute;
-	private String longitude;
+	private Double latitute;
+	private Double longitude;
 	private String phoneNumber;
 	private String email;
 	private String address;
@@ -106,19 +106,19 @@ public class InstituteResponseDto implements Serializable {
 		this.aboutUs = aboutUs;
 	}
 
-	public String getLatitute() {
+	public Double getLatitute() {
 		return latitute;
 	}
 
-	public void setLatitute(final String latitute) {
+	public void setLatitute(final Double latitute) {
 		this.latitute = latitute;
 	}
 
-	public String getLongitude() {
+	public Double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(final String longitude) {
+	public void setLongitude(final Double longitude) {
 		this.longitude = longitude;
 	}
 
@@ -334,36 +334,36 @@ public class InstituteResponseDto implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((aboutUs == null) ? 0 : aboutUs.hashCode());
-		result = (prime * result) + ((address == null) ? 0 : address.hashCode());
-		result = (prime * result) + ((campusType == null) ? 0 : campusType.hashCode());
-		result = (prime * result) + ((cityId == null) ? 0 : cityId.hashCode());
-		result = (prime * result) + ((cityName == null) ? 0 : cityName.hashCode());
-		result = (prime * result) + ((countryId == null) ? 0 : countryId.hashCode());
-		result = (prime * result) + ((countryName == null) ? 0 : countryName.hashCode());
-		result = (prime * result) + ((distance == null) ? 0 : distance.hashCode());
-		result = (prime * result) + ((domesticRanking == null) ? 0 : domesticRanking.hashCode());
-		result = (prime * result) + ((email == null) ? 0 : email.hashCode());
-		result = (prime * result) + ((id == null) ? 0 : id.hashCode());
-		result = (prime * result) + ((instituteType == null) ? 0 : instituteType.hashCode());
-		result = (prime * result) + ((isActive == null) ? 0 : isActive.hashCode());
-		result = (prime * result) + ((latitute == null) ? 0 : latitute.hashCode());
-		result = (prime * result) + ((location == null) ? 0 : location.hashCode());
-		result = (prime * result) + ((longitude == null) ? 0 : longitude.hashCode());
-		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
-		result = (prime * result) + ((openingFrom == null) ? 0 : openingFrom.hashCode());
-		result = (prime * result) + ((openingTo == null) ? 0 : openingTo.hashCode());
-		result = (prime * result) + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());
-		result = (prime * result) + ((stars == null) ? 0 : stars.hashCode());
-		result = (prime * result) + ((storageList == null) ? 0 : storageList.hashCode());
-		result = (prime * result) + ((totalAvailableJobs == null) ? 0 : totalAvailableJobs.hashCode());
-		result = (prime * result) + ((totalCount == null) ? 0 : totalCount.hashCode());
-		result = (prime * result) + ((totalCourses == null) ? 0 : totalCourses.hashCode());
-		result = (prime * result) + ((totalStudent == null) ? 0 : totalStudent.hashCode());
-		result = (prime * result) + ((updatedOn == null) ? 0 : updatedOn.hashCode());
-		result = (prime * result) + ((visaRequirement == null) ? 0 : visaRequirement.hashCode());
-		result = (prime * result) + ((website == null) ? 0 : website.hashCode());
-		result = (prime * result) + ((worldRanking == null) ? 0 : worldRanking.hashCode());
+		result = prime * result + (aboutUs == null ? 0 : aboutUs.hashCode());
+		result = prime * result + (address == null ? 0 : address.hashCode());
+		result = prime * result + (campusType == null ? 0 : campusType.hashCode());
+		result = prime * result + (cityId == null ? 0 : cityId.hashCode());
+		result = prime * result + (cityName == null ? 0 : cityName.hashCode());
+		result = prime * result + (countryId == null ? 0 : countryId.hashCode());
+		result = prime * result + (countryName == null ? 0 : countryName.hashCode());
+		result = prime * result + (distance == null ? 0 : distance.hashCode());
+		result = prime * result + (domesticRanking == null ? 0 : domesticRanking.hashCode());
+		result = prime * result + (email == null ? 0 : email.hashCode());
+		result = prime * result + (id == null ? 0 : id.hashCode());
+		result = prime * result + (instituteType == null ? 0 : instituteType.hashCode());
+		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
+		result = prime * result + (latitute == null ? 0 : latitute.hashCode());
+		result = prime * result + (location == null ? 0 : location.hashCode());
+		result = prime * result + (longitude == null ? 0 : longitude.hashCode());
+		result = prime * result + (name == null ? 0 : name.hashCode());
+		result = prime * result + (openingFrom == null ? 0 : openingFrom.hashCode());
+		result = prime * result + (openingTo == null ? 0 : openingTo.hashCode());
+		result = prime * result + (phoneNumber == null ? 0 : phoneNumber.hashCode());
+		result = prime * result + (stars == null ? 0 : stars.hashCode());
+		result = prime * result + (storageList == null ? 0 : storageList.hashCode());
+		result = prime * result + (totalAvailableJobs == null ? 0 : totalAvailableJobs.hashCode());
+		result = prime * result + (totalCount == null ? 0 : totalCount.hashCode());
+		result = prime * result + (totalCourses == null ? 0 : totalCourses.hashCode());
+		result = prime * result + (totalStudent == null ? 0 : totalStudent.hashCode());
+		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
+		result = prime * result + (visaRequirement == null ? 0 : visaRequirement.hashCode());
+		result = prime * result + (website == null ? 0 : website.hashCode());
+		result = prime * result + (worldRanking == null ? 0 : worldRanking.hashCode());
 		return result;
 	}
 

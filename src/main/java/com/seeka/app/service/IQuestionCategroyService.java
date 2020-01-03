@@ -8,7 +8,7 @@ import com.seeka.app.exception.ValidationException;
 
 public interface IQuestionCategroyService {
 
-	QuestionCategroy addQuestionCategory(QuestionCategroy questionCategroy);
+	QuestionCategroy addQuestionCategory(QuestionCategroy questionCategroy) throws ValidationException;
 
 	List<QuestionCategroy> getQuestionCategoryList();
 

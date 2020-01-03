@@ -14,4 +14,6 @@ public interface IQuestionCategroyDao {
 	QuestionCategroy getQuestionCategory(BigInteger questionCategoryId, Boolean isActive);
 
 	void update(QuestionCategroy questionCategroy);
+
+	QuestionCategroy getQuestionCategoryName(String categoryName, Boolean isActive);
 }

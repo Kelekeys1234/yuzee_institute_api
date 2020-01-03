@@ -170,9 +170,9 @@ public class InstituteDAO implements IInstituteDAO {
 		Session session = sessionFactory.getCurrentSession();
 
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
-				+ "ctry.name as countryName,count(c.id) as courses, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars "
+				+ "ctry.name as countryName,count(c.id) as courses, inst.world_ranking as world_ranking, MIN(c.stars) as stars "
 				+ " ,ctry.id as countryId, ci.id as cityId,inst.updated_on as updatedOn, it.name as instituteType, inst.campus_type,"
-				+ " inst.is_active, inst.domestic_ranking "
+				+ " inst.is_active, inst.domestic_ranking, inst.latitute,inst.longitute "
 				+ " from institute inst  inner join country ctry  on ctry.id = inst.country_id inner join city ci  on ci.id = inst.city_id "
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id inner join institute_type it on inst.institute_type_id=it.id where 1=1 ";
@@ -273,6 +273,12 @@ public class InstituteDAO implements IInstituteDAO {
 			instituteResponseDto.setIsActive(Boolean.valueOf(String.valueOf(row[12])));
 			if (row[13] != null) {
 				instituteResponseDto.setDomesticRanking(Integer.valueOf(String.valueOf(row[13])));
+			}
+			if (row[14] != null) {
+				instituteResponseDto.setLatitute(Double.valueOf(row[14].toString()));
+			}
+			if (row[15] != null) {
+				instituteResponseDto.setLongitude(Double.valueOf(row[15].toString()));
 			}
 			list.add(instituteResponseDto);
 		}

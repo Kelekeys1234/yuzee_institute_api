@@ -20,7 +20,11 @@ public class QuestionCategroyService implements IQuestionCategroyService {
 	private IQuestionCategroyDao iQuestionCategroyDao;
 
 	@Override
-	public QuestionCategroy addQuestionCategory(final QuestionCategroy questionCategroy) {
+	public QuestionCategroy addQuestionCategory(final QuestionCategroy questionCategroy) throws ValidationException {
+		QuestionCategroy questionCategroy2 = iQuestionCategroyDao.getQuestionCategoryName(questionCategroy.getCategoryName(), true);
+		if (questionCategroy2 != null) {
+			throw new ValidationException("Category is already exists");
+		}
 		questionCategroy.setCreatedBy("API");
 		questionCategroy.setCreatedOn(new Date());
 		questionCategroy.setIsActive(true);

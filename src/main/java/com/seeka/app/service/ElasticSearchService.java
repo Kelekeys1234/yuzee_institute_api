@@ -75,6 +75,14 @@ public class ElasticSearchService {
 		}
 	}
 
+	/**
+	 * Save Courses on Elastic search using API.
+	 *
+	 * @param elasticSearchIndex
+	 * @param type
+	 * @param courseList
+	 * @param elasticSearchName
+	 */
 	public void saveCourseOnElasticSearch(final String elasticSearchIndex, final String type, final List<CourseDTOElasticSearch> courseList,
 			final String elasticSearchName) {
 		for (CourseDTOElasticSearch courseElasticSearch : courseList) {

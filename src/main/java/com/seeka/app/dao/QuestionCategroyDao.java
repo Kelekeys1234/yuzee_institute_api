@@ -49,4 +49,15 @@ public class QuestionCategroyDao implements IQuestionCategroyDao {
 		return (QuestionCategroy) criteria.uniqueResult();
 	}
 
+	@Override
+	public QuestionCategroy getQuestionCategoryName(final String categoryName, final Boolean isActive) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(QuestionCategroy.class, "questionCategory");
+		if (isActive != null) {
+			criteria.add(Restrictions.and(Restrictions.eq("questionCategory.isActive", isActive)));
+		}
+		criteria.add(Restrictions.and(Restrictions.eq("questionCategory.categoryName", categoryName)));
+		return (QuestionCategroy) criteria.uniqueResult();
+	}
+
 }

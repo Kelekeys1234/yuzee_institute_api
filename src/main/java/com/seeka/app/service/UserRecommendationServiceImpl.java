@@ -368,8 +368,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		}
 
 		/**
-		 * if required courses not found then other courses find based on same faculty,
-		 * same country but different city
+		 * if required courses not found then other courses find based on same country
+		 * but different city
 		 *
 		 */
 		if (!courseList.isEmpty() && courseList.size() <= pageSize) {

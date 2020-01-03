@@ -109,6 +109,9 @@ public class ReviewQuestionService implements IReviewQuestionService {
 	@Override
 	public ReviewQuestionsDto getReviewQuestion(final BigInteger questionId) throws ValidationException {
 		ReviewQuestions reviewQuestions = iReviewQuestionDao.getReviewQuestion(questionId);
+		if (reviewQuestions == null) {
+			throw new ValidationException("review question not found for id : " + questionId);
+		}
 		ReviewQuestionsDto reviewQuestionsDto = new ReviewQuestionsDto();
 		BeanUtils.copyProperties(reviewQuestions, reviewQuestionsDto);
 		QuestionCategroy questionCategroy = iQuestionCategroyService.getQuestionCategory(reviewQuestionsDto.getQuestionCategoryId(), true);
@@ -120,8 +123,13 @@ public class ReviewQuestionService implements IReviewQuestionService {
 	}
 
 	@Override
-	public ReviewQuestions deleteReviewQuestion(final BigInteger questionId) {
+	public ReviewQuestions deleteReviewQuestion(final BigInteger questionId) throws ValidationException {
 		ReviewQuestions reviewQuestions = iReviewQuestionDao.getReviewQuestion(questionId);
+		if (reviewQuestions == null) {
+			throw new ValidationException("review question not found for id : " + questionId);
+		} else if (reviewQuestions.getIsActive() != null && !reviewQuestions.getIsActive()) {
+			throw new ValidationException("review question already deleted");
+		}
 		reviewQuestions.setUpdatedBy("API");
 		reviewQuestions.setUpdatedOn(new Date());
 		reviewQuestions.setDeletedOn(new Date());
