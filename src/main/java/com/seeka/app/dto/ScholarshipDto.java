@@ -11,6 +11,7 @@ public class ScholarshipDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 2633639341414502096L;
+	private BigInteger id;
 	private String name;
 	private String offeredBy;
 	private String description;
@@ -33,6 +34,14 @@ public class ScholarshipDto implements Serializable {
 	private List<String> intakes;
 	private List<String> languages;
 	private String requirements;
+
+	public BigInteger getId() {
+		return id;
+	}
+
+	public void setId(final BigInteger id) {
+		this.id = id;
+	}
 
 	public String getOfferedBy() {
 		return offeredBy;
