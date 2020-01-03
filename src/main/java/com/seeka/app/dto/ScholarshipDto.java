@@ -39,6 +39,15 @@ public class ScholarshipDto implements Serializable {
 	 * Added to display levelName in front end.
 	 */
 	private String levelName;
+	private String levelCode;
+
+	public String getLevelCode() {
+		return levelCode;
+	}
+
+	public void setLevelCode(final String levelCode) {
+		this.levelCode = levelCode;
+	}
 
 	public String getLevelName() {
 		return levelName;

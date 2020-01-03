@@ -277,6 +277,7 @@ public class ScholarshipService implements IScholarshipService {
 			scholarshipDto.setCountryId(scholarship.getCountry() != null ? scholarship.getCountry().getId() : null);
 			scholarshipDto.setLevelId(scholarship.getLevel() != null ? scholarship.getLevel().getId() : null);
 			scholarshipDto.setLevelName(scholarship.getLevel() != null ? scholarship.getLevel().getName() : null);
+			scholarshipDto.setLevelCode(scholarship.getLevel() != null ? scholarship.getLevel().getCode() : null);
 			scholarshipDto.setInstituteId(scholarship.getInstitute() != null ? scholarship.getInstitute().getId() : null);
 			scholarshipDtoList.add(scholarshipDto);
 		}
