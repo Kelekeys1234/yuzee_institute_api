@@ -308,7 +308,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setDomesticFee(course.getDomesticFee());
 			courseResponseDto.setLocation(course.getCity().getName() + "," + course.getCountry().getName());
 			courseResponseDto.setRequirements(course.getRemarks());
-			courseResponseDto.setStars(course.getStars());
+			courseResponseDto.setStars(Double.valueOf(course.getStars()));
 			courseResponseDto.setCourseRanking(course.getWorldRanking());
 			courseResponseDto.setLanguageShortKey(course.getLanguage());
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null,

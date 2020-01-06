@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,6 +182,11 @@ public class UserReviewService implements IUserReviewService {
 		userReviewResultDto.setRatings(resultList);
 		userReviewResultDto.setReviewStar(iUserReviewDao.getReviewStar(entityId, entityType));
 		return userReviewResultDto;
+	}
+
+	@Override
+	public Map<BigInteger, Double> getUserAverageReviewBasedOnDataList(final List<BigInteger> entityIdList, final String entityType) {
+		return iUserReviewDao.getUserAverageReviewList(entityIdList, entityType);
 	}
 
 	@Override

@@ -1,8 +1,17 @@
 package com.seeka.app.exception;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class Test {
 
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws ParseException {
+		String da = "2019-03-29";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate date = LocalDate.parse(da, formatter);
+		System.out.println(date);
+
 		A a = new A();
 		a.setX(10);
 		System.out.println("exe1 ::" + a.getX());

@@ -2,6 +2,7 @@ package com.seeka.app.dao;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 import com.seeka.app.bean.UserReview;
 import com.seeka.app.bean.UserReviewRating;
@@ -29,4 +30,6 @@ public interface IUserReviewDao {
 	Double getReviewStar(BigInteger entityId, String entityType);
 
 	int getUserReviewCount(BigInteger userId, BigInteger entityId, String entityType, String searchKeyword);
+
+	Map<BigInteger, Double> getUserAverageReviewList(List<BigInteger> entityIdList, String entityType);
 }

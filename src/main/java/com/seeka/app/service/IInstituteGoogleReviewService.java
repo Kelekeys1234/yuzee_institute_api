@@ -2,17 +2,18 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
-import com.seeka.app.bean.InstituteGoogleReview;
+import com.seeka.app.dto.InstituteGoogleReviewDto;
 
 public interface IInstituteGoogleReviewService {
 
-	void addInstituteGoogleReview();
+	List<InstituteGoogleReviewDto> getInstituteGoogleReview(BigInteger instituteId, Integer startIndex, Integer pageSize);
 
-	InstituteGoogleReview getInstituteGoogleReviewDetail(BigInteger instituteId);
+	int getCountInstituteGoogleReview(BigInteger instituteId);
 
-	List<InstituteGoogleReview> getInstituteGoogleReview(Integer pageNumber, Integer pageSize);
+	Double getInstituteAvgGoogleReview(BigInteger instituteId);
 
-	int getCountOfGooglereview();
+	Map<BigInteger, Double> getInstituteAvgGoogleReviewForList(List<BigInteger> instituteIdList);
 
 }

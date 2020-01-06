@@ -9,7 +9,7 @@ public class CourseResponseDto {
 	private BigInteger id;
 	private String name;
 	private Integer courseRanking;
-	private Integer stars;
+	private Double stars;
 	private Double duration;
 	private String durationTime;
 
@@ -96,11 +96,11 @@ public class CourseResponseDto {
 		this.courseRanking = courseRanking;
 	}
 
-	public Integer getStars() {
+	public Double getStars() {
 		return stars;
 	}
 
-	public void setStars(final Integer stars) {
+	public void setStars(final Double stars) {
 		this.stars = stars;
 	}
 

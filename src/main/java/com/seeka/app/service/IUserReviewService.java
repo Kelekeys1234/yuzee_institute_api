@@ -2,6 +2,7 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 import com.seeka.app.bean.UserReview;
 import com.seeka.app.dto.UserReviewDto;
@@ -31,5 +32,7 @@ public interface IUserReviewService {
 	List<UserReviewResultDto> getUserReviewList() throws ValidationException;
 
 	int getUserReviewCount(BigInteger userId, BigInteger entityId, String entityType, String searchKeyword);
+
+	Map<BigInteger, Double> getUserAverageReviewBasedOnDataList(List<BigInteger> entityIdList, String entityType);
 
 }

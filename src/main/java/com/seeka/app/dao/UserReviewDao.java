@@ -1,7 +1,9 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -140,6 +142,31 @@ public class UserReviewDao implements IUserReviewDao {
 		}
 		crit.setProjection(Projections.rowCount());
 		return ((Long) crit.uniqueResult()).intValue();
+	}
+
+	@Override
+	public Map<BigInteger, Double> getUserAverageReviewList(final List<BigInteger> entityIdList, final String entityType) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(UserReview.class, "userReview");
+		if (entityIdList != null && !entityIdList.isEmpty() && entityType != null) {
+			criteria.add(Restrictions.in("userReview.entityId", entityIdList));
+			criteria.add(Restrictions.eq("userReview.entityType", entityType));
+		}
+
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.groupProperty("userReview.entityId"));
+		projList.add(Projections.groupProperty("userReview.entityType"));
+		projList.add(Projections.property("userReview.entityId"), "entityId");
+		projList.add(Projections.avg("userReview.reviewStar"), "reviewStar");
+		criteria.setProjection(projList);
+		List<Object> objectList = criteria.list();
+		Map<BigInteger, Double> resultMap = new HashMap<>();
+		for (Object object : objectList) {
+			Object[] obj1 = (Object[]) object;
+			resultMap.put((BigInteger) obj1[0], (Double) obj1[3]);
+		}
+		return resultMap;
+
 	}
 
 }

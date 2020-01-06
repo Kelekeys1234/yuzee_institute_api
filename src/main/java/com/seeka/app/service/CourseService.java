@@ -141,6 +141,12 @@ public class CourseService implements ICourseService {
 	@Autowired
 	private ITop10CourseService iTop10CourseService;
 
+	@Autowired
+	private IInstituteGoogleReviewService iInstituteGoogleReviewService;
+
+	@Autowired
+	private IUserReviewService iUserReviewService;
+
 	@Override
 	public Course get(final BigInteger id) {
 		return iCourseDAO.get(id);
@@ -842,6 +848,10 @@ public class CourseService implements ICourseService {
 				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), ImageCategory.INSTITUTE.name(), null, "en");
 		List<CourseDeliveryMethod> courseDeliveryMethods = iCourseDAO.getCourseDeliveryMethodBasedOnCourseIdList(courseIds);
 		List<CourseIntake> courseIntake = iCourseDAO.getCourseIntakeBasedOnCourseIdList(courseIds);
+		Map<BigInteger, Double> googleReviewMap = iInstituteGoogleReviewService
+				.getInstituteAvgGoogleReviewForList(courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
+		Map<BigInteger, Double> seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(
+				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), "INSTITUTE");
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
 			if (storageDTOList != null && !storageDTOList.isEmpty()) {
 				List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))
@@ -874,8 +884,42 @@ public class CourseService implements ICourseService {
 			} else {
 				courseResponseDto.setDeliveryMethod(new ArrayList<>());
 			}
+
+			calculateAverageRating(googleReviewMap, seekaReviewMap, courseResponseDto);
+
 		}
 		return courseResponseDtos;
+	}
+
+	private void calculateAverageRating(Map<BigInteger, Double> googleReviewMap, Map<BigInteger, Double> seekaReviewMap, CourseResponseDto courseResponseDto) {
+		Double courseStars = 0d;
+		Double googleReview = 0d;
+		Double seekaReview = 0d;
+		int count = 0;
+		if (courseResponseDto.getStars() != null) {
+			courseStars = courseResponseDto.getStars();
+			count++;
+		}
+		if (googleReviewMap.get(courseResponseDto.getInstituteId()) != null) {
+			googleReview = googleReviewMap.remove(courseResponseDto.getInstituteId());
+			count++;
+		}
+		if (seekaReviewMap.get(courseResponseDto.getInstituteId()) != null) {
+			seekaReview = seekaReviewMap.remove(courseResponseDto.getInstituteId());
+			count++;
+		}
+		System.out.println("course Rating" + courseResponseDto.getStars());
+		System.out.println("course Google Rating" + googleReview);
+		System.out.println("course Seeka Rating" + seekaReview);
+
+		Double rating = Double.sum(courseStars, googleReview);
+		if (count != 0) {
+			Double finalRating = Double.sum(rating, seekaReview);
+			courseResponseDto.setStars(finalRating / count);
+			System.out.println("final Rating" + finalRating);
+		} else {
+			courseResponseDto.setStars(0d);
+		}
 	}
 
 	@Override
