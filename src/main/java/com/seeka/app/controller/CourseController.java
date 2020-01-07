@@ -279,7 +279,8 @@ public class CourseController {
 				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
 		Map<BigInteger, Double> seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(Arrays.asList(courseRequest.getInstituteId()),
 				"INSTITUTE");
-		courseService.calculateAverageRating(googleReviewMap, seekaReviewMap, Double.valueOf(courseRequest.getStars()), courseRequest.getInstituteId());
+		courseRequest.setStars(String.valueOf(courseService.calculateAverageRating(googleReviewMap, seekaReviewMap, Double.valueOf(courseRequest.getStars()),
+				courseRequest.getInstituteId())));
 		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
 		courseRequest.setDeliveryMethod(
 				courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream().map(CourseDeliveryMethod::getName).collect(Collectors.toList()));
