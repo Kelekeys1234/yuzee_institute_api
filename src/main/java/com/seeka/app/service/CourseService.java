@@ -885,40 +885,42 @@ public class CourseService implements ICourseService {
 				courseResponseDto.setDeliveryMethod(new ArrayList<>());
 			}
 
-			calculateAverageRating(googleReviewMap, seekaReviewMap, courseResponseDto);
+			courseResponseDto
+					.setStars(calculateAverageRating(googleReviewMap, seekaReviewMap, courseResponseDto.getStars(), courseResponseDto.getInstituteId()));
 
 		}
 		return courseResponseDtos;
 	}
 
-	private void calculateAverageRating(Map<BigInteger, Double> googleReviewMap, Map<BigInteger, Double> seekaReviewMap, CourseResponseDto courseResponseDto) {
+	@Override
+	public double calculateAverageRating(final Map<BigInteger, Double> googleReviewMap, final Map<BigInteger, Double> seekaReviewMap, final Double courseStar,
+			final BigInteger instituteId) {
 		Double courseStars = 0d;
 		Double googleReview = 0d;
 		Double seekaReview = 0d;
 		int count = 0;
-		if (courseResponseDto.getStars() != null) {
-			courseStars = courseResponseDto.getStars();
+		if (courseStar != null) {
+			courseStars = courseStar;
 			count++;
 		}
-		if (googleReviewMap.get(courseResponseDto.getInstituteId()) != null) {
-			googleReview = googleReviewMap.remove(courseResponseDto.getInstituteId());
+		if (googleReviewMap.get(instituteId) != null) {
+			googleReview = googleReviewMap.get(instituteId);
 			count++;
 		}
-		if (seekaReviewMap.get(courseResponseDto.getInstituteId()) != null) {
-			seekaReview = seekaReviewMap.remove(courseResponseDto.getInstituteId());
+		if (seekaReviewMap.get(instituteId) != null) {
+			seekaReview = seekaReviewMap.get(instituteId);
 			count++;
 		}
-		System.out.println("course Rating" + courseResponseDto.getStars());
+		System.out.println("course Rating" + courseStar);
 		System.out.println("course Google Rating" + googleReview);
 		System.out.println("course Seeka Rating" + seekaReview);
 
 		Double rating = Double.sum(courseStars, googleReview);
 		if (count != 0) {
 			Double finalRating = Double.sum(rating, seekaReview);
-			courseResponseDto.setStars(finalRating / count);
-			System.out.println("final Rating" + finalRating);
+			return finalRating / count;
 		} else {
-			courseResponseDto.setStars(0d);
+			return 0d;
 		}
 	}
 

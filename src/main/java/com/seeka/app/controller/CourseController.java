@@ -2,6 +2,7 @@ package com.seeka.app.controller;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +62,7 @@ import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IEnrollmentService;
+import com.seeka.app.service.IInstituteGoogleReviewService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IStorageService;
 import com.seeka.app.service.IUserReviewService;
@@ -120,6 +122,9 @@ public class CourseController {
 
 	@Autowired
 	private IUserReviewService iUserReviewService;
+
+	@Autowired
+	private IInstituteGoogleReviewService iInstituteGoogleReviewService;
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException {
@@ -270,6 +275,11 @@ public class CourseController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
+		Map<BigInteger, Double> googleReviewMap = iInstituteGoogleReviewService
+				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
+		Map<BigInteger, Double> seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(Arrays.asList(courseRequest.getInstituteId()),
+				"INSTITUTE");
+		courseService.calculateAverageRating(googleReviewMap, seekaReviewMap, Double.valueOf(courseRequest.getStars()), courseRequest.getInstituteId());
 		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
 		courseRequest.setDeliveryMethod(
 				courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream().map(CourseDeliveryMethod::getName).collect(Collectors.toList()));
