@@ -340,7 +340,7 @@ public class CourseController {
 		/**
 		 * Add User Review to the course info response
 		 */
-		List<UserReviewResultDto> userReviewResultList = iUserReviewService.getUserReviewBasedOnData(id, "COURSE", 1, 5, null, null);
+		List<UserReviewResultDto> userReviewResultList = iUserReviewService.getUserReviewBasedOnData(id, "COURSE", 0, 5, null, null);
 		courseRequest.setUserReviewResult(userReviewResultList);
 
 		response.put("status", HttpStatus.OK.value());
