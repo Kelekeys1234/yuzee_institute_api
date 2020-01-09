@@ -1,8 +1,7 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -23,13 +22,14 @@ public class CategoryDAO implements ICategoryDAO {
     @Override
     public List<CategoryDto> getAllCategories() {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("SELECT c.id, c.name as name FROM category c");
+        Query query = session.createSQLQuery("SELECT c.id, c.name as name FROM category c where c.active=1 ORDER BY c.name");
         List<Object[]> rows = query.list();
+        
         List<CategoryDto> categoryDtos = new ArrayList<CategoryDto>();
         CategoryDto categoryDto = null;
         for (Object[] row : rows) {
             categoryDto = new CategoryDto();
-            categoryDto.setId(UUID.fromString((row[0].toString())));
+            categoryDto.setId(new BigInteger((row[0].toString())));
             categoryDto.setName(row[1].toString());
             categoryDtos.add(categoryDto);
         }
@@ -37,7 +37,7 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
-    public CategoryDto getCategoryById(UUID categoryId) {
+    public CategoryDto getCategoryById(BigInteger categoryId) {
         Session session = sessionFactory.getCurrentSession();
         Category category = session.get(Category.class, categoryId);
         CategoryDto categoryDto = null;
@@ -50,9 +50,28 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
-    public Category findCategoryById(UUID categoryId) {
+    public Category findCategoryById(BigInteger categoryId) {
         Session session = sessionFactory.getCurrentSession();
         Category category = session.get(Category.class, categoryId);
         return category;
+    }
+
+    @Override
+    public Category findById(BigInteger id) {
+        Session session = sessionFactory.getCurrentSession();
+        Category category = session.get(Category.class, id);
+        return category;
+    }
+
+    @Override
+    public boolean saveCategory(Category category) {
+        boolean status = true;
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            session.save(category);
+        } catch (Exception exception) {
+            status = false;
+        }
+        return status;
     }
 }

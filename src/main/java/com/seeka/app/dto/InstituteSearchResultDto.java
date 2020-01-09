@@ -1,18 +1,18 @@
-package com.seeka.app.dto;
+package com.seeka.app.dto;import java.math.BigInteger;
 
-import java.util.UUID;
+
 
 public class InstituteSearchResultDto {
 	
-	private UUID instituteId;
+	private BigInteger instituteId;
 	private String instituteName;
 	private String location;
 	
 	
-	public UUID getInstituteId() {
+	public BigInteger getInstituteId() {
 		return instituteId;
 	}
-	public void setInstituteId(UUID instituteId) {
+	public void setInstituteId(BigInteger instituteId) {
 		this.instituteId = instituteId;
 	}
 	public String getInstituteName() {

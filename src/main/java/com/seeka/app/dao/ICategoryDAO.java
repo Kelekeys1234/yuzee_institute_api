@@ -1,17 +1,20 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.seeka.app.bean.Category;
 import com.seeka.app.dto.CategoryDto;
 
 public interface ICategoryDAO {
 
-    public List<CategoryDto> getAllCategories();
+     List<CategoryDto> getAllCategories();
 
-    public CategoryDto getCategoryById(UUID categoryId);
+     CategoryDto getCategoryById(BigInteger categoryId);
 
-    public Category findCategoryById(UUID category);
+     Category findCategoryById(BigInteger category);
+
+     Category findById(BigInteger id);
+
+     boolean saveCategory(Category category);
 
 }

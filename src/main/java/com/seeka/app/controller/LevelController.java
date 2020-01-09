@@ -1,11 +1,12 @@
 package com.seeka.app.controller;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,38 +20,52 @@ import com.seeka.app.service.ILevelService;
 @RestController
 @RequestMapping("/level")
 public class LevelController {
-	
-	@Autowired
-	ILevelService levelService;
-	
-	@RequestMapping(value = "/save", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> saveCity(@RequestBody Level obj) throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
-		levelService.save(obj);		
-		response.put("status", 1);
-		response.put("message","Success");		
-		return ResponseEntity.accepted().body(response);
-	}
-	
-	@RequestMapping(value = "/getlevel/{countryid}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getLevelByCountry(@PathVariable UUID countryid) throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
-        List<Level> levelList = levelService.getLevelByCountryId(countryid);
-        response.put("status", 1);
-		response.put("message","Success.!");
-		response.put("levelList",levelList); 
-		return ResponseEntity.accepted().body(response);
-		
-	}
-	
-	@RequestMapping(value = "/get", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAll() throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
+
+    @Autowired
+    private ILevelService levelService;
+
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> saveLevel(@RequestBody Level obj) throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        levelService.save(obj);
+        response.put("message", "Level added successfully");
+        response.put("status", HttpStatus.OK.value());
+        return ResponseEntity.accepted().body(response);
+    }
+
+    @RequestMapping(value = "/country/{countryId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getLevelByCountry(@PathVariable BigInteger countryId) throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        BigInteger bg = new BigInteger(String.valueOf(countryId));
+        List<Level> levelList = levelService.getLevelByCountryId(bg);
+        if (levelList != null && !levelList.isEmpty()) {
+            response.put("message", "Level fetched successfully");
+            response.put("status", HttpStatus.OK.value());
+        } else {
+            response.put("message", "Level not found");
+            response.put("status", HttpStatus.NOT_FOUND.value());
+        }
+        response.put("data", levelList);
+        return ResponseEntity.accepted().body(response);
+    }
+ 
+    @RequestMapping(value = "/course/country/{countryId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getCountryLevel(@PathVariable BigInteger countryId) throws Exception {
+        return ResponseEntity.accepted().body(levelService.getCountryLevel(countryId));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getAll() throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
         List<Level> levelList = levelService.getAll();
-        response.put("status", 1);
-		response.put("message","Success.!");
-		response.put("levelList",levelList); 
-		return ResponseEntity.accepted().body(response);
-		
-	}
+        if (levelList != null && !levelList.isEmpty()) {
+            response.put("message", "Level fetched successfully");
+            response.put("status", HttpStatus.OK.value());
+        } else {
+            response.put("message", "Level not found");
+            response.put("status", HttpStatus.NOT_FOUND.value());
+        }
+        response.put("data", levelList);
+        return ResponseEntity.accepted().body(response);
+    }
 }

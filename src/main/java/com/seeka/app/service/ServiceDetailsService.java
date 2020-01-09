@@ -1,13 +1,12 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.app.bean.ServiceDetails;
 import com.seeka.app.dao.IServiceDetailsDAO;
 
 @Service
@@ -15,31 +14,31 @@ import com.seeka.app.dao.IServiceDetailsDAO;
 public class ServiceDetailsService implements IServiceDetailsService {
 	
 	@Autowired
-	IServiceDetailsDAO dao;
+	private IServiceDetailsDAO iServiceDetailsDAO;
 	
 	@Override
-	public void save(ServiceDetails obj) {
-		dao.save(obj);
+	public void save(com.seeka.app.bean.Service obj) {
+		iServiceDetailsDAO.save(obj);
 	}
 	
 	@Override
-	public void update(ServiceDetails obj) {
-		dao.update(obj);
+	public void update(com.seeka.app.bean.Service obj) {
+		iServiceDetailsDAO.update(obj);
 	}
 	
 	@Override
-	public ServiceDetails get(UUID id) {
-		return dao.get(id);
+	public com.seeka.app.bean.Service get(BigInteger id) {
+		return iServiceDetailsDAO.get(id);
 	}
 	
 	@Override
-	public List<ServiceDetails> getAllInstituteByCountry(UUID countryId){
-		return dao.getAllInstituteByCountry(countryId);
+	public List<com.seeka.app.bean.Service> getAllInstituteByCountry(BigInteger countryId){
+		return iServiceDetailsDAO.getAllInstituteByCountry(countryId);
 	}
 	
 	@Override
-	public List<ServiceDetails> getAll(){
-		return dao.getAll();
+	public List<com.seeka.app.bean.Service> getAll(){
+		return iServiceDetailsDAO.getAll();
 	}
 
 	

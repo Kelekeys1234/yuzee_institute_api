@@ -1,7 +1,7 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import com.seeka.app.dao.IInstituteDetailsDAO;
 public class InstituteDetailsService implements IInstituteDetailsService {
 	
 	@Autowired
-	IInstituteDetailsDAO dao;
+	private IInstituteDetailsDAO dao;
 	
 	@Override
 	public void save(InstituteDetails obj) {
@@ -28,12 +28,12 @@ public class InstituteDetailsService implements IInstituteDetailsService {
 	}
 	
 	@Override
-	public InstituteDetails get(UUID id) {
+	public InstituteDetails get(BigInteger id) {
 		return dao.get(id);
 	}
 	
 	@Override
-	public List<InstituteDetails> getAllInstituteByCountry(UUID countryId){
+	public List<InstituteDetails> getAllInstituteByCountry(BigInteger countryId){
 		return dao.getAllInstituteByCountry(countryId);
 	}
 	

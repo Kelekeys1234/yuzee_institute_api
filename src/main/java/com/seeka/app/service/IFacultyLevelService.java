@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ public interface IFacultyLevelService {
 	
 	public void save(FacultyLevel obj);
 	public void update(FacultyLevel obj);
-	public FacultyLevel get(Integer id);
+	public FacultyLevel get(BigInteger id);
 	public List<FacultyLevel> getAll();
-	public List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(Integer countryID,Integer courseTypeId);
-	public List<FacultyLevel> getAllFacultyLevelByInstituteId(Integer instituteId);
+	public List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(BigInteger countryID,BigInteger courseTypeId);
+	public List<FacultyLevel> getAllFacultyLevelByInstituteId(BigInteger instituteId);
 }

@@ -1,12 +1,20 @@
 package com.seeka.app.service;
 
-import java.util.UUID;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
 
 import com.seeka.app.bean.InstituteType;
 
 public interface IInstituteTypeService {
 
-	public void save(InstituteType obj);
-	public void update(InstituteType obj);
-	public InstituteType get(UUID id);
+    void save(InstituteType obj);
+
+    void update(InstituteType obj);
+
+    InstituteType get(BigInteger id);
+
+    Map<String, Object> getAllIntake();
+
+    List<InstituteType> getAllInstituteType();
 }

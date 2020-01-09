@@ -1,9 +1,11 @@
 package com.seeka.app.dao;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -11,55 +13,74 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.ServiceDetails;
+import com.seeka.app.bean.Service;
 
 @Repository
-public class ServiceDetailsDAO implements IServiceDetailsDAO{
-	
-	@Autowired
-	private SessionFactory sessionFactory;
-	
-	@Override
-	public void save(ServiceDetails obj) {	
-		Session session = sessionFactory.getCurrentSession();		
-		session.save(obj);	   					
-	}
-	
-	@Override
-	public void update(ServiceDetails obj) {	
-		Session session = sessionFactory.getCurrentSession();		
-		session.update(obj);	   					
-	}
-	
-	@Override
-	public ServiceDetails get(UUID id) {	
-		Session session = sessionFactory.getCurrentSession();		
-		ServiceDetails obj = session.get(ServiceDetails.class, id);
-		return obj;
-	}
-	
-	@Override
-	public List<ServiceDetails> getAllInstituteByCountry(UUID countryId) {
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(ServiceDetails.class);
-		crit.add(Restrictions.eq("countryObj.id",countryId));
-		return crit.list();
-	}
-	
-	@Override
-	public List<ServiceDetails> getAll() {
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(ServiceDetails.class).addOrder(Order.asc("name")); 
-		return crit.list();
-	}
-	
-	/*@Override
-	public Institute getUserByEmail(String email) {	
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(User.class);
-		crit.add(Restrictions.eq("emailId",email));
-		List<User> users = crit.list();
-		return users !=null && !users.isEmpty()?users.get(0):null;
-	}*/
-	
+@SuppressWarnings({ "deprecation", "unchecked", "rawtypes" })
+public class ServiceDetailsDAO implements IServiceDetailsDAO {
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    @Override
+    public void save(Service obj) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(obj);
+    }
+
+    @Override
+    public void update(Service obj) {
+        Session session = sessionFactory.getCurrentSession();
+        session.update(obj);
+    }
+
+    @Override
+    public Service get(BigInteger id) {
+        Session session = sessionFactory.getCurrentSession();
+        Service obj = session.get(Service.class, id);
+        return obj;
+    }
+
+    @Override
+    public List<Service> getAllInstituteByCountry(BigInteger countryId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(Service.class);
+        crit.add(Restrictions.eq("countryObj.id", countryId));
+        return crit.list();
+    }
+
+    @Override
+    public List<Service> getAll() {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(Service.class).addOrder(Order.asc("name"));
+        return crit.list();
+    }
+
+    public List<BigInteger> getServices(BigInteger id) {
+        List<BigInteger> list = new ArrayList<BigInteger>();
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("select s.id, s.name as name, s.description from service s");
+        List<Object[]> rows = query.list();
+        for (Object[] row : rows) {
+            list.add(new BigInteger(row[0].toString()));
+        }
+        return list;
+    }
+
+    public Service getServiceById(BigInteger id) {
+        Service service = new Service();
+        service.setId(id);
+        return service;
+    }
+
+    public List<BigInteger> getServicesById(BigInteger id) {
+        List<BigInteger> list = new ArrayList<BigInteger>();
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("select s.id, s.service_id from institute_service s where s.institute_id=" + id);
+        List<Object[]> rows = query.list();
+        for (Object[] row : rows) {
+            list.add(new BigInteger(row[1].toString()));
+        }
+        return list;
+    }
 }

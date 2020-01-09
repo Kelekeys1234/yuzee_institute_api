@@ -1,10 +1,11 @@
 package com.seeka.app.jobs;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class CurrencyUtil implements InitializingBean {
 	@Autowired
 	ICurrencyService currencyService;
     
-    private static Map<UUID, Currency> currencyIdMap = new HashMap<UUID, Currency>();
+    private static Map<BigInteger, Currency> currencyIdMap = new HashMap<BigInteger, Currency>();
     private static Map<String, Currency> currencyCodeMap = new HashMap<String, Currency>();
 	
     
@@ -28,7 +29,7 @@ public class CurrencyUtil implements InitializingBean {
 		run();
 	}
 	
-	public static Currency getCurrencyObjById(UUID currencyId) {
+	public static Currency getCurrencyObjById(BigInteger currencyId) {
 		return currencyIdMap.get(currencyId);
 	}
 	
@@ -42,7 +43,7 @@ public class CurrencyUtil implements InitializingBean {
 	
     public void run() {
     	List<Currency> list = currencyService.getAll();
-    	Map<UUID, Currency> currencyIdMapTemp = new HashMap<UUID, Currency>();
+    	Map<BigInteger, Currency> currencyIdMapTemp = new HashMap<BigInteger, Currency>();
     	Map<String, Currency> currencyCodeMapTemp = new HashMap<String, Currency>();
     	for (Currency currency : list) {
     		if(null == currency.getName() || currency.getName().isEmpty()) {

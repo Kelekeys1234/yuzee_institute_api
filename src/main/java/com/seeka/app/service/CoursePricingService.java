@@ -1,7 +1,7 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,31 +15,31 @@ import com.seeka.app.dao.ICoursePricingDAO;
 public class CoursePricingService implements ICoursePricingService {
 	
 	@Autowired
-	ICoursePricingDAO dao;
+	private ICoursePricingDAO iCoursePricingDAO;
 	
 	@Override
-	public void save(CoursePricing obj) {
-		dao.save(obj);
+	public void save(CoursePricing coursePricing) {
+		iCoursePricingDAO.save(coursePricing);
 	}
 	
 	@Override
-	public void update(CoursePricing obj) {
-		dao.update(obj);
+	public void update(CoursePricing coursePricing) {
+		iCoursePricingDAO.update(coursePricing);
 	}
 	
 	@Override
-	public CoursePricing get(UUID id) {
-		return dao.get(id);
+	public CoursePricing get(BigInteger id) {
+		return iCoursePricingDAO.get(id);
 	}
 	
 	@Override
 	public List<CoursePricing> getAll(){
-		return dao.getAll();
+		return iCoursePricingDAO.getAll();
 	} 
 	
 	@Override
-	public CoursePricing getPricingByCourseId(UUID courseId) {
-		return dao.getPricingByCourseId(courseId);
+	public CoursePricing getPricingByCourseId(BigInteger courseId) {
+		return iCoursePricingDAO.getPricingByCourseId(courseId);
 	}
 
 }

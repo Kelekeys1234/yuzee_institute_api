@@ -1,184 +1,258 @@
 package com.seeka.app.dto;
 
+import java.math.BigInteger;
 import java.util.List;
-import java.util.UUID;
 
 public class CourseResponseDto {
-	
-	private UUID courseId;
-	private String courseName;	
-	private String courseLanguage;
+
+	private BigInteger id;
+	private String name;
+	private String language;
 	private String languageShortKey;
-	private UUID instituteId;
+	private BigInteger instituteId;
 	private String instituteName;
-	private String instituteLogoUrl;	
-	private String instituteImageUrl;	
-	private String worldRanking;	
-	private String stars;
+	private Integer worldRanking;
+	private Integer stars;
 	private String cost;
-	private String duration;
+	private Integer duration;
 	private String durationTime;
 	private String location;
-	private UUID countryId;
-	private UUID cityId;
+	private BigInteger countryId;
+	private BigInteger cityId;
 	private Integer totalCount;
-	private String localFees;
-	private String intlFees;
+	private Double domasticFee;
+	private Double internationalFee;
 	private String requirements;
 	private String countryName;
 	private String cityName;
 	private Boolean isFavourite;
-	private List<String> imageUrlList;	
-	
-	public UUID getCourseId() {
-		return courseId;
-	}
-	public void setCourseId(UUID courseId) {
-		this.courseId = courseId;
-	}
-	public String getCourseName() {
-		return courseName;
-	}
-	public void setCourseName(String courseName) {
-		this.courseName = courseName;
-	}
-	public UUID getInstituteId() {
+	private String currencyCode;
+	private List<StorageDto> storageList;
+
+	public BigInteger getInstituteId() {
 		return instituteId;
 	}
-	public void setInstituteId(UUID instituteId) {
+
+	public void setInstituteId(final BigInteger instituteId) {
 		this.instituteId = instituteId;
 	}
+
 	public String getInstituteName() {
 		return instituteName;
 	}
-	public void setInstituteName(String instituteName) {
+
+	public void setInstituteName(final String instituteName) {
 		this.instituteName = instituteName;
 	}
-	public String getInstituteLogoUrl() {
-		return instituteLogoUrl;
-	}
-	public void setInstituteLogoUrl(String instituteLogoUrl) {
-		this.instituteLogoUrl = instituteLogoUrl;
-	}
-	public String getInstituteImageUrl() {
-		return instituteImageUrl;
-	}
-	public void setInstituteImageUrl(String instituteImageUrl) {
-		this.instituteImageUrl = instituteImageUrl;
-	}
-	public String getWorldRanking() {
+
+	public Integer getWorldRanking() {
 		return worldRanking;
 	}
-	public void setWorldRanking(String worldRanking) {
+
+	public void setWorldRanking(final Integer worldRanking) {
 		this.worldRanking = worldRanking;
 	}
-	public String getStars() {
+
+	public Integer getStars() {
 		return stars;
 	}
-	public void setStars(String stars) {
+
+	public void setStars(final Integer stars) {
 		this.stars = stars;
 	}
+
 	public String getCost() {
 		return cost;
 	}
-	public void setCost(String cost) {
+
+	public void setCost(final String cost) {
 		this.cost = cost;
 	}
-	public String getDuration() {
+
+	public Integer getDuration() {
 		return duration;
 	}
-	public void setDuration(String duration) {
+
+	public void setDuration(final Integer duration) {
 		this.duration = duration;
 	}
+
 	public String getDurationTime() {
 		return durationTime;
 	}
-	public void setDurationTime(String durationTime) {
+
+	public void setDurationTime(final String durationTime) {
 		this.durationTime = durationTime;
 	}
+
 	public String getLocation() {
 		return location;
 	}
-	public void setLocation(String location) {
+
+	public void setLocation(final String location) {
 		this.location = location;
 	}
-	public UUID getCountryId() {
+
+	public BigInteger getCountryId() {
 		return countryId;
 	}
-	public void setCountryId(UUID countryId) {
+
+	public void setCountryId(final BigInteger countryId) {
 		this.countryId = countryId;
 	}
-	public UUID getCityId() {
+
+	public BigInteger getCityId() {
 		return cityId;
 	}
-	public void setCityId(UUID cityId) {
+
+	public void setCityId(final BigInteger cityId) {
 		this.cityId = cityId;
 	}
-	public String getCourseLanguage() {
-		return courseLanguage;
-	}
-	public void setCourseLanguage(String courseLanguage) {
-		this.courseLanguage = courseLanguage;
-	}
+
 	public String getLanguageShortKey() {
 		return languageShortKey;
 	}
-	public void setLanguageShortKey(String languageShortKey) {
+
+	public void setLanguageShortKey(final String languageShortKey) {
 		this.languageShortKey = languageShortKey;
 	}
+
 	public Integer getTotalCount() {
 		return totalCount;
 	}
-	public void setTotalCount(Integer totalCount) {
+
+	public void setTotalCount(final Integer totalCount) {
 		this.totalCount = totalCount;
 	}
-	public String getLocalFees() {
-		return localFees;
-	}
-	public void setLocalFees(String localFees) {
-		this.localFees = localFees;
-	}
-	public String getIntlFees() {
-		return intlFees;
-	}
-	public void setIntlFees(String intlFees) {
-		this.intlFees = intlFees;
-	}
+
 	public String getRequirements() {
-		if(null == requirements || requirements.isEmpty() || requirements.contains("0.0") || requirements.contains("0.00")) {
+		if (null == requirements || requirements.isEmpty() || requirements.contains("0.0") || requirements.contains("0.00")) {
 			requirements = "No Requirements";
 		}
 		return requirements;
 	}
-	public void setRequirements(String requirements) {
+
+	public void setRequirements(final String requirements) {
 		this.requirements = requirements;
 	}
+
 	public String getCountryName() {
 		return countryName;
 	}
-	public void setCountryName(String countryName) {
+
+	public void setCountryName(final String countryName) {
 		this.countryName = countryName;
 	}
+
 	public String getCityName() {
 		return cityName;
 	}
-	public void setCityName(String cityName) {
+
+	public void setCityName(final String cityName) {
 		this.cityName = cityName;
 	}
-	public List<String> getImageUrlList() {
-		return imageUrlList;
-	}
-	public void setImageUrlList(List<String> imageUrlList) {
-		this.imageUrlList = imageUrlList;
-	}
+
 	public Boolean getIsFavourite() {
-		if(null == isFavourite) {
+		if (null == isFavourite) {
 			isFavourite = false;
 		}
 		return isFavourite;
 	}
-	public void setIsFavourite(Boolean isFavourite) {
+
+	public void setIsFavourite(final Boolean isFavourite) {
 		this.isFavourite = isFavourite;
 	}
-	
+
+	/**
+	 * @return the currencyCode
+	 */
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	/**
+	 * @param currencyCode the currencyCode to set
+	 */
+	public void setCurrencyCode(final String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	public List<StorageDto> getStorageList() {
+		return storageList;
+	}
+
+	public void setStorageList(List<StorageDto> storageList) {
+		this.storageList = storageList;
+	}
+
+	/**
+	 * @return the domasticFee
+	 */
+	public Double getDomasticFee() {
+		return domasticFee;
+	}
+
+	/**
+	 * @param domasticFee the domasticFee to set
+	 */
+	public void setDomasticFee(Double domasticFee) {
+		this.domasticFee = domasticFee;
+	}
+
+	/**
+	 * @return the internationalFee
+	 */
+	public Double getInternationalFee() {
+		return internationalFee;
+	}
+
+	/**
+	 * @param internationalFee the internationalFee to set
+	 */
+	public void setInternationalFee(Double internationalFee) {
+		this.internationalFee = internationalFee;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public BigInteger getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(BigInteger id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the language
+	 */
+	public String getLanguage() {
+		return language;
+	}
+
+	/**
+	 * @param language the language to set
+	 */
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
 }

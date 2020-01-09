@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import com.seeka.app.dao.IFacultyLevelDAO;
 public class FacultyLevelService implements IFacultyLevelService {
 	
 	@Autowired
-	IFacultyLevelDAO dao;
+	private IFacultyLevelDAO dao;
 	
 	@Override
 	public void save(FacultyLevel obj) {
@@ -27,7 +27,7 @@ public class FacultyLevelService implements IFacultyLevelService {
 	}
 	
 	@Override
-	public FacultyLevel get(Integer id) {
+	public FacultyLevel get(BigInteger id) {
 		return dao.get(id);
 	}
 	
@@ -37,12 +37,12 @@ public class FacultyLevelService implements IFacultyLevelService {
 	}
 	
 	@Override
-	public List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(Integer countryID,Integer courseTypeId){
+	public List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(BigInteger countryID,BigInteger courseTypeId){
 		return dao.getFacultyByCountryIdAndCourseTypeId(countryID,courseTypeId);
 	}
 	
 	@Override
-	public List<FacultyLevel> getAllFacultyLevelByInstituteId(Integer instituteId){
+	public List<FacultyLevel> getAllFacultyLevelByInstituteId(BigInteger instituteId){
 		return dao.getAllFacultyLevelByInstituteId(instituteId);
 	}
 	

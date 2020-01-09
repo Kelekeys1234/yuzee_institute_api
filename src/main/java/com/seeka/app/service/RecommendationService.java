@@ -1,0 +1,357 @@
+package com.seeka.app.service;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.seeka.app.bean.Country;
+import com.seeka.app.bean.Course;
+import com.seeka.app.bean.Faculty;
+import com.seeka.app.bean.Institute;
+import com.seeka.app.dto.GlobalDataDto;
+import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.UserDto;
+import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.exception.ValidationException;
+import com.seeka.app.message.MessageByLocaleService;
+
+@Service
+public class RecommendationService implements IRecommendationService {
+
+	@Autowired
+	private IFacultyService iFacultyService;
+	
+	@Autowired
+	private ITop10CourseService iTop10CourseService;
+	
+	@Autowired
+	private IInstituteService iInstituteService;
+	
+	@Autowired
+	private ICourseService iCourseService;
+	
+	@Autowired
+	private ICountryService iCountryService;
+	
+	@Autowired
+	private IUsersService iUsersService;
+	
+	@Autowired
+	private IGlobalStudentData iGlobalStudentDataService;
+	
+	@Autowired
+	private MessageByLocaleService messageByLocalService;
+	
+	@Override
+	public List<InstituteResponseDto> getRecommendedInstitutes(BigInteger userId, Long startIndex, Long pageSize, Long pageNumber,
+			String language) throws ValidationException, NotFoundException{
+
+		List<BigInteger> instituteIdList = new ArrayList<>();
+		/**
+		 * Check for user country
+		 */
+		UserDto userDto = iUsersService.getUserById(userId);
+		if(userDto == null) {
+			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] {userId}, language));
+		} else if(userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present", new Object[] {userId}, language));
+		}
+		
+		/**
+		 * Get Country Id Based on citizenship
+		 */
+		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
+		if(country == null || country.getId() == null) {
+			throw new ValidationException(messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] {userDto.getCitizenship()}, language));
+		}
+		/**
+		 * Check if courses are available for user country
+		 */
+		Long count = iCourseService.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto,country);
+		if(count == null || count.equals(0L)) {
+			throw new ValidationException(messageByLocalService.getMessage("no.courses.present.for.country", new Object[] {userDto.getCitizenship()}, language));
+		}
+		/**
+		 * Display top universities for the country
+		 */
+		if(startIndex == null) {
+			startIndex = (pageNumber * pageSize) + 1;
+			instituteIdList = iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize);
+		} else {
+			instituteIdList = iInstituteService.getTopInstituteIdByCountry(country.getId(), startIndex, pageSize);
+		}
+		
+		return iInstituteService.getAllInstituteByID(instituteIdList);
+	}
+
+	@Override
+	public void getOtherPeopleSearch() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public List<Course> getRecommendedCourses(BigInteger userId) throws ValidationException{
+		// TODO Auto-generated method stub
+		
+		/**
+		 * Query Identity to get UserDto from userId.
+		 */
+//		String identityUrl = "http://" +  IConstant.IDENTITY+"/api/v1/users/"+userId;
+//		ResponseEntity<UserDto> user = restTemplate.getForEntity(identityUrl, UserDto.class);
+//		System.out.println(user);
+//		UserDto userDto = user.getBody();
+//
+//		System.out.println(userDto);
+		UserDto userDto = iUsersService.getUserById(userId);
+		/**
+		 * Validations of for user.
+		 */
+		if(userDto == null) {
+			throw new ValidationException("Invalid User");
+		} else if (userDto.getCitizenship()==null || userDto.getCitizenship().isEmpty()) {
+			throw new ValidationException("User needs to have a citizenship");
+		}
+		
+		/**
+		 * Get country object based on citizenship
+		 */
+		Country country = getCountryBasedOnCitizenship(userDto.getCitizenship());
+		
+		if(country == null || country.getId() == null) {
+			throw new ValidationException("Invalid country citizenship for the user");
+		}
+		
+		/**
+		 * Get all facultyIds from the excel uploaded by Top10Courses
+		 */
+		List<Faculty> allFaculty = getAllFacultyIds();
+		
+		/**
+		 * Check if the courses are present for the user's citizenship in our database.
+		 */
+		long courseCount = checkIfCoursesPresentForCountry(country);
+		
+		if(courseCount > 0) {
+			/**
+			 * Get all institutes based on world ranking for a particular country (of User) 
+			 */
+			List<Institute> allInstitutesRankingWise = getAllInstituteRankingWisePerCountry(country);
+			
+			/**
+			 * This list contains the details of the courses that are to be returned
+			 */
+			List<BigInteger> listOfRecommendedCourseIds = new ArrayList<>();
+			List<Course> listOfRecommendedCourses = new ArrayList<>();
+			Map<Long, Faculty> facultyMap = new HashMap<>();
+			
+			//allFaculty.stream().forEach(i -> facultyMap.put(i.getId().longValue(), i));
+			
+			facultyMap = allFaculty.stream().collect(Collectors.toMap(i -> i.getId().longValue(), i->i));
+			Long count = 0L;
+			
+			System.out.println("insititute count -- "+allInstitutesRankingWise.size());
+			
+			for (Institute institute : allInstitutesRankingWise) {
+				List<Course> listOfCourse = facultyWiseCourseForInstitute(/*allFaculty*/new ArrayList<Faculty>(facultyMap.values()), institute/* .getId().longValue() */);
+				Map<BigInteger, BigInteger> mapFacultyIdCourseId = facultyWiseCourseIdMapForInstitute(new ArrayList<Faculty>(facultyMap.values()), institute);
+				System.out.println(count++);
+				System.out.println("CourseList -- "+listOfCourse.size());
+//				for (Course course : listOfCourse) {
+//					if(facultyMap.containsKey(course.getFaculty().getId().longValue())) {
+//						listOfRecommendedCourseIds.add(course.getId());
+//						/**
+//						 * removing facultyIds from faculty map for which courses are already obtained so that we do not get any courses corresponding to those 
+//						 * faculty for the next intitutes, also we get only one course per faculty in our final list of courses.
+//						 */
+//						facultyMap.remove(course.getFaculty().getId().longValue());
+//					}
+//				}
+				
+				for (Entry<BigInteger,BigInteger> entry : mapFacultyIdCourseId.entrySet()) {
+					if(facultyMap.containsKey(entry.getValue().longValue())) {
+						listOfRecommendedCourseIds.add(entry.getKey());
+						/**
+						 * removing facultyIds from faculty map for which courses are already obtained so that we do not get any courses corresponding to those 
+						 * faculty for the next intitutes, also we get only one course per faculty in our final list of courses.
+						 */
+						facultyMap.remove(entry.getValue().longValue());
+					}
+				}
+				
+				
+				/**
+				 * If we have obtained list of courses for all faculties then no need to further navigate through other 
+				 * institutes and hence breaking the loop
+				 */
+				if(facultyMap.isEmpty()) {
+					break;
+				}
+				
+			}
+			System.out.println("insititute count -- "+allInstitutesRankingWise.size());
+			
+			listOfRecommendedCourses =  iCourseService.getAllCoursesUsingId(listOfRecommendedCourseIds);
+			return listOfRecommendedCourses;
+		} else {
+			
+			//Map<String, List<Course>> mapOfCountryToItsCoursesList = new TreeMap<>();
+			Map<String, List<BigInteger>> mapOfCountryToItsCoursesList = new TreeMap<>();
+			
+			List<Course> recommendedCourseList = new ArrayList<>();
+			
+			List<BigInteger> recommendedCourseListIds = new ArrayList<>();
+			
+			long count = iGlobalStudentDataService.checkForPresenceOfUserCountryInGlobalDataFile(country.getName());
+			/**
+			 * If we dont get any country based on citizenship of user get data of China by default
+			 */
+			if(count == 0) {
+				country = getCountryBasedOnCitizenship("China");
+			}
+			
+			/**
+			 * Get List of countries in which the people from user's country are interested in moving to. This data will be obtained from 
+			 * the table that contains the data from GlobalStudentData.xlsx file uploaded.
+			 */
+			List<GlobalDataDto> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
+
+			for (GlobalDataDto globalDataDto : countryWiseStudentCountListForUserCountry) {
+				//List<Course> courseList = getTopRatedCoursesForCountryWorldRankingWise(getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry()));
+				List<BigInteger> courseList = getTopRatedCourseIdsForCountryWorldRankingWise(getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry()));
+				mapOfCountryToItsCoursesList.put(globalDataDto.getDestinationCountry(), courseList);
+			}
+			List<Integer> requiredCoursesPerCountry = new ArrayList<>();
+			requiredCoursesPerCountry.add(new Integer(2));
+			requiredCoursesPerCountry.add(new Integer(5));
+			requiredCoursesPerCountry.add(new Integer(10));
+			requiredCoursesPerCountry.add(new Integer(20));
+			int i = 0;
+			while(recommendedCourseList.size() < 20 && i < 3) {
+				int courseCountPerCountry = requiredCoursesPerCountry.get(i);
+				recommendedCourseList = new ArrayList<Course>();
+				
+//				for (Entry<String, List<Course>> entry : mapOfCountryToItsCoursesList.entrySet()) {
+//					List<Course> cl = entry.getValue();
+//					if(cl.size() > 0) {
+//						recommendedCourseList.addAll(cl.subList(0, cl.size()>courseCountPerCountry?courseCountPerCountry:cl.size()-1));
+//					}
+//					if(recommendedCourseList.size() >= 20) {
+//						break;
+//					}
+//				}
+				
+				for (Entry<String, List<BigInteger>> entry : mapOfCountryToItsCoursesList.entrySet()) {
+					List<BigInteger> cl = entry.getValue();
+					if(cl.size() > 0) {
+						recommendedCourseListIds.addAll(cl.subList(0, cl.size()>courseCountPerCountry?courseCountPerCountry:cl.size()-1));
+					}
+					if(recommendedCourseListIds.size() >= 20) {
+						break;
+					}
+				}
+				if(i == 3) {
+					break;
+				}
+				i++;
+			}
+			
+			recommendedCourseList = iCourseService.getCoursesById(recommendedCourseListIds);
+			
+			System.out.println(recommendedCourseList);
+			
+			return recommendedCourseList;
+		}
+		
+	}
+
+	private List<Faculty> getAllFacultyIds(){
+		List<String> facultyNames = iTop10CourseService.getAllDistinctFaculty();
+		List<Faculty> facultyList = iFacultyService.getFacultyListByName(facultyNames);
+//		List<Long> facultyIds = new ArrayList<>();
+//		for (Faculty faculty : facultyList) {
+//			facultyIds.add(faculty.getId().longValue());
+//		}
+		return facultyList;
+	}
+	
+	private List<Institute> getAllInstituteRankingWisePerCountry(Country country){
+		return iInstituteService.ratingWiseInstituteListByCountry(country);
+	}
+	
+	private List<Course> facultyWiseCourseForInstitute(List<Faculty> facultyList, Institute instituteId){
+		return iCourseService.facultyWiseCourseForInstitute(facultyList, instituteId);
+	}
+	
+	private Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, Institute instituteId){
+		return iCourseService.facultyWiseCourseIdMapForInstitute(facultyList, instituteId.getId());
+	}
+	
+	private Country getCountryBasedOnCitizenship(String citizenship) {
+		return iCountryService.getCountryBasedOnCitizenship(citizenship);
+	}
+	
+	private long checkIfCoursesPresentForCountry(Country country) {
+		return iCourseService.checkIfCoursesPresentForCountry(country);
+	}
+	
+	private List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country) {
+		if(country != null) {
+			return iCourseService.getTopRatedCoursesForCountryWorldRankingWise(country);
+		} else {
+			return new ArrayList<>();
+		}
+	}
+	
+	private List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(Country country) {
+		if(country != null) {
+			return iCourseService.getTopRatedCourseIdForCountryWorldRankingWise(country);
+		} else {
+			return new ArrayList<>();
+		}
+	}
+
+	@Override
+	public List<Course> getTopSearchedCoursesForFaculty(BigInteger facultyId, BigInteger userId) {
+		List<BigInteger> facultyWiseCourses = iCourseService.getAllCourseUsingFaculty(facultyId);
+		List<BigInteger> allSearchCourses = iCourseService.getTopSearchedCoursesByOtherUsers(userId);
+		allSearchCourses.retainAll(facultyWiseCourses);
+		System.out.println("All Course Size -- "+allSearchCourses.size());
+		if(allSearchCourses == null || allSearchCourses.size()==0) {
+			allSearchCourses = facultyWiseCourses.size()>10 ? facultyWiseCourses.subList(0, 9):facultyWiseCourses;
+		}
+		
+		return iCourseService.getCoursesById(allSearchCourses);
+	}
+
+	@Override
+	public Set<Course> displayRelatedCourseAsPerUserPastSearch(BigInteger userId) throws ValidationException{
+		// TODO Auto-generated method stub
+		List<BigInteger> userSearchCourseIdList = iCourseService.getTopSearchedCoursesByUsers(userId);
+		
+		/**
+		 * Keeping this code to get related courses only for top 3 courses searched.
+		 */
+		if(userSearchCourseIdList.size() > 0) {
+			userSearchCourseIdList = userSearchCourseIdList.size() > 3 ? userSearchCourseIdList.subList(0, 2):userSearchCourseIdList.subList(0, userSearchCourseIdList.size()-1);
+		} else {
+			return new HashSet<Course>();
+		}
+		/**
+		 * Logic ends
+		 */
+		Set<Course> userRelatedCourses = iCourseService.getRelatedCoursesBasedOnPastSearch(userSearchCourseIdList);
+		return userRelatedCourses;
+	}
+
+}

@@ -1,14 +1,15 @@
 package com.seeka.app.controller;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,48 +17,41 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Level;
-import com.seeka.app.bean.User;
+import com.seeka.app.bean.UserInfo;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.StorageDto;
+import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.ValidationException;
 import com.seeka.app.jobs.CountryLevelFacultyUtil;
-import com.seeka.app.service.ICountryService;
-import com.seeka.app.service.IFacultyService;
 import com.seeka.app.service.IInstituteService;
-import com.seeka.app.service.ILevelService;
+import com.seeka.app.service.IStorageService;
 import com.seeka.app.service.IUserService;
-import com.seeka.app.util.CDNServerUtil;
 
 @RestController
 @RequestMapping("/search")
 public class SearchPageController {
-	
+
 	@Autowired
-	ICountryService countryService;
-	
+	private IUserService userService;
+
 	@Autowired
-	ILevelService levelService;
-	
+	private IInstituteService instituteService;
+
 	@Autowired
-	IFacultyService facultyService;
-	
-	@Autowired
-	IUserService userService;
-	
-	@Autowired
-	IInstituteService instituteService;
-	
-	
-	@RequestMapping(value = "/get/all/{userid}", method=RequestMethod.GET)
-	public ResponseEntity<?>  getAllCountries(@PathVariable("userid") UUID userId) {
-		Map<String,Object> response = new HashMap<String, Object>();
+	private IStorageService iStorageService;
+
+	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
+	public ResponseEntity<?> getAllCountries(@PathVariable("userId") final BigInteger userId) throws ValidationException {
+		Map<String, Object> response = new HashMap<>();
 		Date now = new Date();
-		User user = userService.get(userId);
+		UserInfo user = userService.get(userId);
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
-		List<UUID> countryIds = new ArrayList<>();
-		if(null != user.getCountryId()) {
-			countryIds.add(user.getCountryId());
+		List<BigInteger> countryIds = new ArrayList<>();
+		if (null != user.getPreferredCountryId()) {
+			countryIds.add(user.getPreferredCountryId());
 			courseSearchDto.setCountryIds(countryIds);
 		}
 		CourseSearchFilterDto sortingObj = new CourseSearchFilterDto();
@@ -66,27 +60,22 @@ public class SearchPageController {
 		courseSearchDto.setPageNumber(1);
 		courseSearchDto.setMaxSizePerPage(3);
 		List<InstituteResponseDto> recommendedInstList = instituteService.getAllInstitutesByFilter(courseSearchDto);
+
 		for (InstituteResponseDto obj : recommendedInstList) {
-			try {
-				obj.setInstituteLogoUrl(CDNServerUtil.getInstituteLogoImage(obj.getCountryName(), obj.getInstituteName()));
-				obj.setInstituteImageUrl(CDNServerUtil.getInstituteMainImage(obj.getCountryName(), obj.getInstituteName()));
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			obj.setStorageList(storageDTOList);
 		}
 		List<CountryDto> countryList = CountryLevelFacultyUtil.getCountryList();
 		List<Level> levelList = CountryLevelFacultyUtil.getLevelList();
-		response.put("countryList",countryList);
-		response.put("levelList",levelList);
-		response.put("recommendedInstList",recommendedInstList);
-		response.put("status", 1);
-		response.put("message","Success.!");
-		long duration  = new Date().getTime() - now.getTime();
+		response.put("countryList", countryList);
+		response.put("levelList", levelList);
+		response.put("recommendedInstList", recommendedInstList);
+		response.put("status", HttpStatus.OK.value());
+		response.put("message", "Success.!");
+		long duration = new Date().getTime() - now.getTime();
 		long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);
-		System.out.println("Total Computation in "+diffInSeconds);
-    	return ResponseEntity.accepted().body(response);
-	} 
-	
-	 
-	
+		System.out.println("Total Computation in " + diffInSeconds);
+		return ResponseEntity.accepted().body(response);
+	}
+
 }

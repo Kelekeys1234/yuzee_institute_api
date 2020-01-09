@@ -1,7 +1,5 @@
-package com.seeka.app.dto;
-
+package com.seeka.app.dto;import java.math.BigInteger;
 import java.util.List;
-import java.util.UUID;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Level;
@@ -9,17 +7,17 @@ import com.seeka.app.util.CDNServerUtil;
 
 public class CountryDto {
 	
-	private UUID id;
+	private BigInteger id;
 	private String name;
 	private String countryCode;
 	private String imageUrl;
 	private List<Level> levelList;
 	private List<City> cityList;
 	
-	public UUID getId() {
+	public BigInteger getId() {
 		return id;
 	}
-	public void setId(UUID id) {
+	public void setId(BigInteger id) {
 		this.id = id;
 	}
 	public String getName() {

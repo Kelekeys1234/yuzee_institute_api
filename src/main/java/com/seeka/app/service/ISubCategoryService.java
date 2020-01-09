@@ -1,8 +1,8 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 import com.seeka.app.dto.SubCategoryDto;
 
@@ -10,12 +10,12 @@ public interface ISubCategoryService {
 
     public List<SubCategoryDto> getAllSubCategories();
 
-    public List<SubCategoryDto> getSubCategoryByCategory(UUID categoryId);
+    public List<SubCategoryDto> getSubCategoryByCategory(BigInteger categoryId);
 
-    public SubCategoryDto getSubCategoryById(UUID subCategoryId);
+    public SubCategoryDto getSubCategoryById(BigInteger subCategoryId);
 
     public Map<String, Object> saveSubCategory(SubCategoryDto subCategoryDto);
 
-    public boolean deleteSubCategory(UUID subCategoryId);
+    public boolean deleteSubCategory(BigInteger subCategoryId);
 
 }

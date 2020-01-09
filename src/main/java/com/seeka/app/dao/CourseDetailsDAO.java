@@ -1,7 +1,7 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -31,7 +31,7 @@ public class CourseDetailsDAO implements ICourseDetailsDAO{
 	}
 	
 	@Override
-	public CourseDetails get(UUID id) {	
+	public CourseDetails get(BigInteger id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		CourseDetails obj = session.get(CourseDetails.class, id);
 		return obj;

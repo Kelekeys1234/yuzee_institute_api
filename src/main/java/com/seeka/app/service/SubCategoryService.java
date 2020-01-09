@@ -1,9 +1,9 @@
 package com.seeka.app.service;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,12 +33,12 @@ public class SubCategoryService implements ISubCategoryService {
     }
 
     @Override
-    public List<SubCategoryDto> getSubCategoryByCategory(UUID categoryId) {
+    public List<SubCategoryDto> getSubCategoryByCategory(BigInteger categoryId) {
         return subCategoryDAO.getSubCategoryByCategory(categoryId);
     }
 
     @Override
-    public SubCategoryDto getSubCategoryById(UUID subCategoryId) {
+    public SubCategoryDto getSubCategoryById(BigInteger subCategoryId) {
         return subCategoryDAO.getSubCategoryById(subCategoryId);
     }
 
@@ -59,11 +59,11 @@ public class SubCategoryService implements ISubCategoryService {
             subCategory.setIsDeleted(true);
             status = subCategoryDAO.saveSubCategory(subCategory);
             if (status) {
-                response.put("status", IConstant.SUCCESS_CODE);
-                response.put("message", IConstant.SUCCESS_MESSAGE);
+                response.put("status", HttpStatus.OK.value());
+                response.put("message", "Sub category added successfully");
             } else {
                 response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-                response.put("message", IConstant.SUB_CATEGORY_ERROR);
+                response.put("message", IConstant.SQL_ERROR);
             }
         } else {
             response.put("status", HttpStatus.NOT_FOUND.value());
@@ -73,7 +73,7 @@ public class SubCategoryService implements ISubCategoryService {
     }
 
     @Override
-    public boolean deleteSubCategory(UUID subCategoryId) {
+    public boolean deleteSubCategory(BigInteger subCategoryId) {
         boolean status = true;
         try {
             if (subCategoryId != null) {

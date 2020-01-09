@@ -1,7 +1,7 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -34,7 +34,7 @@ public class CourseGradeEligibilityDAO implements ICourseGradeEligibilityDAO{
 	}
 	
 	@Override
-	public CourseGradeEligibility get(UUID id) {	
+	public CourseGradeEligibility get(BigInteger id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		CourseGradeEligibility obj = session.get(CourseGradeEligibility.class, id);
 		return obj;
@@ -47,11 +47,12 @@ public class CourseGradeEligibilityDAO implements ICourseGradeEligibilityDAO{
 		return crit.list();
 	}
 	
-	@Override
-	public CourseGradeEligibility getAllEnglishEligibilityByCourse(UUID courseID) {
+	@SuppressWarnings("deprecation")
+    @Override
+	public CourseGradeEligibility getAllEnglishEligibilityByCourse(BigInteger courseID) {
 		Session session = sessionFactory.getCurrentSession();		
 		Criteria crit = session.createCriteria(CourseGradeEligibility.class); 
-		crit.add(Restrictions.eq("courseId",courseID));
+		crit.add(Restrictions.eq("course.id",courseID));
 		return null != crit.list()?(CourseGradeEligibility)crit.list().get(0):null;
 	}
 	

@@ -1,7 +1,7 @@
-package com.seeka.app.dao;
+package com.seeka.app.dao;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import com.seeka.app.bean.Faculty;
 
@@ -11,13 +11,19 @@ public interface IFacultyDAO {
 
     public void update(Faculty obj);
 
-    public Faculty get(UUID id);
+    public Faculty get(BigInteger id);
 
     public List<Faculty> getAll();
 
-    public List<Faculty> getFacultyByCountryIdAndLevelId(UUID countryID, UUID levelId);
+    public List<Faculty> getFacultyByCountryIdAndLevelId(BigInteger countryID, BigInteger levelId);
 
     public List<Faculty> getAllFacultyByCountryIdAndLevel();
 
-    public List<Faculty> getFacultyByInstituteId(UUID instituteId);
+    public List<Faculty> getFacultyByInstituteId(BigInteger instituteId);
+
+    public List<Faculty> getFacultyByListOfInstituteId(String instituteId);
+
+    public List<Faculty> getCourseFaculty(BigInteger countryId, BigInteger levelId);
+    
+    List<Faculty> getFacultyListByFacultyNames(List<String> facultyNameList);
 }

@@ -1,12 +1,13 @@
 package com.seeka.app.jobs;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public class CountryLevelFacultyUtil {
     	System.out.println("CountryLevelFacultyUtil : Job Started: "+new Date());
     	List<CountryDto> countryList = countryService.getAllCountries();
     	List<Level> levelList = levelService.getAllLevelByCountry();
-    	Map<UUID, List<Level>> levelMap = new HashMap<>();  // trying to build this map , which will contain each country uuid as its key and a list of all levels for the same
+    	Map<BigInteger, List<Level>> levelMap = new HashMap<>(); 
     	for (Level level : levelList) {
     		List<Level> list = levelMap.get(level.getCountryId());
     		if(null != list && !list.isEmpty()) {
@@ -70,15 +71,15 @@ public class CountryLevelFacultyUtil {
     		list = new ArrayList<>();
     		list.add(level);
     		levelMap.put(level.getCountryId(), list);
-		} // we just got levels for each country , at this point only 2 countries have levels in the map  
+		}
     	List<Level> levelMasterListTemp = levelService.getAll();
     	levelMasterList.clear();
     	levelMasterList = new ArrayList<Level>(levelMasterListTemp);
     	
-    	List<Faculty> facultyList = facultyService.getAllFacultyByCountryIdAndLevel();   // 96 faculties with country_id
+    	List<Faculty> facultyList = facultyService.getAllFacultyByCountryIdAndLevel();
     	Map<String, List<Faculty>> facultyMap = new HashMap<>();
     	for (Faculty faculty : facultyList) {
-    		String key = faculty.getCountryId()+"-"+faculty.getLevelId();  // making a facultyMap which contains country_id-level_id with list of this key as facult
+    		String key = faculty.getCountryId()+"-"+faculty.getLevelId();
     		List<Faculty> list = facultyMap.get(key);
     		if(null != list && !list.isEmpty()) {
     			facultyMap.get(key).add(faculty);
@@ -110,6 +111,4 @@ public class CountryLevelFacultyUtil {
 		countryLevelFacultyList = new ArrayList<CountryDto>(finalList);
 		System.out.println("CountryLevelFacultyUtil : Job Completed: "+new Date());
     }
-    
-    
 }

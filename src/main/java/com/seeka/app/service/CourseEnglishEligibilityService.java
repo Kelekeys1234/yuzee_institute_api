@@ -1,7 +1,7 @@
-package com.seeka.app.service;
+package com.seeka.app.service;import java.math.BigInteger;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,30 +15,30 @@ import com.seeka.app.dao.ICourseEnglishEligibilityDAO;
 public class CourseEnglishEligibilityService implements ICourseEnglishEligibilityService {
 	
 	@Autowired
-	ICourseEnglishEligibilityDAO dao;
+	private ICourseEnglishEligibilityDAO iCourseEnglishEligibilityDAO;
 	
 	@Override
 	public void save(CourseEnglishEligibility obj) {
-		dao.save(obj);
+		iCourseEnglishEligibilityDAO.save(obj);
 	}
 	
 	@Override
 	public void update(CourseEnglishEligibility obj) {
-		dao.update(obj);
+		iCourseEnglishEligibilityDAO.update(obj);
 	}
 	
 	@Override
-	public CourseEnglishEligibility get(UUID id) {
-		return dao.get(id);
+	public CourseEnglishEligibility get(BigInteger id) {
+		return iCourseEnglishEligibilityDAO.get(id);
 	}
 	
 	@Override
 	public List<CourseEnglishEligibility> getAll(){
-		return dao.getAll();
+		return iCourseEnglishEligibilityDAO.getAll();
 	} 
 	
 	@Override
-	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(UUID courseID){
-		return dao.getAllEnglishEligibilityByCourse(courseID);
+	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(BigInteger courseID){
+		return iCourseEnglishEligibilityDAO.getAllEnglishEligibilityByCourse(courseID);
 	}
 }

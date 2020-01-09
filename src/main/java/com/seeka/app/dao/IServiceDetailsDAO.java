@@ -1,15 +1,21 @@
 package com.seeka.app.dao;
 
+import java.math.BigInteger;
 import java.util.List;
-import java.util.UUID;
 
-import com.seeka.app.bean.ServiceDetails;
+import com.seeka.app.bean.Service;
 
 public interface IServiceDetailsDAO {
-	
-	public void save(ServiceDetails obj);
-	public void update(ServiceDetails obj);
-	public ServiceDetails get(UUID id);
-	public List<ServiceDetails> getAllInstituteByCountry(UUID countryId);	
-	public List<ServiceDetails> getAll();	
+
+    void save(Service obj);
+
+    void update(Service obj);
+
+    Service get(BigInteger id);
+
+    List<Service> getAllInstituteByCountry(BigInteger countryId);
+
+    List<Service> getAll();
+
+    com.seeka.app.bean.Service getServiceById(BigInteger id);
 }
