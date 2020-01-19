@@ -1,10 +1,13 @@
 package com.seeka.app.dto;import java.math.BigInteger;
 
+import javax.validation.constraints.NotNull;
+
 public class ArticleFolderMapDto {
 
     private BigInteger id;
-    private BigInteger userId;
+    @NotNull(message="Folder Id is required")
     private BigInteger folderId;
+    @NotNull(message="Article Id is required")
     private BigInteger articleId;
 
     /**
@@ -20,21 +23,6 @@ public class ArticleFolderMapDto {
      */
     public void setId(BigInteger id) {
         this.id = id;
-    }
-
-    /**
-     * @return the userId
-     */
-    public BigInteger getUserId() {
-        return userId;
-    }
-
-    /**
-     * @param userId
-     *            the userId to set
-     */
-    public void setUserId(BigInteger userId) {
-        this.userId = userId;
     }
 
     /**

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.Top10Course;
-import com.seeka.app.dto.GlobalDataDto;
+import com.seeka.app.dto.GlobalData;
 
 @Service
 public class UploadService implements IUploadService {
@@ -53,11 +53,11 @@ public class UploadService implements IUploadService {
 	public String importGlobalFlowOfTertiaryLevelStudents(MultipartFile multipartFile) throws IOException{
 		// TODO Auto-generated method stub
 		saveFile(multipartFile,"GlobalFlowOfTertiaryLevelStudents");
-		/*Map<String, List<GlobalDataDto>> countryGlobalStudentMap*/List<GlobalDataDto> globalStudentList = readGlobalFlowOfTertiaryLevelStudents(multipartFile);  // Contains <India,list of<GlobalStudentDto>>
+		/*Map<String, List<GlobalDataDto>> countryGlobalStudentMap*/List<GlobalData> globalStudentList = readGlobalFlowOfTertiaryLevelStudents(multipartFile);  // Contains <India,list of<GlobalStudentDto>>
 		//System.out.println(countryGlobalStudentMap);
 		globalStudentDataService.deleteAllGlobalStudentData();
 		System.out.println(globalStudentList.size());
-		for (GlobalDataDto globalStudentData : globalStudentList) {
+		for (GlobalData globalStudentData : globalStudentList) {
 			globalStudentDataService.saveGlobalStudentData(globalStudentData);
 		}
 		System.out.println("globalStudentList");
@@ -74,10 +74,10 @@ public class UploadService implements IUploadService {
 		return path.toString();
 	}
 	
-	private /*Map<String,List<GlobalDataDto>>*/List<GlobalDataDto> readGlobalFlowOfTertiaryLevelStudents(MultipartFile multipartFile) throws IOException {
+	private /*Map<String,List<GlobalDataDto>>*/List<GlobalData> readGlobalFlowOfTertiaryLevelStudents(MultipartFile multipartFile) throws IOException {
 		InputStream inputStream = multipartFile.getInputStream();
 		Workbook workbook = new XSSFWorkbook(inputStream);
-        Map<String, List<GlobalDataDto>> countryWiseStudentMap = new HashMap<>();
+        Map<String, List<GlobalData>> countryWiseStudentMap = new HashMap<>();
         Sheet sheet = workbook.getSheetAt(0);
 		Iterator<Row> iterator = sheet.iterator();
 		// This is done for header
@@ -90,7 +90,7 @@ public class UploadService implements IUploadService {
 				if (currentCell.getStringCellValue() != null && !currentCell.getStringCellValue().isEmpty() && 
 						!(currentCell.getStringCellValue().equalsIgnoreCase("Total Stude0ts") || currentCell.getStringCellValue().equalsIgnoreCase("Total Students") )) {
 					String countryName = currentCell.getStringCellValue();
-					countryWiseStudentMap.put(countryName, new ArrayList<GlobalDataDto>());
+					countryWiseStudentMap.put(countryName, new ArrayList<GlobalData>());
 					country.put(i, countryName);
 					i++;
 				}
@@ -103,7 +103,7 @@ public class UploadService implements IUploadService {
 			Row currentRow = iterator.next();
 			Iterator<Cell> cellIterator = currentRow.iterator();
 			while (cellIterator.hasNext()) {
-				GlobalDataDto globalDataDto = new GlobalDataDto();
+				GlobalData globalDataDto = new GlobalData();
 				Cell currentCell = cellIterator.next();
 				if (currentCell.getStringCellValue() != null && !currentCell.getStringCellValue().isEmpty()) {
 					globalDataDto.setDestinationCountry(currentCell.getStringCellValue());
@@ -134,9 +134,9 @@ public class UploadService implements IUploadService {
 			}
 		}
 		
-		List<GlobalDataDto> listOfGlobalData = new ArrayList<>();
+		List<GlobalData> listOfGlobalData = new ArrayList<>();
 		
-		for (Entry<String, List<GlobalDataDto>> globalData : countryWiseStudentMap.entrySet()) {
+		for (Entry<String, List<GlobalData>> globalData : countryWiseStudentMap.entrySet()) {
 			listOfGlobalData.addAll(globalData.getValue());
 		}
 		

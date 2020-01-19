@@ -1,6 +1,8 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,11 +11,14 @@ import javax.validation.Valid;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
+import com.seeka.app.bean.InstituteDomesticRankingHistory;
+import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.exception.ValidationException;
 
 public interface IInstituteService {
@@ -24,13 +29,17 @@ public interface IInstituteService {
 
 	Institute get(BigInteger id);
 
-	List<BigInteger> getTopInstituteIdByCountry(BigInteger countryId, Long startIndex, Long pageSize);
+	List<BigInteger> getTopInstituteIdByCountry(BigInteger countryId/* , Long startIndex, Long pageSize */);
+
+	List<BigInteger> getRandomInstituteIdByCountry(List<BigInteger> countryId);
 
 	List<Institute> getAll();
 
 	List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
 
-	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj);
+	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
+			Integer startIndex, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
+			Integer toWorldRanking, String campusType);
 
 	InstituteResponseDto getInstituteByID(BigInteger instituteId);
 
@@ -38,11 +47,11 @@ public interface IInstituteService {
 
 	List<InstituteResponseDto> getInstituteByListOfCityId(String cityId);
 
-	Map<String, Object> save(@Valid List<InstituteRequestDto> institute);
+	Map<String, Object> save(List<InstituteRequestDto> institute);
 
 	Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize);
 
-	Map<String, Object> getById(@Valid BigInteger id);
+	List<InstituteRequestDto> getById(BigInteger id) throws ValidationException;
 
 	Map<String, Object> searchInstitute(@Valid String searchText);
 
@@ -56,9 +65,27 @@ public interface IInstituteService {
 
 	List<InstituteCategoryType> getAllCategories();
 
-	Map<String, Object> deleteInstitute(@Valid BigInteger id);
+	void deleteInstitute(BigInteger id) throws ValidationException;
 
 	List<Institute> ratingWiseInstituteListByCountry(Country country);
 
-	List<InstituteResponseDto> getAllInstituteByID(final List<BigInteger> listInstituteId) throws ValidationException;
+	List<InstituteResponseDto> getAllInstituteByID(final Collection<BigInteger> listInstituteId) throws ValidationException;
+
+	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
+
+	List<BigInteger> getInstituteIdsFromCountry(List<BigInteger> distinctCountryIds);
+
+	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive,
+			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
+
+	Integer getTotalCourseCountForInstitute(BigInteger instituteId);
+
+	InstituteDomesticRankingHistory getHistoryOfDomesticRanking(BigInteger instituteId);
+
+	InstituteWorldRankingHistory getHistoryOfWorldRanking(BigInteger instituteId);
+
+	Map<BigInteger, Integer> getDomesticRanking(List<BigInteger> instituteIdList);
+
+	List<NearestInstituteDTO> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitude, Double longitude) throws ValidationException;
+
 }

@@ -1,371 +1,194 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Query;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.Category;
 import com.seeka.app.bean.SeekaArticles;
-import com.seeka.app.bean.SubCategory;
-import com.seeka.app.dto.PageLookupDto;
-import com.seeka.app.dto.SearchDto;
-import com.seeka.app.dto.SubCategoryDto;
 
 @Repository
-@SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class ArticleDAO implements IArticleDAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+	@Autowired
+	private SessionFactory sessionFactory;
 
-    @Override
-    public List<SeekaArticles> getAll() {
-        Session session = sessionFactory.getCurrentSession();
-        List<SeekaArticles> list = session.createCriteria(SeekaArticles.class).list();
-        System.out.println("The List Of list: "+list.size());
-        return list;
-    }
+	@Override
+	public Integer getTotalSearchCount(final String searchKeyword) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
+		if (searchKeyword != null) {
+			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
+		}
+		List<Object[]> rows = criteria.list();
+		return rows.size();
+	}
 
-    @Override
-    public List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto) {
-        Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select id, heading, content, url, imagePath, created_at, category_id, subcategory_id from " + "seeka_articles order by created_at desc";
-        /*
-         * sqlQuery += " OFFSET (" + pageLookupDto.getPageNumber() + "-1)*" + pageLookupDto.getMaxSizePerPage() + " ROWS FETCH NEXT " + pageLookupDto.getMaxSizePerPage() +
-         * " ROWS ONLY";
-         */
-        sqlQuery = sqlQuery + " LIMIT " + pageLookupDto.getPageNumber() + " ," + pageLookupDto.getMaxSizePerPage();
-        System.out.println(sqlQuery);
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
+	@Override
+	public SeekaArticles save(final SeekaArticles article) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(article);
+		return article;
+	}
 
-        String totalQuery = "select count(*) from seeka_articles";
-        Query query1 = session.createSQLQuery(totalQuery);
-        List<Object[]> rows1 = query1.list();
+	@Override
+	public SeekaArticles findById(final BigInteger uId) {
+		Session session = sessionFactory.getCurrentSession();
+		return session.get(SeekaArticles.class, uId);
+	}
 
-        List<SeekaArticles> list = new ArrayList<SeekaArticles>();
-        SeekaArticles obj = null;
-        for (Object[] row : rows) {
-            obj = new SeekaArticles();
-            obj.setId(new BigInteger(String.valueOf(row[0])));
-            obj.setHeading(String.valueOf(row[1]));
-            obj.setContent(String.valueOf(row[2]));
-            obj.setUrl(String.valueOf(row[3]));
-            obj.setImagepath(String.valueOf(row[4]));
-            obj.setTotalCount(rows1.size());
+	@Override
+	public SeekaArticles deleteArticle(final SeekaArticles article) {
+		Session session = sessionFactory.getCurrentSession();
+		session.update(article);
+		return article;
 
-            if (String.valueOf(row[6]) != null && !String.valueOf(row[6]).equals("null")) {
-                obj.setCategory(session.get(Category.class, new BigInteger((String.valueOf(row[6])))));
+	}
 
-            }
-            if (String.valueOf(row[7]) != null && !String.valueOf(row[7]).equals("null")) {
-                SubCategory subCategory = session.get(SubCategory.class, new BigInteger((String.valueOf(row[7]))));
-                SubCategoryDto subCategoryDto = null;
-                if (subCategory != null) {
-                    subCategoryDto = new SubCategoryDto();
-                    subCategoryDto.setId(subCategory.getId());
-                    subCategoryDto.setName(subCategory.getName());
-                }
-                obj.setSubCategoryDropDownDto(subCategoryDto);
-            }
-            list.add(obj);
-        }
-        return list;
-    }
+	@Override
+	public List<SeekaArticles> getAll(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
+			final String searchKeyword, final List<BigInteger> categoryId, final List<String> tags, final Boolean status, final Date filterDate) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 
-    @Override
-    public SeekaArticles findById(BigInteger uId) {
-        SeekaArticles article = null;
-        Session session = sessionFactory.getCurrentSession();
-        try {
-            article = session.get(SeekaArticles.class, uId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return article;
-    }
+		if (searchKeyword != null) {
+			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
+		}
 
-    @Override
-    public void deleteArticle(SeekaArticles article) {
-        Session session = sessionFactory.getCurrentSession();
-        try {
-            session.update(article);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+		if ((categoryId != null) && !categoryId.isEmpty()) {
+			criteria.createAlias("category", "category");
+			criteria.add(Restrictions.in("category.id", categoryId));
+		}
 
-    @Override
-    public List<SeekaArticles> fetchAllArticleByPage(BigInteger page, BigInteger size, String queryValue, boolean status) {
-        int statusType = 0;
-        if (status) {
-            statusType = 1;
-        }
-        Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.active = "
-                        + statusType + " and sa.deleted_on IS NULL ORDER BY sa.created_at DESC ";
-        sqlQuery = sqlQuery + " LIMIT " + page + " ," + size;
-        System.out.println(sqlQuery);
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
-        List<SeekaArticles> articles = new ArrayList<SeekaArticles>();
-        for (Object[] row : rows) {
-            SeekaArticles article = new SeekaArticles();
-            article.setId(new BigInteger((String.valueOf(row[0]))));
-            article.setHeading(String.valueOf(row[1]));
-            article.setContent(String.valueOf(row[2]));
-            article.setImagepath(String.valueOf(row[3]));
-            article.setCreatedAt((Date) row[6]);
-            if (String.valueOf(row[7]) != null && !String.valueOf(row[7]).equals("null")) {
-                article.setCategory(session.get(Category.class, new BigInteger((String.valueOf(row[7])))));
-            }
-            if (String.valueOf(row[8]) != null && !String.valueOf(row[8]).equals("null")) {
-                SubCategory subCategory = session.get(SubCategory.class, new BigInteger((String.valueOf(row[8]))));
-                SubCategoryDto subCategoryDto = null;
-                if (subCategory != null) {
-                    subCategoryDto = new SubCategoryDto();
-                    subCategoryDto.setId(subCategory.getId());
-                    subCategoryDto.setName(subCategory.getName());
-                }
-                article.setSubCategoryDropDownDto(subCategoryDto);
-            }
+		if ((tags != null) && !tags.isEmpty()) {
+			criteria.add(Restrictions.in("tags", tags));
+		}
 
-            article.setLink(String.valueOf(row[9]));
-            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
-                article.setCountry(new BigInteger((String.valueOf(row[11]))));
-            }
-            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
-                article.setCity(new BigInteger((String.valueOf(row[12]))));
-            }
-            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
-                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
-            }
-            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
-                article.setCourses(new BigInteger((String.valueOf(row[14]))));
-            }
-            article.setGender(String.valueOf(row[15]));
-            articles.add(article);
-        }
-        return articles;
-    }
+		if (status != null) {
+			criteria.add(Restrictions.in("published", status));
+		}
 
-    @Override
-    public int findTotalCount() {
-        int status = 1;
-        Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select sa.id from seeka_articles sa where sa.active = " + status + " and sa.deleted_on IS NULL";
-        System.out.println(sqlQuery);
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
-        return rows.size();
-    }
+		if (filterDate != null) {
+			criteria.add(Restrictions.ge("createdAt", filterDate));
+			criteria.add(Restrictions.ge("createdAt", LocalDateTime.from(filterDate.toInstant()).plusDays(1)));
+		}
 
-    @Override
-    public SeekaArticles save(SeekaArticles article) {
-        try {
-            Session session = sessionFactory.getCurrentSession();
-            session.save(article);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return article;
-    }
+		if (sortByType != null) {
+			if ("ASC".equals(sortByType)) {
+				criteria.addOrder(Order.asc(sortByField));
+			} else {
+				criteria.addOrder(Order.desc(sortByField));
+			}
+		} else {
+			if ("ASC".equals(sortByType)) {
+				criteria.addOrder(Order.asc("seeka_article.heading"));
+			} else {
+				criteria.addOrder(Order.desc("seeka_article.heading"));
+			}
+		}
+		if ((startIndex != null) && (pageSize != null)) {
+			criteria.setFirstResult(startIndex);
+			criteria.setMaxResults(pageSize);
+		}
 
-    @Override
-    public void updateArticle(BigInteger subCAtegory, BigInteger id) {
-        try {
-            Session session = sessionFactory.getCurrentSession();
-            String query = "UPDATE seeka_articles SET subcategory_id = '" + subCAtegory + "' where id='" + id + "'";
-            session.createSQLQuery(query).executeUpdate();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+		return criteria.list();
+	}
 
-    }
+	@Override
+	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
+			final String searchKeyword, final List<BigInteger> categoryIdList, final List<String> tagList, final Boolean status, final Date date) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
+		if (searchKeyword != null) {
+			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
+		}
+		if ((categoryIdList != null) && !categoryIdList.isEmpty()) {
+			criteria.createAlias("category", "category");
+			criteria.add(Restrictions.in("category.id", categoryIdList));
+		}
 
-    @Override
-    public List<SeekaArticles> searchArticle(SearchDto articleDto) {
-        boolean status;
-        Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = null;
-        List<SeekaArticles> articles = new ArrayList<SeekaArticles>();
-        if (articleDto != null && articleDto.getCategory() != null && articleDto.getSubcategory() != null && articleDto.getStatus().equals("All")) {
-            sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.category_id = '"
-                            + articleDto.getCategory() + "' and sa.subcategory_id = '" + articleDto.getSubcategory() + "' and sa.deleted_on IS NULL ORDER BY sa.created_at DESC ";
-        } else if (articleDto != null && articleDto.getCategory() != null && articleDto.getSubcategory() != null && !articleDto.getStatus().equals("All")) {
-            if (articleDto.getStatus().equals("1")) {
-                status = true;
-            } else {
-                status = false;
-            }
-            sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.category_id = '"
-                            + articleDto.getCategory() + "' and sa.subcategory_id = '" + articleDto.getSubcategory() + "' and sa.active = '" + status
-                            + "'  and sa.deleted_on IS NULL ORDER BY sa.created_at DESC ";
-        } else if (articleDto != null && articleDto.getSubcategory() == null && articleDto.getStatus().equals("All")) {
-            sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.subcategory_id = '"
-                            + articleDto.getSubcategory() + "' and sa.deleted_on IS NULL ORDER BY sa.created_at DESC ";
-        } else if (articleDto != null && articleDto.getSubcategory() == null && !articleDto.getStatus().equals("All")) {
-            if (articleDto.getStatus().equals("1")) {
-                status = true;
-            } else {
-                status = false;
-            }
-            sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.subcategory_id = '"
-                            + articleDto.getSubcategory() + "' and sa.active = '" + status + "'  and sa.deleted_on IS NULL ORDER BY sa.created_at DESC ";
-        }
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
-        for (Object[] row : rows) {
-            SeekaArticles article = new SeekaArticles();
-            article.setId(new BigInteger((String.valueOf(row[0]))));
-            article.setHeading(String.valueOf(row[1]));
-            article.setContent(String.valueOf(row[2]));
-            article.setImagepath(String.valueOf(row[3]));
-            article.setCreatedAt((Date) row[6]);
-            if (String.valueOf(row[7]) != null && !String.valueOf(row[7]).equals("null")) {
-                article.setCategory(session.get(Category.class, new BigInteger((String.valueOf(row[7])))));
+		if ((tagList != null) && !tagList.isEmpty()) {
+			criteria.add(Restrictions.in("tags", tagList));
+		}
 
-            }
-            if (String.valueOf(row[8]) != null) {
-                SubCategory subCategory = session.get(SubCategory.class, new BigInteger((String.valueOf(row[8]))));
-                SubCategoryDto subCategoryDto = null;
-                if (subCategory != null) {
-                    subCategoryDto = new SubCategoryDto();
-                    subCategoryDto.setId(subCategory.getId());
-                    subCategoryDto.setName(subCategory.getName());
-                }
-                article.setSubCategoryDropDownDto(subCategoryDto);
-            }
+		if (status != null) {
+			criteria.add(Restrictions.in("published", status));
+		}
 
-            article.setLink(String.valueOf(row[9]));
-            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
-                article.setCountry(new BigInteger((String.valueOf(row[11]))));
-            }
-            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
-                article.setCity(new BigInteger((String.valueOf(row[12]))));
-            }
-            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
-                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
-            }
-            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
-                article.setCourses(new BigInteger((String.valueOf(row[14]))));
-            }
-            article.setGender(String.valueOf(row[15]));
-            articles.add(article);
-        }
-        return articles;
-    }
+		if (date != null) {
+			criteria.add(Restrictions.ge("createdAt", date));
+			criteria.add(Restrictions.ge("createdAt", LocalDateTime.from(date.toInstant()).plusDays(1)));
+		}
+		if (sortByType != null) {
+			if ("ASC".equals(sortByType)) {
+				criteria.addOrder(Order.asc(sortByField));
+			} else {
+				criteria.addOrder(Order.desc(sortByField));
+			}
+		}
+		List<Object[]> rows = criteria.list();
+		return rows.size();
+	}
 
-    @Override
-    public List<SeekaArticles> articleByFilter(String sqlQuery) {
-        Session session = sessionFactory.getCurrentSession();
-        System.out.println(sqlQuery);
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
-        List<SeekaArticles> articles = new ArrayList<SeekaArticles>();
-        for (Object[] row : rows) {
-            SeekaArticles article = new SeekaArticles();
-            article.setId(new BigInteger((String.valueOf(row[0]))));
-            article.setHeading(String.valueOf(row[1]));
-            article.setContent(String.valueOf(row[2]));
-            article.setImagepath(String.valueOf(row[3]));
-            article.setCreatedAt((Date) row[6]);
-            if (String.valueOf(row[7]) != null && !String.valueOf(row[7]).equals("null")) {
-                article.setCategory(session.get(Category.class, new BigInteger((String.valueOf(row[7])))));
-            }
-            if (String.valueOf(row[8]) != null && !String.valueOf(row[8]).equals("null")) {
-                SubCategory subCategory = session.get(SubCategory.class, new BigInteger((String.valueOf(row[8]))));
-                SubCategoryDto subCategoryDto = null;
-                if (subCategory != null) {
-                    subCategoryDto = new SubCategoryDto();
-                    subCategoryDto.setId(subCategory.getId());
-                    subCategoryDto.setName(subCategory.getName());
-                }
-                article.setSubCategoryDropDownDto(subCategoryDto);
-            }
+	@Override
+	public List<String> getAuthors(final int startIndex, final Integer pageSize, final String searchString) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
+		if ((searchString != null) && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
+			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
+		}
+		criteria.setFirstResult(startIndex);
+		criteria.setMaxResults(pageSize);
+		criteria.add(Restrictions.isNotNull("article.author"));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.distinct(Projections.property("article.author")));
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		criteria.addOrder(Order.desc("article.postDate"));
+		return criteria.list();
+	}
 
-            article.setLink(String.valueOf(row[9]));
-            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
-                article.setCountry(new BigInteger((String.valueOf(row[11]))));
-            }
-            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
-                article.setCity(new BigInteger((String.valueOf(row[12]))));
-            }
-            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
-                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
-            }
-            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
-                article.setCourses(new BigInteger((String.valueOf(row[14]))));
-            }
-            article.setGender(String.valueOf(row[15]));
-            articles.add(article);
-        }
-        return articles;
-    }
+	@Override
+	public int getTotalAuthorCount(final String searchString) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
+		if ((searchString != null) && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
+			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
+		}
+		criteria.add(Restrictions.isNotNull("article.author"));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.distinct(Projections.property("article.author")));
+		criteria.setProjection(projectionList);
+		List<String> count = criteria.list();
+		return count != null ? count.size() : 0;
+	}
 
-    @Override
-    public int findTotalCountBasedOnCondition(String countQuery) {
-        Session session = sessionFactory.getCurrentSession();
-        System.out.println(countQuery);
-        Query query = session.createSQLQuery(countQuery);
-        List<Object[]> rows = query.list();
-        return rows.size();
-    }
+	@Override
+	public List<SeekaArticles> findArticleByCountryId(final BigInteger countryId, final String categoryName, final Integer count,
+			final List<BigInteger> viewArticleIds) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
+		criteria.createAlias("article.country", "country");
+		criteria.createAlias("article.category", "category");
+		criteria.add(Restrictions.in("country.id", countryId));
+		criteria.add(Restrictions.in("category.name", categoryName));
+		criteria.add(Restrictions.not(Restrictions.in("article.id", viewArticleIds)));
+		criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
+		criteria.setFirstResult(0);
+		criteria.setMaxResults(count);
+		return criteria.list();
+	}
 
-    @Override
-    public List<SeekaArticles> searchBasedOnNameAndContent(String searchText) {
-        Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select sa.id, sa.heading, sa.content, sa.imagepath, sa.active, sa.deleted_on, sa.created_at, sa.category_id, sa.subcategory_id, sa.link, sa.updated_at, sa.country, sa.city, sa.institute, sa.courses, sa.gender from seeka_articles sa where sa.active = 1"
-                        + " and sa.deleted_on IS NULL and (sa.heading like '%" + searchText.trim() + "%' or sa.content like '%" + searchText.trim()
-                        + "%') ORDER BY sa.created_at DESC ";
-        System.out.println(sqlQuery);
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
-        List<SeekaArticles> articles = new ArrayList<SeekaArticles>();
-        for (Object[] row : rows) {
-            SeekaArticles article = new SeekaArticles();
-            article.setId(new BigInteger((String.valueOf(row[0]))));
-            article.setHeading(String.valueOf(row[1]));
-            article.setContent(String.valueOf(row[2]));
-            article.setImagepath(String.valueOf(row[3]));
-            article.setCreatedAt((Date) row[6]);
-            if (String.valueOf(row[7]) != null && !String.valueOf(row[7]).equals("null")) {
-                article.setCategory(session.get(Category.class, new BigInteger((String.valueOf(row[7])))));
-            }
-            if (String.valueOf(row[8]) != null && !String.valueOf(row[8]).equals("null")) {
-                SubCategory subCategory = session.get(SubCategory.class, new BigInteger((String.valueOf(row[8]))));
-                SubCategoryDto subCategoryDto = null;
-                if (subCategory != null) {
-                    subCategoryDto = new SubCategoryDto();
-                    subCategoryDto.setId(subCategory.getId());
-                    subCategoryDto.setName(subCategory.getName());
-                }
-                article.setSubCategoryDropDownDto(subCategoryDto);
-            }
-
-            article.setLink(String.valueOf(row[9]));
-            if (String.valueOf(row[11]) != null && !String.valueOf(row[11]).equals("null")) {
-                article.setCountry(new BigInteger((String.valueOf(row[11]))));
-            }
-            if (String.valueOf(row[12]) != null && !String.valueOf(row[12]).equals("null")) {
-                article.setCity(new BigInteger((String.valueOf(row[12]))));
-            }
-            if (String.valueOf(row[13]) != null && !String.valueOf(row[13]).equals("null")) {
-                article.setInstitute(new BigInteger((String.valueOf(row[13]))));
-            }
-            if (String.valueOf(row[14]) != null && !String.valueOf(row[14]).equals("null")) {
-                article.setCourses(new BigInteger((String.valueOf(row[14]))));
-            }
-            article.setGender(String.valueOf(row[15]));
-            articles.add(article);
-        }
-        return articles;
-    }
 }

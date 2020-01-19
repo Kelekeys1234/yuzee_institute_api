@@ -93,4 +93,14 @@ public class CityService implements ICityService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<City> getAllCityNames(Integer pageNumber, Integer pageSize, String searchString) {
+		return iCityDAO.getAllCityNames(pageNumber, pageSize, searchString);
+	}
+
+	@Override
+	public Integer getAllCityNamesCount(String searchString) {
+		return iCityDAO.getAllCityNamesCount(searchString);
+	}
 }

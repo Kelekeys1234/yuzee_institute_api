@@ -1,27 +1,45 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
-
-import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.seeka.app.bean.AuditErrorReport;
+import com.seeka.app.bean.ErrorReportCategory;
+import com.seeka.app.dto.ErrorReportCategoryDto;
 import com.seeka.app.dto.ErrorReportDto;
+import com.seeka.app.dto.ErrorReportResponseDto;
+import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.exception.ValidationException;
 
 public interface IErrorReportService {
 
-    public ResponseEntity<?> save(ErrorReportDto errorReport);
-    
-    public ResponseEntity<?> update(ErrorReportDto errorReport, BigInteger id);
+	void save(ErrorReportDto errorReport) throws ValidationException;
 
-    public ResponseEntity<?> getErrorReportByUserId(BigInteger userId);
-    
-    public ResponseEntity<?> getErrorReportById(BigInteger id);
+	void update(ErrorReportDto errorReport, BigInteger id) throws ValidationException;
 
-    public ResponseEntity<?> getAllErrorReport();
+	ErrorReportResponseDto getErrorReportById(BigInteger id) throws ValidationException;
 
-    public ResponseEntity<?> deleteByUserId(@Valid BigInteger userId);
+	List<ErrorReportResponseDto> getAllErrorReport(BigInteger userId, Integer startIndex, Integer pageSize, BigInteger errorReportCategoryId,
+			String errorReportStatus, Date updatedOn, Boolean isFavourite, Boolean isArchive, String sortByField, String sortByType, String searchKeyword)
+			throws ValidationException;
 
-    public ResponseEntity<?> getAllErrorCategory(String errorCategoryType);
+	ResponseEntity<?> deleteByUserId(BigInteger userId);
 
+	List<ErrorReportCategory> getAllErrorCategory(String errorCategoryType);
+
+	int getErrorReportCount(BigInteger userId, BigInteger errorReportCategoryId, String errorReportStatus, Date updatedOn, Boolean isFavourite,
+			Boolean isArchive, String searchKeyword);
+
+	void setIsFavouriteFlag(BigInteger errorRepoetId, boolean isFavourite) throws NotFoundException;
+
+	void deleteByErrorReportId(BigInteger errorReportId);
+
+	void saveErrorReportCategory(ErrorReportCategoryDto errorReportCategoryDto);
+
+	List<AuditErrorReport> getAuditListByErrorReport(BigInteger errorReportId);
+
+	void archiveErrorReport(BigInteger errorReportId, boolean isArchive) throws ValidationException;
 }

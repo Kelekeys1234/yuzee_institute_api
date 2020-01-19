@@ -7,6 +7,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Todo;
+import com.seeka.app.dto.TodoFolder;
 
 @Repository
 @Transactional
@@ -97,5 +99,22 @@ public class TodoDao implements ITodoDao {
             exception.printStackTrace();
         }
         return todos;
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public List<TodoFolder> getTodoFolder() {
+        List<TodoFolder> todoFolders = new ArrayList<TodoFolder>();
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("SELECT sc.id, sc.name as name FROM todo_folder ");
+        List<Object[]> rows = query.list();
+        TodoFolder todoFolder = null;
+        for (Object[] row : rows) {
+            todoFolder = new TodoFolder();
+            todoFolder.setId(new BigInteger((row[0].toString())));
+            todoFolder.setName(row[1].toString());
+            todoFolders.add(todoFolder);
+        }
+        return todoFolders;
     }
 }

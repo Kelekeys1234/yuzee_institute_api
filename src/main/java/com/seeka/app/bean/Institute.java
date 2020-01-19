@@ -46,14 +46,10 @@ public class Institute implements Serializable {
 	private String updatedBy;
 	private Boolean isDeleted;
 
-	private String logoUrl;
-	private String imageUrl;
-	private InstituteDetails instituteDetailsObj;
 	private List<InstituteService> serviceList;
 	private String description;
 
 	private Integer worldRanking;
-	private String accreditation;
 	private String website;
 	private String address;
 	private Integer totalStudent;
@@ -61,30 +57,23 @@ public class Institute implements Serializable {
 	private Double longitude;
 	private String email;
 	private String avgCostOfLiving;
-	private String campus;
 	private String phoneNumber;
 	private String campusType;
-	private String lastUpdated;
 	private String openingFrom;
 	private String openingTo;
 	private String campusName;
 	private InstituteCategoryType instituteCategoryType;
 
-	private String enrolment;
+	private String enrolmentLink;
 	private String tuitionFessPaymentPlan;
 	private String scholarshipFinancingAssistance;
 
 	private Integer courseCount;
-	private String worldRankingType;
-
-	@Transient
-	public String getLastUpdated() {
-		return lastUpdated;
-	}
-
-	public void setLastUpdated(final String lastUpdated) {
-		this.lastUpdated = lastUpdated;
-	}
+	private String whatsNo;
+	private String aboutInfo;
+	private String courseStart;
+	private String lastUpdated;
+	private Integer domesticRanking;
 
 	public Institute() {
 	}
@@ -221,51 +210,6 @@ public class Institute implements Serializable {
 	}
 
 	/**
-	 * @return the logoUrl
-	 */
-	@Transient
-	public String getLogoUrl() {
-		return logoUrl;
-	}
-
-	/**
-	 * @param logoUrl the logoUrl to set
-	 */
-	public void setLogoUrl(final String logoUrl) {
-		this.logoUrl = logoUrl;
-	}
-
-	/**
-	 * @return the imageUrl
-	 */
-	@Transient
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	/**
-	 * @param imageUrl the imageUrl to set
-	 */
-	public void setImageUrl(final String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
-	/**
-	 * @return the instituteDetailsObj
-	 */
-	@Transient
-	public InstituteDetails getInstituteDetailsObj() {
-		return instituteDetailsObj;
-	}
-
-	/**
-	 * @param instituteDetailsObj the instituteDetailsObj to set
-	 */
-	public void setInstituteDetailsObj(final InstituteDetails instituteDetailsObj) {
-		this.instituteDetailsObj = instituteDetailsObj;
-	}
-
-	/**
 	 * @return the serviceList
 	 */
 	@Transient
@@ -280,30 +224,360 @@ public class Institute implements Serializable {
 		this.serviceList = serviceList;
 	}
 
+	/**
+	 * @return the description
+	 */
+	@Column(name = "description")
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @return the worldRanking
+	 */
+	@Column(name = "world_ranking")
+	public Integer getWorldRanking() {
+		return worldRanking;
+	}
+
+	/**
+	 * @param worldRanking the worldRanking to set
+	 */
+	public void setWorldRanking(final Integer worldRanking) {
+		this.worldRanking = worldRanking;
+	}
+
+	/**
+	 * @return the website
+	 */
+	@Column(name = "website")
+	public String getWebsite() {
+		return website;
+	}
+
+	/**
+	 * @param website the website to set
+	 */
+	public void setWebsite(final String website) {
+		this.website = website;
+	}
+
+	/**
+	 * @return the address
+	 */
+	@Column(name = "address")
+	public String getAddress() {
+		return address;
+	}
+
+	/**
+	 * @param address the address to set
+	 */
+	public void setAddress(final String address) {
+		this.address = address;
+	}
+
+	/**
+	 * @return the totalStudent
+	 */
+	@Column(name = "total_student")
+	public Integer getTotalStudent() {
+		return totalStudent;
+	}
+
+	/**
+	 * @param totalStudent the totalStudent to set
+	 */
+	public void setTotalStudent(final Integer totalStudent) {
+		this.totalStudent = totalStudent;
+	}
+
+	/**
+	 * @return the latitute
+	 */
+	@Column(name = "latitute")
+	public Double getLatitute() {
+		return latitute;
+	}
+
+	/**
+	 * @param latitute the latitute to set
+	 */
+	public void setLatitute(final Double latitute) {
+		this.latitute = latitute;
+	}
+
+	/**
+	 * @return the longitude
+	 */
+	@Column(name = "longitute")
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	/**
+	 * @param longitude the longitude to set
+	 */
+	public void setLongitude(final Double longitude) {
+		this.longitude = longitude;
+	}
+
+	/**
+	 * @return the email
+	 */
+	@Column(name = "email")
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(final String email) {
+		this.email = email;
+	}
+
+	/**
+	 * @return the avgCostOfLiving
+	 */
+	@Column(name = "avg_cost_of_living")
+	public String getAvgCostOfLiving() {
+		return avgCostOfLiving;
+	}
+
+	/**
+	 * @param avgCostOfLiving the avgCostOfLiving to set
+	 */
+	public void setAvgCostOfLiving(final String avgCostOfLiving) {
+		this.avgCostOfLiving = avgCostOfLiving;
+	}
+
+	/**
+	 * @return the phoneNumber
+	 */
+	@Column(name = "phone_number")
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	/**
+	 * @param phoneNumber the phoneNumber to set
+	 */
+	public void setPhoneNumber(final String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	/**
+	 * @return the campusType
+	 */
+	@Column(name = "campus_type")
+	public String getCampusType() {
+		return campusType;
+	}
+
+	/**
+	 * @param campusType the campusType to set
+	 */
+	public void setCampusType(final String campusType) {
+		this.campusType = campusType;
+	}
+
+	@Column(name = "opening_from")
+	public String getOpeningFrom() {
+		return openingFrom;
+	}
+
+	public void setOpeningFrom(final String openingFrom) {
+		this.openingFrom = openingFrom;
+	}
+
+	@Column(name = "opening_to")
+	public String getOpeningTo() {
+		return openingTo;
+	}
+
+	public void setOpeningTo(final String openingTo) {
+		this.openingTo = openingTo;
+	}
+
+	@Column(name = "campus_name")
+	public String getCampusName() {
+		return campusName;
+	}
+
+	public void setCampusName(final String campusName) {
+		this.campusName = campusName;
+	}
+
+	/**
+	 * @return the instituteCategoryType
+	 */
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "institute_category_type_id")
+	public InstituteCategoryType getInstituteCategoryType() {
+		return instituteCategoryType;
+	}
+
+	/**
+	 * @param instituteCategoryType the instituteCategoryType to set
+	 */
+	public void setInstituteCategoryType(final InstituteCategoryType instituteCategoryType) {
+		this.instituteCategoryType = instituteCategoryType;
+	}
+
+	/**
+	 * @return the enrolment
+	 */
+	@Column(name = "enrolment_link")
+	public String getEnrolmentLink() {
+		return enrolmentLink;
+	}
+
+	/**
+	 * @param enrolment the enrolment to set
+	 */
+	public void setEnrolmentLink(final String enrolmentLink) {
+		this.enrolmentLink = enrolmentLink;
+	}
+
+	/**
+	 * @return the tuitionFessPaymentPlan
+	 */
+	@Column(name = "ttion_fees_p_plan")
+	public String getTuitionFessPaymentPlan() {
+		return tuitionFessPaymentPlan;
+	}
+
+	/**
+	 * @param tuitionFessPaymentPlan the tuitionFessPaymentPlan to set
+	 */
+	public void setTuitionFessPaymentPlan(final String tuitionFessPaymentPlan) {
+		this.tuitionFessPaymentPlan = tuitionFessPaymentPlan;
+	}
+
+	/**
+	 * @return the scholarshipFinancingAssistance
+	 */
+	@Column(name = "scholarship_financing_assistance")
+	public String getScholarshipFinancingAssistance() {
+		return scholarshipFinancingAssistance;
+	}
+
+	/**
+	 * @param scholarshipFinancingAssistance the scholarshipFinancingAssistance to
+	 *                                       set
+	 */
+	public void setScholarshipFinancingAssistance(final String scholarshipFinancingAssistance) {
+		this.scholarshipFinancingAssistance = scholarshipFinancingAssistance;
+	}
+
+	/**
+	 * @return the courseCount
+	 */
+	@Transient
+	public Integer getCourseCount() {
+		return courseCount;
+	}
+
+	/**
+	 * @param courseCount the courseCount to set
+	 */
+	public void setCourseCount(final Integer courseCount) {
+		this.courseCount = courseCount;
+	}
+
+	/**
+	 * @return the whatsNo
+	 */
+	@Column(name = "whatsapp_no", length = 100)
+	public String getWhatsNo() {
+		return whatsNo;
+	}
+
+	/**
+	 * @param whatsNo the whatsNo to set
+	 */
+	public void setWhatsNo(final String whatsNo) {
+		this.whatsNo = whatsNo;
+	}
+
+	/**
+	 * @return the aboutInfo
+	 */
+	@Column(name = "about_us_info")
+	public String getAboutInfo() {
+		return aboutInfo;
+	}
+
+	/**
+	 * @param aboutInfo the aboutInfo to set
+	 */
+	public void setAboutInfo(final String aboutInfo) {
+		this.aboutInfo = aboutInfo;
+	}
+
+	/**
+	 * @return the courseStart
+	 */
+	@Column(name = "course_start", length = 100)
+	public String getCourseStart() {
+		return courseStart;
+	}
+
+	/**
+	 * @param courseStart the courseStart to set
+	 */
+	public void setCourseStart(final String courseStart) {
+		this.courseStart = courseStart;
+	}
+
+	@Transient
+	public String getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(final String lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	@Column(name = "domestic_ranking")
+	public Integer getDomesticRanking() {
+		return domesticRanking;
+	}
+
+	public void setDomesticRanking(final Integer domesticRanking) {
+		this.domesticRanking = domesticRanking;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (accreditation == null ? 0 : accreditation.hashCode());
+		result = prime * result + (aboutInfo == null ? 0 : aboutInfo.hashCode());
 		result = prime * result + (address == null ? 0 : address.hashCode());
 		result = prime * result + (avgCostOfLiving == null ? 0 : avgCostOfLiving.hashCode());
-		result = prime * result + (campus == null ? 0 : campus.hashCode());
 		result = prime * result + (campusName == null ? 0 : campusName.hashCode());
 		result = prime * result + (campusType == null ? 0 : campusType.hashCode());
 		result = prime * result + (city == null ? 0 : city.hashCode());
 		result = prime * result + (country == null ? 0 : country.hashCode());
 		result = prime * result + (courseCount == null ? 0 : courseCount.hashCode());
+		result = prime * result + (courseStart == null ? 0 : courseStart.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
 		result = prime * result + (description == null ? 0 : description.hashCode());
+		result = prime * result + (domesticRanking == null ? 0 : domesticRanking.hashCode());
 		result = prime * result + (email == null ? 0 : email.hashCode());
-		result = prime * result + (enrolment == null ? 0 : enrolment.hashCode());
+		result = prime * result + (enrolmentLink == null ? 0 : enrolmentLink.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (instituteCategoryType == null ? 0 : instituteCategoryType.hashCode());
-		result = prime * result + (instituteDetailsObj == null ? 0 : instituteDetailsObj.hashCode());
-		result = prime * result + (imageUrl == null ? 0 : imageUrl.hashCode());
-		result = prime * result + (logoUrl == null ? 0 : logoUrl.hashCode());
 		result = prime * result + (instituteType == null ? 0 : instituteType.hashCode());
 		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
 		result = prime * result + (isDeleted == null ? 0 : isDeleted.hashCode());
@@ -321,8 +595,8 @@ public class Institute implements Serializable {
 		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
 		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
 		result = prime * result + (website == null ? 0 : website.hashCode());
+		result = prime * result + (whatsNo == null ? 0 : whatsNo.hashCode());
 		result = prime * result + (worldRanking == null ? 0 : worldRanking.hashCode());
-		result = prime * result + (worldRankingType == null ? 0 : worldRankingType.hashCode());
 		return result;
 	}
 
@@ -338,11 +612,11 @@ public class Institute implements Serializable {
 			return false;
 		}
 		Institute other = (Institute) obj;
-		if (accreditation == null) {
-			if (other.accreditation != null) {
+		if (aboutInfo == null) {
+			if (other.aboutInfo != null) {
 				return false;
 			}
-		} else if (!accreditation.equals(other.accreditation)) {
+		} else if (!aboutInfo.equals(other.aboutInfo)) {
 			return false;
 		}
 		if (address == null) {
@@ -357,13 +631,6 @@ public class Institute implements Serializable {
 				return false;
 			}
 		} else if (!avgCostOfLiving.equals(other.avgCostOfLiving)) {
-			return false;
-		}
-		if (campus == null) {
-			if (other.campus != null) {
-				return false;
-			}
-		} else if (!campus.equals(other.campus)) {
 			return false;
 		}
 		if (campusName == null) {
@@ -401,6 +668,13 @@ public class Institute implements Serializable {
 		} else if (!courseCount.equals(other.courseCount)) {
 			return false;
 		}
+		if (courseStart == null) {
+			if (other.courseStart != null) {
+				return false;
+			}
+		} else if (!courseStart.equals(other.courseStart)) {
+			return false;
+		}
 		if (createdBy == null) {
 			if (other.createdBy != null) {
 				return false;
@@ -429,6 +703,13 @@ public class Institute implements Serializable {
 		} else if (!description.equals(other.description)) {
 			return false;
 		}
+		if (domesticRanking == null) {
+			if (other.domesticRanking != null) {
+				return false;
+			}
+		} else if (!domesticRanking.equals(other.domesticRanking)) {
+			return false;
+		}
 		if (email == null) {
 			if (other.email != null) {
 				return false;
@@ -436,11 +717,11 @@ public class Institute implements Serializable {
 		} else if (!email.equals(other.email)) {
 			return false;
 		}
-		if (enrolment == null) {
-			if (other.enrolment != null) {
+		if (enrolmentLink == null) {
+			if (other.enrolmentLink != null) {
 				return false;
 			}
-		} else if (!enrolment.equals(other.enrolment)) {
+		} else if (!enrolmentLink.equals(other.enrolmentLink)) {
 			return false;
 		}
 		if (id == null) {
@@ -455,27 +736,6 @@ public class Institute implements Serializable {
 				return false;
 			}
 		} else if (!instituteCategoryType.equals(other.instituteCategoryType)) {
-			return false;
-		}
-		if (instituteDetailsObj == null) {
-			if (other.instituteDetailsObj != null) {
-				return false;
-			}
-		} else if (!instituteDetailsObj.equals(other.instituteDetailsObj)) {
-			return false;
-		}
-		if (imageUrl == null) {
-			if (other.imageUrl != null) {
-				return false;
-			}
-		} else if (!imageUrl.equals(other.imageUrl)) {
-			return false;
-		}
-		if (logoUrl == null) {
-			if (other.logoUrl != null) {
-				return false;
-			}
-		} else if (!logoUrl.equals(other.logoUrl)) {
 			return false;
 		}
 		if (instituteType == null) {
@@ -597,18 +857,18 @@ public class Institute implements Serializable {
 		} else if (!website.equals(other.website)) {
 			return false;
 		}
+		if (whatsNo == null) {
+			if (other.whatsNo != null) {
+				return false;
+			}
+		} else if (!whatsNo.equals(other.whatsNo)) {
+			return false;
+		}
 		if (worldRanking == null) {
 			if (other.worldRanking != null) {
 				return false;
 			}
 		} else if (!worldRanking.equals(other.worldRanking)) {
-			return false;
-		}
-		if (worldRankingType == null) {
-			if (other.worldRankingType != null) {
-				return false;
-			}
-		} else if (!worldRankingType.equals(other.worldRankingType)) {
 			return false;
 		}
 		return true;
@@ -620,332 +880,17 @@ public class Institute implements Serializable {
 		builder.append("Institute [id=").append(id).append(", city=").append(city).append(", country=").append(country).append(", instituteType=")
 				.append(instituteType).append(", name=").append(name).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
 				.append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
-				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", logoUrl=").append(logoUrl).append(", imageUrl=")
-				.append(imageUrl).append(", instituteDetailsObj=").append(instituteDetailsObj).append(", serviceList=").append(serviceList)
-				.append(", description=").append(description).append(", worldRanking=").append(worldRanking).append(", accreditation=").append(accreditation)
-				.append(", website=").append(website).append(", address=").append(address).append(", totalStudent=").append(totalStudent).append(", latitute=")
-				.append(latitute).append(", longitude=").append(longitude).append(", email=").append(email).append(", avgCostOfLiving=").append(avgCostOfLiving)
-				.append(", campus=").append(campus).append(", phoneNumber=").append(phoneNumber).append(", campusType=").append(campusType)
-				.append(", lastUpdated=").append(lastUpdated).append(", openingFrom=").append(openingFrom).append(", openingTo=").append(openingTo)
-				.append(", campusName=").append(campusName).append(", instituteCategoryType=").append(instituteCategoryType).append(", enrolment=")
-				.append(enrolment).append(", tuitionFessPaymentPlan=").append(tuitionFessPaymentPlan).append(", scholarshipFinancingAssistance=")
-				.append(scholarshipFinancingAssistance).append(", courseCount=").append(courseCount).append(", worldRankingType=").append(worldRankingType)
-				.append("]");
+				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", serviceList=").append(serviceList)
+				.append(", description=").append(description).append(", worldRanking=").append(worldRanking).append(", website=").append(website)
+				.append(", address=").append(address).append(", totalStudent=").append(totalStudent).append(", latitute=").append(latitute)
+				.append(", longitude=").append(longitude).append(", email=").append(email).append(", avgCostOfLiving=").append(avgCostOfLiving)
+				.append(", phoneNumber=").append(phoneNumber).append(", campusType=").append(campusType).append(", openingFrom=").append(openingFrom)
+				.append(", openingTo=").append(openingTo).append(", campusName=").append(campusName).append(", instituteCategoryType=")
+				.append(instituteCategoryType).append(", enrolmentLink=").append(enrolmentLink).append(", tuitionFessPaymentPlan=")
+				.append(tuitionFessPaymentPlan).append(", scholarshipFinancingAssistance=").append(scholarshipFinancingAssistance).append(", courseCount=")
+				.append(courseCount).append(", whatsNo=").append(whatsNo).append(", aboutInfo=").append(aboutInfo).append(", courseStart=").append(courseStart)
+				.append(", lastUpdated=").append(lastUpdated).append(", domesticRanking=").append(domesticRanking).append("]");
 		return builder.toString();
-	}
-
-	/**
-	 * @return the description
-	 */
-	@Column(name = "description")
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @return the worldRanking
-	 */
-	@Column(name = "world_ranking")
-	public Integer getWorldRanking() {
-		return worldRanking;
-	}
-
-	/**
-	 * @param worldRanking the worldRanking to set
-	 */
-	public void setWorldRanking(final Integer worldRanking) {
-		this.worldRanking = worldRanking;
-	}
-
-	/**
-	 * @return the accreditation
-	 */
-	@Column(name = "accreditation")
-	public String getAccreditation() {
-		return accreditation;
-	}
-
-	/**
-	 * @param accreditation the accreditation to set
-	 */
-	public void setAccreditation(final String accreditation) {
-		this.accreditation = accreditation;
-	}
-
-	/**
-	 * @return the website
-	 */
-	@Column(name = "website")
-	public String getWebsite() {
-		return website;
-	}
-
-	/**
-	 * @param website the website to set
-	 */
-	public void setWebsite(final String website) {
-		this.website = website;
-	}
-
-	/**
-	 * @return the address
-	 */
-	@Column(name = "address")
-	public String getAddress() {
-		return address;
-	}
-
-	/**
-	 * @param address the address to set
-	 */
-	public void setAddress(final String address) {
-		this.address = address;
-	}
-
-	/**
-	 * @return the totalStudent
-	 */
-	@Column(name = "total_student")
-	public Integer getTotalStudent() {
-		return totalStudent;
-	}
-
-	/**
-	 * @param totalStudent the totalStudent to set
-	 */
-	public void setTotalStudent(final Integer totalStudent) {
-		this.totalStudent = totalStudent;
-	}
-
-	/**
-	 * @return the latitute
-	 */
-	@Column(name = "latitute")
-	public Double getLatitute() {
-		return latitute;
-	}
-
-	/**
-	 * @param latitute the latitute to set
-	 */
-	public void setLatitute(final Double latitute) {
-		this.latitute = latitute;
-	}
-
-	/**
-	 * @return the longitude
-	 */
-	@Column(name = "longitute")
-	public Double getLongitude() {
-		return longitude;
-	}
-
-	/**
-	 * @param longitude the longitude to set
-	 */
-	public void setLongitude(final Double longitude) {
-		this.longitude = longitude;
-	}
-
-	/**
-	 * @return the email
-	 */
-	@Column(name = "email")
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(final String email) {
-		this.email = email;
-	}
-
-	/**
-	 * @return the avgCostOfLiving
-	 */
-	@Column(name = "avg_cost_of_living")
-	public String getAvgCostOfLiving() {
-		return avgCostOfLiving;
-	}
-
-	/**
-	 * @param avgCostOfLiving the avgCostOfLiving to set
-	 */
-	public void setAvgCostOfLiving(final String avgCostOfLiving) {
-		this.avgCostOfLiving = avgCostOfLiving;
-	}
-
-	/**
-	 * @return the campus
-	 */
-	@Column(name = "campus")
-	public String getCampus() {
-		return campus;
-	}
-
-	/**
-	 * @param campus the campus to set
-	 */
-	public void setCampus(final String campus) {
-		this.campus = campus;
-	}
-
-	/**
-	 * @return the phoneNumber
-	 */
-	@Column(name = "phone_number")
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	/**
-	 * @param phoneNumber the phoneNumber to set
-	 */
-	public void setPhoneNumber(final String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
-	/**
-	 * @return the campusType
-	 */
-	@Column(name = "campus_type")
-	public String getCampusType() {
-		return campusType;
-	}
-
-	/**
-	 * @param campusType the campusType to set
-	 */
-	public void setCampusType(final String campusType) {
-		this.campusType = campusType;
-	}
-
-	@Column(name = "opening_from")
-	public String getOpeningFrom() {
-		return openingFrom;
-	}
-
-	public void setOpeningFrom(final String openingFrom) {
-		this.openingFrom = openingFrom;
-	}
-
-	@Column(name = "opening_to")
-	public String getOpeningTo() {
-		return openingTo;
-	}
-
-	public void setOpeningTo(final String openingTo) {
-		this.openingTo = openingTo;
-	}
-
-	@Column(name = "campus_name")
-	public String getCampusName() {
-		return campusName;
-	}
-
-	public void setCampusName(final String campusName) {
-		this.campusName = campusName;
-	}
-
-	/**
-	 * @return the instituteCategoryType
-	 */
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "institute_category_type_id")
-	public InstituteCategoryType getInstituteCategoryType() {
-		return instituteCategoryType;
-	}
-
-	/**
-	 * @param instituteCategoryType the instituteCategoryType to set
-	 */
-	public void setInstituteCategoryType(final InstituteCategoryType instituteCategoryType) {
-		this.instituteCategoryType = instituteCategoryType;
-	}
-
-	/**
-	 * @return the enrolment
-	 */
-	@Column(name = "enrolment_link")
-	public String getEnrolment() {
-		return enrolment;
-	}
-
-	/**
-	 * @param enrolment the enrolment to set
-	 */
-	public void setEnrolment(final String enrolment) {
-		this.enrolment = enrolment;
-	}
-
-	/**
-	 * @return the tuitionFessPaymentPlan
-	 */
-	@Column(name = "ttion_fees_p_plan")
-	public String getTuitionFessPaymentPlan() {
-		return tuitionFessPaymentPlan;
-	}
-
-	/**
-	 * @param tuitionFessPaymentPlan the tuitionFessPaymentPlan to set
-	 */
-	public void setTuitionFessPaymentPlan(final String tuitionFessPaymentPlan) {
-		this.tuitionFessPaymentPlan = tuitionFessPaymentPlan;
-	}
-
-	/**
-	 * @return the scholarshipFinancingAssistance
-	 */
-	@Column(name = "scholarship_financing_assistance")
-	public String getScholarshipFinancingAssistance() {
-		return scholarshipFinancingAssistance;
-	}
-
-	/**
-	 * @param scholarshipFinancingAssistance the scholarshipFinancingAssistance to
-	 *                                       set
-	 */
-	public void setScholarshipFinancingAssistance(final String scholarshipFinancingAssistance) {
-		this.scholarshipFinancingAssistance = scholarshipFinancingAssistance;
-	}
-
-	/**
-	 * @return the courseCount
-	 */
-	@Transient
-	public Integer getCourseCount() {
-		return courseCount;
-	}
-
-	/**
-	 * @param courseCount the courseCount to set
-	 */
-	public void setCourseCount(final Integer courseCount) {
-		this.courseCount = courseCount;
-	}
-
-	/**
-	 * @return the worldRankingType
-	 */
-	@Column(name = "world_ranking_type")
-	public String getWorldRankingType() {
-		return worldRankingType;
-	}
-
-	/**
-	 * @param worldRankingType the worldRankingType to set
-	 */
-	public void setWorldRankingType(final String worldRankingType) {
-		this.worldRankingType = worldRankingType;
 	}
 
 }

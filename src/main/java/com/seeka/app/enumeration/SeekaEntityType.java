@@ -1,5 +1,5 @@
 package com.seeka.app.enumeration;
 
 public enum SeekaEntityType {
-	COURSE
+	COURSE,INSTITUTE,ARTICLE,SCHOLARSHIP
 }

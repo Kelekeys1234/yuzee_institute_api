@@ -1,12 +1,10 @@
 package com.seeka.app.bean;
 
-import java.math.BigInteger;
-
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,8 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.seeka.app.dto.ArticleNameDto;
 
 @Entity
 @Table(name = "article_folder")
@@ -30,7 +26,6 @@ public class ArticleFolder implements Serializable {
 	private Boolean deleted;
 	private Date createdAt;
 	private Date updatedAt;
-	private List<ArticleNameDto> articles;
 	private BigInteger userId;
 	
 	private String folderImage;
@@ -45,6 +40,7 @@ public class ArticleFolder implements Serializable {
 	public void setId(BigInteger id) {
 		this.id = id;
 	}
+
 
 	/**
 	 * @return the folderName
@@ -107,21 +103,6 @@ public class ArticleFolder implements Serializable {
 	}
 
 	/**
-	 * @return the articles
-	 */
-	@Transient
-	public List<ArticleNameDto> getArticles() {
-		return articles;
-	}
-
-	/**
-	 * @param articles the articles to set
-	 */
-	public void setArticles(List<ArticleNameDto> articles) {
-		this.articles = articles;
-	}
-
-	/**
 	 * @return the userId
 	 */
 	@Column(name = "user_id")
@@ -140,7 +121,6 @@ public class ArticleFolder implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((articles == null) ? 0 : articles.hashCode());
 		result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
 		result = prime * result + ((deleted == null) ? 0 : deleted.hashCode());
 		result = prime * result + ((folderName == null) ? 0 : folderName.hashCode());
@@ -159,11 +139,6 @@ public class ArticleFolder implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ArticleFolder other = (ArticleFolder) obj;
-		if (articles == null) {
-			if (other.articles != null)
-				return false;
-		} else if (!articles.equals(other.articles))
-			return false;
 		if (createdAt == null) {
 			if (other.createdAt != null)
 				return false;
@@ -208,11 +183,8 @@ public class ArticleFolder implements Serializable {
     
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("ArticleFolder [id=").append(id).append(", folderName=").append(folderName).append(", deleted=")
-				.append(deleted).append(", createdAt=").append(createdAt).append(", updatedAt=").append(updatedAt)
-				.append(", articles=").append(articles).append(", userId=").append(userId).append("]");
-		return builder.toString();
+		return "ArticleFolder [id=" + id + ", folderName=" + folderName + ", deleted=" + deleted + ", createdAt="
+				+ createdAt + ", updatedAt=" + updatedAt + ", userId=" + userId + ", folderImage=" + folderImage + "]";
 	}
 
 }

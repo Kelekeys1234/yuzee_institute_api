@@ -1,16 +1,20 @@
 package com.seeka.app.controller;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -19,16 +23,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseGradeEligibility;
+import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseKeywords;
+import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CoursePricing;
-import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteLevel;
-import com.seeka.app.bean.UserInfo;
 import com.seeka.app.bean.YoutubeVideo;
+import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
@@ -38,19 +45,29 @@ import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserCourse;
+import com.seeka.app.dto.UserDto;
+import com.seeka.app.dto.UserReviewResultDto;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.enumeration.ImageCategory;
-import com.seeka.app.jobs.CurrencyUtil;
+import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.exception.ValidationException;
+import com.seeka.app.message.MessageByLocaleService;
+import com.seeka.app.service.ICountryService;
 import com.seeka.app.service.ICourseEnglishEligibilityService;
 import com.seeka.app.service.ICourseGradeEligibilityService;
 import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
+import com.seeka.app.service.IEnrollmentService;
+import com.seeka.app.service.IInstituteGoogleReviewService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IStorageService;
-import com.seeka.app.service.IUserService;
+import com.seeka.app.service.IUserReviewService;
+import com.seeka.app.service.IUsersService;
+import com.seeka.app.service.IViewService;
 import com.seeka.app.service.InstituteLevelService;
 import com.seeka.app.service.UserRecommendationService;
 import com.seeka.app.util.CommonUtil;
@@ -74,9 +91,6 @@ public class CourseController {
 	private ICourseKeywordService courseKeywordService;
 
 	@Autowired
-	private IUserService userService;
-
-	@Autowired
 	private ICourseEnglishEligibilityService courseEnglishService;
 
 	@Autowired
@@ -91,14 +105,37 @@ public class CourseController {
 	@Autowired
 	private IStorageService iStorageService;
 
+	@Autowired
+	private MessageByLocaleService messageByLocalService;
+
+	@Autowired
+	private IUsersService iUsersService;
+
+	@Autowired
+	private ICountryService iCountryService;
+
+	@Autowired
+	private IEnrollmentService iEnrolmentService;
+
+	@Autowired
+	private IViewService iViewService;
+
+	@Autowired
+	private IUserReviewService iUserReviewService;
+
+	@Autowired
+	private IInstituteGoogleReviewService iInstituteGoogleReviewService;
+
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws Exception {
-		return ResponseEntity.accepted().body(courseService.save(course));
+	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException {
+		BigInteger courseId = courseService.save(course);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId).setMessage("Course Created successfully").create();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@Valid @RequestBody final CourseRequest course, @PathVariable final BigInteger id) throws Exception {
-		return ResponseEntity.accepted().body(courseService.update(course, id));
+	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final BigInteger id) throws ValidationException {
+		BigInteger courseId = courseService.update(course, id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId).setMessage("Course Updated successfully").create();
 	}
 
 	@RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
@@ -130,8 +167,9 @@ public class CourseController {
 			@RequestParam(required = false) final Double minCost, @RequestParam(required = false) final Double maxCost,
 			@RequestParam(required = false) final Integer minDuration, @RequestParam(required = false) final Integer maxDuration,
 			@RequestParam(required = false) final String courseName, @RequestParam(required = false) final String currencyCode,
-			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final boolean sortAsscending,
-			@RequestHeader(required = true) BigInteger userId) throws Exception {
+			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String sortBy,
+			@RequestParam(required = false) final boolean sortAsscending, @RequestHeader(required = true) final BigInteger userId,
+			@RequestParam(required = false) final String date) throws ValidationException {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryIds(countryIds);
 		courseSearchDto.setInstituteId(instituteId);
@@ -150,137 +188,80 @@ public class CourseController {
 		courseSearchDto.setCurrencyCode(currencyCode);
 		courseSearchDto.setSortAsscending(sortAsscending);
 		courseSearchDto.setUserId(userId);
-		return courseSearch(courseSearchDto);
+		courseSearchDto.setDate(date);
+		return courseSearch(courseSearchDto, searchKeyword);
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) BigInteger userId, @RequestBody final CourseSearchDto courseSearchDto)
+	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final BigInteger userId, @RequestBody final CourseSearchDto courseSearchDto)
 			throws Exception {
 		courseSearchDto.setUserId(userId);
-		return courseSearch(courseSearchDto);
+		return courseSearch(courseSearchDto, null);
 	}
 
-	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto) {
-		Map<String, Object> response = new HashMap<>();
-		ErrorDto errorDto = null;
-		if (courseSearchDto.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
-			errorDto = new ErrorDto();
-			errorDto.setCode("400");
-			errorDto.setMessage("Maximum course limit per is " + PaginationUtil.courseResultPageMaxSize);
-			response.put("status", 0);
-			response.put("error", errorDto);
-			return ResponseEntity.badRequest().body(response);
-		}
-		Map<BigInteger, Boolean> favouriteMap = new HashMap<>();
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
-		for (CourseResponseDto obj : courseList) {
-			try {
-				Boolean isFav = favouriteMap.get(obj.getId());
-				if (null != isFav) {
-					obj.setIsFavourite(isFav);
-				}
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
-				obj.setStorageList(storageDTOList);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		Integer maxCount = 0, totalCount = 0;
-		if (null != courseList && !courseList.isEmpty()) {
-			totalCount = courseList.get(0).getTotalCount();
-			maxCount = courseList.size();
-		}
-		boolean showMore;
-		if (courseSearchDto.getMaxSizePerPage() == maxCount) {
-			showMore = true;
-		} else {
-			showMore = false;
-		}
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("paginationObj", new PaginationDto(totalCount, showMore));
-		response.put("courseList", courseList);
-		return ResponseEntity.ok().body(response);
+	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto, final String searchKeyword) throws ValidationException {
+		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage(),
+				searchKeyword);
+		int totalCount = courseService.getCountforNormalCourse(courseSearchDto, searchKeyword);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get course List successfully");
+		responseMap.put("data", courseList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/advanceSearch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) BigInteger userId, @RequestBody final AdvanceSearchDto courseSearchDto)
-			throws Exception {
+	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) final BigInteger userId, @RequestHeader(required = false) final String language,
+			@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception {
+		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
-		return ResponseEntity.ok().body(courseService.advanceSearch(courseSearchDto));
+
+		/**
+		 * Get userCountry Based on userId
+		 */
+		UserDto userDto = iUsersService.getUserById(courseSearchDto.getUserId());
+		if (userDto == null) {
+			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] { courseSearchDto.getUserId() }, language));
+		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+			throw new ValidationException(
+					messageByLocalService.getMessage("user.citizenship.not.present", new Object[] { courseSearchDto.getUserId() }, language));
+		}
+
+		/**
+		 * Get Country Id Based on citizenship
+		 */
+		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
+		if (country == null || country.getId() == null) {
+			throw new ValidationException(
+					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
+		}
+
+		courseSearchDto.setUserCountryId(country.getId());
+		List<CourseResponseDto> courseList = courseService.advanceSearch(courseSearchDto);
+		int totalCount = courseService.getCountOfAdvanceSearch(courseSearchDto);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get course List successfully");
+		responseMap.put("data", courseList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/mycourses", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> getAllMyCourses(@RequestBody final CourseSearchDto courseSearchDto) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		ErrorDto errorDto = null;
-		if (courseSearchDto.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
-			errorDto = new ErrorDto();
-			errorDto.setCode("400");
-			errorDto.setMessage("Maximum course limit per is " + PaginationUtil.courseResultPageMaxSize);
-			response.put("status", 0);
-			response.put("error", errorDto);
-			return ResponseEntity.badRequest().body(response);
-		}
-		UserInfo user = userService.get(courseSearchDto.getUserId());
-		if (null == user) {
-			errorDto = new ErrorDto();
-			errorDto.setCode("400");
-			errorDto.setMessage("Invalid user.!");
-			response.put("status", 0);
-			response.put("error", errorDto);
-			return ResponseEntity.badRequest().body(response);
-		}
-
-		Currency currency = null;
-		String message = "";
-		if (null != courseSearchDto.getCurrencyId() && !user.getPreferredCurrencyId().equals(courseSearchDto.getCurrencyId())) {
-			currency = CurrencyUtil.getCurrencyObjById(courseSearchDto.getCurrencyId());
-			response.put("showCurrencyPopup", true);
-			message = "Do you want to change " + currency.getName() + " (" + currency.getCode() + ") as your currency.?";
-		} else {
-			currency = CurrencyUtil.getCurrencyObjById(user.getPreferredCurrencyId());
-			response.put("showCurrencyPopup", false);
-		}
-		response.put("currencyPopupMsg", message);
-
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
-		for (CourseResponseDto obj : courseList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
-			obj.setStorageList(storageDTOList);
-		}
-		Integer maxCount = 0, totalCount = 0;
-		if (null != courseList && !courseList.isEmpty()) {
-			totalCount = courseList.get(0).getTotalCount();
-			maxCount = courseList.size();
-		}
-		boolean showMore;
-		if (courseSearchDto.getMaxSizePerPage() == maxCount) {
-			showMore = true;
-		} else {
-			showMore = false;
-		}
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("paginationObj", new PaginationDto(totalCount, showMore));
-		response.put("courseList", courseList);
-		return ResponseEntity.accepted().body(response);
-	}
-
-	@RequestMapping(value = "/name", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> search(@Valid @RequestParam("searchkey") final String searchkey) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		CourseSearchDto courseSearchDto = new CourseSearchDto();
-		courseSearchDto.setSearchKey(searchkey);
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto);
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("courseList", courseList);
-		return ResponseEntity.accepted().body(response);
-	}
-
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@Valid @PathVariable final BigInteger id) throws Exception {
+	@GetMapping("/{id}")
+	public ResponseEntity<Object> get(@RequestHeader(required = false) final BigInteger userId, @Valid @PathVariable final BigInteger id)
+			throws ValidationException {
 		ErrorDto errorDto = null;
 		CourseRequest courseRequest = null;
 		Map<String, Object> response = new HashMap<>();
@@ -294,16 +275,31 @@ public class CourseController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
+		Map<BigInteger, Double> googleReviewMap = iInstituteGoogleReviewService
+				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
+		Map<BigInteger, Double> seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(Arrays.asList(courseRequest.getInstituteId()),
+				"INSTITUTE");
+		courseRequest.setStars(String.valueOf(courseService.calculateAverageRating(googleReviewMap, seekaReviewMap, Double.valueOf(courseRequest.getStars()),
+				courseRequest.getInstituteId())));
+		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+		courseRequest.setDeliveryMethod(
+				courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream().map(CourseDeliveryMethod::getName).collect(Collectors.toList()));
+		courseRequest.setLanguage(courseService.getCourseLanguageBasedOnCourseId(id).stream().map(CourseLanguage::getName).collect(Collectors.toList()));
 		Institute instituteObj = course.getInstitute();
+		List<YoutubeVideo> youtubeData = new ArrayList<>();
 		if (instituteObj != null) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
+			youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
 		}
 		List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
 		if (!englishCriteriaList.isEmpty()) {
 			courseRequest.setEnglishEligibility(englishCriteriaList);
+		} else {
+			courseRequest.setEnglishEligibility(new ArrayList<>());
 		}
-		List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName());
+
 		List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
 		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(id);
 		if (course.getInstitute() != null) {
@@ -315,14 +311,46 @@ public class CourseController {
 				}
 			}
 		}
-		response.put("status", 1);
+
+		if (course.getInstitute() != null) {
+			courseRequest.setLatitude(course.getInstitute().getLatitute());
+			courseRequest.setLongitude(course.getInstitute().getLongitude());
+		}
+
+		/**
+		 * Get Enrollment details for the course
+		 */
+		if (userId != null) {
+			int count = iEnrolmentService.countOfEnrollment(userId, id, null, null, null, null, null);
+			courseRequest.setApplied(count == 0 ? false : true);
+		} else {
+			courseRequest.setApplied(false);
+		}
+
+		/**
+		 * Get User View Course Details
+		 */
+		if (userId != null) {
+			int count = iViewService.getUserViewDataCountBasedOnUserId(userId, id, "COURSE");
+			courseRequest.setViewCourse(count == 0 ? false : true);
+		} else {
+			courseRequest.setViewCourse(false);
+		}
+
+		/**
+		 * Add User Review to the course info response
+		 */
+		List<UserReviewResultDto> userReviewResultList = iUserReviewService.getUserReviewBasedOnData(id, "COURSE", 0, 5, null, null);
+		courseRequest.setUserReviewResult(userReviewResultList);
+
+		response.put("status", HttpStatus.OK.value());
 		response.put("message", "Success.!");
 		response.put("courseObj", courseRequest);
 		response.put("recommendCourse", recommendCourse);
 		response.put("relatedCourse", relatedCourse);
 		response.put("instituteObj", instituteObj);
 		response.put("youtubeData", youtubeData);
-		return ResponseEntity.accepted().body(response);
+		return ResponseEntity.ok().body(response);
 	}
 
 	@RequestMapping(value = "/institute/{instituteId}", method = RequestMethod.PUT, produces = "application/json")
@@ -483,10 +511,23 @@ public class CourseController {
 		return ResponseEntity.accepted().body(courseService.addUserCourses(userCourse));
 	}
 
+	/**
+	 * Get My course List
+	 *
+	 * @param userId
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param currencyCode
+	 * @param sortBy
+	 * @param sortAsscending
+	 * @return
+	 * @throws ValidationException
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getUserCourses(@PathVariable final BigInteger userId, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final String currencyCode, @RequestParam(required = false) final String sortBy,
-			@RequestParam(required = false) final boolean sortAsscending) throws Exception {
+			@RequestParam(required = false) final boolean sortAsscending) throws ValidationException {
 		return ResponseEntity.accepted().body(courseService.getUserCourse(userId, pageNumber, pageSize, currencyCode, sortBy, sortAsscending));
 	}
 
@@ -500,50 +541,66 @@ public class CourseController {
 		return ResponseEntity.accepted().body(courseService.getUserCompareCourse(userId));
 	}
 
-	@RequestMapping(value = "/youtube/{courseId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final BigInteger courseId) throws Exception {
-		return ResponseEntity.accepted().body(courseService.getYoutubeDataforCourse(courseId));
+	@RequestMapping(value = "/youtube/{courseId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final BigInteger courseId, @PathVariable final Integer pageNumber,
+			@PathVariable final Integer pageSize) throws Exception {
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(courseId, startIndex, pageSize);
+		int totalCount = courseService.getYoutubeDataforCourse(courseId, null, null).size();
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get Youtube  List successfully");
+		responseMap.put("data", youtubeData);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> courseFilter(@RequestBody final CourseFilterDto courseFilter) throws Exception {
+	public ResponseEntity<?> courseFilter(@RequestHeader(required = true) final BigInteger userId, @RequestHeader(required = false) final String language,
+			@RequestBody final CourseFilterDto courseFilter) throws Exception {
+
+		/**
+		 * Get userCountry Based on userId
+		 */
+		UserDto userDto = iUsersService.getUserById(userId);
+		if (userDto == null) {
+			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] { userId }, language));
+		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present", new Object[] { userId }, language));
+		}
+
+		/**
+		 * Get Country Id Based on citizenship
+		 */
+		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
+		if (country == null || country.getId() == null) {
+			throw new ValidationException(
+					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
+		}
+
+		courseFilter.setUserCountryId(country.getId());
+
 		return ResponseEntity.ok().body(courseService.courseFilter(courseFilter));
 	}
 
 	@RequestMapping(value = "/minimumRequirement", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> saveCourseMinRequirement(@Valid @RequestBody final CourseMinRequirementDto courseMinRequirementDto) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			courseService.saveCourseMinrequirement(courseMinRequirementDto);
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", "CourseMinRequirement Save Successfully");
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.NOT_FOUND.value());
-			response.put("message", "Error to save CourseMinRequirement");
+	public ResponseEntity<?> saveCourseMinRequirement(@Valid @RequestBody final List<CourseMinRequirementDto> courseMinRequirementDtoList) throws Exception {
+		for (CourseMinRequirementDto courseMinRequirementDto2 : courseMinRequirementDtoList) {
+			courseService.saveCourseMinrequirement(courseMinRequirementDto2);
 		}
-		return ResponseEntity.accepted().body(response);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Created Course Minimum Requirement").create();
 	}
 
 	@RequestMapping(value = "/minimumRequirement/{courseId}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getCourseMinRequirement(@PathVariable final BigInteger courseId) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			CourseMinRequirementDto courseMinRequirementDto = courseService.getCourseMinRequirement(courseId);
-			if (courseMinRequirementDto.getGrade() != null && !courseMinRequirementDto.getGrade().isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", "Course minimum requirement fetch Successfully");
-				response.put("data", courseMinRequirementDto);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", "Course minimum requirement Not Found");
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", exception);
-		}
-		return ResponseEntity.accepted().body(response);
+		List<CourseMinRequirementDto> courseMinRequirementDto = courseService.getCourseMinRequirement(courseId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Get Course Minimum Requirement").setData(courseMinRequirementDto)
+				.create();
 	}
 
 	@RequestMapping(value = "/autoSearch/{searchKey}", method = RequestMethod.GET, produces = "application/json")
@@ -551,4 +608,83 @@ public class CourseController {
 		return ResponseEntity.accepted().body(courseService.autoSearchByCharacter(searchKey));
 	}
 
+	@GetMapping(value = "/viewCourse/filter")
+	public ResponseEntity<?> getUserListForUserWatchCourseFilter(@RequestHeader(required = false) final String language,
+			@RequestParam(name = "courseId", required = false) final BigInteger courseId,
+			@RequestParam(name = "facultyId", required = false) final BigInteger facultyId,
+			@RequestParam(name = "instituteId", required = false) final BigInteger instituteId,
+			@RequestParam(name = "countryId", required = false) final BigInteger countryId,
+			@RequestParam(name = "cityId", required = false) final BigInteger cityId) throws ValidationException {
+		if (courseId == null && facultyId == null && instituteId == null && countryId == null && cityId == null) {
+			throw new ValidationException(messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));
+		}
+		List<Long> userList = courseService.getUserListForUserWatchCourseFilter(courseId, instituteId, facultyId, countryId, cityId);
+		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK).create();
+	}
+
+	/**
+	 * This API is used when in normal or global search if data is not available
+	 * based on filter.
+	 *
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param facultyId
+	 * @param countryId
+	 * @param userCountry
+	 * @return
+	 * @throws ValidationException
+	 */
+	@GetMapping(value = "/noResult/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<Object> getCourseNoResultRecommendation(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
+			@RequestParam(required = true) final String userCountry) throws ValidationException {
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<CourseResponseDto> courseResponseDtos = courseService.getCourseNoResultRecommendation(userCountry, facultyId, countryId, startIndex, pageSize);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get course list displayed successfully").setStatus(HttpStatus.OK)
+				.create();
+	}
+
+	/**
+	 * This API is used for course Info page for related course keyword
+	 * recommendation.
+	 *
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param facultyId
+	 * @param countryId
+	 * @param levelId
+	 * @return
+	 * @throws ValidationException
+	 */
+	@GetMapping(value = "/keyword/recommendatation/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<Object> getCourseKeywordRecommendation(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
+			@RequestParam(required = true) final BigInteger levelId) throws ValidationException {
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<String> courseResponseDtos = courseService.getCourseKeywordRecommendation(facultyId, countryId, levelId, startIndex, pageSize);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get course keyword recommendation list displayed successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	/**
+	 * This API is used for course Info page for related course keyword
+	 * recommendation.
+	 *
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param facultyId
+	 * @param countryId
+	 * @param levelId
+	 * @return
+	 * @throws ValidationException
+	 */
+	@GetMapping(value = "/cheapest/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<Object> getCheapestCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
+			@RequestParam(required = true) final BigInteger levelId, @RequestParam(required = true) final BigInteger cityId) throws ValidationException {
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<CourseResponseDto> courseResponseDtos = userRecommendationService.getCheapestCourse(facultyId, countryId, levelId, cityId, startIndex, pageSize);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get cheapest course recommendation list displayed successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
 }

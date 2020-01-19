@@ -7,7 +7,8 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,8 @@ public class EnrollmentDao implements IEnrollmentDao {
 
 	@Override
 	public void updateEnrollment(final Enrollment enrollment) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = session.beginTransaction();
-		session.update(enrollment);
-		tx.commit();
-		session.close();
+		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(enrollment);
 	}
 
 	@Override
@@ -51,6 +49,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 		return session.get(Enrollment.class, enrollmentId);
 	}
 
+	@SuppressWarnings({ "deprecation", "unchecked" })
 	@Override
 	public List<EnrollmentStatus> getEnrollmentStatusDetail(final BigInteger enrollmentId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -60,6 +59,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 		return crit.list();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public EnrollmentStatus getEnrollmentStatusDetailBasedOnFilter(final BigInteger enrollmentId, final String status) {
 		Session session = sessionFactory.getCurrentSession();
@@ -70,17 +70,19 @@ public class EnrollmentDao implements IEnrollmentDao {
 		return (EnrollmentStatus) crit.uniqueResult();
 	}
 
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
 	public List<Enrollment> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
-			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize) {
+			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive, final String sortByField,
+			String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Enrollment.class, "enrollment");
+		crit.createAlias("enrollment.institute", "institute");
+		crit.createAlias("enrollment.course", "course");
 		if (instituteId != null) {
-			crit.createAlias("enrollment.institute", "institute");
 			crit.add(Restrictions.eq("institute.id", instituteId));
 		}
 		if (courseId != null) {
-			crit.createAlias("enrollment.course", "course");
 			crit.add(Restrictions.eq("course.id", courseId));
 		}
 		if (enrollmentId != null) {
@@ -98,6 +100,37 @@ public class EnrollmentDao implements IEnrollmentDao {
 		if (userId != null) {
 			crit.add(Restrictions.eq("enrollment.userId", userId));
 		}
+		if (isArchive != null) {
+			crit.add(Restrictions.eq("enrollment.isArchive", isArchive));
+		}
+		if (searchKeyword != null) {
+			crit.add(Restrictions.disjunction().add(Restrictions.ilike("course.name", searchKeyword, MatchMode.ANYWHERE))
+					.add(Restrictions.ilike("institute.name", searchKeyword, MatchMode.ANYWHERE)));
+		}
+		if (sortByType == null) {
+			sortByType = "DESC";
+		}
+		if (sortByField != null) {
+			if ("courseName".equals(sortByField)) {
+				if ("ASC".equals(sortByType)) {
+					crit.addOrder(Order.asc("course.name"));
+				} else if ("DESC".equals(sortByType)) {
+					crit.addOrder(Order.desc("course.name"));
+				}
+			} else if ("instituteName".equals(sortByField)) {
+				if ("ASC".equals(sortByType)) {
+					crit.addOrder(Order.asc("institute.name"));
+				} else if ("DESC".equals(sortByType)) {
+					crit.addOrder(Order.desc("institute.name"));
+				}
+			}
+		} else {
+			if ("ASC".equals(sortByType)) {
+				crit.addOrder(Order.asc("institute.id"));
+			} else if ("DESC".equals(sortByType)) {
+				crit.addOrder(Order.desc("institute.id"));
+			}
+		}
 
 		if (startIndex != null && pageSize != null) {
 			crit.setFirstResult(startIndex);
@@ -106,10 +139,39 @@ public class EnrollmentDao implements IEnrollmentDao {
 		return crit.list();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public int countOfEnrollment() {
+	public int countOfEnrollment(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
+			final String status, final Date updatedOn, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Enrollment.class, "enrollment");
+		crit.createAlias("enrollment.institute", "institute");
+		crit.createAlias("enrollment.course", "course");
+		if (instituteId != null) {
+			crit.add(Restrictions.eq("institute.id", instituteId));
+		}
+		if (courseId != null) {
+			crit.add(Restrictions.eq("course.id", courseId));
+		}
+		if (enrollmentId != null) {
+			crit.add(Restrictions.eq("enrollment.id", enrollmentId));
+		}
+		if (status != null && !status.isEmpty()) {
+			crit.add(Restrictions.eq("enrollment.status", status));
+		}
+		if (updatedOn != null) {
+			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
+			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
+			crit.add(Restrictions.ge("enrollment.updatedOn", fromDate));
+			crit.add(Restrictions.le("enrollment.updatedOn", toDate));
+		}
+		if (searchKeyword != null) {
+			crit.add(Restrictions.disjunction().add(Restrictions.ilike("course.name", searchKeyword, MatchMode.ANYWHERE))
+					.add(Restrictions.ilike("institute.name", searchKeyword, MatchMode.ANYWHERE)));
+		}
+		if (userId != null) {
+			crit.add(Restrictions.eq("enrollment.userId", userId));
+		}
 		crit.setProjection(Projections.rowCount());
 		return ((Long) crit.uniqueResult()).intValue();
 	}

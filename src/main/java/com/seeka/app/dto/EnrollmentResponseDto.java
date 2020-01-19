@@ -61,6 +61,7 @@ public class EnrollmentResponseDto implements Serializable {
 
 	private List<StorageDto> enrollmentImages;
 	private Date deadLine;
+	private Boolean isArchive;
 
 	public BigInteger getId() {
 		return id;
@@ -406,6 +407,14 @@ public class EnrollmentResponseDto implements Serializable {
 		this.deadLine = deadLine;
 	}
 
+	public Boolean getIsArchive() {
+		return isArchive;
+	}
+
+	public void setIsArchive(final Boolean isArchive) {
+		this.isArchive = isArchive;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -433,6 +442,7 @@ public class EnrollmentResponseDto implements Serializable {
 		result = prime * result + (instituteName == null ? 0 : instituteName.hashCode());
 		result = prime * result + (instituteTypeId == null ? 0 : instituteTypeId.hashCode());
 		result = prime * result + (instituteTypeName == null ? 0 : instituteTypeName.hashCode());
+		result = prime * result + (isArchive == null ? 0 : isArchive.hashCode());
 		result = prime * result + (isInternationalStudent == null ? 0 : isInternationalStudent.hashCode());
 		result = prime * result + (lastName == null ? 0 : lastName.hashCode());
 		result = prime * result + (latestAcademicQualification == null ? 0 : latestAcademicQualification.hashCode());
@@ -629,6 +639,13 @@ public class EnrollmentResponseDto implements Serializable {
 		} else if (!instituteTypeName.equals(other.instituteTypeName)) {
 			return false;
 		}
+		if (isArchive == null) {
+			if (other.isArchive != null) {
+				return false;
+			}
+		} else if (!isArchive.equals(other.isArchive)) {
+			return false;
+		}
 		if (isInternationalStudent == null) {
 			if (other.isInternationalStudent != null) {
 				return false;
@@ -790,7 +807,7 @@ public class EnrollmentResponseDto implements Serializable {
 				.append(phoneNumber).append(", email=").append(email).append(", assignee=").append(assignee).append(", assigneeName=").append(assigneeName)
 				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=").append(createdBy)
 				.append(", updatedBy=").append(updatedBy).append(", enrollmentImages=").append(enrollmentImages).append(", deadLine=").append(deadLine)
-				.append("]");
+				.append(", isArchive=").append(isArchive).append("]");
 		return builder.toString();
 	}
 

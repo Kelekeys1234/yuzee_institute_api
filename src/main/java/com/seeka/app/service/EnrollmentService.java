@@ -20,6 +20,7 @@ import com.seeka.app.bean.EnrollmentStatus;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.constant.BasicStatus;
+import com.seeka.app.constant.NotificationType;
 import com.seeka.app.dao.IEnrollmentDao;
 import com.seeka.app.dto.EnrollmentDto;
 import com.seeka.app.dto.EnrollmentResponseDto;
@@ -86,11 +87,13 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollment.setInstituteType(instituteType);
 		}
 
-		Country country = iCountryService.get(enrollmentDto.getCountryId());
-		if (country == null) {
-			throw new ValidationException("Country type not found for id: " + enrollmentDto.getCountryId());
-		} else {
-			enrollment.setCountry(country);
+		if (enrollmentDto.getCountryId() != null) {
+			Country country = iCountryService.get(enrollmentDto.getCountryId());
+			if (country == null) {
+				throw new ValidationException("Country not found for id: " + enrollmentDto.getCountryId());
+			} else {
+				enrollment.setCountry(country);
+			}
 		}
 
 		iEnrollmentDao.addEnrollment(enrollment);
@@ -111,44 +114,46 @@ public class EnrollmentService implements IEnrollmentService {
 		if (existingEnrollment == null) {
 			throw new ValidationException("enrollment not found for id" + enrollmentId);
 		}
-
-		Enrollment enrollment = new Enrollment();
-		BeanUtils.copyProperties(enrollmentDto, enrollment);
-		enrollment.setId(enrollmentId);
-		enrollment.setStatus(existingEnrollment.getStatus());
-		enrollment.setCreatedBy(existingEnrollment.getCreatedBy());
-		enrollment.setCreatedOn(existingEnrollment.getCreatedOn());
-		enrollment.setUpdatedBy("API");
-		enrollment.setUpdatedOn(new Date());
+		String existingStatus = existingEnrollment.getStatus();
+		String createdBy = existingEnrollment.getCreatedBy();
+		Date createdOn = existingEnrollment.getCreatedOn();
+		BeanUtils.copyProperties(enrollmentDto, existingEnrollment);
+		existingEnrollment.setState(existingStatus);
+		existingEnrollment.setCreatedBy(createdBy);
+		existingEnrollment.setCreatedOn(createdOn);
+		existingEnrollment.setUpdatedBy("API");
+		existingEnrollment.setUpdatedOn(new Date());
 		Institute institute = iInstituteService.get(enrollmentDto.getInstituteId());
 		if (institute == null) {
 			throw new ValidationException("Institute not found for id: " + enrollmentDto.getInstituteId());
 		} else {
-			enrollment.setInstitute(institute);
+			existingEnrollment.setInstitute(institute);
 		}
 
 		Course course = iCourseService.getCourseData(enrollmentDto.getCourseId());
 		if (course == null) {
 			throw new ValidationException("Course not found for id: " + enrollmentDto.getCourseId());
 		} else {
-			enrollment.setCourse(course);
+			existingEnrollment.setCourse(course);
 		}
 
 		InstituteType instituteType = iInstituteTypeService.get(enrollmentDto.getInstituteTypeId());
 		if (instituteType == null) {
 			throw new ValidationException("Institute type not found for id: " + enrollmentDto.getInstituteTypeId());
 		} else {
-			enrollment.setInstituteType(instituteType);
+			existingEnrollment.setInstituteType(instituteType);
 		}
 
-		Country country = iCountryService.get(enrollmentDto.getCountryId());
-		if (country == null) {
-			throw new ValidationException("Country type not found for id: " + enrollmentDto.getCountryId());
-		} else {
-			enrollment.setCountry(country);
+		if (enrollmentDto.getCountryId() != null) {
+			Country country = iCountryService.get(enrollmentDto.getCountryId());
+			if (country == null) {
+				throw new ValidationException("Country not found for id: " + enrollmentDto.getCountryId());
+			} else {
+				existingEnrollment.setCountry(country);
+			}
 		}
 
-		iEnrollmentDao.updateEnrollment(enrollment);
+		iEnrollmentDao.updateEnrollment(existingEnrollment);
 		return enrollmentDto;
 
 	}
@@ -192,7 +197,7 @@ public class EnrollmentService implements IEnrollmentService {
 		if (userId.compareTo(enrollmentStatus.getEnrollment().getUserId()) != 0) {
 			String message = "Your application status changed to "
 					+ com.seeka.app.constant.EnrollmentStatus.getByValue(enrollmentStatus.getStatus()).getDisplayValue();
-			iUsersService.sendPushNotification(enrollmentStatus.getEnrollment().getUserId(), message);
+			iUsersService.sendPushNotification(enrollmentStatus.getEnrollment().getUserId(), message, NotificationType.ENROLLMENT.name());
 		} else {
 			logger.info("Message trigger by user");
 		}
@@ -202,6 +207,9 @@ public class EnrollmentService implements IEnrollmentService {
 	@Override
 	public EnrollmentResponseDto getEnrollmentDetail(final BigInteger enrollmentId) throws ValidationException {
 		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentId);
+		if (enrollment == null) {
+			throw new ValidationException("Enrollment not found for id :" + enrollmentId);
+		}
 		EnrollmentResponseDto enrollmentResponseDto = new EnrollmentResponseDto();
 		BeanUtils.copyProperties(enrollment, enrollmentResponseDto);
 
@@ -214,11 +222,16 @@ public class EnrollmentService implements IEnrollmentService {
 		enrollmentResponseDto.setCourseName(enrollment.getCourse().getName());
 		enrollmentResponseDto.setInstituteTypeId(enrollment.getInstituteType().getId());
 		enrollmentResponseDto.setInstituteTypeName(enrollment.getInstituteType().getName());
-		enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
-		enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
-		UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
-		enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
-		enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
+		if (enrollment.getCountry() != null) {
+			enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
+			enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
+		}
+		if (enrollment.getUserId() != null) {
+			UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
+			enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
+			enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
+		}
+
 		return enrollmentResponseDto;
 	}
 
@@ -237,8 +250,10 @@ public class EnrollmentService implements IEnrollmentService {
 
 	@Override
 	public List<EnrollmentResponseDto> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId,
-			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize) {
-		List<Enrollment> enrollmenList = iEnrollmentDao.getEnrollmentList(userId, courseId, instituteId, enrollmentId, status, updatedOn, startIndex, pageSize);
+			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive,
+			final String sortByField, final String sortByType, final String searchKeyword) throws ValidationException {
+		List<Enrollment> enrollmenList = iEnrollmentDao.getEnrollmentList(userId, courseId, instituteId, enrollmentId, status, updatedOn, startIndex, pageSize,
+				isArchive, sortByField, sortByType, searchKeyword);
 		List<EnrollmentResponseDto> resultList = new ArrayList<>();
 		for (Enrollment enrollment : enrollmenList) {
 			EnrollmentResponseDto enrollmentResponseDto = new EnrollmentResponseDto();
@@ -249,26 +264,42 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollmentResponseDto.setCourseName(enrollment.getCourse().getName());
 			enrollmentResponseDto.setInstituteTypeId(enrollment.getInstituteType().getId());
 			enrollmentResponseDto.setInstituteTypeName(enrollment.getInstituteType().getName());
-			enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
-			enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
+			if (enrollment.getCountry() != null) {
+				enrollmentResponseDto.setCountryId(enrollment.getCountry().getId());
+				enrollmentResponseDto.setCountryName(enrollment.getCountry().getName());
+			}
 			enrollmentResponseDto.setEnrollmentImages(null);
 
 			EnrollmentStatus enrollmentStatus = iEnrollmentDao.getEnrollmentStatusDetailBasedOnFilter(enrollment.getId(), enrollment.getStatus());
 			if (enrollmentStatus != null) {
 				enrollmentResponseDto.setDeadLine(enrollmentStatus.getDeadLine());
 			}
-
-			UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
-			enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
-			enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
+			if (enrollment.getUserId() != null) {
+				UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
+				enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
+				enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
+			}
 			resultList.add(enrollmentResponseDto);
 		}
 		return resultList;
 	}
 
 	@Override
-	public int countOfEnrollment() {
-		return iEnrollmentDao.countOfEnrollment();
+	public int countOfEnrollment(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
+			final String status, final Date updatedOn, final String searchKeyword) {
+		return iEnrollmentDao.countOfEnrollment(userId, courseId, instituteId, enrollmentId, status, updatedOn, searchKeyword);
+	}
+
+	@Override
+	public void archiveEnrollment(final BigInteger enrollmentId, final boolean isArchive) throws ValidationException {
+		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentId);
+		if (enrollment == null) {
+			throw new ValidationException("Enrollment not found for id :" + enrollmentId);
+		}
+		enrollment.setIsArchive(isArchive);
+		enrollment.setUpdatedBy("API");
+		enrollment.setUpdatedOn(new Date());
+		iEnrollmentDao.updateEnrollment(enrollment);
 	}
 
 }

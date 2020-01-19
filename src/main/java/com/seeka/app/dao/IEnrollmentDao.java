@@ -20,9 +20,10 @@ public interface IEnrollmentDao {
 	List<EnrollmentStatus> getEnrollmentStatusDetail(BigInteger enrollmentId);
 
 	List<Enrollment> getEnrollmentList(BigInteger userId, BigInteger courseId, BigInteger instituteId, BigInteger enrollmentId, String status, Date updatedOn,
-			Integer startIndex, Integer pageSize);
+			Integer startIndex, Integer pageSize, Boolean isArchive, String sortByField, String sortByType, String searchKeyword);
 
-	int countOfEnrollment();
+	int countOfEnrollment(BigInteger userId, BigInteger courseId, BigInteger instituteId, BigInteger enrollmentId, String status, Date updatedOn,
+			String searchKeyword);
 
 	EnrollmentStatus getEnrollmentStatusDetailBasedOnFilter(BigInteger enrollmentId, String status);
 

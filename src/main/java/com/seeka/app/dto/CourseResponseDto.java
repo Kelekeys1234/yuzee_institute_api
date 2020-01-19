@@ -1,26 +1,31 @@
 package com.seeka.app.dto;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 public class CourseResponseDto {
 
 	private BigInteger id;
 	private String name;
+	private Integer courseRanking;
+	private Double stars;
+	private Double duration;
+	private String durationTime;
+
 	private String language;
+
 	private String languageShortKey;
 	private BigInteger instituteId;
 	private String instituteName;
-	private Integer worldRanking;
-	private Integer stars;
-	private String cost;
-	private Integer duration;
-	private String durationTime;
+
+	private Double costRange;
+
 	private String location;
 	private BigInteger countryId;
 	private BigInteger cityId;
 	private Integer totalCount;
-	private Double domasticFee;
+	private Double domesticFee;
 	private Double internationalFee;
 	private String requirements;
 	private String countryName;
@@ -28,6 +33,44 @@ public class CourseResponseDto {
 	private Boolean isFavourite;
 	private String currencyCode;
 	private List<StorageDto> storageList;
+	private Boolean isViewed = false;
+	private String cost;
+	private Boolean isActive;
+	private Date updatedOn;
+	private List<Date> intake;
+	private List<String> deliveryMethod;
+
+	private String facultyName;
+	private BigInteger facultyId;
+
+	private Double distance;
+
+	private Double latitude;
+	private Double longitude;
+
+	public Double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(final Double distance) {
+		this.distance = distance;
+	}
+
+	public String getFacultyName() {
+		return facultyName;
+	}
+
+	public void setFacultyName(final String facultyName) {
+		this.facultyName = facultyName;
+	}
+
+	public BigInteger getFacultyId() {
+		return facultyId;
+	}
+
+	public void setFacultyId(final BigInteger facultyId) {
+		this.facultyId = facultyId;
+	}
 
 	public BigInteger getInstituteId() {
 		return instituteId;
@@ -45,35 +88,27 @@ public class CourseResponseDto {
 		this.instituteName = instituteName;
 	}
 
-	public Integer getWorldRanking() {
-		return worldRanking;
+	public Integer getCourseRanking() {
+		return courseRanking;
 	}
 
-	public void setWorldRanking(final Integer worldRanking) {
-		this.worldRanking = worldRanking;
+	public void setCourseRanking(final Integer courseRanking) {
+		this.courseRanking = courseRanking;
 	}
 
-	public Integer getStars() {
+	public Double getStars() {
 		return stars;
 	}
 
-	public void setStars(final Integer stars) {
+	public void setStars(final Double stars) {
 		this.stars = stars;
 	}
 
-	public String getCost() {
-		return cost;
-	}
-
-	public void setCost(final String cost) {
-		this.cost = cost;
-	}
-
-	public Integer getDuration() {
+	public Double getDuration() {
 		return duration;
 	}
 
-	public void setDuration(final Integer duration) {
+	public void setDuration(final Double duration) {
 		this.duration = duration;
 	}
 
@@ -181,22 +216,22 @@ public class CourseResponseDto {
 		return storageList;
 	}
 
-	public void setStorageList(List<StorageDto> storageList) {
+	public void setStorageList(final List<StorageDto> storageList) {
 		this.storageList = storageList;
 	}
 
 	/**
 	 * @return the domasticFee
 	 */
-	public Double getDomasticFee() {
-		return domasticFee;
+	public Double getDomesticFee() {
+		return domesticFee;
 	}
 
 	/**
 	 * @param domasticFee the domasticFee to set
 	 */
-	public void setDomasticFee(Double domasticFee) {
-		this.domasticFee = domasticFee;
+	public void setDomesticFee(final Double domasticFee) {
+		this.domesticFee = domasticFee;
 	}
 
 	/**
@@ -209,7 +244,7 @@ public class CourseResponseDto {
 	/**
 	 * @param internationalFee the internationalFee to set
 	 */
-	public void setInternationalFee(Double internationalFee) {
+	public void setInternationalFee(final Double internationalFee) {
 		this.internationalFee = internationalFee;
 	}
 
@@ -223,7 +258,7 @@ public class CourseResponseDto {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(BigInteger id) {
+	public void setId(final BigInteger id) {
 		this.id = id;
 	}
 
@@ -237,7 +272,7 @@ public class CourseResponseDto {
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -251,8 +286,101 @@ public class CourseResponseDto {
 	/**
 	 * @param language the language to set
 	 */
-	public void setLanguage(String language) {
+	public void setLanguage(final String language) {
 		this.language = language;
+	}
+
+	/**
+	 *
+	 * @return gives details if course is watched before by user
+	 */
+	public Boolean getIsViewed() {
+		return isViewed;
+	}
+
+	public void setIsViewed(final Boolean isViewed) {
+		this.isViewed = isViewed;
+	}
+
+	public Double getCostRange() {
+		return costRange;
+	}
+
+	public void setCostRange(final Double costRange) {
+		this.costRange = costRange;
+	}
+
+	public String getCost() {
+		return cost;
+	}
+
+	public void setCost(final String cost) {
+		this.cost = cost;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(final Boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public Date getUpdatedOn() {
+		return updatedOn;
+	}
+
+	public void setUpdatedOn(final Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
+
+	public List<Date> getIntake() {
+		return intake;
+	}
+
+	public void setIntake(final List<Date> intake) {
+		this.intake = intake;
+	}
+
+	public List<String> getDeliveryMethod() {
+		return deliveryMethod;
+	}
+
+	public void setDeliveryMethod(final List<String> deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(final Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(final Double longitude) {
+		this.longitude = longitude;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("CourseResponseDto [id=").append(id).append(", name=").append(name).append(", courseRanking=").append(courseRanking).append(", stars=")
+				.append(stars).append(", duration=").append(duration).append(", durationTime=").append(durationTime).append(", language=").append(language)
+				.append(", languageShortKey=").append(languageShortKey).append(", instituteId=").append(instituteId).append(", instituteName=")
+				.append(instituteName).append(", costRange=").append(costRange).append(", location=").append(location).append(", countryId=").append(countryId)
+				.append(", cityId=").append(cityId).append(", totalCount=").append(totalCount).append(", domesticFee=").append(domesticFee)
+				.append(", internationalFee=").append(internationalFee).append(", requirements=").append(requirements).append(", countryName=")
+				.append(countryName).append(", cityName=").append(cityName).append(", isFavourite=").append(isFavourite).append(", currencyCode=")
+				.append(currencyCode).append(", storageList=").append(storageList).append(", isViewed=").append(isViewed).append(", cost=").append(cost)
+				.append(", isActive=").append(isActive).append(", updatedOn=").append(updatedOn).append(", intake=").append(intake).append(", deliveryMethod=")
+				.append(deliveryMethod).append(", facultyName=").append(facultyName).append(", facultyId=").append(facultyId).append(", distance=")
+				.append(distance).append(", latitude=").append(latitude).append(", longitude=").append(longitude).append("]");
+		return builder.toString();
 	}
 
 }

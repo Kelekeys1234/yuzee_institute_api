@@ -1,5 +1,7 @@
 package com.seeka.app.exception;
 
+import java.text.ParseException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -34,7 +36,10 @@ public class ErrorHandlingController {
 	ResponseEntity<Object> handleControllerException(final HttpServletRequest request, final Throwable exception) {
 		HttpStatus status = null;
 		String message = null;
-		if (exception instanceof BaseException) {
+		if(exception instanceof ParseException) {
+			status = ((BaseException) exception).getStatus();
+			message = exception.getMessage();
+		} else if (exception instanceof BaseException) {
 			status = ((BaseException) exception).getStatus();
 			message = exception.getMessage();
 		} else if (exception instanceof BaseRuntimeException) {

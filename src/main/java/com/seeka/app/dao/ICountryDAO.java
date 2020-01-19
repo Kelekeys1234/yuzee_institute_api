@@ -9,23 +9,29 @@ import com.seeka.app.dto.DiscoverCountryDto;
 
 public interface ICountryDAO {
 
-    public List<Country> getAll();
+	List<Country> getAll();
 
-    public Country get(BigInteger id);
+	Country get(BigInteger id);
 
-    public List<CountryDto> getAllUniversityCountries();
+	List<CountryDto> getAllUniversityCountries();
 
-    public Country save(Country obj);
+	Country save(Country obj);
 
-    public List<CountryDto> searchInterestByCountry(String name);
+	List<CountryDto> searchInterestByCountry(String name);
 
-    public List<CountryDto> getAllCountries();
+	List<CountryDto> getAllCountries();
 
-    public List<CountryDto> getAllCountryName();
+	List<CountryDto> getAllCountryName();
 
-    public List<DiscoverCountryDto> getDiscoverCountry();
+	List<DiscoverCountryDto> getDiscoverCountry();
 
-    public List<CountryDto> autoSearch(int i, int j, String searchKey);
+	List<CountryDto> autoSearch(int i, int j, String searchKey);
 
 	Country getCountryBasedOnCitizenship(String citizenship);
+
+	List<Country> getCountryIdsBasedOnCitizenships(List<String> citizenships);
+
+	List<Country> getAllCountryByIds(List<BigInteger> countryIds);
+
+	Country getCountryByName(String countryName);
 }

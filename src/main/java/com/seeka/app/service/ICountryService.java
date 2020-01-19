@@ -39,4 +39,8 @@ public interface ICountryService {
     public Map<String, Object> getCourseCountry();
 
 	Country getCountryBasedOnCitizenship(String citizenship);
+	
+	List<Country> getCountryListBasedOnCitizenship(List<String> citizenships);
+
+	List<BigInteger> getCountryBasedOnCitizenship(List<String> countryNames);
 }

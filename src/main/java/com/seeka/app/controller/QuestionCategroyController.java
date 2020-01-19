@@ -1,5 +1,6 @@
 package com.seeka.app.controller;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,5 +49,11 @@ public class QuestionCategroyController {
 		List<QuestionCategroy> questionCategory = iQuestionCategroy.getQuestionCategoryList();
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(questionCategory).setMessage("Get question Category list successfully")
 				.create();
+	}
+
+	@DeleteMapping("/{questionCategoryId}")
+	public ResponseEntity<?> deleteQuestionCategory(@PathVariable final BigInteger questionCategoryId) throws ValidationException {
+		iQuestionCategroy.deleteQuestionCategory(questionCategoryId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted question Category successfully").create();
 	}
 }

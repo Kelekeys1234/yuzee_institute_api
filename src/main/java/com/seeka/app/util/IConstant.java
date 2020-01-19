@@ -1,8 +1,12 @@
 package com.seeka.app.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class IConstant {
 	public static final String CURRENCY_URL = "https://data.fixer.io/api/";
-	public static final String API_KEY = "95bdc53aa11d07169765f1b413275ba2";
+	public static final String API_KEY = "30c3311abac5d7016332d637bade7b54";
+	public static final String USD_CODE = "USD";
 
 	static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
 	public static final String CORRELATION_ID = "correlationId";
@@ -88,19 +92,66 @@ public class IConstant {
 	public static final String STORAGE_CONNECTION_URL = "http://" + STORAGE + "/api";
 	public static final String IDENTITY_CONNECTION_URL = "http://" + IDENTITY;
 	public static final String USER_DETAIL_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/api/v1/users/basic";
+	public static final String USER_ACHIVEMENT_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/api/v1/user/achivement/user";
 	public static final String USER_DEVICE_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/api/v1/user/device/basic";
 
 	public static final String NOTIFICATION_CONNECTION_URL = "http://" + NOTIFICATION + "/push";
 
-	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH";
-	public static final String ELASTIC_SEARCH_INDEX = "seeka_dev";
+	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";
+	public static final String ELASTIC_SEARCH_INDEX_COURSE = "seeka_dev";
+	// temp for testing
+	// public static final String ELASTIC_SEARCH_INDEX_COURSE_TEST =
+	// "seeka_dev_course_temp";
+
+	public static final String ELASTIC_SEARCH_INDEX_ARTICLE = "seeka_dev_article";
+	public static final String ELASTIC_SEARCH_INDEX_INSTITUTE = "seeka_dev_institute";
+	// temp for testing
+	// public static final String ELASTIC_SEARCH_INDEX_INSTITUTE_TEST =
+	// "seeka_dev_institute_temp_tet";
+
+	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP = "seeka_dev_scholarship";
+
+	// For testing pupose only
+	// public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP_TEST =
+	// "seeka_dev_scholarship_temp";
+
+	public static final String ELASTIC_SEARCH_URL = ELASTIC_SEARCH + "/";
+
 	public static final String ELASTIC_SEARCH_COURSE_TYPE = "course";
 	public static final String ELASTIC_SEARCH_ARTICLE_TYPE = "article";
 	public static final String COURSE_DEFAULT_DESCRPTION = "Seeka believes that every person deserves an equal opportunity in education, career aspirations and life. Our database is developed to match users no matter where they live. With over 200,000 scholarships available to choose from, we have carefully paired you with the best.";
 
+	public static final Integer INSITUTE_PER_COUNTRY = 2;
+
+	public static final Integer COUNTRY_PER_PAGE = 10;
+
+	public static final Integer SCHOLARSHIPS_PER_COUNTRY_FOR_RECOMMENDATION = 4;
+
+	public static final Integer TOTAL_SCHOLARSHIPS_PER_PAGE = 20;
+
+	public static final Integer TOTAL_INSTITUTES_PER_PAGE = 20;
 	/***************
 	 * CONSTANTS FOR DISPLAYING MESSAGES
 	 ******************************************/
 	public static final String INSTITUTE = "Institute";
+	public static final String COURSE = "Course";
+	public static final String ARTICLE = "Article";
+	public static final String SCHOLARSHIP = "Scholarship";
 	/***************************************************************************************/
+
+	public static final Integer CURRENCY_THRESHOLD = 2;
+
+	public static final int COURSES_PER_SCHEDULER_LOOP = 30;
+
+	public static final String EVENT_BRITE_API_KEY = "6I6BHL5TKXEYXU3PTFYO";
+
+	public static final List<String> COUNTRY_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE = Arrays.asList("Australia", "Canada", "United Kingdom",
+			"United States", "New Zealand");
+
+	public static final List<String> LEVEL_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE = Arrays.asList("Undergraduate", "Postgraduate");
+
+	public static final List<String> LIST_OF_ARTICLE_CATEGORY = Arrays.asList("Campus Life", "Academic Help", "Career and Trends",
+			"Personal Experiences and Inspirations", "Work and Internships", "Financial", "Self-Help", "News");
+
+	public static final Integer ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION = 2;
 }

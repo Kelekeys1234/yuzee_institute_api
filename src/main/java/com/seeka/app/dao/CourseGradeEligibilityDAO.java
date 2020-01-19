@@ -1,7 +1,7 @@
-package com.seeka.app.dao;import java.math.BigInteger;
+package com.seeka.app.dao;
 
+import java.math.BigInteger;
 import java.util.List;
-
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -11,50 +11,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseGradeEligibility;
 
 @Repository
-public class CourseGradeEligibilityDAO implements ICourseGradeEligibilityDAO{
-	
+public class CourseGradeEligibilityDAO implements ICourseGradeEligibilityDAO {
+
 	@Autowired
 	private SessionFactory sessionFactory;
-	
-	
+
 	@Override
-	public void save(CourseGradeEligibility obj) {	
-		Session session = sessionFactory.getCurrentSession();		
-		session.save(obj);	   					
+	public void save(final CourseGradeEligibility obj) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(obj);
 	}
-	
+
 	@Override
-	public void update(CourseGradeEligibility obj) {	
-		Session session = sessionFactory.getCurrentSession();		
-		session.update(obj);	   					
+	public void update(final CourseGradeEligibility obj) {
+		Session session = sessionFactory.getCurrentSession();
+		session.update(obj);
 	}
-	
+
 	@Override
-	public CourseGradeEligibility get(BigInteger id) {	
-		Session session = sessionFactory.getCurrentSession();		
+	public CourseGradeEligibility get(final BigInteger id) {
+		Session session = sessionFactory.getCurrentSession();
 		CourseGradeEligibility obj = session.get(CourseGradeEligibility.class, id);
 		return obj;
 	}
-	
+
 	@Override
 	public List<CourseGradeEligibility> getAll() {
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(Course.class); 
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Course.class);
 		return crit.list();
 	}
-	
+
 	@SuppressWarnings("deprecation")
-    @Override
-	public CourseGradeEligibility getAllEnglishEligibilityByCourse(BigInteger courseID) {
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(CourseGradeEligibility.class); 
-		crit.add(Restrictions.eq("course.id",courseID));
-		return null != crit.list()?(CourseGradeEligibility)crit.list().get(0):null;
+	@Override
+	public CourseGradeEligibility getAllEnglishEligibilityByCourse(final BigInteger courseID) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(CourseGradeEligibility.class);
+		crit.add(Restrictions.eq("course.id", courseID));
+
+		List<CourseGradeEligibility> result = crit.list();
+		if (result.isEmpty()) {
+			return null;
+		} else {
+			return result.get(0);
+		}
 	}
-	
-	 
+
 }

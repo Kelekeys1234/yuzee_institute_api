@@ -1,33 +1,31 @@
-package com.seeka.app.dao;import java.math.BigInteger;
+package com.seeka.app.dao;
+
+import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import com.seeka.app.bean.SeekaArticles;
-import com.seeka.app.dto.PageLookupDto;
-import com.seeka.app.dto.SearchDto;
 
 public interface IArticleDAO {
 
-     List<SeekaArticles> getAll();
+	List<SeekaArticles> getAll(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword, List<BigInteger> categoryId,
+			List<String> tags, Boolean status, Date filterDate);
 
-     List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto);
+	SeekaArticles findById(BigInteger uId);
 
-     SeekaArticles findById(BigInteger uId);
+	SeekaArticles deleteArticle(SeekaArticles article);
 
-     void deleteArticle(SeekaArticles article);
+	SeekaArticles save(SeekaArticles article);
 
-     List<SeekaArticles> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status);
+	Integer getTotalSearchCount(String searchKeyword);
 
-     int findTotalCount();
+	Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType, final String searchKeyword,
+			List<BigInteger> categoryIdList, List<String> tagList, Boolean status, Date date);
 
-     SeekaArticles save(SeekaArticles article);
+	List<String> getAuthors(int startIndex, Integer pageSize, String searchString);
 
-     void updateArticle(BigInteger subCAtegory, BigInteger id);
+	int getTotalAuthorCount(String searchString);
 
-     List<SeekaArticles> searchArticle(SearchDto article);
+	List<SeekaArticles> findArticleByCountryId(BigInteger countryId, String categoryName, Integer count, List<BigInteger> viewArticleIds);
 
-    List<SeekaArticles> articleByFilter(String sqlQuery);
-
-    int findTotalCountBasedOnCondition(String countQuery);
-
-    List<SeekaArticles> searchBasedOnNameAndContent(String searchText);
 }

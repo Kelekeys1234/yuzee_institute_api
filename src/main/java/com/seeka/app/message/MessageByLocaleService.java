@@ -7,5 +7,7 @@ package com.seeka.app.message;
  */
 public interface MessageByLocaleService {
 
-	public String getMessage(String id, Object[] arg, String language);
+	String getMessage(String id, Object[] arg, String language);
+	
+	String getMessage(String id, Object[] arg);
 }

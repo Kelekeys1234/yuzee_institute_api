@@ -1,57 +1,58 @@
 package com.seeka.app.service;
 
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.web.multipart.MultipartFile;
-
+import com.seeka.app.bean.ArticleFolder;
 import com.seeka.app.bean.SeekaArticles;
-import com.seeka.app.dto.ArticleDto;
-import com.seeka.app.dto.ArticleDto2;
 import com.seeka.app.dto.ArticleFolderDto;
 import com.seeka.app.dto.ArticleFolderMapDto;
-import com.seeka.app.dto.PageLookupDto;
-import com.seeka.app.dto.SearchDto;
+import com.seeka.app.dto.ArticleResponseDetailsDto;
+import com.seeka.app.dto.SeekaArticleDto;
+import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.exception.ValidationException;
 
 public interface IArticleService {
 
-	List<SeekaArticles> getAll();
+	SeekaArticles deleteArticle(String articleId);
 
-	List<SeekaArticles> getArticlesByLookup(PageLookupDto pageLookupDto);
+	ArticleResponseDetailsDto getArticleById(String articleId) throws ValidationException;
 
-	Map<String, Object> deleteArticle(String articleId);
+	SeekaArticleDto saveMultiArticle(SeekaArticleDto article, BigInteger userId) throws ValidationException, ParseException;
 
-	Map<String, Object> getArticleById(String articleId);
+	ArticleFolderDto saveArticleFolder(ArticleFolderDto articleFolder, String language) throws NotFoundException, ValidationException;
 
-	Map<String, Object> fetchAllArticleByPage(BigInteger page, BigInteger size, String query, boolean status, BigInteger categoryId, String tag,
-			String status2);
+	ArticleFolder getArticleFolderById(BigInteger articleFolderId) throws ValidationException;
 
-	Map<String, Object> saveArticle(MultipartFile file, ArticleDto article);
+	List<ArticleFolder> getAllArticleFolder();
 
-	Map<String, Object> searchArticle(SearchDto article);
+	List<ArticleFolder> getFolderByUserId(BigInteger userId) throws ValidationException;
 
-	Map<String, Object> saveMultiArticle(ArticleDto2 article, MultipartFile file);
+	List<ArticleResponseDetailsDto> getArticleByFolderId(Integer startIndex, Integer pageSize, BigInteger folderId) throws ValidationException;
 
-	Map<String, Object> saveArticleFolder(ArticleFolderDto articleFolder);
+	Integer getTotalSearchCount(String searchKeyword);
 
-	Map<String, Object> getArticleFolderById(BigInteger articleFolderId);
+	ArticleFolderMapDto mapArticleFolder(final ArticleFolderMapDto articleFolderMapDto, String language) throws ValidationException;
 
-	Map<String, Object> getAllArticleFolder();
+	ArticleFolder deleteArticleFolderById(final BigInteger articleFolderId) throws ValidationException;
 
-	Map<String, Object> deleteArticleFolderById(BigInteger articleFolderId);
+	List<ArticleResponseDetailsDto> getArticleList(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword,
+			BigInteger categoryId, String tags, Boolean status, Date date) throws ValidationException;
 
-	Map<String, Object> mapArticleFolder(ArticleFolderMapDto articleFolderMapDto);
+	List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
+			final String searchKeyword, List<BigInteger> categoryId, List<String> tags, Boolean status, Date filterDate) throws ValidationException;
 
-	Map<String, Object> getFolderWithArticle(BigInteger userId);
+	Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType, final String searchKeyword,
+			BigInteger categoryId, String tags, Boolean status, Date filterDate);
 
-	Map<String, Object> searchBasedOnNameAndContent(String searchText);
+	Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType, final String searchKeyword,
+			List<BigInteger> categoryIdList, List<String> tagList, Boolean status, Date date);
 
-	Map<String, Object> addArticleImage(MultipartFile file, BigInteger articleId);
+	List<String> getAuthors(int startIndex, Integer pageSize, String searchString);
 
-	SeekaArticles findByArticleId(BigInteger articleId);
+	int getTotalAuthorCount(String searchString);
 
-    Map<String, Object> unMappedFolder(BigInteger articleId, BigInteger folderId);
-
-    Map<String, Object> getArticleByFolderId(BigInteger folderId);
+	List<SeekaArticles> findArticleByCountryId(BigInteger id, String categoryName, Integer count, List<BigInteger> viewArticleIds);
 }

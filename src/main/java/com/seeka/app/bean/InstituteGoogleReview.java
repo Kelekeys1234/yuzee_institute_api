@@ -8,8 +8,11 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,20 +29,20 @@ public class InstituteGoogleReview implements Serializable {
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private BigInteger id;
-	@Column(name = "institute_id", nullable = true)
-	private BigInteger instituteId;
-	@Column(name = "name", nullable = true)
-	private String name;
-	@Column(name = "latitute", nullable = true)
-	private Double latitute;
-	@Column(name = "longitude", nullable = true)
-	private Double longitude;
-	@Column(name = "address", nullable = true)
-	private String address;
-	@Column(name = "review_star", nullable = true)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "institute_id", nullable = false)
+	private Institute institute;
+	@Column(name = "user_name", nullable = false)
+	private String userName;
+	@Column(name = "date_of_posting", nullable = true)
+	private Date dateOfPosting;
+	@Column(name = "review_star", nullable = false)
 	private Double reviewStar;
-	@Column(name = "total_reviews", nullable = true)
-	private Integer totalReviews;
+	@Column(name = "review_comment", nullable = true)
+	private String reviewComment;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "country_id")
+	private Country country;
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
 	private Date createdOn;
@@ -59,44 +62,28 @@ public class InstituteGoogleReview implements Serializable {
 		this.id = id;
 	}
 
-	public BigInteger getInstituteId() {
-		return instituteId;
+	public Institute getInstitute() {
+		return institute;
 	}
 
-	public void setInstituteId(final BigInteger instituteId) {
-		this.instituteId = instituteId;
+	public void setInstitute(final Institute institute) {
+		this.institute = institute;
 	}
 
-	public String getName() {
-		return name;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setName(final String name) {
-		this.name = name;
+	public void setUserName(final String userName) {
+		this.userName = userName;
 	}
 
-	public Double getLatitute() {
-		return latitute;
+	public Date getDateOfPosting() {
+		return dateOfPosting;
 	}
 
-	public void setLatitute(final Double latitute) {
-		this.latitute = latitute;
-	}
-
-	public Double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(final Double longitude) {
-		this.longitude = longitude;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(final String address) {
-		this.address = address;
+	public void setDateOfPosting(final Date dateOfPosting) {
+		this.dateOfPosting = dateOfPosting;
 	}
 
 	public Double getReviewStar() {
@@ -107,12 +94,20 @@ public class InstituteGoogleReview implements Serializable {
 		this.reviewStar = reviewStar;
 	}
 
-	public Integer getTotalReviews() {
-		return totalReviews;
+	public String getReviewComment() {
+		return reviewComment;
 	}
 
-	public void setTotalReviews(final Integer totalReviews) {
-		this.totalReviews = totalReviews;
+	public void setReviewComment(final String reviewComment) {
+		this.reviewComment = reviewComment;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(final Country country) {
+		this.country = country;
 	}
 
 	public Date getCreatedOn() {
@@ -151,18 +146,17 @@ public class InstituteGoogleReview implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (address == null ? 0 : address.hashCode());
+		result = prime * result + (country == null ? 0 : country.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
+		result = prime * result + (dateOfPosting == null ? 0 : dateOfPosting.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
-		result = prime * result + (instituteId == null ? 0 : instituteId.hashCode());
-		result = prime * result + (latitute == null ? 0 : latitute.hashCode());
-		result = prime * result + (longitude == null ? 0 : longitude.hashCode());
-		result = prime * result + (name == null ? 0 : name.hashCode());
+		result = prime * result + (institute == null ? 0 : institute.hashCode());
+		result = prime * result + (reviewComment == null ? 0 : reviewComment.hashCode());
 		result = prime * result + (reviewStar == null ? 0 : reviewStar.hashCode());
-		result = prime * result + (totalReviews == null ? 0 : totalReviews.hashCode());
 		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
 		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
+		result = prime * result + (userName == null ? 0 : userName.hashCode());
 		return result;
 	}
 
@@ -178,11 +172,11 @@ public class InstituteGoogleReview implements Serializable {
 			return false;
 		}
 		InstituteGoogleReview other = (InstituteGoogleReview) obj;
-		if (address == null) {
-			if (other.address != null) {
+		if (country == null) {
+			if (other.country != null) {
 				return false;
 			}
-		} else if (!address.equals(other.address)) {
+		} else if (!country.equals(other.country)) {
 			return false;
 		}
 		if (createdBy == null) {
@@ -199,6 +193,13 @@ public class InstituteGoogleReview implements Serializable {
 		} else if (!createdOn.equals(other.createdOn)) {
 			return false;
 		}
+		if (dateOfPosting == null) {
+			if (other.dateOfPosting != null) {
+				return false;
+			}
+		} else if (!dateOfPosting.equals(other.dateOfPosting)) {
+			return false;
+		}
 		if (id == null) {
 			if (other.id != null) {
 				return false;
@@ -206,32 +207,18 @@ public class InstituteGoogleReview implements Serializable {
 		} else if (!id.equals(other.id)) {
 			return false;
 		}
-		if (instituteId == null) {
-			if (other.instituteId != null) {
+		if (institute == null) {
+			if (other.institute != null) {
 				return false;
 			}
-		} else if (!instituteId.equals(other.instituteId)) {
+		} else if (!institute.equals(other.institute)) {
 			return false;
 		}
-		if (latitute == null) {
-			if (other.latitute != null) {
+		if (reviewComment == null) {
+			if (other.reviewComment != null) {
 				return false;
 			}
-		} else if (!latitute.equals(other.latitute)) {
-			return false;
-		}
-		if (longitude == null) {
-			if (other.longitude != null) {
-				return false;
-			}
-		} else if (!longitude.equals(other.longitude)) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
+		} else if (!reviewComment.equals(other.reviewComment)) {
 			return false;
 		}
 		if (reviewStar == null) {
@@ -239,13 +226,6 @@ public class InstituteGoogleReview implements Serializable {
 				return false;
 			}
 		} else if (!reviewStar.equals(other.reviewStar)) {
-			return false;
-		}
-		if (totalReviews == null) {
-			if (other.totalReviews != null) {
-				return false;
-			}
-		} else if (!totalReviews.equals(other.totalReviews)) {
 			return false;
 		}
 		if (updatedBy == null) {
@@ -262,16 +242,23 @@ public class InstituteGoogleReview implements Serializable {
 		} else if (!updatedOn.equals(other.updatedOn)) {
 			return false;
 		}
+		if (userName == null) {
+			if (other.userName != null) {
+				return false;
+			}
+		} else if (!userName.equals(other.userName)) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("InstituteGoogleReview [id=").append(id).append(", instituteId=").append(instituteId).append(", name=").append(name)
-				.append(", latitute=").append(latitute).append(", longitude=").append(longitude).append(", address=").append(address).append(", reviewStar=")
-				.append(reviewStar).append(", totalReviews=").append(totalReviews).append(", createdOn=").append(createdOn).append(", updatedOn=")
-				.append(updatedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append("]");
+		builder.append("InstituteGoogleReview [id=").append(id).append(", institute=").append(institute).append(", userName=").append(userName)
+				.append(", dateOfPosting=").append(dateOfPosting).append(", reviewStar=").append(reviewStar).append(", reviewComment=").append(reviewComment)
+				.append(", country=").append(country).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=")
+				.append(createdBy).append(", updatedBy=").append(updatedBy).append("]");
 		return builder.toString();
 	}
 

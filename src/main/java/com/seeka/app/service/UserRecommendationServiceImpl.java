@@ -2,7 +2,6 @@ package com.seeka.app.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,14 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.SeekaArticles;
-import com.seeka.app.bean.UserWatchArticle;
-import com.seeka.app.bean.UserWatchCourse;
 import com.seeka.app.dao.UserRecommendationDao;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.StorageDto;
-import com.seeka.app.dto.UserArticleRequestDto;
-import com.seeka.app.dto.UserCourseRequestDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 
@@ -33,70 +27,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	private ICourseService iCourseService;
 
 	@Autowired
-	private IArticleService iArticleService;
-
-	@Autowired
 	private IStorageService iStorageService;
-
-	@Override
-	public void createUserWatchCourse(final UserCourseRequestDto userCourseRequestDto) throws ValidationException {
-		UserWatchCourse existingUserWatchCourse = userRecommendationDao.getUserWatchCourseByUserIdAndCourseId(userCourseRequestDto.getUserId(),
-				userCourseRequestDto.getCourseId());
-		Date now = new Date();
-		if (existingUserWatchCourse != null) {
-			existingUserWatchCourse.setUpdatedBy("API");
-			existingUserWatchCourse.setUpdatedOn(now);
-			userRecommendationDao.save(existingUserWatchCourse);
-		} else {
-			Course existingCourse = iCourseService.getCourseData(userCourseRequestDto.getCourseId());
-			if (existingCourse == null) {
-				throw new ValidationException("Course not found for Id : " + userCourseRequestDto.getCourseId());
-			}
-			UserWatchCourse userWatchCourse = new UserWatchCourse();
-			userWatchCourse.setCourse(existingCourse);
-			userWatchCourse.setUserId(userCourseRequestDto.getUserId());
-			userWatchCourse.setCreatedBy("API");
-			userWatchCourse.setCreatedOn(now);
-			userWatchCourse.setUpdatedBy("API");
-			userWatchCourse.setUpdatedOn(now);
-			userRecommendationDao.save(userWatchCourse);
-		}
-	}
-
-	@Override
-	public List<UserWatchCourse> getUserWatchCourse(final BigInteger userId) {
-		return userRecommendationDao.getUserWatchCourse(userId);
-	}
-
-	@Override
-	public void createUserWatchArticle(final UserArticleRequestDto userArticleRequestDto) throws ValidationException {
-		UserWatchArticle existingUserWatchArticle = userRecommendationDao.getUserWatchArticleByUserIdAndArticleId(userArticleRequestDto.getUserId(),
-				userArticleRequestDto.getArticleId());
-		Date now = new Date();
-		if (existingUserWatchArticle != null) {
-			existingUserWatchArticle.setUpdatedBy("API");
-			existingUserWatchArticle.setUpdatedOn(now);
-			userRecommendationDao.save(existingUserWatchArticle);
-		} else {
-			SeekaArticles seekaArticles = iArticleService.findByArticleId(userArticleRequestDto.getArticleId());
-			if (seekaArticles == null) {
-				throw new ValidationException("Article not found for Id : " + userArticleRequestDto.getArticleId());
-			}
-			UserWatchArticle userWatchArticle = new UserWatchArticle();
-			userWatchArticle.setSeekaArticles(seekaArticles);
-			userWatchArticle.setUserId(userArticleRequestDto.getUserId());
-			userWatchArticle.setCreatedBy("API");
-			userWatchArticle.setCreatedOn(now);
-			userWatchArticle.setUpdatedBy("API");
-			userWatchArticle.setUpdatedOn(now);
-			userRecommendationDao.save(userWatchArticle);
-		}
-	}
-
-	@Override
-	public List<UserWatchArticle> getUserWatchArticle(final BigInteger userId) {
-		return userRecommendationDao.getUserWatchArticle(userId);
-	}
 
 	@Override
 	public List<Course> getRecommendCourse(final BigInteger courseId, final BigInteger userId) throws ValidationException {
@@ -145,7 +76,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 * usdInternationFee +-2000, +-5000 +-10000
 		 */
 		int remainingCourse = 4 - resultList.size();
-		courseIds = resultList.stream().map(i -> i.getId()).collect(Collectors.toList());
+		courseIds = resultList.stream().map(Course::getId).collect(Collectors.toList());
 		courseIds.add(courseId);
 		List<Course> secondCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, cityId, price, Double.valueOf(2000), remainingCourse,
 				courseIds);
@@ -166,7 +97,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		remainingCourse = 4 - resultList.size();
 		List<Course> thirdCourses = new ArrayList<>();
 		if (remainingCourse != 0) {
-			courseIds = resultList.stream().map(i -> i.getId()).collect(Collectors.toList());
+			courseIds = resultList.stream().map(Course::getId).collect(Collectors.toList());
 			courseIds.add(courseId);
 			thirdCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, null, price, Double.valueOf(2000), remainingCourse, courseIds);
 			if (thirdCourses.size() < remainingCourse) {
@@ -187,7 +118,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		remainingCourse = 4 - resultList.size();
 		List<Course> forthCourses = new ArrayList<>();
 		if (remainingCourse != 0) {
-			courseIds = resultList.stream().map(i -> i.getId()).collect(Collectors.toList());
+			courseIds = resultList.stream().map(Course::getId).collect(Collectors.toList());
 			courseIds.add(courseId);
 			forthCourses = userRecommendationDao.getRecommendCourse(facultyId, null, null, null, price, Double.valueOf(2000), remainingCourse, courseIds);
 			if (forthCourses.size() < remainingCourse) {
@@ -201,10 +132,9 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		remainingCourse = 4 - resultList.size();
 
 		if (remainingCourse < 5 && userId != null) {
-			List<UserWatchCourse> userWatchCourses = userRecommendationDao.getUserWatchCourse(userId);
-			courseIds = resultList.stream().map(i -> i.getId()).collect(Collectors.toList());
+			courseIds = resultList.stream().map(Course::getId).collect(Collectors.toList());
 			courseIds.add(courseId);
-			List<Course> courseWatchList = userWatchCourses.stream().map(i -> i.getCourse()).collect(Collectors.toList());
+			List<Course> courseWatchList = iCourseService.getAllCoursesUsingId(courseIds);
 
 			while (remainingCourse != 0) {
 				for (Course course : courseWatchList) {
@@ -326,7 +256,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		List<BigInteger> courseIds = new ArrayList<>();
 		courseIds.add(courseId);
 		if (!resultList.isEmpty()) {
-			List<BigInteger> list = resultList.stream().map(i -> i.getId()).collect(Collectors.toList());
+			List<BigInteger> list = resultList.stream().map(Course::getId).collect(Collectors.toList());
 			courseIds.addAll(list);
 		}
 		int pageSize = 5 - resultList.size();
@@ -348,47 +278,24 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	 */
 	@Override
 	public List<CourseResponseDto> getCourseRelated(final BigInteger courseId) throws ValidationException {
-		List<CourseResponseDto> resultList = new ArrayList<>();
 		List<Course> courseList = getRelatedCourse(courseId);
-		for (Course course : courseList) {
-			CourseResponseDto courseResponseDto = new CourseResponseDto();
-			courseResponseDto.setId(course.getId());
-			courseResponseDto.setCityId(course.getCity().getId());
-			courseResponseDto.setCityName(course.getCity().getName());
-			courseResponseDto.setCost(String.valueOf(course.getCostRange()));
-			courseResponseDto.setCountryId(course.getCountry().getId());
-			courseResponseDto.setCountryName(course.getCountry().getName());
-			courseResponseDto.setLanguage(course.getLanguage());
-			courseResponseDto.setName(course.getName());
-			courseResponseDto.setDuration(course.getDuration());
-			courseResponseDto.setDurationTime(course.getDurationTime());
-			courseResponseDto.setInstituteId(course.getInstitute().getId());
-			courseResponseDto.setInstituteName(course.getInstitute().getName());
-			courseResponseDto.setInternationalFee(course.getInternationalFee());
-			courseResponseDto.setDomasticFee(course.getDomesticFee());
-			courseResponseDto.setLocation(course.getCity().getName() + "," + course.getCountry().getName());
-			courseResponseDto.setRequirements(course.getRemarks());
-			courseResponseDto.setStars(course.getStars());
-			courseResponseDto.setWorldRanking(course.getWorldRanking());
-			courseResponseDto.setLanguageShortKey(course.getLanguage());
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null,
-					"en");
-			courseResponseDto.setStorageList(storageDTOList);
-			resultList.add(courseResponseDto);
-		}
-		return resultList;
+		return convertCourseToCourseRespone(courseList);
 	}
 
 	@Override
 	public List<CourseResponseDto> getCourseRecommended(final BigInteger courseId) throws ValidationException {
-		List<CourseResponseDto> resultList = new ArrayList<>();
 		List<Course> courseList = getRecommendCourse(courseId, null);
+		return convertCourseToCourseRespone(courseList);
+	}
+
+	private List<CourseResponseDto> convertCourseToCourseRespone(final List<Course> courseList) throws ValidationException {
+		List<CourseResponseDto> resultList = new ArrayList<>();
 		for (Course course : courseList) {
 			CourseResponseDto courseResponseDto = new CourseResponseDto();
 			courseResponseDto.setId(course.getId());
 			courseResponseDto.setCityId(course.getCity().getId());
 			courseResponseDto.setCityName(course.getCity().getName());
-			courseResponseDto.setCost(String.valueOf(course.getCostRange()));
+			courseResponseDto.setCostRange(course.getCostRange());
 			courseResponseDto.setCountryId(course.getCountry().getId());
 			courseResponseDto.setCountryName(course.getCountry().getName());
 			courseResponseDto.setLanguage(course.getLanguage());
@@ -398,24 +305,80 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setInstituteId(course.getInstitute().getId());
 			courseResponseDto.setInstituteName(course.getInstitute().getName());
 			courseResponseDto.setInternationalFee(course.getInternationalFee());
-			courseResponseDto.setDomasticFee(course.getDomesticFee());
+			courseResponseDto.setDomesticFee(course.getDomesticFee());
 			courseResponseDto.setLocation(course.getCity().getName() + "," + course.getCountry().getName());
 			courseResponseDto.setRequirements(course.getRemarks());
-			courseResponseDto.setStars(course.getStars());
-			courseResponseDto.setWorldRanking(course.getWorldRanking());
+			courseResponseDto.setStars(Double.valueOf(course.getStars()));
+			courseResponseDto.setCourseRanking(course.getWorldRanking());
 			courseResponseDto.setLanguageShortKey(course.getLanguage());
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null,
 					"en");
 			courseResponseDto.setStorageList(storageDTOList);
 			resultList.add(courseResponseDto);
 		}
+
 		return resultList;
 	}
 
+	/**
+	 * First we find based on faculty and country
+	 */
 	@Override
-	public List<BigInteger> getTopSearchedCoursesByOtherUsers(final BigInteger userId) {
+	public List<CourseResponseDto> getCourseNoResultRecommendation(final BigInteger facultyId, final BigInteger countryId, final Integer startIndex,
+			final Integer pageSize) throws ValidationException {
+		/**
+		 * Find courses with the same faculty and country
+		 */
+		List<Course> courseList = userRecommendationDao.getCourseNoResultRecommendation(facultyId, countryId, null, startIndex, pageSize);
+		/**
+		 * If required courses are not found then we will find courses with any faculty
+		 * but with the same country.
+		 *
+		 */
+		if (!courseList.isEmpty() && courseList.size() <= pageSize) {
+			List<Course> courseCountryList = userRecommendationDao.getCourseNoResultRecommendation(null, countryId,
+					courseList.stream().map(Course::getId).collect(Collectors.toList()), startIndex, pageSize - courseList.size());
+			courseList.addAll(courseCountryList);
+		} else {
+			List<Course> courseCountryList = userRecommendationDao.getCourseNoResultRecommendation(null, countryId, null, startIndex, pageSize);
+			courseList.addAll(courseCountryList);
+		}
+		return convertCourseToCourseRespone(courseList);
+	}
 
-		return userRecommendationDao.getOtherUserWatchCourse(userId);
+	@Override
+	public List<CourseResponseDto> getCheapestCourse(final BigInteger facultyId, final BigInteger countryId, final BigInteger levelId, final BigInteger cityId,
+			final Integer startIndex, final Integer pageSize) throws ValidationException {
+		/**
+		 * First we find courses based on same faculty, same country and same level but
+		 * different city
+		 *
+		 */
+		List<Course> courseList = userRecommendationDao.getCheapestCourse(facultyId, countryId, levelId, cityId, null, startIndex, pageSize);
+
+		/**
+		 * if required courses not found then other courses find based on same faculty,
+		 * same country but different city
+		 *
+		 */
+		if (!courseList.isEmpty() && courseList.size() <= pageSize) {
+			List<Course> moreCourses = userRecommendationDao.getCheapestCourse(facultyId, countryId, null, cityId,
+					courseList.stream().map(Course::getId).collect(Collectors.toList()), startIndex, pageSize - courseList.size());
+			courseList.addAll(moreCourses);
+		}
+
+		/**
+		 * if required courses not found then other courses find based on same country
+		 * but different city
+		 *
+		 */
+		if (!courseList.isEmpty() && courseList.size() <= pageSize) {
+			List<Course> moreCourses = userRecommendationDao.getCheapestCourse(null, countryId, null, cityId,
+					courseList.stream().map(Course::getId).collect(Collectors.toList()), startIndex, pageSize - courseList.size());
+			courseList.addAll(moreCourses);
+		}
+
+		return convertCourseToCourseRespone(courseList);
 	}
 
 }

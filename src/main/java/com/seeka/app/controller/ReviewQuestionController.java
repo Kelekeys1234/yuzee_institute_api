@@ -71,7 +71,7 @@ public class ReviewQuestionController {
 	}
 
 	@DeleteMapping("/{questionId}")
-	public ResponseEntity<?> deleteReviewQuestion(@PathVariable final BigInteger questionId) {
+	public ResponseEntity<?> deleteReviewQuestion(@PathVariable final BigInteger questionId) throws ValidationException {
 		ReviewQuestions reviewQuestions = iReviewQuestionService.deleteReviewQuestion(questionId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(reviewQuestions).setMessage("Deleted review question successfully")
 				.create();

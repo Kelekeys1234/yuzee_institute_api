@@ -5,270 +5,332 @@ import java.util.List;
 
 public class AdvanceSearchDto {
 
-    private List<BigInteger> faculties;
-    private List<BigInteger> levelIds;
-    private List<BigInteger> serviceIds;
-    private List<BigInteger> countryIds;
-    private List<String> courseKeys;
-    private List<BigInteger> cityIds;
-    private Double minCost;
-    private Double maxCost;
-    private Integer minDuration;
-    private Integer maxDuration;
+	private List<BigInteger> faculties;
+	private List<BigInteger> levelIds;
+	private List<BigInteger> serviceIds;
+	private List<BigInteger> countryIds;
+	private List<String> courseKeys;
+	private List<BigInteger> cityIds;
+	private Double minCost;
+	private Double maxCost;
+	private Integer minDuration;
+	private Integer maxDuration;
 
-    private boolean sortAsscending;
-    private String sortBy;
-    private Integer maxSizePerPage;
-    private Integer pageNumber;
-    private String currencyCode;
-    private BigInteger userId;
+	private boolean sortAsscending;
+	private String sortBy;
+	private Integer maxSizePerPage;
+	private Integer pageNumber;
+	private String currencyCode;
+	private BigInteger userId;
 
-    /**
-     * @return the faculties
-     */
-    public List<BigInteger> getFaculties() {
-        return faculties;
-    }
+	private BigInteger userCountryId;
 
-    /**
-     * @param faculties
-     *            the faculties to set
-     */
-    public void setFaculties(List<BigInteger> faculties) {
-        this.faculties = faculties;
-    }
+	private List<String> names;
+	private String searchKeyword;
+	private String partFull;
+	private String deliveryMethod;
+	private String instituteId;
 
-    /**
-     * @return the levelIds
-     */
-    public List<BigInteger> getLevelIds() {
-        return levelIds;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public List<String> getNames() {
+		return names;
+	}
 
-    /**
-     * @param levelIds
-     *            the levelIds to set
-     */
-    public void setLevelIds(List<BigInteger> levelIds) {
-        this.levelIds = levelIds;
-    }
+	/**
+	 *
+	 * @param names
+	 */
+	public void setNames(final List<String> names) {
+		this.names = names;
+	}
 
-    /**
-     * @return the serviceIds
-     */
-    public List<BigInteger> getServiceIds() {
-        return serviceIds;
-    }
+	/**
+	 *
+	 * @return
+	 */
+	public BigInteger getUserCountryId() {
+		return userCountryId;
+	}
 
-    /**
-     * @param serviceIds
-     *            the serviceIds to set
-     */
-    public void setServiceIds(List<BigInteger> serviceIds) {
-        this.serviceIds = serviceIds;
-    }
+	/**
+	 *
+	 * @param userCountryId
+	 */
+	public void setUserCountryId(final BigInteger userCountryId) {
+		this.userCountryId = userCountryId;
+	}
 
-    /**
-     * @return the minCost
-     */
-    public Double getMinCost() {
-        return minCost;
-    }
+	/**
+	 * @return the faculties
+	 */
+	public List<BigInteger> getFaculties() {
+		return faculties;
+	}
 
-    /**
-     * @param minCost
-     *            the minCost to set
-     */
-    public void setMinCost(Double minCost) {
-        this.minCost = minCost;
-    }
+	/**
+	 * @param faculties the faculties to set
+	 */
+	public void setFaculties(final List<BigInteger> faculties) {
+		this.faculties = faculties;
+	}
 
-    /**
-     * @return the maxCost
-     */
-    public Double getMaxCost() {
-        return maxCost;
-    }
+	/**
+	 * @return the levelIds
+	 */
+	public List<BigInteger> getLevelIds() {
+		return levelIds;
+	}
 
-    /**
-     * @param maxCost
-     *            the maxCost to set
-     */
-    public void setMaxCost(Double maxCost) {
-        this.maxCost = maxCost;
-    }
+	/**
+	 * @param levelIds the levelIds to set
+	 */
+	public void setLevelIds(final List<BigInteger> levelIds) {
+		this.levelIds = levelIds;
+	}
 
-    /**
-     * @return the minDuration
-     */
-    public Integer getMinDuration() {
-        return minDuration;
-    }
+	/**
+	 * @return the serviceIds
+	 */
+	public List<BigInteger> getServiceIds() {
+		return serviceIds;
+	}
 
-    /**
-     * @param minDuration
-     *            the minDuration to set
-     */
-    public void setMinDuration(Integer minDuration) {
-        this.minDuration = minDuration;
-    }
+	/**
+	 * @param serviceIds the serviceIds to set
+	 */
+	public void setServiceIds(final List<BigInteger> serviceIds) {
+		this.serviceIds = serviceIds;
+	}
 
-    /**
-     * @return the maxDuration
-     */
-    public Integer getMaxDuration() {
-        return maxDuration;
-    }
+	/**
+	 * @return the minCost
+	 */
+	public Double getMinCost() {
+		return minCost;
+	}
 
-    /**
-     * @param maxDuration
-     *            the maxDuration to set
-     */
-    public void setMaxDuration(Integer maxDuration) {
-        this.maxDuration = maxDuration;
-    }
+	/**
+	 * @param minCost the minCost to set
+	 */
+	public void setMinCost(final Double minCost) {
+		this.minCost = minCost;
+	}
 
-    /**
-     * @return the sortAsscending
-     */
-    public boolean getSortAsscending() {
-        return sortAsscending;
-    }
+	/**
+	 * @return the maxCost
+	 */
+	public Double getMaxCost() {
+		return maxCost;
+	}
 
-    /**
-     * @param sortAsscending
-     *            the sortAsscending to set
-     */
-    public void setSortAsscending(boolean sortAsscending) {
-        this.sortAsscending = sortAsscending;
-    }
+	/**
+	 * @param maxCost the maxCost to set
+	 */
+	public void setMaxCost(final Double maxCost) {
+		this.maxCost = maxCost;
+	}
 
-    /**
-     * @return the sortBy
-     */
-    public String getSortBy() {
-        return sortBy;
-    }
+	/**
+	 * @return the minDuration
+	 */
+	public Integer getMinDuration() {
+		return minDuration;
+	}
 
-    /**
-     * @param sortBy
-     *            the sortBy to set
-     */
-    public void setSortBy(String sortBy) {
-        this.sortBy = sortBy;
-    }
+	/**
+	 * @param minDuration the minDuration to set
+	 */
+	public void setMinDuration(final Integer minDuration) {
+		this.minDuration = minDuration;
+	}
 
-    /**
-     * @return the countryIds
-     */
-    public List<BigInteger> getCountryIds() {
-        return countryIds;
-    }
+	/**
+	 * @return the maxDuration
+	 */
+	public Integer getMaxDuration() {
+		return maxDuration;
+	}
 
-    /**
-     * @param countryIds the countryIds to set
-     */
-    public void setCountryIds(List<BigInteger> countryIds) {
-        this.countryIds = countryIds;
-    }
+	/**
+	 * @param maxDuration the maxDuration to set
+	 */
+	public void setMaxDuration(final Integer maxDuration) {
+		this.maxDuration = maxDuration;
+	}
 
-    /**
-     * @return the courseKeys
-     */
-    public List<String> getCourseKeys() {
-        return courseKeys;
-    }
+	/**
+	 * @return the sortAsscending
+	 */
+	public boolean getSortAsscending() {
+		return sortAsscending;
+	}
 
-    /**
-     * @param courseKeys the courseKeys to set
-     */
-    public void setCourseKeys(List<String> courseKeys) {
-        this.courseKeys = courseKeys;
-    }
+	/**
+	 * @param sortAsscending the sortAsscending to set
+	 */
+	public void setSortAsscending(final boolean sortAsscending) {
+		this.sortAsscending = sortAsscending;
+	}
 
-    /**
-     * @return the maxSizePerPage
-     */
-    public Integer getMaxSizePerPage() {
-        return maxSizePerPage;
-    }
+	/**
+	 * @return the sortBy
+	 */
+	public String getSortBy() {
+		return sortBy;
+	}
 
-    /**
-     * @param maxSizePerPage the maxSizePerPage to set
-     */
-    public void setMaxSizePerPage(Integer maxSizePerPage) {
-        this.maxSizePerPage = maxSizePerPage;
-    }
+	/**
+	 * @param sortBy the sortBy to set
+	 */
+	public void setSortBy(final String sortBy) {
+		this.sortBy = sortBy;
+	}
 
-    /**
-     * @return the pageNumber
-     */
-    public Integer getPageNumber() {
-        return pageNumber;
-    }
+	/**
+	 * @return the countryIds
+	 */
+	public List<BigInteger> getCountryIds() {
+		return countryIds;
+	}
 
-    /**
-     * @param pageNumber the pageNumber to set
-     */
-    public void setPageNumber(Integer pageNumber) {
-        this.pageNumber = pageNumber;
-    }
+	/**
+	 * @param countryIds the countryIds to set
+	 */
+	public void setCountryIds(final List<BigInteger> countryIds) {
+		this.countryIds = countryIds;
+	}
 
-    /**
-     * @return the currencyCode
-     */
-    public String getCurrencyCode() {
-        return currencyCode;
-    }
+	/**
+	 * @return the courseKeys
+	 */
+	public List<String> getCourseKeys() {
+		return courseKeys;
+	}
 
-    /**
-     * @param currencyCode the currencyCode to set
-     */
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
-    }
+	/**
+	 * @param courseKeys the courseKeys to set
+	 */
+	public void setCourseKeys(final List<String> courseKeys) {
+		this.courseKeys = courseKeys;
+	}
 
-    /**
-     * @return the userId
-     */
-    public BigInteger getUserId() {
-        return userId;
-    }
+	/**
+	 * @return the maxSizePerPage
+	 */
+	public Integer getMaxSizePerPage() {
+		return maxSizePerPage;
+	}
 
-    /**
-     * @param userId the userId to set
-     */
-    public void setUserId(BigInteger userId) {
-        this.userId = userId;
-    }
+	/**
+	 * @param maxSizePerPage the maxSizePerPage to set
+	 */
+	public void setMaxSizePerPage(final Integer maxSizePerPage) {
+		this.maxSizePerPage = maxSizePerPage;
+	}
 
-    /**
-     * @return the cityIds
-     */
-    public List<BigInteger> getCityIds() {
-        return cityIds;
-    }
+	/**
+	 * @return the pageNumber
+	 */
+	public Integer getPageNumber() {
+		return pageNumber;
+	}
 
-    /**
-     * @param cityIds the cityIds to set
-     */
-    public void setCityIds(List<BigInteger> cityIds) {
-        this.cityIds = cityIds;
-    }
+	/**
+	 * @param pageNumber the pageNumber to set
+	 */
+	public void setPageNumber(final Integer pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+
+	/**
+	 * @return the currencyCode
+	 */
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	/**
+	 * @param currencyCode the currencyCode to set
+	 */
+	public void setCurrencyCode(final String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public BigInteger getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(final BigInteger userId) {
+		this.userId = userId;
+	}
+
+	/**
+	 * @return the cityIds
+	 */
+	public List<BigInteger> getCityIds() {
+		return cityIds;
+	}
+
+	/**
+	 * @param cityIds the cityIds to set
+	 */
+	public void setCityIds(final List<BigInteger> cityIds) {
+		this.cityIds = cityIds;
+	}
+
+	public String getSearchKeyword() {
+		return searchKeyword;
+	}
+
+	public void setSearchKeyword(final String searchKeyword) {
+		this.searchKeyword = searchKeyword;
+	}
+
+	public String getPartFull() {
+		return partFull;
+	}
+
+	public void setPartFull(final String partFull) {
+		this.partFull = partFull;
+	}
+
+	public String getDeliveryMethod() {
+		return deliveryMethod;
+	}
+
+	public void setDeliveryMethod(final String deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
+	}
+
+	public String getInstituteId() {
+		return instituteId;
+	}
+
+	public void setInstituteId(final String instituteId) {
+		this.instituteId = instituteId;
+	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AdvanceSearchDto [faculties=").append(faculties).append(", levelIds=").append(levelIds)
-				.append(", serviceIds=").append(serviceIds).append(", countryIds=").append(countryIds)
-				.append(", courseKeys=").append(courseKeys).append(", cityIds=").append(cityIds).append(", minCost=")
-				.append(minCost).append(", maxCost=").append(maxCost).append(", minDuration=").append(minDuration)
-				.append(", maxDuration=").append(maxDuration).append(", sortAsscending=").append(sortAsscending)
-				.append(", sortBy=").append(sortBy).append(", maxSizePerPage=").append(maxSizePerPage)
-				.append(", pageNumber=").append(pageNumber).append(", currencyCode=").append(currencyCode)
-				.append(", userId=").append(userId).append("]");
+		builder.append("AdvanceSearchDto [faculties=").append(faculties).append(", levelIds=").append(levelIds).append(", serviceIds=").append(serviceIds)
+				.append(", countryIds=").append(countryIds).append(", courseKeys=").append(courseKeys).append(", cityIds=").append(cityIds).append(", minCost=")
+				.append(minCost).append(", maxCost=").append(maxCost).append(", minDuration=").append(minDuration).append(", maxDuration=").append(maxDuration)
+				.append(", sortAsscending=").append(sortAsscending).append(", sortBy=").append(sortBy).append(", maxSizePerPage=").append(maxSizePerPage)
+				.append(", pageNumber=").append(pageNumber).append(", currencyCode=").append(currencyCode).append(", userId=").append(userId)
+				.append(", userCountryId=").append(userCountryId).append(", names=").append(names).append(", searchKeyword=").append(searchKeyword)
+				.append(", partFull=").append(partFull).append(", deliveryMethod=").append(deliveryMethod).append(", instituteId=").append(instituteId)
+				.append("]");
 		return builder.toString();
 	}
 
-    
 }

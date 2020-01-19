@@ -2,15 +2,19 @@ package com.seeka.app.service;
 
 import java.util.List;
 
-import com.seeka.app.dto.GlobalDataDto;
+import com.seeka.app.dto.GlobalData;
 
 public interface IGlobalStudentData {
 
-	void saveGlobalStudentData(GlobalDataDto globalStudentDataDto);
+	void saveGlobalStudentData(GlobalData globalStudentDataDto);
 
 	void deleteAllGlobalStudentData();
 	
-	List<GlobalDataDto> getCountryWiseStudentList(String countryName);
+	List<GlobalData> getCountryWiseStudentList(String countryName);
 	
 	long checkForPresenceOfUserCountryInGlobalDataFile(String countryName);
+	
+	List<String> getDistinctMigratedCountryForUserCountry (String countryName);
+	
+	List<String> getDistinctMigratedCountryForUserCountryOrderbyStudentCount (String countryName);
 }

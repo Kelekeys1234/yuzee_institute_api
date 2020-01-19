@@ -23,10 +23,14 @@ public interface IEnrollmentService {
 	List<EnrollmentStatusDto> getEnrollmentStatusDetail(BigInteger enrollmentId);
 
 	List<EnrollmentResponseDto> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId,
-			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize);
+			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, Boolean isArchive,
+			String sortByField, String sortByType, String searchKeyword) throws ValidationException;
 
-	int countOfEnrollment();
+	int countOfEnrollment(BigInteger userId, BigInteger courseId, BigInteger instituteId, BigInteger enrollmentId, String status, Date updatedOn,
+			String searchKeyword);
 
 	void sentEnrollmentNotification(EnrollmentStatus enrollmentStatus, BigInteger userId) throws ValidationException;
+
+	void archiveEnrollment(BigInteger enrollmentId, boolean isArchive) throws ValidationException;
 
 }

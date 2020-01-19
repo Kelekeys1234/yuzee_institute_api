@@ -1,6 +1,7 @@
 package com.seeka.app.dto;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import com.seeka.app.bean.CourseEnglishEligibility;
@@ -16,17 +17,18 @@ public class CourseRequest {
 	private String name;
 	private String description;
 	private String duration;
-	private String intake;
-	private String language;
+	private List<Date> intake;
+	private List<String> deliveryMethod;
+	private List<String> language;
 	private Double domasticFee;
 	private Double internationalFee;
 	private String grades;
-	private String partTime;
-	private String fullTime;
 	private String documentUrl;
 	private String contact;
 	private String openingHourFrom;
 	private String openingHourTo;
+	private String jobFullTime;
+	private String jobPartTime;
 	private String campusLocation;
 	private String website;
 	private String link;
@@ -48,6 +50,60 @@ public class CourseRequest {
 	private String availbility;
 	private List<CourseEnglishEligibility> englishEligibility;
 	private List<StorageDto> storageList;
+
+	private Boolean applied;
+	private Boolean viewCourse;
+	private Double latitude;
+	private Double longitude;
+	private List<UserReviewResultDto> userReviewResult;
+
+	public List<UserReviewResultDto> getUserReviewResult() {
+		return userReviewResult;
+	}
+
+	public void setUserReviewResult(final List<UserReviewResultDto> userReviewResult) {
+		this.userReviewResult = userReviewResult;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(final Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(final Double longitude) {
+		this.longitude = longitude;
+	}
+
+	public Boolean getViewCourse() {
+		return viewCourse;
+	}
+
+	public void setViewCourse(final Boolean viewCourse) {
+		this.viewCourse = viewCourse;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public Boolean getApplied() {
+		return applied;
+	}
+
+	/**
+	 *
+	 * @param applied
+	 */
+	public void setApplied(final Boolean applied) {
+		this.applied = applied;
+	}
 
 	/**
 	 * @return the cId
@@ -150,14 +206,14 @@ public class CourseRequest {
 	/**
 	 * @return the intake
 	 */
-	public String getIntake() {
+	public List<Date> getIntake() {
 		return intake;
 	}
 
 	/**
 	 * @param intake the intake to set
 	 */
-	public void setIntake(final String intake) {
+	public void setIntake(final List<Date> intake) {
 		this.intake = intake;
 	}
 
@@ -207,36 +263,8 @@ public class CourseRequest {
 		return englishEligibility;
 	}
 
-	public void setEnglishEligibility(List<CourseEnglishEligibility> englishEligibility) {
+	public void setEnglishEligibility(final List<CourseEnglishEligibility> englishEligibility) {
 		this.englishEligibility = englishEligibility;
-	}
-
-	/**
-	 * @return the partTime
-	 */
-	public String getPartTime() {
-		return partTime;
-	}
-
-	/**
-	 * @param partTime the partTime to set
-	 */
-	public void setPartTime(final String partTime) {
-		this.partTime = partTime;
-	}
-
-	/**
-	 * @return the fullTime
-	 */
-	public String getFullTime() {
-		return fullTime;
-	}
-
-	/**
-	 * @param fullTime the fullTime to set
-	 */
-	public void setFullTime(final String fullTime) {
-		this.fullTime = fullTime;
 	}
 
 	/**
@@ -473,7 +501,7 @@ public class CourseRequest {
 	/**
 	 * @param facultyName the facultyName to set
 	 */
-	public void setFacultyName(String facultyName) {
+	public void setFacultyName(final String facultyName) {
 		this.facultyName = facultyName;
 	}
 
@@ -487,7 +515,7 @@ public class CourseRequest {
 	/**
 	 * @param studyMode the studyMode to set
 	 */
-	public void setStudyMode(String studyMode) {
+	public void setStudyMode(final String studyMode) {
 		this.studyMode = studyMode;
 	}
 
@@ -501,7 +529,7 @@ public class CourseRequest {
 	/**
 	 * @param partFull the partFull to set
 	 */
-	public void setPartFull(String partFull) {
+	public void setPartFull(final String partFull) {
 		this.partFull = partFull;
 	}
 
@@ -515,7 +543,7 @@ public class CourseRequest {
 	/**
 	 * @param levelId the levelId to set
 	 */
-	public void setLevelId(BigInteger levelId) {
+	public void setLevelId(final BigInteger levelId) {
 		this.levelId = levelId;
 	}
 
@@ -529,7 +557,7 @@ public class CourseRequest {
 	/**
 	 * @param levelName the levelName to set
 	 */
-	public void setLevelName(String levelName) {
+	public void setLevelName(final String levelName) {
 		this.levelName = levelName;
 	}
 
@@ -543,7 +571,7 @@ public class CourseRequest {
 	/**
 	 * @param availbility the availbility to set
 	 */
-	public void setAvailbility(String availbility) {
+	public void setAvailbility(final String availbility) {
 		this.availbility = availbility;
 	}
 
@@ -551,7 +579,7 @@ public class CourseRequest {
 		return storageList;
 	}
 
-	public void setStorageList(List<StorageDto> storageList) {
+	public void setStorageList(final List<StorageDto> storageList) {
 		this.storageList = storageList;
 	}
 
@@ -565,7 +593,7 @@ public class CourseRequest {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(BigInteger id) {
+	public void setId(final BigInteger id) {
 		this.id = id;
 	}
 
@@ -579,21 +607,21 @@ public class CourseRequest {
 	/**
 	 * @param currency the currency to set
 	 */
-	public void setCurrency(String currency) {
+	public void setCurrency(final String currency) {
 		this.currency = currency;
 	}
 
 	/**
 	 * @return the language
 	 */
-	public String getLanguage() {
+	public List<String> getLanguage() {
 		return language;
 	}
 
 	/**
 	 * @param language the language to set
 	 */
-	public void setLanguage(String language) {
+	public void setLanguage(final List<String> language) {
 		this.language = language;
 	}
 
@@ -607,7 +635,32 @@ public class CourseRequest {
 	/**
 	 * @param link the link to set
 	 */
-	public void setLink(String link) {
+	public void setLink(final String link) {
 		this.link = link;
 	}
+
+	public List<String> getDeliveryMethod() {
+		return deliveryMethod;
+	}
+
+	public void setDeliveryMethod(final List<String> deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
+	}
+
+	public String getJobFullTime() {
+		return jobFullTime;
+	}
+
+	public void setJobFullTime(final String jobFullTime) {
+		this.jobFullTime = jobFullTime;
+	}
+
+	public String getJobPartTime() {
+		return jobPartTime;
+	}
+
+	public void setJobPartTime(final String jobPartTime) {
+		this.jobPartTime = jobPartTime;
+	}
+
 }

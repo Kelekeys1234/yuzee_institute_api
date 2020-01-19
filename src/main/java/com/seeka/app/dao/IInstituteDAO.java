@@ -1,7 +1,10 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -14,66 +17,84 @@ import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.NearestInstituteDTO;
 
 public interface IInstituteDAO {
 
-    void save(Institute obj);
+	void save(Institute obj);
 
-    void update(Institute obj);
+	void update(Institute obj);
 
-    Institute get(BigInteger id);
+	Institute get(BigInteger id);
 
-    List<BigInteger> getTopInstituteByCountry(BigInteger countryId, Long startIndex, Long pageSize);
+	List<BigInteger> getTopInstituteByCountry(BigInteger countryId/* , Long startIndex, Long pageSize */);
 
-    List<Institute> getAll();
+	List<Institute> getAll();
 
-    List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
+	List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
 
-    List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj);
+	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
+			Integer startIndex, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
+			Integer toWorldRanking, String campusType);
 
-    InstituteResponseDto getInstituteByID(BigInteger instituteId);
+	InstituteResponseDto getInstituteByID(BigInteger instituteId);
 
-    List<InstituteResponseDto> getInstitudeByCityId(BigInteger cityId);
+	List<InstituteResponseDto> getInstitudeByCityId(BigInteger cityId);
 
-    List<InstituteResponseDto> getInstituteByListOfCityId(String citisId);
+	List<InstituteResponseDto> getInstituteByListOfCityId(String citisId);
 
-    List<Institute> searchInstitute(String sqlQuery);
+	List<Institute> searchInstitute(String sqlQuery);
 
-    int findTotalCount();
+	int findTotalCount();
 
-    List<Institute> getAll(Integer pageNumber, Integer pageSize);
+	List<Institute> getAll(Integer pageNumber, Integer pageSize);
 
-    List<com.seeka.app.bean.Service> getAllServices();
+	List<com.seeka.app.bean.Service> getAllServices();
 
-    void delete(Institute obj);
+	void delete(Institute obj);
 
-    List<Institute> instituteFilter(int startIndex, Integer maxSizePerPage, InstituteFilterDto instituteFilterDto);
+	List<Institute> instituteFilter(int startIndex, Integer maxSizePerPage, InstituteFilterDto instituteFilterDto);
 
-    int findTotalCountFilterInstitute(InstituteFilterDto instituteFilterDto);
+	int findTotalCountFilterInstitute(InstituteFilterDto instituteFilterDto);
 
-    List<Institute> getInstituteCampusWithInstitue();
+	List<Institute> getInstituteCampusWithInstitue();
 
-    List<Institute> autoSearch(int startIndex, Integer pageSize, String searchKey);
+	List<Institute> autoSearch(int startIndex, Integer pageSize, String searchKey);
 
-    int findTotalCountForInstituteAutosearch(String searchKey);
+	int findTotalCountForInstituteAutosearch(String searchKey);
 
-    InstituteCategoryType getInstituteCategoryType(BigInteger instituteCategoryTypeId);
+	InstituteCategoryType getInstituteCategoryType(BigInteger instituteCategoryTypeId);
 
-    List<Institute> getSecondayCampus(BigInteger countryId, BigInteger cityId, String name);
+	List<Institute> getSecondayCampus(BigInteger countryId, BigInteger cityId, String name);
 
-    void saveInstituteserviceDetails(InstituteService instituteServiceDetails);
+	void saveInstituteserviceDetails(InstituteService instituteServiceDetails);
 
-    void deleteInstituteService(BigInteger id);
+	void deleteInstituteService(BigInteger id);
 
-    void saveInstituteIntake(InstituteIntake instituteIntake);
+	void saveInstituteIntake(InstituteIntake instituteIntake);
 
-    void deleteInstituteIntakeById(BigInteger id);
+	void deleteInstituteIntakeById(BigInteger id);
 
-    List<String> getIntakesById(@Valid BigInteger id);
-    
-    List<InstituteCategoryType> getAllCategories();
-    
-    List<Institute> ratingWiseInstituteListByCountry(Country country);
+	List<String> getIntakesById(@Valid BigInteger id);
 
-	List<Institute> getAllInstituteByID(List<BigInteger> instituteId);
+	List<InstituteCategoryType> getAllCategories();
+
+	List<Institute> ratingWiseInstituteListByCountry(Country country);
+
+	List<Institute> getAllInstituteByID(Collection<BigInteger> instituteId);
+
+	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
+
+	List<BigInteger> getInstitudeByCountry(List<BigInteger> distinctCountryIds);
+
+	List<BigInteger> getRandomInstituteByCountry(List<BigInteger> countryIdList);
+
+	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive,
+			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
+
+	Map<BigInteger, Integer> getDomesticRanking(List<BigInteger> instituteIdList);
+
+	List<NearestInstituteDTO> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitude, Double longitude);
+
+	List<String> getUserSearchInstituteRecommendation(Integer startIndex, Integer pageSize, String searchKeyword);
 }

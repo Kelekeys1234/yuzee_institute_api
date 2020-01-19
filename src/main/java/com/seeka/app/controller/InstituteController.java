@@ -10,9 +10,12 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,16 +24,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
+import com.seeka.app.bean.InstituteDomesticRankingHistory;
 import com.seeka.app.bean.InstituteType;
+import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.bean.Service;
-import com.seeka.app.bean.UserInfo;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
@@ -39,7 +45,6 @@ import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IInstituteTypeService;
 import com.seeka.app.service.IServiceDetailsService;
 import com.seeka.app.service.IStorageService;
-import com.seeka.app.service.IUserService;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
@@ -58,9 +63,6 @@ public class InstituteController {
 
 	@Autowired
 	private IInstituteServiceDetailsService instituteServiceDetailsService;
-
-	@Autowired
-	private IUserService userService;
 
 	@Autowired
 	private IStorageService iStorageService;
@@ -322,53 +324,57 @@ public class InstituteController {
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> instituteSearch(@RequestBody final CourseSearchDto request) throws Exception {
-		return getInstitutesBySearchFilters(request);
+		return getInstitutesBySearchFilters(request, null, null, null, null, null, null, null, null, null, null);
 	}
 
 	@RequestMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> instituteSearch(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final List<BigInteger> countryIds, @RequestParam(required = false) final List<BigInteger> facultyIds,
-			@RequestParam(required = false) final List<BigInteger> levelIds) throws Exception {
+			@RequestParam(required = false) final List<BigInteger> levelIds, @RequestParam(required = false) final BigInteger cityId,
+			@RequestParam(required = false) final BigInteger instituteTypeId, @RequestParam(required = false) final Boolean isActive,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
+			@RequestParam(required = false) final Integer fromWorldRanking, @RequestParam(required = false) final Integer toWorldRanking,
+			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
+			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String campusType) throws ValidationException {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryIds(countryIds);
 		courseSearchDto.setFacultyIds(facultyIds);
 		courseSearchDto.setLevelIds(levelIds);
 		courseSearchDto.setPageNumber(pageNumber);
 		courseSearchDto.setMaxSizePerPage(pageSize);
-		return getInstitutesBySearchFilters(courseSearchDto);
+		return getInstitutesBySearchFilters(courseSearchDto, sortByField, sortByType, searchKeyword, cityId, instituteTypeId, isActive, updatedOn,
+				fromWorldRanking, toWorldRanking, campusType);
 	}
 
-	private ResponseEntity<?> getInstitutesBySearchFilters(final CourseSearchDto request) throws ValidationException {
-		Map<String, Object> response = new HashMap<>();
-
+	private ResponseEntity<?> getInstitutesBySearchFilters(final CourseSearchDto request, final String sortByField, final String sortByType,
+			final String searchKeyword, final BigInteger cityId, final BigInteger instituteTypeId, final Boolean isActive, final Date updatedOn,
+			final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) throws ValidationException {
 		List<BigInteger> countryIds = request.getCountryIds();
 		if (null == countryIds || countryIds.isEmpty()) {
 			countryIds = new ArrayList<>();
 		}
-
-		List<InstituteResponseDto> instituteList = instituteService.getAllInstitutesByFilter(request);
+		int startIndex = PaginationUtil.getStartIndex(request.getPageNumber(), request.getMaxSizePerPage());
+		List<InstituteResponseDto> instituteList = instituteService.getAllInstitutesByFilter(request, sortByField, sortByType, searchKeyword, startIndex,
+				cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking, campusType);
 		for (InstituteResponseDto instituteResponseDto : instituteList) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null,
 					"en");
 			instituteResponseDto.setStorageList(storageDTOList);
 		}
 
-		Integer maxCount = 0, totalCount = 0;
-		if (null != instituteList && !instituteList.isEmpty()) {
-			totalCount = instituteList.get(0).getTotalCount();
-			maxCount = instituteList.size();
-		}
-		boolean showMore;
-		if (request.getMaxSizePerPage() == maxCount) {
-			showMore = true;
-		} else {
-			showMore = false;
-		}
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("paginationObj", new PaginationDto(totalCount, showMore));
-		response.put("instituteList", instituteList);
-		return ResponseEntity.accepted().body(response);
+		int totalCount = instituteService.getCountOfInstitute(request, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking,
+				toWorldRanking, campusType);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, request.getMaxSizePerPage(), totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get Institute List successfully");
+		responseMap.put("data", instituteList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/recommended", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -393,18 +399,13 @@ public class InstituteController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		UserInfo user = userService.get(request.getUserId());
-
 		List<BigInteger> countryIds = request.getCountryIds();
 		if (null == countryIds || countryIds.isEmpty()) {
 			countryIds = new ArrayList<>();
 		}
-		if (null != user.getPreferredCountryId()) {
-			countryIds.add(user.getPreferredCountryId());
-			request.setCountryIds(countryIds);
-		}
 
-		List<InstituteResponseDto> instituteResponseDtoList = instituteService.getAllInstitutesByFilter(request);
+		List<InstituteResponseDto> instituteResponseDtoList = instituteService.getAllInstitutesByFilter(request, null, null, null, null, null, null, null, null,
+				null, null, null);
 		for (InstituteResponseDto instituteResponseDto : instituteResponseDtoList) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null,
 					"en");
@@ -480,8 +481,10 @@ public class InstituteController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@Valid @PathVariable final BigInteger id) throws Exception {
-		return ResponseEntity.accepted().body(instituteService.getById(id));
+	public ResponseEntity<?> get(@PathVariable final BigInteger id) throws ValidationException {
+		List<InstituteRequestDto> instituteRequestDtos = instituteService.getById(id);
+		return new GenericResponseHandlers.Builder().setData(instituteRequestDtos).setMessage("Institute details get successfully").setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@RequestMapping(value = "search/{searchText}", method = RequestMethod.GET, produces = "application/json")
@@ -553,9 +556,10 @@ public class InstituteController {
 		return ResponseEntity.ok().body(response);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<?> delete(@Valid @PathVariable final BigInteger id) throws Exception {
-		return ResponseEntity.accepted().body(instituteService.deleteInstitute(id));
+	@RequestMapping(value = "/{instituteId}", method = RequestMethod.DELETE, produces = "application/json")
+	public ResponseEntity<?> delete(@PathVariable final BigInteger instituteId) throws ValidationException {
+		instituteService.deleteInstitute(instituteId);
+		return new GenericResponseHandlers.Builder().setMessage("Institute deleted successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/images/{instituteId}", method = RequestMethod.GET, produces = "application/json")
@@ -563,4 +567,44 @@ public class InstituteController {
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteId, ImageCategory.INSTITUTE.toString(), null, "en");
 		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
 	}
+
+	@GetMapping(value = "/totalCourseCount", produces = "application/json")
+	public ResponseEntity<?> getTotalCourseForInstitute(@RequestParam(value = "instituteId", required = true) final BigInteger instituteId)
+			throws ValidationException {
+		Integer courseCount = instituteService.getTotalCourseCountForInstitute(instituteId);
+		return new GenericResponseHandlers.Builder().setData(courseCount).setMessage("Course Count returned successfully").setStatus(HttpStatus.OK).create();
+	}
+
+	@GetMapping(value = "/history/domestic/ranking", produces = "application/json")
+	public ResponseEntity<?> getHistoryOfDomesticRanking(@RequestParam(value = "instituteId", required = true) final BigInteger instituteId)
+			throws ValidationException {
+		InstituteDomesticRankingHistory instituteDomesticRankingHistory = instituteService.getHistoryOfDomesticRanking(instituteId);
+		return new GenericResponseHandlers.Builder().setData(instituteDomesticRankingHistory).setMessage("Get institute domestic ranking successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@GetMapping(value = "/history/world/ranking", produces = "application/json")
+	public ResponseEntity<?> getHistoryOfWorldRanking(@RequestParam(value = "instituteId", required = true) final BigInteger instituteId)
+			throws ValidationException {
+		InstituteWorldRankingHistory instituteWorldRankingHistory = instituteService.getHistoryOfWorldRanking(instituteId);
+		return new GenericResponseHandlers.Builder().setData(instituteWorldRankingHistory).setMessage("Get institute world ranking successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@PostMapping(value = "/domesticRankingForCourse", produces = "application/json")
+	public ResponseEntity<?> getDomesticRanking(@RequestBody final List<BigInteger> courseIds) throws ValidationException {
+		Map<BigInteger, Integer> instituteIdDomesticRanking = instituteService.getDomesticRanking(courseIds);
+		return new GenericResponseHandlers.Builder().setData(instituteIdDomesticRanking).setMessage("Domestic Ranking Displayed Successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@GetMapping(value = "/nearest/pageNumber/{pageNumber}/pageSize/{pageSize}", produces = "application/json")
+	public ResponseEntity<?> getNearestInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(value = "latitude", required = true) final Double latitude,
+			@RequestParam(value = "longitude", required = true) final Double longitude) throws ValidationException {
+		List<NearestInstituteDTO> nearestInstituteDTOs = instituteService.getNearestInstituteList(pageNumber, pageSize, latitude, longitude);
+		return new GenericResponseHandlers.Builder().setData(nearestInstituteDTOs).setMessage("Nearest Institute Displayed Successfully.")
+				.setStatus(HttpStatus.OK).create();
+	}
+
 }

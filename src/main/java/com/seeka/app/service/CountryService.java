@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -265,5 +266,18 @@ public class CountryService implements ICountryService {
 	@Override
 	public Country getCountryBasedOnCitizenship(String citizenship) {
 		return countryDAO.getCountryBasedOnCitizenship(citizenship);
+	}
+	
+	@Override
+	public List<Country> getCountryListBasedOnCitizenship(List<String> citizenships) {
+		return countryDAO.getCountryIdsBasedOnCitizenships(citizenships);
+	}
+
+	@Override
+	public List<BigInteger> getCountryBasedOnCitizenship(List<String> countryNames) {
+		
+		List<Country> countryList = countryDAO.getCountryIdsBasedOnCitizenships(countryNames);
+		List<BigInteger> countryIds = countryList.stream().map(i -> i.getId()).collect(Collectors.toList());
+		return countryIds;
 	}
 }
