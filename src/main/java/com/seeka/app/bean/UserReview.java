@@ -82,6 +82,19 @@ public class UserReview implements Serializable {
 	private String updatedBy;
 	@Column(name = "deleted_by", length = 50)
 	private String deletedBy;
+	
+	@Column(name = "full_name", length = 50)
+	private String userName;
+	
+	
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 	public BigInteger getId() {
 		return id;
@@ -231,6 +244,7 @@ public class UserReview implements Serializable {
 		result = prime * result + (updatedBy == null ? 0 : updatedBy.hashCode());
 		result = prime * result + (updatedOn == null ? 0 : updatedOn.hashCode());
 		result = prime * result + (userId == null ? 0 : userId.hashCode());
+		result = prime * result + (userName == null ? 0 : userName.hashCode());
 		return result;
 	}
 
@@ -351,6 +365,13 @@ public class UserReview implements Serializable {
 		} else if (!updatedOn.equals(other.updatedOn)) {
 			return false;
 		}
+		if (userName == null) {
+			if (other.userName != null) {
+				return false;
+			}
+		} else if (!userName.equals(other.userName)) {
+			return false;
+		}
 		if (userId == null) {
 			if (other.userId != null) {
 				return false;
@@ -359,6 +380,8 @@ public class UserReview implements Serializable {
 			return false;
 		}
 		return true;
+		
+		
 	}
 
 	@Override
@@ -368,7 +391,7 @@ public class UserReview implements Serializable {
 				.append(entityType).append(", studentType=").append(studentType).append(", studentCategory=").append(studentCategory).append(", isAnonymous=")
 				.append(isAnonymous).append(", reviewStar=").append(reviewStar).append(", comments=").append(comments).append(", isActive=").append(isActive)
 				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
-				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", deletedBy=").append(deletedBy).append("]");
+				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy).append(", userName=").append(userName).append(", deletedBy=").append(deletedBy).append("]");
 		return builder.toString();
 	}
 

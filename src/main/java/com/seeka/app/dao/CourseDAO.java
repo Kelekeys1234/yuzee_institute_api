@@ -1202,7 +1202,7 @@ public class CourseDAO implements ICourseDAO {
 		}
 		String sizeSqlQuery = "select count(*) from course crs inner join institute inst "
 				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join course_delivery_method cd on cd.course_id=crs.id "
-				+ "where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
+				+ "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
 				+ courseSearchDto.getUserId() + ") ";
 		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
 			sizeSqlQuery = addConditionForCourseList(sizeSqlQuery, globalSearchFilterDto.getIds());
@@ -1372,7 +1372,7 @@ public class CourseDAO implements ICourseDAO {
 		}
 
 		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
-			sqlQuery += " and crs.name in (\"" + courseSearchDto.getCourseKeys().stream().map(String::valueOf).collect(Collectors.joining(",")) + "\")";
+			sqlQuery += " and crs.name in (" + courseSearchDto.getCourseKeys().stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + ")";
 		}
 		/**
 		 * This is added as in advanced search names are to be passed now, so not

@@ -134,7 +134,7 @@ public class UserReviewService implements IUserReviewService {
 	public List<UserReviewResultDto> getUserReviewBasedOnData(final BigInteger entityId, final String entityType, final Integer startIndex,
 			final Integer pageSize, final String sortByType, final String searchKeyword) throws ValidationException {
 		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, entityId, entityType, startIndex, pageSize, sortByType, searchKeyword);
-		List<UserReviewResultDto> resultList = new ArrayList<>();
+		List<UserReviewResultDto> userReviewResultDtolist = new ArrayList<>();
 		for (UserReview userReview : userReviewList) {
 			UserReviewResultDto reviewResultDto = new UserReviewResultDto();
 			BeanUtils.copyProperties(userReview, reviewResultDto);
@@ -146,9 +146,9 @@ public class UserReviewService implements IUserReviewService {
 				userReviewRatingDtos.add(userReviewRatingDto);
 			}
 			reviewResultDto.setRatings(userReviewRatingDtos);
-			resultList.add(reviewResultDto);
+			userReviewResultDtolist.add(reviewResultDto);
 		}
-		return resultList;
+		return userReviewResultDtolist;
 	}
 
 	@Override
@@ -176,11 +176,11 @@ public class UserReviewService implements IUserReviewService {
 			ReviewQuestionsDto reviewQuestionsDto = iReviewQuestionService.getReviewQuestion((BigInteger) obj1[0]);
 			BeanUtils.copyProperties(reviewQuestionsDto, userReviewRatingDto);
 			userReviewRatingDto.setReviewQuestionId((BigInteger) obj1[0]);
-			userReviewRatingDto.setRating((Double) obj1[1]);
+			userReviewRatingDto.setRating((double) Math.round((Double) obj1[1]));
 			resultList.add(userReviewRatingDto);
 		}
 		userReviewResultDto.setRatings(resultList);
-		userReviewResultDto.setReviewStar(iUserReviewDao.getReviewStar(entityId, entityType));
+		userReviewResultDto.setReviewStar((double)Math.round((Double)iUserReviewDao.getReviewStar(entityId, entityType)));
 		return userReviewResultDto;
 	}
 
