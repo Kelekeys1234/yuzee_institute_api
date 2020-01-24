@@ -149,4 +149,6 @@ public interface ICourseService {
 	List<String> getCourseKeywordRecommendation(BigInteger facultyId, BigInteger countryId, BigInteger levelId, Integer startIndex, Integer pageSize);
 
 	double calculateAverageRating(Map<BigInteger, Double> googleReviewMap, Map<BigInteger, Double> seekaReviewMap, Double courseStar, BigInteger instituteId);
+
+	Map<String, Integer> getCourseCountByLevel();
 }
