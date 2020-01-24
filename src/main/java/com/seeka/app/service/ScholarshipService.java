@@ -3,7 +3,9 @@ package com.seeka.app.service;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -287,5 +289,17 @@ public class ScholarshipService implements IScholarshipService {
 	@Override
 	public List<BigInteger> getRandomScholarShipIds(final int i) {
 		return iScholarshipDAO.getRandomScholarships(i);
+	}
+	
+	public Map<String, Object> getScholarshipCountByLevelId(List<Level> levelList) {
+		Map<String, Object> map = new HashMap<>();
+		for (Level level : levelList) {
+			BigInteger count = null;
+			if (level != null && level.getId() != null) {
+				count = iScholarshipDAO.getScholarshipCountByLevelId(level.getId());
+				map.put(level.getName(), count);
+			}
+		}
+		return map;
 	}
 }

@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.bean.Level;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.dto.ScholarshipResponseDTO;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.service.ILevelService;
 import com.seeka.app.service.IScholarshipService;
 import com.seeka.app.util.PaginationUtil;
 
@@ -37,6 +39,9 @@ public class ScholarshipController {
 
 	@Autowired
 	private IScholarshipService iScholarshipService;
+	
+	@Autowired
+    private ILevelService levelService;
 
 	@PostMapping()
 	public ResponseEntity<?> saveScholarship(@RequestBody final ScholarshipDto scholarshipDto, final BindingResult bindingResult) throws Exception {
@@ -95,5 +100,14 @@ public class ScholarshipController {
 		iScholarshipService.deleteScholarship(id);
 		return new GenericResponseHandlers.Builder().setMessage("delete Scholarship Successfully.").setStatus(HttpStatus.OK).create();
 	}
-
+	
+	@GetMapping(value = "/getScholarshipCountByLevel")
+	public ResponseEntity<?> getScholarshipCountByLevel() throws Exception {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<Level> levels = levelService.getAll();
+		if (levels != null && !levels.isEmpty()) {
+			response = iScholarshipService.getScholarshipCountByLevelId(levels);
+		}
+		return ResponseEntity.accepted().body(response);
+	}
 }
