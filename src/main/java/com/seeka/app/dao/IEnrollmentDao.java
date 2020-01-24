@@ -27,4 +27,6 @@ public interface IEnrollmentDao {
 
 	EnrollmentStatus getEnrollmentStatusDetailBasedOnFilter(BigInteger enrollmentId, String status);
 
+	List<Enrollment> getAllEnrollment();
+
 }

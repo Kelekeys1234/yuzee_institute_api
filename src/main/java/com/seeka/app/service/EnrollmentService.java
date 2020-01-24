@@ -4,7 +4,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ import com.seeka.app.dto.EnrollmentResponseDto;
 import com.seeka.app.dto.EnrollmentStatusDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserDto;
+import com.seeka.app.enumeration.EnrollmentStatusType;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 
@@ -300,6 +303,33 @@ public class EnrollmentService implements IEnrollmentService {
 		enrollment.setUpdatedBy("API");
 		enrollment.setUpdatedOn(new Date());
 		iEnrollmentDao.updateEnrollment(enrollment);
+	}
+
+	@Override
+	public Map<String, Long> getEnrollmentStatus() {
+		List<Enrollment> enrollments =iEnrollmentDao.getAllEnrollment();
+		Map<String, Long> enrollmentStatusCount = new HashMap<String, Long>();
+		
+		long completedCount =0;
+		long assignedCount =0;
+		long notAssignedCount =0;
+		for (Enrollment enrollment : enrollments) {
+			if(enrollment.getStatus().equalsIgnoreCase("SUBMITTED")) {
+				notAssignedCount++;
+			}
+			else if(enrollment.getStatus().matches("SEEKA_REVIEWED|PREPARED|INSTITUTE_SUBMITTED|INSTITUTE_REVIEWED|INSTITUTE_OFFERED|"
+					+ "APPLICANT_APPROVED")) {
+				assignedCount++;
+			}
+			
+			else if(enrollment.getStatus().equalsIgnoreCase("APPROVED")) {
+				completedCount++;
+			}
+		}
+		enrollmentStatusCount.put(EnrollmentStatusType.NOT_ASSIGNED.name(), notAssignedCount );
+		enrollmentStatusCount.put(EnrollmentStatusType.ASSIGNED.name(), assignedCount);
+		enrollmentStatusCount.put(EnrollmentStatusType.COMPLETED.name(), completedCount);
+		return enrollmentStatusCount;
 	}
 
 }

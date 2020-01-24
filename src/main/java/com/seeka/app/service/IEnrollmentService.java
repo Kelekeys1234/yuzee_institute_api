@@ -3,6 +3,9 @@ package com.seeka.app.service;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import org.json.JSONObject;
 
 import com.seeka.app.bean.EnrollmentStatus;
 import com.seeka.app.dto.EnrollmentDto;
@@ -32,5 +35,7 @@ public interface IEnrollmentService {
 	void sentEnrollmentNotification(EnrollmentStatus enrollmentStatus, BigInteger userId) throws ValidationException;
 
 	void archiveEnrollment(BigInteger enrollmentId, boolean isArchive) throws ValidationException;
+
+	Map<String, Long> getEnrollmentStatus();
 
 }

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -135,5 +136,15 @@ public class EnrollmentController {
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentStatus).setMessage("Get enrollment status details successfully")
 				.create();
 	}
+	
+	@GetMapping("/getEnrollmentstatus")
+	public ResponseEntity<?> getEnrollmentstatus() {
+		Map<String, Long> enrollmentStatus = iEnrollmentService.getEnrollmentStatus();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentStatus).setMessage("Get enrollment status details successfully")
+				.create();
+		
+	}
+	
+	
 
 }
