@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -73,6 +74,8 @@ public class CourseDAO implements ICourseDAO {
 
 	@Value("${s3.url}")
 	private String s3URL;
+	
+	Function<String,String> addQuotes =  s -> "\"" + s + "\"";
 
 	@Override
 	public void save(final Course obj) {
@@ -1372,14 +1375,14 @@ public class CourseDAO implements ICourseDAO {
 		}
 
 		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
-			sqlQuery += " and crs.name in (" + courseSearchDto.getCourseKeys().stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + ")";
+			sqlQuery += " and crs.name in (" + courseSearchDto.getCourseKeys().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
 		}
 		/**
 		 * This is added as in advanced search names are to be passed now, so not
 		 * disturbing the already existing code, this condition has been kept in place.
 		 */
 		else if (null != courseSearchDto.getNames() && !courseSearchDto.getNames().isEmpty()) {
-			sqlQuery += " and crs.name in (\"" + courseSearchDto.getNames().stream().map(String::valueOf).collect(Collectors.joining(",")) + "\")";
+			sqlQuery += " and crs.name in (" + courseSearchDto.getNames().stream().map(String::valueOf).collect(Collectors.joining(",")) + "\")";
 		}
 
 		if (null != courseSearchDto.getServiceIds() && !courseSearchDto.getServiceIds().isEmpty()) {
@@ -1412,12 +1415,12 @@ public class CourseDAO implements ICourseDAO {
 			sqlQuery += " or crs.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%' )";
 		}
 
-		if (courseSearchDto.getPartFull() != null) {
-			sqlQuery += " and crs.part_full = '" + courseSearchDto.getPartFull() + "'";
+		if (courseSearchDto.getPartFulls() != null) {
+			sqlQuery += " and crs.part_full in ("+ courseSearchDto.getPartFulls().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (courseSearchDto.getDeliveryMethod() != null) {
-			sqlQuery += " and cd.name = '" + courseSearchDto.getDeliveryMethod() + "'";
+		if (courseSearchDto.getDeliveryMethods() != null) {
+			sqlQuery += " and cd.name in (" + courseSearchDto.getDeliveryMethods().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
 		}
 
 		/**
@@ -2141,4 +2144,5 @@ public class CourseDAO implements ICourseDAO {
 		return criteria.list();
 	}
 
+	
 }

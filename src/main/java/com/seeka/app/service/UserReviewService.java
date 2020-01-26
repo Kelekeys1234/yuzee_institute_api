@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.seeka.app.bean.UserReview;
 import com.seeka.app.bean.UserReviewRating;
 import com.seeka.app.dao.IUserReviewDao;
 import com.seeka.app.dto.ReviewQuestionsDto;
+import com.seeka.app.dto.UserDto;
 import com.seeka.app.dto.UserReviewDto;
 import com.seeka.app.dto.UserReviewRatingDto;
 import com.seeka.app.dto.UserReviewResultDto;
@@ -37,6 +39,9 @@ public class UserReviewService implements IUserReviewService {
 
 	@Autowired
 	private IReviewQuestionService iReviewQuestionService;
+	
+	@Autowired
+	private IUsersService iUsersService;
 
 	@Override
 	public UserReview addUserReview(final UserReviewDto userReviewDto) throws ValidationException {
@@ -90,77 +95,105 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public List<UserReviewResultDto> getUserReviewList(final BigInteger userId, final Integer startIndex, final Integer pageSize) {
+	public List<UserReviewResultDto> getUserReviewList(final BigInteger userId, final Integer startIndex, final Integer pageSize) throws ValidationException {
+		
+		UserDto userDto = iUsersService.getUserById(userId);
+		
 		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(userId, null, null, startIndex, pageSize, null, null);
-		List<UserReviewResultDto> resultList = new ArrayList<>();
-		for (UserReview userReview : userReviewList) {
+		List<UserReviewResultDto> userReviewResultDtoList = new ArrayList<>();
+		
+		userReviewList.parallelStream().forEach(userReview -> {
 			UserReviewResultDto reviewResultDto = new UserReviewResultDto();
 			BeanUtils.copyProperties(userReview, reviewResultDto);
 			List<UserReviewRating> userReviewRatings = iUserReviewDao.getUserReviewRatings(userReview.getId());
-			List<UserReviewRatingDto> userReviewRatingDtos = new ArrayList<>();
-			for (UserReviewRating userReviewRating : userReviewRatings) {
+			List<UserReviewRatingDto> userReviewRatingDtoList = new ArrayList<>();
+			userReviewRatings.parallelStream().forEach(userReviewRating -> {
 				UserReviewRatingDto userReviewRatingDto = new UserReviewRatingDto();
 				BeanUtils.copyProperties(userReviewRating, userReviewRatingDto);
-				userReviewRatingDtos.add(userReviewRatingDto);
-			}
-			reviewResultDto.setRatings(userReviewRatingDtos);
-			resultList.add(reviewResultDto);
-		}
-
-		return resultList;
+				userReviewRatingDtoList.add(userReviewRatingDto);
+			});
+			reviewResultDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
+			reviewResultDto.setRatings(userReviewRatingDtoList);
+			userReviewResultDtoList.add(reviewResultDto);
+		});
+		return userReviewResultDtoList;
 	}
 
 	@Override
 	public UserReviewResultDto getUserReviewDetails(final BigInteger userReviewId) throws ValidationException {
 		UserReview userReview = iUserReviewDao.getUserReview(userReviewId);
+		UserDto userDto = iUsersService.getUserById(userReview.getUserId());
 		UserReviewResultDto userReviewResultDto = new UserReviewResultDto();
 		BeanUtils.copyProperties(userReview, userReviewResultDto);
+		userReviewResultDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
 		List<UserReviewRating> userReviewRatings = iUserReviewDao.getUserReviewRatings(userReview.getId());
-		List<UserReviewRatingDto> resultList = new ArrayList<>();
+		List<UserReviewRatingDto> userReviewRatingDtoList = new ArrayList<>();
+		
 		for (UserReviewRating userReviewRating : userReviewRatings) {
 			UserReviewRatingDto userReviewRatingDto = new UserReviewRatingDto();
 			ReviewQuestionsDto reviewQuestionsDto = iReviewQuestionService.getReviewQuestion(userReviewRating.getReviewQuestionId());
 			BeanUtils.copyProperties(reviewQuestionsDto, userReviewRatingDto);
 			userReviewRatingDto.setReviewQuestionId(userReviewRating.getReviewQuestionId());
 			userReviewRatingDto.setRating(userReviewRating.getRating());
-			resultList.add(userReviewRatingDto);
+			userReviewRatingDtoList.add(userReviewRatingDto);
 		}
-		userReviewResultDto.setRatings(resultList);
-
+		userReviewResultDto.setRatings(userReviewRatingDtoList);
 		return userReviewResultDto;
 	}
 
 	@Override
 	public List<UserReviewResultDto> getUserReviewBasedOnData(final BigInteger entityId, final String entityType, final Integer startIndex,
 			final Integer pageSize, final String sortByType, final String searchKeyword) throws ValidationException {
-		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, entityId, entityType, startIndex, pageSize, sortByType, searchKeyword);
 		List<UserReviewResultDto> userReviewResultDtolist = new ArrayList<>();
-		for (UserReview userReview : userReviewList) {
-			UserReviewResultDto reviewResultDto = new UserReviewResultDto();
-			BeanUtils.copyProperties(userReview, reviewResultDto);
-			List<UserReviewRating> userReviewRatings = iUserReviewDao.getUserReviewRatings(userReview.getId());
-			List<UserReviewRatingDto> userReviewRatingDtos = new ArrayList<>();
-			for (UserReviewRating userReviewRating : userReviewRatings) {
-				UserReviewRatingDto userReviewRatingDto = new UserReviewRatingDto();
-				BeanUtils.copyProperties(userReviewRating, userReviewRatingDto);
-				userReviewRatingDtos.add(userReviewRatingDto);
+		
+		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, entityId, entityType, startIndex, pageSize, sortByType, searchKeyword);
+		
+		Map<BigInteger, List<UserReview>> reviewsGroupByUserID = userReviewList.stream().collect(Collectors.groupingBy(UserReview::getUserId));
+		
+		reviewsGroupByUserID.forEach((k,v) -> {
+			try {
+				UserDto userDto = iUsersService.getUserById(k);	
+				v.stream().forEach(userReview -> {
+					UserReviewResultDto userReviewResultDto = new UserReviewResultDto();
+					BeanUtils.copyProperties(userReview, userReviewResultDto);
+					List<UserReviewRating> userReviewRatings = iUserReviewDao.getUserReviewRatings(userReview.getId());
+					List<UserReviewRatingDto> userReviewRatingDtos = new ArrayList<>();
+					for (UserReviewRating userReviewRating : userReviewRatings) {
+						UserReviewRatingDto userReviewRatingDto = new UserReviewRatingDto();
+						BeanUtils.copyProperties(userReviewRating, userReviewRatingDto);
+						userReviewRatingDtos.add(userReviewRatingDto);
+					}
+					userReviewResultDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
+					userReviewResultDto.setRatings(userReviewRatingDtos);
+					userReviewResultDtolist.add(userReviewResultDto);
+				});
+				
+			} catch (ValidationException e) {
 			}
-			reviewResultDto.setRatings(userReviewRatingDtos);
-			userReviewResultDtolist.add(reviewResultDto);
-		}
+		});
 		return userReviewResultDtolist;
 	}
 
 	@Override
 	public List<UserReviewResultDto> getUserReviewList() throws ValidationException {
+		List<UserReviewResultDto> userReviewResultDtoList = new ArrayList<>();
 		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, null, null, null, null, null, null);
-		List<UserReviewResultDto> resultList = new ArrayList<>();
-		for (UserReview userReview : userReviewList) {
-			UserReviewResultDto reviewResultDto = new UserReviewResultDto();
-			BeanUtils.copyProperties(userReview, reviewResultDto);
-			resultList.add(reviewResultDto);
-		}
-		return resultList;
+		
+		Map<BigInteger, List<UserReview>> reviewsGroupByUserID = userReviewList.stream().collect(Collectors.groupingBy(UserReview::getUserId));
+		reviewsGroupByUserID.forEach((k,v) -> {
+			try {
+				UserDto userDto = iUsersService.getUserById(k);	
+				v.stream().forEach(userReview -> {
+					UserReviewResultDto reviewResultDto = new UserReviewResultDto();
+					BeanUtils.copyProperties(userReview, reviewResultDto);
+					reviewResultDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
+					userReviewResultDtoList.add(reviewResultDto);
+				});
+				
+			} catch (ValidationException e) {
+			}
+		});
+		return userReviewResultDtoList;
 	}
 
 	@Override
@@ -198,7 +231,6 @@ public class UserReviewService implements IUserReviewService {
 		} else {
 			throw new ValidationException("User review is not found for id " + userReviewId);
 		}
-
 	}
 
 	@Override
