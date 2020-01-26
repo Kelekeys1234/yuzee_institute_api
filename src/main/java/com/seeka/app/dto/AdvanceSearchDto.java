@@ -27,9 +27,25 @@ public class AdvanceSearchDto {
 
 	private List<String> names;
 	private String searchKeyword;
-	private String partFull;
-	private String deliveryMethod;
-	private String instituteId;
+	private List<String> partFulls;
+	private List<String> deliveryMethods;
+	private String instituteId;	
+	
+	public List<String> getPartFulls() {
+		return partFulls;
+	}
+
+	public void setPartFulls(List<String> partFulls) {
+		this.partFulls = partFulls;
+	}
+
+	public List<String> getDeliveryMethods() {
+		return deliveryMethods;
+	}
+
+	public void setDeliveryMethods(List<String> deliveryMethods) {
+		this.deliveryMethods = deliveryMethods;
+	}
 
 	/**
 	 *
@@ -295,21 +311,7 @@ public class AdvanceSearchDto {
 		this.searchKeyword = searchKeyword;
 	}
 
-	public String getPartFull() {
-		return partFull;
-	}
 
-	public void setPartFull(final String partFull) {
-		this.partFull = partFull;
-	}
-
-	public String getDeliveryMethod() {
-		return deliveryMethod;
-	}
-
-	public void setDeliveryMethod(final String deliveryMethod) {
-		this.deliveryMethod = deliveryMethod;
-	}
 
 	public String getInstituteId() {
 		return instituteId;
@@ -328,7 +330,7 @@ public class AdvanceSearchDto {
 				.append(", sortAsscending=").append(sortAsscending).append(", sortBy=").append(sortBy).append(", maxSizePerPage=").append(maxSizePerPage)
 				.append(", pageNumber=").append(pageNumber).append(", currencyCode=").append(currencyCode).append(", userId=").append(userId)
 				.append(", userCountryId=").append(userCountryId).append(", names=").append(names).append(", searchKeyword=").append(searchKeyword)
-				.append(", partFull=").append(partFull).append(", deliveryMethod=").append(deliveryMethod).append(", instituteId=").append(instituteId)
+				.append(", partFulls=").append(partFulls).append(", deliveryMethods=").append(deliveryMethods).append(", instituteId=").append(instituteId)
 				.append("]");
 		return builder.toString();
 	}

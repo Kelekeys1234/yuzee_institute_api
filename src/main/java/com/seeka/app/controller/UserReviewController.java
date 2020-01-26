@@ -48,7 +48,7 @@ public class UserReviewController {
 
 	@GetMapping("/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getUserReview(@PathVariable final BigInteger userId, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize) {
+			@PathVariable final Integer pageSize) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewList(userId, startIndex, pageSize);
 		int totalCount = iUserReview.getUserReviewCount(userId, null, null, null);

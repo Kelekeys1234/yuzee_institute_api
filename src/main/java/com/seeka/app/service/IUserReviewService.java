@@ -18,7 +18,7 @@ public interface IUserReviewService {
 
 	UserReview addUserReview(UserReviewDto userReviewDto) throws ValidationException;
 
-	List<UserReviewResultDto> getUserReviewList(BigInteger userId, Integer pageNumber, Integer pageSize);
+	List<UserReviewResultDto> getUserReviewList(BigInteger userId, Integer pageNumber, Integer pageSize) throws ValidationException;
 
 	UserReviewResultDto getUserReviewDetails(BigInteger userId) throws ValidationException;
 

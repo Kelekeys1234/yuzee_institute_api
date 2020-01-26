@@ -15,6 +15,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.UserReview;
 import com.seeka.app.bean.UserReviewRating;
@@ -116,6 +117,7 @@ public class UserReviewDao implements IUserReviewDao {
 	}
 
 	@Override
+	@Transactional
 	public List<UserReviewRating> getUserReviewRatings(final BigInteger userReviewId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReviewRating.class, "userReviewRating");
