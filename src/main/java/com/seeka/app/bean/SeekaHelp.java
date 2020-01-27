@@ -41,7 +41,7 @@ public class SeekaHelp implements Serializable {
 	private BigInteger userId;
 	private String status;
 	private BigInteger assignedUserId;
-	private Boolean isFavourite;
+	private Boolean isFavourite = false;
 	private Boolean isArchive = false;
 
 	@Id
