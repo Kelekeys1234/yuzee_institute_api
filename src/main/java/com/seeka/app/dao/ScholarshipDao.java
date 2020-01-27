@@ -321,8 +321,8 @@ public class ScholarshipDao implements IScholarshipDAO {
 	@Override
 	public BigInteger getScholarshipCountByLevelId(BigInteger levelId) {
 		Session session = sessionFactory.getCurrentSession();
-		String query = "Select count(*) from scholarship where level_id=" + levelId;
-		BigInteger count = (BigInteger) session.createNativeQuery(query).uniqueResult();
+		StringBuilder query = new StringBuilder("Select count(*) from scholarship where level_id=" + levelId);
+		BigInteger count = (BigInteger) session.createNativeQuery(query.toString()).uniqueResult();
 		return count;
 	}
 }

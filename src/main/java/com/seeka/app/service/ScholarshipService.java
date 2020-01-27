@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
@@ -293,13 +294,13 @@ public class ScholarshipService implements IScholarshipService {
 	
 	public Map<String, Object> getScholarshipCountByLevelId(List<Level> levelList) {
 		Map<String, Object> map = new HashMap<>();
-		for (Level level : levelList) {
+		levelList.stream().forEach(level -> {
 			BigInteger count = null;
-			if (level != null && level.getId() != null) {
+			if (!ObjectUtils.isEmpty(level) && !ObjectUtils.isEmpty(level.getId())) {
 				count = iScholarshipDAO.getScholarshipCountByLevelId(level.getId());
 				map.put(level.getName(), count);
 			}
-		}
+		});
 		return map;
 	}
 }
