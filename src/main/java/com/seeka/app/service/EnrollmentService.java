@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
@@ -306,30 +309,32 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public Map<String, Long> getEnrollmentStatus() {
-		List<Enrollment> enrollments =iEnrollmentDao.getAllEnrollment();
-		Map<String, Long> enrollmentStatusCount = new HashMap<String, Long>();
-		
-		long completedCount =0;
-		long assignedCount =0;
-		long notAssignedCount =0;
-		for (Enrollment enrollment : enrollments) {
-			if(enrollment.getStatus().equalsIgnoreCase("SUBMITTED")) {
-				notAssignedCount++;
-			}
-			else if(enrollment.getStatus().matches("SEEKA_REVIEWED|PREPARED|INSTITUTE_SUBMITTED|INSTITUTE_REVIEWED|INSTITUTE_OFFERED|"
-					+ "APPLICANT_APPROVED")) {
-				assignedCount++;
-			}
-			
-			else if(enrollment.getStatus().equalsIgnoreCase("APPROVED")) {
-				completedCount++;
-			}
+	public Map<String, AtomicLong> getEnrollmentStatus() {
+		List<Enrollment> enrollments = iEnrollmentDao.getAllEnrollment();
+		Map<String, AtomicLong> enrollmentStatusCount = new HashMap<String, AtomicLong>();
+
+		AtomicLong completedCount = new AtomicLong(0);
+		AtomicLong assignedCount = new AtomicLong(0);
+		AtomicLong notAssignedCount = new AtomicLong(0);
+		if(!CollectionUtils.isEmpty(enrollments)) {
+			enrollments.stream().forEach(enrollment -> {
+				if (enrollment.getStatus().equalsIgnoreCase(com.seeka.app.constant.EnrollmentStatus.SUBMITTED.name())) {
+					notAssignedCount.getAndIncrement();
+				} else if ((enrollment.getStatus().equalsIgnoreCase(com.seeka.app.constant.EnrollmentStatus.SEEKA_REVIEWED.name()))
+						|| (enrollment.getStatus().equalsIgnoreCase(com.seeka.app.constant.EnrollmentStatus.PREPARED.name()))
+						|| (enrollment.getStatus().equalsIgnoreCase(com.seeka.app.constant.EnrollmentStatus.INSTITUTE_SUBMITTED.name()))
+						|| (enrollment.getStatus().equalsIgnoreCase(com.seeka.app.constant.EnrollmentStatus.INSTITUTE_REVIEWED.name()))
+						|| (enrollment.getStatus().equalsIgnoreCase(com.seeka.app.constant.EnrollmentStatus.INSTITUTE_OFFERED.name()))
+						|| (enrollment.getStatus().equalsIgnoreCase(com.seeka.app.constant.EnrollmentStatus.APPLICANT_APPROVED.name()))) {
+					assignedCount.getAndIncrement();
+				} else if (enrollment.getStatus().equalsIgnoreCase(com.seeka.app.constant.EnrollmentStatus.APPROVED.name())) {
+					completedCount.getAndIncrement();
+				}
+			});
 		}
-		enrollmentStatusCount.put(EnrollmentStatusType.NOT_ASSIGNED.name(), notAssignedCount );
+		enrollmentStatusCount.put(EnrollmentStatusType.NOT_ASSIGNED.name(), notAssignedCount);
 		enrollmentStatusCount.put(EnrollmentStatusType.ASSIGNED.name(), assignedCount);
 		enrollmentStatusCount.put(EnrollmentStatusType.COMPLETED.name(), completedCount);
 		return enrollmentStatusCount;
 	}
-
 }

@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -139,7 +139,7 @@ public class EnrollmentController {
 	
 	@GetMapping("/getEnrollmentstatus")
 	public ResponseEntity<?> getEnrollmentstatus() {
-		Map<String, Long> enrollmentStatus = iEnrollmentService.getEnrollmentStatus();
+		Map<String, AtomicLong> enrollmentStatus = iEnrollmentService.getEnrollmentStatus();
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentStatus).setMessage("Get enrollment status details successfully")
 				.create();
 		
