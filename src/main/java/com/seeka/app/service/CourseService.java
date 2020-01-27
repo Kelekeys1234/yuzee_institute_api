@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
@@ -1352,11 +1354,16 @@ public class CourseService implements ICourseService {
 	public Map<String, Integer> getCourseCountByLevel() {
 		Map<String, Integer> courseLevelCount = new HashMap<>();
 		List<Level> levels = iLevelDao.getAll();
-		if (null != levels && !levels.isEmpty()) {
-			for (Level level : levels) {
-				Integer courseCount = iCourseDAO.getCoursesCountBylevelId(level.getId());
-				courseLevelCount.put(level.getName(), courseCount);
-			}
+		if (!CollectionUtils.isEmpty(levels)) {
+			levels.stream().forEach(level -> {
+				Integer courseCount = null;
+				if (!ObjectUtils.isEmpty(level.getId())) {
+					courseCount = iCourseDAO.getCoursesCountBylevelId(level.getId());
+				}
+				if (!ObjectUtils.isEmpty(courseCount)) {
+					courseLevelCount.put(level.getName(), courseCount);
+				}
+			});
 		}
 		return courseLevelCount;
 	}

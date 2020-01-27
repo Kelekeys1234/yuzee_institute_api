@@ -2144,15 +2144,9 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public Integer getCoursesCountBylevelId(final BigInteger levelId) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select count(*) from  course c where c.level_id="
-				+ levelId;
-		System.out.println(sqlQuery);
-		Query query = session.createSQLQuery(sqlQuery);
+		StringBuilder sqlQuery = new StringBuilder("select count(*) from  course c where c.level_id="+ levelId);
+		Query query = session.createSQLQuery(sqlQuery.toString());
 		Integer count =  Integer.valueOf(query.uniqueResult().toString());
 		return count;
 	}
-	
-	
-
-
 }
