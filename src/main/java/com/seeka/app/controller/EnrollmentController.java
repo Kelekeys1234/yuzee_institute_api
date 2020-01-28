@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -135,5 +136,15 @@ public class EnrollmentController {
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentStatus).setMessage("Get enrollment status details successfully")
 				.create();
 	}
+	
+	@GetMapping("/getEnrollmentstatus")
+	public ResponseEntity<?> getEnrollmentstatus() {
+		Map<String, AtomicLong> enrollmentStatus = iEnrollmentService.getEnrollmentStatus();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentStatus).setMessage("Get enrollment status details successfully")
+				.create();
+		
+	}
+	
+	
 
 }

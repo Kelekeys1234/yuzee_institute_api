@@ -3,7 +3,9 @@ package com.seeka.app.service;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import com.seeka.app.bean.Level;
 import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.dto.ScholarshipResponseDTO;
 import com.seeka.app.exception.ValidationException;
@@ -28,4 +30,6 @@ public interface IScholarshipService {
 	List<ScholarshipDto> getAllScholarshipDetailsFromId(List<BigInteger> recommendedScholarships);
 
 	List<BigInteger> getRandomScholarShipIds(int i);
+	
+	public Map<String, Object> getScholarshipCountByLevelId(List<Level> levelList);
 }

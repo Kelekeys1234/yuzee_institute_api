@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Enrollment;
 import com.seeka.app.bean.EnrollmentStatus;
+import com.seeka.app.bean.Level;
 import com.seeka.app.util.CommonUtil;
 
 @Repository
@@ -174,6 +175,13 @@ public class EnrollmentDao implements IEnrollmentDao {
 		}
 		crit.setProjection(Projections.rowCount());
 		return ((Long) crit.uniqueResult()).intValue();
+	}
+
+	@Override
+	public List<Enrollment> getAllEnrollment() {
+		Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(Enrollment.class);
+        return crit.list();
 	}
 
 }

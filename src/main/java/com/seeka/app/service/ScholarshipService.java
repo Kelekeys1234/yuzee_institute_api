@@ -3,7 +3,9 @@ package com.seeka.app.service;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
@@ -287,5 +290,17 @@ public class ScholarshipService implements IScholarshipService {
 	@Override
 	public List<BigInteger> getRandomScholarShipIds(final int i) {
 		return iScholarshipDAO.getRandomScholarships(i);
+	}
+	
+	public Map<String, Object> getScholarshipCountByLevelId(List<Level> levelList) {
+		Map<String, Object> map = new HashMap<>();
+		levelList.stream().forEach(level -> {
+			BigInteger count = null;
+			if (!ObjectUtils.isEmpty(level) && !ObjectUtils.isEmpty(level.getId())) {
+				count = iScholarshipDAO.getScholarshipCountByLevelId(level.getId());
+				map.put(level.getName(), count);
+			}
+		});
+		return map;
 	}
 }
