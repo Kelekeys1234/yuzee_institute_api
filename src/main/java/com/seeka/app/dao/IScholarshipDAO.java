@@ -39,4 +39,6 @@ public interface IScholarshipDAO {
 	List<Scholarship> getAllScholarshipDetailsFromId(List<BigInteger> recommendedScholarships);
 
 	List<BigInteger> getRandomScholarships(int i);
+	
+	BigInteger getScholarshipCountByLevelId(BigInteger levelId);
 }
