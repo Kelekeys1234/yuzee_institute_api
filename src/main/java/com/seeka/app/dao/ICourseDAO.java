@@ -153,6 +153,8 @@ public interface ICourseDAO {
 	List<CourseLanguage> getCourseLanguageBasedOnCourseId(BigInteger courseId);
 
 	List<String> getUserSearchCourseRecommendation(Integer startIndex, Integer pageSize, String searchKeyword);
+	
+	Integer getCoursesCountBylevelId(BigInteger levelId);
 
 	int getDistinctCourseCountbyName(String courseName);
 

@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
@@ -32,6 +34,7 @@ import com.seeka.app.bean.Currency;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.Level;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.UserMyCourse;
@@ -46,6 +49,7 @@ import com.seeka.app.dao.ICourseMinRequirementDao;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.IGlobalStudentDataDAO;
 import com.seeka.app.dao.IInstituteDAO;
+import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dao.ViewDao;
 import com.seeka.app.dto.AdvanceSearchDto;
@@ -146,6 +150,9 @@ public class CourseService implements ICourseService {
 
 	@Autowired
 	private IUserReviewService iUserReviewService;
+	
+	@Autowired
+	private ILevelDAO iLevelDao;
 
 	@Override
 	public Course get(final BigInteger id) {
@@ -1351,6 +1358,22 @@ public class CourseService implements ICourseService {
 	@Override
 	public List<CourseResponseDto> getDistinctCourseList(Integer startIndex, Integer pageSize,String courseName) {
 		return iCourseDAO.getDistinctCourseListByName(startIndex, pageSize, courseName);
-		
+	}
+
+	public Map<String, Integer> getCourseCountByLevel() {
+		Map<String, Integer> courseLevelCount = new HashMap<>();
+		List<Level> levels = iLevelDao.getAll();
+		if (!CollectionUtils.isEmpty(levels)) {
+			levels.stream().forEach(level -> {
+				Integer courseCount = null;
+				if (!ObjectUtils.isEmpty(level.getId())) {
+					courseCount = iCourseDAO.getCoursesCountBylevelId(level.getId());
+				}
+				if (!ObjectUtils.isEmpty(courseCount)) {
+					courseLevelCount.put(level.getName(), courseCount);
+				}
+			});
+		}
+		return courseLevelCount;
 	}
 }

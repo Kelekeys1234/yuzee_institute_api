@@ -2172,4 +2172,12 @@ public class CourseDAO implements ICourseDAO {
 		criteria.setMaxResults(pageSize);
 		return criteria.list();
 	}
+	
+	public Integer getCoursesCountBylevelId(final BigInteger levelId) {
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder sqlQuery = new StringBuilder("select count(*) from  course c where c.level_id="+ levelId);
+		Query query = session.createSQLQuery(sqlQuery.toString());
+		Integer count =  Integer.valueOf(query.uniqueResult().toString());
+		return count;
+	}
 }

@@ -129,23 +129,27 @@ public class CourseController {
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException {
 		BigInteger courseId = courseService.save(course);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId).setMessage("Course Created successfully").create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
+				.setMessage("Course Created successfully").create();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final BigInteger id) throws ValidationException {
+	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final BigInteger id)
+			throws ValidationException {
 		BigInteger courseId = courseService.update(course, id);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId).setMessage("Course Updated successfully").create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
+				.setMessage("Course Updated successfully").create();
 	}
 
 	@RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
+	public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize)
+			throws Exception {
 		return ResponseEntity.accepted().body(courseService.getAllCourse(pageNumber, pageSize));
 	}
 
 	@RequestMapping(value = "/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> autoSearch(@PathVariable final String searchKey, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize)
-			throws Exception {
+	public ResponseEntity<?> autoSearch(@PathVariable final String searchKey, @PathVariable final Integer pageNumber,
+			@PathVariable final Integer pageSize) throws Exception {
 		return ResponseEntity.accepted().body(courseService.autoSearch(pageNumber, pageSize, searchKey));
 	}
 
@@ -161,15 +165,22 @@ public class CourseController {
 
 	@RequestMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> searchCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = false) final List<BigInteger> countryIds, @RequestParam(required = false) final BigInteger instituteId,
-			@RequestParam(required = false) final List<BigInteger> facultyIds, @RequestParam(required = false) final List<BigInteger> cityIds,
-			@RequestParam(required = false) final List<BigInteger> levelIds, @RequestParam(required = false) final List<BigInteger> serviceIds,
+			@RequestParam(required = false) final List<BigInteger> countryIds,
+			@RequestParam(required = false) final BigInteger instituteId,
+			@RequestParam(required = false) final List<BigInteger> facultyIds,
+			@RequestParam(required = false) final List<BigInteger> cityIds,
+			@RequestParam(required = false) final List<BigInteger> levelIds,
+			@RequestParam(required = false) final List<BigInteger> serviceIds,
 			@RequestParam(required = false) final Double minCost, @RequestParam(required = false) final Double maxCost,
-			@RequestParam(required = false) final Integer minDuration, @RequestParam(required = false) final Integer maxDuration,
-			@RequestParam(required = false) final String courseName, @RequestParam(required = false) final String currencyCode,
-			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String sortBy,
-			@RequestParam(required = false) final boolean sortAsscending, @RequestHeader(required = true) final BigInteger userId,
-			@RequestParam(required = false) final String date) throws ValidationException {
+			@RequestParam(required = false) final Integer minDuration,
+			@RequestParam(required = false) final Integer maxDuration,
+			@RequestParam(required = false) final String courseName,
+			@RequestParam(required = false) final String currencyCode,
+			@RequestParam(required = false) final String searchKeyword,
+			@RequestParam(required = false) final String sortBy,
+			@RequestParam(required = false) final boolean sortAsscending,
+			@RequestHeader(required = true) final BigInteger userId, @RequestParam(required = false) final String date)
+			throws ValidationException {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryIds(countryIds);
 		courseSearchDto.setInstituteId(instituteId);
@@ -193,18 +204,21 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final BigInteger userId, @RequestBody final CourseSearchDto courseSearchDto)
-			throws Exception {
+	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final BigInteger userId,
+			@RequestBody final CourseSearchDto courseSearchDto) throws Exception {
 		courseSearchDto.setUserId(userId);
 		return courseSearch(courseSearchDto, null);
 	}
 
-	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto, final String searchKeyword) throws ValidationException {
-		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage(),
-				searchKeyword);
+	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto, final String searchKeyword)
+			throws ValidationException {
+		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),
+				courseSearchDto.getMaxSizePerPage());
+		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, startIndex,
+				courseSearchDto.getMaxSizePerPage(), searchKeyword);
 		int totalCount = courseService.getCountforNormalCourse(courseSearchDto, searchKeyword);
-		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,
+				courseSearchDto.getMaxSizePerPage(), totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
 		responseMap.put("message", "Get course List successfully");
@@ -218,35 +232,41 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/advanceSearch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) final BigInteger userId, @RequestHeader(required = false) final String language,
-			@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception {
-		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) final BigInteger userId,
+			@RequestHeader(required = false) final String language, @RequestBody final AdvanceSearchDto courseSearchDto)
+			throws Exception {
+		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),
+				courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
 
 		/**
 		 * Get userCountry Based on userId
 		 */
-		UserDto userDto = iUsersService.getUserById(courseSearchDto.getUserId());
-		if (userDto == null) {
-			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] { courseSearchDto.getUserId() }, language));
-		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
-			throw new ValidationException(
-					messageByLocalService.getMessage("user.citizenship.not.present", new Object[] { courseSearchDto.getUserId() }, language));
-		}
-
-		
-		 //Get Country Id Based on citizenship
-		 
-		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
-		if (country == null || country.getId() == null) {
-			throw new ValidationException(
-					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
-		} 
-
-		courseSearchDto.setUserCountryId(country.getId());
+		/*
+		 * UserDto userDto = iUsersService.getUserById(courseSearchDto.getUserId()); if
+		 * (userDto == null) { throw new
+		 * NotFoundException(messageByLocalService.getMessage("user.not.found", new
+		 * Object[] { courseSearchDto.getUserId() }, language)); } else if
+		 * (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
+		 * throw new ValidationException(
+		 * messageByLocalService.getMessage("user.citizenship.not.present", new Object[]
+		 * { courseSearchDto.getUserId() }, language)); }
+		 * 
+		 *//**
+			 * Get Country Id Based on citizenship
+			 *//*
+				 * Country country =
+				 * iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship()); if
+				 * (country == null || country.getId() == null) { throw new ValidationException(
+				 * messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[]
+				 * { userDto.getCitizenship() }, language)); }
+				 * 
+				 * courseSearchDto.setUserCountryId(country.getId());
+				 */
 		List<CourseResponseDto> courseList = courseService.advanceSearch(courseSearchDto);
 		int totalCount = courseService.getCountOfAdvanceSearch(courseSearchDto);
-		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,
+				courseSearchDto.getMaxSizePerPage(), totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
 		responseMap.put("message", "Get course List successfully");
@@ -260,8 +280,8 @@ public class CourseController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Object> get(@RequestHeader(required = false) final BigInteger userId, @Valid @PathVariable final BigInteger id)
-			throws ValidationException, NotFoundException {
+	public ResponseEntity<Object> get(@RequestHeader(required = false) final BigInteger userId,
+			@Valid @PathVariable final BigInteger id) throws ValidationException {
 		ErrorDto errorDto = null;
 		CourseRequest courseRequest = null;
 		Map<String, Object> response = new HashMap<>();
@@ -277,18 +297,21 @@ public class CourseController {
 		courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
 		Map<BigInteger, Double> googleReviewMap = iInstituteGoogleReviewService
 				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
-		Map<BigInteger, Double> seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(Arrays.asList(courseRequest.getInstituteId()),
-				"INSTITUTE");
-		courseRequest.setStars(String.valueOf(courseService.calculateAverageRating(googleReviewMap, seekaReviewMap, Double.valueOf(courseRequest.getStars()),
-				courseRequest.getInstituteId())));
-		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
-		courseRequest.setDeliveryMethod(
-				courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream().map(CourseDeliveryMethod::getName).collect(Collectors.toList()));
-		courseRequest.setLanguage(courseService.getCourseLanguageBasedOnCourseId(id).stream().map(CourseLanguage::getName).collect(Collectors.toList()));
+		Map<BigInteger, Double> seekaReviewMap = iUserReviewService
+				.getUserAverageReviewBasedOnDataList(Arrays.asList(courseRequest.getInstituteId()), "INSTITUTE");
+		courseRequest.setStars(String.valueOf(courseService.calculateAverageRating(googleReviewMap, seekaReviewMap,
+				Double.valueOf(courseRequest.getStars()), courseRequest.getInstituteId())));
+		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream()
+				.map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+		courseRequest.setDeliveryMethod(courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream()
+				.map(CourseDeliveryMethod::getName).collect(Collectors.toList()));
+		courseRequest.setLanguage(courseService.getCourseLanguageBasedOnCourseId(id).stream()
+				.map(CourseLanguage::getName).collect(Collectors.toList()));
 		Institute instituteObj = course.getInstitute();
 		List<YoutubeVideo> youtubeData = new ArrayList<>();
 		if (instituteObj != null) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(),
+					ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
 			youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
@@ -303,7 +326,8 @@ public class CourseController {
 		List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
 		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(id);
 		if (course.getInstitute() != null) {
-			List<InstituteLevel> instituteLevels = instituteLevelService.getAllLevelByInstituteId(course.getInstitute().getId());
+			List<InstituteLevel> instituteLevels = instituteLevelService
+					.getAllLevelByInstituteId(course.getInstitute().getId());
 			if (instituteLevels != null && !instituteLevels.isEmpty()) {
 				if (instituteLevels.get(0).getLevel() != null) {
 					courseRequest.setLevelId(instituteLevels.get(0).getLevel().getId());
@@ -340,7 +364,8 @@ public class CourseController {
 		/**
 		 * Add User Review to the course info response
 		 */
-		List<UserReviewResultDto> userReviewResultList = iUserReviewService.getUserReviewBasedOnData(id, "COURSE", 0, 5, null, null);
+		List<UserReviewResultDto> userReviewResultList = iUserReviewService.getUserReviewBasedOnData(id, "COURSE", 0, 5,
+				null, null);
 		courseRequest.setUserReviewResult(userReviewResultList);
 
 		response.put("status", HttpStatus.OK.value());
@@ -354,8 +379,8 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/institute/{instituteId}", method = RequestMethod.PUT, produces = "application/json")
-	public ResponseEntity<?> getAllCourseByInstituteID(@Valid @PathVariable final BigInteger instituteId, @Valid @RequestBody final CourseSearchDto request)
-			throws Exception {
+	public ResponseEntity<?> getAllCourseByInstituteID(@Valid @PathVariable final BigInteger instituteId,
+			@Valid @RequestBody final CourseSearchDto request) throws Exception {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<>();
 
@@ -368,7 +393,8 @@ public class CourseController {
 			response.put("error", errorDto);
 			return ResponseEntity.badRequest().body(response);
 		}
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(),
+				ImageCategory.INSTITUTE.toString(), null, "en");
 		instituteResponseDto.setStorageList(storageDTOList);
 
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByInstitute(instituteId, request);
@@ -402,7 +428,8 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/keyword", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> searchCourseKeyword(@RequestParam(value = "keyword") final String keyword) throws Exception {
+	public ResponseEntity<?> searchCourseKeyword(@RequestParam(value = "keyword") final String keyword)
+			throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<CourseKeywords> searchkeywordList = courseKeywordService.searchCourseKeyword(keyword);
 		response.put("status", 1);
@@ -427,7 +454,8 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/multiple/faculty/{facultyId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCouresesByListOfFacultyId(@Valid @PathVariable final String facultyId) throws Exception {
+	public ResponseEntity<?> getCouresesByListOfFacultyId(@Valid @PathVariable final String facultyId)
+			throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<CourseResponseDto> courseDtos = courseService.getCouresesByListOfFacultyId(facultyId);
 		if (courseDtos != null && !courseDtos.isEmpty()) {
@@ -525,10 +553,13 @@ public class CourseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getUserCourses(@PathVariable final BigInteger userId, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = false) final String currencyCode, @RequestParam(required = false) final String sortBy,
+	public ResponseEntity<?> getUserCourses(@PathVariable final BigInteger userId,
+			@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(required = false) final String currencyCode,
+			@RequestParam(required = false) final String sortBy,
 			@RequestParam(required = false) final boolean sortAsscending) throws ValidationException {
-		return ResponseEntity.accepted().body(courseService.getUserCourse(userId, pageNumber, pageSize, currencyCode, sortBy, sortAsscending));
+		return ResponseEntity.accepted()
+				.body(courseService.getUserCourse(userId, pageNumber, pageSize, currencyCode, sortBy, sortAsscending));
 	}
 
 	@RequestMapping(value = "/compare", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -542,8 +573,8 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/youtube/{courseId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final BigInteger courseId, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize) throws Exception {
+	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final BigInteger courseId,
+			@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(courseId, startIndex, pageSize);
 		int totalCount = courseService.getYoutubeDataforCourse(courseId, null, null).size();
@@ -561,17 +592,20 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> courseFilter(@RequestHeader(required = true) final BigInteger userId, @RequestHeader(required = false) final String language,
-			@RequestBody final CourseFilterDto courseFilter) throws Exception {
+	public ResponseEntity<?> courseFilter(@RequestHeader(required = true) final BigInteger userId,
+			@RequestHeader(required = false) final String language, @RequestBody final CourseFilterDto courseFilter)
+			throws Exception {
 
 		/**
 		 * Get userCountry Based on userId
 		 */
 		UserDto userDto = iUsersService.getUserById(userId);
 		if (userDto == null) {
-			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] { userId }, language));
+			throw new NotFoundException(
+					messageByLocalService.getMessage("user.not.found", new Object[] { userId }, language));
 		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
-			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present", new Object[] { userId }, language));
+			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present",
+					new Object[] { userId }, language));
 		}
 
 		/**
@@ -579,8 +613,8 @@ public class CourseController {
 		 */
 		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
 		if (country == null || country.getId() == null) {
-			throw new ValidationException(
-					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
+			throw new ValidationException(messageByLocalService.getMessage("invalid.citizenship.for.user",
+					new Object[] { userDto.getCitizenship() }, language));
 		}
 
 		courseFilter.setUserCountryId(country.getId());
@@ -589,18 +623,20 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/minimumRequirement", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> saveCourseMinRequirement(@Valid @RequestBody final List<CourseMinRequirementDto> courseMinRequirementDtoList) throws Exception {
+	public ResponseEntity<?> saveCourseMinRequirement(
+			@Valid @RequestBody final List<CourseMinRequirementDto> courseMinRequirementDtoList) throws Exception {
 		for (CourseMinRequirementDto courseMinRequirementDto2 : courseMinRequirementDtoList) {
 			courseService.saveCourseMinrequirement(courseMinRequirementDto2);
 		}
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Created Course Minimum Requirement").create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Created Course Minimum Requirement").create();
 	}
 
 	@RequestMapping(value = "/minimumRequirement/{courseId}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getCourseMinRequirement(@PathVariable final BigInteger courseId) throws Exception {
 		List<CourseMinRequirementDto> courseMinRequirementDto = courseService.getCourseMinRequirement(courseId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Get Course Minimum Requirement").setData(courseMinRequirementDto)
-				.create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Get Course Minimum Requirement").setData(courseMinRequirementDto).create();
 	}
 
 	@RequestMapping(value = "/autoSearch/{searchKey}", method = RequestMethod.GET, produces = "application/json")
@@ -616,10 +652,13 @@ public class CourseController {
 			@RequestParam(name = "countryId", required = false) final BigInteger countryId,
 			@RequestParam(name = "cityId", required = false) final BigInteger cityId) throws ValidationException {
 		if (courseId == null && facultyId == null && instituteId == null && countryId == null && cityId == null) {
-			throw new ValidationException(messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));
+			throw new ValidationException(
+					messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));
 		}
-		List<Long> userList = courseService.getUserListForUserWatchCourseFilter(courseId, instituteId, facultyId, countryId, cityId);
-		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully").setStatus(HttpStatus.OK).create();
+		List<Long> userList = courseService.getUserListForUserWatchCourseFilter(courseId, instituteId, facultyId,
+				countryId, cityId);
+		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	/**
@@ -635,13 +674,15 @@ public class CourseController {
 	 * @throws ValidationException
 	 */
 	@GetMapping(value = "/noResult/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<Object> getCourseNoResultRecommendation(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
+	public ResponseEntity<Object> getCourseNoResultRecommendation(@PathVariable final Integer pageNumber,
+			@PathVariable final Integer pageSize, @RequestParam(required = true) final BigInteger facultyId,
+			@RequestParam(required = true) final BigInteger countryId,
 			@RequestParam(required = true) final String userCountry) throws ValidationException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<CourseResponseDto> courseResponseDtos = courseService.getCourseNoResultRecommendation(userCountry, facultyId, countryId, startIndex, pageSize);
-		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get course list displayed successfully").setStatus(HttpStatus.OK)
-				.create();
+		List<CourseResponseDto> courseResponseDtos = courseService.getCourseNoResultRecommendation(userCountry,
+				facultyId, countryId, startIndex, pageSize);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtos)
+				.setMessage("Get course list displayed successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	/**
@@ -657,13 +698,16 @@ public class CourseController {
 	 * @throws ValidationException
 	 */
 	@GetMapping(value = "/keyword/recommendatation/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<Object> getCourseKeywordRecommendation(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
+	public ResponseEntity<Object> getCourseKeywordRecommendation(@PathVariable final Integer pageNumber,
+			@PathVariable final Integer pageSize, @RequestParam(required = true) final BigInteger facultyId,
+			@RequestParam(required = true) final BigInteger countryId,
 			@RequestParam(required = true) final BigInteger levelId) throws ValidationException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<String> courseResponseDtos = courseService.getCourseKeywordRecommendation(facultyId, countryId, levelId, startIndex, pageSize);
-		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get course keyword recommendation list displayed successfully")
-				.setStatus(HttpStatus.OK).create();
+		List<String> courseResponseDtos = courseService.getCourseKeywordRecommendation(facultyId, countryId, levelId,
+				startIndex, pageSize);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtos)
+				.setMessage("Get course keyword recommendation list displayed successfully").setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	/**
@@ -679,13 +723,24 @@ public class CourseController {
 	 * @throws ValidationException
 	 */
 	@GetMapping(value = "/cheapest/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<Object> getCheapestCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = true) final BigInteger facultyId, @RequestParam(required = true) final BigInteger countryId,
-			@RequestParam(required = true) final BigInteger levelId, @RequestParam(required = true) final BigInteger cityId) throws ValidationException {
+	public ResponseEntity<Object> getCheapestCourse(@PathVariable final Integer pageNumber,
+			@PathVariable final Integer pageSize, @RequestParam(required = true) final BigInteger facultyId,
+			@RequestParam(required = true) final BigInteger countryId,
+			@RequestParam(required = true) final BigInteger levelId,
+			@RequestParam(required = true) final BigInteger cityId) throws ValidationException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<CourseResponseDto> courseResponseDtos = userRecommendationService.getCheapestCourse(facultyId, countryId, levelId, cityId, startIndex, pageSize);
-		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get cheapest course recommendation list displayed successfully")
-				.setStatus(HttpStatus.OK).create();
+		List<CourseResponseDto> courseResponseDtos = userRecommendationService.getCheapestCourse(facultyId, countryId,
+				levelId, cityId, startIndex, pageSize);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtos)
+				.setMessage("Get cheapest course recommendation list displayed successfully").setStatus(HttpStatus.OK)
+				.create();
+	}
+
+	@GetMapping(value = "/getCourseCountByLevel")
+	public ResponseEntity<Object> getCourseCountByLevel() {
+		Map<String, Integer> courseCount = courseService.getCourseCountByLevel();
+		return new GenericResponseHandlers.Builder().setData(courseCount)
+				.setMessage("Course count displayed successfully").setStatus(HttpStatus.OK).create();
 	}
 	
 	@GetMapping(value = "/names/distinct/pageNumber/{pageNumber}/pageSize/{pageSize}")
@@ -706,5 +761,4 @@ public class CourseController {
 		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 		
 	}
-	
 }
