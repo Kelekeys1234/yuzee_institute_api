@@ -18,9 +18,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -1758,7 +1760,6 @@ public class CourseDAO implements ICourseDAO {
 
 	@Override
 	public List<Long> getUserListFromUserWatchCoursesBasedOnCourses(final List<BigInteger> courseIds) {
-
 		Session session = sessionFactory.getCurrentSession();
 		String ids = courseIds.stream().map(BigInteger::toString).collect(Collectors.joining(","));
 		List<Long> userIds = session.createNativeQuery("select distinct user_id from user_watch_course where course_id in (" + ids + ")").getResultList();
@@ -2144,5 +2145,31 @@ public class CourseDAO implements ICourseDAO {
 		return criteria.list();
 	}
 
-	
+	@Override
+	public int getDistinctCourseCountbyName(String courseName) {
+		Session session = sessionFactory.getCurrentSession();
+		//String sqlQuery = "select distinct c.name as courseName from course c where name like ('" + "%" + courseName.trim() + "%')";
+		StringBuilder sqlQuery = new StringBuilder("select distinct c.name as courseName from course c");
+		if (StringUtils.isNotEmpty(courseName)) {
+			sqlQuery.append(" where name like ('" + "%" + courseName.trim() + "%')");
+		}
+		Query query = session.createSQLQuery(sqlQuery.toString());
+		List<Object[]> rows = query.list();
+		return rows.size();
+	}
+
+	@Override
+	public List<CourseResponseDto> getDistinctCourseListByName(Integer startIndex, Integer pageSize, String courseName) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Course.class).setProjection(Projections.projectionList()
+				.add(Projections.groupProperty("name").as("name")).add(Projections.property("id").as("id")).add(Projections.property("language").as("language"))
+				.add(Projections.property("duration").as("duration"))
+				.add(Projections.property("durationTime").as("durationTime"))).setResultTransformer(Transformers.aliasToBean(CourseResponseDto.class));
+		if (StringUtils.isNotEmpty(courseName)) {
+			criteria.add(Restrictions.like("name", courseName,MatchMode.ANYWHERE));
+		}
+		criteria.setFirstResult(startIndex);
+		criteria.setMaxResults(pageSize);
+		return criteria.list();
+	}
 }

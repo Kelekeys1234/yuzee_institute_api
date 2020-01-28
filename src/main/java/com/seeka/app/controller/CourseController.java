@@ -687,4 +687,24 @@ public class CourseController {
 		return new GenericResponseHandlers.Builder().setData(courseResponseDtos).setMessage("Get cheapest course recommendation list displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
+	
+	@GetMapping(value = "/names/distinct/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getDistinctCourses(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,@RequestParam(required = false) final String name) {
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		int totalCount = courseService.getDistinctCourseCount(name);
+		List<CourseResponseDto> couserList = courseService.getDistinctCourseList(startIndex, pageSize,name);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		Map<String, Object> responseMap = new HashMap<>(10);
+		responseMap.put("status", HttpStatus.OK);
+		responseMap.put("message", "Get course List successfully");
+		responseMap.put("data", couserList);
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
+		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
+		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
+		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
+		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+		
+	}
+	
 }

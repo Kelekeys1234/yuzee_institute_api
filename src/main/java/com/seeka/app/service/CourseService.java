@@ -1342,4 +1342,15 @@ public class CourseService implements ICourseService {
 		}
 		return courseKeywordRecommended;
 	}
+
+	@Override
+	public int getDistinctCourseCount(String courseName) {
+		return iCourseDAO.getDistinctCourseCountbyName(courseName);
+	}
+
+	@Override
+	public List<CourseResponseDto> getDistinctCourseList(Integer startIndex, Integer pageSize,String courseName) {
+		return iCourseDAO.getDistinctCourseListByName(startIndex, pageSize, courseName);
+		
+	}
 }

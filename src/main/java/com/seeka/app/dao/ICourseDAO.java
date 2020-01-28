@@ -38,7 +38,8 @@ public interface ICourseDAO {
 
 	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, String searchKeyword, List<BigInteger> courseIds, Integer startIndex,
 			boolean uniqueCourseName);
-
+	
+	
 	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
 
 	Map<String, Object> getCourse(BigInteger courseid);
@@ -48,7 +49,7 @@ public interface ICourseDAO {
 	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
 	int findTotalCount();
-
+	
 	List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
 
 	List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType)
@@ -152,5 +153,9 @@ public interface ICourseDAO {
 	List<CourseLanguage> getCourseLanguageBasedOnCourseId(BigInteger courseId);
 
 	List<String> getUserSearchCourseRecommendation(Integer startIndex, Integer pageSize, String searchKeyword);
+
+	int getDistinctCourseCountbyName(String courseName);
+
+	List<CourseResponseDto> getDistinctCourseListByName(Integer startIndex, Integer pageSize, String courseName);
 
 }
