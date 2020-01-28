@@ -130,6 +130,8 @@ public interface ICourseService {
 	int getCountforNormalCourse(CourseSearchDto courseSearchDto, String searchKeyword);
 
 	int getCountOfAdvanceSearch(AdvanceSearchDto courseSearchDto) throws ValidationException, NotFoundException;
+	
+	int getDistinctCourseCount(String courseName);
 
 	List<CourseDTOElasticSearch> getUpdatedCourses(Date date, Integer startIndex, Integer limit);
 
@@ -145,6 +147,8 @@ public interface ICourseService {
 
 	List<CourseResponseDto> getCourseNoResultRecommendation(String userCountry, BigInteger facultyId, BigInteger countryId, Integer startIndex,
 			Integer pageSize) throws ValidationException;
+	
+	List<CourseResponseDto> getDistinctCourseList(Integer startIndex, Integer pageSize, String courseName) ;
 
 	List<String> getCourseKeywordRecommendation(BigInteger facultyId, BigInteger countryId, BigInteger levelId, Integer startIndex, Integer pageSize);
 
