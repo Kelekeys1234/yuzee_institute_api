@@ -35,7 +35,7 @@ public class UserHobbyDao {
         Hobbies obj = null;
         for (Object[] row : rows) {
             obj = new Hobbies();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setHobbyTxt(row[1].toString());
             hobbies.add(obj);
         }
@@ -59,7 +59,7 @@ public class UserHobbyDao {
         UserInterestHobbies obj = null;
         for (Object[] row : rows) {
             obj = new UserInterestHobbies();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             session.delete(obj);
         }
     }
@@ -89,7 +89,7 @@ public class UserHobbyDao {
         UserBiginterestCountry obj = null;
         for (Object[] row : rows) {
             obj = new UserBiginterestCountry();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             session.delete(obj);
         }
     }
@@ -102,7 +102,7 @@ public class UserHobbyDao {
         UserInterestHobbies obj = null;
         for (Object[] row : rows) {
             obj = new UserInterestHobbies();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             session.delete(obj);
         }
 
@@ -116,7 +116,7 @@ public class UserHobbyDao {
         UserBiginterestCountry obj = null;
         for (Object[] row : rows) {
             obj = new UserBiginterestCountry();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             session.delete(obj);
         }
 

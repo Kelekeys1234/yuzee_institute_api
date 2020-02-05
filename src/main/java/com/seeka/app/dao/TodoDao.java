@@ -111,7 +111,7 @@ public class TodoDao implements ITodoDao {
         TodoFolder todoFolder = null;
         for (Object[] row : rows) {
             todoFolder = new TodoFolder();
-            todoFolder.setId(new BigInteger((row[0].toString())));
+            todoFolder.setId(row[0].toString());
             todoFolder.setName(row[1].toString());
             todoFolders.add(todoFolder);
         }

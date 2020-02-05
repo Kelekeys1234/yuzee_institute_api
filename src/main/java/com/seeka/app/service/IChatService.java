@@ -15,7 +15,7 @@ public interface IChatService {
 
 	void addChatImage(MultipartFile file, ChatConversation chatConversation);
 
-	void changeChatAssignee(BigInteger enrollmentChatId, BigInteger assigneeId) throws ValidationException;
+	void changeChatAssignee(String enrollmentChatId, BigInteger assigneeId) throws ValidationException;
 
 	ChatResposneDto getChatListBasedOnEntityIdAndEntityType(BigInteger entityId, String entityType, Integer startIndex, Integer pageSize)
 			throws ValidationException;
@@ -24,9 +24,9 @@ public interface IChatService {
 
 	Integer getChatConversationCountBasedOnChatId(BigInteger chatId);
 
-	ChatResposneDto getChatListBasedOnEntityType(String entityType, BigInteger initiateFromId, BigInteger initiateToId, Integer startIndex, Integer pageSize)
+	ChatResposneDto getChatListBasedOnEntityType(String entityType, String initiateFromId, String initiateToId, Integer startIndex, Integer pageSize)
 			throws ValidationException;
 
-	Integer getChatConversationCountBasedOnEntityType(String entityType, BigInteger initiateFromId, BigInteger initiateToId);
+	Integer getChatConversationCountBasedOnEntityType(String entityType, String initiateFromId, String initiateToId);
 
 }

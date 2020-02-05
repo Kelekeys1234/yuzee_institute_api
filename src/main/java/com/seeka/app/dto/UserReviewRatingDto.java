@@ -10,27 +10,27 @@ public class UserReviewRatingDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 8831276275076190678L;
 
-	private BigInteger id;
-	private BigInteger reviewQuestionId;
+	private String id;
+	private String reviewQuestionId;
 	private Double rating;
 	private String questionTitle;
-	private BigInteger questionCategoryId;
+	private String questionCategoryId;
 	private String question;
 	private String questionCategoryName;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public BigInteger getReviewQuestionId() {
+	public String getReviewQuestionId() {
 		return reviewQuestionId;
 	}
 
-	public void setReviewQuestionId(final BigInteger reviewQuestionId) {
+	public void setReviewQuestionId(final String reviewQuestionId) {
 		this.reviewQuestionId = reviewQuestionId;
 	}
 
@@ -50,11 +50,11 @@ public class UserReviewRatingDto implements Serializable {
 		this.questionTitle = questionTitle;
 	}
 
-	public BigInteger getQuestionCategoryId() {
+	public String getQuestionCategoryId() {
 		return questionCategoryId;
 	}
 
-	public void setQuestionCategoryId(final BigInteger questionCategoryId) {
+	public void setQuestionCategoryId(final String questionCategoryId) {
 		this.questionCategoryId = questionCategoryId;
 	}
 

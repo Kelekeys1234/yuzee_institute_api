@@ -61,7 +61,7 @@ public class EnrollmentController {
 	}
 
 	@PutMapping("/{enrollmentId}")
-	public ResponseEntity<?> updateEnrollment(@PathVariable final BigInteger enrollmentId, @RequestBody final EnrollmentDto enrollmentDto)
+	public ResponseEntity<?> updateEnrollment(@PathVariable final String enrollmentId, @RequestBody final EnrollmentDto enrollmentDto)
 			throws ValidationException {
 		EnrollmentDto resultEnrollmentDto = iEnrollmentService.updateEnrollment(enrollmentDto, enrollmentId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(resultEnrollmentDto).setMessage("Updated enrollment successfully")
@@ -69,7 +69,7 @@ public class EnrollmentController {
 	}
 
 	@PostMapping("/status")
-	public ResponseEntity<?> updateEnrollmentStatus(@RequestHeader final BigInteger userId, @RequestBody final EnrollmentStatusDto enrollmentStatusDto)
+	public ResponseEntity<?> updateEnrollmentStatus(@RequestHeader final String userId, @RequestBody final EnrollmentStatusDto enrollmentStatusDto)
 			throws ValidationException {
 		EnrollmentStatus enrollmentStatus = iEnrollmentService.updateEnrollmentStatus(enrollmentStatusDto, userId);
 		/**
@@ -80,7 +80,7 @@ public class EnrollmentController {
 	}
 
 	@GetMapping("/{enrollmentId}")
-	public ResponseEntity<?> getEnrollmentDetail(@PathVariable final BigInteger enrollmentId) throws ValidationException {
+	public ResponseEntity<?> getEnrollmentDetail(@PathVariable final String enrollmentId) throws ValidationException {
 		EnrollmentResponseDto enrollmentResponseDto = iEnrollmentService.getEnrollmentDetail(enrollmentId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentResponseDto).setMessage("Get enrollment details successfully")
 				.create();
@@ -88,7 +88,7 @@ public class EnrollmentController {
 
 	@GetMapping("/user/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getEnrollmentListBasedOnUserId(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestHeader final BigInteger userId, @RequestParam(name = "isArchive", required = false) final boolean isArchive) throws ValidationException {
+			@RequestHeader final String userId, @RequestParam(name = "isArchive", required = false) final boolean isArchive) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(userId, null, null, null, null, null, startIndex, pageSize,
 				isArchive, null, null, null);
@@ -108,10 +108,10 @@ public class EnrollmentController {
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getEnrollmentList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = false) final BigInteger courseId, @RequestParam(required = false) final BigInteger instituteId,
-			@RequestParam(required = false) final BigInteger enrollmentId, @RequestParam(required = false) final String status,
+			@RequestParam(required = false) final String courseId, @RequestParam(required = false) final String instituteId,
+			@RequestParam(required = false) final String enrollmentId, @RequestParam(required = false) final String status,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
-			@RequestParam(required = false) final BigInteger userId, @RequestParam(required = false) final String sortByField,
+			@RequestParam(required = false) final String userId, @RequestParam(required = false) final String sortByField,
 			@RequestParam(required = false) final String sortByType, @RequestParam(required = false) final String searchKeyword) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<EnrollmentResponseDto> enrollmentResponseList = iEnrollmentService.getEnrollmentList(null, courseId, instituteId, enrollmentId, status, updatedOn,
@@ -131,7 +131,7 @@ public class EnrollmentController {
 	}
 
 	@GetMapping("/status/{enrollmentId}")
-	public ResponseEntity<?> getEnrollmentStatusDetail(@PathVariable final BigInteger enrollmentId) throws ValidationException {
+	public ResponseEntity<?> getEnrollmentStatusDetail(@PathVariable final String enrollmentId) throws ValidationException {
 		List<EnrollmentStatusDto> enrollmentStatus = iEnrollmentService.getEnrollmentStatusDetail(enrollmentId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(enrollmentStatus).setMessage("Get enrollment status details successfully")
 				.create();

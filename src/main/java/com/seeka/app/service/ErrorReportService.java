@@ -75,7 +75,7 @@ public class ErrorReportService implements IErrorReportService {
 	}
 
 	@Override
-	public void update(final ErrorReportDto errorReportDto, final BigInteger id) throws ValidationException {
+	public void update(final ErrorReportDto errorReportDto, final String id) throws ValidationException {
 		if (null == errorReportDto.getStatus()) {
 			throw new ValidationException("Status is required.");
 		}
@@ -101,7 +101,7 @@ public class ErrorReportService implements IErrorReportService {
 	}
 
 	@Override
-	public ErrorReportResponseDto getErrorReportById(final BigInteger id) throws ValidationException {
+	public ErrorReportResponseDto getErrorReportById(final String id) throws ValidationException {
 		ErrorReport errorReport = errorReportDAO.getErrorReportById(id);
 		ErrorReportResponseDto errorReportResponseDto = new ErrorReportResponseDto();
 		BeanUtils.copyProperties(errorReport, errorReportResponseDto);
@@ -188,7 +188,7 @@ public class ErrorReportService implements IErrorReportService {
 	}
 
 	@Override
-	public void deleteByErrorReportId(final BigInteger errorReportId) {
+	public void deleteByErrorReportId(final String errorReportId) {
 		ErrorReport errorReport = errorReportDAO.getErrorReportById(errorReportId);
 		errorReport.setIsActive(false);
 		errorReport.setDeletedOn(new Date());
@@ -197,12 +197,12 @@ public class ErrorReportService implements IErrorReportService {
 	}
 
 	@Override
-	public List<AuditErrorReport> getAuditListByErrorReport(final BigInteger errorReportId) {
+	public List<AuditErrorReport> getAuditListByErrorReport(final String errorReportId) {
 		return errorReportDAO.getAuditListByErrorReport(errorReportId);
 	}
 
 	@Override
-	public void archiveErrorReport(final BigInteger errorReportId, final boolean isArchive) throws ValidationException {
+	public void archiveErrorReport(final String errorReportId, final boolean isArchive) throws ValidationException {
 		ErrorReport errorReport = errorReportDAO.getErrorReportById(errorReportId);
 		if (errorReport == null) {
 			throw new ValidationException("Error Report not found for id :" + errorReportId);

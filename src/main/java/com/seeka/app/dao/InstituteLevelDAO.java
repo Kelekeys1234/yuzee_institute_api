@@ -40,7 +40,7 @@ public class InstituteLevelDAO implements IInstituteLevelDAO {
 
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	@Override
-	public List<InstituteLevel> getAllLevelByInstituteId(final BigInteger instituteId) {
+	public List<InstituteLevel> getAllLevelByInstituteId(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(InstituteLevel.class, "instituteLevel");
 		crit.createAlias("instituteLevel.institute", "institute");
@@ -49,7 +49,7 @@ public class InstituteLevelDAO implements IInstituteLevelDAO {
 	}
 
 	@Override
-	public void deleteInstituteLevel(final BigInteger instituteId) {
+	public void deleteInstituteLevel(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery("DELETE FROM institute_level WHERE institute_id =" + instituteId);
 		query.executeUpdate();

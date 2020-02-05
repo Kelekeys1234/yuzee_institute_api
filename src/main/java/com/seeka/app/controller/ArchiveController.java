@@ -32,7 +32,7 @@ public class ArchiveController {
 	private IErrorReportService iErrorReportService;
 
 	@PostMapping("/entityType/{entityType}/entityId/{entityId}")
-	public ResponseEntity<Object> addArchive(@PathVariable final String entityType, @PathVariable final BigInteger entityId,
+	public ResponseEntity<Object> addArchive(@PathVariable final String entityType, @PathVariable final String entityId,
 			@RequestParam final boolean isArchive) throws ValidationException {
 		if (entityType.equals(ArchiveEntityType.ENROLLMENT.name())) {
 			iEnrollmentService.archiveEnrollment(entityId, isArchive);

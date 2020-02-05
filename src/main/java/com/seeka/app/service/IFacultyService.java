@@ -10,19 +10,19 @@ public interface IFacultyService {
 
     public void update(Faculty obj);
 
-    public Faculty get(BigInteger id);
+    public Faculty get(String id);
 
     public List<Faculty> getAll();
 
-    public List<Faculty> getFacultyByCountryIdAndLevelId(BigInteger countryID, BigInteger levelId);
+    public List<Faculty> getFacultyByCountryIdAndLevelId(String countryID, String levelId);
 
     public List<Faculty> getAllFacultyByCountryIdAndLevel();
 
-    public List<Faculty> getFacultyByInstituteId(BigInteger instituteId);
+    public List<Faculty> getFacultyByInstituteId(String instituteId);
 
     public List<Faculty> getFacultyByListOfInstituteId(String instituteId);
 
-    public List<Faculty> getCourseFaculty(BigInteger countryId, BigInteger levelId);
+    public List<Faculty> getCourseFaculty(String countryId, String levelId);
     
     List<Faculty> getFacultyListByName(List<String> facultyNames);
 }

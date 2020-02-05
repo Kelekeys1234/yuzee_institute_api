@@ -29,7 +29,7 @@ public class CategoryDAO implements ICategoryDAO {
         CategoryDto categoryDto = null;
         for (Object[] row : rows) {
             categoryDto = new CategoryDto();
-            categoryDto.setId(new BigInteger((row[0].toString())));
+            categoryDto.setId(row[0].toString());
             categoryDto.setName(row[1].toString());
             categoryDtos.add(categoryDto);
         }
@@ -37,7 +37,7 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
-    public CategoryDto getCategoryById(BigInteger categoryId) {
+    public CategoryDto getCategoryById(String categoryId) {
         Session session = sessionFactory.getCurrentSession();
         Category category = session.get(Category.class, categoryId);
         CategoryDto categoryDto = null;
@@ -50,14 +50,14 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
-    public Category findCategoryById(BigInteger categoryId) {
+    public Category findCategoryById(String categoryId) {
         Session session = sessionFactory.getCurrentSession();
         Category category = session.get(Category.class, categoryId);
         return category;
     }
 
     @Override
-    public Category findById(BigInteger id) {
+    public Category findById(String id) {
         Session session = sessionFactory.getCurrentSession();
         Category category = session.get(Category.class, id);
         return category;

@@ -35,7 +35,7 @@ public class ReviewQuestionDao implements IReviewQuestionDao {
 	}
 
 	@Override
-	public ReviewQuestions getReviewQuestion(final BigInteger id) {
+	public ReviewQuestions getReviewQuestion(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.get(ReviewQuestions.class, id);
 	}
@@ -49,7 +49,7 @@ public class ReviewQuestionDao implements IReviewQuestionDao {
 
 	@Override
 	public List<ReviewQuestions> getReviewQuestionListBasedOnParam(final Boolean isActive, final String studentType, final String studentCategory,
-			final BigInteger questionCategoryId, final BigInteger questionId, final BigInteger notQuestionId) {
+			final String questionCategoryId, final String questionId, final String notQuestionId) {
 
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ReviewQuestions.class, "reviewQuestions");

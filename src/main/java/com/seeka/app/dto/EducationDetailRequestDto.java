@@ -9,9 +9,9 @@ public class EducationDetailRequestDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 4119989833427065164L;
-	private BigInteger educationCountryId;
-	private BigInteger educationSystemId;
-	private BigInteger educationLevelId;
+	private String educationCountryId;
+	private String educationSystemId;
+	private String educationLevelId;
 	private String educationInstitue;
 	private String gpaScore;
 	private Boolean isEnglishMedium;
@@ -24,27 +24,27 @@ public class EducationDetailRequestDto implements Serializable {
 	private String educationCountryName;
 	private String educationQualification;
 
-	public BigInteger getEducationCountryId() {
+	public String getEducationCountryId() {
 		return educationCountryId;
 	}
 
-	public void setEducationCountryId(final BigInteger educationCountryId) {
+	public void setEducationCountryId(final String educationCountryId) {
 		this.educationCountryId = educationCountryId;
 	}
 
-	public BigInteger getEducationSystemId() {
+	public String getEducationSystemId() {
 		return educationSystemId;
 	}
 
-	public void setEducationSystemId(final BigInteger educationSystemId) {
+	public void setEducationSystemId(final String educationSystemId) {
 		this.educationSystemId = educationSystemId;
 	}
 
-	public BigInteger getEducationLevelId() {
+	public String getEducationLevelId() {
 		return educationLevelId;
 	}
 
-	public void setEducationLevelId(final BigInteger educationLevelId) {
+	public void setEducationLevelId(final String educationLevelId) {
 		this.educationLevelId = educationLevelId;
 	}
 

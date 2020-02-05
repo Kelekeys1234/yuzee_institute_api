@@ -52,7 +52,7 @@ public class HobbyDAO implements IHobbyDAO {
         Hobbies obj = null;
         for (Object[] row : rows) {
             obj = new Hobbies();
-            obj.setId(new BigInteger(row[0].toString()));
+            obj.setId(row[0].toString());
             obj.setHobbyTxt(row[1].toString());
             hobbies.add(obj);
         }
@@ -79,7 +79,7 @@ public class HobbyDAO implements IHobbyDAO {
         Hobbies obj = null;
         for (Object[] row : rows) {
             obj = new Hobbies();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setHobbyTxt(row[1].toString());
             hobbies.add(obj);
         }
@@ -97,7 +97,7 @@ public class HobbyDAO implements IHobbyDAO {
         Hobbies obj = null;
         for (Object[] row : rows) {
             obj = new Hobbies();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setHobbyTxt(row[1].toString());
             hobbies.add(obj);
         }
@@ -115,7 +115,7 @@ public class HobbyDAO implements IHobbyDAO {
         Hobbies obj = null;
         for (Object[] row : rows) {
             obj = new Hobbies();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setHobbyTxt(row[1].toString());
             hobbies.add(obj);
         }

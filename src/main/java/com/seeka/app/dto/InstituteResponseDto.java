@@ -11,14 +11,14 @@ public class InstituteResponseDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 4673759147405801959L;
-	private BigInteger id;
+	private String id;
 	private String name;
 	private Integer worldRanking;
 	private String location;
 	private Integer totalCourses;
 	private Integer totalCount;
-	private BigInteger cityId;
-	private BigInteger countryId;
+	private String cityId;
+	private String countryId;
 	private String website;
 	private String aboutUs;
 	private String openingFrom;
@@ -152,19 +152,19 @@ public class InstituteResponseDto implements Serializable {
 		this.totalAvailableJobs = totalAvailableJobs;
 	}
 
-	public BigInteger getCityId() {
+	public String getCityId() {
 		return cityId;
 	}
 
-	public void setCityId(final BigInteger cityId) {
+	public void setCityId(final String cityId) {
 		this.cityId = cityId;
 	}
 
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(final BigInteger countryId) {
+	public void setCountryId(final String countryId) {
 		this.countryId = countryId;
 	}
 
@@ -211,14 +211,14 @@ public class InstituteResponseDto implements Serializable {
 	/**
 	 * @return the id
 	 */
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

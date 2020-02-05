@@ -56,7 +56,7 @@ public class FaqSubCategoryService implements IFaqSubCategoryService {
 	}
 
 	@Override
-	public void updateFaqSubCategory(final FaqSubCategoryDto faqSubCategoryDto, final BigInteger faqSubCategoryId) throws ValidationException {
+	public void updateFaqSubCategory(final FaqSubCategoryDto faqSubCategoryDto, final String faqSubCategoryId) throws ValidationException {
 		/**
 		 * Check same name other category exists or not.
 		 */
@@ -85,7 +85,7 @@ public class FaqSubCategoryService implements IFaqSubCategoryService {
 	}
 
 	@Override
-	public void deleteFaqSubCategory(final BigInteger faqSubCategoryId) throws ValidationException {
+	public void deleteFaqSubCategory(final String faqSubCategoryId) throws ValidationException {
 		/**
 		 * Fetch existing category based on id
 		 */
@@ -105,7 +105,7 @@ public class FaqSubCategoryService implements IFaqSubCategoryService {
 	}
 
 	@Override
-	public List<FaqSubCategoryDto> getFaqSubCategoryList(final Integer startIndex, final Integer pageSize, final BigInteger faqCategoryId) {
+	public List<FaqSubCategoryDto> getFaqSubCategoryList(final Integer startIndex, final Integer pageSize, final String faqCategoryId) {
 		List<FaqSubCategory> faqSubCategories = iFaqSubCategoryDao.getFaqSubCategoryList(startIndex, pageSize, faqCategoryId);
 		List<FaqSubCategoryDto> faqSubCategoryDtos = new ArrayList<>();
 		for (FaqSubCategory faqSubCategory : faqSubCategories) {
@@ -119,12 +119,12 @@ public class FaqSubCategoryService implements IFaqSubCategoryService {
 	}
 
 	@Override
-	public int getFaqSubCategoryCount(final BigInteger faqCategoryId) {
+	public int getFaqSubCategoryCount(final String faqCategoryId) {
 		return iFaqSubCategoryDao.getFaqSubCategoryCount(faqCategoryId);
 	}
 
 	@Override
-	public FaqSubCategoryDto getFaqSubCategoryDetail(final BigInteger faqSubCategoryId) throws ValidationException {
+	public FaqSubCategoryDto getFaqSubCategoryDetail(final String faqSubCategoryId) throws ValidationException {
 		FaqSubCategory faqSubCategory = iFaqSubCategoryDao.getFaqSubCategoryDetail(faqSubCategoryId);
 		if (faqSubCategory == null) {
 			throw new ValidationException("Sub Category not found for id: " + faqSubCategoryId);

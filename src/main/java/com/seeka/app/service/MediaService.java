@@ -3,7 +3,6 @@ package com.seeka.app.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ public class MediaService implements IMediaService {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public String uploadImage(final MultipartFile file, final BigInteger entityId, final String entityType, final String type) {
+	public String uploadImage(final MultipartFile file, final String entityId, final String entityType, final String type) {
 		/**
 		 * Set http headers
 		 */

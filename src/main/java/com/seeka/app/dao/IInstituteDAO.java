@@ -25,19 +25,19 @@ public interface IInstituteDAO {
 
 	void update(Institute obj);
 
-	Institute get(BigInteger id);
+	Institute get(String id);
 
-	List<BigInteger> getTopInstituteByCountry(BigInteger countryId/* , Long startIndex, Long pageSize */);
+	List<String> getTopInstituteByCountry(String countryId/* , Long startIndex, Long pageSize */);
 
 	List<Institute> getAll();
 
 	List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
 
 	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
-			Integer startIndex, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
+			Integer startIndex, String cityId, String instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
 			Integer toWorldRanking, String campusType);
 
-	InstituteResponseDto getInstituteByID(BigInteger instituteId);
+	InstituteResponseDto getInstituteByID(String instituteId);
 
 	List<InstituteResponseDto> getInstitudeByCityId(BigInteger cityId);
 
@@ -63,33 +63,33 @@ public interface IInstituteDAO {
 
 	int findTotalCountForInstituteAutosearch(String searchKey);
 
-	InstituteCategoryType getInstituteCategoryType(BigInteger instituteCategoryTypeId);
+	InstituteCategoryType getInstituteCategoryType(String instituteCategoryTypeId);
 
-	List<Institute> getSecondayCampus(BigInteger countryId, BigInteger cityId, String name);
+	List<Institute> getSecondayCampus(String countryId, String cityId, String name);
 
 	void saveInstituteserviceDetails(InstituteService instituteServiceDetails);
 
-	void deleteInstituteService(BigInteger id);
+	void deleteInstituteService(String id);
 
 	void saveInstituteIntake(InstituteIntake instituteIntake);
 
-	void deleteInstituteIntakeById(BigInteger id);
+	void deleteInstituteIntakeById(String id);
 
-	List<String> getIntakesById(@Valid BigInteger id);
+	List<String> getIntakesById(@Valid String id);
 
 	List<InstituteCategoryType> getAllCategories();
 
 	List<Institute> ratingWiseInstituteListByCountry(Country country);
 
-	List<Institute> getAllInstituteByID(Collection<BigInteger> instituteId);
+	List<Institute> getAllInstituteByID(Collection<String> instituteId);
 
 	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
 
-	List<BigInteger> getInstitudeByCountry(List<BigInteger> distinctCountryIds);
+	List<String> getInstitudeByCountry(List<String> distinctCountryIds);
 
-	List<BigInteger> getRandomInstituteByCountry(List<BigInteger> countryIdList);
+	List<String> getRandomInstituteByCountry(List<String > countryIdList);
 
-	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive,
+	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, String cityId, String instituteTypeId, Boolean isActive,
 			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
 
 	Map<BigInteger, Integer> getDomesticRanking(List<BigInteger> instituteIdList);

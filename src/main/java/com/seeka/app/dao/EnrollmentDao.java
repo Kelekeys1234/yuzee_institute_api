@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Enrollment;
 import com.seeka.app.bean.EnrollmentStatus;
-import com.seeka.app.bean.Level;
 import com.seeka.app.util.CommonUtil;
 
 @Repository
@@ -45,14 +44,14 @@ public class EnrollmentDao implements IEnrollmentDao {
 	}
 
 	@Override
-	public Enrollment getEnrollment(final BigInteger enrollmentId) {
+	public Enrollment getEnrollment(final String enrollmentId) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.get(Enrollment.class, enrollmentId);
 	}
 
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	@Override
-	public List<EnrollmentStatus> getEnrollmentStatusDetail(final BigInteger enrollmentId) {
+	public List<EnrollmentStatus> getEnrollmentStatusDetail(final String enrollmentId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(EnrollmentStatus.class, "enrollmentStatus");
 		crit.createAlias("enrollmentStatus.enrollment", "enrollment");
@@ -62,7 +61,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public EnrollmentStatus getEnrollmentStatusDetailBasedOnFilter(final BigInteger enrollmentId, final String status) {
+	public EnrollmentStatus getEnrollmentStatusDetailBasedOnFilter(final String enrollmentId, final String status) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(EnrollmentStatus.class, "enrollmentStatus");
 		crit.createAlias("enrollmentStatus.enrollment", "enrollment");
@@ -73,7 +72,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
-	public List<Enrollment> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
+	public List<Enrollment> getEnrollmentList(final String userId, final String courseId, final String instituteId, final String enrollmentId,
 			final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive, final String sortByField,
 			String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
@@ -142,7 +141,7 @@ public class EnrollmentDao implements IEnrollmentDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public int countOfEnrollment(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
+	public int countOfEnrollment(final String userId, final String courseId, final String instituteId, final String enrollmentId,
 			final String status, final Date updatedOn, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Enrollment.class, "enrollment");

@@ -35,7 +35,7 @@ public class UserInterestDao {
         Interest obj = null;
         for (Object[] row : rows) {
             obj = new Interest();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setInterest(row[1].toString());
             hobbies.add(obj);
         }
@@ -50,7 +50,7 @@ public class UserInterestDao {
         UserInterest obj = null;
         for (Object[] row : rows) {
             obj = new UserInterest();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             session.delete(obj);
         }
     }

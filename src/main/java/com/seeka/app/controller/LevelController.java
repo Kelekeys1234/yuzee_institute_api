@@ -34,10 +34,9 @@ public class LevelController {
     }
 
     @RequestMapping(value = "/country/{countryId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getLevelByCountry(@PathVariable BigInteger countryId) throws Exception {
+    public ResponseEntity<?> getLevelByCountry(@PathVariable String countryId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        BigInteger bg = new BigInteger(String.valueOf(countryId));
-        List<Level> levelList = levelService.getLevelByCountryId(bg);
+        List<Level> levelList = levelService.getLevelByCountryId(countryId);
         if (levelList != null && !levelList.isEmpty()) {
             response.put("message", "Level fetched successfully");
             response.put("status", HttpStatus.OK.value());
@@ -50,7 +49,7 @@ public class LevelController {
     }
  
     @RequestMapping(value = "/course/country/{countryId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getCountryLevel(@PathVariable BigInteger countryId) throws Exception {
+    public ResponseEntity<?> getCountryLevel(@PathVariable String countryId) throws Exception {
         return ResponseEntity.accepted().body(levelService.getCountryLevel(countryId));
     }
 

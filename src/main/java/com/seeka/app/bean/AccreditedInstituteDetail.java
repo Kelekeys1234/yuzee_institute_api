@@ -1,15 +1,14 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "accredited_institute_detail")
@@ -20,29 +19,30 @@ public class AccreditedInstituteDetail implements Serializable {
 	 */
 	private static final long serialVersionUID = 748946079064801464L;
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private BigInteger id;
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	private String id;
 	@Column(name = "entity_id", nullable = false)
-	private BigInteger entityId;
+	private String entityId;
 	@Column(name = "entity_type", nullable = false)
 	private String entityType;
 	@Column(name = "accredited_institute_id", nullable = false)
-	private BigInteger accreditedInstituteId;
+	private String accreditedInstituteId;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public BigInteger getEntityId() {
+	public String getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(final BigInteger entityId) {
+	public void setEntityId(final String entityId) {
 		this.entityId = entityId;
 	}
 
@@ -54,11 +54,11 @@ public class AccreditedInstituteDetail implements Serializable {
 		this.entityType = entityType;
 	}
 
-	public BigInteger getAccreditedInstituteId() {
+	public String getAccreditedInstituteId() {
 		return accreditedInstituteId;
 	}
 
-	public void setAccreditedInstituteId(final BigInteger accreditedInstituteId) {
+	public void setAccreditedInstituteId(final String accreditedInstituteId) {
 		this.accreditedInstituteId = accreditedInstituteId;
 	}
 

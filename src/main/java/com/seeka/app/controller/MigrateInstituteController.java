@@ -366,7 +366,7 @@ public class MigrateInstituteController {
 			object.setCountry(countryObj);
 
 			InstituteType instituteType = new InstituteType();
-			instituteType.setId(new BigInteger("111111"));
+			instituteType.setId(("111111"));
 			object.setInstituteType(instituteType);
 			object.setIsActive(true);
 			object.setIsDeleted(false);

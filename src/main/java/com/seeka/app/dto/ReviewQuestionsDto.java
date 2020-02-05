@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
@@ -11,7 +10,7 @@ public class ReviewQuestionsDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = -6404309246018938368L;
-	private BigInteger id;
+	private String id;
 	@NotNull(message = "studentType is Required")
 	private String studentType;
 	@NotNull(message = "studentCategory is Required")
@@ -19,7 +18,7 @@ public class ReviewQuestionsDto implements Serializable {
 	@NotNull(message = "questionTitle is Required")
 	private String questionTitle;
 	@NotNull(message = "questionCategoryId is Required")
-	private BigInteger questionCategoryId;
+	private String questionCategoryId;
 	@NotNull(message = "question is Required")
 	private String question;
 	private String questionCategoryName;
@@ -27,11 +26,11 @@ public class ReviewQuestionsDto implements Serializable {
 	private Date createdOn;
 	private Date updatedOn;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -59,11 +58,11 @@ public class ReviewQuestionsDto implements Serializable {
 		this.questionTitle = questionTitle;
 	}
 
-	public BigInteger getQuestionCategoryId() {
+	public String getQuestionCategoryId() {
 		return questionCategoryId;
 	}
 
-	public void setQuestionCategoryId(final BigInteger questionCategoryId) {
+	public void setQuestionCategoryId(final String questionCategoryId) {
 		this.questionCategoryId = questionCategoryId;
 	}
 

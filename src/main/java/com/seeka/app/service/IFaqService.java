@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.dto.FaqRequestDto;
@@ -11,15 +10,15 @@ public interface IFaqService {
 
 	void addFaq(FaqRequestDto faqRequestDto) throws ValidationException;
 
-	void updateFaq(FaqRequestDto faqRequestDto, BigInteger faqId) throws ValidationException;
+	void updateFaq(FaqRequestDto faqRequestDto, String faqId) throws ValidationException;
 
-	void deleteFaq(BigInteger faqId) throws ValidationException;
+	void deleteFaq(String faqId) throws ValidationException;
 
-	List<FaqResponseDto> getFaqList(Integer startIndex, Integer pageSize, BigInteger faqCategoryId, BigInteger faqSubCategoryId, String sortByField,
+	List<FaqResponseDto> getFaqList(Integer startIndex, Integer pageSize, String faqCategoryId, String faqSubCategoryId, String sortByField,
 			String sortByType, String searchKeyword);
 
-	int getFaqCount(BigInteger faqCategoryId, BigInteger faqSubCategoryId, String searchKeyword);
+	int getFaqCount(String faqCategoryId, String faqSubCategoryId, String searchKeyword);
 
-	FaqResponseDto getFaqDetail(BigInteger faqId);
+	FaqResponseDto getFaqDetail(String faqId);
 
 }

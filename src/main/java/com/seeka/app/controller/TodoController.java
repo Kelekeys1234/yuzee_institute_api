@@ -65,7 +65,7 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json")
-    public ResponseEntity<?> updateTodo(@PathVariable BigInteger id, @Valid @RequestBody TodoDto todoDto) throws Exception {
+    public ResponseEntity<?> updateTodo(@PathVariable String id, @Valid @RequestBody TodoDto todoDto) throws Exception {
         Map<String, Object> response = new HashMap<>(3);
         try {
             iTodoService.update(todoDto, id);

@@ -13,7 +13,7 @@ public class ErrorReportResponseDto implements Serializable {
 	private BigInteger userId;
 	private String userName;
 	private String userEmail;
-	private BigInteger errorReportCategoryId;
+	private String errorReportCategoryId;
 	private String errorReportCategoryName;
 	private String description;
 	private Date createdOn;
@@ -68,11 +68,11 @@ public class ErrorReportResponseDto implements Serializable {
 		this.userEmail = userEmail;
 	}
 
-	public BigInteger getErrorReportCategoryId() {
+	public String getErrorReportCategoryId() {
 		return errorReportCategoryId;
 	}
 
-	public void setErrorReportCategoryId(final BigInteger errorReportCategoryId) {
+	public void setErrorReportCategoryId(final String errorReportCategoryId) {
 		this.errorReportCategoryId = errorReportCategoryId;
 	}
 

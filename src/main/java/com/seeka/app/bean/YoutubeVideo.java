@@ -1,7 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.math.BigInteger;
 import java.util.Date;
 
@@ -14,11 +12,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "youtube_video")
 public class YoutubeVideo implements java.io.Serializable {
 
-    private BigInteger youtubeVideoId;
+    private String youtubeVideoId;
     private BigInteger id;
     private String type;
     private String videoTitle;
@@ -36,9 +36,10 @@ public class YoutubeVideo implements java.io.Serializable {
      * @return the youtubeVideoId
      */
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "youtube_video_id", unique = true, nullable = false)
-    public BigInteger getYoutubeVideoId() {
+    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "youtubeVideoId", columnDefinition = "uniqueidentifier")
+    public String getYoutubeVideoId() {
         return youtubeVideoId;
     }
 
@@ -46,7 +47,7 @@ public class YoutubeVideo implements java.io.Serializable {
      * @param youtubeVideoId
      *            the youtubeVideoId to set
      */
-    public void setYoutubeVideoId(BigInteger youtubeVideoId) {
+    public void setYoutubeVideoId(String youtubeVideoId) {
         this.youtubeVideoId = youtubeVideoId;
     }
 

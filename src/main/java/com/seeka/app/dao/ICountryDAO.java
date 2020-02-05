@@ -11,7 +11,7 @@ public interface ICountryDAO {
 
 	List<Country> getAll();
 
-	Country get(BigInteger id);
+	Country get(String id);
 
 	List<CountryDto> getAllUniversityCountries();
 

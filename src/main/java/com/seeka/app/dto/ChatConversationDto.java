@@ -10,8 +10,8 @@ public class ChatConversationDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 7590305810325611394L;
-	private BigInteger id;
-	private BigInteger chatId;
+	private String id;
+	private String chatId;
 	private String message;
 	private String status;
 	/**
@@ -26,19 +26,19 @@ public class ChatConversationDto implements Serializable {
 	private Date createdOn;
 	private StorageDto storageDto;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public BigInteger getChatId() {
+	public String getChatId() {
 		return chatId;
 	}
 
-	public void setChatId(final BigInteger chatId) {
+	public void setChatId(final String chatId) {
 		this.chatId = chatId;
 	}
 

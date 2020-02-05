@@ -10,7 +10,7 @@ import com.seeka.app.bean.InstituteType;
 
 public class InstituteGetRequestDto {
 
-    private BigInteger id;
+    private String id;
     private City city;
     private Country country;
     private InstituteType instituteType;
@@ -39,7 +39,7 @@ public class InstituteGetRequestDto {
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -47,7 +47,7 @@ public class InstituteGetRequestDto {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

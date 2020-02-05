@@ -128,15 +128,15 @@ public class CourseController {
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException {
-		BigInteger courseId = courseService.save(course);
+		String courseId = courseService.save(course);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Created successfully").create();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final BigInteger id)
+	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final String id)
 			throws ValidationException {
-		BigInteger courseId = courseService.update(course, id);
+		String courseId = courseService.update(course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Updated successfully").create();
 	}
@@ -159,18 +159,18 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<?> delete(@Valid @PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> delete(@Valid @PathVariable final String id) throws Exception {
 		return ResponseEntity.accepted().body(courseService.deleteCourse(id));
 	}
 
 	@RequestMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> searchCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = false) final List<BigInteger> countryIds,
-			@RequestParam(required = false) final BigInteger instituteId,
-			@RequestParam(required = false) final List<BigInteger> facultyIds,
-			@RequestParam(required = false) final List<BigInteger> cityIds,
-			@RequestParam(required = false) final List<BigInteger> levelIds,
-			@RequestParam(required = false) final List<BigInteger> serviceIds,
+			@RequestParam(required = false) final List<String> countryIds,
+			@RequestParam(required = false) final String instituteId,
+			@RequestParam(required = false) final List<String> facultyIds,
+			@RequestParam(required = false) final List<String> cityIds,
+			@RequestParam(required = false) final List<String> levelIds,
+			@RequestParam(required = false) final List<String> serviceIds,
 			@RequestParam(required = false) final Double minCost, @RequestParam(required = false) final Double maxCost,
 			@RequestParam(required = false) final Integer minDuration,
 			@RequestParam(required = false) final Integer maxDuration,
@@ -280,8 +280,8 @@ public class CourseController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Object> get(@RequestHeader(required = false) final BigInteger userId,
-			@Valid @PathVariable final BigInteger id) throws ValidationException {
+	public ResponseEntity<Object> get(@RequestHeader(required = false) final String userId,
+			@Valid @PathVariable final String id) throws ValidationException {
 		ErrorDto errorDto = null;
 		CourseRequest courseRequest = null;
 		Map<String, Object> response = new HashMap<>();
@@ -295,9 +295,9 @@ public class CourseController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
-		Map<BigInteger, Double> googleReviewMap = iInstituteGoogleReviewService
+		Map<String, Double> googleReviewMap = iInstituteGoogleReviewService
 				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
-		Map<BigInteger, Double> seekaReviewMap = iUserReviewService
+		Map<String, Double> seekaReviewMap = iUserReviewService
 				.getUserAverageReviewBasedOnDataList(Arrays.asList(courseRequest.getInstituteId()), "INSTITUTE");
 		courseRequest.setStars(String.valueOf(courseService.calculateAverageRating(googleReviewMap, seekaReviewMap,
 				Double.valueOf(courseRequest.getStars()), courseRequest.getInstituteId())));
@@ -379,7 +379,7 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/institute/{instituteId}", method = RequestMethod.PUT, produces = "application/json")
-	public ResponseEntity<?> getAllCourseByInstituteID(@Valid @PathVariable final BigInteger instituteId,
+	public ResponseEntity<?> getAllCourseByInstituteID(@Valid @PathVariable final String instituteId,
 			@Valid @RequestBody final CourseSearchDto request) throws Exception {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<>();
@@ -573,7 +573,7 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/youtube/{courseId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final BigInteger courseId,
+	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final String courseId,
 			@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(courseId, startIndex, pageSize);
@@ -592,7 +592,7 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> courseFilter(@RequestHeader(required = true) final BigInteger userId,
+	public ResponseEntity<?> courseFilter(@RequestHeader(required = true) final String userId,
 			@RequestHeader(required = false) final String language, @RequestBody final CourseFilterDto courseFilter)
 			throws Exception {
 
@@ -675,8 +675,8 @@ public class CourseController {
 	 */
 	@GetMapping(value = "/noResult/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<Object> getCourseNoResultRecommendation(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = true) final BigInteger facultyId,
-			@RequestParam(required = true) final BigInteger countryId,
+			@PathVariable final Integer pageSize, @RequestParam(required = true) final String facultyId,
+			@RequestParam(required = true) final String countryId,
 			@RequestParam(required = true) final String userCountry) throws ValidationException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> courseResponseDtos = courseService.getCourseNoResultRecommendation(userCountry,
@@ -699,9 +699,9 @@ public class CourseController {
 	 */
 	@GetMapping(value = "/keyword/recommendatation/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<Object> getCourseKeywordRecommendation(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = true) final BigInteger facultyId,
-			@RequestParam(required = true) final BigInteger countryId,
-			@RequestParam(required = true) final BigInteger levelId) throws ValidationException {
+			@PathVariable final Integer pageSize, @RequestParam(required = true) final String facultyId,
+			@RequestParam(required = true) final String countryId,
+			@RequestParam(required = true) final String levelId) throws ValidationException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<String> courseResponseDtos = courseService.getCourseKeywordRecommendation(facultyId, countryId, levelId,
 				startIndex, pageSize);
@@ -724,10 +724,10 @@ public class CourseController {
 	 */
 	@GetMapping(value = "/cheapest/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<Object> getCheapestCourse(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = true) final BigInteger facultyId,
-			@RequestParam(required = true) final BigInteger countryId,
-			@RequestParam(required = true) final BigInteger levelId,
-			@RequestParam(required = true) final BigInteger cityId) throws ValidationException {
+			@PathVariable final Integer pageSize, @RequestParam(required = true) final String facultyId,
+			@RequestParam(required = true) final String countryId,
+			@RequestParam(required = true) final String levelId,
+			@RequestParam(required = true) final String cityId) throws ValidationException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> courseResponseDtos = userRecommendationService.getCheapestCourse(facultyId, countryId,
 				levelId, cityId, startIndex, pageSize);

@@ -95,7 +95,7 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public List<UserReviewResultDto> getUserReviewList(final BigInteger userId, final Integer startIndex, final Integer pageSize) throws ValidationException {
+	public List<UserReviewResultDto> getUserReviewList(final String userId, final Integer startIndex, final Integer pageSize) throws ValidationException {
 		
 		UserDto userDto = iUsersService.getUserById(userId);
 		
@@ -120,7 +120,7 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public UserReviewResultDto getUserReviewDetails(final BigInteger userReviewId) throws ValidationException {
+	public UserReviewResultDto getUserReviewDetails(final String userReviewId) throws ValidationException {
 		UserReview userReview = iUserReviewDao.getUserReview(userReviewId);
 		UserDto userDto = iUsersService.getUserById(userReview.getUserId());
 		UserReviewResultDto userReviewResultDto = new UserReviewResultDto();
@@ -142,13 +142,13 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public List<UserReviewResultDto> getUserReviewBasedOnData(final BigInteger entityId, final String entityType, final Integer startIndex,
+	public List<UserReviewResultDto> getUserReviewBasedOnData(final String entityId, final String entityType, final Integer startIndex,
 			final Integer pageSize, final String sortByType, final String searchKeyword) throws ValidationException {
 		List<UserReviewResultDto> userReviewResultDtolist = new ArrayList<>();
 		
 		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, entityId, entityType, startIndex, pageSize, sortByType, searchKeyword);
 		
-		Map<BigInteger, List<UserReview>> reviewsGroupByUserID = userReviewList.stream().collect(Collectors.groupingBy(UserReview::getUserId));
+		Map<String, List<UserReview>> reviewsGroupByUserID = userReviewList.stream().collect(Collectors.groupingBy(UserReview::getUserId));
 		
 		reviewsGroupByUserID.forEach((k,v) -> {
 			try {
@@ -179,7 +179,7 @@ public class UserReviewService implements IUserReviewService {
 		List<UserReviewResultDto> userReviewResultDtoList = new ArrayList<>();
 		List<UserReview> userReviewList = iUserReviewDao.getUserReviewList(null, null, null, null, null, null, null);
 		
-		Map<BigInteger, List<UserReview>> reviewsGroupByUserID = userReviewList.stream().collect(Collectors.groupingBy(UserReview::getUserId));
+		Map<String, List<UserReview>> reviewsGroupByUserID = userReviewList.stream().collect(Collectors.groupingBy(UserReview::getUserId));
 		reviewsGroupByUserID.forEach((k,v) -> {
 			try {
 				UserDto userDto = iUsersService.getUserById(k);	
@@ -197,7 +197,7 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public UserReviewResultDto getUserAverageReviewBasedOnData(final BigInteger entityId, final String entityType) throws ValidationException {
+	public UserReviewResultDto getUserAverageReviewBasedOnData(final String entityId, final String entityType) throws ValidationException {
 		List<Object> objectList = iUserReviewDao.getUserAverageReview(entityId, entityType);
 		UserReviewResultDto userReviewResultDto = new UserReviewResultDto();
 		userReviewResultDto.setEntityId(entityId);
@@ -206,9 +206,9 @@ public class UserReviewService implements IUserReviewService {
 		for (Object object : objectList) {
 			Object[] obj1 = (Object[]) object;
 			UserReviewRatingDto userReviewRatingDto = new UserReviewRatingDto();
-			ReviewQuestionsDto reviewQuestionsDto = iReviewQuestionService.getReviewQuestion((BigInteger) obj1[0]);
+			ReviewQuestionsDto reviewQuestionsDto = iReviewQuestionService.getReviewQuestion((String) obj1[0]);
 			BeanUtils.copyProperties(reviewQuestionsDto, userReviewRatingDto);
-			userReviewRatingDto.setReviewQuestionId((BigInteger) obj1[0]);
+			userReviewRatingDto.setReviewQuestionId((String) obj1[0]);
 			userReviewRatingDto.setRating((double) Math.round((Double) obj1[1]));
 			resultList.add(userReviewRatingDto);
 		}
@@ -218,12 +218,12 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public Map<BigInteger, Double> getUserAverageReviewBasedOnDataList(final List<BigInteger> entityIdList, final String entityType) {
+	public Map<String, Double> getUserAverageReviewBasedOnDataList(final List<String> entityIdList, final String entityType) {
 		return iUserReviewDao.getUserAverageReviewList(entityIdList, entityType);
 	}
 
 	@Override
-	public void deleteUserReview(final BigInteger userReviewId) throws ValidationException {
+	public void deleteUserReview(final String userReviewId) throws ValidationException {
 		UserReview userReview = iUserReviewDao.getUserReview(userReviewId);
 		if (userReview != null) {
 			userReview.setIsActive(false);
@@ -234,7 +234,7 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 	@Override
-	public int getUserReviewCount(final BigInteger userId, final BigInteger entityId, final String entityType, final String searchKeyword) {
+	public int getUserReviewCount(final String userId, final String entityId, final String entityType, final String searchKeyword) {
 		return iUserReviewDao.getUserReviewCount(userId, entityId, entityType, searchKeyword);
 	}
 

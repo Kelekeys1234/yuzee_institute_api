@@ -47,7 +47,7 @@ public class CourseGradeEligibilityDAO implements ICourseGradeEligibilityDAO {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public CourseGradeEligibility getAllEnglishEligibilityByCourse(final BigInteger courseID) {
+	public CourseGradeEligibility getAllEnglishEligibilityByCourse(final String courseID) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(CourseGradeEligibility.class);
 		crit.add(Restrictions.eq("course.id", courseID));

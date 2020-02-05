@@ -72,7 +72,7 @@ public class UserMyCourseService implements IUserMyCourseService {
 	}
 
 	@Override
-	public UserMyCourse getDataByUserIDAndCourseID(final BigInteger userId, final BigInteger courseId) {
+	public UserMyCourse getDataByUserIDAndCourseID(final BigInteger userId, final String courseId) {
 		return iUserMyCourseDAO.getDataByUserIDAndCourseID(userId, courseId);
 	}
 

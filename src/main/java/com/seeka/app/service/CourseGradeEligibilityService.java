@@ -38,7 +38,7 @@ public class CourseGradeEligibilityService implements ICourseGradeEligibilitySer
 	} 
 	
 	@Override
-	public CourseGradeEligibility getAllEnglishEligibilityByCourse(BigInteger courseID) {
+	public CourseGradeEligibility getAllEnglishEligibilityByCourse(String courseID) {
 		return iCourseGradeEligibilityDAO.getAllEnglishEligibilityByCourse(courseID);
 	}
 	

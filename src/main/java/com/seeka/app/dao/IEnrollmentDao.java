@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -13,19 +12,19 @@ public interface IEnrollmentDao {
 
 	void saveEnrollmentStatus(EnrollmentStatus enrollmentStatus);
 
-	Enrollment getEnrollment(BigInteger enrollmentId);
+	Enrollment getEnrollment(String enrollmentId);
 
 	void updateEnrollment(Enrollment enrollment);
 
-	List<EnrollmentStatus> getEnrollmentStatusDetail(BigInteger enrollmentId);
+	List<EnrollmentStatus> getEnrollmentStatusDetail(String enrollmentId);
 
-	List<Enrollment> getEnrollmentList(BigInteger userId, BigInteger courseId, BigInteger instituteId, BigInteger enrollmentId, String status, Date updatedOn,
+	List<Enrollment> getEnrollmentList(String userId, String courseId, String instituteId, String enrollmentId, String status, Date updatedOn,
 			Integer startIndex, Integer pageSize, Boolean isArchive, String sortByField, String sortByType, String searchKeyword);
 
-	int countOfEnrollment(BigInteger userId, BigInteger courseId, BigInteger instituteId, BigInteger enrollmentId, String status, Date updatedOn,
+	int countOfEnrollment(String userId, String courseId, String instituteId, String enrollmentId, String status, Date updatedOn,
 			String searchKeyword);
 
-	EnrollmentStatus getEnrollmentStatusDetailBasedOnFilter(BigInteger enrollmentId, String status);
+	EnrollmentStatus getEnrollmentStatusDetailBasedOnFilter(String enrollmentId, String status);
 
 	List<Enrollment> getAllEnrollment();
 

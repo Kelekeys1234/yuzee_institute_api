@@ -52,7 +52,7 @@ public class QuestionCategroyController {
 	}
 
 	@DeleteMapping("/{questionCategoryId}")
-	public ResponseEntity<?> deleteQuestionCategory(@PathVariable final BigInteger questionCategoryId) throws ValidationException {
+	public ResponseEntity<?> deleteQuestionCategory(@PathVariable final String questionCategoryId) throws ValidationException {
 		iQuestionCategroy.deleteQuestionCategory(questionCategoryId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted question Category successfully").create();
 	}

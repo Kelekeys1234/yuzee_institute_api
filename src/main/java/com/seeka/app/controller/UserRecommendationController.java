@@ -29,14 +29,14 @@ public class UserRecommendationController {
 	private UserRecommendationService userRecommendationService;
 
 	@GetMapping(value = "/recommend/course/{courseId}")
-	public ResponseEntity<?> getUserRecommendCourse(@PathVariable final BigInteger courseId, @RequestParam final BigInteger userId) throws Exception {
+	public ResponseEntity<?> getUserRecommendCourse(@PathVariable final String courseId, @RequestParam final String userId) throws Exception {
 		List<Course> recommendCourses = userRecommendationService.getRecommendCourse(courseId, userId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage("Get recommend course successfully")
 				.create();
 	}
 
 	@GetMapping(value = "/related/course/{courseId}")
-	public ResponseEntity<?> getRelatedCourse(@PathVariable final BigInteger courseId) throws Exception {
+	public ResponseEntity<?> getRelatedCourse(@PathVariable final String courseId) throws Exception {
 		List<Course> recommendCourses = userRecommendationService.getRelatedCourse(courseId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage("Get related course successfully").create();
 	}

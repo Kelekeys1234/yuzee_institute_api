@@ -30,7 +30,7 @@ public class CountryDetailsDAO implements ICountryDetailsDAO {
 
     @SuppressWarnings({ "deprecation", "unchecked" })
     @Override
-    public CountryDetails getDetailsByCountryId(BigInteger id) {
+    public CountryDetails getDetailsByCountryId(String id) {
         CountryDetails countryDetail = null;
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(CountryDetails.class);

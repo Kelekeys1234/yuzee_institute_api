@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -38,12 +37,12 @@ public class QuestionCategroyService implements IQuestionCategroyService {
 	}
 
 	@Override
-	public QuestionCategroy getQuestionCategory(final BigInteger questionCategoryId, final Boolean isActive) {
+	public QuestionCategroy getQuestionCategory(final String questionCategoryId, final Boolean isActive) {
 		return iQuestionCategroyDao.getQuestionCategory(questionCategoryId, isActive);
 	}
 
 	@Override
-	public void deleteQuestionCategory(final BigInteger questionCategoryId) throws ValidationException {
+	public void deleteQuestionCategory(final String questionCategoryId) throws ValidationException {
 		QuestionCategroy questionCategroy = iQuestionCategroyDao.getQuestionCategory(questionCategoryId, true);
 		if (questionCategroy == null) {
 			throw new ValidationException("QuestionCategroy is not found for id" + questionCategoryId);

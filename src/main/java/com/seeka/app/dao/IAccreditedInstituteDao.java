@@ -13,9 +13,10 @@ public interface IAccreditedInstituteDao {
 
 	List<AccreditedInstitute> getAccreditedInstituteList(Integer startIndex, Integer pageSize);
 
-	AccreditedInstitute getAccreditedInstituteDetail(BigInteger instituteId);
+	AccreditedInstitute getAccreditedInstituteDetail(String
+			instituteId);
 
-	AccreditedInstitute getAccreditedInstituteDetailBasedOnName(String name, BigInteger instituteId);
+	AccreditedInstitute getAccreditedInstituteDetailBasedOnName(String name, String instituteId);
 	
 	List<AccreditedInstitute> getAllAccreditedInstitutes();
 

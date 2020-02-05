@@ -16,11 +16,11 @@ public interface IViewService {
 
 	List<UserViewData> getUserViewData(BigInteger userId, String entityType, boolean isUnique, Integer startIndex, Integer pageSize);
 
-	int getUserViewDataCountBasedOnUserId(BigInteger userId, BigInteger entityId, String entityType);
+	int getUserViewDataCountBasedOnUserId(String userId, String entityId, String entityType);
 
 	int getUserViewDataCountBasedOnEntityId(BigInteger entityId, String entityType);
 
-	List<BigInteger> getUserViewDataBasedOnEntityIdList(BigInteger userId, String entityType, List<BigInteger> entityIds);
+	List<BigInteger> getUserViewDataBasedOnEntityIdList(BigInteger userId, String entityType, List<String> entityIds);
 
 	List<CourseResponseDto> getUserViewDataCourse(BigInteger userId, boolean isUnique, Integer startIndex, Integer pageSize);
 

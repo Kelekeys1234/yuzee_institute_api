@@ -16,8 +16,8 @@ public interface IInstituteGoogleReviewDao {
 
 	List<InstituteGoogleReview> getInstituteGoogleReview(BigInteger instituteId, int startIndex, Integer pageSize);
 
-	Double getInstituteAvgGoogleReview(BigInteger instituteId);
+	Double getInstituteAvgGoogleReview(String instituteId);
 
-	Map<BigInteger, Double> getInstituteAvgGoogleReviewForList(List<BigInteger> instituteIdList);
+	Map<String, Double> getInstituteAvgGoogleReviewForList(List<String> instituteIdList);
 
 }

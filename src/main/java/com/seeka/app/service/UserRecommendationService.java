@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.Course;
@@ -9,18 +8,18 @@ import com.seeka.app.exception.ValidationException;
 
 public interface UserRecommendationService {
 
-	List<Course> getRecommendCourse(BigInteger courseId, BigInteger userId) throws ValidationException;
+	List<Course> getRecommendCourse(String courseId, String userId) throws ValidationException;
 
-	List<Course> getRelatedCourse(BigInteger courseId) throws ValidationException;
+	List<Course> getRelatedCourse(String courseId) throws ValidationException;
 
-	List<CourseResponseDto> getCourseRelated(BigInteger courseId) throws ValidationException;
+	List<CourseResponseDto> getCourseRelated(String courseId) throws ValidationException;
 
-	List<CourseResponseDto> getCourseRecommended(BigInteger courseId) throws ValidationException;
+	List<CourseResponseDto> getCourseRecommended(String courseId) throws ValidationException;
 
-	List<CourseResponseDto> getCourseNoResultRecommendation(BigInteger facultyId, BigInteger countryId, Integer startIndex, Integer pageSize)
+	List<CourseResponseDto> getCourseNoResultRecommendation(String facultyId, String countryId, Integer startIndex, Integer pageSize)
 			throws ValidationException;
 
-	List<CourseResponseDto> getCheapestCourse(BigInteger facultyId, BigInteger countryId, BigInteger levelId, BigInteger cityId, Integer startIndex,
+	List<CourseResponseDto> getCheapestCourse(String facultyId, String countryId, String levelId, String cityId, Integer startIndex,
 			Integer pageSize) throws ValidationException;
 
 }

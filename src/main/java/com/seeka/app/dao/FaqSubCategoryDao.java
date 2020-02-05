@@ -34,7 +34,7 @@ public class FaqSubCategoryDao implements IFaqSubCategoryDao {
 	}
 
 	@Override
-	public FaqSubCategory getFaqSubCategoryDetail(final BigInteger faqSubCategoryId) {
+	public FaqSubCategory getFaqSubCategoryDetail(final String faqSubCategoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(FaqSubCategory.class, "faqSubCategory");
 		criteria.add(Restrictions.eq("faqSubCategory.id", faqSubCategoryId));
@@ -42,7 +42,7 @@ public class FaqSubCategoryDao implements IFaqSubCategoryDao {
 	}
 
 	@Override
-	public List<FaqSubCategory> getFaqSubCategoryList(final Integer startIndex, final Integer pageSize, final BigInteger faqCategoryId) {
+	public List<FaqSubCategory> getFaqSubCategoryList(final Integer startIndex, final Integer pageSize, final String faqCategoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(FaqSubCategory.class, "faqSubCategory");
 		criteria.createAlias("faqSubCategory.faqCategory", "faqCategory");
@@ -59,7 +59,7 @@ public class FaqSubCategoryDao implements IFaqSubCategoryDao {
 	}
 
 	@Override
-	public int getFaqSubCategoryCount(final BigInteger faqCategoryId) {
+	public int getFaqSubCategoryCount(final String faqCategoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(FaqSubCategory.class, "faqSubCategory");
 		criteria.createAlias("faqSubCategory.faqCategory", "faqCategory");
@@ -72,7 +72,7 @@ public class FaqSubCategoryDao implements IFaqSubCategoryDao {
 	}
 
 	@Override
-	public FaqSubCategory getFaqSubCategoryBasedOnName(final String name, final BigInteger faqCategoryId, final BigInteger faqSubCategoryId) {
+	public FaqSubCategory getFaqSubCategoryBasedOnName(final String name, final String faqCategoryId, final String faqSubCategoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(FaqSubCategory.class, "faqSubCategory");
 		criteria.createAlias("faqSubCategory.faqCategory", "faqCategory");

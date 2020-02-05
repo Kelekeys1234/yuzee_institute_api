@@ -11,5 +11,5 @@ public interface ICourseEnglishEligibilityDAO {
 	public void update(CourseEnglishEligibility obj);
 	public CourseEnglishEligibility get(BigInteger id);
 	public List<CourseEnglishEligibility> getAll();	
-	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(BigInteger courseID);
+	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(String courseID);
 }

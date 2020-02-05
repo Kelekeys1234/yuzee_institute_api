@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -12,24 +11,24 @@ public class ArticleResponseDetailsDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 2548163101026500580L;
 	
-	private BigInteger id;
+	private String id;
     private String heading;
     private String content;
-    private BigInteger categoryId;
+    private String categoryId;
     private String categoryName;
-    private BigInteger subcategoryId;
+    private String subcategoryId;
     private String subcategoryName;
 	private String link;
     private String imageUrl;
-    private BigInteger countryId;
+    private String countryId;
     private String countryName;
-    private BigInteger cityId;
+    private String cityId;
     private String cityName;
-    private BigInteger facultyId;
+    private String facultyId;
     private String facutyName;
-    private BigInteger instituteId;
+    private String instituteId;
     private String instituteName;
-    private BigInteger courseId;
+    private String courseId;
     private String courseName;
     private String status;
 	private String author;
@@ -63,11 +62,11 @@ public class ArticleResponseDetailsDto implements Serializable {
 		this.published = published;
 	}
 	
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -172,27 +171,27 @@ public class ArticleResponseDetailsDto implements Serializable {
 		return serialVersionUID;
 	}
 
-	public BigInteger getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(BigInteger categoryId) {
+	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
 
-	public BigInteger getSubcategoryId() {
+	public String getSubcategoryId() {
 		return subcategoryId;
 	}
 
-	public void setSubcategoryId(BigInteger subcategoryId) {
+	public void setSubcategoryId(String subcategoryId) {
 		this.subcategoryId = subcategoryId;
 	}
 
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(BigInteger countryId) {
+	public void setCountryId(String countryId) {
 		this.countryId = countryId;
 	}
 
@@ -204,11 +203,11 @@ public class ArticleResponseDetailsDto implements Serializable {
 		this.countryName = countryName;
 	}
 
-	public BigInteger getCityId() {
+	public String getCityId() {
 		return cityId;
 	}
 
-	public void setCityId(BigInteger cityId) {
+	public void setCityId(String cityId) {
 		this.cityId = cityId;
 	}
 
@@ -220,11 +219,11 @@ public class ArticleResponseDetailsDto implements Serializable {
 		this.cityName = cityName;
 	}
 
-	public BigInteger getFacultyId() {
+	public String getFacultyId() {
 		return facultyId;
 	}
 
-	public void setFacultyId(BigInteger facultyId) {
+	public void setFacultyId(String facultyId) {
 		this.facultyId = facultyId;
 	}
 
@@ -236,11 +235,11 @@ public class ArticleResponseDetailsDto implements Serializable {
 		this.facutyName = facutyName;
 	}
 
-	public BigInteger getInstituteId() {
+	public String getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(BigInteger instituteId) {
+	public void setInstituteId(String instituteId) {
 		this.instituteId = instituteId;
 	}
 
@@ -252,11 +251,11 @@ public class ArticleResponseDetailsDto implements Serializable {
 		this.instituteName = instituteName;
 	}
 
-	public BigInteger getCourseId() {
+	public String getCourseId() {
 		return courseId;
 	}
 
-	public void setCourseId(BigInteger courseId) {
+	public void setCourseId(String courseId) {
 		this.courseId = courseId;
 	}
 

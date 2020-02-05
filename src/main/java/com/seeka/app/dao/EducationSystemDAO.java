@@ -35,7 +35,7 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 	}
 
 	@Override
-	public EducationSystem get(final BigInteger id) {
+	public EducationSystem get(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		EducationSystem obj = session.get(EducationSystem.class, id);
 		return obj;
@@ -57,7 +57,7 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 		List<EducationSystem> list = new ArrayList<>();
 		for (Object[] row : rows) {
 			EducationSystem obj = new EducationSystem();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			obj.setCode(row[2].toString());
 			list.add(obj);
@@ -66,7 +66,7 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 	}
 
 	@Override
-	public List<EducationSystem> getEducationSystemsByCountryId(final BigInteger countryId) {
+	public List<EducationSystem> getEducationSystemsByCountryId(final String countryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(EducationSystem.class, "educationSystem");
 		criteria.createAlias("educationSystem.country", "country");

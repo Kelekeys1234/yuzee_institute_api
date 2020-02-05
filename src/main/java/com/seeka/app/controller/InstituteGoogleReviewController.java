@@ -58,7 +58,7 @@ public class InstituteGoogleReviewController {
 	 * @return
 	 */
 	@GetMapping("/average/{instituteId}")
-	public ResponseEntity<Object> getInstituteAvgGoogleReview(@PathVariable final BigInteger instituteId) {
+	public ResponseEntity<Object> getInstituteAvgGoogleReview(@PathVariable final String instituteId) {
 		Double rating = iInstituteGoogleReviewService.getInstituteAvgGoogleReview(instituteId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(rating).setMessage("Get Institute average rating successfully").create();
 	}

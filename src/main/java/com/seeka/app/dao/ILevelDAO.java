@@ -12,15 +12,15 @@ public interface ILevelDAO {
 
     public void update(Level obj);
 
-    public Level get(BigInteger id);
+    public Level get(String id);
 
     public List<Level> getAll();
 
     public List<Level> getCourseTypeByCountryId(BigInteger countryID);
 
-    public List<Level> getLevelByCountryId(BigInteger countryId);
+    public List<Level> getLevelByCountryId(String countryId);
 
     public List<Level> getAllLevelByCountry();
 
-    public List<Level> getCountryLevel(BigInteger countryId);
+    public List<Level> getCountryLevel(String countryId);
 }

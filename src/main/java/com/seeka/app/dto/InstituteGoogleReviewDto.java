@@ -17,8 +17,8 @@ public class InstituteGoogleReviewDto implements Serializable {
 	private String reviewComment;
 	private String instituteName;
 	private String countryName;
-	private BigInteger instituteId;
-	private BigInteger countryId;
+	private String instituteId;
+	private String countryId;
 
 	public String getUserName() {
 		return userName;
@@ -68,19 +68,19 @@ public class InstituteGoogleReviewDto implements Serializable {
 		this.countryName = countryName;
 	}
 
-	public BigInteger getInstituteId() {
+	public String getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(final BigInteger instituteId) {
+	public void setInstituteId(final String instituteId) {
 		this.instituteId = instituteId;
 	}
 
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(final BigInteger countryId) {
+	public void setCountryId(final String countryId) {
 		this.countryId = countryId;
 	}
 

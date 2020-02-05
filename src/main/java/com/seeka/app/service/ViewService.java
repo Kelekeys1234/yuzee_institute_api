@@ -57,7 +57,7 @@ public class ViewService implements IViewService {
 		for (Object object : objectList) {
 			Object[] obj1 = (Object[]) object;
 			UserViewData UserViewData = new UserViewData();
-			UserViewData.setId((BigInteger) obj1[0]);
+			UserViewData.setId(obj1[0].toString());
 			UserViewData.setUserId((BigInteger) obj1[1]);
 			UserViewData.setEntityId((BigInteger) obj1[2]);
 			UserViewData.setEntityType((String) obj1[3]);
@@ -77,7 +77,7 @@ public class ViewService implements IViewService {
 	}
 
 	@Override
-	public List<BigInteger> getUserViewDataBasedOnEntityIdList(final BigInteger userId, final String entityType, final List<BigInteger> entityIds) {
+	public List<BigInteger> getUserViewDataBasedOnEntityIdList(final BigInteger userId, final String entityType, final List<String> entityIds) {
 		List<BigInteger> resultList = new ArrayList<>();
 		List<Object> objectList = iViewDataDao.getUserViewDataBasedOnEntityIdList(userId, entityType, true, entityIds);
 		for (Object object : objectList) {
@@ -88,7 +88,7 @@ public class ViewService implements IViewService {
 	}
 
 	@Override
-	public int getUserViewDataCountBasedOnUserId(final BigInteger userId, final BigInteger entityId, final String entityType) {
+	public int getUserViewDataCountBasedOnUserId(final String userId, final String entityId, final String entityType) {
 		return iViewDataDao.getUserViewDataCountBasedOnUserId(userId, entityId, entityType);
 	}
 

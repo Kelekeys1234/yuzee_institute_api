@@ -33,8 +33,8 @@ public class CountryUtil {
 
     public static List<CountryDto> univCountryList = new ArrayList<CountryDto>();
     public static List<CountryDto> countryList = new ArrayList<CountryDto>();
-    public static Map<BigInteger, List<City>> countryCityMap = new HashMap<>();
-    public static Map<BigInteger, CountryDto> countryMap = new HashMap<>();
+    public static Map<String, List<City>> countryCityMap = new HashMap<>();
+    public static Map<String, CountryDto> countryMap = new HashMap<>();
 
     @Scheduled(fixedRate = 500000, initialDelay = 5000)
     public void reportCurrentTime() {
@@ -55,7 +55,7 @@ public class CountryUtil {
         return countryCityMap.get(countryId);
     }
 
-    public static CountryDto getCountryByCountryId(BigInteger countryId) {
+    public static CountryDto getCountryByCountryId(String countryId) {
         return countryMap.get(countryId);
     }
 
@@ -66,7 +66,7 @@ public class CountryUtil {
         List<CountryDto> countriesWithUniversity = countryService.getAllUniversityCountries();
 
         List<City> cityList = cityService.getAll();
-        Map<BigInteger, List<City>> cityMapTemp = new HashMap<>();
+        Map<String, List<City>> cityMapTemp = new HashMap<>();
         for (City city : cityList) {
             if (city.getCountry() != null) {
                 List<City> list = cityMapTemp.get(city.getCountry().getId());

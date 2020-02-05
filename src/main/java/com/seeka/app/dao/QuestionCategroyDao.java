@@ -39,7 +39,7 @@ public class QuestionCategroyDao implements IQuestionCategroyDao {
 	}
 
 	@Override
-	public QuestionCategroy getQuestionCategory(final BigInteger questionCategoryId, final Boolean isActive) {
+	public QuestionCategroy getQuestionCategory(final String questionCategoryId, final Boolean isActive) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(QuestionCategroy.class, "questionCategory");
 		if (isActive != null) {

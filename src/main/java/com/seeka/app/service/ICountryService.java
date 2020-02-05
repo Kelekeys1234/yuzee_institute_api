@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,7 @@ import com.seeka.app.dto.CountryRequestDto;
 public interface ICountryService {
     public List<Country> getAll();
 
-    public Country get(BigInteger id);
+    public Country get(String id);
 
     public List<CountryDto> getAllUniversityCountries();
 
@@ -30,7 +29,7 @@ public interface ICountryService {
 
     public Map<String, Object> getAllDiscoverCountry();
 
-    public Map<String, Object> getCountryDetailsById(BigInteger id);
+    public Map<String, Object> getCountryDetailsById(String id);
 
     public Map<String, Object> getCountryLevelFaculty();
 
@@ -42,5 +41,5 @@ public interface ICountryService {
 	
 	List<Country> getCountryListBasedOnCitizenship(List<String> citizenships);
 
-	List<BigInteger> getCountryBasedOnCitizenship(List<String> countryNames);
+	List<String> getCountryBasedOnCitizenship(List<String> countryNames);
 }

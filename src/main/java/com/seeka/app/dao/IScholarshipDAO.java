@@ -17,28 +17,28 @@ public interface IScholarshipDAO {
 
 	void saveScholarshipLanguage(ScholarshipLanguage scholarshipLanguage);
 
-	void deleteScholarshipIntakes(BigInteger scholarShipId);
+	void deleteScholarshipIntakes(String scholarShipId);
 
-	void deleteScholarshipLanguage(BigInteger scholarShipId);
+	void deleteScholarshipLanguage(String scholarShipId);
 
-	Scholarship getScholarshipById(BigInteger id);
+	Scholarship getScholarshipById(String id);
 
-	List<ScholarshipIntakes> getIntakeByScholarship(BigInteger id);
+	List<ScholarshipIntakes> getIntakeByScholarship(String id);
 
-	List<ScholarshipLanguage> getLanguageByScholarship(BigInteger id);
+	List<ScholarshipLanguage> getLanguageByScholarship(String id);
 
 	void updateScholarship(Scholarship scholarship);
 
-	List<ScholarshipResponseDTO> getScholarshipList(Integer startIndex, Integer pageSize, BigInteger countryId, BigInteger instituteId, String validity,
+	List<ScholarshipResponseDTO> getScholarshipList(Integer startIndex, Integer pageSize, String countryId, String instituteId, String validity,
 			Boolean isActive, Date filterDate, String searchKeyword, String sortByField, String sortByType);
 
-	int countScholarshipList(BigInteger countryId, BigInteger instituteId, String validity, Boolean isActive, Date filterDate, String searchKeyword);
+	int countScholarshipList(String countryId, String instituteId, String validity, Boolean isActive, Date filterDate, String searchKeyword);
 
-	List<BigInteger> getRandomScholarShipsForCountry(List<BigInteger> countryIds, Integer limit);
+	List<String> getRandomScholarShipsForCountry(List<String> countryIds, Integer limit);
 
-	List<Scholarship> getAllScholarshipDetailsFromId(List<BigInteger> recommendedScholarships);
+	List<Scholarship> getAllScholarshipDetailsFromId(List<String> recommendedScholarships);
 
-	List<BigInteger> getRandomScholarships(int i);
+	List<String> getRandomScholarships(int i);
 	
-	BigInteger getScholarshipCountByLevelId(BigInteger levelId);
+	BigInteger getScholarshipCountByLevelId(String levelId);
 }

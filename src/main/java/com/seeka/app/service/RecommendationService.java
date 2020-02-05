@@ -78,7 +78,7 @@ public class RecommendationService implements IRecommendationService {
 	private IScholarshipService iScholarshipService;
 
 	@Override
-	public List<InstituteResponseDto> getRecommendedInstitutes(final BigInteger userId, /*
+	public List<InstituteResponseDto> getRecommendedInstitutes(final String userId, /*
 																						 * Long startIndex, final Long pageSize, Long pageNumber,
 																						 */
 			final String language) throws ValidationException, NotFoundException {
@@ -102,17 +102,17 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Final institute list to recommend
 		 */
-		Set<BigInteger> instituteListToRecommend = new HashSet<>();
+		Set<String> instituteListToRecommend = new HashSet<>();
 
 		/**
 		 * Get institutes based on Past User Search based on country of courses
 		 */
-		List<BigInteger> instituteBasedOnPastSearch = getInstituteIdsBasedOnPastSearch(userId);
+		List<String> instituteBasedOnPastSearch = getInstituteIdsBasedOnPastSearch(userId);
 
 		/**
 		 * Get institutes Based on User's Country
 		 */
-		List<BigInteger> institutesBasedOnUserCountry = iInstituteService.getTopInstituteIdByCountry(country.getId());
+		List<String> institutesBasedOnUserCountry = iInstituteService.getTopInstituteIdByCountry(country.getId());
 
 		/**
 		 * Get courses based on the country that other users from user's country are
@@ -122,8 +122,8 @@ public class RecommendationService implements IRecommendationService {
 		List<GlobalData> globalDataDtoList = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
 
 		List<String> countryNames = globalDataDtoList.stream().map(i -> i.getDestinationCountry()).collect(Collectors.toList());
-		List<BigInteger> allCountryIds = iCountryService.getCountryBasedOnCitizenship(countryNames);
-		List<BigInteger> institutesById = iInstituteService.getRandomInstituteIdByCountry(allCountryIds);
+		List<String> allCountryIds = iCountryService.getCountryBasedOnCitizenship(countryNames);
+		List<String> institutesById = iInstituteService.getRandomInstituteIdByCountry(allCountryIds);
 		/**
 		 * Select Random two courses from User Past Search
 		 */
@@ -131,10 +131,10 @@ public class RecommendationService implements IRecommendationService {
 		instituteListToRecommend.addAll(institutesBasedOnUserCountry);
 		instituteListToRecommend.addAll(institutesById);
 
-		List<BigInteger> instList = new ArrayList<>();
+		List<String> instList = new ArrayList<>();
 
 		int count = 0;
-		for (BigInteger id : instituteListToRecommend) {
+		for (String id : instituteListToRecommend) {
 			instList.add(id);
 			if (count >= 20) {
 				break;
@@ -155,7 +155,7 @@ public class RecommendationService implements IRecommendationService {
 	}
 
 	@Override
-	public List</* Course */CourseResponseDto> getRecommendedCourses(final BigInteger userId) throws ValidationException {
+	public List</* Course */CourseResponseDto> getRecommendedCourses(final String userId) throws ValidationException {
 		// TODO Auto-generated method stub
 
 		/**
@@ -183,12 +183,12 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Final course list to recommend
 		 */
-		List<BigInteger> courseListToRecommend = new ArrayList<>();
+		List<String> courseListToRecommend = new ArrayList<>();
 
 		/**
 		 * Get courses based on Past User Search based on country of courses
 		 */
-		List<BigInteger> coursesBasedOnPastSearch = iCourseService.getTopSearchedCoursesByUsers(userId);
+		List<String> coursesBasedOnPastSearch = iCourseService.getTopSearchedCoursesByUsers(userId);
 
 		/**
 		 * Get Courses Based on User's Country
@@ -208,7 +208,7 @@ public class RecommendationService implements IRecommendationService {
 			for (int i = 0; i < 2; i++) {
 				if (coursesBasedOnPastSearch.size() > 0) {
 					int randomIndex = rand.nextInt(coursesBasedOnPastSearch.size());
-					BigInteger randomElement = coursesBasedOnPastSearch.get(randomIndex);
+					String randomElement = coursesBasedOnPastSearch.get(randomIndex);
 					coursesBasedOnPastSearch.remove(randomIndex);
 					courseListToRecommend.add(randomElement);
 				} else {
@@ -223,7 +223,7 @@ public class RecommendationService implements IRecommendationService {
 			for (int i = 0; i < 5; i++) {
 				if (coursesBasedOnUserCountry.size() > 0) {
 					int randomIndex = rand.nextInt(coursesBasedOnUserCountry.size());
-					BigInteger randomElement = coursesBasedOnUserCountry.get(randomIndex);
+					String randomElement = String.valueOf(coursesBasedOnUserCountry.get(randomIndex));
 					coursesBasedOnUserCountry.remove(randomIndex);
 					courseListToRecommend.add(randomElement);
 				} else {
@@ -240,7 +240,7 @@ public class RecommendationService implements IRecommendationService {
 			while ((20 - courseListToRecommend.size()) > 0) {
 				if (coursesBasedOnUserMigrationCountry.size() > 0) {
 					int randomIndex = rand.nextInt(coursesBasedOnUserMigrationCountry.size());
-					BigInteger randomElement = coursesBasedOnUserMigrationCountry.get(randomIndex);
+					String randomElement = String.valueOf(coursesBasedOnUserMigrationCountry.get(randomIndex));
 					coursesBasedOnUserMigrationCountry.remove(randomIndex);
 					courseListToRecommend.add(randomElement);
 				} else {
@@ -296,7 +296,7 @@ public class RecommendationService implements IRecommendationService {
 		return iCourseService.facultyWiseCourseForInstitute(facultyList, instituteId);
 	}
 
-	private Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final Institute instituteId) {
+	private Map<String, String> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final Institute instituteId) {
 		return iCourseService.facultyWiseCourseIdMapForInstitute(facultyList, instituteId.getId());
 	}
 
@@ -316,7 +316,7 @@ public class RecommendationService implements IRecommendationService {
 		}
 	}
 
-	private List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(final Country country) {
+	private List<String> getTopRatedCourseIdsForCountryWorldRankingWise(final Country country) {
 		if (country != null) {
 			return iCourseService.getTopRatedCourseIdForCountryWorldRankingWise(country);
 		} else {
@@ -325,9 +325,9 @@ public class RecommendationService implements IRecommendationService {
 	}
 
 	@Override
-	public List<Course> getTopSearchedCoursesForFaculty(final BigInteger facultyId, final BigInteger userId) {
-		List<BigInteger> facultyWiseCourses = iCourseService.getAllCourseUsingFaculty(facultyId);
-		List<BigInteger> allSearchCourses = iCourseService.getTopSearchedCoursesByOtherUsers(userId);
+	public List<Course> getTopSearchedCoursesForFaculty(final String facultyId, final String userId) {
+		List<String> facultyWiseCourses = iCourseService.getAllCourseUsingFacultyId(facultyId);
+		List<String> allSearchCourses = iCourseService.getTopSearchedCoursesByOtherUsers(userId);
 		allSearchCourses.retainAll(facultyWiseCourses);
 		System.out.println("All Course Size -- " + allSearchCourses.size());
 		if ((allSearchCourses == null) || (allSearchCourses.size() == 0)) {
@@ -338,9 +338,9 @@ public class RecommendationService implements IRecommendationService {
 	}
 
 	@Override
-	public Set<Course> displayRelatedCourseAsPerUserPastSearch(final BigInteger userId) throws ValidationException {
+	public Set<Course> displayRelatedCourseAsPerUserPastSearch(final String userId) throws ValidationException {
 		// TODO Auto-generated method stub
-		List<BigInteger> userSearchCourseIdList = iCourseService.getTopSearchedCoursesByUsers(userId);
+		List<String> userSearchCourseIdList = iCourseService.getTopSearchedCoursesByUsers(userId);
 
 		/**
 		 * Keeping this code to get related courses only for top 3 courses searched.
@@ -359,7 +359,7 @@ public class RecommendationService implements IRecommendationService {
 	}
 
 	@Override
-	public List<ScholarshipDto> getRecommendedScholarships(final BigInteger userId, final String language) throws ValidationException, NotFoundException {
+	public List<ScholarshipDto> getRecommendedScholarships(final String userId, final String language) throws ValidationException, NotFoundException {
 
 		/**
 		 * Get user details from userId
@@ -373,9 +373,9 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get courses based on Past User Search based on country of courses
 		 */
-		List<BigInteger> coursesBasedOnPastSearch = iCourseService.getTopSearchedCoursesByUsers(userId);
+		List<String> coursesBasedOnPastSearch = iCourseService.getTopSearchedCoursesByUsers(userId);
 
-		List<BigInteger> recommendedScholarships = new ArrayList<>();
+		List<String> recommendedScholarships = new ArrayList<>();
 		if ((coursesBasedOnPastSearch == null) || coursesBasedOnPastSearch.isEmpty()) {
 			/**
 			 * If users donot have past search history run the below logic
@@ -388,7 +388,7 @@ public class RecommendationService implements IRecommendationService {
 			List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
 			if ((distinctCountryList != null) && !distinctCountryList.isEmpty()) {
 				List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
-				List<BigInteger> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
+				List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
 				/**
 				 * Get all scholarshipIds based on country
 				 */
@@ -407,17 +407,17 @@ public class RecommendationService implements IRecommendationService {
 			/**
 			 * If users have past search history run the below logic.
 			 */
-			List<BigInteger> countryList = iCourseService.getCountryForTopSearchedCourses(coursesBasedOnPastSearch);
+			List<String> countryList = iCourseService.getCountryForTopSearchedCourses(coursesBasedOnPastSearch);
 
 			/**
 			 * Convert the countryList to Set to make it more random.
 			 */
-			Set<BigInteger> countrySet = new HashSet<>(countryList);
-			for (BigInteger countryId : countrySet) {
+			Set<String> countrySet = new HashSet<>(countryList);
+			for (String countryId : countrySet) {
 				/**
 				 * Add all scholarship Ids obtained to recommended scholarships
 				 */
-				List<BigInteger> countryListForScholarship = new ArrayList<>();
+				List<String> countryListForScholarship = new ArrayList<>();
 				countryListForScholarship.add(countryId);
 				recommendedScholarships.addAll(
 						iScholarshipService.getScholarshipIdsByCountryId(countryListForScholarship, IConstant.SCHOLARSHIPS_PER_COUNTRY_FOR_RECOMMENDATION));
@@ -439,7 +439,7 @@ public class RecommendationService implements IRecommendationService {
 				List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
 				// countries.stream().map(country ->
 				// country.getId()).collect(Collectors.toList());
-				List<BigInteger> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
+				List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
 
 				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(countryIdList,
 						IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE - recommendedScholarships.size()));
@@ -518,15 +518,15 @@ public class RecommendationService implements IRecommendationService {
 //		}
 //	}
 
-	private List<BigInteger> getInstituteIdsBasedOnPastSearch(final BigInteger userId) throws ValidationException {
+	private List<String> getInstituteIdsBasedOnPastSearch(final String userId) throws ValidationException {
 
-		List<BigInteger> instituteList = new ArrayList<>();
+		List<String> instituteList = new ArrayList<>();
 
-		List<BigInteger> topSearchedCourseIds = iCourseService.getTopSearchedCoursesByUsers(userId);
+		List<String> topSearchedCourseIds = iCourseService.getTopSearchedCoursesByUsers(userId);
 		if ((topSearchedCourseIds != null) && !topSearchedCourseIds.isEmpty()) {
-			List<BigInteger> countryForTopSearchedCourses = iCourseService.getCountryForTopSearchedCourses(topSearchedCourseIds);
-			for (BigInteger countryId : countryForTopSearchedCourses) {
-				List<BigInteger> insituteId = iInstituteService.getTopInstituteIdByCountry(countryId/* , 0L, 1L */);
+			List<String> countryForTopSearchedCourses = iCourseService.getCountryForTopSearchedCourses(topSearchedCourseIds);
+			for (String countryId : countryForTopSearchedCourses) {
+				List<String> insituteId = iInstituteService.getTopInstituteIdByCountry(countryId/* , 0L, 1L */);
 				instituteList.addAll(insituteId);
 			}
 		}
@@ -534,7 +534,7 @@ public class RecommendationService implements IRecommendationService {
 		return instituteList;
 	}
 
-	private List<Course> oldLogic(final BigInteger userId) throws ValidationException {
+	private List<Course> oldLogic(final String userId) throws ValidationException {
 		UserDto userDto = iUsersService.getUserById(userId);
 		/**
 		 * Validations of for user.
@@ -573,13 +573,13 @@ public class RecommendationService implements IRecommendationService {
 			/**
 			 * This list contains the details of the courses that are to be returned
 			 */
-			List<BigInteger> listOfRecommendedCourseIds = new ArrayList<>();
+			List<String> listOfRecommendedCourseIds = new ArrayList<>();
 			List<Course> listOfRecommendedCourses = new ArrayList<>();
-			Map<Long, Faculty> facultyMap = new HashMap<>();
+			Map<String, Faculty> facultyMap = new HashMap<>();
 
 			// allFaculty.stream().forEach(i -> facultyMap.put(i.getId().longValue(), i));
 
-			facultyMap = allFaculty.stream().collect(Collectors.toMap(i -> i.getId().longValue(), i -> i));
+			facultyMap = allFaculty.stream().collect(Collectors.toMap(i -> i.getId(), i -> i));
 			Long count = 0L;
 
 			System.out.println("insititute count -- " + allInstitutesRankingWise.size());
@@ -587,12 +587,12 @@ public class RecommendationService implements IRecommendationService {
 			for (Institute institute : allInstitutesRankingWise) {
 				List<Course> listOfCourse = facultyWiseCourseForInstitute(/* allFaculty */new ArrayList<>(facultyMap.values()),
 						institute/* .getId().longValue() */);
-				Map<BigInteger, BigInteger> mapFacultyIdCourseId = facultyWiseCourseIdMapForInstitute(new ArrayList<>(facultyMap.values()), institute);
+				Map<String, String> mapFacultyIdCourseId = facultyWiseCourseIdMapForInstitute(new ArrayList<>(facultyMap.values()), institute);
 				System.out.println(count++);
 				System.out.println("CourseList -- " + listOfCourse.size());
 
-				for (Entry<BigInteger, BigInteger> entry : mapFacultyIdCourseId.entrySet()) {
-					if (facultyMap.containsKey(entry.getValue().longValue())) {
+				for (Entry<String, String> entry : mapFacultyIdCourseId.entrySet()) {
+					if (facultyMap.containsKey(entry.getValue())) {
 						listOfRecommendedCourseIds.add(entry.getKey());
 						/**
 						 * removing facultyIds from faculty map for which courses are already obtained
@@ -600,7 +600,7 @@ public class RecommendationService implements IRecommendationService {
 						 * intitutes, also we get only one course per faculty in our final list of
 						 * courses.
 						 */
-						facultyMap.remove(entry.getValue().longValue());
+						facultyMap.remove(entry.getValue());
 					}
 				}
 
@@ -620,11 +620,11 @@ public class RecommendationService implements IRecommendationService {
 		} else {
 
 			// Map<String, List<Course>> mapOfCountryToItsCoursesList = new TreeMap<>();
-			Map<String, List<BigInteger>> mapOfCountryToItsCoursesList = new TreeMap<>();
+			Map<String, List<String>> mapOfCountryToItsCoursesList = new TreeMap<>();
 
 			List<Course> recommendedCourseList = new ArrayList<>();
 
-			List<BigInteger> recommendedCourseListIds = new ArrayList<>();
+			List<String> recommendedCourseListIds = new ArrayList<>();
 
 			long count = iGlobalStudentDataService.checkForPresenceOfUserCountryInGlobalDataFile(country.getName());
 			/**
@@ -645,7 +645,7 @@ public class RecommendationService implements IRecommendationService {
 			for (GlobalData globalDataDto : countryWiseStudentCountListForUserCountry) {
 				// List<Course> courseList =
 				// getTopRatedCoursesForCountryWorldRankingWise(getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry()));
-				List<BigInteger> courseList = getTopRatedCourseIdsForCountryWorldRankingWise(
+				List<String> courseList = getTopRatedCourseIdsForCountryWorldRankingWise(
 						getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry()));
 				mapOfCountryToItsCoursesList.put(globalDataDto.getDestinationCountry(), courseList);
 			}
@@ -659,8 +659,8 @@ public class RecommendationService implements IRecommendationService {
 				int courseCountPerCountry = requiredCoursesPerCountry.get(i);
 				recommendedCourseList = new ArrayList<>();
 
-				for (Entry<String, List<BigInteger>> entry : mapOfCountryToItsCoursesList.entrySet()) {
-					List<BigInteger> cl = entry.getValue();
+				for (Entry<String, List<String>> entry : mapOfCountryToItsCoursesList.entrySet()) {
+					List<String> cl = entry.getValue();
 					if (cl.size() > 0) {
 						recommendedCourseListIds.addAll(cl.subList(0, cl.size() > courseCountPerCountry ? courseCountPerCountry : cl.size() - 1));
 					}
@@ -683,23 +683,23 @@ public class RecommendationService implements IRecommendationService {
 	}
 
 	@Override
-	public List<InstituteResponseDto> getinstitutesBasedOnOtherPeopleSearch(final BigInteger userId) {
+	public List<InstituteResponseDto> getinstitutesBasedOnOtherPeopleSearch(final String userId) {
 
 		/**
 		 * Get all distinct courseIds searched by other users
 		 */
-		List<BigInteger> distinctCourseIds = iCourseService.getTopSearchedCoursesByOtherUsers(userId);
+		List<String> distinctCourseIds = iCourseService.getTopSearchedCoursesByOtherUsers(userId);
 		try {
 			/**
 			 * Get all distinct country Ids for the course ids
 			 */
-			List<BigInteger> distinctCountryIds = iCourseService.getCountryForTopSearchedCourses(distinctCourseIds);
+			List<String> distinctCountryIds = iCourseService.getCountryForTopSearchedCourses(distinctCourseIds);
 
 			/**
 			 * Get all institutes for the various countries that other users have searched
 			 * for
 			 */
-			List<BigInteger> allInstituteIds = iInstituteService.getInstituteIdsFromCountry(distinctCountryIds);
+			List<String> allInstituteIds = iInstituteService.getInstituteIdsFromCountry(distinctCountryIds);
 
 			/**
 			 * If we dont get any institutes return an empty list
@@ -718,12 +718,12 @@ public class RecommendationService implements IRecommendationService {
 			 * If greater than 20 have a random logic for the same
 			 */
 			else {
-				List<BigInteger> randomInstituteIds = new ArrayList<>();
+				List<String> randomInstituteIds = new ArrayList<>();
 				Random rand = new Random();
 				while (randomInstituteIds.size() <= 20) {
 					if (allInstituteIds.size() > 0) {
 						int randomIndex = rand.nextInt(allInstituteIds.size());
-						BigInteger randomElement = allInstituteIds.get(randomIndex);
+						String randomElement = allInstituteIds.get(randomIndex);
 						allInstituteIds.remove(randomIndex);
 						randomInstituteIds.add(randomElement);
 					} else {
@@ -853,7 +853,7 @@ public class RecommendationService implements IRecommendationService {
 	 *
 	 */
 	@Override
-	public List<ArticleResposeDto> getRecommendedArticles(final BigInteger userId) throws ValidationException {
+	public List<ArticleResposeDto> getRecommendedArticles(final String userId) throws ValidationException {
 		/**
 		 * Query Identity to get UserDto from userId.
 		 */

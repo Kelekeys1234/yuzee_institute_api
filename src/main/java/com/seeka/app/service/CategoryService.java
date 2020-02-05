@@ -28,7 +28,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public CategoryDto getCategoryById(BigInteger categoryId) {
+    public CategoryDto getCategoryById(String categoryId) {
         return categoryDAO.getCategoryById(categoryId);
     }
 
@@ -61,7 +61,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public boolean deleteCategory(BigInteger categoryId) {
+    public boolean deleteCategory(String categoryId) {
         boolean status = true;
         try {
             if (categoryId != null) {

@@ -83,7 +83,7 @@ public class SubCategoryController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteSuCategory(@PathVariable BigInteger id) {
+    public ResponseEntity<?> deleteSuCategory(@PathVariable String id) {
         Map<String, Object> response = new HashMap<String, Object>();
         boolean status = subCategoryService.deleteSubCategory(id);
         if (status) {

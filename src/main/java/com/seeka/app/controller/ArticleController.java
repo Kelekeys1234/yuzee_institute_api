@@ -164,7 +164,7 @@ public class ArticleController {
 	}
 
 	@GetMapping(value = "/folder/{id}")
-	public ResponseEntity<Object> getArticleFolderById(@PathVariable final BigInteger id) throws ValidationException {
+	public ResponseEntity<Object> getArticleFolderById(@PathVariable final String id) throws ValidationException {
 		return new GenericResponseHandlers.Builder().setData(articleService.getArticleFolderById(id)).setMessage("get Folder Successfully").setStatus(HttpStatus.OK).create();
 	}
 
@@ -179,7 +179,7 @@ public class ArticleController {
 	}
 
 	@DeleteMapping(value = "/folder/{id}")
-	public ResponseEntity<?> deleteArticleFolderById(@PathVariable final BigInteger id) throws ValidationException {
+	public ResponseEntity<?> deleteArticleFolderById(@PathVariable final String id) throws ValidationException {
 		return new GenericResponseHandlers.Builder().setData(articleService.deleteArticleFolderById(id)).setMessage("Folder deleted Successfully").setStatus(HttpStatus.OK).create();
 	}
 

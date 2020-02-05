@@ -33,12 +33,12 @@ public class InstituteLevelService implements IInstituteLevelService {
 	}
 
 	@Override
-	public List<InstituteLevel> getAllLevelByInstituteId(final BigInteger instituteId) {
+	public List<InstituteLevel> getAllLevelByInstituteId(final String instituteId) {
 		return dao.getAllLevelByInstituteId(instituteId);
 	}
 
 	@Override
-	public void deleteInstituteLevel(final BigInteger instituteId) {
+	public void deleteInstituteLevel(final String instituteId) {
 		dao.deleteInstituteLevel(instituteId);
 
 	}

@@ -68,7 +68,7 @@ public class CountryService implements ICountryService {
     }
 
     @Override
-    public Country get(BigInteger id) {
+    public Country get(String id) {
         return countryDAO.get(id);
     }
 
@@ -154,7 +154,7 @@ public class CountryService implements ICountryService {
     }
 
     @Override
-    public Map<String, Object> getCountryDetailsById(BigInteger id) {
+    public Map<String, Object> getCountryDetailsById(String id) {
         Map<String, Object> response = new HashMap<String, Object>();
         CountryDetailsResponse countryDetailsResponse = new CountryDetailsResponse();
         try {
@@ -173,11 +173,11 @@ public class CountryService implements ICountryService {
         return response;
     }
 
-    private List<YoutubeVideo> getYoutubeVideos(BigInteger id) {
+    private List<YoutubeVideo> getYoutubeVideos(String id) {
         return youtubeVideoDAO.getYoutubeVideoByCountryId(id, IConstant.COUNTRY_TYPE);
     }
 
-    private List<String> getCountryImages(BigInteger id) {
+    private List<String> getCountryImages(String id) {
         List<String> images = new ArrayList<>();
         Country country = countryDAO.get(id);
         if (country != null) {
@@ -210,7 +210,7 @@ public class CountryService implements ICountryService {
         return response;
     }
 
-    private List<Level> getLevelByCountryId(BigInteger id) {
+    private List<Level> getLevelByCountryId(String id) {
         List<Level> levels = levelDAO.getLevelByCountryId(id);
         for (Level level : levels) {
             level.setFacultyList(getFacultiesByLevelId(level.getId(), id));
@@ -218,7 +218,7 @@ public class CountryService implements ICountryService {
         return levels;
     }
 
-    private List<Faculty> getFacultiesByLevelId(BigInteger levelId, BigInteger countryId) {
+    private List<Faculty> getFacultiesByLevelId(String levelId, String countryId) {
         return facultyDAO.getFacultyByCountryIdAndLevelId(countryId, levelId);
     }
 
@@ -274,10 +274,10 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
-	public List<BigInteger> getCountryBasedOnCitizenship(List<String> countryNames) {
+	public List<String> getCountryBasedOnCitizenship(List<String> countryNames) {
 		
 		List<Country> countryList = countryDAO.getCountryIdsBasedOnCitizenships(countryNames);
-		List<BigInteger> countryIds = countryList.stream().map(i -> i.getId()).collect(Collectors.toList());
+		List<String> countryIds = countryList.stream().map(i -> i.getId()).collect(Collectors.toList());
 		return countryIds;
 	}
 }

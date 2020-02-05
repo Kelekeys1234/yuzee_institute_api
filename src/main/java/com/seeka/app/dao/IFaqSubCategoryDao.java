@@ -1,21 +1,20 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.FaqSubCategory;
 
 public interface IFaqSubCategoryDao {
 
-	FaqSubCategory getFaqSubCategoryDetail(BigInteger faqSubCategoryId);
+	FaqSubCategory getFaqSubCategoryDetail(String faqSubCategoryId);
 
 	void saveFaqSubCategory(FaqSubCategory faqSubCategory);
 
 	void updateFaqSubCategory(FaqSubCategory faqSubCategory);
 
-	List<FaqSubCategory> getFaqSubCategoryList(Integer startIndex, Integer pageSize, BigInteger faqCategoryId);
+	List<FaqSubCategory> getFaqSubCategoryList(Integer startIndex, Integer pageSize, String faqCategoryId);
 
-	int getFaqSubCategoryCount(BigInteger faqCategoryId);
+	int getFaqSubCategoryCount(String faqCategoryId);
 
-	FaqSubCategory getFaqSubCategoryBasedOnName(String name, BigInteger faqCategoryId, BigInteger faqSubCategoryId);
+	FaqSubCategory getFaqSubCategoryBasedOnName(String name, String faqCategoryId, String faqSubCategoryId);
 }

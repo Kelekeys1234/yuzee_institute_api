@@ -42,7 +42,7 @@ public class UserEducationAOLevelSubjectDAO implements IUserEducationAOLevelSubj
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<UserEducationAOLevelSubjects> getUserLevelSubjectGrades(BigInteger userId) {
+    public List<UserEducationAOLevelSubjects> getUserLevelSubjectGrades(String userId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(UserEducationAOLevelSubjects.class);
         crit.add(Restrictions.eq("userId", userId));
@@ -58,7 +58,7 @@ public class UserEducationAOLevelSubjectDAO implements IUserEducationAOLevelSubj
         return crit.list();
     }
 
-    public void deleteEducationAOLevelByUserId(BigInteger userId) {
+    public void deleteEducationAOLevelByUserId(String userId) {
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery("delete from UserEducationAOLevelSubjects where user_id =" + userId);
         q.executeUpdate();

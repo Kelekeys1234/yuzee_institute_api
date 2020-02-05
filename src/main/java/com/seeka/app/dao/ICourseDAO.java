@@ -32,7 +32,7 @@ public interface ICourseDAO {
 
 	void update(Course obj);
 
-	Course get(BigInteger id);
+	Course get(String id);
 
 	List<Course> getAll();
 
@@ -40,7 +40,7 @@ public interface ICourseDAO {
 			boolean uniqueCourseName);
 	
 	
-	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
+	List<CourseResponseDto> getAllCoursesByInstitute(String instituteId, CourseSearchDto filterObj);
 
 	Map<String, Object> getCourse(BigInteger courseid);
 
@@ -65,9 +65,9 @@ public interface ICourseDAO {
 
 	CourseRequest getCourseById(Integer valueOf);
 
-	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, Set<String> keyword, Integer startIndex, Integer pageSize);
+	List<YoutubeVideo> getYoutubeDataforCourse(String instituteId, Set<String> keyword, Integer startIndex, Integer pageSize);
 
-	Course getCourseData(BigInteger id);
+	Course getCourseData(String id);
 
 	List<CourseResponseDto> advanceSearch(Object... values/* AdvanceSearchDto courseSearchDto */);
 
@@ -91,28 +91,28 @@ public interface ICourseDAO {
 
 	List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
 
-	List<Course> getAllCourseForFacultyWorldRankingWise(Long facultyId);
+	List<Course> getAllCourseForFacultyWorldRankingWise(String facultyId);
 
-	List<BigInteger> getAllCourseForFacultyWorldRankingWise(BigInteger facultyId);
+	List<String> getAllCourseForFacultyWorldRankingWises(String facultyId);
 
-	List<Course> getCoursesFromId(List<BigInteger> allSearchCourses);
+	List<Course> getCoursesFromId(List<String> allSearchCourses);
 
-	Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, BigInteger instituteId);
+	Map<String, String> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, String instituteId);
 
-	List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds);
+	List<Course> getAllCoursesUsingId(List<String> listOfRecommendedCourseIds);
 
-	List<BigInteger> getTopRatedCourseIdsForCountryWorldRankingWise(Country country);
+	List<String> getTopRatedCourseIdsForCountryWorldRankingWise(Country country);
 
 	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
 
-	List<BigInteger> getDistinctCountryBasedOnCourses(List<BigInteger> topSearchedCourseIds);
+	List<String> getDistinctCountryBasedOnCourses(List<String> topSearchedCourseIds);
 
 	List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId,
 			BigInteger cityId);
 
 	List<BigInteger> getCourseIdsForCountry(final Country country);
 
-	List<BigInteger> getAllCoursesForCountry(List<BigInteger> otherCountryIds);
+	List<BigInteger> getAllCoursesForCountry(List<String> otherCountryIds);
 
 	List<Long> getUserListFromUserWatchCoursesBasedOnCourses(List<BigInteger> courseIds);
 
@@ -128,33 +128,33 @@ public interface ICourseDAO {
 
 	Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate);
 
-	List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds, Integer startIndex, Integer limit);
+	List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<String> courseIds, Integer startIndex, Integer limit);
 
 	void saveCourseIntake(CourseIntake courseIntake);
 
-	void deleteCourseIntake(BigInteger courseId);
+	void deleteCourseIntake(String courseId);
 
-	List<CourseIntake> getCourseIntakeBasedOnCourseId(BigInteger courseId);
+	List<CourseIntake> getCourseIntakeBasedOnCourseId(String courseId);
 
-	List<CourseIntake> getCourseIntakeBasedOnCourseIdList(List<BigInteger> courseIds);
+	List<CourseIntake> getCourseIntakeBasedOnCourseIdList(List<String> courseIds);
 
 	void saveCourseDeliveryMethod(CourseDeliveryMethod courseDeliveryMethod);
 
-	void deleteCourseDeliveryMethod(BigInteger courseId);
+	void deleteCourseDeliveryMethod(String courseId);
 
-	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(BigInteger courseId);
+	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(String courseId);
 
-	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseIdList(List<BigInteger> courseIds);
+	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseIdList(List<String> courseIds);
 
 	void saveCourseLanguage(CourseLanguage courseLanguage);
 
-	void deleteCourseLanguage(BigInteger courseId);
+	void deleteCourseLanguage(String courseId);
 
-	List<CourseLanguage> getCourseLanguageBasedOnCourseId(BigInteger courseId);
+	List<CourseLanguage> getCourseLanguageBasedOnCourseId(String courseId);
 
 	List<String> getUserSearchCourseRecommendation(Integer startIndex, Integer pageSize, String searchKeyword);
 	
-	Integer getCoursesCountBylevelId(BigInteger levelId);
+	Integer getCoursesCountBylevelId(String levelId);
 
 	int getDistinctCourseCountbyName(String courseName);
 

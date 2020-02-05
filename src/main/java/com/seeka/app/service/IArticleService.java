@@ -24,7 +24,7 @@ public interface IArticleService {
 
 	ArticleFolderDto saveArticleFolder(ArticleFolderDto articleFolder, String language) throws NotFoundException, ValidationException;
 
-	ArticleFolder getArticleFolderById(BigInteger articleFolderId) throws ValidationException;
+	ArticleFolder getArticleFolderById(String articleFolderId) throws ValidationException;
 
 	List<ArticleFolder> getAllArticleFolder();
 
@@ -36,7 +36,7 @@ public interface IArticleService {
 
 	ArticleFolderMapDto mapArticleFolder(final ArticleFolderMapDto articleFolderMapDto, String language) throws ValidationException;
 
-	ArticleFolder deleteArticleFolderById(final BigInteger articleFolderId) throws ValidationException;
+	ArticleFolder deleteArticleFolderById(final String articleFolderId) throws ValidationException;
 
 	List<ArticleResponseDetailsDto> getArticleList(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword,
 			BigInteger categoryId, String tags, Boolean status, Date date) throws ValidationException;
@@ -54,5 +54,5 @@ public interface IArticleService {
 
 	int getTotalAuthorCount(String searchString);
 
-	List<SeekaArticles> findArticleByCountryId(BigInteger id, String categoryName, Integer count, List<BigInteger> viewArticleIds);
+	List<SeekaArticles> findArticleByCountryId(String id, String categoryName, Integer count, List<BigInteger> viewArticleIds);
 }

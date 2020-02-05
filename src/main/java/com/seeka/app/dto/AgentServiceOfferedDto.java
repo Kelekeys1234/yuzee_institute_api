@@ -4,14 +4,14 @@ import java.math.BigInteger;
 
 public class AgentServiceOfferedDto {
 
-    private BigInteger service;
+    private String service;
     private Double amount;
-    private BigInteger currency;
+    private String currency;
 
     /**
      * @return the service
      */
-    public BigInteger getService() {
+    public String getService() {
         return service;
     }
 
@@ -19,7 +19,7 @@ public class AgentServiceOfferedDto {
      * @param service
      *            the service to set
      */
-    public void setService(BigInteger service) {
+    public void setService(String service) {
         this.service = service;
     }
 
@@ -41,7 +41,7 @@ public class AgentServiceOfferedDto {
     /**
      * @return the currency
      */
-    public BigInteger getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
@@ -49,7 +49,7 @@ public class AgentServiceOfferedDto {
      * @param currency
      *            the currency to set
      */
-    public void setCurrency(BigInteger currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 

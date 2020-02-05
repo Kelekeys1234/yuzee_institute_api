@@ -55,7 +55,7 @@ public class Top10CourseService implements ITop10CourseService {
 	}
 
 	@Override
-	public List<String> getTop10CourseKeyword(final BigInteger facultyId) {
+	public List<String> getTop10CourseKeyword(final String facultyId) {
 		Faculty faculty = iFacultyService.get(facultyId);
 		return iTop10CourseDao.getTop10CourseKeyword(faculty.getName()).stream().map(Top10Course::getCourse).collect(Collectors.toList());
 	}
@@ -66,7 +66,7 @@ public class Top10CourseService implements ITop10CourseService {
 		List<String> levelList = IConstant.LEVEL_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE;
 		List<CourseResponseDto> listOfTop10Course = new ArrayList<>();
 
-		List<BigInteger> responseCourseIds = new ArrayList<>();
+		List<String> responseCourseIds = new ArrayList<>();
 
 		for (String countryName : countryListForCourses) {
 			if ((top10CourseIds == null) || top10CourseIds.isEmpty()) {

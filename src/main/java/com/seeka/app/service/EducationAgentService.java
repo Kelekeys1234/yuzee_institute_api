@@ -64,7 +64,7 @@ public class EducationAgentService implements IEducationAgentService {
         saveAgentDetails(educationAgentDto, educationAgent);
     }
 
-    private EducationAgent convertAgentDtoToBean(@Valid EducationAgentDto educationAgentDto, BigInteger id) {
+    private EducationAgent convertAgentDtoToBean(@Valid EducationAgentDto educationAgentDto, String id) {
         EducationAgent educationAgent = null;
         if (id != null) {
             educationAgent = educationAgentDao.get(id);
@@ -86,7 +86,7 @@ public class EducationAgentService implements IEducationAgentService {
     }
 
     @Override
-    public void update(@Valid EducationAgentDto educationAgentDto, BigInteger id) {
+    public void update(@Valid EducationAgentDto educationAgentDto, String id) {
         EducationAgent educationAgent = convertAgentDtoToBean(educationAgentDto, id);
         educationAgentDao.updateEducationAgent(educationAgent);
         saveAgentDetails(educationAgentDto, educationAgent);
@@ -109,7 +109,7 @@ public class EducationAgentService implements IEducationAgentService {
 
     public void saveSkillAndEducationAgentSkill(EducationAgentDto educationAgentDto, EducationAgent educationAgent) {
         educationAgentDao.deleteEducationAgentSkill(educationAgent.getId());
-        for (BigInteger id : educationAgentDto.getSkill()) {
+        for (String id : educationAgentDto.getSkill()) {
             EducationAgentSkill educationAgentSkill = new EducationAgentSkill();
             Skill skill = educationAgentDao.fetchSkill(id);
             educationAgentSkill.setSkill(skill);
@@ -203,7 +203,7 @@ public class EducationAgentService implements IEducationAgentService {
     }
 
     @Override
-    public Map<String, Object> get(@Valid BigInteger id) {
+    public Map<String, Object> get(@Valid String id) {
         Map<String, Object> response = new HashMap<String, Object>();
         try {
             EducationAgent educationAgent = educationAgentDao.get(id);
@@ -216,7 +216,7 @@ public class EducationAgentService implements IEducationAgentService {
                     agentDto = convertEductaionAgentToDto(educationAgent);
                 }
                 List<EducationAgentSkill> agentSkills = educationAgentDao.fetchEducationAgentSkillByEducationAgentId(id);
-                List<BigInteger> skills = new ArrayList<>();
+                List<String> skills = new ArrayList<>();
                 for (EducationAgentSkill educationAgentSkill : agentSkills) {
                     skills.add(educationAgentSkill.getSkill().getId());
                 }
@@ -332,7 +332,7 @@ public class EducationAgentService implements IEducationAgentService {
     }
 
     @Override
-    public Map<String, Object> deleteEducationAgent(BigInteger id) {
+    public Map<String, Object> deleteEducationAgent(String id) {
         Map<String, Object> response = new HashMap<>();
         try {
             EducationAgent educationAgent = educationAgentDao.get(id);

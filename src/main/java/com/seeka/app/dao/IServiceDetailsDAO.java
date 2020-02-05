@@ -17,5 +17,5 @@ public interface IServiceDetailsDAO {
 
     List<Service> getAll();
 
-    com.seeka.app.bean.Service getServiceById(BigInteger id);
+    com.seeka.app.bean.Service getServiceById(String id);
 }

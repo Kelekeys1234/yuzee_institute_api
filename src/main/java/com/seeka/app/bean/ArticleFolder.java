@@ -1,7 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
@@ -13,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "article_folder")
 public class ArticleFolder implements Serializable {
@@ -21,7 +21,7 @@ public class ArticleFolder implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private BigInteger id;
+	private String id;
 	private String folderName;
 	private Boolean deleted;
 	private Date createdAt;
@@ -31,13 +31,14 @@ public class ArticleFolder implements Serializable {
 	private String folderImage;
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", updatable = false, nullable = false)
-	public BigInteger getId() {
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	public String getId() {
 		return id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

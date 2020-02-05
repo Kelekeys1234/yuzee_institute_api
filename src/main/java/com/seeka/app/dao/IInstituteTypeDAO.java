@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.InstituteType;
@@ -12,7 +11,7 @@ public interface IInstituteTypeDAO {
 
     void update(InstituteType obj);
 
-    InstituteType get(BigInteger id);
+    InstituteType get(String id);
 
     List<Intake> getAllIntake();
 

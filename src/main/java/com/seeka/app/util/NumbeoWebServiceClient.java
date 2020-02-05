@@ -15,7 +15,7 @@ public class NumbeoWebServiceClient  {
 	//public static String fileDirectory ="D:\\Seeka\\files\\City\\";
 	public static String fileDirectory ="//var//seeka//city_living_cost//";
 	   
-	public static boolean getCityPricing(String cityName ,BigInteger cityId) throws Exception {
+	public static boolean getCityPricing(String cityName , String cityId) throws Exception {
 		try {
 			 String url = "https://www.numbeo.com/api/city_prices?api_key=6m50upz1d0b6bq&query="+cityName+"&format=json";
 		     URL obj = new URL(url);

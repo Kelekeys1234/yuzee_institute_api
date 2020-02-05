@@ -44,7 +44,7 @@ public class EducationAgentController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateEducationAgent(@PathVariable BigInteger id, @RequestBody final EducationAgentDto educationAgentDto) {
+    public ResponseEntity<?> updateEducationAgent(@PathVariable String id, @RequestBody final EducationAgentDto educationAgentDto) {
         Map<String, Object> response = new HashMap<>();
         try {
             educationService.update(educationAgentDto, id);
@@ -64,12 +64,12 @@ public class EducationAgentController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getEducationAgent(@PathVariable final BigInteger id) throws Exception {
+    public ResponseEntity<?> getEducationAgent(@PathVariable final String id) throws Exception {
         return ResponseEntity.accepted().body(educationService.get(id));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteEducationAgent(@PathVariable BigInteger id) {
+    public ResponseEntity<?> deleteEducationAgent(@PathVariable String id) {
         return ResponseEntity.accepted().body(educationService.deleteEducationAgent(id));
     }
 

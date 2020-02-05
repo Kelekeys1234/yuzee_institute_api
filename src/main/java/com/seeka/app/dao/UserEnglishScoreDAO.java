@@ -50,14 +50,14 @@ public class UserEnglishScoreDAO implements IUserEnglishScoreDAO {
     }
 
     @Override
-    public List<UserEnglishScore> getEnglishEligibiltyByUserID(BigInteger userId) {
+    public List<UserEnglishScore> getEnglishEligibiltyByUserID(String userId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(UserEnglishScore.class);
         crit.add(Restrictions.eq("userId", userId));
         return crit.list();
     }
 
-    public void deleteEnglishScoreByUserId(BigInteger userId) {
+    public void deleteEnglishScoreByUserId(String userId) {
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery("delete from UserEduIelTofScore where user_id =" + userId);
         q.executeUpdate();

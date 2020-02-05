@@ -11,13 +11,13 @@ public class ScholarshipResponseDTO implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = -6660498982386504039L;
-	private BigInteger id;
+	private String id;
 	private String name;
 	private String offeredBy;
 	private String description;
 	private String scholarshipAward;
-	private BigInteger countryId;
-	private BigInteger levelId;
+	private String countryId;
+	private String levelId;
 	private Integer numberOfAvaliability;
 	private Double scholarshipAmount;
 	private String validity;
@@ -34,7 +34,7 @@ public class ScholarshipResponseDTO implements Serializable {
 	private Date deletedOn;
 	private Boolean isActive;
 	private String website;
-	private BigInteger instituteId;
+	private String instituteId;
 	private Date applicationDeadline;
 	private List<String> intakes;
 	private List<String> languages;
@@ -66,11 +66,11 @@ public class ScholarshipResponseDTO implements Serializable {
 		this.levelCode = levelCode;
 	}
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -106,19 +106,19 @@ public class ScholarshipResponseDTO implements Serializable {
 		this.scholarshipAward = scholarshipAward;
 	}
 
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(final BigInteger countryId) {
+	public void setCountryId(final String countryId) {
 		this.countryId = countryId;
 	}
 
-	public BigInteger getLevelId() {
+	public String getLevelId() {
 		return levelId;
 	}
 
-	public void setLevelId(final BigInteger levelId) {
+	public void setLevelId(final String levelId) {
 		this.levelId = levelId;
 	}
 
@@ -258,11 +258,11 @@ public class ScholarshipResponseDTO implements Serializable {
 		this.website = website;
 	}
 
-	public BigInteger getInstituteId() {
+	public String getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(final BigInteger instituteId) {
+	public void setInstituteId(final String instituteId) {
 		this.instituteId = instituteId;
 	}
 

@@ -14,6 +14,6 @@ public interface ISubCategoryDAO {
 
     public boolean saveSubCategory(SubCategory subCategory);
 
-    public SubCategory findById(BigInteger id);
+    public SubCategory findById(String id);
 
 }

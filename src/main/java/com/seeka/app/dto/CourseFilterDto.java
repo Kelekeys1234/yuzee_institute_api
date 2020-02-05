@@ -21,13 +21,13 @@ public class CourseFilterDto {
 	 * the above mentioned country will be available as filter while this will be
 	 * derived based on logged in user country
 	 */
-	private BigInteger userCountryId;
+	private String userCountryId;
 
-	public BigInteger getUserCountryId() {
+	public String getUserCountryId() {
 		return userCountryId;
 	}
 
-	public void setUserCountryId(final BigInteger userCountryId) {
+	public void setUserCountryId(final String userCountryId) {
 		this.userCountryId = userCountryId;
 	}
 

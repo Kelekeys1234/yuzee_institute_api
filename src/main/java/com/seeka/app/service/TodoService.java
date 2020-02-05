@@ -31,7 +31,7 @@ public class TodoService implements ITodoService {
     }
 
     @Override
-    public void update(TodoDto todoDto, BigInteger id) {
+    public void update(TodoDto todoDto, String id) {
         Todo todo = CommonUtil.convertTodoDtoIntoTodo(todoDto);
         todo.setId(id);
         iTodoDao.update(todo);

@@ -46,13 +46,13 @@ public class ScholarshipDao implements IScholarshipDAO {
 	}
 
 	@Override
-	public Scholarship getScholarshipById(final BigInteger id) {
+	public Scholarship getScholarshipById(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.get(Scholarship.class, id);
 	}
 
 	@Override
-	public List<ScholarshipIntakes> getIntakeByScholarship(final BigInteger id) {
+	public List<ScholarshipIntakes> getIntakeByScholarship(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(ScholarshipIntakes.class, "intake");
 		criteria.createAlias("intake.scholarship", "scholarship");
@@ -63,7 +63,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 	}
 
 	@Override
-	public List<ScholarshipLanguage> getLanguageByScholarship(final BigInteger id) {
+	public List<ScholarshipLanguage> getLanguageByScholarship(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(ScholarshipLanguage.class, "language");
 		criteria.createAlias("language.scholarship", "scholarship");
@@ -74,7 +74,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 	}
 
 	@Override
-	public void deleteScholarshipIntakes(final BigInteger scholarShipId) {
+	public void deleteScholarshipIntakes(final String scholarShipId) {
 		Session session = sessionFactory.getCurrentSession();
 		List<ScholarshipIntakes> intakes = getIntakeByScholarship(scholarShipId);
 		for (ScholarshipIntakes scholarshipIntakes : intakes) {
@@ -83,7 +83,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 	}
 
 	@Override
-	public void deleteScholarshipLanguage(final BigInteger scholarShipId) {
+	public void deleteScholarshipLanguage(final String scholarShipId) {
 		Session session = sessionFactory.getCurrentSession();
 		List<ScholarshipLanguage> languages = getLanguageByScholarship(scholarShipId);
 		for (ScholarshipLanguage scholarshipLanguage : languages) {
@@ -98,8 +98,8 @@ public class ScholarshipDao implements IScholarshipDAO {
 	}
 
 	@Override
-	public List<ScholarshipResponseDTO> getScholarshipList(final Integer startIndex, final Integer pageSize, final BigInteger countryId,
-			final BigInteger instituteId, final String validity, final Boolean isActive, final Date updatedOn, final String searchKeyword,
+	public List<ScholarshipResponseDTO> getScholarshipList(final Integer startIndex, final Integer pageSize, final String countryId,
+			final String instituteId, final String validity, final Boolean isActive, final Date updatedOn, final String searchKeyword,
 			final String sortByField, String sortByType) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select sch.id,sch.name,sch.offered_by,sch.description,sch.scholarship_award,country.id as country_id,level.id as level_id,sch.number_of_avaliability,sch.scholarship_amount,\r\n"
@@ -166,18 +166,18 @@ public class ScholarshipDao implements IScholarshipDAO {
 		List<ScholarshipResponseDTO> list = new ArrayList<>();
 		for (Object[] row : rows) {
 			ScholarshipResponseDTO scholarshipResponseDTO = new ScholarshipResponseDTO();
-			scholarshipResponseDTO.setId(new BigInteger(String.valueOf(row[0])));
+			scholarshipResponseDTO.setId(String.valueOf(row[0]));
 			scholarshipResponseDTO.setName(String.valueOf(row[1]));
 			scholarshipResponseDTO.setOfferedBy(String.valueOf(row[2]));
 			scholarshipResponseDTO.setDescription(String.valueOf(row[3]));
 			scholarshipResponseDTO.setScholarshipAward(String.valueOf(row[4]));
 			if (row[5] != null) {
-				scholarshipResponseDTO.setCountryId(new BigInteger(String.valueOf(row[5])));
+				scholarshipResponseDTO.setCountryId(String.valueOf(row[5]));
 			} else {
 				scholarshipResponseDTO.setCountryId(null);
 			}
 			if (row[6] != null) {
-				scholarshipResponseDTO.setLevelId(new BigInteger(String.valueOf(row[6])));
+				scholarshipResponseDTO.setLevelId(String.valueOf(row[6]));
 			} else {
 				scholarshipResponseDTO.setLevelId(null);
 			}
@@ -207,7 +207,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 
 			scholarshipResponseDTO.setWebsite(String.valueOf(row[22]));
 			if (row[23] != null) {
-				scholarshipResponseDTO.setInstituteId(new BigInteger(String.valueOf(row[23])));
+				scholarshipResponseDTO.setInstituteId(String.valueOf(row[23]));
 			} else {
 				scholarshipResponseDTO.setInstituteId(null);
 			}
@@ -224,7 +224,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 	}
 
 	@Override
-	public int countScholarshipList(final BigInteger countryId, final BigInteger instituteId, final String validity, final Boolean isActive,
+	public int countScholarshipList(final String countryId, final String instituteId, final String validity, final Boolean isActive,
 			final Date updatedOn, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select sch.id from scholarship sch inner join country country \r\n"
@@ -292,17 +292,17 @@ public class ScholarshipDao implements IScholarshipDAO {
 	}
 
 	@Override
-	public List<BigInteger> getRandomScholarShipsForCountry(final List<BigInteger> countryId, final Integer limit) {
+	public List<String> getRandomScholarShipsForCountry(final List<String> countryId, final Integer limit) {
 
 		Session session = sessionFactory.getCurrentSession();
-		String ids = countryId.stream().map(BigInteger::toString).collect(Collectors.joining(","));
+		String ids = countryId.stream().map(String::toString).collect(Collectors.joining(","));
 		String query = "Select id from scholarship where country_id in (" + ids + ") order by Rand() LIMIT ?";
-		List<BigInteger> scholarshipIds = session.createNativeQuery(query).setParameter(1, limit).getResultList();
+		List<String> scholarshipIds = session.createNativeQuery(query).setParameter(1, limit).getResultList();
 		return scholarshipIds;
 	}
 
 	@Override
-	public List<Scholarship> getAllScholarshipDetailsFromId(final List<BigInteger> recommendedScholarships) {
+	public List<Scholarship> getAllScholarshipDetailsFromId(final List<String> recommendedScholarships) {
 
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Scholarship.class, "scholarship");
@@ -311,15 +311,15 @@ public class ScholarshipDao implements IScholarshipDAO {
 	}
 
 	@Override
-	public List<BigInteger> getRandomScholarships(final int i) {
+	public List<String> getRandomScholarships(final int i) {
 		Session session = sessionFactory.getCurrentSession();
 		String query = "Select id from scholarship order by Rand() LIMIT ?";
-		List<BigInteger> scholarshipIds = session.createNativeQuery(query).setParameter(1, i).getResultList();
+		List<String> scholarshipIds = session.createNativeQuery(query).setParameter(1, i).getResultList();
 		return scholarshipIds;
 	}
 
 	@Override
-	public BigInteger getScholarshipCountByLevelId(BigInteger levelId) {
+	public BigInteger getScholarshipCountByLevelId(String levelId) {
 		Session session = sessionFactory.getCurrentSession();
 		StringBuilder query = new StringBuilder("Select count(*) from scholarship where level_id=" + levelId);
 		BigInteger count = (BigInteger) session.createNativeQuery(query.toString()).uniqueResult();

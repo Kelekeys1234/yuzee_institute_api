@@ -29,7 +29,7 @@ public class UserEnglishScore extends RecordModifier {
 	private BigInteger id;
 
 	@Column(name = "user_id")
-	private BigInteger userId;
+	private String userId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "english_type")
@@ -61,11 +61,11 @@ public class UserEnglishScore extends RecordModifier {
 		this.id = id;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(BigInteger userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -18,21 +17,21 @@ public interface IUserReviewService {
 
 	UserReview addUserReview(UserReviewDto userReviewDto) throws ValidationException;
 
-	List<UserReviewResultDto> getUserReviewList(BigInteger userId, Integer pageNumber, Integer pageSize) throws ValidationException;
+	List<UserReviewResultDto> getUserReviewList(String userId, Integer pageNumber, Integer pageSize) throws ValidationException;
 
-	UserReviewResultDto getUserReviewDetails(BigInteger userId) throws ValidationException;
+	UserReviewResultDto getUserReviewDetails(String userId) throws ValidationException;
 
-	List<UserReviewResultDto> getUserReviewBasedOnData(BigInteger entityId, String entityType, Integer startIndex, Integer pageSize, String sortByType,
+	List<UserReviewResultDto> getUserReviewBasedOnData(String entityId, String entityType, Integer startIndex, Integer pageSize, String sortByType,
 			String searchKeyword) throws ValidationException;
 
-	UserReviewResultDto getUserAverageReviewBasedOnData(BigInteger entityId, String entityType) throws ValidationException;
+	UserReviewResultDto getUserAverageReviewBasedOnData(String entityId, String entityType) throws ValidationException;
 
-	void deleteUserReview(BigInteger userReviewId) throws ValidationException;
+	void deleteUserReview(String userReviewId) throws ValidationException;
 
 	List<UserReviewResultDto> getUserReviewList() throws ValidationException;
 
-	int getUserReviewCount(BigInteger userId, BigInteger entityId, String entityType, String searchKeyword);
+	int getUserReviewCount(String userId, String entityId, String entityType, String searchKeyword);
 
-	Map<BigInteger, Double> getUserAverageReviewBasedOnDataList(List<BigInteger> entityIdList, String entityType);
+	Map<String, Double> getUserAverageReviewBasedOnDataList(List<String> entityIdList, String entityType);
 
 }

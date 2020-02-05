@@ -97,11 +97,11 @@ public class ElasticSearchService {
 		}
 	}
 
-	public Map<String, List<BigInteger>> updateCourseOnElasticSearch(final String elasticSearchIndex, final String type,
+	public Map<String, List<String>> updateCourseOnElasticSearch(final String elasticSearchIndex, final String type,
 			final List<CourseDTOElasticSearch> courseList, final String elasticSearchName) {
-		Map<String, List<BigInteger>> elasticSearchCourseUpdateStatusMap = new HashMap<>();
-		elasticSearchCourseUpdateStatusMap.put("failed", new ArrayList<BigInteger>());
-		elasticSearchCourseUpdateStatusMap.put("successful", new ArrayList<BigInteger>());
+		Map<String, List<String>> elasticSearchCourseUpdateStatusMap = new HashMap<>();
+		elasticSearchCourseUpdateStatusMap.put("failed", new ArrayList<String>());
+		elasticSearchCourseUpdateStatusMap.put("successful", new ArrayList<String>());
 		for (CourseDTOElasticSearch courseElasticSearch : courseList) {
 			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 			elasticSearchDto.setIndex(elasticSearchIndex);

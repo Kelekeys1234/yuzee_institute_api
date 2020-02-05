@@ -16,9 +16,9 @@ public class UserReviewResultDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 1298861732976808001L;
 
-	private BigInteger id;
-	private BigInteger userId;
-	private BigInteger entityId;
+	private String id;
+	private String userId;
+	private String entityId;
 	private String entityType;
 	private String studentType;
 	private String studentCategory;
@@ -30,27 +30,27 @@ public class UserReviewResultDto implements Serializable {
 	private String userName;
 	private List<UserReviewRatingDto> ratings;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
-	public BigInteger getEntityId() {
+	public String getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(final BigInteger entityId) {
+	public void setEntityId(final String entityId) {
 		this.entityId = entityId;
 	}
 

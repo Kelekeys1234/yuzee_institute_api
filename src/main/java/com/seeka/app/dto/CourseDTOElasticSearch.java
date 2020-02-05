@@ -12,7 +12,7 @@ public class CourseDTOElasticSearch implements Serializable {
 	 */
 	private static final long serialVersionUID = 3521506877760833299L;
 
-	private BigInteger id;
+	private String id;
 	private Integer cId;
 	private String name;
 	private Integer worldRanking;
@@ -77,11 +77,11 @@ public class CourseDTOElasticSearch implements Serializable {
 		this.link = link;
 	}
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

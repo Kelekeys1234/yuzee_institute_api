@@ -1,8 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,6 +10,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "error_report_category")
 public class ErrorReportCategory implements java.io.Serializable {
@@ -22,7 +21,7 @@ public class ErrorReportCategory implements java.io.Serializable {
      */
     private static final long serialVersionUID = -4896547771928499529L;
 
-    private BigInteger id;
+    private String id;
     private String name;
     private Date createdOn;
     private Date updatedOn;
@@ -36,9 +35,10 @@ public class ErrorReportCategory implements java.io.Serializable {
      * @return the id
      */
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public BigInteger getId() {
+    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+    public String getId() {
         return id;
     }
 
@@ -46,7 +46,7 @@ public class ErrorReportCategory implements java.io.Serializable {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

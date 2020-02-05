@@ -25,7 +25,7 @@ public class ArticleFolderDao implements IArticleFolderDao{
     }
 
     @Override
-    public ArticleFolder findById(BigInteger id) {
+    public ArticleFolder findById(String id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(ArticleFolder.class, id);
     }

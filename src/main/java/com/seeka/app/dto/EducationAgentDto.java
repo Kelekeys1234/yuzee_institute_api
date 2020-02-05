@@ -8,14 +8,14 @@ public class EducationAgentDto {
     private String firstName;
     private String lastName;
     private String description;
-    private BigInteger city;
-    private BigInteger country;
+    private String city;
+    private String country;
     private String phoneNumber;
     private String email;
     private String createdBy;
     private String updatedBy;
     private String deletedBy;
-    private List<BigInteger> skill;
+    private List<String> skill;
     private List<String> accomplishment;
     private List<AgentServiceOfferedDto> agentServiceOffereds;
     private List<AgentEducationDetailDto> agentEducationDetails;
@@ -44,19 +44,19 @@ public class EducationAgentDto {
         this.description = description;
     }
 
-    public BigInteger getCity() {
+    public String getCity() {
         return city;
     }
 
-    public void setCity(BigInteger city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
-    public BigInteger getCountry() {
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry(BigInteger country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
@@ -100,11 +100,11 @@ public class EducationAgentDto {
         this.deletedBy = deletedBy;
     }
 
-    public List<BigInteger> getSkill() {
+    public List<String> getSkill() {
         return skill;
     }
 
-    public void setSkill(List<BigInteger> skill) {
+    public void setSkill(List<String> skill) {
         this.skill = skill;
     }
 

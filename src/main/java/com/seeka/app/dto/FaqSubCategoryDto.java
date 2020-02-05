@@ -12,7 +12,7 @@ public class FaqSubCategoryDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = -4031303934629241617L;
-	private BigInteger id;
+	private String id;
 	@NotNull(message = "name is required")
 	private String name;
 	private Date createdOn;
@@ -21,14 +21,14 @@ public class FaqSubCategoryDto implements Serializable {
 	private String updatedBy;
 	private Boolean isActive;
 	@NotNull(message = "faqCategoryId is required")
-	private BigInteger faqCategoryId;
+	private String faqCategoryId;
 	private String faqCategoryName;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -80,11 +80,11 @@ public class FaqSubCategoryDto implements Serializable {
 		this.isActive = isActive;
 	}
 
-	public BigInteger getFaqCategoryId() {
+	public String getFaqCategoryId() {
 		return faqCategoryId;
 	}
 
-	public void setFaqCategoryId(final BigInteger faqCategoryId) {
+	public void setFaqCategoryId(final String faqCategoryId) {
 		this.faqCategoryId = faqCategoryId;
 	}
 

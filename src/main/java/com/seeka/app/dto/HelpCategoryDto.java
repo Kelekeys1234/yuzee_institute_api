@@ -1,10 +1,8 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class HelpCategoryDto {
 
-    private BigInteger id;
+    private String id;
     private String name;
     private String createdBy;
     private String updatedBy;
@@ -36,14 +34,14 @@ public class HelpCategoryDto {
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -4,17 +4,17 @@ import java.math.BigInteger;
 
 public class EducationAgentPartnershipsDto {
 
-    private BigInteger agentId;
-    private BigInteger courseId;
-    private BigInteger instituteId;
+    private String agentId;
+    private String courseId;
+    private String instituteId;
     private String createdBy;
     private String UpdatedBy;
-    private BigInteger countryId;
+    private String countryId;
 
     /**
      * @return the agentId
      */
-    public BigInteger getAgentId() {
+    public String getAgentId() {
         return agentId;
     }
 
@@ -22,14 +22,14 @@ public class EducationAgentPartnershipsDto {
      * @param agentId
      *            the agentId to set
      */
-    public void setAgentId(BigInteger agentId) {
+    public void setAgentId(String agentId) {
         this.agentId = agentId;
     }
 
     /**
      * @return the courseId
      */
-    public BigInteger getCourseId() {
+    public String getCourseId() {
         return courseId;
     }
 
@@ -37,14 +37,14 @@ public class EducationAgentPartnershipsDto {
      * @param courseId
      *            the courseId to set
      */
-    public void setCourseId(BigInteger courseId) {
+    public void setCourseId(String courseId) {
         this.courseId = courseId;
     }
 
     /**
      * @return the instituteId
      */
-    public BigInteger getInstituteId() {
+    public String getInstituteId() {
         return instituteId;
     }
 
@@ -52,7 +52,7 @@ public class EducationAgentPartnershipsDto {
      * @param instituteId
      *            the instituteId to set
      */
-    public void setInstituteId(BigInteger instituteId) {
+    public void setInstituteId(String instituteId) {
         this.instituteId = instituteId;
     }
 
@@ -89,7 +89,7 @@ public class EducationAgentPartnershipsDto {
     /**
      * @return the countryId
      */
-    public BigInteger getCountryId() {
+    public String getCountryId() {
         return countryId;
     }
 
@@ -97,7 +97,7 @@ public class EducationAgentPartnershipsDto {
      * @param countryId
      *            the countryId to set
      */
-    public void setCountryId(BigInteger countryId) {
+    public void setCountryId(String countryId) {
         this.countryId = countryId;
     }
 

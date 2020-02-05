@@ -1,7 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 
@@ -15,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "user_review_rating")
 public class UserReviewRating implements Serializable {
@@ -24,22 +24,23 @@ public class UserReviewRating implements Serializable {
 	 */
 	private static final long serialVersionUID = 8527758588935720411L;
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private BigInteger id;
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	private String id;
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_review_id", nullable = false)
 	private UserReview userReview;
 	@Column(name = "review_question_id", nullable = false)
-	private BigInteger reviewQuestionId;
+	private String reviewQuestionId;
 	@Column(name = "rating", nullable = false, precision = 4)
 	private Double rating;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -51,11 +52,11 @@ public class UserReviewRating implements Serializable {
 		this.userReview = userReview;
 	}
 
-	public BigInteger getReviewQuestionId() {
+	public String getReviewQuestionId() {
 		return reviewQuestionId;
 	}
 
-	public void setReviewQuestionId(final BigInteger reviewQuestionId) {
+	public void setReviewQuestionId(final String reviewQuestionId) {
 		this.reviewQuestionId = reviewQuestionId;
 	}
 

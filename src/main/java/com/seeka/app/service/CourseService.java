@@ -155,7 +155,7 @@ public class CourseService implements ICourseService {
 	private ILevelDAO iLevelDao;
 
 	@Override
-	public Course get(final BigInteger id) {
+	public Course get(final String id) {
 		return iCourseDAO.get(id);
 	}
 
@@ -176,7 +176,7 @@ public class CourseService implements ICourseService {
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<BigInteger> courseIds = courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
+		List<String> courseIds = courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
 		List<BigInteger> viewedCourseIds = new ArrayList<>();
 		if (courseSearchDto.getUserId() != null) {
 			viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
@@ -225,7 +225,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<CourseResponseDto> getAllCoursesByInstitute(final BigInteger instituteId, final CourseSearchDto courseSearchDto) {
+	public List<CourseResponseDto> getAllCoursesByInstitute(final String instituteId, final CourseSearchDto courseSearchDto) {
 		return iCourseDAO.getAllCoursesByInstitute(instituteId, courseSearchDto);
 	}
 
@@ -254,7 +254,7 @@ public class CourseService implements ICourseService {
 	 *
 	 */
 	@Override
-	public BigInteger save(@Valid final CourseRequest courseDto) throws ValidationException {
+	public String save(@Valid final CourseRequest courseDto) throws ValidationException {
 		Course course = new Course();
 		course.setInstitute(getInstititute(courseDto.getInstituteId()));
 		course.setDescription(courseDto.getDescription());
@@ -414,7 +414,7 @@ public class CourseService implements ICourseService {
 	 *
 	 */
 	@Override
-	public BigInteger update(final CourseRequest courseDto, final BigInteger id) throws ValidationException {
+	public String update(final CourseRequest courseDto, final String id) throws ValidationException {
 		Course course = new Course();
 		course = iCourseDAO.get(id);
 		course.setId(id);
@@ -460,7 +460,7 @@ public class CourseService implements ICourseService {
 		if (courseDto.getCurrency() != null) {
 			course.setCurrency(courseDto.getCurrency());
 			Currency toCurrency = currencyDAO.getCurrencyByCode("USD");
-			BigInteger toCurrencyId = null;
+			String toCurrencyId = null;
 			if (toCurrency != null) {
 				toCurrencyId = toCurrency.getId();
 			}
@@ -565,7 +565,7 @@ public class CourseService implements ICourseService {
 		return currencyRate;
 	}
 
-	private Country getCountry(final BigInteger countryId) {
+	private Country getCountry(final String countryId) {
 		Country country = null;
 		if (countryId != null) {
 			country = countryDAO.get(countryId);
@@ -573,7 +573,7 @@ public class CourseService implements ICourseService {
 		return country;
 	}
 
-	private City getCity(final BigInteger cityId) {
+	private City getCity(final String cityId) {
 		City city = null;
 		if (cityId != null) {
 			city = cityDAO.get(cityId);
@@ -581,7 +581,7 @@ public class CourseService implements ICourseService {
 		return city;
 	}
 
-	private Faculty getFaculty(final BigInteger facultyId) {
+	private Faculty getFaculty(final String facultyId) {
 		Faculty faculty = null;
 		if (facultyId != null) {
 			faculty = facultyDAO.get(facultyId);
@@ -589,7 +589,7 @@ public class CourseService implements ICourseService {
 		return faculty;
 	}
 
-	private Institute getInstititute(final BigInteger instituteId) {
+	private Institute getInstititute(final String instituteId) {
 		Institute institute = null;
 		if (instituteId != null) {
 			institute = dao.get(instituteId);
@@ -639,7 +639,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Map<String, Object> deleteCourse(@Valid final BigInteger courseId) {
+	public Map<String, Object> deleteCourse(@Valid final String courseId) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			Course course = iCourseDAO.get(courseId);
@@ -675,7 +675,7 @@ public class CourseService implements ICourseService {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			if (userCourse.getCourses() != null && !userCourse.getCourses().isEmpty()) {
-				for (BigInteger courseId : userCourse.getCourses()) {
+				for (String courseId : userCourse.getCourses()) {
 					UserMyCourse myCourse = new UserMyCourse();
 					myCourse.setCourse(iCourseDAO.get(courseId));
 					myCourse.setUserId(userCourse.getUserId());
@@ -732,7 +732,7 @@ public class CourseService implements ICourseService {
 		try {
 			if (userCourse.getCourses() != null && !userCourse.getCourses().isEmpty()) {
 				String compareValue = "";
-				for (BigInteger courseId : userCourse.getCourses()) {
+				for (String courseId : userCourse.getCourses()) {
 					compareValue += courseId + ",";
 				}
 				UserCompareCourse compareCourse = new UserCompareCourse();
@@ -743,7 +743,7 @@ public class CourseService implements ICourseService {
 				compareCourse.setUpdatedOn(new Date());
 				compareCourse.setUserId(userCourse.getUserId());
 				iCourseDAO.saveUserCompareCourse(compareCourse);
-				for (BigInteger courseId : userCourse.getCourses()) {
+				for (String courseId : userCourse.getCourses()) {
 					UserCompareCourseBundle compareCourseBundle = new UserCompareCourseBundle();
 					compareCourseBundle.setUserId(userCourse.getUserId());
 					compareCourseBundle.setCompareCourse(compareCourse);
@@ -804,18 +804,18 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<YoutubeVideo> getYoutubeDataforCourse(final BigInteger courseId, final Integer startIndex, final Integer pageSize) {
+	public List<YoutubeVideo> getYoutubeDataforCourse(final String courseId, final Integer startIndex, final Integer pageSize) {
 		Course courseData = iCourseDAO.getCourseData(courseId);
 		if (courseData == null) {
 			return new ArrayList<>();
 		}
 		String courseName = courseData.getName();
-		BigInteger instituteId = courseData.getInstitute().getId();
+		String instituteId = courseData.getInstitute().getId();
 		return getYoutubeDataforCourse(instituteId, courseName, startIndex, pageSize);
 	}
 
 	@Override
-	public List<YoutubeVideo> getYoutubeDataforCourse(final BigInteger instituteId, final String courseName, final Integer startIndex, final Integer pageSize) {
+	public List<YoutubeVideo> getYoutubeDataforCourse(final String instituteId, final String courseName, final Integer startIndex, final Integer pageSize) {
 		List<String> skipWords = Arrays.asList("Master`s", "Master", "International", "Bachelor", "of", "Bachelor's", "degree", "&", "and");
 		List<String> courseKeyword = Arrays.asList(courseName.split("\\s|,|\\.|-|:|\\(|\\)"));
 		Set<String> keyword = courseKeyword.stream().filter(i -> !i.isEmpty() && !skipWords.contains(i)).collect(Collectors.toSet());
@@ -823,7 +823,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Course getCourseData(final BigInteger courseId) {
+	public Course getCourseData(final String courseId) {
 		return iCourseDAO.getCourseData(courseId);
 	}
 
@@ -849,15 +849,15 @@ public class CourseService implements ICourseService {
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<BigInteger> courseIds = courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
+		List<String> courseIds = courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
 		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
 				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), ImageCategory.INSTITUTE.name(), null, "en");
 		List<CourseDeliveryMethod> courseDeliveryMethods = iCourseDAO.getCourseDeliveryMethodBasedOnCourseIdList(courseIds);
 		List<CourseIntake> courseIntake = iCourseDAO.getCourseIntakeBasedOnCourseIdList(courseIds);
-		Map<BigInteger, Double> googleReviewMap = iInstituteGoogleReviewService
+		Map<String, Double> googleReviewMap = iInstituteGoogleReviewService
 				.getInstituteAvgGoogleReviewForList(courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
-		Map<BigInteger, Double> seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(
+		Map<String, Double> seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(
 				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), "INSTITUTE");
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
 			if (storageDTOList != null && !storageDTOList.isEmpty()) {
@@ -900,8 +900,8 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public double calculateAverageRating(final Map<BigInteger, Double> googleReviewMap, final Map<BigInteger, Double> seekaReviewMap, final Double courseStar,
-			final BigInteger instituteId) {
+	public double calculateAverageRating(final Map<String, Double> googleReviewMap, final Map<String, Double> seekaReviewMap, final Double courseStar,
+			final String instituteId) {
 		Double courseStars = 0d;
 		Double googleReview = 0d;
 		Double seekaReview = 0d;
@@ -1085,8 +1085,8 @@ public class CourseService implements ICourseService {
 
 	public List<CourseMinRequirementDto> convertCourseMinRequirementToDto(final List<CourseMinRequirement> courseMinRequirement) {
 		List<CourseMinRequirementDto> resultList = new ArrayList<>();
-		Set<BigInteger> countryIds = courseMinRequirement.stream().map(c -> c.getCountry().getId()).collect(Collectors.toSet());
-		for (BigInteger countryId : countryIds) {
+		Set<String> countryIds = courseMinRequirement.stream().map(c -> c.getCountry().getId()).collect(Collectors.toSet());
+		for (String countryId : countryIds) {
 			List<String> subject = new ArrayList<>();
 			List<String> grade = new ArrayList<>();
 			List<CourseMinRequirement> filterList = courseMinRequirement.stream().filter(x -> x.getCountry().getId().equals(countryId))
@@ -1139,49 +1139,49 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<Course> getAllCourseUsingFaculty(final Long facultyId) {
+	public List<Course> getAllCourseUsingFaculty(final String facultyId) {
 		return iCourseDAO.getAllCourseForFacultyWorldRankingWise(facultyId);
 	}
 
 	@Override
-	public List<BigInteger> getAllCourseUsingFaculty(final BigInteger facultyId) {
-		return iCourseDAO.getAllCourseForFacultyWorldRankingWise(facultyId);
+	public List<String> getAllCourseUsingFacultyId(final String facultyId) {
+		return iCourseDAO.getAllCourseForFacultyWorldRankingWises(facultyId);
 	}
 
 	@Override
-	public List<BigInteger> getTopSearchedCoursesByOtherUsers(final BigInteger userId) {
+	public List<String> getTopSearchedCoursesByOtherUsers(final String userId) {
 		return viewDao.getOtherUserWatchCourse(userId, "COURSE");
 	}
 
 	@Override
-	public List<Course> getCoursesById(final List<BigInteger> allSearchCourses) {
+	public List<Course> getCoursesById(final List<String> allSearchCourses) {
 		return iCourseDAO.getCoursesFromId(allSearchCourses);
 	}
 
 	@Override
-	public Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final BigInteger instituteId) {
+	public Map<String, String> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final String instituteId) {
 		return iCourseDAO.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
 	}
 
 	@Override
-	public List<Course> getAllCoursesUsingId(final List<BigInteger> listOfRecommendedCourseIds) {
+	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
 		return iCourseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
 	}
 
 	@Override
-	public List<BigInteger> getTopRatedCourseIdForCountryWorldRankingWise(final Country country) {
+	public List<String> getTopRatedCourseIdForCountryWorldRankingWise(final Country country) {
 		return iCourseDAO.getTopRatedCourseIdsForCountryWorldRankingWise(country);
 	}
 
 	@Override
-	public List<BigInteger> getTopSearchedCoursesByUsers(final BigInteger userId) {
+	public List<String> getTopSearchedCoursesByUsers(final String userId) {
 		return viewDao.getUserWatchCourseIds(userId, "COURSE");
 	}
 
 	@Override
-	public Set<Course> getRelatedCoursesBasedOnPastSearch(final List<BigInteger> courseList) throws ValidationException {
+	public Set<Course> getRelatedCoursesBasedOnPastSearch(final List<String> courseList) throws ValidationException {
 		Set<Course> relatedCourses = new HashSet<>();
-		for (BigInteger courseId : courseList) {
+		for (String courseId : courseList) {
 			relatedCourses.addAll(userRecommedationService.getRelatedCourse(courseId));
 		}
 		return relatedCourses;
@@ -1193,7 +1193,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<BigInteger> getCountryForTopSearchedCourses(final List<BigInteger> topSearchedCourseIds) throws ValidationException {
+	public List<String> getCountryForTopSearchedCourses(final List<String> topSearchedCourseIds) throws ValidationException {
 		if (topSearchedCourseIds == null || topSearchedCourseIds.isEmpty()) {
 			throw new ValidationException(messageByLocaleService.getMessage("no.course.id.specified", new Object[] {}));
 		}
@@ -1225,7 +1225,7 @@ public class CourseService implements ICourseService {
 	@Override
 	public List<BigInteger> courseIdsForMigratedCountries(final Country country) {
 		List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
-		List<BigInteger> otherCountryIds = new ArrayList<>();
+		List<String> otherCountryIds = new ArrayList<>();
 		if (countryWiseStudentCountListForUserCountry == null || countryWiseStudentCountListForUserCountry.isEmpty()) {
 			countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList("China");
 		}
@@ -1265,27 +1265,27 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<BigInteger> courseIds, final Integer startIndex, final Integer limit) {
+	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds, final Integer startIndex, final Integer limit) {
 		return iCourseDAO.getCoursesToBeRetriedForElasticSearch(courseIds, startIndex, limit);
 	}
 
 	@Override
-	public List<CourseIntake> getCourseIntakeBasedOnCourseId(final BigInteger courseId) {
+	public List<CourseIntake> getCourseIntakeBasedOnCourseId(final String courseId) {
 		return iCourseDAO.getCourseIntakeBasedOnCourseId(courseId);
 	}
 
 	@Override
-	public List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(final BigInteger courseId) {
+	public List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(final String courseId) {
 		return iCourseDAO.getCourseDeliveryMethodBasedOnCourseId(courseId);
 	}
 
 	@Override
-	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(final BigInteger courseId) {
+	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(final String courseId) {
 		return iCourseDAO.getCourseLanguageBasedOnCourseId(courseId);
 	}
 
 	@Override
-	public List<CourseResponseDto> getCourseNoResultRecommendation(final String userCountry, final BigInteger facultyId, final BigInteger countryId,
+	public List<CourseResponseDto> getCourseNoResultRecommendation(final String userCountry, final String facultyId, final String countryId,
 			final Integer startIndex, final Integer pageSize) throws ValidationException {
 		/**
 		 * Find course based on faculty and country.
@@ -1319,7 +1319,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<String> getCourseKeywordRecommendation(final BigInteger facultyId, final BigInteger countryId, final BigInteger levelId,
+	public List<String> getCourseKeywordRecommendation(final String facultyId, final String countryId, final String levelId,
 			final Integer startIndex, final Integer pageSize) {
 		List<String> courseKeywordRecommended = new ArrayList<>();
 		/**

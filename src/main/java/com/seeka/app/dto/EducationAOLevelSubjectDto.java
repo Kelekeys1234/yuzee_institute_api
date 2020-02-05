@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 public class EducationAOLevelSubjectDto implements Serializable {
 
@@ -9,15 +8,15 @@ public class EducationAOLevelSubjectDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 473560159928318998L;
-	private BigInteger subjectId;
+	private String subjectId;
 	private String subjectName;
 	private String grade;
 
-	public BigInteger getSubjectId() {
+	public String getSubjectId() {
 		return subjectId;
 	}
 
-	public void setSubjectId(final BigInteger subjectId) {
+	public void setSubjectId(final String subjectId) {
 		this.subjectId = subjectId;
 	}
 

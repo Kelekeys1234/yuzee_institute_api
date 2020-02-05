@@ -40,7 +40,7 @@ public class CityDAO implements ICityDAO {
 		City obj = null;
 		for (Object[] row : rows) {
 			obj = new City();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			citis.add(obj);
 		}
@@ -48,14 +48,14 @@ public class CityDAO implements ICityDAO {
 	}
 
 	@Override
-	public City get(final BigInteger id) {
+	public City get(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		City city = session.get(City.class, id);
 		return city;
 	}
 
 	@Override
-	public List<City> getAllCitiesByCountry(final BigInteger countryId) {
+	public List<City> getAllCitiesByCountry(final String countryId) {
 		List<City> citis = new ArrayList<>();
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery("select c.id, c.name as name from city c  where c.country_id = " + countryId + " ORDER BY c.name");
@@ -63,7 +63,7 @@ public class CityDAO implements ICityDAO {
 		City obj = null;
 		for (Object[] row : rows) {
 			obj = new City();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			citis.add(obj);
 		}
@@ -79,12 +79,12 @@ public class CityDAO implements ICityDAO {
 		City obj = null;
 		for (Object[] row : rows) {
 			obj = new City();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			citis.add(obj);
 		}
 		City allObj = new City();
-		allObj.setId(new BigInteger("111111"));
+		allObj.setId("111111");
 		allObj.setName("All");
 		citis.add(allObj);
 		return citis;

@@ -31,9 +31,9 @@ public class SubCategoryDAO implements ISubCategoryDAO {
         SubCategoryDto subCategoryDto = null;
         for (Object[] row : rows) {
             subCategoryDto = new SubCategoryDto();
-            subCategoryDto.setId(new BigInteger((row[0].toString())));
+            subCategoryDto.setId(row[0].toString());
             subCategoryDto.setName(row[1].toString());
-            subCategoryDto.setCategoryId(new BigInteger((row[2].toString())));
+            subCategoryDto.setCategoryId(row[2].toString());
             subCategoryDto.setCategoryName(row[3].toString());
             subCategoryDtos.add(subCategoryDto);
         }
@@ -60,7 +60,7 @@ public class SubCategoryDAO implements ISubCategoryDAO {
             }
         }
         SubCategoryDto subCategoryDto = new SubCategoryDto();
-        subCategoryDto.setId(new BigInteger("111111"));
+        subCategoryDto.setId("111111");
         subCategoryDto.setName("All");
         subCategoryDtos.add(subCategoryDto);
         return subCategoryDtos;
@@ -95,7 +95,7 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     }
 
     @Override
-    public SubCategory findById(BigInteger id) {
+    public SubCategory findById(String id) {
         Session session = sessionFactory.getCurrentSession();
         SubCategory subCategory = session.get(SubCategory.class, id);
         return subCategory;

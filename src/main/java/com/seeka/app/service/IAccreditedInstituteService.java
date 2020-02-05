@@ -16,14 +16,14 @@ public interface IAccreditedInstituteService {
 
 	List<AccreditedInstituteDto> getAccreditedInstituteList(Integer pageNumber, Integer pageSize) throws ValidationException;
 
-	AccreditedInstituteDto getAccreditedInstituteDetail(BigInteger accreditedInstituteId) throws ValidationException;
+	AccreditedInstituteDto getAccreditedInstituteDetail(String accreditedInstituteId) throws ValidationException;
 
 	void addAccreditedLogo(MultipartFile file, AccreditedInstitute accreditedInstitute);
 
-	AccreditedInstitute updateAccreditedInstitute(BigInteger accreditedInstituteId, AccreditedInstituteRequestDto accreditedInstituteRequestDto)
+	AccreditedInstitute updateAccreditedInstitute(String accreditedInstituteId, AccreditedInstituteRequestDto accreditedInstituteRequestDto)
 			throws ValidationException;
 
-	void deleteAccreditedInstitute(BigInteger accreditedInstituteId) throws ValidationException;
+	void deleteAccreditedInstitute(String accreditedInstituteId) throws ValidationException;
 
 	List<AccreditedInstituteRequestDto> getAllAccreditedInstitutes();
 

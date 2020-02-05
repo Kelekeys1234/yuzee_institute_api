@@ -29,14 +29,14 @@ import com.seeka.app.exception.ValidationException;
 
 public interface ICourseService {
 
-	Course get(BigInteger id);
+	Course get(String id);
 
 	List<Course> getAll();
 
 	List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, Integer startIndex, Integer pageSize, String searchKeyword)
 			throws ValidationException;
 
-	List<CourseResponseDto> getAllCoursesByInstitute(BigInteger instituteId, CourseSearchDto filterObj);
+	List<CourseResponseDto> getAllCoursesByInstitute(String instituteId, CourseSearchDto filterObj);
 
 	Map<String, Object> getCourse(BigInteger courseid);
 
@@ -44,11 +44,11 @@ public interface ICourseService {
 
 	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
-	BigInteger save(CourseRequest courseDto) throws ValidationException;
+	String save(CourseRequest courseDto) throws ValidationException;
 
 	Map<String, Object> getAllCourse(Integer pageNumber, Integer pageSize);
 
-	Map<String, Object> deleteCourse(BigInteger courseId);
+	Map<String, Object> deleteCourse(String courseId);
 
 	Map<String, Object> addUserCourses(UserCourse userCourse);
 
@@ -59,11 +59,11 @@ public interface ICourseService {
 
 	Map<String, Object> getUserCompareCourse(BigInteger userId);
 
-	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger courseId, Integer startIndex, final Integer pageSize);
+	List<YoutubeVideo> getYoutubeDataforCourse(String courseId, Integer startIndex, final Integer pageSize);
 
-	List<YoutubeVideo> getYoutubeDataforCourse(BigInteger instituteId, String courseName, Integer startIndex, Integer pageSize);
+	List<YoutubeVideo> getYoutubeDataforCourse(String instituteId, String courseName, Integer startIndex, Integer pageSize);
 
-	Course getCourseData(BigInteger courseId);
+	Course getCourseData(String courseId);
 
 	Map<String, Object> getAllServices();
 
@@ -79,7 +79,7 @@ public interface ICourseService {
 	 * @return
 	 * @throws ValidationException
 	 */
-	BigInteger update(CourseRequest courseDto, BigInteger id) throws ValidationException;
+	String update(CourseRequest courseDto, String id) throws ValidationException;
 
 	Map<String, Object> courseFilter(CourseFilterDto courseFilter);
 
@@ -97,27 +97,27 @@ public interface ICourseService {
 
 	List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
 
-	List<Course> getAllCourseUsingFaculty(Long facultyId);
+	List<Course> getAllCourseUsingFaculty(String facultyId);
 
-	List<BigInteger> getAllCourseUsingFaculty(BigInteger facultyId);
+	List<String> getAllCourseUsingFacultyId(String facultyId);
 
-	List<BigInteger> getTopSearchedCoursesByOtherUsers(BigInteger userId);
+	List<String> getTopSearchedCoursesByOtherUsers(String userId);
 
-	List<Course> getCoursesById(List<BigInteger> allSearchCourses);
+	List<Course> getCoursesById(List<String> allSearchCourses);
 
-	Map<BigInteger, BigInteger> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, BigInteger instituteId);
+	Map<String, String> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, String instituteId);
 
-	List<Course> getAllCoursesUsingId(List<BigInteger> listOfRecommendedCourseIds);
+	List<Course> getAllCoursesUsingId(List<String> listOfRecommendedCourseIds);
 
-	List<BigInteger> getTopRatedCourseIdForCountryWorldRankingWise(Country country);
+	List<String> getTopRatedCourseIdForCountryWorldRankingWise(Country country);
 
-	List<BigInteger> getTopSearchedCoursesByUsers(BigInteger userId);
+	List<String> getTopSearchedCoursesByUsers(String userId);
 
-	Set<Course> getRelatedCoursesBasedOnPastSearch(List<BigInteger> courseList) throws ValidationException;
+	Set<Course> getRelatedCoursesBasedOnPastSearch(List<String> courseList) throws ValidationException;
 
 	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
 
-	List<BigInteger> getCountryForTopSearchedCourses(List<BigInteger> topSearchedCourseIds) throws ValidationException;
+	List<String> getCountryForTopSearchedCourses(List<String> topSearchedCourseIds) throws ValidationException;
 
 	List<BigInteger> courseIdsForCountry(final Country country);
 
@@ -137,22 +137,22 @@ public interface ICourseService {
 
 	Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate);
 
-	List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<BigInteger> courseIds, Integer startIndex, Integer limit);
+	List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<String> courseIds, Integer startIndex, Integer limit);
 
-	List<CourseIntake> getCourseIntakeBasedOnCourseId(BigInteger courseId);
+	List<CourseIntake> getCourseIntakeBasedOnCourseId(String courseId);
 
-	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(BigInteger courseId);
+	List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(String courseId);
 
-	List<CourseLanguage> getCourseLanguageBasedOnCourseId(BigInteger courseId);
+	List<CourseLanguage> getCourseLanguageBasedOnCourseId(String courseId);
 
-	List<CourseResponseDto> getCourseNoResultRecommendation(String userCountry, BigInteger facultyId, BigInteger countryId, Integer startIndex,
+	List<CourseResponseDto> getCourseNoResultRecommendation(String userCountry, String facultyId, String countryId, Integer startIndex,
 			Integer pageSize) throws ValidationException;
 	
 	List<CourseResponseDto> getDistinctCourseList(Integer startIndex, Integer pageSize, String courseName) ;
 
-	List<String> getCourseKeywordRecommendation(BigInteger facultyId, BigInteger countryId, BigInteger levelId, Integer startIndex, Integer pageSize);
+	List<String> getCourseKeywordRecommendation(String facultyId, String countryId, String levelId, Integer startIndex, Integer pageSize);
 
-	double calculateAverageRating(Map<BigInteger, Double> googleReviewMap, Map<BigInteger, Double> seekaReviewMap, Double courseStar, BigInteger instituteId);
+	double calculateAverageRating(Map<String, Double> googleReviewMap, Map<String, Double> seekaReviewMap, Double courseStar, String instituteId);
 
 	Map<String, Integer> getCourseCountByLevel();
 }

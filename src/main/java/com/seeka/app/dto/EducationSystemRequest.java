@@ -1,11 +1,10 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class EducationSystemRequest {
 
-	private BigInteger userId;
+	private String userId;
 	private EducationDetailRequestDto educationDetail;
 	private List<EnglishScoresDto> englishScoresList;
 	private List<EducationAOLevelSubjectDto> educationAOLevelSubjectList;
@@ -15,14 +14,14 @@ public class EducationSystemRequest {
 	/**
 	 * @return the userId
 	 */
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 

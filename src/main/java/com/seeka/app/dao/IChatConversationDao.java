@@ -13,13 +13,13 @@ public interface IChatConversationDao {
 
 	ChatConversation getChatConversation(BigInteger chatConversationId);
 
-	List<ChatConversation> getChatConversationBasedOnChatId(BigInteger chatId, Integer startIndex, Integer pageSize);
+	List<ChatConversation> getChatConversationBasedOnChatId(String chatId, Integer startIndex, Integer pageSize);
 
 	Integer getChatConversationCountBasedOnChatId(BigInteger chatId);
 
-	List<ChatConversation> getChatListBasedOnEntityType(String entityType, BigInteger initiateFromId, BigInteger initiateToId, Integer startIndex,
+	List<ChatConversation> getChatListBasedOnEntityType(String entityType, String initiateFromId, String initiateToId, Integer startIndex,
 			Integer pageSize);
 
-	Integer getChatConversationCountBasedOnEntityType(String entityType, BigInteger initiateFromId, BigInteger initiateToId);
+	Integer getChatConversationCountBasedOnEntityType(String entityType, String initiateFromId, String initiateToId);
 
 }

@@ -38,7 +38,7 @@ public class AccreditedInstituteDetailDao implements IAccreditedInstituteDetailD
     }
 
     @Override
-    public List<AccreditedInstituteDetail> getAccreditedInstituteDetail(final BigInteger accreditedInstituteId) {
+    public List<AccreditedInstituteDetail> getAccreditedInstituteDetail(final String accreditedInstituteId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(AccreditedInstituteDetail.class, "accreditedInstituteDetail");
         crit.add(Restrictions.eq("accreditedInstituteDetail.accreditedInstituteId", accreditedInstituteId));
@@ -46,7 +46,7 @@ public class AccreditedInstituteDetailDao implements IAccreditedInstituteDetailD
     }
 
     @Override
-    public AccreditedInstituteDetail getAccreditedInstituteDetailbasedOnParams(final BigInteger accreditedInstituteId, final BigInteger entityId, final String entityType) {
+    public AccreditedInstituteDetail getAccreditedInstituteDetailbasedOnParams(final String accreditedInstituteId, final String entityId, final String entityType) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(AccreditedInstituteDetail.class, "accreditedInstituteDetail");
         crit.add(Restrictions.eq("accreditedInstituteDetail.entityId", entityId));
@@ -56,7 +56,7 @@ public class AccreditedInstituteDetailDao implements IAccreditedInstituteDetailD
     }
 
     @Override
-    public void deleteAccreditedInstitueDetailByEntityId(BigInteger entityId) {
+    public void deleteAccreditedInstitueDetailByEntityId(String entityId) {
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery("delete from AccreditedInstituteDetail where entity_id =" + entityId);
         q.executeUpdate();
@@ -64,8 +64,8 @@ public class AccreditedInstituteDetailDao implements IAccreditedInstituteDetailD
     }
 
     @Override
-    public List<BigInteger> getAccreditation(@Valid BigInteger id) {
-        List<BigInteger> list = new ArrayList<>();
+    public List<String> getAccreditation(@Valid String id) {
+        List<String> list = new ArrayList<>();
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(AccreditedInstituteDetail.class);
         crit.add(Restrictions.eq("entityId", id));

@@ -27,21 +27,21 @@ public interface IInstituteService {
 
 	void update(Institute obj);
 
-	Institute get(BigInteger id);
+	Institute get(String id);
 
-	List<BigInteger> getTopInstituteIdByCountry(BigInteger countryId/* , Long startIndex, Long pageSize */);
+	List<String> getTopInstituteIdByCountry(String countryId/* , Long startIndex, Long pageSize */);
 
-	List<BigInteger> getRandomInstituteIdByCountry(List<BigInteger> countryId);
+	List<String> getRandomInstituteIdByCountry(List<String> countryId);
 
 	List<Institute> getAll();
 
 	List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
 
 	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
-			Integer startIndex, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
+			Integer startIndex, String cityId, String instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
 			Integer toWorldRanking, String campusType);
 
-	InstituteResponseDto getInstituteByID(BigInteger instituteId);
+	InstituteResponseDto getInstituteByID(String instituteId);
 
 	List<InstituteResponseDto> getInstitudeByCityId(BigInteger cityId);
 
@@ -51,11 +51,11 @@ public interface IInstituteService {
 
 	Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize);
 
-	List<InstituteRequestDto> getById(BigInteger id) throws ValidationException;
+	List<InstituteRequestDto> getById(String id) throws ValidationException;
 
 	Map<String, Object> searchInstitute(@Valid String searchText);
 
-	Map<String, Object> update(List<InstituteRequestDto> institute, @Valid BigInteger id);
+	Map<String, Object> update(List<InstituteRequestDto> institute, @Valid String id);
 
 	Map<String, Object> instituteFilter(InstituteFilterDto instituteFilterDto);
 
@@ -65,17 +65,17 @@ public interface IInstituteService {
 
 	List<InstituteCategoryType> getAllCategories();
 
-	void deleteInstitute(BigInteger id) throws ValidationException;
+	void deleteInstitute(String id) throws ValidationException;
 
 	List<Institute> ratingWiseInstituteListByCountry(Country country);
 
-	List<InstituteResponseDto> getAllInstituteByID(final Collection<BigInteger> listInstituteId) throws ValidationException;
+	List<InstituteResponseDto> getAllInstituteByID(final Collection<String> listInstituteId) throws ValidationException;
 
 	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
 
-	List<BigInteger> getInstituteIdsFromCountry(List<BigInteger> distinctCountryIds);
+	List<String> getInstituteIdsFromCountry(List<String> distinctCountryIds);
 
-	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, BigInteger cityId, BigInteger instituteTypeId, Boolean isActive,
+	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, String cityId, String instituteTypeId, Boolean isActive,
 			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
 
 	Integer getTotalCourseCountForInstitute(BigInteger instituteId);

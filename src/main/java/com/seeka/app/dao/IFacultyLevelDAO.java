@@ -17,7 +17,7 @@ public interface IFacultyLevelDAO {
 
 	List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(BigInteger countryID, BigInteger courseTypeId);
 
-	List<FacultyLevel> getAllFacultyLevelByInstituteId(BigInteger instituteId);
+	List<FacultyLevel> getAllFacultyLevelByInstituteId(String instituteId);
 
-	void deleteFacultyLevel(BigInteger instituteId);
+	void deleteFacultyLevel(String instituteId);
 }

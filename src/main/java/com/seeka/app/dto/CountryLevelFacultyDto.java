@@ -7,20 +7,20 @@ import com.seeka.app.bean.Level;
 
 public class CountryLevelFacultyDto {
 
-    private BigInteger id;
+    private String id;
     private String name;
     private String countryCode;
     private List<Level> levels;
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
     /**
      * @param id the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
     /**

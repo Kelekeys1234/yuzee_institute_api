@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.HelpAnswer;
@@ -13,49 +12,49 @@ public interface IHelpDAO {
 
 	void save(SeekaHelp seekaHelp);
 
-	HelpCategory getHelpCategory(BigInteger id);
+	HelpCategory getHelpCategory(String id);
 
-	HelpSubCategory getHelpSubCategory(BigInteger id);
+	HelpSubCategory getHelpSubCategory(String id);
 
-	SeekaHelp get(BigInteger id);
+	SeekaHelp get(String id);
 
 	void update(SeekaHelp seekaHelp);
 
-	int findTotalHelpRecord(BigInteger userId, Boolean isArchive);
+	int findTotalHelpRecord(String userId, Boolean isArchive);
 
-	List<SeekaHelp> getAll(Integer startIndex, Integer pageSize, BigInteger userId, Boolean isArchive);
+	List<SeekaHelp> getAll(Integer startIndex, Integer pageSize, String userId, Boolean isArchive);
 
 	void save(HelpCategory helpCategory);
 
 	void save(HelpSubCategory helpSubCategory);
 
-	List<HelpSubCategory> getSubCategoryByCategory(BigInteger id, Integer startIndex, Integer pageSize);
+	List<HelpSubCategory> getSubCategoryByCategory(String id, Integer startIndex, Integer pageSize);
 
-	Integer findTotalHelpRecordBySubCategory(BigInteger sub_category_id);
+	Integer findTotalHelpRecordBySubCategory(String sub_category_id);
 
 	List<HelpSubCategory> getAllHelpSubCategories();
 
-	List<SeekaHelp> getHelpByCategory(BigInteger id);
+	List<SeekaHelp> getHelpByCategory(String id);
 
 	HelpAnswer save(HelpAnswer helpAnswer);
 
-	List<HelpAnswer> getAnswerByHelpId(BigInteger userId);
+	List<HelpAnswer> getAnswerByHelpId(String userId);
 
 	List<HelpCategory> getAllCategory(Integer startIndex, Integer pageSize);
 
-	List<SeekaHelp> findByStatus(String status, BigInteger categoryId);
+	List<SeekaHelp> findByStatus(String status, String categoryId);
 
-	List<SeekaHelp> findByMostRecent(String status, BigInteger categoryId);
+	List<SeekaHelp> findByMostRecent(String status, String categoryId);
 
-	List<SeekaHelp> findByStatusAndMostRecent(String status, String mostRecent, BigInteger categoryId);
+	List<SeekaHelp> findByStatusAndMostRecent(String status, String mostRecent, String categoryId);
 
 	void updateAnwser(HelpAnswer helpAnswer);
 
-	void setIsFavouriteFlag(BigInteger id, boolean isFavourite) throws NotFoundException;
+	void setIsFavouriteFlag(String id, boolean isFavourite) throws NotFoundException;
 
 	int getCategoryCount();
 
-	int getSubCategoryCount(BigInteger categoryId);
+	int getSubCategoryCount(String categoryId);
 
 	List<String> getRelatedSearchQuestions(List<String> searchKeywords);
 

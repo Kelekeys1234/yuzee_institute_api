@@ -73,7 +73,7 @@ public class SubCategoryService implements ISubCategoryService {
     }
 
     @Override
-    public boolean deleteSubCategory(BigInteger subCategoryId) {
+    public boolean deleteSubCategory(String subCategoryId) {
         boolean status = true;
         try {
             if (subCategoryId != null) {

@@ -1,7 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.math.BigInteger;
 import java.util.Date;
 
@@ -14,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "agent_education_detail")
 public class AgentEducationDetail {
@@ -21,7 +21,7 @@ public class AgentEducationDetail {
     /**
     *
     */
-    private BigInteger id;
+    private String id;
     private String course;
     private BigInteger durationFrom;
     private BigInteger durationTo;
@@ -35,13 +35,14 @@ public class AgentEducationDetail {
     private Date deletedOn;
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public BigInteger getId() {
+    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+    public String getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

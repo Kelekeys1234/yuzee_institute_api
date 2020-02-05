@@ -6,7 +6,7 @@ import java.util.List;
 
 public class CourseResponseDto {
 
-	private BigInteger id;
+	private String id;
 	private String name;
 	private Integer courseRanking;
 	private Double stars;
@@ -16,14 +16,14 @@ public class CourseResponseDto {
 	private String language;
 
 	private String languageShortKey;
-	private BigInteger instituteId;
+	private String instituteId;
 	private String instituteName;
 
 	private Double costRange;
 
 	private String location;
-	private BigInteger countryId;
-	private BigInteger cityId;
+	private String countryId;
+	private String cityId;
 	private Integer totalCount;
 	private Double domesticFee;
 	private Double internationalFee;
@@ -41,7 +41,7 @@ public class CourseResponseDto {
 	private List<String> deliveryMethod;
 
 	private String facultyName;
-	private BigInteger facultyId;
+	private String facultyId;
 
 	private Double distance;
 
@@ -64,19 +64,19 @@ public class CourseResponseDto {
 		this.facultyName = facultyName;
 	}
 
-	public BigInteger getFacultyId() {
+	public String getFacultyId() {
 		return facultyId;
 	}
 
-	public void setFacultyId(final BigInteger facultyId) {
+	public void setFacultyId(final String facultyId) {
 		this.facultyId = facultyId;
 	}
 
-	public BigInteger getInstituteId() {
+	public String getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(final BigInteger instituteId) {
+	public void setInstituteId(final String instituteId) {
 		this.instituteId = instituteId;
 	}
 
@@ -128,19 +128,19 @@ public class CourseResponseDto {
 		this.location = location;
 	}
 
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(final BigInteger countryId) {
+	public void setCountryId(final String countryId) {
 		this.countryId = countryId;
 	}
 
-	public BigInteger getCityId() {
+	public String getCityId() {
 		return cityId;
 	}
 
-	public void setCityId(final BigInteger cityId) {
+	public void setCityId(final String cityId) {
 		this.cityId = cityId;
 	}
 
@@ -251,14 +251,14 @@ public class CourseResponseDto {
 	/**
 	 * @return the id
 	 */
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

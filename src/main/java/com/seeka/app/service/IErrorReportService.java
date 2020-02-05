@@ -18,9 +18,9 @@ public interface IErrorReportService {
 
 	void save(ErrorReportDto errorReport) throws ValidationException;
 
-	void update(ErrorReportDto errorReport, BigInteger id) throws ValidationException;
+	void update(ErrorReportDto errorReport, String id) throws ValidationException;
 
-	ErrorReportResponseDto getErrorReportById(BigInteger id) throws ValidationException;
+	ErrorReportResponseDto getErrorReportById(String id) throws ValidationException;
 
 	List<ErrorReportResponseDto> getAllErrorReport(BigInteger userId, Integer startIndex, Integer pageSize, BigInteger errorReportCategoryId,
 			String errorReportStatus, Date updatedOn, Boolean isFavourite, Boolean isArchive, String sortByField, String sortByType, String searchKeyword)
@@ -35,11 +35,11 @@ public interface IErrorReportService {
 
 	void setIsFavouriteFlag(BigInteger errorRepoetId, boolean isFavourite) throws NotFoundException;
 
-	void deleteByErrorReportId(BigInteger errorReportId);
+	void deleteByErrorReportId(String errorReportId);
 
 	void saveErrorReportCategory(ErrorReportCategoryDto errorReportCategoryDto);
 
-	List<AuditErrorReport> getAuditListByErrorReport(BigInteger errorReportId);
+	List<AuditErrorReport> getAuditListByErrorReport(String errorReportId);
 
-	void archiveErrorReport(BigInteger errorReportId, boolean isArchive) throws ValidationException;
+	void archiveErrorReport(String errorReportId, boolean isArchive) throws ValidationException;
 }

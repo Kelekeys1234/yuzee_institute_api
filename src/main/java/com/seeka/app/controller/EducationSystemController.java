@@ -29,7 +29,7 @@ public class EducationSystemController {
 	private IEducationSystemService educationSystemService;
 
 	@RequestMapping(value = "/{countryId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getEducationSystems(@PathVariable final BigInteger countryId) throws Exception {
+	public ResponseEntity<?> getEducationSystems(@PathVariable final String countryId) throws Exception {
 		List<EducationSystem> educationSystemList = educationSystemService.getEducationSystemsByCountryId(countryId);
 		return new GenericResponseHandlers.Builder().setData(educationSystemList).setMessage("Fetch Education system list successfully")
 				.setStatus(HttpStatus.OK).create();
@@ -47,14 +47,14 @@ public class EducationSystemController {
 	}
 
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getEducationSystemsDetailByUserId(@PathVariable final BigInteger userId) throws Exception {
+	public ResponseEntity<?> getEducationSystemsDetailByUserId(@PathVariable final String userId) throws Exception {
 		EducationSystemResponse educationSystemResponse = educationSystemService.getEducationSystemsDetailByUserId(userId);
 		return new GenericResponseHandlers.Builder().setData(educationSystemResponse).setMessage("Get user education system details successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<?> delete(@Valid @PathVariable final BigInteger userId) throws Exception {
+	public ResponseEntity<?> delete(@Valid @PathVariable final String userId) throws Exception {
 		educationSystemService.deleteEducationSystemDetailByUserId(userId);
 		return new GenericResponseHandlers.Builder().setMessage("Delete user education system details successfully").setStatus(HttpStatus.OK).create();
 	}

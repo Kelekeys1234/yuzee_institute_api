@@ -60,7 +60,7 @@ public class CityController {
 	}
 
 	@RequestMapping(value = "/country/{countryId}", method = RequestMethod.GET)
-	public ResponseEntity<?> getAllCitiesByCountry(@PathVariable final BigInteger countryId) throws Exception {
+	public ResponseEntity<?> getAllCitiesByCountry(@PathVariable final String countryId) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<City> cityList = null;
 		try {
@@ -81,7 +81,7 @@ public class CityController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> get(@PathVariable final String id) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		City cityObj = null;
 		try {
@@ -128,7 +128,7 @@ public class CityController {
 	}
 
 	@RequestMapping(value = "/{id}/pricing", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCityPricingByCityID(@PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> getCityPricingByCityID(@PathVariable final String id) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		File file = new File(NumbeoWebServiceClient.fileDirectory + id + ".json");
 		City city = cityService.get(id);

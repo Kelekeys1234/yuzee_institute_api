@@ -1,10 +1,7 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -27,20 +26,21 @@ public class CourseMinRequirement implements Serializable{
      * 
      */
     private static final long serialVersionUID = 6903674843134844883L;
-    private BigInteger id;
+    private String id;
     private Country country;
-    private BigInteger system;
+    private String system;
     private String subject;
     private String grade;
     private Course course;
     
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public BigInteger getId() {
+    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+    public String getId() {
         return id;
     }
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
     
@@ -54,10 +54,10 @@ public class CourseMinRequirement implements Serializable{
     }
     
     @Column(name = "system_id")
-    public BigInteger getSystem() {
+    public String getSystem() {
         return system;
     }
-    public void setSystem(BigInteger system) {
+    public void setSystem(String system) {
         this.system = system;
     }
     

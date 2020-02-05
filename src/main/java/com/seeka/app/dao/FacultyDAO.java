@@ -34,7 +34,7 @@ public class FacultyDAO implements IFacultyDAO {
 	}
 
 	@Override
-	public Faculty get(final BigInteger id) {
+	public Faculty get(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		Faculty obj = session.get(Faculty.class, id);
 		return obj;
@@ -48,7 +48,7 @@ public class FacultyDAO implements IFacultyDAO {
 	}
 
 	@Override
-	public List<Faculty> getFacultyByCountryIdAndLevelId(final BigInteger countryID, final BigInteger levelId) {
+	public List<Faculty> getFacultyByCountryIdAndLevelId(final String countryID, final String levelId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
 				"select distinct f.id, f.name as facultyName, il.level_id as levelid from institute_level il inner join faculty_level fl on fl.institute_id = il.institute_id inner join faculty f on fl.faculty_id= f.id where il.country_id = :countryId and il.level_id = :levelId")
@@ -58,7 +58,7 @@ public class FacultyDAO implements IFacultyDAO {
 		Faculty obj = null;
 		for (Object[] row : rows) {
 			obj = new Faculty();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			faculties.add(obj);
 		}
@@ -75,7 +75,7 @@ public class FacultyDAO implements IFacultyDAO {
 		Faculty obj = null;
 		for (Object[] row : rows) {
 			obj = new Faculty();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			obj.setLevelId(new BigInteger(row[2].toString()));
 			obj.setCountryId(new BigInteger(row[3].toString()));
@@ -86,7 +86,7 @@ public class FacultyDAO implements IFacultyDAO {
 	}
 
 	@Override
-	public List<Faculty> getFacultyByInstituteId(final BigInteger instituteId) {
+	public List<Faculty> getFacultyByInstituteId(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery("select distinct f.id, f.name as facultyName,f.level_id as levelid,f.description as description from faculty f  "
 				+ "inner join faculty_level fl  on f.id = fl.faculty_id where fl.institute_id = '" + instituteId + "' ORDER BY f.name");
@@ -95,7 +95,7 @@ public class FacultyDAO implements IFacultyDAO {
 		Faculty obj = null;
 		for (Object[] row : rows) {
 			obj = new Faculty();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			obj.setLevelId(new BigInteger(row[2].toString()));
 			obj.setDescription(row[3].toString());
@@ -114,7 +114,7 @@ public class FacultyDAO implements IFacultyDAO {
 		Faculty obj = null;
 		for (Object[] row : rows) {
 			obj = new Faculty();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			obj.setLevelId(new BigInteger(row[2].toString()));
 			if (row[3] != null) {
@@ -123,7 +123,7 @@ public class FacultyDAO implements IFacultyDAO {
 			faculties.add(obj);
 		}
 		Faculty allObject = new Faculty();
-		allObject.setId(new BigInteger("111111"));
+		allObject.setId("111111");
 		allObject.setName("All");
 		faculties.add(allObject);
 		return faculties;
@@ -138,7 +138,7 @@ public class FacultyDAO implements IFacultyDAO {
 	}
 
 	@Override
-	public List<Faculty> getCourseFaculty(final BigInteger countryId, final BigInteger levelId) {
+	public List<Faculty> getCourseFaculty(final String countryId, final String levelId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
 				"select distinct f.id, f.name as facultyName, il.level_id as levelid from course c inner join institute_level il on c.institute_id = il.institute_id inner join faculty f on c.faculty_id= f.id where il.country_id = :countryId and il.level_id = :levelId")
@@ -148,7 +148,7 @@ public class FacultyDAO implements IFacultyDAO {
 		Faculty obj = null;
 		for (Object[] row : rows) {
 			obj = new Faculty();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			faculties.add(obj);
 		}

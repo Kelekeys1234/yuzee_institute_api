@@ -10,9 +10,9 @@ public interface IArticleUserDemographicDao {
 
 	ArticleUserDemographic save(ArticleUserDemographic a);
 
-	void deleteByArticleId(BigInteger id);
+	void deleteByArticleId(String id);
 
-	List<ArticleUserDemographic> getbyArticleId(BigInteger id);
+	List<ArticleUserDemographic> getbyArticleId(String id);
 
-	List<ArticleUserDemographic> getArticleCityListbyCountryId(BigInteger id,BigInteger articleId);
+	List<ArticleUserDemographic> getArticleCityListbyCountryId(BigInteger id, String articleId);
 }

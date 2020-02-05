@@ -10,25 +10,25 @@ public class SubCategoryDto implements Serializable {
 	 */
 	private static final long serialVersionUID = -4182642814665982022L;
 
-	private BigInteger id;
+	private String id;
 
 	private String name;
 
-	private BigInteger categoryId;
+	private String categoryId;
 
 	private String categoryName;
 
 	/**
 	 * @return the id
 	 */
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -49,14 +49,14 @@ public class SubCategoryDto implements Serializable {
 	/**
 	 * @return the categoryId
 	 */
-	public BigInteger getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
 
 	/**
 	 * @param categoryId the categoryId to set
 	 */
-	public void setCategoryId(BigInteger categoryId) {
+	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
 

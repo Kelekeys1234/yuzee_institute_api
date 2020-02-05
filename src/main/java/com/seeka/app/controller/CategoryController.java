@@ -1,6 +1,5 @@
 package com.seeka.app.controller;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class CategoryController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getCategoryById(@RequestHeader(value = IConstant.CORRELATION_ID, required = false, defaultValue = "") String correlationId,
                     @RequestHeader(value = IConstant.USER_ID, required = false) String userId, @RequestHeader(value = IConstant.SESSION_ID, required = false) String sessionId,
-                    @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable BigInteger id) {
+                    @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable String id) {
         Map<String, Object> response = new HashMap<String, Object>();
         CategoryDto categoryDto = categoryService.getCategoryById(id);
         if (categoryDto != null) {
@@ -67,7 +66,7 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteSuCategory(@PathVariable BigInteger id) {
+    public ResponseEntity<?> deleteSuCategory(@PathVariable String id) {
         Map<String, Object> response = new HashMap<String, Object>();
         boolean status = categoryService.deleteCategory(id);
         if (status) {

@@ -1,15 +1,14 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "institute_intake")
@@ -21,12 +20,13 @@ public class InstituteIntake implements Serializable {
     private static final long serialVersionUID = 748946079064801464L;
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    private BigInteger id;
+    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+    private String id;
 
     @Column(name = "entity_id", nullable = false)
-    private BigInteger entityId;
+    private String entityId;
 
     @Column(name = "entity_type", nullable = false)
     private String entityType;
@@ -37,7 +37,7 @@ public class InstituteIntake implements Serializable {
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -45,14 +45,14 @@ public class InstituteIntake implements Serializable {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     /**
      * @return the entityId
      */
-    public BigInteger getEntityId() {
+    public String getEntityId() {
         return entityId;
     }
 
@@ -60,7 +60,7 @@ public class InstituteIntake implements Serializable {
      * @param entityId
      *            the entityId to set
      */
-    public void setEntityId(BigInteger entityId) {
+    public void setEntityId(String entityId) {
         this.entityId = entityId;
     }
 
