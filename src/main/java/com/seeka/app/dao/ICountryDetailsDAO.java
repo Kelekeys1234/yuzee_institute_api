@@ -8,6 +8,6 @@ public interface ICountryDetailsDAO {
 
     public void save(CountryDetails convertCountryDetailsDTOToBean);
 
-    public CountryDetails getDetailsByCountryId(BigInteger id);
+    public CountryDetails getDetailsByCountryId(String id);
 
 }

@@ -118,7 +118,7 @@ public class ScholarshipService implements IScholarshipService {
 	}
 
 	@Override
-	public ScholarshipResponseDTO getScholarshipById(final BigInteger id) {
+	public ScholarshipResponseDTO getScholarshipById(final String id) {
 		ScholarshipResponseDTO scholarshipResponseDTO = new ScholarshipResponseDTO();
 		Scholarship scholarship = iScholarshipDAO.getScholarshipById(id);
 		BeanUtils.copyProperties(scholarship, scholarshipResponseDTO);
@@ -148,7 +148,7 @@ public class ScholarshipService implements IScholarshipService {
 	}
 
 	@Override
-	public void updateScholarship(final ScholarshipDto scholarshipDto, final BigInteger scholarshipId) throws ValidationException {
+	public void updateScholarship(final ScholarshipDto scholarshipDto, final String scholarshipId) throws ValidationException {
 		Scholarship existingScholarship = iScholarshipDAO.getScholarshipById(scholarshipId);
 		if (existingScholarship == null) {
 			throw new ValidationException("Scholarship not found for id" + scholarshipId);
@@ -216,8 +216,8 @@ public class ScholarshipService implements IScholarshipService {
 	}
 
 	@Override
-	public List<ScholarshipResponseDTO> getScholarshipList(final Integer startIndex, final Integer pageSize, final BigInteger countryId,
-			final BigInteger instituteId, final String validity, final Boolean isActive, final Date filterDate, final String searchKeyword,
+	public List<ScholarshipResponseDTO> getScholarshipList(final Integer startIndex, final Integer pageSize, final String countryId,
+			final String instituteId, final String validity, final Boolean isActive, final Date filterDate, final String searchKeyword,
 			final String sortByField, final String sortByType) {
 		List<ScholarshipResponseDTO> scholarships = iScholarshipDAO.getScholarshipList(startIndex, pageSize, countryId, instituteId, validity, isActive,
 				filterDate, searchKeyword, sortByField, sortByType);
@@ -243,13 +243,13 @@ public class ScholarshipService implements IScholarshipService {
 	}
 
 	@Override
-	public int countScholarshipList(final BigInteger countryId, final BigInteger instituteId, final String validity, final Boolean isActive,
+	public int countScholarshipList(final String countryId, final String instituteId, final String validity, final Boolean isActive,
 			final Date filterDate, final String searchKeyword) {
 		return iScholarshipDAO.countScholarshipList(countryId, instituteId, validity, isActive, filterDate, searchKeyword);
 	}
 
 	@Override
-	public void deleteScholarship(final BigInteger scholarshipId) throws ValidationException {
+	public void deleteScholarship(final String scholarshipId) throws ValidationException {
 		Scholarship existingScholarship = iScholarshipDAO.getScholarshipById(scholarshipId);
 		if (existingScholarship == null) {
 			throw new ValidationException("Scholarship not found for id" + scholarshipId);
@@ -262,8 +262,8 @@ public class ScholarshipService implements IScholarshipService {
 	}
 
 	@Override
-	public List<BigInteger> getScholarshipIdsByCountryId(final List<BigInteger> countryIds, final Integer limit) {
-		List<BigInteger> scholarshipIds = new ArrayList<>();
+	public List<String> getScholarshipIdsByCountryId(final List<String> countryIds, final Integer limit) {
+		List<String> scholarshipIds = new ArrayList<>();
 		if ((limit != null) && !limit.equals(0)) {
 			scholarshipIds = iScholarshipDAO.getRandomScholarShipsForCountry(countryIds, limit);
 		}
@@ -271,7 +271,7 @@ public class ScholarshipService implements IScholarshipService {
 	}
 
 	@Override
-	public List<ScholarshipDto> getAllScholarshipDetailsFromId(final List<BigInteger> recommendedScholarships) {
+	public List<ScholarshipDto> getAllScholarshipDetailsFromId(final List<String> recommendedScholarships) {
 		List<Scholarship> scholarshipList = iScholarshipDAO.getAllScholarshipDetailsFromId(recommendedScholarships);
 		List<ScholarshipDto> scholarshipDtoList = new ArrayList<>();
 		for (Scholarship scholarship : scholarshipList) {
@@ -288,7 +288,7 @@ public class ScholarshipService implements IScholarshipService {
 	}
 
 	@Override
-	public List<BigInteger> getRandomScholarShipIds(final int i) {
+	public List<String> getRandomScholarShipIds(final int i) {
 		return iScholarshipDAO.getRandomScholarships(i);
 	}
 	

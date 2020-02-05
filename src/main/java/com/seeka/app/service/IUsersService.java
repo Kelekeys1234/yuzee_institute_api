@@ -9,10 +9,10 @@ import com.seeka.app.exception.ValidationException;
 
 public interface IUsersService {
 
-	UserDto getUserById(BigInteger userId) throws ValidationException;
+	UserDto getUserById(String userId) throws ValidationException;
 
-	void sendPushNotification(BigInteger userId, String message, String notificationType) throws ValidationException;
+	void sendPushNotification(String userId, String message, String notificationType) throws ValidationException;
 
-	List<UserAchivements> getUserAchivementsByUserId(BigInteger userId) throws ValidationException;
+	List<UserAchivements> getUserAchivementsByUserId(String userId) throws ValidationException;
 
 }

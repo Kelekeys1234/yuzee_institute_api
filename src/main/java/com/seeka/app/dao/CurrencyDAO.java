@@ -59,7 +59,7 @@ public class CurrencyDAO implements ICurrencyDAO {
         List<Currency> courseTypes = new ArrayList<>();
         for (Object[] row : rows) {
             Currency obj = new Currency();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId((row[0].toString()));
             obj.setName(row[1].toString());
             courseTypes.add(obj);
         }
@@ -80,7 +80,7 @@ public class CurrencyDAO implements ICurrencyDAO {
 
         for (Object[] row : rows) {
             Currency obj = new Currency();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setName(row[1].toString());
             Currency.add(obj);
         }

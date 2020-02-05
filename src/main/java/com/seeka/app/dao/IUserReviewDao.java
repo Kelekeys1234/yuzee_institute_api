@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -16,20 +15,20 @@ public interface IUserReviewDao {
 
 	void save(UserReview userReview);
 
-	List<UserReview> getUserReviewList(BigInteger userId, BigInteger entityId, String entityType, Integer startIndex, Integer pageSize, String sortByType,
+	List<UserReview> getUserReviewList(String userId, String entityId, String entityType, Integer startIndex, Integer pageSize, String sortByType,
 			String searchKeyword);
 
-	List<Object> getUserAverageReview(BigInteger entityId, String entityType);
+	List<Object> getUserAverageReview(String entityId, String entityType);
 
-	UserReview getUserReview(BigInteger userReviewId);
+	UserReview getUserReview(String userReviewId);
 
 	void saveUserReviewRating(UserReviewRating userReviewRating);
 
-	List<UserReviewRating> getUserReviewRatings(BigInteger userReviewId);
+	List<UserReviewRating> getUserReviewRatings(String userReviewId);
 
-	Double getReviewStar(BigInteger entityId, String entityType);
+	Double getReviewStar(String entityId, String entityType);
 
-	int getUserReviewCount(BigInteger userId, BigInteger entityId, String entityType, String searchKeyword);
+	int getUserReviewCount(String userId, String entityId, String entityType, String searchKeyword);
 
-	Map<BigInteger, Double> getUserAverageReviewList(List<BigInteger> entityIdList, String entityType);
+	Map<String, Double> getUserAverageReviewList(List<String> entityIdList, String entityType);
 }

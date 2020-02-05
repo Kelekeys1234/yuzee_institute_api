@@ -1,13 +1,12 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.FaqCategory;
 
 public interface IFaqCategoryDao {
 
-	FaqCategory getFaqCategoryDetail(BigInteger faqCategoryId);
+	FaqCategory getFaqCategoryDetail(String faqCategoryId);
 
 	void saveFaqCategory(FaqCategory faqCategory);
 
@@ -17,5 +16,5 @@ public interface IFaqCategoryDao {
 
 	int getFaqCategoryCount();
 
-	FaqCategory getFaqCategoryBasedOnName(String name, BigInteger faqCategoryId);
+	FaqCategory getFaqCategoryBasedOnName(String name, String faqCategoryId);
 }

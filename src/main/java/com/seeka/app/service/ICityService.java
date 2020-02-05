@@ -11,9 +11,9 @@ import com.seeka.app.dto.UpdateCityDto;
 public interface ICityService {
 	List<City> getAll();
 
-	City get(BigInteger id);
+	City get(String id);
 
-	List<City> getAllCitiesByCountry(BigInteger countryId);
+	List<City> getAllCitiesByCountry(String countryId);
 
 	void save(City obj);
 

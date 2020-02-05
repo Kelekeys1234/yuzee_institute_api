@@ -112,7 +112,7 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	}
 
 	@Override
-	public ErrorReport getErrorReportById(final BigInteger id) {
+	public ErrorReport getErrorReportById(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ErrorReport.class);
 		crit.add(Restrictions.eq("id", id)).add(Restrictions.eq("isActive", true));
@@ -187,7 +187,7 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	}
 
 	@Override
-	public List<AuditErrorReport> getAuditListByErrorReport(final BigInteger errorReportId) {
+	public List<AuditErrorReport> getAuditListByErrorReport(final String errorReportId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(AuditErrorReport.class, "auditErrorReport");
 		criteria.createAlias("auditErrorReport.errorReport", "errorReport");

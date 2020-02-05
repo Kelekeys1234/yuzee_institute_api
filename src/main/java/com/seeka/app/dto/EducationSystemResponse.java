@@ -8,7 +8,7 @@ import com.seeka.app.bean.UserEnglishScore;
 
 public class EducationSystemResponse {
 
-	private BigInteger userId;
+	private String userId;
 
 	private UserEducationDetailResponseDto educationDetail;
 
@@ -19,14 +19,14 @@ public class EducationSystemResponse {
 	/**
 	 * @return the userId
 	 */
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 

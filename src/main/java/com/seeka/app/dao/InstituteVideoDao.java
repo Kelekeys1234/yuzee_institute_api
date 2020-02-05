@@ -26,7 +26,7 @@ public class InstituteVideoDao implements IInstituteVideoDao {
 	}
 
 	@Override
-	public List<InstituteVideos> findByInstituteId(final BigInteger id) {
+	public List<InstituteVideos> findByInstituteId(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(InstituteVideos.class);
 		crit.add(Restrictions.eq("institute.id", id));

@@ -34,7 +34,7 @@ public class FaqCategoryDao implements IFaqCategoryDao {
 	}
 
 	@Override
-	public FaqCategory getFaqCategoryDetail(final BigInteger faqCategoryId) {
+	public FaqCategory getFaqCategoryDetail(final String faqCategoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(FaqCategory.class, "faqCategory");
 		criteria.add(Restrictions.eq("faqCategory.id", faqCategoryId));
@@ -64,7 +64,7 @@ public class FaqCategoryDao implements IFaqCategoryDao {
 	}
 
 	@Override
-	public FaqCategory getFaqCategoryBasedOnName(final String name, final BigInteger faqCategoryId) {
+	public FaqCategory getFaqCategoryBasedOnName(final String name, final String faqCategoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(FaqCategory.class, "faqCategory");
 		criteria.add(Restrictions.eq("faqCategory.name", name).ignoreCase());

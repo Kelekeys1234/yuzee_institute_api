@@ -45,7 +45,7 @@ public class FaqCategoryService implements IFaqCategoryService {
 	}
 
 	@Override
-	public void updateFaqCategory(final FaqCategory faqCategory, final BigInteger faqCategoryId) throws ValidationException {
+	public void updateFaqCategory(final FaqCategory faqCategory, final String faqCategoryId) throws ValidationException {
 		/**
 		 * Check same name other category exists or not.
 		 */
@@ -68,7 +68,7 @@ public class FaqCategoryService implements IFaqCategoryService {
 	}
 
 	@Override
-	public void deleteFaqCategory(final BigInteger faqCategoryId) throws ValidationException {
+	public void deleteFaqCategory(final String faqCategoryId) throws ValidationException {
 		/**
 		 * Fetch existing category based on id
 		 */
@@ -103,7 +103,7 @@ public class FaqCategoryService implements IFaqCategoryService {
 	}
 
 	@Override
-	public FaqCategory getFaqCategoryDetail(final BigInteger faqCategoryId) {
+	public FaqCategory getFaqCategoryDetail(final String faqCategoryId) {
 		return iFaqCategoryDao.getFaqCategoryDetail(faqCategoryId);
 	}
 

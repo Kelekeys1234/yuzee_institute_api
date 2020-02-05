@@ -1,8 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,11 +14,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "country_videos")
 public class CountryVideos implements java.io.Serializable {
 
-    private BigInteger id;
+    private String id;
     private Country country;
     private String youTubeChannel;
     private String youTubeId1;
@@ -39,9 +38,10 @@ public class CountryVideos implements java.io.Serializable {
      * @return the id
      */
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public BigInteger getId() {
+    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+    public String getId() {
         return id;
     }
 
@@ -49,7 +49,7 @@ public class CountryVideos implements java.io.Serializable {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.ReviewQuestions;
@@ -11,17 +10,17 @@ public interface IReviewQuestionService {
 
 	ReviewQuestions addReviewQuestions(ReviewQuestionsDto reviewQuestionsDto) throws ValidationException;
 
-	ReviewQuestions updateReviewQuestions(ReviewQuestionsDto reviewQuestionsDto, BigInteger questionId) throws ValidationException;
+	ReviewQuestions updateReviewQuestions(ReviewQuestionsDto reviewQuestionsDto, String questionId) throws ValidationException;
 
-	ReviewQuestionsDto getReviewQuestion(BigInteger questionId) throws ValidationException;
+	ReviewQuestionsDto getReviewQuestion(String questionId) throws ValidationException;
 
-	ReviewQuestions deleteReviewQuestion(BigInteger questionId) throws ValidationException;
+	ReviewQuestions deleteReviewQuestion(String questionId) throws ValidationException;
 
 	List<ReviewQuestions> getReviewQuestionList();
 
-	List<ReviewQuestions> getReviewQuestionListBasedOnParam(Boolean isActive, String studentType, String studentCategory, BigInteger questionCategoryId,
-			BigInteger questionId);
+	List<ReviewQuestions> getReviewQuestionListBasedOnParam(Boolean isActive, String studentType, String studentCategory, String questionCategoryId,
+			String questionId);
 
-	ReviewQuestions getReviewQuestionOnly(BigInteger questionId) throws ValidationException;
+	ReviewQuestions getReviewQuestionOnly(String questionId) throws ValidationException;
 
 }

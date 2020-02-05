@@ -27,7 +27,7 @@ public class ArticleUserDemographicDao implements IArticleUserDemographicDao {
 	}
 
 	@Override
-	public void deleteByArticleId(BigInteger id) {
+	public void deleteByArticleId(String id) {
 		Session session = sessionFactory.getCurrentSession();
 	     String hql = "delete ArticleUserDemographic where article_id = :id";
 	     Query q = session.createQuery(hql).setParameter("id", id);
@@ -37,7 +37,7 @@ public class ArticleUserDemographicDao implements IArticleUserDemographicDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public List<ArticleUserDemographic> getbyArticleId(BigInteger id) {
+	public List<ArticleUserDemographic> getbyArticleId(String id) {
 		
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(ArticleUserDemographic.class, "article_user_deographic");
@@ -47,7 +47,7 @@ public class ArticleUserDemographicDao implements IArticleUserDemographicDao {
 	}
 
 	@Override
-	public List<ArticleUserDemographic> getArticleCityListbyCountryId(BigInteger id,BigInteger articleId) {
+	public List<ArticleUserDemographic> getArticleCityListbyCountryId(BigInteger id, String articleId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(ArticleUserDemographic.class, "article_user_deographic");
 		criteria.createAlias("country", "country");

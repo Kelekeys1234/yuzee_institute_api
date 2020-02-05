@@ -31,7 +31,7 @@ public class UserManagementController {
 	private EducationSystemService educationSystemService;
 
 	@GetMapping("/{userId}")
-	public ResponseEntity<Object> getUserManagementData(@PathVariable final BigInteger userId) throws ValidationException {
+	public ResponseEntity<Object> getUserManagementData(@PathVariable final String userId) throws ValidationException {
 		UserManagement userManagement = new UserManagement();
 		UserDto userDto = usersService.getUserById(userId);
 		userManagement.setUserDto(userDto);

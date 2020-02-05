@@ -13,15 +13,15 @@ public interface IEducationAgentService {
 
     public void save(@Valid EducationAgentDto educationAgentDto);
 
-    public void update(@Valid EducationAgentDto educationAgentDto, BigInteger id);
+    public void update(@Valid EducationAgentDto educationAgentDto, String id);
 
     public Map<String, Object> getAllEducationAgent(Integer pageNumber, Integer pageSize);
 
-    public Map<String, Object> get(@Valid BigInteger id);
+    public Map<String, Object> get(@Valid String id);
 
     public void savePartnership(List<EducationAgentPartnershipsDto> agentPartnershipsDto);
 
-    public Map<String, Object> deleteEducationAgent(BigInteger id);
+    public Map<String, Object> deleteEducationAgent(String id);
 
     public Map<String, Object> getAllSkill();
 }

@@ -11,11 +11,11 @@ public class ChatRequestDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 7590305810325611394L;
-	private BigInteger id;
+	private String id;
 	private BigInteger entityId;
 	@NotNull(message = "entityType is required")
 	private String entityType;
-	private BigInteger userId;
+	private String userId;
 	/**
 	 * SEEKA/USER
 	 */
@@ -24,19 +24,19 @@ public class ChatRequestDto implements Serializable {
 	/**
 	 * UserId
 	 */
-	private BigInteger initiateFromId;
+	private String initiateFromId;
 	private String initiateTo;
 	/**
 	 * UserId
 	 */
-	private BigInteger initiateToId;
+	private String initiateToId;
 	private String message;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -56,11 +56,11 @@ public class ChatRequestDto implements Serializable {
 		this.entityType = entityType;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
@@ -72,11 +72,11 @@ public class ChatRequestDto implements Serializable {
 		this.initiateFrom = initiateFrom;
 	}
 
-	public BigInteger getInitiateFromId() {
+	public String getInitiateFromId() {
 		return initiateFromId;
 	}
 
-	public void setInitiateFromId(final BigInteger initiateFromId) {
+	public void setInitiateFromId(final String initiateFromId) {
 		this.initiateFromId = initiateFromId;
 	}
 
@@ -112,11 +112,11 @@ public class ChatRequestDto implements Serializable {
 		this.initiateTo = initiateTo;
 	}
 
-	public BigInteger getInitiateToId() {
+	public String getInitiateToId() {
 		return initiateToId;
 	}
 
-	public void setInitiateToId(final BigInteger initiateToId) {
+	public void setInitiateToId(final String initiateToId) {
 		this.initiateToId = initiateToId;
 	}
 

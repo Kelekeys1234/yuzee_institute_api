@@ -47,22 +47,22 @@ public class HelpController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> save(@Valid @RequestBody final HelpDto helpDto, @RequestHeader final BigInteger userId) throws Exception {
+	public ResponseEntity<?> save(@Valid @RequestBody final HelpDto helpDto, @RequestHeader final String userId) throws Exception {
 		return ResponseEntity.accepted().body(helpService.save(helpDto, userId));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> get(@PathVariable final String id) throws Exception {
 		return ResponseEntity.accepted().body(helpService.get(id));
 	}
 
 	@RequestMapping(value = "/by/category/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getHelpByCategoryId(@PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> getHelpByCategoryId(@PathVariable final String id) throws Exception {
 		return ResponseEntity.accepted().body(helpService.getHelpByCategory(id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> update(@PathVariable final BigInteger id, @RequestBody final HelpDto helpDto, @RequestHeader final BigInteger userId) {
+	public ResponseEntity<?> update(@PathVariable final String id, @RequestBody final HelpDto helpDto, @RequestHeader final String userId) {
 		return ResponseEntity.accepted().body(helpService.update(helpDto, id, userId));
 	}
 
@@ -72,7 +72,7 @@ public class HelpController {
 	}
 
 	@RequestMapping(value = "/category/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCatgeory(@PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> getCatgeory(@PathVariable final String id) throws Exception {
 		return ResponseEntity.accepted().body(helpService.getCategory(id));
 	}
 
@@ -82,12 +82,12 @@ public class HelpController {
 	}
 
 	@RequestMapping(value = "/subCategory/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getSubCatgeory(@PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> getSubCatgeory(@PathVariable final String id) throws Exception {
 		return ResponseEntity.accepted().body(helpService.getSubCategory(id));
 	}
 
 	@RequestMapping(value = "/category/{categoryId}/subCategory/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getSubCatgeoryByCategory(@PathVariable final BigInteger categoryId, @PathVariable final Integer pageNumber,
+	public ResponseEntity<?> getSubCatgeoryByCategory(@PathVariable final String categoryId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<HelpSubCategoryDto> subCategoryDtos = helpService.getSubCategoryByCategory(categoryId, startIndex, pageSize);
@@ -117,7 +117,7 @@ public class HelpController {
 	}
 
 	@RequestMapping(value = "/answer/{helpId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAnswerByHelpId(@PathVariable final BigInteger helpId) throws Exception {
+	public ResponseEntity<?> getAnswerByHelpId(@PathVariable final String helpId) throws Exception {
 		return ResponseEntity.accepted().body(helpService.getAnswerByHelpId(helpId));
 	}
 
@@ -140,24 +140,24 @@ public class HelpController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<?> delete(@Valid @PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> delete(@Valid @PathVariable final String id) throws Exception {
 		return ResponseEntity.accepted().body(helpService.delete(id));
 	}
 
 	@RequestMapping(value = "/status/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> updateStatus(@PathVariable final BigInteger id, @RequestHeader(required = false) final BigInteger userId,
-			@RequestParam final String status, @RequestParam(required = false) final BigInteger assignedUserId) throws Exception {
+	public ResponseEntity<?> updateStatus(@PathVariable final String id, @RequestHeader(required = false) final BigInteger userId,
+			@RequestParam final String status, @RequestParam(required = false) final String assignedUserId) throws Exception {
 		return ResponseEntity.accepted().body(helpService.updateStatus(id, assignedUserId, status));
 	}
 
 	@RequestMapping(value = "/filter", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> filter(@RequestParam(required = false) final String status, @RequestParam(required = false) final String mostRecent,
-			@RequestParam final BigInteger categoryId) throws Exception {
+			@RequestParam final String categoryId) throws Exception {
 		return ResponseEntity.accepted().body(helpService.filter(status, mostRecent, categoryId));
 	}
 
 	@RequestMapping(value = "/user/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getUserHelpList(@RequestHeader final BigInteger userId, @PathVariable final Integer pageNumber,
+	public ResponseEntity<?> getUserHelpList(@RequestHeader final String userId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(name = "isArchive", required = false) final boolean isArchive) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<SeekaHelp> helps = helpService.getUserHelpList(userId, startIndex, pageSize, isArchive);
@@ -176,14 +176,14 @@ public class HelpController {
 	}
 
 	@PutMapping(value = "/{id}/isFavourite/{isFavourite}")
-	public ResponseEntity<?> setIsFavourite(@RequestHeader(value = "userId") final BigInteger userId, @PathVariable(value = "id") final BigInteger id,
+	public ResponseEntity<?> setIsFavourite(@RequestHeader(value = "userId") final BigInteger userId, @PathVariable(value = "id") final String id,
 			@PathVariable(value = "isFavourite") final boolean isFavourite) throws NotFoundException {
 		helpService.setIsFavouriteFlag(id, isFavourite);
 		return new GenericResponseHandlers.Builder().setMessage("Updated Successfuly").setStatus(HttpStatus.OK).create();
 	}
 
 	@PostMapping(value = "/relatedQuestions")
-	public ResponseEntity<?> getOptionOnUserSearch(@RequestHeader(value = "userId") final BigInteger userId,
+	public ResponseEntity<?> getOptionOnUserSearch(@RequestHeader(value = "userId") final String userId,
 			@RequestBody(required = true) final String searchString) throws ValidationException {
 		List<String> questionList = helpService.getRelatedSearchQuestions(searchString);
 		return new GenericResponseHandlers.Builder().setMessage("Related Questions Displayed Successfully").setStatus(HttpStatus.OK).setData(questionList)

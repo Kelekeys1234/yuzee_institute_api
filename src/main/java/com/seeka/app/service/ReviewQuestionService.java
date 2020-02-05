@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -73,7 +72,7 @@ public class ReviewQuestionService implements IReviewQuestionService {
 	}
 
 	@Override
-	public ReviewQuestions updateReviewQuestions(final ReviewQuestionsDto reviewQuestionsDto, final BigInteger questionId) throws ValidationException {
+	public ReviewQuestions updateReviewQuestions(final ReviewQuestionsDto reviewQuestionsDto, final String questionId) throws ValidationException {
 		QuestionCategroy questionCategroy = validateReviewQuestion(reviewQuestionsDto);
 
 		ReviewQuestions existingReviewQuestions = iReviewQuestionDao.getReviewQuestion(questionId);
@@ -102,12 +101,12 @@ public class ReviewQuestionService implements IReviewQuestionService {
 	}
 
 	@Override
-	public ReviewQuestions getReviewQuestionOnly(final BigInteger questionId) throws ValidationException {
+	public ReviewQuestions getReviewQuestionOnly(final String questionId) throws ValidationException {
 		return iReviewQuestionDao.getReviewQuestion(questionId);
 	}
 
 	@Override
-	public ReviewQuestionsDto getReviewQuestion(final BigInteger questionId) throws ValidationException {
+	public ReviewQuestionsDto getReviewQuestion(final String questionId) throws ValidationException {
 		ReviewQuestions reviewQuestions = iReviewQuestionDao.getReviewQuestion(questionId);
 		if (reviewQuestions == null) {
 			throw new ValidationException("review question not found for id : " + questionId);
@@ -123,7 +122,7 @@ public class ReviewQuestionService implements IReviewQuestionService {
 	}
 
 	@Override
-	public ReviewQuestions deleteReviewQuestion(final BigInteger questionId) throws ValidationException {
+	public ReviewQuestions deleteReviewQuestion(final String questionId) throws ValidationException {
 		ReviewQuestions reviewQuestions = iReviewQuestionDao.getReviewQuestion(questionId);
 		if (reviewQuestions == null) {
 			throw new ValidationException("review question not found for id : " + questionId);
@@ -146,7 +145,7 @@ public class ReviewQuestionService implements IReviewQuestionService {
 
 	@Override
 	public List<ReviewQuestions> getReviewQuestionListBasedOnParam(final Boolean isActive, final String studentType, final String studentCategory,
-			final BigInteger questionCategoryId, final BigInteger questionId) {
+			final String questionCategoryId, final String questionId) {
 		return iReviewQuestionDao.getReviewQuestionListBasedOnParam(isActive, studentType, studentCategory, questionCategoryId, questionId, null);
 	}
 

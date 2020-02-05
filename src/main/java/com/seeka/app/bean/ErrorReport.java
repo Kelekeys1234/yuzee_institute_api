@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "error_report")
 public class ErrorReport implements java.io.Serializable {
@@ -25,8 +27,8 @@ public class ErrorReport implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = -4896547771928499529L;
 
-	private BigInteger id;
-	private BigInteger userId;
+	private String id;
+	private String userId;
 	private ErrorReportCategory errorReportCategory;
 	private String description;
 	private Date createdOn;
@@ -38,9 +40,9 @@ public class ErrorReport implements java.io.Serializable {
 
 	private String caseNumber;
 	private String status;
-	private BigInteger courseArticleId;
+	private String courseArticleId;
 	private Date dueDate;
-	private BigInteger assigneeUserId;
+	private String assigneeUserId;
 	private String severity;
 	private Boolean isFavourite = false;
 	
@@ -53,16 +55,17 @@ public class ErrorReport implements java.io.Serializable {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	public BigInteger getId() {
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -133,14 +136,14 @@ public class ErrorReport implements java.io.Serializable {
 	 * @return the userId
 	 */
 	@Column(name = "user_id")
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
@@ -209,14 +212,14 @@ public class ErrorReport implements java.io.Serializable {
 	 * @return the coreArticalDetail
 	 */
 	@Column(name = "course_article_id")
-	public BigInteger getCourseArticleId() {
+	public String getCourseArticleId() {
 		return courseArticleId;
 	}
 
 	/**
 	 * @param coreArticalDetail
 	 */
-	public void setCourseArticleId(final BigInteger courseArticleId) {
+	public void setCourseArticleId(final String courseArticleId) {
 		this.courseArticleId = courseArticleId;
 	}
 
@@ -237,14 +240,14 @@ public class ErrorReport implements java.io.Serializable {
 	 * @return the assigneeUserId
 	 */
 	@Column(name = "assignee_user_id")
-	public BigInteger getAssigneeUserId() {
+	public String getAssigneeUserId() {
 		return assigneeUserId;
 	}
 
 	/**
 	 * @param dueDate
 	 */
-	public void setAssigneeUserId(final BigInteger assigneeUserId) {
+	public void setAssigneeUserId(final String assigneeUserId) {
 		this.assigneeUserId = assigneeUserId;
 	}
 

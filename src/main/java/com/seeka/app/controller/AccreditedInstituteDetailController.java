@@ -43,7 +43,7 @@ public class AccreditedInstituteDetailController {
 	}
 
 	@GetMapping("{accreditedInstituteId}")
-	public ResponseEntity<?> getAccreditedInstituteDetail(@PathVariable final BigInteger accreditedInstituteId) {
+	public ResponseEntity<?> getAccreditedInstituteDetail(@PathVariable final String accreditedInstituteId) {
 		List<AccreditedInstituteDetail> accreditedInstituteDetail = iAccreditedInstituteDetailService.getAccreditedInstituteDetail(accreditedInstituteId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstituteDetail)
 				.setMessage("Get accredited Institute details successfully").create();

@@ -1,9 +1,6 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * @author SeekADegree
@@ -28,15 +27,16 @@ public class UserReview implements Serializable {
 	private static final long serialVersionUID = -5699019798373814995L;
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private BigInteger id;
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	private String id;
 
 	@Column(name = "user_id")
-	private BigInteger userId;
+	private String userId;
 
 	@Column(name = "entity_id")
-	private BigInteger entityId;
+	private String entityId;
 
 	/**
 	 * Which reviews do you want to share with us : Course or Institute
@@ -83,27 +83,27 @@ public class UserReview implements Serializable {
 	@Column(name = "deleted_by", length = 50)
 	private String deletedBy;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
-	public BigInteger getEntityId() {
+	public String getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(final BigInteger entityId) {
+	public void setEntityId(final String entityId) {
 		this.entityId = entityId;
 	}
 

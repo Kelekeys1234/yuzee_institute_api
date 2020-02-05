@@ -48,7 +48,7 @@ public class ChatDao implements IChatDao {
 	}
 
 	@Override
-	public Chat getChat(final BigInteger chatId) {
+	public Chat getChat(final String chatId) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.get(Chat.class, chatId);
 	}

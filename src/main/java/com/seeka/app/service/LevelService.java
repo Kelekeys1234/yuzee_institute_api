@@ -32,7 +32,7 @@ public class LevelService implements ILevelService {
     }
 
     @Override
-    public Level get(BigInteger id) {
+    public Level get(String id) {
         return dao.get(id);
     }
 
@@ -47,7 +47,7 @@ public class LevelService implements ILevelService {
     }
 
     @Override
-    public List<Level> getLevelByCountryId(BigInteger countryId) {
+    public List<Level> getLevelByCountryId(String countryId) {
         return dao.getLevelByCountryId(countryId);
     }
 
@@ -57,7 +57,7 @@ public class LevelService implements ILevelService {
     }
 
     @Override
-    public Map<String, Object> getCountryLevel(BigInteger countryId) {
+    public Map<String, Object> getCountryLevel(String countryId) {
         Map<String, Object> response = new HashMap<>();
         List<Level> levels = new ArrayList<Level>();
         try {

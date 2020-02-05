@@ -38,7 +38,7 @@ public class AccreditedInstituteDao implements IAccreditedInstituteDao {
 	}
 
 	@Override
-	public AccreditedInstitute getAccreditedInstituteDetail(final BigInteger instituteId) {
+	public AccreditedInstitute getAccreditedInstituteDetail(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(AccreditedInstitute.class, "accreditedInstitute");
 		crit.add(Restrictions.eq("accreditedInstitute.id", instituteId));
@@ -46,7 +46,7 @@ public class AccreditedInstituteDao implements IAccreditedInstituteDao {
 	}
 
 	@Override
-	public AccreditedInstitute getAccreditedInstituteDetailBasedOnName(final String name, final BigInteger instituteId) {
+	public AccreditedInstitute getAccreditedInstituteDetailBasedOnName(final String name, final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(AccreditedInstitute.class, "accreditedInstitute");
 		crit.add(Restrictions.eq("accreditedInstitute.name", name));

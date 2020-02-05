@@ -4,10 +4,10 @@ import java.math.BigInteger;
 
 public class HelpDto {
 
-	private BigInteger id;
+	private String id;
 	private String title;
-	private BigInteger categoryId;
-	private BigInteger subCategoryId;
+	private String categoryId;
+	private String subCategoryId;
 	private String description;
 	private String createdBy;
 	private String updatedBy;
@@ -26,19 +26,19 @@ public class HelpDto {
 		this.title = title;
 	}
 
-	public BigInteger getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(final BigInteger categoryId) {
+	public void setCategoryId(final String categoryId) {
 		this.categoryId = categoryId;
 	}
 
-	public BigInteger getSubCategoryId() {
+	public String getSubCategoryId() {
 		return subCategoryId;
 	}
 
-	public void setSubCategoryId(final BigInteger subCategoryId) {
+	public void setSubCategoryId(final String subCategoryId) {
 		this.subCategoryId = subCategoryId;
 	}
 
@@ -77,14 +77,14 @@ public class HelpDto {
 	/**
 	 * @return the id
 	 */
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

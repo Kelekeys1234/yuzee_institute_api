@@ -5,21 +5,21 @@ import java.util.List;
 
 public class InstituteRequestDto {
 
-	private BigInteger id;
+	private String id;
 	private String name;
 	private String description;
-	private BigInteger cityId;
-	private BigInteger countryId;
+	private String cityId;
+	private String countryId;
 	private Integer worldRanking;
 	private String logoUrl;
 	private String avgCostOfLiving;
-	private BigInteger instituteTypeId;
+	private String instituteTypeId;
 	private String enrolmentLink;
 	private String tuitionFessPaymentPlan;
 	private String scholarshipFinancingAssistance;
 	private String website;
 	private List<InstituteMedia> instituteMedias;
-	private BigInteger instituteCategoryTypeId;
+	private String instituteCategoryTypeId;
 	private String campusType;
 	private String campusName;
 	private Double latitude;
@@ -30,8 +30,8 @@ public class InstituteRequestDto {
 	private String email;
 	private String phoneNumber;
 	private String address;
-	private List<BigInteger> offerService;
-	private List<BigInteger> accreditation;
+	private List<String> offerService;
+	private List<String> accreditation;
 	private List<String> intakes;
 	private String createdBy;
 	private String updatedBy;
@@ -43,20 +43,20 @@ public class InstituteRequestDto {
 	private String aboutInfo;
 	private String courseStart;
 
-	private List<BigInteger> facultyIds;
-	private List<BigInteger> levelIds;
+	private List<String> facultyIds;
+	private List<String> levelIds;
 
 	/**
 	 * @return the id
 	 */
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -99,28 +99,28 @@ public class InstituteRequestDto {
 	/**
 	 * @return the cityId
 	 */
-	public BigInteger getCityId() {
+	public String getCityId() {
 		return cityId;
 	}
 
 	/**
 	 * @param cityId the cityId to set
 	 */
-	public void setCityId(final BigInteger cityId) {
+	public void setCityId(final String cityId) {
 		this.cityId = cityId;
 	}
 
 	/**
 	 * @return the countryId
 	 */
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
 	/**
 	 * @param countryId the countryId to set
 	 */
-	public void setCountryId(final BigInteger countryId) {
+	public void setCountryId(final String countryId) {
 		this.countryId = countryId;
 	}
 
@@ -163,11 +163,11 @@ public class InstituteRequestDto {
 	/**
 	 * @return the typeId
 	 */
-	public BigInteger getInstituteTypeId() {
+	public String getInstituteTypeId() {
 		return instituteTypeId;
 	}
 
-	public void setInstituteTypeId(final BigInteger instituteTypeId) {
+	public void setInstituteTypeId(final String instituteTypeId) {
 		this.instituteTypeId = instituteTypeId;
 	}
 
@@ -236,11 +236,11 @@ public class InstituteRequestDto {
 		this.instituteMedias = instituteMedias;
 	}
 
-	public BigInteger getInstituteCategoryTypeId() {
+	public String getInstituteCategoryTypeId() {
 		return instituteCategoryTypeId;
 	}
 
-	public void setInstituteCategoryTypeId(final BigInteger instituteCategoryTypeId) {
+	public void setInstituteCategoryTypeId(final String instituteCategoryTypeId) {
 		this.instituteCategoryTypeId = instituteCategoryTypeId;
 	}
 
@@ -387,28 +387,28 @@ public class InstituteRequestDto {
 	/**
 	 * @return the offerService
 	 */
-	public List<BigInteger> getOfferService() {
+	public List<String> getOfferService() {
 		return offerService;
 	}
 
 	/**
 	 * @param offerService the offerService to set
 	 */
-	public void setOfferService(final List<BigInteger> offerService) {
+	public void setOfferService(final List<String> offerService) {
 		this.offerService = offerService;
 	}
 
 	/**
 	 * @return the accreditation
 	 */
-	public List<BigInteger> getAccreditation() {
+	public List<String> getAccreditation() {
 		return accreditation;
 	}
 
 	/**
 	 * @param accreditation the accreditation to set
 	 */
-	public void setAccreditation(final List<BigInteger> accreditation) {
+	public void setAccreditation(final List<String> accreditation) {
 		this.accreditation = accreditation;
 	}
 
@@ -481,19 +481,19 @@ public class InstituteRequestDto {
 		this.courseStart = courseStart;
 	}
 
-	public List<BigInteger> getFacultyIds() {
+	public List<String> getFacultyIds() {
 		return facultyIds;
 	}
 
-	public void setFacultyIds(final List<BigInteger> facultyIds) {
+	public void setFacultyIds(final List<String> facultyIds) {
 		this.facultyIds = facultyIds;
 	}
 
-	public List<BigInteger> getLevelIds() {
+	public List<String> getLevelIds() {
 		return levelIds;
 	}
 
-	public void setLevelIds(final List<BigInteger> levelIds) {
+	public void setLevelIds(final List<String> levelIds) {
 		this.levelIds = levelIds;
 	}
 

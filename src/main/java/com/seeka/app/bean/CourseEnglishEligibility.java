@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -11,15 +10,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -34,7 +32,7 @@ public class CourseEnglishEligibility implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1606844916847628647L;
-	private BigInteger id;
+	private String id;
 	private Course course;
 	private String englishType;
 	private Double reading;
@@ -77,13 +75,14 @@ public class CourseEnglishEligibility implements Serializable {
 	}
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	public BigInteger getId() {
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	public String getId() {
 		return this.id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

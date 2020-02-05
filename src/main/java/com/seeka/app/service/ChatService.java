@@ -106,12 +106,12 @@ public class ChatService implements IChatService {
 		return chatConversation;
 	}
 
-	private void sentPushNotificationForChatConversation(final String message, final BigInteger userId) throws ValidationException {
+	private void sentPushNotificationForChatConversation(final String message, final String userId) throws ValidationException {
 		iUsersService.sendPushNotification(userId, message, NotificationType.CHAT_CONVERSATION.name());
 	}
 
 	@Override
-	public void changeChatAssignee(final BigInteger chatId, final BigInteger assigneeId) throws ValidationException {
+	public void changeChatAssignee(final String chatId, final BigInteger assigneeId) throws ValidationException {
 		Chat chat = iChatDao.getChat(chatId);
 		if (chat == null) {
 			throw new ValidationException("chat not found for id " + chatId);
@@ -181,7 +181,7 @@ public class ChatService implements IChatService {
 	}
 
 	@Override
-	public ChatResposneDto getChatListBasedOnEntityType(final String entityType, final BigInteger userFromId, final BigInteger initiateToId,
+	public ChatResposneDto getChatListBasedOnEntityType(final String entityType, final String userFromId, final String initiateToId,
 			final Integer startIndex, final Integer pageSize) throws ValidationException {
 		ChatResposneDto chatResposneDto = new ChatResposneDto();
 		List<ChatConversationDto> chatConversationDtos = new ArrayList<>();
@@ -211,7 +211,7 @@ public class ChatService implements IChatService {
 	}
 
 	@Override
-	public Integer getChatConversationCountBasedOnEntityType(final String entityType, final BigInteger initiateFromId, final BigInteger initiateToId) {
+	public Integer getChatConversationCountBasedOnEntityType(final String entityType, final String initiateFromId, final String initiateToId) {
 		return iChatConversationDao.getChatConversationCountBasedOnEntityType(entityType, initiateFromId, initiateToId);
 	}
 

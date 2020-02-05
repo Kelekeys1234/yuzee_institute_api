@@ -36,21 +36,21 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public HelpCategory getHelpCategory(final BigInteger id) {
+	public HelpCategory getHelpCategory(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		HelpCategory obj = session.get(HelpCategory.class, id);
 		return obj;
 	}
 
 	@Override
-	public HelpSubCategory getHelpSubCategory(final BigInteger id) {
+	public HelpSubCategory getHelpSubCategory(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		HelpSubCategory obj = session.get(HelpSubCategory.class, id);
 		return obj;
 	}
 
 	@Override
-	public SeekaHelp get(final BigInteger id) {
+	public SeekaHelp get(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		SeekaHelp obj = session.get(SeekaHelp.class, id);
 		return obj;
@@ -63,7 +63,7 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public int findTotalHelpRecord(final BigInteger userId, final Boolean isArchive) {
+	public int findTotalHelpRecord(final String userId, final Boolean isArchive) {
 		int status = 1;
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select count(*) from seeka_help sa where sa.is_active = " + status + " and sa.deleted_on IS NULL";
@@ -80,7 +80,7 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<SeekaHelp> getAll(final Integer startIndex, final Integer pageSize, final BigInteger userId, final Boolean isArchive) {
+	public List<SeekaHelp> getAll(final Integer startIndex, final Integer pageSize, final String userId, final Boolean isArchive) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
 		if (userId != null) {
@@ -114,7 +114,7 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<HelpSubCategory> getSubCategoryByCategory(final BigInteger categoryId, final Integer startIndex, final Integer pageSize) {
+	public List<HelpSubCategory> getSubCategoryByCategory(final String categoryId, final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(HelpSubCategory.class, "helpSubCategory");
 		crit.createAlias("helpSubCategory.categoryId", "helpCategory");
@@ -129,7 +129,7 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<SeekaHelp> getHelpByCategory(final BigInteger categoryId) {
+	public List<SeekaHelp> getHelpByCategory(final String categoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
 		crit.createAlias("seekaHelp.category", "category");
@@ -137,7 +137,7 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public Integer findTotalHelpRecordBySubCategory(final BigInteger sub_category_id) {
+	public Integer findTotalHelpRecordBySubCategory(final String sub_category_id) {
 		int status = 1;
 		Integer helpCount = null;
 		Session session = sessionFactory.getCurrentSession();
@@ -167,7 +167,7 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<HelpAnswer> getAnswerByHelpId(final BigInteger userId) {
+	public List<HelpAnswer> getAnswerByHelpId(final String userId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(HelpAnswer.class, "helpAnswer");
 		crit.createAlias("helpAnswer.seekaHelp", "seekaHelp");
@@ -187,14 +187,14 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<SeekaHelp> findByStatus(final String status, final BigInteger categoryId) {
+	public List<SeekaHelp> findByStatus(final String status, final String categoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
 		return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true)).list();
 	}
 
 	@Override
-	public List<SeekaHelp> findByMostRecent(final String mostRecent, final BigInteger categoryId) {
+	public List<SeekaHelp> findByMostRecent(final String mostRecent, final String categoryId) {
 		if ((mostRecent != null) && mostRecent.equals("asc")) {
 			Session session = sessionFactory.getCurrentSession();
 			Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
@@ -207,7 +207,7 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<SeekaHelp> findByStatusAndMostRecent(final String status, final String mostRecent, final BigInteger categoryId) {
+	public List<SeekaHelp> findByStatusAndMostRecent(final String status, final String mostRecent, final String categoryId) {
 		if ((mostRecent != null) && mostRecent.equals("asc")) {
 			Session session = sessionFactory.getCurrentSession();
 			Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
@@ -228,7 +228,7 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public void setIsFavouriteFlag(final BigInteger id, final boolean isFavourite) throws NotFoundException {
+	public void setIsFavouriteFlag(final String id, final boolean isFavourite) throws NotFoundException {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "update seeka_help set is_favourite = ? where id = ?";
 		int updateCount = session.createNativeQuery(sqlQuery).setParameter(1, isFavourite).setParameter(2, id).executeUpdate();
@@ -248,7 +248,7 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public int getSubCategoryCount(final BigInteger categoryId) {
+	public int getSubCategoryCount(final String categoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(HelpSubCategory.class, "helpSubCategory");
 		crit.createAlias("helpSubCategory.categoryId", "helpCategory");

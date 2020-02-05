@@ -5,25 +5,25 @@ import java.util.List;
 
 public class CourseMinRequirementDto {
 
-	private BigInteger country;
-	private BigInteger system;
+	private String country;
+	private String system;
 	private List<String> subject;
 	private List<String> grade;
-	private BigInteger course;
+	private String course;
 
-	public BigInteger getCountry() {
+	public String getCountry() {
 		return country;
 	}
 
-	public void setCountry(final BigInteger country) {
+	public void setCountry(final String country) {
 		this.country = country;
 	}
 
-	public BigInteger getSystem() {
+	public String getSystem() {
 		return system;
 	}
 
-	public void setSystem(final BigInteger system) {
+	public void setSystem(final String system) {
 		this.system = system;
 	}
 
@@ -43,11 +43,11 @@ public class CourseMinRequirementDto {
 		this.grade = grade;
 	}
 
-	public BigInteger getCourse() {
+	public String getCourse() {
 		return course;
 	}
 
-	public void setCourse(final BigInteger course) {
+	public void setCourse(final String course) {
 		this.course = course;
 	}
 

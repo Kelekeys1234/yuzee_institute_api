@@ -1,7 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 
@@ -17,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
+
 /**
  *
  * @author SeekADegree
@@ -31,9 +31,10 @@ public class UserViewData implements Serializable {
 	 */
 	private static final long serialVersionUID = 2268386819742613960L;
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private BigInteger id;
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	private String id;
 	@Column(name = "entity_id", nullable = false)
 	private BigInteger entityId;
 	@Column(name = "entity_type", nullable = false)
@@ -46,11 +47,11 @@ public class UserViewData implements Serializable {
 	@Column(name = "created_by", length = 50)
 	private String createdBy;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

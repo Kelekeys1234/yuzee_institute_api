@@ -1,30 +1,28 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class HelpAnswerDto {
 
-    private BigInteger userId;
-    private BigInteger helpId;
+    private String userId;
+    private String helpId;
     private String answer;
     private String createdBy;
     private String updatedBy;
     private String createdOn;
     private String fileUrl;
 
-    public BigInteger getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(BigInteger userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public BigInteger getHelpId() {
+    public String getHelpId() {
         return helpId;
     }
 
-    public void setHelpId(BigInteger helpId) {
+    public void setHelpId(String helpId) {
         this.helpId = helpId;
     }
 

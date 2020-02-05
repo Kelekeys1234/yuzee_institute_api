@@ -30,7 +30,7 @@ public class StorageService implements IStorageService {
 	private MessageByLocaleService messageByLocalService;
 
 	@Override
-	public List<StorageDto> getStorageInformation(final BigInteger entityId, final String entityType, final String type, final String language)
+	public List<StorageDto> getStorageInformation(final String entityId, final String entityType, final String type, final String language)
 			throws ValidationException {
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL);
@@ -62,7 +62,7 @@ public class StorageService implements IStorageService {
 	}
 
 	@Override
-	public List<StorageDto> getStorageInformationBasedOnEntityIdList(final List<BigInteger> entityIds, final String entityType, final String type,
+	public List<StorageDto> getStorageInformationBasedOnEntityIdList(final List<String> entityIds, final String entityType, final String type,
 			final String language) throws ValidationException {
 		String url = IConstant.STORAGE_CONNECTION_URL + "/get";
 

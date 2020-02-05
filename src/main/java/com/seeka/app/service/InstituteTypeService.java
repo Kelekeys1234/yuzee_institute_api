@@ -38,7 +38,7 @@ public class InstituteTypeService implements IInstituteTypeService {
     }
 
     @Override
-    public InstituteType get(BigInteger id) {
+    public InstituteType get(String id) {
         return iInstituteTypeDAO.get(id);
     }
 

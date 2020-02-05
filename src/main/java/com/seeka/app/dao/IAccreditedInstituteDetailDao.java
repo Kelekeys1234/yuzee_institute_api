@@ -13,12 +13,12 @@ public interface IAccreditedInstituteDetailDao {
 
 	List<AccreditedInstituteDetail> getAccreditedInstituteDetailList(BigInteger entityId, String entityType, Integer startIndex, Integer pageSize);
 
-	List<AccreditedInstituteDetail> getAccreditedInstituteDetail(BigInteger accreditedInstituteId);
+	List<AccreditedInstituteDetail> getAccreditedInstituteDetail(String accreditedInstituteId);
 
-	AccreditedInstituteDetail getAccreditedInstituteDetailbasedOnParams(BigInteger accreditedInstituteId, BigInteger entityId, String entityType);
+	AccreditedInstituteDetail getAccreditedInstituteDetailbasedOnParams(String accreditedInstituteId, String entityId, String entityType);
 	
-	void deleteAccreditedInstitueDetailByEntityId(BigInteger entityId);
+	void deleteAccreditedInstitueDetailByEntityId(String entityId);
 
-    List<BigInteger> getAccreditation(@Valid BigInteger id);
+    List<String> getAccreditation(@Valid String id);
 
 }

@@ -105,7 +105,7 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public SeekaArticles deleteArticle(final String articleId) {
-		SeekaArticles article = articleDAO.findById(new BigInteger(articleId));
+		SeekaArticles article = articleDAO.findById(articleId);
 		if (article != null) {
 			article.setActive(false);
 			article.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
@@ -116,7 +116,7 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public ArticleResponseDetailsDto getArticleById(final String articleId) throws ValidationException {
-		SeekaArticles article = articleDAO.findById(new BigInteger(articleId));
+		SeekaArticles article = articleDAO.findById(articleId);
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
 		ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
 		articleResponseDetailsDto.setStorageList(storageDTOList);
@@ -196,13 +196,13 @@ public class ArticleService implements IArticleService {
 			}
 
 			List<ArticleUserDemographicDto> userDemographicDtoList = new ArrayList<>();
-			Map<BigInteger, ArticleUserDemographic> countyList = new HashMap<>();
+			Map<String, ArticleUserDemographic> countyList = new HashMap<>();
 			List<ArticleUserDemographic> userDemographicList = iArticleUserDemographicDao.getbyArticleId(article.getId());
 
 			for (ArticleUserDemographic articleUserDemographic : userDemographicList) {
 				countyList.put(articleUserDemographic.getCountry().getId(), articleUserDemographic);
 			}
-			for (Map.Entry<BigInteger, ArticleUserDemographic> obj : countyList.entrySet()) {
+			for (Map.Entry<String, ArticleUserDemographic> obj : countyList.entrySet()) {
 				ArticleUserDemographicDto demographicDto = new ArticleUserDemographicDto();
 
 				demographicDto.setArticle(article.getId());
@@ -230,8 +230,8 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public SeekaArticleDto saveMultiArticle(final SeekaArticleDto articleDto, final BigInteger userId) throws ValidationException, ParseException {
-		Map<BigInteger, String> countryMap = new HashMap<>();
-		Map<BigInteger, String> cityMap = new HashMap<>();
+		Map<String, String> countryMap = new HashMap<>();
+		Map<String, String> cityMap = new HashMap<>();
 		SeekaArticles article = new SeekaArticles();
 		Boolean updateCase = false;
 		if ((articleDto != null) && (articleDto.getId() != null)) {
@@ -410,7 +410,7 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public ArticleFolder getArticleFolderById(final BigInteger articleFolderId) throws ValidationException {
+	public ArticleFolder getArticleFolderById(final String articleFolderId) throws ValidationException {
 		ArticleFolder articleFolder = iArticleFolderDao.findById(articleFolderId);
 		if (articleFolder == null) {
 			throw new ValidationException(messageByLocalService.getMessage("article.folder.not.found", new Object[] { articleFolderId }, "en"));
@@ -425,7 +425,7 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public ArticleFolder deleteArticleFolderById(final BigInteger articleFolderId) throws ValidationException {
+	public ArticleFolder deleteArticleFolderById(final String articleFolderId) throws ValidationException {
 		ArticleFolder articleFolder = iArticleFolderDao.findById(articleFolderId);
 		if (articleFolder != null) {
 			articleFolder.setDeleted(false);
@@ -503,7 +503,7 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public List<SeekaArticles> findArticleByCountryId(final BigInteger countryId, final String categoryName, final Integer count,
+	public List<SeekaArticles> findArticleByCountryId(final String countryId, final String categoryName, final Integer count,
 			final List<BigInteger> viewArticleIds) {
 		return articleDAO.findArticleByCountryId(countryId, categoryName, count, viewArticleIds);
 	}

@@ -8,9 +8,9 @@ import com.seeka.app.bean.City;
 public interface ICityDAO {
 	List<City> getAll();
 
-	City get(BigInteger id);
+	City get(String id);
 
-	List<City> getAllCitiesByCountry(BigInteger countryId);
+	List<City> getAllCitiesByCountry(String countryId);
 
 	void save(City obj);
 

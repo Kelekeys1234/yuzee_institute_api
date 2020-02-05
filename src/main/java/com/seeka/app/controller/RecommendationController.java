@@ -36,7 +36,7 @@ public class RecommendationController {
 	private MessageByLocaleService messageByLocalService;
 
 	@GetMapping("/institute")
-	public ResponseEntity<?> getRecommendedInstitutes(@RequestHeader(value = "userId") final BigInteger userId,
+	public ResponseEntity<?> getRecommendedInstitutes(@RequestHeader(value = "userId") final String userId,
 			@RequestHeader(value = "language") final String language/*
 																	 * , @RequestParam(value = "startIndex", required = false) Long startIndex,
 																	 *
@@ -59,7 +59,7 @@ public class RecommendationController {
 	}
 
 	@GetMapping("/otherPeopleInstituteSearch")
-	public ResponseEntity<?> getInsituteBasedOnOtherPeopleSearch(@RequestHeader(value = "userId") final BigInteger userId,
+	public ResponseEntity<?> getInsituteBasedOnOtherPeopleSearch(@RequestHeader(value = "userId") final String userId,
 			@RequestHeader(value = "language", required = false) final String language) {
 		List<InstituteResponseDto> institutesBasedOnOtherPeopleSearch = iRecommendationService.getinstitutesBasedOnOtherPeopleSearch(userId);
 		return new GenericResponseHandlers.Builder().setData(institutesBasedOnOtherPeopleSearch)
@@ -68,7 +68,7 @@ public class RecommendationController {
 	}
 
 	@GetMapping("/courses")
-	public ResponseEntity<?> getRecommendedCourses(@RequestHeader(value = "userId") final BigInteger userId,
+	public ResponseEntity<?> getRecommendedCourses(@RequestHeader(value = "userId") final String userId,
 			@RequestHeader(value = "language", required = false) final String language) throws ValidationException {
 		List<CourseResponseDto> recomendedCourses = iRecommendationService.getRecommendedCourses(userId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recomendedCourses)
@@ -76,7 +76,7 @@ public class RecommendationController {
 	}
 
 	@GetMapping("/articles")
-	public ResponseEntity<?> getRecommendedArticles(@RequestHeader(value = "userId") final BigInteger userId,
+	public ResponseEntity<?> getRecommendedArticles(@RequestHeader(value = "userId") final String userId,
 			@RequestHeader(value = "language", required = false) final String language) throws ValidationException {
 		List<ArticleResposeDto> recomendedArticles = iRecommendationService.getRecommendedArticles(userId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recomendedArticles)
@@ -84,21 +84,21 @@ public class RecommendationController {
 	}
 
 	@GetMapping("/topSearchedCourses/{facultyId}")
-	public ResponseEntity<?> getTopSearchedCourse(@RequestHeader(value = "userId") final BigInteger userId, @PathVariable final BigInteger facultyId) {
+	public ResponseEntity<?> getTopSearchedCourse(@RequestHeader(value = "userId") final String userId, @PathVariable final String facultyId) {
 		List<Course> topSearchedCourses = iRecommendationService.getTopSearchedCoursesForFaculty(facultyId, userId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(topSearchedCourses)
 				.setMessage("Recommended Course Displayed Successfully").create();
 	}
 
 	@GetMapping("/userCourseRelatedToSearch")
-	public ResponseEntity<?> displayRelatedCourseAsPerUserPastSearch(@RequestHeader(value = "userId") final BigInteger userId) throws ValidationException {
+	public ResponseEntity<?> displayRelatedCourseAsPerUserPastSearch(@RequestHeader(value = "userId") final String userId) throws ValidationException {
 		Set<Course> listOfRelatedCourses = iRecommendationService.displayRelatedCourseAsPerUserPastSearch(userId);
 		return new GenericResponseHandlers.Builder().setData(listOfRelatedCourses).setMessage("Related Courses Display Successfully").setStatus(HttpStatus.OK)
 				.create();
 	}
 
 	@GetMapping("/scholarship")
-	public ResponseEntity<?> getRecommendedScholarship(@RequestHeader(value = "userId") final BigInteger userId,
+	public ResponseEntity<?> getRecommendedScholarship(@RequestHeader(value = "userId") final String userId,
 			@RequestHeader(value = "language", required = false) final String language) throws ValidationException, NotFoundException {
 		List<ScholarshipDto> scholarshipDtoList = iRecommendationService.getRecommendedScholarships(userId, language);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(scholarshipDtoList)

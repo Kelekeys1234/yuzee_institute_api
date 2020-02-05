@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 
@@ -14,20 +13,20 @@ import com.seeka.app.exception.ValidationException;
 
 public interface IRecommendationService {
 
-	List<InstituteResponseDto> getRecommendedInstitutes(BigInteger userId, /* Long startIndex, Long pageSize, Long pageNumber, */ String language)
+	List<InstituteResponseDto> getRecommendedInstitutes(String userId, /* Long startIndex, Long pageSize, Long pageNumber, */ String language)
 			throws ValidationException, NotFoundException;
 
 	void getOtherPeopleSearch();
 
-	List<CourseResponseDto> getRecommendedCourses(BigInteger userId) throws ValidationException;
+	List<CourseResponseDto> getRecommendedCourses(String userId) throws ValidationException;
 
-	List<Course> getTopSearchedCoursesForFaculty(BigInteger facultyId, BigInteger userId);
+	List<Course> getTopSearchedCoursesForFaculty(String facultyId, String userId);
 
-	Set<Course> displayRelatedCourseAsPerUserPastSearch(BigInteger userId) throws ValidationException;
+	Set<Course> displayRelatedCourseAsPerUserPastSearch(String userId) throws ValidationException;
 
-	List<InstituteResponseDto> getinstitutesBasedOnOtherPeopleSearch(BigInteger userId);
+	List<InstituteResponseDto> getinstitutesBasedOnOtherPeopleSearch(String userId);
 
-	List<ScholarshipDto> getRecommendedScholarships(BigInteger userId, String language) throws ValidationException, NotFoundException;
+	List<ScholarshipDto> getRecommendedScholarships(String userId, String language) throws ValidationException, NotFoundException;
 
-	List<ArticleResposeDto> getRecommendedArticles(BigInteger userId) throws ValidationException;
+	List<ArticleResposeDto> getRecommendedArticles(String userId) throws ValidationException;
 }

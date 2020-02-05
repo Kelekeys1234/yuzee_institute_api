@@ -11,26 +11,26 @@ public class EnrollmentStatusDto implements Serializable {
 	 */
 	private static final long serialVersionUID = -1493487191397729023L;
 
-	private BigInteger id;
-	private BigInteger enrollmentId;
+	private String id;
+	private String enrollmentId;
 	private String status;
 	private Date deadLine;
 	private Date createdOn;
 	private String createdBy;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public BigInteger getEnrollmentId() {
+	public String getEnrollmentId() {
 		return enrollmentId;
 	}
 
-	public void setEnrollmentId(final BigInteger enrollmentId) {
+	public void setEnrollmentId(final String enrollmentId) {
 		this.enrollmentId = enrollmentId;
 	}
 

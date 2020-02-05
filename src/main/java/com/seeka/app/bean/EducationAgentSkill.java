@@ -1,9 +1,6 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "education_agent_skill")
 public class EducationAgentSkill implements Serializable {
@@ -23,7 +22,7 @@ public class EducationAgentSkill implements Serializable {
     *
     */
     private static final long serialVersionUID = 8492390790670110780L;
-    private BigInteger id;
+    private String id;
     private Skill skill;
     private EducationAgent educationAgent;
     private String createdBy;
@@ -37,7 +36,7 @@ public class EducationAgentSkill implements Serializable {
         super();
     }
 
-    public EducationAgentSkill(BigInteger id, Skill skill, EducationAgent educationAgent) {
+    public EducationAgentSkill(String id, Skill skill, EducationAgent educationAgent) {
         super();
         this.id = id;
         this.skill = skill;
@@ -45,13 +44,14 @@ public class EducationAgentSkill implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public BigInteger getId() {
+    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+    public String getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

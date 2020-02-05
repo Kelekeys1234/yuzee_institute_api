@@ -5,14 +5,14 @@ import java.util.List;
 
 public class UserCompareCourseResponse {
 
-    private BigInteger userCourseCompareId;
+    private String userCourseCompareId;
 
     private List<CourseRequest> courses;
 
     /**
      * @return the userCourseCompareId
      */
-    public BigInteger getUserCourseCompareId() {
+    public String getUserCourseCompareId() {
         return userCourseCompareId;
     }
 
@@ -20,7 +20,7 @@ public class UserCompareCourseResponse {
      * @param userCourseCompareId
      *            the userCourseCompareId to set
      */
-    public void setUserCourseCompareId(BigInteger userCourseCompareId) {
+    public void setUserCourseCompareId(String userCourseCompareId) {
         this.userCourseCompareId = userCourseCompareId;
     }
 

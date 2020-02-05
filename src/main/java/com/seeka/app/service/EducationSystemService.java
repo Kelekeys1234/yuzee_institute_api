@@ -83,7 +83,7 @@ public class EducationSystemService implements IEducationSystemService {
 	}
 
 	@Override
-	public EducationSystem get(final BigInteger id) {
+	public EducationSystem get(final String id) {
 		return iEducationSystemDAO.get(id);
 	}
 
@@ -93,7 +93,7 @@ public class EducationSystemService implements IEducationSystemService {
 	}
 
 	@Override
-	public List<EducationSystem> getEducationSystemsByCountryId(final BigInteger countryId) {
+	public List<EducationSystem> getEducationSystemsByCountryId(final String countryId) {
 		List<EducationSystem> educationSystems = iEducationSystemDAO.getEducationSystemsByCountryId(countryId);
 		for (EducationSystem educationSystem : educationSystems) {
 			List<Subject> subjects = iEducationSystemDAO.getSubject();
@@ -154,7 +154,7 @@ public class EducationSystemService implements IEducationSystemService {
 	}
 
 	@Override
-	public EducationSystemResponse getEducationSystemsDetailByUserId(final BigInteger userId) {
+	public EducationSystemResponse getEducationSystemsDetailByUserId(final String userId) {
 		EducationSystemResponse systemResponse = new EducationSystemResponse();
 		UserEducationDetails educationDetails = educationDetailDAO.getUserEducationDetails(userId);
 		systemResponse.setUserId(userId);
@@ -178,7 +178,7 @@ public class EducationSystemService implements IEducationSystemService {
 		systemResponse.setEnglishScoresList(englishScoreDAO.getEnglishEligibiltyByUserID(userId));
 		List<UserEducationAOLevelSubjects> educationAOLevelSubjects = educationAOLevelSubjectDAO.getUserLevelSubjectGrades(userId);
 		List<Subject> subjectList = iEducationSystemDAO.getSubject();
-		Map<BigInteger, String> subjectMap = new HashMap<>();
+		Map<String, String> subjectMap = new HashMap<>();
 		for (Subject subject : subjectList) {
 			subjectMap.put(subject.getId(), subject.getSubjectName());
 		}
@@ -192,7 +192,7 @@ public class EducationSystemService implements IEducationSystemService {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteEducationSystemDetailByUserId(@Valid final BigInteger userId) {
+	public ResponseEntity<?> deleteEducationSystemDetailByUserId(@Valid final String userId) {
 		Map<String, Object> response = new HashMap<>();
 		Date now = new Date();
 		try {

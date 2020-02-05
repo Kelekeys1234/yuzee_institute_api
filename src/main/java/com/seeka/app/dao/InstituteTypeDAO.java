@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.Hobbies;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Intake;
 
@@ -34,7 +32,7 @@ public class InstituteTypeDAO implements IInstituteTypeDAO {
     }
 
     @Override
-    public InstituteType get(BigInteger id) {
+    public InstituteType get(String id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(InstituteType.class, id);
     }
@@ -56,7 +54,7 @@ public class InstituteTypeDAO implements IInstituteTypeDAO {
         InstituteType obj = null;
         for (Object[] row : rows) {
             obj = new InstituteType();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setName(row[1].toString());
             hobbies.add(obj);
         }

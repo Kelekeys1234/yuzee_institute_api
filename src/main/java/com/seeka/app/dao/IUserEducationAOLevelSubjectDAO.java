@@ -10,7 +10,7 @@ public interface IUserEducationAOLevelSubjectDAO {
 	public void save(UserEducationAOLevelSubjects hobbiesObj);
 	public void update(UserEducationAOLevelSubjects hobbiesObj);
 	public UserEducationAOLevelSubjects get(BigInteger id);
-	public List<UserEducationAOLevelSubjects> getUserLevelSubjectGrades(BigInteger userId);
+	public List<UserEducationAOLevelSubjects> getUserLevelSubjectGrades(String userId);
 	public List<UserEducationAOLevelSubjects> getActiveUserLevelSubjectGrades(BigInteger userId);
 	
 }

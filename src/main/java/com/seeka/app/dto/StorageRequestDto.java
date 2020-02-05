@@ -11,15 +11,15 @@ public class StorageRequestDto implements Serializable {
 	 */
 	private static final long serialVersionUID = -2247205976858854489L;
 
-	private List<BigInteger> entityIds;
+	private List<String> entityIds;
 	private String entityType;
 	private String type;
 
-	public List<BigInteger> getEntityIds() {
+	public List<String> getEntityIds() {
 		return entityIds;
 	}
 
-	public void setEntityIds(final List<BigInteger> entityIds) {
+	public void setEntityIds(final List<String> entityIds) {
 		this.entityIds = entityIds;
 	}
 

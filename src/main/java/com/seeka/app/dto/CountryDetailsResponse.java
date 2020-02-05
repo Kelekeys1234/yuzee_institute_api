@@ -8,7 +8,7 @@ import com.seeka.app.bean.YoutubeVideo;
 
 public class CountryDetailsResponse {
 
-    private BigInteger countryId;
+    private String countryId;
     private CountryDetails countryDetails;
     private List<String> images;
     private List<YoutubeVideo> youtubeVideos;
@@ -16,7 +16,7 @@ public class CountryDetailsResponse {
     /**
      * @return the countryId
      */
-    public BigInteger getCountryId() {
+    public String getCountryId() {
         return countryId;
     }
 
@@ -24,7 +24,7 @@ public class CountryDetailsResponse {
      * @param countryId
      *            the countryId to set
      */
-    public void setCountryId(BigInteger countryId) {
+    public void setCountryId(String countryId) {
         this.countryId = countryId;
     }
 

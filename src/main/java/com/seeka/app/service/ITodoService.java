@@ -13,7 +13,7 @@ public interface ITodoService {
 
     public void save(TodoDto todoDto);
 
-    public void update(TodoDto todoDto, BigInteger id);
+    public void update(TodoDto todoDto, String id);
 
     public TodoDto get(BigInteger id);
 

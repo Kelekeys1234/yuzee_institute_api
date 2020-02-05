@@ -44,7 +44,7 @@ public class UserMyCourseDAO implements IUserMyCourseDAO {
 	}
 
 	@Override
-	public UserMyCourse getDataByUserIDAndCourseID(final BigInteger userId, final BigInteger courseId) {
+	public UserMyCourse getDataByUserIDAndCourseID(final BigInteger userId, final String courseId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserMyCourse.class, "userMyCourse");
 		crit.createAlias("userMyCourse.course", "course");

@@ -12,22 +12,22 @@ public class ArticleUserDemographicDto implements Serializable {
 	private static final long serialVersionUID = -6506522428374103956L;
 
 
-	private Long id;
-	private BigInteger article;
+	private String id;
+	private String article;
 	private ArticleCountryDto citizenship;
 	private List<ArticleCityDto> cities;
 	private String gender;
 	
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-	public BigInteger getArticle() {
+	public String getArticle() {
 		return article;
 	}
-	public void setArticle(BigInteger article) {
+	public void setArticle(String article) {
 		this.article = article;
 	}
 	public ArticleCountryDto getCitizenship() {

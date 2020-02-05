@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 public class CategoryDto implements Serializable {
 
@@ -10,21 +9,21 @@ public class CategoryDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 1087211561594551204L;
 
-	private BigInteger id;
+	private String id;
 
 	private String name;
 
 	/**
 	 * @return the id
 	 */
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

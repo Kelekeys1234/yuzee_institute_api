@@ -12,8 +12,8 @@ public interface IInstituteGoogleReviewService {
 
 	int getCountInstituteGoogleReview(BigInteger instituteId);
 
-	Double getInstituteAvgGoogleReview(BigInteger instituteId);
+	Double getInstituteAvgGoogleReview(String instituteId);
 
-	Map<BigInteger, Double> getInstituteAvgGoogleReviewForList(List<BigInteger> instituteIdList);
+	Map<String, Double> getInstituteAvgGoogleReviewForList(List<String> instituteIdList);
 
 }

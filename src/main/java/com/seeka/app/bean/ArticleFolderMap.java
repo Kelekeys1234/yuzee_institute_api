@@ -1,15 +1,14 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "article_folder_mapping")
@@ -19,37 +18,38 @@ public class ArticleFolderMap implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private BigInteger id;
+	private String id;
 	
-    private BigInteger folderId;
+    private String folderId;
 	
-    private BigInteger articleId;
+    private String articleId;
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", updatable = false, nullable = false)
-	public BigInteger getId() {
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	public String getId() {
 		return id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
 	@Column(name = "folder_id")
-	public BigInteger getFolderId() {
+	public String getFolderId() {
 		return folderId;
 	}
 
-	public void setFolderId(BigInteger folderId) {
+	public void setFolderId(String folderId) {
 		this.folderId = folderId;
 	}
 	@Column(name = "article_id")
-	public BigInteger getArticleId() {
+	public String getArticleId() {
 		return articleId;
 	}
 
-	public void setArticleId(BigInteger articleId) {
+	public void setArticleId(String articleId) {
 		this.articleId = articleId;
 	}
 

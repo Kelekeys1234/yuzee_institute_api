@@ -1,6 +1,5 @@
 package com.seeka.app.controller;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public class AccreditedInstituteController {
 	}
 
 	@PutMapping("/{accreditedInstituteId}")
-	public ResponseEntity<?> updateAccreditedInstitute(@PathVariable final BigInteger accreditedInstituteId,
+	public ResponseEntity<?> updateAccreditedInstitute(@PathVariable final String accreditedInstituteId,
 			@RequestParam(name = "file", required = false) final MultipartFile file,
 			@ModelAttribute final AccreditedInstituteRequestDto accreditedInstituteRequestDto) throws ValidationException {
 		AccreditedInstitute resultAccreditedInstitute = iAccreditedInstitute.updateAccreditedInstitute(accreditedInstituteId, accreditedInstituteRequestDto);
@@ -55,7 +54,7 @@ public class AccreditedInstituteController {
 	}
 
 	@DeleteMapping("/{accreditedInstituteId}")
-	public ResponseEntity<?> deleteAccreditedInstitute(@PathVariable final BigInteger accreditedInstituteId) throws ValidationException {
+	public ResponseEntity<?> deleteAccreditedInstitute(@PathVariable final String accreditedInstituteId) throws ValidationException {
 		iAccreditedInstitute.deleteAccreditedInstitute(accreditedInstituteId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted accredited Institute successfully").create();
 	}
@@ -69,7 +68,7 @@ public class AccreditedInstituteController {
 	}
 
 	@GetMapping("/{accreditedInstituteId}")
-	public ResponseEntity<?> getAccreditedInstituteDetail(@PathVariable final BigInteger accreditedInstituteId) throws ValidationException {
+	public ResponseEntity<?> getAccreditedInstituteDetail(@PathVariable final String accreditedInstituteId) throws ValidationException {
 		AccreditedInstituteDto accreditedInstitute = iAccreditedInstitute.getAccreditedInstituteDetail(accreditedInstituteId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstitute).setMessage("Get accredited Institute successfully")
 				.create();

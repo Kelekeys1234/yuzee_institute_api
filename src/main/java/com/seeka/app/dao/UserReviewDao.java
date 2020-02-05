@@ -44,7 +44,7 @@ public class UserReviewDao implements IUserReviewDao {
 	}
 
 	@Override
-	public List<UserReview> getUserReviewList(final BigInteger userId, final BigInteger entityId, final String entityType, final Integer startIndex,
+	public List<UserReview> getUserReviewList(final String userId, final String entityId, final String entityType, final Integer startIndex,
 			final Integer pageSize, final String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReview.class, "userReview");
@@ -75,7 +75,7 @@ public class UserReviewDao implements IUserReviewDao {
 	}
 
 	@Override
-	public Double getReviewStar(final BigInteger entityId, final String entityType) {
+	public Double getReviewStar(final String entityId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReview.class, "userReview");
 		if (entityId != null && entityType != null) {
@@ -89,7 +89,7 @@ public class UserReviewDao implements IUserReviewDao {
 	}
 
 	@Override
-	public List<Object> getUserAverageReview(final BigInteger entityId, final String entityType) {
+	public List<Object> getUserAverageReview(final String entityId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReviewRating.class, "userReviewRating");
 		crit.createAlias("userReviewRating.userReview", "userReview");
@@ -109,7 +109,7 @@ public class UserReviewDao implements IUserReviewDao {
 	}
 
 	@Override
-	public UserReview getUserReview(final BigInteger userReviewId) {
+	public UserReview getUserReview(final String userReviewId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReview.class, "userReview");
 		crit.add(Restrictions.eq("id", userReviewId));
@@ -118,7 +118,7 @@ public class UserReviewDao implements IUserReviewDao {
 
 	@Override
 	@Transactional
-	public List<UserReviewRating> getUserReviewRatings(final BigInteger userReviewId) {
+	public List<UserReviewRating> getUserReviewRatings(final String userReviewId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReviewRating.class, "userReviewRating");
 		crit.createAlias("userReviewRating.userReview", "userReview");
@@ -127,7 +127,7 @@ public class UserReviewDao implements IUserReviewDao {
 	}
 
 	@Override
-	public int getUserReviewCount(final BigInteger userId, final BigInteger entityId, final String entityType, final String searchKeyword) {
+	public int getUserReviewCount(final String userId, final String entityId, final String entityType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserReview.class, "userReview");
 		if (entityId != null && entityType != null) {
@@ -147,7 +147,7 @@ public class UserReviewDao implements IUserReviewDao {
 	}
 
 	@Override
-	public Map<BigInteger, Double> getUserAverageReviewList(final List<BigInteger> entityIdList, final String entityType) {
+	public Map<String, Double> getUserAverageReviewList(final List<String> entityIdList, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserReview.class, "userReview");
 		if (entityIdList != null && !entityIdList.isEmpty() && entityType != null) {
@@ -162,10 +162,10 @@ public class UserReviewDao implements IUserReviewDao {
 		projList.add(Projections.avg("userReview.reviewStar"), "reviewStar");
 		criteria.setProjection(projList);
 		List<Object> objectList = criteria.list();
-		Map<BigInteger, Double> resultMap = new HashMap<>();
+		Map<String, Double> resultMap = new HashMap<>();
 		for (Object object : objectList) {
 			Object[] obj1 = (Object[]) object;
-			resultMap.put((BigInteger) obj1[0], (Double) obj1[3]);
+			resultMap.put((String) obj1[0], (Double) obj1[3]);
 		}
 		return resultMap;
 

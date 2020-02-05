@@ -7,7 +7,7 @@ public class TodoDto {
     /**
      * 
      */
-    private BigInteger id;
+    private String id;
     private String title;
     private String description;
     private BigInteger userId;
@@ -76,14 +76,14 @@ public class TodoDto {
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -47,7 +47,7 @@ public class CourseEnglishEligibilityDAO implements ICourseEnglishEligibilityDAO
 	}
 
     @Override
-	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(final BigInteger courseID) {
+	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(final String courseID) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria c = session.createCriteria(CourseEnglishEligibility.class, "courseEnglishEligibility");
 		c.createAlias("courseEnglishEligibility.course", "course");

@@ -47,7 +47,7 @@ public class FaqCategroyController {
 	}
 
 	@PutMapping("/{faqCategoryId}")
-	public ResponseEntity<?> updateFaqCategory(@PathVariable final BigInteger faqCategoryId, @RequestBody @Valid final FaqCategory faqCategory,
+	public ResponseEntity<?> updateFaqCategory(@PathVariable final String faqCategoryId, @RequestBody @Valid final FaqCategory faqCategory,
 			final BindingResult bindingResult) throws ValidationException {
 		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		if (!fieldErrors.isEmpty()) {
@@ -58,7 +58,7 @@ public class FaqCategroyController {
 	}
 
 	@DeleteMapping("/{faqCategoryId}")
-	public ResponseEntity<?> deleteFaqCategory(@PathVariable final BigInteger faqCategoryId) throws ValidationException {
+	public ResponseEntity<?> deleteFaqCategory(@PathVariable final String faqCategoryId) throws ValidationException {
 		iFaqCategoryService.deleteFaqCategory(faqCategoryId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted faq category successfully").create();
 	}
@@ -82,7 +82,7 @@ public class FaqCategroyController {
 	}
 
 	@GetMapping("/{faqCategoryId}")
-	public ResponseEntity<?> getFaqCategoryDetail(@PathVariable final BigInteger faqCategoryId) throws ValidationException {
+	public ResponseEntity<?> getFaqCategoryDetail(@PathVariable final String faqCategoryId) throws ValidationException {
 		FaqCategory faqCategory = iFaqCategoryService.getFaqCategoryDetail(faqCategoryId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(faqCategory).setMessage("Get faq category successfully").create();
 	}

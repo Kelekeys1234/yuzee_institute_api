@@ -11,5 +11,5 @@ public interface ICourseGradeEligibilityService {
 	public void update(CourseGradeEligibility obj);
 	public CourseGradeEligibility get(BigInteger id);
 	public List<CourseGradeEligibility> getAll();
-	public CourseGradeEligibility getAllEnglishEligibilityByCourse(BigInteger courseID);
+	public CourseGradeEligibility getAllEnglishEligibilityByCourse(String courseID);
 }

@@ -16,7 +16,7 @@ public class InstituteCampusDto {
     private List<BigInteger> offerService;
     private Integer totalStudent;
     private String campusType;
-    private BigInteger id;
+    private String id;
 
     public String getEmail() {
         return email;
@@ -108,7 +108,7 @@ public class InstituteCampusDto {
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -116,7 +116,7 @@ public class InstituteCampusDto {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -11,13 +11,13 @@ public interface IEducationSystemDAO {
 
 	void update(EducationSystem hobbiesObj);
 
-	EducationSystem get(BigInteger id);
+	EducationSystem get(String id);
 
 	List<EducationSystem> getAll();
 
 	List<EducationSystem> getAllGlobeEducationSystems();
 
-	List<EducationSystem> getEducationSystemsByCountryId(BigInteger countryId);
+	List<EducationSystem> getEducationSystemsByCountryId(String countryId);
 
 	List<Subject> getSubjectByEducationSystem(BigInteger educationSystemId);
 

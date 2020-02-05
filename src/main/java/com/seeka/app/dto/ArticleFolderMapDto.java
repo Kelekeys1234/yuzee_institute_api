@@ -4,16 +4,16 @@ import javax.validation.constraints.NotNull;
 
 public class ArticleFolderMapDto {
 
-    private BigInteger id;
+    private String id;
     @NotNull(message="Folder Id is required")
-    private BigInteger folderId;
+    private String folderId;
     @NotNull(message="Article Id is required")
-    private BigInteger articleId;
+    private String articleId;
 
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -21,14 +21,14 @@ public class ArticleFolderMapDto {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     /**
      * @return the folderId
      */
-    public BigInteger getFolderId() {
+    public String getFolderId() {
         return folderId;
     }
 
@@ -36,14 +36,14 @@ public class ArticleFolderMapDto {
      * @param folderId
      *            the folderId to set
      */
-    public void setFolderId(BigInteger folderId) {
+    public void setFolderId(String folderId) {
         this.folderId = folderId;
     }
 
     /**
      * @return the articleId
      */
-    public BigInteger getArticleId() {
+    public String getArticleId() {
         return articleId;
     }
 
@@ -51,7 +51,7 @@ public class ArticleFolderMapDto {
      * @param articleId
      *            the articleId to set
      */
-    public void setArticleId(BigInteger articleId) {
+    public void setArticleId(String articleId) {
         this.articleId = articleId;
     }
 }

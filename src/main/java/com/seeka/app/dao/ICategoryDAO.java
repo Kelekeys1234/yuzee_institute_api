@@ -9,11 +9,11 @@ public interface ICategoryDAO {
 
      List<CategoryDto> getAllCategories();
 
-     CategoryDto getCategoryById(BigInteger categoryId);
+     CategoryDto getCategoryById(String categoryId);
 
-     Category findCategoryById(BigInteger category);
+     Category findCategoryById(String category);
 
-     Category findById(BigInteger id);
+     Category findById(String id);
 
      boolean saveCategory(Category category);
 

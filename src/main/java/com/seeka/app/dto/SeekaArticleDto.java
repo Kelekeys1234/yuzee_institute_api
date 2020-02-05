@@ -6,12 +6,12 @@ import java.util.List;
 
 public class SeekaArticleDto {
 
-	private BigInteger id;
+	private String id;
 	private String heading;
 	private String content;
 	private String imagepath;
-	private BigInteger categoryId;
-	private BigInteger subcategoryId;
+	private String categoryId;
+	private String subcategoryId;
 	private String author;
 	private Date postDate;
 	private Date expireDate;
@@ -20,19 +20,19 @@ public class SeekaArticleDto {
 	private String websiteUrl;
 	private String url;
 	private String tags;
-	private BigInteger countryId;
-	private BigInteger cityId;
-	private BigInteger facultyId;
-	private BigInteger instituteId;
-	private BigInteger courseId;
+	private String countryId;
+	private String cityId;
+	private String facultyId;
+	private String instituteId;
+	private String courseId;
 
 	private List<ArticleUserDemographicDto> userDemographic;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -60,19 +60,19 @@ public class SeekaArticleDto {
 		this.imagepath = imagepath;
 	}
 
-	public BigInteger getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(BigInteger categoryId) {
+	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
 
-	public BigInteger getSubcategoryId() {
+	public String getSubcategoryId() {
 		return subcategoryId;
 	}
 
-	public void setSubcategoryId(BigInteger subcategoryId) {
+	public void setSubcategoryId(String subcategoryId) {
 		this.subcategoryId = subcategoryId;
 	}
 
@@ -140,43 +140,43 @@ public class SeekaArticleDto {
 		this.tags = tags;
 	}
 
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(BigInteger country) {
+	public void setCountryId(String country) {
 		this.countryId = country;
 	}
 
-	public BigInteger getCityId() {
+	public String getCityId() {
 		return cityId;
 	}
 
-	public void setCityId(BigInteger city) {
+	public void setCityId(String city) {
 		this.cityId = city;
 	}
 
-	public BigInteger getFacultyId() {
+	public String getFacultyId() {
 		return facultyId;
 	}
 
-	public void setFacultyId(BigInteger faculty) {
+	public void setFacultyId(String faculty) {
 		this.facultyId = faculty;
 	}
 
-	public BigInteger getInstituteId() {
+	public String getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(BigInteger institute) {
+	public void setInstituteId(String institute) {
 		this.instituteId = institute;
 	}
 
-	public BigInteger getCourseId() {
+	public String getCourseId() {
 		return courseId;
 	}
 
-	public void setCourseId(BigInteger courses) {
+	public void setCourseId(String courses) {
 		this.courseId = courses;
 	}
 

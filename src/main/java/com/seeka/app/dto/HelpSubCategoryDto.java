@@ -1,14 +1,12 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class HelpSubCategoryDto {
 
-    private BigInteger id;
+    private String id;
     private String name;
     private String createdBy;
     private String updatedBy;
-    private BigInteger categoryId;
+    private String categoryId;
     private Integer helpCount;
     
     public String getName() {
@@ -35,24 +33,24 @@ public class HelpSubCategoryDto {
         this.updatedBy = updatedBy;
     }
 
-    public BigInteger getCategoryId() {
+    public String getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(BigInteger categoryId) {
+    public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

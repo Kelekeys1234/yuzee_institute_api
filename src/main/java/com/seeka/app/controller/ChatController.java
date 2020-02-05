@@ -42,7 +42,7 @@ public class ChatController {
 
 	@PostMapping
 	public ResponseEntity<?> addChat(@RequestParam(name = "file", required = false) final MultipartFile file,
-			@RequestHeader(name = "userId") final BigInteger userId, @ModelAttribute @Valid final ChatRequestDto chatRequestDto,
+			@RequestHeader(name = "userId") final String userId, @ModelAttribute @Valid final ChatRequestDto chatRequestDto,
 			final BindingResult bindingResult) throws ValidationException {
 		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		if (!fieldErrors.isEmpty()) {
@@ -61,7 +61,7 @@ public class ChatController {
 	}
 
 	@PutMapping("{chatId}/assignee/{assigneeId}")
-	public ResponseEntity<?> changeChatAssignee(@PathVariable final BigInteger chatId, @PathVariable final BigInteger assigneeId) throws ValidationException {
+	public ResponseEntity<?> changeChatAssignee(@PathVariable final String chatId, @PathVariable final BigInteger assigneeId) throws ValidationException {
 		iChatService.changeChatAssignee(chatId, assigneeId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Update chat assignee successfully").create();
 	}
@@ -93,7 +93,7 @@ public class ChatController {
 
 	@GetMapping("/entityType/{entityType}/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getChatListBasedOnEntityType(@PathVariable final String entityType, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam final BigInteger initiateFromId, @RequestParam final BigInteger initiateToId)
+			@PathVariable final Integer pageSize, @RequestParam final String initiateFromId, @RequestParam final String initiateToId)
 			throws ValidationException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		ChatResposneDto chatResposneDto = iChatService.getChatListBasedOnEntityType(entityType, initiateFromId, initiateToId, startIndex, pageSize);

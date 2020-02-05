@@ -9,6 +9,6 @@ public interface IInstituteVideoDao {
 
 	void save(InstituteVideos instituteVideo);
 
-	List<InstituteVideos> findByInstituteId(BigInteger id);
+	List<InstituteVideos> findByInstituteId(String id);
 
 }

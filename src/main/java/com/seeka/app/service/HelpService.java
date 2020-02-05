@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -112,7 +111,7 @@ public class HelpService implements IHelpService {
 	private IStorageService iStorageService;
 
 	@Override
-	public Map<String, Object> save(@Valid final HelpDto helpDto, final BigInteger userId) {
+	public Map<String, Object> save(@Valid final HelpDto helpDto, final String userId) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			helpDAO.save(convertDtoToSeekaHelp(helpDto, null, userId));
@@ -125,7 +124,7 @@ public class HelpService implements IHelpService {
 		return response;
 	}
 
-	public SeekaHelp convertDtoToSeekaHelp(final HelpDto dto, final BigInteger id, final BigInteger userId) {
+	public SeekaHelp convertDtoToSeekaHelp(final HelpDto dto, final String id, final String userId) {
 		SeekaHelp seekaHelp = null;
 		if (id != null) {
 			seekaHelp = helpDAO.get(id);
@@ -148,7 +147,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> get(final BigInteger id) {
+	public Map<String, Object> get(final String id) {
 		Map<String, Object> response = new HashMap<>();
 		HelpDto dto = null;
 		try {
@@ -204,7 +203,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> update(final HelpDto helpDto, final BigInteger id, final BigInteger userId) {
+	public Map<String, Object> update(final HelpDto helpDto, final String id, final String userId) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			helpDAO.update(convertDtoToSeekaHelp(helpDto, id, userId));
@@ -297,7 +296,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> getCategory(final BigInteger id) {
+	public Map<String, Object> getCategory(final String id) {
 		Map<String, Object> response = new HashMap<>();
 		HelpCategoryDto dto = null;
 		try {
@@ -328,7 +327,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> getSubCategory(final BigInteger id) {
+	public Map<String, Object> getSubCategory(final String id) {
 		Map<String, Object> response = new HashMap<>();
 		HelpSubCategoryDto dto = null;
 		try {
@@ -361,7 +360,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public List<HelpSubCategoryDto> getSubCategoryByCategory(final BigInteger categoryId, final Integer startIndex, final Integer pageSize) {
+	public List<HelpSubCategoryDto> getSubCategoryByCategory(final String categoryId, final Integer startIndex, final Integer pageSize) {
 		List<HelpSubCategoryDto> subCategoryDtos = new ArrayList<>();
 		List<HelpSubCategory> categories = helpDAO.getSubCategoryByCategory(categoryId, startIndex, pageSize);
 		for (HelpSubCategory helpSubCategory : categories) {
@@ -372,7 +371,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> getHelpByCategory(final BigInteger categoryId) {
+	public Map<String, Object> getHelpByCategory(final String categoryId) {
 		Map<String, Object> response = new HashMap<>();
 		List<HelpDto> helpDtos = new ArrayList<>();
 		try {
@@ -461,7 +460,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> getAnswerByHelpId(final BigInteger helpId) {
+	public Map<String, Object> getAnswerByHelpId(final String helpId) {
 		Map<String, Object> response = new HashMap<>();
 		List<HelpAnswerDto> dtos = new ArrayList<>();
 		try {
@@ -522,7 +521,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> delete(@Valid final BigInteger id) {
+	public Map<String, Object> delete(@Valid final String id) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			SeekaHelp help = helpDAO.get(id);
@@ -546,7 +545,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> updateStatus(final BigInteger id, final BigInteger userId, final String status) {
+	public Map<String, Object> updateStatus(final String id, final String userId, final String status) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			SeekaHelp help = helpDAO.get(id);
@@ -572,7 +571,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public Map<String, Object> filter(final String status, final String mostRecent, final BigInteger categoryId) {
+	public Map<String, Object> filter(final String status, final String mostRecent, final String categoryId) {
 		Map<String, Object> response = new HashMap<>();
 		List<HelpDto> helpDtos = new ArrayList<>();
 		try {
@@ -609,17 +608,17 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public List<SeekaHelp> getUserHelpList(final BigInteger userId, final int startIndex, final Integer pageSize, final Boolean isArchive) {
+	public List<SeekaHelp> getUserHelpList(final String userId, final int startIndex, final Integer pageSize, final Boolean isArchive) {
 		return helpDAO.getAll(startIndex, pageSize, userId, isArchive);
 	}
 
 	@Override
-	public int getUserHelpCount(final BigInteger userId, final Boolean isArchive) {
+	public int getUserHelpCount(final String userId, final Boolean isArchive) {
 		return helpDAO.findTotalHelpRecord(userId, isArchive);
 	}
 
 	@Override
-	public void setIsFavouriteFlag(final BigInteger id, final boolean isFavourite) throws NotFoundException {
+	public void setIsFavouriteFlag(final String id, final boolean isFavourite) throws NotFoundException {
 		helpDAO.setIsFavouriteFlag(id, isFavourite);
 	}
 
@@ -629,12 +628,12 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public int getSubCategoryCount(final BigInteger categoryId) {
+	public int getSubCategoryCount(final String categoryId) {
 		return helpDAO.getSubCategoryCount(categoryId);
 	}
 
 	@Override
-	public void archiveHelpSupport(final BigInteger entityId, final boolean isArchive) {
+	public void archiveHelpSupport(final String entityId, final boolean isArchive) {
 		SeekaHelp seekaHelp = helpDAO.get(entityId);
 		seekaHelp.setIsArchive(isArchive);
 		seekaHelp.setUpdatedBy("API");

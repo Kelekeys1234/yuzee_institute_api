@@ -33,7 +33,7 @@ public class LevelDAO implements ILevelDAO {
     }
 
     @Override
-    public Level get(BigInteger id) {
+    public Level get(String id) {
         Session session = sessionFactory.getCurrentSession();
         Level obj = session.get(Level.class, id);
         return obj;
@@ -56,7 +56,7 @@ public class LevelDAO implements ILevelDAO {
         List<Level> courseTypes = new ArrayList<>();
         for (Object[] row : rows) {
             Level obj = new Level();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setName(row[1].toString());
             courseTypes.add(obj);
         }
@@ -64,7 +64,7 @@ public class LevelDAO implements ILevelDAO {
     }
 
     @Override
-    public List<Level> getLevelByCountryId(BigInteger countryId) {
+    public List<Level> getLevelByCountryId(String countryId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.code as levelkey from level le inner join institute_level il  on il.level_id = le.id "
                         + "inner join country c on c.id = il.country_id " + "where il.country_id = :countryId").setParameter("countryId", countryId);
@@ -72,7 +72,7 @@ public class LevelDAO implements ILevelDAO {
         List<Level> level = new ArrayList<>();
         for (Object[] row : rows) {
             Level obj = new Level();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setName(row[1].toString());
             obj.setCode(row[2].toString());
             level.add(obj);
@@ -91,7 +91,7 @@ public class LevelDAO implements ILevelDAO {
 
         for (Object[] row : rows) {
             Level obj = new Level();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setName(row[1].toString());
             if (row[2] != null) {
                 obj.setCode(row[2].toString());
@@ -103,7 +103,7 @@ public class LevelDAO implements ILevelDAO {
     }
 
     @Override
-    public List<Level> getCountryLevel(BigInteger countryId) {
+    public List<Level> getCountryLevel(String countryId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery(
                         "select distinct ll.id, ll.name as name,ll.code as levelkey from course c inner join institute_level il on il.institute_id = c.institute_id inner join level ll on il.level_id = ll.id "
@@ -113,7 +113,7 @@ public class LevelDAO implements ILevelDAO {
         List<Level> level = new ArrayList<>();
         for (Object[] row : rows) {
             Level obj = new Level();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setName(row[1].toString());
             obj.setCode(row[2].toString());
             level.add(obj);

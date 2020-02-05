@@ -19,7 +19,7 @@ public interface IUserMyCourseService {
 
 	UserMyCourse get(BigInteger userId);
 
-	UserMyCourse getDataByUserIDAndCourseID(BigInteger userId, BigInteger courseId);
+	UserMyCourse getDataByUserIDAndCourseID(BigInteger userId, String courseId);
 
 	List<UserMyCourse> getUserMyCourseByUserID(BigInteger userId);
 

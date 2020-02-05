@@ -23,11 +23,11 @@ public class UserReviewDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 1298861732976808001L;
 
-	private BigInteger id;
+	private String id;
 	@NotNull(message = "userId is required")
-	private BigInteger userId;
+	private String userId;
 	@NotNull(message = "entityId is required")
-	private BigInteger entityId;
+	private String entityId;
 	/**
 	 * Which reviews do you want to share with us : Course or Institute
 	 */
@@ -51,27 +51,27 @@ public class UserReviewDto implements Serializable {
 	@NotNull(message = "ratings is required")
 	private List<UserReviewRating> ratings;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
-	public BigInteger getEntityId() {
+	public String getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(final BigInteger entityId) {
+	public void setEntityId(final String entityId) {
 		this.entityId = entityId;
 	}
 

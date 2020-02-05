@@ -68,7 +68,7 @@ public class FaqService implements IFaqService {
 	}
 
 	@Override
-	public void updateFaq(final FaqRequestDto faqRequestDto, final BigInteger faqId) throws ValidationException {
+	public void updateFaq(final FaqRequestDto faqRequestDto, final String faqId) throws ValidationException {
 		Faq existingFaq = iFaqDao.getFaqDetail(faqId);
 		if (existingFaq == null) {
 			throw new ValidationException("Faq not found for id: " + faqId);
@@ -101,7 +101,7 @@ public class FaqService implements IFaqService {
 	}
 
 	@Override
-	public void deleteFaq(final BigInteger faqId) throws ValidationException {
+	public void deleteFaq(final String faqId) throws ValidationException {
 		/**
 		 * Fetch existing FAQ based on id
 		 */
@@ -116,7 +116,7 @@ public class FaqService implements IFaqService {
 	}
 
 	@Override
-	public List<FaqResponseDto> getFaqList(final Integer startIndex, final Integer pageSize, final BigInteger faqCategoryId, final BigInteger faqSubCategoryId,
+	public List<FaqResponseDto> getFaqList(final Integer startIndex, final Integer pageSize, final String faqCategoryId, final String faqSubCategoryId,
 			final String sortByField, final String sortByType, final String searchKeyword) {
 		List<Faq> faqList = iFaqDao.getFaqList(startIndex, pageSize, faqCategoryId, faqSubCategoryId, sortByField, sortByType, searchKeyword);
 		List<FaqResponseDto> faqResponseDtos = new ArrayList<>();
@@ -138,12 +138,12 @@ public class FaqService implements IFaqService {
 	}
 
 	@Override
-	public int getFaqCount(final BigInteger faqCategoryId, final BigInteger faqSubCategoryId, final String searchKeyword) {
+	public int getFaqCount(final String faqCategoryId, final String faqSubCategoryId, final String searchKeyword) {
 		return iFaqDao.getFaqCount(faqCategoryId, faqSubCategoryId, searchKeyword);
 	}
 
 	@Override
-	public FaqResponseDto getFaqDetail(final BigInteger faqId) {
+	public FaqResponseDto getFaqDetail(final String faqId) {
 		Faq faq = iFaqDao.getFaqDetail(faqId);
 		FaqResponseDto faqResponseDto = new FaqResponseDto();
 		BeanUtils.copyProperties(faq, faqResponseDto);

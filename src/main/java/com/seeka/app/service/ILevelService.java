@@ -13,15 +13,15 @@ public interface ILevelService {
 
     public void update(Level obj);
 
-    public Level get(BigInteger id);
+    public Level get(String id);
 
     public List<Level> getAll();
 
     public List<Level> getCourseTypeByCountryId(BigInteger countryID);
 
-    public List<Level> getLevelByCountryId(BigInteger countryId);
+    public List<Level> getLevelByCountryId(String countryId);
 
     public List<Level> getAllLevelByCountry();
 
-    public Map<String, Object> getCountryLevel(BigInteger countryId);
+    public Map<String, Object> getCountryLevel(String countryId);
 }

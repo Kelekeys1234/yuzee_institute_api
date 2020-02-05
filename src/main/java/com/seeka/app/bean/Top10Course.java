@@ -1,9 +1,6 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "top_10_courses")
@@ -24,9 +23,10 @@ public class Top10Course implements Serializable{
 	private static final long serialVersionUID = -5652852493164776528L;
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private BigInteger id;
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	private String id;
 	
 	@Column(name = "course")
 	private String course;
@@ -74,10 +74,10 @@ public class Top10Course implements Serializable{
 		builder.append("Top10Course [course=").append(course).append(", faculty=").append(faculty).append("]");
 		return builder.toString();
 	}
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public Date getCreatedOn() {

@@ -34,13 +34,13 @@ public class FaqDao implements IFaqDao {
 	}
 
 	@Override
-	public Faq getFaqDetail(final BigInteger faqId) {
+	public Faq getFaqDetail(final String faqId) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.get(Faq.class, faqId);
 	}
 
 	@Override
-	public List<Faq> getFaqList(final Integer startIndex, final Integer pageSize, final BigInteger faqCategoryId, final BigInteger faqSubCategoryId,
+	public List<Faq> getFaqList(final Integer startIndex, final Integer pageSize, final String faqCategoryId, final String faqSubCategoryId,
 			final String sortByField, String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Faq.class, "faq");
@@ -103,7 +103,7 @@ public class FaqDao implements IFaqDao {
 	}
 
 	@Override
-	public int getFaqCount(final BigInteger faqCategoryId, final BigInteger faqSubCategoryId, final String searchKeyword) {
+	public int getFaqCount(final String faqCategoryId, final String faqSubCategoryId, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Faq.class, "faq");
 		criteria.createAlias("faq.faqCategory", "faqCategory");

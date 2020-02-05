@@ -13,16 +13,16 @@ public class EnrollmentDto implements Serializable {
 	 */
 	private static final long serialVersionUID = -2176239464548120692L;
 
-	private BigInteger id;
+	private String id;
 	@NotNull(message = "instituteId is Required")
-	private BigInteger instituteId;
+	private String instituteId;
 	@NotNull(message = "userId is Required")
 	private BigInteger userId;
 	@NotNull(message = "courseId is Required")
-	private BigInteger courseId;
+	private String courseId;
 	private Boolean isInternationalStudent;
 	@NotNull(message = "instituteTypeId is Required")
-	private BigInteger instituteTypeId;
+	private String instituteTypeId;
 	private String previousInstitute;
 	private String previousCourseName;
 	private Date graduationDate;
@@ -46,7 +46,7 @@ public class EnrollmentDto implements Serializable {
 	private String address;
 	private String town;
 	private String state;
-	private BigInteger countryId;
+	private String countryId;
 	private String zipCode;
 	private String phoneNumber;
 	private String email;
@@ -57,19 +57,19 @@ public class EnrollmentDto implements Serializable {
 	private String createdBy;
 	private String updatedBy;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public BigInteger getInstituteId() {
+	public String getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(final BigInteger instituteId) {
+	public void setInstituteId(final String instituteId) {
 		this.instituteId = instituteId;
 	}
 
@@ -81,11 +81,11 @@ public class EnrollmentDto implements Serializable {
 		this.userId = userId;
 	}
 
-	public BigInteger getCourseId() {
+	public String getCourseId() {
 		return courseId;
 	}
 
-	public void setCourseId(final BigInteger courseId) {
+	public void setCourseId(final String courseId) {
 		this.courseId = courseId;
 	}
 
@@ -97,11 +97,11 @@ public class EnrollmentDto implements Serializable {
 		this.isInternationalStudent = isInternationalStudent;
 	}
 
-	public BigInteger getInstituteTypeId() {
+	public String getInstituteTypeId() {
 		return instituteTypeId;
 	}
 
-	public void setInstituteTypeId(final BigInteger instituteTypeId) {
+	public void setInstituteTypeId(final String instituteTypeId) {
 		this.instituteTypeId = instituteTypeId;
 	}
 
@@ -257,11 +257,11 @@ public class EnrollmentDto implements Serializable {
 		this.state = state;
 	}
 
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(final BigInteger countryId) {
+	public void setCountryId(final String countryId) {
 		this.countryId = countryId;
 	}
 

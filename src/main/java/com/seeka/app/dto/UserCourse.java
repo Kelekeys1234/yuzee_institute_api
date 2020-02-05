@@ -7,7 +7,7 @@ public class UserCourse {
 
     private BigInteger userId;
 
-    private List<BigInteger> courses;
+    private List<String> courses;
 
     private String createdBy;
     private String updatedBy;
@@ -30,7 +30,7 @@ public class UserCourse {
     /**
      * @return the courses
      */
-    public List<BigInteger> getCourses() {
+    public List<String> getCourses() {
         return courses;
     }
 
@@ -38,7 +38,7 @@ public class UserCourse {
      * @param courses
      *            the courses to set
      */
-    public void setCourses(List<BigInteger> courses) {
+    public void setCourses(List<String> courses) {
         this.courses = courses;
     }
 

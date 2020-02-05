@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.Top10Course;
@@ -15,7 +14,7 @@ public interface ITop10CourseService {
 
 	List<String> getAllDistinctFaculty();
 
-	List<String> getTop10CourseKeyword(BigInteger facultyId);
+	List<String> getTop10CourseKeyword(String facultyId);
 
 	List<CourseResponseDto> getTop10RandomCoursesForGlobalSearchLandingPage() throws ValidationException;
 }

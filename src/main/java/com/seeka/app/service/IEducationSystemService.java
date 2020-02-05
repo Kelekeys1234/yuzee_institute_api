@@ -18,21 +18,21 @@ public interface IEducationSystemService {
 
 	void update(EducationSystem hobbiesObj);
 
-	EducationSystem get(BigInteger id);
+	EducationSystem get(String id);
 
 	List<EducationSystem> getAll();
 
 	List<EducationSystem> getAllGlobeEducationSystems();
 
-	List<EducationSystem> getEducationSystemsByCountryId(BigInteger countryId);
+	List<EducationSystem> getEducationSystemsByCountryId(String countryId);
 
 	ResponseEntity<?> saveEducationSystems(@Valid EducationSystemDto educationSystem);
 
 //	ResponseEntity<?> saveEducationDetails(@Valid EducationSystemRequest educationSystemDetails);
 
-	EducationSystemResponse getEducationSystemsDetailByUserId(BigInteger userId);
+	EducationSystemResponse getEducationSystemsDetailByUserId(String userId);
 
-	ResponseEntity<?> deleteEducationSystemDetailByUserId(@Valid BigInteger userId);
+	ResponseEntity<?> deleteEducationSystemDetailByUserId(@Valid String userId);
 
 	ResponseEntity<?> calculate(@Valid GradeDto gradeDto);
 

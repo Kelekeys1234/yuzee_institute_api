@@ -28,7 +28,7 @@ public class InterestDao {
         Interest obj = null;
         for (Object[] row : rows) {
             obj = new Interest();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setInterest(row[1].toString());
             interests.add(obj);
         }
@@ -44,7 +44,7 @@ public class InterestDao {
         Interest obj = null;
         for (Object[] row : rows) {
             obj = new Interest();
-            obj.setId(new BigInteger((row[0].toString())));
+            obj.setId(row[0].toString());
             obj.setInterest(row[1].toString());
             interests.add(obj);
         }

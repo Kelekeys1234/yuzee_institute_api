@@ -47,7 +47,7 @@ public class UserReviewController {
 	}
 
 	@GetMapping("/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getUserReview(@PathVariable final BigInteger userId, @PathVariable final Integer pageNumber,
+	public ResponseEntity<?> getUserReview(@PathVariable final String userId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<UserReviewResultDto> userReviewList = iUserReview.getUserReviewList(userId, startIndex, pageSize);
@@ -66,7 +66,7 @@ public class UserReviewController {
 	}
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getUserReviewBasedOnData(@RequestParam(name = "entityId", required = false) final BigInteger entityId,
+	public ResponseEntity<?> getUserReviewBasedOnData(@RequestParam(name = "entityId", required = false) final String entityId,
 			@RequestParam(name = "entityType", required = false) final String entityType, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(required = false) final String sortByType,
 			@RequestParam(required = false) final String searchKeyword) throws ValidationException {
@@ -93,7 +93,7 @@ public class UserReviewController {
 	}
 
 	@GetMapping("/average")
-	public ResponseEntity<?> getUserAverageReviewBasedOnData(@RequestParam(name = "entityId") final BigInteger entityId,
+	public ResponseEntity<?> getUserAverageReviewBasedOnData(@RequestParam(name = "entityId") final String entityId,
 			@RequestParam(name = "entityType") final String entityType) throws ValidationException {
 		UserReviewResultDto userReviewResultDto = iUserReview.getUserAverageReviewBasedOnData(entityId, entityType);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReviewResultDto).setMessage("Get user average review successfully")
@@ -101,13 +101,13 @@ public class UserReviewController {
 	}
 
 	@DeleteMapping("/{userReviewId}")
-	public ResponseEntity<?> deleteUserReview(@PathVariable final BigInteger userReviewId) throws ValidationException {
+	public ResponseEntity<?> deleteUserReview(@PathVariable final String userReviewId) throws ValidationException {
 		iUserReview.deleteUserReview(userReviewId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted user review successfully").create();
 	}
 
 	@GetMapping("/user/{userReviewId}")
-	public ResponseEntity<?> getUserReviewDetails(@PathVariable final BigInteger userReviewId) throws ValidationException {
+	public ResponseEntity<?> getUserReviewDetails(@PathVariable final String userReviewId) throws ValidationException {
 		UserReviewResultDto userReview = iUserReview.getUserReviewDetails(userReviewId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReview).setMessage("Get user review details successfully").create();
 	}

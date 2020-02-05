@@ -21,41 +21,41 @@ public interface IEducationAgentDAO {
 
     public EducationAgent fetchEducationAgent(BigInteger id);
 
-    public void deleteEducationAgent(BigInteger id);
+    public void deleteEducationAgent(String id);
 
-    public List<EducationAgentSkill> fetchEducationAgentSkillByEducationAgentId(BigInteger educationAgent);
+    public List<EducationAgentSkill> fetchEducationAgentSkillByEducationAgentId(String educationAgent);
 
-    public List<AgentServiceOffered> fetchAgentServiceOffered(BigInteger educationAgent);
+    public List<AgentServiceOffered> fetchAgentServiceOffered(String educationAgent);
 
-    public List<AgentEducationDetail> fetchAgentEducationDetail(BigInteger educationAgent);
+    public List<AgentEducationDetail> fetchAgentEducationDetail(String educationAgent);
 
-    public List<AgentMediaDocumentation> fetchAgentMediaDocumentation(BigInteger educationAgent);
+    public List<AgentMediaDocumentation> fetchAgentMediaDocumentation(String educationAgent);
 
-    public List<EducationAgentAccomplishment> fetcheducationAgentAccomplishment(BigInteger educationAgent);
+    public List<EducationAgentAccomplishment> fetcheducationAgentAccomplishment(String educationAgent);
 
     public void saveSkill(Skill skill);
 
-    public Skill fetchSkill(BigInteger id);
+    public Skill fetchSkill(String id);
 
     public void deleteSkill(BigInteger educationAgentId);
 
     public void saveEducationAgentSkill(EducationAgentSkill agentSkill);
 
-    public void deleteEducationAgentSkill(BigInteger educationAgentId);
+    public void deleteEducationAgentSkill(String educationAgentId);
 
     public void saveAgentServiceOffered(AgentServiceOffered agentServiceOffered);
 
-    public void deleteAgentServiceOffered(BigInteger educationAgentId);
+    public void deleteAgentServiceOffered(String educationAgentId);
 
     public void saveAgentEducationDetail(AgentEducationDetail agentEducationDetail);
 
-    public void deleteAgentEducationDetail(BigInteger educationAgentId);
+    public void deleteAgentEducationDetail(String educationAgentId);
 
     public void saveAgentMediaDocumentation(AgentMediaDocumentation agentMediaDocumentation);
 
-    public void deleteAgentMediaDocumentation(BigInteger educationAgentId);
+    public void deleteAgentMediaDocumentation(String educationAgentId);
 
-    public EducationAgent get(BigInteger id);
+    public EducationAgent get(String id);
 
     public int findTotalCount();
 
@@ -63,11 +63,11 @@ public interface IEducationAgentDAO {
 
     public void saveEducationAgentPartnerships(EducationAgentPartnerships educationAgentPartnerships);
 
-    public void deleteEducationAgentPartnerships(BigInteger educationAgent);
+    public void deleteEducationAgentPartnerships(String educationAgent);
 
     public void saveEducationAgentAccomplishment(EducationAgentAccomplishment educationAgentAccomplishment);
 
-    public void deleteEducationAgentAccomplishment(BigInteger educationAgent);
+    public void deleteEducationAgentAccomplishment(String educationAgent);
 
     public List<Skill> getAllSkill();
 

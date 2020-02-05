@@ -56,7 +56,7 @@ public class ScholarshipController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateScholarship(@RequestBody final ScholarshipDto scholarshipDto, final BindingResult bindingResult,
-			@PathVariable final BigInteger id) throws Exception {
+			@PathVariable final String id) throws Exception {
 		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		if (!fieldErrors.isEmpty()) {
 			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
@@ -66,7 +66,7 @@ public class ScholarshipController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> get(@PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> get(@PathVariable final String id) throws Exception {
 		return new GenericResponseHandlers.Builder().setMessage("Get Scholarship Successfully.").setData(iScholarshipService.getScholarshipById(id))
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -74,8 +74,8 @@ public class ScholarshipController {
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllScholarship(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
-			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final BigInteger countryId,
-			@RequestParam(required = false) final BigInteger instituteId, @RequestParam(required = false) final String validity,
+			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String countryId,
+			@RequestParam(required = false) final String instituteId, @RequestParam(required = false) final String validity,
 			@RequestParam(required = false) final Boolean isActive,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn) throws Exception {
 
@@ -97,7 +97,7 @@ public class ScholarshipController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteScholarship(@PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> deleteScholarship(@PathVariable final String id) throws Exception {
 		iScholarshipService.deleteScholarship(id);
 		return new GenericResponseHandlers.Builder().setMessage("delete Scholarship Successfully.").setStatus(HttpStatus.OK).create();
 	}

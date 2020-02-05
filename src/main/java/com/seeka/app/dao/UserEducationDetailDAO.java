@@ -34,7 +34,7 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
 	}
 
 	@Override
-	public UserEducationDetails get(final BigInteger id) {
+	public UserEducationDetails get(final String id) {
 		UserEducationDetails educationDetails = null;
 		if (id != null) {
 			Session session = sessionFactory.getCurrentSession();
@@ -44,7 +44,7 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
 	}
 
 	@Override
-	public UserEducationDetails getUserEducationDetails(final BigInteger userId) {
+	public UserEducationDetails getUserEducationDetails(final String userId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserEducationDetails.class, "userEducationDetails");
 		criteria.add(Restrictions.eq("userEducationDetails.userId", userId));
@@ -52,7 +52,7 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
 		return (UserEducationDetails) criteria.uniqueResult();
 	}
 
-	public String getGradeDetails(final BigInteger countryId, final BigInteger educationSystemId, final String grade) {
+	public String getGradeDetails(final String countryId, final String educationSystemId, final String grade) {
 		String gpaGrade = "0.0";
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(GradeDetails.class);

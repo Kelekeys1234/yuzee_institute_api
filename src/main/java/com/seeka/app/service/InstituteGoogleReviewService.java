@@ -48,12 +48,12 @@ public class InstituteGoogleReviewService implements IInstituteGoogleReviewServi
 	}
 
 	@Override
-	public Double getInstituteAvgGoogleReview(final BigInteger instituteId) {
+	public Double getInstituteAvgGoogleReview(final String instituteId) {
 		return iInstituteGoogleReviewDao.getInstituteAvgGoogleReview(instituteId);
 	}
 
 	@Override
-	public Map<BigInteger, Double> getInstituteAvgGoogleReviewForList(final List<BigInteger> instituteIdList) {
+	public Map<String, Double> getInstituteAvgGoogleReviewForList(final List<String> instituteIdList) {
 		return iInstituteGoogleReviewDao.getInstituteAvgGoogleReviewForList(instituteIdList);
 	}
 

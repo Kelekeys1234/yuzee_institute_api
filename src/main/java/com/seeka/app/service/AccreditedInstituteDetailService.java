@@ -54,7 +54,7 @@ public class AccreditedInstituteDetailService implements IAccreditedInstituteDet
 	}
 
 	@Override
-	public List<AccreditedInstituteDetail> getAccreditedInstituteDetail(final BigInteger accreditedInstituteId) {
+	public List<AccreditedInstituteDetail> getAccreditedInstituteDetail(final String accreditedInstituteId) {
 		return iAccreditedInstituteDetailDao.getAccreditedInstituteDetail(accreditedInstituteId);
 	}
 

@@ -52,7 +52,7 @@ public class FacultyController {
     }
 
     @RequestMapping(value = "/country/{countryId}/level/{levelId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getFacultyeByCountryAndLevelId(@PathVariable BigInteger countryId, @PathVariable BigInteger levelId) throws Exception {
+    public ResponseEntity<?> getFacultyeByCountryAndLevelId(@PathVariable String countryId, @PathVariable String levelId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Faculty> facultyList = facultyService.getFacultyByCountryIdAndLevelId(countryId, levelId);
         response.put("status", 1);
@@ -77,7 +77,7 @@ public class FacultyController {
     }
 
     @RequestMapping(value = "/institute/{instituteId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getFacultyByInstituteId(@Valid @PathVariable BigInteger instituteId) throws Exception {
+    public ResponseEntity<?> getFacultyByInstituteId(@Valid @PathVariable String instituteId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Faculty> faculties = facultyService.getFacultyByInstituteId(instituteId);
         if (faculties != null && !faculties.isEmpty()) {
@@ -107,7 +107,7 @@ public class FacultyController {
     }
     
     @RequestMapping(value = "/course/country/{countryId}/level/{levelId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getCourseFaculty(@PathVariable BigInteger countryId, @PathVariable BigInteger levelId) throws Exception {
+    public ResponseEntity<?> getCourseFaculty(@PathVariable String countryId, @PathVariable String levelId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Faculty> facultyList = facultyService.getCourseFaculty(countryId, levelId);
         response.put("status", 1);

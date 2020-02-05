@@ -43,11 +43,11 @@ public class FacultyLevelService implements IFacultyLevelService {
 	}
 
 	@Override
-	public List<FacultyLevel> getAllFacultyLevelByInstituteId(final BigInteger instituteId) {
+	public List<FacultyLevel> getAllFacultyLevelByInstituteId(final String instituteId) {
 		return dao.getAllFacultyLevelByInstituteId(instituteId);
 	}
 
-	public void deleteFacultyLevel(final BigInteger instituteId) {
+	public void deleteFacultyLevel(final String instituteId) {
 		dao.deleteFacultyLevel(instituteId);
 	}
 

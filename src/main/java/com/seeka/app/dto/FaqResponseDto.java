@@ -11,13 +11,13 @@ public class FaqResponseDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 5744814923342867841L;
 
-	private BigInteger id;
+	private String id;
 	private String title;
 	private String description;
 	private Integer votes;
-	private BigInteger faqCategoryId;
+	private String faqCategoryId;
 	private String faqCategoryName;
-	private BigInteger faqSubCategoryId;
+	private String faqSubCategoryId;
 	private String faqSubCategoryName;
 	private Date createdOn;
 	private Date updatedOn;
@@ -25,11 +25,11 @@ public class FaqResponseDto implements Serializable {
 	private String updatedBy;
 	private Boolean isActive;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -57,11 +57,11 @@ public class FaqResponseDto implements Serializable {
 		this.votes = votes;
 	}
 
-	public BigInteger getFaqCategoryId() {
+	public String getFaqCategoryId() {
 		return faqCategoryId;
 	}
 
-	public void setFaqCategoryId(final BigInteger faqCategoryId) {
+	public void setFaqCategoryId(final String faqCategoryId) {
 		this.faqCategoryId = faqCategoryId;
 	}
 
@@ -73,11 +73,11 @@ public class FaqResponseDto implements Serializable {
 		this.faqCategoryName = faqCategoryName;
 	}
 
-	public BigInteger getFaqSubCategoryId() {
+	public String getFaqSubCategoryId() {
 		return faqSubCategoryId;
 	}
 
-	public void setFaqSubCategoryId(final BigInteger faqSubCategoryId) {
+	public void setFaqSubCategoryId(final String faqSubCategoryId) {
 		this.faqSubCategoryId = faqSubCategoryId;
 	}
 

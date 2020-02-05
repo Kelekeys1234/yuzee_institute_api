@@ -1,7 +1,5 @@
 package com.seeka.app.dto;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.math.BigInteger;
 import java.util.Date;
 
@@ -13,15 +11,18 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
+
 
 @Entity
 @Table(name = "global_search_keyword")
 public class GlobalSearchKeyword {
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private BigInteger id;
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	private String id;
 	@Column(name = "user_id")
 	private BigInteger userId;
 	@Column(name = "search_keyword")
@@ -36,10 +37,10 @@ public class GlobalSearchKeyword {
 	private BigInteger createdBy;
 	@Column(name = "updated_by", length = 50)
 	private BigInteger updatedBy;
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public BigInteger getUserId() {

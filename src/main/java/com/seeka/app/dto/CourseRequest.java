@@ -1,6 +1,5 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -8,12 +7,12 @@ import com.seeka.app.bean.CourseEnglishEligibility;
 
 public class CourseRequest {
 
-	private BigInteger id;
+	private String id;
 	private Integer cId;
-	private BigInteger instituteId;
-	private BigInteger cityId;
-	private BigInteger countryId;
-	private BigInteger facultyId;
+	private String instituteId;
+	private String cityId;
+	private String countryId;
+	private String facultyId;
 	private String name;
 	private String description;
 	private String duration;
@@ -45,7 +44,7 @@ public class CourseRequest {
 	private String facultyName;
 	private String studyMode;
 	private String partFull;
-	private BigInteger levelId;
+	private String levelId;
 	private String levelName;
 	private String availbility;
 	private List<CourseEnglishEligibility> englishEligibility;
@@ -122,42 +121,42 @@ public class CourseRequest {
 	/**
 	 * @return the instituteId
 	 */
-	public BigInteger getInstituteId() {
+	public String getInstituteId() {
 		return instituteId;
 	}
 
 	/**
 	 * @param instituteId the instituteId to set
 	 */
-	public void setInstituteId(final BigInteger instituteId) {
+	public void setInstituteId(final String instituteId) {
 		this.instituteId = instituteId;
 	}
 
 	/**
 	 * @return the cityId
 	 */
-	public BigInteger getCityId() {
+	public String getCityId() {
 		return cityId;
 	}
 
 	/**
 	 * @param cityId the cityId to set
 	 */
-	public void setCityId(final BigInteger cityId) {
+	public void setCityId(final String cityId) {
 		this.cityId = cityId;
 	}
 
 	/**
 	 * @return the facultyId
 	 */
-	public BigInteger getFacultyId() {
+	public String getFacultyId() {
 		return facultyId;
 	}
 
 	/**
 	 * @param facultyId the facultyId to set
 	 */
-	public void setFacultyId(final BigInteger facultyId) {
+	public void setFacultyId(final String facultyId) {
 		this.facultyId = facultyId;
 	}
 
@@ -354,14 +353,14 @@ public class CourseRequest {
 	/**
 	 * @return the countryId
 	 */
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
 	/**
 	 * @param countryId the countryId to set
 	 */
-	public void setCountryId(final BigInteger countryId) {
+	public void setCountryId(final String countryId) {
 		this.countryId = countryId;
 	}
 
@@ -536,14 +535,14 @@ public class CourseRequest {
 	/**
 	 * @return the levelId
 	 */
-	public BigInteger getLevelId() {
+	public String getLevelId() {
 		return levelId;
 	}
 
 	/**
 	 * @param levelId the levelId to set
 	 */
-	public void setLevelId(final BigInteger levelId) {
+	public void setLevelId(final String levelId) {
 		this.levelId = levelId;
 	}
 
@@ -586,14 +585,14 @@ public class CourseRequest {
 	/**
 	 * @return the id
 	 */
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

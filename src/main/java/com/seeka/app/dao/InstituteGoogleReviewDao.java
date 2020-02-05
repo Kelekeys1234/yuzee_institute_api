@@ -57,7 +57,7 @@ public class InstituteGoogleReviewDao implements IInstituteGoogleReviewDao {
 	}
 
 	@Override
-	public Double getInstituteAvgGoogleReview(final BigInteger instituteId) {
+	public Double getInstituteAvgGoogleReview(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(InstituteGoogleReview.class, "instituteGoogleReview");
 		criteria.createAlias("instituteGoogleReview.institute", "institute");
@@ -69,7 +69,7 @@ public class InstituteGoogleReviewDao implements IInstituteGoogleReviewDao {
 	}
 
 	@Override
-	public Map<BigInteger, Double> getInstituteAvgGoogleReviewForList(final List<BigInteger> instituteIdList) {
+	public Map<String, Double> getInstituteAvgGoogleReviewForList(final List<String> instituteIdList) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(InstituteGoogleReview.class, "instituteGoogleReview");
 		criteria.createAlias("instituteGoogleReview.institute", "institute");
@@ -80,10 +80,10 @@ public class InstituteGoogleReviewDao implements IInstituteGoogleReviewDao {
 		projList.add(Projections.avg("instituteGoogleReview.reviewStar"), "reviewStar");
 		criteria.setProjection(projList);
 		List<Object> objectList = criteria.list();
-		Map<BigInteger, Double> resultMap = new HashMap<>();
+		Map<String, Double> resultMap = new HashMap<>();
 		for (Object object : objectList) {
 			Object[] obj1 = (Object[]) object;
-			resultMap.put((BigInteger) obj1[1], (Double) obj1[2]);
+			resultMap.put((String) obj1[1], (Double) obj1[2]);
 		}
 		return resultMap;
 

@@ -20,14 +20,14 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<Course> getRecommendCourse(final BigInteger facultyId, final BigInteger instituteId, final BigInteger countryId, final BigInteger cityId,
-			final Double price, final Double variablePrice, final int pageSize, final List<BigInteger> courseIds) {
+	public List<Course> getRecommendCourse(final String facultyId, final String instituteId, final String countryId, final String cityId,
+			final Double price, final Double variablePrice, final int pageSize, final List<String> courseIds) {
 		return getRelatedCourse(facultyId, instituteId, countryId, cityId, price, variablePrice, pageSize, courseIds, null);
 	}
 
 	@Override
-	public List<Course> getRelatedCourse(final BigInteger facultyId, final BigInteger instituteId, final BigInteger countryId, final BigInteger cityId,
-			final Double price, final Double variablePrice, final int pageSize, final List<BigInteger> courseIds, final String courseName) {
+	public List<Course> getRelatedCourse(final String facultyId, final String instituteId, final String countryId, final String cityId,
+			final Double price, final Double variablePrice, final int pageSize, final List<String> courseIds, final String courseName) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
 		crit.createAlias("course.faculty", "faculty");
@@ -71,7 +71,7 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public List<Course> getCourseNoResultRecommendation(final BigInteger facultyId, final BigInteger countryId, final List<BigInteger> courseIds,
+	public List<Course> getCourseNoResultRecommendation(final String facultyId, final String countryId, final List<String> courseIds,
 			final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
@@ -95,8 +95,8 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 	}
 
 	@Override
-	public List<Course> getCheapestCourse(final BigInteger facultyId, final BigInteger countryId, final BigInteger levelId, final BigInteger cityId,
-			final List<BigInteger> courseIds, final Integer startIndex, final Integer pageSize) {
+	public List<Course> getCheapestCourse(final String facultyId, final String countryId, final String levelId, final String cityId,
+			final List<String> courseIds, final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
 		crit.createAlias("course.faculty", "faculty");

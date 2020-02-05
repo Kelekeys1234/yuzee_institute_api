@@ -42,12 +42,12 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	public City get(BigInteger id) {
+	public City get(String id) {
 		return iCityDAO.get(id);
 	}
 
 	@Override
-	public List<City> getAllCitiesByCountry(BigInteger countryId) {
+	public List<City> getAllCitiesByCountry(String countryId) {
 		return iCityDAO.getAllCitiesByCountry(countryId);
 	}
 

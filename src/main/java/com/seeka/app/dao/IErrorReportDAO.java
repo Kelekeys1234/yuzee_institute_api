@@ -18,7 +18,7 @@ public interface IErrorReportDAO {
 	List<ErrorReport> getAllErrorReport(BigInteger userId, Integer startIndex, Integer pageSize, BigInteger errorReportCategoryId, String errorReportStatus,
 			Date updatedOn, Boolean isFavourite, Boolean isArchive, String sortByField, String sortByType, String searchKeyword);
 
-	ErrorReport getErrorReportById(BigInteger id);
+	ErrorReport getErrorReportById(String id);
 
 	void update(ErrorReport errorReport);
 
@@ -33,5 +33,5 @@ public interface IErrorReportDAO {
 
 	void saveErrorReportCategory(ErrorReportCategory errorReportCategory);
 
-	List<AuditErrorReport> getAuditListByErrorReport(BigInteger errorReportId);
+	List<AuditErrorReport> getAuditListByErrorReport(String errorReportId);
 }

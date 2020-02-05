@@ -13,7 +13,7 @@ public interface IChatDao {
 
 	List<Chat> getChatList(Integer startIndex, Integer pageSize);
 
-	Chat getChat(BigInteger chatId);
+	Chat getChat(String chatId);
 
 	Chat getChatBasedOnEntityId(BigInteger entityId);
 

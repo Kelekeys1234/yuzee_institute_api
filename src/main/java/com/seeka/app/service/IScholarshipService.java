@@ -14,22 +14,22 @@ public interface IScholarshipService {
 
 	void saveScholarship(ScholarshipDto scholarshipDto) throws ValidationException;
 
-	ScholarshipResponseDTO getScholarshipById(BigInteger id);
+	ScholarshipResponseDTO getScholarshipById(String id);
 
-	void updateScholarship(ScholarshipDto scholarshipDto, BigInteger scholarshipId) throws ValidationException;
+	void updateScholarship(ScholarshipDto scholarshipDto, String scholarshipId) throws ValidationException;
 
-	List<ScholarshipResponseDTO> getScholarshipList(Integer startIndex, Integer pageSize, BigInteger countryId, BigInteger instituteId, String validity,
+	List<ScholarshipResponseDTO> getScholarshipList(Integer startIndex, Integer pageSize, String countryId, String instituteId, String validity,
 			Boolean isActive, Date filterDate, String searchKeyword, String sortByField, String sortByType);
 
-	int countScholarshipList(BigInteger countryId, BigInteger instituteId, String validity, Boolean isActive, Date filterDate, String searchKeyword);
+	int countScholarshipList(String countryId, String instituteId, String validity, Boolean isActive, Date filterDate, String searchKeyword);
 
-	void deleteScholarship(BigInteger scholarshipId) throws ValidationException;
+	void deleteScholarship(String scholarshipId) throws ValidationException;
 
-	List<BigInteger> getScholarshipIdsByCountryId(List<BigInteger> countryId, Integer limit);
+	List<String> getScholarshipIdsByCountryId(List<String> countryId, Integer limit);
 
-	List<ScholarshipDto> getAllScholarshipDetailsFromId(List<BigInteger> recommendedScholarships);
+	List<ScholarshipDto> getAllScholarshipDetailsFromId(List<String> recommendedScholarships);
 
-	List<BigInteger> getRandomScholarShipIds(int i);
+	List<String> getRandomScholarShipIds(int i);
 	
 	public Map<String, Object> getScholarshipCountByLevelId(List<Level> levelList);
 }

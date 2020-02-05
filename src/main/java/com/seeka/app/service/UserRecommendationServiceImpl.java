@@ -30,15 +30,15 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	private IStorageService iStorageService;
 
 	@Override
-	public List<Course> getRecommendCourse(final BigInteger courseId, final BigInteger userId) throws ValidationException {
+	public List<Course> getRecommendCourse(final String courseId, final String userId) throws ValidationException {
 		Course existingCourse = iCourseService.getCourseData(courseId);
 		if (existingCourse == null) {
 			throw new ValidationException("Course not found for Id : " + courseId);
 		}
-		BigInteger facultyId = null;
-		BigInteger instituteId = null;
-		BigInteger countryId = null;
-		BigInteger cityId = null;
+		String facultyId = null;
+		String instituteId = null;
+		String countryId = null;
+		String cityId = null;
 		if (existingCourse.getFaculty() != null) {
 			facultyId = existingCourse.getFaculty().getId();
 		}
@@ -55,7 +55,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		Double price = existingCourse.getUsdInternationFee();
 		List<Course> resultList = new ArrayList<>();
 
-		List<BigInteger> courseIds = new ArrayList<>();
+		List<String> courseIds = new ArrayList<>();
 		courseIds.add(courseId);
 		/**
 		 * same faculty , same institute , same country , same city -> with
@@ -149,15 +149,15 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	}
 
 	@Override
-	public List<Course> getRelatedCourse(final BigInteger courseId) throws ValidationException {
+	public List<Course> getRelatedCourse(final String courseId) throws ValidationException {
 		Course existingCourse = iCourseService.getCourseData(courseId);
 		if (existingCourse == null) {
 			throw new ValidationException("Course not found for Id : " + courseId);
 		}
-		BigInteger facultyId = null;
-		BigInteger instituteId = null;
-		BigInteger countryId = null;
-		BigInteger cityId = null;
+		String facultyId = null;
+		String instituteId = null;
+		String countryId = null;
+		String cityId = null;
 		if (existingCourse.getFaculty() != null) {
 			facultyId = existingCourse.getFaculty().getId();
 		}
@@ -251,12 +251,12 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	 * @param resultList
 	 * @return
 	 */
-	private List<Course> getRelatedCoursesPrice(final BigInteger facultyId, final BigInteger instituteId, final BigInteger countryId, final BigInteger cityId,
-			final String courseName, final Double price, final List<Course> resultList, final BigInteger courseId) {
-		List<BigInteger> courseIds = new ArrayList<>();
+	private List<Course> getRelatedCoursesPrice(final String facultyId, final String instituteId, final String countryId, final String cityId,
+			final String courseName, final Double price, final List<Course> resultList, final String courseId) {
+		List<String> courseIds = new ArrayList<>();
 		courseIds.add(courseId);
 		if (!resultList.isEmpty()) {
-			List<BigInteger> list = resultList.stream().map(Course::getId).collect(Collectors.toList());
+			List<String> list = resultList.stream().map(Course::getId).collect(Collectors.toList());
 			courseIds.addAll(list);
 		}
 		int pageSize = 5 - resultList.size();
@@ -277,13 +277,13 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	 * For restricted response for related course
 	 */
 	@Override
-	public List<CourseResponseDto> getCourseRelated(final BigInteger courseId) throws ValidationException {
+	public List<CourseResponseDto> getCourseRelated(final String courseId) throws ValidationException {
 		List<Course> courseList = getRelatedCourse(courseId);
 		return convertCourseToCourseRespone(courseList);
 	}
 
 	@Override
-	public List<CourseResponseDto> getCourseRecommended(final BigInteger courseId) throws ValidationException {
+	public List<CourseResponseDto> getCourseRecommended(final String courseId) throws ValidationException {
 		List<Course> courseList = getRecommendCourse(courseId, null);
 		return convertCourseToCourseRespone(courseList);
 	}
@@ -324,7 +324,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	 * First we find based on faculty and country
 	 */
 	@Override
-	public List<CourseResponseDto> getCourseNoResultRecommendation(final BigInteger facultyId, final BigInteger countryId, final Integer startIndex,
+	public List<CourseResponseDto> getCourseNoResultRecommendation(final String facultyId, final String countryId, final Integer startIndex,
 			final Integer pageSize) throws ValidationException {
 		/**
 		 * Find courses with the same faculty and country
@@ -347,7 +347,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	}
 
 	@Override
-	public List<CourseResponseDto> getCheapestCourse(final BigInteger facultyId, final BigInteger countryId, final BigInteger levelId, final BigInteger cityId,
+	public List<CourseResponseDto> getCheapestCourse(final String facultyId, final String countryId, final String levelId, final String cityId,
 			final Integer startIndex, final Integer pageSize) throws ValidationException {
 		/**
 		 * First we find courses based on same faculty, same country and same level but

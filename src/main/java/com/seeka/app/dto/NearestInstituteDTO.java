@@ -7,7 +7,7 @@ import java.util.List;
 public class NearestInstituteDTO implements Serializable {
 
 	private static final long serialVersionUID = 3205327956325930806L;
-	private BigInteger instituteId;
+	private String instituteId;
 	private String instituteName;
 	private Integer totalCourseCount;
 	private Double minPriceRange;
@@ -16,11 +16,11 @@ public class NearestInstituteDTO implements Serializable {
 	private Double longitude;
 	private List<StorageDto> instituteLogoImages;
 
-	public BigInteger getInstituteId() {
+	public String getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(final BigInteger instituteId) {
+	public void setInstituteId(final String instituteId) {
 		this.instituteId = instituteId;
 	}
 

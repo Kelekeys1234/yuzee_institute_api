@@ -11,11 +11,11 @@ public class CourseSearchDto {
 	private BigInteger currencyId;
 	private BigInteger userId;
 	private List<String> courseKeys;
-	private List<BigInteger> levelIds;
-	private List<BigInteger> facultyIds;
-	private List<BigInteger> countryIds;
-	private List<BigInteger> serviceIds;
-	private List<BigInteger> cityIds;
+	private List<String> levelIds;
+	private List<String> facultyIds;
+	private List<String> countryIds;
+	private List<String> serviceIds;
+	private List<String> cityIds;
 	private Double minCost;
 	private Double maxCost;
 	private Integer minDuration;
@@ -23,7 +23,7 @@ public class CourseSearchDto {
 	private Integer maxSizePerPage;
 	private Integer pageNumber;
 	private CourseSearchFilterDto sortingObj;
-	private BigInteger instituteId;
+	private String instituteId;
 	private boolean sortAsscending;
 	private String sortBy;
 	private String currencyCode;
@@ -61,35 +61,35 @@ public class CourseSearchDto {
 		this.courseKeys = courseKeys;
 	}
 
-	public List<BigInteger> getLevelIds() {
+	public List<String> getLevelIds() {
 		return levelIds;
 	}
 
-	public void setLevelIds(final List<BigInteger> levelIds) {
+	public void setLevelIds(final List<String> levelIds) {
 		this.levelIds = levelIds;
 	}
 
-	public List<BigInteger> getFacultyIds() {
+	public List<String> getFacultyIds() {
 		return facultyIds;
 	}
 
-	public void setFacultyIds(final List<BigInteger> facultyIds) {
+	public void setFacultyIds(final List<String> facultyIds) {
 		this.facultyIds = facultyIds;
 	}
 
-	public List<BigInteger> getCountryIds() {
+	public List<String> getCountryIds() {
 		return countryIds;
 	}
 
-	public void setCountryIds(final List<BigInteger> countryIds) {
+	public void setCountryIds(final List<String> countryIds) {
 		this.countryIds = countryIds;
 	}
 
-	public List<BigInteger> getServiceIds() {
+	public List<String> getServiceIds() {
 		return serviceIds;
 	}
 
-	public void setServiceIds(final List<BigInteger> serviceIds) {
+	public void setServiceIds(final List<String> serviceIds) {
 		this.serviceIds = serviceIds;
 	}
 
@@ -165,19 +165,19 @@ public class CourseSearchDto {
 		this.currencyId = currencyId;
 	}
 
-	public List<BigInteger> getCityIds() {
+	public List<String> getCityIds() {
 		return cityIds;
 	}
 
-	public void setCityIds(final List<BigInteger> cityIds) {
+	public void setCityIds(final List<String> cityIds) {
 		this.cityIds = cityIds;
 	}
 
-	public BigInteger getInstituteId() {
+	public String getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(final BigInteger instituteId) {
+	public void setInstituteId(final String instituteId) {
 		this.instituteId = instituteId;
 	}
 

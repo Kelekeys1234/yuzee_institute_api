@@ -1,12 +1,10 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 import com.seeka.app.bean.Country;
 
 public class EducationSystemDto {
 
-    private BigInteger id;
+    private String id;
     private Country country;
     private String name;
     private String code;
@@ -17,7 +15,7 @@ public class EducationSystemDto {
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -25,7 +23,7 @@ public class EducationSystemDto {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

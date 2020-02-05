@@ -11,18 +11,18 @@ public class UserSearchDTO implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = -180933182938458432L;
-	private BigInteger id;
+	private String id;
 	@NotNull(message = "searchString is required")
 	private String searchString;
 	private BigInteger userId;
 	@NotNull(message = "entityType is required")
 	private String entityType;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

@@ -11,7 +11,7 @@ public interface IArticleDAO {
 	List<SeekaArticles> getAll(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword, List<BigInteger> categoryId,
 			List<String> tags, Boolean status, Date filterDate);
 
-	SeekaArticles findById(BigInteger uId);
+	SeekaArticles findById(String uId);
 
 	SeekaArticles deleteArticle(SeekaArticles article);
 
@@ -26,6 +26,6 @@ public interface IArticleDAO {
 
 	int getTotalAuthorCount(String searchString);
 
-	List<SeekaArticles> findArticleByCountryId(BigInteger countryId, String categoryName, Integer count, List<BigInteger> viewArticleIds);
+	List<SeekaArticles> findArticleByCountryId(String countryId, String categoryName, Integer count, List<BigInteger> viewArticleIds);
 
 }

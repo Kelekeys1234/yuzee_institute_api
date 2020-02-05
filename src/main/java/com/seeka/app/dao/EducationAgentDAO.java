@@ -113,35 +113,35 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     @Override
-    public void deleteEducationAgentSkill(BigInteger educationAgentId) {
+    public void deleteEducationAgentSkill(String educationAgentId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("DELETE FROM education_agent_skill WHERE education_agent =" + educationAgentId);
         query.executeUpdate();
     }
 
     @Override
-    public void deleteAgentServiceOffered(BigInteger educationAgentId) {
+    public void deleteAgentServiceOffered(String educationAgentId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("DELETE FROM agent_service_offered WHERE education_agent =" + educationAgentId);
         query.executeUpdate();
     }
 
     @Override
-    public void deleteAgentEducationDetail(BigInteger educationAgentId) {
+    public void deleteAgentEducationDetail(String educationAgentId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("DELETE FROM agent_education_detail WHERE education_agent =" + educationAgentId);
         query.executeUpdate();
     }
 
     @Override
-    public void deleteAgentMediaDocumentation(BigInteger educationAgentId) {
+    public void deleteAgentMediaDocumentation(String educationAgentId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("DELETE FROM agent_media_documentation WHERE education_agent =" + educationAgentId);
         query.executeUpdate();
     }
 
     @Override
-    public Skill fetchSkill(BigInteger id) {
+    public Skill fetchSkill(String id) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(Skill.class);
         crit.add(Restrictions.eq("id", id));
@@ -149,7 +149,7 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     @Override
-    public EducationAgent get(BigInteger id) {
+    public EducationAgent get(String id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(EducationAgent.class, id);
     }
@@ -246,7 +246,7 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     @Override
-    public List<EducationAgentSkill> fetchEducationAgentSkillByEducationAgentId(BigInteger educationAgent) {
+    public List<EducationAgentSkill> fetchEducationAgentSkillByEducationAgentId(String educationAgent) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(EducationAgentSkill.class);
         List<EducationAgentSkill> agentSkills = crit.add(Restrictions.eq("educationAgent.id", educationAgent)).list();
@@ -254,7 +254,7 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     @Override
-    public List<AgentServiceOffered> fetchAgentServiceOffered(BigInteger educationAgent) {
+    public List<AgentServiceOffered> fetchAgentServiceOffered(String educationAgent) {
         Session session = sessionFactory.getCurrentSession();
         List<AgentServiceOffered> agentServiceOffereds = new ArrayList<>();
         List<Object[]> agentService = session
@@ -263,16 +263,16 @@ public class EducationAgentDAO implements IEducationAgentDAO {
             AgentServiceOffered agentServiceOffered = new AgentServiceOffered();
             Service service = new Service();
             agentServiceOffered.setAmount(Double.parseDouble(obj[0].toString()));
-            service.setId(new BigInteger(obj[1].toString()));
+            service.setId(obj[1].toString());
             agentServiceOffered.setService(service);
-            agentServiceOffered.setCurrency(new BigInteger(obj[2].toString()));
+            agentServiceOffered.setCurrency(obj[2].toString());
             agentServiceOffereds.add(agentServiceOffered);
         }
         return agentServiceOffereds;
     }
 
     @Override
-    public List<AgentEducationDetail> fetchAgentEducationDetail(BigInteger educationAgent) {
+    public List<AgentEducationDetail> fetchAgentEducationDetail(String educationAgent) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(AgentEducationDetail.class);
         List<AgentEducationDetail> agentEducationDetails = crit.add(Restrictions.eq("educationAgent.id", educationAgent)).list();
@@ -280,7 +280,7 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     @Override
-    public List<AgentMediaDocumentation> fetchAgentMediaDocumentation(BigInteger educationAgent) {
+    public List<AgentMediaDocumentation> fetchAgentMediaDocumentation(String educationAgent) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(AgentMediaDocumentation.class);
         List<AgentMediaDocumentation> agentMediaDocumentations = crit.add(Restrictions.eq("educationAgent.id", educationAgent)).list();
@@ -298,14 +298,14 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     @Override
-    public void deleteEducationAgent(BigInteger id) {
+    public void deleteEducationAgent(String id) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("DELETE FROM education_agent WHERE id =" + id);
         query.executeUpdate();
     }
 
     @Override
-    public void deleteEducationAgentPartnerships(BigInteger educationAgentId) {
+    public void deleteEducationAgentPartnerships(String educationAgentId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("DELETE FROM education_agent_partnerships WHERE education_agent =" + educationAgentId);
         query.executeUpdate();
@@ -323,14 +323,14 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     @Override
-    public void deleteEducationAgentAccomplishment(BigInteger educationAgent) {
+    public void deleteEducationAgentAccomplishment(String educationAgent) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("DELETE FROM education_agent_accomplishment WHERE education_agent =" + educationAgent);
         query.executeUpdate();
     }
 
     @Override
-    public List<EducationAgentAccomplishment> fetcheducationAgentAccomplishment(BigInteger educationAgent) {
+    public List<EducationAgentAccomplishment> fetcheducationAgentAccomplishment(String educationAgent) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(EducationAgentAccomplishment.class);
         List<EducationAgentAccomplishment> agentAccomplishments = crit.add(Restrictions.eq("educationAgent.id", educationAgent)).list();

@@ -142,17 +142,17 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public Institute get(final BigInteger id) {
+	public Institute get(final String id) {
 		return dao.get(id);
 	}
 
 	@Override
-	public List<BigInteger> getTopInstituteIdByCountry(final BigInteger countryId/* , Long startIndex, Long pageSize */) {
+	public List<String> getTopInstituteIdByCountry(final String countryId/* , Long startIndex, Long pageSize */) {
 		return dao.getTopInstituteByCountry(countryId/* , startIndex, pageSize */);
 	}
 
 	@Override
-	public List<BigInteger> getRandomInstituteIdByCountry(final List<BigInteger> countryIdList/* , Long startIndex, Long pageSize */) {
+	public List<String> getRandomInstituteIdByCountry(final List<String> countryIdList/* , Long startIndex, Long pageSize */) {
 		return dao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
 	}
 
@@ -168,19 +168,19 @@ public class InstituteService implements IInstituteService {
 
 	@Override
 	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto filterObj, final String sortByField, final String sortByType,
-			final String searchKeyword, final Integer startIndex, final BigInteger cityId, final BigInteger instituteTypeId, final Boolean isActive,
+			final String searchKeyword, final Integer startIndex, final String cityId, final String instituteTypeId, final Boolean isActive,
 			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) {
 		return dao.getAllInstitutesByFilter(filterObj, sortByField, sortByType, searchKeyword, startIndex, cityId, instituteTypeId, isActive, updatedOn,
 				fromWorldRanking, toWorldRanking, campusType);
 	}
 
 	@Override
-	public InstituteResponseDto getInstituteByID(final BigInteger instituteId) {
+	public InstituteResponseDto getInstituteByID(final String instituteId) {
 		return dao.getInstituteByID(instituteId);
 	}
 
 	@Override
-	public List<InstituteResponseDto> getAllInstituteByID(final Collection<BigInteger> listInstituteId) throws ValidationException {
+	public List<InstituteResponseDto> getAllInstituteByID(final Collection<String> listInstituteId) throws ValidationException {
 		List<Institute> inistituteList = dao.getAllInstituteByID(listInstituteId);
 		List<InstituteResponseDto> instituteResponseDTOList = new ArrayList<>();
 		for (Institute institute : inistituteList) {
@@ -237,7 +237,7 @@ public class InstituteService implements IInstituteService {
 					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
 				}
 				if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
-					Map<BigInteger, String> facultyIdNameMap = saveFacultyLevel(institute, instituteRequest.getFacultyIds());
+					Map<String, String> facultyIdNameMap = saveFacultyLevel(institute, instituteRequest.getFacultyIds());
 					List<String> facultyNames = new ArrayList<>(facultyIdNameMap.values());
 					instituteElasticSearchDto.setFacultyNames(facultyNames);
 				}
@@ -294,11 +294,11 @@ public class InstituteService implements IInstituteService {
 		instituteDomesticRankingHistoryDAO.save(domesticRanking);
 	}
 
-	private Map<String, String> saveInstituteLevel(final Institute institute, final List<BigInteger> levelIds) {
+	private Map<String, String> saveInstituteLevel(final Institute institute, final List<String> levelIds) {
 		iInstituteLevelService.deleteInstituteLevel(institute.getId());
 		Map<String, String> levelNameLevelCodeMap = new HashMap<>(); // contains Map<LevelName, LevelCode>
 
-		for (BigInteger levelId : levelIds) {
+		for (String levelId : levelIds) {
 			Level level = levelService.get(levelId);
 			InstituteLevel instituteLevel = new InstituteLevel();
 			instituteLevel.setLevel(level);
@@ -316,10 +316,10 @@ public class InstituteService implements IInstituteService {
 		return levelNameLevelCodeMap;
 	}
 
-	private Map<BigInteger, String> saveFacultyLevel(final Institute institute, final List<BigInteger> facultyIds) {
+	private Map<String, String> saveFacultyLevel(final Institute institute, final List<String> facultyIds) {
 		iFacultyLevelService.deleteFacultyLevel(institute.getId());
-		Map<BigInteger, String> facultyIdNameMap = new HashMap<>();
-		for (BigInteger facultyId : facultyIds) {
+		Map<String, String> facultyIdNameMap = new HashMap<>();
+		for (String facultyId : facultyIds) {
 			Faculty faculty = iFacultyService.get(facultyId);
 			FacultyLevel facultyLevel = new FacultyLevel();
 			facultyLevel.setFaculty(faculty);
@@ -336,7 +336,7 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public Map<String, Object> update(final List<InstituteRequestDto> instituteRequests, @Valid final BigInteger id) {
+	public Map<String, Object> update(final List<InstituteRequestDto> instituteRequests, @Valid final String id) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
@@ -356,7 +356,7 @@ public class InstituteService implements IInstituteService {
 					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
 				}
 				if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
-					Map<BigInteger, String> facultyIdNameMap = saveFacultyLevel(institute, instituteRequest.getFacultyIds());
+					Map<String, String> facultyIdNameMap = saveFacultyLevel(institute, instituteRequest.getFacultyIds());
 					List<String> facultyNames = (List<String>) facultyIdNameMap.values();
 					instituteElasticSearchDto.setFacultyNames(facultyNames);
 				}
@@ -401,7 +401,7 @@ public class InstituteService implements IInstituteService {
 		}
 	}
 
-	private List<InstituteMedia> getInstituteMedia(final BigInteger instituteId) {
+	private List<InstituteMedia> getInstituteMedia(final String instituteId) {
 		List<InstituteVideos> instituteVideos = instituteVideoDao.findByInstituteId(instituteId);
 		List<InstituteMedia> instituteMedias = new ArrayList<>();
 		for (InstituteVideos instituteVideos2 : instituteVideos) {
@@ -412,7 +412,7 @@ public class InstituteService implements IInstituteService {
 		return instituteMedias;
 	}
 
-	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final BigInteger id) throws ValidationException {
+	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException {
 		Institute institute = null;
 		if (id != null) {
 			institute = dao.get(id);
@@ -504,9 +504,9 @@ public class InstituteService implements IInstituteService {
 		}
 	}
 
-	private void saveAccreditedInstituteDetails(final Institute institute, final List<BigInteger> accreditation) {
+	private void saveAccreditedInstituteDetails(final Institute institute, final List<String> accreditation) {
 		accreditedInstituteDetailDao.deleteAccreditedInstitueDetailByEntityId(institute.getId());
-		for (BigInteger accreditedInstituteDetail2 : accreditation) {
+		for (String accreditedInstituteDetail2 : accreditation) {
 			AccreditedInstituteDetail accreditedInstituteDetail = new AccreditedInstituteDetail();
 			accreditedInstituteDetail.setEntityId(institute.getId());
 			accreditedInstituteDetail.setEntityType("INSTITUTE");
@@ -515,9 +515,9 @@ public class InstituteService implements IInstituteService {
 		}
 	}
 
-	private void saveInstituteService(final Institute institute, final List<BigInteger> offerService) {
+	private void saveInstituteService(final Institute institute, final List<String> offerService) {
 		dao.deleteInstituteService(institute.getId());
-		for (BigInteger id : offerService) {
+		for (String id : offerService) {
 			com.seeka.app.bean.Service service = serviceDetailsDAO.getServiceById(id);
 			com.seeka.app.bean.InstituteService instituteServiceDetails = new com.seeka.app.bean.InstituteService();
 			instituteServiceDetails.setInstitute(institute);
@@ -531,7 +531,7 @@ public class InstituteService implements IInstituteService {
 		}
 	}
 
-	private InstituteCategoryType getInstituteCategoryType(final BigInteger instituteCategoryTypeId) {
+	private InstituteCategoryType getInstituteCategoryType(final String instituteCategoryTypeId) {
 		return dao.getInstituteCategoryType(instituteCategoryTypeId);
 	}
 
@@ -603,7 +603,7 @@ public class InstituteService implements IInstituteService {
 		return images;
 	}
 
-	private List<InstituteDetailsGetRequest> getInstituteDetails(final BigInteger id) {
+	private List<InstituteDetailsGetRequest> getInstituteDetails(final String id) {
 		List<InstituteDetailsGetRequest> instituteDetailsGetRequests = new ArrayList<>();
 		Institute dto = dao.get(id);
 		InstituteDetailsGetRequest instituteDetail = new InstituteDetailsGetRequest();
@@ -625,7 +625,7 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<InstituteRequestDto> getById(final BigInteger id) throws ValidationException {
+	public List<InstituteRequestDto> getById(final String id) throws ValidationException {
 		InstituteRequestDto instituteRequestDto = null;
 		List<InstituteRequestDto> instituteRequestDtos = new ArrayList<>();
 		Institute institute = dao.get(id);
@@ -665,7 +665,7 @@ public class InstituteService implements IInstituteService {
 		return instituteRequestDtos;
 	}
 
-	private List<BigInteger> getFacultyLevelData(final BigInteger id) {
+	private List<String> getFacultyLevelData(final String id) {
 		List<FacultyLevel> facultyLevel = iFacultyLevelService.getAllFacultyLevelByInstituteId(id);
 		if (facultyLevel != null && !facultyLevel.isEmpty()) {
 			return facultyLevel.stream().map(i -> i.getFaculty().getId()).collect(Collectors.toList());
@@ -674,7 +674,7 @@ public class InstituteService implements IInstituteService {
 		}
 	}
 
-	private List<BigInteger> getInstituteLevelData(final BigInteger id) {
+	private List<String> getInstituteLevelData(final String id) {
 		List<InstituteLevel> instituteLevel = iInstituteLevelService.getAllLevelByInstituteId(id);
 		if (instituteLevel != null && !instituteLevel.isEmpty()) {
 			return instituteLevel.stream().map(i -> i.getLevel().getId()).collect(Collectors.toList());
@@ -683,15 +683,15 @@ public class InstituteService implements IInstituteService {
 		}
 	}
 
-	private List<String> getIntakes(@Valid final BigInteger id) {
+	private List<String> getIntakes(@Valid final String id) {
 		return dao.getIntakesById(id);
 	}
 
-	private List<BigInteger> getAccreditation(@Valid final BigInteger id) {
+	private List<String> getAccreditation(@Valid final String id) {
 		return accreditedInstituteDetailDao.getAccreditation(id);
 	}
 
-	private List<BigInteger> getOfferServices(final BigInteger id) {
+	private List<String> getOfferServices(final String id) {
 		return serviceDetailsDAO.getServicesById(id);
 	}
 
@@ -818,7 +818,7 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public void deleteInstitute(final BigInteger id) throws ValidationException {
+	public void deleteInstitute(final String id) throws ValidationException {
 		Institute institute = dao.get(id);
 		if (institute != null) {
 			institute.setIsActive(false);
@@ -841,14 +841,14 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<BigInteger> getInstituteIdsFromCountry(final List<BigInteger> distinctCountryIds) {
+	public List<String> getInstituteIdsFromCountry(final List<String> distinctCountryIds) {
 
-		List<BigInteger> instituteIds = dao.getInstitudeByCountry(distinctCountryIds);
+		List<String> instituteIds = dao.getInstitudeByCountry(distinctCountryIds);
 		return instituteIds;
 	}
 
 	@Override
-	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final BigInteger cityId, final BigInteger instituteTypeId,
+	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final String cityId, final String instituteTypeId,
 			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) {
 		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking,
 				campusType);

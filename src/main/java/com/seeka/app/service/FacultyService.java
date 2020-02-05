@@ -29,7 +29,7 @@ public class FacultyService implements IFacultyService {
 	}
 
 	@Override
-	public Faculty get(final BigInteger id) {
+	public Faculty get(final String id) {
 		return dao.get(id);
 	}
 
@@ -43,7 +43,7 @@ public class FacultyService implements IFacultyService {
 	}
 
 	@Override
-	public List<Faculty> getFacultyByCountryIdAndLevelId(final BigInteger countryID, final BigInteger levelId) {
+	public List<Faculty> getFacultyByCountryIdAndLevelId(final String countryID, final String levelId) {
 		return dao.getFacultyByCountryIdAndLevelId(countryID, levelId);
 	}
 
@@ -53,7 +53,7 @@ public class FacultyService implements IFacultyService {
 	}
 
 	@Override
-	public List<Faculty> getFacultyByInstituteId(final BigInteger instituteId) {
+	public List<Faculty> getFacultyByInstituteId(final String instituteId) {
 		return dao.getFacultyByInstituteId(instituteId);
 	}
 
@@ -68,7 +68,7 @@ public class FacultyService implements IFacultyService {
 	}
 
 	@Override
-	public List<Faculty> getCourseFaculty(final BigInteger countryId, final BigInteger levelId) {
+	public List<Faculty> getCourseFaculty(final String countryId, final String levelId) {
 		return dao.getCourseFaculty(countryId, levelId);
 	}
 

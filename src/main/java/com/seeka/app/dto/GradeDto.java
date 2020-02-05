@@ -5,14 +5,14 @@ import java.util.List;
 
 public class GradeDto {
 
-    private BigInteger countryId;
-    private BigInteger educationSystemId;
+    private String countryId;
+    private String educationSystemId;
     private List<String> subjectGrades;
 
     /**
      * @return the countryId
      */
-    public BigInteger getCountryId() {
+    public String getCountryId() {
         return countryId;
     }
 
@@ -20,14 +20,14 @@ public class GradeDto {
      * @param countryId
      *            the countryId to set
      */
-    public void setCountryId(BigInteger countryId) {
+    public void setCountryId(String countryId) {
         this.countryId = countryId;
     }
 
     /**
      * @return the educationSystemId
      */
-    public BigInteger getEducationSystemId() {
+    public String getEducationSystemId() {
         return educationSystemId;
     }
 
@@ -35,7 +35,7 @@ public class GradeDto {
      * @param educationSystemId
      *            the educationSystemId to set
      */
-    public void setEducationSystemId(BigInteger educationSystemId) {
+    public void setEducationSystemId(String educationSystemId) {
         this.educationSystemId = educationSystemId;
     }
 

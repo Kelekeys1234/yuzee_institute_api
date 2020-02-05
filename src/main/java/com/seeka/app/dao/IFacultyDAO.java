@@ -11,19 +11,19 @@ public interface IFacultyDAO {
 
 	void update(Faculty obj);
 
-	Faculty get(BigInteger id);
+	Faculty get(String id);
 
 	List<Faculty> getAll();
 
-	List<Faculty> getFacultyByCountryIdAndLevelId(BigInteger countryID, BigInteger levelId);
+	List<Faculty> getFacultyByCountryIdAndLevelId(String countryID, String levelId);
 
 	List<Faculty> getAllFacultyByCountryIdAndLevel();
 
-	List<Faculty> getFacultyByInstituteId(BigInteger instituteId);
+	List<Faculty> getFacultyByInstituteId(String instituteId);
 
 	List<Faculty> getFacultyByListOfInstituteId(String instituteId);
 
-	List<Faculty> getCourseFaculty(BigInteger countryId, BigInteger levelId);
+	List<Faculty> getCourseFaculty(String countryId, String levelId);
 
 	List<Faculty> getFacultyListByFacultyNames(List<String> facultyNameList);
 

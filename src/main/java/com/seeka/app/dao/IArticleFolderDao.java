@@ -9,7 +9,7 @@ public interface IArticleFolderDao {
 
 	void save(ArticleFolder articleFolder);
 
-	ArticleFolder findById(BigInteger id);
+	ArticleFolder findById(String id);
 
 	List<ArticleFolder> getAllArticleFolder();
 

@@ -70,7 +70,7 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public Institute get(final BigInteger id) {
+	public Institute get(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Institute.class, "institute");
 		criteria.add(Restrictions.eq("institute.id", id));
@@ -78,9 +78,9 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<BigInteger> getTopInstituteByCountry(final BigInteger countryId/* , Long startIndex, Long pageSize */) {
+	public List<String> getTopInstituteByCountry(final String countryId/* , Long startIndex, Long pageSize */) {
 		Session session = sessionFactory.getCurrentSession();
-		List<BigInteger> idList = session.createNativeQuery("select id from institute where country_id = ? order by world_ranking").setParameter(1, countryId)
+		List<String> idList = session.createNativeQuery("select id from institute where country_id = ? order by world_ranking").setParameter(1, countryId)
 				.getResultList();
 		// .setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
 
@@ -114,7 +114,7 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final BigInteger cityId, final BigInteger instituteId,
+	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final String cityId, final String instituteId,
 			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) {
 		Session session = sessionFactory.getCurrentSession();
 
@@ -165,7 +165,7 @@ public class InstituteDAO implements IInstituteDAO {
 
 	@Override
 	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto courseSearchDto, final String sortByField, String sortByType,
-			final String searchKeyword, final Integer startIndex, final BigInteger cityId, final BigInteger instituteId, final Boolean isActive,
+			final String searchKeyword, final Integer startIndex, final String cityId, final String instituteId, final Boolean isActive,
 			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) {
 		Session session = sessionFactory.getCurrentSession();
 
@@ -248,7 +248,7 @@ public class InstituteDAO implements IInstituteDAO {
 		InstituteResponseDto instituteResponseDto = null;
 		for (Object[] row : rows) {
 			instituteResponseDto = new InstituteResponseDto();
-			instituteResponseDto.setId(new BigInteger(String.valueOf(row[0])));
+			instituteResponseDto.setId(String.valueOf(row[0]));
 			instituteResponseDto.setName(String.valueOf(row[1]));
 			instituteResponseDto.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
 			instituteResponseDto.setCityName(String.valueOf(row[2]));
@@ -265,8 +265,8 @@ public class InstituteDAO implements IInstituteDAO {
 				instituteResponseDto.setStars(0);
 			}
 
-			instituteResponseDto.setCountryId(new BigInteger(String.valueOf(row[7])));
-			instituteResponseDto.setCityId(new BigInteger(String.valueOf(row[8])));
+			instituteResponseDto.setCountryId(String.valueOf(row[7]));
+			instituteResponseDto.setCityId(String.valueOf(row[8]));
 			instituteResponseDto.setUpdatedOn((Date) row[9]);
 			instituteResponseDto.setInstituteType(String.valueOf(row[10]));
 			instituteResponseDto.setCampusType(String.valueOf(row[11]));
@@ -286,7 +286,7 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public InstituteResponseDto getInstituteByID(final BigInteger instituteId) {
+	public InstituteResponseDto getInstituteByID(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
 				+ "ctry.name as countryName,crs.world_ranking,crs.stars,crs.totalCourse from institute inst  inner join country ctry  "
@@ -299,7 +299,7 @@ public class InstituteDAO implements IInstituteDAO {
 		InstituteResponseDto obj = null;
 		for (Object[] row : rows) {
 			obj = new InstituteResponseDto();
-			obj.setId(new BigInteger(String.valueOf(row[0])));
+			obj.setId(String.valueOf(row[0]));
 			obj.setName(String.valueOf(row[1]));
 			obj.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
 			if (row[4] != null) {
@@ -311,7 +311,7 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<Institute> getAllInstituteByID(final Collection<BigInteger> instituteId) {
+	public List<Institute> getAllInstituteByID(final Collection<String> instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Institute.class, "institute");
 		crit.add(Restrictions.in("id", instituteId));
@@ -332,7 +332,7 @@ public class InstituteDAO implements IInstituteDAO {
 		InstituteResponseDto instituteResponseDto = null;
 		for (Object[] row : rows) {
 			instituteResponseDto = new InstituteResponseDto();
-			instituteResponseDto.setId(new BigInteger(String.valueOf(row[0])));
+			instituteResponseDto.setId(String.valueOf(row[0]));
 			instituteResponseDto.setName(String.valueOf(row[1]));
 			instituteResponseDtos.add(instituteResponseDto);
 		}
@@ -354,12 +354,12 @@ public class InstituteDAO implements IInstituteDAO {
 		InstituteResponseDto instituteResponseDto = null;
 		for (Object[] row : rows) {
 			instituteResponseDto = new InstituteResponseDto();
-			instituteResponseDto.setId(new BigInteger(String.valueOf(row[0])));
+			instituteResponseDto.setId(String.valueOf(row[0]));
 			instituteResponseDto.setName(String.valueOf(row[1]));
 			instituteResponseDtos.add(instituteResponseDto);
 		}
 		InstituteResponseDto instituteResponseDto1 = new InstituteResponseDto();
-		instituteResponseDto1.setId(new BigInteger("111111"));
+		instituteResponseDto1.setId(("111111"));
 		instituteResponseDto1.setName("All");
 		instituteResponseDtos.add(instituteResponseDto1);
 		return instituteResponseDtos;
@@ -374,7 +374,7 @@ public class InstituteDAO implements IInstituteDAO {
 		Institute obj = null;
 		for (Object[] row : rows) {
 			obj = new Institute();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			if (row[2] != null) {
 				obj.setCountry(getCountry(new BigInteger(row[2].toString()), session));
@@ -429,7 +429,7 @@ public class InstituteDAO implements IInstituteDAO {
 		Institute obj = null;
 		for (Object[] row : rows) {
 			obj = new Institute();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			if (row[1] != null) {
 				obj.setName(row[1].toString());
 			}
@@ -469,7 +469,7 @@ public class InstituteDAO implements IInstituteDAO {
 		Service obj = null;
 		for (Object[] row : rows) {
 			obj = new Service();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			if (row[2] != null) {
 				obj.setDescription(row[2].toString());
@@ -491,7 +491,7 @@ public class InstituteDAO implements IInstituteDAO {
 		Institute obj = null;
 		for (Object[] row : rows) {
 			obj = new Institute();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			if (row[2] != null) {
 				obj.setCountry(getCountry(new BigInteger(row[2].toString()), session));
@@ -590,7 +590,7 @@ public class InstituteDAO implements IInstituteDAO {
 		Institute obj = null;
 		for (Object[] row : rows) {
 			obj = new Institute();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			if (row[1] != null) {
 				obj.setName(row[1].toString());
 			}
@@ -640,7 +640,7 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public InstituteCategoryType getInstituteCategoryType(final BigInteger instituteCategoryTypeId) {
+	public InstituteCategoryType getInstituteCategoryType(final String instituteCategoryTypeId) {
 		InstituteCategoryType obj = null;
 		if (instituteCategoryTypeId != null) {
 			Session session = sessionFactory.getCurrentSession();
@@ -650,7 +650,7 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<Institute> getSecondayCampus(final BigInteger countryId, final BigInteger cityId, final String name) {
+	public List<Institute> getSecondayCampus(final String countryId, final String cityId, final String name) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Institute.class);
 		crit.add(Restrictions.eq("country.id", countryId));
@@ -667,7 +667,7 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public void deleteInstituteService(final BigInteger id) {
+	public void deleteInstituteService(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		Query q = session.createQuery("delete from InstituteService where institute_id =" + id);
 		q.executeUpdate();
@@ -682,14 +682,14 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public void deleteInstituteIntakeById(final BigInteger id) {
+	public void deleteInstituteIntakeById(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery("DELETE FROM institute_intake WHERE entity_id =" + id);
 		query.executeUpdate();
 	}
 
 	@Override
-	public List<String> getIntakesById(@Valid final BigInteger id) {
+	public List<String> getIntakesById(@Valid final String id) {
 		List<String> list = new ArrayList<>();
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(InstituteIntake.class);
@@ -727,19 +727,19 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<BigInteger> getInstitudeByCountry(final List<BigInteger> distinctCountryIds) {
+	public List<String> getInstitudeByCountry(final List<String> distinctCountryIds) {
 		Session session = sessionFactory.getCurrentSession();
-		String ids = distinctCountryIds.stream().map(BigInteger::toString).collect(Collectors.joining(","));
-		List<BigInteger> instituteIds = session.createNativeQuery("SELECT ID FROM INSTITUTE WHERE COUNTRY_ID IN (" + ids + ")").getResultList();
+		String ids = distinctCountryIds.stream().map(String::toString).collect(Collectors.joining(","));
+		List<String> instituteIds = session.createNativeQuery("SELECT ID FROM INSTITUTE WHERE COUNTRY_ID IN (" + ids + ")").getResultList();
 		return instituteIds;
 	}
 
 	@Override
-	public List<BigInteger> getRandomInstituteByCountry(final List<BigInteger> countryIdList) {
+	public List<String> getRandomInstituteByCountry(final List<String> countryIdList) {
 		Session session = sessionFactory.getCurrentSession();
 
 		String countryIds = countryIdList.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(","));
-		List<BigInteger> idList = session.createNativeQuery("select id from institute where country_id in (?) order by Rand() LIMIT ?")
+		List<String> idList = session.createNativeQuery("select id from institute where country_id in (?) order by Rand() LIMIT ?")
 				.setParameter(1, countryIds).setParameter(2, IConstant.TOTAL_INSTITUTES_PER_PAGE).getResultList();
 		// .setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
 
@@ -783,7 +783,7 @@ public class InstituteDAO implements IInstituteDAO {
 		List<NearestInstituteDTO> nearestInstituteDTOs = new ArrayList<>();
 		for (Object[] row : rows) {
 			NearestInstituteDTO nearestInstituteDTO = new NearestInstituteDTO();
-			nearestInstituteDTO.setInstituteId(new BigInteger(String.valueOf(row[0])));
+			nearestInstituteDTO.setInstituteId((String.valueOf(row[0])));
 			nearestInstituteDTO.setInstituteName(String.valueOf(row[1]));
 			nearestInstituteDTO.setTotalCourseCount(((BigInteger) row[2]).intValue());
 			nearestInstituteDTO.setMinPriceRange((Double) row[3]);

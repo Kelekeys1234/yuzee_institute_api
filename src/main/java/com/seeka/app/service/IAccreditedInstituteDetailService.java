@@ -12,6 +12,6 @@ public interface IAccreditedInstituteDetailService {
 
 	List<AccreditedInstituteDetail> getAccreditedInstituteDetailList(BigInteger entityId, String entityType, Integer pageNumber, Integer pageSize);
 
-	List<AccreditedInstituteDetail> getAccreditedInstituteDetail(BigInteger accreditedInstituteId);
+	List<AccreditedInstituteDetail> getAccreditedInstituteDetail(String accreditedInstituteId);
 
 }

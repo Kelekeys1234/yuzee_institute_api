@@ -13,17 +13,17 @@ public interface IViewDao {
 
 	List<Object> getUserViewData(BigInteger userId, String entityType, boolean isUnique, Integer startIndex, Integer pageSize);
 
-	int getUserViewDataCountBasedOnUserId(BigInteger userId, BigInteger entityId, String entityType);
+	int getUserViewDataCountBasedOnUserId(String userId, String entityId, String entityType);
 
 	int getUserViewDataCountBasedOnEntityId(BigInteger entityId, String entityType);
 
-	List<Object> getUserViewDataBasedOnEntityIdList(BigInteger userId, String entityType, boolean isUnique, List<BigInteger> entityIds);
+	List<Object> getUserViewDataBasedOnEntityIdList(BigInteger userId, String entityType, boolean isUnique, List<String> entityIds);
 
-	List<BigInteger> getUserWatchCourseIds(final BigInteger userId, final String entityType);
+	List<String> getUserWatchCourseIds(final String userId, final String entityType);
 
-	List<BigInteger> getOtherUserWatchCourse(BigInteger userId, String entityType);
+	List<String> getOtherUserWatchCourse(String userId, String entityType);
 
-	List<UserCourseView> userVisistedCourseBasedOncity(BigInteger cityId, Date fromDate, Date toDate);
+	List<UserCourseView> userVisistedCourseBasedOncity(String cityId, Date fromDate, Date toDate);
 
-	List<UserCourseView> userVisistedCourseBasedOnCountry(BigInteger countryId, Date fromDate, Date toDate);
+	List<UserCourseView> userVisistedCourseBasedOnCountry(String countryId, Date fromDate, Date toDate);
 }

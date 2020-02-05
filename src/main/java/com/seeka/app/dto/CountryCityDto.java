@@ -4,13 +4,13 @@ import java.math.BigInteger;
 
 public class CountryCityDto {
 
-    private BigInteger id;
+    private String id;
     private String name;
 
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -18,7 +18,7 @@ public class CountryCityDto {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

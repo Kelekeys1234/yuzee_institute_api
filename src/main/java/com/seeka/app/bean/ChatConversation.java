@@ -1,7 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
@@ -18,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "chat_conversation")
 public class ChatConversation implements Serializable {
@@ -27,9 +27,10 @@ public class ChatConversation implements Serializable {
 	 */
 	private static final long serialVersionUID = 7590305810325611394L;
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private BigInteger id;
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	private String id;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "chat_id", nullable = false)
@@ -48,23 +49,23 @@ public class ChatConversation implements Serializable {
 	private String initiateFrom;
 
 	@Column(name = "initiate_from_id")
-	private BigInteger initiateFromId;
+	private String initiateFromId;
 
 	@Column(name = "initiate_to")
 	private String initiateTo;
 
 	@Column(name = "initiate_to_id")
-	private BigInteger initiateToId;
+	private String initiateToId;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
 	private Date createdOn;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -100,11 +101,11 @@ public class ChatConversation implements Serializable {
 		this.initiateFrom = initiateFrom;
 	}
 
-	public BigInteger getInitiateFromId() {
+	public String getInitiateFromId() {
 		return initiateFromId;
 	}
 
-	public void setInitiateFromId(final BigInteger initiateFromId) {
+	public void setInitiateFromId(final String initiateFromId) {
 		this.initiateFromId = initiateFromId;
 	}
 
@@ -116,11 +117,11 @@ public class ChatConversation implements Serializable {
 		this.initiateTo = initiateTo;
 	}
 
-	public BigInteger getInitiateToId() {
+	public String getInitiateToId() {
 		return initiateToId;
 	}
 
-	public void setInitiateToId(final BigInteger initiateToId) {
+	public void setInitiateToId(final String initiateToId) {
 		this.initiateToId = initiateToId;
 	}
 

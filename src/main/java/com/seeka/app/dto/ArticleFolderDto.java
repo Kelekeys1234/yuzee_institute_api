@@ -2,19 +2,19 @@ package com.seeka.app.dto;import java.math.BigInteger;
 
 public class ArticleFolderDto {
     
-    private BigInteger id;
+    private String id;
     private String folderName;
     private BigInteger userId;
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
     /**
      * @param id the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
     /**

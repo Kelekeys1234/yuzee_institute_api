@@ -75,13 +75,13 @@ public class ErrorReportController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@Valid @RequestBody final ErrorReportDto errorReport, @PathVariable final BigInteger id) throws ValidationException {
+	public ResponseEntity<?> update(@Valid @RequestBody final ErrorReportDto errorReport, @PathVariable final String id) throws ValidationException {
 		errorReportService.update(errorReport, id);
 		return new GenericResponseHandlers.Builder().setMessage("Update Error Report Successfully.").setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getErrorReportById(@PathVariable final BigInteger id) throws ValidationException {
+	public ResponseEntity<?> getErrorReportById(@PathVariable final String id) throws ValidationException {
 		ErrorReportResponseDto errorReport = errorReportService.getErrorReportById(id);
 		return new GenericResponseHandlers.Builder().setMessage("Get Error Report Successfully.").setData(errorReport).setStatus(HttpStatus.OK).create();
 	}
@@ -138,7 +138,7 @@ public class ErrorReportController {
 	}
 
 	@DeleteMapping("/{errorReportId}")
-	public ResponseEntity<?> deleteErrorReport(@PathVariable final BigInteger errorReportId) throws Exception {
+	public ResponseEntity<?> deleteErrorReport(@PathVariable final String errorReportId) throws Exception {
 		errorReportService.deleteByErrorReportId(errorReportId);
 		return new GenericResponseHandlers.Builder().setMessage("Error report deleted successfuly").setStatus(HttpStatus.OK).create();
 	}
@@ -152,7 +152,7 @@ public class ErrorReportController {
 	}
 
 	@GetMapping("/audit/{id}")
-	public ResponseEntity<?> getErrorReportHistoryById(@PathVariable(name = "id") final BigInteger errorReportId) throws ValidationException {
+	public ResponseEntity<?> getErrorReportHistoryById(@PathVariable(name = "id") final String errorReportId) throws ValidationException {
 		List<AuditErrorReport> errorReport = errorReportService.getAuditListByErrorReport(errorReportId);
 		return new GenericResponseHandlers.Builder().setMessage("Get Error Report Audit list Successfully.").setData(errorReport).setStatus(HttpStatus.OK)
 				.create();

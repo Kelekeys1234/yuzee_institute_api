@@ -13,7 +13,7 @@ public interface IInstituteLevelDAO {
 
 	InstituteLevel get(BigInteger id);
 
-	List<InstituteLevel> getAllLevelByInstituteId(BigInteger instituteId);
+	List<InstituteLevel> getAllLevelByInstituteId(String instituteId);
 
-	void deleteInstituteLevel(BigInteger instituteId);
+	void deleteInstituteLevel(String instituteId);
 }

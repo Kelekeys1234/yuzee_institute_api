@@ -17,8 +17,8 @@ public class FaqRequestDto implements Serializable {
 	@NotNull(message = "description is required")
 	private String description;
 	private Integer votes;
-	private BigInteger faqCategoryId;
-	private BigInteger faqSubCategoryId;
+	private String faqCategoryId;
+	private String faqSubCategoryId;
 
 	public String getTitle() {
 		return title;
@@ -44,19 +44,19 @@ public class FaqRequestDto implements Serializable {
 		this.votes = votes;
 	}
 
-	public BigInteger getFaqCategoryId() {
+	public String getFaqCategoryId() {
 		return faqCategoryId;
 	}
 
-	public void setFaqCategoryId(final BigInteger faqCategoryId) {
+	public void setFaqCategoryId(final String faqCategoryId) {
 		this.faqCategoryId = faqCategoryId;
 	}
 
-	public BigInteger getFaqSubCategoryId() {
+	public String getFaqSubCategoryId() {
 		return faqSubCategoryId;
 	}
 
-	public void setFaqSubCategoryId(final BigInteger faqSubCategoryId) {
+	public void setFaqSubCategoryId(final String faqSubCategoryId) {
 		this.faqSubCategoryId = faqSubCategoryId;
 	}
 

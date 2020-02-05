@@ -70,7 +70,7 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 	}
 
 	@Override
-	public AccreditedInstituteDto getAccreditedInstituteDetail(final BigInteger accreditedInstituteId) throws ValidationException {
+	public AccreditedInstituteDto getAccreditedInstituteDetail(final String accreditedInstituteId) throws ValidationException {
 		AccreditedInstitute accreditedInstitute = iAccreditedInstituteDao.getAccreditedInstituteDetail(accreditedInstituteId);
 		AccreditedInstituteDto accreditedInstituteDto = new AccreditedInstituteDto();
 		BeanUtils.copyProperties(accreditedInstitute, accreditedInstituteDto);
@@ -89,7 +89,7 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 	}
 
 	@Override
-	public AccreditedInstitute updateAccreditedInstitute(final BigInteger accreditedInstituteId,
+	public AccreditedInstitute updateAccreditedInstitute(final String accreditedInstituteId,
 			final AccreditedInstituteRequestDto accreditedInstituteRequestDto) throws ValidationException {
 		AccreditedInstitute existingAccreditedInstitute = iAccreditedInstituteDao.getAccreditedInstituteDetail(accreditedInstituteId);
 		if (existingAccreditedInstitute == null) {
@@ -110,7 +110,7 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 	}
 
 	@Override
-	public void deleteAccreditedInstitute(final BigInteger accreditedInstituteId) throws ValidationException {
+	public void deleteAccreditedInstitute(final String accreditedInstituteId) throws ValidationException {
 		AccreditedInstitute existingAccreditedInstitute = iAccreditedInstituteDao.getAccreditedInstituteDetail(accreditedInstituteId);
 		if (existingAccreditedInstitute == null) {
 			throw new ValidationException("Accredited institute not found for id" + accreditedInstituteId);

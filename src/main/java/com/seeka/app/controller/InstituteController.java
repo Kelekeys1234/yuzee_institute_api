@@ -329,9 +329,9 @@ public class InstituteController {
 
 	@RequestMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> instituteSearch(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = false) final List<BigInteger> countryIds, @RequestParam(required = false) final List<BigInteger> facultyIds,
-			@RequestParam(required = false) final List<BigInteger> levelIds, @RequestParam(required = false) final BigInteger cityId,
-			@RequestParam(required = false) final BigInteger instituteTypeId, @RequestParam(required = false) final Boolean isActive,
+			@RequestParam(required = false) final List<String> countryIds, @RequestParam(required = false) final List<String> facultyIds,
+			@RequestParam(required = false) final List<String> levelIds, @RequestParam(required = false) final String cityId,
+			@RequestParam(required = false) final String instituteTypeId, @RequestParam(required = false) final Boolean isActive,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
 			@RequestParam(required = false) final Integer fromWorldRanking, @RequestParam(required = false) final Integer toWorldRanking,
 			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
@@ -347,9 +347,9 @@ public class InstituteController {
 	}
 
 	private ResponseEntity<?> getInstitutesBySearchFilters(final CourseSearchDto request, final String sortByField, final String sortByType,
-			final String searchKeyword, final BigInteger cityId, final BigInteger instituteTypeId, final Boolean isActive, final Date updatedOn,
+			final String searchKeyword, final String cityId, final String instituteTypeId, final Boolean isActive, final Date updatedOn,
 			final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) throws ValidationException {
-		List<BigInteger> countryIds = request.getCountryIds();
+		List<String> countryIds = request.getCountryIds();
 		if (null == countryIds || countryIds.isEmpty()) {
 			countryIds = new ArrayList<>();
 		}
@@ -399,7 +399,7 @@ public class InstituteController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		List<BigInteger> countryIds = request.getCountryIds();
+		List<String> countryIds = request.getCountryIds();
 		if (null == countryIds || countryIds.isEmpty()) {
 			countryIds = new ArrayList<>();
 		}
@@ -465,7 +465,7 @@ public class InstituteController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@Valid @PathVariable final BigInteger id, @RequestBody final List<InstituteRequestDto> institute) throws Exception {
+	public ResponseEntity<?> update(@Valid @PathVariable final String id, @RequestBody final List<InstituteRequestDto> institute) throws Exception {
 		return ResponseEntity.accepted().body(instituteService.update(institute, id));
 	}
 
@@ -481,7 +481,7 @@ public class InstituteController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@PathVariable final BigInteger id) throws ValidationException {
+	public ResponseEntity<?> get(@PathVariable final String id) throws ValidationException {
 		List<InstituteRequestDto> instituteRequestDtos = instituteService.getById(id);
 		return new GenericResponseHandlers.Builder().setData(instituteRequestDtos).setMessage("Institute details get successfully").setStatus(HttpStatus.OK)
 				.create();
@@ -557,13 +557,13 @@ public class InstituteController {
 	}
 
 	@RequestMapping(value = "/{instituteId}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<?> delete(@PathVariable final BigInteger instituteId) throws ValidationException {
+	public ResponseEntity<?> delete(@PathVariable final String instituteId) throws ValidationException {
 		instituteService.deleteInstitute(instituteId);
 		return new GenericResponseHandlers.Builder().setMessage("Institute deleted successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/images/{instituteId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getInstituteImage(@PathVariable final BigInteger instituteId) throws Exception {
+	public ResponseEntity<?> getInstituteImage(@PathVariable final String instituteId) throws Exception {
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteId, ImageCategory.INSTITUTE.toString(), null, "en");
 		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
 	}

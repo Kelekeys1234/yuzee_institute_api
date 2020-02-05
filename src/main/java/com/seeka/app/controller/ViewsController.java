@@ -73,7 +73,7 @@ public class ViewsController {
 	}
 
 	@GetMapping(value = "/user")
-	public ResponseEntity<?> getUserViewDataCountBasedOnUserId(@RequestHeader final BigInteger userId, @RequestParam final BigInteger entityId,
+	public ResponseEntity<?> getUserViewDataCountBasedOnUserId(@RequestHeader final String userId, @RequestParam final String entityId,
 			@RequestParam final String entityType) throws ValidationException {
 		int count = iViewService.getUserViewDataCountBasedOnUserId(userId, entityId, entityType);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Get user view count.").setData(count).create();
@@ -87,7 +87,7 @@ public class ViewsController {
 	}
 
 	@GetMapping(value = "/visit")
-	public ResponseEntity<?> userVisited(@RequestHeader final BigInteger userId, @RequestParam final BigInteger entityId, @RequestParam final String entityType)
+	public ResponseEntity<?> userVisited(@RequestHeader final String userId, @RequestParam final String entityId, @RequestParam final String entityType)
 			throws ValidationException {
 		int count = iViewService.getUserViewDataCountBasedOnUserId(userId, entityId, entityType);
 		boolean flag = count > 0;

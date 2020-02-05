@@ -28,7 +28,7 @@ public class UserEducationAOLevelSubjectService implements IUserEducationAOLevel
 	}
 	
 	@Override
-	public List<UserEducationAOLevelSubjects> getUserLevelSubjectGrades(BigInteger userId) {
+	public List<UserEducationAOLevelSubjects> getUserLevelSubjectGrades(String userId) {
 		return iUserEducationAOLevelSubjectDAO.getUserLevelSubjectGrades(userId);
 	}
 	

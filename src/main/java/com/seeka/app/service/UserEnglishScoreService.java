@@ -38,7 +38,7 @@ public class UserEnglishScoreService implements IUserEnglishScoreService{
 		return iUserEnglishScoreDAO.get(id);
 	}
 	
-	public List<UserEnglishScore> getEnglishEligibiltyByUserID(BigInteger userId){
+	public List<UserEnglishScore> getEnglishEligibiltyByUserID(String userId){
 		return iUserEnglishScoreDAO.getEnglishEligibiltyByUserID(userId);
 	}
 	

@@ -12,7 +12,7 @@ public interface IQuestionCategroyService {
 
 	List<QuestionCategroy> getQuestionCategoryList();
 
-	QuestionCategroy getQuestionCategory(BigInteger questionCategoryId, Boolean isActive);
+	QuestionCategroy getQuestionCategory(String questionCategoryId, Boolean isActive);
 
-	void deleteQuestionCategory(BigInteger questionCategoryId) throws ValidationException;
+	void deleteQuestionCategory(String questionCategoryId) throws ValidationException;
 }

@@ -1,7 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
@@ -18,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "article_user_demographic")
 public class ArticleUserDemographic implements Serializable {
@@ -28,9 +28,10 @@ public class ArticleUserDemographic implements Serializable {
 	 */
 	private static final long serialVersionUID = 5046135699948169230L;
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private Long id;
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	private String id;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = true)
 	@JoinColumn(name = "article_id", nullable = false)	
@@ -67,10 +68,10 @@ public class ArticleUserDemographic implements Serializable {
 	
 	
 	
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public SeekaArticles getArticle() {

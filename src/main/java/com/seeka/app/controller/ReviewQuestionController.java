@@ -53,7 +53,7 @@ public class ReviewQuestionController {
 	}
 
 	@PutMapping("/{questionId}")
-	public ResponseEntity<?> updateReviewQuestions(@PathVariable final BigInteger questionId, @Valid @RequestBody final ReviewQuestionsDto reviewQuestionsDto,
+	public ResponseEntity<?> updateReviewQuestions(@PathVariable final String questionId, @Valid @RequestBody final ReviewQuestionsDto reviewQuestionsDto,
 			final BindingResult bindingResult) throws ValidationException {
 		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		if (!fieldErrors.isEmpty()) {
@@ -65,13 +65,13 @@ public class ReviewQuestionController {
 	}
 
 	@GetMapping("/{questionId}")
-	public ResponseEntity<?> getReviewQuestion(@PathVariable final BigInteger questionId) throws ValidationException {
+	public ResponseEntity<?> getReviewQuestion(@PathVariable final String questionId) throws ValidationException {
 		ReviewQuestionsDto reviewQuestions = iReviewQuestionService.getReviewQuestion(questionId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(reviewQuestions).setMessage("Get review question successfully").create();
 	}
 
 	@DeleteMapping("/{questionId}")
-	public ResponseEntity<?> deleteReviewQuestion(@PathVariable final BigInteger questionId) throws ValidationException {
+	public ResponseEntity<?> deleteReviewQuestion(@PathVariable final String questionId) throws ValidationException {
 		ReviewQuestions reviewQuestions = iReviewQuestionService.deleteReviewQuestion(questionId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(reviewQuestions).setMessage("Deleted review question successfully")
 				.create();
@@ -88,7 +88,7 @@ public class ReviewQuestionController {
 	public ResponseEntity<?> getReviewQuestionList(@RequestParam(name = "isActive", required = false) final Boolean isActive,
 			@RequestParam(name = "studentType", required = false) final String studentType,
 			@RequestParam(name = "studentCategory", required = false) final String studentCategory,
-			@RequestParam(name = "questionCategoryId", required = false) final BigInteger questionCategoryId) throws ValidationException {
+			@RequestParam(name = "questionCategoryId", required = false) final String questionCategoryId) throws ValidationException {
 		List<ReviewQuestions> reviewQuestionsList = iReviewQuestionService.getReviewQuestionListBasedOnParam(isActive, studentType, studentCategory,
 				questionCategoryId, null);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(reviewQuestionsList).setMessage("Get review question list successfully")

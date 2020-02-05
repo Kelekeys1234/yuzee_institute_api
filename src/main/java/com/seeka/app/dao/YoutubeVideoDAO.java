@@ -27,7 +27,7 @@ public class YoutubeVideoDAO {
         return session.createCriteria(YoutubeVideo.class).list();
     }
 
-    public List<YoutubeVideo> getYoutubeVideoByCountryId(BigInteger id, String countryType) {
+    public List<YoutubeVideo> getYoutubeVideoByCountryId(String id, String countryType) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(YoutubeVideo.class);
         crit.add(Restrictions.eq("id", id)).add(Restrictions.eq("type", countryType));

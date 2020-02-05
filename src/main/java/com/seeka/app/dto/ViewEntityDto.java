@@ -12,7 +12,7 @@ public class ViewEntityDto implements Serializable {
 	private static final long serialVersionUID = 3530870980534096720L;
 
 	private String entityType;
-	private List<BigInteger> entityIds;
+	private List<String> entityIds;
 
 	public String getEntityType() {
 		return entityType;
@@ -22,11 +22,11 @@ public class ViewEntityDto implements Serializable {
 		this.entityType = entityType;
 	}
 
-	public List<BigInteger> getEntityIds() {
+	public List<String> getEntityIds() {
 		return entityIds;
 	}
 
-	public void setEntityIds(final List<BigInteger> entityIds) {
+	public void setEntityIds(final List<String> entityIds) {
 		this.entityIds = entityIds;
 	}
 

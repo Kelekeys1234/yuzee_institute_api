@@ -44,7 +44,7 @@ public class ChatConversationDao implements IChatConversationDao {
 
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	@Override
-	public List<ChatConversation> getChatConversationBasedOnChatId(final BigInteger chatId, final Integer startIndex, final Integer pageSize) {
+	public List<ChatConversation> getChatConversationBasedOnChatId(final String chatId, final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ChatConversation.class, "chatConversation");
 		crit.createAlias("chatConversation.chat", "chat");
@@ -69,7 +69,7 @@ public class ChatConversationDao implements IChatConversationDao {
 	}
 
 	@Override
-	public List<ChatConversation> getChatListBasedOnEntityType(final String entityType, final BigInteger initiateFromId, final BigInteger initiateToId,
+	public List<ChatConversation> getChatListBasedOnEntityType(final String entityType, final String initiateFromId, final String initiateToId,
 			final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ChatConversation.class, "chatConversation");
@@ -87,7 +87,7 @@ public class ChatConversationDao implements IChatConversationDao {
 	}
 
 	@Override
-	public Integer getChatConversationCountBasedOnEntityType(final String entityType, final BigInteger initiateFromId, final BigInteger initiateToId) {
+	public Integer getChatConversationCountBasedOnEntityType(final String entityType, final String initiateFromId, final String initiateToId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ChatConversation.class, "chatConversation");
 		crit.createAlias("chatConversation.chat", "chat");

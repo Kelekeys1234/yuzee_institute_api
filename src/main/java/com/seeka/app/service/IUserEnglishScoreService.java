@@ -10,6 +10,6 @@ public interface IUserEnglishScoreService {
 	public UserEnglishScore get(BigInteger id);
 	public void save(UserEnglishScore obj); 
 	public void update(UserEnglishScore obj);
-	public List<UserEnglishScore> getEnglishEligibiltyByUserID(BigInteger userId);
+	public List<UserEnglishScore> getEnglishEligibiltyByUserID(String userId);
 }
  

@@ -44,7 +44,7 @@ public class ArticleDAO implements IArticleDAO {
 	}
 
 	@Override
-	public SeekaArticles findById(final BigInteger uId) {
+	public SeekaArticles findById(final String uId) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.get(SeekaArticles.class, uId);
 	}
@@ -176,7 +176,7 @@ public class ArticleDAO implements IArticleDAO {
 	}
 
 	@Override
-	public List<SeekaArticles> findArticleByCountryId(final BigInteger countryId, final String categoryName, final Integer count,
+	public List<SeekaArticles> findArticleByCountryId(final String countryId, final String categoryName, final Integer count,
 			final List<BigInteger> viewArticleIds) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");

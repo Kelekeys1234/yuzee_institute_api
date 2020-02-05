@@ -1,9 +1,6 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,6 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "help_answer")
 public class HelpAnswer implements Serializable {
@@ -25,8 +24,8 @@ public class HelpAnswer implements Serializable {
      * 
      */
     private static final long serialVersionUID = 6922844940897956622L;
-    private BigInteger id;
-    private BigInteger user;
+    private String id;
+    private String user;
     private SeekaHelp seekaHelp;
     private String answer;
     private Date createdOn;
@@ -38,13 +37,14 @@ public class HelpAnswer implements Serializable {
     private String fileName;
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public BigInteger getId() {
+    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+    public String getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -58,11 +58,11 @@ public class HelpAnswer implements Serializable {
     }
 
     @Column(name = "user_id")
-    public BigInteger getUser() {
+    public String getUser() {
         return user;
     }
 
-    public void setUser(BigInteger user) {
+    public void setUser(String user) {
         this.user = user;
     }
 

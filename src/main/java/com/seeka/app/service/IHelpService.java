@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -18,11 +17,11 @@ import com.seeka.app.exception.ValidationException;
 
 public interface IHelpService {
 
-	Map<String, Object> save(@Valid HelpDto helpDto, BigInteger userId);
+	Map<String, Object> save(@Valid HelpDto helpDto, String userId);
 
-	Map<String, Object> get(BigInteger id);
+	Map<String, Object> get(String id);
 
-	Map<String, Object> update(HelpDto helpDto, BigInteger id, BigInteger userId);
+	Map<String, Object> update(HelpDto helpDto, String id, String userId);
 
 	Map<String, Object> getAll(Integer pageNumber, Integer pageSize);
 
@@ -30,39 +29,39 @@ public interface IHelpService {
 
 	Map<String, Object> save(@Valid HelpSubCategoryDto helpSubCategoryDto);
 
-	Map<String, Object> getCategory(BigInteger id);
+	Map<String, Object> getCategory(String id);
 
-	Map<String, Object> getSubCategory(BigInteger id);
+	Map<String, Object> getSubCategory(String id);
 
-	List<HelpSubCategoryDto> getSubCategoryByCategory(BigInteger id, Integer startIndex, Integer pageSize);
+	List<HelpSubCategoryDto> getSubCategoryByCategory(String id, Integer startIndex, Integer pageSize);
 
-	Map<String, Object> getHelpByCategory(BigInteger id);
+	Map<String, Object> getHelpByCategory(String id);
 
 	Map<String, Object> getSubCategoryCount();
 
 	Map<String, Object> saveAnswer(@Valid HelpAnswerDto helpAnswerDto, MultipartFile file);
 
-	Map<String, Object> getAnswerByHelpId(BigInteger userId);
+	Map<String, Object> getAnswerByHelpId(String userId);
 
 	List<HelpCategoryDto> getCategory(Integer startIndex, Integer pageSize);
 
-	Map<String, Object> delete(@Valid BigInteger id);
+	Map<String, Object> delete(@Valid String id);
 
-	Map<String, Object> updateStatus(BigInteger id, BigInteger userId, String status);
+	Map<String, Object> updateStatus(String id, String userId, String status);
 
-	Map<String, Object> filter(String status, String mostRecent, BigInteger categoryId);
+	Map<String, Object> filter(String status, String mostRecent, String categoryId);
 
-	List<SeekaHelp> getUserHelpList(BigInteger userId, int startIndex, Integer pageSize, Boolean isArchive);
+	List<SeekaHelp> getUserHelpList(String userId, int startIndex, Integer pageSize, Boolean isArchive);
 
-	int getUserHelpCount(BigInteger userId, Boolean isArchive);
+	int getUserHelpCount(String userId, Boolean isArchive);
 
-	void setIsFavouriteFlag(BigInteger id, boolean isFavourite) throws NotFoundException;
+	void setIsFavouriteFlag(String id, boolean isFavourite) throws NotFoundException;
 
 	int getCategoryCount();
 
-	int getSubCategoryCount(BigInteger categoryId);
+	int getSubCategoryCount(String categoryId);
 
-	void archiveHelpSupport(BigInteger entityId, boolean isArchive);
+	void archiveHelpSupport(String entityId, boolean isArchive);
 
 	List<String> getRelatedSearchQuestions(String searchString) throws ValidationException;
 

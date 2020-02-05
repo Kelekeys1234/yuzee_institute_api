@@ -10,7 +10,7 @@ public class UserCourseRequestDto implements Serializable {
 	 */
 	private static final long serialVersionUID = -5780245895720098894L;
 	private BigInteger userId;
-	private BigInteger courseId;
+	private String courseId;
 
 	public BigInteger getUserId() {
 		return userId;
@@ -20,11 +20,11 @@ public class UserCourseRequestDto implements Serializable {
 		this.userId = userId;
 	}
 
-	public BigInteger getCourseId() {
+	public String getCourseId() {
 		return courseId;
 	}
 
-	public void setCourseId(final BigInteger courseId) {
+	public void setCourseId(final String courseId) {
 		this.courseId = courseId;
 	}
 

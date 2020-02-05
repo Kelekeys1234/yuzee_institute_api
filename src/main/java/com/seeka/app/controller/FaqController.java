@@ -49,7 +49,7 @@ public class FaqController {
 	}
 
 	@PutMapping("/{faqId}")
-	public ResponseEntity<?> updateFaq(@PathVariable final BigInteger faqId, @RequestBody @Valid final FaqRequestDto faqRequestDto,
+	public ResponseEntity<?> updateFaq(@PathVariable final String faqId, @RequestBody @Valid final FaqRequestDto faqRequestDto,
 			final BindingResult bindingResult) throws ValidationException {
 		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		if (!fieldErrors.isEmpty()) {
@@ -60,14 +60,14 @@ public class FaqController {
 	}
 
 	@DeleteMapping("/{faqId}")
-	public ResponseEntity<?> deleteFaq(@PathVariable final BigInteger faqId) throws ValidationException {
+	public ResponseEntity<?> deleteFaq(@PathVariable final String faqId) throws ValidationException {
 		iFaqService.deleteFaq(faqId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted faq successfully").create();
 	}
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getFaqList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = false) final BigInteger faqCategoryId, @RequestParam(required = false) final BigInteger faqSubCategoryId,
+			@RequestParam(required = false) final String faqCategoryId, @RequestParam(required = false) final String faqSubCategoryId,
 			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
 			@RequestParam(required = false) final String searchKeyword) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
@@ -88,7 +88,7 @@ public class FaqController {
 	}
 
 	@GetMapping("/{faqId}")
-	public ResponseEntity<?> getFaqDetail(@PathVariable final BigInteger faqId) throws ValidationException {
+	public ResponseEntity<?> getFaqDetail(@PathVariable final String faqId) throws ValidationException {
 		FaqResponseDto faqResponseDto = iFaqService.getFaqDetail(faqId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(faqResponseDto).setMessage("Get faq successfully").create();
 	}

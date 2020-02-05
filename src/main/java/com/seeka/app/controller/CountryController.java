@@ -99,7 +99,7 @@ public class CountryController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> get(@PathVariable BigInteger id) throws Exception {
+    public ResponseEntity<?> get(@PathVariable String id) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         Country countryObj = null;
         try {
@@ -195,7 +195,7 @@ public class CountryController {
     }
 
     @RequestMapping(value = "/details/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getCountryDetailsById(@PathVariable BigInteger id) {
+    public ResponseEntity<?> getCountryDetailsById(@PathVariable String id) {
         return ResponseEntity.accepted().body(countryService.getCountryDetailsById(id));
     }
 

@@ -1,8 +1,4 @@
-package com.seeka.app.service;import java.math.BigInteger;
-
-
-
-import org.springframework.beans.factory.annotation.Autowired;
+package com.seeka.app.service;import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +23,12 @@ public class UserEducationDetailService implements IUserEducationDetailService {
 	}
 	
 	@Override
-	public UserEducationDetails getUserEducationDetails(BigInteger userId) {
+	public UserEducationDetails getUserEducationDetails(String userId) {
 		return iUserEducationDetailDAO.getUserEducationDetails(userId);
 	}
 	
 	@Override
-	public UserEducationDetails get(BigInteger id) {
+	public UserEducationDetails get(String id) {
 		return iUserEducationDetailDAO.get(id);
 	}
 	

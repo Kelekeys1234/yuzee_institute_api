@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -115,7 +114,7 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public EnrollmentDto updateEnrollment(final EnrollmentDto enrollmentDto, final BigInteger enrollmentId) throws ValidationException {
+	public EnrollmentDto updateEnrollment(final EnrollmentDto enrollmentDto, final String enrollmentId) throws ValidationException {
 		Enrollment existingEnrollment = iEnrollmentDao.getEnrollment(enrollmentId);
 		if (existingEnrollment == null) {
 			throw new ValidationException("enrollment not found for id" + enrollmentId);
@@ -165,7 +164,7 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public EnrollmentStatus updateEnrollmentStatus(final EnrollmentStatusDto enrollmentStatusDto, final BigInteger userId) throws ValidationException {
+	public EnrollmentStatus updateEnrollmentStatus(final EnrollmentStatusDto enrollmentStatusDto, final String userId) throws ValidationException {
 		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentStatusDto.getEnrollmentId());
 		if (enrollment == null) {
 			throw new ValidationException("enrollment not found for id" + enrollmentStatusDto.getEnrollmentId());
@@ -199,8 +198,8 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public void sentEnrollmentNotification(final EnrollmentStatus enrollmentStatus, final BigInteger userId) throws ValidationException {
-		if (userId.compareTo(enrollmentStatus.getEnrollment().getUserId()) != 0) {
+	public void sentEnrollmentNotification(final EnrollmentStatus enrollmentStatus, final String userId) throws ValidationException {
+		if (!userId.equals(enrollmentStatus.getEnrollment().getUserId())) {
 			String message = "Your application status changed to "
 					+ com.seeka.app.constant.EnrollmentStatus.getByValue(enrollmentStatus.getStatus()).getDisplayValue();
 			iUsersService.sendPushNotification(enrollmentStatus.getEnrollment().getUserId(), message, NotificationType.ENROLLMENT.name());
@@ -211,7 +210,7 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public EnrollmentResponseDto getEnrollmentDetail(final BigInteger enrollmentId) throws ValidationException {
+	public EnrollmentResponseDto getEnrollmentDetail(final String enrollmentId) throws ValidationException {
 		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentId);
 		if (enrollment == null) {
 			throw new ValidationException("Enrollment not found for id :" + enrollmentId);
@@ -242,7 +241,7 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public List<EnrollmentStatusDto> getEnrollmentStatusDetail(final BigInteger enrollmentId) {
+	public List<EnrollmentStatusDto> getEnrollmentStatusDetail(final String enrollmentId) {
 		List<EnrollmentStatus> enrollmentStatusList = iEnrollmentDao.getEnrollmentStatusDetail(enrollmentId);
 		List<EnrollmentStatusDto> resultList = new ArrayList<>();
 		for (EnrollmentStatus enrollmentStatus : enrollmentStatusList) {
@@ -255,8 +254,8 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public List<EnrollmentResponseDto> getEnrollmentList(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId,
-			final BigInteger enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive,
+	public List<EnrollmentResponseDto> getEnrollmentList(final String userId, final String courseId, final String instituteId,
+			final String enrollmentId, final String status, final Date updatedOn, final Integer startIndex, final Integer pageSize, final Boolean isArchive,
 			final String sortByField, final String sortByType, final String searchKeyword) throws ValidationException {
 		List<Enrollment> enrollmenList = iEnrollmentDao.getEnrollmentList(userId, courseId, instituteId, enrollmentId, status, updatedOn, startIndex, pageSize,
 				isArchive, sortByField, sortByType, searchKeyword);
@@ -291,13 +290,13 @@ public class EnrollmentService implements IEnrollmentService {
 	}
 
 	@Override
-	public int countOfEnrollment(final BigInteger userId, final BigInteger courseId, final BigInteger instituteId, final BigInteger enrollmentId,
+	public int countOfEnrollment(final String userId, final String courseId, final String instituteId, final String enrollmentId,
 			final String status, final Date updatedOn, final String searchKeyword) {
 		return iEnrollmentDao.countOfEnrollment(userId, courseId, instituteId, enrollmentId, status, updatedOn, searchKeyword);
 	}
 
 	@Override
-	public void archiveEnrollment(final BigInteger enrollmentId, final boolean isArchive) throws ValidationException {
+	public void archiveEnrollment(final String enrollmentId, final boolean isArchive) throws ValidationException {
 		Enrollment enrollment = iEnrollmentDao.getEnrollment(enrollmentId);
 		if (enrollment == null) {
 			throw new ValidationException("Enrollment not found for id :" + enrollmentId);

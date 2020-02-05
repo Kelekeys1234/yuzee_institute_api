@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.ReviewQuestions;
@@ -11,11 +10,11 @@ public interface IReviewQuestionDao {
 
 	void updateReviewQuestions(ReviewQuestions reviewQuestions);
 
-	ReviewQuestions getReviewQuestion(BigInteger questionId);
+	ReviewQuestions getReviewQuestion(String questionId);
 
 	List<ReviewQuestions> getReviewQuestionList();
 
-	List<ReviewQuestions> getReviewQuestionListBasedOnParam(Boolean isActive, String studentType, String studentCategory, BigInteger questionCategoryId,
-			BigInteger questionId, BigInteger notQuestionId);
+	List<ReviewQuestions> getReviewQuestionListBasedOnParam(Boolean isActive, String studentType, String studentCategory, String questionCategoryId,
+			String questionId, String notQuestionId);
 
 }

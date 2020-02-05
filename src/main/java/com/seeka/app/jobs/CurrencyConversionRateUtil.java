@@ -50,7 +50,7 @@ public class CurrencyConversionRateUtil {
 	@Autowired
 	private ElasticSearchService elasticSearchService;
 	
-	private static List<BigInteger> failedRecordsInElasticSearch = new ArrayList<>();
+	private static List<String> failedRecordsInElasticSearch = new ArrayList<>();
 
 	// @Scheduled(fixedRate = 86400000, initialDelay = 10000)
 	@Scheduled(cron = "0 30 0 * * ?")
@@ -164,7 +164,7 @@ public class CurrencyConversionRateUtil {
 //				courseDtoElasticSearch.setLevelName(course.getLevel()!=null?course.getLevel().getName():null);
 //				courseDtoElasticSearchList.add(courseDtoElasticSearch);
 //			}
-			Map<String, List<BigInteger>> courseUpdateStatus = elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+			Map<String, List<String>> courseUpdateStatus = elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
 			failedRecordsInElasticSearch.addAll(courseUpdateStatus.get("failed"));
 		}
 	}
@@ -175,7 +175,7 @@ public class CurrencyConversionRateUtil {
 		Integer totalCourseToBeRetried = failedRecordsInElasticSearch.size();
 		
 		for (int i = 0; i < totalCourseToBeRetried; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
-			List<BigInteger> courseIds = failedRecordsInElasticSearch.subList(i, i+IConstant.COURSES_PER_SCHEDULER_LOOP < totalCourseToBeRetried ? i+IConstant.COURSES_PER_SCHEDULER_LOOP: totalCourseToBeRetried);
+			List<String> courseIds = failedRecordsInElasticSearch.subList(i, i+IConstant.COURSES_PER_SCHEDULER_LOOP < totalCourseToBeRetried ? i+IConstant.COURSES_PER_SCHEDULER_LOOP: totalCourseToBeRetried);
 			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseService.getCoursesToBeRetriedForElasticSearch(courseIds, i, IConstant.COURSES_PER_SCHEDULER_LOOP);
 			elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
 		}

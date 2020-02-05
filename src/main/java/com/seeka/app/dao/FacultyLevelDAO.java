@@ -60,7 +60,7 @@ public class FacultyLevelDAO implements IFacultyLevelDAO {
 		FacultyLevel obj = null;
 		for (Object[] row : rows) {
 			obj = new FacultyLevel();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			/* obj.setName(row[1].toString()); */
 			faculties.add(obj);
 		}
@@ -68,7 +68,7 @@ public class FacultyLevelDAO implements IFacultyLevelDAO {
 	}
 
 	@Override
-	public List<FacultyLevel> getAllFacultyLevelByInstituteId(final BigInteger instituteId) {
+	public List<FacultyLevel> getAllFacultyLevelByInstituteId(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(FacultyLevel.class, "facultyLevel");
 		crit.createAlias("facultyLevel.institute", "institute");
@@ -77,7 +77,7 @@ public class FacultyLevelDAO implements IFacultyLevelDAO {
 	}
 
 	@Override
-	public void deleteFacultyLevel(final BigInteger instituteId) {
+	public void deleteFacultyLevel(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery("DELETE FROM faculty_level WHERE institute_id =" + instituteId);
 		query.executeUpdate();

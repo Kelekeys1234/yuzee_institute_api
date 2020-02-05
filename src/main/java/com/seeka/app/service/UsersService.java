@@ -30,7 +30,7 @@ public class UsersService implements IUsersService {
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public UserDto getUserById(final BigInteger userId) throws ValidationException {
+	public UserDto getUserById(final String userId) throws ValidationException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_DETAIL_CONNECTION_URL).pathSegment(String.valueOf(userId));
 		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
 		Map<String, Object> responseMap = result.getBody();
@@ -48,7 +48,7 @@ public class UsersService implements IUsersService {
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<UserAchivements> getUserAchivementsByUserId(final BigInteger userId) throws ValidationException {
+	public List<UserAchivements> getUserAchivementsByUserId(final String userId) throws ValidationException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_ACHIVEMENT_CONNECTION_URL).pathSegment(String.valueOf(userId));
 		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
 		Map<String, Object> responseMap = result.getBody();
@@ -69,7 +69,7 @@ public class UsersService implements IUsersService {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private List<UserDeviceInfoDto> getUserDeviceById(final BigInteger userId) throws ValidationException {
+	private List<UserDeviceInfoDto> getUserDeviceById(final String userId) throws ValidationException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_DEVICE_CONNECTION_URL).pathSegment(String.valueOf(userId));
 		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
 		Map<String, Object> responseMap = result.getBody();
@@ -106,7 +106,7 @@ public class UsersService implements IUsersService {
 	}
 
 	@Override
-	public void sendPushNotification(final BigInteger userId, final String message, final String notificationType) throws ValidationException {
+	public void sendPushNotification(final String userId, final String message, final String notificationType) throws ValidationException {
 		List<UserDeviceInfoDto> userDeviceInfoDto = getUserDeviceById(userId);
 
 		if (userDeviceInfoDto != null) {

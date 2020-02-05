@@ -58,7 +58,7 @@ public class ViewDao implements IViewDao {
 	}
 
 	@Override
-	public int getUserViewDataCountBasedOnUserId(final BigInteger userId, final BigInteger entityId, final String entityType) {
+	public int getUserViewDataCountBasedOnUserId(final String userId, final String entityId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserViewData.class, "userViewData");
 		crit.add(Restrictions.and(Restrictions.eq("userViewData.userId", userId)));
@@ -84,7 +84,7 @@ public class ViewDao implements IViewDao {
 
 	@Override
 	public List<Object> getUserViewDataBasedOnEntityIdList(final BigInteger userId, final String entityType, final boolean isUnique,
-			final List<BigInteger> entityIds) {
+			final List<String> entityIds) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserViewData.class, "userViewData");
 		crit.add(Restrictions.and(Restrictions.eq("userViewData.userId", userId)));
@@ -102,14 +102,14 @@ public class ViewDao implements IViewDao {
 	}
 
 	@Override
-	public List<BigInteger> getUserWatchCourseIds(final BigInteger userId, final String entityType) {
+	public List<String> getUserWatchCourseIds(final String userId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.createNativeQuery("Select entity_id from user_view_data where user_id = ? and entity_type = ? group by entity_id order by count(*) desc")
 				.setParameter(1, userId).setParameter(2, entityType).getResultList();
 	}
 
 	@Override
-	public List<BigInteger> getOtherUserWatchCourse(final BigInteger userId, final String entityType) {
+	public List<String> getOtherUserWatchCourse(final String userId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.createNativeQuery(
 				"select entity_id from user_view_data userwatchcourse where userwatchcourse.user_Id not in (?) and userwatchcourse.entity_type = ? group by userwatchcourse.entity_id order by count(*) desc")
@@ -117,7 +117,7 @@ public class ViewDao implements IViewDao {
 	}
 
 	@Override
-	public List<UserCourseView> userVisistedCourseBasedOncity(final BigInteger cityId, final Date fromDate, final Date toDate) {
+	public List<UserCourseView> userVisistedCourseBasedOncity(final String cityId, final Date fromDate, final Date toDate) {
 		Session session = sessionFactory.getCurrentSession();
 		List<Object[]> rows = session.createNativeQuery(
 				"select count(*),abc.course_id from (select count(*) as count ,course.id  as course_id from user_view_data join course on course.id=user_view_data.entity_id "
@@ -134,7 +134,7 @@ public class ViewDao implements IViewDao {
 	}
 
 	@Override
-	public List<UserCourseView> userVisistedCourseBasedOnCountry(final BigInteger countryId, final Date fromDate, final Date toDate) {
+	public List<UserCourseView> userVisistedCourseBasedOnCountry(final String countryId, final Date fromDate, final Date toDate) {
 		Session session = sessionFactory.getCurrentSession();
 		List<Object[]> rows = session.createNativeQuery(
 				"select count(*),abc.course_id from (select count(*) as count ,course.id  as course_id from user_view_data join course on course.id=user_view_data.entity_id "

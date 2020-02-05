@@ -16,6 +16,6 @@ public interface ISubCategoryService {
 
     public Map<String, Object> saveSubCategory(SubCategoryDto subCategoryDto);
 
-    public boolean deleteSubCategory(BigInteger subCategoryId);
+    public boolean deleteSubCategory(String subCategoryId);
 
 }
