@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+     <property name="LOG_LOCATION" value="/home/ec2-user/Logs" />
+
+     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+ 
+    <appender name="SERVER" class="ch.qos.logback.core.FileAppender">
+        <File>${LOG_LOCATION}/institute-service.log</File>
+        <encoder>
+             <pattern>%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n</pattern>
+        </encoder>
+       <!--  <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_LOCATION}/mylog-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy> -->
+    </appender> 
+ 
+    <root level="DEBUG">
+        <appender-ref ref="SERVER"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+ 
+    <!-- Application logs at debug level -->
+     <logger name="com.seeka" level="DEBUG" additivity="false">
+        <appender-ref ref="SERVER"/>
+    </logger>
+
+    
+<logger name="org.springframework" level="debug">
+    <appender-ref ref="SERVER" />
+</logger>
+
+ 
+</configuration>
