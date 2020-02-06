@@ -22,7 +22,7 @@ import com.seeka.app.service.IFacultyService;
 import com.seeka.app.util.IConstant;
 
 @RestController("facultyControllerV1")
-@RequestMapping("/v1/faculty")
+@RequestMapping("/api/v1/faculty")
 public class FacultyController {
 
     @Autowired

@@ -40,7 +40,7 @@ import com.seeka.app.service.IErrorReportService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("errorReportControllerV1")
-@RequestMapping("/v1/error/report")
+@RequestMapping("/api/v1/error/report")
 public class ErrorReportController {
 
 	@Autowired

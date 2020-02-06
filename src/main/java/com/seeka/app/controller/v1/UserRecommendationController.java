@@ -21,7 +21,7 @@ import com.seeka.app.service.UserRecommendationService;
  *
  */
 @RestController("userRecommendationControllerV1")
-@RequestMapping("/v1/user")
+@RequestMapping("/api/v1/user")
 public class UserRecommendationController {
 
 	@Autowired

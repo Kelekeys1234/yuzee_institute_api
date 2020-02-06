@@ -22,7 +22,7 @@ import com.seeka.app.dto.EducationSystemResponse;
 import com.seeka.app.service.IEducationSystemService;
 
 @RestController("educationSystemControllerV1")
-@RequestMapping("/v1/educationSystem")
+@RequestMapping("/api/v1/educationSystem")
 public class EducationSystemController {
 
 	@Autowired

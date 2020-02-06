@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.service.IHobbyService;
 
 @RestController("interestControllerV1")
-@RequestMapping("/v1/interest")
+@RequestMapping("/api/v1/interest")
 public class InterestController {
 
     @Autowired

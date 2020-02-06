@@ -25,7 +25,7 @@ import com.seeka.app.service.IRecommendationService;
 import com.seeka.app.util.IConstant;
 
 @RestController("recommendationControllerV1")
-@RequestMapping("/v1/recommendation")
+@RequestMapping("/api/v1/recommendation")
 public class RecommendationController {
 
 	@Autowired

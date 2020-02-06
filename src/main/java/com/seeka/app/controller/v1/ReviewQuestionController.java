@@ -33,7 +33,7 @@ import com.seeka.app.service.IReviewQuestionService;
  *
  */
 @RestController("reviewQuestionControllerV1")
-@RequestMapping("/v1/review/question")
+@RequestMapping("/api/v1/review/question")
 public class ReviewQuestionController {
 
 	@Autowired

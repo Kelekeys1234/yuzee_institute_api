@@ -33,7 +33,7 @@ import com.seeka.app.util.PaginationUtil;
  *
  */
 @RestController("userReviewControllerV1")
-@RequestMapping("/v1/review")
+@RequestMapping("/api/v1/review")
 public class UserReviewController {
 
 	@Autowired

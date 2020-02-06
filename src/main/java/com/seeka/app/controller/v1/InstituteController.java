@@ -49,7 +49,7 @@ import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("instituteControllerV1")
-@RequestMapping("/v1/institute")
+@RequestMapping("/api/v1/institute")
 public class InstituteController {
 
 	@Autowired

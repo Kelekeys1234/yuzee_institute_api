@@ -19,7 +19,7 @@ import com.seeka.app.dto.TodoFolder;
 import com.seeka.app.service.ITodoService;
 
 @RestController("todoControllerV1")
-@RequestMapping("/v1/todo")
+@RequestMapping("/api/v1/todo")
 public class TodoController {
 
     @Autowired

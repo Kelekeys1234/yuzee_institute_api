@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.service.IAlternativeService;
 
 @RestController("displayAlternativeControllerV1")
-@RequestMapping("/v1/alternative")
+@RequestMapping("/api/v1/alternative")
 public class DisplayAlternativeController {
 
 	@Autowired

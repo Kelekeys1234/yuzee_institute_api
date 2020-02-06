@@ -17,7 +17,7 @@ import com.seeka.app.service.IErrorReportService;
 import com.seeka.app.service.IHelpService;
 
 @RestController("archiveControllerV1")
-@RequestMapping("/v1/archive")
+@RequestMapping("/api/v1/archive")
 public class ArchiveController {
 
 	@Autowired

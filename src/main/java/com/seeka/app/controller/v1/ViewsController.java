@@ -31,7 +31,7 @@ import com.seeka.app.service.IViewService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("viewsControllerV1")
-@RequestMapping("/v1/view")
+@RequestMapping("/api/v1/view")
 public class ViewsController {
 
 	@Autowired

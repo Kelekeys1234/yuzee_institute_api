@@ -20,7 +20,7 @@ import com.seeka.app.service.ICategoryService;
 import com.seeka.app.util.IConstant;
 
 @RestController("categoryControllerV1")
-@RequestMapping("/v1/category")
+@RequestMapping("/api/v1/category")
 public class CategoryController {
 
     @Autowired

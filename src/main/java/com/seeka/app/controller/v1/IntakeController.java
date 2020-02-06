@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.service.IInstituteTypeService;
 
 @RestController("intakeControllerV1")
-@RequestMapping("/v1/intake")
+@RequestMapping("/api/v1/intake")
 public class IntakeController {
 
     @Autowired

@@ -30,7 +30,7 @@ import com.seeka.app.service.IFaqSubCategoryService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("faqSubCategroyControllerV1")
-@RequestMapping("/v1/faq/sub/category")
+@RequestMapping("/api/v1/faq/sub/category")
 public class FaqSubCategroyController {
 
 	@Autowired

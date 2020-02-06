@@ -41,7 +41,7 @@ import com.seeka.app.util.PaginationUtil;
  *
  */
 @RestController("enrollmentControllerV1")
-@RequestMapping("/v1/enrollment")
+@RequestMapping("/api/v1/enrollment")
 public class EnrollmentController {
 
 	@Autowired

@@ -25,7 +25,7 @@ import com.seeka.app.service.ICountryService;
 import com.seeka.app.util.IConstant;
 
 @RestController("countryControllerV1")
-@RequestMapping("/v1/country")
+@RequestMapping("/api/v1/country")
 public class CountryController {
 
     @Autowired

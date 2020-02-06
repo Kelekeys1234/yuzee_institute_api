@@ -18,7 +18,7 @@ import com.seeka.app.service.IGlobalSearchKeywordService;
 
 
 @RestController("globalSearchKeywordControllerV1")
-@RequestMapping("/v1/globalSearch/keyword")
+@RequestMapping("/api/v1/globalSearch/keyword")
 public class GlobalSearchKeywordController {
 
 	@Autowired

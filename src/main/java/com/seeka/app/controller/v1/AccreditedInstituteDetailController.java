@@ -20,7 +20,7 @@ import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IAccreditedInstituteDetailService;
 
 @RestController("accreditedInstituteDetailControllerV1")
-@RequestMapping("/v1/accredited/institute/detail")
+@RequestMapping("/api/v1/accredited/detail")
 public class AccreditedInstituteDetailController {
 
 	@Autowired

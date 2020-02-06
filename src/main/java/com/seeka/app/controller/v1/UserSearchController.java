@@ -26,7 +26,7 @@ import com.seeka.app.service.UserSearchService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("userSearchControllerV1")
-@RequestMapping("/v1/userSearch")
+@RequestMapping("/api/v1/userSearch")
 public class UserSearchController {
 
 	@Autowired

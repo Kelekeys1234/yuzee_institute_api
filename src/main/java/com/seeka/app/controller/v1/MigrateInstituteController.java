@@ -30,7 +30,7 @@ import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IServiceDetailsService;
 
 @RestController("migrateInstituteControllerV1")
-@RequestMapping("/v1/migrate")
+@RequestMapping("/api/v1/migrate")
 public class MigrateInstituteController {
 
 	@Autowired

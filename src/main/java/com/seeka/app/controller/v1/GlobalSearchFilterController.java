@@ -20,7 +20,7 @@ import com.seeka.app.service.IGlobalSearchFilterService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("globalSearchFilterControllerV1")
-@RequestMapping("/v1/globalSearch")
+@RequestMapping("/api/v1/globalSearch")
 public class GlobalSearchFilterController {
 
 	@Autowired

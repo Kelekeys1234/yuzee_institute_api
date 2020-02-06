@@ -20,7 +20,7 @@ import com.seeka.app.dto.EducationAgentPartnershipsDto;
 import com.seeka.app.service.IEducationAgentService;
 
 @RestController("educationAgentControllerV1")
-@RequestMapping("/v1/educationAgent")
+@RequestMapping("/api/v1/educationAgent")
 @Transactional
 public class EducationAgentController {
 

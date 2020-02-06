@@ -75,7 +75,7 @@ import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("courseControllerV1")
-@RequestMapping("/v1/course")
+@RequestMapping("/api/v1/course")
 public class CourseController {
 
 	@Autowired

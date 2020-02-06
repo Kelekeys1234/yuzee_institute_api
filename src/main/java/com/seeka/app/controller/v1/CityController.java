@@ -32,7 +32,7 @@ import com.seeka.app.util.NumbeoWebServiceClient;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("cityControllerV1")
-@RequestMapping("/v1/city")
+@RequestMapping("/api/v1/city")
 public class CityController {
 
 	@Autowired

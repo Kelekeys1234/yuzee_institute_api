@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.service.IEducationAgentService;
 
 @RestController("skillControllerV1")
-@RequestMapping("/v1/skill")
+@RequestMapping("/api/v1/skill")
 @Transactional
 public class SkillController {
 

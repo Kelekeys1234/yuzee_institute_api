@@ -34,7 +34,7 @@ import com.seeka.app.service.IScholarshipService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("scholarshipControllerV1")
-@RequestMapping("/v1/scholarship")
+@RequestMapping("/api/v1/scholarship")
 public class ScholarshipController {
 
 	@Autowired

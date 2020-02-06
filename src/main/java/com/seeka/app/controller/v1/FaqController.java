@@ -31,7 +31,7 @@ import com.seeka.app.service.IFaqService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("faqControllerV1")
-@RequestMapping("/v1/faq")
+@RequestMapping("/api/v1/faq")
 public class FaqController {
 
 	@Autowired

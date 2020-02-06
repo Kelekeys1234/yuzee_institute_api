@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.jobs.CurrencyConversionRateUtil;
 
 @RestController("schedulerControllerV1")
-@RequestMapping("/v1/scheduler")
+@RequestMapping("/api/v1/scheduler")
 public class SchedulerController {
 
 	@Autowired

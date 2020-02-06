@@ -28,7 +28,7 @@ import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IStorageService;
 
 @RestController("searchPageControllerV1")
-@RequestMapping("/v1/search")
+@RequestMapping("/api/v1/search")
 public class SearchPageController {
 
 	@Autowired

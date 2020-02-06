@@ -13,7 +13,7 @@ import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.service.ICurrencyRateService;
 
 @RestController("currencyControllerV1")
-@RequestMapping("/v1/currency")
+@RequestMapping("/api/v1/currency")
 public class CurrencyController {
 
 	@Autowired

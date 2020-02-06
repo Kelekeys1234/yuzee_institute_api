@@ -14,7 +14,7 @@ import com.seeka.app.dto.EventBriteDto;
 import com.seeka.app.service.EventBriteService;
 
 @RestController("eventBriteControllerV1")
-@RequestMapping("/v1/eventbrite")
+@RequestMapping("/api/v1/eventbrite")
 public class EventBriteController {
 
 	@Autowired

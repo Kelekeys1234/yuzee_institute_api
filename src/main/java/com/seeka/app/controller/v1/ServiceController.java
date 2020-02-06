@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.service.ICourseService;
 
 @RestController("serviceControllerV1")
-@RequestMapping("/v1/service")
+@RequestMapping("/api/v1/service")
 public class ServiceController {
     
     @Autowired

@@ -42,7 +42,7 @@ import com.seeka.app.service.IArticleService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("articleControllerV1")
-@RequestMapping("/v1/article")
+@RequestMapping("/api/v1/article")
 public class ArticleController {
 
 	@Autowired

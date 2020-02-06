@@ -20,7 +20,7 @@ import com.seeka.app.service.IInstituteGoogleReviewService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("instituteGoogleReviewControllerV1")
-@RequestMapping("/v1/review/google")
+@RequestMapping("/api/v1/review/google")
 public class InstituteGoogleReviewController {
 
 	@Autowired

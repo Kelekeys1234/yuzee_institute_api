@@ -17,7 +17,7 @@ import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.util.IConstant;
 
 @RestController("globalSearchControllerV1")
-@RequestMapping("/v1/global")
+@RequestMapping("/api/v1/global")
 public class GlobalSearchController {
 
     @Autowired

@@ -35,7 +35,7 @@ import com.seeka.app.service.IHelpService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("helpControllerV1")
-@RequestMapping("/v1/help")
+@RequestMapping("/api/v1/help")
 public class HelpController {
 
 	@Autowired

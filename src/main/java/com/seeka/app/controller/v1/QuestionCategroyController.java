@@ -24,7 +24,7 @@ import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IQuestionCategroyService;
 
 @RestController("questionCategroyControllerV1")
-@RequestMapping("/v1/question/category")
+@RequestMapping("/api/v1/question/category")
 public class QuestionCategroyController {
 
 	@Autowired

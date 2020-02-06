@@ -27,7 +27,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport{
             		.groupName("version1")
                     .select()
                     .apis(RequestHandlerSelectors.basePackage(IConstant.BASE_PACKAGE))
-                    .paths(PathSelectors.regex("/v1.*"))
+                    .paths(PathSelectors.regex("/api/v1.*"))
                     .build()
                     .apiInfo(metaData());
         }

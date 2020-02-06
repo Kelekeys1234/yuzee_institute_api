@@ -25,7 +25,7 @@ import com.seeka.app.service.UserMyCourseService;
  *
  */
 @RestController("userMyCourseControllerV1")
-@RequestMapping("/v1/course")
+@RequestMapping("/api/v1/course")
 public class UserMyCourseController {
 
 	@Autowired

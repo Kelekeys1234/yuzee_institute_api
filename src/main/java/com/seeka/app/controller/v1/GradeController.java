@@ -13,7 +13,7 @@ import com.seeka.app.dto.GradeDto;
 import com.seeka.app.service.IEducationSystemService;
 
 @RestController("gradeControllerV1")
-@RequestMapping("/v1/grade")
+@RequestMapping("/api/v1/grade")
 public class GradeController {
 
     @Autowired

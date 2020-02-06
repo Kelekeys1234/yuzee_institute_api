@@ -20,7 +20,7 @@ import com.seeka.app.service.EducationSystemService;
 import com.seeka.app.service.UsersService;
 
 @RestController("userManagementControllerV1")
-@RequestMapping("/v1/user")
+@RequestMapping("/api/v1/user")
 public class UserManagementController {
 
 	@Autowired

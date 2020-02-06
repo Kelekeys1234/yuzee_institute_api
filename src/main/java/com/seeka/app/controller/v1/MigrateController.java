@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("migrateControllerV1")
-@RequestMapping("/v1/migrate")
+@RequestMapping("/api/v1/migrate")
 public class MigrateController {
 //
 //    @Autowired

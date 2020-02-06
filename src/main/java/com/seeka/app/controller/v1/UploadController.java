@@ -15,7 +15,7 @@ import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.service.IUploadService;
 
 @RestController("uploadControllerV1")
-@RequestMapping("/v1")
+@RequestMapping("/api/v1")
 public class UploadController {
 
 	@Autowired

@@ -17,7 +17,7 @@ import com.seeka.app.bean.CourseDetails;
 import com.seeka.app.bean.CoursePricing;
 
 @RestController("migrateCourseControllerTestingV1")
-@RequestMapping("/v1/migrate")
+@RequestMapping("/api/v1/migrate")
 public class MigrateCourseControllerTesting {
 
     public static void main(String[] args) throws Exception {

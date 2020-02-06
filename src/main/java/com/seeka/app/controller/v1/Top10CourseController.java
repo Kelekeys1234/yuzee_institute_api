@@ -17,7 +17,7 @@ import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.ITop10CourseService;
 
 @RestController("top10CourseControllerV1")
-@RequestMapping("/v1/top10")
+@RequestMapping("/api/v1/top10")
 public class Top10CourseController {
 
 	@Autowired

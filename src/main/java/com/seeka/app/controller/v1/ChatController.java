@@ -34,7 +34,7 @@ import com.seeka.app.service.IChatService;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("chatControllerV1")
-@RequestMapping("/v1/chat")
+@RequestMapping("/api/v1/chat")
 public class ChatController {
 
 	@Autowired

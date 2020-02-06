@@ -17,7 +17,7 @@ import com.seeka.app.bean.Level;
 import com.seeka.app.service.ILevelService;
 
 @RestController("levelControllerV1")
-@RequestMapping("/v1/level")
+@RequestMapping("/api/v1/level")
 public class LevelController {
 
     @Autowired
