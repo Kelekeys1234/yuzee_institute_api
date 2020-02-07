@@ -553,7 +553,7 @@ public class CourseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getUserCourses(@PathVariable final BigInteger userId,
+	public ResponseEntity<?> getUserCourses(@PathVariable final String userId,
 			@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final String currencyCode,
 			@RequestParam(required = false) final String sortBy,

@@ -52,7 +52,7 @@ public interface ICourseService {
 
 	Map<String, Object> addUserCourses(UserCourse userCourse);
 
-	Map<String, Object> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, Boolean sortAsscending)
+	Map<String, Object> getUserCourse(String userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, Boolean sortAsscending)
 			throws ValidationException;
 
 	Map<String, Object> addUserCompareCourse(UserCourse userCourse);

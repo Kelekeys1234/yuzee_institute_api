@@ -870,7 +870,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<CourseRequest> getUserCourse(final BigInteger userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
+	public List<CourseRequest> getUserCourse(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
 			final String sortBy, final boolean sortType) throws ValidationException {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select c.id ,c.c_id, c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
@@ -878,8 +878,8 @@ public class CourseDAO implements ICourseDAO {
 				+ " c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency,"
 				+ " i.latitute, i.longitute  FROM  user_my_course umc inner join course c on umc.course_id = c.id "
-				+ " left join institute i on c.institute_id = i.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = "
-				+ userId + "  ";
+				+ " left join institute i on c.institute_id = i.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = '"
+				+ userId + "'";
 		if (sortBy != null && "institute_name".contentEquals(sortBy)) {
 			sqlQuery = sqlQuery + " ORDER BY i.name " + (sortType ? "ASC" : "DESC");
 		} else if (sortBy != null) {
@@ -1012,10 +1012,9 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public int findTotalCountByUserId(final BigInteger userId) {
+	public int findTotalCountByUserId(final String userId) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select count(*) from  user_my_course umc inner join course c on umc.course_id = c.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id="
-				+ userId;
+		String sqlQuery = "select count(*) from  user_my_course umc inner join course c on umc.course_id = c.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id='"+ userId + "'";
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
 		return ((Number) query.uniqueResult()).intValue();
