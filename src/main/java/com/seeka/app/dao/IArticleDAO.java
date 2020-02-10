@@ -26,6 +26,6 @@ public interface IArticleDAO {
 
 	int getTotalAuthorCount(String searchString);
 
-	List<SeekaArticles> findArticleByCountryId(String countryId, String categoryName, Integer count, List<BigInteger> viewArticleIds);
+	List<SeekaArticles> findArticleByCountryId(String countryId, String categoryName, Integer count, List<String> viewArticleIds);
 
 }

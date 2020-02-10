@@ -46,14 +46,14 @@ public class ViewsController {
 	}
 
 	@GetMapping
-	public ResponseEntity<?> getUserViewData(@RequestHeader(name = "userId") final BigInteger userId, @RequestParam final String entityType,
+	public ResponseEntity<?> getUserViewData(@RequestHeader(name = "userId") final String userId, @RequestParam final String entityType,
 			@RequestParam(name = "isUnique", required = false) final boolean isUnique) throws ValidationException {
 		List<UserViewData> userViewDatas = iViewService.getUserViewData(userId, entityType, isUnique, null, null);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Get user view data.").setData(userViewDatas).create();
 	}
 
 	@GetMapping("/user/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getUserViewDataCourse(@RequestParam(name = "userId") final BigInteger userId,
+	public ResponseEntity<?> getUserViewDataCourse(@RequestParam(name = "userId") final String userId,
 			@RequestParam(name = "isUnique", required = false) final boolean isUnique, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
@@ -95,8 +95,8 @@ public class ViewsController {
 	}
 
 	@PostMapping(value = "/visit/entity")
-	public ResponseEntity<?> userVisitedBasedonEntityId(@RequestHeader final BigInteger userId, @RequestBody final ViewEntityDto viewEntityDto) {
-		List<BigInteger> viewedEntityIds = iViewService.getUserViewDataBasedOnEntityIdList(userId, viewEntityDto.getEntityType(), viewEntityDto.getEntityIds());
+	public ResponseEntity<?> userVisitedBasedonEntityId(@RequestHeader final String userId, @RequestBody final ViewEntityDto viewEntityDto) {
+		List<String> viewedEntityIds = iViewService.getUserViewDataBasedOnEntityIdList(userId, viewEntityDto.getEntityType(), viewEntityDto.getEntityIds());
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(" visited entity.").setData(viewedEntityIds).create();
 	}
 

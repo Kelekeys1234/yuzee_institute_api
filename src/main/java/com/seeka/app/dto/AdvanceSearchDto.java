@@ -5,12 +5,12 @@ import java.util.List;
 
 public class AdvanceSearchDto {
 
-	private List<BigInteger> faculties;
-	private List<BigInteger> levelIds;
-	private List<BigInteger> serviceIds;
-	private List<BigInteger> countryIds;
+	private List<String> faculties;
+	private List<String> levelIds;
+	private List<String> serviceIds;
+	private List<String> countryIds;
 	private List<String> courseKeys;
-	private List<BigInteger> cityIds;
+	private List<String> cityIds;
 	private Double minCost;
 	private Double maxCost;
 	private Integer minDuration;
@@ -21,9 +21,9 @@ public class AdvanceSearchDto {
 	private Integer maxSizePerPage;
 	private Integer pageNumber;
 	private String currencyCode;
-	private BigInteger userId;
+	private String userId;
 
-	private BigInteger userCountryId;
+	private String userCountryId;
 
 	private List<String> names;
 	private String searchKeyword;
@@ -67,7 +67,7 @@ public class AdvanceSearchDto {
 	 *
 	 * @return
 	 */
-	public BigInteger getUserCountryId() {
+	public String getUserCountryId() {
 		return userCountryId;
 	}
 
@@ -75,49 +75,49 @@ public class AdvanceSearchDto {
 	 *
 	 * @param userCountryId
 	 */
-	public void setUserCountryId(final BigInteger userCountryId) {
+	public void setUserCountryId(final String userCountryId) {
 		this.userCountryId = userCountryId;
 	}
 
 	/**
 	 * @return the faculties
 	 */
-	public List<BigInteger> getFaculties() {
+	public List<String> getFaculties() {
 		return faculties;
 	}
 
 	/**
 	 * @param faculties the faculties to set
 	 */
-	public void setFaculties(final List<BigInteger> faculties) {
+	public void setFaculties(final List<String> faculties) {
 		this.faculties = faculties;
 	}
 
 	/**
 	 * @return the levelIds
 	 */
-	public List<BigInteger> getLevelIds() {
+	public List<String> getLevelIds() {
 		return levelIds;
 	}
 
 	/**
 	 * @param levelIds the levelIds to set
 	 */
-	public void setLevelIds(final List<BigInteger> levelIds) {
+	public void setLevelIds(final List<String> levelIds) {
 		this.levelIds = levelIds;
 	}
 
 	/**
 	 * @return the serviceIds
 	 */
-	public List<BigInteger> getServiceIds() {
+	public List<String> getServiceIds() {
 		return serviceIds;
 	}
 
 	/**
 	 * @param serviceIds the serviceIds to set
 	 */
-	public void setServiceIds(final List<BigInteger> serviceIds) {
+	public void setServiceIds(final List<String> serviceIds) {
 		this.serviceIds = serviceIds;
 	}
 
@@ -208,14 +208,14 @@ public class AdvanceSearchDto {
 	/**
 	 * @return the countryIds
 	 */
-	public List<BigInteger> getCountryIds() {
+	public List<String> getCountryIds() {
 		return countryIds;
 	}
 
 	/**
 	 * @param countryIds the countryIds to set
 	 */
-	public void setCountryIds(final List<BigInteger> countryIds) {
+	public void setCountryIds(final List<String> countryIds) {
 		this.countryIds = countryIds;
 	}
 
@@ -278,28 +278,28 @@ public class AdvanceSearchDto {
 	/**
 	 * @return the userId
 	 */
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
 	/**
 	 * @return the cityIds
 	 */
-	public List<BigInteger> getCityIds() {
+	public List<String> getCityIds() {
 		return cityIds;
 	}
 
 	/**
 	 * @param cityIds the cityIds to set
 	 */
-	public void setCityIds(final List<BigInteger> cityIds) {
+	public void setCityIds(final List<String> cityIds) {
 		this.cityIds = cityIds;
 	}
 

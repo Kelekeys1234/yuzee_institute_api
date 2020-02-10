@@ -504,7 +504,7 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public List<SeekaArticles> findArticleByCountryId(final String countryId, final String categoryName, final Integer count,
-			final List<BigInteger> viewArticleIds) {
+			final List<String> viewArticleIds) {
 		return articleDAO.findArticleByCountryId(countryId, categoryName, count, viewArticleIds);
 	}
 

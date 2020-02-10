@@ -24,7 +24,7 @@ import com.seeka.app.util.IConstant;
 @Transactional(rollbackFor = Throwable.class)
 public class Top10CourseService implements ITop10CourseService {
 
-	private static List<BigInteger> top10CourseIds = null;
+	private static List<String> top10CourseIds = null;
 
 	@Autowired
 	private ITop10CourseDAO iTop10CourseDao;
@@ -109,7 +109,7 @@ public class Top10CourseService implements ITop10CourseService {
 		top10CourseIds = iTop10CourseDao.getCourseIdsOfTop10CoursesFromEveryFaculty();
 	}
 
-	public static List<BigInteger> getTop10CourseIdList() {
+	public static List<String> getTop10CourseIdList() {
 		return top10CourseIds;
 	}
 

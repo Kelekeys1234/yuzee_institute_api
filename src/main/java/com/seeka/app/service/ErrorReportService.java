@@ -118,7 +118,7 @@ public class ErrorReportService implements IErrorReportService {
 	}
 
 	@Override
-	public List<ErrorReportResponseDto> getAllErrorReport(final BigInteger userId, final Integer startIndex, final Integer pageSize,
+	public List<ErrorReportResponseDto> getAllErrorReport(final String userId, final Integer startIndex, final Integer pageSize,
 			final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive,
 			final String sortByField, final String sortByType, final String searchKeyword) throws ValidationException {
 		List<ErrorReport> errorReports = errorReportDAO.getAllErrorReport(userId, startIndex, pageSize, errorReportCategoryId, errorReportStatus, updatedOn,
@@ -147,7 +147,7 @@ public class ErrorReportService implements IErrorReportService {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteByUserId(@Valid final BigInteger userId) {
+	public ResponseEntity<?> deleteByUserId(@Valid final String userId) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			List<ErrorReport> errorReports = errorReportDAO.getAllErrorReport(userId, null, null, null, null, null, null, null, null, null, null);
@@ -177,7 +177,7 @@ public class ErrorReportService implements IErrorReportService {
 	}
 
 	@Override
-	public int getErrorReportCount(final BigInteger userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
+	public int getErrorReportCount(final String userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
 			final Boolean isFavourite, final Boolean isArchive, final String searchKeyword) {
 		return errorReportDAO.getErrorReportCountForUser(userId, errorReportCategoryId, errorReportStatus, updatedOn, isFavourite, isArchive, searchKeyword);
 	}

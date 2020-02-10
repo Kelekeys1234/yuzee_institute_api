@@ -177,7 +177,7 @@ public class CourseService implements ICourseService {
 			return new ArrayList<>();
 		}
 		List<String> courseIds = courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
-		List<BigInteger> viewedCourseIds = new ArrayList<>();
+		List<String> viewedCourseIds = new ArrayList<>();
 		if (courseSearchDto.getUserId() != null) {
 			viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
 		}
@@ -850,7 +850,7 @@ public class CourseService implements ICourseService {
 			return new ArrayList<>();
 		}
 		List<String> courseIds = courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
-		List<BigInteger> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
+		List<String> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
 				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), ImageCategory.INSTITUTE.name(), null, "en");
 		List<CourseDeliveryMethod> courseDeliveryMethods = iCourseDAO.getCourseDeliveryMethodBasedOnCourseIdList(courseIds);

@@ -32,7 +32,7 @@ public class ViewDao implements IViewDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public List<Object> getUserViewData(final BigInteger userId, final String entityType, final boolean isUnique, final Integer startIndex,
+	public List<Object> getUserViewData(final String userId, final String entityType, final boolean isUnique, final Integer startIndex,
 			final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserViewData.class, "userViewData");
@@ -83,7 +83,7 @@ public class ViewDao implements IViewDao {
 	}
 
 	@Override
-	public List<Object> getUserViewDataBasedOnEntityIdList(final BigInteger userId, final String entityType, final boolean isUnique,
+	public List<Object> getUserViewDataBasedOnEntityIdList(final String userId, final String entityType, final boolean isUnique,
 			final List<String> entityIds) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserViewData.class, "userViewData");

@@ -177,7 +177,7 @@ public class ArticleDAO implements IArticleDAO {
 
 	@Override
 	public List<SeekaArticles> findArticleByCountryId(final String countryId, final String categoryName, final Integer count,
-			final List<BigInteger> viewArticleIds) {
+			final List<String> viewArticleIds) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
 		criteria.createAlias("article.country", "country");

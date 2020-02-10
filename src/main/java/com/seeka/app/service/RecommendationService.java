@@ -869,8 +869,8 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get List of all user viewd articles
 		 */
-		List<UserViewData> userViewDataList = viewService.getUserViewData(BigInteger.valueOf(userDto.getId()), "ARTICLE", false, null, null);
-		List<BigInteger> viewArticleIds = new ArrayList<>();
+		List<UserViewData> userViewDataList = viewService.getUserViewData((userDto.getId()), "ARTICLE", false, null, null);
+		List<String> viewArticleIds = new ArrayList<>();
 		for (UserViewData userViewData : userViewDataList) {
 			viewArticleIds.add(userViewData.getEntityId());
 		}

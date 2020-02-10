@@ -22,15 +22,15 @@ public interface IErrorReportService {
 
 	ErrorReportResponseDto getErrorReportById(String id) throws ValidationException;
 
-	List<ErrorReportResponseDto> getAllErrorReport(BigInteger userId, Integer startIndex, Integer pageSize, BigInteger errorReportCategoryId,
+	List<ErrorReportResponseDto> getAllErrorReport(String userId, Integer startIndex, Integer pageSize, BigInteger errorReportCategoryId,
 			String errorReportStatus, Date updatedOn, Boolean isFavourite, Boolean isArchive, String sortByField, String sortByType, String searchKeyword)
 			throws ValidationException;
 
-	ResponseEntity<?> deleteByUserId(BigInteger userId);
+	ResponseEntity<?> deleteByUserId(String userId);
 
 	List<ErrorReportCategory> getAllErrorCategory(String errorCategoryType);
 
-	int getErrorReportCount(BigInteger userId, BigInteger errorReportCategoryId, String errorReportStatus, Date updatedOn, Boolean isFavourite,
+	int getErrorReportCount(String userId, BigInteger errorReportCategoryId, String errorReportStatus, Date updatedOn, Boolean isFavourite,
 			Boolean isArchive, String searchKeyword);
 
 	void setIsFavouriteFlag(BigInteger errorRepoetId, boolean isFavourite) throws NotFoundException;

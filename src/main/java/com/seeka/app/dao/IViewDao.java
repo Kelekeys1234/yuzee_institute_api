@@ -11,13 +11,13 @@ public interface IViewDao {
 
 	void createUserViewData(UserViewData userViewData);
 
-	List<Object> getUserViewData(BigInteger userId, String entityType, boolean isUnique, Integer startIndex, Integer pageSize);
+	List<Object> getUserViewData(String userId, String entityType, boolean isUnique, Integer startIndex, Integer pageSize);
 
 	int getUserViewDataCountBasedOnUserId(String userId, String entityId, String entityType);
 
 	int getUserViewDataCountBasedOnEntityId(BigInteger entityId, String entityType);
 
-	List<Object> getUserViewDataBasedOnEntityIdList(BigInteger userId, String entityType, boolean isUnique, List<String> entityIds);
+	List<Object> getUserViewDataBasedOnEntityIdList(String userId, String entityType, boolean isUnique, List<String> entityIds);
 
 	List<String> getUserWatchCourseIds(final String userId, final String entityType);
 
