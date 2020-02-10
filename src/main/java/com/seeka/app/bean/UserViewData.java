@@ -36,11 +36,11 @@ public class UserViewData implements Serializable {
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
 	private String id;
 	@Column(name = "entity_id", nullable = false)
-	private BigInteger entityId;
+	private String entityId;
 	@Column(name = "entity_type", nullable = false)
 	private String entityType;
 	@Column(name = "user_id", nullable = false)
-	private BigInteger userId;
+	private String userId;
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
 	private Date createdOn;
@@ -55,11 +55,11 @@ public class UserViewData implements Serializable {
 		this.id = id;
 	}
 
-	public BigInteger getEntityId() {
+	public String getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(final BigInteger entityId) {
+	public void setEntityId(final String entityId) {
 		this.entityId = entityId;
 	}
 
@@ -71,11 +71,11 @@ public class UserViewData implements Serializable {
 		this.entityType = entityType;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 

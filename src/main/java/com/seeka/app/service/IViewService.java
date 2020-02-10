@@ -14,15 +14,15 @@ public interface IViewService {
 
 	void createUserViewData(UserViewDataRequestDto userViewDataRequestDto);
 
-	List<UserViewData> getUserViewData(BigInteger userId, String entityType, boolean isUnique, Integer startIndex, Integer pageSize);
+	List<UserViewData> getUserViewData(String userId, String entityType, boolean isUnique, Integer startIndex, Integer pageSize);
 
 	int getUserViewDataCountBasedOnUserId(String userId, String entityId, String entityType);
 
 	int getUserViewDataCountBasedOnEntityId(BigInteger entityId, String entityType);
 
-	List<BigInteger> getUserViewDataBasedOnEntityIdList(String userId, String entityType, List<String> entityIds);
+	List<String> getUserViewDataBasedOnEntityIdList(String userId, String entityType, List<String> entityIds);
 
-	List<CourseResponseDto> getUserViewDataCourse(BigInteger userId, boolean isUnique, Integer startIndex, Integer pageSize);
+	List<CourseResponseDto> getUserViewDataCourse(String userId, boolean isUnique, Integer startIndex, Integer pageSize);
 
 	List<UserCourseView> userVisistedCourseBasedOncity(String cityName, Date fromDate, Date toDate) throws ValidationException;
 

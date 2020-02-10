@@ -24,7 +24,7 @@ public class Top10CourseController {
 	private ITop10CourseService iTop10CourseService;
 
 	@GetMapping("/random")
-	public ResponseEntity<?> getTop10RandomCoursesForGlobalSearchLandingPage(@RequestHeader final BigInteger userId) throws ValidationException {
+	public ResponseEntity<?> getTop10RandomCoursesForGlobalSearchLandingPage(@RequestHeader final String userId) throws ValidationException {
 
 		List<CourseResponseDto> courseResponseDto = iTop10CourseService.getTop10RandomCoursesForGlobalSearchLandingPage();
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Random List of Courses.").setData(courseResponseDto).create();

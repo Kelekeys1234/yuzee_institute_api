@@ -11,7 +11,7 @@ public interface IViewDao {
 
 	void createUserViewData(UserViewData userViewData);
 
-	List<Object> getUserViewData(BigInteger userId, String entityType, boolean isUnique, Integer startIndex, Integer pageSize);
+	List<Object> getUserViewData(String userId, String entityType, boolean isUnique, Integer startIndex, Integer pageSize);
 
 	int getUserViewDataCountBasedOnUserId(String userId, String entityId, String entityType);
 

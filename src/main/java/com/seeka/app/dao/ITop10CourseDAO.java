@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.Course;
@@ -16,7 +15,7 @@ public interface ITop10CourseDAO {
 
 	List<Top10Course> getTop10CourseKeyword(String faculty);
 
-	List<BigInteger> getCourseIdsOfTop10CoursesFromEveryFaculty();
+	List<String> getCourseIdsOfTop10CoursesFromEveryFaculty();
 
-	List<Course> getRandomCourseFromTop10Course(String countryName, List<String> levelList, List<BigInteger> top10CourseIds);
+	List<Course> getRandomCourseFromTop10Course(String countryName, List<String> levelList, List<String> top10CourseIds);
 }

@@ -111,7 +111,7 @@ public class ErrorReportController {
 	}
 
 	@GetMapping(value = "/user/pageNumber/{pageNumber}/pageSize/{pageSize}", produces = "application/json")
-	public ResponseEntity<?> getErrorReportForUser(@RequestHeader(value = "userId") final BigInteger userId, @PathVariable final Integer pageNumber,
+	public ResponseEntity<?> getErrorReportForUser(@RequestHeader(value = "userId") final String userId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(required = false) final Boolean isFavourite,
 			@RequestParam(required = false) final boolean isArchive) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
@@ -133,7 +133,7 @@ public class ErrorReportController {
 	}
 
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<?> delete(@Valid @PathVariable final BigInteger userId) throws Exception {
+	public ResponseEntity<?> delete(@Valid @PathVariable final String userId) throws Exception {
 		return ResponseEntity.accepted().body(errorReportService.deleteByUserId(userId));
 	}
 

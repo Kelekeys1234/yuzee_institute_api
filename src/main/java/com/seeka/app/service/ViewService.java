@@ -50,7 +50,7 @@ public class ViewService implements IViewService {
 	}
 
 	@Override
-	public List<UserViewData> getUserViewData(final BigInteger userId, final String entityType, final boolean isUnique, final Integer startIndex,
+	public List<UserViewData> getUserViewData(final String userId, final String entityType, final boolean isUnique, final Integer startIndex,
 			final Integer pageSize) {
 		List<UserViewData> resultList = new ArrayList<>();
 		List<Object> objectList = iViewDataDao.getUserViewData(userId, entityType, isUnique, startIndex, pageSize);
@@ -58,8 +58,8 @@ public class ViewService implements IViewService {
 			Object[] obj1 = (Object[]) object;
 			UserViewData UserViewData = new UserViewData();
 			UserViewData.setId(obj1[0].toString());
-			UserViewData.setUserId((BigInteger) obj1[1]);
-			UserViewData.setEntityId((BigInteger) obj1[2]);
+			UserViewData.setUserId((String) obj1[1]);
+			UserViewData.setEntityId((String) obj1[2]);
 			UserViewData.setEntityType((String) obj1[3]);
 			UserViewData.setCreatedOn((Date) obj1[4]);
 			UserViewData.setCreatedBy((String) obj1[5]);
@@ -69,7 +69,7 @@ public class ViewService implements IViewService {
 	}
 
 	@Override
-	public List<CourseResponseDto> getUserViewDataCourse(final BigInteger userId, final boolean isUnique, final Integer startIndex, final Integer pageSize) {
+	public List<CourseResponseDto> getUserViewDataCourse(final String userId, final boolean isUnique, final Integer startIndex, final Integer pageSize) {
 		List<UserViewData> userViewDatas = getUserViewData(userId, "COURSE", isUnique, startIndex, pageSize);
 		return iCourseDAO.getAllCoursesByFilter(new CourseSearchDto(), null, userViewDatas.stream().map(x -> x.getEntityId()).collect(Collectors.toList()),
 				null, false);
@@ -77,12 +77,12 @@ public class ViewService implements IViewService {
 	}
 
 	@Override
-	public List<BigInteger> getUserViewDataBasedOnEntityIdList(final String userId, final String entityType, final List<String> entityIds) {
-		List<BigInteger> resultList = new ArrayList<>();
+	public List<String> getUserViewDataBasedOnEntityIdList(final String userId, final String entityType, final List<String> entityIds) {
+		List<String> resultList = new ArrayList<>();
 		List<Object> objectList = iViewDataDao.getUserViewDataBasedOnEntityIdList(userId, entityType, true, entityIds);
 		for (Object object : objectList) {
 			Object[] obj1 = (Object[]) object;
-			resultList.add((BigInteger) obj1[0]);
+			resultList.add((String) obj1[0]);
 		}
 		return resultList;
 	}

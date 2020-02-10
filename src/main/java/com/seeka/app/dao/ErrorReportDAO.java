@@ -46,7 +46,7 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	}
 
 	@Override
-	public List<ErrorReport> getAllErrorReport(final BigInteger userId, final Integer startIndex, final Integer pageSize,
+	public List<ErrorReport> getAllErrorReport(final String userId, final Integer startIndex, final Integer pageSize,
 			final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive,
 			final String sortByField, String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
@@ -141,7 +141,7 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	}
 
 	@Override
-	public int getErrorReportCountForUser(final BigInteger userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
+	public int getErrorReportCountForUser(final String userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
 			final Boolean isFavourite, final Boolean isArchive, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ErrorReport.class, "errorReport");

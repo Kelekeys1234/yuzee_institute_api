@@ -55,7 +55,7 @@ public class Top10CourseDAO implements ITop10CourseDAO {
 	}
 
 	@Override
-	public List<BigInteger> getCourseIdsOfTop10CoursesFromEveryFaculty() {
+	public List<String> getCourseIdsOfTop10CoursesFromEveryFaculty() {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Top10Course.class, "top10Course");
 		crit.setProjection(Projections.property("course"));
@@ -68,7 +68,7 @@ public class Top10CourseDAO implements ITop10CourseDAO {
 	}
 
 	@Override
-	public List<Course> getRandomCourseFromTop10Course(final String countryName, final List<String> levelList, final List<BigInteger> top10CourseIds) {
+	public List<Course> getRandomCourseFromTop10Course(final String countryName, final List<String> levelList, final List<String> top10CourseIds) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
 		crit.createAlias("faculty", "faculty");

@@ -54,5 +54,5 @@ public interface IArticleService {
 
 	int getTotalAuthorCount(String searchString);
 
-	List<SeekaArticles> findArticleByCountryId(String id, String categoryName, Integer count, List<BigInteger> viewArticleIds);
+	List<SeekaArticles> findArticleByCountryId(String id, String categoryName, Integer count, List<String> viewArticleIds);
 }
