@@ -697,7 +697,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Map<String, Object> getUserCourse(final BigInteger userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
+	public Map<String, Object> getUserCourse(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
 			final String sortBy, final Boolean sortAsscending) throws ValidationException {
 		Map<String, Object> response = new HashMap<>();
 		String status = IConstant.SUCCESS;

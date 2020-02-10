@@ -52,10 +52,10 @@ public interface ICourseDAO {
 	
 	List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
 
-	List<CourseRequest> getUserCourse(BigInteger userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType)
+	List<CourseRequest> getUserCourse(String userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType)
 			throws ValidationException;
 
-	int findTotalCountByUserId(BigInteger userId);
+	int findTotalCountByUserId(String userId);
 
 	void saveUserCompareCourse(UserCompareCourse compareCourse);
 
