@@ -179,7 +179,7 @@ public class CourseController {
 			@RequestParam(required = false) final String searchKeyword,
 			@RequestParam(required = false) final String sortBy,
 			@RequestParam(required = false) final boolean sortAsscending,
-			@RequestHeader(required = true) final BigInteger userId, @RequestParam(required = false) final String date)
+			@RequestHeader(required = true) final String userId, @RequestParam(required = false) final String date)
 			throws ValidationException {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryIds(countryIds);
@@ -204,7 +204,7 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final BigInteger userId,
+	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final String userId,
 			@RequestBody final CourseSearchDto courseSearchDto) throws Exception {
 		courseSearchDto.setUserId(userId);
 		return courseSearch(courseSearchDto, null);
@@ -232,7 +232,7 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/advanceSearch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) final BigInteger userId,
+	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) final String userId,
 			@RequestHeader(required = false) final String language, @RequestBody final AdvanceSearchDto courseSearchDto)
 			throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),

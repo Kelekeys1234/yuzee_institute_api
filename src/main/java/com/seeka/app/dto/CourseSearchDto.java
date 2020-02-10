@@ -9,7 +9,7 @@ public class CourseSearchDto {
 	private String courseName;
 	private Boolean isProfileSearch;
 	private BigInteger currencyId;
-	private BigInteger userId;
+	private String userId;
 	private List<String> courseKeys;
 	private List<String> levelIds;
 	private List<String> facultyIds;
@@ -149,11 +149,11 @@ public class CourseSearchDto {
 		this.pageNumber = pageNumber;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 

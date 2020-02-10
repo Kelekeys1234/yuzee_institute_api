@@ -95,7 +95,7 @@ public class ViewsController {
 	}
 
 	@PostMapping(value = "/visit/entity")
-	public ResponseEntity<?> userVisitedBasedonEntityId(@RequestHeader final BigInteger userId, @RequestBody final ViewEntityDto viewEntityDto) {
+	public ResponseEntity<?> userVisitedBasedonEntityId(@RequestHeader final String userId, @RequestBody final ViewEntityDto viewEntityDto) {
 		List<BigInteger> viewedEntityIds = iViewService.getUserViewDataBasedOnEntityIdList(userId, viewEntityDto.getEntityType(), viewEntityDto.getEntityIds());
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(" visited entity.").setData(viewedEntityIds).create();
 	}

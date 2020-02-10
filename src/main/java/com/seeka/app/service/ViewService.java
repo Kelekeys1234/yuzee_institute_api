@@ -77,7 +77,7 @@ public class ViewService implements IViewService {
 	}
 
 	@Override
-	public List<BigInteger> getUserViewDataBasedOnEntityIdList(final BigInteger userId, final String entityType, final List<String> entityIds) {
+	public List<BigInteger> getUserViewDataBasedOnEntityIdList(final String userId, final String entityType, final List<String> entityIds) {
 		List<BigInteger> resultList = new ArrayList<>();
 		List<Object> objectList = iViewDataDao.getUserViewDataBasedOnEntityIdList(userId, entityType, true, entityIds);
 		for (Object object : objectList) {

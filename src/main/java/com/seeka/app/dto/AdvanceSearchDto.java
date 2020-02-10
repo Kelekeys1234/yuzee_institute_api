@@ -21,7 +21,7 @@ public class AdvanceSearchDto {
 	private Integer maxSizePerPage;
 	private Integer pageNumber;
 	private String currencyCode;
-	private BigInteger userId;
+	private String userId;
 
 	private BigInteger userCountryId;
 
@@ -278,14 +278,14 @@ public class AdvanceSearchDto {
 	/**
 	 * @return the userId
 	 */
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 

@@ -20,7 +20,7 @@ public interface IViewService {
 
 	int getUserViewDataCountBasedOnEntityId(BigInteger entityId, String entityType);
 
-	List<BigInteger> getUserViewDataBasedOnEntityIdList(BigInteger userId, String entityType, List<String> entityIds);
+	List<BigInteger> getUserViewDataBasedOnEntityIdList(String userId, String entityType, List<String> entityIds);
 
 	List<CourseResponseDto> getUserViewDataCourse(BigInteger userId, boolean isUnique, Integer startIndex, Integer pageSize);
 
