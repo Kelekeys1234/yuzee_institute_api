@@ -763,11 +763,7 @@ public class CourseDAO implements ICourseDAO {
 				obj.setCost(getCost(row[2].toString(), session));
 			}
 			if (row[3] != null) {
-				obj.setCountryId(row[3].toString());
 				obj.setLocation(getLocationName(row[3].toString(), session));
-			}
-			if (row[4] != null) {
-				obj.setCityId(row[4].toString());
 			}
 			if (row[5] != null) {
 				obj.setFacultyId(row[5].toString());
@@ -909,10 +905,8 @@ public class CourseDAO implements ICourseDAO {
 				obj.setCost(getCost(row[2].toString(), session));
 			}
 			if (row[3] != null) {
-				obj.setCountryId(row[3].toString());
 				obj.setLocation(getLocationName(row[3].toString(), session));
 			}
-			obj.setCityId(row[4].toString());
 			obj.setFacultyId(row[5].toString());
 			obj.setName(row[6].toString());
 			if (row[7] != null) {
@@ -1074,10 +1068,8 @@ public class CourseDAO implements ICourseDAO {
 				courseRequest.setCost(getCost(row[2].toString(), session));
 			}
 			if (row[3] != null) {
-				courseRequest.setCountryId(row[3].toString());
 				courseRequest.setLocation(getLocationName(row[3].toString(), session));
 			}
-			courseRequest.setCityId(row[4].toString());
 			courseRequest.setFacultyId(row[5].toString());
 			courseRequest.setName(row[6].toString());
 			if (row[7] != null) {

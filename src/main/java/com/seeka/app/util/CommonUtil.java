@@ -143,9 +143,6 @@ public class CommonUtil {
 		}
 		courseRequest.setDomasticFee(course.getUsdDomasticFee());
 		courseRequest.setInternationalFee(course.getUsdInternationFee());
-		if (course.getCountry() != null) {
-			courseRequest.setCountryId(course.getCountry().getId());
-		}
 		courseRequest.setGrades(course.getGrades());
 		courseRequest.setContact(course.getContact());
 		courseRequest.setCampusLocation(course.getCampusLocation());
@@ -164,12 +161,6 @@ public class CommonUtil {
 		}
 		if (course.getLevel() != null) {
 			courseRequest.setLevelId(course.getLevel().getId());
-		}
-		if (course.getCountry() != null) {
-			courseRequest.setCountryId(course.getCountry().getId());
-		}
-		if (course.getCity() != null) {
-			courseRequest.setCityId(course.getCity().getId());
 		}
 		return courseRequest;
 	}

@@ -74,8 +74,6 @@ public class Top10CourseDAO implements ITop10CourseDAO {
 		crit.createAlias("faculty", "faculty");
 		crit.createAlias("institute", "institute");
 		crit.createAlias("level", "level");
-		crit.createAlias("country", "country");
-		crit.add(Restrictions.in("country.name", countryName));
 		crit.add(Restrictions.in("level.name", levelList));
 		crit.add(Restrictions.in("course.id", top10CourseIds));
 		crit.add(Restrictions.sqlRestriction("1=1 order by rand()"));

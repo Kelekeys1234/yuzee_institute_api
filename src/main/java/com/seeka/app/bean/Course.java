@@ -1,9 +1,6 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -35,8 +32,6 @@ public class Course implements Serializable {
 	 */
 	private static final long serialVersionUID = 8492390790670110780L;
 	private String id;
-	private City city;
-	private Country country;
 	private Faculty faculty;
 	private Institute institute;
 	private String name;
@@ -86,12 +81,10 @@ public class Course implements Serializable {
 	public Course() {
 	}
 
-	public Course(final City city, final Country country, final Faculty faculty, final Institute institute, final String name, final Integer worldRanking,
+	public Course(final Faculty faculty, final Institute institute, final String name, final Integer worldRanking,
 			final Integer stars, final String recognition, final String recognitionType, final Double duration, final String durationTime, final String website,
 			final String language, final String abbreviation, final Date recDate, final String remarks, final String description, final Boolean isActive,
 			final Date createdOn, final Date updatedOn, final Date deletedOn, final String createdBy, final String updatedBy, final Boolean isDeleted) {
-		this.city = city;
-		this.country = country;
 		this.faculty = faculty;
 		this.institute = institute;
 		this.name = name;
@@ -126,26 +119,6 @@ public class Course implements Serializable {
 
 	public void setId(final String id) {
 		this.id = id;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "city_id")
-	public City getCity() {
-		return this.city;
-	}
-
-	public void setCity(final City city) {
-		this.city = city;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "country_id")
-	public Country getCountry() {
-		return this.country;
-	}
-
-	public void setCountry(final Country country) {
-		this.country = country;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -641,10 +614,8 @@ public class Course implements Serializable {
 		result = prime * result + (availbilty == null ? 0 : availbilty.hashCode());
 		result = prime * result + (cId == null ? 0 : cId.hashCode());
 		result = prime * result + (campusLocation == null ? 0 : campusLocation.hashCode());
-		result = prime * result + (city == null ? 0 : city.hashCode());
 		result = prime * result + (contact == null ? 0 : contact.hashCode());
 		result = prime * result + (costRange == null ? 0 : costRange.hashCode());
-		result = prime * result + (country == null ? 0 : country.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (currency == null ? 0 : currency.hashCode());
@@ -727,13 +698,6 @@ public class Course implements Serializable {
 		} else if (!campusLocation.equals(other.campusLocation)) {
 			return false;
 		}
-		if (city == null) {
-			if (other.city != null) {
-				return false;
-			}
-		} else if (!city.equals(other.city)) {
-			return false;
-		}
 		if (contact == null) {
 			if (other.contact != null) {
 				return false;
@@ -746,13 +710,6 @@ public class Course implements Serializable {
 				return false;
 			}
 		} else if (!costRange.equals(other.costRange)) {
-			return false;
-		}
-		if (country == null) {
-			if (other.country != null) {
-				return false;
-			}
-		} else if (!country.equals(other.country)) {
 			return false;
 		}
 		if (createdBy == null) {
@@ -1034,7 +991,7 @@ public class Course implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Course [id=").append(id).append(", city=").append(city).append(", country=").append(country).append(", faculty=").append(faculty)
+		builder.append("Course [id=").append(id).append(", faculty=").append(faculty)
 				.append(", institute=").append(institute).append(", name=").append(name).append(", worldRanking=").append(worldRanking).append(", stars=")
 				.append(stars).append(", recognition=").append(recognition).append(", recognitionType=").append(recognitionType).append(", duration=")
 				.append(duration).append(", durationTime=").append(durationTime).append(", website=").append(website).append(", language=").append(language)

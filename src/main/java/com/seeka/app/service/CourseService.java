@@ -264,8 +264,6 @@ public class CourseService implements ICourseService {
 			course.setDuration(Double.valueOf(courseDto.getDuration()));
 		}
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
-		course.setCity(getCity(courseDto.getCityId()));
-		course.setCountry(getCountry(courseDto.getCountryId()));
 		course.setIsActive(true);
 		course.setCreatedBy("API");
 		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -389,8 +387,6 @@ public class CourseService implements ICourseService {
 		 */
 		CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
 		BeanUtils.copyProperties(course, courseElasticSearch);
-		courseElasticSearch.setCountryName(course.getCountry() != null ? course.getCountry().getName() : null);
-		courseElasticSearch.setCityName(course.getCity() != null ? course.getCity().getName() : null);
 		courseElasticSearch.setFacultyName(course.getFaculty() != null ? course.getFaculty().getName() : null);
 		courseElasticSearch.setFacultyDescription(course.getFaculty() != null ? course.getFaculty().getDescription() : null);
 		courseElasticSearch.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
@@ -423,8 +419,6 @@ public class CourseService implements ICourseService {
 		course.setName(courseDto.getName());
 		course.setcId(courseDto.getcId());
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
-		course.setCity(getCity(courseDto.getCityId()));
-		course.setCountry(getCountry(courseDto.getCountryId()));
 		course.setIsActive(true);
 		course.setCreatedBy("API");
 		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -538,8 +532,6 @@ public class CourseService implements ICourseService {
 
 		CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
 		BeanUtils.copyProperties(course, courseElasticSearch);
-		courseElasticSearch.setCountryName(course.getCountry() != null ? course.getCountry().getName() : null);
-		courseElasticSearch.setCityName(course.getCity() != null ? course.getCity().getName() : null);
 		courseElasticSearch.setFacultyName(course.getFaculty() != null ? course.getFaculty().getName() : null);
 		courseElasticSearch.setFacultyDescription(course.getFaculty() != null ? course.getFaculty().getDescription() : null);
 		courseElasticSearch.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
