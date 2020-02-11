@@ -110,26 +110,26 @@ public class CourseDAO implements ICourseDAO {
 
 		String sqlQuery = "select count(*) from course crs inner join institute inst "
 				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join city ci  on ci.id = crs.city_id "
-				+ " where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
-				+ courseSearchDto.getUserId() + ")";
+				+ " where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id='"
+				+ courseSearchDto.getUserId() + "')";
 		if (null != courseSearchDto.getInstituteId()) {
-			sqlQuery += " and inst.id =" + courseSearchDto.getInstituteId();
+			sqlQuery += " and inst.id ='" + courseSearchDto.getInstituteId() + "'";
 		}
 
 		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
-			sqlQuery += " and crs.country_id in (" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+			sqlQuery += " and crs.country_id in ('" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
 		}
 
 		if (null != courseSearchDto.getCityIds() && !courseSearchDto.getCityIds().isEmpty()) {
-			sqlQuery += " and crs.city_id in (" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+			sqlQuery += " and crs.city_id in ('" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
 		}
 
 		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
-			sqlQuery += " and crs.level_id in (" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+			sqlQuery += " and crs.level_id in ('" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
 		}
 
 		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
-			sqlQuery += " and crs.faculty_id in (" + courseSearchDto.getFacultyIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+			sqlQuery += " and crs.faculty_id in ('" + courseSearchDto.getFacultyIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
 		}
 
 		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
@@ -763,11 +763,7 @@ public class CourseDAO implements ICourseDAO {
 				obj.setCost(getCost(row[2].toString(), session));
 			}
 			if (row[3] != null) {
-				obj.setCountryId(row[3].toString());
 				obj.setLocation(getLocationName(row[3].toString(), session));
-			}
-			if (row[4] != null) {
-				obj.setCityId(row[4].toString());
 			}
 			if (row[5] != null) {
 				obj.setFacultyId(row[5].toString());
@@ -909,10 +905,8 @@ public class CourseDAO implements ICourseDAO {
 				obj.setCost(getCost(row[2].toString(), session));
 			}
 			if (row[3] != null) {
-				obj.setCountryId(row[3].toString());
 				obj.setLocation(getLocationName(row[3].toString(), session));
 			}
-			obj.setCityId(row[4].toString());
 			obj.setFacultyId(row[5].toString());
 			obj.setName(row[6].toString());
 			if (row[7] != null) {
@@ -1074,10 +1068,8 @@ public class CourseDAO implements ICourseDAO {
 				courseRequest.setCost(getCost(row[2].toString(), session));
 			}
 			if (row[3] != null) {
-				courseRequest.setCountryId(row[3].toString());
 				courseRequest.setLocation(getLocationName(row[3].toString(), session));
 			}
-			courseRequest.setCityId(row[4].toString());
 			courseRequest.setFacultyId(row[5].toString());
 			courseRequest.setName(row[6].toString());
 			if (row[7] != null) {
@@ -1205,8 +1197,8 @@ public class CourseDAO implements ICourseDAO {
 		}
 		String sizeSqlQuery = "select count(*) from course crs inner join institute inst "
 				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = crs.country_id inner join course_delivery_method cd on cd.course_id=crs.id "
-				+ "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id="
-				+ courseSearchDto.getUserId() + ") ";
+				+ "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id='"
+				+ courseSearchDto.getUserId() + "') ";
 		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
 			sizeSqlQuery = addConditionForCourseList(sizeSqlQuery, globalSearchFilterDto.getIds());
 		}
@@ -2072,7 +2064,6 @@ public class CourseDAO implements ICourseDAO {
 			courseId.add("'"+courseIds.get(i)+"'");
 		}
 		crit.add(Restrictions.in("course.id", courseId));
-		
 		return crit.list();
 	}
 

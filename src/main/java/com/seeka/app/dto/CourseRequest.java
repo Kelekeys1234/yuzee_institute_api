@@ -10,8 +10,6 @@ public class CourseRequest {
 	private String id;
 	private Integer cId;
 	private String instituteId;
-	private String cityId;
-	private String countryId;
 	private String facultyId;
 	private String name;
 	private String description;
@@ -130,20 +128,6 @@ public class CourseRequest {
 	 */
 	public void setInstituteId(final String instituteId) {
 		this.instituteId = instituteId;
-	}
-
-	/**
-	 * @return the cityId
-	 */
-	public String getCityId() {
-		return cityId;
-	}
-
-	/**
-	 * @param cityId the cityId to set
-	 */
-	public void setCityId(final String cityId) {
-		this.cityId = cityId;
 	}
 
 	/**
@@ -348,20 +332,6 @@ public class CourseRequest {
 	 */
 	public void setContact(final String contact) {
 		this.contact = contact;
-	}
-
-	/**
-	 * @return the countryId
-	 */
-	public String getCountryId() {
-		return countryId;
-	}
-
-	/**
-	 * @param countryId the countryId to set
-	 */
-	public void setCountryId(final String countryId) {
-		this.countryId = countryId;
 	}
 
 	/**

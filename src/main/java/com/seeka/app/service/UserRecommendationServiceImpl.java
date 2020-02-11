@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,13 +44,6 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if (existingCourse.getInstitute() != null) {
 			instituteId = existingCourse.getInstitute().getId();
 		}
-		if (existingCourse.getCountry() != null) {
-			countryId = existingCourse.getCountry().getId();
-		}
-		if (existingCourse.getCity() != null) {
-			cityId = existingCourse.getCity().getId();
-		}
-
 		Double price = existingCourse.getUsdInternationFee();
 		List<Course> resultList = new ArrayList<>();
 
@@ -163,12 +155,6 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		}
 		if (existingCourse.getInstitute() != null) {
 			instituteId = existingCourse.getInstitute().getId();
-		}
-		if (existingCourse.getCountry() != null) {
-			countryId = existingCourse.getCountry().getId();
-		}
-		if (existingCourse.getCity() != null) {
-			cityId = existingCourse.getCity().getId();
 		}
 		String courseName = existingCourse.getName();
 		Double price = existingCourse.getUsdInternationFee();
@@ -293,11 +279,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		for (Course course : courseList) {
 			CourseResponseDto courseResponseDto = new CourseResponseDto();
 			courseResponseDto.setId(course.getId());
-			courseResponseDto.setCityId(course.getCity().getId());
-			courseResponseDto.setCityName(course.getCity().getName());
 			courseResponseDto.setCostRange(course.getCostRange());
-			courseResponseDto.setCountryId(course.getCountry().getId());
-			courseResponseDto.setCountryName(course.getCountry().getName());
 			courseResponseDto.setLanguage(course.getLanguage());
 			courseResponseDto.setName(course.getName());
 			courseResponseDto.setDuration(course.getDuration());
@@ -306,7 +288,6 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseResponseDto.setInstituteName(course.getInstitute().getName());
 			courseResponseDto.setInternationalFee(course.getInternationalFee());
 			courseResponseDto.setDomesticFee(course.getDomesticFee());
-			courseResponseDto.setLocation(course.getCity().getName() + "," + course.getCountry().getName());
 			courseResponseDto.setRequirements(course.getRemarks());
 			courseResponseDto.setStars(Double.valueOf(course.getStars()));
 			courseResponseDto.setCourseRanking(course.getWorldRanking());
