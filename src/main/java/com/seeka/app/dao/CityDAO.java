@@ -41,7 +41,10 @@ public class CityDAO implements ICityDAO {
 		for (Object[] row : rows) {
 			obj = new City();
 			obj.setId(row[0].toString());
-			obj.setName(row[1].toString());
+			if(row[1] != null) {
+				obj.setName(row[1].toString());
+			}
+			
 			citis.add(obj);
 		}
 		return citis;
@@ -58,13 +61,16 @@ public class CityDAO implements ICityDAO {
 	public List<City> getAllCitiesByCountry(final String countryId) {
 		List<City> citis = new ArrayList<>();
 		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createSQLQuery("select c.id, c.name as name from city c  where c.country_id = " + countryId + " ORDER BY c.name");
+		Query query = session.createSQLQuery("select c.id, c.name as name from city c  where c.country_id = '" + countryId + "' ORDER BY c.name");
 		List<Object[]> rows = query.list();
 		City obj = null;
 		for (Object[] row : rows) {
 			obj = new City();
 			obj.setId(row[0].toString());
-			obj.setName(row[1].toString());
+			if(row[1] != null) {
+				obj.setName(row[1].toString());
+			}
+			
 			citis.add(obj);
 		}
 		return citis;

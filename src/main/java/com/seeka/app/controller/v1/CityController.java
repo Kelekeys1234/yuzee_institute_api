@@ -170,7 +170,7 @@ public class CityController {
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	public ResponseEntity<?> getAllCity(@RequestParam(value = "pageNumber", required = true) final Integer pageNumber,
-			@RequestParam(value = "pageSize", required = true) final Integer pageSize, @RequestHeader final BigInteger userId,
+			@RequestParam(value = "pageSize", required = true) final Integer pageSize, @RequestHeader final String userId,
 			@RequestParam(name = "searchString", required = false) final String searchString) {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<City> cityList = cityService.getAllCityNames(pageNumber, pageSize, searchString);

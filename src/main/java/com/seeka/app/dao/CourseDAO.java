@@ -1422,7 +1422,7 @@ public class CourseDAO implements ICourseDAO {
 		 *
 		 */
 		if (null != courseSearchDto.getUserCountryId()) {
-			sqlQuery += " and ((crs.country_id ='" + courseSearchDto.getUserCountryId() + "' and crs.availbilty = 'D') OR (crs.country_id <>'"
+			sqlQuery += " and ((inst.country_id ='" + courseSearchDto.getUserCountryId() + "' and crs.availbilty = 'D') OR (inst.country_id <>'"
 					+ courseSearchDto.getUserCountryId() + "' and crs.availbilty = 'I') OR crs.availbilty = 'A')";
 		}
 		return sqlQuery;
@@ -1578,7 +1578,8 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public List<CountryDto> getCourseCountry() {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select distinct ctry.id as countryId, ctry.name as countryName from course crs inner join country ctry on ctry.id = crs.country_id where crs.deleted_on IS NULL";
+		String sqlQuery = "select distinct ctry.id as countryId, ctry.name as countryName from course crs inner join institute inst on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_id"
+				+ " where crs.deleted_on IS NULL";
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
 		List<CountryDto> countryDtos = new ArrayList<>();
@@ -1806,7 +1807,7 @@ public class CourseDAO implements ICourseDAO {
 				+ "fac.description as faculty_description, cntry.name as country_name,\r\n"
 				+ "ct.name as city_name, lev.code as level_code, lev.name as level_name, crs.c_id, crs.recognition_type,"
 				+ "crs.duration_time from course crs \r\n" + "inner join institute inst on crs.institute_id = inst.id\r\n"
-				+ "inner join faculty fac on crs.faculty_id = fac.id\r\n" + "inner join country cntry on crs.country_id = cntry.id\r\n"
+				+ "inner join faculty fac on crs.faculty_id = fac.id\r\n" + "inner join country cntry on inst.country_id = cntry.id\r\n"
 				+ "inner join city ct on crs.city_id = ct.id\r\n" + "inner join level lev on crs.level_id = lev.id\r\n" + "where crs.updated_on >= ? \r\n"
 				+ "limit ?,?;");
 		query.setParameter(1, updatedOn).setParameter(2, startIndex).setParameter(3, limit);
@@ -1927,7 +1928,7 @@ public class CourseDAO implements ICourseDAO {
 				+ "fac.description as faculty_description, cntry.name as country_name,\r\n"
 				+ "ct.name as city_name, lev.code as level_code, lev.name as level_name, crs.c_id, crs.recognition_type,"
 				+ "crs.duration_time from course crs \r\n" + "inner join institute inst on crs.institute_id = inst.id\r\n"
-				+ "inner join faculty fac on crs.faculty_id = fac.id\r\n" + "inner join country cntry on crs.country_id = cntry.id\r\n"
+				+ "inner join faculty fac on crs.faculty_id = fac.id\r\n" + "inner join country cntry on inst.country_id = cntry.id\r\n"
 				+ "inner join city ct on crs.city_id = ct.id\r\n" + "inner join level lev on crs.level_id = lev.id\r\n" + "where crs.id in (");
 
 		for (int i = 0; i < courseIds.size(); i++) {
