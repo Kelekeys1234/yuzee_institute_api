@@ -1342,6 +1342,12 @@ public class CourseDAO implements ICourseDAO {
 			sortingQuery = sortingQuery + " ORDER BY crs.duration " + sortTypeValue + " ";
 		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.RECOGNITION.toString())) {
 			sortingQuery = sortingQuery + " ORDER BY crs.recognition " + sortTypeValue + " ";
+		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DOMESTIC_PRICE.toString())) {
+			sortingQuery = sortingQuery + " ORDER BY crs.domestic_fee " + sortTypeValue + " ";
+		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.INTERNATION_PRICE.toString())) {
+			sortingQuery = sortingQuery + " ORDER BY crs.international_fee " + sortTypeValue + " ";
+		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.CREATED_DATE.toString())) {
+			sortingQuery = sortingQuery + " ORDER BY crs.created_on " + sortTypeValue + " ";
 		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.LOCATION.toString())) {
 			sortingQuery = sortingQuery + " ORDER BY ctry.name " + sortTypeValue + " ";
 		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.PRICE.toString())) {
