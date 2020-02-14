@@ -54,7 +54,6 @@ public class Course implements Serializable {
 	private String createdBy;
 	private String updatedBy;
 	private Boolean isDeleted;
-	private Integer cId;
 	private Level level;
 
 	private String availbilty;
@@ -323,21 +322,6 @@ public class Course implements Serializable {
 
 	public void setIsDeleted(final Boolean isDeleted) {
 		this.isDeleted = isDeleted;
-	}
-
-	/**
-	 * @return the cId
-	 */
-	@Column(name = "c_id")
-	public Integer getcId() {
-		return cId;
-	}
-
-	/**
-	 * @param cId the cId to set
-	 */
-	public void setcId(final Integer cId) {
-		this.cId = cId;
 	}
 
 	/**
@@ -612,7 +596,6 @@ public class Course implements Serializable {
 		int result = 1;
 		result = prime * result + (abbreviation == null ? 0 : abbreviation.hashCode());
 		result = prime * result + (availbilty == null ? 0 : availbilty.hashCode());
-		result = prime * result + (cId == null ? 0 : cId.hashCode());
 		result = prime * result + (campusLocation == null ? 0 : campusLocation.hashCode());
 		result = prime * result + (contact == null ? 0 : contact.hashCode());
 		result = prime * result + (costRange == null ? 0 : costRange.hashCode());
@@ -682,13 +665,6 @@ public class Course implements Serializable {
 				return false;
 			}
 		} else if (!availbilty.equals(other.availbilty)) {
-			return false;
-		}
-		if (cId == null) {
-			if (other.cId != null) {
-				return false;
-			}
-		} else if (!cId.equals(other.cId)) {
 			return false;
 		}
 		if (campusLocation == null) {
@@ -998,7 +974,7 @@ public class Course implements Serializable {
 				.append(", abbreviation=").append(abbreviation).append(", recDate=").append(recDate).append(", remarks=").append(remarks)
 				.append(", description=").append(description).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
 				.append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
-				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", cId=").append(cId).append(", level=").append(level)
+				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append(", level=").append(level)
 				.append(", availbilty=").append(availbilty).append(", partFull=").append(partFull).append(", studyMode=").append(studyMode).append(", intake=")
 				.append(intake).append(", fileUrl=").append(fileUrl).append(", grades=").append(grades).append(", contact=").append(contact)
 				.append(", openingHourFrom=").append(openingHourFrom).append(", openingHourTo=").append(openingHourTo).append(", campusLocation=")

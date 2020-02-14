@@ -259,7 +259,6 @@ public class CourseService implements ICourseService {
 		course.setInstitute(getInstititute(courseDto.getInstituteId()));
 		course.setDescription(courseDto.getDescription());
 		course.setName(courseDto.getName());
-		course.setcId(courseDto.getcId());
 		if (courseDto.getDuration() != null && !courseDto.getDuration().isEmpty()) {
 			course.setDuration(Double.valueOf(courseDto.getDuration()));
 		}
@@ -417,7 +416,6 @@ public class CourseService implements ICourseService {
 		course.setInstitute(getInstititute(courseDto.getInstituteId()));
 		course.setDescription(courseDto.getDescription());
 		course.setName(courseDto.getName());
-		course.setcId(courseDto.getcId());
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
 		course.setIsActive(true);
 		course.setCreatedBy("API");

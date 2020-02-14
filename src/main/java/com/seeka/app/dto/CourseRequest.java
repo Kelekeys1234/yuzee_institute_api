@@ -8,7 +8,6 @@ import com.seeka.app.bean.CourseEnglishEligibility;
 public class CourseRequest {
 
 	private String id;
-	private Integer cId;
 	private String instituteId;
 	private String facultyId;
 	private String name;
@@ -100,20 +99,6 @@ public class CourseRequest {
 	 */
 	public void setApplied(final Boolean applied) {
 		this.applied = applied;
-	}
-
-	/**
-	 * @return the cId
-	 */
-	public Integer getcId() {
-		return cId;
-	}
-
-	/**
-	 * @param cId the cId to set
-	 */
-	public void setcId(final Integer cId) {
-		this.cId = cId;
 	}
 
 	/**

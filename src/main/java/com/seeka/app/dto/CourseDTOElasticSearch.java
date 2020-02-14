@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +12,6 @@ public class CourseDTOElasticSearch implements Serializable {
 	private static final long serialVersionUID = 3521506877760833299L;
 
 	private String id;
-	private Integer cId;
 	private String name;
 	private Integer worldRanking;
 	private Integer stars;
@@ -83,14 +81,6 @@ public class CourseDTOElasticSearch implements Serializable {
 
 	public void setId(final String id) {
 		this.id = id;
-	}
-
-	public Integer getcId() {
-		return cId;
-	}
-
-	public void setcId(final Integer cId) {
-		this.cId = cId;
 	}
 
 	public String getName() {
@@ -400,7 +390,7 @@ public class CourseDTOElasticSearch implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("CourseDTOElasticSearch [id=").append(id).append(", cId=").append(cId).append(", name=").append(name).append(", worldRanking=")
+		builder.append("CourseDTOElasticSearch [id=").append(id).append(", name=").append(name).append(", worldRanking=")
 				.append(worldRanking).append(", stars=").append(stars).append(", recognition=").append(recognition).append(", recognitionType=")
 				.append(recognitionType).append(", duration=").append(duration).append(", durationTime=").append(durationTime).append(", website=")
 				.append(website).append(", language=").append(language).append(", abbreviation=").append(abbreviation).append(", remarks=").append(remarks)
@@ -423,7 +413,6 @@ public class CourseDTOElasticSearch implements Serializable {
 		int result = 1;
 		result = (prime * result) + ((abbreviation == null) ? 0 : abbreviation.hashCode());
 		result = (prime * result) + ((availbilty == null) ? 0 : availbilty.hashCode());
-		result = (prime * result) + ((cId == null) ? 0 : cId.hashCode());
 		result = (prime * result) + ((cityName == null) ? 0 : cityName.hashCode());
 		result = (prime * result) + ((contact == null) ? 0 : contact.hashCode());
 		result = (prime * result) + ((content == null) ? 0 : content.hashCode());
@@ -490,13 +479,6 @@ public class CourseDTOElasticSearch implements Serializable {
 				return false;
 			}
 		} else if (!availbilty.equals(other.availbilty)) {
-			return false;
-		}
-		if (cId == null) {
-			if (other.cId != null) {
-				return false;
-			}
-		} else if (!cId.equals(other.cId)) {
 			return false;
 		}
 		if (cityName == null) {

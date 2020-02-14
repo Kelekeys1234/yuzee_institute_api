@@ -148,7 +148,6 @@ public class CommonUtil {
 		courseRequest.setCampusLocation(course.getCampusLocation());
 		courseRequest.setCurrency(course.getCurrency());
 		courseRequest.setWebsite(course.getWebsite());
-		courseRequest.setcId(course.getcId());
 		courseRequest.setPartFull(course.getPartFull());
 		courseRequest.setStudyMode(course.getStudyMode());
 		courseRequest.setAvailbility(course.getAvailbilty());
