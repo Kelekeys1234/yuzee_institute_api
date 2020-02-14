@@ -732,11 +732,11 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public List<CourseRequest> getAll(final Integer pageNumber, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select c.id , c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
+		String sqlQuery = "select c.id , c.institute_id, i.country_id, i.city_id, c.faculty_id, c.name , "
 				+ "c.description, c.intake, c.duration, c.language, c.domestic_fee, c.international_fee,"
 				+ "c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM course c "
-				+ " where c.is_active = 1 and c.deleted_on IS NULL ORDER BY c.created_on DESC ";
+				+ " inner join institute i on c.institute_id=i.id where c.is_active = 1 and c.deleted_on IS NULL ORDER BY c.created_on DESC ";
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
@@ -758,19 +758,25 @@ public class CourseDAO implements ICourseDAO {
 				Institute institute = getInstitute(row[1].toString(), session);
 				obj.setInstituteId(row[1].toString());
 				obj.setInstituteName(institute.getName());
-				obj.setCost(getCost(row[1].toString(), session));
+				obj.setCost(getCost(row[2].toString(), session));
 			}
 			if (row[2] != null) {
+                obj.setCountryId(row[2].toString());
 				obj.setLocation(getLocationName(row[2].toString(), session));
 			}
+
 			if (row[4] != null) {
-				obj.setFacultyId(row[4].toString());
+				obj.setCityId(row[4].toString());
 			}
+ 
 			if (row[5] != null) {
-				obj.setName(row[5].toString());
+				obj.setFacultyId(row[5].toString());
 			}
 			if (row[6] != null) {
-				obj.setDescription(row[6].toString());
+				obj.setName(row[6].toString());
+			}
+			if (row[7] != null) {
+				obj.setDescription(row[7].toString());
 			}
 			/*
 			 * if (row[8] != null) { obj.setIntake(row[8].toString()); }
@@ -829,7 +835,7 @@ public class CourseDAO implements ICourseDAO {
 	private String getLocationName(final String id, final Session session) {
 		String name = null;
 		if (id != null) {
-			Country obj = session.get(Country.class, new BigInteger(id));
+			Country obj = session.get(Country.class, id);
 			name = obj.getName();
 		}
 		return name;
@@ -838,7 +844,7 @@ public class CourseDAO implements ICourseDAO {
 	private String getInstituteName(final String id, final Session session) {
 		String name = null;
 		if (id != null) {
-			Institute obj = session.get(Institute.class, new BigInteger(id));
+			Institute obj = session.get(Institute.class, id);
 			name = obj.getName();
 		}
 		return name;
@@ -847,7 +853,7 @@ public class CourseDAO implements ICourseDAO {
 	private Institute getInstitute(final String id, final Session session) {
 		Institute obj = null;
 		if (id != null) {
-			obj = session.get(Institute.class, new BigInteger(id));
+			obj = session.get(Institute.class, id);
 		}
 		return obj;
 	}
@@ -866,7 +872,7 @@ public class CourseDAO implements ICourseDAO {
 	public List<CourseRequest> getUserCourse(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
 			final String sortBy, final boolean sortType) throws ValidationException {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select c.id , c.institute_id, c.country_id , c.city_id, c.faculty_id, c.name , "
+		String sqlQuery = "select c.id , c.institute_id, i.country_id , i.city_id, c.faculty_id, c.name , "
 				+ "c.description, c.intake,c.duration, c.language,c.usd_domestic_fee, c.usd_international_fee,"
 				+ " c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency,"
@@ -902,8 +908,10 @@ public class CourseDAO implements ICourseDAO {
 				obj.setCost(getCost(row[1].toString(), session));
 			}
 			if (row[2] != null) {
+				obj.setCountryId(row[2].toString());
 				obj.setLocation(getLocationName(row[2].toString(), session));
 			}
+            obj.setCityId(row[3].toString());
 			obj.setFacultyId(row[4].toString());
 			obj.setName(row[5].toString());
 			if (row[6] != null) {
@@ -991,7 +999,7 @@ public class CourseDAO implements ICourseDAO {
 
 	private String getCost(final String instituteId, final Session session) {
 		String cost = null;
-		Query query = session.createSQLQuery("select c.id, c.avg_cost_of_living from institute c  where c.id=" + instituteId);
+		Query query = session.createSQLQuery("select c.id, c.avg_cost_of_living from institute c  where c.id='" + instituteId +"'");
 		List<Object[]> rows = query.list();
 		for (Object[] row : rows) {
 			if (row[1] != null) {
