@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class AccreditedInstituteDetailDao implements IAccreditedInstituteDetailD
     }
 
     @Override
-    public List<AccreditedInstituteDetail> getAccreditedInstituteDetailList(final BigInteger entityId, final String entityType, final Integer startIndex, final Integer pageSize) {
+    public List<AccreditedInstituteDetail> getAccreditedInstituteDetailList(final String entityId, final String entityType, final Integer startIndex, final Integer pageSize) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(AccreditedInstituteDetail.class, "accreditedInstituteDetail");
         crit.add(Restrictions.eq("accreditedInstituteDetail.entityId", entityId));

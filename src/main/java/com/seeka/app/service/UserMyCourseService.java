@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -67,22 +66,22 @@ public class UserMyCourseService implements IUserMyCourseService {
 	}
 
 	@Override
-	public UserMyCourse get(final BigInteger userId) {
+	public UserMyCourse get(final String userId) {
 		return iUserMyCourseDAO.get(userId);
 	}
 
 	@Override
-	public UserMyCourse getDataByUserIDAndCourseID(final BigInteger userId, final String courseId) {
+	public UserMyCourse getDataByUserIDAndCourseID(final String userId, final String courseId) {
 		return iUserMyCourseDAO.getDataByUserIDAndCourseID(userId, courseId);
 	}
 
 	@Override
-	public List<UserMyCourse> getUserMyCourseByUserID(final BigInteger userId) {
+	public List<UserMyCourse> getUserMyCourseByUserID(final String userId) {
 		return iUserMyCourseDAO.getDataByUserID(userId);
 	}
 
 	@Override
-	public List<BigInteger> getAllCourseIdsByUser(final BigInteger userId) {
+	public List<String> getAllCourseIdsByUser(final String userId) {
 		return iUserMyCourseDAO.getAllCourseIdsByUser(userId);
 	}
 }

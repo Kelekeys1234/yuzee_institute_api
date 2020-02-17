@@ -1,5 +1,4 @@
-package com.seeka.app.dao;import java.math.BigInteger;
-import java.util.List;
+package com.seeka.app.dao;import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,7 +27,7 @@ public class SeekaCouponsDAO implements ISeekaCouponsDAO {
 	}
 	
 	@Override
-	public SeekaCoupons get(BigInteger id) {	
+	public SeekaCoupons get(String id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		SeekaCoupons seekaCoupons = session.get(SeekaCoupons.class, id);
 		return seekaCoupons;

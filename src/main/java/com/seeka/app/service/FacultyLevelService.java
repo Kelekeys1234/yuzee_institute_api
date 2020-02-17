@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class FacultyLevelService implements IFacultyLevelService {
 	}
 
 	@Override
-	public FacultyLevel get(final BigInteger id) {
+	public FacultyLevel get(final String id) {
 		return dao.get(id);
 	}
 
@@ -38,7 +37,7 @@ public class FacultyLevelService implements IFacultyLevelService {
 	}
 
 	@Override
-	public List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(final BigInteger countryID, final BigInteger courseTypeId) {
+	public List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(final String countryID, final String courseTypeId) {
 		return dao.getFacultyByCountryIdAndCourseTypeId(countryID, courseTypeId);
 	}
 

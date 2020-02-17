@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 public class StorageDto implements Serializable {
 
@@ -10,21 +9,21 @@ public class StorageDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 3198093215326324489L;
 
-	private BigInteger id;
+	private String id;
 	private String imageName;
 	private String baseUrl;
 	private String imageURL;
 	private String documentType;
 	private String originalName;
-	private BigInteger entityId;
+	private String entityId;
 	private String entityType;
 	private String type;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -68,11 +67,11 @@ public class StorageDto implements Serializable {
 		this.originalName = originalName;
 	}
 
-	public BigInteger getEntityId() {
+	public String getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(BigInteger entityId) {
+	public void setEntityId(String entityId) {
 		this.entityId = entityId;
 	}
 

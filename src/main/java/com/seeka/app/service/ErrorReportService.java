@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -119,7 +118,7 @@ public class ErrorReportService implements IErrorReportService {
 
 	@Override
 	public List<ErrorReportResponseDto> getAllErrorReport(final String userId, final Integer startIndex, final Integer pageSize,
-			final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive,
+			final String errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive,
 			final String sortByField, final String sortByType, final String searchKeyword) throws ValidationException {
 		List<ErrorReport> errorReports = errorReportDAO.getAllErrorReport(userId, startIndex, pageSize, errorReportCategoryId, errorReportStatus, updatedOn,
 				isFavourite, isArchive, sortByField, sortByType, searchKeyword);
@@ -177,13 +176,13 @@ public class ErrorReportService implements IErrorReportService {
 	}
 
 	@Override
-	public int getErrorReportCount(final String userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
+	public int getErrorReportCount(final String userId, final String errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
 			final Boolean isFavourite, final Boolean isArchive, final String searchKeyword) {
 		return errorReportDAO.getErrorReportCountForUser(userId, errorReportCategoryId, errorReportStatus, updatedOn, isFavourite, isArchive, searchKeyword);
 	}
 
 	@Override
-	public void setIsFavouriteFlag(final BigInteger errorRepoetId, final boolean isFavourite) throws NotFoundException {
+	public void setIsFavouriteFlag(final String errorRepoetId, final boolean isFavourite) throws NotFoundException {
 		errorReportDAO.setIsFavouriteFlag(errorRepoetId, isFavourite);
 	}
 

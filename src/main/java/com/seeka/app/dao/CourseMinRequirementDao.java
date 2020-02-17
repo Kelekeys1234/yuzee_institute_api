@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -25,7 +24,7 @@ public class CourseMinRequirementDao implements ICourseMinRequirementDao {
 	}
 
 	@Override
-	public List<CourseMinRequirement> get(final BigInteger course) {
+	public List<CourseMinRequirement> get(final String course) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(CourseMinRequirement.class, "courseMinRequirement");
 //		crit.createAlias("courseMinRequirement.country", "country");

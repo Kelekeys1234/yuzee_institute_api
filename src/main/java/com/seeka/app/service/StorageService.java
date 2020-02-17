@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ public class StorageService implements IStorageService {
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL);
 
-		if (entityId == null || entityId.equals(new BigInteger("0"))) {
+		if (entityId == null || entityId.isEmpty()) {
 			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] { entityId }, language));
 		} else if (entityType == null || entityType.isEmpty()) {
 			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] { entityType }, language));

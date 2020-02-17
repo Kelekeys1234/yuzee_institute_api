@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.EducationSystem;
@@ -19,7 +18,7 @@ public interface IEducationSystemDAO {
 
 	List<EducationSystem> getEducationSystemsByCountryId(String countryId);
 
-	List<Subject> getSubjectByEducationSystem(BigInteger educationSystemId);
+	List<Subject> getSubjectByEducationSystem(String educationSystemId);
 
 	List<Subject> getSubject();
 

@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,12 +32,12 @@ public class SubCategoryService implements ISubCategoryService {
     }
 
     @Override
-    public List<SubCategoryDto> getSubCategoryByCategory(BigInteger categoryId) {
+    public List<SubCategoryDto> getSubCategoryByCategory(String categoryId) {
         return subCategoryDAO.getSubCategoryByCategory(categoryId);
     }
 
     @Override
-    public SubCategoryDto getSubCategoryById(BigInteger subCategoryId) {
+    public SubCategoryDto getSubCategoryById(String subCategoryId) {
         return subCategoryDAO.getSubCategoryById(subCategoryId);
     }
 

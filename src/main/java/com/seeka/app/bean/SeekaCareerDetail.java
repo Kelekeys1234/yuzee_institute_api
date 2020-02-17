@@ -1,15 +1,12 @@
-package com.seeka.app.bean;import java.math.BigInteger;
-
-
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.io.Serializable;
+package com.seeka.app.bean;import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 
 @Entity
@@ -22,9 +19,10 @@ public class SeekaCareerDetail extends RecordModifier implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", updatable = false, nullable = false)
-    private BigInteger id;
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+    private String id;
 	
 	@Column(name = "career_txt")  
 	private String careerText;
@@ -59,11 +57,11 @@ public class SeekaCareerDetail extends RecordModifier implements Serializable {
 	@Column(name = "career_cat_id")  
 	private String careerCatId;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

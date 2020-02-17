@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +65,7 @@ public class CountryDAO implements ICountryDAO {
 	}
 
 	@Override
-	public List<Country> getAllCountryByIds(final List<BigInteger> countryIds) {
+	public List<Country> getAllCountryByIds(final List<String> countryIds) {
 		Session session = sessionFactory.getCurrentSession();
 		List<Country> countries = session.createQuery("SELECT c FROM country c WHERE c.id IN :ids").setParameter("ids", countryIds).getResultList();
 		return countries;
@@ -139,7 +138,7 @@ public class CountryDAO implements ICountryDAO {
 		DiscoverCountryDto obj = null;
 		for (Object[] row : rows) {
 			obj = new DiscoverCountryDto();
-			obj.setId(new BigInteger(row[0].toString()));
+			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			if (row[2] != null) {
 				obj.setCountryCode(row[2].toString());

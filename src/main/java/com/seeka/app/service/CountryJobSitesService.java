@@ -1,7 +1,4 @@
-package com.seeka.app.service;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.service;import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +28,7 @@ public class CountryJobSitesService implements ICountryJobSitesService{
 	}
     
 	@Override
-	public CountryJobSites get(BigInteger id) {
+	public CountryJobSites get(String id) {
 		return iCountryJobSitesDAO.get(id);
 	}
 	

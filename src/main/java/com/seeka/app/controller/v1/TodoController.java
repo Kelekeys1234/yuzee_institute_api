@@ -1,10 +1,11 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.seeka.app.dto.TodoDto;
 import com.seeka.app.dto.TodoFolder;
 import com.seeka.app.service.ITodoService;
@@ -42,7 +44,7 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> get(@PathVariable BigInteger id) throws Exception {
+    public ResponseEntity<?> get(@PathVariable String id) throws Exception {
         Map<String, Object> response = new HashMap<>(3);
         try {
             TodoDto todoDto = iTodoService.get(id);
@@ -82,7 +84,7 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getTodoByUserId(@PathVariable BigInteger userId) throws Exception {
+    public ResponseEntity<?> getTodoByUserId(@PathVariable String userId) throws Exception {
         Map<String, Object> response = new HashMap<>(3);
         try {
             List<TodoDto> todoDto = iTodoService.getByUserId(userId);
@@ -128,7 +130,7 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-    public ResponseEntity<?> delete(@Valid @PathVariable final BigInteger id) throws Exception {
+    public ResponseEntity<?> delete(@Valid @PathVariable final String id) throws Exception {
         return ResponseEntity.accepted().body(iTodoService.delete(id));
     }
 

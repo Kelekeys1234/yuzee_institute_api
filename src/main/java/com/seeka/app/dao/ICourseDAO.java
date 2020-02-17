@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +41,9 @@ public interface ICourseDAO {
 	
 	List<CourseResponseDto> getAllCoursesByInstitute(String instituteId, CourseSearchDto filterObj);
 
-	Map<String, Object> getCourse(BigInteger courseid);
+	Map<String, Object> getCourse(String courseid);
 
-	List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
+	List<CourseResponseDto> getCouresesByFacultyId(String facultyId);
 
 	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
@@ -61,7 +60,7 @@ public interface ICourseDAO {
 
 	void saveUserCompareCourseBundle(UserCompareCourseBundle compareCourseBundle);
 
-	List<UserCompareCourse> getUserCompareCourse(BigInteger userId);
+	List<UserCompareCourse> getUserCompareCourse(String userId);
 
 	CourseRequest getCourseById(Integer valueOf);
 
@@ -107,14 +106,14 @@ public interface ICourseDAO {
 
 	List<String> getDistinctCountryBasedOnCourses(List<String> topSearchedCourseIds);
 
-	List<BigInteger> getCourseListForCourseBasedOnParameters(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId,
-			BigInteger cityId);
+	List<String> getCourseListForCourseBasedOnParameters(String courseId, String instituteId, String facultyId, String countryId,
+			String cityId);
 
-	List<BigInteger> getCourseIdsForCountry(final Country country);
+	List<String> getCourseIdsForCountry(final Country country);
 
-	List<BigInteger> getAllCoursesForCountry(List<String> otherCountryIds);
+	List<String> getAllCoursesForCountry(List<String> otherCountryIds);
 
-	List<Long> getUserListFromUserWatchCoursesBasedOnCourses(List<BigInteger> courseIds);
+	List<Long> getUserListFromUserWatchCoursesBasedOnCourses(List<String> courseIds);
 
 	int updateCourseForCurrency(CurrencyRate currencyRate);
 
@@ -122,7 +121,7 @@ public interface ICourseDAO {
 
 	int getCountOfAdvanceSearch(Object... values);
 
-	Integer getTotalCourseCountForInstitute(BigInteger instituteId);
+	Integer getTotalCourseCountForInstitute(String instituteId);
 
 	List<CourseDTOElasticSearch> getUpdatedCourses(Date date, Integer startIndex, Integer limit);
 

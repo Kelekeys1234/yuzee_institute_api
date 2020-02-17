@@ -1,7 +1,4 @@
-package com.seeka.app.service;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.service;import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,12 +21,12 @@ public class CityDetailsService implements ICityDetailsService{
 	}
 	
 	@Override
-	public CityDetails get(BigInteger id) {
+	public CityDetails get(String id) {
 		return iCityDetailsDAO.get(id);
 	}
 	
 	@Override
-	public List<CityDetails> getAllCitiesByCountry(BigInteger countryId) {		
+	public List<CityDetails> getAllCitiesByCountry(String countryId) {		
 		return iCityDetailsDAO.getAllCitiesByCountry(countryId);
 	}
 	

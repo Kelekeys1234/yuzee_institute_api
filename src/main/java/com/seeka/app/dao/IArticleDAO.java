@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +7,7 @@ import com.seeka.app.bean.SeekaArticles;
 
 public interface IArticleDAO {
 
-	List<SeekaArticles> getAll(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword, List<BigInteger> categoryId,
+	List<SeekaArticles> getAll(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword, List<String> categoryId,
 			List<String> tags, Boolean status, Date filterDate);
 
 	SeekaArticles findById(String uId);
@@ -20,7 +19,7 @@ public interface IArticleDAO {
 	Integer getTotalSearchCount(String searchKeyword);
 
 	Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType, final String searchKeyword,
-			List<BigInteger> categoryIdList, List<String> tagList, Boolean status, Date date);
+			List<String> categoryIdList, List<String> tagList, Boolean status, Date date);
 
 	List<String> getAuthors(int startIndex, Integer pageSize, String searchString);
 

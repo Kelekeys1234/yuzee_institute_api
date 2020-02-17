@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -14,13 +13,13 @@ public interface ICurrencyRateService {
 
     public void update(Currency obj);
 
-    public Currency get(BigInteger id);
+    public Currency get(String id);
 
     public List<Currency> getAll();
 
-    public List<Currency> getCourseTypeByCountryId(BigInteger countryID);
+    public List<Currency> getCourseTypeByCountryId(String countryID);
 
-    public List<Currency> getCurrencyByCountryId(BigInteger countryId);
+    public List<Currency> getCurrencyByCountryId(String countryId);
 
     public Currency getCurrencyByCode(String currencyCode);
 

@@ -1,7 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
-
 import java.util.List;
 
 import com.seeka.app.bean.Level;
@@ -16,7 +14,7 @@ public interface ILevelDAO {
 
     public List<Level> getAll();
 
-    public List<Level> getCourseTypeByCountryId(BigInteger countryID);
+    public List<Level> getCourseTypeByCountryId(String countryID);
 
     public List<Level> getLevelByCountryId(String countryId);
 

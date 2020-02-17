@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.Chat;
@@ -15,8 +14,8 @@ public interface IChatDao {
 
 	Chat getChat(String chatId);
 
-	Chat getChatBasedOnEntityId(BigInteger entityId);
+	Chat getChatBasedOnEntityId(String entityId);
 
-	Chat getChatBasedOnEntityIdAndEntityType(BigInteger entityId, String entityType);
+	Chat getChatBasedOnEntityIdAndEntityType(String entityId, String entityType);
 
 }

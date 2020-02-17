@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -32,8 +31,8 @@ public class CourseEnglishEligibilityDAO implements ICourseEnglishEligibilityDAO
 		session.update(obj);
 	}
 
-	@Override
-	public CourseEnglishEligibility get(final BigInteger id) {
+	@Override	
+	public CourseEnglishEligibility get(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		CourseEnglishEligibility obj = session.get(CourseEnglishEligibility.class, id);
 		return obj;
@@ -56,7 +55,7 @@ public class CourseEnglishEligibilityDAO implements ICourseEnglishEligibilityDAO
 		return c.list();
 	}
 	
-	public void delete(final BigInteger courseID){
+	public void delete(final String courseID){
 	    Session session = sessionFactory.getCurrentSession();
         Criteria c = session.createCriteria(CourseEnglishEligibility.class, "courseEnglishEligibility");
         c.createAlias("courseEnglishEligibility.course", "course");

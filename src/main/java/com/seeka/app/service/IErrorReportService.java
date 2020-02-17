@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public interface IErrorReportService {
 
 	ErrorReportResponseDto getErrorReportById(String id) throws ValidationException;
 
-	List<ErrorReportResponseDto> getAllErrorReport(String userId, Integer startIndex, Integer pageSize, BigInteger errorReportCategoryId,
+	List<ErrorReportResponseDto> getAllErrorReport(String userId, Integer startIndex, Integer pageSize, String errorReportCategoryId,
 			String errorReportStatus, Date updatedOn, Boolean isFavourite, Boolean isArchive, String sortByField, String sortByType, String searchKeyword)
 			throws ValidationException;
 
@@ -30,10 +29,10 @@ public interface IErrorReportService {
 
 	List<ErrorReportCategory> getAllErrorCategory(String errorCategoryType);
 
-	int getErrorReportCount(String userId, BigInteger errorReportCategoryId, String errorReportStatus, Date updatedOn, Boolean isFavourite,
+	int getErrorReportCount(String userId, String errorReportCategoryId, String errorReportStatus, Date updatedOn, Boolean isFavourite,
 			Boolean isArchive, String searchKeyword);
 
-	void setIsFavouriteFlag(BigInteger errorRepoetId, boolean isFavourite) throws NotFoundException;
+	void setIsFavouriteFlag(String errorRepoetId, boolean isFavourite) throws NotFoundException;
 
 	void deleteByErrorReportId(String errorReportId);
 

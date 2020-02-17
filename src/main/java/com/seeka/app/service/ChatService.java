@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -111,7 +110,7 @@ public class ChatService implements IChatService {
 	}
 
 	@Override
-	public void changeChatAssignee(final String chatId, final BigInteger assigneeId) throws ValidationException {
+	public void changeChatAssignee(final String chatId, final String assigneeId) throws ValidationException {
 		Chat chat = iChatDao.getChat(chatId);
 		if (chat == null) {
 			throw new ValidationException("chat not found for id " + chatId);
@@ -121,7 +120,7 @@ public class ChatService implements IChatService {
 	}
 
 	@Override
-	public ChatResposneDto getChatListBasedOnEntityIdAndEntityType(final BigInteger entityId, final String entityType, final Integer startIndex,
+	public ChatResposneDto getChatListBasedOnEntityIdAndEntityType(final String entityId, final String entityType, final Integer startIndex,
 			final Integer pageSize) throws ValidationException {
 		Chat chat = iChatDao.getChatBasedOnEntityIdAndEntityType(entityId, entityType);
 		if (chat == null) {
@@ -160,7 +159,7 @@ public class ChatService implements IChatService {
 	}
 
 	@Override
-	public void readChatConversation(final BigInteger chatConversationId) throws ValidationException {
+	public void readChatConversation(final String chatConversationId) throws ValidationException {
 		ChatConversation chatConversation = iChatConversationDao.getChatConversation(chatConversationId);
 		if (chatConversation == null) {
 			throw new ValidationException("Chat conversation not found for id" + chatConversationId);
@@ -176,7 +175,7 @@ public class ChatService implements IChatService {
 	}
 
 	@Override
-	public Integer getChatConversationCountBasedOnChatId(final BigInteger chatId) {
+	public Integer getChatConversationCountBasedOnChatId(final String chatId) {
 		return iChatConversationDao.getChatConversationCountBasedOnChatId(chatId);
 	}
 

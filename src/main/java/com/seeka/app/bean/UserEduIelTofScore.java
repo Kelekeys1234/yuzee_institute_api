@@ -1,9 +1,6 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -31,7 +28,7 @@ public class UserEduIelTofScore implements Serializable {
 	 */
 	private static final long serialVersionUID = 5399436420545397464L;
 	private String id;
-	private BigInteger userId;
+	private String userId;
 	private String englishType;
 	private Double reading;
 	private Double writing;
@@ -49,11 +46,11 @@ public class UserEduIelTofScore implements Serializable {
 	public UserEduIelTofScore() {
 	}
 
-	public UserEduIelTofScore(BigInteger userId) {
+	public UserEduIelTofScore(String userId) {
 		this.userId = userId;
 	}
 
-	public UserEduIelTofScore(BigInteger userId, String englishType, Double reading, Double writing, Double speaking,
+	public UserEduIelTofScore(String userId, String englishType, Double reading, Double writing, Double speaking,
 			Double listening, Double overall, Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn,
 			String createdBy, String updatedBy, Boolean isDeleted) {
 		this.userId = userId;
@@ -85,11 +82,11 @@ public class UserEduIelTofScore implements Serializable {
 	}
 
 	@Column(name = "user_id")
-	public BigInteger getUserInfo() {
+	public String getUserInfo() {
 		return this.userId;
 	}
 
-	public void setUserInfo(BigInteger userId) {
+	public void setUserInfo(String userId) {
 		this.userId = userId;
 	}
 
@@ -325,11 +322,11 @@ public class UserEduIelTofScore implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserEduIelTofScore [id=").append(id).append(", userId=").append(userId)
-				.append(", englishType=").append(englishType).append(", reading=").append(reading).append(", writing=")
-				.append(writing).append(", speaking=").append(speaking).append(", listening=").append(listening)
-				.append(", overall=").append(overall).append(", isActive=").append(isActive).append(", createdOn=")
-				.append(createdOn).append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
+		builder.append("UserEduIelTofScore [id=").append(id).append(", userId=").append(userId).append(", englishType=")
+				.append(englishType).append(", reading=").append(reading).append(", writing=").append(writing)
+				.append(", speaking=").append(speaking).append(", listening=").append(listening).append(", overall=")
+				.append(overall).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
+				.append(", updatedOn=").append(updatedOn).append(", deletedOn=").append(deletedOn)
 				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
 				.append(", isDeleted=").append(isDeleted).append("]");
 		return builder.toString();

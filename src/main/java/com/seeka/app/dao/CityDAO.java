@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -97,7 +96,7 @@ public class CityDAO implements ICityDAO {
 	}
 
 	@Override
-	public List<City> getAllCityByIds(final List<BigInteger> cityIds) {
+	public List<City> getAllCityByIds(final List<String> cityIds) {
 		Session session = sessionFactory.getCurrentSession();
 		List<City> cities = session.createQuery("SELECT c FROM city c WHERE c.id IN :ids").setParameter("ids", cityIds).getResultList();
 		return cities;

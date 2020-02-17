@@ -1,7 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ public class IntakeController {
     private IInstituteTypeService instituteTypeService;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getAllIntake(@Valid @PathVariable final BigInteger id) throws Exception {
+    public ResponseEntity<?> getAllIntake(@Valid @PathVariable final String id) throws Exception {
         return ResponseEntity.accepted().body(instituteTypeService.getAllIntake());
     }
 }

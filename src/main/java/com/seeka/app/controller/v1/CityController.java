@@ -3,7 +3,6 @@ package com.seeka.app.controller.v1;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +106,7 @@ public class CityController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> update(@PathVariable final BigInteger id, @RequestBody final UpdateCityDto city) throws Exception {
+	public ResponseEntity<?> update(@PathVariable final String id, @RequestBody final UpdateCityDto city) throws Exception {
 		return ResponseEntity.accepted().body(cityService.update(id, city));
 	}
 

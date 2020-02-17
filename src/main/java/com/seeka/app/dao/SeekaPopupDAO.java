@@ -1,7 +1,4 @@
-package com.seeka.app.dao;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.dao;import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -30,7 +27,7 @@ public class SeekaPopupDAO implements ISeekaPopupDAO {
 	}
 	
 	@Override
-	public SeekaPopup get(BigInteger id) {	
+	public SeekaPopup get(String id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		SeekaPopup city = session.get(SeekaPopup.class, id);
 		return city;

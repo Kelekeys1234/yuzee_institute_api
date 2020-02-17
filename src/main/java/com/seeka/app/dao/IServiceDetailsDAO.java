@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.Service;
@@ -11,9 +10,9 @@ public interface IServiceDetailsDAO {
 
     void update(Service obj);
 
-    Service get(BigInteger id);
+    Service get(String id);
 
-    List<Service> getAllInstituteByCountry(BigInteger countryId);
+    List<Service> getAllInstituteByCountry(String countryId);
 
     List<Service> getAll();
 

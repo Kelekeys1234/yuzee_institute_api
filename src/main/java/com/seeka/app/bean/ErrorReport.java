@@ -1,8 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;

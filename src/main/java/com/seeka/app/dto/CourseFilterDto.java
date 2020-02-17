@@ -1,13 +1,11 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class CourseFilterDto {
 
-	private BigInteger countryId;
-	private BigInteger instituteId;
-	private BigInteger facultyId;
-	private BigInteger courseId;
+	private String countryId;
+	private String instituteId;
+	private String facultyId;
+	private String courseId;
 	private String language;
 	private Integer minRanking;
 	private Integer maxRanking;
@@ -31,35 +29,35 @@ public class CourseFilterDto {
 		this.userCountryId = userCountryId;
 	}
 
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(final BigInteger countryId) {
+	public void setCountryId(final String countryId) {
 		this.countryId = countryId;
 	}
 
-	public BigInteger getInstituteId() {
+	public String getInstituteId() {
 		return instituteId;
 	}
 
-	public void setInstituteId(final BigInteger instituteId) {
+	public void setInstituteId(final String instituteId) {
 		this.instituteId = instituteId;
 	}
 
-	public BigInteger getFacultyId() {
+	public String getFacultyId() {
 		return facultyId;
 	}
 
-	public void setFacultyId(final BigInteger facultyId) {
+	public void setFacultyId(final String facultyId) {
 		this.facultyId = facultyId;
 	}
 
-	public BigInteger getCourseId() {
+	public String getCourseId() {
 		return courseId;
 	}
 
-	public void setCourseId(final BigInteger courseId) {
+	public void setCourseId(final String courseId) {
 		this.courseId = courseId;
 	}
 

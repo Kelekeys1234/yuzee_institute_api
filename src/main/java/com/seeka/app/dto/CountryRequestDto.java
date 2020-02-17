@@ -1,11 +1,10 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class CountryRequestDto {
 
-    private BigInteger id;
+    private String id;
 
     private String name;
 
@@ -16,11 +15,11 @@ public class CountryRequestDto {
     private CountryDetailsDto countryDetailsDto;
 
     private List<CountryImageDto> countryImageDtos;
-
+	
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -28,7 +27,7 @@ public class CountryRequestDto {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

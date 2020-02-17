@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +57,7 @@ public class HobbyService implements IHobbyService {
     }
 
     @Override
-    public Hobbies get(BigInteger id) {
+    public Hobbies get(String id) {
         return dao.get(id);
     }
 
@@ -87,7 +86,7 @@ public class HobbyService implements IHobbyService {
     public Map<String, Object> addUserHobbies(@Valid UserHobbies userHobbies) {
         Map<String, Object> response = new HashMap<String, Object>();
         try {
-            for (BigInteger id : userHobbies.getHobbies()) {
+            for (String id : userHobbies.getHobbies()) {
                 UserInterestHobbies interestHobbies = new UserInterestHobbies();
                 interestHobbies.setHobbies(dao.get(id));
                 interestHobbies.setUserInfo(userHobbies.getUserId());
@@ -107,7 +106,7 @@ public class HobbyService implements IHobbyService {
     }
 
     @Override
-    public Map<String, Object> getUserHobbies(BigInteger userId) {
+    public Map<String, Object> getUserHobbies(String userId) {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Hobbies> hobbies = new ArrayList<Hobbies>();
         try {
@@ -149,7 +148,7 @@ public class HobbyService implements IHobbyService {
     }
 
     @Override
-    public Map<String, Object> deleteUserHobbies(BigInteger userId, BigInteger hobbyId) {
+    public Map<String, Object> deleteUserHobbies(String userId, String hobbyId) {
         Map<String, Object> response = new HashMap<String, Object>();
         try {
             userHobbyDao.deleteUserHobbies(userId, hobbyId);
@@ -208,7 +207,7 @@ public class HobbyService implements IHobbyService {
     public Map<String, Object> addUserInterest(@Valid UserInterest userInterest) {
         Map<String, Object> response = new HashMap<String, Object>();
         try {
-            for (BigInteger id : userInterest.getInterest()) {
+            for (String id : userInterest.getInterest()) {
                 com.seeka.app.bean.UserInterest interestHobbies = new com.seeka.app.bean.UserInterest();
                 interestHobbies.setInterest(interestDao.get(id));
                 interestHobbies.setUserInfo(userInterest.getUserId());
@@ -228,7 +227,7 @@ public class HobbyService implements IHobbyService {
     }
 
     @Override
-    public Map<String, Object> getUserInterest(BigInteger userId) {
+    public Map<String, Object> getUserInterest(String userId) {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Interest> interests = new ArrayList<Interest>();
         try {
@@ -249,7 +248,7 @@ public class HobbyService implements IHobbyService {
     }
 
     @Override
-    public Map<String, Object> deleteUserInterest(BigInteger userId, BigInteger interestId) {
+    public Map<String, Object> deleteUserInterest(String userId, String interestId) {
         Map<String, Object> response = new HashMap<String, Object>();
         try {
             userInterestDao.deleteUserInterest(userId, interestId);
@@ -272,7 +271,7 @@ public class HobbyService implements IHobbyService {
             if (userHountryHobbies.getCountry() != null && !userHountryHobbies.getCountry().isEmpty()) {
                 userHobbyDao.deleteUserAllCountries(userHountryHobbies.getUserId());
             }
-            for (BigInteger id : userHountryHobbies.getHobbies()) {
+            for (String id : userHountryHobbies.getHobbies()) {
                 UserInterestHobbies interestHobbies = new UserInterestHobbies();
                 interestHobbies.setHobbies(dao.get(id));
                 interestHobbies.setUserInfo(userHountryHobbies.getUserId());
@@ -302,7 +301,7 @@ public class HobbyService implements IHobbyService {
     }
 
     @Override
-    public Map<String, Object> getUserHobbiesAndCountry(BigInteger userId) {
+    public Map<String, Object> getUserHobbiesAndCountry(String userId) {
         Map<String, Object> response = new HashMap<String, Object>();
         List<Hobbies> hobbies = new ArrayList<Hobbies>();
         List<String> countries = new ArrayList<String>();
@@ -320,7 +319,7 @@ public class HobbyService implements IHobbyService {
     }
 
     @Override
-    public Map<String, Object> deleteInterest(BigInteger userId, BigInteger hobbyId, String countryId) {
+    public Map<String, Object> deleteInterest(String userId, String hobbyId, String countryId) {
         Map<String, Object> response = new HashMap<String, Object>();
         try {
             if (hobbyId != null) {

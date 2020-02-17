@@ -1,6 +1,5 @@
 package com.seeka.app.jobs;
 
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +50,7 @@ public class CountryUtil {
         return univCountryList;
     }
 
-    public static List<City> getCityListByCountryId(BigInteger countryId) {
+    public static List<City> getCityListByCountryId(String countryId) {
         return countryCityMap.get(countryId);
     }
 

@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.AgentEducationDetail;
@@ -19,7 +18,7 @@ public interface IEducationAgentDAO {
 
     public void updateEducationAgent(EducationAgent educationAgent);
 
-    public EducationAgent fetchEducationAgent(BigInteger id);
+    public EducationAgent fetchEducationAgent(String id);
 
     public void deleteEducationAgent(String id);
 
@@ -37,7 +36,7 @@ public interface IEducationAgentDAO {
 
     public Skill fetchSkill(String id);
 
-    public void deleteSkill(BigInteger educationAgentId);
+    public void deleteSkill(String educationAgentId);
 
     public void saveEducationAgentSkill(EducationAgentSkill agentSkill);
 

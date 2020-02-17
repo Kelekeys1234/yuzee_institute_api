@@ -1,12 +1,10 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class TodoFolder {
 
     private String id;
     private String name;
-    private BigInteger userId;
+    private String userId;
 
     /**
      * @return the id
@@ -41,7 +39,7 @@ public class TodoFolder {
     /**
      * @return the userId
      */
-    public BigInteger getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -49,7 +47,7 @@ public class TodoFolder {
      * @param userId
      *            the userId to set
      */
-    public void setUserId(BigInteger userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

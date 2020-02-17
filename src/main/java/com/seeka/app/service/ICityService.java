@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,7 @@ public interface ICityService {
 
 	Map<String, Object> save(CityDto city);
 
-	Map<String, Object> update(BigInteger id, UpdateCityDto city);
+	Map<String, Object> update(String id, UpdateCityDto city);
 
 	List<City> getAllCityNames(Integer pageNumber, Integer pageSize, String searchString);
 	

@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,8 +76,8 @@ public class FacultyDAO implements IFacultyDAO {
 			obj = new Faculty();
 			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
-			obj.setLevelId(new BigInteger(row[2].toString()));
-			obj.setCountryId(new BigInteger(row[3].toString()));
+			obj.setLevelId(row[2].toString());
+			obj.setCountryId(row[3].toString());
 			faculties.add(obj);
 		}
 		return faculties;
@@ -97,7 +96,7 @@ public class FacultyDAO implements IFacultyDAO {
 			obj = new Faculty();
 			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
-			obj.setLevelId(new BigInteger(row[2].toString()));
+			obj.setLevelId(row[2].toString());
 			obj.setDescription(row[3].toString());
 			faculties.add(obj);
 		}
@@ -116,7 +115,7 @@ public class FacultyDAO implements IFacultyDAO {
 			obj = new Faculty();
 			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
-			obj.setLevelId(new BigInteger(row[2].toString()));
+			obj.setLevelId(row[2].toString());
 			if (row[3] != null) {
 				obj.setDescription(row[3].toString());
 			}

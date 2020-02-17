@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -26,7 +25,7 @@ public class ArticleFolder implements Serializable {
 	private Boolean deleted;
 	private Date createdAt;
 	private Date updatedAt;
-	private BigInteger userId;
+	private String userId;
 	
 	private String folderImage;
 
@@ -107,14 +106,14 @@ public class ArticleFolder implements Serializable {
 	 * @return the userId
 	 */
 	@Column(name = "user_id")
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(BigInteger userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

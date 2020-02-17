@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -33,7 +32,7 @@ public class UserMyCourse implements Serializable {
 	private static final long serialVersionUID = -379655458576053915L;
 	private String id;
 	private Course course;
-	private BigInteger userId;
+	private String userId;
 	private Boolean isActive;
 	private Date createdOn;
 	private Date updatedOn;
@@ -49,8 +48,8 @@ public class UserMyCourse implements Serializable {
 		this.course = course;
 	}
 
-	public UserMyCourse(Course course, BigInteger userId, Boolean isActive, Date createdOn, Date updatedOn,
-			Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
+	public UserMyCourse(Course course, String userId, Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn,
+			String createdBy, String updatedBy, Boolean isDeleted) {
 		this.course = course;
 		this.userId = userId;
 		this.isActive = isActive;
@@ -86,11 +85,11 @@ public class UserMyCourse implements Serializable {
 
 	@Column(name = "user_id", length = 20)
 	@JoinColumn(name = "user_id")
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(BigInteger userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

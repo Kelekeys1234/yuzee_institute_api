@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -230,12 +229,12 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Map<String, Object> getCourse(final BigInteger courseId) {
+	public Map<String, Object> getCourse(final String courseId) {
 		return iCourseDAO.getCourse(courseId);
 	}
 
 	@Override
-	public List<CourseResponseDto> getCouresesByFacultyId(final BigInteger facultyId) {
+	public List<CourseResponseDto> getCouresesByFacultyId(final String facultyId) {
 		return iCourseDAO.getCouresesByFacultyId(facultyId);
 	}
 
@@ -244,7 +243,7 @@ public class CourseService implements ICourseService {
 		String[] citiesArray = facultyId.split(",");
 		String tempList = "";
 		for (String id : citiesArray) {
-			tempList = tempList + "," + "'" + new BigInteger(id) + "'";
+			tempList = tempList + "," + "'" + id + "'";
 		}
 		return iCourseDAO.getCouresesByListOfFacultyId(tempList.substring(1, tempList.length()));
 	}
@@ -754,7 +753,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Map<String, Object> getUserCompareCourse(final BigInteger userId) {
+	public Map<String, Object> getUserCompareCourse(final String userId) {
 		Map<String, Object> response = new HashMap<>();
 		List<UserCompareCourseResponse> compareCourseResponses = new ArrayList<>();
 		try {
@@ -1069,7 +1068,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<CourseMinRequirementDto> getCourseMinRequirement(final BigInteger course) {
+	public List<CourseMinRequirementDto> getCourseMinRequirement(final String course) {
 		return convertCourseMinRequirementToDto(courseMinRequirementDao.get(course));
 	}
 
@@ -1190,16 +1189,16 @@ public class CourseService implements ICourseService {
 		return iCourseDAO.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
 	}
 
-	private List<BigInteger> getCourseListBasedForCourseOnParameters(final BigInteger courseId, final BigInteger instituteId, final BigInteger facultyId,
-			final BigInteger countryId, final BigInteger cityId) {
-		List<BigInteger> courseIdList = iCourseDAO.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId, countryId, cityId);
+	private List<String> getCourseListBasedForCourseOnParameters(final String courseId, final String instituteId, final String facultyId,
+			final String countryId, final String cityId) {
+		List<String> courseIdList = iCourseDAO.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId, countryId, cityId);
 		return courseIdList;
 	}
 
 	@Override
-	public List<Long> getUserListForUserWatchCourseFilter(final BigInteger courseId, final BigInteger instituteId, final BigInteger facultyId,
-			final BigInteger countryId, final BigInteger cityId) {
-		List<BigInteger> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
+	public List<Long> getUserListForUserWatchCourseFilter(final String courseId, final String instituteId, final String facultyId,
+			final String countryId, final String cityId) {
+		List<String> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
 		if (courseIdList == null || courseIdList.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -1208,12 +1207,12 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<BigInteger> courseIdsForCountry(final Country country) {
+	public List<String> courseIdsForCountry(final Country country) {
 		return iCourseDAO.getCourseIdsForCountry(country);
 	}
 
 	@Override
-	public List<BigInteger> courseIdsForMigratedCountries(final Country country) {
+	public List<String> courseIdsForMigratedCountries(final Country country) {
 		List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
 		List<String> otherCountryIds = new ArrayList<>();
 		if (countryWiseStudentCountListForUserCountry == null || countryWiseStudentCountListForUserCountry.isEmpty()) {
@@ -1227,7 +1226,7 @@ public class CourseService implements ICourseService {
 			}
 		}
 		if (!otherCountryIds.isEmpty()) {
-			List<BigInteger> courseIds = iCourseDAO.getAllCoursesForCountry(otherCountryIds);
+			List<String> courseIds = iCourseDAO.getAllCoursesForCountry(otherCountryIds);
 			return courseIds;
 		}
 		return new ArrayList<>();

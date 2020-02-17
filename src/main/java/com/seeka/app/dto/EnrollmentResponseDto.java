@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class EnrollmentResponseDto implements Serializable {
 	private String id;
 	private String instituteId;
 	private String instituteName;
-	private BigInteger userId;
+	private String userId;
 	private String userName;
 	private String citizenship;
 	private String courseId;
@@ -51,7 +50,7 @@ public class EnrollmentResponseDto implements Serializable {
 	private String zipCode;
 	private String phoneNumber;
 	private String email;
-	private BigInteger assignee;
+	private String assignee;
 	private String assigneeName;
 
 	private Date createdOn;
@@ -87,11 +86,11 @@ public class EnrollmentResponseDto implements Serializable {
 		this.instituteName = instituteName;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
@@ -343,11 +342,11 @@ public class EnrollmentResponseDto implements Serializable {
 		this.email = email;
 	}
 
-	public BigInteger getAssignee() {
+	public String getAssignee() {
 		return assignee;
 	}
 
-	public void setAssignee(final BigInteger assignee) {
+	public void setAssignee(final String assignee) {
 		this.assignee = assignee;
 	}
 

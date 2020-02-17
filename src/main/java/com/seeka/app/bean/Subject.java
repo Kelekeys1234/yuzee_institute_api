@@ -1,7 +1,5 @@
 package com.seeka.app.bean;
 
-import java.math.BigInteger;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,12 +21,12 @@ public class Subject implements java.io.Serializable {
     private static final long serialVersionUID = -4896547771928499529L;
     private String id;
     private String subjectName;
-    private BigInteger educationSystemId;
+    private String educationSystemId;
 
     public Subject() {
     }
 
-    public Subject(String subjectName, BigInteger educationSystemId) {
+    public Subject(String subjectName, String educationSystemId) {
         this.subjectName = subjectName;
         this.educationSystemId = educationSystemId;
     }
@@ -65,7 +63,7 @@ public class Subject implements java.io.Serializable {
      * @return the educationSystemId
      */
     @Column(name = "education_system_id")
-    public BigInteger getEducationSystemId() {
+    public String getEducationSystemId() {
         return educationSystemId;
     }
 
@@ -73,7 +71,7 @@ public class Subject implements java.io.Serializable {
      * @param educationSystemId
      *            the educationSystemId to set
      */
-    public void setEducationSystemId(BigInteger educationSystemId) {
+    public void setEducationSystemId(String educationSystemId) {
         this.educationSystemId = educationSystemId;
     }
 

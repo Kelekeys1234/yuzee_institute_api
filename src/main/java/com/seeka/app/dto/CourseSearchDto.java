@@ -1,6 +1,5 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class CourseSearchDto {
@@ -8,7 +7,7 @@ public class CourseSearchDto {
 	private String searchKey;
 	private String courseName;
 	private Boolean isProfileSearch;
-	private BigInteger currencyId;
+	private String currencyId;
 	private String userId;
 	private List<String> courseKeys;
 	private List<String> levelIds;
@@ -157,11 +156,11 @@ public class CourseSearchDto {
 		this.userId = userId;
 	}
 
-	public BigInteger getCurrencyId() {
+	public String getCurrencyId() {
 		return currencyId;
 	}
 
-	public void setCurrencyId(final BigInteger currencyId) {
+	public void setCurrencyId(final String currencyId) {
 		this.currencyId = currencyId;
 	}
 

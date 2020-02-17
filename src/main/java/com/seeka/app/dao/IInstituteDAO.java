@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +38,7 @@ public interface IInstituteDAO {
 
 	InstituteResponseDto getInstituteByID(String instituteId);
 
-	List<InstituteResponseDto> getInstitudeByCityId(BigInteger cityId);
+	List<InstituteResponseDto> getInstitudeByCityId(String cityId);
 
 	List<InstituteResponseDto> getInstituteByListOfCityId(String citisId);
 
@@ -83,7 +82,7 @@ public interface IInstituteDAO {
 
 	List<Institute> getAllInstituteByID(Collection<String> instituteId);
 
-	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
+	List<String> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
 
 	List<String> getInstitudeByCountry(List<String> distinctCountryIds);
 
@@ -92,7 +91,7 @@ public interface IInstituteDAO {
 	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, String cityId, String instituteTypeId, Boolean isActive,
 			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
 
-	Map<BigInteger, Integer> getDomesticRanking(List<BigInteger> instituteIdList);
+	Map<String, Integer> getDomesticRanking(List<String> instituteIdList);
 
 	List<NearestInstituteDTO> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitude, Double longitude);
 

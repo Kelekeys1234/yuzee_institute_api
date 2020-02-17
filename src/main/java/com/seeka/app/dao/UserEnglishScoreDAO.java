@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -42,8 +41,8 @@ public class UserEnglishScoreDAO implements IUserEnglishScoreDAO {
     }
 
     @Override
-    public UserEnglishScore get(BigInteger id) {
-        System.out.println("BigInteger : " + id);
+    public UserEnglishScore get(String id) {
+        System.out.println("String : " + id);
         Session session = sessionFactory.getCurrentSession();
         UserEnglishScore UserEnglishScore = session.get(UserEnglishScore.class, id);
         return UserEnglishScore;

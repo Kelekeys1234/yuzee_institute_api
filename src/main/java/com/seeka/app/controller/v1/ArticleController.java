@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,7 +52,7 @@ public class ArticleController {
 			@PathVariable final Integer pageSize, @RequestParam(required = false) final String sortByField,
 			@RequestParam(required = false) final String sortByType,
 			@RequestParam(required = false) final String searchKeyword,
-			@RequestParam(required = false) final BigInteger categoryId,
+			@RequestParam(required = false) final String categoryId,
 			@RequestParam(required = false) final String tags,
 			@RequestParam(required = false) final Boolean status,
 			@RequestParam(required = false) final String date
@@ -128,7 +127,7 @@ public class ArticleController {
 
 	@PostMapping()
 	public ResponseEntity<?> saveMultiArticle(@RequestBody SeekaArticleDto article,
-			@RequestHeader(name = "userId") final BigInteger userId) throws ParseException, ValidationException {
+			@RequestHeader(name = "userId") final String userId) throws ParseException, ValidationException {
 		SeekaArticleDto articleDto = articleService.saveMultiArticle(article, userId);
 		return new GenericResponseHandlers.Builder().setData(articleDto).setMessage("Article Created Successfully")
 					.setStatus(HttpStatus.OK).create();
@@ -137,9 +136,9 @@ public class ArticleController {
 	
 	@PutMapping()
 	public ResponseEntity<?> updateArticle(@RequestBody SeekaArticleDto article,
-			@RequestHeader(name = "userId") final BigInteger userId) throws ParseException, ValidationException {
+			@RequestHeader(name = "userId") final String userId) throws ParseException, ValidationException {
 		SeekaArticleDto articleDto = articleService.saveMultiArticle(article, userId);
-		if(article == null || article.getId() ==null || BigInteger.ZERO.equals(article.getId())) {
+		if(article == null || article.getId() ==null) {
 			throw new ValidationException("Please specify Id to update article");
 		}
 		return new GenericResponseHandlers.Builder().setData(articleDto).setMessage("Article Updated Successfully")
@@ -155,7 +154,7 @@ public class ArticleController {
 	
 	@PutMapping(value = "/folder")
 	public ResponseEntity<Object> updateArticleFolder(@RequestBody ArticleFolderDto articleFolderDto, @RequestHeader final String language) throws NotFoundException, ValidationException{
-		if(articleFolderDto.getId() ==null || BigInteger.ZERO.equals(articleFolderDto.getId())) {
+		if(articleFolderDto.getId() ==null) {
 			throw new ValidationException("Please specify Id to update folder date");
 		}
 		articleFolderDto = articleService.saveArticleFolder(articleFolderDto, language);
@@ -196,13 +195,13 @@ public class ArticleController {
 	}
 
 	@GetMapping(value = "/folder/user/{userId}")
-	public ResponseEntity<?> getFolderWithArticle(@PathVariable final BigInteger userId) throws ValidationException {
+	public ResponseEntity<?> getFolderWithArticle(@PathVariable final String userId) throws ValidationException {
 		return new GenericResponseHandlers.Builder().setData( articleService.getFolderByUserId(userId)).setMessage("get Folder by User Successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping(value = "/folder/{folderId}/all/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getArticleByFolderId(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize,@PathVariable final BigInteger folderId) throws ValidationException {
+			@PathVariable final Integer pageSize,@PathVariable final String folderId) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<ArticleResponseDetailsDto> articleList  = articleService.getArticleByFolderId(startIndex, pageSize,folderId);
 		return new GenericResponseHandlers.Builder().setData(articleList).setMessage("get Articles Successfully").setStatus(HttpStatus.OK).create();

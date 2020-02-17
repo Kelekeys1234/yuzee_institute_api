@@ -1,14 +1,14 @@
-package com.seeka.app.dto;import java.math.BigInteger;
+package com.seeka.app.dto;
 
 public class ArticleNameDto {
 
-    private BigInteger articleId;
+    private String articleId;
     private String title;
 
     /**
      * @return the articleId
      */
-    public BigInteger getArticleId() {
+    public String getArticleId() {
         return articleId;
     }
 
@@ -16,7 +16,7 @@ public class ArticleNameDto {
      * @param articleId
      *            the articleId to set
      */
-    public void setArticleId(BigInteger articleId) {
+    public void setArticleId(String articleId) {
         this.articleId = articleId;
     }
 

@@ -1,16 +1,15 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -34,7 +33,7 @@ public class CityJobs implements Serializable {
 	private String id;
 	private City city;
 	private Country country;
-	private BigInteger availableJobs;
+	private String availableJobs;
 	private String TLink;
 	private Date createdOn;
 	private Date updatedOn;
@@ -51,7 +50,7 @@ public class CityJobs implements Serializable {
 		this.country = country;
 	}
 
-	public CityJobs(City city, Country country, BigInteger availableJobs, String TLink, Date createdOn, Date updatedOn,
+	public CityJobs(City city, Country country, String availableJobs, String TLink, Date createdOn, Date updatedOn,
 			Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
 		this.city = city;
 		this.country = country;
@@ -98,11 +97,11 @@ public class CityJobs implements Serializable {
 	}
 
 	@Column(name = "available_jobs")
-	public BigInteger getAvailableJobs() {
+	public String getAvailableJobs() {
 		return this.availableJobs;
 	}
 
-	public void setAvailableJobs(BigInteger availableJobs) {
+	public void setAvailableJobs(String availableJobs) {
 		this.availableJobs = availableJobs;
 	}
 

@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +79,7 @@ public class ViewsController {
 	}
 
 	@GetMapping(value = "/entity")
-	public ResponseEntity<?> getUserViewDataCountBasedOnEntityId(@RequestParam final BigInteger entityId, @RequestParam final String entityType)
+	public ResponseEntity<?> getUserViewDataCountBasedOnEntityId(@RequestParam final String entityId, @RequestParam final String entityType)
 			throws ValidationException {
 		int count = iViewService.getUserViewDataCountBasedOnEntityId(entityId, entityType);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Get user view count based on entity.").setData(count).create();

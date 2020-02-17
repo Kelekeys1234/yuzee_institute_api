@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.UserMyCourse;
@@ -15,11 +14,11 @@ public interface IUserMyCourseDAO {
 
 	void update(UserMyCourse reviewObj);
 
-	UserMyCourse get(BigInteger userId);
+	UserMyCourse get(String userId);
 
-	UserMyCourse getDataByUserIDAndCourseID(BigInteger userId, String courseId);
+	UserMyCourse getDataByUserIDAndCourseID(String userId, String courseId);
 
-	List<UserMyCourse> getDataByUserID(BigInteger userId);
+	List<UserMyCourse> getDataByUserID(String userId);
 
-	List<BigInteger> getAllCourseIdsByUser(BigInteger userId);
+	List<String> getAllCourseIdsByUser(String userId);
 }

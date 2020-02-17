@@ -1,15 +1,14 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class InstituteGetByIdRequestDto {
 
-    private BigInteger instituteId;
+    private String instituteId;
     private String instituteName;
     private String description;
-    private BigInteger cityId;
-    private BigInteger countryId;
+    private String cityId;
+    private String countryId;
 
     private String latitute;
     private String longitude;
@@ -19,7 +18,7 @@ public class InstituteGetByIdRequestDto {
     private String instituteLogoUrl;
     private String averageCostFrom;
     private String averageCostTo;
-    private BigInteger instituteTypeId;
+    private String instituteTypeId;
     private String openingHour;
     private String closingHour;
     private String enrolment;
@@ -31,13 +30,13 @@ public class InstituteGetByIdRequestDto {
     private String address;
     private List<InstituteMedia> instituteMedias;
     private List<InstituteCampusDto> instituteCampus;
-    private BigInteger instituteCategoryTypeId;
+    private String instituteCategoryTypeId;
     private String campusType;
 
     /**
      * @return the instituteId
      */
-    public BigInteger getInstituteId() {
+    public String getInstituteId() {
         return instituteId;
     }
 
@@ -45,7 +44,7 @@ public class InstituteGetByIdRequestDto {
      * @param instituteId
      *            the instituteId to set
      */
-    public void setInstituteId(BigInteger instituteId) {
+    public void setInstituteId(String instituteId) {
         this.instituteId = instituteId;
     }
 
@@ -82,7 +81,7 @@ public class InstituteGetByIdRequestDto {
     /**
      * @return the cityId
      */
-    public BigInteger getCityId() {
+    public String getCityId() {
         return cityId;
     }
 
@@ -90,14 +89,14 @@ public class InstituteGetByIdRequestDto {
      * @param cityId
      *            the cityId to set
      */
-    public void setCityId(BigInteger cityId) {
+    public void setCityId(String cityId) {
         this.cityId = cityId;
     }
 
     /**
      * @return the countryId
      */
-    public BigInteger getCountryId() {
+    public String getCountryId() {
         return countryId;
     }
 
@@ -105,7 +104,7 @@ public class InstituteGetByIdRequestDto {
      * @param countryId
      *            the countryId to set
      */
-    public void setCountryId(BigInteger countryId) {
+    public void setCountryId(String countryId) {
         this.countryId = countryId;
     }
 
@@ -232,7 +231,7 @@ public class InstituteGetByIdRequestDto {
     /**
      * @return the instituteTypeId
      */
-    public BigInteger getInstituteTypeId() {
+    public String getInstituteTypeId() {
         return instituteTypeId;
     }
 
@@ -240,7 +239,7 @@ public class InstituteGetByIdRequestDto {
      * @param instituteTypeId
      *            the instituteTypeId to set
      */
-    public void setInstituteTypeId(BigInteger instituteTypeId) {
+    public void setInstituteTypeId(String instituteTypeId) {
         this.instituteTypeId = instituteTypeId;
     }
 
@@ -405,14 +404,14 @@ public class InstituteGetByIdRequestDto {
     /**
      * @return the instituteCategoryTypeId
      */
-    public BigInteger getInstituteCategoryTypeId() {
+    public String getInstituteCategoryTypeId() {
         return instituteCategoryTypeId;
     }
 
     /**
      * @param instituteCategoryTypeId the instituteCategoryTypeId to set
      */
-    public void setInstituteCategoryTypeId(BigInteger instituteCategoryTypeId) {
+    public void setInstituteCategoryTypeId(String instituteCategoryTypeId) {
         this.instituteCategoryTypeId = instituteCategoryTypeId;
     }
 

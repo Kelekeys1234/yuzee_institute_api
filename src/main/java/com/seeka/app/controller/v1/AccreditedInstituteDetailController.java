@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class AccreditedInstituteDetailController {
 	}
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getAccreditedInstituteDetailList(@RequestParam(name = "entityId") final BigInteger entityId,
+	public ResponseEntity<?> getAccreditedInstituteDetailList(@RequestParam(name = "entityId") final String entityId,
 			@RequestParam(name = "entityType") final String entityType, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) {
 		List<AccreditedInstituteDetail> accreditedInstituteDetailList = iAccreditedInstituteDetailService.getAccreditedInstituteDetailList(entityId, entityType,
 				pageNumber, pageSize);

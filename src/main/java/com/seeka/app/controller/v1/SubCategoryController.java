@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,7 @@ public class SubCategoryController {
     @RequestMapping(value = "/category/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getSubCategoryByCategory(@RequestHeader(value = IConstant.CORRELATION_ID, required = false, defaultValue = "") String correlationId,
                     @RequestHeader(value = IConstant.USER_ID, required = false) String userId, @RequestHeader(value = IConstant.SESSION_ID, required = false) String sessionId,
-                    @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable BigInteger categoryId) {
+                    @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable String categoryId) {
         Map<String, Object> response = new HashMap<String, Object>();
         List<SubCategoryDto> subCategoryDtos = subCategoryService.getSubCategoryByCategory(categoryId);
         if (subCategoryDtos != null && !subCategoryDtos.isEmpty()) {
@@ -63,7 +62,7 @@ public class SubCategoryController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getSubCategoryById(@RequestHeader(value = IConstant.CORRELATION_ID, required = false, defaultValue = "") String correlationId,
                     @RequestHeader(value = IConstant.USER_ID, required = false) String userId, @RequestHeader(value = IConstant.SESSION_ID, required = false) String sessionId,
-                    @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable BigInteger id) {
+                    @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable String id) {
         Map<String, Object> response = new HashMap<String, Object>();
         SubCategoryDto subCategoryDto = subCategoryService.getSubCategoryById(id);
         if (subCategoryDto != null) {

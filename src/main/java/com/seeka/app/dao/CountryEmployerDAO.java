@@ -1,6 +1,4 @@
-package com.seeka.app.dao;import java.math.BigInteger;
-
-import java.util.ArrayList;
+package com.seeka.app.dao;import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -35,8 +33,8 @@ public class CountryEmployerDAO implements ICountryEmployerDAO {
 	}
 
 	@Override
-	public CountryEmployers get(BigInteger id) {
-		System.out.println("BigInteger : "+id);
+	public CountryEmployers get(String id) {
+		System.out.println("String : "+id);
 		//Session session = sessionFactory.getCurrentSession();
 		Session session = sessionFactory.getCurrentSession();		
 		 

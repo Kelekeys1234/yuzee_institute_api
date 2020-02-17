@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -29,7 +28,7 @@ public class UserSearchDaoImpl implements UserSearchDao {
 	}
 
 	@Override
-	public void deleteUserSearchEntry(final BigInteger userId, final String entityType) {
+	public void deleteUserSearchEntry(final String userId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createNativeQuery("delete from user_search where user_id = ? and entity_type = ?");
 		query.setParameter(1, userId);
@@ -38,7 +37,7 @@ public class UserSearchDaoImpl implements UserSearchDao {
 	}
 
 	@Override
-	public List<UserSearch> getUserSearchEntry(final BigInteger userId, final String entityType, final Integer startIndex, final Integer pageSize) {
+	public List<UserSearch> getUserSearchEntry(final String userId, final String entityType, final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserSearch.class);
 		criteria.add(Restrictions.eq("userId", userId));
@@ -50,7 +49,7 @@ public class UserSearchDaoImpl implements UserSearchDao {
 	}
 
 	@Override
-	public Integer getUserSearchEntryCount(final BigInteger userId, final String entityType) {
+	public Integer getUserSearchEntryCount(final String userId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserSearch.class);
 		criteria.add(Restrictions.eq("userId", userId));

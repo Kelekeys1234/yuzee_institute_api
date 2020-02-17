@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -439,7 +438,7 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/faculty/{facultyId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCouresesByFacultyId(@Valid @PathVariable final BigInteger facultyId) throws Exception {
+	public ResponseEntity<?> getCouresesByFacultyId(@Valid @PathVariable final String facultyId) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<CourseResponseDto> courseDtos = courseService.getCouresesByFacultyId(facultyId);
 		if (courseDtos != null && !courseDtos.isEmpty()) {
@@ -568,7 +567,7 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/compare/user/{userId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getUserCompareCourse(@PathVariable final BigInteger userId) throws Exception {
+	public ResponseEntity<?> getUserCompareCourse(@PathVariable final String userId) throws Exception {
 		return ResponseEntity.accepted().body(courseService.getUserCompareCourse(userId));
 	}
 
@@ -633,7 +632,7 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/minimumRequirement/{courseId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCourseMinRequirement(@PathVariable final BigInteger courseId) throws Exception {
+	public ResponseEntity<?> getCourseMinRequirement(@PathVariable final String courseId) throws Exception {
 		List<CourseMinRequirementDto> courseMinRequirementDto = courseService.getCourseMinRequirement(courseId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
 				.setMessage("Get Course Minimum Requirement").setData(courseMinRequirementDto).create();
@@ -646,11 +645,11 @@ public class CourseController {
 
 	@GetMapping(value = "/viewCourse/filter")
 	public ResponseEntity<?> getUserListForUserWatchCourseFilter(@RequestHeader(required = false) final String language,
-			@RequestParam(name = "courseId", required = false) final BigInteger courseId,
-			@RequestParam(name = "facultyId", required = false) final BigInteger facultyId,
-			@RequestParam(name = "instituteId", required = false) final BigInteger instituteId,
-			@RequestParam(name = "countryId", required = false) final BigInteger countryId,
-			@RequestParam(name = "cityId", required = false) final BigInteger cityId) throws ValidationException {
+			@RequestParam(name = "courseId", required = false) final String courseId,
+			@RequestParam(name = "facultyId", required = false) final String facultyId,
+			@RequestParam(name = "instituteId", required = false) final String instituteId,
+			@RequestParam(name = "countryId", required = false) final String countryId,
+			@RequestParam(name = "cityId", required = false) final String cityId) throws ValidationException {
 		if (courseId == null && facultyId == null && instituteId == null && countryId == null && cityId == null) {
 			throw new ValidationException(
 					messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));

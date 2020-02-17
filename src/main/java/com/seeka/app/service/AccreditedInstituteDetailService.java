@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,7 @@ public class AccreditedInstituteDetailService implements IAccreditedInstituteDet
 	}
 
 	@Override
-	public List<AccreditedInstituteDetail> getAccreditedInstituteDetailList(final BigInteger entityId, final String entityType, final Integer pageNumber,
+	public List<AccreditedInstituteDetail> getAccreditedInstituteDetailList(final String entityId, final String entityType, final Integer pageNumber,
 			final Integer pageSize) {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		return iAccreditedInstituteDetailDao.getAccreditedInstituteDetailList(entityId, entityType, startIndex, pageSize);

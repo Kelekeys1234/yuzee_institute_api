@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 public class UserCourseRequestDto implements Serializable {
 
@@ -9,14 +8,14 @@ public class UserCourseRequestDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = -5780245895720098894L;
-	private BigInteger userId;
+	private String userId;
 	private String courseId;
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 

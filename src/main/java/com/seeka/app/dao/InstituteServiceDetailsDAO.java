@@ -1,7 +1,4 @@
-package com.seeka.app.dao;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.dao;import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -31,7 +28,7 @@ public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO{
 	}
 	
 	@Override
-	public InstituteService get(BigInteger id) {	
+	public InstituteService get(String id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		InstituteService obj = session.get(InstituteService.class, id);
 		return obj;
@@ -45,7 +42,7 @@ public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO{
 	}
 	
 	@Override
-	public List<String> getAllServices(BigInteger instituteId) {
+	public List<String> getAllServices(String instituteId) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
 				"select distinct s.name from service s inner join institute_service i on s.id =i.service_id where i.institute_id = '"+instituteId+"'");

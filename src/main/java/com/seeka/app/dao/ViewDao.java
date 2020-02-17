@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +12,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -74,7 +72,7 @@ public class ViewDao implements IViewDao {
 	}
 
 	@Override
-	public int getUserViewDataCountBasedOnEntityId(final BigInteger entityId, final String entityType) {
+	public int getUserViewDataCountBasedOnEntityId(final String entityId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserViewData.class, "userViewData");
 		crit.add(Restrictions.and(Restrictions.eq("userViewData.entityId", entityId)));

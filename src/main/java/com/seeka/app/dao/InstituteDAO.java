@@ -105,7 +105,7 @@ public class InstituteDAO implements IInstituteDAO {
 		InstituteSearchResultDto obj = null;
 		for (Object[] row : rows) {
 			obj = new InstituteSearchResultDto();
-			obj.setInstituteId(new BigInteger(row[0].toString()));
+			obj.setInstituteId(row[0].toString());
 			obj.setInstituteName(row[1].toString());
 			obj.setLocation(row[2].toString() + ", " + row[3].toString());
 			instituteList.add(obj);
@@ -319,7 +319,7 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<InstituteResponseDto> getInstitudeByCityId(final BigInteger cityId) {
+	public List<InstituteResponseDto> getInstitudeByCityId(final String cityId) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.institute_type_id as institudeTypeId "
 				+ "from institute_level instLevel  inner join institute inst " + "on inst.id = instLevel.institute_id " + "where instLevel.city_id ='" + cityId
@@ -377,28 +377,28 @@ public class InstituteDAO implements IInstituteDAO {
 			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			if (row[2] != null) {
-				obj.setCountry(getCountry(new BigInteger(row[2].toString()), session));
+				obj.setCountry(getCountry(row[2].toString(), session));
 			}
 			if (row[3] != null) {
-				obj.setCity(getCity(new BigInteger(row[3].toString()), session));
+				obj.setCity(getCity(row[3].toString(), session));
 			}
 			if (row[4] != null) {
-				obj.setInstituteType(getInstituteType(new BigInteger(row[4].toString()), session));
+				obj.setInstituteType(getInstituteType(row[4].toString(), session));
 			}
 			instituteList.add(obj);
 		}
 		return instituteList;
 	}
 
-	private InstituteType getInstituteType(final BigInteger id, final Session session) {
+	private InstituteType getInstituteType(final String id, final Session session) {
 		return session.get(InstituteType.class, id);
 	}
 
-	private City getCity(final BigInteger id, final Session session) {
+	private City getCity(final String id, final Session session) {
 		return session.get(City.class, id);
 	}
 
-	private Country getCountry(final BigInteger id, final Session session) {
+	private Country getCountry(final String id, final Session session) {
 		return session.get(Country.class, id);
 	}
 
@@ -434,13 +434,13 @@ public class InstituteDAO implements IInstituteDAO {
 				obj.setName(row[1].toString());
 			}
 			if (row[2] != null) {
-				obj.setCountry(getCountry(new BigInteger(row[2].toString()), session));
+				obj.setCountry(getCountry(row[2].toString(), session));
 			}
 			if (row[3] != null) {
-				obj.setCity(getCity(new BigInteger(row[3].toString()), session));
+				obj.setCity(getCity(row[3].toString(), session));
 			}
 			if (row[4] != null) {
-				obj.setInstituteType(getInstituteType(new BigInteger(row[4].toString()), session));
+				obj.setInstituteType(getInstituteType(row[4].toString(), session));
 			}
 			if (row[5] != null) {
 				obj.setDescription(row[5].toString());
@@ -494,13 +494,13 @@ public class InstituteDAO implements IInstituteDAO {
 			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			if (row[2] != null) {
-				obj.setCountry(getCountry(new BigInteger(row[2].toString()), session));
+				obj.setCountry(getCountry(row[2].toString(), session));
 			}
 			if (row[3] != null) {
-				obj.setCity(getCity(new BigInteger(row[3].toString()), session));
+				obj.setCity(getCity(row[3].toString(), session));
 			}
 			if (row[4] != null) {
-				obj.setInstituteType(getInstituteType(new BigInteger(row[4].toString()), session));
+				obj.setInstituteType(getInstituteType(row[4].toString(), session));
 			}
 			if (row[5] != null) {
 				obj.setDescription(row[5].toString());
@@ -525,7 +525,7 @@ public class InstituteDAO implements IInstituteDAO {
 		return instituteList;
 	}
 
-	private Integer getCourseCount(final BigInteger id) {
+	private Integer getCourseCount(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select sa.id from course sa where sa.institute_id=" + id;
 		Query query = session.createSQLQuery(sqlQuery);
@@ -549,15 +549,15 @@ public class InstituteDAO implements IInstituteDAO {
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id where inst.is_active = 1 and inst.deleted_on IS NULL  ";
 
-		if (instituteFilterDto.getCountryId() != null && instituteFilterDto.getCountryId().intValue() > 0) {
+		if (instituteFilterDto.getCountryId() != null) {
 			sqlQuery += " and inst.country_id = " + instituteFilterDto.getCountryId() + " ";
 		}
 
-		if (instituteFilterDto.getCityId() != null && instituteFilterDto.getCityId().intValue() > 0) {
-			sqlQuery += " and inst.city_id = " + instituteFilterDto.getCityId().intValue() + " ";
+		if (instituteFilterDto.getCityId() != null) {
+			sqlQuery += " and inst.city_id = " + instituteFilterDto.getCityId() + " ";
 		}
 
-		if (instituteFilterDto.getInstituteId() != null && instituteFilterDto.getInstituteId().intValue() > 0) {
+		if (instituteFilterDto.getInstituteId() != null) {
 			sqlQuery += " and inst.id =" + instituteFilterDto.getInstituteId() + " ";
 		}
 
@@ -565,7 +565,7 @@ public class InstituteDAO implements IInstituteDAO {
 			sqlQuery += " and inst.world_ranking = " + instituteFilterDto.getWorldRanking() + " ";
 		}
 
-		if (instituteFilterDto.getInstituteTypeId() != null && instituteFilterDto.getInstituteTypeId().intValue() > 0) {
+		if (instituteFilterDto.getInstituteTypeId() != null) {
 			sqlQuery += " and inst.institute_category_type_id = " + instituteFilterDto.getInstituteTypeId() + " ";
 		}
 		if (instituteFilterDto.getDatePosted() != null && !instituteFilterDto.getDatePosted().isEmpty()) {
@@ -719,9 +719,9 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<BigInteger> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
+	public List<String> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
 		Session session = sessionFactory.getCurrentSession();
-		List<BigInteger> insituteIds = session.createNativeQuery("SELECT ID FROM INSTITUTE ORDER BY WORLD_RANKING LIMIT ?,?").setParameter(1, startIndex)
+		List<String> insituteIds = session.createNativeQuery("SELECT ID FROM INSTITUTE ORDER BY WORLD_RANKING LIMIT ?,?").setParameter(1, startIndex)
 				.setParameter(2, pageSize).getResultList();
 		return insituteIds;
 	}
@@ -747,7 +747,7 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public Map<BigInteger, Integer> getDomesticRanking(final List<BigInteger> courseIdList) {
+	public Map<String, Integer> getDomesticRanking(final List<String> courseIdList) {
 		Session session = sessionFactory.getCurrentSession();
 
 		Criteria criteria = session.createCriteria(Course.class, "course");
@@ -759,9 +759,9 @@ public class InstituteDAO implements IInstituteDAO {
 		criteria.setProjection(projectionList);
 
 		List<Object[]> resultList = criteria.list();
-		Map<BigInteger, Integer> courseDomesticRanking = new HashMap<>();
+		Map<String, Integer> courseDomesticRanking = new HashMap<>();
 		for (Object[] result : resultList) {
-			courseDomesticRanking.put((BigInteger) result[0], (Integer) result[1]);
+			courseDomesticRanking.put((String) result[0], (Integer) result[1]);
 		}
 
 		return courseDomesticRanking;

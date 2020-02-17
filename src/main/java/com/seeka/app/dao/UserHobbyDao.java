@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class UserHobbyDao {
         session.save(interestHobbies);
     }
 
-    public List<Hobbies> getUserHobbies(BigInteger userId) {
+    public List<Hobbies> getUserHobbies(String userId) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select h.id as id , h.hobby_txt FROM user_interest_hobbies uih inner join hobbies h on uih.hobby_id = h.id where uih.user_id= " + userId;
         Query query = session.createSQLQuery(sqlQuery);
@@ -42,7 +41,7 @@ public class UserHobbyDao {
         return hobbies;
     }
 
-    public int findTotalCountByUser(BigInteger userId) {
+    public int findTotalCountByUser(String userId) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select hb.id from user_interest_hobbies hb where hb.user_id=" + userId;
         System.out.println(sqlQuery);
@@ -51,7 +50,7 @@ public class UserHobbyDao {
         return rows.size();
     }
 
-    public void deleteUserHobbies(BigInteger userId, BigInteger hobbyId) {
+    public void deleteUserHobbies(String userId, String hobbyId) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select uih.id , uih.user_id FROM user_interest_hobbies uih where uih.user_id= " + userId + " and uih.hobby_id=" + hobbyId;
         Query query = session.createSQLQuery(sqlQuery);
@@ -69,7 +68,7 @@ public class UserHobbyDao {
         session.save(userBiginterestCountry);
     }
 
-    public List<String> getCountryByUserId(BigInteger userId) {
+    public List<String> getCountryByUserId(String userId) {
         List<String> countries = new ArrayList<String>();
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select uih.id , uih.country_name FROM user_biginterest_country uih where uih.user_id= " + userId;
@@ -81,7 +80,7 @@ public class UserHobbyDao {
         return countries;
     }
 
-    public void deleteUserCountry(BigInteger userId, String countryId) {
+    public void deleteUserCountry(String userId, String countryId) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select uih.id , uih.user_id FROM user_biginterest_country uih where uih.user_id= " + userId + " and uih.country_name= '" + countryId + "'";
         Query query = session.createSQLQuery(sqlQuery);
@@ -94,7 +93,7 @@ public class UserHobbyDao {
         }
     }
 
-    public void deleteUserAllHobbies(BigInteger userId) {
+    public void deleteUserAllHobbies(String userId) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select uih.id , uih.user_id FROM user_interest_hobbies uih where uih.user_id= " + userId;
         Query query = session.createSQLQuery(sqlQuery);
@@ -108,7 +107,7 @@ public class UserHobbyDao {
 
     }
 
-    public void deleteUserAllCountries(BigInteger userId) {
+    public void deleteUserAllCountries(String userId) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select uih.id , uih.user_id FROM user_biginterest_country uih where uih.user_id= " + userId;
         Query query = session.createSQLQuery(sqlQuery);

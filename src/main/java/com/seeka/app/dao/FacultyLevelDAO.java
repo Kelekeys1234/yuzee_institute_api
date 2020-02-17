@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class FacultyLevelDAO implements IFacultyLevelDAO {
 	}
 
 	@Override
-	public FacultyLevel get(final BigInteger id) {
+	public FacultyLevel get(final String id) {
 		Session session = sessionFactory.getCurrentSession();
 		FacultyLevel obj = session.get(FacultyLevel.class, id);
 		return obj;
@@ -48,7 +47,7 @@ public class FacultyLevelDAO implements IFacultyLevelDAO {
 	}
 
 	@Override
-	public List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(final BigInteger countryID, final BigInteger courseTypeId) {
+	public List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(final String countryID, final String courseTypeId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session
 				.createSQLQuery("select distinct f.id, f.name as facultyName from faculty f  "

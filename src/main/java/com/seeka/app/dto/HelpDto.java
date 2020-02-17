@@ -1,7 +1,5 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class HelpDto {
 
 	private String id;

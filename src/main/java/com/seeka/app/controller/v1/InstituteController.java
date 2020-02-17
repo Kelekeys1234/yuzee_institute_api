@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -78,7 +77,7 @@ public class InstituteController {
 	}
 
 	@RequestMapping(value = "/service/{instituteTypeId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> saveService(@PathVariable final BigInteger instituteTypeId) throws Exception {
+	public ResponseEntity<?> saveService(@PathVariable final String instituteTypeId) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<Service> list = new ArrayList<>();
 		String createdBy = "AUTO";
@@ -308,7 +307,7 @@ public class InstituteController {
 	}
 
 	@RequestMapping(value = "/{id}/service", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable final BigInteger id) throws Exception {
+	public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable final String id) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<String> serviceNames = instituteServiceDetailsService.getAllServices(id);
 		if (serviceNames != null && !serviceNames.isEmpty()) {
@@ -430,7 +429,7 @@ public class InstituteController {
 	}
 
 	@RequestMapping(value = "/city/{cityId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getInstituteByCityId(@Valid @PathVariable final BigInteger cityId) throws Exception {
+	public ResponseEntity<?> getInstituteByCityId(@Valid @PathVariable final String cityId) throws Exception {
 		Map<String, Object> response = new HashMap<>();
 		List<InstituteResponseDto> institutes = instituteService.getInstitudeByCityId(cityId);
 		if (institutes != null && !institutes.isEmpty()) {
@@ -569,14 +568,14 @@ public class InstituteController {
 	}
 
 	@GetMapping(value = "/totalCourseCount", produces = "application/json")
-	public ResponseEntity<?> getTotalCourseForInstitute(@RequestParam(value = "instituteId", required = true) final BigInteger instituteId)
+	public ResponseEntity<?> getTotalCourseForInstitute(@RequestParam(value = "instituteId", required = true) final String instituteId)
 			throws ValidationException {
 		Integer courseCount = instituteService.getTotalCourseCountForInstitute(instituteId);
 		return new GenericResponseHandlers.Builder().setData(courseCount).setMessage("Course Count returned successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping(value = "/history/domestic/ranking", produces = "application/json")
-	public ResponseEntity<?> getHistoryOfDomesticRanking(@RequestParam(value = "instituteId", required = true) final BigInteger instituteId)
+	public ResponseEntity<?> getHistoryOfDomesticRanking(@RequestParam(value = "instituteId", required = true) final String instituteId)
 			throws ValidationException {
 		InstituteDomesticRankingHistory instituteDomesticRankingHistory = instituteService.getHistoryOfDomesticRanking(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteDomesticRankingHistory).setMessage("Get institute domestic ranking successfully")
@@ -584,7 +583,7 @@ public class InstituteController {
 	}
 
 	@GetMapping(value = "/history/world/ranking", produces = "application/json")
-	public ResponseEntity<?> getHistoryOfWorldRanking(@RequestParam(value = "instituteId", required = true) final BigInteger instituteId)
+	public ResponseEntity<?> getHistoryOfWorldRanking(@RequestParam(value = "instituteId", required = true) final String instituteId)
 			throws ValidationException {
 		InstituteWorldRankingHistory instituteWorldRankingHistory = instituteService.getHistoryOfWorldRanking(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteWorldRankingHistory).setMessage("Get institute world ranking successfully")
@@ -592,8 +591,8 @@ public class InstituteController {
 	}
 
 	@PostMapping(value = "/domesticRankingForCourse", produces = "application/json")
-	public ResponseEntity<?> getDomesticRanking(@RequestBody final List<BigInteger> courseIds) throws ValidationException {
-		Map<BigInteger, Integer> instituteIdDomesticRanking = instituteService.getDomesticRanking(courseIds);
+	public ResponseEntity<?> getDomesticRanking(@RequestBody final List<String> courseIds) throws ValidationException {
+		Map<String, Integer> instituteIdDomesticRanking = instituteService.getDomesticRanking(courseIds);
 		return new GenericResponseHandlers.Builder().setData(instituteIdDomesticRanking).setMessage("Domestic Ranking Displayed Successfully")
 				.setStatus(HttpStatus.OK).create();
 	}

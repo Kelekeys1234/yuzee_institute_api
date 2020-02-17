@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -37,14 +36,14 @@ public class UserMyCourseDAO implements IUserMyCourseDAO {
 	}
 
 	@Override
-	public UserMyCourse get(final BigInteger userId) {
+	public UserMyCourse get(final String userId) {
 		Session session = sessionFactory.getCurrentSession();
 		UserMyCourse user = session.get(UserMyCourse.class, userId);
 		return user;
 	}
 
 	@Override
-	public UserMyCourse getDataByUserIDAndCourseID(final BigInteger userId, final String courseId) {
+	public UserMyCourse getDataByUserIDAndCourseID(final String userId, final String courseId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserMyCourse.class, "userMyCourse");
 		crit.createAlias("userMyCourse.course", "course");
@@ -54,7 +53,7 @@ public class UserMyCourseDAO implements IUserMyCourseDAO {
 	}
 
 	@Override
-	public List<UserMyCourse> getDataByUserID(final BigInteger userId) {
+	public List<UserMyCourse> getDataByUserID(final String userId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(UserMyCourse.class, "userMyCourse");
 		crit.add(Restrictions.eq("userId", userId));
@@ -63,11 +62,11 @@ public class UserMyCourseDAO implements IUserMyCourseDAO {
 	}
 
 	@Override
-	public List<BigInteger> getAllCourseIdsByUser(final BigInteger userId) {
+	public List<String> getAllCourseIdsByUser(final String userId) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select course_id from user_my_course where is_active = 1 and user_id ='" + userId + "'";
 		Query query = session.createSQLQuery(sqlQuery);
-		List<BigInteger> rows = query.list();
+		List<String> rows = query.list();
 		return rows;
 	}
 

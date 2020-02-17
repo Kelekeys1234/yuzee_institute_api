@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -23,7 +22,7 @@ public class GlobalSearchKeywordDAO implements IGlobalSearchKeywordDAO {
 	}
 
 	@Override
-	public List<String> getOtherUsersTopSearchedKeywords(BigInteger userId) {
+	public List<String> getOtherUsersTopSearchedKeywords(String userId) {
 
 		Session session = sessionFactory.getCurrentSession();
 		List<String> keyWordList = session.createNativeQuery("Select search_keyword from global_search_keyword where user_id not in (?) group by search_keyword order by count(*) desc")

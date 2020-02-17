@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 

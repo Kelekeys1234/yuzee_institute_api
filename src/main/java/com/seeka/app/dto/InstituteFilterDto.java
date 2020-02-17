@@ -1,20 +1,19 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 public class InstituteFilterDto {
 
-    private BigInteger cityId;
-    private BigInteger countryId;
-    private BigInteger instituteId;
-    private BigInteger instituteTypeId;
+    private String cityId;
+    private String countryId;
+    private String instituteId;
+    private String instituteTypeId;
 
-    public BigInteger getInstituteTypeId() {
+    public String getInstituteTypeId() {
         return instituteTypeId;
     }
 
-    public void setInstituteTypeId(BigInteger instituteTypeId) {
+    public void setInstituteTypeId(String instituteTypeId) {
         this.instituteTypeId = instituteTypeId;
     }
 
@@ -32,27 +31,27 @@ public class InstituteFilterDto {
         this.worldRanking = worldRanking;
     }
 
-    public BigInteger getCityId() {
+    public String getCityId() {
         return cityId;
     }
 
-    public void setCityId(BigInteger cityId) {
+    public void setCityId(String cityId) {
         this.cityId = cityId;
     }
 
-    public BigInteger getCountryId() {
+    public String getCountryId() {
         return countryId;
     }
 
-    public void setCountryId(BigInteger countryId) {
+    public void setCountryId(String countryId) {
         this.countryId = countryId;
     }
 
-    public BigInteger getInstituteId() {
+    public String getInstituteId() {
         return instituteId;
     }
 
-    public void setInstituteId(BigInteger instituteId) {
+    public void setInstituteId(String instituteId) {
         this.instituteId = instituteId;
     }
 

@@ -1,7 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
-
 import com.seeka.app.bean.CountryDetails;
 
 public interface ICountryDetailsDAO {

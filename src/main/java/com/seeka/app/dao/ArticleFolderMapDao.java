@@ -1,11 +1,8 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -13,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.ArticleFolderMap;
-import com.seeka.app.dto.ArticleNameDto;
 
 
 @Repository
@@ -29,7 +25,7 @@ public class ArticleFolderMapDao implements IArticleFolderMapDao{
            return articleFolderMap;
     }
     @Override
-    public List<ArticleFolderMap> getArticleByFolderId(Integer startIndex,Integer pageSize,BigInteger folderId) {
+    public List<ArticleFolderMap> getArticleByFolderId(Integer startIndex,Integer pageSize, String folderId) {
         Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(ArticleFolderMap.class, "article_folder_mapping");
 		criteria.add(Restrictions.eq("folderId", folderId));

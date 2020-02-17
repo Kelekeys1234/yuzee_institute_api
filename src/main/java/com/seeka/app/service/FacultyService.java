@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +61,7 @@ public class FacultyService implements IFacultyService {
 		String[] citiesArray = instituteId.split(",");
 		String tempList = "";
 		for (String id : citiesArray) {
-			tempList = tempList + "," + "'" + new BigInteger(id) + "'";
+			tempList = tempList + "," + "'" + id + "'";
 		}
 		return dao.getFacultyByListOfInstituteId(tempList.substring(1, tempList.length()));
 	}

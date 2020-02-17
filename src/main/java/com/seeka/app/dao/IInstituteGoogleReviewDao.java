@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +11,9 @@ public interface IInstituteGoogleReviewDao {
 
 	void update(InstituteGoogleReview instituteGoogleReview);
 
-	int getCountOfGooglereview(BigInteger instituteId);
+	int getCountOfGooglereview(String instituteId);
 
-	List<InstituteGoogleReview> getInstituteGoogleReview(BigInteger instituteId, int startIndex, Integer pageSize);
+	List<InstituteGoogleReview> getInstituteGoogleReview(String instituteId, int startIndex, Integer pageSize);
 
 	Double getInstituteAvgGoogleReview(String instituteId);
 

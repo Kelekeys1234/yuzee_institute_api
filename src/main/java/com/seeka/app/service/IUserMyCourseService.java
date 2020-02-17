@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.UserMyCourse;
@@ -17,13 +16,13 @@ public interface IUserMyCourseService {
 
 	void update(UserMyCourse user);
 
-	UserMyCourse get(BigInteger userId);
+	UserMyCourse get(String userId);
 
-	UserMyCourse getDataByUserIDAndCourseID(BigInteger userId, String courseId);
+	UserMyCourse getDataByUserIDAndCourseID(String userId, String courseId);
 
-	List<UserMyCourse> getUserMyCourseByUserID(BigInteger userId);
+	List<UserMyCourse> getUserMyCourseByUserID(String userId);
 
-	List<BigInteger> getAllCourseIdsByUser(BigInteger userId);
+	List<String> getAllCourseIdsByUser(String userId);
 
 	void createUserMyCourse(UserCourseRequestDto courseRequestDto) throws ValidationException;
 }

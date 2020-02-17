@@ -1,6 +1,5 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -24,7 +23,7 @@ public class GlobalSearchKeyword {
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
 	private String id;
 	@Column(name = "user_id")
-	private BigInteger userId;
+	private String userId;
 	@Column(name = "search_keyword")
 	private String searchKeyword;
 	@Temporal(TemporalType.TIMESTAMP)
@@ -34,19 +33,19 @@ public class GlobalSearchKeyword {
 	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
 	@Column(name = "created_by", length = 50)
-	private BigInteger createdBy;
+	private String createdBy;
 	@Column(name = "updated_by", length = 50)
-	private BigInteger updatedBy;
+	private String updatedBy;
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
 	}
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(BigInteger userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	public String getSearchKeyword() {
@@ -68,16 +67,16 @@ public class GlobalSearchKeyword {
 		this.updatedOn = updatedOn;
 	}
 	
-	public BigInteger getCreatedBy() {
+	public String getCreatedBy() {
 		return createdBy;
 	}
-	public void setCreatedBy(BigInteger createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-	public BigInteger getUpdatedBy() {
+	public String getUpdatedBy() {
 		return updatedBy;
 	}
-	public void setUpdatedBy(BigInteger updatedBy) {
+	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 	@Override

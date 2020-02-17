@@ -1,7 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import com.seeka.app.bean.ChatConversation;
@@ -15,14 +13,14 @@ public interface IChatService {
 
 	void addChatImage(MultipartFile file, ChatConversation chatConversation);
 
-	void changeChatAssignee(String enrollmentChatId, BigInteger assigneeId) throws ValidationException;
+	void changeChatAssignee(String enrollmentChatId, String assigneeId) throws ValidationException;
 
-	ChatResposneDto getChatListBasedOnEntityIdAndEntityType(BigInteger entityId, String entityType, Integer startIndex, Integer pageSize)
+	ChatResposneDto getChatListBasedOnEntityIdAndEntityType(String entityId, String entityType, Integer startIndex, Integer pageSize)
 			throws ValidationException;
 
-	void readChatConversation(BigInteger enrollmentChatConversationId) throws ValidationException;
+	void readChatConversation(String enrollmentChatConversationId) throws ValidationException;
 
-	Integer getChatConversationCountBasedOnChatId(BigInteger chatId);
+	Integer getChatConversationCountBasedOnChatId(String chatId);
 
 	ChatResposneDto getChatListBasedOnEntityType(String entityType, String initiateFromId, String initiateToId, Integer startIndex, Integer pageSize)
 			throws ValidationException;

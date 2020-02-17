@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -125,9 +124,9 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, final BigInteger categoryId, final String tags, final Boolean status, final Date date) throws ValidationException {
+			final String searchKeyword, final String categoryId, final String tags, final Boolean status, final Date date) throws ValidationException {
 
-		List<BigInteger> categoryIdList = new ArrayList<>();
+		List<String> categoryIdList = new ArrayList<>();
 		List<String> tagList = new ArrayList<>();
 
 		if (categoryId != null) {
@@ -141,7 +140,7 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, final List<BigInteger> categoryIdList, final List<String> tagList, final Boolean status, final Date filterDate)
+			final String searchKeyword, final List<String> categoryIdList, final List<String> tagList, final Boolean status, final Date filterDate)
 			throws ValidationException {
 
 		List<SeekaArticles> articleList = articleDAO.getAll(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status,
@@ -229,7 +228,7 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public SeekaArticleDto saveMultiArticle(final SeekaArticleDto articleDto, final BigInteger userId) throws ValidationException, ParseException {
+	public SeekaArticleDto saveMultiArticle(final SeekaArticleDto articleDto, final String userId) throws ValidationException, ParseException {
 		Map<String, String> countryMap = new HashMap<>();
 		Map<String, String> cityMap = new HashMap<>();
 		SeekaArticles article = new SeekaArticles();
@@ -400,7 +399,7 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public List<ArticleFolder> getFolderByUserId(final BigInteger userId) throws ValidationException {
+	public List<ArticleFolder> getFolderByUserId(final String userId) throws ValidationException {
 		List<ArticleFolder> articleFolders = new ArrayList<>();
 		articleFolders = iArticleFolderDao.getAllFolderByUserId(userId);
 		if (!articleFolders.isEmpty()) {
@@ -451,7 +450,7 @@ public class ArticleService implements IArticleService {
 	}
 
 	@Override
-	public List<ArticleResponseDetailsDto> getArticleByFolderId(final Integer startIndex, final Integer pageSize, final BigInteger folderId)
+	public List<ArticleResponseDetailsDto> getArticleByFolderId(final Integer startIndex, final Integer pageSize, final String folderId)
 			throws ValidationException {
 		List<ArticleFolderMap> articleFolderMaps = articleFolderMapDao.getArticleByFolderId(startIndex, pageSize, folderId);
 		List<SeekaArticles> articleList = new ArrayList<>();
@@ -473,8 +472,8 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, final BigInteger categoryId, final String tags, final Boolean status, final Date filterDate) {
-		List<BigInteger> categoryIdList = new ArrayList<>();
+			final String searchKeyword, final String categoryId, final String tags, final Boolean status, final Date filterDate) {
+		List<String> categoryIdList = new ArrayList<>();
 		List<String> tagList = new ArrayList<>();
 
 		if (categoryId != null) {
@@ -488,7 +487,7 @@ public class ArticleService implements IArticleService {
 
 	@Override
 	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, final List<BigInteger> categoryIdList, final List<String> tagList, final Boolean status, final Date date) {
+			final String searchKeyword, final List<String> categoryIdList, final List<String> tagList, final Boolean status, final Date date) {
 		return articleDAO.getTotalSearchCount(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status, date);
 	}
 

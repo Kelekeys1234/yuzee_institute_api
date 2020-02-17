@@ -1,7 +1,4 @@
-package com.seeka.app.service;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.service;import java.util.List;
 
 import com.seeka.app.bean.CountryEmployers;
 import com.seeka.app.dto.CountryDto;
@@ -10,7 +7,7 @@ import com.seeka.app.dto.CountryDto;
 
 public interface ICountryEmployerService {
 	public List<CountryEmployers> getAll();
-	public CountryEmployers get(BigInteger id);
+	public CountryEmployers get(String id);
 	public List<CountryDto> getAllUniversityCountries();
 	public void save(CountryEmployers obj); 
 	public List<CountryDto> searchInterestByCountry(String name);

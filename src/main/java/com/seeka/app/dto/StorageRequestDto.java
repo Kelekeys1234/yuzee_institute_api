@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
 
 public class StorageRequestDto implements Serializable {

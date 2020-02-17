@@ -1,7 +1,4 @@
-package com.seeka.app.service;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.service;import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,11 +26,11 @@ public class CountryEnglishEligibilityService implements ICountryEnglishEligibil
 	}
     
 	@Override
-	public CountryEnglishEligibility get(BigInteger id) {
+	public CountryEnglishEligibility get(String id) {
 		return iCountryEnglishEligibilityDAO.get(id);
 	}
 	
-	public List<CountryEnglishEligibility> getEnglishEligibiltyList(BigInteger countryId){
+	public List<CountryEnglishEligibility> getEnglishEligibiltyList(String countryId){
 		return iCountryEnglishEligibilityDAO.getEnglishEligibiltyList(countryId);
 	}
 	

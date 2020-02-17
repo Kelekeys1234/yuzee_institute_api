@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,10 +54,10 @@ public class CityService implements ICityService {
 	public List<City> getAllMultipleCitiesByCountry(String countryId) {
 		String[] citiesArray = countryId.split(",");
 		String tempList = "";
-		List<BigInteger> list = new ArrayList<>();
+		List<String> list = new ArrayList<>();
 		for (String id : citiesArray) {
-			list.add(new BigInteger(id));
-			tempList = tempList + "," + "'" + new BigInteger(id) + "'";
+			list.add(id);
+			tempList = tempList + "," + "'" + id + "'";
 		}
 		return iCityDAO.getAllMultipleCitiesByCountry(tempList.substring(1, tempList.length()));
 	}
@@ -89,7 +88,7 @@ public class CityService implements ICityService {
 	}
 
 	@Override
-	public Map<String, Object> update(BigInteger id, UpdateCityDto city) {
+	public Map<String, Object> update(String id, UpdateCityDto city) {
 		// TODO Auto-generated method stub
 		return null;
 	}

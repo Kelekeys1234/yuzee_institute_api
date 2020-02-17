@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -60,7 +59,7 @@ public class EducationSystemController {
 	}
 
 	@RequestMapping(value = "/grades/{countryId}/{systemId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getGrades(@PathVariable final BigInteger countryId, @PathVariable final BigInteger systemId) throws Exception {
+	public ResponseEntity<?> getGrades(@PathVariable final String countryId, @PathVariable final String systemId) throws Exception {
 		return educationSystemService.getGrades(countryId, systemId);
 	}
 

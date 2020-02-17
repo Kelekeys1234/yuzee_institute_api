@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.FacultyLevel;
@@ -11,11 +10,11 @@ public interface IFacultyLevelDAO {
 
 	void update(FacultyLevel obj);
 
-	FacultyLevel get(BigInteger id);
+	FacultyLevel get(String id);
 
 	List<FacultyLevel> getAll();
 
-	List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(BigInteger countryID, BigInteger courseTypeId);
+	List<FacultyLevel> getFacultyByCountryIdAndCourseTypeId(String countryID, String courseTypeId);
 
 	List<FacultyLevel> getAllFacultyLevelByInstituteId(String instituteId);
 

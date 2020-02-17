@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,7 +43,7 @@ public class CurrencyRateService implements ICurrencyRateService {
     }
 
     @Override
-    public Currency get(BigInteger id) {
+    public Currency get(String id) {
         return dao.get(id);
     }
 
@@ -59,12 +58,12 @@ public class CurrencyRateService implements ICurrencyRateService {
     }
     
     @Override
-    public List<Currency> getCourseTypeByCountryId(BigInteger countryID) {
+    public List<Currency> getCourseTypeByCountryId(String countryID) {
         return dao.getCourseTypeByCountryId(countryID);
     }
 
     @Override
-    public List<Currency> getCurrencyByCountryId(BigInteger countryId) {
+    public List<Currency> getCurrencyByCountryId(String countryId) {
         return dao.getCurrencyByCountryId(countryId);
     }
 
@@ -120,7 +119,7 @@ public class CurrencyRateService implements ICurrencyRateService {
 
 	@Override
 	public CurrencyRate getCurrencyRate(String currencyCode) {
-		return currencyRateDAO.getCurrencyRate(currencyCode);
+		return currencyRateDAO.getCurrencyRateByCurrencyCode(currencyCode);
 	}
 
 	@Override
@@ -130,7 +129,7 @@ public class CurrencyRateService implements ICurrencyRateService {
 
 	@Override
 	public Double getConversionRate(String currencyCode) throws NotFoundException {
-		CurrencyRate currencyRate = currencyRateDAO.getCurrencyRate(currencyCode);
+		CurrencyRate currencyRate = currencyRateDAO.getCurrencyRateByCurrencyCode(currencyCode);
 		if(currencyRate == null || currencyRate.getId() == null || currencyRate.getConversionRate() == 0) {
 			throw new NotFoundException("Currency Rate not availbale for currency - "+currencyCode);
 		}
@@ -166,7 +165,7 @@ public class CurrencyRateService implements ICurrencyRateService {
 //    }
 
 //    @SuppressWarnings("rawtypes")
-//    private Double getConvertedCurrency(CurrencyRate currencyRate, BigInteger toCurrencyId, Double amount) {
+//    private Double getConvertedCurrency(CurrencyRate currencyRate, String toCurrencyId, Double amount) {
 //        Double convertedRate = null;
 //        try {
 //            if (currencyRate.getRateDetail() != null) {

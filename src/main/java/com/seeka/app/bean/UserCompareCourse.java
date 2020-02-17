@@ -1,10 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
-
-// Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,7 +25,7 @@ public class UserCompareCourse implements Serializable {
 	 */
 	private static final long serialVersionUID = 9149617652748065109L;
 	private String id;
-	private BigInteger userId;
+	private String userId;
 	private String compareValue;
 	private Date createdOn;
 	private Date updatedOn;
@@ -56,13 +52,13 @@ public class UserCompareCourse implements Serializable {
      * @return the userId
      */
     @Column(name = "user_id")
-    public BigInteger getUserId() {
+    public String getUserId() {
         return userId;
     }
     /**
      * @param userId the userId to set
      */
-    public void setUserId(BigInteger userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
     /**

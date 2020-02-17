@@ -1,24 +1,23 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.enumeration.SeekaEntityType;
 
-public class GlobalFilterSearchDto implements Serializable{
+public class GlobalFilterSearchDto implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8396029582988011591L;
 
-	private List<BigInteger> ids;
+	private List<String> ids;
 	private SeekaEntityType seekaEntityType;
-	private List<BigInteger> faculties;
-	private List<BigInteger> levelIds;
-	private List<BigInteger> serviceIds;
-	private List<BigInteger> countryIds;
+	private List<String> faculties;
+	private List<String> levelIds;
+	private List<String> serviceIds;
+	private List<String> countryIds;
 	private Double minCost;
 	private Double maxCost;
 	private Integer minDuration;
@@ -28,96 +27,127 @@ public class GlobalFilterSearchDto implements Serializable{
 	private Integer maxSizePerPage;
 	private Integer pageNumber;
 	private String currencyCode;
-	public List<BigInteger> getIds() {
+
+	public List<String> getIds() {
 		return ids;
 	}
-	public void setIds(List<BigInteger> ids) {
+
+	public void setIds(List<String> ids) {
 		this.ids = ids;
 	}
+
 	public SeekaEntityType getSeekaEntityType() {
 		return seekaEntityType;
 	}
+
 	public void setSeekaEntityType(SeekaEntityType seekaEntityType) {
 		this.seekaEntityType = seekaEntityType;
 	}
-	public List<BigInteger> getFaculties() {
+
+	public List<String> getFaculties() {
 		return faculties;
 	}
-	public void setFaculties(List<BigInteger> faculties) {
+
+	public void setFaculties(List<String> faculties) {
 		this.faculties = faculties;
 	}
-	public List<BigInteger> getLevelIds() {
+
+	public List<String> getLevelIds() {
 		return levelIds;
 	}
-	public void setLevelIds(List<BigInteger> levelIds) {
+
+	public void setLevelIds(List<String> levelIds) {
 		this.levelIds = levelIds;
 	}
-	public List<BigInteger> getServiceIds() {
+
+	public List<String> getServiceIds() {
 		return serviceIds;
 	}
-	public void setServiceIds(List<BigInteger> serviceIds) {
+
+	public void setServiceIds(List<String> serviceIds) {
 		this.serviceIds = serviceIds;
 	}
-	public List<BigInteger> getCountryIds() {
+
+	public List<String> getCountryIds() {
 		return countryIds;
 	}
-	public void setCountryIds(List<BigInteger> countryIds) {
+
+	public void setCountryIds(List<String> countryIds) {
 		this.countryIds = countryIds;
 	}
+
 	public Double getMinCost() {
 		return minCost;
 	}
+
 	public void setMinCost(Double minCost) {
 		this.minCost = minCost;
 	}
+
 	public Double getMaxCost() {
 		return maxCost;
 	}
+
 	public void setMaxCost(Double maxCost) {
 		this.maxCost = maxCost;
 	}
+
 	public Integer getMinDuration() {
 		return minDuration;
 	}
+
 	public void setMinDuration(Integer minDuration) {
 		this.minDuration = minDuration;
 	}
+
 	public Integer getMaxDuration() {
 		return maxDuration;
 	}
+
 	public void setMaxDuration(Integer maxDuration) {
 		this.maxDuration = maxDuration;
 	}
+
 	public boolean isSortAsscending() {
 		return sortAsscending;
 	}
+
 	public void setSortAsscending(boolean sortAsscending) {
 		this.sortAsscending = sortAsscending;
 	}
+
 	public String getSortBy() {
 		return sortBy;
 	}
+
 	public void setSortBy(String sortBy) {
 		this.sortBy = sortBy;
 	}
+
 	public Integer getMaxSizePerPage() {
 		return maxSizePerPage;
 	}
+
 	public void setMaxSizePerPage(Integer maxSizePerPage) {
 		this.maxSizePerPage = maxSizePerPage;
 	}
+
 	public Integer getPageNumber() {
 		return pageNumber;
 	}
+
 	public void setPageNumber(Integer pageNumber) {
 		this.pageNumber = pageNumber;
 	}
+
 	public String getCurrencyCode() {
 		return currencyCode;
 	}
+
 	public void setCurrencyCode(String currencyCode) {
 		this.currencyCode = currencyCode;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -139,6 +169,7 @@ public class GlobalFilterSearchDto implements Serializable{
 		result = prime * result + ((sortBy == null) ? 0 : sortBy.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -219,6 +250,7 @@ public class GlobalFilterSearchDto implements Serializable{
 			return false;
 		return true;
 	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -231,5 +263,5 @@ public class GlobalFilterSearchDto implements Serializable{
 				.append(", pageNumber=").append(pageNumber).append(", currencyCode=").append(currencyCode).append("]");
 		return builder.toString();
 	}
-	
+
 }

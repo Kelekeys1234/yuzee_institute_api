@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class InterestDao {
         return interests;
     }
 
-    public Interest get(BigInteger id) {
+    public Interest get(String id) {
         Session session = sessionFactory.getCurrentSession();
         Interest obj = session.get(Interest.class, id);
         return obj;

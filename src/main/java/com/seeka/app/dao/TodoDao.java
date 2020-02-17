@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class TodoDao implements ITodoDao {
     }
 
     @Override
-    public Todo get(BigInteger id) {
+    public Todo get(String id) {
         Todo todo = new Todo();
         try {
             Session session = sessionFactory.getCurrentSession();
@@ -58,7 +57,7 @@ public class TodoDao implements ITodoDao {
     }
 
     @Override
-    public List<Todo> getByUserId(BigInteger userId) {
+    public List<Todo> getByUserId(String userId) {
         List<Todo> todos = new ArrayList<>();
         try {
             Session session = sessionFactory.getCurrentSession();

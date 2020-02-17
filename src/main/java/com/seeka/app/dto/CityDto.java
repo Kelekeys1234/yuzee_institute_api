@@ -1,11 +1,10 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class CityDto {
 
-	private BigInteger id;
+	private String id;
 	private CountryCityDto country;
 	private String name;
 	private String tripAdvisorLink;
@@ -17,14 +16,14 @@ public class CityDto {
 	/**
 	 * @return the id
 	 */
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

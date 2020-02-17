@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -27,105 +26,102 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "user_interest")
 public class UserInterest implements Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 5898014655457998560L;
-    private String id;
-    private Interest interest;
-    private BigInteger userInfo;
-    private Date createdOn;
-    private Date updatedOn;
-    private String createdBy;
-    private String updatedBy;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5898014655457998560L;
+	private String id;
+	private Interest interest;
+	private String userInfo;
+	private Date createdOn;
+	private Date updatedOn;
+	private String createdBy;
+	private String updatedBy;
 
-    /**
-     * @return the id
-     */
-    @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
-     * @return the interest
-     */
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "interest_id", nullable = false)
-    public Interest getInterest() {
-        return interest;
-    }
+	/**
+	 * @return the interest
+	 */
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "interest_id", nullable = false)
+	public Interest getInterest() {
+		return interest;
+	}
 
-    /**
-     * @param interest
-     *            the interest to set
-     */
-    public void setInterest(Interest interest) {
-        this.interest = interest;
-    }
+	/**
+	 * @param interest the interest to set
+	 */
+	public void setInterest(Interest interest) {
+		this.interest = interest;
+	}
 
-    /**
-     * @return the userInfo
-     */
-    @Column(name = "user_id", length = 20)
-    public BigInteger getUserInfo() {
-        return userInfo;
-    }
+	/**
+	 * @return the userInfo
+	 */
+	@Column(name = "user_id", length = 20)
+	public String getUserInfo() {
+		return userInfo;
+	}
 
-    /**
-     * @param userInfo
-     *            the userInfo to set
-     */
-    public void setUserInfo(BigInteger userInfo) {
-        this.userInfo = userInfo;
-    }
+	/**
+	 * @param userInfo the userInfo to set
+	 */
+	public void setUserInfo(String userInfo) {
+		this.userInfo = userInfo;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_on", length = 19)
-    public Date getCreatedOn() {
-        return this.createdOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on", length = 19)
+	public Date getCreatedOn() {
+		return this.createdOn;
+	}
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_on", length = 19)
-    public Date getUpdatedOn() {
-        return this.updatedOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on", length = 19)
+	public Date getUpdatedOn() {
+		return this.updatedOn;
+	}
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
+	public void setUpdatedOn(Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
 
-    @Column(name = "created_by", length = 50)
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
+	@Column(name = "created_by", length = 50)
+	public String getCreatedBy() {
+		return this.createdBy;
+	}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    @Column(name = "updated_by", length = 50)
-    public String getUpdatedBy() {
-        return this.updatedBy;
-    }
+	@Column(name = "updated_by", length = 50)
+	public String getUpdatedBy() {
+		return this.updatedBy;
+	}
 
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 }

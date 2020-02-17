@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -108,7 +107,7 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     @Override
-    public void deleteSkill(BigInteger educationAgentId) {
+    public void deleteSkill(String educationAgentId) {
 
     }
 
@@ -180,14 +179,14 @@ public class EducationAgentDAO implements IEducationAgentDAO {
         EducationAgentGetAllDto educationAgent = null;
         for (Object[] row : rows) {
             educationAgent = new EducationAgentGetAllDto();
-            educationAgent.setId(new BigInteger(row[0].toString()));
+            educationAgent.setId(row[0].toString());
             educationAgent.setAgentName(row[1].toString());
             educationAgent.setDescription(row[2].toString());
             if (row[3] != null) {
-                educationAgent.setCity(getCity(new BigInteger(row[3].toString())));
+                educationAgent.setCity(getCity(row[3].toString()));
             }
             if (row[4] != null) {
-                educationAgent.setCountry(getCountry(new BigInteger(row[4].toString())));
+                educationAgent.setCountry(getCountry(row[4].toString()));
             }
             String contact = null;
             if (row[6] != null) {
@@ -213,7 +212,7 @@ public class EducationAgentDAO implements IEducationAgentDAO {
         return educationAgentGetAllDtos;
     }
 
-    private String getCountry(BigInteger id) {
+    private String getCountry(String id) {
         String name = null;
         if (id != null) {
             Session session = sessionFactory.getCurrentSession();
@@ -225,7 +224,7 @@ public class EducationAgentDAO implements IEducationAgentDAO {
         return name;
     }
 
-    private String getCity(BigInteger id) {
+    private String getCity(String id) {
         String name = null;
         if (id != null) {
             Session session = sessionFactory.getCurrentSession();
@@ -238,7 +237,7 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     @Override
-    public EducationAgent fetchEducationAgent(BigInteger id) {
+    public EducationAgent fetchEducationAgent(String id) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(EducationAgent.class, "skill");
         crit.add(Restrictions.eq("EducationAgent.id", id));

@@ -293,7 +293,7 @@ public class CourseDAO implements ICourseDAO {
 					courseResponseDto.setCurrencyCode(courseSearchDto.getCurrencyCode());
 					if (row[19] != null) {
 
-						CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
+						CurrencyRate currencyRate = currencyRateDao.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
 						Double amt = Double.valueOf(row[19].toString());
 						Double convertedRate = amt * currencyRate.getConversionRate();
 						if (convertedRate != null) {
@@ -301,7 +301,7 @@ public class CourseDAO implements ICourseDAO {
 						}
 					}
 					if (row[20] != null) {
-						CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
+						CurrencyRate currencyRate = currencyRateDao.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
 						Double amt = Double.valueOf(row[20].toString());
 						Double convertedRate = amt * currencyRate.getConversionRate();
 						if (convertedRate != null) {
@@ -462,7 +462,7 @@ public class CourseDAO implements ICourseDAO {
 		return list;
 	}
 
-	public CourseResponseDto getCourse(final BigInteger instituteId, final CourseSearchDto courseSearchDto) {
+	public CourseResponseDto getCourse(final String instituteId, final CourseSearchDto courseSearchDto) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName,"
 				+ "inst.id as instId,inst.name as instName,"
@@ -584,7 +584,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public Map<String, Object> getCourse(final BigInteger courseId) {
+	public Map<String, Object> getCourse(final String courseId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
 				"select crs.id as course_id,crs.stars as course_stars,crs.name as course_name,crs.language as course_language,crs.description as course_description,"
@@ -605,7 +605,7 @@ public class CourseDAO implements ICourseDAO {
 		Map<String, Object> map = new HashMap<>();
 		for (Object[] row : rows) {
 			courseObj = new CourseDto();
-			courseObj.setId(new BigInteger(String.valueOf(row[0])));
+			courseObj.setId(String.valueOf(row[0]));
 			courseObj.setStars(String.valueOf(row[1]));
 			courseObj.setName(String.valueOf(row[2]));
 			courseObj.setLanguage(String.valueOf(row[3]));
@@ -622,7 +622,7 @@ public class CourseDAO implements ICourseDAO {
 			courseObj.setCost(String.valueOf(row[18]) + " " + String.valueOf(row[17]));
 			courseObj.setFacultyName(String.valueOf(row[23]));
 			if (row[24] != null) {
-				courseObj.setLevelId(new BigInteger(String.valueOf(row[24])));
+				courseObj.setLevelId(String.valueOf(row[24]));
 			}
 			courseObj.setLevelName(String.valueOf(row[25]));
 			courseObj.setIntakeDate(String.valueOf(row[34]));
@@ -676,7 +676,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<CourseResponseDto> getCouresesByFacultyId(final BigInteger facultyId) {
+	public List<CourseResponseDto> getCouresesByFacultyId(final String facultyId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class);
 		crit.add(Restrictions.eq("facultyObj.id", facultyId));
@@ -892,7 +892,7 @@ public class CourseDAO implements ICourseDAO {
 		List<CourseRequest> courses = new ArrayList<>();
 		CourseRequest obj = null;
 
-		CurrencyRate curencyRate = currencyRateDao.getCurrencyRate(currencyCode);
+		CurrencyRate curencyRate = currencyRateDao.getCurrencyRateByCurrencyCode(currencyCode);
 		if (curencyRate == null || curencyRate.getConversionRate() == null || curencyRate.getConversionRate() == 0) {
 			throw new ValidationException("Either No Currency found or Conversion rate is 0 for specified currency - " + currencyCode);
 		}
@@ -1031,7 +1031,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<UserCompareCourse> getUserCompareCourse(final BigInteger userId) {
+	public List<UserCompareCourse> getUserCompareCourse(final String userId) {
 		List<UserCompareCourse> compareCourses = new ArrayList<>();
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select ucc.id, ucc.compare_value FROM  user_compare_course ucc where ucc.deleted_on IS NULL and ucc.user_id=" + userId;
@@ -1170,7 +1170,7 @@ public class CourseDAO implements ICourseDAO {
 		for (Object[] row : rows) {
 			YoutubeVideo youtubeVideo = new YoutubeVideo();
 			youtubeVideo.setYoutubeVideoId(row[0].toString());
-			youtubeVideo.setId(new BigInteger(row[1].toString()));
+			youtubeVideo.setId(row[1].toString());
 			youtubeVideo.setVideoTitle(row[3].toString());
 			youtubeVideo.setDescription(row[4].toString());
 			youtubeVideo.setVedioId(row[5].toString());
@@ -1302,14 +1302,14 @@ public class CourseDAO implements ICourseDAO {
 		courseResponseDto.setRequirements(String.valueOf(row[18]));
 		if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
 			if (row[19] != null) {
-				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
+				CurrencyRate currencyRate = currencyRateDao.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[19].toString());
 				Double convertedRate = amt * currencyRate.getConversionRate();
 				courseResponseDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
 			}
 			if (row[20] != null) {
 
-				CurrencyRate currencyRate = currencyRateDao.getCurrencyRate(courseSearchDto.getCurrencyCode());
+				CurrencyRate currencyRate = currencyRateDao.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[20].toString());
 				Double convertedRate = amt * currencyRate.getConversionRate();
 				courseResponseDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
@@ -1479,14 +1479,14 @@ public class CourseDAO implements ICourseDAO {
 
 	private String addCourseFilterCondition(String sqlQuery, final CourseFilterDto courseFilter) {
 
-		if (null != courseFilter.getCountryId() && courseFilter.getCountryId().intValue() > 0) {
+		if (null != courseFilter.getCountryId()) {
 			sqlQuery += " and c.country_id = " + courseFilter.getCountryId() + " ";
 		}
-		if (null != courseFilter.getInstituteId() && courseFilter.getInstituteId().intValue() > 0) {
+		if (null != courseFilter.getInstituteId()) {
 			sqlQuery += " and c.institute_id =" + courseFilter.getInstituteId() + " ";
 		}
 
-		if (null != courseFilter.getFacultyId() && courseFilter.getFacultyId().intValue() > 0) {
+		if (null != courseFilter.getFacultyId()) {
 			sqlQuery += " and c.faculty_id = " + courseFilter.getFacultyId() + " ";
 		}
 
@@ -1703,7 +1703,7 @@ public class CourseDAO implements ICourseDAO {
 		return courseIds;
 	}
 
-	private String addConditionForCourseList(String sqlQuery, final List<BigInteger> courseIds) {
+	private String addConditionForCourseList(String sqlQuery, final List<String> courseIds) {
 		if (null != courseIds) {
 			sqlQuery += " and crs.id in (" + courseIds.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
 		}
@@ -1734,8 +1734,8 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<BigInteger> getCourseListForCourseBasedOnParameters(final BigInteger courseId, final BigInteger instituteId, final BigInteger facultyId,
-			final BigInteger countryId, final BigInteger cityId) {
+	public List<String> getCourseListForCourseBasedOnParameters(final String courseId, final String instituteId, final String facultyId,
+			final String countryId, final String cityId) {
 		Session session = sessionFactory.getCurrentSession();
 		StringBuilder query = new StringBuilder();
 		query.append("Select id from course where 1=1");
@@ -1755,30 +1755,30 @@ public class CourseDAO implements ICourseDAO {
 			query.append(" and city_id = " + cityId);
 		}
 
-		List<BigInteger> courseIds = session.createNativeQuery(query.toString()).getResultList();
+		List<String> courseIds = session.createNativeQuery(query.toString()).getResultList();
 		return courseIds;
 	}
 
 	@Override
-	public List<Long> getUserListFromUserWatchCoursesBasedOnCourses(final List<BigInteger> courseIds) {
+	public List<Long> getUserListFromUserWatchCoursesBasedOnCourses(final List<String> courseIds) {
 		Session session = sessionFactory.getCurrentSession();
-		String ids = courseIds.stream().map(BigInteger::toString).collect(Collectors.joining(","));
+		String ids = courseIds.stream().map(String::toString).collect(Collectors.joining(","));
 		List<Long> userIds = session.createNativeQuery("select distinct user_id from user_watch_course where course_id in (" + ids + ")").getResultList();
 		return userIds;
 	}
 
 	@Override
-	public List<BigInteger> getCourseIdsForCountry(final Country country) {
+	public List<String> getCourseIdsForCountry(final Country country) {
 		Session session = sessionFactory.getCurrentSession();
-		List<BigInteger> courseList = session.createNativeQuery("select id from course where country_id = ?").setParameter(1, country.getId()).getResultList();
+		List<String> courseList = session.createNativeQuery("select id from course where country_id = ?").setParameter(1, country.getId()).getResultList();
 		return courseList;
 	}
 
 	@Override
-	public List<BigInteger> getAllCoursesForCountry(final List<String> otherCountryIds) {
+	public List<String> getAllCoursesForCountry(final List<String> otherCountryIds) {
 		Session session = sessionFactory.getCurrentSession();
 		String ids = otherCountryIds.stream().map(String::toString).collect(Collectors.joining(","));
-		List<BigInteger> courseIdList = session.createNativeQuery("Select id from course where country_id in (" + ids + ")").getResultList();
+		List<String> courseIdList = session.createNativeQuery("Select id from course where country_id in (" + ids + ")").getResultList();
 		return courseIdList;
 	}
 
@@ -1795,7 +1795,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public Integer getTotalCourseCountForInstitute(final BigInteger instituteId) {
+	public Integer getTotalCourseCountForInstitute(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Course.class, "course");
 		criteria.createAlias("institute", "institute");

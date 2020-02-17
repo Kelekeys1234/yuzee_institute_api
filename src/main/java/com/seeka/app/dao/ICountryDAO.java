@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.Country;
@@ -31,7 +30,7 @@ public interface ICountryDAO {
 
 	List<Country> getCountryIdsBasedOnCitizenships(List<String> citizenships);
 
-	List<Country> getAllCountryByIds(List<BigInteger> countryIds);
+	List<Country> getAllCountryByIds(List<String> countryIds);
 
 	Country getCountryByName(String countryName);
 }

@@ -1,7 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
-
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +15,7 @@ public interface ILevelService {
 
     public List<Level> getAll();
 
-    public List<Level> getCourseTypeByCountryId(BigInteger countryID);
+    public List<Level> getCourseTypeByCountryId(String countryID);
 
     public List<Level> getLevelByCountryId(String countryId);
 

@@ -1,27 +1,25 @@
-package com.seeka.app.dto;import java.math.BigInteger;
-
-
+package com.seeka.app.dto;
 
 public class CurrencyConverterDto {
 	
-	private BigInteger fromCurrencyId;
-	private BigInteger toCurrencyId;
+	private String fromCurrencyId;
+	private String toCurrencyId;
 	private String fromCurrencyCode;
 	private String toCurrencyCode;
 	private Double conversionRate;
-	private BigInteger fromCurrencyMax;
-	private BigInteger toCurrencyMax;
+	private String fromCurrencyMax;
+	private String toCurrencyMax;
 	
-	public BigInteger getFromCurrencyId() {
+	public String getFromCurrencyId() {
 		return fromCurrencyId;
 	}
-	public void setFromCurrencyId(BigInteger fromCurrencyId) {
+	public void setFromCurrencyId(String fromCurrencyId) {
 		this.fromCurrencyId = fromCurrencyId;
 	}
-	public BigInteger getToCurrencyId() {
+	public String getToCurrencyId() {
 		return toCurrencyId;
 	}
-	public void setToCurrencyId(BigInteger toCurrencyId) {
+	public void setToCurrencyId(String toCurrencyId) {
 		this.toCurrencyId = toCurrencyId;
 	}
 	public String getFromCurrencyCode() {
@@ -42,16 +40,16 @@ public class CurrencyConverterDto {
 	public void setConversionRate(Double conversionRate) {
 		this.conversionRate = conversionRate;
 	}
-	public BigInteger getFromCurrencyMax() {
+	public String getFromCurrencyMax() {
 		return fromCurrencyMax;
 	}
-	public void setFromCurrencyMax(BigInteger fromCurrencyMax) {
+	public void setFromCurrencyMax(String fromCurrencyMax) {
 		this.fromCurrencyMax = fromCurrencyMax;
 	}
-	public BigInteger getToCurrencyMax() {
+	public String getToCurrencyMax() {
 		return toCurrencyMax;
 	}
-	public void setToCurrencyMax(BigInteger toCurrencyMax) {
+	public void setToCurrencyMax(String toCurrencyMax) {
 		this.toCurrencyMax = toCurrencyMax;
 	}
 	

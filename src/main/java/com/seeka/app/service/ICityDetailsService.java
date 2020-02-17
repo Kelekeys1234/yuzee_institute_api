@@ -1,12 +1,9 @@
-package com.seeka.app.service;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.service;import java.util.List;
 
 import com.seeka.app.bean.CityDetails;
 
 public interface ICityDetailsService {
 	public List<CityDetails> getAll();
-	public CityDetails get(BigInteger id);
-	public List<CityDetails> getAllCitiesByCountry(BigInteger countryId);
+	public CityDetails get(String id);
+	public List<CityDetails> getAllCitiesByCountry(String countryId);
 }

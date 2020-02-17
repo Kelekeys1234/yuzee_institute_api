@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class InstituteGoogleReviewService implements IInstituteGoogleReviewServi
 	private IInstituteGoogleReviewDao iInstituteGoogleReviewDao;
 
 	@Override
-	public List<InstituteGoogleReviewDto> getInstituteGoogleReview(final BigInteger instituteId, final Integer startIndex, final Integer pageSize) {
+	public List<InstituteGoogleReviewDto> getInstituteGoogleReview(final String instituteId, final Integer startIndex, final Integer pageSize) {
 		List<InstituteGoogleReview> instituteGoogleReviews = iInstituteGoogleReviewDao.getInstituteGoogleReview(instituteId, startIndex, pageSize);
 		List<InstituteGoogleReviewDto> instituteGoogleReviewDtos = new ArrayList<>();
 		for (InstituteGoogleReview instituteGoogleReview : instituteGoogleReviews) {
@@ -43,7 +42,7 @@ public class InstituteGoogleReviewService implements IInstituteGoogleReviewServi
 	}
 
 	@Override
-	public int getCountInstituteGoogleReview(final BigInteger instituteId) {
+	public int getCountInstituteGoogleReview(final String instituteId) {
 		return iInstituteGoogleReviewDao.getCountOfGooglereview(instituteId);
 	}
 

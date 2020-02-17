@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +41,7 @@ public class LevelService implements ILevelService {
     }
 
     @Override
-    public List<Level> getCourseTypeByCountryId(BigInteger countryID) {
+    public List<Level> getCourseTypeByCountryId(String countryID) {
         return dao.getCourseTypeByCountryId(countryID);
     }
 

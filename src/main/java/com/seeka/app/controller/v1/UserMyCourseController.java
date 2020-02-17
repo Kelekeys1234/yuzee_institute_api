@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class UserMyCourseController {
 	}
 
 	@GetMapping(value = "/user/favourite/{userId}")
-	public ResponseEntity<?> markUserFavoriteCourse(@PathVariable final BigInteger userId) throws Exception {
+	public ResponseEntity<?> markUserFavoriteCourse(@PathVariable final String userId) throws Exception {
 		List<UserMyCourse> userMyCourseList = userMyCourseService.getUserMyCourseByUserID(userId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userMyCourseList).setMessage("Get my course successfully").create();
 	}

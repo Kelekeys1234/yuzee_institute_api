@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -22,7 +21,6 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "article_user_demographic")
 public class ArticleUserDemographic implements Serializable {
 
-	
 	/**
 	 * 
 	 */
@@ -32,19 +30,19 @@ public class ArticleUserDemographic implements Serializable {
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
 	private String id;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = true)
-	@JoinColumn(name = "article_id", nullable = false)	
+	@JoinColumn(name = "article_id", nullable = false)
 	private SeekaArticles article;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = true)
 	@JoinColumn(name = "country_id", nullable = false)
 	private Country country;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = true)
 	@JoinColumn(name = "city_id", nullable = false)
 	private City city;
-	
+
 	@Column(name = "gender")
 	private String gender;
 
@@ -55,74 +53,83 @@ public class ArticleUserDemographic implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "updated_at")
 	private Date updatedAt;
-	
+
 	@Column(name = "created_by")
-	private BigInteger createdBy;
+	private String createdBy;
+
 	@Column(name = "updated_by")
-	private BigInteger updatedBy;
-	
-	
-	
-	
-	
-	
-	
-	
+	private String updatedBy;
+
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public SeekaArticles getArticle() {
 		return article;
 	}
+
 	public void setArticle(SeekaArticles article) {
 		this.article = article;
 	}
+
 	public Country getCountry() {
 		return country;
 	}
+
 	public void setCountry(Country country) {
 		this.country = country;
 	}
-	
+
 	public City getCity() {
 		return city;
 	}
+
 	public void setCity(City city) {
 		this.city = city;
 	}
+
 	public String getGender() {
 		return gender;
 	}
+
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+
 	public Date getCreatedAt() {
 		return createdAt;
 	}
+
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
+
 	public Date getUpdatedAt() {
 		return updatedAt;
 	}
+
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	public BigInteger getCreatedBy() {
+
+	public String getCreatedBy() {
 		return createdBy;
 	}
-	public void setCreatedBy(BigInteger createdBy) {
+
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-	public BigInteger getUpdatedBy() {
+
+	public String getUpdatedBy() {
 		return updatedBy;
 	}
-	public void setUpdatedBy(BigInteger updatedBy) {
+
+	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
+
 }

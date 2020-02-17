@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -37,7 +36,7 @@ public class ChatConversationDao implements IChatConversationDao {
 	}
 
 	@Override
-	public ChatConversation getChatConversation(final BigInteger chatConversationId) {
+	public ChatConversation getChatConversation(final String chatConversationId) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.get(ChatConversation.class, chatConversationId);
 	}
@@ -59,7 +58,7 @@ public class ChatConversationDao implements IChatConversationDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Integer getChatConversationCountBasedOnChatId(final BigInteger chatId) {
+	public Integer getChatConversationCountBasedOnChatId(final String chatId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ChatConversation.class, "chatConversation");
 		crit.createAlias("chatConversation.chat", "chat");

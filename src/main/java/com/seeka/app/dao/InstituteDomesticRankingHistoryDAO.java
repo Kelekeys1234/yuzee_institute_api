@@ -1,7 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,7 +22,7 @@ public class InstituteDomesticRankingHistoryDAO implements IInstituteDomesticRan
 	}
 
 	@Override
-	public InstituteDomesticRankingHistory getHistoryOfDomesticRanking(final BigInteger instituteId) {
+	public InstituteDomesticRankingHistory getHistoryOfDomesticRanking(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(InstituteDomesticRankingHistory.class, "instituteDomesticRankingHistory");
 		criteria.createAlias("instituteDomesticRankingHistory.institute", "institute");

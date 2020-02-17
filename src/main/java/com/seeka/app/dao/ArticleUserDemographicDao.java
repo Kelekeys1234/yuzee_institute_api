@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -47,7 +46,7 @@ public class ArticleUserDemographicDao implements IArticleUserDemographicDao {
 	}
 
 	@Override
-	public List<ArticleUserDemographic> getArticleCityListbyCountryId(BigInteger id, String articleId) {
+	public List<ArticleUserDemographic> getArticleCityListbyCountryId(String id, String articleId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(ArticleUserDemographic.class, "article_user_deographic");
 		criteria.createAlias("country", "country");

@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -55,7 +54,7 @@ public class ChatDao implements IChatDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Chat getChatBasedOnEntityId(final BigInteger entityId) {
+	public Chat getChatBasedOnEntityId(final String entityId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Chat.class, "chat");
 		crit.add(Restrictions.eq("chat.id", entityId));
@@ -64,7 +63,7 @@ public class ChatDao implements IChatDao {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Chat getChatBasedOnEntityIdAndEntityType(final BigInteger entityId, final String entityType) {
+	public Chat getChatBasedOnEntityIdAndEntityType(final String entityId, final String entityType) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Chat.class, "chat");
 		crit.add(Restrictions.eq("chat.entityId", entityId));

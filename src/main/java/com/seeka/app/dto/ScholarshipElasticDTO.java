@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +10,7 @@ public class ScholarshipElasticDTO implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 3487477078664375741L;
-	private BigInteger id;
+	private String id;
 	private String name;
 	private String countryName;
 	private String instituteName;
@@ -61,11 +60,11 @@ public class ScholarshipElasticDTO implements Serializable {
 		this.languages = languages;
 	}
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

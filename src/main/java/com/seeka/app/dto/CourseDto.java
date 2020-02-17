@@ -1,11 +1,9 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class CourseDto {
 
-    private BigInteger id;
-    private BigInteger levelId;
+    private String id;
+    private String levelId;
     private String name;
     private String language;
     private String languageShortKey;
@@ -126,11 +124,11 @@ public class CourseDto {
         this.intakeDate = intakeDate;
     }
 
-    public BigInteger getLevelId() {
+    public String getLevelId() {
         return levelId;
     }
 
-    public void setLevelId(final BigInteger levelId) {
+    public void setLevelId(final String levelId) {
         this.levelId = levelId;
     }
 
@@ -175,7 +173,7 @@ public class CourseDto {
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -183,7 +181,7 @@ public class CourseDto {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

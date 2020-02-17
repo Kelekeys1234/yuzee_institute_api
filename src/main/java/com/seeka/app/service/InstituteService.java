@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -205,7 +204,7 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<InstituteResponseDto> getInstitudeByCityId(final BigInteger cityId) {
+	public List<InstituteResponseDto> getInstitudeByCityId(final String cityId) {
 		return dao.getInstitudeByCityId(cityId);
 	}
 
@@ -214,7 +213,7 @@ public class InstituteService implements IInstituteService {
 		String[] citiesArray = cityId.split(",");
 		String tempList = "";
 		for (String id : citiesArray) {
-			tempList = tempList + "," + "'" + new BigInteger(id) + "'";
+			tempList = tempList + "," + "'" + id + "'";
 		}
 		return dao.getInstituteByListOfCityId(tempList.substring(1, tempList.length()));
 	}
@@ -836,7 +835,7 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<BigInteger> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
+	public List<String> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
 		return dao.getInstituteIdsBasedOnGlobalRanking(startIndex, pageSize);
 	}
 
@@ -886,23 +885,23 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public Integer getTotalCourseCountForInstitute(final BigInteger instituteId) {
+	public Integer getTotalCourseCountForInstitute(final String instituteId) {
 		return courseDao.getTotalCourseCountForInstitute(instituteId);
 	}
 
 	@Override
-	public InstituteDomesticRankingHistory getHistoryOfDomesticRanking(final BigInteger instituteId) {
+	public InstituteDomesticRankingHistory getHistoryOfDomesticRanking(final String instituteId) {
 		return instituteDomesticRankingHistoryDAO.getHistoryOfDomesticRanking(instituteId);
 	}
 
 	@Override
-	public InstituteWorldRankingHistory getHistoryOfWorldRanking(final BigInteger instituteId) {
+	public InstituteWorldRankingHistory getHistoryOfWorldRanking(final String instituteId) {
 		return institudeWorldRankingHistoryDAO.getHistoryOfWorldRanking(instituteId);
 	}
 
 	@Override
-	public Map<BigInteger, Integer> getDomesticRanking(final List<BigInteger> courseIdList) {
-		Map<BigInteger, Integer> courseDomesticRanking = dao.getDomesticRanking(courseIdList);
+	public Map<String, Integer> getDomesticRanking(final List<String> courseIdList) {
+		Map<String, Integer> courseDomesticRanking = dao.getDomesticRanking(courseIdList);
 		return courseDomesticRanking;
 	}
 

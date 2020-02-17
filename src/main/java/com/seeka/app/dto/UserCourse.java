@@ -1,11 +1,10 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class UserCourse {
 
-    private BigInteger userId;
+    private String userId;
 
     private List<String> courses;
 
@@ -15,7 +14,7 @@ public class UserCourse {
     /**
      * @return the userId
      */
-    public BigInteger getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -23,7 +22,7 @@ public class UserCourse {
      * @param userId
      *            the userId to set
      */
-    public void setUserId(BigInteger userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

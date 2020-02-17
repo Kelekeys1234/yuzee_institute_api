@@ -3,7 +3,6 @@ package com.seeka.app.bean;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -25,7 +24,7 @@ public class CourseDetails implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 5618988312191735907L;
-	private BigInteger id;
+	private String id;
 	private Course course;
 	private String wrRange;
 	private String availbilty;
@@ -78,11 +77,11 @@ public class CourseDetails implements Serializable {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
-	public BigInteger getId() {
+	public String getId() {
 		return this.id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

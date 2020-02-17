@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +73,7 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
 		return gpaGrade;
 	}
 
-	public List<GradeDetails> getGrades(final BigInteger countryId, final BigInteger systemId) {
+	public List<GradeDetails> getGrades(final String countryId, final String systemId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(GradeDetails.class);
 		crit.add(Restrictions.eq("countryId", countryId));

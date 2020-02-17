@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public interface IViewDao {
 
 	int getUserViewDataCountBasedOnUserId(String userId, String entityId, String entityType);
 
-	int getUserViewDataCountBasedOnEntityId(BigInteger entityId, String entityType);
+	int getUserViewDataCountBasedOnEntityId(String entityId, String entityType);
 
 	List<Object> getUserViewDataBasedOnEntityIdList(String userId, String entityType, boolean isUnique, List<String> entityIds);
 

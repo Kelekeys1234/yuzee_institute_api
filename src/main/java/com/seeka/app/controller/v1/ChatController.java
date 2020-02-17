@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,19 +60,19 @@ public class ChatController {
 	}
 
 	@PutMapping("{chatId}/assignee/{assigneeId}")
-	public ResponseEntity<?> changeChatAssignee(@PathVariable final String chatId, @PathVariable final BigInteger assigneeId) throws ValidationException {
+	public ResponseEntity<?> changeChatAssignee(@PathVariable final String chatId, @PathVariable final String assigneeId) throws ValidationException {
 		iChatService.changeChatAssignee(chatId, assigneeId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Update chat assignee successfully").create();
 	}
 
 	@PutMapping("/{chatConversationId}")
-	public ResponseEntity<?> readChatConversation(@PathVariable final BigInteger chatConversationId) throws ValidationException {
+	public ResponseEntity<?> readChatConversation(@PathVariable final String chatConversationId) throws ValidationException {
 		iChatService.readChatConversation(chatConversationId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Updated Chat conversation successfully").create();
 	}
 
 	@GetMapping("/entityType/{entityType}/entityId/{entityId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getChatListBasedOnEntityTypeAndEntityId(@PathVariable final String entityType, @PathVariable final BigInteger entityId,
+	public ResponseEntity<?> getChatListBasedOnEntityTypeAndEntityId(@PathVariable final String entityType, @PathVariable final String entityId,
 			@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws ValidationException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		ChatResposneDto chatResposneDto = iChatService.getChatListBasedOnEntityIdAndEntityType(entityId, entityType, startIndex, pageSize);

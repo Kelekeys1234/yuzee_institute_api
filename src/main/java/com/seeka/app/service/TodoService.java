@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,12 +37,12 @@ public class TodoService implements ITodoService {
     }
 
     @Override
-    public TodoDto get(BigInteger id) {
+    public TodoDto get(String id) {
         return CommonUtil.convertTodoIntoTodoDto(iTodoDao.get(id));
     }
 
     @Override
-    public List<TodoDto> getByUserId(BigInteger userId) {
+    public List<TodoDto> getByUserId(String userId) {
         List<Todo> list = iTodoDao.getByUserId(userId);
         List<TodoDto> todoDtos = new LinkedList<>();
         for (Todo todo : list) {
@@ -63,7 +62,7 @@ public class TodoService implements ITodoService {
     }
 
     @Override
-    public Map<String, Object> delete(@Valid BigInteger id) {
+    public Map<String, Object> delete(@Valid String id) {
         Map<String, Object> response = new HashMap<>();
         try {
             Todo todo = iTodoDao.get(id);

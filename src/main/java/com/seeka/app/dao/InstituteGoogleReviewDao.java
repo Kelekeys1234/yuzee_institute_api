@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ public class InstituteGoogleReviewDao implements IInstituteGoogleReviewDao {
 	}
 
 	@Override
-	public List<InstituteGoogleReview> getInstituteGoogleReview(final BigInteger instituteId, final int startIndex, final Integer pageSize) {
+	public List<InstituteGoogleReview> getInstituteGoogleReview(final String instituteId, final int startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(InstituteGoogleReview.class, "instituteGoogleReview");
 		criteria.createAlias("instituteGoogleReview.institute", "institute");
@@ -47,7 +46,7 @@ public class InstituteGoogleReviewDao implements IInstituteGoogleReviewDao {
 	}
 
 	@Override
-	public int getCountOfGooglereview(final BigInteger instituteId) {
+	public int getCountOfGooglereview(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(InstituteGoogleReview.class, "instituteGoogleReview");
 		criteria.createAlias("instituteGoogleReview.institute", "institute");

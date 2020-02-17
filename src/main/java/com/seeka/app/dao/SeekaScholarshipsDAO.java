@@ -1,7 +1,4 @@
-package com.seeka.app.dao;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.dao;import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -31,7 +28,7 @@ public class SeekaScholarshipsDAO implements ISeekaScholarshipsDAO {
 	}
 	
 	@Override
-	public SeekaScholarships get(BigInteger id) {	
+	public SeekaScholarships get(String id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		SeekaScholarships city = session.get(SeekaScholarships.class, id);
 		return city;

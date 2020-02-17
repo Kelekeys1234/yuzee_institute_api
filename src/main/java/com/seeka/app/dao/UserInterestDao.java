@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class UserInterestDao {
 
     }
 
-    public List<Interest> getUserInterest(BigInteger userId) {
+    public List<Interest> getUserInterest(String userId) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select h.id as id , h.interest FROM user_interest uih inner join interest h on uih.interest_id = h.id where uih.user_id= " + userId;
         Query query = session.createSQLQuery(sqlQuery);
@@ -42,7 +41,7 @@ public class UserInterestDao {
         return hobbies;
     }
 
-    public void deleteUserInterest(BigInteger userId, BigInteger interestId) {
+    public void deleteUserInterest(String userId, String interestId) {
         Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select uih.id , uih.user_id FROM user_interest uih where uih.user_id= " + userId + " and uih.interest_id=" + interestId;
         Query query = session.createSQLQuery(sqlQuery);

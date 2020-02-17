@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +42,7 @@ public interface IInstituteService {
 
 	InstituteResponseDto getInstituteByID(String instituteId);
 
-	List<InstituteResponseDto> getInstitudeByCityId(BigInteger cityId);
+	List<InstituteResponseDto> getInstitudeByCityId(String cityId);
 
 	List<InstituteResponseDto> getInstituteByListOfCityId(String cityId);
 
@@ -71,20 +70,20 @@ public interface IInstituteService {
 
 	List<InstituteResponseDto> getAllInstituteByID(final Collection<String> listInstituteId) throws ValidationException;
 
-	List<BigInteger> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
+	List<String> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
 
 	List<String> getInstituteIdsFromCountry(List<String> distinctCountryIds);
 
 	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, String cityId, String instituteTypeId, Boolean isActive,
 			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
 
-	Integer getTotalCourseCountForInstitute(BigInteger instituteId);
+	Integer getTotalCourseCountForInstitute(String instituteId);
 
-	InstituteDomesticRankingHistory getHistoryOfDomesticRanking(BigInteger instituteId);
+	InstituteDomesticRankingHistory getHistoryOfDomesticRanking(String instituteId);
 
-	InstituteWorldRankingHistory getHistoryOfWorldRanking(BigInteger instituteId);
+	InstituteWorldRankingHistory getHistoryOfWorldRanking(String instituteId);
 
-	Map<BigInteger, Integer> getDomesticRanking(List<BigInteger> instituteIdList);
+	Map<String, Integer> getDomesticRanking(List<String> instituteIdList);
 
 	List<NearestInstituteDTO> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitude, Double longitude) throws ValidationException;
 

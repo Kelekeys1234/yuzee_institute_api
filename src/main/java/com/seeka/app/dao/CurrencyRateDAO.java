@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -19,14 +18,14 @@ public class CurrencyRateDAO {
     private SessionFactory sessionFactory;
 
     @SuppressWarnings("deprecation")
-    public CurrencyRate getCurrencyRate(BigInteger toCurrencyId) {
+    public CurrencyRate getCurrencyRateByCurrencyId(String toCurrencyId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(CurrencyRate.class);
         crit.add(Restrictions.eq("baseCurrencyId", toCurrencyId));
         return (CurrencyRate) crit.uniqueResult();
     }
 
-    public CurrencyRate getCurrencyRate(String toCurrencyCode) {
+    public CurrencyRate getCurrencyRateByCurrencyCode(String toCurrencyCode) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(CurrencyRate.class);
         crit.add(Restrictions.eq("toCurrencyCode", toCurrencyCode));

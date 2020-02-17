@@ -1,18 +1,17 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class UserHobbies {
 
-    private BigInteger userId;
+    private String userId;
 
-    private List<BigInteger> hobbies;
+    private List<String> hobbies;
 
     /**
      * @return the userId
      */
-    public BigInteger getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -20,14 +19,14 @@ public class UserHobbies {
      * @param userId
      *            the userId to set
      */
-    public void setUserId(BigInteger userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
     /**
      * @return the hobbies
      */
-    public List<BigInteger> getHobbies() {
+    public List<String> getHobbies() {
         return hobbies;
     }
 
@@ -35,7 +34,7 @@ public class UserHobbies {
      * @param hobbies
      *            the hobbies to set
      */
-    public void setHobbies(List<BigInteger> hobbies) {
+    public void setHobbies(List<String> hobbies) {
         this.hobbies = hobbies;
     }
 

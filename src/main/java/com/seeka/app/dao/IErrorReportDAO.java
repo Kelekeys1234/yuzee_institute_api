@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -13,9 +12,9 @@ public interface IErrorReportDAO {
 
 	void save(ErrorReport errorReport);
 
-	ErrorReportCategory getErrorCategory(BigInteger errorReportCategoryId);
+	ErrorReportCategory getErrorCategory(String errorReportCategoryId);
 
-	List<ErrorReport> getAllErrorReport(String userId, Integer startIndex, Integer pageSize, BigInteger errorReportCategoryId, String errorReportStatus,
+	List<ErrorReport> getAllErrorReport(String userId, Integer startIndex, Integer pageSize, String errorReportCategoryId, String errorReportStatus,
 			Date updatedOn, Boolean isFavourite, Boolean isArchive, String sortByField, String sortByType, String searchKeyword);
 
 	ErrorReport getErrorReportById(String id);
@@ -26,10 +25,10 @@ public interface IErrorReportDAO {
 
 	void addErrorRepoerAudit(AuditErrorReport auditErrorReport);
 
-	int getErrorReportCountForUser(String userId, BigInteger errorReportCategoryId, String errorReportStatus, Date updatedOn, Boolean isFavourite,
+	int getErrorReportCountForUser(String userId, String errorReportCategoryId, String errorReportStatus, Date updatedOn, Boolean isFavourite,
 			Boolean isArchive, String searchKeyword);
 
-	void setIsFavouriteFlag(BigInteger errorRepoetId, boolean isFavourite) throws NotFoundException;
+	void setIsFavouriteFlag(String errorRepoetId, boolean isFavourite) throws NotFoundException;
 
 	void saveErrorReportCategory(ErrorReportCategory errorReportCategory);
 

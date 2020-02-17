@@ -38,7 +38,7 @@ public class SeekaArticles implements Serializable {
 	private String id;
 	private Category category;
 	private SubCategory subcategory;
-	private BigInteger userId;
+	private String userId;
 	private String addType;
 	private String heading;
 	private String content;
@@ -82,7 +82,7 @@ public class SeekaArticles implements Serializable {
 	public SeekaArticles() {
 	}
 
-	public SeekaArticles(final Category category, final SubCategory subcategory, final BigInteger userInfo, final String addType, final String heading,
+	public SeekaArticles(final Category category, final SubCategory subcategory, final String userInfo, final String addType, final String heading,
 			final String content, final String url, final String imagepath, final BigInteger type, final Boolean active, final Date deletedOn,
 			final Date createdAt, final BigInteger shared, final BigInteger reviewed, final BigInteger likes, final String link, final Date updatedAt,
 			final Country country, final City city, final Faculty faculty, final Institute institute, final Course courses, final String gender,
@@ -147,11 +147,11 @@ public class SeekaArticles implements Serializable {
 	}
 
 	@Column(name = "user_id")
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(final BigInteger userInfo) {
+	public void setUserId(final String userInfo) {
 		this.userId = userInfo;
 	}
 

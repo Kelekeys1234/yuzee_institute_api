@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +37,7 @@ public class SearchPageController {
 	private IStorageService iStorageService;
 
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-	public ResponseEntity<?> getAllCountries(@PathVariable("userId") final BigInteger userId) throws ValidationException {
+	public ResponseEntity<?> getAllCountries(@PathVariable("userId") final String userId) throws ValidationException {
 		Map<String, Object> response = new HashMap<>();
 		Date now = new Date();
 		CourseSearchDto courseSearchDto = new CourseSearchDto();

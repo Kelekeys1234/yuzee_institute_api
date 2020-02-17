@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,7 +92,7 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 	}
 
 	@Override
-	public List<Subject> getSubjectByEducationSystem(final BigInteger educationSystemId) {
+	public List<Subject> getSubjectByEducationSystem(final String educationSystemId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Subject.class);
 		crit.add(Restrictions.eq("educationSystemId", educationSystemId));

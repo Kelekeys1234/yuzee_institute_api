@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,14 +34,14 @@ public class ServiceDetailsDAO implements IServiceDetailsDAO {
     }
 
     @Override
-    public Service get(BigInteger id) {
+    public Service get(String id) {
         Session session = sessionFactory.getCurrentSession();
         Service obj = session.get(Service.class, id);
         return obj;
     }
 
     @Override
-    public List<Service> getAllInstituteByCountry(BigInteger countryId) {
+    public List<Service> getAllInstituteByCountry(String countryId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(Service.class);
         crit.add(Restrictions.eq("countryObj.id", countryId));
@@ -56,13 +55,13 @@ public class ServiceDetailsDAO implements IServiceDetailsDAO {
         return crit.list();
     }
 
-    public List<BigInteger> getServices(BigInteger id) {
-        List<BigInteger> list = new ArrayList<BigInteger>();
+    public List<String> getServices(String id) {
+        List<String> list = new ArrayList<>();
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("select s.id, s.name as name, s.description from service s");
         List<Object[]> rows = query.list();
         for (Object[] row : rows) {
-            list.add(new BigInteger(row[0].toString()));
+            list.add(row[0].toString());
         }
         return list;
     }

@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.validation.constraints.NotNull;
 
@@ -14,7 +13,7 @@ public class UserSearchDTO implements Serializable {
 	private String id;
 	@NotNull(message = "searchString is required")
 	private String searchString;
-	private BigInteger userId;
+	private String userId;
 	@NotNull(message = "entityType is required")
 	private String entityType;
 
@@ -34,11 +33,11 @@ public class UserSearchDTO implements Serializable {
 		this.searchString = searchString;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 

@@ -1,34 +1,33 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class UserCourseCompare {
     
-    private BigInteger userId;
-    private List<BigInteger> courseId;
+    private String userId;
+    private List<String> courseId;
     /**
      * @return the userId
      */
-    public BigInteger getUserId() {
+    public String getUserId() {
         return userId;
     }
     /**
      * @param userId the userId to set
      */
-    public void setUserId(BigInteger userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
     /**
      * @return the courseId
      */
-    public List<BigInteger> getCourseId() {
+    public List<String> getCourseId() {
         return courseId;
     }
     /**
      * @param courseId the courseId to set
      */
-    public void setCourseId(List<BigInteger> courseId) {
+    public void setCourseId(List<String> courseId) {
         this.courseId = courseId;
     }
 

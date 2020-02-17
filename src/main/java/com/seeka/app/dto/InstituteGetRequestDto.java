@@ -1,6 +1,5 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 

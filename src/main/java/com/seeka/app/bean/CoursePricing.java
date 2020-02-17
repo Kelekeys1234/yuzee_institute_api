@@ -1,10 +1,10 @@
-package com.seeka.app.bean;import static javax.persistence.GenerationType.IDENTITY;
+package com.seeka.app.bean;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
-
 
 import java.util.Date;
 
@@ -26,7 +26,7 @@ public class CoursePricing implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8311274851710389762L;
-	private BigInteger id;
+	private String id;
 	private Course course;
 	private Double localFees;
 	private Double intlFees;
@@ -50,11 +50,9 @@ public class CoursePricing implements Serializable {
 		this.course = course;
 	}
 
-	public CoursePricing(Course course, Double localFees,
-			Double intlFees, Double unionFees, String currency,
-			String currencyTime, Double costSavings, Double costRange,
-			Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn,
-			String createdBy, String updatedBy, Boolean isDeleted) {
+	public CoursePricing(Course course, Double localFees, Double intlFees, Double unionFees, String currency,
+			String currencyTime, Double costSavings, Double costRange, Boolean isActive, Date createdOn, Date updatedOn,
+			Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
 		this.course = course;
 		this.localFees = localFees;
 		this.intlFees = intlFees;
@@ -75,11 +73,11 @@ public class CoursePricing implements Serializable {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
-	public BigInteger getId() {
+	public String getId() {
 		return this.id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -222,128 +220,132 @@ public class CoursePricing implements Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((costRange == null) ? 0 : costRange.hashCode());
-        result = prime * result + ((costSavings == null) ? 0 : costSavings.hashCode());
-        result = prime * result + ((course == null) ? 0 : course.hashCode());
-        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
-        result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
-        result = prime * result + ((currency == null) ? 0 : currency.hashCode());
-        result = prime * result + ((currencyTime == null) ? 0 : currencyTime.hashCode());
-        result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((intlFees == null) ? 0 : intlFees.hashCode());
-        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
-        result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
-        result = prime * result + ((localFees == null) ? 0 : localFees.hashCode());
-        result = prime * result + ((unionFees == null) ? 0 : unionFees.hashCode());
-        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
-        result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
-        return result;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((costRange == null) ? 0 : costRange.hashCode());
+		result = prime * result + ((costSavings == null) ? 0 : costSavings.hashCode());
+		result = prime * result + ((course == null) ? 0 : course.hashCode());
+		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
+		result = prime * result + ((currency == null) ? 0 : currency.hashCode());
+		result = prime * result + ((currencyTime == null) ? 0 : currencyTime.hashCode());
+		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((intlFees == null) ? 0 : intlFees.hashCode());
+		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
+		result = prime * result + ((localFees == null) ? 0 : localFees.hashCode());
+		result = prime * result + ((unionFees == null) ? 0 : unionFees.hashCode());
+		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
+		return result;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        CoursePricing other = (CoursePricing) obj;
-        if (costRange == null) {
-            if (other.costRange != null)
-                return false;
-        } else if (!costRange.equals(other.costRange))
-            return false;
-        if (costSavings == null) {
-            if (other.costSavings != null)
-                return false;
-        } else if (!costSavings.equals(other.costSavings))
-            return false;
-        if (course == null) {
-            if (other.course != null)
-                return false;
-        } else if (!course.equals(other.course))
-            return false;
-        if (createdBy == null) {
-            if (other.createdBy != null)
-                return false;
-        } else if (!createdBy.equals(other.createdBy))
-            return false;
-        if (createdOn == null) {
-            if (other.createdOn != null)
-                return false;
-        } else if (!createdOn.equals(other.createdOn))
-            return false;
-        if (currency == null) {
-            if (other.currency != null)
-                return false;
-        } else if (!currency.equals(other.currency))
-            return false;
-        if (currencyTime == null) {
-            if (other.currencyTime != null)
-                return false;
-        } else if (!currencyTime.equals(other.currencyTime))
-            return false;
-        if (deletedOn == null) {
-            if (other.deletedOn != null)
-                return false;
-        } else if (!deletedOn.equals(other.deletedOn))
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (intlFees == null) {
-            if (other.intlFees != null)
-                return false;
-        } else if (!intlFees.equals(other.intlFees))
-            return false;
-        if (isActive == null) {
-            if (other.isActive != null)
-                return false;
-        } else if (!isActive.equals(other.isActive))
-            return false;
-        if (isDeleted == null) {
-            if (other.isDeleted != null)
-                return false;
-        } else if (!isDeleted.equals(other.isDeleted))
-            return false;
-        if (localFees == null) {
-            if (other.localFees != null)
-                return false;
-        } else if (!localFees.equals(other.localFees))
-            return false;
-        if (unionFees == null) {
-            if (other.unionFees != null)
-                return false;
-        } else if (!unionFees.equals(other.unionFees))
-            return false;
-        if (updatedBy == null) {
-            if (other.updatedBy != null)
-                return false;
-        } else if (!updatedBy.equals(other.updatedBy))
-            return false;
-        if (updatedOn == null) {
-            if (other.updatedOn != null)
-                return false;
-        } else if (!updatedOn.equals(other.updatedOn))
-            return false;
-        return true;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CoursePricing other = (CoursePricing) obj;
+		if (costRange == null) {
+			if (other.costRange != null)
+				return false;
+		} else if (!costRange.equals(other.costRange))
+			return false;
+		if (costSavings == null) {
+			if (other.costSavings != null)
+				return false;
+		} else if (!costSavings.equals(other.costSavings))
+			return false;
+		if (course == null) {
+			if (other.course != null)
+				return false;
+		} else if (!course.equals(other.course))
+			return false;
+		if (createdBy == null) {
+			if (other.createdBy != null)
+				return false;
+		} else if (!createdBy.equals(other.createdBy))
+			return false;
+		if (createdOn == null) {
+			if (other.createdOn != null)
+				return false;
+		} else if (!createdOn.equals(other.createdOn))
+			return false;
+		if (currency == null) {
+			if (other.currency != null)
+				return false;
+		} else if (!currency.equals(other.currency))
+			return false;
+		if (currencyTime == null) {
+			if (other.currencyTime != null)
+				return false;
+		} else if (!currencyTime.equals(other.currencyTime))
+			return false;
+		if (deletedOn == null) {
+			if (other.deletedOn != null)
+				return false;
+		} else if (!deletedOn.equals(other.deletedOn))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (intlFees == null) {
+			if (other.intlFees != null)
+				return false;
+		} else if (!intlFees.equals(other.intlFees))
+			return false;
+		if (isActive == null) {
+			if (other.isActive != null)
+				return false;
+		} else if (!isActive.equals(other.isActive))
+			return false;
+		if (isDeleted == null) {
+			if (other.isDeleted != null)
+				return false;
+		} else if (!isDeleted.equals(other.isDeleted))
+			return false;
+		if (localFees == null) {
+			if (other.localFees != null)
+				return false;
+		} else if (!localFees.equals(other.localFees))
+			return false;
+		if (unionFees == null) {
+			if (other.unionFees != null)
+				return false;
+		} else if (!unionFees.equals(other.unionFees))
+			return false;
+		if (updatedBy == null) {
+			if (other.updatedBy != null)
+				return false;
+		} else if (!updatedBy.equals(other.updatedBy))
+			return false;
+		if (updatedOn == null) {
+			if (other.updatedOn != null)
+				return false;
+		} else if (!updatedOn.equals(other.updatedOn))
+			return false;
+		return true;
+	}
 
-    @Override
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("CoursePricing [id=").append(id).append(", course=").append(course).append(", localFees=")

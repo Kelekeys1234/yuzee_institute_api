@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -33,7 +32,7 @@ public class UserInterestHobbies implements Serializable {
 	private static final long serialVersionUID = 5898014655457998560L;
 	private String id;
 	private Hobbies hobbies;
-	private BigInteger userInfo;
+	private String userInfo;
 	private String hobbyTxt;
 	private Date createdOn;
 	private Date updatedOn;
@@ -45,12 +44,12 @@ public class UserInterestHobbies implements Serializable {
 	public UserInterestHobbies() {
 	}
 
-	public UserInterestHobbies(Hobbies hobbies, BigInteger userInfo) {
+	public UserInterestHobbies(Hobbies hobbies, String userInfo) {
 		this.hobbies = hobbies;
 		this.userInfo = userInfo;
 	}
 
-	public UserInterestHobbies(Hobbies hobbies, BigInteger userInfo, String hobbyTxt, Date createdOn, Date updatedOn,
+	public UserInterestHobbies(Hobbies hobbies, String userInfo, String hobbyTxt, Date createdOn, Date updatedOn,
 			Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
 		this.hobbies = hobbies;
 		this.userInfo = userInfo;
@@ -86,11 +85,11 @@ public class UserInterestHobbies implements Serializable {
 	}
 
 	@Column(name = "user_id", length = 20)
-	public BigInteger getUserInfo() {
+	public String getUserInfo() {
 		return this.userInfo;
 	}
 
-	public void setUserInfo(BigInteger userInfo) {
+	public void setUserInfo(String userInfo) {
 		this.userInfo = userInfo;
 	}
 

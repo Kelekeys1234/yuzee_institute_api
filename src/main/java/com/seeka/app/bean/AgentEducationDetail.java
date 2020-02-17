@@ -1,6 +1,5 @@
 package com.seeka.app.bean;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -23,8 +22,8 @@ public class AgentEducationDetail {
     */
     private String id;
     private String course;
-    private BigInteger durationFrom;
-    private BigInteger durationTo;
+    private String durationFrom;
+    private String durationTo;
     private String institute;
     private EducationAgent educationAgent;
     private String createdBy;
@@ -56,20 +55,20 @@ public class AgentEducationDetail {
     }
 
     @Column(name = "duration_from")
-    public BigInteger getDurationFrom() {
+    public String getDurationFrom() {
         return durationFrom;
     }
 
-    public void setDurationFrom(BigInteger durationFrom) {
+    public void setDurationFrom(String durationFrom) {
         this.durationFrom = durationFrom;
     }
 
     @Column(name = "duration_to")
-    public BigInteger getDurationTo() {
+    public String getDurationTo() {
         return durationTo;
     }
 
-    public void setDurationTo(BigInteger durationTo) {
+    public void setDurationTo(String durationTo) {
         this.durationTo = durationTo;
     }
 

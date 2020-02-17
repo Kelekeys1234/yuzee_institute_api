@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class GlobalSearchKeywordController {
 	private IGlobalSearchKeywordService iGlobalSearchKeywordService;
 	
 	@PutMapping("/add/{searchKeyWord}")
-	public ResponseEntity<?> addKeyword(@RequestHeader("userId") BigInteger userId, @PathVariable(name="searchKeyWord") String searchKeyword){
+	public ResponseEntity<?> addKeyword(@RequestHeader("userId") String userId, @PathVariable(name="searchKeyWord") String searchKeyword){
 		if(searchKeyword != null) {
 			iGlobalSearchKeywordService.addGlobalSearhcKeyForUser(searchKeyword, userId);
 		}	
@@ -33,7 +32,7 @@ public class GlobalSearchKeywordController {
 	}
 	
 	@GetMapping("/getTopSearched")
-	public ResponseEntity<?> getOtherUsersTopSearchedKeywords(@RequestHeader("userId") BigInteger userId){
+	public ResponseEntity<?> getOtherUsersTopSearchedKeywords(@RequestHeader("userId") String userId){
 		List<String> globalKeywordList = iGlobalSearchKeywordService.getOtherUsersTopSearchedKeywords(userId);
 		return new GenericResponseHandlers.Builder().setMessage("Keyword list displayed successfully").setStatus(HttpStatus.OK).setData(globalKeywordList).create();
 	}

@@ -1,7 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +26,12 @@ public class UserController {
     }
 
     @RequestMapping(value = "{userId}/interest", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getUserHobbiesAndCountry(@PathVariable BigInteger userId) throws Exception {
+    public ResponseEntity<?> getUserHobbiesAndCountry(@PathVariable String userId) throws Exception {
         return ResponseEntity.accepted().body(hobbyService.getUserHobbiesAndCountry(userId));
     }
 
     @RequestMapping(value = "{userId}/{hobbyId}/{countryName}", method = RequestMethod.DELETE, produces = "application/json")
-    public ResponseEntity<?> deleteInterest(@PathVariable BigInteger userId, @PathVariable BigInteger hobbyId, @PathVariable String countryName) throws Exception {
+    public ResponseEntity<?> deleteInterest(@PathVariable String userId, @PathVariable String hobbyId, @PathVariable String countryName) throws Exception {
         return ResponseEntity.accepted().body(hobbyService.deleteInterest(userId, hobbyId, countryName));
     }
     

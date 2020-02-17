@@ -1,24 +1,22 @@
-package com.seeka.app.dto;import java.math.BigInteger;
-
-
+package com.seeka.app.dto;
 
 public class JobsDto {
 	
-	private BigInteger cityId;
-	private BigInteger countryId;
+	private String cityId;
+	private String countryId;
 	private Integer noOfJobs;
 	
 	
-	public BigInteger getCityId() {
+	public String getCityId() {
 		return cityId;
 	}
-	public void setCityId(BigInteger cityId) {
+	public void setCityId(String cityId) {
 		this.cityId = cityId;
 	}
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
-	public void setCountryId(BigInteger countryId) {
+	public void setCountryId(String countryId) {
 		this.countryId = countryId;
 	}
 	public Integer getNoOfJobs() {

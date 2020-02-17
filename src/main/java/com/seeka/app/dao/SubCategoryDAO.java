@@ -1,5 +1,4 @@
-package com.seeka.app.dao;import java.math.BigInteger;
-import java.util.ArrayList;
+package com.seeka.app.dao;import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -41,7 +40,7 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     }
 
     @Override
-    public List<SubCategoryDto> getSubCategoryByCategory(BigInteger categoryId) {
+    public List<SubCategoryDto> getSubCategoryByCategory(String categoryId) {
         List<SubCategoryDto> subCategoryDtos = new ArrayList<SubCategoryDto>();
         Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(SubCategory.class);
@@ -67,7 +66,7 @@ public class SubCategoryDAO implements ISubCategoryDAO {
     }
 
     @Override
-    public SubCategoryDto getSubCategoryById(BigInteger subCategoryId) {
+    public SubCategoryDto getSubCategoryById(String subCategoryId) {
         Session session = sessionFactory.getCurrentSession();
         SubCategory subCategory = session.get(SubCategory.class, subCategoryId);
         SubCategoryDto subCategoryDto = null;

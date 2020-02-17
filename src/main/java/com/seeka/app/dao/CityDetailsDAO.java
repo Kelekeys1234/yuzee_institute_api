@@ -1,7 +1,4 @@
-package com.seeka.app.dao;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.dao;import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -27,7 +24,7 @@ public class CityDetailsDAO implements ICityDetailsDAO {
 	}
 	
 	@Override
-	public CityDetails get(BigInteger id) {	
+	public CityDetails get(String id) {	
 		Session session = sessionFactory.getCurrentSession();		
 		CityDetails cityDetails = session.get(CityDetails.class, id);
 		return cityDetails;
@@ -42,7 +39,7 @@ public class CityDetailsDAO implements ICityDetailsDAO {
 		return  result;
 	}*/
 	
-	public List<CityDetails> getAllCitiesByCountry(BigInteger countryId) {		
+	public List<CityDetails> getAllCitiesByCountry(String countryId) {		
 		Session session = sessionFactory.getCurrentSession();				 
 		Criteria criteria = session.createCriteria(City.class);	   	
 		criteria.add(Restrictions.eq("countryObj.id", countryId));

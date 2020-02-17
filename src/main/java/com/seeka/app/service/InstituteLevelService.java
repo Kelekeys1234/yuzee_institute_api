@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class InstituteLevelService implements IInstituteLevelService {
 	}
 
 	@Override
-	public InstituteLevel get(final BigInteger id) {
+	public InstituteLevel get(final String id) {
 		return dao.get(id);
 	}
 

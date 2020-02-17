@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class InstituteServiceDetailsService implements IInstituteServiceDetailsS
     }
 
     @Override
-    public InstituteService get(BigInteger id) {
+    public InstituteService get(String id) {
         return iInstituteServiceDetailsDAO.get(id);
     }
 
@@ -38,7 +37,7 @@ public class InstituteServiceDetailsService implements IInstituteServiceDetailsS
     }
 
     @Override
-    public List<String> getAllServices(BigInteger instituteId) {
+    public List<String> getAllServices(String instituteId) {
         return iInstituteServiceDetailsDAO.getAllServices(instituteId);
     }
 

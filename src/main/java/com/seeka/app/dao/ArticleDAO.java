@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +58,7 @@ public class ArticleDAO implements IArticleDAO {
 
 	@Override
 	public List<SeekaArticles> getAll(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, final List<BigInteger> categoryId, final List<String> tags, final Boolean status, final Date filterDate) {
+			final String searchKeyword, final List<String> categoryId, final List<String> tags, final Boolean status, final Date filterDate) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 
@@ -108,7 +107,7 @@ public class ArticleDAO implements IArticleDAO {
 
 	@Override
 	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, final List<BigInteger> categoryIdList, final List<String> tagList, final Boolean status, final Date date) {
+			final String searchKeyword, final List<String> categoryIdList, final List<String> tagList, final Boolean status, final Date date) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
 		if (searchKeyword != null) {

@@ -1,10 +1,8 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class EnglishEligibilityDto {
     
-    private BigInteger id;
+    private String id;
     private String englishType;
     private Double reading;
     private Double writing;
@@ -12,10 +10,10 @@ public class EnglishEligibilityDto {
     private Double listening;
     private Double overall;
     private Boolean isActive;
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
     public String getEnglishType() {

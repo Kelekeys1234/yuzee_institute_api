@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class UserSearchController {
 	private UserSearchService iUserSearchService;
 
 	@PostMapping
-	public ResponseEntity<?> createUserSearchEntry(@RequestHeader final BigInteger userId, @RequestBody UserSearchDTO userSearchDTO)
+	public ResponseEntity<?> createUserSearchEntry(@RequestHeader final String userId, @RequestBody UserSearchDTO userSearchDTO)
 			throws ValidationException {
 		userSearchDTO.setUserId(userId);
 		userSearchDTO = iUserSearchService.createUserSearchEntry(userSearchDTO);
@@ -41,7 +40,7 @@ public class UserSearchController {
 	}
 
 	@GetMapping
-	public ResponseEntity<?> getUserSearchEntry(@RequestHeader(name = "userId") final BigInteger userId, @RequestParam final String entityType,
+	public ResponseEntity<?> getUserSearchEntry(@RequestHeader(name = "userId") final String userId, @RequestParam final String entityType,
 			@RequestParam(value = "pageNumber") final Integer pageNumber, @RequestParam(value = "pageSize") final Integer pageSize) throws ValidationException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		int totalCount = iUserSearchService.getUserSearchEntryCount(userId, entityType);
@@ -60,7 +59,7 @@ public class UserSearchController {
 	}
 
 	@DeleteMapping
-	public ResponseEntity<?> deleteUserSearchEntry(@RequestHeader(name = "userId") final BigInteger userId, @RequestParam final String entityType)
+	public ResponseEntity<?> deleteUserSearchEntry(@RequestHeader(name = "userId") final String userId, @RequestParam final String entityType)
 			throws ValidationException {
 		iUserSearchService.deleteUserSearchEntry(userId, entityType);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("User search history deleted successfully.").create();

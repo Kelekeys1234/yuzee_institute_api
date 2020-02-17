@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,7 +144,7 @@ public class HelpController {
 	}
 
 	@RequestMapping(value = "/status/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> updateStatus(@PathVariable final String id, @RequestHeader(required = false) final BigInteger userId,
+	public ResponseEntity<?> updateStatus(@PathVariable final String id, @RequestHeader(required = false) final String userId,
 			@RequestParam final String status, @RequestParam(required = false) final String assignedUserId) throws Exception {
 		return ResponseEntity.accepted().body(helpService.updateStatus(id, assignedUserId, status));
 	}
@@ -176,7 +175,7 @@ public class HelpController {
 	}
 
 	@PutMapping(value = "/{id}/isFavourite/{isFavourite}")
-	public ResponseEntity<?> setIsFavourite(@RequestHeader(value = "userId") final BigInteger userId, @PathVariable(value = "id") final String id,
+	public ResponseEntity<?> setIsFavourite(@RequestHeader(value = "userId") final String userId, @PathVariable(value = "id") final String id,
 			@PathVariable(value = "isFavourite") final boolean isFavourite) throws NotFoundException {
 		helpService.setIsFavouriteFlag(id, isFavourite);
 		return new GenericResponseHandlers.Builder().setMessage("Updated Successfuly").setStatus(HttpStatus.OK).create();

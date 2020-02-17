@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class LevelDAO implements ILevelDAO {
     }
 
     @Override
-    public List<Level> getCourseTypeByCountryId(BigInteger countryID) {
+    public List<Level> getCourseTypeByCountryId(String countryID) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("select distinct ct.id, ct.type_txt as courseType from course_type ct  inner join faculty f  on f.course_type_id = ct.id "
                         + "inner join course c  on c.faculty_id = f.id inner join institute_course ic  on ic.course_id = c.id " + "where ic.country_id = :countryId")
@@ -96,7 +95,7 @@ public class LevelDAO implements ILevelDAO {
             if (row[2] != null) {
                 obj.setCode(row[2].toString());
             }
-            obj.setCountryId(new BigInteger(row[3].toString()));
+            obj.setCountryId(row[3].toString());
             level.add(obj);
         }
         return level;

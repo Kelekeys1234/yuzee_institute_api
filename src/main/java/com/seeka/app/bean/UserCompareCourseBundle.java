@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +25,7 @@ public class UserCompareCourseBundle implements Serializable {
      */
     private static final long serialVersionUID = 9149617652748065109L;
     private String id;
-    private BigInteger userId;
+    private String userId;
     private Course course;
     private UserCompareCourse compareCourse;
 
@@ -53,7 +52,7 @@ public class UserCompareCourseBundle implements Serializable {
      * @return the userId
      */
     @Column(name = "user_id")
-    public BigInteger getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -61,7 +60,7 @@ public class UserCompareCourseBundle implements Serializable {
      * @param userId
      *            the userId to set
      */
-    public void setUserId(BigInteger userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

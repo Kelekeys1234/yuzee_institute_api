@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +37,9 @@ public interface ICourseService {
 
 	List<CourseResponseDto> getAllCoursesByInstitute(String instituteId, CourseSearchDto filterObj);
 
-	Map<String, Object> getCourse(BigInteger courseid);
+	Map<String, Object> getCourse(String courseid);
 
-	List<CourseResponseDto> getCouresesByFacultyId(BigInteger facultyId);
+	List<CourseResponseDto> getCouresesByFacultyId(String facultyId);
 
 	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
@@ -57,7 +56,7 @@ public interface ICourseService {
 
 	Map<String, Object> addUserCompareCourse(UserCourse userCourse);
 
-	Map<String, Object> getUserCompareCourse(BigInteger userId);
+	Map<String, Object> getUserCompareCourse(String userId);
 
 	List<YoutubeVideo> getYoutubeDataforCourse(String courseId, Integer startIndex, final Integer pageSize);
 
@@ -89,7 +88,7 @@ public interface ICourseService {
 
 	void saveCourseMinrequirement(CourseMinRequirementDto obj);
 
-	List<CourseMinRequirementDto> getCourseMinRequirement(BigInteger courseId);
+	List<CourseMinRequirementDto> getCourseMinRequirement(String courseId);
 
 	Map<String, Object> autoSearchByCharacter(String searchKey);
 
@@ -119,11 +118,11 @@ public interface ICourseService {
 
 	List<String> getCountryForTopSearchedCourses(List<String> topSearchedCourseIds) throws ValidationException;
 
-	List<BigInteger> courseIdsForCountry(final Country country);
+	List<String> courseIdsForCountry(final Country country);
 
-	List<BigInteger> courseIdsForMigratedCountries(final Country country);
+	List<String> courseIdsForMigratedCountries(final Country country);
 
-	List<Long> getUserListForUserWatchCourseFilter(BigInteger courseId, BigInteger instituteId, BigInteger facultyId, BigInteger countryId, BigInteger cityId);
+	List<Long> getUserListForUserWatchCourseFilter(String courseId, String instituteId, String facultyId, String countryId, String cityId);
 
 	void updateCourseForCurrency(CurrencyRate currencyRate);
 

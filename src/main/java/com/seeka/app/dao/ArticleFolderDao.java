@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -39,7 +38,7 @@ public class ArticleFolderDao implements IArticleFolderDao{
     }
 
     @Override
-    public List<ArticleFolder> getAllArticleFolderByUserId(BigInteger userId) {
+    public List<ArticleFolder> getAllArticleFolderByUserId(String userId) {
     	 Session session = sessionFactory.getCurrentSession();
      	Criteria criteria = session.createCriteria(ArticleFolder.class);
  		criteria.add(Restrictions.eq("userId",userId));
@@ -47,7 +46,7 @@ public class ArticleFolderDao implements IArticleFolderDao{
     }
 
 	@Override
-	public List<ArticleFolder> getAllFolderByUserId(BigInteger userId) {
+	public List<ArticleFolder> getAllFolderByUserId(String userId) {
 		 Session session = sessionFactory.getCurrentSession();
 	     	Criteria criteria = session.createCriteria(ArticleFolder.class);
 	 		criteria.add(Restrictions.eq("userId",userId));

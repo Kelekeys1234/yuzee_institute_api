@@ -1,10 +1,8 @@
-package com.seeka.app.dto;import java.math.BigInteger;
-
-import java.util.List;
+package com.seeka.app.dto;import java.util.List;
 
 public class SearchDto {
     
-    private BigInteger id;
+    private String id;
     private String heading;
     private String content;
     private String category;
@@ -13,15 +11,15 @@ public class SearchDto {
     private SubCategoryDto subcategoryobj;
     private String link;
     private String imageUrl;
-    private List<BigInteger> country;
-    private List<BigInteger> city;
-    private List<BigInteger> faculty;
-    private List<BigInteger> institute;
-    private List<BigInteger> courses;
+    private List<String> country;
+    private List<String> city;
+    private List<String> faculty;
+    private List<String> institute;
+    private List<String> courses;
     private List<String> gender;
     private String status;
-    private BigInteger userCity;
-    private BigInteger userCountry;
+    private String userCity;
+    private String userCountry;
     private String compnayName;
     private String companyWebsite;
     private Boolean recArticleType;
@@ -29,13 +27,13 @@ public class SearchDto {
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
     /**
      * @param id the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
     /**
@@ -137,61 +135,61 @@ public class SearchDto {
     /**
      * @return the country
      */
-    public List<BigInteger> getCountry() {
+    public List<String> getCountry() {
         return country;
     }
     /**
      * @param country the country to set
      */
-    public void setCountry(List<BigInteger> country) {
+    public void setCountry(List<String> country) {
         this.country = country;
     }
     /**
      * @return the city
      */
-    public List<BigInteger> getCity() {
+    public List<String> getCity() {
         return city;
     }
     /**
      * @param city the city to set
      */
-    public void setCity(List<BigInteger> city) {
+    public void setCity(List<String> city) {
         this.city = city;
     }
     /**
      * @return the faculty
      */
-    public List<BigInteger> getFaculty() {
+    public List<String> getFaculty() {
         return faculty;
     }
     /**
      * @param faculty the faculty to set
      */
-    public void setFaculty(List<BigInteger> faculty) {
+    public void setFaculty(List<String> faculty) {
         this.faculty = faculty;
     }
     /**
      * @return the institute
      */
-    public List<BigInteger> getInstitute() {
+    public List<String> getInstitute() {
         return institute;
     }
     /**
      * @param institute the institute to set
      */
-    public void setInstitute(List<BigInteger> institute) {
+    public void setInstitute(List<String> institute) {
         this.institute = institute;
     }
     /**
      * @return the courses
      */
-    public List<BigInteger> getCourses() {
+    public List<String> getCourses() {
         return courses;
     }
     /**
      * @param courses the courses to set
      */
-    public void setCourses(List<BigInteger> courses) {
+    public void setCourses(List<String> courses) {
         this.courses = courses;
     }
     /**
@@ -221,25 +219,25 @@ public class SearchDto {
     /**
      * @return the userCity
      */
-    public BigInteger getUserCity() {
+    public String getUserCity() {
         return userCity;
     }
     /**
      * @param userCity the userCity to set
      */
-    public void setUserCity(BigInteger userCity) {
+    public void setUserCity(String userCity) {
         this.userCity = userCity;
     }
     /**
      * @return the userCountry
      */
-    public BigInteger getUserCountry() {
+    public String getUserCountry() {
         return userCountry;
     }
     /**
      * @param userCountry the userCountry to set
      */
-    public void setUserCountry(BigInteger userCountry) {
+    public void setUserCountry(String userCountry) {
         this.userCountry = userCountry;
     }
     /**

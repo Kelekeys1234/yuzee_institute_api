@@ -1,6 +1,4 @@
-package com.seeka.app.dto;import java.math.BigInteger;
-
-import java.util.List;
+package com.seeka.app.dto;import java.util.List;
 
 public class SearchResultDto {
 	

@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
@@ -17,7 +16,7 @@ public class EnrollmentDto implements Serializable {
 	@NotNull(message = "instituteId is Required")
 	private String instituteId;
 	@NotNull(message = "userId is Required")
-	private BigInteger userId;
+	private String userId;
 	@NotNull(message = "courseId is Required")
 	private String courseId;
 	private Boolean isInternationalStudent;
@@ -50,7 +49,7 @@ public class EnrollmentDto implements Serializable {
 	private String zipCode;
 	private String phoneNumber;
 	private String email;
-	private BigInteger assignee;
+	private String assignee;
 
 	private Date createdOn;
 	private Date updatedOn;
@@ -73,11 +72,11 @@ public class EnrollmentDto implements Serializable {
 		this.instituteId = instituteId;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
@@ -289,11 +288,11 @@ public class EnrollmentDto implements Serializable {
 		this.email = email;
 	}
 
-	public BigInteger getAssignee() {
+	public String getAssignee() {
 		return assignee;
 	}
 
-	public void setAssignee(final BigInteger assignee) {
+	public void setAssignee(final String assignee) {
 		this.assignee = assignee;
 	}
 

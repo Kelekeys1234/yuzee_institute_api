@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -19,171 +18,170 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "todo")
 public class Todo implements Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 5620793456256288215L;
-    private String id;
-    private String title;
-    private String description;
-    private Date createdOn;
-    private Date updatedOn;
-    private String createdBy;
-    private String updatedBy;
-    private BigInteger userId;
-    private String status;
-    private BigInteger folderId;
-    private Date deletedOn;
-    private Boolean isActive;
-    private Date dueDate;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5620793456256288215L;
+	private String id;
+	private String title;
+	private String description;
+	private Date createdOn;
+	private Date updatedOn;
+	private String createdBy;
+	private String updatedBy;
+	private String userId;
+	private String status;
+	private String folderId;
+	private Date deletedOn;
+	private Boolean isActive;
+	private Date dueDate;
 
-    public Todo() {
-        super();
-    }
+	public Todo() {
+		super();
+	}
 
-    public Todo(String id, String title, String description, Date createdOn, Date updatedOn, String createdBy, String updatedBy, BigInteger userId, String status,
-                    BigInteger folderId) {
-        super();
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.createdOn = createdOn;
-        this.updatedOn = updatedOn;
-        this.createdBy = createdBy;
-        this.updatedBy = updatedBy;
-        this.userId = userId;
-        this.status = status;
-        this.folderId = folderId;
-    }
+	public Todo(String id, String title, String description, Date createdOn, Date updatedOn, String createdBy,
+			String updatedBy, String userId, String status, String folderId) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.createdOn = createdOn;
+		this.updatedOn = updatedOn;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.userId = userId;
+		this.status = status;
+		this.folderId = folderId;
+	}
 
-    @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@Id
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    @Column(name = "title")
-    public String getTitle() {
-        return title;
-    }
+	@Column(name = "title")
+	public String getTitle() {
+		return title;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    @Column(name = "description")
-    public String getDescription() {
-        return description;
-    }
+	@Column(name = "description")
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    @Column(name = "created_on")
-    public Date getCreatedOn() {
-        return createdOn;
-    }
+	@Column(name = "created_on")
+	public Date getCreatedOn() {
+		return createdOn;
+	}
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
 
-    @Column(name = "created_by")
-    public String getCreatedBy() {
-        return createdBy;
-    }
+	@Column(name = "created_by")
+	public String getCreatedBy() {
+		return createdBy;
+	}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    @Column(name = "updated_on")
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
+	@Column(name = "updated_on")
+	public Date getUpdatedOn() {
+		return updatedOn;
+	}
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
+	public void setUpdatedOn(Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
 
-    @Column(name = "updated_by")
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
+	@Column(name = "updated_by")
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
 
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
-    @Column(name = "user_id")
-    public BigInteger getUserId() {
-        return userId;
-    }
+	@Column(name = "user_id")
+	public String getUserId() {
+		return userId;
+	}
 
-    public void setUserId(BigInteger userId) {
-        this.userId = userId;
-    }
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
+	@Column(name = "status")
+	public String getStatus() {
+		return status;
+	}
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-    @Column(name = "folder_id")
-    public BigInteger getFolderId() {
-        return folderId;
-    }
+	@Column(name = "folder_id")
+	public String getFolderId() {
+		return folderId;
+	}
 
-    public void setFolderId(BigInteger folderId) {
-        this.folderId = folderId;
-    }
+	public void setFolderId(String folderId) {
+		this.folderId = folderId;
+	}
 
-    @Column(name = "deleted_on")
-    public Date getDeletedOn() {
-        return deletedOn;
-    }
+	@Column(name = "deleted_on")
+	public Date getDeletedOn() {
+		return deletedOn;
+	}
 
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
+	public void setDeletedOn(Date deletedOn) {
+		this.deletedOn = deletedOn;
+	}
 
-    @Column(name = "is_active")
-    public Boolean getIsActive() {
-        return isActive;
-    }
+	@Column(name = "is_active")
+	public Boolean getIsActive() {
+		return isActive;
+	}
 
-    /**
-     * @param isActive
-     *            the isActive to set
-     */
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
 
-    /**
-     * @return the dueDate
-     */
-    @Column(name = "due_date")
-    public Date getDueDate() {
-        return dueDate;
-    }
+	/**
+	 * @return the dueDate
+	 */
+	@Column(name = "due_date")
+	public Date getDueDate() {
+		return dueDate;
+	}
 
-    /**
-     * @param dueDate the dueDate to set
-     */
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-    }
+	/**
+	 * @param dueDate the dueDate to set
+	 */
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+	}
 
 }

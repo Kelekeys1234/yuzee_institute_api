@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public interface IViewService {
 
 	int getUserViewDataCountBasedOnUserId(String userId, String entityId, String entityType);
 
-	int getUserViewDataCountBasedOnEntityId(BigInteger entityId, String entityType);
+	int getUserViewDataCountBasedOnEntityId(String entityId, String entityType);
 
 	List<String> getUserViewDataBasedOnEntityIdList(String userId, String entityType, List<String> entityIds);
 

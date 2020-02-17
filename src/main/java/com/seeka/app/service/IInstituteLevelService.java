@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import com.seeka.app.bean.InstituteLevel;
@@ -11,7 +10,7 @@ public interface IInstituteLevelService {
 
 	void update(InstituteLevel obj);
 
-	InstituteLevel get(BigInteger id);
+	InstituteLevel get(String id);
 
 	List<InstituteLevel> getAllLevelByInstituteId(String instituteId);
 

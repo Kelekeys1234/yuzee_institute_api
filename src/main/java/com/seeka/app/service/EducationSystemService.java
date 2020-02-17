@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -257,7 +256,7 @@ public class EducationSystemService implements IEducationSystemService {
 	}
 
 	@Override
-	public ResponseEntity<?> getGrades(final BigInteger countryId, final BigInteger systemId) {
+	public ResponseEntity<?> getGrades(final String countryId, final String systemId) {
 		List<GradeDetails> grades = null;
 		try {
 			grades = educationDetailDAO.getGrades(countryId, systemId);

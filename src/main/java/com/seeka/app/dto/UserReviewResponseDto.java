@@ -1,4 +1,4 @@
-package com.seeka.app.dto;import java.math.BigInteger;
+package com.seeka.app.dto;
 
 public class UserReviewResponseDto {
 	 

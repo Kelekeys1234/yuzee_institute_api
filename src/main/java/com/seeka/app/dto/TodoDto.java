@@ -1,7 +1,5 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class TodoDto {
 
     /**
@@ -10,9 +8,9 @@ public class TodoDto {
     private String id;
     private String title;
     private String description;
-    private BigInteger userId;
+    private String userId;
     private String status;
-    private BigInteger folderId;
+    private String folderId;
     private String createdBy;
     private String updatedBy;
     private String dueDate;
@@ -33,11 +31,11 @@ public class TodoDto {
         this.description = description;
     }
 
-    public BigInteger getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(BigInteger userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -49,11 +47,11 @@ public class TodoDto {
         this.status = status;
     }
 
-    public BigInteger getFolderId() {
+    public String getFolderId() {
         return folderId;
     }
 
-    public void setFolderId(BigInteger folderId) {
+    public void setFolderId(String folderId) {
         this.folderId = folderId;
     }
 

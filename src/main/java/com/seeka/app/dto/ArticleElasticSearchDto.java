@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 public class ArticleElasticSearchDto implements Serializable{
@@ -11,7 +10,7 @@ public class ArticleElasticSearchDto implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -3270095176718095747L;
-	private BigInteger id;
+	private String id;
     private String heading;
     private String content;
     private String category;
@@ -31,7 +30,7 @@ public class ArticleElasticSearchDto implements Serializable{
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -39,7 +38,7 @@ public class ArticleElasticSearchDto implements Serializable{
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
     

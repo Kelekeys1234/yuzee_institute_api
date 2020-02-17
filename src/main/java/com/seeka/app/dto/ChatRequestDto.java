@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,7 +11,7 @@ public class ChatRequestDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 7590305810325611394L;
 	private String id;
-	private BigInteger entityId;
+	private String entityId;
 	@NotNull(message = "entityType is required")
 	private String entityType;
 	private String userId;
@@ -40,11 +39,11 @@ public class ChatRequestDto implements Serializable {
 		this.id = id;
 	}
 
-	public BigInteger getEntityId() {
+	public String getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(final BigInteger entityId) {
+	public void setEntityId(final String entityId) {
 		this.entityId = entityId;
 	}
 

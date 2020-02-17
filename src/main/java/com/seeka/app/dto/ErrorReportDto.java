@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,17 +11,17 @@ public class ErrorReportDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 8602286882307240534L;
 	@NotNull(message = "User Id is required.")
-	private BigInteger userId;
+	private String userId;
 	@NotNull(message = "Error Report Category Id is required.")
-	private BigInteger errorReportCategoryId;
+	private String errorReportCategoryId;
 	@NotNull(message = "Description is required.")
 	private String description;
 
 	private String caseNumber;
 	private String status;
-	private BigInteger courseArticleId;
+	private String courseArticleId;
 	private String dueDate;
-	private BigInteger assigneeUserId;
+	private String assigneeUserId;
 	private String severity;
 
 	private String phoneName;
@@ -34,28 +33,28 @@ public class ErrorReportDto implements Serializable {
 	/**
 	 * @return the userId
 	 */
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
 	/**
 	 * @return the errorReportCategoryId
 	 */
-	public BigInteger getErrorReportCategoryId() {
+	public String getErrorReportCategoryId() {
 		return errorReportCategoryId;
 	}
 
 	/**
 	 * @param errorReportCategoryId the errorReportCategoryId to set
 	 */
-	public void setErrorReportCategoryId(final BigInteger errorReportCategoryId) {
+	public void setErrorReportCategoryId(final String errorReportCategoryId) {
 		this.errorReportCategoryId = errorReportCategoryId;
 	}
 
@@ -104,14 +103,14 @@ public class ErrorReportDto implements Serializable {
 	/**
 	 * @return the coreArticalDetail
 	 */
-	public BigInteger getCourseArticleId() {
+	public String getCourseArticleId() {
 		return courseArticleId;
 	}
 
 	/**
 	 * @param coreArticalDetail
 	 */
-	public void setCourseArticleId(final BigInteger courseArticleId) {
+	public void setCourseArticleId(final String courseArticleId) {
 		this.courseArticleId = courseArticleId;
 	}
 
@@ -132,14 +131,14 @@ public class ErrorReportDto implements Serializable {
 	/**
 	 * @return the assigneeUserId
 	 */
-	public BigInteger getAssigneeUserId() {
+	public String getAssigneeUserId() {
 		return assigneeUserId;
 	}
 
 	/**
 	 * @param assigneeUserId
 	 */
-	public void setAssigneeUserId(final BigInteger assigneeUserId) {
+	public void setAssigneeUserId(final String assigneeUserId) {
 		this.assigneeUserId = assigneeUserId;
 	}
 

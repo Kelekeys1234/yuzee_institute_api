@@ -1,10 +1,8 @@
-package com.seeka.app.dto;import java.math.BigInteger;
-
-
+package com.seeka.app.dto;
 
 public class CourseFilterCostResponseDto {
 	
-	private BigInteger currencyId; 
+	private String currencyId; 
 	private Long minCost; 
 	private Long maxCost; 
 	private String currencySymbol;
@@ -12,10 +10,10 @@ public class CourseFilterCostResponseDto {
 	private String currencyName;
 	
 	
-	public BigInteger getCurrencyId() {
+	public String getCurrencyId() {
 		return currencyId;
 	}
-	public void setCurrencyId(BigInteger currencyId) {
+	public void setCurrencyId(String currencyId) {
 		this.currencyId = currencyId;
 	}
 	 

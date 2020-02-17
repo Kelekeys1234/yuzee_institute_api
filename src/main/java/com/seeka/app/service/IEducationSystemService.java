@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -36,7 +35,7 @@ public interface IEducationSystemService {
 
 	ResponseEntity<?> calculate(@Valid GradeDto gradeDto);
 
-	ResponseEntity<?> getGrades(BigInteger countryId, BigInteger systemId);
+	ResponseEntity<?> getGrades(String countryId, String systemId);
 
 	void saveUserEducationDetails(EducationSystemRequest educationSystemDetails);
 }

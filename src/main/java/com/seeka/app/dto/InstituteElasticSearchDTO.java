@@ -1,11 +1,10 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class InstituteElasticSearchDTO {
 
-	private BigInteger id;
+	private String id;
 	private String countryName;
 	private String cityName;
 	private String instituteTypeName;
@@ -286,11 +285,11 @@ public class InstituteElasticSearchDTO {
 		return true;
 	}
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

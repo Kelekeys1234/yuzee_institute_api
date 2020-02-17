@@ -1,7 +1,4 @@
-package com.seeka.app.service;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.service;import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +25,7 @@ public class CoursePricingService implements ICoursePricingService {
 	}
 	
 	@Override
-	public CoursePricing get(BigInteger id) {
+	public CoursePricing get(String id) {
 		return iCoursePricingDAO.get(id);
 	}
 	
@@ -38,7 +35,7 @@ public class CoursePricingService implements ICoursePricingService {
 	} 
 	
 	@Override
-	public CoursePricing getPricingByCourseId(BigInteger courseId) {
+	public CoursePricing getPricingByCourseId(String courseId) {
 		return iCoursePricingDAO.getPricingByCourseId(courseId);
 	}
 

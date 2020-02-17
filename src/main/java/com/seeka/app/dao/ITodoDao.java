@@ -1,7 +1,7 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
+
 import com.seeka.app.bean.Todo;
 import com.seeka.app.dto.TodoFolder;
 
@@ -11,9 +11,9 @@ public interface ITodoDao {
 
     void update(Todo todo);
 
-    Todo get(BigInteger id);
+    Todo get(String id);
 
-    List<Todo> getByUserId(BigInteger userId);
+    List<Todo> getByUserId(String userId);
 
     List<Todo> getAll();
 

@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -44,9 +43,9 @@ public class Faculty implements Serializable {
 	private String updatedBy;
 	private Boolean isDeleted;
 
-	private BigInteger levelId;
+	private String levelId;
 
-	private BigInteger countryId;
+	private String countryId;
 	private String icon;
 
 	public Faculty() {
@@ -176,14 +175,14 @@ public class Faculty implements Serializable {
 	 * @return the levelId
 	 */
 	@Transient
-	public BigInteger getLevelId() {
+	public String getLevelId() {
 		return levelId;
 	}
 
 	/**
 	 * @param levelId the levelId to set
 	 */
-	public void setLevelId(BigInteger levelId) {
+	public void setLevelId(String levelId) {
 		this.levelId = levelId;
 	}
 
@@ -191,14 +190,14 @@ public class Faculty implements Serializable {
 	 * @return the countryId
 	 */
 	@Transient
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
 	/**
 	 * @param countryId the countryId to set
 	 */
-	public void setCountryId(BigInteger countryId) {
+	public void setCountryId(String countryId) {
 		this.countryId = countryId;
 	}
 
@@ -321,19 +320,19 @@ public class Faculty implements Serializable {
 		return builder.toString();
 	}
 
-    /**
-     * @return the icon
-     */
+	/**
+	 * @return the icon
+	 */
 	@Transient
-    public String getIcon() {
-        return icon;
-    }
+	public String getIcon() {
+		return icon;
+	}
 
-    /**
-     * @param icon the icon to set
-     */
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
+	/**
+	 * @param icon the icon to set
+	 */
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
 
 }

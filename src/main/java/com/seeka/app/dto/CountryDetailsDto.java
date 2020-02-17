@@ -1,12 +1,10 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class CountryDetailsDto {
 
-    private BigInteger id;
+    private String id;
 
-    private BigInteger countryId;
+    private String countryId;
 
     private String capitalCity; // Capital City
 
@@ -71,7 +69,7 @@ public class CountryDetailsDto {
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -79,14 +77,14 @@ public class CountryDetailsDto {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     /**
      * @return the countryId
      */
-    public BigInteger getCountryId() {
+    public String getCountryId() {
         return countryId;
     }
 
@@ -94,7 +92,7 @@ public class CountryDetailsDto {
      * @param countryId
      *            the countryId to set
      */
-    public void setCountryId(BigInteger countryId) {
+    public void setCountryId(String countryId) {
         this.countryId = countryId;
     }
 

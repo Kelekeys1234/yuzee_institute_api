@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 public class ErrorReportResponseDto implements Serializable {
@@ -9,8 +8,8 @@ public class ErrorReportResponseDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = -1390809834979298427L;
-	private BigInteger id;
-	private BigInteger userId;
+	private String id;
+	private String userId;
 	private String userName;
 	private String userEmail;
 	private String errorReportCategoryId;
@@ -24,9 +23,9 @@ public class ErrorReportResponseDto implements Serializable {
 	private Boolean isActive;
 	private String caseNumber;
 	private String status;
-	private BigInteger courseArticleId;
+	private String courseArticleId;
 	private Date dueDate;
-	private BigInteger assigneeUserId;
+	private String assigneeUserId;
 	private String assigneeUserName;
 	private String assigneeUserImageUrl;
 	private String severity;
@@ -36,19 +35,19 @@ public class ErrorReportResponseDto implements Serializable {
 	private String phoneIp;
 	private Boolean isArchive;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final BigInteger id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
@@ -156,11 +155,11 @@ public class ErrorReportResponseDto implements Serializable {
 		this.status = status;
 	}
 
-	public BigInteger getCourseArticleId() {
+	public String getCourseArticleId() {
 		return courseArticleId;
 	}
 
-	public void setCourseArticleId(final BigInteger courseArticleId) {
+	public void setCourseArticleId(final String courseArticleId) {
 		this.courseArticleId = courseArticleId;
 	}
 
@@ -172,11 +171,11 @@ public class ErrorReportResponseDto implements Serializable {
 		this.dueDate = dueDate;
 	}
 
-	public BigInteger getAssigneeUserId() {
+	public String getAssigneeUserId() {
 		return assigneeUserId;
 	}
 
-	public void setAssigneeUserId(final BigInteger assigneeUserId) {
+	public void setAssigneeUserId(final String assigneeUserId) {
 		this.assigneeUserId = assigneeUserId;
 	}
 

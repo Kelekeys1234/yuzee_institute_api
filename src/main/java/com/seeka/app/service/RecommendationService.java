@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -193,13 +192,13 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get Courses Based on User's Country
 		 */
-		List<BigInteger> coursesBasedOnUserCountry = iCourseService.courseIdsForCountry(country);
+		List<String> coursesBasedOnUserCountry = iCourseService.courseIdsForCountry(country);
 
 		/**
 		 * Get courses based on the country that other users from user's country are
 		 * most interested to migrate to.
 		 */
-		List<BigInteger> coursesBasedOnUserMigrationCountry = iCourseService.courseIdsForMigratedCountries(country);
+		List<String> coursesBasedOnUserMigrationCountry = iCourseService.courseIdsForMigratedCountries(country);
 		/**
 		 * Select Random two courses from User Past Search
 		 */
@@ -733,7 +732,7 @@ public class RecommendationService implements IRecommendationService {
 		}
 	}
 
-	private List<InstituteResponseDto> oldInstituteRecommendationLogic(final BigInteger userId, final Long startIndex, final Long pageSize,
+	private List<InstituteResponseDto> oldInstituteRecommendationLogic(final String userId, final Long startIndex, final Long pageSize,
 			final Long pageNumber, final String language) {
 //		List<BigInteger> instituteIdList = new ArrayList<>();
 //		/**

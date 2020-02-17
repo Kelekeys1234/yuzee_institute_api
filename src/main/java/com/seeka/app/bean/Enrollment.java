@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -97,7 +96,7 @@ public class Enrollment implements Serializable {
 	@Column(name = "email")
 	private String email;
 	@Column(name = "assignee")
-	private BigInteger assignee;
+	private String assignee;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
@@ -344,11 +343,11 @@ public class Enrollment implements Serializable {
 		this.email = email;
 	}
 
-	public BigInteger getAssignee() {
+	public String getAssignee() {
 		return assignee;
 	}
 
-	public void setAssignee(final BigInteger assignee) {
+	public void setAssignee(final String assignee) {
 		this.assignee = assignee;
 	}
 

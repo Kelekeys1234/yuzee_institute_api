@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +87,7 @@ public class ErrorReportController {
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllErrorReport(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = false) final BigInteger errorReportCategoryId,
+			@RequestParam(required = false) final String errorReportCategoryId,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
 			@RequestParam(required = false) final String errorReportStatus, @RequestParam(required = false) final Boolean isFavourite,
 			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
@@ -144,8 +143,8 @@ public class ErrorReportController {
 	}
 
 	@PutMapping(value = "/{errorReportId}/isFavourite/{isFavourite}")
-	public ResponseEntity<?> setIsFavourite(@RequestHeader(value = "userId") final BigInteger userId,
-			@PathVariable(value = "errorReportId") final BigInteger errorReportId, @PathVariable(value = "isFavourite") final boolean isFavourite)
+	public ResponseEntity<?> setIsFavourite(@RequestHeader(value = "userId") final String userId,
+			@PathVariable(value = "errorReportId") final String errorReportId, @PathVariable(value = "isFavourite") final boolean isFavourite)
 			throws NotFoundException {
 		errorReportService.setIsFavouriteFlag(errorReportId, isFavourite);
 		return new GenericResponseHandlers.Builder().setMessage("Updated successfuly").setStatus(HttpStatus.OK).create();

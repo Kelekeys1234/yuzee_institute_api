@@ -1,6 +1,5 @@
 package com.seeka.app.bean;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -20,139 +19,134 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "grade_details")
 public class GradeDetails implements java.io.Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    private String id;
-    private BigInteger countryId;
-    private BigInteger educationSystemId;
-    private String grade;
-    private String gpaGrade;
-    private Date createdOn;
-    private Date updatedOn;
-    private String createdBy;
-    private String updatedBy;
+	private String id;
+	private String countryId;
+	private String educationSystemId;
+	private String grade;
+	private String gpaGrade;
+	private Date createdOn;
+	private Date updatedOn;
+	private String createdBy;
+	private String updatedBy;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_on", length = 19)
-    public Date getCreatedOn() {
-        return this.createdOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on", length = 19)
+	public Date getCreatedOn() {
+		return this.createdOn;
+	}
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_on", length = 19)
-    public Date getUpdatedOn() {
-        return this.updatedOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on", length = 19)
+	public Date getUpdatedOn() {
+		return this.updatedOn;
+	}
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
+	public void setUpdatedOn(Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
 
-    @Column(name = "created_by", length = 50)
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
+	@Column(name = "created_by", length = 50)
+	public String getCreatedBy() {
+		return this.createdBy;
+	}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    @Column(name = "updated_by", length = 50)
-    public String getUpdatedBy() {
-        return this.updatedBy;
-    }
+	@Column(name = "updated_by", length = 50)
+	public String getUpdatedBy() {
+		return this.updatedBy;
+	}
 
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
-    /**
-     * @return the id
-     */
-    @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	/**
+	 * @return the id
+	 */
+	@Id
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
-     * @return the countryId
-     */
-    @Column(name = "country_id")
-    public BigInteger getCountryId() {
-        return countryId;
-    }
+	/**
+	 * @return the countryId
+	 */
+	@Column(name = "country_id")
+	public String getCountryId() {
+		return countryId;
+	}
 
-    /**
-     * @param countryId
-     *            the countryId to set
-     */
-    public void setCountryId(BigInteger countryId) {
-        this.countryId = countryId;
-    }
+	/**
+	 * @param countryId the countryId to set
+	 */
+	public void setCountryId(String countryId) {
+		this.countryId = countryId;
+	}
 
-    /**
-     * @return the educationSystemId
-     */
-    @Column(name = "education_system_id")
-    public BigInteger getEducationSystemId() {
-        return educationSystemId;
-    }
+	/**
+	 * @return the educationSystemId
+	 */
+	@Column(name = "education_system_id")
+	public String getEducationSystemId() {
+		return educationSystemId;
+	}
 
-    /**
-     * @param educationSystemId
-     *            the educationSystemId to set
-     */
-    public void setEducationSystemId(BigInteger educationSystemId) {
-        this.educationSystemId = educationSystemId;
-    }
+	/**
+	 * @param educationSystemId the educationSystemId to set
+	 */
+	public void setEducationSystemId(String educationSystemId) {
+		this.educationSystemId = educationSystemId;
+	}
 
-    /**
-     * @return the grade
-     */
-    @Column(name = "grade")
-    public String getGrade() {
-        return grade;
-    }
+	/**
+	 * @return the grade
+	 */
+	@Column(name = "grade")
+	public String getGrade() {
+		return grade;
+	}
 
-    /**
-     * @param grade
-     *            the grade to set
-     */
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
+	/**
+	 * @param grade the grade to set
+	 */
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
 
-    /**
-     * @return the gpaGrade
-     */
-    @Column(name = "gpa_grade")
-    public String getGpaGrade() {
-        return gpaGrade;
-    }
+	/**
+	 * @return the gpaGrade
+	 */
+	@Column(name = "gpa_grade")
+	public String getGpaGrade() {
+		return gpaGrade;
+	}
 
-    /**
-     * @param gpaGrade
-     *            the gpaGrade to set
-     */
-    public void setGpaGrade(String gpaGrade) {
-        this.gpaGrade = gpaGrade;
-    }
+	/**
+	 * @param gpaGrade the gpaGrade to set
+	 */
+	public void setGpaGrade(String gpaGrade) {
+		this.gpaGrade = gpaGrade;
+	}
 }

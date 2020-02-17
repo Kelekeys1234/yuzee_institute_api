@@ -1,7 +1,4 @@
-package com.seeka.app.service;import java.math.BigInteger;
-
-import java.util.List;
-
+package com.seeka.app.service;import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,12 +30,12 @@ public class UserEducationAOLevelSubjectService implements IUserEducationAOLevel
 	}
 	
 	@Override
-	public UserEducationAOLevelSubjects get(BigInteger id) {
+	public UserEducationAOLevelSubjects get(String id) {
 		return iUserEducationAOLevelSubjectDAO.get(id);
 	}
 	
 	@Override
-	public List<UserEducationAOLevelSubjects> getActiveUserLevelSubjectGrades(BigInteger userId){
+	public List<UserEducationAOLevelSubjects> getActiveUserLevelSubjectGrades(String userId){
 		return iUserEducationAOLevelSubjectDAO.getActiveUserLevelSubjectGrades(userId);
 	}
 }

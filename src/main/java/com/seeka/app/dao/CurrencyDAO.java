@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class CurrencyDAO implements ICurrencyDAO {
     }
 
     @Override
-    public Currency get(BigInteger id) {
+    public Currency get(String id) {
         Session session = sessionFactory.getCurrentSession();
         Currency obj = session.get(Currency.class, id);
         return obj;
@@ -50,7 +49,7 @@ public class CurrencyDAO implements ICurrencyDAO {
     }
 
     @Override
-    public List<Currency> getCourseTypeByCountryId(BigInteger countryID) {
+    public List<Currency> getCourseTypeByCountryId(String countryID) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("select distinct ct.id, ct.type_txt as courseType from course_type ct  inner join faculty f  on f.course_type_id = ct.id "
                         + "inner join course c  on c.faculty_id = f.id inner join institute_course ic  on ic.course_id = c.id " + "where ic.country_id = :countryId")
@@ -67,7 +66,7 @@ public class CurrencyDAO implements ICurrencyDAO {
     }
 
     @Override
-    public List<Currency> getCurrencyByCountryId(BigInteger countryId) {
+    public List<Currency> getCurrencyByCountryId(String countryId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session
                         .createSQLQuery("select distinct le.id, le.name as name,le.Currency_key as Currencykey from Currency le  inner join institute_Currency il  on il.Currency_id = le.id "
@@ -148,7 +147,7 @@ public class CurrencyDAO implements ICurrencyDAO {
 //        return convertedRate;
 //    }
 
-    private Currency getCurrency(BigInteger id, Session session) {
+    private Currency getCurrency(String id, Session session) {
         Currency obj = session.get(Currency.class, id);
         return obj;
     }

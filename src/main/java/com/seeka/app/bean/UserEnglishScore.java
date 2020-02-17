@@ -1,9 +1,5 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.math.BigInteger;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,6 +7,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.seeka.app.enumeration.EnglishType;
 
@@ -24,9 +22,10 @@ public class UserEnglishScore extends RecordModifier {
 	private static final long serialVersionUID = -1461179559012854449L;
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id")
-	private BigInteger id;
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	private String id;
 
 	@Column(name = "user_id")
 	private String userId;
@@ -53,11 +52,11 @@ public class UserEnglishScore extends RecordModifier {
 	@Column(name = "is_active")
 	private Boolean isActive;
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

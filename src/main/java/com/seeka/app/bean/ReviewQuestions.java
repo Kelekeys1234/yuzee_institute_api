@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -33,7 +32,7 @@ public class ReviewQuestions implements Serializable {
 	@Column(name = "question_title", nullable = false, length = 250)
 	private String questionTitle;
 	@Column(name = "question_category_id", nullable = false)
-	private BigInteger questionCategoryId;
+	private String questionCategoryId;
 	@Column(name = "question", nullable = false, length = 2000)
 	private String question;
 
@@ -87,11 +86,11 @@ public class ReviewQuestions implements Serializable {
 		this.questionTitle = questionTitle;
 	}
 
-	public BigInteger getQuestionCategoryId() {
+	public String getQuestionCategoryId() {
 		return questionCategoryId;
 	}
 
-	public void setQuestionCategoryId(final BigInteger questionCategoryId) {
+	public void setQuestionCategoryId(final String questionCategoryId) {
 		this.questionCategoryId = questionCategoryId;
 	}
 
@@ -288,11 +287,12 @@ public class ReviewQuestions implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ReviewQuestions [id=").append(id).append(", studentType=").append(studentType).append(", studentCategory=").append(studentCategory)
-				.append(", questionTitle=").append(questionTitle).append(", questionCategoryId=").append(questionCategoryId).append(", question=")
-				.append(question).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
-				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
-				.append(", deletedBy=").append(deletedBy).append("]");
+		builder.append("ReviewQuestions [id=").append(id).append(", studentType=").append(studentType)
+				.append(", studentCategory=").append(studentCategory).append(", questionTitle=").append(questionTitle)
+				.append(", questionCategoryId=").append(questionCategoryId).append(", question=").append(question)
+				.append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=")
+				.append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
+				.append(", updatedBy=").append(updatedBy).append(", deletedBy=").append(deletedBy).append("]");
 		return builder.toString();
 	}
 

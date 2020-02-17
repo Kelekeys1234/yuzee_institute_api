@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +37,12 @@ public class UserSearchServiceImpl implements UserSearchService {
 	}
 
 	@Override
-	public void deleteUserSearchEntry(final BigInteger userId, final String entityType) {
+	public void deleteUserSearchEntry(final String userId, final String entityType) {
 		iUserSearchDao.deleteUserSearchEntry(userId, entityType);
 	}
 
 	@Override
-	public List<UserSearchDTO> getUserSearchEntry(final BigInteger userId, final String entityType, final Integer startIndex, final Integer pageSize) {
+	public List<UserSearchDTO> getUserSearchEntry(final String userId, final String entityType, final Integer startIndex, final Integer pageSize) {
 		List<UserSearch> userSearchList = iUserSearchDao.getUserSearchEntry(userId, entityType, startIndex, pageSize);
 		List<UserSearchDTO> userSearchDtoList = new ArrayList<>();
 		for (UserSearch userSearch : userSearchList) {
@@ -55,7 +54,7 @@ public class UserSearchServiceImpl implements UserSearchService {
 	}
 
 	@Override
-	public int getUserSearchEntryCount(final BigInteger userId, final String entityType) {
+	public int getUserSearchEntryCount(final String userId, final String entityType) {
 		return iUserSearchDao.getUserSearchEntryCount(userId, entityType);
 	}
 

@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class HobbyDAO implements IHobbyDAO {
     }
 
     @Override
-    public Hobbies get(BigInteger id) {
+    public Hobbies get(String id) {
         Session session = sessionFactory.getCurrentSession();
         Hobbies obj = session.get(Hobbies.class, id);
         return obj;

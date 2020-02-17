@@ -1,30 +1,30 @@
-package com.seeka.app.dto;import java.math.BigInteger;
+package com.seeka.app.dto;
 
 public class ArticleDto {
-    private BigInteger id;
+    private String id;
     private String heading;
     private String content;
-    private BigInteger category;
-    private BigInteger subcategory;
+    private String category;
+    private String subcategory;
     private CategoryDto categoryobj;
     private SubCategoryDto subcategoryobj;
     private String link;
     private String imageUrl;
-    private BigInteger country;
-    private BigInteger city;
-    private BigInteger faculty;
-    private BigInteger institute;
-    private BigInteger courses;
+    private String country;
+    private String city;
+    private String faculty;
+    private String institute;
+    private String courses;
     private String gender;
     private String status;
-    private BigInteger userCity;
-    private BigInteger userCountry;
+    private String userCity;
+    private String userCountry;
 
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -44,19 +44,19 @@ public class ArticleDto {
         this.content = content;
     }
 
-    public BigInteger getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(BigInteger category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
-    public BigInteger getSubcategory() {
+    public String getSubcategory() {
         return subcategory;
     }
 
-    public void setSubcategory(BigInteger subcategory) {
+    public void setSubcategory(String subcategory) {
         this.subcategory = subcategory;
     }
 
@@ -79,7 +79,7 @@ public class ArticleDto {
     /**
      * @return the country
      */
-    public BigInteger getCountry() {
+    public String getCountry() {
         return country;
     }
 
@@ -87,14 +87,14 @@ public class ArticleDto {
      * @param country
      *            the country to set
      */
-    public void setCountry(BigInteger country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
     /**
      * @return the city
      */
-    public BigInteger getCity() {
+    public String getCity() {
         return city;
     }
 
@@ -102,14 +102,14 @@ public class ArticleDto {
      * @param city
      *            the city to set
      */
-    public void setCity(BigInteger city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
     /**
      * @return the faculty
      */
-    public BigInteger getFaculty() {
+    public String getFaculty() {
         return faculty;
     }
 
@@ -117,14 +117,14 @@ public class ArticleDto {
      * @param faculty
      *            the faculty to set
      */
-    public void setFaculty(BigInteger faculty) {
+    public void setFaculty(String faculty) {
         this.faculty = faculty;
     }
 
     /**
      * @return the courses
      */
-    public BigInteger getCourses() {
+    public String getCourses() {
         return courses;
     }
 
@@ -132,14 +132,14 @@ public class ArticleDto {
      * @param courses
      *            the courses to set
      */
-    public void setCourses(BigInteger courses) {
+    public void setCourses(String courses) {
         this.courses = courses;
     }
 
     /**
      * @return the institute
      */
-    public BigInteger getInstitute() {
+    public String getInstitute() {
         return institute;
     }
 
@@ -147,7 +147,7 @@ public class ArticleDto {
      * @param institute
      *            the institute to set
      */
-    public void setInstitute(BigInteger institute) {
+    public void setInstitute(String institute) {
         this.institute = institute;
     }
 
@@ -214,7 +214,7 @@ public class ArticleDto {
     /**
      * @return the userCity
      */
-    public BigInteger getUserCity() {
+    public String getUserCity() {
         return userCity;
     }
 
@@ -222,14 +222,14 @@ public class ArticleDto {
      * @param userCity
      *            the userCity to set
      */
-    public void setUserCity(BigInteger userCity) {
+    public void setUserCity(String userCity) {
         this.userCity = userCity;
     }
 
     /**
      * @return the userCountry
      */
-    public BigInteger getUserCountry() {
+    public String getUserCountry() {
         return userCountry;
     }
 
@@ -237,7 +237,7 @@ public class ArticleDto {
      * @param userCountry
      *            the userCountry to set
      */
-    public void setUserCountry(BigInteger userCountry) {
+    public void setUserCountry(String userCountry) {
         this.userCountry = userCountry;
     }
 }

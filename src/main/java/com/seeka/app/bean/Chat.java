@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,13 +28,13 @@ public class Chat implements Serializable {
 	private String id;
 
 	@Column(name = "entity_id")
-	private BigInteger entityId;
+	private String entityId;
 
 	@Column(name = "entity_type")
 	private String entityType;
 
 	@Column(name = "assignee_id")
-	private BigInteger assigneeId;
+	private String assigneeId;
 
 	@Column(name = "user_id")
 	private String userId;
@@ -56,11 +55,11 @@ public class Chat implements Serializable {
 		this.id = id;
 	}
 
-	public BigInteger getEntityId() {
+	public String getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(final BigInteger entityId) {
+	public void setEntityId(final String entityId) {
 		this.entityId = entityId;
 	}
 
@@ -72,11 +71,11 @@ public class Chat implements Serializable {
 		this.entityType = entityType;
 	}
 
-	public BigInteger getAssigneeId() {
+	public String getAssigneeId() {
 		return assigneeId;
 	}
 
-	public void setAssigneeId(final BigInteger assigneeId) {
+	public void setAssigneeId(final String assigneeId) {
 		this.assigneeId = assigneeId;
 	}
 
@@ -185,9 +184,9 @@ public class Chat implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("EnrollmentChat [id=").append(id).append(", entityId=").append(entityId).append(", entityType=").append(entityType)
-				.append(", assigneeId=").append(assigneeId).append(", userId=").append(userId).append(", createdOn=").append(createdOn).append(", updatedOn=")
-				.append(updatedOn).append("]");
+		builder.append("EnrollmentChat [id=").append(id).append(", entityId=").append(entityId).append(", entityType=")
+				.append(entityType).append(", assigneeId=").append(assigneeId).append(", userId=").append(userId)
+				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append("]");
 		return builder.toString();
 	}
 

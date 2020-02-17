@@ -1,6 +1,4 @@
-package com.seeka.app.dto;import java.math.BigInteger;
-
-import javax.validation.constraints.NotNull;
+package com.seeka.app.dto;import javax.validation.constraints.NotNull;
 
 public class ArticleFolderMapDto {
 

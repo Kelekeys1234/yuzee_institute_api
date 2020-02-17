@@ -1,6 +1,5 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class InstituteCampusDto {
@@ -13,7 +12,7 @@ public class InstituteCampusDto {
     private Double longitute;
     private String openingFrom;
     private String openingTo;
-    private List<BigInteger> offerService;
+    private List<String> offerService;
     private Integer totalStudent;
     private String campusType;
     private String id;
@@ -74,11 +73,11 @@ public class InstituteCampusDto {
         this.openingTo = openingTo;
     }
 
-    public List<BigInteger> getOfferService() {
+    public List<String> getOfferService() {
         return offerService;
     }
 
-    public void setOfferService(List<BigInteger> offerService) {
+    public void setOfferService(List<String> offerService) {
         this.offerService = offerService;
     }
 

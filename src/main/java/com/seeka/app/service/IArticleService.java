@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +19,7 @@ public interface IArticleService {
 
 	ArticleResponseDetailsDto getArticleById(String articleId) throws ValidationException;
 
-	SeekaArticleDto saveMultiArticle(SeekaArticleDto article, BigInteger userId) throws ValidationException, ParseException;
+	SeekaArticleDto saveMultiArticle(SeekaArticleDto article, String userId) throws ValidationException, ParseException;
 
 	ArticleFolderDto saveArticleFolder(ArticleFolderDto articleFolder, String language) throws NotFoundException, ValidationException;
 
@@ -28,9 +27,9 @@ public interface IArticleService {
 
 	List<ArticleFolder> getAllArticleFolder();
 
-	List<ArticleFolder> getFolderByUserId(BigInteger userId) throws ValidationException;
+	List<ArticleFolder> getFolderByUserId(String userId) throws ValidationException;
 
-	List<ArticleResponseDetailsDto> getArticleByFolderId(Integer startIndex, Integer pageSize, BigInteger folderId) throws ValidationException;
+	List<ArticleResponseDetailsDto> getArticleByFolderId(Integer startIndex, Integer pageSize, String folderId) throws ValidationException;
 
 	Integer getTotalSearchCount(String searchKeyword);
 
@@ -39,16 +38,16 @@ public interface IArticleService {
 	ArticleFolder deleteArticleFolderById(final String articleFolderId) throws ValidationException;
 
 	List<ArticleResponseDetailsDto> getArticleList(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword,
-			BigInteger categoryId, String tags, Boolean status, Date date) throws ValidationException;
+			String categoryId, String tags, Boolean status, Date date) throws ValidationException;
 
 	List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, List<BigInteger> categoryId, List<String> tags, Boolean status, Date filterDate) throws ValidationException;
+			final String searchKeyword, List<String> categoryId, List<String> tags, Boolean status, Date filterDate) throws ValidationException;
 
 	Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType, final String searchKeyword,
-			BigInteger categoryId, String tags, Boolean status, Date filterDate);
+			String categoryId, String tags, Boolean status, Date filterDate);
 
 	Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType, final String searchKeyword,
-			List<BigInteger> categoryIdList, List<String> tagList, Boolean status, Date date);
+			List<String> categoryIdList, List<String> tagList, Boolean status, Date date);
 
 	List<String> getAuthors(int startIndex, Integer pageSize, String searchString);
 

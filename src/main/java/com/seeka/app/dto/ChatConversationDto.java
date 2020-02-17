@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 public class ChatConversationDto implements Serializable {
@@ -18,10 +17,10 @@ public class ChatConversationDto implements Serializable {
 	 * USER/SEEKA
 	 */
 	private String initiateFrom;
-	private BigInteger initiateFromId;
+	private String initiateFromId;
 	private String initiateFromName;
 	private String initiateTo;
-	private BigInteger initiateToId;
+	private String initiateToId;
 	private String initiateToName;
 	private Date createdOn;
 	private StorageDto storageDto;
@@ -66,11 +65,11 @@ public class ChatConversationDto implements Serializable {
 		this.initiateFrom = initiateFrom;
 	}
 
-	public BigInteger getInitiateFromId() {
+	public String getInitiateFromId() {
 		return initiateFromId;
 	}
 
-	public void setInitiateFromId(final BigInteger initiateFromId) {
+	public void setInitiateFromId(final String initiateFromId) {
 		this.initiateFromId = initiateFromId;
 	}
 
@@ -90,11 +89,11 @@ public class ChatConversationDto implements Serializable {
 		this.initiateTo = initiateTo;
 	}
 
-	public BigInteger getInitiateToId() {
+	public String getInitiateToId() {
 		return initiateToId;
 	}
 
-	public void setInitiateToId(final BigInteger initiateToId) {
+	public void setInitiateToId(final String initiateToId) {
 		this.initiateToId = initiateToId;
 	}
 

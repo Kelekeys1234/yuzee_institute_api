@@ -1,17 +1,15 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class CurrencyConvertorRequest {
 
-    private BigInteger fromCurrencyId;
-    private BigInteger toCurrencyId;
+    private String fromCurrencyId;
+    private String toCurrencyId;
     private Double amount;
 
     /**
      * @return the fromCurrencyId
      */
-    public BigInteger getFromCurrencyId() {
+    public String getFromCurrencyId() {
         return fromCurrencyId;
     }
 
@@ -19,14 +17,14 @@ public class CurrencyConvertorRequest {
      * @param fromCurrencyId
      *            the fromCurrencyId to set
      */
-    public void setFromCurrencyId(BigInteger fromCurrencyId) {
+    public void setFromCurrencyId(String fromCurrencyId) {
         this.fromCurrencyId = fromCurrencyId;
     }
 
     /**
      * @return the toCurrencyId
      */
-    public BigInteger getToCurrencyId() {
+    public String getToCurrencyId() {
         return toCurrencyId;
     }
 
@@ -34,7 +32,7 @@ public class CurrencyConvertorRequest {
      * @param toCurrencyId
      *            the toCurrencyId to set
      */
-    public void setToCurrencyId(BigInteger toCurrencyId) {
+    public void setToCurrencyId(String toCurrencyId) {
         this.toCurrencyId = toCurrencyId;
     }
 

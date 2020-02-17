@@ -1,16 +1,17 @@
 package com.seeka.app.bean;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -29,7 +30,7 @@ public class ArticleUserCitizenship implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -3766742694768712352L;
-	private BigInteger id;
+	private String id;
 	private City city;
 	private Country country;
 	private SeekaArticles seekaArticles;
@@ -55,11 +56,11 @@ public class ArticleUserCitizenship implements Serializable {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
-	public BigInteger getId() {
+	public String getId() {
 		return this.id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

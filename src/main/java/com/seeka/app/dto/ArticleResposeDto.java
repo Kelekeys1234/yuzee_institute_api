@@ -1,5 +1,4 @@
 package com.seeka.app.dto;import java.io.Serializable;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 
 public class ArticleResposeDto implements Serializable{
@@ -8,7 +7,7 @@ public class ArticleResposeDto implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -6548673986025506150L;
-	private BigInteger id;
+	private String id;
     private String heading;
     private String content;
     private String category;
@@ -32,11 +31,11 @@ public class ArticleResposeDto implements Serializable{
 	private String tags;
 
 
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

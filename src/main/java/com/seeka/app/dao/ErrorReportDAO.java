@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -40,14 +39,14 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	}
 
 	@Override
-	public ErrorReportCategory getErrorCategory(final BigInteger errorReportCategoryId) {
+	public ErrorReportCategory getErrorCategory(final String errorReportCategoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		return session.get(ErrorReportCategory.class, errorReportCategoryId);
 	}
 
 	@Override
 	public List<ErrorReport> getAllErrorReport(final String userId, final Integer startIndex, final Integer pageSize,
-			final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive,
+			final String errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive,
 			final String sortByField, String sortByType, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ErrorReport.class, "errorReport");
@@ -141,7 +140,7 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	}
 
 	@Override
-	public int getErrorReportCountForUser(final String userId, final BigInteger errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
+	public int getErrorReportCountForUser(final String userId, final String errorReportCategoryId, final String errorReportStatus, final Date updatedOn,
 			final Boolean isFavourite, final Boolean isArchive, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(ErrorReport.class, "errorReport");
@@ -177,7 +176,7 @@ public class ErrorReportDAO implements IErrorReportDAO {
 	}
 
 	@Override
-	public void setIsFavouriteFlag(final BigInteger errorReportId, final boolean isFavourite) throws NotFoundException {
+	public void setIsFavouriteFlag(final String errorReportId, final boolean isFavourite) throws NotFoundException {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "update error_report set is_favourite = ? where id = ?";
 		int updateCount = session.createNativeQuery(sqlQuery).setParameter(1, isFavourite).setParameter(2, errorReportId).executeUpdate();

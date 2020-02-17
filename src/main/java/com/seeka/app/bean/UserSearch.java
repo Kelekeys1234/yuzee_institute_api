@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -30,7 +29,7 @@ public class UserSearch implements Serializable {
 	@Column(name = "search_string")
 	private String searchString;
 	@Column(name = "user_id", length = 20)
-	private BigInteger userId;
+	private String userId;
 	@Column(name = "entity_type", length = 50)
 	private String entityType;
 
@@ -54,11 +53,11 @@ public class UserSearch implements Serializable {
 		this.searchString = searchString;
 	}
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 

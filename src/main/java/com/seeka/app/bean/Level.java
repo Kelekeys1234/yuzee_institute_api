@@ -1,9 +1,6 @@
 package com.seeka.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -44,7 +41,7 @@ public class Level implements Serializable {
 	private String updatedBy;
 	private Boolean isDeleted;
 
-	private BigInteger countryId;
+	private String countryId;
 
 	private List<Faculty> facultyList;
 
@@ -174,14 +171,14 @@ public class Level implements Serializable {
 	 * @return the countryId
 	 */
 	@Transient
-	public BigInteger getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
 
 	/**
 	 * @param countryId the countryId to set
 	 */
-	public void setCountryId(BigInteger countryId) {
+	public void setCountryId(String countryId) {
 		this.countryId = countryId;
 	}
 

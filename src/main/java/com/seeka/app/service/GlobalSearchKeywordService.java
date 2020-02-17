@@ -1,6 +1,5 @@
 package com.seeka.app.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class GlobalSearchKeywordService implements IGlobalSearchKeywordService {
 	private IGlobalSearchKeywordDAO iGlobalSearchKeyWordDao;
 	
 	@Override
-	public void addGlobalSearhcKeyForUser(String searchKeyword, BigInteger userId) {
+	public void addGlobalSearhcKeyForUser(String searchKeyword, String userId) {
 		
 		GlobalSearchKeyword globalSearchKeyword = new GlobalSearchKeyword();
 		globalSearchKeyword.setUserId(userId);
@@ -31,7 +30,7 @@ public class GlobalSearchKeywordService implements IGlobalSearchKeywordService {
 	}
 
 	@Override
-	public List<String> getOtherUsersTopSearchedKeywords(BigInteger userId) {
+	public List<String> getOtherUsersTopSearchedKeywords(String userId) {
 		// TODO Auto-generated method stub
 		List<String> topKeyWordList = iGlobalSearchKeyWordDao.getOtherUsersTopSearchedKeywords(userId);
 		return topKeyWordList;

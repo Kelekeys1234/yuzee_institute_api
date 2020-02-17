@@ -1,7 +1,6 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -24,124 +23,125 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "user_biginterest_country")
 public class UserBiginterestCountry implements Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -5961885660772909758L;
-    private String id;
-    private String country;
-    private BigInteger userInfo;
-    private Date createdOn;
-    private Date updatedOn;
-    private Date deletedOn;
-    private String createdBy;
-    private String updatedBy;
-    private Boolean isDeleted;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5961885660772909758L;
+	private String id;
+	private String country;
+	private String userInfo;
+	private Date createdOn;
+	private Date updatedOn;
+	private Date deletedOn;
+	private String createdBy;
+	private String updatedBy;
+	private Boolean isDeleted;
 
-    public UserBiginterestCountry() {
-    }
+	public UserBiginterestCountry() {
+	}
 
-    public UserBiginterestCountry(String country, BigInteger userInfo) {
-        this.country = country;
-        this.userInfo = userInfo;
-    }
+	public UserBiginterestCountry(String country, String userInfo) {
+		this.country = country;
+		this.userInfo = userInfo;
+	}
 
-    public UserBiginterestCountry(String country, BigInteger userInfo, Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
-        this.country = country;
-        this.userInfo = userInfo;
-        this.createdOn = createdOn;
-        this.updatedOn = updatedOn;
-        this.deletedOn = deletedOn;
-        this.createdBy = createdBy;
-        this.updatedBy = updatedBy;
-        this.isDeleted = isDeleted;
-    }
+	public UserBiginterestCountry(String country, String userInfo, Date createdOn, Date updatedOn, Date deletedOn,
+			String createdBy, String updatedBy, Boolean isDeleted) {
+		this.country = country;
+		this.userInfo = userInfo;
+		this.createdOn = createdOn;
+		this.updatedOn = updatedOn;
+		this.deletedOn = deletedOn;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.isDeleted = isDeleted;
+	}
 
-    @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@Id
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
-    public String getId() {
-        return this.id;
-    }
+	public String getId() {
+		return this.id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    @Column(name = "country_name", length = 45)
-    public String getCountry() {
-        return this.country;
-    }
+	@Column(name = "country_name", length = 45)
+	public String getCountry() {
+		return this.country;
+	}
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
+	public void setCountry(String country) {
+		this.country = country;
+	}
 
-    @Column(name = "user_id", length = 45)
-    public BigInteger getUserInfo() {
-        return this.userInfo;
-    }
+	@Column(name = "user_id", length = 45)
+	public String getUserInfo() {
+		return this.userInfo;
+	}
 
-    public void setUserInfo(BigInteger userInfo) {
-        this.userInfo = userInfo;
-    }
+	public void setUserInfo(String userInfo) {
+		this.userInfo = userInfo;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_on", length = 19)
-    public Date getCreatedOn() {
-        return this.createdOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on", length = 19)
+	public Date getCreatedOn() {
+		return this.createdOn;
+	}
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_on", length = 19)
-    public Date getUpdatedOn() {
-        return this.updatedOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on", length = 19)
+	public Date getUpdatedOn() {
+		return this.updatedOn;
+	}
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
+	public void setUpdatedOn(Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "deleted_on", length = 19)
-    public Date getDeletedOn() {
-        return this.deletedOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deleted_on", length = 19)
+	public Date getDeletedOn() {
+		return this.deletedOn;
+	}
 
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
+	public void setDeletedOn(Date deletedOn) {
+		this.deletedOn = deletedOn;
+	}
 
-    @Column(name = "created_by", length = 50)
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
+	@Column(name = "created_by", length = 50)
+	public String getCreatedBy() {
+		return this.createdBy;
+	}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    @Column(name = "updated_by", length = 50)
-    public String getUpdatedBy() {
-        return this.updatedBy;
-    }
+	@Column(name = "updated_by", length = 50)
+	public String getUpdatedBy() {
+		return this.updatedBy;
+	}
 
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
-    @Column(name = "is_deleted")
-    public Boolean getIsDeleted() {
-        return this.isDeleted;
-    }
+	@Column(name = "is_deleted")
+	public Boolean getIsDeleted() {
+		return this.isDeleted;
+	}
 
-    public void setIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 
 }

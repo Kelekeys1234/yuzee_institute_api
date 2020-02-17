@@ -14,7 +14,7 @@ public class DisplayAlternativeController {
 	public IAlternativeService iAlternativeService;
 	
 //	@GetMapping("/courses")
-//	public ResponseEntity<?> getAlternateCourses(@RequestHeader(value = "userId") BigInteger userId,
+//	public ResponseEntity<?> getAlternateCourses(@RequestHeader(value = "userId") String userId,
 //			@RequestHeader(value = "language", required = false) String language)
 //			throws ValidationException {
 //		List<CourseResponseDto> recomendedCourses = iRecommendationService.getRecommendedCourses(userId);

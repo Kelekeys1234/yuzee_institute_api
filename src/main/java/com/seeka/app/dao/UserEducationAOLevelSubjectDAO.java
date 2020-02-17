@@ -1,6 +1,5 @@
 package com.seeka.app.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -34,7 +33,7 @@ public class UserEducationAOLevelSubjectDAO implements IUserEducationAOLevelSubj
     }
 
     @Override
-    public UserEducationAOLevelSubjects get(BigInteger id) {
+    public UserEducationAOLevelSubjects get(String id) {
         Session session = sessionFactory.getCurrentSession();
         UserEducationAOLevelSubjects obj = session.get(UserEducationAOLevelSubjects.class, id);
         return obj;
@@ -51,7 +50,7 @@ public class UserEducationAOLevelSubjectDAO implements IUserEducationAOLevelSubj
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<UserEducationAOLevelSubjects> getActiveUserLevelSubjectGrades(BigInteger userId) {
+    public List<UserEducationAOLevelSubjects> getActiveUserLevelSubjectGrades(String userId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(UserEducationAOLevelSubjects.class);
         crit.add(Restrictions.eq("userId", userId)).add(Restrictions.eq("isActive", true));

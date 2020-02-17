@@ -1,10 +1,8 @@
 package com.seeka.app.dto;
 
-import java.math.BigInteger;
-
 public class DiscoverCountryDto {
     
-    private BigInteger id;
+    private String id;
     private String name;
     private String countryCode;
     private String imageUrl;
@@ -12,7 +10,7 @@ public class DiscoverCountryDto {
     /**
      * @return the id
      */
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
@@ -20,7 +18,7 @@ public class DiscoverCountryDto {
      * @param id
      *            the id to set
      */
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

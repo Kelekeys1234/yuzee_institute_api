@@ -1,6 +1,5 @@
 package com.seeka.app.controller.v1;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,7 @@ public class InstituteGoogleReviewController {
 	 * @return
 	 */
 	@GetMapping("/{instituteId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<Object> getInstituteGoogleReview(@PathVariable final BigInteger instituteId, @PathVariable final Integer pageNumber,
+	public ResponseEntity<Object> getInstituteGoogleReview(@PathVariable final String instituteId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<InstituteGoogleReviewDto> instituteGoogleReviewList = iInstituteGoogleReviewService.getInstituteGoogleReview(instituteId, startIndex, pageSize);

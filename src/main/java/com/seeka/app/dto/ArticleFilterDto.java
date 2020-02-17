@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
 
 public class ArticleFilterDto implements Serializable{
@@ -16,7 +15,7 @@ public class ArticleFilterDto implements Serializable{
 	private String sortByField;
 	private String sortByType;
 	private String searchKeyword;
-	private List<BigInteger> categoryId;
+	private List<String> categoryId;
 	private List<String> tags;
 	private Boolean status;
 	public Integer getPageNumber() {
@@ -49,10 +48,10 @@ public class ArticleFilterDto implements Serializable{
 	public void setSearchKeyword(String searchKeyword) {
 		this.searchKeyword = searchKeyword;
 	}
-	public List<BigInteger> getCategoryId() {
+	public List<String> getCategoryId() {
 		return categoryId;
 	}
-	public void setCategoryId(List<BigInteger> categoryId) {
+	public void setCategoryId(List<String> categoryId) {
 		this.categoryId = categoryId;
 	}
 	public List<String> getTags() {
