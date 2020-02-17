@@ -1,16 +1,19 @@
 package com.seeka.app.dao;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -119,15 +122,18 @@ public class ViewDao implements IViewDao {
 	@Override
 	public List<UserCourseView> userVisistedCourseBasedOncity(final String cityId, final Date fromDate, final Date toDate) {
 		Session session = sessionFactory.getCurrentSession();
-		List<Object[]> rows = session.createNativeQuery(
-				"select count(*),abc.course_id from (select count(*) as count ,course.id  as course_id from user_view_data join course on course.id=user_view_data.entity_id "
-						+ " where entity_type='COURSE' and course.city_id=? and Date(user_view_data.created_on) between ? and ? group by entity_id,user_id) as abc group by abc.course_id ")
-				.setParameter(1, cityId).setParameter(2, fromDate).setParameter(3, toDate).getResultList();
+		
+		String sqlQuery ="select count(*),abc.course_id from (select count(*) as count ,course.id  as course_id from user_view_data join course on course.id=user_view_data.entity_id"
+				+ " where entity_type='COURSE' and course.city_id='"+cityId+"' and Date(user_view_data.created_on) between '"+fromDate+"' and '"+toDate+"' group by entity_id,user_id) as abc group by abc.course_id ";
+		
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		
 		List<UserCourseView> result = new ArrayList<>();
 		for (Object[] row : rows) {
 			UserCourseView userCourseView = new UserCourseView();
 			userCourseView.setCount(Integer.parseInt(String.valueOf(row[0])));
-			userCourseView.setCourseId(new BigInteger(String.valueOf(row[1])));
+			userCourseView.setCourseId((String.valueOf(row[1])));
 			result.add(userCourseView);
 		}
 		return result;
@@ -136,15 +142,22 @@ public class ViewDao implements IViewDao {
 	@Override
 	public List<UserCourseView> userVisistedCourseBasedOnCountry(final String countryId, final Date fromDate, final Date toDate) {
 		Session session = sessionFactory.getCurrentSession();
-		List<Object[]> rows = session.createNativeQuery(
-				"select count(*),abc.course_id from (select count(*) as count ,course.id  as course_id from user_view_data join course on course.id=user_view_data.entity_id "
-						+ " where entity_type='COURSE' and course.country_id=? and Date(user_view_data.created_on) between ? and ? group by entity_id,user_id) as abc group by abc.course_id ")
-				.setParameter(1, countryId).setParameter(2, fromDate).setParameter(3, toDate).getResultList();
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String startDate = dateFormat.format(fromDate);
+		String endDate = dateFormat.format(toDate);
+
+		String sqlQuery ="select count(*),abc.course_id from (select count(*) as count ,course.id  as course_id from user_view_data join course on course.id=user_view_data.entity_id "
+				+ "join institute it on it.id = course.institute_id where entity_type='COURSE' and it.country_id='"+countryId+"' and Date(user_view_data.created_on) between '"+startDate+"' and '"+endDate+"' group by entity_id,user_id) as abc group by abc.course_id";
+		
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		
 		List<UserCourseView> result = new ArrayList<>();
 		for (Object[] row : rows) {
 			UserCourseView userCourseView = new UserCourseView();
 			userCourseView.setCount(Integer.parseInt(String.valueOf(row[0])));
-			userCourseView.setCourseId(new BigInteger(String.valueOf(row[1])));
+			userCourseView.setCourseId((String.valueOf(row[1])));
 			result.add(userCourseView);
 		}
 		return result;

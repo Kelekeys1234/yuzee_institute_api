@@ -1,7 +1,6 @@
 package com.seeka.app.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,25 +10,25 @@ public class UserViewDataRequestDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = -5780245895720098894L;
-	private BigInteger userId;
+	private String userId;
 	@NotNull(message = "entityId is required")
-	private BigInteger entityId;
+	private String entityId;
 	@NotNull(message = "entityType is required")
 	private String entityType;
 
-	public BigInteger getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(final BigInteger userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
-	public BigInteger getEntityId() {
+	public String getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(final BigInteger entityId) {
+	public void setEntityId(final String entityId) {
 		this.entityId = entityId;
 	}
 
@@ -90,8 +89,8 @@ public class UserViewDataRequestDto implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserViewDataRequestDto [userId=").append(userId).append(", entityId=").append(entityId).append(", entityType=").append(entityType)
-				.append("]");
+		builder.append("UserViewDataRequestDto [userId=").append(userId).append(", entityId=").append(entityId)
+				.append(", entityType=").append(entityType).append("]");
 		return builder.toString();
 	}
 

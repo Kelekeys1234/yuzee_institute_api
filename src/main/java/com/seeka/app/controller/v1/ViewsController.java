@@ -38,7 +38,7 @@ public class ViewsController {
 	private IViewService iViewService;
 
 	@PostMapping
-	public ResponseEntity<?> createUserViewData(@RequestHeader final BigInteger userId, @RequestBody final UserViewDataRequestDto userViewDataRequestDto)
+	public ResponseEntity<?> createUserViewData(@RequestHeader final String userId, @RequestBody final UserViewDataRequestDto userViewDataRequestDto)
 			throws ValidationException {
 		userViewDataRequestDto.setUserId(userId);
 		iViewService.createUserViewData(userViewDataRequestDto);
