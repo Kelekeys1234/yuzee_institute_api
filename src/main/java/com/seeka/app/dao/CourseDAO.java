@@ -1726,10 +1726,9 @@ public class CourseDAO implements ICourseDAO {
 		Session session = sessionFactory.getCurrentSession();
 
 		String ids = topSearchedCourseIds.stream().map(String::toString).collect(Collectors.joining(","));
-
 		System.out.println("IDs -- " + ids);
 		List<String> countryIds = session
-				.createNativeQuery("Select distinct country_id from course where country_id is not null and " + "id in (" + ids + ")").getResultList();
+				.createNativeQuery("Select distinct i.country_id from course c join institute i on i.id=c.institute_id  where i.country_id is not null and " + "c.id in ('" + ids.replace(",", "','") + "')").getResultList();
 		return countryIds;
 	}
 
