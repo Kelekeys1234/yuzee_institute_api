@@ -876,8 +876,9 @@ public class CourseDAO implements ICourseDAO {
 				+ "c.description, c.intake,c.duration, c.language,c.usd_domestic_fee, c.usd_international_fee,"
 				+ " c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency,"
-				+ " i.latitute, i.longitute  FROM  user_my_course umc inner join course c on umc.course_id = c.id "
-				+ " left join institute i on c.institute_id = i.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = '"
+				+ " i.latitute, i.longitute, cty.name as cityName, ctry.name as countryName FROM  user_my_course umc inner join course c on umc.course_id = c.id "
+				+ " left join institute i on c.institute_id = i.id left join city cty on cty.id = i.city_id left join country ctry on ctry.id = i.country_id "
+				+ " where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = '"
 				+ userId + "'";
 		if (sortBy != null && "institute_name".contentEquals(sortBy)) {
 			sqlQuery = sqlQuery + " ORDER BY i.name " + (sortType ? "ASC" : "DESC");
@@ -990,6 +991,12 @@ public class CourseDAO implements ICourseDAO {
 			}
 			if (row[28] != null && !row[28].toString().isEmpty()) {
 				obj.setLongitude(Double.parseDouble(row[28].toString()));
+			}
+			if(row[29] != null) {
+				obj.setCityName(row[29].toString());
+			}
+			if(row[30] != null) {
+				obj.setCountryName(row[30].toString());
 			}
 			obj.setEnglishEligibility(getEnglishEligibility(session, row[0].toString()));
 			courses.add(obj);
@@ -1726,6 +1733,7 @@ public class CourseDAO implements ICourseDAO {
 		Session session = sessionFactory.getCurrentSession();
 
 		String ids = topSearchedCourseIds.stream().map(String::toString).collect(Collectors.joining(","));
+
 		System.out.println("IDs -- " + ids);
 		List<String> countryIds = session
 				.createNativeQuery("Select distinct i.country_id from course c join institute i on i.id=c.institute_id  where i.country_id is not null and " + "c.id in ('" + ids.replace(",", "','") + "')").getResultList();

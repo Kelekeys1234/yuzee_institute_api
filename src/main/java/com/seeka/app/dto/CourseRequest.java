@@ -54,6 +54,9 @@ public class CourseRequest {
 	private Double latitude;
 	private Double longitude;
 	private List<UserReviewResultDto> userReviewResult;
+	
+	private String countryName;
+	private String cityName;
 
 	public List<UserReviewResultDto> getUserReviewResult() {
 		return userReviewResult;
@@ -645,6 +648,22 @@ public class CourseRequest {
 
 	public void setJobPartTime(final String jobPartTime) {
 		this.jobPartTime = jobPartTime;
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
 	}
 
 }
