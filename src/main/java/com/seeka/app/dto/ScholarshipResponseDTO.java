@@ -12,7 +12,6 @@ public class ScholarshipResponseDTO implements Serializable {
 	private static final long serialVersionUID = -6660498982386504039L;
 	private String id;
 	private String name;
-	private String offeredBy;
 	private String description;
 	private String scholarshipAward;
 	private String countryId;
@@ -33,7 +32,6 @@ public class ScholarshipResponseDTO implements Serializable {
 	private Date deletedOn;
 	private Boolean isActive;
 	private String website;
-	private String instituteId;
 	private Date applicationDeadline;
 	private List<String> intakes;
 	private List<String> languages;
@@ -41,6 +39,7 @@ public class ScholarshipResponseDTO implements Serializable {
 	private String levelName;
 	private String currency;
 	private String instituteName;
+	private String courseName;
 	private String requirements;
 	private String levelCode;
 	/**
@@ -79,14 +78,6 @@ public class ScholarshipResponseDTO implements Serializable {
 
 	public void setName(final String name) {
 		this.name = name;
-	}
-
-	public String getOfferedBy() {
-		return offeredBy;
-	}
-
-	public void setOfferedBy(final String offeredBy) {
-		this.offeredBy = offeredBy;
 	}
 
 	public String getDescription() {
@@ -257,14 +248,6 @@ public class ScholarshipResponseDTO implements Serializable {
 		this.website = website;
 	}
 
-	public String getInstituteId() {
-		return instituteId;
-	}
-
-	public void setInstituteId(final String instituteId) {
-		this.instituteId = instituteId;
-	}
-
 	public Date getApplicationDeadline() {
 		return applicationDeadline;
 	}
@@ -312,6 +295,14 @@ public class ScholarshipResponseDTO implements Serializable {
 	public void setInstituteName(final String instituteName) {
 		this.instituteName = instituteName;
 	}
+	
+	public String getCourseName() {
+		return courseName;
+	}
+
+	public void setCourseName(final String courseName) {
+		this.courseName = courseName;
+	}
 
 	@Override
 	public int hashCode() {
@@ -332,8 +323,8 @@ public class ScholarshipResponseDTO implements Serializable {
 		result = (prime * result) + ((headquaters == null) ? 0 : headquaters.hashCode());
 		result = (prime * result) + ((howToApply == null) ? 0 : howToApply.hashCode());
 		result = (prime * result) + ((id == null) ? 0 : id.hashCode());
-		result = (prime * result) + ((instituteId == null) ? 0 : instituteId.hashCode());
 		result = (prime * result) + ((instituteName == null) ? 0 : instituteName.hashCode());
+		result = (prime * result) + ((courseName == null) ? 0 : courseName.hashCode());
 		result = (prime * result) + ((intake == null) ? 0 : intake.hashCode());
 		result = (prime * result) + ((intakes == null) ? 0 : intakes.hashCode());
 		result = (prime * result) + ((isActive == null) ? 0 : isActive.hashCode());
@@ -343,7 +334,6 @@ public class ScholarshipResponseDTO implements Serializable {
 		result = (prime * result) + ((levelName == null) ? 0 : levelName.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((numberOfAvaliability == null) ? 0 : numberOfAvaliability.hashCode());
-		result = (prime * result) + ((offeredBy == null) ? 0 : offeredBy.hashCode());
 		result = (prime * result) + ((requirements == null) ? 0 : requirements.hashCode());
 		result = (prime * result) + ((scholarshipAmount == null) ? 0 : scholarshipAmount.hashCode());
 		result = (prime * result) + ((scholarshipAward == null) ? 0 : scholarshipAward.hashCode());
@@ -471,18 +461,18 @@ public class ScholarshipResponseDTO implements Serializable {
 		} else if (!id.equals(other.id)) {
 			return false;
 		}
-		if (instituteId == null) {
-			if (other.instituteId != null) {
-				return false;
-			}
-		} else if (!instituteId.equals(other.instituteId)) {
-			return false;
-		}
 		if (instituteName == null) {
 			if (other.instituteName != null) {
 				return false;
 			}
 		} else if (!instituteName.equals(other.instituteName)) {
+			return false;
+		}
+		if (courseName == null) {
+			if (other.courseName != null) {
+				return false;
+			}
+		} else if (!courseName.equals(other.courseName)) {
 			return false;
 		}
 		if (intake == null) {
@@ -548,13 +538,6 @@ public class ScholarshipResponseDTO implements Serializable {
 		} else if (!numberOfAvaliability.equals(other.numberOfAvaliability)) {
 			return false;
 		}
-		if (offeredBy == null) {
-			if (other.offeredBy != null) {
-				return false;
-			}
-		} else if (!offeredBy.equals(other.offeredBy)) {
-			return false;
-		}
 		if (requirements == null) {
 			if (other.requirements != null) {
 				return false;
@@ -610,14 +593,14 @@ public class ScholarshipResponseDTO implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ScholarshipResponseDTO [id=").append(id).append(", name=").append(name).append(", offeredBy=").append(offeredBy)
+		builder.append("ScholarshipResponseDTO [id=").append(id).append(", name=").append(name)
 				.append(", description=").append(description).append(", scholarshipAward=").append(scholarshipAward).append(", countryId=").append(countryId)
 				.append(", levelId=").append(levelId).append(", numberOfAvaliability=").append(numberOfAvaliability).append(", scholarshipAmount=")
 				.append(scholarshipAmount).append(", validity=").append(validity).append(", howToApply=").append(howToApply).append(", gender=").append(gender)
 				.append(", eligibleNationality=").append(eligibleNationality).append(", headquaters=").append(headquaters).append(", email=").append(email)
 				.append(", address=").append(address).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=")
 				.append(createdBy).append(", updatedBy=").append(updatedBy).append(", deletedOn=").append(deletedOn).append(", isActive=").append(isActive)
-				.append(", website=").append(website).append(", instituteId=").append(instituteId).append(", applicationDeadline=").append(applicationDeadline)
+				.append(", website=").append(website).append(", courseName=").append(courseName).append(", applicationDeadline=").append(applicationDeadline)
 				.append(", intakes=").append(intakes).append(", languages=").append(languages).append(", countryName=").append(countryName)
 				.append(", levelName=").append(levelName).append(", currency=").append(currency).append(", instituteName=").append(instituteName)
 				.append(", requirements=").append(requirements).append(", levelCode=").append(levelCode).append(", intake=").append(intake).append("]");
