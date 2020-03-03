@@ -28,8 +28,6 @@ public class Scholarship implements java.io.Serializable {
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
 	private String id;
-	@Column(name = "offered_by")
-	private String offeredBy;
 	@Column(name = "description")
 	private String description;
 	@Column(name = "scholarship_award")
@@ -81,9 +79,10 @@ public class Scholarship implements java.io.Serializable {
 	 */
 	@Column(name = "website")
 	private String website;
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "institute_id")
-	private Institute institute;
+	@Column(name = "institute_name")
+	private String instituteName;
+	@Column(name = "course_name")
+	private String courseName;
 	/**
 	 * used as title
 	 */
@@ -103,14 +102,6 @@ public class Scholarship implements java.io.Serializable {
 
 	public void setId(final String id) {
 		this.id = id;
-	}
-
-	public String getOfferedBy() {
-		return offeredBy;
-	}
-
-	public void setOfferedBy(final String offeredBy) {
-		this.offeredBy = offeredBy;
 	}
 
 	public String getDescription() {
@@ -281,12 +272,20 @@ public class Scholarship implements java.io.Serializable {
 		this.website = website;
 	}
 
-	public Institute getInstitute() {
-		return institute;
+	public String getInstituteName() {
+		return instituteName;
 	}
 
-	public void setInstitute(final Institute institute) {
-		this.institute = institute;
+	public void setInstituteName(final String instituteName) {
+		this.instituteName = instituteName;
+	}
+	
+	public String getCourseName() {
+		return courseName;
+	}
+
+	public void setCourseName(final String courseName) {
+		this.courseName = courseName;
 	}
 
 	public String getName() {
@@ -332,12 +331,12 @@ public class Scholarship implements java.io.Serializable {
 		result = (prime * result) + ((headquaters == null) ? 0 : headquaters.hashCode());
 		result = (prime * result) + ((howToApply == null) ? 0 : howToApply.hashCode());
 		result = (prime * result) + ((id == null) ? 0 : id.hashCode());
-		result = (prime * result) + ((institute == null) ? 0 : institute.hashCode());
+		result = (prime * result) + ((instituteName == null) ? 0 : instituteName.hashCode());
 		result = (prime * result) + ((isActive == null) ? 0 : isActive.hashCode());
 		result = (prime * result) + ((level == null) ? 0 : level.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((numberOfAvaliability == null) ? 0 : numberOfAvaliability.hashCode());
-		result = (prime * result) + ((offeredBy == null) ? 0 : offeredBy.hashCode());
+		result = (prime * result) + ((courseName == null) ? 0 : courseName.hashCode());
 		result = (prime * result) + ((requirements == null) ? 0 : requirements.hashCode());
 		result = (prime * result) + ((scholarshipAmount == null) ? 0 : scholarshipAmount.hashCode());
 		result = (prime * result) + ((scholarshipAward == null) ? 0 : scholarshipAward.hashCode());
@@ -465,11 +464,11 @@ public class Scholarship implements java.io.Serializable {
 		} else if (!id.equals(other.id)) {
 			return false;
 		}
-		if (institute == null) {
-			if (other.institute != null) {
+		if (instituteName == null) {
+			if (other.instituteName != null) {
 				return false;
 			}
-		} else if (!institute.equals(other.institute)) {
+		} else if (!instituteName.equals(other.instituteName)) {
 			return false;
 		}
 		if (isActive == null) {
@@ -500,11 +499,11 @@ public class Scholarship implements java.io.Serializable {
 		} else if (!numberOfAvaliability.equals(other.numberOfAvaliability)) {
 			return false;
 		}
-		if (offeredBy == null) {
-			if (other.offeredBy != null) {
+		if (courseName == null) {
+			if (other.courseName != null) {
 				return false;
 			}
-		} else if (!offeredBy.equals(other.offeredBy)) {
+		} else if (!courseName.equals(other.courseName)) {
 			return false;
 		}
 		if (requirements == null) {
@@ -562,14 +561,14 @@ public class Scholarship implements java.io.Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Scholarship [id=").append(id).append(", offeredBy=").append(offeredBy).append(", description=").append(description)
+		builder.append("Scholarship [id=").append(id).append(", courseName=").append(courseName).append(", description=").append(description)
 				.append(", scholarshipAward=").append(scholarshipAward).append(", country=").append(country).append(", level=").append(level)
 				.append(", numberOfAvaliability=").append(numberOfAvaliability).append(", currency=").append(currency).append(", scholarshipAmount=")
 				.append(scholarshipAmount).append(", validity=").append(validity).append(", howToApply=").append(howToApply).append(", gender=").append(gender)
 				.append(", eligibleNationality=").append(eligibleNationality).append(", headquaters=").append(headquaters).append(", email=").append(email)
 				.append(", address=").append(address).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=")
 				.append(createdBy).append(", updatedBy=").append(updatedBy).append(", deletedOn=").append(deletedOn).append(", isActive=").append(isActive)
-				.append(", website=").append(website).append(", institute=").append(institute).append(", name=").append(name).append(", applicationDeadline=")
+				.append(", website=").append(website).append(", instituteName=").append(instituteName).append(", name=").append(name).append(", applicationDeadline=")
 				.append(applicationDeadline).append(", content=").append(content).append(", requirements=").append(requirements).append("]");
 		return builder.toString();
 	}

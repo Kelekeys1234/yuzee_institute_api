@@ -12,7 +12,6 @@ public class ScholarshipDto implements Serializable {
 	private static final long serialVersionUID = 2633639341414502096L;
 	private String id;
 	private String name;
-	private String offeredBy;
 	private String description;
 	private String scholarshipAward;
 	private String countryId;
@@ -28,7 +27,8 @@ public class ScholarshipDto implements Serializable {
 	private String email;
 	private String address;
 	private String website;
-	private String instituteId;
+	private String instituteName;
+	private String courseName;
 	private Date applicationDeadline;
 	private List<String> intakes;
 	private List<String> languages;
@@ -62,14 +62,6 @@ public class ScholarshipDto implements Serializable {
 
 	public void setId(final String id) {
 		this.id = id;
-	}
-
-	public String getOfferedBy() {
-		return offeredBy;
-	}
-
-	public void setOfferedBy(final String offeredBy) {
-		this.offeredBy = offeredBy;
 	}
 
 	public String getName() {
@@ -200,12 +192,20 @@ public class ScholarshipDto implements Serializable {
 		this.website = website;
 	}
 
-	public String getInstituteId() {
-		return instituteId;
+	public String getInstituteName() {
+		return instituteName;
 	}
 
-	public void setInstituteId(final String instituteId) {
-		this.instituteId = instituteId;
+	public void setInstituteName(final String instituteName) {
+		this.instituteName = instituteName;
+	}
+	
+	public String getCourseName() {
+		return courseName;
+	}
+
+	public void setCourseName(final String courseName) {
+		this.courseName = courseName;
 	}
 
 	public Date getApplicationDeadline() {
@@ -246,13 +246,13 @@ public class ScholarshipDto implements Serializable {
 		result = (prime * result) + ((gender == null) ? 0 : gender.hashCode());
 		result = (prime * result) + ((headquaters == null) ? 0 : headquaters.hashCode());
 		result = (prime * result) + ((howToApply == null) ? 0 : howToApply.hashCode());
-		result = (prime * result) + ((instituteId == null) ? 0 : instituteId.hashCode());
+		result = (prime * result) + ((instituteName == null) ? 0 : instituteName.hashCode());
 		result = (prime * result) + ((intakes == null) ? 0 : intakes.hashCode());
 		result = (prime * result) + ((languages == null) ? 0 : languages.hashCode());
 		result = (prime * result) + ((levelId == null) ? 0 : levelId.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((numberOfAvaliability == null) ? 0 : numberOfAvaliability.hashCode());
-		result = (prime * result) + ((offeredBy == null) ? 0 : offeredBy.hashCode());
+		result = (prime * result) + ((courseName == null) ? 0 : courseName.hashCode());
 		result = (prime * result) + ((requirements == null) ? 0 : requirements.hashCode());
 		result = (prime * result) + ((scholarshipAmount == null) ? 0 : scholarshipAmount.hashCode());
 		result = (prime * result) + ((scholarshipAward == null) ? 0 : scholarshipAward.hashCode());
@@ -343,11 +343,11 @@ public class ScholarshipDto implements Serializable {
 		} else if (!howToApply.equals(other.howToApply)) {
 			return false;
 		}
-		if (instituteId == null) {
-			if (other.instituteId != null) {
+		if (instituteName == null) {
+			if (other.instituteName != null) {
 				return false;
 			}
-		} else if (!instituteId.equals(other.instituteId)) {
+		} else if (!instituteName.equals(other.instituteName)) {
 			return false;
 		}
 		if (intakes == null) {
@@ -385,11 +385,11 @@ public class ScholarshipDto implements Serializable {
 		} else if (!numberOfAvaliability.equals(other.numberOfAvaliability)) {
 			return false;
 		}
-		if (offeredBy == null) {
-			if (other.offeredBy != null) {
+		if (courseName == null) {
+			if (other.courseName != null) {
 				return false;
 			}
-		} else if (!offeredBy.equals(other.offeredBy)) {
+		} else if (!courseName.equals(other.courseName)) {
 			return false;
 		}
 		if (requirements == null) {
@@ -433,12 +433,12 @@ public class ScholarshipDto implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ScholarshipDto [name=").append(name).append(", offeredBy=").append(offeredBy).append(", description=").append(description)
+		builder.append("ScholarshipDto [name=").append(name).append(", courseName=").append(courseName).append(", description=").append(description)
 				.append(", scholarshipAward=").append(scholarshipAward).append(", countryId=").append(countryId).append(", levelId=").append(levelId)
 				.append(", numberOfAvaliability=").append(numberOfAvaliability).append(", currency=").append(currency).append(", scholarshipAmount=")
 				.append(scholarshipAmount).append(", validity=").append(validity).append(", howToApply=").append(howToApply).append(", gender=").append(gender)
 				.append(", eligibleNationality=").append(eligibleNationality).append(", headquaters=").append(headquaters).append(", email=").append(email)
-				.append(", address=").append(address).append(", website=").append(website).append(", instituteId=").append(instituteId)
+				.append(", address=").append(address).append(", website=").append(website).append(", instituteName=").append(instituteName)
 				.append(", applicationDeadline=").append(applicationDeadline).append(", intakes=").append(intakes).append(", languages=").append(languages)
 				.append(", requirements=").append(requirements).append("]");
 		return builder.toString();

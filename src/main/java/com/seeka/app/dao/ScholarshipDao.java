@@ -102,17 +102,17 @@ public class ScholarshipDao implements IScholarshipDAO {
 			final String instituteId, final String validity, final Boolean isActive, final Date updatedOn, final String searchKeyword,
 			final String sortByField, String sortByType) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select sch.id,sch.name,sch.offered_by,sch.description,sch.scholarship_award,country.id as country_id,level.id as level_id,sch.number_of_avaliability,sch.scholarship_amount,\r\n"
+		String sqlQuery = "select sch.id,sch.name,sch.course_name,sch.description,sch.scholarship_award,country.id as country_id,level.id as level_id,sch.number_of_avaliability,sch.scholarship_amount,\r\n"
 				+ "sch.validity,sch.how_to_apply,sch.gender,sch.eligible_nationality,sch.headquaters,sch.email,sch.address,sch.created_on,sch.updated_on,sch.created_by,sch.updated_by,\r\n"
-				+ "sch.deleted_on,sch.is_active,sch.website,ins.id as institute_id,sch.application_deadline,country.name as country_name,level.name as level_name,\r\n"
-				+ "sch.currency,ins.name as institute_name,sch.requirements,level.code as level_code\r\n"
+				+ "sch.deleted_on,sch.is_active,sch.website,sch.institute_name,sch.application_deadline,country.name as country_name,level.name as level_name,\r\n"
+				+ "sch.currency,sch.requirements,level.code as level_code\r\n"
 				+ "from scholarship sch inner join country country \r\n"
-				+ "on sch.country_id = country.id inner join level level on sch.level_id = level.id inner join institute ins on sch.institute_id = ins.id where 1 = 1";
+				+ "on sch.country_id = country.id inner join level level on sch.level_id = level.id";
 		if (null != countryId) {
 			sqlQuery += " and country.id =" + countryId;
 		}
 		if (null != instituteId) {
-			sqlQuery += " and ins.id =" + instituteId;
+			sqlQuery += " and sch.institute_name =" + instituteId;
 		}
 		if (null != validity) {
 			sqlQuery += " and sch.validity =" + validity;
@@ -130,7 +130,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 		}
 		if (searchKeyword != null) {
 			sqlQuery += " and ( sch.name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or sch.offered_by like '%" + searchKeyword.trim() + "%'";
+			sqlQuery += " or sch.course_name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or country.name like '%" + searchKeyword.trim() + "%' )";
 			sqlQuery += " or sch.validity like '%" + searchKeyword.trim() + "%' )";
 		}
@@ -143,7 +143,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 			if ("name".equals(sortByField)) {
 				sortingQuery = sortingQuery + " ORDER BY sch.name " + sortByType + " ";
 			} else if ("offeredBy".equals(sortByField)) {
-				sortingQuery = sortingQuery + " ORDER BY sch.offered_by " + sortByType + " ";
+				sortingQuery = sortingQuery + " ORDER BY sch.course_name " + sortByType + " ";
 			} else if ("countryId".equals(sortByField)) {
 				sortingQuery = sortingQuery + " ORDER BY country.name " + sortByType + " ";
 			} else if ("validity".equals(sortByField)) {
@@ -168,7 +168,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 			ScholarshipResponseDTO scholarshipResponseDTO = new ScholarshipResponseDTO();
 			scholarshipResponseDTO.setId(String.valueOf(row[0]));
 			scholarshipResponseDTO.setName(String.valueOf(row[1]));
-			scholarshipResponseDTO.setOfferedBy(String.valueOf(row[2]));
+			scholarshipResponseDTO.setCourseName(String.valueOf(row[2]));
 			scholarshipResponseDTO.setDescription(String.valueOf(row[3]));
 			scholarshipResponseDTO.setScholarshipAward(String.valueOf(row[4]));
 			if (row[5] != null) {
@@ -182,7 +182,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 				scholarshipResponseDTO.setLevelId(null);
 			}
 			if (row[7] != null) {
-				scholarshipResponseDTO.setNumberOfAvaliability(((BigInteger) row[7]).intValue());
+				scholarshipResponseDTO.setNumberOfAvaliability(((Integer) row[7]).intValue());
 			} else {
 				scholarshipResponseDTO.setNumberOfAvaliability(null);
 			}
@@ -207,17 +207,16 @@ public class ScholarshipDao implements IScholarshipDAO {
 
 			scholarshipResponseDTO.setWebsite(String.valueOf(row[22]));
 			if (row[23] != null) {
-				scholarshipResponseDTO.setInstituteId(String.valueOf(row[23]));
+				scholarshipResponseDTO.setInstituteName(String.valueOf(row[23]));
 			} else {
-				scholarshipResponseDTO.setInstituteId(null);
+				scholarshipResponseDTO.setInstituteName(null);
 			}
 			scholarshipResponseDTO.setApplicationDeadline((Date) row[24]);
 			scholarshipResponseDTO.setCountryName(String.valueOf(row[25]));
 			scholarshipResponseDTO.setLevelName(String.valueOf(row[26]));
 			scholarshipResponseDTO.setCurrency(String.valueOf(row[27]));
-			scholarshipResponseDTO.setInstituteName(String.valueOf(row[28]));
-			scholarshipResponseDTO.setRequirements(String.valueOf(row[29]));
-			scholarshipResponseDTO.setLevelCode(String.valueOf(row[30]));
+			scholarshipResponseDTO.setRequirements(String.valueOf(row[28]));
+			scholarshipResponseDTO.setLevelCode(String.valueOf(row[29]));
 			list.add(scholarshipResponseDTO);
 		}
 		return list;
@@ -228,7 +227,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 			final Date updatedOn, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select sch.id from scholarship sch inner join country country \r\n"
-				+ "on sch.country_id = country.id inner join level level on sch.level_id = level.id inner join institute ins on sch.institute_id = ins.id where 1 = 1";
+				+ "on sch.country_id = country.id inner join level level on sch.level_id = level.id inner join institute ins on sch.institute_name = ins.name where 1 = 1";
 		if (null != countryId) {
 			sqlQuery += " and country.id =" + countryId;
 		}
@@ -251,7 +250,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 		}
 		if (searchKeyword != null) {
 			sqlQuery += " and ( sch.name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or sch.offered_by like '%" + searchKeyword.trim() + "%'";
+			sqlQuery += " or sch.course_name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or country.name like '%" + searchKeyword.trim() + "%' )";
 			sqlQuery += " or sch.validity like '%" + searchKeyword.trim() + "%' )";
 		}

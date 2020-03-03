@@ -70,11 +70,11 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public Institute get(final String id) {
+	public Institute get(final String instituteName) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Institute.class, "institute");
-		criteria.add(Restrictions.eq("institute.id", id));
-		return (Institute) criteria.uniqueResult();
+		criteria.add(Restrictions.eq("institute.name", instituteName));
+		return (Institute) criteria.list().get(0);
 	}
 
 	@Override
