@@ -155,6 +155,7 @@ public class ScholarshipService implements IScholarshipService {
 		String createdBy = existingScholarship.getCreatedBy();
 		Date createdOn = existingScholarship.getCreatedOn();
 		BeanUtils.copyProperties(scholarshipDto, existingScholarship);
+		existingScholarship.setId(scholarshipId);
 		existingScholarship.setCreatedBy(createdBy);
 		existingScholarship.setCreatedOn(createdOn);
 		existingScholarship.setUpdatedBy("API");
@@ -209,9 +210,9 @@ public class ScholarshipService implements IScholarshipService {
 		scholarshipElasticDto.setAmount(existingScholarship.getScholarshipAmount());
 		scholarshipElasticDto.setLanguages(scholarshipDto.getLanguages());
 		scholarshipElasticDto.setIntake(scholarshipDto.getIntakes());
-
-		elasticSearchService.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP, SeekaEntityType.SCHOLARSHIP.name().toLowerCase(),
-				scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
+		
+		elasticSearchService.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
+				SeekaEntityType.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 	}
 
 	@Override

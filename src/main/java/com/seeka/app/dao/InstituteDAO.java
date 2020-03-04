@@ -74,7 +74,7 @@ public class InstituteDAO implements IInstituteDAO {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Institute.class, "institute");
 		criteria.add(Restrictions.eq("institute.name", instituteName));
-		return (Institute) criteria.list().get(0);
+		return (Institute) criteria.uniqueResult();
 	}
 
 	@Override
