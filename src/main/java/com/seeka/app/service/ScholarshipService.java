@@ -77,11 +77,13 @@ public class ScholarshipService implements IScholarshipService {
 			scholarship.setCountry(country);
 		}
 		if (scholarshipDto.getInstituteName() != null) {
-			Institute institute = iInstituteDAO.get(scholarshipDto.getInstituteName());
-			if (institute == null) {
-				throw new ValidationException("institute not found for id" + scholarshipDto.getInstituteName());
-			}
-			scholarship.setInstituteName(institute.getName());
+			/*
+			 * Institute institute = iInstituteDAO.get(scholarshipDto.getInstituteName());
+			 * if (institute == null) { throw new
+			 * ValidationException("institute not found for id" +
+			 * scholarshipDto.getInstituteName()); }
+			 */
+			scholarship.setInstituteName(scholarshipDto.getInstituteName());
 		}
 		iScholarshipDAO.saveScholarship(scholarship);
 
@@ -177,11 +179,13 @@ public class ScholarshipService implements IScholarshipService {
 			existingScholarship.setCountry(country);
 		}
 		if (scholarshipDto.getInstituteName() != null) {
-			Institute institute = iInstituteDAO.get(scholarshipDto.getInstituteName());
-			if (institute == null) {
-				throw new ValidationException("institute not found for name" + scholarshipDto.getInstituteName());
-			}
-			existingScholarship.setInstituteName(institute.getName());
+			/*
+			 * Institute institute = iInstituteDAO.get(scholarshipDto.getInstituteName());
+			 * if (institute == null) { throw new
+			 * ValidationException("institute not found for name" +
+			 * scholarshipDto.getInstituteName()); }
+			 */
+			existingScholarship.setInstituteName(scholarshipDto.getInstituteName());
 		}
 		if ((scholarshipDto.getIntakes() != null) && !scholarshipDto.getIntakes().isEmpty()) {
 			for (String intake : scholarshipDto.getIntakes()) {
