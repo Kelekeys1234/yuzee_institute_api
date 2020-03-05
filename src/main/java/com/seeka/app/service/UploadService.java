@@ -52,13 +52,11 @@ public class UploadService implements IUploadService {
 	@Override
 	public String importGlobalFlowOfTertiaryLevelStudents(MultipartFile multipartFile) throws IOException{
 		saveFile(multipartFile,"GlobalFlowOfTertiaryLevelStudents");
+        List<GlobalData> globalStudentList = readGlobalFlowOfTertiaryLevelStudents(multipartFile);
 		globalStudentDataService.deleteAllGlobalStudentData();
-		System.out.println(globalStudentList.size());
 		for (GlobalData globalStudentData : globalStudentList) {
 			globalStudentDataService.saveGlobalStudentData(globalStudentData);
 		}
-		System.out.println("globalStudentList");
-		System.out.println(globalStudentList);
 		return "Done";
 	}
 	
