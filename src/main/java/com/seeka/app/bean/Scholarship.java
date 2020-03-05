@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -95,6 +96,12 @@ public class Scholarship implements java.io.Serializable {
 	private String content;
 	@Column(name = "requirements")
 	private String requirements;
+	@Transient
+	private String entityId;
+	@Transient
+	private String imageName;
+	@Transient
+	private String imageUrl;
 
 	public String getId() {
 		return id;
@@ -310,6 +317,30 @@ public class Scholarship implements java.io.Serializable {
 
 	public void setContent(final String content) {
 		this.content = content;
+	}
+	
+	public String getEntityId() {
+		return entityId;
+	}
+
+	public void setEntityId(final String entityId) {
+		this.entityId = entityId;
+	}
+	
+	public String getImageName() {
+		return entityId;
+	}
+	
+	public void setImageName(final String imageName) {
+		this.imageName = imageName;
+	}
+	
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(final String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	@Override

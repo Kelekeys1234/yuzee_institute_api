@@ -14,7 +14,7 @@ public interface IScholarshipService {
 
 	Scholarship saveScholarship(ScholarshipDto scholarshipDto) throws ValidationException;
 
-	ScholarshipResponseDTO getScholarshipById(String id);
+	ScholarshipResponseDTO getScholarshipById(String id) throws ValidationException;
 
 	void updateScholarship(ScholarshipDto scholarshipDto, String scholarshipId) throws ValidationException;
 

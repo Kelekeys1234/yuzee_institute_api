@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Transient;
+
 public class ScholarshipResponseDTO implements Serializable {
 
 	/**
@@ -42,6 +44,9 @@ public class ScholarshipResponseDTO implements Serializable {
 	private String courseName;
 	private String requirements;
 	private String levelCode;
+	
+	private List<MediaDto> files;
+	
 	/**
 	 * This field is added just to keep the response from elastic search and normal
 	 * search same.
@@ -303,7 +308,15 @@ public class ScholarshipResponseDTO implements Serializable {
 	public void setCourseName(final String courseName) {
 		this.courseName = courseName;
 	}
+	
+	public List<MediaDto> getFiles() {
+		return files;
+	}
 
+	public void setFiles(final List<MediaDto> files) {
+		this.files = files;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

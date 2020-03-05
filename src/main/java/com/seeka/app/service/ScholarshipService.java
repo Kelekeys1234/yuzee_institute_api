@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +24,12 @@ import com.seeka.app.bean.ScholarshipLanguage;
 import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.IScholarshipDAO;
+import com.seeka.app.dto.MediaDto;
 import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.dto.ScholarshipElasticDTO;
 import com.seeka.app.dto.ScholarshipResponseDTO;
+import com.seeka.app.dto.StorageDto;
+import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.util.IConstant;
@@ -45,6 +49,9 @@ public class ScholarshipService implements IScholarshipService {
 
 	@Autowired
 	private ElasticSearchService elasticSearchService;
+	
+	@Autowired
+	private IStorageService iStorageService;
 
 	private static Logger LOGGER = LoggerFactory.getLogger(ScholarshipService.class);
 
@@ -110,7 +117,7 @@ public class ScholarshipService implements IScholarshipService {
 	}
 
 	@Override
-	public ScholarshipResponseDTO getScholarshipById(final String id) {
+	public ScholarshipResponseDTO getScholarshipById(final String id) throws ValidationException {
 		ScholarshipResponseDTO scholarshipResponseDTO = new ScholarshipResponseDTO();
 		Scholarship scholarship = iScholarshipDAO.getScholarshipById(id);
 		BeanUtils.copyProperties(scholarship, scholarshipResponseDTO);
@@ -135,6 +142,17 @@ public class ScholarshipService implements IScholarshipService {
 		scholarshipResponseDTO.setCountryName(scholarship.getCountry().getName());
 		scholarshipResponseDTO.setLevelName(scholarship.getLevel().getName());
 		scholarshipResponseDTO.setInstituteName(scholarship.getInstituteName());
+		
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(id, ImageCategory.INSTITUTE.name(), null, "en");
+		List<MediaDto> mediaDtos = new ArrayList<>();
+		for (StorageDto storageDto : storageDTOList) {
+			MediaDto mediaDto = new MediaDto();
+			mediaDto.setId(storageDto.getEntityId());
+			mediaDto.setName(storageDto.getImageName());
+			mediaDto.setUrl(storageDto.getImageURL());
+			mediaDtos.add(mediaDto);
+		}
+		scholarshipResponseDTO.setFiles(mediaDtos);
 		return scholarshipResponseDTO;
 	}
 

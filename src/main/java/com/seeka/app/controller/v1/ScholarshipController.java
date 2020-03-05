@@ -66,7 +66,7 @@ public class ScholarshipController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> get(@PathVariable final String id) throws Exception {
+	public ResponseEntity<?> get(@PathVariable final String id) throws ValidationException {
 		return new GenericResponseHandlers.Builder().setMessage("Get Scholarship Successfully.").setData(iScholarshipService.getScholarshipById(id))
 				.setStatus(HttpStatus.OK).create();
 	}
