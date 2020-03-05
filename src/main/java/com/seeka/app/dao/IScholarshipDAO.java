@@ -11,7 +11,7 @@ import com.seeka.app.dto.ScholarshipResponseDTO;
 
 public interface IScholarshipDAO {
 
-	void saveScholarship(Scholarship scholarship);
+	Scholarship saveScholarship(Scholarship scholarship);
 
 	void saveScholarshipIntake(ScholarshipIntakes scholarshipIntakes);
 

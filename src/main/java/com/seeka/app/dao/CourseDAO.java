@@ -451,9 +451,6 @@ public class CourseDAO implements ICourseDAO {
 			obj.setLanguage(String.valueOf(row[13]));
 			obj.setLanguageShortKey(String.valueOf(row[13]));
 			obj.setStars(Double.valueOf(String.valueOf(row[14])));
-			// obj.setDomasticFee(String.valueOf(row[16]) + " " + String.valueOf(row[5]));
-			// obj.setInternationalFee(String.valueOf(row[17]) + " " +
-			// String.valueOf(row[5]));
 			obj.setDomesticFee(Double.valueOf(String.valueOf(row[16])));
 			obj.setInternationalFee(Double.valueOf(String.valueOf(row[17])));
 			obj.setTotalCount(Integer.parseInt(String.valueOf(row[18])));
@@ -778,15 +775,9 @@ public class CourseDAO implements ICourseDAO {
 			if (row[7] != null) {
 				obj.setDescription(row[7].toString());
 			}
-			/*
-			 * if (row[8] != null) { obj.setIntake(row[8].toString()); }
-			 */
 			if (row[8] != null) {
 				obj.setDuration(row[8].toString());
 			}
-			/*
-			 * if (row[10] != null) { obj.setLanguage(row[10].toString()); }
-			 */
 			if (row[10] != null) {
 				obj.setDomasticFee(Double.valueOf(row[10].toString()));
 			}
@@ -799,9 +790,6 @@ public class CourseDAO implements ICourseDAO {
 			if (row[17] != null) {
 				obj.setWebsite(row[17].toString());
 			}
-//			if (row[20] != null) {
-//				obj.setFullTime(row[20].toString());
-//			}
 			if (row[20] != null) {
 				obj.setLink(row[20].toString());
 			}
@@ -924,9 +912,6 @@ public class CourseDAO implements ICourseDAO {
 			if (row[8] != null) {
 				obj.setDuration(row[8].toString());
 			}
-			/*
-			 * if (row[10] != null) { obj.setLanguage(row[10].toString()); }
-			 */
 			if (row[10] != null) {
 				obj.setDomasticFee(Double.valueOf(row[10].toString()) * conversionRate);
 			}
@@ -951,12 +936,6 @@ public class CourseDAO implements ICourseDAO {
 			if (row[17] != null) {
 				obj.setWebsite(row[17].toString());
 			}
-//			if (row[19] != null) {
-//				obj.setPartTime(row[19].toString());
-//			}
-//			if (row[20] != null) {
-//				obj.setFullTime(row[20].toString());
-//			}
 			if (row[20] != null) {
 				obj.setLink(row[20].toString());
 			}
@@ -1087,16 +1066,12 @@ public class CourseDAO implements ICourseDAO {
 				courseRequest.setDescription(row[6].toString());
 			}
 			if (row[7] != null) {
-//				courseRequest.setIntake(row[8].toString());
 				courseRequest
 						.setIntake(getCourseIntakeBasedOnCourseId(courseRequest.getId()).stream().map(x -> x.getIntakeDates()).collect(Collectors.toList()));
 			}
 			if (row[8] != null) {
 				courseRequest.setDuration(row[8].toString());
 			}
-			/*
-			 * if (row[10] != null) { courseRequest.setLanguage(row[10].toString()); }
-			 */
 			if (row[10] != null) {
 				courseRequest.setDomasticFee(Double.valueOf(row[10].toString()));
 			}
@@ -1121,12 +1096,6 @@ public class CourseDAO implements ICourseDAO {
 			if (row[17] != null) {
 				courseRequest.setWebsite(row[17].toString());
 			}
-//			if (row[19] != null) {
-//				courseRequest.setPartTime(row[19].toString());
-//			}
-//			if (row[20] != null) {
-//				courseRequest.setFullTime(row[20].toString());
-//			}
 			if (row[20] != null) {
 				courseRequest.setLink(row[20].toString());
 			}
@@ -1264,14 +1233,13 @@ public class CourseDAO implements ICourseDAO {
 		List<CourseResponseDto> list = new ArrayList<>();
 		CourseResponseDto courseResponseDto = null;
 		for (Object[] row : rows) {
-			courseResponseDto = getCourseData(row, courseSearchDto, showIntlCost /* baseCurrencyId, toCurrencyId */);
+			courseResponseDto = getCourseData(row, courseSearchDto, showIntlCost);
 			list.add(courseResponseDto);
 		}
 		return list;
 	}
 
-	private CourseResponseDto getCourseData(final Object[] row, final AdvanceSearchDto courseSearchDto, final boolean showIntlCost
-	/* final BigInteger baseCurrencyId, final BigInteger toCurrencyId */) {
+	private CourseResponseDto getCourseData(final Object[] row, final AdvanceSearchDto courseSearchDto, final boolean showIntlCost) {
 		CourseResponseDto courseResponseDto = null;
 		Long cost = 0l;
 		String newCurrencyCode = "";
@@ -2152,7 +2120,6 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public int getDistinctCourseCountbyName(String courseName) {
 		Session session = sessionFactory.getCurrentSession();
-		//String sqlQuery = "select distinct c.name as courseName from course c where name like ('" + "%" + courseName.trim() + "%')";
 		StringBuilder sqlQuery = new StringBuilder("select distinct c.name as courseName from course c");
 		if (StringUtils.isNotEmpty(courseName)) {
 			sqlQuery.append(" where name like ('" + "%" + courseName.trim() + "%')");

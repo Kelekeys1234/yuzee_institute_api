@@ -78,12 +78,10 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<String> getTopInstituteByCountry(final String countryId/* , Long startIndex, Long pageSize */) {
+	public List<String> getTopInstituteByCountry(final String countryId) {
 		Session session = sessionFactory.getCurrentSession();
 		List<String> idList = session.createNativeQuery("select id from institute where country_id = ? order by world_ranking").setParameter(1, countryId)
 				.getResultList();
-		// .setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
-
 		return idList;
 	}
 
@@ -741,8 +739,6 @@ public class InstituteDAO implements IInstituteDAO {
 		String countryIds = countryIdList.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(","));
 		List<String> idList = session.createNativeQuery("select id from institute where country_id in (?) order by Rand() LIMIT ?")
 				.setParameter(1, countryIds).setParameter(2, IConstant.TOTAL_INSTITUTES_PER_PAGE).getResultList();
-		// .setParameter(2, startIndex).setParameter(3, pageSize).getResultList();
-
 		return idList;
 	}
 

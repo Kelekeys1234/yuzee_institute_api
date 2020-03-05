@@ -25,7 +25,6 @@ public class CountryJobSitesDAO implements ICountryJobSitesDAO {
 	@Override
 	public List<CountryJobSites> getAll() {
 		System.out.println("Inside CountryJobSites DAO....");
-		// TODO Auto-generated method stub
 		Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		List<CountryJobSites> list = session.createCriteria(CountryJobSites.class).list();
@@ -35,12 +34,7 @@ public class CountryJobSitesDAO implements ICountryJobSitesDAO {
 	@Override
 	public CountryJobSites get(String id) {
 		System.out.println("String : "+id);
-		//Session session = sessionFactory.getCurrentSession();
 		Session session = sessionFactory.getCurrentSession();		
-		 
-		
-		//CountryJobSites CountryJobSites = session.load(CountryJobSites.class, id);
-		
 		CountryJobSites CountryJobSites = session.get(CountryJobSites.class, id);
 		return CountryJobSites;
 	}

@@ -50,13 +50,4 @@ public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO{
 		return rows;
 	}
 	
-	/*@Override
-	public Institute getUserByEmail(String email) {	
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(UserInfo.class);
-		crit.add(Restrictions.eq("emailId",email));
-		List<UserInfo> users = crit.list();
-		return users !=null && !users.isEmpty()?users.get(0):null;
-	}*/
-	
 }

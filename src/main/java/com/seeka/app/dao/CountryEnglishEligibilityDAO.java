@@ -24,7 +24,6 @@ public class CountryEnglishEligibilityDAO implements ICountryEnglishEligibilityD
 	@Override
 	public List<CountryEnglishEligibility> getAll() {
 		System.out.println("Inside CountryEnglishEligibility DAO....");
-		// TODO Auto-generated method stub
 		Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		List<CountryEnglishEligibility> list = session.createCriteria(CountryEnglishEligibility.class).list();
@@ -46,42 +45,5 @@ public class CountryEnglishEligibilityDAO implements ICountryEnglishEligibilityD
 		crit.add(Restrictions.eq("countryId",countryId));
 		return crit.list();
 	}
-	
-/*
-	@Override
-	public List<CountryDto> searchInterestByCountry(String name) {
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createSQLQuery(
-				"SELECT c.id,c.name as name,c.country_code as code FROM CountryEnglishEligibility c with WHERE c.name LIKE '%" + name + "%'");
-		List<Object[]> rows = query.list();
-		List<CountryDto> countries = new ArrayList<CountryDto>();
-		CountryDto obj = null;
-		for (Object[] row : rows) {
-			obj = new CountryDto();
-			obj.setId(BigInteger.fromString((row[0].toString())));
-			obj.setName(row[1].toString());
-			obj.setCountryCode(row[2].toString());
-			countries.add(obj);
-		}
-		return countries;
-	}
-	
-	@Override
-	public List<CountryDto> getAllCountries() {
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createSQLQuery(
-				"SELECT c.id,c.name as name,c.country_code as code FROM CountryEnglishEligibility c with");
-		List<Object[]> rows = query.list();
-		List<CountryDto> countries = new ArrayList<CountryDto>();
-		CountryDto obj = null;
-		for (Object[] row : rows) {
-			obj = new CountryDto();
-			obj.setId(BigInteger.fromString((row[0].toString())));
-			obj.setName(row[1].toString());
-			obj.setCountryCode(row[2].toString());
-			countries.add(obj);
-		}
-		return countries;
-	}*/
 
 }

@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -28,9 +28,11 @@ public class ScholarshipDao implements IScholarshipDAO {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public void saveScholarship(final Scholarship scholarship) {
+	public Scholarship saveScholarship(final Scholarship scholarship) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(scholarship);
+		Scholarship scholarships = session.get(Scholarship.class, scholarship.getName());
+		return scholarships;
 	}
 
 	@Override
@@ -257,37 +259,6 @@ public class ScholarshipDao implements IScholarshipDAO {
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
 		return query.list().size();
-//		Criteria criteria = session.createCriteria(Scholarship.class, "scholarship");
-//		criteria.createAlias("scholarship.country", "country");
-//		criteria.createAlias("scholarship.institute", "institute");
-//		if (countryId != null) {
-//			criteria.add(Restrictions.eq("country.id", countryId));
-//		}
-//		if (instituteId != null) {
-//			criteria.add(Restrictions.eq("institute.id", instituteId));
-//		}
-//		if (validity != null) {
-//			criteria.add(Restrictions.eq("scholarship.validity", validity));
-//		}
-//		if (isActive != null) {
-//			criteria.add(Restrictions.eq("scholarship.isActive", isActive));
-//		} else {
-//			criteria.add(Restrictions.eq("scholarship.isActive", true));
-//		}
-//		if (updatedOn != null) {
-//			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
-//			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
-//			criteria.add(Restrictions.ge("scholarship.updatedOn", fromDate));
-//			criteria.add(Restrictions.le("scholarship.updatedOn", toDate));
-//		}
-//		if (searchKeyword != null) {
-//			criteria.add(Restrictions.disjunction().add(Restrictions.ilike("scholarship.name", searchKeyword, MatchMode.ANYWHERE))
-//					.add(Restrictions.ilike("scholarship.offeredBy", searchKeyword, MatchMode.ANYWHERE))
-//					.add(Restrictions.ilike("country.name", searchKeyword, MatchMode.ANYWHERE))
-//					.add(Restrictions.ilike("scholarship.validity", searchKeyword, MatchMode.ANYWHERE)));
-//		}
-//		criteria.setProjection(Projections.rowCount());
-//		return ((Long) criteria.uniqueResult()).intValue();
 	}
 
 	@Override

@@ -35,44 +35,4 @@ public class ArticleFolderMapDao implements IArticleFolderMapDao{
 		}
 		return criteria.list();
     }
-
-    
-    
-//
-//    public List<ArticleNameDto> getFolderArticles(BigInteger id) {
-//        List<ArticleNameDto> articleNameDtos = new ArrayList<ArticleNameDto>();
-//        try {
-//            Session session = sessionFactory.getCurrentSession();
-//            Query query = session.createSQLQuery(
-//                            "SELECT sc.id, sc.heading FROM article_folder_mapping auc inner join seeka_articles sc on auc.article_id = sc.id  where auc.folder_id='" + id + "'");
-//            List<Object[]> rows = query.list();
-//            for (Object[] row : rows) {
-//                ArticleNameDto bean = new ArticleNameDto();
-//                bean.setTitle((row[1].toString()));
-//                bean.setArticleId((new BigInteger((row[0].toString()))));
-//                articleNameDtos.add(bean);
-//            }
-//        } catch (Exception exception) {
-//            exception.printStackTrace();
-//        }
-//        return articleNameDtos;
-//    }
-//
-//  
-//    public String getFolderImageUrl(BigInteger id) {
-//        String imageUrl = null;
-//        try {
-//            Session session = sessionFactory.getCurrentSession();
-//            Query query = session.createSQLQuery(
-//                            "SELECT sc.imagepath FROM article_folder_mapping auc inner join seeka_articles sc on auc.article_id = sc.id  where auc.folder_id='" + id + "'"
-//                                            + "ORDER BY auc.article_id DESC LIMIT 1");
-//             imageUrl = (String) query.uniqueResult();
-//        } catch (Exception exception) {
-//            exception.printStackTrace();
-//        }
-//        return imageUrl;
-//    }
-    
-
-
 }

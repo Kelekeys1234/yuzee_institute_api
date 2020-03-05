@@ -112,7 +112,6 @@ public class CityDAO implements ICityDAO {
 		}
 		criteria.setFirstResult(startIndex);
 		criteria.setMaxResults(pageSize);
-		// criteria.setProjection(Projections.property("city.name"));
 		return criteria.list();
 	}
 

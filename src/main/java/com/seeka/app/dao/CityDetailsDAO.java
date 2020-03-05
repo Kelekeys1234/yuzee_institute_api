@@ -30,15 +30,6 @@ public class CityDetailsDAO implements ICityDetailsDAO {
 		return cityDetails;
 	}
 	
-	/*@Override
-	public List<City> getCountry() {
-		Session session = sessionFactory.getCurrentSession();	
-		String hql = "SELECT * FROM City INNER JOIN FROM Country ON City.countryId=Country.id";				 
-		Query query = (Query) session.createQuery(hql);
-		List<City> result = query.getResultList();
-		return  result;
-	}*/
-	
 	public List<CityDetails> getAllCitiesByCountry(String countryId) {		
 		Session session = sessionFactory.getCurrentSession();				 
 		Criteria criteria = session.createCriteria(City.class);	   	

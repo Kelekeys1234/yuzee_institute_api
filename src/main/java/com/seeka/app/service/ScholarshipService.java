@@ -16,13 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Country;
-import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Level;
 import com.seeka.app.bean.Scholarship;
 import com.seeka.app.bean.ScholarshipIntakes;
 import com.seeka.app.bean.ScholarshipLanguage;
 import com.seeka.app.dao.ICountryDAO;
-import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.IScholarshipDAO;
 import com.seeka.app.dto.ScholarshipDto;
@@ -43,9 +41,6 @@ public class ScholarshipService implements IScholarshipService {
 	private ICountryDAO iCountryDAO;
 
 	@Autowired
-	private IInstituteDAO iInstituteDAO;
-
-	@Autowired
 	private ILevelDAO iLevelDAO;
 
 	@Autowired
@@ -54,7 +49,7 @@ public class ScholarshipService implements IScholarshipService {
 	private static Logger LOGGER = LoggerFactory.getLogger(ScholarshipService.class);
 
 	@Override
-	public void saveScholarship(final ScholarshipDto scholarshipDto) throws ValidationException {
+	public Scholarship saveScholarship(final ScholarshipDto scholarshipDto) throws ValidationException {
 		Scholarship scholarship = new Scholarship();
 		BeanUtils.copyProperties(scholarshipDto, scholarship);
 		scholarship.setIsActive(true);
@@ -77,12 +72,6 @@ public class ScholarshipService implements IScholarshipService {
 			scholarship.setCountry(country);
 		}
 		if (scholarshipDto.getInstituteName() != null) {
-			/*
-			 * Institute institute = iInstituteDAO.get(scholarshipDto.getInstituteName());
-			 * if (institute == null) { throw new
-			 * ValidationException("institute not found for id" +
-			 * scholarshipDto.getInstituteName()); }
-			 */
 			scholarship.setInstituteName(scholarshipDto.getInstituteName());
 		}
 		iScholarshipDAO.saveScholarship(scholarship);
@@ -117,6 +106,7 @@ public class ScholarshipService implements IScholarshipService {
 		
 		elasticSearchService.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
 				SeekaEntityType.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
+		return scholarship;
 	}
 
 	@Override
@@ -179,12 +169,6 @@ public class ScholarshipService implements IScholarshipService {
 			existingScholarship.setCountry(country);
 		}
 		if (scholarshipDto.getInstituteName() != null) {
-			/*
-			 * Institute institute = iInstituteDAO.get(scholarshipDto.getInstituteName());
-			 * if (institute == null) { throw new
-			 * ValidationException("institute not found for name" +
-			 * scholarshipDto.getInstituteName()); }
-			 */
 			existingScholarship.setInstituteName(scholarshipDto.getInstituteName());
 		}
 		if ((scholarshipDto.getIntakes() != null) && !scholarshipDto.getIntakes().isEmpty()) {

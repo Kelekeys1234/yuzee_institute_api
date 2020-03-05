@@ -33,12 +33,4 @@ public class InstituteKeywordDAO implements IInstituteKeywordDAO{
 		Criteria crit = session.createCriteria(InstituteKeywords.class);
 		return crit.list();
 	}
-	
-	/*@Override
-	public List<InstituteKeywords> searchCourseKeyword(String keyword){
-		Session session = sessionFactory.getCurrentSession();		
-		Query query = session.createSQLQuery("SELECT sk.keyword FROM search_keywords sk WHERE sk.keyword LIKE '%"+keyword+"%'");
-		return query.list();
-	}*/
-	
 }

@@ -70,17 +70,6 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 		Criteria criteria = session.createCriteria(EducationSystem.class, "educationSystem");
 		criteria.createAlias("educationSystem.country", "country");
 		criteria.add(Restrictions.eq("country.id", countryId));
-		/*
-		 *
-		 * Query query = session
-		 * .createSQLQuery("select id, name, code ,country_id ,is_active from education_system  where country_id="
-		 * + countryId + " and is_active = 1 order by code"); List<Object[]> rows =
-		 * query.list(); List<EducationSystem> list = new ArrayList<>(); for (Object[]
-		 * row : rows) { EducationSystem obj = new EducationSystem(); obj.setId(new
-		 * BigInteger((row[0].toString()))); obj.setName(row[1].toString());
-		 * obj.setCode(row[2].toString()); obj.setSubjects(getSubject(session));
-		 * list.add(obj); }
-		 */
 		return criteria.list();
 	}
 

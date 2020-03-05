@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Level;
+import com.seeka.app.bean.Scholarship;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.ScholarshipDto;
@@ -49,8 +50,8 @@ public class ScholarshipController {
 		if (!fieldErrors.isEmpty()) {
 			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
 		}
-		iScholarshipService.saveScholarship(scholarshipDto);
-		return new GenericResponseHandlers.Builder().setMessage("Create Scholarship Successfully.").setStatus(HttpStatus.OK).create();
+		Scholarship scholarship = iScholarshipService.saveScholarship(scholarshipDto);
+		return new GenericResponseHandlers.Builder().setData(scholarship.getId()).setMessage("Create Scholarship Successfully.").setStatus(HttpStatus.OK).create();
 	}
 
 	@PutMapping("/{id}")
@@ -61,7 +62,7 @@ public class ScholarshipController {
 			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
 		}
 		iScholarshipService.updateScholarship(scholarshipDto, id);
-		return new GenericResponseHandlers.Builder().setMessage("Update Scholarship Successfully.").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(id).setMessage("Update Scholarship Successfully.").setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping("/{id}")

@@ -237,31 +237,7 @@ public class CourseController {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),
 				courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
-
-		/**
-		 * Get userCountry Based on userId
-		 */
-		/*
-		 * UserDto userDto = iUsersService.getUserById(courseSearchDto.getUserId()); if
-		 * (userDto == null) { throw new
-		 * NotFoundException(messageByLocalService.getMessage("user.not.found", new
-		 * Object[] { courseSearchDto.getUserId() }, language)); } else if
-		 * (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
-		 * throw new ValidationException(
-		 * messageByLocalService.getMessage("user.citizenship.not.present", new Object[]
-		 * { courseSearchDto.getUserId() }, language)); }
-		 * 
-		 *//**
-			 * Get Country Id Based on citizenship
-			 *//*
-				 * Country country =
-				 * iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship()); if
-				 * (country == null || country.getId() == null) { throw new ValidationException(
-				 * messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[]
-				 * { userDto.getCitizenship() }, language)); }
-				 * 
-				 * courseSearchDto.setUserCountryId(country.getId());
-				 */
+		
 		List<CourseResponseDto> courseList = courseService.advanceSearch(courseSearchDto);
 		int totalCount = courseService.getCountOfAdvanceSearch(courseSearchDto);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,

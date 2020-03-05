@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.seeka.app.bean.Level;
+import com.seeka.app.bean.Scholarship;
 import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.dto.ScholarshipResponseDTO;
 import com.seeka.app.exception.ValidationException;
 
 public interface IScholarshipService {
 
-	void saveScholarship(ScholarshipDto scholarshipDto) throws ValidationException;
+	Scholarship saveScholarship(ScholarshipDto scholarshipDto) throws ValidationException;
 
 	ScholarshipResponseDTO getScholarshipById(String id);
 

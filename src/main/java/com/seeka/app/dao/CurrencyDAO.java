@@ -101,52 +101,6 @@ public class CurrencyDAO implements ICurrencyDAO {
         return (CurrencyRate) crit.uniqueResult();
     }
 
-//    public CurrencyRate saveCurrencyRate(BigInteger fromCurrencyId, String courseCurrency) {
-//        Session session = sessionFactory.getCurrentSession();
-//        CurrencyRate currencyRate = null;
-//        String currencyResponse = CommonUtil.getCurrencyDetails(courseCurrency);
-//        if (currencyResponse != null) {
-//            currencyRate = new CurrencyRate();
-//            currencyRate.setCreatedDate(DateUtil.getUTCdatetimeAsStringYYYY_MM_DD());
-//            currencyRate.setBaseCurrencyId(fromCurrencyId);
-//            currencyRate.setRateDetail(currencyResponse);
-//            session.save(currencyRate);
-//        }
-//        return currencyRate;
-//    }
-
-//    public Double getConvertedCurrency(CurrencyRate currencyRate, BigInteger toCurrencyId, Double amount) {
-//        Session session = sessionFactory.getCurrentSession();
-//        Double convertedRate = null;
-//        if (currencyRate.getRateDetail() != null) {
-//            Currency currency = getCurrency(toCurrencyId, session);
-//            JSONParser parser = new JSONParser();
-//            org.json.simple.JSONObject json;
-//            try {
-//                json = (org.json.simple.JSONObject) parser.parse(currencyRate.getRateDetail());
-//                org.json.simple.JSONObject rates = (org.json.simple.JSONObject) json.get("rates");
-//                Double currencyValue = null;
-//                for (Iterator iterator = rates.keySet().iterator(); iterator.hasNext();) {
-//                    String key = (String) iterator.next();
-//                    if (key.equalsIgnoreCase(currency.getCode())) {
-//                        if (rates.get(key) != null && String.valueOf(rates.get(key)).contains(".")) {
-//                            currencyValue = (Double) rates.get(key);
-//                        } else {
-//                            currencyValue = Double.valueOf((Long) rates.get(key));
-//                        }
-//                        break;
-//                    }
-//                }
-//                if (currencyValue != null) {
-//                    convertedRate = currencyValue * amount;
-//                }
-//            } catch (org.json.simple.parser.ParseException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return convertedRate;
-//    }
-
     private Currency getCurrency(String id, Session session) {
         Currency obj = session.get(Currency.class, id);
         return obj;

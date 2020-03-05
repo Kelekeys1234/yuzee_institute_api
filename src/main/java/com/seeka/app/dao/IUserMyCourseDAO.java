@@ -4,11 +4,6 @@ import java.util.List;
 
 import com.seeka.app.bean.UserMyCourse;
 
-/**
- *
- * @author SeekADegree
- *
- */
 public interface IUserMyCourseDAO {
 	void save(UserMyCourse reviewObj);
 

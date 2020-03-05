@@ -51,10 +51,7 @@ public class UploadService implements IUploadService {
 	
 	@Override
 	public String importGlobalFlowOfTertiaryLevelStudents(MultipartFile multipartFile) throws IOException{
-		// TODO Auto-generated method stub
 		saveFile(multipartFile,"GlobalFlowOfTertiaryLevelStudents");
-		/*Map<String, List<GlobalDataDto>> countryGlobalStudentMap*/List<GlobalData> globalStudentList = readGlobalFlowOfTertiaryLevelStudents(multipartFile);  // Contains <India,list of<GlobalStudentDto>>
-		//System.out.println(countryGlobalStudentMap);
 		globalStudentDataService.deleteAllGlobalStudentData();
 		System.out.println(globalStudentList.size());
 		for (GlobalData globalStudentData : globalStudentList) {
@@ -74,13 +71,12 @@ public class UploadService implements IUploadService {
 		return path.toString();
 	}
 	
-	private /*Map<String,List<GlobalDataDto>>*/List<GlobalData> readGlobalFlowOfTertiaryLevelStudents(MultipartFile multipartFile) throws IOException {
+	private List<GlobalData> readGlobalFlowOfTertiaryLevelStudents(MultipartFile multipartFile) throws IOException {
 		InputStream inputStream = multipartFile.getInputStream();
 		Workbook workbook = new XSSFWorkbook(inputStream);
         Map<String, List<GlobalData>> countryWiseStudentMap = new HashMap<>();
         Sheet sheet = workbook.getSheetAt(0);
 		Iterator<Row> iterator = sheet.iterator();
-		// This is done for header
 		Map<Integer,String> country= new HashMap<Integer, String>();
 		if (iterator.hasNext()) {
 			Iterator<Cell> cellIterator = iterator.next().iterator();
@@ -108,7 +104,6 @@ public class UploadService implements IUploadService {
 				if (currentCell.getStringCellValue() != null && !currentCell.getStringCellValue().isEmpty()) {
 					globalDataDto.setDestinationCountry(currentCell.getStringCellValue());
 				} else {
-				//	i++;
 					continue;
 				}
 				if(cellIterator.hasNext()) {
@@ -140,10 +135,10 @@ public class UploadService implements IUploadService {
 			listOfGlobalData.addAll(globalData.getValue());
 		}
 		
-		return /* countryWiseStudentMap */listOfGlobalData;
+		return listOfGlobalData;
 	}
 
-	private /*Map<String,List<String>>*/List<Top10Course> readTop10CoursesPerFaculty(MultipartFile multipartFile) throws IOException {
+	private List<Top10Course> readTop10CoursesPerFaculty(MultipartFile multipartFile) throws IOException {
 		InputStream inputStream = multipartFile.getInputStream();
 		Workbook workbook = new XSSFWorkbook(inputStream);
         Map<String, List<String>> facultyCourseMap = new HashMap<>();
@@ -151,7 +146,6 @@ public class UploadService implements IUploadService {
         	Sheet sheet = workbook.getSheetAt(i);
         	Iterator<Row> iterator = sheet.iterator();
         	String facultyName=null; 
-        	// This is done for header
         	if(iterator.hasNext()) {
         		Iterator<Cell> cellIterator = iterator.next().iterator();
         		 while (cellIterator.hasNext()) {
@@ -181,8 +175,6 @@ public class UploadService implements IUploadService {
         	System.out.println(facultyCourseMap.get(facultyName));
         }
         
-        // Map<FacultyName, List of Courses in it>
-        
         List<Top10Course> listOfCourses = new ArrayList<>();
         Top10Course top10Course = null;
         for (Entry<String, List<String>> facultyCourse : facultyCourseMap.entrySet()) {
@@ -192,6 +184,6 @@ public class UploadService implements IUploadService {
 			}
 		}
         
-		return /* facultyCourseMap */listOfCourses;
+		return listOfCourses;
 	}
 }

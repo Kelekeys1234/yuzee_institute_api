@@ -443,7 +443,7 @@ public class ArticleService implements IArticleService {
 			articleFolderMap.setArticleId(articleFolderMapDto.getArticleId());
 			articleFolderMapDao.save(articleFolderMap);
 			articleFolderMapDto.setId(articleFolderMap.getId());
-			return articleFolderMapDto;// ConstraintViolationException
+			return articleFolderMapDto;
 		} catch (DataIntegrityViolationException e) {
 			throw new ValidationException(messageByLocalService.getMessage("article.exists.in.folder", new Object[] {}, language));
 		}
