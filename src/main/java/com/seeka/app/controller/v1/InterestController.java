@@ -25,4 +25,9 @@ public class InterestController {
     public ResponseEntity<?> searchInterest(@PathVariable String searchText) throws Exception {
         return ResponseEntity.accepted().body(hobbyService.searchInterest(searchText));
     }
+    
+    @RequestMapping(value = "/{interestID}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getInterestByID(@PathVariable String interestID) throws Exception {
+        return ResponseEntity.accepted().body(hobbyService.getInterest((interestID)));
+    }
 }

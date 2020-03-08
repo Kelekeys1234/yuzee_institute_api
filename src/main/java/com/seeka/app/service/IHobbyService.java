@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.seeka.app.bean.Hobbies;
+import com.seeka.app.bean.Interest;
 import com.seeka.app.dto.UserCountryHobbiesDto;
 import com.seeka.app.dto.UserHobbies;
 import com.seeka.app.dto.UserInterest;
@@ -16,6 +17,8 @@ public interface IHobbyService {
     public void update(Hobbies hobbiesObj);
 
     public Hobbies get(String id);
+    
+    public Interest getInterest(String id);
 
     public List<Hobbies> searchByHobbies(String hobbyTxt);
 

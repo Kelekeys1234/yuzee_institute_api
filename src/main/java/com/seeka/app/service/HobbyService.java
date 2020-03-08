@@ -356,4 +356,9 @@ public class HobbyService implements IHobbyService {
         }
         return response;
     }
+
+	@Override
+	public Interest getInterest(String id) {
+		return interestDao.get(id);
+	}
 }
