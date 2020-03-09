@@ -217,7 +217,7 @@ public class EnrollmentService implements IEnrollmentService {
 		EnrollmentResponseDto enrollmentResponseDto = new EnrollmentResponseDto();
 		BeanUtils.copyProperties(enrollment, enrollmentResponseDto);
 
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(enrollmentId, ImageCategory.ENROLLMENT.name(), null, "en");
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(enrollmentId, null, "en");
 		enrollmentResponseDto.setEnrollmentImages(storageDTOList);
 
 		enrollmentResponseDto.setInstituteId(enrollment.getInstitute().getId());

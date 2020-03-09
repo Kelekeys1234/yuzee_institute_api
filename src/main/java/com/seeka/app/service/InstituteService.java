@@ -195,8 +195,7 @@ public class InstituteService implements IInstituteService {
 			}
 			instituteResponseDTO.setWorldRanking(institute.getWorldRanking());
 			instituteResponseDTO.setLocation(institute.getLatitute() + "," + institute.getLongitude());
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDTO.getId(), ImageCategory.INSTITUTE.toString(), null,
-					"en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDTO.getId(), null, "en");
 			instituteResponseDTO.setStorageList(storageDTOList);
 			instituteResponseDTOList.add(instituteResponseDTO);
 		}
@@ -911,8 +910,7 @@ public class InstituteService implements IInstituteService {
 		int startIndex = (pageNumber - 1) * pageSize;
 		List<NearestInstituteDTO> nearestInstituteDTOs = dao.getNearestInstituteList(startIndex, pageSize, latitude, longitude);
 		for (NearestInstituteDTO nearestInstituteDTO : nearestInstituteDTOs) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getInstituteId(), ImageCategory.INSTITUTE.toString(),
-					Type.LOGO.name(), "en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getInstituteId(), Type.LOGO.name(), "en");
 			nearestInstituteDTO.setInstituteLogoImages(storageDTOList);
 		}
 		return nearestInstituteDTOs;

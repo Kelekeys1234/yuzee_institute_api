@@ -29,19 +29,17 @@ public class StorageService implements IStorageService {
 	private MessageByLocaleService messageByLocalService;
 
 	@Override
-	public List<StorageDto> getStorageInformation(final String entityId, final String entityType, final String type, final String language)
+	public List<StorageDto> getStorageInformation(final String entityId, final String type, final String language)
 			throws ValidationException {
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL);
 
 		if (entityId == null || entityId.isEmpty()) {
 			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] { entityId }, language));
-		} else if (entityType == null || entityType.isEmpty()) {
-			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] { entityType }, language));
-		}
+		} 
 
 		builder.queryParam("entityId", entityId);
-		builder.queryParam("entityType", entityType);
+//		builder.queryParam("entityType", entityType);
 		if (type != null) {
 			builder.queryParam("type", type);
 		}
@@ -61,19 +59,17 @@ public class StorageService implements IStorageService {
 	}
 
 	@Override
-	public List<StorageDto> getStorageInformationBasedOnEntityIdList(final List<String> entityIds, final String entityType, final String type,
+	public List<StorageDto> getStorageInformationBasedOnEntityIdList(final List<String> entityIds, final String type,
 			final String language) throws ValidationException {
 		String url = IConstant.STORAGE_CONNECTION_URL + "/get";
 
 		if (entityIds == null || entityIds.isEmpty()) {
 			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] { entityIds }, language));
-		} else if (entityType == null || entityType.isEmpty()) {
-			throw new ValidationException(messageByLocalService.getMessage("not.null", new Object[] { entityType }, language));
-		}
+		} 
 
 		StorageRequestDto storageRequestDto = new StorageRequestDto();
 		storageRequestDto.setEntityIds(entityIds);
-		storageRequestDto.setEntityType(entityType);
+//		storageRequestDto.setEntityType(entityType);
 		if (type != null) {
 			storageRequestDto.setType(type);
 		}

@@ -285,8 +285,7 @@ public class CourseController {
 		Institute instituteObj = course.getInstitute();
 		List<YoutubeVideo> youtubeData = new ArrayList<>();
 		if (instituteObj != null) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(),
-					ImageCategory.INSTITUTE.toString(), null, "en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), null, "en");
 			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
 			youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
@@ -368,8 +367,7 @@ public class CourseController {
 			response.put("error", errorDto);
 			return ResponseEntity.badRequest().body(response);
 		}
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(),
-				ImageCategory.INSTITUTE.toString(), null, "en");
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), null, "en");
 		instituteResponseDto.setStorageList(storageDTOList);
 
 		List<CourseResponseDto> courseList = courseService.getAllCoursesByInstitute(instituteId, request);

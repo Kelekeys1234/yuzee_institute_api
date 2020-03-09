@@ -50,7 +50,7 @@ public class SearchPageController {
 				null, null, null, null);
 
 		for (InstituteResponseDto obj : recommendedInstList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getId(), null, "en");
 			obj.setStorageList(storageDTOList);
 		}
 		List<CountryDto> countryList = CountryLevelFacultyUtil.getCountryList();

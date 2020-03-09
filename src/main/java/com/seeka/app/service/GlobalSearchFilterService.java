@@ -44,8 +44,7 @@ public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 
 		List<CourseResponseDto> courseList = icourseDao.advanceSearch(advacneSearchDto, globalSearchFilterDto);
 		for (CourseResponseDto courseResponseDto : courseList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseResponseDto.getInstituteId(), ImageCategory.INSTITUTE.toString(),
-					null, "en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseResponseDto.getInstituteId(), null, "en");
 			courseResponseDto.setStorageList(storageDTOList);
 		}
 		Map<String, Object> returnMap = new HashMap<>();
