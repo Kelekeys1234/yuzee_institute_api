@@ -252,8 +252,7 @@ public class RecommendationService implements IRecommendationService {
 			BeanUtils.copyProperties(course, courseResponseDto);
 			courseResponseDto.setInstituteId(course.getInstitute().getId());
 			courseResponseDto.setInstituteName(course.getInstitute().getName());
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null,
-					"en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), null, "en");
 			courseResponseDto.setStorageList(storageDTOList);
 			if ((coursesBasedOnPastSearch != null) && coursesBasedOnPastSearch.contains(course.getId())) {
 				courseResponseDto.setIsViewed(true);

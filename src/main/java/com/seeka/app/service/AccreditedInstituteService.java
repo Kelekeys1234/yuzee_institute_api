@@ -58,8 +58,7 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 		for (AccreditedInstitute accreditedInstitute : accreditedInstitutes) {
 			AccreditedInstituteDto accreditedInstituteDto = new AccreditedInstituteDto();
 			BeanUtils.copyProperties(accreditedInstitute, accreditedInstituteDto);
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(accreditedInstitute.getId(), ImageCategory.ACCREDITED_INSTITUTE.name(),
-					null, "en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(accreditedInstitute.getId(), null, "en");
 			if (storageDTOList != null && !storageDTOList.isEmpty()) {
 				accreditedInstituteDto.setStorageDto(storageDTOList.get(0));
 			}
@@ -73,8 +72,7 @@ public class AccreditedInstituteService implements IAccreditedInstituteService {
 		AccreditedInstitute accreditedInstitute = iAccreditedInstituteDao.getAccreditedInstituteDetail(accreditedInstituteId);
 		AccreditedInstituteDto accreditedInstituteDto = new AccreditedInstituteDto();
 		BeanUtils.copyProperties(accreditedInstitute, accreditedInstituteDto);
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(accreditedInstitute.getId(), ImageCategory.ACCREDITED_INSTITUTE.name(), null,
-				"en");
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(accreditedInstitute.getId(), null, "en");
 		if (storageDTOList != null && !storageDTOList.isEmpty()) {
 			accreditedInstituteDto.setStorageDto(storageDTOList.get(0));
 		}

@@ -336,8 +336,7 @@ public class InstituteController {
 		List<InstituteResponseDto> instituteList = instituteService.getAllInstitutesByFilter(request, sortByField, sortByType, searchKeyword, startIndex,
 				cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking, campusType);
 		for (InstituteResponseDto instituteResponseDto : instituteList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null,
-					"en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), null, "en");
 			instituteResponseDto.setStorageList(storageDTOList);
 		}
 
@@ -386,8 +385,7 @@ public class InstituteController {
 		List<InstituteResponseDto> instituteResponseDtoList = instituteService.getAllInstitutesByFilter(request, null, null, null, null, null, null, null, null,
 				null, null, null);
 		for (InstituteResponseDto instituteResponseDto : instituteResponseDtoList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null,
-					"en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), null, "en");
 			instituteResponseDto.setStorageList(storageDTOList);
 		}
 		Integer maxCount = 0, totalCount = 0;
@@ -543,7 +541,7 @@ public class InstituteController {
 
 	@RequestMapping(value = "/images/{instituteId}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getInstituteImage(@PathVariable final String instituteId) throws Exception {
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteId, ImageCategory.INSTITUTE.toString(), null, "en");
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteId, null, "en");
 		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
 	}
 

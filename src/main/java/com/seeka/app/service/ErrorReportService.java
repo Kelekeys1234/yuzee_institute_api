@@ -134,7 +134,7 @@ public class ErrorReportService implements IErrorReportService {
 			if (errorReport.getAssigneeUserId() != null) {
 				UserDto assignUserDto = iUsersService.getUserById(errorReport.getAssigneeUserId());
 				errorReportResponseDto.setAssigneeUserName(assignUserDto.getFirstName() + " " + assignUserDto.getLastName());
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(errorReport.getAssigneeUserId(), "USER_PROFILE", null, "en");
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(errorReport.getAssigneeUserId(), null, "en");
 				if (storageDTOList != null && !storageDTOList.isEmpty()) {
 					errorReportResponseDto.setAssigneeUserImageUrl(storageDTOList.get(0).getImageURL());
 				}

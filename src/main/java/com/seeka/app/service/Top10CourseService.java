@@ -86,7 +86,7 @@ public class Top10CourseService implements ITop10CourseService {
 			}
 		}
 		if ((responseCourseIds != null) && !responseCourseIds.isEmpty()) {
-			List<StorageDto> storageList = iStorageService.getStorageInformationBasedOnEntityIdList(responseCourseIds, "COURSE", null, "en");
+			List<StorageDto> storageList = iStorageService.getStorageInformationBasedOnEntityIdList(responseCourseIds, null, "en");
 			for (CourseResponseDto courseResponseDto : listOfTop10Course) {
 				List<StorageDto> s = new ArrayList<>();
 				for (StorageDto storageDto : storageList) {

@@ -496,7 +496,7 @@ public class HelpService implements IHelpService {
 		}
 		if (helpAnswer.getFileName() != null) {
 			try {
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(helpAnswer.getId(), ImageCategory.HELP_SUPPORT.toString(), null, "en");
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(helpAnswer.getId(), null, "en");
 				if ((storageDTOList != null) && !storageDTOList.isEmpty()) {
 					StorageDto storageDto = storageDTOList.get(0);
 					if (storageDto != null) {
