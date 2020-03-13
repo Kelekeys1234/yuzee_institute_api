@@ -489,11 +489,13 @@ public class CourseService implements ICourseService {
 			iCourseDAO.saveCourseIntake(courseIntake);
 		}
 
-		for (String deliveryMethod : courseDto.getDeliveryMethod()) {
-			CourseDeliveryMethod courseDeliveryMethod = new CourseDeliveryMethod();
-			courseDeliveryMethod.setCourse(course);
-			courseDeliveryMethod.setName(deliveryMethod);
-			iCourseDAO.saveCourseDeliveryMethod(courseDeliveryMethod);
+		if(!ObjectUtils.isEmpty(courseDto) && !ObjectUtils.isEmpty(courseDto.getDeliveryMethod())) {
+			for (String deliveryMethod : courseDto.getDeliveryMethod()) {
+				CourseDeliveryMethod courseDeliveryMethod = new CourseDeliveryMethod();
+				courseDeliveryMethod.setCourse(course);
+				courseDeliveryMethod.setName(deliveryMethod);
+				iCourseDAO.saveCourseDeliveryMethod(courseDeliveryMethod);
+			}
 		}
 
 		if (courseDto.getLanguage() != null && !courseDto.getLanguage().isEmpty()) {
