@@ -60,6 +60,9 @@ public class CountryService implements ICountryService {
 
     @Autowired
     private ICourseDAO courseDAO;
+    
+    @Autowired
+    private IStateService iStateService;
 
     @Override
     public List<Country> getAll() {
@@ -97,6 +100,7 @@ public class CountryService implements ICountryService {
         List<CountryDto> resultCountryList = new ArrayList<>();
         for (CountryDto countryDto : countryList) {
             countryDto.setCityList(iCityService.getAllCitiesByCountry(countryDto.getId()));
+            countryDto.setStateList(iStateService.getStateByCountryId(countryDto.getId()));
             resultCountryList.add(countryDto);
         }
         return resultCountryList;

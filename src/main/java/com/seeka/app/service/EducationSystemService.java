@@ -70,12 +70,6 @@ public class EducationSystemService implements IEducationSystemService {
 	@Autowired
 	private ILevelService iLevelService;
 	
-	@Autowired
-	private ICityService iCityService;
-	
-	@Autowired
-	private IStateService iStateService;
-
 	@Override
 	public void save(final EducationSystem hobbiesObj) {
 		iEducationSystemDAO.save(hobbiesObj);
@@ -105,28 +99,8 @@ public class EducationSystemService implements IEducationSystemService {
 	public List<EducationSystem> getEducationSystemsByCountryId(final String countryId) {
 		List<EducationSystem> educationSystems = iEducationSystemDAO.getEducationSystemsByCountryId(countryId);
 		for (EducationSystem educationSystem : educationSystems) {
-			//List<Subject> subjects = iEducationSystemDAO.getSubject();
-			//educationSystem.setSubjects(subjects);
-			List<City> cities = iCityService.getAllCitiesByCountry(educationSystem.getCountry().getId());
-			List<String> cityName = new ArrayList<>();
-			for (City city : cities) {
-				if (!ObjectUtils.isEmpty(city) && !ObjectUtils.isEmpty(city.getName())) {
-					cityName.add(city.getName());
-				}
-			}
-			if (!CollectionUtils.isEmpty(cityName)) {
-				educationSystem.setCities(cityName);
-			}
-			List<State> states = iStateService.getStateByCountryId(educationSystem.getCountry().getId());
-			List<String> stateName = new ArrayList<>();
-			for (State state : states) {
-				if (!ObjectUtils.isEmpty(state) && !ObjectUtils.isEmpty(state.getName())) {
-					stateName.add(state.getName());
-				}
-			}
-			if (!CollectionUtils.isEmpty(stateName)) {
-				educationSystem.setStates(stateName);
-			}
+			List<Subject> subjects = iEducationSystemDAO.getSubject();
+			educationSystem.setSubjects(subjects);
 		}
 		return educationSystems;
 	}

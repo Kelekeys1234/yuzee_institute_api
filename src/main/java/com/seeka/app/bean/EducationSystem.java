@@ -44,20 +44,15 @@ public class EducationSystem implements Serializable {
 	private String createdBy;
 	private String updatedBy;
 	private Boolean isDeleted;
-	private List<String> states;
-	private List<String> cities;
 
-	// private List<Subject> subjects;
+	private List<Subject> subjects;
 
 	public EducationSystem() {
 	}
 
-	public EducationSystem(Country country, List<String> cities, List<String> states, String name, String code,
-			String description, Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn, String createdBy,
-			String updatedBy, Boolean isDeleted) {
+	public EducationSystem(Country country, String name, String code, String description, Boolean isActive,
+			Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
 		this.country = country;
-		this.cities = cities;
-		this.states = states;
 		this.name = name;
 		this.code = code;
 		this.description = description;
@@ -90,24 +85,6 @@ public class EducationSystem implements Serializable {
 
 	public void setCountry(Country country) {
 		this.country = country;
-	}
-
-	@Transient
-	public List<String> getCities() {
-		return this.cities;
-	}
-
-	public void setCities(List<String> cities) {
-		this.cities = cities;
-	}
-
-	@Transient
-	public List<String> getStates() {
-		return this.states;
-	}
-
-	public void setStates(List<String> states) {
-		this.states = states;
 	}
 
 	@Column(name = "name", length = 100)
@@ -318,13 +295,17 @@ public class EducationSystem implements Serializable {
 	/**
 	 * @return the subjects
 	 */
-	/*
-	 * @Transient public List<Subject> getSubjects() { return subjects; }
-	 * 
-	 *//**
-		 * @param subjects the subjects to set
-		 *//*
-			 * public void setSubjects(List<Subject> subjects) { this.subjects = subjects; }
-			 */
+
+	@Transient
+	public List<Subject> getSubjects() {
+		return subjects;
+	}
+
+	/**
+	 * @param subjects the subjects to set
+	 */
+	public void setSubjects(List<Subject> subjects) {
+		this.subjects = subjects;
+	}
 
 }
