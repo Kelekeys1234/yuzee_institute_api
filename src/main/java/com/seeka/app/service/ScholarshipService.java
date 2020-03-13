@@ -143,7 +143,7 @@ public class ScholarshipService implements IScholarshipService {
 		scholarshipResponseDTO.setLevelName(scholarship.getLevel().getName());
 		scholarshipResponseDTO.setInstituteName(scholarship.getInstituteName());
 		
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(id, null, "en");
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(id, ImageCategory.SCHOLARSHIP.name(), null, "en");
 		List<MediaDto> mediaDtos = new ArrayList<>();
 		for (StorageDto storageDto : storageDTOList) {
 			MediaDto mediaDto = new MediaDto();

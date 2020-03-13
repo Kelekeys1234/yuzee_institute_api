@@ -12,6 +12,7 @@ public class AccreditedInstituteDto implements Serializable {
 	private String id;
 	private String name;
 	private String description;
+	private String website;
 	private Boolean isActive;
 	private Date createdOn;
 	private Date updatedOn;
@@ -43,6 +44,14 @@ public class AccreditedInstituteDto implements Serializable {
 
 	public void setDescription(final String description) {
 		this.description = description;
+	}
+	
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(final String website) {
+		this.website = website;
 	}
 
 	public Boolean getIsActive() {

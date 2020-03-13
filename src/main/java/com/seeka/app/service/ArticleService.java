@@ -116,7 +116,7 @@ public class ArticleService implements IArticleService {
 	@Override
 	public ArticleResponseDetailsDto getArticleById(final String articleId) throws ValidationException {
 		SeekaArticles article = articleDAO.findById(articleId);
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), null, "en");
+		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
 		ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
 		articleResponseDetailsDto.setStorageList(storageDTOList);
 		return articleResponseDetailsDto;
@@ -153,7 +153,7 @@ public class ArticleService implements IArticleService {
 			 * Remove this once there is API available to get storage based on all articles
 			 * in list with a single API.
 			 */
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), null, "en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
 			articleResponseDetailsDto.setStorageList(storageDTOList);
 		}
 		return articleResponseDetailsDtoList;

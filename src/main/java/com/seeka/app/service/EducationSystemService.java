@@ -15,11 +15,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
+import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.EducationSystem;
 import com.seeka.app.bean.GradeDetails;
 import com.seeka.app.bean.Level;
+import com.seeka.app.bean.State;
 import com.seeka.app.bean.Subject;
 import com.seeka.app.bean.UserEducationAOLevelSubjects;
 import com.seeka.app.bean.UserEducationDetails;
@@ -65,6 +69,12 @@ public class EducationSystemService implements IEducationSystemService {
 
 	@Autowired
 	private ILevelService iLevelService;
+	
+	@Autowired
+	private ICityService iCityService;
+	
+	@Autowired
+	private IStateService iStateService;
 
 	@Override
 	public void save(final EducationSystem hobbiesObj) {
@@ -95,8 +105,28 @@ public class EducationSystemService implements IEducationSystemService {
 	public List<EducationSystem> getEducationSystemsByCountryId(final String countryId) {
 		List<EducationSystem> educationSystems = iEducationSystemDAO.getEducationSystemsByCountryId(countryId);
 		for (EducationSystem educationSystem : educationSystems) {
-			List<Subject> subjects = iEducationSystemDAO.getSubject();
-			educationSystem.setSubjects(subjects);
+			//List<Subject> subjects = iEducationSystemDAO.getSubject();
+			//educationSystem.setSubjects(subjects);
+			List<City> cities = iCityService.getAllCitiesByCountry(educationSystem.getCountry().getId());
+			List<String> cityName = new ArrayList<>();
+			for (City city : cities) {
+				if (!ObjectUtils.isEmpty(city) && !ObjectUtils.isEmpty(city.getName())) {
+					cityName.add(city.getName());
+				}
+			}
+			if (!CollectionUtils.isEmpty(cityName)) {
+				educationSystem.setCities(cityName);
+			}
+			List<State> states = iStateService.getStateByCountryId(educationSystem.getCountry().getId());
+			List<String> stateName = new ArrayList<>();
+			for (State state : states) {
+				if (!ObjectUtils.isEmpty(state) && !ObjectUtils.isEmpty(state.getName())) {
+					stateName.add(state.getName());
+				}
+			}
+			if (!CollectionUtils.isEmpty(stateName)) {
+				educationSystem.setStates(stateName);
+			}
 		}
 		return educationSystems;
 	}

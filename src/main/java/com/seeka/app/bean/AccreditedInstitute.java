@@ -30,6 +30,8 @@ public class AccreditedInstitute implements Serializable {
 	private String name;
 	@Column(name = "description", nullable = false)
 	private String description;
+	@Column(name = "website")
+	private String website;
 	@Column(name = "is_active")
 	private Boolean isActive;
 	@Temporal(TemporalType.TIMESTAMP)
@@ -126,6 +128,14 @@ public class AccreditedInstitute implements Serializable {
 
 	public void setDeletedBy(final String deletedBy) {
 		this.deletedBy = deletedBy;
+	}
+	
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(final String website) {
+		this.website = website;
 	}
 
 	@Override

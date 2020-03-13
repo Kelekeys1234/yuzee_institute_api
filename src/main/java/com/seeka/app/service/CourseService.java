@@ -181,7 +181,7 @@ public class CourseService implements ICourseService {
 			viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
 		}
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
-				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), null, "en");
+				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
 		List<CourseIntake> courseIntake = iCourseDAO.getCourseIntakeBasedOnCourseIdList(courseIds);
 		List<CourseDeliveryMethod> courseDeliveryMethods = iCourseDAO.getCourseDeliveryMethodBasedOnCourseIdList(courseIds);
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
@@ -601,7 +601,7 @@ public class CourseService implements ICourseService {
 			List<CourseRequest> resultList = new ArrayList<>();
 
 			for (CourseRequest courseRequest : courses) {
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), null, "en");
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 				courseRequest.setStorageList(storageDTOList);
 				resultList.add(courseRequest);
 			}
@@ -697,7 +697,7 @@ public class CourseService implements ICourseService {
 		paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		courses = iCourseDAO.getUserCourse(userId, startIndex, pageSize, currencyCode, sortBy, sortAsscending);
 		for (CourseRequest courseRequest : courses) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), null,
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null,
 					"en");
 			courseRequest.setStorageList(storageDTOList);
 			resultList.add(courseRequest);
@@ -782,7 +782,7 @@ public class CourseService implements ICourseService {
 		String[] compareValues = compareValue.split(",");
 		for (String id : compareValues) {
 			CourseRequest courseRequest = iCourseDAO.getCourseById(Integer.valueOf(id));
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), null, "en");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setStorageList(storageDTOList);
 			courses.add(courseRequest);
 		}
@@ -838,7 +838,7 @@ public class CourseService implements ICourseService {
 		List<String> courseIds = courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
 		List<String> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
-				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), null, "en");
+				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
 		List<CourseDeliveryMethod> courseDeliveryMethods = iCourseDAO.getCourseDeliveryMethodBasedOnCourseIdList(courseIds);
 		List<CourseIntake> courseIntake = iCourseDAO.getCourseIntakeBasedOnCourseIdList(courseIds);
 		Map<String, Double> googleReviewMap = iInstituteGoogleReviewService
@@ -953,7 +953,7 @@ public class CourseService implements ICourseService {
 			List<CourseRequest> resultList = new ArrayList<>();
 
 			for (CourseRequest courseRequest : courses) {
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), null, "en");
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 				courseRequest.setStorageList(storageDTOList);
 				resultList.add(courseRequest);
 			}
@@ -991,7 +991,7 @@ public class CourseService implements ICourseService {
 			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 			courses = iCourseDAO.autoSearch(startIndex, pageSize, searchKey);
 			for (CourseRequest courseRequest : courses) {
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), null, "en");
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 				courseRequest.setStorageList(storageDTOList);
 				resultList.add(courseRequest);
 			}

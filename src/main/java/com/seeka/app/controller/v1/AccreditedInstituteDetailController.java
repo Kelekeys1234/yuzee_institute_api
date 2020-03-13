@@ -47,5 +47,12 @@ public class AccreditedInstituteDetailController {
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstituteDetail)
 				.setMessage("Get accredited Institute details successfully").create();
 	}
+	
+	@GetMapping("{instituteId}")
+	public ResponseEntity<?> getAccreditedInstituteDetailsByInstituteId(@PathVariable final String instituteId) {
+		List<AccreditedInstituteDetail> accreditedInstituteDetail = iAccreditedInstituteDetailService.getAccreditedInstituteDetail(instituteId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accreditedInstituteDetail)
+				.setMessage("Get accredited Institute details successfully").create();
+	}
 
 }

@@ -13,6 +13,8 @@ public interface IAccreditedInstituteDetailDao {
 	List<AccreditedInstituteDetail> getAccreditedInstituteDetailList(String entityId, String entityType, Integer startIndex, Integer pageSize);
 
 	List<AccreditedInstituteDetail> getAccreditedInstituteDetail(String accreditedInstituteId);
+	
+	List<AccreditedInstituteDetail> getAccreditedInstituteDetailsByInstituteId(String instituteId);
 
 	AccreditedInstituteDetail getAccreditedInstituteDetailbasedOnParams(String accreditedInstituteId, String entityId, String entityType);
 	

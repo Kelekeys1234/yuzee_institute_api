@@ -43,6 +43,14 @@ public class AccreditedInstituteDetailDao implements IAccreditedInstituteDetailD
         crit.add(Restrictions.eq("accreditedInstituteDetail.accreditedInstituteId", accreditedInstituteId));
         return crit.list();
     }
+    
+    @Override
+    public List<AccreditedInstituteDetail> getAccreditedInstituteDetailsByInstituteId(final String instituteId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(AccreditedInstituteDetail.class, "accreditedInstituteDetail");
+        crit.add(Restrictions.eq("accreditedInstituteDetail.entityId", instituteId));
+        return crit.list();
+    }
 
     @Override
     public AccreditedInstituteDetail getAccreditedInstituteDetailbasedOnParams(final String accreditedInstituteId, final String entityId, final String entityType) {

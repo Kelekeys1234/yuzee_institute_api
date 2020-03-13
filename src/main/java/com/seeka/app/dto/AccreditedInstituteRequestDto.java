@@ -11,6 +11,7 @@ public class AccreditedInstituteRequestDto implements Serializable {
 	private String id;
 	private String name;
 	private String description;
+	private String website;
 
 	public String getId() {
 		return id;
@@ -35,11 +36,20 @@ public class AccreditedInstituteRequestDto implements Serializable {
 	public void setDescription(final String description) {
 		this.description = description;
 	}
+	
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(final String website) {
+		this.website = website;
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (website == null ? 0 : website.hashCode());
 		result = prime * result + (description == null ? 0 : description.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (name == null ? 0 : name.hashCode());

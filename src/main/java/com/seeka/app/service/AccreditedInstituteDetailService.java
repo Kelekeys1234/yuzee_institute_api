@@ -57,4 +57,8 @@ public class AccreditedInstituteDetailService implements IAccreditedInstituteDet
 		return iAccreditedInstituteDetailDao.getAccreditedInstituteDetail(accreditedInstituteId);
 	}
 
+	@Override
+	public List<AccreditedInstituteDetail> getAccreditedInstituteDetailsByInstituteId(final String instituteId) {
+		return iAccreditedInstituteDetailDao.getAccreditedInstituteDetailsByInstituteId(instituteId);
+	}
 }
