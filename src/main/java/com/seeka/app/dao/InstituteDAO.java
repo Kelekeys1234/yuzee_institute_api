@@ -73,7 +73,7 @@ public class InstituteDAO implements IInstituteDAO {
 	public Institute get(final String instituteName) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Institute.class, "institute");
-		criteria.add(Restrictions.eq("institute.name", instituteName));
+		criteria.add(Restrictions.eq("institute.id", instituteName));
 		return (Institute) criteria.uniqueResult();
 	}
 
