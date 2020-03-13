@@ -25,6 +25,7 @@ import com.seeka.app.bean.CountryDetails;
 import com.seeka.app.bean.CountryImages;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Institute;
+import com.seeka.app.bean.State;
 import com.seeka.app.bean.Todo;
 import com.seeka.app.dto.CityDto;
 import com.seeka.app.dto.CountryDetailsDto;
@@ -33,6 +34,7 @@ import com.seeka.app.dto.CountryRequestDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.InstituteCampusDto;
 import com.seeka.app.dto.InstituteRequestDto;
+import com.seeka.app.dto.StateDto;
 import com.seeka.app.dto.TodoDto;
 
 public class CommonUtil {
@@ -440,4 +442,14 @@ public class CommonUtil {
 		currencyNameMap.put("BRL", "Brazilian Real");
 	}
 
+	public static State convertStateDTOToBean(final StateDto stateObj, final Country country) {
+		State state = new State();
+		state.setCountry(country);
+		state.setName(stateObj.getName());
+		state.setCreatedBy(stateObj.getCreatedBy());
+		state.setUpdatedBy(stateObj.getUpdatedBy());
+		state.setCreatedDate(new Date());
+		state.setUpdatedDate(new Date());
+		return state;
+	}
 }

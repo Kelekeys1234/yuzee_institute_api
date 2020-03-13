@@ -154,4 +154,8 @@ public class IConstant {
 			"Personal Experiences and Inspirations", "Work and Internships", "Financial", "Self-Help", "News");
 
 	public static final Integer ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION = 2;
+	
+	public static final String STATE_GET_SUCCESS = "State get successfully";
+	public static final String STATE_NOT_FOUND = "State not found";
+	public static final String STATE_SUCCESS_MESSAGE = "State addded successfully";
 }
