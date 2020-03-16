@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -274,8 +275,12 @@ public class CourseController {
 				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
 		Map<String, Double> seekaReviewMap = iUserReviewService
 				.getUserAverageReviewBasedOnDataList(Arrays.asList(courseRequest.getInstituteId()), "INSTITUTE");
-		courseRequest.setStars(String.valueOf(courseService.calculateAverageRating(googleReviewMap, seekaReviewMap,
-				Double.valueOf(courseRequest.getStars()), courseRequest.getInstituteId())));
+		
+		if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
+			courseRequest.setStars(String.valueOf(courseService.calculateAverageRating(googleReviewMap, seekaReviewMap,
+					Double.valueOf(courseRequest.getStars()), courseRequest.getInstituteId())));
+		}
+		
 		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream()
 				.map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
 		courseRequest.setDeliveryMethod(courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream()
