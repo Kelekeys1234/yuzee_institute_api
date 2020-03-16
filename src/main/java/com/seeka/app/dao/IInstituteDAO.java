@@ -96,4 +96,8 @@ public interface IInstituteDAO {
 	List<NearestInstituteDTO> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitude, Double longitude);
 
 	List<String> getUserSearchInstituteRecommendation(Integer startIndex, Integer pageSize, String searchKeyword);
+	
+	List<InstituteResponseDto> getDistinctInstituteListByName(Integer startIndex, Integer pageSize, String institueName);
+	
+	int getDistinctInstituteCountByName(String skillName);
 }

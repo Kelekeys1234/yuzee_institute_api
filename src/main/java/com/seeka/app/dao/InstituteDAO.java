@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,6 +23,7 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -804,5 +806,48 @@ public class InstituteDAO implements IInstituteDAO {
 			criteria.setMaxResults(pageSize);
 		}
 		return criteria.list();
+	}
+
+	@Override
+	public List<InstituteResponseDto> getDistinctInstituteListByName(Integer startIndex, Integer pageSize, String instituteName) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Institute.class)
+				.setProjection(Projections.projectionList().add(Projections.groupProperty("name").as("name"))
+						.add(Projections.property("id").as("id"))
+						.add(Projections.property("worldRanking").as("worldRanking"))
+						.add(Projections.property("city.id").as("cityId"))
+						.add(Projections.property("country.id").as("countryId"))
+						.add(Projections.property("website").as("website"))
+						.add(Projections.property("aboutInfo").as("aboutUs"))
+						.add(Projections.property("openingFrom").as("openingFrom"))
+						.add(Projections.property("openingTo").as("openingTo"))
+						.add(Projections.property("totalStudent").as("totalStudent"))
+						.add(Projections.property("latitute").as("latitute"))
+						.add(Projections.property("longitude").as("longitude"))
+						.add(Projections.property("phoneNumber").as("phoneNumber"))
+						.add(Projections.property("email").as("email"))
+						.add(Projections.property("address").as("address"))
+						.add(Projections.property("updatedOn").as("updatedOn"))
+						.add(Projections.property("campusType").as("campusType"))
+						.add(Projections.property("domesticRanking").as("domesticRanking")))
+				.setResultTransformer(Transformers.aliasToBean(InstituteResponseDto.class));
+		if (StringUtils.isNotEmpty(instituteName)) {
+			criteria.add(Restrictions.like("name", instituteName, MatchMode.ANYWHERE));
+		}
+		criteria.setFirstResult(startIndex);
+		criteria.setMaxResults(pageSize);
+		return criteria.list();
+	}
+
+	@Override
+	public int getDistinctInstituteCountByName(String instituteName) {
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder sqlQuery = new StringBuilder("select distinct i.name as instituteName from institute i");
+		if (StringUtils.isNotEmpty(instituteName)) {
+			sqlQuery.append(" where name like ('" + "%" + instituteName.trim() + "%')");
+		}
+		Query query = session.createSQLQuery(sqlQuery.toString());
+		List<Object[]> rows = query.list();
+		return rows.size();
 	}
 }

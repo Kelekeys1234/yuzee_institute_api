@@ -43,12 +43,12 @@ public class SkillController {
 			throws Exception {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		int totalCount = iSkillService.getDistinctSkillsCount(skillName);
-		List<SkillDto> couserList = iSkillService.getDistinctSkillsList(startIndex, pageSize, skillName);
+		List<SkillDto> skillList = iSkillService.getDistinctSkillsList(startIndex, pageSize, skillName);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
 		responseMap.put("message", "Get Skills List Successfully");
-		responseMap.put("data", couserList);
+		responseMap.put("data", skillList);
 		responseMap.put("totalCount", totalCount);
 		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
 		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());

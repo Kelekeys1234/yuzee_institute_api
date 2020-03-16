@@ -915,4 +915,14 @@ public class InstituteService implements IInstituteService {
 		}
 		return nearestInstituteDTOs;
 	}
+
+	@Override
+	public List<InstituteResponseDto> getDistinctInstituteList(Integer startIndex, Integer pageSize, String instituteName) {
+		return dao.getDistinctInstituteListByName(startIndex, pageSize, instituteName);
+	}
+
+	@Override
+	public int getDistinctInstituteCount(String instituteName) {
+		return dao.getDistinctInstituteCountByName(instituteName);
+	}
 }

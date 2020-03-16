@@ -86,5 +86,9 @@ public interface IInstituteService {
 	Map<String, Integer> getDomesticRanking(List<String> instituteIdList);
 
 	List<NearestInstituteDTO> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitude, Double longitude) throws ValidationException;
+	
+	public List<InstituteResponseDto> getDistinctInstituteList(Integer startIndex, Integer pageSize, String instituteName);
+	
+	public int getDistinctInstituteCount(String instituteName);
 
 }
