@@ -1,10 +1,8 @@
 package com.seeka.app.dao;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -12,6 +10,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -26,34 +25,29 @@ public class SkillDao implements ISkillDao {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<SkillDto> autoSearch(Integer pageNumber, Integer pageSize, final String searchKey) {
+	public List<SkillDto> getDistinctSkillsListByName(Integer startIndex, Integer pageSize, String skillName) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select distinct s.id, s.skill_name as name from skill s where s.skill_name like '%"
-				+ searchKey.trim() + "%'";
-		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		List<SkillDto> skills = new ArrayList<>();
-		SkillDto obj = null;
-		for (Object[] row : rows) {
-			obj = new SkillDto();
-			obj.setId(row[0].toString());
-			obj.setSkillName(row[1].toString());
-			skills.add(obj);
+		Criteria criteria = session.createCriteria(Skill.class)
+				.setProjection(Projections.projectionList().add(Projections.groupProperty("skillName").as("skillName"))
+						.add(Projections.property("id").as("id")))
+				.setResultTransformer(Transformers.aliasToBean(SkillDto.class));
+		if (StringUtils.isNotEmpty(skillName)) {
+			criteria.add(Restrictions.like("skillName", skillName, MatchMode.ANYWHERE));
 		}
-		return skills;
+		criteria.setFirstResult(startIndex);
+		criteria.setMaxResults(pageSize);
+		return criteria.list();
 	}
 
 	@Override
-	public Integer getAllSkillNamesCount(final String searchString) {
+	public int getDistinctSkillsCountByName(String skillName) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(Skill.class, "skill");
-		if (searchString != null) {
-			criteria.add(Restrictions.ilike("skill.skillName", searchString, MatchMode.ANYWHERE));
+		StringBuilder sqlQuery = new StringBuilder("select distinct s.skill_name as skillName from skill s");
+		if (StringUtils.isNotEmpty(skillName)) {
+			sqlQuery.append(" where skill_name like ('" + "%" + skillName.trim() + "%')");
 		}
-		criteria.setProjection(Projections.property("skill.skillName"));
-		List<String> skillNameList = criteria.list();
-		Set<String> skillNameSet = skillNameList == null ? null : new HashSet<>(skillNameList);
-		return skillNameSet != null ? skillNameSet.size() : 0;
+		Query query = session.createSQLQuery(sqlQuery.toString());
+		List<Object[]> rows = query.list();
+		return rows.size();
 	}
 }

@@ -6,7 +6,7 @@ import com.seeka.app.dto.SkillDto;
 
 public interface ISkillDao {
 
-	Integer getAllSkillNamesCount(String searchString);
-	
-	List<SkillDto> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
+	int getDistinctSkillsCountByName(String skillName);
+
+	List<SkillDto> getDistinctSkillsListByName(Integer startIndex, Integer pageSize, String skillName);
 }

@@ -1,10 +1,12 @@
 package com.seeka.app.service;
 
-import java.util.Map;
+import java.util.List;
+
+import com.seeka.app.dto.SkillDto;
 
 public interface ISkillService {
 
-	Integer getAllSkillNamesCount(String searchString);
+	int getDistinctSkillsCount(String skillName);
 	
-	public Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
+	List<SkillDto> getDistinctSkillsList(Integer startIndex, Integer pageSize, String skillName) ;
 }
