@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.dao.IFacultyDAO;
@@ -29,7 +30,11 @@ public class FacultyService implements IFacultyService {
 
 	@Override
 	public Faculty get(final String id) {
-		return dao.get(id);
+		Faculty faculty = dao.get(id);
+		if (!ObjectUtils.isEmpty(faculty)) {
+			faculty.setIcon(CDNServerUtil.getFacultyIconUrl(faculty.getName()));
+		}
+		return faculty;
 	}
 
 	@Override
@@ -74,6 +79,11 @@ public class FacultyService implements IFacultyService {
 	@Override
 	public List<Faculty> getFacultyListByName(final List<String> facultyNames) {
 		return dao.getFacultyListByFacultyNames(facultyNames);
+	}
+
+	@Override
+	public Faculty getFacultyByFacultyName(String facultyName) {
+		return dao.getFacultyByFacultyName(facultyName);
 	}
 
 }

@@ -23,4 +23,6 @@ public interface IFacultyService {
     public List<Faculty> getCourseFaculty(String countryId, String levelId);
     
     List<Faculty> getFacultyListByName(List<String> facultyNames);
+    
+    Faculty getFacultyByFacultyName(String facultyName);
 }
