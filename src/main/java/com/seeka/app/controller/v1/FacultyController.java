@@ -124,4 +124,18 @@ public class FacultyController {
         response.put("faculty", faculty);
         return ResponseEntity.accepted().body(response);
     }
+    
+    
+    @RequestMapping(value = "/name/{facultyName}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getFacultyByFacultyName(@PathVariable("facultyName") String facultyName) throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+        Faculty faculty = facultyService.getFacultyByFacultyName(facultyName);
+        response.put("status", 1);
+        response.put("message", "Faculty Fetched Successfully");
+        response.put("faculty", faculty);
+        return ResponseEntity.accepted().body(response);
+    }
 }
+
+
+

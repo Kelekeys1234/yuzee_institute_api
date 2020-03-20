@@ -585,13 +585,13 @@ public class InstituteController {
 	}
 	
 	
-	@RequestMapping(value = "/instituteNames/distinct/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/names/distinct/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getDistinctInstututes(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = false) final String instituteName)
+			@PathVariable final Integer pageSize, @RequestParam(required = false) final String name)
 			throws Exception {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		int totalCount = instituteService.getDistinctInstituteCount(instituteName);
-		List<InstituteResponseDto> instituteList = instituteService.getDistinctInstituteList(startIndex, pageSize, instituteName);
+		int totalCount = instituteService.getDistinctInstituteCount(name);
+		List<InstituteResponseDto> instituteList = instituteService.getDistinctInstituteList(startIndex, pageSize, name);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);

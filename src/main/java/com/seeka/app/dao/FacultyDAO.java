@@ -154,4 +154,13 @@ public class FacultyDAO implements IFacultyDAO {
 		return faculties;
 	}
 
+	@Override
+	public Faculty getFacultyByFacultyName(String facultyName) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria crit = session.createCriteria(Faculty.class, "faculty");
+		crit.add(Restrictions.in("name", facultyName));
+		Faculty faculty = (Faculty) crit.uniqueResult();
+		return faculty;
+	}
+
 }

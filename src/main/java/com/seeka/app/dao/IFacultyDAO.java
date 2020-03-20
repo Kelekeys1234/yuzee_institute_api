@@ -25,5 +25,7 @@ public interface IFacultyDAO {
 	List<Faculty> getCourseFaculty(String countryId, String levelId);
 
 	List<Faculty> getFacultyListByFacultyNames(List<String> facultyNameList);
+	
+	Faculty getFacultyByFacultyName(String facultyName);
 
 }

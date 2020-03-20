@@ -75,7 +75,7 @@ public class ServiceDetailsDAO implements IServiceDetailsDAO {
     public List<String> getServicesById(String id) {
         List<String> list = new ArrayList<String>();
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select s.id, s.service_id from institute_service s where s.institute_id=" + id);
+        Query query = session.createSQLQuery("select s.id, s.service_id from institute_service s where s.institute_id='" + id +"'");
         List<Object[]> rows = query.list();
         for (Object[] row : rows) {
             list.add(new String(row[1].toString()));

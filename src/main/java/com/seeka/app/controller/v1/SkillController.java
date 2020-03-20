@@ -39,11 +39,11 @@ public class SkillController {
 
 	@RequestMapping(value = "/names/distinct/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getDistinctSkills(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = false) final String skillName)
+			@PathVariable final Integer pageSize, @RequestParam(required = false) final String name)
 			throws Exception {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		int totalCount = iSkillService.getDistinctSkillsCount(skillName);
-		List<SkillDto> skillList = iSkillService.getDistinctSkillsList(startIndex, pageSize, skillName);
+		int totalCount = iSkillService.getDistinctSkillsCount(name);
+		List<SkillDto> skillList = iSkillService.getDistinctSkillsList(startIndex, pageSize, name);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
