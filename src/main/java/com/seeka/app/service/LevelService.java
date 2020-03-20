@@ -75,4 +75,9 @@ public class LevelService implements ILevelService {
         }
         return response;
     }
+
+	@Override
+	public List<String> getAllLevelNameByInstituteId(String instituteId) {
+		return dao.getAllLevelNamesByInstituteId(instituteId);
+	}
 }

@@ -86,4 +86,9 @@ public class FacultyService implements IFacultyService {
 		return dao.getFacultyByFacultyName(facultyName);
 	}
 
+	@Override
+	public List<String> getFacultyNameByInstituteId(String id) {
+		return dao.getAllFacultyNamesByInstituteId(id);
+	}
+
 }

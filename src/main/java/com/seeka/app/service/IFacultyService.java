@@ -25,4 +25,6 @@ public interface IFacultyService {
     List<Faculty> getFacultyListByName(List<String> facultyNames);
     
     Faculty getFacultyByFacultyName(String facultyName);
+    
+    public List<String> getFacultyNameByInstituteId(final String id);
 }

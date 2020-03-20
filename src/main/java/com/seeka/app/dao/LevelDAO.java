@@ -119,5 +119,17 @@ public class LevelDAO implements ILevelDAO {
         }
         return level;
     }
+    
+    @Override
+	public List<String> getAllLevelNamesByInstituteId(final String instituteId) {
+        List<String> list = new ArrayList<String>();
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("select l.id, l.`name` from institute_level il left join level l on l.id = il.level_id where il.institute_id ='"+instituteId+"'");
+        List<Object[]> rows = query.list();
+        for (Object[] row : rows) {
+            list.add(new String(row[1].toString()));
+        }
+        return list;
+    }
 
 }
