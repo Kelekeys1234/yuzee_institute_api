@@ -22,4 +22,6 @@ public interface ILevelService {
     public List<Level> getAllLevelByCountry();
 
     public Map<String, Object> getCountryLevel(String countryId);
+    
+    List<String> getAllLevelNameByInstituteId(String instituteId);
 }

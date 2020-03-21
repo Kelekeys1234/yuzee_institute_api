@@ -30,7 +30,9 @@ public class InstituteRequestDto {
 	private String phoneNumber;
 	private String address;
 	private List<String> offerService;
+	private List<String> offerServiceName;
 	private List<String> accreditation;
+	private List<String> accreditationName;
 	private List<String> intakes;
 	private String createdBy;
 	private String updatedBy;
@@ -43,7 +45,9 @@ public class InstituteRequestDto {
 	private String courseStart;
 
 	private List<String> facultyIds;
+	private List<String> facultyNames;
 	private List<String> levelIds;
+	private List<String> levelNames;
 
 	/**
 	 * @return the id
@@ -814,6 +818,38 @@ public class InstituteRequestDto {
 				.append(", updatedBy=").append(updatedBy).append(", whatsNo=").append(whatsNo).append(", aboutInfo=").append(aboutInfo).append(", courseStart=")
 				.append(courseStart).append(", facultyIds=").append(facultyIds).append(", levelIds=").append(levelIds).append("]");
 		return builder.toString();
+	}
+
+	public List<String> getOfferServiceName() {
+		return offerServiceName;
+	}
+
+	public void setOfferServiceName(List<String> offerServiceName) {
+		this.offerServiceName = offerServiceName;
+	}
+
+	public List<String> getFacultyNames() {
+		return facultyNames;
+	}
+
+	public void setFacultyNames(List<String> facultyNames) {
+		this.facultyNames = facultyNames;
+	}
+
+	public List<String> getLevelNames() {
+		return levelNames;
+	}
+
+	public void setLevelNames(List<String> levelNames) {
+		this.levelNames = levelNames;
+	}
+
+	public List<String> getAccreditationName() {
+		return accreditationName;
+	}
+
+	public void setAccreditationName(List<String> accreditationName) {
+		this.accreditationName = accreditationName;
 	}
 
 }

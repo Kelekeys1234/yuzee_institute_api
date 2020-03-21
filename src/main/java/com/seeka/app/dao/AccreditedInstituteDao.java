@@ -1,11 +1,13 @@
 package com.seeka.app.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -60,6 +62,18 @@ public class AccreditedInstituteDao implements IAccreditedInstituteDao {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(AccreditedInstitute.class);
         return crit.list();
+    }
+    
+    @Override
+    public List<String> getAccreditationNameByInstituteId(String id) {
+        List<String> list = new ArrayList<String>();
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("select ai.id, ai.`name` from accredited_institute_detail aci left join accredited_institute ai on ai.id = aci.accredited_institute_id where aci.entity_id ='"+id+"'");
+        List<Object[]> rows = query.list();
+        for (Object[] row : rows) {
+            list.add(new String(row[1].toString()));
+        }
+        return list;
     }
 
 }

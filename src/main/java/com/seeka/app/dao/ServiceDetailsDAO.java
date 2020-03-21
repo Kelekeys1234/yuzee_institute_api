@@ -82,4 +82,15 @@ public class ServiceDetailsDAO implements IServiceDetailsDAO {
         }
         return list;
     }
+    
+    public List<String> getServiceNameByInstituteId(String id) {
+        List<String> list = new ArrayList<String>();
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createSQLQuery("select s.id, s.`name` from service s inner join institute_service i on s.id = i.service_id where i.institute_id='"+id+"'");
+        List<Object[]> rows = query.list();
+        for (Object[] row : rows) {
+            list.add(new String(row[1].toString()));
+        }
+        return list;
+    }
 }

@@ -35,6 +35,7 @@ import com.seeka.app.bean.InstituteVideos;
 import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.bean.Level;
 import com.seeka.app.constant.Type;
+import com.seeka.app.dao.IAccreditedInstituteDao;
 import com.seeka.app.dao.IAccreditedInstituteDetailDao;
 import com.seeka.app.dao.ICityDAO;
 import com.seeka.app.dao.ICountryDAO;
@@ -97,6 +98,9 @@ public class InstituteService implements IInstituteService {
 
 	@Autowired
 	private IAccreditedInstituteDetailDao accreditedInstituteDetailDao;
+	
+	@Autowired
+	private IAccreditedInstituteDao accreditedInstituteDao;
 
 	@Autowired
 	private IStorageService iStorageService;
@@ -632,11 +636,16 @@ public class InstituteService implements IInstituteService {
 		}
 		instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
 		instituteRequestDto.setOfferService(getOfferServices(id));
+		instituteRequestDto.setOfferServiceName(getOfferServiceNames(id));
 		instituteRequestDto.setAccreditation(getAccreditation(id));
+		instituteRequestDto.setAccreditationName(getAccreditationName(id));
 		instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
 		instituteRequestDto.setIntakes(getIntakes(id));
 		instituteRequestDto.setFacultyIds(getFacultyLevelData(id));
+		instituteRequestDto.setFacultyNames(getFacultyByInstituteId(id));
 		instituteRequestDto.setLevelIds(getInstituteLevelData(id));
+		instituteRequestDto.setLevelNames(getInstituteLevelName(id));
+		
 		if (institute.getInstituteCategoryType() != null) {
 			instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
 		}
@@ -648,11 +657,15 @@ public class InstituteService implements IInstituteService {
 				for (Institute campus : institutes) {
 					instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(campus);
 					instituteRequestDto.setOfferService(getOfferServices(campus.getId()));
+					instituteRequestDto.setOfferServiceName(getOfferServiceNames(campus.getId()));
 					instituteRequestDto.setAccreditation(getAccreditation(campus.getId()));
+					instituteRequestDto.setAccreditationName(getAccreditationName(campus.getId()));
 					instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
 					instituteRequestDto.setIntakes(getIntakes(campus.getId()));
 					instituteRequestDto.setFacultyIds(getFacultyLevelData(campus.getId()));
+					instituteRequestDto.setFacultyNames(getFacultyByInstituteId(campus.getId()));
 					instituteRequestDto.setLevelIds(getInstituteLevelData(campus.getId()));
+					instituteRequestDto.setLevelNames(getInstituteLevelName(campus.getId()));
 					if (institute.getInstituteCategoryType() != null) {
 						instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
 					}
@@ -671,6 +684,10 @@ public class InstituteService implements IInstituteService {
 			return new ArrayList<>();
 		}
 	}
+	
+	private List<String> getFacultyByInstituteId(final String id) {
+		return iFacultyService.getFacultyNameByInstituteId(id);
+	}
 
 	private List<String> getInstituteLevelData(final String id) {
 		List<InstituteLevel> instituteLevel = iInstituteLevelService.getAllLevelByInstituteId(id);
@@ -680,6 +697,10 @@ public class InstituteService implements IInstituteService {
 			return new ArrayList<>();
 		}
 	}
+	
+	private List<String> getInstituteLevelName(final String id) {
+		return levelService.getAllLevelNameByInstituteId(id);
+	}
 
 	private List<String> getIntakes(@Valid final String id) {
 		return dao.getIntakesById(id);
@@ -688,11 +709,19 @@ public class InstituteService implements IInstituteService {
 	private List<String> getAccreditation(@Valid final String id) {
 		return accreditedInstituteDetailDao.getAccreditation(id);
 	}
+	
+	private List<String> getAccreditationName(@Valid final String id) {
+		return accreditedInstituteDao.getAccreditationNameByInstituteId(id);
+	}
 
 	private List<String> getOfferServices(final String id) {
 		return serviceDetailsDAO.getServicesById(id);
 	}
 
+	private List<String> getOfferServiceNames(final String id) {
+		return serviceDetailsDAO.getServiceNameByInstituteId(id);
+	}
+	
 	@Override
 	public Map<String, Object> searchInstitute(@Valid final String searchText) {
 		Map<String, Object> response = new HashMap<>();

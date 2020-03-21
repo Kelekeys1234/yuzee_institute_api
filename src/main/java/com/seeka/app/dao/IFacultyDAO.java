@@ -28,4 +28,6 @@ public interface IFacultyDAO {
 	
 	Faculty getFacultyByFacultyName(String facultyName);
 
+	List<String> getAllFacultyNamesByInstituteId(String instituteId);
+
 }

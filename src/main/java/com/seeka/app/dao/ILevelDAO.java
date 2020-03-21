@@ -21,4 +21,6 @@ public interface ILevelDAO {
     public List<Level> getAllLevelByCountry();
 
     public List<Level> getCountryLevel(String countryId);
+
+	List<String> getAllLevelNamesByInstituteId(String instituteId);
 }

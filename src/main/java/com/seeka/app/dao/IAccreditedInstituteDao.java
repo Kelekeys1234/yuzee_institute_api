@@ -19,4 +19,6 @@ public interface IAccreditedInstituteDao {
 	
 	List<AccreditedInstitute> getAllAccreditedInstitutes();
 
+	List<String> getAccreditationNameByInstituteId(String id);
+
 }
