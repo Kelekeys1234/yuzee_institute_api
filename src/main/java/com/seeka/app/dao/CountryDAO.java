@@ -47,7 +47,7 @@ public class CountryDAO implements ICountryDAO {
 	public List<CountryDto> getAllUniversityCountries() {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select distinct c.id, c.name as name, c.country_code as code from country c  " + "inner join institute i  on i.country_id = c.id");
+				"select distinct c.id, c.name as name, c.country_code as code from country c");
 		List<Object[]> rows = query.list();
 		List<CountryDto> countries = new ArrayList<>();
 		CountryDto obj = null;
@@ -111,8 +111,10 @@ public class CountryDAO implements ICountryDAO {
 	@Override
 	public List<CountryDto> getAllCountryName() {
 		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createSQLQuery("select distinct c.id, c.name as name, c.country_code as code from country c  "
-				+ "inner join institute i  on i.country_id = c.id ORDER BY c.name");
+//		Query query = session.createSQLQuery("select distinct c.id, c.name as name, c.country_code as code from country c  "
+//				+ "inner join institute i  on i.country_id = c.id ORDER BY c.name");
+		
+		Query query = session.createSQLQuery("select distinct c.id, c.name as name, c.country_code as code from country c ORDER BY c.name");
 		List<Object[]> rows = query.list();
 		List<CountryDto> countries = new ArrayList<>();
 		CountryDto obj = null;
