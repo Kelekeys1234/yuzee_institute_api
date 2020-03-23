@@ -50,7 +50,7 @@ public class FacultyDAO implements IFacultyDAO {
 	public List<Faculty> getFacultyByCountryIdAndLevelId(final String countryID, final String levelId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select distinct f.id, f.name as facultyName, il.level_id as levelid from institute_level il inner join faculty_level fl on fl.institute_id = il.institute_id inner join faculty f on fl.faculty_id= f.id where il.country_id = :countryId and il.level_id = :levelId")
+				"select distinct f.id, f.name as facultyName, il.level_id as levelid from institute_level il inner join faculty_level fl on fl.institute_id = il.institute_id inner join faculty f on fl.faculty_id= f.id where il.country_name = :countryId and il.level_id = :levelId")
 				.setParameter("countryId", countryID).setParameter("levelId", levelId);
 		List<Object[]> rows = query.list();
 		List<Faculty> faculties = new ArrayList<>();
@@ -67,7 +67,7 @@ public class FacultyDAO implements IFacultyDAO {
 	@Override
 	public List<Faculty> getAllFacultyByCountryIdAndLevel() {
 		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createSQLQuery("select distinct f.id, f.name as facultyName,f.level_id as levelid,il.country_id from faculty f  "
+		Query query = session.createSQLQuery("select distinct f.id, f.name as facultyName,f.level_id as levelid,il.country_name from faculty f  "
 				+ "inner join institute_level il  on il.level_id = f.level_id");
 		List<Object[]> rows = query.list();
 		List<Faculty> faculties = new ArrayList<>();
@@ -140,7 +140,7 @@ public class FacultyDAO implements IFacultyDAO {
 	public List<Faculty> getCourseFaculty(final String countryId, final String levelId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select distinct f.id, f.name as facultyName, il.level_id as levelid from course c inner join institute_level il on c.institute_id = il.institute_id inner join faculty f on c.faculty_id= f.id where il.country_id = :countryId and il.level_id = :levelId")
+				"select distinct f.id, f.name as facultyName, il.level_id as levelid from course c inner join institute_level il on c.institute_id = il.institute_id inner join faculty f on c.faculty_id= f.id where il.country_name = :countryId and il.level_id = :levelId")
 				.setParameter("countryId", countryId).setParameter("levelId", levelId);
 		List<Object[]> rows = query.list();
 		List<Faculty> faculties = new ArrayList<>();

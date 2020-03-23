@@ -66,7 +66,7 @@ public class LevelDAO implements ILevelDAO {
     public List<Level> getLevelByCountryId(String countryId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.code as levelkey from level le inner join institute_level il  on il.level_id = le.id "
-                        + "inner join country c on c.id = il.country_id " + "where il.country_id = :countryId").setParameter("countryId", countryId);
+                        + "inner join country c on c.name = il.country_name " + "where il.country_name = :countryId").setParameter("countryId", countryId);
         List<Object[]> rows = query.list();
         List<Level> level = new ArrayList<>();
         for (Object[] row : rows) {
@@ -82,10 +82,9 @@ public class LevelDAO implements ILevelDAO {
     @Override
     public List<Level> getAllLevelByCountry() {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.code as levelkey,il.country_id from level le  inner join institute_level il  on "
-                        + "il.level_id = le.id inner join country c  on c.id = il.country_id");
+        Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.code as levelkey,il.country_name from level le  inner join institute_level il  on "
+                        + "il.level_id = le.id inner join country c  on c.name = il.country_name");
         List<Object[]> rows = query.list();
-
         List<Level> level = new ArrayList<>();
 
         for (Object[] row : rows) {

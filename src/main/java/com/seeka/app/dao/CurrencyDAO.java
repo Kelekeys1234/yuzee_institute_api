@@ -70,7 +70,7 @@ public class CurrencyDAO implements ICurrencyDAO {
         Session session = sessionFactory.getCurrentSession();
         Query query = session
                         .createSQLQuery("select distinct le.id, le.name as name,le.Currency_key as Currencykey from Currency le  inner join institute_Currency il  on il.Currency_id = le.id "
-                                        + "inner join country c  on c.id = il.country_id " + "where il.country_id = :countryId")
+                                        + "inner join country c  on c.id = il.country_name " + "where il.country_name = :countryId")
                         .setParameter("countryId", countryId);
 
         List<Object[]> rows = query.list();
