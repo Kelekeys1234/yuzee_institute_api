@@ -62,5 +62,12 @@ public class EducationSystemController {
 	public ResponseEntity<?> getGrades(@PathVariable final String countryId, @PathVariable final String systemId) throws Exception {
 		return educationSystemService.getGrades(countryId, systemId);
 	}
-
+	
+	@RequestMapping(value = "/{countryName}/{stateName}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getEducationSystemByCountryNameAndStateName(@PathVariable String countryName,
+			@PathVariable String stateName) throws Exception {
+		List<EducationSystemDto> educationSystems = educationSystemService.getEducationSystemByCountryNameAndStateName(countryName, stateName);
+		return new GenericResponseHandlers.Builder().setData(educationSystems)
+				.setMessage("Education System fetched Successfully").setStatus(HttpStatus.OK).create();
+	}
 }

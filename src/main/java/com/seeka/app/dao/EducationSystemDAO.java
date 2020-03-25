@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.EducationSystem;
 import com.seeka.app.bean.Subject;
+import com.seeka.app.dto.EducationSystemDto;
 
 @Repository
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
@@ -86,5 +87,26 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 		Criteria crit = session.createCriteria(Subject.class);
 		crit.add(Restrictions.eq("educationSystemId", educationSystemId));
 		return crit.list();
+	}
+
+	@Override
+	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName) {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery(
+				"select id,country_name,name,code,description,state_name from education_system where country_name='"
+						+ countryName + "'and state_name='" + stateName + "'");
+		List<Object[]> rows = query.list();
+		List<EducationSystemDto> list = new ArrayList<>();
+		for (Object[] row : rows) {
+			EducationSystemDto obj = new EducationSystemDto();
+			obj.setId(row[0].toString());
+			obj.setCountryName(row[1].toString());
+			obj.setName(row[2].toString());
+			obj.setCode(row[3].toString());
+			obj.setDescription(row[4].toString());
+			obj.setStateName(row[5].toString());
+			list.add(obj);
+		}
+		return list;
 	}
 }

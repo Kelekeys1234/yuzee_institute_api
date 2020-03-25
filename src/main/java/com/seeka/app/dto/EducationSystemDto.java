@@ -1,16 +1,15 @@
 package com.seeka.app.dto;
 
-import com.seeka.app.bean.Country;
-
 public class EducationSystemDto {
 
     private String id;
-    private Country country;
+    private String countryName;
     private String name;
     private String code;
     private String description;
     private String createdBy;
     private String updatedBy;
+    private String stateName;
 
     /**
      * @return the id
@@ -27,20 +26,6 @@ public class EducationSystemDto {
         this.id = id;
     }
 
-    /**
-     * @return the country
-     */
-    public Country getCountry() {
-        return country;
-    }
-
-    /**
-     * @param country
-     *            the country to set
-     */
-    public void setCountry(Country country) {
-        this.country = country;
-    }
 
     /**
      * @return the name
@@ -114,5 +99,21 @@ public class EducationSystemDto {
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+	public String getStateName() {
+		return stateName;
+	}
+
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
 
 }
