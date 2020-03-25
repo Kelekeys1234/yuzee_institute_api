@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.seeka.app.bean.EducationSystem;
 import com.seeka.app.bean.Subject;
+import com.seeka.app.dto.EducationSystemDto;
 
 public interface IEducationSystemDAO {
 	void save(EducationSystem hobbiesObj);
@@ -21,5 +22,7 @@ public interface IEducationSystemDAO {
 	List<Subject> getSubjectByEducationSystem(String educationSystemId);
 
 	List<Subject> getSubject();
+	
+	List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName);
 
 }

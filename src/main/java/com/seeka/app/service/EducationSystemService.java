@@ -15,15 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 
-import com.seeka.app.bean.City;
 import com.seeka.app.bean.Country;
 import com.seeka.app.bean.EducationSystem;
 import com.seeka.app.bean.GradeDetails;
 import com.seeka.app.bean.Level;
-import com.seeka.app.bean.State;
 import com.seeka.app.bean.Subject;
 import com.seeka.app.bean.UserEducationAOLevelSubjects;
 import com.seeka.app.bean.UserEducationDetails;
@@ -112,13 +108,13 @@ public class EducationSystemService implements IEducationSystemService {
 			if (educationSystem != null && educationSystem.getId() != null) {
 				EducationSystem system = iEducationSystemDAO.get(educationSystem.getId());
 				if (system != null) {
-					if (educationSystem.getCountry() != null && educationSystem.getCountry().getId() != null) {
+					if (educationSystem.getCountryName() != null) {
 						system.setUpdatedBy(educationSystem.getUpdatedBy());
 						system.setUpdatedOn(new Date());
 						system.setName(educationSystem.getName());
 						system.setDescription(educationSystem.getDescription());
 						system.setCode(educationSystem.getCode());
-						system.setCountry(countryDAO.get(educationSystem.getCountry().getId()));
+						system.setCountryName(educationSystem.getCountryName());
 						response.put("message", IConstant.EDUCATION_SUCCESS_UPDATE);
 						response.put("status", HttpStatus.OK.value());
 					} else {
@@ -130,10 +126,10 @@ public class EducationSystemService implements IEducationSystemService {
 					response.put("status", HttpStatus.NOT_FOUND.value());
 				}
 			} else {
-				if (educationSystem.getCountry() != null && educationSystem.getCountry().getId() != null) {
+				if (educationSystem.getCountryName() != null) {
 					EducationSystem system = new EducationSystem();
 					system.setCode(educationSystem.getCode());
-					system.setCountry(countryDAO.get(educationSystem.getCountry().getId()));
+					system.setCountryName(educationSystem.getCountryName());
 					system.setCreatedBy(educationSystem.getCreatedBy());
 					system.setCreatedOn(new Date());
 					system.setDescription(educationSystem.getDescription());
@@ -368,5 +364,10 @@ public class EducationSystemService implements IEducationSystemService {
 			userEduIelTofScore.setIsActive(true);
 			englishScoreDAO.save(userEduIelTofScore);
 		}
+	}
+
+	@Override
+	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName) {
+		return iEducationSystemDAO.getEducationSystemByCountryNameAndStateName(countryName, stateName);
 	}
 }

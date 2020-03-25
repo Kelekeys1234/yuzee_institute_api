@@ -9,11 +9,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -33,7 +30,8 @@ public class EducationSystem implements Serializable {
 	 */
 	private static final long serialVersionUID = 4954893670488436110L;
 	private String id;
-	private Country country;
+	//private Country country;
+	private String countryName;
 	private String name;
 	private String code;
 	private String description;
@@ -46,13 +44,33 @@ public class EducationSystem implements Serializable {
 	private Boolean isDeleted;
 
 	private List<Subject> subjects;
+	//private State state;
+	private String stateName;
+	
+	@Column(name = "country_name")
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+	@Column(name = "state_name")
+	public String getStateName() {
+		return stateName;
+	}
+
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
 
 	public EducationSystem() {
 	}
 
-	public EducationSystem(Country country, String name, String code, String description, Boolean isActive,
+	public EducationSystem(String name, String code, String description, Boolean isActive,
 			Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
-		this.country = country;
+		//this.country = country;
 		this.name = name;
 		this.code = code;
 		this.description = description;
@@ -77,15 +95,15 @@ public class EducationSystem implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "country_id")
-	public Country getCountry() {
-		return this.country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
-	}
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "country_id")
+//	public Country getCountry() {
+//		return this.country;
+//	}
+//
+//	public void setCountry(Country country) {
+//		this.country = country;
+//	}
 
 	@Column(name = "name", length = 100)
 	public String getName() {
@@ -190,7 +208,7 @@ public class EducationSystem implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		//result = prime * result + ((country == null) ? 0 : country.hashCode());
 		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
 		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
 		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
@@ -223,11 +241,11 @@ public class EducationSystem implements Serializable {
 				return false;
 		} else if (!code.equals(other.code))
 			return false;
-		if (country == null) {
-			if (other.country != null)
-				return false;
-		} else if (!country.equals(other.country))
-			return false;
+//		if (country == null) {
+//			if (other.country != null)
+//				return false;
+//		} else if (!country.equals(other.country))
+//			return false;
 		if (createdBy == null) {
 			if (other.createdBy != null)
 				return false;
@@ -284,7 +302,7 @@ public class EducationSystem implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("EducationSystem [id=").append(id).append(", country=").append(country).append(", name=")
+		builder.append("EducationSystem [id=").append(id).append(", name=")
 				.append(name).append(", code=").append(code).append(", description=").append(description)
 				.append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=")
 				.append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
@@ -307,5 +325,15 @@ public class EducationSystem implements Serializable {
 	public void setSubjects(List<Subject> subjects) {
 		this.subjects = subjects;
 	}
+
+	/*@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "state_name")
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}*/
 
 }

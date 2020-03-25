@@ -38,4 +38,6 @@ public interface IEducationSystemService {
 	ResponseEntity<?> getGrades(String countryId, String systemId);
 
 	void saveUserEducationDetails(EducationSystemRequest educationSystemDetails);
+	
+	List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName);
 }
