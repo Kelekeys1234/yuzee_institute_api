@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.EducationSystem;
 import com.seeka.app.bean.Subject;
 import com.seeka.app.dto.EducationSystemDto;
+import com.seeka.app.dto.SubjectDto;
 
 @Repository
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
@@ -93,10 +94,10 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select id,country_name,name,code,description,state_name from education_system where country_name='"
-						+ countryName + "'and state_name='" + stateName + "'");
+				"select es.id,es.country_name,es.name,es.code,es.description,es.state_name from education_system es where es.country_name='"+countryName+"'and es.state_name='"+stateName+"'");
 		List<Object[]> rows = query.list();
 		List<EducationSystemDto> list = new ArrayList<>();
+		List<SubjectDto> subjects = new ArrayList<>();
 		for (Object[] row : rows) {
 			EducationSystemDto obj = new EducationSystemDto();
 			obj.setId(row[0].toString());
@@ -105,6 +106,16 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 			obj.setCode(row[3].toString());
 			obj.setDescription(row[4].toString());
 			obj.setStateName(row[5].toString());
+			
+			Query subjectQuery = session.createSQLQuery("select id,subject_name from seeka_subject where education_system_id ='"+row[0].toString()+"'");
+			List<Object[]> stateRows = subjectQuery.list();
+			for (Object[] stateRow : stateRows) {
+				SubjectDto subject = new SubjectDto();
+				subject.setId(stateRow[0].toString());
+				subject.setSubjectName(stateRow[1].toString());
+				subjects.add(subject);
+				obj.setSubjects(subjects);
+			}
 			list.add(obj);
 		}
 		return list;
