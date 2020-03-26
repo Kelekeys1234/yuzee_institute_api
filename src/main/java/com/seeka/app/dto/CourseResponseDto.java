@@ -21,8 +21,8 @@ public class CourseResponseDto {
 	private Double costRange;
 
 	private String location;
-	private String countryId;
-	private String cityId;
+//	private String countryId;
+//	private String cityId;
 	private Integer totalCount;
 	private Double domesticFee;
 	private Double internationalFee;
@@ -127,25 +127,25 @@ public class CourseResponseDto {
 		this.location = location;
 	}
 
-	public String getCountryId() {
-		return countryId;
-	}
-
-	public void setCountryId(final String countryId) {
-		this.countryId = countryId;
-	}
-
-	public String getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(final String cityId) {
-		this.cityId = cityId;
-	}
-
-	public String getLanguageShortKey() {
-		return languageShortKey;
-	}
+//	public String getCountryId() {
+//		return countryId;
+//	}
+//
+//	public void setCountryId(final String countryId) {
+//		this.countryId = countryId;
+//	}
+//
+//	public String getCityId() {
+//		return cityId;
+//	}
+//
+//	public void setCityId(final String cityId) {
+//		this.cityId = cityId;
+//	}
+//
+//	public String getLanguageShortKey() {
+//		return languageShortKey;
+//	}
 
 	public void setLanguageShortKey(final String languageShortKey) {
 		this.languageShortKey = languageShortKey;
@@ -371,8 +371,7 @@ public class CourseResponseDto {
 		builder.append("CourseResponseDto [id=").append(id).append(", name=").append(name).append(", courseRanking=").append(courseRanking).append(", stars=")
 				.append(stars).append(", duration=").append(duration).append(", durationTime=").append(durationTime).append(", language=").append(language)
 				.append(", languageShortKey=").append(languageShortKey).append(", instituteId=").append(instituteId).append(", instituteName=")
-				.append(instituteName).append(", costRange=").append(costRange).append(", location=").append(location).append(", countryId=").append(countryId)
-				.append(", cityId=").append(cityId).append(", totalCount=").append(totalCount).append(", domesticFee=").append(domesticFee)
+				.append(instituteName).append(", costRange=").append(costRange).append(", location=").append(location).append(", totalCount=").append(totalCount).append(", domesticFee=").append(domesticFee)
 				.append(", internationalFee=").append(internationalFee).append(", requirements=").append(requirements).append(", countryName=")
 				.append(countryName).append(", cityName=").append(cityName).append(", isFavourite=").append(isFavourite).append(", currencyCode=")
 				.append(currencyCode).append(", storageList=").append(storageList).append(", isViewed=").append(isViewed).append(", cost=").append(cost)

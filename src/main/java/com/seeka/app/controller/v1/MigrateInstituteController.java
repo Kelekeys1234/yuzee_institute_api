@@ -362,7 +362,7 @@ public class MigrateInstituteController {
 			if (null == countryObj) {
 				continue;
 			}
-			object.setCountry(countryObj);
+			object.setCountryName(countryObj.getName());
 
 			InstituteType instituteType = new InstituteType();
 			instituteType.setId(("111111"));

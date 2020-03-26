@@ -31,8 +31,29 @@ public class InstituteLevel implements Serializable {
 	 */
 	private static final long serialVersionUID = 747289592458631120L;
 	private String id;
-	private City city;
-	private Country country;
+	//private City city;
+	//private Country country;
+	private String cityName;
+	
+	@Column(name = "city_name")
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	@Column(name = "country_name")
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+	private String countryName;
 	private Institute institute;
 	private Level level;
 	private Boolean isActive;
@@ -47,16 +68,16 @@ public class InstituteLevel implements Serializable {
 	}
 
 	public InstituteLevel(City city, Country country, Institute institute, Level level) {
-		this.city = city;
-		this.country = country;
+		//this.city = city;
+		//this.country = country;
 		this.institute = institute;
 		this.level = level;
 	}
 
 	public InstituteLevel(City city, Country country, Institute institute, Level level, Boolean isActive,
 			Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
-		this.city = city;
-		this.country = country;
+		//this.city = city;
+		//this.country = country;
 		this.institute = institute;
 		this.level = level;
 		this.isActive = isActive;
@@ -80,7 +101,7 @@ public class InstituteLevel implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	/*@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "city_id", nullable = false)
 	public City getCity() {
 		return this.city;
@@ -98,7 +119,7 @@ public class InstituteLevel implements Serializable {
 
 	public void setCountry(Country country) {
 		this.country = country;
-	}
+	}*/
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "institute_id", nullable = false)
@@ -195,8 +216,8 @@ public class InstituteLevel implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((city == null) ? 0 : city.hashCode());
-		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((cityName == null) ? 0 : cityName.hashCode());
+		result = prime * result + ((countryName == null) ? 0 : countryName.hashCode());
 		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
 		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
 		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
@@ -224,15 +245,15 @@ public class InstituteLevel implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		InstituteLevel other = (InstituteLevel) obj;
-		if (city == null) {
-			if (other.city != null)
+		if (cityName == null) {
+			if (other.cityName != null)
 				return false;
-		} else if (!city.equals(other.city))
+		} else if (!cityName.equals(other.cityName))
 			return false;
-		if (country == null) {
-			if (other.country != null)
+		if (countryName == null) {
+			if (other.countryName != null)
 				return false;
-		} else if (!country.equals(other.country))
+		} else if (!countryName.equals(other.countryName))
 			return false;
 		if (createdBy == null) {
 			if (other.createdBy != null)
@@ -290,8 +311,8 @@ public class InstituteLevel implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("InstituteLevel [id=").append(id).append(", city=").append(city).append(", country=")
-				.append(country).append(", institute=").append(institute).append(", level=").append(level)
+		builder.append("InstituteLevel [id=").append(id).append(", city=").append(cityName).append(", country=")
+				.append(countryName).append(", institute=").append(institute).append(", level=").append(level)
 				.append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=")
 				.append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
 				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");

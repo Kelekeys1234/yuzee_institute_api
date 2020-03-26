@@ -7,8 +7,8 @@ public class InstituteRequestDto {
 	private String id;
 	private String name;
 	private String description;
-	private String cityId;
-	private String countryId;
+	private String cityName;
+	private String countryName;
 	private Integer worldRanking;
 	private String logoUrl;
 	private String avgCostOfLiving;
@@ -28,6 +28,23 @@ public class InstituteRequestDto {
 	private String openingTo;
 	private String email;
 	private String phoneNumber;
+	
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
 	private String address;
 	private List<String> offerService;
 	private List<String> offerServiceName;
@@ -98,35 +115,6 @@ public class InstituteRequestDto {
 	public void setDescription(final String description) {
 		this.description = description;
 	}
-
-	/**
-	 * @return the cityId
-	 */
-	public String getCityId() {
-		return cityId;
-	}
-
-	/**
-	 * @param cityId the cityId to set
-	 */
-	public void setCityId(final String cityId) {
-		this.cityId = cityId;
-	}
-
-	/**
-	 * @return the countryId
-	 */
-	public String getCountryId() {
-		return countryId;
-	}
-
-	/**
-	 * @param countryId the countryId to set
-	 */
-	public void setCountryId(final String countryId) {
-		this.countryId = countryId;
-	}
-
 	/**
 	 * @return the worldRanking
 	 */
@@ -510,8 +498,8 @@ public class InstituteRequestDto {
 		result = prime * result + (avgCostOfLiving == null ? 0 : avgCostOfLiving.hashCode());
 		result = prime * result + (campusName == null ? 0 : campusName.hashCode());
 		result = prime * result + (campusType == null ? 0 : campusType.hashCode());
-		result = prime * result + (cityId == null ? 0 : cityId.hashCode());
-		result = prime * result + (countryId == null ? 0 : countryId.hashCode());
+		result = prime * result + (cityName == null ? 0 : cityName.hashCode());
+		result = prime * result + (countryName == null ? 0 : countryName.hashCode());
 		result = prime * result + (courseStart == null ? 0 : courseStart.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (description == null ? 0 : description.hashCode());
@@ -596,18 +584,18 @@ public class InstituteRequestDto {
 		} else if (!campusType.equals(other.campusType)) {
 			return false;
 		}
-		if (cityId == null) {
-			if (other.cityId != null) {
+		if (cityName == null) {
+			if (other.cityName != null) {
 				return false;
 			}
-		} else if (!cityId.equals(other.cityId)) {
+		} else if (!cityName.equals(other.cityName)) {
 			return false;
 		}
-		if (countryId == null) {
-			if (other.countryId != null) {
+		if (countryName == null) {
+			if (other.countryName != null) {
 				return false;
 			}
-		} else if (!countryId.equals(other.countryId)) {
+		} else if (!countryName.equals(other.countryName)) {
 			return false;
 		}
 		if (courseStart == null) {
@@ -806,7 +794,7 @@ public class InstituteRequestDto {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("InstituteRequestDto [id=").append(id).append(", name=").append(name).append(", description=").append(description).append(", cityId=")
-				.append(cityId).append(", countryId=").append(countryId).append(", worldRanking=").append(worldRanking).append(", logoUrl=").append(logoUrl)
+				.append(cityName).append(", countryId=").append(countryName).append(", worldRanking=").append(worldRanking).append(", logoUrl=").append(logoUrl)
 				.append(", avgCostOfLiving=").append(avgCostOfLiving).append(", instituteTypeId=").append(instituteTypeId).append(", enrolmentLink=")
 				.append(enrolmentLink).append(", tuitionFessPaymentPlan=").append(tuitionFessPaymentPlan).append(", scholarshipFinancingAssistance=")
 				.append(scholarshipFinancingAssistance).append(", website=").append(website).append(", instituteMedias=").append(instituteMedias)

@@ -84,8 +84,8 @@ public class CommonUtil {
 	public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(final Institute institute) {
 		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
 		instituteRequestDto.setAvgCostOfLiving(institute.getAvgCostOfLiving());
-		instituteRequestDto.setCityId(institute.getCity().getId());
-		instituteRequestDto.setCountryId(institute.getCountry().getId());
+		instituteRequestDto.setCityName(institute.getCityName());
+		instituteRequestDto.setCountryName(institute.getCountryName());
 		instituteRequestDto.setDescription(institute.getDescription());
 		instituteRequestDto.setId(institute.getId());
 		instituteRequestDto.setWebsite(institute.getWebsite());

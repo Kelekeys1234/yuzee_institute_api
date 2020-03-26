@@ -10,8 +10,10 @@ import com.seeka.app.bean.InstituteType;
 public class InstituteGetRequestDto {
 
     private String id;
-    private City city;
-    private Country country;
+    //private City city;
+    //private Country country;
+    private String countryName;
+    private String cityName;
     private InstituteType instituteType;
     private String name;
     private List<InstituteDetailsGetRequest> instituteDetails;
@@ -49,38 +51,24 @@ public class InstituteGetRequestDto {
     public void setId(String id) {
         this.id = id;
     }
+    
+    public String getCountryName() {
+		return countryName;
+	}
 
-    /**
-     * @return the city
-     */
-    public City getCity() {
-        return city;
-    }
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
 
-    /**
-     * @param city
-     *            the city to set
-     */
-    public void setCity(City city) {
-        this.city = city;
-    }
+	public String getCityName() {
+		return cityName;
+	}
 
-    /**
-     * @return the country
-     */
-    public Country getCountry() {
-        return country;
-    }
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
 
-    /**
-     * @param country
-     *            the country to set
-     */
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
-    /**
+	/**
      * @return the instituteType
      */
     public InstituteType getInstituteType() {

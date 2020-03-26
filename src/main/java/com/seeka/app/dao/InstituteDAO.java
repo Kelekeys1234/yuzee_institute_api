@@ -377,10 +377,10 @@ public class InstituteDAO implements IInstituteDAO {
 			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			if (row[2] != null) {
-				obj.setCountry(getCountry(row[2].toString(), session));
+				obj.setCountryName(row[2].toString());
 			}
 			if (row[3] != null) {
-				obj.setCity(getCity(row[3].toString(), session));
+				obj.setCityName(row[3].toString());
 			}
 			if (row[4] != null) {
 				obj.setInstituteType(getInstituteType(row[4].toString(), session));
@@ -434,10 +434,10 @@ public class InstituteDAO implements IInstituteDAO {
 				obj.setName(row[1].toString());
 			}
 			if (row[2] != null) {
-				obj.setCountry(getCountry(row[2].toString(), session));
+				obj.setCountryName(row[2].toString());
 			}
 			if (row[3] != null) {
-				obj.setCity(getCity(row[3].toString(), session));
+				obj.setCityName(row[3].toString());
 			}
 			if (row[4] != null) {
 				obj.setInstituteType(getInstituteType(row[4].toString(), session));
@@ -494,10 +494,10 @@ public class InstituteDAO implements IInstituteDAO {
 			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			if (row[2] != null) {
-				obj.setCountry(getCountry(row[2].toString(), session));
+				obj.setCountryName(row[2].toString());
 			}
 			if (row[3] != null) {
-				obj.setCity(getCity(row[3].toString(), session));
+				obj.setCityName(row[3].toString());
 			}
 			if (row[4] != null) {
 				obj.setInstituteType(getInstituteType(row[4].toString(), session));
@@ -653,8 +653,8 @@ public class InstituteDAO implements IInstituteDAO {
 	public List<Institute> getSecondayCampus(final String countryId, final String cityId, final String name) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Institute.class);
-		crit.add(Restrictions.eq("country.id", countryId));
-		crit.add(Restrictions.eq("city.id", cityId));
+		crit.add(Restrictions.eq("country.name", countryId));
+		crit.add(Restrictions.eq("city.name", cityId));
 		crit.add(Restrictions.eq("name", name));
 		crit.add(Restrictions.eq("campusType", "SECONDARY"));
 		return crit.list();
@@ -815,8 +815,8 @@ public class InstituteDAO implements IInstituteDAO {
 				.setProjection(Projections.projectionList().add(Projections.groupProperty("name").as("name"))
 						.add(Projections.property("id").as("id"))
 						.add(Projections.property("worldRanking").as("worldRanking"))
-						.add(Projections.property("city.id").as("cityId"))
-						.add(Projections.property("country.id").as("countryId"))
+						.add(Projections.property("cityName").as("cityName"))
+						.add(Projections.property("countryName").as("countryName"))
 						.add(Projections.property("website").as("website"))
 						.add(Projections.property("aboutInfo").as("aboutUs"))
 						.add(Projections.property("openingFrom").as("openingFrom"))

@@ -189,13 +189,11 @@ public class InstituteService implements IInstituteService {
 		for (Institute institute : inistituteList) {
 			InstituteResponseDto instituteResponseDTO = new InstituteResponseDto();
 			BeanUtils.copyProperties(institute, instituteResponseDTO);
-			if (institute.getCountry() != null) {
-				instituteResponseDTO.setCountryId(institute.getCountry().getId());
-				instituteResponseDTO.setCountryName(institute.getCountry().getName());
+			if (institute.getCountryName() != null) {
+				instituteResponseDTO.setCountryName(institute.getCountryName());
 			}
-			if (institute.getCity() != null) {
-				instituteResponseDTO.setCityId(institute.getCity().getId());
-				instituteResponseDTO.setCityName(institute.getCity().getName());
+			if (institute.getCityName() != null) {
+				instituteResponseDTO.setCityName(institute.getCityName());
 			}
 			instituteResponseDTO.setWorldRanking(institute.getWorldRanking());
 			instituteResponseDTO.setLocation(institute.getLatitute() + "," + institute.getLongitude());
@@ -250,8 +248,8 @@ public class InstituteService implements IInstituteService {
 				}
 
 				BeanUtils.copyProperties(institute, instituteElasticSearchDto);
-				instituteElasticSearchDto.setCountryName(institute.getCountry() != null ? institute.getCountry().getName() : null);
-				instituteElasticSearchDto.setCityName(institute.getCity() != null ? institute.getCity().getName() : null);
+				instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
+				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
 				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType().getName() : null);
 				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 				instituteElasticDtoList.add(instituteElasticSearchDto);
@@ -304,8 +302,8 @@ public class InstituteService implements IInstituteService {
 			Level level = levelService.get(levelId);
 			InstituteLevel instituteLevel = new InstituteLevel();
 			instituteLevel.setLevel(level);
-			instituteLevel.setCountry(institute.getCountry());
-			instituteLevel.setCity(institute.getCity());
+			instituteLevel.setCountryName(institute.getCountryName());
+			instituteLevel.setCityName(institute.getCityName());
 			instituteLevel.setInstitute(institute);
 			instituteLevel.setCreatedBy("API");
 			instituteLevel.setCreatedOn(new Date());
@@ -369,8 +367,8 @@ public class InstituteService implements IInstituteService {
 				}
 
 				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
-				instituteElasticSearchDto.setCountryName(institute.getCountry() != null ? institute.getCountry().getName() : null);
-				instituteElasticSearchDto.setCityName(institute.getCity() != null ? institute.getCity().getName() : null);
+				instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
+				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
 				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType().getName() : null);
 				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 				instituteElasticDtoList.add(instituteElasticSearchDto);
@@ -427,13 +425,13 @@ public class InstituteService implements IInstituteService {
 		institute.setUpdatedBy(instituteRequest.getUpdatedBy());
 		institute.setName(instituteRequest.getName());
 		institute.setDescription(instituteRequest.getDescription());
-		if (instituteRequest.getCountryId() != null) {
-			institute.setCountry(countryDAO.get(instituteRequest.getCountryId()));
+		if (instituteRequest.getCountryName() != null) {
+			institute.setCountryName(instituteRequest.getCountryName());
 		} else {
 			throw new ValidationException("countryId is required");
 		}
-		if (instituteRequest.getCountryId() != null) {
-			institute.setCity(cityDAO.get(instituteRequest.getCityId()));
+		if (instituteRequest.getCityName() != null) {
+			institute.setCityName(instituteRequest.getCityName());
 		} else {
 			throw new ValidationException("cityId is required");
 		}
@@ -579,8 +577,8 @@ public class InstituteService implements IInstituteService {
 	private InstituteGetRequestDto getInstitute(final Institute institute) {
 		InstituteGetRequestDto dto = new InstituteGetRequestDto();
 		dto.setId(institute.getId());
-		dto.setCity(institute.getCity());
-		dto.setCountry(institute.getCountry());
+		dto.setCityName(institute.getCityName());
+		dto.setCountryName(institute.getCountryName());
 		dto.setInstituteType(institute.getInstituteType());
 		dto.setName(institute.getName());
 		dto.setIsActive(institute.getIsActive());
@@ -589,17 +587,17 @@ public class InstituteService implements IInstituteService {
 		dto.setUpdatedOn(institute.getUpdatedOn());
 		dto.setUpdatedBy(institute.getUpdatedBy());
 		dto.setInstituteDetails(getInstituteDetails(institute.getId()));
-		dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountry(), institute.getName()));
+		dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
 		dto.setCourseCount(institute.getCourseCount());
 		dto.setCampusType(institute.getCampusType());
 		return dto;
 	}
 
-	private List<String> getInstituteYoutube(final Country country, final String instituteName) {
+	private List<String> getInstituteYoutube(final String countryName, final String instituteName) {
 		List<String> images = new ArrayList<>();
-		if (country != null && country.getName() != null) {
+		if (countryName != null) {
 			for (int i = 1; i <= 20; i++) {
-				images.add(CDNServerUtil.getInstituteImages(country.getName(), instituteName, i));
+				images.add(CDNServerUtil.getInstituteImages(countryName, instituteName, i));
 			}
 		}
 		return images;
@@ -652,8 +650,8 @@ public class InstituteService implements IInstituteService {
 
 		instituteRequestDtos.add(instituteRequestDto);
 		if (institute != null && institute.getCampusType() != null && institute.getCampusType().equals("PRIMARY")) {
-			if (institute.getCountry() != null && institute.getCity() != null && institute.getName() != null) {
-				List<Institute> institutes = dao.getSecondayCampus(institute.getCountry().getId(), institute.getCity().getId(), institute.getName());
+			if (institute.getCountryName() != null && institute.getCityName() != null && institute.getName() != null) {
+				List<Institute> institutes = dao.getSecondayCampus(institute.getCountryName(), institute.getCityName(), institute.getName());
 				for (Institute campus : institutes) {
 					instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(campus);
 					instituteRequestDto.setOfferService(getOfferServices(campus.getId()));
