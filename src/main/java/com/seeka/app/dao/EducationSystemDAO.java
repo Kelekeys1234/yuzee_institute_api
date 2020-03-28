@@ -119,7 +119,7 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 				obj.setSubjects(subjects);
 			}
 			
-			Query gradeQuery = session.createSQLQuery("select id,country_name,grade,gpa_grade from grade_details where education_system_id ='"+row[0].toString()+"'");
+			Query gradeQuery = session.createSQLQuery("SELECT DISTINCT id,country_name,grade,MIN(gpa_grade) FROM grade_details where education_system_id ='"+row[0].toString()+"' GROUP BY grade;");
 			List<Object[]> gradeRows = gradeQuery.list();
 			for(Object[] gradeRow : gradeRows) {
 				GradeDto grade = new GradeDto();
