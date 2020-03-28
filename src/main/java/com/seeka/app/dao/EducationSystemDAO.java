@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.EducationSystem;
 import com.seeka.app.bean.Subject;
 import com.seeka.app.dto.EducationSystemDto;
+import com.seeka.app.dto.GradeDto;
 import com.seeka.app.dto.SubjectDto;
 
 @Repository
@@ -98,6 +99,7 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 		List<Object[]> rows = query.list();
 		List<EducationSystemDto> list = new ArrayList<>();
 		List<SubjectDto> subjects = new ArrayList<>();
+		List<GradeDto> gradeDetails = new ArrayList<>();
 		for (Object[] row : rows) {
 			EducationSystemDto obj = new EducationSystemDto();
 			obj.setId(row[0].toString());
@@ -108,13 +110,29 @@ public class EducationSystemDAO implements IEducationSystemDAO {
 			obj.setStateName(row[5].toString());
 			
 			Query subjectQuery = session.createSQLQuery("select id,subject_name from seeka_subject where education_system_id ='"+row[0].toString()+"'");
-			List<Object[]> stateRows = subjectQuery.list();
-			for (Object[] stateRow : stateRows) {
+			List<Object[]> subjectRows = subjectQuery.list();
+			for (Object[] subjectRow : subjectRows) {
 				SubjectDto subject = new SubjectDto();
-				subject.setId(stateRow[0].toString());
-				subject.setSubjectName(stateRow[1].toString());
+				subject.setId(subjectRow[0].toString());
+				subject.setSubjectName(subjectRow[1].toString());
 				subjects.add(subject);
 				obj.setSubjects(subjects);
+			}
+			
+			Query gradeQuery = session.createSQLQuery("select id,country_name,grade,gpa_grade from grade_details where education_system_id ='"+row[0].toString()+"'");
+			List<Object[]> gradeRows = gradeQuery.list();
+			for(Object[] gradeRow : gradeRows) {
+				GradeDto grade = new GradeDto();
+				grade.setId(gradeRow[0].toString());
+				grade.setCountryName(gradeRow[1].toString());
+				if(gradeRow[2] != null) {
+					grade.setGrade(gradeRow[2].toString());
+				}
+				if(gradeRow[3].toString() != null) {
+					grade.setGpaGrade(gradeRow[3].toString());
+				}
+				gradeDetails.add(grade);
+				obj.setGradeDtos(gradeDetails);
 			}
 			list.add(obj);
 		}

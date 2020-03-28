@@ -237,7 +237,7 @@ public class EducationSystemService implements IEducationSystemService {
 		Double gpaGrade = 0.0;
 		List<String> gpaGrades = new ArrayList<>();
 		for (String grade : gradeDto.getSubjectGrades()) {
-			gpaGrades.add(educationDetailDAO.getGradeDetails(gradeDto.getCountryId(), gradeDto.getEducationSystemId(), grade));
+			gpaGrades.add(educationDetailDAO.getGradeDetails(gradeDto.getCountryName(), gradeDto.getEducationSystemId(), grade));
 		}
 		for (String grade : gpaGrades) {
 			gpaGrade = gpaGrade + Double.valueOf(grade);

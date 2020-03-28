@@ -2,8 +2,6 @@ package com.seeka.app.dto;
 
 import java.util.List;
 
-import com.seeka.app.bean.Subject;
-
 public class EducationSystemDto {
 
     private String id;
@@ -15,6 +13,7 @@ public class EducationSystemDto {
     private String updatedBy;
     private String stateName;
     private List<SubjectDto> subjects;
+    private List<GradeDto> gradeDtos;
 
     /**
      * @return the id
@@ -127,6 +126,14 @@ public class EducationSystemDto {
 
 	public void setSubjects(List<SubjectDto> subjects) {
 		this.subjects = subjects;
+	}
+
+	public List<GradeDto> getGradeDtos() {
+		return gradeDtos;
+	}
+
+	public void setGradeDtos(List<GradeDto> gradeDtos) {
+		this.gradeDtos = gradeDtos;
 	}
 
 }

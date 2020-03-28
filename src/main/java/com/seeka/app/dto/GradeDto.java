@@ -4,24 +4,13 @@ import java.util.List;
 
 public class GradeDto {
 
-    private String countryId;
+	private String id;
+    private String countryName;
     private String educationSystemId;
     private List<String> subjectGrades;
+    private String grade;
+	private String gpaGrade;
 
-    /**
-     * @return the countryId
-     */
-    public String getCountryId() {
-        return countryId;
-    }
-
-    /**
-     * @param countryId
-     *            the countryId to set
-     */
-    public void setCountryId(String countryId) {
-        this.countryId = countryId;
-    }
 
     /**
      * @return the educationSystemId
@@ -52,5 +41,37 @@ public class GradeDto {
     public void setSubjectGrades(List<String> subjectGrades) {
         this.subjectGrades = subjectGrades;
     }
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public String getGpaGrade() {
+		return gpaGrade;
+	}
+
+	public void setGpaGrade(String gpaGrade) {
+		this.gpaGrade = gpaGrade;
+	}
 
 }

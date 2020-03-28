@@ -1044,7 +1044,7 @@ public class CourseService implements ICourseService {
 			courseMinRequirementDao.save(courseMinRequirement);
 			i++;
 		}
-		gradeDto.setCountryId(courseMinRequirementDto.getCountry());
+		gradeDto.setCountryName(courseMinRequirementDto.getCountry());
 		gradeDto.setEducationSystemId(courseMinRequirementDto.getSystem());
 		gradeDto.setSubjectGrades(subjectGrade);
 		Double averageGPA = educationSystemService.calGpa(gradeDto);
