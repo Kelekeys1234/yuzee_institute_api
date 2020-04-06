@@ -68,7 +68,7 @@ public class HelpDAO implements IHelpDAO {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select count(*) from seeka_help sa where sa.is_active = " + status + " and sa.deleted_on IS NULL";
 		if (userId != null) {
-			sqlQuery = sqlQuery + " and sa.user_id = " + userId;
+			sqlQuery = sqlQuery + " and sa.user_id = '" + userId + "'";
 		}
 		if (isArchive != null) {
 			sqlQuery = sqlQuery + " and sa.is_archive = " + isArchive;
