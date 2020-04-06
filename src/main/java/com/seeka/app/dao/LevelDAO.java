@@ -105,7 +105,7 @@ public class LevelDAO implements ILevelDAO {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery(
                         "select distinct ll.id, ll.name as name,ll.code as levelkey from course c inner join institute_level il on il.institute_id = c.institute_id inner join level ll on il.level_id = ll.id "
-                                        + "inner join institute inst on inst.id = c.institute_id where inst.country_id = :countryId")
+                                        + "inner join institute inst on inst.id = c.institute_id where inst.country_name = :countryId")
                         .setParameter("countryId", countryId);
         List<Object[]> rows = query.list();
         List<Level> level = new ArrayList<>();
