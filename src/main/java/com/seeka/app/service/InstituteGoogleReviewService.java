@@ -31,9 +31,8 @@ public class InstituteGoogleReviewService implements IInstituteGoogleReviewServi
 				instituteGoogleReviewDto.setInstituteId(instituteGoogleReview.getInstitute().getId());
 				instituteGoogleReviewDto.setInstituteName(instituteGoogleReview.getInstitute().getName());
 			}
-			if (instituteGoogleReview.getCountry() != null) {
-				instituteGoogleReviewDto.setCountryId(instituteGoogleReview.getCountry().getId());
-				instituteGoogleReviewDto.setCountryName(instituteGoogleReview.getCountry().getName());
+			if (instituteGoogleReview.getCountryName() != null) {
+				instituteGoogleReviewDto.setCountryName(instituteGoogleReview.getCountryName());
 			}
 			instituteGoogleReviewDtos.add(instituteGoogleReviewDto);
 		}

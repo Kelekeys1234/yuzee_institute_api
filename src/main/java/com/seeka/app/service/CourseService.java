@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.seeka.app.bean.City;
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseEnglishEligibility;
@@ -40,8 +38,6 @@ import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dao.CourseGradeEligibilityDAO;
 import com.seeka.app.dao.CurrencyDAO;
-import com.seeka.app.dao.ICityDAO;
-import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.ICourseEnglishEligibilityDAO;
 import com.seeka.app.dao.ICourseMinRequirementDao;
@@ -87,11 +83,11 @@ public class CourseService implements ICourseService {
 	@Autowired
 	private IInstituteDAO dao;
 
-	@Autowired
-	private ICountryDAO countryDAO;
+//	@Autowired
+//	private ICountryDAO countryDAO;
 
-	@Autowired
-	private ICityDAO cityDAO;
+//	@Autowired
+//	private ICityDAO cityDAO;
 
 	@Autowired
 	private IFacultyDAO facultyDAO;
@@ -120,8 +116,8 @@ public class CourseService implements ICourseService {
 	@Autowired
 	private IGlobalStudentData iGlobalStudentDataService;
 
-	@Autowired
-	private ICountryService iCountryService;
+//	@Autowired
+//	private ICountryService iCountryService;
 
 	@Autowired
 	private IViewService iViewService;
@@ -555,21 +551,21 @@ public class CourseService implements ICourseService {
 		return currencyRate;
 	}
 
-	private Country getCountry(final String countryId) {
-		Country country = null;
-		if (countryId != null) {
-			country = countryDAO.get(countryId);
-		}
-		return country;
-	}
+//	private Country getCountry(final String countryId) {
+//		Country country = null;
+//		if (countryId != null) {
+//			country = countryDAO.get(countryId);
+//		}
+//		return country;
+//	}
 
-	private City getCity(final String cityId) {
-		City city = null;
-		if (cityId != null) {
-			city = cityDAO.get(cityId);
-		}
-		return city;
-	}
+//	private City getCity(final String cityId) {
+//		City city = null;
+//		if (cityId != null) {
+//			city = cityDAO.get(cityId);
+//		}
+//		return city;
+//	}
 
 	private Faculty getFaculty(final String facultyId) {
 		Faculty faculty = null;
@@ -1035,7 +1031,7 @@ public class CourseService implements ICourseService {
 		for (String subject : courseMinRequirementDto.getSubject()) {
 			System.out.println(subject);
 			CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
-			courseMinRequirement.setCountry(countryDAO.get(courseMinRequirementDto.getCountry()));
+			courseMinRequirement.setCountryName(courseMinRequirementDto.getCountry());
 			courseMinRequirement.setSystem(courseMinRequirementDto.getSystem());
 			courseMinRequirement.setSubject(courseMinRequirementDto.getSubject().get(i));
 			courseMinRequirement.setGrade(courseMinRequirementDto.getGrade().get(i));
@@ -1071,17 +1067,17 @@ public class CourseService implements ICourseService {
 
 	public List<CourseMinRequirementDto> convertCourseMinRequirementToDto(final List<CourseMinRequirement> courseMinRequirement) {
 		List<CourseMinRequirementDto> resultList = new ArrayList<>();
-		Set<String> countryIds = courseMinRequirement.stream().map(c -> c.getCountry().getId()).collect(Collectors.toSet());
+		Set<String> countryIds = courseMinRequirement.stream().map(c -> c.getCountryName()).collect(Collectors.toSet());
 		for (String countryId : countryIds) {
 			List<String> subject = new ArrayList<>();
 			List<String> grade = new ArrayList<>();
-			List<CourseMinRequirement> filterList = courseMinRequirement.stream().filter(x -> x.getCountry().getId().equals(countryId))
+			List<CourseMinRequirement> filterList = courseMinRequirement.stream().filter(x -> x.getCountryName().equals(countryId))
 					.collect(Collectors.toList());
 			CourseMinRequirementDto courseMinRequirementDto = new CourseMinRequirementDto();
 			for (CourseMinRequirement courseMinRequirements : filterList) {
 				subject.add(courseMinRequirements.getSubject());
 				grade.add(courseMinRequirements.getGrade());
-				courseMinRequirementDto.setCountry(courseMinRequirements.getCountry().getId());
+				courseMinRequirementDto.setCountry(courseMinRequirements.getCountryName());
 				courseMinRequirementDto.setSystem(courseMinRequirements.getSystem());
 				courseMinRequirementDto.setCourse(courseMinRequirements.getCourse().getId());
 			}
@@ -1115,12 +1111,12 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public long checkIfCoursesPresentForCountry(final Country country) {
+	public long checkIfCoursesPresentForCountry(final String country) {
 		return iCourseDAO.getCourseCountForCountry(country);
 	}
 
 	@Override
-	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final Country country) {
+	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
 		return iCourseDAO.getTopRatedCoursesForCountryWorldRankingWise(country);
 	}
 
@@ -1155,7 +1151,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<String> getTopRatedCourseIdForCountryWorldRankingWise(final Country country) {
+	public List<String> getTopRatedCourseIdForCountryWorldRankingWise(final String country) {
 		return iCourseDAO.getTopRatedCourseIdsForCountryWorldRankingWise(country);
 	}
 
@@ -1174,7 +1170,7 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final Country country) {
+	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final String country) {
 		return iCourseDAO.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto, country);
 	}
 
@@ -1204,23 +1200,20 @@ public class CourseService implements ICourseService {
 	}
 
 	@Override
-	public List<String> courseIdsForCountry(final Country country) {
+	public List<String> courseIdsForCountry(final String country) {
 		return iCourseDAO.getCourseIdsForCountry(country);
 	}
 
 	@Override
-	public List<String> courseIdsForMigratedCountries(final Country country) {
-		List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
+	public List<String> courseIdsForMigratedCountries(final String country) {
+		List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country);
 		List<String> otherCountryIds = new ArrayList<>();
 		if (countryWiseStudentCountListForUserCountry == null || countryWiseStudentCountListForUserCountry.isEmpty()) {
 			countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList("China");
 		}
 
 		for (GlobalData globalDataDto : countryWiseStudentCountListForUserCountry) {
-			Country con = iCountryService.getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry());
-			if (!(con == null || con.getId() == null)) {
-				otherCountryIds.add(con.getId());
-			}
+				otherCountryIds.add(globalDataDto.getDestinationCountry());
 		}
 		if (!otherCountryIds.isEmpty()) {
 			List<String> courseIds = iCourseDAO.getAllCoursesForCountry(otherCountryIds);
@@ -1293,8 +1286,8 @@ public class CourseService implements ICourseService {
 		if (courseResponseDtos.size() <= pageSize) {
 			List<GlobalData> globalDatas = iGlobalStudentDataDAO.getCountryWiseStudentList(userCountry);
 			if (!globalDatas.isEmpty()) {
-				Country country = countryDAO.getCountryByName(globalDatas.get(0).getDestinationCountry());
-				courseSearchDto.setCountryIds(Arrays.asList(country.getId()));
+				//Country country = countryDAO.getCountryByName(globalDatas.get(0).getDestinationCountry());
+				courseSearchDto.setCountryIds(Arrays.asList(globalDatas.get(0).getDestinationCountry()));
 				courseSearchDto.setMaxSizePerPage(pageSize - courseResponseDtos.size());
 				List<CourseResponseDto> courseResponseDtos2 = iCourseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, false);
 				courseResponseDtos.addAll(courseResponseDtos2);

@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.EducationSystem;
 import com.seeka.app.bean.GradeDetails;
 import com.seeka.app.bean.Level;
@@ -25,7 +24,6 @@ import com.seeka.app.bean.UserEducationAOLevelSubjects;
 import com.seeka.app.bean.UserEducationDetails;
 import com.seeka.app.bean.UserEnglishScore;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
-import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.IEducationSystemDAO;
 import com.seeka.app.dao.UserEducationAOLevelSubjectDAO;
 import com.seeka.app.dao.UserEducationDetailDAO;
@@ -48,11 +46,11 @@ public class EducationSystemService implements IEducationSystemService {
 	@Autowired
 	private IEducationSystemDAO iEducationSystemDAO;
 
-	@Autowired
-	private ICountryDAO countryDAO;
-
-	@Autowired
-	private ICountryService iCountryService;
+//	@Autowired
+//	private ICountryDAO countryDAO;
+//
+//	@Autowired
+//	private ICountryService iCountryService;
 
 	@Autowired
 	private UserEducationDetailDAO educationDetailDAO;
@@ -163,11 +161,11 @@ public class EducationSystemService implements IEducationSystemService {
 
 		UserEducationDetailResponseDto userEducationDetailResponseDto = new UserEducationDetailResponseDto();
 		BeanUtils.copyProperties(educationDetails, userEducationDetailResponseDto);
-		Country country = educationDetails.getCountry();
+		//Country country = educationDetails.getCountry();
 		EducationSystem educationSystem = educationDetails.getEducationSystem();
 		Level level = educationDetails.getLevel();
-		userEducationDetailResponseDto.setEducationCountryId(country.getId());
-		userEducationDetailResponseDto.setEducationCountryName(country.getName());
+		//userEducationDetailResponseDto.setEducationCountryId(country.getId());
+		userEducationDetailResponseDto.setEducationCountryName(educationDetails.getCountryName());
 		userEducationDetailResponseDto.setEducationLevelId(level.getId());
 		userEducationDetailResponseDto.setEduLevel(level.getName());
 		userEducationDetailResponseDto.setEducationSystemId(educationSystem.getId());
@@ -299,7 +297,7 @@ public class EducationSystemService implements IEducationSystemService {
 			EducationDetailRequestDto educationDetailRequestDto = educationSystemDetails.getEducationDetail();
 			BeanUtils.copyProperties(educationDetailRequestDto, existingUserEducationDetails);
 			if (educationDetailRequestDto.getEducationCountryId() != null) {
-				existingUserEducationDetails.setCountry(iCountryService.get(educationDetailRequestDto.getEducationCountryId()));
+				existingUserEducationDetails.setCountryName(educationDetailRequestDto.getEducationCountryId());
 			}
 			if (educationDetailRequestDto.getEducationSystemId() != null) {
 				existingUserEducationDetails.setEducationSystem(iEducationSystemDAO.get(educationDetailRequestDto.getEducationSystemId()));

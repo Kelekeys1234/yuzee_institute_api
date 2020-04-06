@@ -1,4 +1,4 @@
-package com.seeka.app.dao;
+/*package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,3 +202,4 @@ public class CountryDAO implements ICountryDAO {
 		return (Country) criteria.uniqueResult();
 	}
 }
+*/

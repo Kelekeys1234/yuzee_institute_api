@@ -86,9 +86,8 @@ public class Enrollment implements Serializable {
 	private String town;
 	@Column(name = "state")
 	private String state;
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = true)
-	@JoinColumn(name = "country_id", nullable = false)
-	private Country country;
+	@Column(name = "country_name")
+	private String countryName;
 	@Column(name = "zip_code")
 	private String zipCode;
 	@Column(name = "phone_number")
@@ -311,14 +310,6 @@ public class Enrollment implements Serializable {
 		this.state = state;
 	}
 
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setCountry(final Country country) {
-		this.country = country;
-	}
-
 	public String getZipCode() {
 		return zipCode;
 	}
@@ -398,7 +389,7 @@ public class Enrollment implements Serializable {
 		result = prime * result + (address == null ? 0 : address.hashCode());
 		result = prime * result + (assignee == null ? 0 : assignee.hashCode());
 		result = prime * result + (birthDate == null ? 0 : birthDate.hashCode());
-		result = prime * result + (country == null ? 0 : country.hashCode());
+		result = prime * result + (getCountryName() == null ? 0 : getCountryName().hashCode());
 		result = prime * result + (course == null ? 0 : course.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
@@ -466,11 +457,11 @@ public class Enrollment implements Serializable {
 		} else if (!birthDate.equals(other.birthDate)) {
 			return false;
 		}
-		if (country == null) {
-			if (other.country != null) {
+		if (getCountryName() == null) {
+			if (other.getCountryName() != null) {
 				return false;
 			}
-		} else if (!country.equals(other.country)) {
+		} else if (!getCountryName().equals(other.getCountryName())) {
 			return false;
 		}
 		if (course == null) {
@@ -705,10 +696,19 @@ public class Enrollment implements Serializable {
 				.append(birthDate).append(", passportNumber=").append(passportNumber).append(", passportIssueDate=").append(passportIssueDate)
 				.append(", passportExpiryDate=").append(passportExpiryDate).append(", officeOfIssue=").append(officeOfIssue).append(", otherName=")
 				.append(otherName).append(", address=").append(address).append(", town=").append(town).append(", state=").append(state).append(", country=")
-				.append(country).append(", zipCode=").append(zipCode).append(", phoneNumber=").append(phoneNumber).append(", email=").append(email)
+				.append(getCountryName()).append(", zipCode=").append(zipCode).append(", phoneNumber=").append(phoneNumber).append(", email=").append(email)
 				.append(", assignee=").append(assignee).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=")
 				.append(createdBy).append(", updatedBy=").append(updatedBy).append(", isArchive=").append(isArchive).append("]");
 		return builder.toString();
+	}
+
+	@Column(name = "country_name")
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 
 }

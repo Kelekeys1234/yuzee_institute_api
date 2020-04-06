@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+/*package com.seeka.app.service;
 
 import java.util.List;
 import java.util.Map;
@@ -26,3 +26,4 @@ public interface ICityService {
 	
 	Integer getAllCityNamesCount(String searchString);
 }
+*/

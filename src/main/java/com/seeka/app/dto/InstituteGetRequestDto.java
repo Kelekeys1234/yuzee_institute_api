@@ -3,8 +3,6 @@ package com.seeka.app.dto;
 import java.util.Date;
 import java.util.List;
 
-import com.seeka.app.bean.City;
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.InstituteType;
 
 public class InstituteGetRequestDto {

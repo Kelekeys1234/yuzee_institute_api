@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseIntake;
@@ -92,9 +91,9 @@ public interface ICourseService {
 
 	Map<String, Object> autoSearchByCharacter(String searchKey);
 
-	long checkIfCoursesPresentForCountry(Country country);
+	long checkIfCoursesPresentForCountry(String country);
 
-	List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
+	List<Course> getTopRatedCoursesForCountryWorldRankingWise(String country);
 
 	List<Course> getAllCourseUsingFaculty(String facultyId);
 
@@ -108,19 +107,19 @@ public interface ICourseService {
 
 	List<Course> getAllCoursesUsingId(List<String> listOfRecommendedCourseIds);
 
-	List<String> getTopRatedCourseIdForCountryWorldRankingWise(Country country);
+	List<String> getTopRatedCourseIdForCountryWorldRankingWise(String country);
 
 	List<String> getTopSearchedCoursesByUsers(String userId);
 
 	Set<Course> getRelatedCoursesBasedOnPastSearch(List<String> courseList) throws ValidationException;
 
-	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
+	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, String country);
 
 	List<String> getCountryForTopSearchedCourses(List<String> topSearchedCourseIds) throws ValidationException;
 
-	List<String> courseIdsForCountry(final Country country);
+	List<String> courseIdsForCountry(final String country);
 
-	List<String> courseIdsForMigratedCountries(final Country country);
+	List<String> courseIdsForMigratedCountries(final String country);
 
 	List<Long> getUserListForUserWatchCourseFilter(String courseId, String instituteId, String facultyId, String countryId, String cityId);
 

@@ -9,7 +9,6 @@ import com.seeka.app.bean.EducationAgent;
 import com.seeka.app.bean.EducationAgentAccomplishment;
 import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
-import com.seeka.app.bean.Skill;
 import com.seeka.app.dto.EducationAgentGetAllDto;
 
 public interface IEducationAgentDAO {
@@ -31,10 +30,6 @@ public interface IEducationAgentDAO {
     public List<AgentMediaDocumentation> fetchAgentMediaDocumentation(String educationAgent);
 
     public List<EducationAgentAccomplishment> fetcheducationAgentAccomplishment(String educationAgent);
-
-    public void saveSkill(Skill skill);
-
-    public Skill fetchSkill(String id);
 
     public void deleteSkill(String educationAgentId);
 
@@ -67,7 +62,5 @@ public interface IEducationAgentDAO {
     public void saveEducationAgentAccomplishment(EducationAgentAccomplishment educationAgentAccomplishment);
 
     public void deleteEducationAgentAccomplishment(String educationAgent);
-
-    public List<Skill> getAllSkill();
 
 }

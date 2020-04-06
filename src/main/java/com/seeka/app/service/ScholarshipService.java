@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Level;
 import com.seeka.app.bean.Scholarship;
 import com.seeka.app.bean.ScholarshipIntakes;
 import com.seeka.app.bean.ScholarshipLanguage;
-import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.IScholarshipDAO;
 import com.seeka.app.dto.MediaDto;
@@ -41,8 +38,8 @@ public class ScholarshipService implements IScholarshipService {
 	@Autowired
 	private IScholarshipDAO iScholarshipDAO;
 
-	@Autowired
-	private ICountryDAO iCountryDAO;
+//	@Autowired
+//	private ICountryDAO iCountryDAO;
 
 	@Autowired
 	private ILevelDAO iLevelDAO;
@@ -71,12 +68,8 @@ public class ScholarshipService implements IScholarshipService {
 			}
 			scholarship.setLevel(level);
 		}
-		if (scholarshipDto.getCountryId() != null) {
-			Country country = iCountryDAO.get(scholarshipDto.getCountryId());
-			if (country == null) {
-				throw new ValidationException("country not found for id" + scholarshipDto.getCountryId());
-			}
-			scholarship.setCountry(country);
+		if (scholarshipDto.getCountryName() != null) {
+			scholarship.setCountryName(scholarshipDto.getCountryName());
 		}
 		if (scholarshipDto.getInstituteName() != null) {
 			scholarship.setInstituteName(scholarshipDto.getInstituteName());
@@ -85,7 +78,7 @@ public class ScholarshipService implements IScholarshipService {
 
 		ScholarshipElasticDTO scholarshipElasticDto = new ScholarshipElasticDTO();
 		BeanUtils.copyProperties(scholarship, scholarshipElasticDto);
-		scholarshipElasticDto.setCountryName(scholarship.getCountry() != null ? scholarship.getCountry().getName() : null);
+		scholarshipElasticDto.setCountryName(scholarship.getCountryName() != null ? scholarship.getCountryName() : null);
 		scholarshipElasticDto.setCountryName(scholarshipDto.getCourseName());
 		scholarshipElasticDto.setInstituteName(scholarship.getInstituteName() != null ? scholarship.getInstituteName() : null);
 		scholarshipElasticDto.setLevelName(scholarship.getLevel() != null ? scholarship.getLevel().getName() : null);
@@ -137,9 +130,9 @@ public class ScholarshipService implements IScholarshipService {
 			}
 			scholarshipResponseDTO.setLanguages(languages);
 		}
-		scholarshipResponseDTO.setCountryId(scholarship.getCountry().getId());
+		scholarshipResponseDTO.setCountryId(scholarship.getCountryName());
 		scholarshipResponseDTO.setLevelId(scholarship.getLevel().getId());
-		scholarshipResponseDTO.setCountryName(scholarship.getCountry().getName());
+		scholarshipResponseDTO.setCountryName(scholarship.getCountryName());
 		scholarshipResponseDTO.setLevelName(scholarship.getLevel().getName());
 		scholarshipResponseDTO.setInstituteName(scholarship.getInstituteName());
 		
@@ -179,12 +172,8 @@ public class ScholarshipService implements IScholarshipService {
 			}
 			existingScholarship.setLevel(level);
 		}
-		if (scholarshipDto.getCountryId() != null) {
-			Country country = iCountryDAO.get(scholarshipDto.getCountryId());
-			if (country == null) {
-				throw new ValidationException("country not found for id" + scholarshipDto.getCountryId());
-			}
-			existingScholarship.setCountry(country);
+		if (scholarshipDto.getCountryName() != null) {
+			existingScholarship.setCountryName(scholarshipDto.getCountryName());
 		}
 		if (scholarshipDto.getInstituteName() != null) {
 			existingScholarship.setInstituteName(scholarshipDto.getInstituteName());
@@ -208,7 +197,7 @@ public class ScholarshipService implements IScholarshipService {
 		iScholarshipDAO.updateScholarship(existingScholarship);
 		ScholarshipElasticDTO scholarshipElasticDto = new ScholarshipElasticDTO();
 		BeanUtils.copyProperties(existingScholarship, scholarshipElasticDto);
-		scholarshipElasticDto.setCountryName(existingScholarship.getCountry() != null ? existingScholarship.getCountry().getName() : null);
+		scholarshipElasticDto.setCountryName(existingScholarship.getCountryName() != null ? existingScholarship.getCountryName() : null);
 		scholarshipElasticDto.setCountryName(existingScholarship.getCourseName());
 		scholarshipElasticDto.setInstituteName(existingScholarship.getInstituteName() != null ? existingScholarship.getInstituteName() : null);
 		scholarshipElasticDto.setLevelName(existingScholarship.getLevel() != null ? existingScholarship.getLevel().getName() : null);
@@ -283,7 +272,7 @@ public class ScholarshipService implements IScholarshipService {
 		for (Scholarship scholarship : scholarshipList) {
 			ScholarshipDto scholarshipDto = new ScholarshipDto();
 			BeanUtils.copyProperties(scholarship, scholarshipDto);
-			scholarshipDto.setCountryId(scholarship.getCountry() != null ? scholarship.getCountry().getId() : null);
+			scholarshipDto.setCountryName(scholarship.getCountryName() != null ? scholarship.getCountryName() : null);
 			scholarshipDto.setLevelId(scholarship.getLevel() != null ? scholarship.getLevel().getId() : null);
 			scholarshipDto.setLevelName(scholarship.getLevel() != null ? scholarship.getLevel().getName() : null);
 			scholarshipDto.setLevelCode(scholarship.getLevel() != null ? scholarship.getLevel().getCode() : null);

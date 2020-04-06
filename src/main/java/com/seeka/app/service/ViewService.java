@@ -10,11 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.app.bean.City;
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.UserViewData;
-import com.seeka.app.dao.ICityDAO;
-import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IViewDao;
 import com.seeka.app.dto.CourseResponseDto;
@@ -33,11 +29,11 @@ public class ViewService implements IViewService {
 	@Autowired
 	private ICourseDAO iCourseDAO;
 
-	@Autowired
-	private ICityDAO iCityDAO;
+//	@Autowired
+//	private ICityDAO iCityDAO;
 
-	@Autowired
-	private ICountryDAO iCountryDAO;
+//	@Autowired
+//	private ICountryDAO iCountryDAO;
 
 	@Override
 	public void createUserViewData(final UserViewDataRequestDto userViewDataRequestDto) {
@@ -98,7 +94,6 @@ public class ViewService implements IViewService {
 
 	@Override
 	public List<UserCourseView> userVisistedCourseBasedOncity(final String cityName, final Date fromDate, final Date toDate) throws ValidationException {
-		City city = iCityDAO.getCityByName(cityName);
 		/**
 		 * Find unique courses viewed by how many unique users based on city.
 		 *
@@ -109,8 +104,8 @@ public class ViewService implements IViewService {
 		 * the user is lived anywhere in the world.
 		 *
 		 */
-		if (city != null) {
-			return iViewDataDao.userVisistedCourseBasedOncity(city.getId(), fromDate, toDate);
+		if (cityName != null) {
+			return iViewDataDao.userVisistedCourseBasedOncity(cityName, fromDate, toDate);
 		} else {
 			throw new ValidationException("Users city not found");
 		}
@@ -118,7 +113,6 @@ public class ViewService implements IViewService {
 
 	@Override
 	public List<UserCourseView> userVisistedCourseBasedOnCountry(final String countryName, final Date fromDate, final Date toDate) throws ValidationException {
-		Country country = iCountryDAO.getCountryByName(countryName);
 		/**
 		 * Find unique courses viewed by how many unique users based on country.
 		 *
@@ -129,8 +123,8 @@ public class ViewService implements IViewService {
 		 * lived anywhere in the world.
 		 *
 		 */
-		if (country != null) {
-			return iViewDataDao.userVisistedCourseBasedOnCountry(country.getId(), fromDate, toDate);
+		if (countryName != null) {
+			return iViewDataDao.userVisistedCourseBasedOnCountry(countryName, fromDate, toDate);
 		} else {
 			throw new ValidationException("Users country not found");
 		}

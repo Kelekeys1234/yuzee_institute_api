@@ -35,13 +35,11 @@ public class ArticleUserDemographic implements Serializable {
 	@JoinColumn(name = "article_id", nullable = false)
 	private SeekaArticles article;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = true)
-	@JoinColumn(name = "country_id", nullable = false)
-	private Country country;
+	@Column(name = "country_name")
+	private String countryName;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = true)
-	@JoinColumn(name = "city_id", nullable = false)
-	private City city;
+	@Column(name = "city_name")
+	private String cityName;
 
 	@Column(name = "gender")
 	private String gender;
@@ -74,22 +72,6 @@ public class ArticleUserDemographic implements Serializable {
 
 	public void setArticle(SeekaArticles article) {
 		this.article = article;
-	}
-
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
-	}
-
-	public City getCity() {
-		return city;
-	}
-
-	public void setCity(City city) {
-		this.city = city;
 	}
 
 	public String getGender() {
@@ -130,6 +112,22 @@ public class ArticleUserDemographic implements Serializable {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
 	}
 
 }

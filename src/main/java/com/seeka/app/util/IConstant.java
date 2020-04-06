@@ -88,6 +88,7 @@ public class IConstant {
 	public static final String STORAGE = "STORAGE-SERVICE/storage";
 	public static final String IDENTITY = "AUTH-SERVICE/identity";
 	public static final String NOTIFICATION = "NOTIFICATION-SERVICE/notification/api/v1";
+	public static final String COMMON = "COMMON-API/common/api/v1";
 
 	public static final String STORAGE_CONNECTION_URL = "http://" + STORAGE + "/api/v1";
 	public static final String IDENTITY_CONNECTION_URL = "http://" + IDENTITY + "/api/v1";
@@ -96,6 +97,7 @@ public class IConstant {
 	public static final String USER_DEVICE_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/user/device/basic";
 
 	public static final String NOTIFICATION_CONNECTION_URL = "http://" + NOTIFICATION + "/push";
+	public static final String COMMON_CONNECTION_URL = "http://" + COMMON;
 
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";
 	public static final String ELASTIC_SEARCH_INDEX_COURSE = "seeka_dev";

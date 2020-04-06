@@ -18,9 +18,6 @@ import com.seeka.app.bean.EducationAgent;
 import com.seeka.app.bean.EducationAgentAccomplishment;
 import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
-import com.seeka.app.bean.Skill;
-import com.seeka.app.dao.ICityDAO;
-import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IEducationAgentDAO;
 import com.seeka.app.dao.IInstituteDAO;
@@ -41,11 +38,11 @@ public class EducationAgentService implements IEducationAgentService {
     @Autowired
     private IEducationAgentDAO educationAgentDao;
 
-    @Autowired
-    private ICountryDAO countryDao;
+//    @Autowired
+//    private ICountryDAO countryDao;
 
-    @Autowired
-    private ICityDAO cityDao;
+//    @Autowired
+//    private ICityDAO cityDao;
 
     @Autowired
     private IServiceDetailsDAO serviceDao;
@@ -73,8 +70,8 @@ public class EducationAgentService implements IEducationAgentService {
         educationAgent.setFirstName(educationAgentDto.getFirstName());
         educationAgent.setLastName(educationAgentDto.getLastName());
         educationAgent.setDescription(educationAgentDto.getDescription());
-        educationAgent.setCountry(countryDao.get(educationAgentDto.getCountry()));
-        educationAgent.setCity(cityDao.get(educationAgentDto.getCity()));
+        educationAgent.setCountryName(educationAgentDto.getCountry());
+        educationAgent.setCityName(educationAgentDto.getCity());
         educationAgent.setCreatedBy(educationAgentDto.getCreatedBy());
         educationAgent.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
         educationAgent.setUpdatedBy(educationAgentDto.getUpdatedBy());
@@ -110,8 +107,8 @@ public class EducationAgentService implements IEducationAgentService {
         educationAgentDao.deleteEducationAgentSkill(educationAgent.getId());
         for (String id : educationAgentDto.getSkill()) {
             EducationAgentSkill educationAgentSkill = new EducationAgentSkill();
-            Skill skill = educationAgentDao.fetchSkill(id);
-            educationAgentSkill.setSkill(skill);
+            //Skill skill = educationAgentDao.fetchSkill(id);
+            //educationAgentSkill.setSkill(skill);
             educationAgentSkill.setEducationAgent(educationAgent);
             educationAgentSkill.setCreatedBy(educationAgentDto.getCreatedBy());
             educationAgentSkill.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -216,10 +213,10 @@ public class EducationAgentService implements IEducationAgentService {
                 }
                 List<EducationAgentSkill> agentSkills = educationAgentDao.fetchEducationAgentSkillByEducationAgentId(id);
                 List<String> skills = new ArrayList<>();
-                for (EducationAgentSkill educationAgentSkill : agentSkills) {
-                    skills.add(educationAgentSkill.getSkill().getId());
-                }
-                agentDto.setSkill(skills);
+//                for (EducationAgentSkill educationAgentSkill : agentSkills) {
+//                    skills.add(educationAgentSkill.getSkill().getId());
+//                }
+//                agentDto.setSkill(skills);
                 List<AgentServiceOffered> agentServiceOffereds = educationAgentDao.fetchAgentServiceOffered(id);
                 if (agentServiceOffereds != null && !agentServiceOffereds.isEmpty()) {
                     List<AgentServiceOfferedDto> agentServiceOfferedDtos = new ArrayList<>();
@@ -262,8 +259,8 @@ public class EducationAgentService implements IEducationAgentService {
         agentDto.setFirstName(agent.getFirstName());
         agentDto.setLastName(agent.getLastName());
         agentDto.setDescription(agent.getDescription());
-        agentDto.setCity(agent.getCity().getId());
-        agentDto.setCountry(agent.getCountry().getId());
+        agentDto.setCity(agent.getCityName());
+        agentDto.setCountry(agent.getCountryName());
         agentDto.setPhoneNumber(agent.getPhoneNumber());
         agentDto.setEmail(agent.getEmail());
         agentDto.setCreatedBy(agent.getCreatedBy());
@@ -322,7 +319,7 @@ public class EducationAgentService implements IEducationAgentService {
                 agentPartnership.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
                 agentPartnership.setCreatedBy(dto.getCreatedBy());
                 agentPartnership.setUpdatedBy(dto.getUpdatedBy());
-                agentPartnership.setCountry(countryDao.get(dto.getCountryId()));
+                agentPartnership.setCountryName(dto.getCountryId());
                 educationAgentDao.saveEducationAgentPartnerships(agentPartnership);
             }
         } catch (Exception exception) {
@@ -343,27 +340,6 @@ public class EducationAgentService implements IEducationAgentService {
             } else {
                 response.put("status", HttpStatus.OK.value());
                 response.put("message", "Education Agent not found");
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.put("message", exception.getCause());
-        }
-        return response;
-    }
-
-    @Override
-    public Map<String, Object> getAllSkill() {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<Skill> skills = educationAgentDao.getAllSkill();
-            if (skills != null) {
-                response.put("status", HttpStatus.OK.value());
-                response.put("message", "Skill retrieve successfully");
-                response.put("data", skills);
-            } else {
-                response.put("status", HttpStatus.OK.value());
-                response.put("message", "Skill not found");
             }
         } catch (Exception exception) {
             exception.printStackTrace();

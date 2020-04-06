@@ -19,27 +19,17 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.seeka.app.bean.City;
-import com.seeka.app.bean.Country;
-import com.seeka.app.bean.CountryDetails;
-import com.seeka.app.bean.CountryImages;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.State;
 import com.seeka.app.bean.Todo;
-import com.seeka.app.dto.CityDto;
-import com.seeka.app.dto.CountryDetailsDto;
-import com.seeka.app.dto.CountryImageDto;
-import com.seeka.app.dto.CountryRequestDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.InstituteCampusDto;
 import com.seeka.app.dto.InstituteRequestDto;
-import com.seeka.app.dto.StateDto;
 import com.seeka.app.dto.TodoDto;
 
 public class CommonUtil {
 
-	public static Country convertDTOToBean(final CountryRequestDto countryRequestDto) {
+	/*public static Country convertDTOToBean(final CountryRequestDto countryRequestDto) {
 		ObjectMapper mapper = new ObjectMapper();
 		Country country = null;
 		try {
@@ -79,7 +69,7 @@ public class CommonUtil {
 		city.setCreatedOn(new Date());
 		city.setUpdatedOn(new Date());
 		return city;
-	}
+	}*/
 
 	public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(final Institute institute) {
 		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
@@ -442,7 +432,7 @@ public class CommonUtil {
 		currencyNameMap.put("BRL", "Brazilian Real");
 	}
 
-	public static State convertStateDTOToBean(final StateDto stateObj, final Country country) {
+/*	public static State convertStateDTOToBean(final StateDto stateObj, final Country country) {
 		State state = new State();
 		state.setCountry(country);
 		state.setName(stateObj.getName());
@@ -451,5 +441,5 @@ public class CommonUtil {
 		state.setCreatedDate(new Date());
 		state.setUpdatedDate(new Date());
 		return state;
-	}
+	}*/
 }

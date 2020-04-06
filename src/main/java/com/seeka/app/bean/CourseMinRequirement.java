@@ -26,7 +26,7 @@ public class CourseMinRequirement implements Serializable{
      */
     private static final long serialVersionUID = 6903674843134844883L;
     private String id;
-    private Country country;
+    private String countryName;
     private String system;
     private String subject;
     private String grade;
@@ -41,15 +41,6 @@ public class CourseMinRequirement implements Serializable{
     }
     public void setId(String id) {
         this.id = id;
-    }
-    
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "country_id")
-    public Country getCountry() {
-        return country;
-    }
-    public void setCountry(Country country) {
-        this.country = country;
     }
     
     @Column(name = "system_id")
@@ -84,6 +75,14 @@ public class CourseMinRequirement implements Serializable{
     public void setCourse(Course course) {
         this.course = course;
     }
+    
+    @Column(name="country_name")
+	public String getCountryName() {
+		return countryName;
+	}
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
     
     
 }

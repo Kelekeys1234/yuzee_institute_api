@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseIntake;
@@ -86,9 +85,9 @@ public interface ICourseDAO {
 
 	List<CountryDto> getCourseCountry();
 
-	long getCourseCountForCountry(Country country);
+	long getCourseCountForCountry(String countryName);
 
-	List<Course> getTopRatedCoursesForCountryWorldRankingWise(Country country);
+	List<Course> getTopRatedCoursesForCountryWorldRankingWise(String countryName);
 
 	List<Course> getAllCourseForFacultyWorldRankingWise(String facultyId);
 
@@ -100,16 +99,16 @@ public interface ICourseDAO {
 
 	List<Course> getAllCoursesUsingId(List<String> listOfRecommendedCourseIds);
 
-	List<String> getTopRatedCourseIdsForCountryWorldRankingWise(Country country);
+	List<String> getTopRatedCourseIdsForCountryWorldRankingWise(String countryName);
 
-	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, Country country);
+	Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, String countryName);
 
 	List<String> getDistinctCountryBasedOnCourses(List<String> topSearchedCourseIds);
 
 	List<String> getCourseListForCourseBasedOnParameters(String courseId, String instituteId, String facultyId, String countryId,
 			String cityId);
 
-	List<String> getCourseIdsForCountry(final Country country);
+	List<String> getCourseIdsForCountry(final String countryName);
 
 	List<String> getAllCoursesForCountry(List<String> otherCountryIds);
 

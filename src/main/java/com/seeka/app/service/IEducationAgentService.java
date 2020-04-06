@@ -22,5 +22,4 @@ public interface IEducationAgentService {
 
     public Map<String, Object> deleteEducationAgent(String id);
 
-    public Map<String, Object> getAllSkill();
 }

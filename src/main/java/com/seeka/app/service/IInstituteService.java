@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteDomesticRankingHistory;
@@ -66,7 +65,7 @@ public interface IInstituteService {
 
 	void deleteInstitute(String id) throws ValidationException;
 
-	List<Institute> ratingWiseInstituteListByCountry(Country country);
+	List<Institute> ratingWiseInstituteListByCountry(String countryName);
 
 	List<InstituteResponseDto> getAllInstituteByID(final Collection<String> listInstituteId) throws ValidationException;
 

@@ -40,9 +40,8 @@ public class InstituteGoogleReview implements Serializable {
 	private Double reviewStar;
 	@Column(name = "review_comment", nullable = true)
 	private String reviewComment;
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "country_id")
-	private Country country;
+	@Column(name = "country_name")
+	private String countryName;
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
 	private Date createdOn;
@@ -102,14 +101,6 @@ public class InstituteGoogleReview implements Serializable {
 		this.reviewComment = reviewComment;
 	}
 
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setCountry(final Country country) {
-		this.country = country;
-	}
-
 	public Date getCreatedOn() {
 		return createdOn;
 	}
@@ -146,7 +137,7 @@ public class InstituteGoogleReview implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (country == null ? 0 : country.hashCode());
+		result = prime * result + (getCountryName() == null ? 0 : getCountryName().hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (dateOfPosting == null ? 0 : dateOfPosting.hashCode());
@@ -172,11 +163,11 @@ public class InstituteGoogleReview implements Serializable {
 			return false;
 		}
 		InstituteGoogleReview other = (InstituteGoogleReview) obj;
-		if (country == null) {
-			if (other.country != null) {
+		if (getCountryName() == null) {
+			if (other.getCountryName() != null) {
 				return false;
 			}
-		} else if (!country.equals(other.country)) {
+		} else if (!getCountryName().equals(other.getCountryName())) {
 			return false;
 		}
 		if (createdBy == null) {
@@ -257,9 +248,17 @@ public class InstituteGoogleReview implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("InstituteGoogleReview [id=").append(id).append(", institute=").append(institute).append(", userName=").append(userName)
 				.append(", dateOfPosting=").append(dateOfPosting).append(", reviewStar=").append(reviewStar).append(", reviewComment=").append(reviewComment)
-				.append(", country=").append(country).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=")
+				.append(", country=").append(getCountryName()).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=")
 				.append(createdBy).append(", updatedBy=").append(updatedBy).append("]");
 		return builder.toString();
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 
 }

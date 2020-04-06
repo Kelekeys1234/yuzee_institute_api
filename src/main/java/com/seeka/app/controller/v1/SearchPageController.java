@@ -14,15 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.bean.Level;
-import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.jobs.CountryLevelFacultyUtil;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IStorageService;
 
@@ -53,10 +50,10 @@ public class SearchPageController {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			obj.setStorageList(storageDTOList);
 		}
-		List<CountryDto> countryList = CountryLevelFacultyUtil.getCountryList();
-		List<Level> levelList = CountryLevelFacultyUtil.getLevelList();
-		response.put("countryList", countryList);
-		response.put("levelList", levelList);
+		//List<CountryDto> countryList = CountryLevelFacultyUtil.getCountryList();
+		//List<Level> levelList = CountryLevelFacultyUtil.getLevelList();
+		response.put("countryList", null);
+		response.put("levelList", null);
 		response.put("recommendedInstList", recommendedInstList);
 		response.put("status", HttpStatus.OK.value());
 		response.put("message", "Success.!");

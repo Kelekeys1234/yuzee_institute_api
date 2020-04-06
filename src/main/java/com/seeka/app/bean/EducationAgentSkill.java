@@ -23,7 +23,7 @@ public class EducationAgentSkill implements Serializable {
     */
     private static final long serialVersionUID = 8492390790670110780L;
     private String id;
-    private Skill skill;
+    //private Skill skill;
     private EducationAgent educationAgent;
     private String createdBy;
     private Date createdOn;
@@ -36,10 +36,10 @@ public class EducationAgentSkill implements Serializable {
         super();
     }
 
-    public EducationAgentSkill(String id, Skill skill, EducationAgent educationAgent) {
+    public EducationAgentSkill(String id, EducationAgent educationAgent) {
         super();
         this.id = id;
-        this.skill = skill;
+       // this.skill = skill;
         this.educationAgent = educationAgent;
     }
 
@@ -55,15 +55,15 @@ public class EducationAgentSkill implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "skill_id")
-    public Skill getSkill() {
-        return skill;
-    }
-
-    public void setSkill(Skill skill) {
-        this.skill = skill;
-    }
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "skill_id")
+//    public Skill getSkill() {
+//        return skill;
+//    }
+//
+//    public void setSkill(Skill skill) {
+//        this.skill = skill;
+//    }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "education_agent")
