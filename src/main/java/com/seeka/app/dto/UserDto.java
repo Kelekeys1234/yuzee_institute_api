@@ -1,11 +1,8 @@
 package com.seeka.app.dto;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -37,13 +34,14 @@ public class UserDto {
 	private String imageName;
 	private String imageURL;
 	private String aboutMe;
-	@JsonIgnore
+	private String currencyCode;
+
 	UserEducationProfileResponseDto userEducationProfileResponseDto =  null;
-	@JsonIgnore
+
 	UserAchivementsProfileResponseDto userAchivementsProfileResponseDto = null;
-	@JsonIgnore
+
 	private List<SkillProfileResponseDto> skills = new ArrayList<SkillProfileResponseDto>();
-	@JsonIgnore
+
 	List<UserEnglishQualificationProfileResponseDto> listOfUserEnglishQualificationProfileResponseDto = null;
 	
 	public UserDto() {
