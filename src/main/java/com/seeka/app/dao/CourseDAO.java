@@ -1177,7 +1177,7 @@ public class CourseDAO implements ICourseDAO {
 			globalSearchFilterDto = (GlobalFilterSearchDto) values[1];
 		}
 		String sizeSqlQuery = "select count(*) from course crs inner join institute inst "
-				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_id inner join course_delivery_method cd on cd.course_id=crs.id "
+				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_name inner join course_delivery_method cd on cd.course_id=crs.id "
 				+ "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id='"
 				+ courseSearchDto.getUserId() + "') ";
 		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
@@ -1337,10 +1337,10 @@ public class CourseDAO implements ICourseDAO {
 
 	private String addCondition(String sqlQuery, final AdvanceSearchDto courseSearchDto) {
 		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
-			sqlQuery += " and inst.country_id in ('" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
+			sqlQuery += " and inst.country_name in ('" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
 		}
 		if (null != courseSearchDto.getCityIds() && !courseSearchDto.getCityIds().isEmpty()) {
-			sqlQuery += " and inst.city_id in ('" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
+			sqlQuery += " and inst.city_name in ('" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
 		}
 		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and crs.level_id in ('" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
@@ -1387,7 +1387,7 @@ public class CourseDAO implements ICourseDAO {
 
 		if (courseSearchDto.getSearchKeyword() != null) {
 			sqlQuery += " and ( inst.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%'";
-			sqlQuery += " or ctry.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%'";
+			sqlQuery += " or inst.country_name like '%" + courseSearchDto.getSearchKeyword().trim() + "%'";
 			sqlQuery += " or crs.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%' )";
 		}
 
