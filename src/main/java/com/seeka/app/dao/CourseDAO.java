@@ -854,8 +854,8 @@ public class CourseDAO implements ICourseDAO {
 				+ "c.description, c.intake,c.duration, c.language,c.usd_domestic_fee, c.usd_international_fee,"
 				+ " c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks, c.currency,"
-				+ " i.latitute, i.longitute, cty.name as cityName, ctry.name as countryName FROM  user_my_course umc inner join course c on umc.course_id = c.id "
-				+ " left join institute i on c.institute_id = i.id left join city cty on cty.id = i.city_id left join country ctry on ctry.id = i.country_id "
+				+ " i.latitute, i.longitute FROM  user_my_course umc inner join course c on umc.course_id = c.id "
+				+ " left join institute i on c.institute_id = i.id"
 				+ " where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id = '"
 				+ userId + "'";
 		if (sortBy != null && "institute_name".contentEquals(sortBy)) {
@@ -886,6 +886,7 @@ public class CourseDAO implements ICourseDAO {
 				obj.setInstituteName(institute.getName());
 				obj.setCost(getCost(row[1].toString(), session));
 			}
+
 			if (row[2] != null) {
 				obj.setLocation(row[2].toString());
 			}
@@ -960,11 +961,11 @@ public class CourseDAO implements ICourseDAO {
 			if (row[28] != null && !row[28].toString().isEmpty()) {
 				obj.setLongitude(Double.parseDouble(row[28].toString()));
 			}
-			if(row[29] != null) {
-				obj.setCityName(row[29].toString());
+			if(row[2] != null) {
+				obj.setCityName(row[2].toString());
 			}
-			if(row[30] != null) {
-				obj.setCountryName(row[30].toString());
+			if(row[3] != null) {
+				obj.setCountryName(row[3].toString());
 			}
 			obj.setEnglishEligibility(getEnglishEligibility(session, row[0].toString()));
 			courses.add(obj);
@@ -1165,7 +1166,7 @@ public class CourseDAO implements ICourseDAO {
 			globalSearchFilterDto = (GlobalFilterSearchDto) values[1];
 		}
 		String sizeSqlQuery = "select count(*) from course crs inner join institute inst "
-				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_id inner join course_delivery_method cd on cd.course_id=crs.id "
+				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_name inner join course_delivery_method cd on cd.course_id=crs.id "
 				+ "left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id='"
 				+ courseSearchDto.getUserId() + "') ";
 		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
@@ -1375,7 +1376,7 @@ public class CourseDAO implements ICourseDAO {
 
 		if (courseSearchDto.getSearchKeyword() != null) {
 			sqlQuery += " and ( inst.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%'";
-			sqlQuery += " or ctry.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%'";
+			sqlQuery += " or inst.country_name like '%" + courseSearchDto.getSearchKeyword().trim() + "%'";
 			sqlQuery += " or crs.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%' )";
 		}
 
@@ -1550,7 +1551,7 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public List<CountryDto> getCourseCountry() {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select distinct ctry.id as countryId, ctry.name as countryName from course crs inner join institute inst on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_id"
+		String sqlQuery = "select distinct ctry.id as countryId, ctry.name as countryName from course crs inner join institute inst on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_name"
 				+ " where crs.deleted_on IS NULL";
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();

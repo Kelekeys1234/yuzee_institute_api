@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.seeka.app.bean.UserViewData;
 import com.seeka.app.dao.ICourseDAO;
@@ -113,6 +114,7 @@ public class ViewService implements IViewService {
 
 	@Override
 	public List<UserCourseView> userVisistedCourseBasedOnCountry(final String countryName, final Date fromDate, final Date toDate) throws ValidationException {
+
 		/**
 		 * Find unique courses viewed by how many unique users based on country.
 		 *
@@ -123,7 +125,7 @@ public class ViewService implements IViewService {
 		 * lived anywhere in the world.
 		 *
 		 */
-		if (countryName != null) {
+		if (StringUtils.isEmpty(countryName)) {
 			return iViewDataDao.userVisistedCourseBasedOnCountry(countryName, fromDate, toDate);
 		} else {
 			throw new ValidationException("Users country not found");
