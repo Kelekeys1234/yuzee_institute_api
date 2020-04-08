@@ -50,7 +50,7 @@ public class CountryEmployerDAO implements ICountryEmployerDAO {
 		CountryDto obj = null;
 		for (Object[] row : rows) {
 			obj = new CountryDto();
-			obj.setId(row[0].toString());
+			obj.setCountryId(row[0].toString());
 			obj.setName(row[1].toString());
 			obj.setCountryCode(row[2].toString());
 			countries.add(obj);
@@ -69,7 +69,7 @@ public class CountryEmployerDAO implements ICountryEmployerDAO {
 		CountryDto obj = null;
 		for (Object[] row : rows) {
 			obj = new CountryDto();
-			obj.setId(row[0].toString());
+			obj.setCountryId(row[0].toString());
 			obj.setName(row[1].toString());
 			obj.setCountryCode(row[2].toString());
 			countries.add(obj);
@@ -86,7 +86,7 @@ public class CountryEmployerDAO implements ICountryEmployerDAO {
 		CountryDto obj = null;
 		for (Object[] row : rows) {
 			obj = new CountryDto();
-			obj.setId(row[0].toString());
+			obj.setCountryId(row[0].toString());
 			obj.setName(row[1].toString());
 			obj.setCountryCode(row[2].toString());
 			countries.add(obj);

@@ -1,4 +1,4 @@
-package com.seeka.app.dao;import java.util.List;
+/*package com.seeka.app.dao;import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -37,3 +37,4 @@ public class CityDetailsDAO implements ICityDetailsDAO {
 		return criteria.list();
 	}
 }
+*/

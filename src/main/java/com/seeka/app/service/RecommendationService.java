@@ -15,7 +15,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
@@ -55,8 +54,8 @@ public class RecommendationService implements IRecommendationService {
 	@Autowired
 	private ICourseService iCourseService;
 
-	@Autowired
-	private ICountryService iCountryService;
+//	@Autowired
+//	private ICountryService iCountryService;
 
 	@Autowired
 	private IUsersService iUsersService;
@@ -92,11 +91,11 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get Country Id Based on citizenship
 		 */
-		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
-		if ((country == null) || (country.getId() == null)) {
-			throw new ValidationException(
-					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
-		}
+//		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
+//		if ((country == null) || (country.getId() == null)) {
+//			throw new ValidationException(
+//					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
+//		}
 
 		/**
 		 * Final institute list to recommend
@@ -111,18 +110,18 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get institutes Based on User's Country
 		 */
-		List<String> institutesBasedOnUserCountry = iInstituteService.getTopInstituteIdByCountry(country.getId());
+		List<String> institutesBasedOnUserCountry = iInstituteService.getTopInstituteIdByCountry(userDto.getCitizenship());
 
 		/**
 		 * Get courses based on the country that other users from user's country are
 		 * most interested to migrate to.
 		 */
 
-		List<GlobalData> globalDataDtoList = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
+		List<GlobalData> globalDataDtoList = iGlobalStudentDataService.getCountryWiseStudentList(userDto.getCitizenship());
 
 		List<String> countryNames = globalDataDtoList.stream().map(i -> i.getDestinationCountry()).collect(Collectors.toList());
-		List<String> allCountryIds = iCountryService.getCountryBasedOnCitizenship(countryNames);
-		List<String> institutesById = iInstituteService.getRandomInstituteIdByCountry(allCountryIds);
+		//List<String> allCountryIds = iCountryService.getCountryBasedOnCitizenship(countryNames);
+		List<String> institutesById = iInstituteService.getRandomInstituteIdByCountry(countryNames);
 		/**
 		 * Select Random two courses from User Past Search
 		 */
@@ -166,11 +165,11 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get country object based on citizenship
 		 */
-		Country country = getCountryBasedOnCitizenship(userDto.getCitizenship());
-
-		if ((country == null) || (country.getId() == null)) {
-			throw new ValidationException("Invalid country citizenship for the user");
-		}
+//		Country country = getCountryBasedOnCitizenship(userDto.getCitizenship());
+//
+//		if ((country == null) || (country.getId() == null)) {
+//			throw new ValidationException("Invalid country citizenship for the user");
+//		}
 		/**
 		 * Final course list to recommend
 		 */
@@ -184,13 +183,13 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get Courses Based on User's Country
 		 */
-		List<String> coursesBasedOnUserCountry = iCourseService.courseIdsForCountry(country);
+		List<String> coursesBasedOnUserCountry = iCourseService.courseIdsForCountry(userDto.getCitizenship());
 
 		/**
 		 * Get courses based on the country that other users from user's country are
 		 * most interested to migrate to.
 		 */
-		List<String> coursesBasedOnUserMigrationCountry = iCourseService.courseIdsForMigratedCountries(country);
+		List<String> coursesBasedOnUserMigrationCountry = iCourseService.courseIdsForMigratedCountries(userDto.getCitizenship());
 		/**
 		 * Select Random two courses from User Past Search
 		 */
@@ -269,7 +268,7 @@ public class RecommendationService implements IRecommendationService {
 		return facultyList;
 	}
 
-	private List<Institute> getAllInstituteRankingWisePerCountry(final Country country) {
+	private List<Institute> getAllInstituteRankingWisePerCountry(final String country) {
 		return iInstituteService.ratingWiseInstituteListByCountry(country);
 	}
 
@@ -281,15 +280,15 @@ public class RecommendationService implements IRecommendationService {
 		return iCourseService.facultyWiseCourseIdMapForInstitute(facultyList, instituteId.getId());
 	}
 
-	private Country getCountryBasedOnCitizenship(final String citizenship) {
-		return iCountryService.getCountryBasedOnCitizenship(citizenship);
-	}
+//	private Country getCountryBasedOnCitizenship(final String citizenship) {
+//		return iCountryService.getCountryBasedOnCitizenship(citizenship);
+//	}
 
-	private long checkIfCoursesPresentForCountry(final Country country) {
+	private long checkIfCoursesPresentForCountry(final String country) {
 		return iCourseService.checkIfCoursesPresentForCountry(country);
 	}
 
-	private List<Course> getTopRatedCoursesForCountryWorldRankingWise(final Country country) {
+	private List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
 		if (country != null) {
 			return iCourseService.getTopRatedCoursesForCountryWorldRankingWise(country);
 		} else {
@@ -297,7 +296,7 @@ public class RecommendationService implements IRecommendationService {
 		}
 	}
 
-	private List<String> getTopRatedCourseIdsForCountryWorldRankingWise(final Country country) {
+	private List<String> getTopRatedCourseIdsForCountryWorldRankingWise(final String country) {
 		if (country != null) {
 			return iCourseService.getTopRatedCourseIdForCountryWorldRankingWise(country);
 		} else {
@@ -367,12 +366,12 @@ public class RecommendationService implements IRecommendationService {
 			 */
 			List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
 			if ((distinctCountryList != null) && !distinctCountryList.isEmpty()) {
-				List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
-				List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
+				//List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
+				//List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
 				/**
 				 * Get all scholarshipIds based on country
 				 */
-				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(countryIdList, IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE));
+				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(distinctCountryList, IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE));
 			}
 
 			/**
@@ -416,12 +415,12 @@ public class RecommendationService implements IRecommendationService {
 			 */
 			if (recommendedScholarships.size() < IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE) {
 				List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
-				List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
+				//List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
 				// countries.stream().map(country ->
 				// country.getId()).collect(Collectors.toList());
-				List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
+				//List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
 
-				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(countryIdList,
+				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(distinctCountryList,
 						IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE - recommendedScholarships.size()));
 			}
 		}
@@ -466,11 +465,11 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get country object based on citizenship
 		 */
-		Country country = getCountryBasedOnCitizenship(userDto.getCitizenship());
-
-		if ((country == null) || (country.getId() == null)) {
-			throw new ValidationException("Invalid country citizenship for the user");
-		}
+//		Country country = getCountryBasedOnCitizenship(userDto.getCitizenship());
+//
+//		if ((country == null) || (country.getId() == null)) {
+//			throw new ValidationException("Invalid country citizenship for the user");
+//		}
 
 		/**
 		 * Get all facultyIds from the excel uploaded by Top10Courses
@@ -480,13 +479,13 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Check if the courses are present for the user's citizenship in our database.
 		 */
-		long courseCount = checkIfCoursesPresentForCountry(country);
+		long courseCount = checkIfCoursesPresentForCountry(userDto.getCitizenship());
 
 		if (courseCount > 0) {
 			/**
 			 * Get all institutes based on world ranking for a particular country (of User)
 			 */
-			List<Institute> allInstitutesRankingWise = getAllInstituteRankingWisePerCountry(country);
+			List<Institute> allInstitutesRankingWise = getAllInstituteRankingWisePerCountry(userDto.getCitizenship());
 
 			/**
 			 * This list contains the details of the courses that are to be returned
@@ -543,13 +542,14 @@ public class RecommendationService implements IRecommendationService {
 
 			List<String> recommendedCourseListIds = new ArrayList<>();
 
-			long count = iGlobalStudentDataService.checkForPresenceOfUserCountryInGlobalDataFile(country.getName());
+			long count = iGlobalStudentDataService.checkForPresenceOfUserCountryInGlobalDataFile(userDto.getCitizenship());
 			/**
 			 * If we dont get any country based on citizenship of user get data of China by
 			 * default
 			 */
+			String countryName = null;
 			if (count == 0) {
-				country = getCountryBasedOnCitizenship("China");
+				countryName = "China";
 			}
 
 			/**
@@ -557,11 +557,12 @@ public class RecommendationService implements IRecommendationService {
 			 * in moving to. This data will be obtained from the table that contains the
 			 * data from GlobalStudentData.xlsx file uploaded.
 			 */
-			List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country.getName());
-
+			List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(countryName);
+			List<String> courseList = new ArrayList<>();
 			for (GlobalData globalDataDto : countryWiseStudentCountListForUserCountry) {
-				List<String> courseList = getTopRatedCourseIdsForCountryWorldRankingWise(
-						getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry()));
+				courseList.add(globalDataDto.getDestinationCountry());
+//				List<String> courseList = getTopRatedCourseIdsForCountryWorldRankingWise(
+//						getCountryBasedOnCitizenship(globalDataDto.getDestinationCountry()));
 				mapOfCountryToItsCoursesList.put(globalDataDto.getDestinationCountry(), courseList);
 			}
 			List<Integer> requiredCoursesPerCountry = new ArrayList<>();
@@ -681,7 +682,7 @@ public class RecommendationService implements IRecommendationService {
 			viewArticleIds.add(userViewData.getEntityId());
 		}
 
-		Country country;
+		//Country country;
 		List<ArticleResposeDto> articleResposeDtolist = new ArrayList<>();
 		List<SeekaArticles> seekaArticlelist = new ArrayList<>();
 
@@ -689,32 +690,32 @@ public class RecommendationService implements IRecommendationService {
 			/**
 			 * If user citizenship doesn't exists use United States as a country by default.
 			 */
-			country = getCountryBasedOnCitizenship("United States");
+			//country = getCountryBasedOnCitizenship("United States");
 
 			/**
 			 * Get 2 articles per category from static list of categories provided by
 			 * stakeholders.
 			 */
 			for (String categoryName : IConstant.LIST_OF_ARTICLE_CATEGORY) {
-				List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId(country.getId(), categoryName,
+				List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId("United States", categoryName,
 						IConstant.ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION, viewArticleIds);
 				seekaArticlelist.addAll(articlelist);
 			}
 		} else {
-			country = getCountryBasedOnCitizenship(userDto.getCitizenship());
+			//country = getCountryBasedOnCitizenship(userDto.getCitizenship());
 			/**
 			 * If the citizenship obtained from user doesn't exists in database
 			 */
-			if (country == null) {
-				throw new ValidationException("Invalid country citizenship for the user");
-			}
+//			if (country == null) {
+//				throw new ValidationException("Invalid country citizenship for the user");
+//			}
 
 			/**
 			 * Get 2 articles per category from static list of categories provided by
 			 * stakeholders.
 			 */
 			for (String categoryName : IConstant.LIST_OF_ARTICLE_CATEGORY) {
-				List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId(country.getId(), categoryName,
+				List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId(userDto.getCitizenship(), categoryName,
 						IConstant.ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION, viewArticleIds);
 				seekaArticlelist.addAll(articlelist);
 			}
@@ -724,7 +725,7 @@ public class RecommendationService implements IRecommendationService {
 			 * and start displaying the articles
 			 */
 			if (seekaArticlelist.isEmpty() || (seekaArticlelist == null)) {
-				List<GlobalData> globalDataList = iGlobalStudentData.getCountryWiseStudentList(country.getName());
+				List<GlobalData> globalDataList = iGlobalStudentData.getCountryWiseStudentList(userDto.getCitizenship());
 				if ((globalDataList != null) && !globalDataList.isEmpty()) {
 
 					/**
@@ -732,9 +733,9 @@ public class RecommendationService implements IRecommendationService {
 					 * check for second globalData destination country and so on..
 					 */
 					for (GlobalData globalData : globalDataList) {
-						country = getCountryBasedOnCitizenship(globalData.getDestinationCountry());
+						//country = getCountryBasedOnCitizenship(globalData.getDestinationCountry());
 						for (String categoryName : IConstant.LIST_OF_ARTICLE_CATEGORY) {
-							List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId(country.getId(), categoryName, 2, viewArticleIds);
+							List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId(globalData.getDestinationCountry(), categoryName, 2, viewArticleIds);
 							seekaArticlelist.addAll(articlelist);
 						}
 
@@ -761,11 +762,11 @@ public class RecommendationService implements IRecommendationService {
 			if (seekaArticles.getSubcategory() != null) {
 				articleResposeDto.setSubcategory(seekaArticles.getSubcategory().getName());
 			}
-			if (seekaArticles.getCountry() != null) {
-				articleResposeDto.setCountry(seekaArticles.getCountry().getName());
+			if (seekaArticles.getCountryName() != null) {
+				articleResposeDto.setCountry(seekaArticles.getCountryName());
 			}
-			if (seekaArticles.getCity() != null) {
-				articleResposeDto.setCity(seekaArticles.getCity().getName());
+			if (seekaArticles.getCityName() != null) {
+				articleResposeDto.setCity(seekaArticles.getCityName());
 			}
 			if (seekaArticles.getFaculty() != null) {
 				articleResposeDto.setFaculty(seekaArticles.getFaculty().getName());

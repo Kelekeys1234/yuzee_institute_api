@@ -18,16 +18,12 @@ import com.seeka.app.bean.ArticleFolder;
 import com.seeka.app.bean.ArticleFolderMap;
 import com.seeka.app.bean.ArticleUserDemographic;
 import com.seeka.app.bean.Category;
-import com.seeka.app.bean.City;
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.bean.SubCategory;
 import com.seeka.app.dao.ArticleFolderMapDao;
-import com.seeka.app.dao.CityDAO;
-import com.seeka.app.dao.CountryDAO;
 import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dao.FacultyDAO;
 import com.seeka.app.dao.IArticleDAO;
@@ -78,11 +74,11 @@ public class ArticleService implements IArticleService {
 	@Autowired
 	private CourseDAO courseDAO;
 
-	@Autowired
-	private CountryDAO countryDAO;
+//	@Autowired
+//	private CountryDAO countryDAO;
 
-	@Autowired
-	private CityDAO cityDAO;
+//	@Autowired
+//	private CityDAO cityDAO;
 
 	@Autowired
 	private InstituteDAO instituteDAO;
@@ -173,13 +169,11 @@ public class ArticleService implements IArticleService {
 				articleResponseDetailsDto.setSubcategoryName(article.getSubcategory().getName());
 				articleResponseDetailsDto.setSubcategoryId(article.getSubcategory().getId());
 			}
-			if (article.getCountry() != null) {
-				articleResponseDetailsDto.setCountryId(article.getCountry().getId());
-				articleResponseDetailsDto.setCountryName(article.getCountry().getName());
+			if (article.getCountryName() != null) {
+				articleResponseDetailsDto.setCountryName(article.getCountryName());
 			}
-			if (article.getCity() != null) {
-				articleResponseDetailsDto.setCityId(article.getCity().getId());
-				articleResponseDetailsDto.setCityName(article.getCity().getName());
+			if (article.getCityName() != null) {
+				articleResponseDetailsDto.setCityName(article.getCityName());
 			}
 			if (article.getFaculty() != null) {
 				articleResponseDetailsDto.setFacultyId(article.getFaculty().getId());
@@ -199,7 +193,7 @@ public class ArticleService implements IArticleService {
 			List<ArticleUserDemographic> userDemographicList = iArticleUserDemographicDao.getbyArticleId(article.getId());
 
 			for (ArticleUserDemographic articleUserDemographic : userDemographicList) {
-				countyList.put(articleUserDemographic.getCountry().getId(), articleUserDemographic);
+				countyList.put(articleUserDemographic.getCountryName(), articleUserDemographic);
 			}
 			for (Map.Entry<String, ArticleUserDemographic> obj : countyList.entrySet()) {
 				ArticleUserDemographicDto demographicDto = new ArticleUserDemographicDto();
@@ -207,7 +201,7 @@ public class ArticleService implements IArticleService {
 				demographicDto.setArticle(article.getId());
 				demographicDto.setGender(obj.getValue().getGender());
 				ArticleCountryDto countrydto = new ArticleCountryDto();
-				BeanUtils.copyProperties(obj.getValue().getCountry(), countrydto);
+				BeanUtils.copyProperties(obj.getValue().getCountryName(), countrydto);
 				demographicDto.setCitizenship(countrydto);
 
 				List<ArticleCityDto> articleCityDtoList = new ArrayList<>();
@@ -215,7 +209,7 @@ public class ArticleService implements IArticleService {
 						article.getId());
 				for (ArticleUserDemographic cityObj : articleUserDemographicCityList) {
 					ArticleCityDto cityDto = new ArticleCityDto();
-					BeanUtils.copyProperties(cityObj.getCity(), cityDto);
+					BeanUtils.copyProperties(cityObj.getCityName(), cityDto);
 					articleCityDtoList.add(cityDto);
 				}
 				demographicDto.setCities(articleCityDtoList);
@@ -249,28 +243,28 @@ public class ArticleService implements IArticleService {
 		}
 
 		article = articleDAO.save(article);
-		if (article.getCountry() != null) {
-			countryMap.put(article.getCountry().getId(), article.getCountry().getName());
-		}
-		if (article.getCity() != null) {
-			cityMap.put(article.getCity().getId(), article.getCity().getName());
-		}
+//		if (article.getCountryName() != null) {
+//			countryMap.put(article.getCountry().getId(), article.getCountry().getName());
+//		}
+//		if (article.getCity() != null) {
+//			cityMap.put(article.getCity().getId(), article.getCity().getName());
+//		}
 
 		List<ArticleUserDemographicDto> articleUserDemoDtoList = articleDto.getUserDemographic();
 
 		if ((articleUserDemoDtoList != null) && !articleUserDemoDtoList.isEmpty()) {
 			for (ArticleUserDemographicDto articleUserDemographicDto : articleUserDemoDtoList) {
-				Country country = new Country();
-				BeanUtils.copyProperties(articleUserDemographicDto.getCitizenship(), country);
+				//Country country = new Country();
+				//BeanUtils.copyProperties(articleUserDemographicDto.getCitizenship(), country);
 				List<ArticleCityDto> cityDtoList = articleUserDemographicDto.getCities();
 				if (cityDtoList != null) {
 					for (ArticleCityDto cityDto : cityDtoList) {
-						City city = new City();
-						BeanUtils.copyProperties(cityDto, city);
+						//City city = new City();
+						//BeanUtils.copyProperties(cityDto, city);
 						ArticleUserDemographic articleUserDemographic = new ArticleUserDemographic();
 						articleUserDemographic.setArticle(article);
-						articleUserDemographic.setCountry(country);
-						articleUserDemographic.setCity(city);
+						articleUserDemographic.setCountryName(article.getCountryName());
+						articleUserDemographic.setCityName(article.getCityName());
 						articleUserDemographic.setGender(articleUserDemographicDto.getGender());
 						articleUserDemographic.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
 						iArticleUserDemographicDao.save(articleUserDemographic);
@@ -278,8 +272,8 @@ public class ArticleService implements IArticleService {
 					}
 				} else {
 					ArticleUserDemographic articleUserDemographic = new ArticleUserDemographic();
-					articleUserDemographic.setCountry(country);
-					articleUserDemographic.setCity(null);
+					articleUserDemographic.setCountryName(article.getCountryName());
+					articleUserDemographic.setCityName(null);
 					articleUserDemographic.setGender(articleUserDemographicDto.getGender());
 					articleUserDemographic.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
 					iArticleUserDemographicDao.save(articleUserDemographic);
@@ -293,8 +287,8 @@ public class ArticleService implements IArticleService {
 		BeanUtils.copyProperties(articleDto, articleElasticSearchDTO);
 		articleElasticSearchDTO.setCategory(article.getCategory() != null ? article.getCategory().getName() : null);
 		articleElasticSearchDTO.setSubCategory(article.getSubcategory() != null ? article.getSubcategory().getName() : null);
-		articleElasticSearchDTO.setCountry(article.getCountry() != null ? article.getCountry().getName() : null);
-		articleElasticSearchDTO.setCity(article.getCity() != null ? article.getCity().getName() : null);
+		articleElasticSearchDTO.setCountry(article.getCountryName() != null ? article.getCountryName() : null);
+		articleElasticSearchDTO.setCity(article.getCityName() != null ? article.getCityName() : null);
 		articleElasticSearchDTO.setFaculty(article.getFaculty() != null ? article.getFaculty().getName() : null);
 		articleElasticSearchDTO.setInstitute(article.getInstitute() != null ? article.getInstitute().getName() : null);
 		articleElasticSearchDTO.setCourse(article.getCourse() != null ? article.getCourse().getName() : null);
@@ -323,17 +317,11 @@ public class ArticleService implements IArticleService {
 				article.setSubcategory(subCategory);
 			}
 		}
-		if (articleDto.getCountryId() != null) {
-			Country country = countryDAO.get(articleDto.getCountryId());
-			if (country != null) {
-				article.setCountry(country);
-			}
+		if (articleDto.getCountryName() != null) {
+				article.setCountryName(articleDto.getCountryName());
 		}
 		if (articleDto.getCityId() != null) {
-			City city = cityDAO.get(articleDto.getCityId());
-			if (city != null) {
-				article.setCity(city);
-			}
+				article.setCityName(articleDto.getCityId());
 		}
 		if (articleDto.getCourseId() != null) {
 			Course course = courseDAO.get(articleDto.getCourseId());

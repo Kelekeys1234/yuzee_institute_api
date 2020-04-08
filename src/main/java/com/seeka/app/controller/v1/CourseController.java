@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseEnglishEligibility;
@@ -55,7 +53,6 @@ import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
-import com.seeka.app.service.ICountryService;
 import com.seeka.app.service.ICourseEnglishEligibilityService;
 import com.seeka.app.service.ICourseGradeEligibilityService;
 import com.seeka.app.service.ICourseKeywordService;
@@ -111,8 +108,8 @@ public class CourseController {
 	@Autowired
 	private IUsersService iUsersService;
 
-	@Autowired
-	private ICountryService iCountryService;
+//	@Autowired
+//	private ICountryService iCountryService;
 
 	@Autowired
 	private IEnrollmentService iEnrolmentService;
@@ -589,13 +586,13 @@ public class CourseController {
 		/**
 		 * Get Country Id Based on citizenship
 		 */
-		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
-		if (country == null || country.getId() == null) {
-			throw new ValidationException(messageByLocalService.getMessage("invalid.citizenship.for.user",
-					new Object[] { userDto.getCitizenship() }, language));
-		}
+//		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
+//		if (country == null || country.getId() == null) {
+//			throw new ValidationException(messageByLocalService.getMessage("invalid.citizenship.for.user",
+//					new Object[] { userDto.getCitizenship() }, language));
+//		}
 
-		courseFilter.setUserCountryId(country.getId());
+		courseFilter.setUserCountryId(userDto.getCitizenship());
 
 		return ResponseEntity.ok().body(courseService.courseFilter(courseFilter));
 	}

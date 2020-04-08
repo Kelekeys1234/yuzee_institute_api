@@ -19,7 +19,7 @@ public class SeekaArticleDto {
 	private String websiteUrl;
 	private String url;
 	private String tags;
-	private String countryId;
+	private String countryName;
 	private String cityId;
 	private String facultyId;
 	private String instituteId;
@@ -139,14 +139,6 @@ public class SeekaArticleDto {
 		this.tags = tags;
 	}
 
-	public String getCountryId() {
-		return countryId;
-	}
-
-	public void setCountryId(String country) {
-		this.countryId = country;
-	}
-
 	public String getCityId() {
 		return cityId;
 	}
@@ -185,6 +177,14 @@ public class SeekaArticleDto {
 
 	public void setUserDemographic(List<ArticleUserDemographicDto> userDemographic) {
 		this.userDemographic = userDemographic;
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 
 

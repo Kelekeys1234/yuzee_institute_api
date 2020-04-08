@@ -27,14 +27,13 @@ public class ArticleCountry implements Serializable {
 	 */
 	private static final long serialVersionUID = 6903674843134844883L;
 	private String id;
-	private Country country;
+	private String countryName;
 	private SeekaArticles seekaArticles;
 
 	public ArticleCountry() {
 	}
 
-	public ArticleCountry(Country country, SeekaArticles seekaArticles) {
-		this.country = country;
+	public ArticleCountry(SeekaArticles seekaArticles) {
 		this.seekaArticles = seekaArticles;
 	}
 
@@ -51,16 +50,6 @@ public class ArticleCountry implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "country_id")
-	public Country getCountry() {
-		return this.country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "article_id")
 	public SeekaArticles getSeekaArticles() {
 		return this.seekaArticles;
@@ -74,7 +63,6 @@ public class ArticleCountry implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((country == null) ? 0 : country.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((seekaArticles == null) ? 0 : seekaArticles.hashCode());
 		return result;
@@ -89,11 +77,6 @@ public class ArticleCountry implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ArticleCountry other = (ArticleCountry) obj;
-		if (country == null) {
-			if (other.country != null)
-				return false;
-		} else if (!country.equals(other.country))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -110,9 +93,18 @@ public class ArticleCountry implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ArticleCountry [id=").append(id).append(", country=").append(country).append(", seekaArticles=")
+		builder.append("ArticleCountry [id=").append(id).append(", seekaArticles=")
 				.append(seekaArticles).append("]");
 		return builder.toString();
+	}
+
+	@Column(name = "country_name")
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 
 }

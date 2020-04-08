@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.bean.AccreditedInstituteDetail;
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.Institute;
@@ -37,8 +36,6 @@ import com.seeka.app.bean.Level;
 import com.seeka.app.constant.Type;
 import com.seeka.app.dao.IAccreditedInstituteDao;
 import com.seeka.app.dao.IAccreditedInstituteDetailDao;
-import com.seeka.app.dao.ICityDAO;
-import com.seeka.app.dao.ICountryDAO;
 import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IInstituteDomesticRankingHistoryDAO;
@@ -75,8 +72,8 @@ public class InstituteService implements IInstituteService {
 	@Autowired
 	private IInstituteDAO dao;
 
-	@Autowired
-	private ICountryDAO countryDAO;
+//	@Autowired
+//	private ICountryDAO countryDAO;
 
 	@Autowired
 	private IInstituteWorldRankingHistoryDAO institudeWorldRankingHistoryDAO;
@@ -84,8 +81,8 @@ public class InstituteService implements IInstituteService {
 	@Autowired
 	private IInstituteDomesticRankingHistoryDAO instituteDomesticRankingHistoryDAO;
 
-	@Autowired
-	private ICityDAO cityDAO;
+//	@Autowired
+//	private ICityDAO cityDAO;
 
 	@Autowired
 	private IInstituteTypeDAO instituteTypeDAO;
@@ -856,8 +853,8 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<Institute> ratingWiseInstituteListByCountry(final Country country) {
-		return dao.ratingWiseInstituteListByCountry(country);
+	public List<Institute> ratingWiseInstituteListByCountry(final String countryName) {
+		return dao.ratingWiseInstituteListByCountry(countryName);
 	}
 
 	@Override

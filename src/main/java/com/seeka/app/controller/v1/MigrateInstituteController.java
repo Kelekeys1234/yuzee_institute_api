@@ -17,14 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.bean.City;
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteService;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
-import com.seeka.app.service.ICityService;
-import com.seeka.app.service.ICountryService;
 import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IServiceDetailsService;
@@ -33,11 +29,8 @@ import com.seeka.app.service.IServiceDetailsService;
 @RequestMapping("/api/v1/migrate")
 public class MigrateInstituteController {
 
-	@Autowired
-	private ICountryService countryService;
-
-	@Autowired
-	private ICityService cityService;
+//	@Autowired
+//	private ICityService cityService;
 
 	@Autowired
 	private IInstituteService instituteService;
@@ -66,18 +59,18 @@ public class MigrateInstituteController {
 			serviceMap.put(key, serviceObj);
 		}
 
-		List<Country> countryList = countryService.getAll();
-		Map<String, Country> countryMap = new HashMap<>();
-		for (Country country : countryList) {
-			countryMap.put(country.getCountryCode().toLowerCase().replaceAll("[^\\w]", ""), country);
-			countryMap.put(country.getName().toLowerCase().replaceAll("[^\\w]", ""), country);
-		}
+//		List<Country> countryList = countryService.getAll();
+//		Map<String, Country> countryMap = new HashMap<>();
+//		for (Country country : countryList) {
+//			countryMap.put(country.getCountryCode().toLowerCase().replaceAll("[^\\w]", ""), country);
+//			countryMap.put(country.getName().toLowerCase().replaceAll("[^\\w]", ""), country);
+//		}
 
-		List<City> list = cityService.getAll();
-		Map<String, City> cityMap = new HashMap<>();
-		for (City city : list) {
-			cityMap.put(city.getName().toLowerCase().replaceAll("[^\\w]", ""), city);
-		}
+//		List<City> list = cityService.getAll();
+//		Map<String, City> cityMap = new HashMap<>();
+//		for (City city : list) {
+//			cityMap.put(city.getName().toLowerCase().replaceAll("[^\\w]", ""), city);
+//		}
 
 		int rowCount = 0;
 		while (rowIterator.hasNext()) {
@@ -358,11 +351,11 @@ public class MigrateInstituteController {
 
 			object = new Institute();
 
-			Country countryObj = countryMap.get(Country.toLowerCase().replaceAll("[^\\w]", ""));
-			if (null == countryObj) {
-				continue;
-			}
-			object.setCountryName(countryObj.getName());
+//			Country countryObj = countryMap.get(Country.toLowerCase().replaceAll("[^\\w]", ""));
+//			if (null == countryObj) {
+//				continue;
+//			}
+			object.setCountryName(Country.toLowerCase().replaceAll("[^\\w]", ""));
 
 			InstituteType instituteType = new InstituteType();
 			instituteType.setId(("111111"));

@@ -5,11 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -26,8 +23,8 @@ public class EducationAgent implements Serializable {
     private String firstName;
     private String lastName;
     private String description;
-    private City city;
-    private Country country;
+    private String cityName;
+    private String countryName;
     private String phoneNumber;
     private String email;
     private String createdBy;
@@ -41,14 +38,12 @@ public class EducationAgent implements Serializable {
         super();
     }
 
-    public EducationAgent(String id, String firstName, String lastName, String description, City city, Country country, String phoneNumber, String email) {
+    public EducationAgent(String id, String firstName, String lastName, String description,String phoneNumber, String email) {
         super();
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.description = description;
-        this.city = city;
-        this.country = country;
         this.phoneNumber = phoneNumber;
         this.email = email;
     }
@@ -90,26 +85,6 @@ public class EducationAgent implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "city_id")
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "country_id")
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
     }
 
     @Column(name = "phone_number")
@@ -183,5 +158,23 @@ public class EducationAgent implements Serializable {
     public void setDeletedOn(Date deletedOn) {
         this.deletedOn = deletedOn;
     }
+
+    @Column(name = "country_name")
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+	@Column(name = "city_name")
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
 
 }

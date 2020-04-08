@@ -5,7 +5,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.City;
 import com.seeka.app.bean.SeekaScholarships;
 
 @Repository
@@ -23,7 +22,7 @@ public class SeekaScholarshipsDAO implements ISeekaScholarshipsDAO {
 	@Override
 	public List<SeekaScholarships> getAll() {		
 		Session session = sessionFactory.getCurrentSession();		
-		List<SeekaScholarships> list = session.createCriteria(City.class).list();	   					
+		List<SeekaScholarships> list = session.createCriteria(SeekaScholarships.class).list();	   					
 		return list;
 	}
 	

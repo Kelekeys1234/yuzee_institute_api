@@ -1,4 +1,4 @@
-package com.seeka.app.jobs;
+/*package com.seeka.app.jobs;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -91,10 +91,10 @@ public class CountryLevelFacultyUtil {
 		int i = 0;
 		for (CountryDto countryDto : countryList) {
 			i++;
-			List<Level> levels = levelMap.get(countryDto.getId());
+			List<Level> levels = levelMap.get(countryDto.getCountryId());
 			if(null != levels && !levels.isEmpty()) {
 				for (Level level : levels) {
-					String key = countryDto.getId()+"-"+level.getId();
+					String key = countryDto.getCountryId()+"-"+level.getId();
 					List<Faculty> list = facultyMap.get(key);
 					if(null !=list && !list.isEmpty()) {
 						
@@ -109,4 +109,4 @@ public class CountryLevelFacultyUtil {
 		countryLevelFacultyList = new ArrayList<CountryDto>(finalList);
 		System.out.println("CountryLevelFacultyUtil : Job Completed: "+new Date());
     }
-}
+}*/

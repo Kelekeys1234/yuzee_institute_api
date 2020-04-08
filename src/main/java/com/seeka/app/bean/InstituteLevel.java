@@ -31,8 +31,6 @@ public class InstituteLevel implements Serializable {
 	 */
 	private static final long serialVersionUID = 747289592458631120L;
 	private String id;
-	//private City city;
-	//private Country country;
 	private String cityName;
 	
 	@Column(name = "city_name")
@@ -67,17 +65,13 @@ public class InstituteLevel implements Serializable {
 	public InstituteLevel() {
 	}
 
-	public InstituteLevel(City city, Country country, Institute institute, Level level) {
-		//this.city = city;
-		//this.country = country;
+	public InstituteLevel(Institute institute, Level level) {
 		this.institute = institute;
 		this.level = level;
 	}
 
-	public InstituteLevel(City city, Country country, Institute institute, Level level, Boolean isActive,
+	public InstituteLevel(Institute institute, Level level, Boolean isActive,
 			Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
-		//this.city = city;
-		//this.country = country;
 		this.institute = institute;
 		this.level = level;
 		this.isActive = isActive;
@@ -100,26 +94,6 @@ public class InstituteLevel implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-
-	/*@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "city_id", nullable = false)
-	public City getCity() {
-		return this.city;
-	}
-
-	public void setCity(City city) {
-		this.city = city;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "country_id", nullable = false)
-	public Country getCountry() {
-		return this.country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
-	}*/
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "institute_id", nullable = false)

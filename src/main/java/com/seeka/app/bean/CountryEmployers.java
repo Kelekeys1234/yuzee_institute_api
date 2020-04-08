@@ -31,7 +31,7 @@ public class CountryEmployers implements Serializable {
 	 */
 	private static final long serialVersionUID = -8563183060119189621L;
 	private String id;
-	private Country country;
+	private String countryName;
 	private String webUrl;
 	private String employerName;
 	private String facultyId;
@@ -46,13 +46,8 @@ public class CountryEmployers implements Serializable {
 	public CountryEmployers() {
 	}
 
-	public CountryEmployers(Country country) {
-		this.country = country;
-	}
-
-	public CountryEmployers(Country country, String webUrl, String employerName, String facultyId, Boolean isActive,
+	public CountryEmployers(String webUrl, String employerName, String facultyId, Boolean isActive,
 			Date createdOn, Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
-		this.country = country;
 		this.webUrl = webUrl;
 		this.employerName = employerName;
 		this.facultyId = facultyId;
@@ -75,16 +70,6 @@ public class CountryEmployers implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "country_id", nullable = false)
-	public Country getCountry() {
-		return this.country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
 	}
 
 	@Column(name = "web_url", length = 500)
@@ -189,7 +174,6 @@ public class CountryEmployers implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((country == null) ? 0 : country.hashCode());
 		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
 		result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
 		result = prime * result + ((deletedOn == null) ? 0 : deletedOn.hashCode());
@@ -218,11 +202,6 @@ public class CountryEmployers implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		CountryEmployers other = (CountryEmployers) obj;
-		if (country == null) {
-			if (other.country != null)
-				return false;
-		} else if (!country.equals(other.country))
-			return false;
 		if (createdBy == null) {
 			if (other.createdBy != null)
 				return false;
@@ -289,12 +268,21 @@ public class CountryEmployers implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("CountryEmployers [id=").append(id).append(", country=").append(country).append(", webUrl=")
+		builder.append("CountryEmployers [id=").append(id).append(", webUrl=")
 				.append(webUrl).append(", employerName=").append(employerName).append(", facultyId=").append(facultyId)
 				.append(", isActive=").append(isActive).append(", createdOn=").append(createdOn).append(", updatedOn=")
 				.append(updatedOn).append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
 				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
 		return builder.toString();
+	}
+
+	@Column(name = "country_name")
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 
 }

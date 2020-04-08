@@ -33,9 +33,8 @@ public class Scholarship implements java.io.Serializable {
 	private String description;
 	@Column(name = "scholarship_award")
 	private String scholarshipAward;
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "country_id")
-	private Country country;
+	@Column(name = "country_name")
+	private String countryName;
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "level_id")
 	private Level level;
@@ -125,14 +124,6 @@ public class Scholarship implements java.io.Serializable {
 
 	public void setScholarshipAward(final String scholarshipAward) {
 		this.scholarshipAward = scholarshipAward;
-	}
-
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setCountry(final Country country) {
-		this.country = country;
 	}
 
 	public Level getLevel() {
@@ -350,7 +341,7 @@ public class Scholarship implements java.io.Serializable {
 		result = (prime * result) + ((address == null) ? 0 : address.hashCode());
 		result = (prime * result) + ((applicationDeadline == null) ? 0 : applicationDeadline.hashCode());
 		result = (prime * result) + ((content == null) ? 0 : content.hashCode());
-		result = (prime * result) + ((country == null) ? 0 : country.hashCode());
+		result = (prime * result) + ((getCountryName() == null) ? 0 : getCountryName().hashCode());
 		result = (prime * result) + ((createdBy == null) ? 0 : createdBy.hashCode());
 		result = (prime * result) + ((createdOn == null) ? 0 : createdOn.hashCode());
 		result = (prime * result) + ((currency == null) ? 0 : currency.hashCode());
@@ -411,11 +402,11 @@ public class Scholarship implements java.io.Serializable {
 		} else if (!content.equals(other.content)) {
 			return false;
 		}
-		if (country == null) {
-			if (other.country != null) {
+		if (getCountryName() == null) {
+			if (other.getCountryName() != null) {
 				return false;
 			}
-		} else if (!country.equals(other.country)) {
+		} else if (!getCountryName().equals(other.getCountryName())) {
 			return false;
 		}
 		if (createdBy == null) {
@@ -593,7 +584,7 @@ public class Scholarship implements java.io.Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Scholarship [id=").append(id).append(", courseName=").append(courseName).append(", description=").append(description)
-				.append(", scholarshipAward=").append(scholarshipAward).append(", country=").append(country).append(", level=").append(level)
+				.append(", scholarshipAward=").append(scholarshipAward).append(", country=").append(getCountryName()).append(", level=").append(level)
 				.append(", numberOfAvaliability=").append(numberOfAvaliability).append(", currency=").append(currency).append(", scholarshipAmount=")
 				.append(scholarshipAmount).append(", validity=").append(validity).append(", howToApply=").append(howToApply).append(", gender=").append(gender)
 				.append(", eligibleNationality=").append(eligibleNationality).append(", headquaters=").append(headquaters).append(", email=").append(email)
@@ -610,6 +601,14 @@ public class Scholarship implements java.io.Serializable {
 
 	public void setRequirements(final String requirements) {
 		this.requirements = requirements;
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 
 }

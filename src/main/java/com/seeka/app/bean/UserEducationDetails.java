@@ -38,9 +38,8 @@ public class UserEducationDetails implements Serializable {
 	private String id;
 	@Column(name = "user_id", nullable = false)
 	private String userId;
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinColumn(name = "education_country_id", nullable = false)
-	private Country country;
+	@Column(name = "country_name")
+	private String countryName;
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "education_system_id", nullable = false)
 	private EducationSystem educationSystem;
@@ -94,14 +93,6 @@ public class UserEducationDetails implements Serializable {
 
 	public void setUserId(final String userId) {
 		this.userId = userId;
-	}
-
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setCountry(final Country country) {
-		this.country = country;
 	}
 
 	public EducationSystem getEducationSystem() {
@@ -244,7 +235,7 @@ public class UserEducationDetails implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (country == null ? 0 : country.hashCode());
+		result = prime * result + (getCountryName() == null ? 0 : getCountryName().hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
 		result = prime * result + (createdOn == null ? 0 : createdOn.hashCode());
 		result = prime * result + (deletedBy == null ? 0 : deletedBy.hashCode());
@@ -279,11 +270,11 @@ public class UserEducationDetails implements Serializable {
 			return false;
 		}
 		UserEducationDetails other = (UserEducationDetails) obj;
-		if (country == null) {
-			if (other.country != null) {
+		if (getCountryName() == null) {
+			if (other.getCountryName() != null) {
 				return false;
 			}
-		} else if (!country.equals(other.country)) {
+		} else if (!getCountryName().equals(other.getCountryName())) {
 			return false;
 		}
 		if (createdBy == null) {
@@ -425,7 +416,7 @@ public class UserEducationDetails implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserEducationDetails [id=").append(id).append(", userId=").append(userId).append(", country=").append(country)
+		builder.append("UserEducationDetails [id=").append(id).append(", userId=").append(userId).append(", country=").append(getCountryName())
 				.append(", educationSystem=").append(educationSystem).append(", educationInstitue=").append(educationInstitue).append(", gpaScore=")
 				.append(gpaScore).append(", isEnglishMedium=").append(isEnglishMedium).append(", englishLevel=").append(englishLevel).append(", eduSysScore=")
 				.append(eduSysScore).append(", level=").append(level).append(", isActive=").append(isActive).append(", createdOn=").append(createdOn)
@@ -433,6 +424,14 @@ public class UserEducationDetails implements Serializable {
 				.append(", deletedBy=").append(deletedBy).append(", deletedOn=").append(deletedOn).append(", fromDuration=").append(fromDuration)
 				.append(", toDuration=").append(toDuration).append(", educationQualification=").append(educationQualification).append("]");
 		return builder.toString();
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 
 }

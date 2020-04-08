@@ -1,4 +1,4 @@
-package com.seeka.app.controller.v1;
+/*package com.seeka.app.controller.v1;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -187,3 +187,4 @@ public class CityController {
 		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 }
+*/

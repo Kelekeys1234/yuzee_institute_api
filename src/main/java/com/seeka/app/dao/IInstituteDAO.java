@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteIntake;
@@ -78,7 +77,7 @@ public interface IInstituteDAO {
 
 	List<InstituteCategoryType> getAllCategories();
 
-	List<Institute> ratingWiseInstituteListByCountry(Country country);
+	List<Institute> ratingWiseInstituteListByCountry(String countryName);
 
 	List<Institute> getAllInstituteByID(Collection<String> instituteId);
 

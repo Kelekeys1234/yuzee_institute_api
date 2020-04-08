@@ -53,8 +53,8 @@ public class SeekaArticles implements Serializable {
 	private String link;
 	private Date createdAt;
 	private Date updatedAt;
-	private Country country;
-	private City city;
+	private String countryName;
+	private String cityName;
 	private Faculty faculty;
 	private Institute institute;
 	private Course course;
@@ -85,7 +85,7 @@ public class SeekaArticles implements Serializable {
 	public SeekaArticles(final Category category, final SubCategory subcategory, final String userInfo, final String addType, final String heading,
 			final String content, final String url, final String imagepath, final BigInteger type, final Boolean active, final Date deletedOn,
 			final Date createdAt, final BigInteger shared, final BigInteger reviewed, final BigInteger likes, final String link, final Date updatedAt,
-			final Country country, final City city, final Faculty faculty, final Institute institute, final Course courses, final String gender,
+			final Faculty faculty, final Institute institute, final Course courses, final String gender,
 			final String articleType, final String companyName, final String companyWebsite) {
 		this.category = category;
 		this.subcategory = subcategory;
@@ -104,8 +104,6 @@ public class SeekaArticles implements Serializable {
 		this.likes = likes;
 		this.link = link;
 		this.updatedAt = updatedAt;
-		this.country = country;
-		this.city = city;
 		this.faculty = faculty;
 		this.institute = institute;
 		this.course = courses;
@@ -285,26 +283,6 @@ public class SeekaArticles implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "country")
-	public Country getCountry() {
-		return this.country;
-	}
-
-	public void setCountry(final Country country) {
-		this.country = country;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "city")
-	public City getCity() {
-		return this.city;
-	}
-
-	public void setCity(final City city) {
-		this.city = city;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "faculty")
 	public Faculty getFaculty() {
 		return this.faculty;
@@ -400,11 +378,11 @@ public class SeekaArticles implements Serializable {
 		result = prime * result + (articleType == null ? 0 : articleType.hashCode());
 		result = prime * result + (category == null ? 0 : category.hashCode());
 		result = prime * result + (categoryobj == null ? 0 : categoryobj.hashCode());
-		result = prime * result + (city == null ? 0 : city.hashCode());
+		result = prime * result + (getCityName() == null ? 0 : getCityName().hashCode());
 		result = prime * result + (companyName == null ? 0 : companyName.hashCode());
 		result = prime * result + (companyWebsite == null ? 0 : companyWebsite.hashCode());
 		result = prime * result + (content == null ? 0 : content.hashCode());
-		result = prime * result + (country == null ? 0 : country.hashCode());
+		result = prime * result + (getCountryName() == null ? 0 : getCountryName().hashCode());
 		result = prime * result + (course == null ? 0 : course.hashCode());
 		result = prime * result + (createdAt == null ? 0 : createdAt.hashCode());
 		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
@@ -473,11 +451,11 @@ public class SeekaArticles implements Serializable {
 		} else if (!categoryobj.equals(other.categoryobj)) {
 			return false;
 		}
-		if (city == null) {
-			if (other.city != null) {
+		if (getCityName() == null) {
+			if (other.getCityName() != null) {
 				return false;
 			}
-		} else if (!city.equals(other.city)) {
+		} else if (!getCityName().equals(other.getCityName())) {
 			return false;
 		}
 		if (companyName == null) {
@@ -501,11 +479,11 @@ public class SeekaArticles implements Serializable {
 		} else if (!content.equals(other.content)) {
 			return false;
 		}
-		if (country == null) {
-			if (other.country != null) {
+		if (getCountryName() == null) {
+			if (other.getCountryName() != null) {
 				return false;
 			}
-		} else if (!country.equals(other.country)) {
+		} else if (!getCountryName().equals(other.getCountryName())) {
 			return false;
 		}
 		if (course == null) {
@@ -644,8 +622,8 @@ public class SeekaArticles implements Serializable {
 				.append(userId).append(", addType=").append(addType).append(", heading=").append(heading).append(", content=").append(content).append(", url=")
 				.append(url).append(", imagepath=").append(imagepath).append(", type=").append(type).append(", active=").append(active).append(", deletedOn=")
 				.append(deletedOn).append(", createdAt=").append(createdAt).append(", shared=").append(shared).append(", reviewed=").append(reviewed)
-				.append(", likes=").append(likes).append(", link=").append(link).append(", updatedAt=").append(updatedAt).append(", country=").append(country)
-				.append(", city=").append(city).append(", faculty=").append(faculty).append(", institute=").append(institute).append(", courses=")
+				.append(", likes=").append(likes).append(", link=").append(link).append(", updatedAt=").append(updatedAt).append(", country=").append(getCountryName())
+				.append(", city=").append(getCityName()).append(", faculty=").append(faculty).append(", institute=").append(institute).append(", courses=")
 				.append(course).append(", articleType=").append(articleType).append(", companyName=").append(companyName).append(", companyWebsite=")
 				.append(companyWebsite).append(", subCategoryDropDownDto=").append(subCategoryDropDownDto).append(", categoryobj=").append(categoryobj)
 				.append(", author=").append(author).append(", postDate=").append(postDate).append(", expireyDate=").append(expireDate).append(", enabled=")
@@ -812,5 +790,23 @@ public class SeekaArticles implements Serializable {
 	 */
 	public void setStatus(final String status) {
 		this.status = status;
+	}
+
+	@Column(name = "country_name")
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+	@Column(name = "city_name")
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
 	}
 }

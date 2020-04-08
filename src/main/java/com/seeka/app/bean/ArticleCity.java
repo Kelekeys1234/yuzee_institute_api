@@ -27,14 +27,13 @@ public class ArticleCity implements Serializable {
 	 */
 	private static final long serialVersionUID = 3834995480494335769L;
 	private String id;
-	private City city;
+	private String cityName;
 	private SeekaArticles seekaArticles;
 
 	public ArticleCity() {
 	}
 
-	public ArticleCity(City city, SeekaArticles seekaArticles) {
-		this.city = city;
+	public ArticleCity(SeekaArticles seekaArticles) {
 		this.seekaArticles = seekaArticles;
 	}
 
@@ -51,16 +50,6 @@ public class ArticleCity implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "city_id")
-	public City getCity() {
-		return this.city;
-	}
-
-	public void setCity(City city) {
-		this.city = city;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "article_id")
 	public SeekaArticles getSeekaArticles() {
 		return this.seekaArticles;
@@ -74,7 +63,7 @@ public class ArticleCity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((city == null) ? 0 : city.hashCode());
+		result = prime * result + ((getCityName() == null) ? 0 : getCityName().hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((seekaArticles == null) ? 0 : seekaArticles.hashCode());
 		return result;
@@ -89,10 +78,10 @@ public class ArticleCity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ArticleCity other = (ArticleCity) obj;
-		if (city == null) {
-			if (other.city != null)
+		if (getCityName() == null) {
+			if (other.getCityName() != null)
 				return false;
-		} else if (!city.equals(other.city))
+		} else if (!getCityName().equals(other.getCityName()))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -110,9 +99,18 @@ public class ArticleCity implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ArticleCity [id=").append(id).append(", city=").append(city).append(", seekaArticles=")
+		builder.append("ArticleCity [id=").append(id).append(", city=").append(getCityName()).append(", seekaArticles=")
 				.append(seekaArticles).append("]");
 		return builder.toString();
+	}
+
+	@Column(name = "city_name")
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
 	}
 
 }

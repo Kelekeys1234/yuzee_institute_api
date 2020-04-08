@@ -32,7 +32,7 @@ public class EducationAgentPartnerships implements Serializable {
     private Date DeletedOn;
     private Boolean isDeleted;
     private EducationAgent educationAgent;
-    private Country country;
+    private String countryName;
 
     @Id
     @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
@@ -130,14 +130,14 @@ public class EducationAgentPartnerships implements Serializable {
         this.educationAgent = educationAgent;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "country_id")
-    public Country getCountry() {
-        return country;
-    }
+    @Column(name = "country_name")
+	public String getCountryName() {
+		return countryName;
+	}
 
-    public void setCountry(Country country) {
-        this.country = country;
-    }
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
 
 }

@@ -1,4 +1,4 @@
-package com.seeka.app.jobs;
+/*package com.seeka.app.jobs;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.seeka.app.bean.City;
 import com.seeka.app.dto.CountryDto;
-import com.seeka.app.service.ICityService;
 import com.seeka.app.service.ICountryService;
 
 @Component
@@ -27,12 +25,12 @@ public class CountryUtil {
     @Autowired
     ICountryService countryService;
 
-    @Autowired
-    ICityService cityService;
+//    @Autowired
+//    ICityService cityService;
 
     public static List<CountryDto> univCountryList = new ArrayList<CountryDto>();
     public static List<CountryDto> countryList = new ArrayList<CountryDto>();
-    public static Map<String, List<City>> countryCityMap = new HashMap<>();
+    public static Map<String, List<CountryDto>> countryCityMap = new HashMap<>();
     public static Map<String, CountryDto> countryMap = new HashMap<>();
 
     @Scheduled(fixedRate = 500000, initialDelay = 5000)
@@ -118,3 +116,4 @@ public class CountryUtil {
     }
 
 }
+*/

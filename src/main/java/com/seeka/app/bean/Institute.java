@@ -33,8 +33,6 @@ public class Institute implements Serializable {
 	 */
 	private static final long serialVersionUID = 7598262998124127162L;
 	private String id;
-//	private City city;
-//	private Country country;
 	private InstituteType instituteType;
 	private String name;
 	private Boolean isActive;
@@ -97,10 +95,8 @@ public class Institute implements Serializable {
 	public Institute() {
 	}
 
-	public Institute(final City city, final Country country, final InstituteType instituteType, final String name, final Boolean isActive, final Date createdOn,
+	public Institute(final InstituteType instituteType, final String name, final Boolean isActive, final Date createdOn,
 			final Date updatedOn, final Date deletedOn, final String createdBy, final String updatedBy, final Boolean isDeleted) {
-//		this.city = city;
-//		this.country = country;
 		this.instituteType = instituteType;
 		this.name = name;
 		this.isActive = isActive;
@@ -123,26 +119,6 @@ public class Institute implements Serializable {
 	public void setId(final String id) {
 		this.id = id;
 	}
-
-//	@ManyToOne(fetch = FetchType.EAGER)
-//	@JoinColumn(name = "city_id")
-//	public City getCity() {
-//		return this.city;
-//	}
-//
-//	public void setCity(final City city) {
-//		this.city = city;
-//	}
-//
-//	@ManyToOne(fetch = FetchType.EAGER)
-//	@JoinColumn(name = "country_id")
-//	public Country getCountry() {
-//		return this.country;
-//	}
-//
-//	public void setCountry(final Country country) {
-//		this.country = country;
-//	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "institute_type_id")
@@ -585,8 +561,6 @@ public class Institute implements Serializable {
 		result = prime * result + (avgCostOfLiving == null ? 0 : avgCostOfLiving.hashCode());
 		result = prime * result + (campusName == null ? 0 : campusName.hashCode());
 		result = prime * result + (campusType == null ? 0 : campusType.hashCode());
-//		result = prime * result + (city == null ? 0 : city.hashCode());
-//		result = prime * result + (country == null ? 0 : country.hashCode());
 		result = prime * result + (courseCount == null ? 0 : courseCount.hashCode());
 		result = prime * result + (courseStart == null ? 0 : courseStart.hashCode());
 		result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
@@ -667,20 +641,6 @@ public class Institute implements Serializable {
 		} else if (!campusType.equals(other.campusType)) {
 			return false;
 		}
-//		if (city == null) {
-//			if (other.city != null) {
-//				return false;
-//			}
-//		} else if (!city.equals(other.city)) {
-//			return false;
-//		}
-//		if (country == null) {
-//			if (other.country != null) {
-//				return false;
-//			}
-//		} else if (!country.equals(other.country)) {
-//			return false;
-//		}
 		if (courseCount == null) {
 			if (other.courseCount != null) {
 				return false;

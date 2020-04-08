@@ -14,7 +14,7 @@ public class ScholarshipDto implements Serializable {
 	private String name;
 	private String description;
 	private String scholarshipAward;
-	private String countryId;
+	private String countryName;
 	private String levelId;
 	private Integer numberOfAvaliability;
 	private String currency;
@@ -86,14 +86,6 @@ public class ScholarshipDto implements Serializable {
 
 	public void setScholarshipAward(final String scholarshipAward) {
 		this.scholarshipAward = scholarshipAward;
-	}
-
-	public String getCountryId() {
-		return countryId;
-	}
-
-	public void setCountryId(final String countryId) {
-		this.countryId = countryId;
 	}
 
 	public String getLevelId() {
@@ -238,7 +230,6 @@ public class ScholarshipDto implements Serializable {
 		int result = 1;
 		result = (prime * result) + ((address == null) ? 0 : address.hashCode());
 		result = (prime * result) + ((applicationDeadline == null) ? 0 : applicationDeadline.hashCode());
-		result = (prime * result) + ((countryId == null) ? 0 : countryId.hashCode());
 		result = (prime * result) + ((currency == null) ? 0 : currency.hashCode());
 		result = (prime * result) + ((description == null) ? 0 : description.hashCode());
 		result = (prime * result) + ((eligibleNationality == null) ? 0 : eligibleNationality.hashCode());
@@ -285,13 +276,6 @@ public class ScholarshipDto implements Serializable {
 				return false;
 			}
 		} else if (!applicationDeadline.equals(other.applicationDeadline)) {
-			return false;
-		}
-		if (countryId == null) {
-			if (other.countryId != null) {
-				return false;
-			}
-		} else if (!countryId.equals(other.countryId)) {
 			return false;
 		}
 		if (currency == null) {
@@ -434,7 +418,7 @@ public class ScholarshipDto implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ScholarshipDto [name=").append(name).append(", courseName=").append(courseName).append(", description=").append(description)
-				.append(", scholarshipAward=").append(scholarshipAward).append(", countryId=").append(countryId).append(", levelId=").append(levelId)
+				.append(", scholarshipAward=").append(scholarshipAward).append(", levelId=").append(levelId)
 				.append(", numberOfAvaliability=").append(numberOfAvaliability).append(", currency=").append(currency).append(", scholarshipAmount=")
 				.append(scholarshipAmount).append(", validity=").append(validity).append(", howToApply=").append(howToApply).append(", gender=").append(gender)
 				.append(", eligibleNationality=").append(eligibleNationality).append(", headquaters=").append(headquaters).append(", email=").append(email)
@@ -450,6 +434,14 @@ public class ScholarshipDto implements Serializable {
 
 	public void setRequirements(final String requirements) {
 		this.requirements = requirements;
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 
 }

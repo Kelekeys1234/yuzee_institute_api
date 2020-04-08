@@ -1,4 +1,4 @@
-package com.seeka.app.dao;
+/*package com.seeka.app.dao;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -139,3 +139,4 @@ public class CityDAO implements ICityDAO {
 		return (City) criteria.uniqueResult();
 	}
 }
+*/

@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+/*package com.seeka.app.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,11 +24,11 @@ import com.seeka.app.enumeration.StudentCategory;
 import com.seeka.app.enumeration.StudentType;
 import com.seeka.app.exception.ValidationException;
 
-/**
+*//**
  *
  * @author SeekADegree
  *
- */
+ *//*
 @Service
 @Transactional(rollbackFor = Throwable.class)
 public class UserReviewService implements IUserReviewService {
@@ -238,3 +238,4 @@ public class UserReviewService implements IUserReviewService {
 	}
 
 }
+*/

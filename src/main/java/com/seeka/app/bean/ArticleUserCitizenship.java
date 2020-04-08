@@ -31,8 +31,8 @@ public class ArticleUserCitizenship implements Serializable {
 	 */
 	private static final long serialVersionUID = -3766742694768712352L;
 	private String id;
-	private City city;
-	private Country country;
+	private String cityName;
+	private String countryName;
 	private SeekaArticles seekaArticles;
 	private String createdBy;
 	private Date createdDate;
@@ -42,10 +42,9 @@ public class ArticleUserCitizenship implements Serializable {
 	public ArticleUserCitizenship() {
 	}
 
-	public ArticleUserCitizenship(City city, Country country, SeekaArticles seekaArticles, String createdBy,
+	public ArticleUserCitizenship(String countryName, SeekaArticles seekaArticles, String createdBy,
 			Date createdDate, String updatedBy, Date updatedDate) {
-		this.city = city;
-		this.country = country;
+		this.setCountryName(countryName);
 		this.seekaArticles = seekaArticles;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
@@ -62,26 +61,6 @@ public class ArticleUserCitizenship implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "city_id")
-	public City getCity() {
-		return this.city;
-	}
-
-	public void setCity(City city) {
-		this.city = city;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "country_id")
-	public Country getCountry() {
-		return this.country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -136,8 +115,8 @@ public class ArticleUserCitizenship implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((city == null) ? 0 : city.hashCode());
-		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((getCityName() == null) ? 0 : getCityName().hashCode());
+		result = prime * result + ((getCountryName() == null) ? 0 : getCountryName().hashCode());
 		result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
 		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -156,15 +135,15 @@ public class ArticleUserCitizenship implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ArticleUserCitizenship other = (ArticleUserCitizenship) obj;
-		if (city == null) {
-			if (other.city != null)
+		if (getCityName() == null) {
+			if (other.getCityName() != null)
 				return false;
-		} else if (!city.equals(other.city))
+		} else if (!getCityName().equals(other.getCityName()))
 			return false;
-		if (country == null) {
-			if (other.country != null)
+		if (getCountryName() == null) {
+			if (other.getCountryName() != null)
 				return false;
-		} else if (!country.equals(other.country))
+		} else if (!getCountryName().equals(other.getCountryName()))
 			return false;
 		if (createdBy == null) {
 			if (other.createdBy != null)
@@ -202,11 +181,29 @@ public class ArticleUserCitizenship implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ArticleUserCitizenship [id=").append(id).append(", city=").append(city).append(", country=")
-				.append(country).append(", seekaArticles=").append(seekaArticles).append(", createdBy=")
+		builder.append("ArticleUserCitizenship [id=").append(id).append(", city=").append(getCityName()).append(", country=")
+				.append(getCountryName()).append(", seekaArticles=").append(seekaArticles).append(", createdBy=")
 				.append(createdBy).append(", createdDate=").append(createdDate).append(", updatedBy=").append(updatedBy)
 				.append(", updatedDate=").append(updatedDate).append("]");
 		return builder.toString();
+	}
+
+	@Column(name = "country_name")
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+	@Column (name = "city_name")
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
 	}
 
 }

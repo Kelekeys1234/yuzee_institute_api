@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+/*package com.seeka.app.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,3 +103,4 @@ public class CityService implements ICityService {
 		return iCityDAO.getAllCityNamesCount(searchString);
 	}
 }
+*/

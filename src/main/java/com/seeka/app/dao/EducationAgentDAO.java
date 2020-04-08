@@ -16,14 +16,11 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.AgentEducationDetail;
 import com.seeka.app.bean.AgentMediaDocumentation;
 import com.seeka.app.bean.AgentServiceOffered;
-import com.seeka.app.bean.City;
-import com.seeka.app.bean.Country;
 import com.seeka.app.bean.EducationAgent;
 import com.seeka.app.bean.EducationAgentAccomplishment;
 import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
 import com.seeka.app.bean.Service;
-import com.seeka.app.bean.Skill;
 import com.seeka.app.dto.EducationAgentGetAllDto;
 
 @Repository
@@ -48,16 +45,6 @@ public class EducationAgentDAO implements IEducationAgentDAO {
         Session session = sessionFactory.getCurrentSession();
         try {
             session.update(educationAgent);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    @Override
-    public void saveSkill(Skill skill) {
-        Session session = sessionFactory.getCurrentSession();
-        try {
-            session.save(skill);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -140,14 +127,6 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     }
 
     @Override
-    public Skill fetchSkill(String id) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Skill.class);
-        crit.add(Restrictions.eq("id", id));
-        return (Skill) crit.uniqueResult();
-    }
-
-    @Override
     public EducationAgent get(String id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(EducationAgent.class, id);
@@ -166,7 +145,7 @@ public class EducationAgentDAO implements IEducationAgentDAO {
     @Override
     public List<EducationAgentGetAllDto> getAll(int pageNumber, Integer pageSize) {
         Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select inst.id, inst.first_name , inst.description , inst.city_id, inst.country_id, inst.email , inst.phone_number, inst.updated_on FROM education_agent as inst where inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
+        String sqlQuery = "select inst.id, inst.first_name , inst.description , inst.city_name, inst.country_name, inst.email , inst.phone_number, inst.updated_on FROM education_agent as inst where inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
         Query query = session.createSQLQuery(sqlQuery);
         List<Object[]> rows = query.list();
@@ -183,10 +162,10 @@ public class EducationAgentDAO implements IEducationAgentDAO {
             educationAgent.setAgentName(row[1].toString());
             educationAgent.setDescription(row[2].toString());
             if (row[3] != null) {
-                educationAgent.setCity(getCity(row[3].toString()));
+                educationAgent.setCity(row[3].toString());
             }
             if (row[4] != null) {
-                educationAgent.setCountry(getCountry(row[4].toString()));
+                educationAgent.setCountry(row[4].toString());
             }
             String contact = null;
             if (row[6] != null) {
@@ -212,29 +191,29 @@ public class EducationAgentDAO implements IEducationAgentDAO {
         return educationAgentGetAllDtos;
     }
 
-    private String getCountry(String id) {
-        String name = null;
-        if (id != null) {
-            Session session = sessionFactory.getCurrentSession();
-            Country country = session.get(Country.class, id);
-            if (country != null) {
-                name = country.getName();
-            }
-        }
-        return name;
-    }
+//    private String getCountry(String id) {
+//        String name = null;
+//        if (id != null) {
+//            Session session = sessionFactory.getCurrentSession();
+//            Country country = session.get(Country.class, id);
+//            if (country != null) {
+//                name = country.getName();
+//            }
+//        }
+//        return name;
+//    }
 
-    private String getCity(String id) {
-        String name = null;
-        if (id != null) {
-            Session session = sessionFactory.getCurrentSession();
-            City city = session.get(City.class, id);
-            if (city != null) {
-                name = city.getName();
-            }
-        }
-        return name;
-    }
+//    private String getCity(String id) {
+//        String name = null;
+//        if (id != null) {
+//            Session session = sessionFactory.getCurrentSession();
+//            City city = session.get(City.class, id);
+//            if (city != null) {
+//                name = city.getName();
+//            }
+//        }
+//        return name;
+//    }
 
     @Override
     public EducationAgent fetchEducationAgent(String id) {
@@ -334,12 +313,5 @@ public class EducationAgentDAO implements IEducationAgentDAO {
         Criteria crit = session.createCriteria(EducationAgentAccomplishment.class);
         List<EducationAgentAccomplishment> agentAccomplishments = crit.add(Restrictions.eq("educationAgent.id", educationAgent)).list();
         return agentAccomplishments;
-    }
-
-    @Override
-    public List<Skill> getAllSkill() {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Skill.class);
-        return crit.list();
     }
 }
