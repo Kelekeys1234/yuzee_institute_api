@@ -1,4 +1,4 @@
-package com.seeka.app.controller.v1;
+/*package com.seeka.app.controller.v1;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +27,11 @@ import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IUserReviewService;
 import com.seeka.app.util.PaginationUtil;
 
-/**
+*//**
  *
  * @author SeekADegree
  *
- */
+ *//*
 @RestController("userReviewControllerV1")
 @RequestMapping("/api/v1/review")
 public class UserReviewController {
@@ -111,3 +111,4 @@ public class UserReviewController {
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(userReview).setMessage("Get user review details successfully").create();
 	}
 }
+*/

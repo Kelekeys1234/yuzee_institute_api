@@ -271,7 +271,7 @@ public class CourseController {
 		Map<String, Double> googleReviewMap = iInstituteGoogleReviewService
 				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
 		Map<String, Double> seekaReviewMap = iUserReviewService
-				.getUserAverageReviewBasedOnDataList(Arrays.asList(courseRequest.getInstituteId()), "INSTITUTE");
+				.getUserAverageReviewBasedOnDataList("INSTITUTE", Arrays.asList(courseRequest.getInstituteId()));
 		
 		if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
 			courseRequest.setStars(String.valueOf(courseService.calculateAverageRating(googleReviewMap, seekaReviewMap,
