@@ -254,7 +254,7 @@ public class CourseController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> get(@RequestHeader(required = false) final String userId,
-			@Valid @PathVariable final String id) throws ValidationException {
+			@Valid @PathVariable final String id) throws Exception {
 		ErrorDto errorDto = null;
 		CourseRequest courseRequest = null;
 		Map<String, Object> response = new HashMap<>();
@@ -271,7 +271,7 @@ public class CourseController {
 		Map<String, Double> googleReviewMap = iInstituteGoogleReviewService
 				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
 		Map<String, Double> seekaReviewMap = iUserReviewService
-				.getUserAverageReviewBasedOnDataList(Arrays.asList(courseRequest.getInstituteId()), "INSTITUTE");
+				.getUserAverageReviewBasedOnDataList("INSTITUTE", Arrays.asList(courseRequest.getInstituteId()));
 		
 		if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
 			courseRequest.setStars(String.valueOf(courseService.calculateAverageRating(googleReviewMap, seekaReviewMap,

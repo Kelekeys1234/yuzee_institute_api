@@ -15,10 +15,12 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
@@ -142,7 +144,7 @@ public class CourseService implements ICourseService {
 
 	@Autowired
 	private IInstituteGoogleReviewService iInstituteGoogleReviewService;
-
+	
 	@Autowired
 	private IUserReviewService iUserReviewService;
 	
@@ -841,8 +843,13 @@ public class CourseService implements ICourseService {
 		List<CourseIntake> courseIntake = iCourseDAO.getCourseIntakeBasedOnCourseIdList(courseIds);
 		Map<String, Double> googleReviewMap = iInstituteGoogleReviewService
 				.getInstituteAvgGoogleReviewForList(courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
-		Map<String, Double> seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(
-				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), "INSTITUTE");
+		Map<String, Double> seekaReviewMap = null;
+		try {
+			seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(
+					"INSTITUTE", courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
 			if (storageDTOList != null && !storageDTOList.isEmpty()) {
 				List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))

@@ -1,12 +1,20 @@
 package com.seeka.app.dto;
 
-import java.util.List;
+import java.util.Map;
 
-public class UserReviewResponseDto {
+public class UserAverageReviewResponseDto {
 
-	private List<UserReviewResultDto> data;
+	private Map<String, Double> data;
 	private String message;
 	private String status;
+
+	public Map<String, Double> getData() {
+		return data;
+	}
+
+	public void setData(Map<String, Double> data) {
+		this.data = data;
+	}
 
 	public String getMessage() {
 		return message;
@@ -23,15 +31,4 @@ public class UserReviewResponseDto {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	public List<UserReviewResultDto> getData() {
-		return data;
-	}
-
-	public void setData(List<UserReviewResultDto> data) {
-		this.data = data;
-	}
-
-	
-	
 }
