@@ -146,9 +146,6 @@ public class CourseService implements ICourseService {
 	private IInstituteGoogleReviewService iInstituteGoogleReviewService;
 	
 	@Autowired
-	private RestTemplate restTemplate;
-
-	@Autowired
 	private IUserReviewService iUserReviewService;
 	
 	@Autowired
@@ -846,9 +843,13 @@ public class CourseService implements ICourseService {
 		List<CourseIntake> courseIntake = iCourseDAO.getCourseIntakeBasedOnCourseIdList(courseIds);
 		Map<String, Double> googleReviewMap = iInstituteGoogleReviewService
 				.getInstituteAvgGoogleReviewForList(courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
-		Map<String, Double> seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(
-				"INSTITUTE", courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
-		System.out.println("seekaReviewMap response ------>"+seekaReviewMap);
+		Map<String, Double> seekaReviewMap = null;
+		try {
+			seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(
+					"INSTITUTE", courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		for (CourseResponseDto courseResponseDto : courseResponseDtos) {
 			if (storageDTOList != null && !storageDTOList.isEmpty()) {
 				List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))

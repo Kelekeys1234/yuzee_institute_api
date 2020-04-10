@@ -12,8 +12,8 @@ import com.seeka.app.dto.UserReviewResultDto;
  */
 public interface IUserReviewService {
 	
-	public Map<String, Double> getUserAverageReviewBasedOnDataList(String entityType, List<String> entityIds);
+	public Map<String, Double> getUserAverageReviewBasedOnDataList(String entityType, List<String> entityIds) throws Exception;
 	
 	List<UserReviewResultDto> getUserReviewBasedOnData(String entityId, String entityType, 
-				Integer pageNumber,Integer pageSize, String sortByType, String searchKeyword);
+				Integer pageNumber,Integer pageSize, String sortByType, String searchKeyword) throws Exception ;
 }

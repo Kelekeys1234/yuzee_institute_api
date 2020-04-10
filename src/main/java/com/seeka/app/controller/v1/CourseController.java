@@ -254,7 +254,7 @@ public class CourseController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> get(@RequestHeader(required = false) final String userId,
-			@Valid @PathVariable final String id) throws ValidationException {
+			@Valid @PathVariable final String id) throws Exception {
 		ErrorDto errorDto = null;
 		CourseRequest courseRequest = null;
 		Map<String, Object> response = new HashMap<>();
