@@ -1,35 +1,43 @@
 package com.seeka.app.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
+import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dto.CountryDto;
-import com.seeka.app.util.IConstant;
 
 @Service
 @Transactional
 public class CountryService implements ICountryService {
 
 	@Autowired
-	private RestTemplate restTemplate;
-	
+	private ICourseDAO courseDAO;
+
 	@Override
-	public List<CountryDto> getAllCountries() {
-		ResponseEntity<Map> result = restTemplate.getForEntity(IConstant.COMMON_CONNECTION_URL + "/country/getAll", Map.class);
-		Map<String, Object> responseMap = result.getBody();
-		System.out.println("responseMap------>"+responseMap);
-		Map<String, Object> bodyResponseMap = (Map<String, Object>) responseMap.get("body");
-		System.out.println("bodyResponseMap------>"+bodyResponseMap);
-		List<CountryDto> countryDto = (List<CountryDto>) bodyResponseMap.get("data");
-		System.out.println("dataResponseMap------>"+countryDto);
-		return countryDto;
+	public Map<String, Object> getCourseCountry() {
+		Map<String, Object> response = new HashMap<>();
+		List<CountryDto> countries = new ArrayList<CountryDto>();
+		try {
+			countries = courseDAO.getCourseCountry();
+			if (countries != null && !countries.isEmpty()) {
+				response.put("status", HttpStatus.OK.value());
+				response.put("message", "Country fetched successfully");
+				response.put("courses", countries);
+			} else {
+				response.put("status", HttpStatus.NOT_FOUND.value());
+				response.put("message", "Country not found");
+			}
+		} catch (Exception exception) {
+			response.put("message", exception.getCause());
+			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+		}
+		return response;
 	}
-
-
 }

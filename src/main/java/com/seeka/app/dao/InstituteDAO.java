@@ -116,7 +116,7 @@ public class InstituteDAO implements IInstituteDAO {
 			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) {
 		Session session = sessionFactory.getCurrentSession();
 
-		String sqlQuery = "select count(distinct inst.id) from institute inst  inner join country ctry  on ctry.name = inst.country_name inner join city ci  on ci.id = inst.city_id "
+		String sqlQuery = "select count(distinct inst.id) from institute inst "
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
 				+ "left join course c  on c.institute_id=inst.id inner join institute_type it on inst.institute_type_id=it.id where 1=1 ";
 
@@ -153,7 +153,7 @@ public class InstituteDAO implements IInstituteDAO {
 
 		if (null != searchKeyword && !searchKeyword.isEmpty()) {
 			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or ctry.name like '%" + searchKeyword.trim() + "%'";
+			sqlQuery += " or inst.country_name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or ci.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or it.name like '%" + searchKeyword.trim() + "%' )";
 		}
@@ -173,7 +173,7 @@ public class InstituteDAO implements IInstituteDAO {
 				+ " inst.is_active, inst.domestic_ranking, inst.latitute,inst.longitute "
 				+ " from institute inst "
 				+ "left join faculty_level f on f.institute_id = inst.id left join institute_level l on l.institute_id = inst.id "
-				+ "left join course c  on c.institute_id=inst.id inner join institute_type it on inst.institute_type_id=it.id where 1=1 ";
+				+ "left join course c  on c.institute_id=inst.id left join institute_type it on inst.institute_type_id=it.id where 1=1 ";
 
 		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
 			sqlQuery += " and inst.country_name in ('" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";

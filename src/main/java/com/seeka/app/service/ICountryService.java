@@ -1,11 +1,8 @@
 package com.seeka.app.service;
 
-import java.util.List;
-
-import com.seeka.app.dto.CountryDto;
+import java.util.Map;
 
 public interface ICountryService {
 	
-	List<CountryDto> getAllCountries();
-	
+    Map<String, Object> getCourseCountry();
 }

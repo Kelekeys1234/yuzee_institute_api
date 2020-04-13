@@ -16,8 +16,8 @@ public class InstituteResponseDto implements Serializable {
 	private String location;
 	private Integer totalCourses;
 	private Integer totalCount;
-	private String cityId;
-	private String countryId;
+	//private String cityId;
+	//private String countryId;
 	private String website;
 	private String aboutUs;
 	private String openingFrom;
@@ -151,21 +151,21 @@ public class InstituteResponseDto implements Serializable {
 		this.totalAvailableJobs = totalAvailableJobs;
 	}
 
-	public String getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(final String cityId) {
-		this.cityId = cityId;
-	}
-
-	public String getCountryId() {
-		return countryId;
-	}
-
-	public void setCountryId(final String countryId) {
-		this.countryId = countryId;
-	}
+//	public String getCityId() {
+//		return cityId;
+//	}
+//
+//	public void setCityId(final String cityId) {
+//		this.cityId = cityId;
+//	}
+//
+//	public String getCountryId() {
+//		return countryId;
+//	}
+//
+//	public void setCountryId(final String countryId) {
+//		this.countryId = countryId;
+//	}
 
 	public String getCountryName() {
 		return countryName;
@@ -336,9 +336,9 @@ public class InstituteResponseDto implements Serializable {
 		result = prime * result + (aboutUs == null ? 0 : aboutUs.hashCode());
 		result = prime * result + (address == null ? 0 : address.hashCode());
 		result = prime * result + (campusType == null ? 0 : campusType.hashCode());
-		result = prime * result + (cityId == null ? 0 : cityId.hashCode());
+		//result = prime * result + (cityId == null ? 0 : cityId.hashCode());
 		result = prime * result + (cityName == null ? 0 : cityName.hashCode());
-		result = prime * result + (countryId == null ? 0 : countryId.hashCode());
+		//result = prime * result + (countryId == null ? 0 : countryId.hashCode());
 		result = prime * result + (countryName == null ? 0 : countryName.hashCode());
 		result = prime * result + (distance == null ? 0 : distance.hashCode());
 		result = prime * result + (domesticRanking == null ? 0 : domesticRanking.hashCode());
@@ -399,13 +399,13 @@ public class InstituteResponseDto implements Serializable {
 		} else if (!campusType.equals(other.campusType)) {
 			return false;
 		}
-		if (cityId == null) {
-			if (other.cityId != null) {
-				return false;
-			}
-		} else if (!cityId.equals(other.cityId)) {
-			return false;
-		}
+//		if (cityId == null) {
+//			if (other.cityId != null) {
+//				return false;
+//			}
+//		} else if (!cityId.equals(other.cityId)) {
+//			return false;
+//		}
 		if (cityName == null) {
 			if (other.cityName != null) {
 				return false;
@@ -413,13 +413,13 @@ public class InstituteResponseDto implements Serializable {
 		} else if (!cityName.equals(other.cityName)) {
 			return false;
 		}
-		if (countryId == null) {
-			if (other.countryId != null) {
-				return false;
-			}
-		} else if (!countryId.equals(other.countryId)) {
-			return false;
-		}
+//		if (countryId == null) {
+//			if (other.countryId != null) {
+//				return false;
+//			}
+//		} else if (!countryId.equals(other.countryId)) {
+//			return false;
+//		}
 		if (countryName == null) {
 			if (other.countryName != null) {
 				return false;
@@ -596,7 +596,7 @@ public class InstituteResponseDto implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("InstituteResponseDto [id=").append(id).append(", name=").append(name).append(", worldRanking=").append(worldRanking)
 				.append(", location=").append(location).append(", totalCourses=").append(totalCourses).append(", totalCount=").append(totalCount)
-				.append(", cityId=").append(cityId).append(", countryId=").append(countryId).append(", website=").append(website).append(", aboutUs=")
+				.append(", website=").append(website).append(", aboutUs=")
 				.append(aboutUs).append(", openingFrom=").append(openingFrom).append(", openingTo=").append(openingTo).append(", totalStudent=")
 				.append(totalStudent).append(", latitute=").append(latitute).append(", longitude=").append(longitude).append(", phoneNumber=")
 				.append(phoneNumber).append(", email=").append(email).append(", address=").append(address).append(", visaRequirement=").append(visaRequirement)

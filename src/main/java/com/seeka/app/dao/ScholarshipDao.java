@@ -266,7 +266,7 @@ public class ScholarshipDao implements IScholarshipDAO {
 
 		Session session = sessionFactory.getCurrentSession();
 		String ids = countryId.stream().map(String::toString).collect(Collectors.joining(","));
-		String query = "Select id from scholarship where country_id in (" + ids + ") order by Rand() LIMIT ?";
+		String query = "Select id from scholarship where country_name in ('" + ids + "') order by Rand() LIMIT ?";
 		List<String> scholarshipIds = session.createNativeQuery(query).setParameter(1, limit).getResultList();
 		return scholarshipIds;
 	}

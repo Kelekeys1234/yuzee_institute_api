@@ -1,28 +1,12 @@
-/*package com.seeka.app.controller.v1;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package com.seeka.app.controller.v1;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.bean.Country;
-import com.seeka.app.bean.CountryEnglishEligibility;
-import com.seeka.app.dto.CountryDto;
-import com.seeka.app.dto.CountryRequestDto;
-import com.seeka.app.enumeration.EnglishType;
-import com.seeka.app.jobs.CountryUtil;
-import com.seeka.app.service.ICountryEnglishEligibilityService;
 import com.seeka.app.service.ICountryService;
-import com.seeka.app.util.IConstant;
 
 @RestController("countryControllerV1")
 @RequestMapping("/api/v1/country")
@@ -31,10 +15,8 @@ public class CountryController {
     @Autowired
     private ICountryService countryService;
 
-    @Autowired
-    ICountryEnglishEligibilityService countryEnglishEligibilityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+   /* @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getAll() {
         Map<String, Object> response = new HashMap<String, Object>();
         List<CountryDto> countryList = null;
@@ -206,10 +188,10 @@ public class CountryController {
     @RequestMapping(value = "/autoSearch/{searchKey}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> autoSearch(@PathVariable final String searchKey) throws Exception {
         return ResponseEntity.accepted().body(countryService.autoSearch(searchKey));
-    }
+    }*/
 
     @RequestMapping(value = "/course", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getCourseCountry() throws Exception {
         return ResponseEntity.accepted().body(countryService.getCourseCountry());
     }
-}*/
+}

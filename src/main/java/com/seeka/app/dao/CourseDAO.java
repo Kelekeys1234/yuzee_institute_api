@@ -338,11 +338,11 @@ public class CourseDAO implements ICourseDAO {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName,"
 				+ "inst.id as instId,inst.name as instName,"
-				+ " crs.cost_range, crs.currency, crs.duration,crs.duration_time, ci.id as cityId, ctry.id as countryId,ci.name as cityName,"
-				+ "ctry.name as countryName,crs.world_ranking,crs.language,crs.stars,crs.recognition,crs.domestic_fee,crs.international_fee "
+				+ " crs.cost_range, crs.currency, crs.duration,crs.duration_time, inst.city_name as cityName,"
+				+ "inst.country_name as countryName,crs.world_ranking,crs.language,crs.stars,crs.recognition,crs.domestic_fee,crs.international_fee "
 				+ "from course crs  inner join institute inst "
-				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_id inner join "
-				+ "city ci  on ci.id = inst.city_id inner join faculty f  on f.id = crs.faculty_id "
+				+ " on crs.institute_id = inst.id "
+				+ "inner join faculty f  on f.id = crs.faculty_id "
 				+ "left join institute_service iis  on iis.institute_id = inst.id where crs.institute_id = '" + instituteId + "'";
 
 		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
@@ -448,12 +448,12 @@ public class CourseDAO implements ICourseDAO {
 				worldRanking = Double.valueOf(String.valueOf(row[12])).intValue();
 			}
 			obj.setCourseRanking(Integer.valueOf(worldRanking.toString()));
-			obj.setLanguage(String.valueOf(row[13]));
-			obj.setLanguageShortKey(String.valueOf(row[13]));
-			obj.setStars(Double.valueOf(String.valueOf(row[14])));
-			obj.setDomesticFee(Double.valueOf(String.valueOf(row[16])));
-			obj.setInternationalFee(Double.valueOf(String.valueOf(row[17])));
-			obj.setTotalCount(Integer.parseInt(String.valueOf(row[18])));
+			obj.setLanguage(String.valueOf(row[12]));
+			obj.setLanguageShortKey(String.valueOf(row[12]));
+			obj.setStars(Double.valueOf(String.valueOf(row[13])));
+			obj.setDomesticFee(Double.valueOf(String.valueOf(row[15])));
+			obj.setInternationalFee(Double.valueOf(String.valueOf(row[16])));
+			obj.setTotalCount(Integer.parseInt(String.valueOf(row[17])));
 			list.add(obj);
 		}
 		return list;
@@ -649,12 +649,6 @@ public class CourseDAO implements ICourseDAO {
 			instituteObj.setLocation(String.valueOf(row[21]) + "," + String.valueOf(row[22]));
 			instituteObj.setCountryName(String.valueOf(row[22]));
 			instituteObj.setCityName(String.valueOf(row[21]));
-			if (row[26] != null) {
-				instituteObj.setCityId(String.valueOf(row[26]));
-			}
-			if (row[27] != null) {
-				instituteObj.setCountryId(String.valueOf(row[27]));
-			}
 			instituteObj.setTotalAvailableJobs(String.valueOf(row[31]));
 
 			map.put("courseObj", courseObj);
@@ -819,6 +813,15 @@ public class CourseDAO implements ICourseDAO {
 		return courses;
 	}
 
+	/*private String getLocationName(final String id, final Session session) {
+		String name = null;
+		if (id != null) {
+			Country obj = session.get(Country.class, id);
+			name = obj.getName();
+		}
+		return name;
+	}*/
+
 	private String getInstituteName(final String id, final Session session) {
 		String name = null;
 		if (id != null) {
@@ -886,7 +889,6 @@ public class CourseDAO implements ICourseDAO {
 				obj.setInstituteName(institute.getName());
 				obj.setCost(getCost(row[1].toString(), session));
 			}
-
 			if (row[2] != null) {
 				obj.setLocation(row[2].toString());
 			}
@@ -1028,11 +1030,11 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public CourseRequest getCourseById(final Integer courseId) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select c.id , c.institute_id, i.country_name , i.city_name, c.faculty_id, c.name , "
+        String sqlQuery = "select c.id , c.institute_id, i.country_name , i.city_name, c.faculty_id, c.name , "
 				+ "c.description, c.intake,c.duration, c.language, c.domestic_fee, c.international_fee,"
 				+ "c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time,c.remarks  FROM course c "
-				+ "left join institute i on c.institute_id=i.id where c.id=" + courseId;
+                + "left join institute i on c.institute_id=i.id where c.id=" + courseId;
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
 		CourseRequest courseRequest = null;
@@ -1395,7 +1397,7 @@ public class CourseDAO implements ICourseDAO {
 		 *
 		 */
 		if (null != courseSearchDto.getUserCountryId()) {
-			sqlQuery += " and ((inst.country_id ='" + courseSearchDto.getUserCountryId() + "' and crs.availbilty = 'D') OR (inst.country_id <>'"
+			sqlQuery += " and ((inst.country_name ='" + courseSearchDto.getUserCountryId() + "' and crs.availbilty = 'D') OR (inst.country_name <>'"
 					+ courseSearchDto.getUserCountryId() + "' and crs.availbilty = 'I') OR crs.availbilty = 'A')";
 		}
 		return sqlQuery;
@@ -1421,7 +1423,7 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public List<CourseRequest> courseFilter(final int pageNumber, final Integer pageSize, final CourseFilterDto courseFilter) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select c.id , c.institute_id, inst.country_name , inst.city_name, c.faculty_id, c.name , "
+        String sqlQuery = "select c.id , c.institute_id, inst.country_name , inst.city_name, c.faculty_id, c.name , "
 				+ "c.description, c.intake, c.duration, c.language, c.domestic_fee, c.international_fee,"
 				+ "c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM course c join institute inst"
@@ -1494,7 +1496,7 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public List<CourseRequest> autoSearch(final int pageNumber, final Integer pageSize, final String searchKey) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select c.id , c.institute_id, ist.country_name , ist.city_name, c.faculty_id, c.name , "
+        String sqlQuery = "select c.id , c.institute_id, ist.country_name , ist.city_name, c.faculty_id, c.name , "
 				+ "c.description, c.intake, c.duration, c.language, c.domestic_fee, c.international_fee,"
 				+ "c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time, c.remarks  FROM course c inner join institute ist on c.institute_id = ist.id"
@@ -1551,42 +1553,42 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public List<CountryDto> getCourseCountry() {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select distinct ctry.id as countryId, ctry.name as countryName from course crs inner join institute inst on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_name"
+		String sqlQuery = "select distinct inst.country_name as countryName from course crs inner join institute inst on crs.institute_id = inst.id"
 				+ " where crs.deleted_on IS NULL";
 		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
+		List<String> rows = query.list();
 		List<CountryDto> countryDtos = new ArrayList<>();
 		CountryDto countryDto = null;
-		for (Object[] row : rows) {
+		for (String row : rows) {
 			countryDto = new CountryDto();
-			countryDto.setCountryId(row[0].toString());
-			if (row[1] != null) {
-				countryDto.setName(row[1].toString());
+			if (row != null) {
+				countryDto.setName(row);
 			}
-			List<Level> levels = levelDAO.getCountryLevel(countryDto.getCountryId());
+			List<Level> levels = levelDAO.getCountryLevel(countryDto.getName());
 			for (Level level : levels) {
-				List<Faculty> facultyList = dao.getCourseFaculty(countryDto.getCountryId(), level.getId());
+				List<Faculty> facultyList = dao.getCourseFaculty(countryDto.getName(), level.getId());
 				level.setFacultyList(facultyList);
 			}
+			countryDto.setLevelList(levels);
 			countryDtos.add(countryDto);
 		}
 		return countryDtos;
 	}
 
 	@Override
-	public long getCourseCountForCountry(final String countryName) {
+	public long getCourseCountForCountry(final String country) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
-		crit.add(Restrictions.eq("country", countryName));
+		crit.add(Restrictions.eq("country", country));
 		crit.setProjection(Projections.rowCount());
 		return (long) crit.uniqueResult();
 	}
 
 	@Override
-	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String countryName) {
+	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
-		crit.add(Restrictions.eq("country", countryName));
+		crit.add(Restrictions.eq("country", country));
 		crit.addOrder(Order.desc("worldRanking"));
 		return crit.list();
 	}
@@ -1656,10 +1658,10 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<String> getTopRatedCourseIdsForCountryWorldRankingWise(final String countryName) {
+	public List<String> getTopRatedCourseIdsForCountryWorldRankingWise(final String country) {
 		Session session = sessionFactory.getCurrentSession();
-		List<String> rows = session.createNativeQuery("select id from course where country_id = ? order by world_ranking desc")
-				.setString(1, countryName).getResultList();
+		List<String> rows = session.createNativeQuery("select id from course where country_name = ? order by world_ranking desc")
+				.setString(1, country).getResultList();
 		List<String> courseIds = rows;
 
 		return courseIds;
@@ -1673,12 +1675,12 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final String countryName) {
+	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final String country) {
 		Session session = sessionFactory.getCurrentSession();
 
 		BigInteger count = (BigInteger) session.createNativeQuery(
-				"select count(*) from (Select count(*) from course where country_id = ? and is_active = ? group by country_id, institute_id) as temp_table")
-				.setParameter(1, countryName).setParameter(2, 1).uniqueResult();
+				"select count(*) from (Select count(*) from course where country_id = ? and is_active = ? group by country_name, institute_id) as temp_table")
+				.setParameter(1, country).setParameter(2, 1).uniqueResult();
 		return count != null ? count.longValue() : 0L;
 	}
 
@@ -1691,7 +1693,7 @@ public class CourseDAO implements ICourseDAO {
 
 		System.out.println("IDs -- " + ids);
 		List<String> countryIds = session
-				.createNativeQuery("Select distinct i.country_id from course c join institute i on i.id=c.institute_id  where i.country_id is not null and " + "c.id in ('" + ids.replace(",", "','") + "')").getResultList();
+                .createNativeQuery("Select distinct i.country_name from course c join institute i on i.id=c.institute_id  where i.country_name is not null and " + "c.id in ('" + ids.replace(",", "','") + "')").getResultList();
 		return countryIds;
 	}
 
@@ -1730,9 +1732,9 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<String> getCourseIdsForCountry(final String countryName) {
+	public List<String> getCourseIdsForCountry(final String country) {
 		Session session = sessionFactory.getCurrentSession();
-		List<String> courseList = session.createNativeQuery("select id from course where country_id = ?").setParameter(1, countryName).getResultList();
+		List<String> courseList = session.createNativeQuery("select id from course where country_name = ?").setParameter(1, country).getResultList();
 		return courseList;
 	}
 

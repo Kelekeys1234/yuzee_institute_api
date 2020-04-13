@@ -64,10 +64,17 @@ public class UserReviewService implements IUserReviewService {
 		Map<String, String> params = new HashMap<String, String>();
 		try {
 			StringBuilder path = new StringBuilder();
+			params.put("entityId", entityId);
+			params.put("entityType", entityType);
+			params.put("pageNumber", pageNumber.toString());
+			params.put("pageSize", pageSize.toString());
 			path.append(IConstant.REVIEW_CONNECTION_URL).append(GET_USER_REVIEW);
 			userReviewResponseDto = restTemplate.exchange(path.toString(), HttpMethod.GET, null, UserReviewResponseDto.class, params);
 			if (userReviewResponseDto.getStatusCode().value() != 200) {
 				throw new ReviewInvokeException ("Error response recieved from review service with error code " + userReviewResponseDto.getStatusCode().value());
+			}
+			if(userReviewResponseDto.getBody().getData() != null) {
+				throw new ReviewInvokeException ("No userReview found in DB for entityId " + entityId);
 			}
 		} catch( Exception e) {
 			if (e instanceof ReviewInvokeException) {
