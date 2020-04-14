@@ -146,7 +146,7 @@ public class ViewDao implements IViewDao {
 		String endDate = dateFormat.format(toDate);
 
 		String sqlQuery ="select count(*),abc.course_id from (select count(*) as count ,course.id  as course_id from user_view_data join course on course.id=user_view_data.entity_id "
-				+ "join institute it on it.id = course.institute_id where entity_type='COURSE' and it.country_id='"+countryId+"' and Date(user_view_data.created_on) between '"+startDate+"' and '"+endDate+"' group by entity_id,user_id) as abc group by abc.course_id";
+				+ "join institute it on it.id = course.institute_id where entity_type='COURSE' and it.country_name='"+countryId+"' and Date(user_view_data.created_on) between '"+startDate+"' and '"+endDate+"' group by entity_id,user_id) as abc group by abc.course_id";
 		
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();

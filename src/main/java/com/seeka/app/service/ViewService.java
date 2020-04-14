@@ -30,12 +30,6 @@ public class ViewService implements IViewService {
 	@Autowired
 	private ICourseDAO iCourseDAO;
 
-//	@Autowired
-//	private ICityDAO iCityDAO;
-
-//	@Autowired
-//	private ICountryDAO iCountryDAO;
-
 	@Override
 	public void createUserViewData(final UserViewDataRequestDto userViewDataRequestDto) {
 		UserViewData userViewData = new UserViewData();
@@ -131,5 +125,4 @@ public class ViewService implements IViewService {
 			throw new ValidationException("Users country not found");
 		}
 	}
-
 }

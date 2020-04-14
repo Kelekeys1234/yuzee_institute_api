@@ -116,11 +116,11 @@ public class CourseDAO implements ICourseDAO {
 		}
 
 		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
-			sqlQuery += " and inst.country_name in ('" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
+			sqlQuery += " and inst.country_id in ('" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
 		}
 
 		if (null != courseSearchDto.getCityIds() && !courseSearchDto.getCityIds().isEmpty()) {
-			sqlQuery += " and inst.city_name in ('" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
+			sqlQuery += " and inst.city_id in ('" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
 		}
 
 		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
@@ -1713,10 +1713,10 @@ public class CourseDAO implements ICourseDAO {
 			query.append(" and faculty_id = " + facultyId);
 		}
 		if (countryId != null) {
-			query.append(" and country_name = " + countryId);
+			query.append(" and country_id = " + countryId);
 		}
 		if (cityId != null) {
-			query.append(" and city_name = " + cityId);
+			query.append(" and city_id = " + cityId);
 		}
 
 		List<String> courseIds = session.createNativeQuery(query.toString()).getResultList();
