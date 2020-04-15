@@ -1734,7 +1734,8 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public List<String> getCourseIdsForCountry(final String country) {
 		Session session = sessionFactory.getCurrentSession();
-		List<String> courseList = session.createNativeQuery("select id from course where country_name = ?").setParameter(1, country).getResultList();
+		List<String> courseList = session.createNativeQuery("select c.id from course c left join institute i on i.id = c.institute_id"
+				+ " where i.country_name ='"+country+"'").getResultList();
 		return courseList;
 	}
 
@@ -1742,7 +1743,8 @@ public class CourseDAO implements ICourseDAO {
 	public List<String> getAllCoursesForCountry(final List<String> otherCountryIds) {
 		Session session = sessionFactory.getCurrentSession();
 		String ids = otherCountryIds.stream().map(String::toString).collect(Collectors.joining(","));
-		List<String> courseIdList = session.createNativeQuery("Select id from course where country_id in (" + ids + ")").getResultList();
+		List<String> courseIdList = session.createNativeQuery("Select c.id from course c left join institute i on i.id = c.institute_id"
+				+ " where i.country_name in ('" + ids + "')").getResultList();
 		return courseIdList;
 	}
 
