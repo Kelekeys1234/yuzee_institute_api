@@ -756,7 +756,7 @@ public class CourseService implements ICourseService {
 			List<UserCompareCourse> compareCourses = iCourseDAO.getUserCompareCourse(userId);
 			for (UserCompareCourse compareCourse : compareCourses) {
 				UserCompareCourseResponse courseResponse = new UserCompareCourseResponse();
-				courseResponse.setUserCourseCompareId(compareCourse.getId());
+				courseResponse.setUserCourseCompareId(compareCourse.getId().toString());
 				courseResponse.setCourses(getCourses(compareCourse.getCompareValue()));
 				compareCourseResponses.add(courseResponse);
 			}
@@ -779,7 +779,7 @@ public class CourseService implements ICourseService {
 		List<CourseRequest> courses = new ArrayList<>();
 		String[] compareValues = compareValue.split(",");
 		for (String id : compareValues) {
-			CourseRequest courseRequest = iCourseDAO.getCourseById(Integer.valueOf(id));
+			CourseRequest courseRequest = iCourseDAO.getCourseById(id);
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setStorageList(storageDTOList);
 			courses.add(courseRequest);

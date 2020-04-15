@@ -61,7 +61,7 @@ public interface ICourseDAO {
 
 	List<UserCompareCourse> getUserCompareCourse(String userId);
 
-	CourseRequest getCourseById(Integer valueOf);
+	CourseRequest getCourseById(String valueOf);
 
 	List<YoutubeVideo> getYoutubeDataforCourse(String instituteId, Set<String> keyword, Integer startIndex, Integer pageSize);
 

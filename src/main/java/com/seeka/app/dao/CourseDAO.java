@@ -1012,7 +1012,7 @@ public class CourseDAO implements ICourseDAO {
 	public List<UserCompareCourse> getUserCompareCourse(final String userId) {
 		List<UserCompareCourse> compareCourses = new ArrayList<>();
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select ucc.id, ucc.compare_value FROM  user_compare_course ucc where ucc.deleted_on IS NULL and ucc.user_id=" + userId;
+		String sqlQuery = "select ucc.id, ucc.compare_value FROM  user_compare_course ucc where ucc.deleted_on IS NULL and ucc.user_id='" + userId +"'";
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
 		UserCompareCourse obj = null;
@@ -1028,13 +1028,13 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public CourseRequest getCourseById(final Integer courseId) {
+	public CourseRequest getCourseById(final String courseId) {
 		Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select c.id , c.institute_id, i.country_name , i.city_name, c.faculty_id, c.name , "
 				+ "c.description, c.intake,c.duration, c.language, c.domestic_fee, c.international_fee,"
 				+ "c.availbilty, c.study_mode, c.created_by, c.updated_by, c.campus_location, c.website,"
 				+ " c.recognition_type, c.part_full, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.duration_time,c.remarks  FROM course c "
-                + "left join institute i on c.institute_id=i.id where c.id=" + courseId;
+                + "left join institute i on c.institute_id=i.id where c.id='" + courseId + "'";
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
 		CourseRequest courseRequest = null;
