@@ -7,9 +7,9 @@ public class AdvanceSearchDto {
 	private List<String> faculties;
 	private List<String> levelIds;
 	private List<String> serviceIds;
-	private List<String> countryIds;
+	private List<String> countryNames;
 	private List<String> courseKeys;
-	private List<String> cityIds;
+	private List<String> cityNames;
 	private Double minCost;
 	private Double maxCost;
 	private Integer minDuration;
@@ -205,20 +205,6 @@ public class AdvanceSearchDto {
 	}
 
 	/**
-	 * @return the countryIds
-	 */
-	public List<String> getCountryIds() {
-		return countryIds;
-	}
-
-	/**
-	 * @param countryIds the countryIds to set
-	 */
-	public void setCountryIds(final List<String> countryIds) {
-		this.countryIds = countryIds;
-	}
-
-	/**
 	 * @return the courseKeys
 	 */
 	public List<String> getCourseKeys() {
@@ -288,20 +274,6 @@ public class AdvanceSearchDto {
 		this.userId = userId;
 	}
 
-	/**
-	 * @return the cityIds
-	 */
-	public List<String> getCityIds() {
-		return cityIds;
-	}
-
-	/**
-	 * @param cityIds the cityIds to set
-	 */
-	public void setCityIds(final List<String> cityIds) {
-		this.cityIds = cityIds;
-	}
-
 	public String getSearchKeyword() {
 		return searchKeyword;
 	}
@@ -310,8 +282,6 @@ public class AdvanceSearchDto {
 		this.searchKeyword = searchKeyword;
 	}
 
-
-
 	public String getInstituteId() {
 		return instituteId;
 	}
@@ -319,12 +289,28 @@ public class AdvanceSearchDto {
 	public void setInstituteId(final String instituteId) {
 		this.instituteId = instituteId;
 	}
+	
+	public List<String> getCountryNames() {
+		return countryNames;
+	}
+
+	public void setCountryNames(List<String> countryNames) {
+		this.countryNames = countryNames;
+	}
+
+	public List<String> getCityNames() {
+		return cityNames;
+	}
+
+	public void setCityNames(List<String> cityNames) {
+		this.cityNames = cityNames;
+	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AdvanceSearchDto [faculties=").append(faculties).append(", levelIds=").append(levelIds).append(", serviceIds=").append(serviceIds)
-				.append(", countryIds=").append(countryIds).append(", courseKeys=").append(courseKeys).append(", cityIds=").append(cityIds).append(", minCost=")
+				.append(", courseKeys=").append(courseKeys).append(", minCost=")
 				.append(minCost).append(", maxCost=").append(maxCost).append(", minDuration=").append(minDuration).append(", maxDuration=").append(maxDuration)
 				.append(", sortAsscending=").append(sortAsscending).append(", sortBy=").append(sortBy).append(", maxSizePerPage=").append(maxSizePerPage)
 				.append(", pageNumber=").append(pageNumber).append(", currencyCode=").append(currencyCode).append(", userId=").append(userId)

@@ -1327,11 +1327,11 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	private String addCondition(String sqlQuery, final AdvanceSearchDto courseSearchDto) {
-		if (null != courseSearchDto.getCountryIds() && !courseSearchDto.getCountryIds().isEmpty()) {
-			sqlQuery += " and inst.country_name in ('" + courseSearchDto.getCountryIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
+		if (null != courseSearchDto.getCountryNames() && !courseSearchDto.getCountryNames().isEmpty()) {
+			sqlQuery += " and inst.country_name in ('" + courseSearchDto.getCountryNames().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
 		}
-		if (null != courseSearchDto.getCityIds() && !courseSearchDto.getCityIds().isEmpty()) {
-			sqlQuery += " and inst.city_name in ('" + courseSearchDto.getCityIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
+		if (null != courseSearchDto.getCityNames() && !courseSearchDto.getCityNames().isEmpty()) {
+			sqlQuery += " and inst.city_name in ('" + courseSearchDto.getCityNames().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
 		}
 		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
 			sqlQuery += " and crs.level_id in ('" + courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
