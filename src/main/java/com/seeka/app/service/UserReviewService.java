@@ -1,5 +1,6 @@
 package com.seeka.app.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,7 @@ public class UserReviewService implements IUserReviewService {
 	@Override
 	public List<UserReviewResultDto> getUserReviewBasedOnData(String entityId, String entityType, Integer pageNumber,
 			Integer pageSize, String sortByType, String searchKeyword) throws Exception {
+		List<UserReviewResultDto> userReviewList = new ArrayList<>();
 		ResponseEntity<UserReviewResponseDto> userReviewResponseDto = null;
 		Map<String, String> params = new HashMap<String, String>();
 		try {
@@ -73,8 +75,8 @@ public class UserReviewService implements IUserReviewService {
 			if (userReviewResponseDto.getStatusCode().value() != 200) {
 				throw new ReviewInvokeException ("Error response recieved from review service with error code " + userReviewResponseDto.getStatusCode().value());
 			}
-			if(userReviewResponseDto.getBody().getData() != null) {
-				throw new ReviewInvokeException ("No userReview found in DB for entityId " + entityId);
+			if(userReviewResponseDto.getBody().getData().containsKey("userReviewList")) {
+				userReviewList = (List<UserReviewResultDto>) userReviewResponseDto.getBody().getData().get("userReviewList");	
 			}
 		} catch( Exception e) {
 			if (e instanceof ReviewInvokeException) {
@@ -83,6 +85,6 @@ public class UserReviewService implements IUserReviewService {
 				throw new ReviewInvokeException("Error invoking review service");
 			}	
 		}
-		return userReviewResponseDto.getBody().getData();
+		return userReviewList;
 	}
 }
