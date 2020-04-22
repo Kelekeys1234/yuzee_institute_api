@@ -3,7 +3,6 @@ package com.seeka.app.dao;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
@@ -14,7 +13,6 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
-import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseFilterDto;
@@ -62,8 +60,6 @@ public interface ICourseDAO {
 	List<UserCompareCourse> getUserCompareCourse(String userId);
 
 	CourseRequest getCourseById(String valueOf);
-
-	List<YoutubeVideo> getYoutubeDataforCourse(String instituteId, Set<String> keyword, Integer startIndex, Integer pageSize);
 
 	Course getCourseData(String id);
 

@@ -12,7 +12,6 @@ import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseFilterDto;
@@ -56,10 +55,6 @@ public interface ICourseService {
 	Map<String, Object> addUserCompareCourse(UserCourse userCourse);
 
 	Map<String, Object> getUserCompareCourse(String userId);
-
-	List<YoutubeVideo> getYoutubeDataforCourse(String courseId, Integer startIndex, final Integer pageSize);
-
-	List<YoutubeVideo> getYoutubeDataforCourse(String instituteId, String courseName, Integer startIndex, Integer pageSize);
 
 	Course getCourseData(String courseId);
 
