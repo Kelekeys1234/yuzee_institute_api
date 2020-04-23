@@ -303,7 +303,7 @@ public class CourseController {
 			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
 			//youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
-			youtubeData = commonHandler.getYoutubeDataforCourse(instituteObj.getName(), 1, 10);
+			youtubeData = commonHandler.getYoutubeDataforCourse(course.getName(), 1, 10);
 		}
 		List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
 		if (!englishCriteriaList.isEmpty()) {
