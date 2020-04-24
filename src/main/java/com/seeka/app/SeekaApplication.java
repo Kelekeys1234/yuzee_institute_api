@@ -1,14 +1,15 @@
 
-package com.seeka.main;
+package com.seeka.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,8 +18,9 @@ import com.seeka.app.util.FileStorageProperties;
 @SpringBootApplication
 @EnableScheduling
 @EnableConfigurationProperties({ FileStorageProperties.class })
-@ComponentScan(basePackages = "com.seeka.app")
 @EnableEurekaClient
+@EnableJpaRepositories(basePackages = "com.seeka.app")
+@EntityScan(basePackages = "com.seeka.app")
 public class SeekaApplication {
 
 	public static void main(final String[] args) {

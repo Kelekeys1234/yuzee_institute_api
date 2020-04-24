@@ -15,4 +15,10 @@ public interface IInstituteServiceDetailsDAO {
     List<InstituteService> getAll();
 
     List<String> getAllServices(String instituteId);
+    
+    public List<InstituteService> getAllInstituteService(String instituteId);
+    
+    public void saveInstituteServices(List<InstituteService> listOfInstituteService);
+
+    public void deleteServiceByIdAndInstituteId (String serviceId, String instituteId);
 }
