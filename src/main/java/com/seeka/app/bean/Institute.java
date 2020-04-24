@@ -75,6 +75,67 @@ public class Institute implements Serializable {
 	private String countryName;
 	private List<String> instituteServices;
 
+	private String englishPartners;
+	private String imageCount;
+	private String climate;
+	private String youtubeLink;
+	private String internationalPhoneNumber;
+	private String domesticPhoneNumber;
+	
+	@Column(name = "english_partners")
+	public String getEnglishPartners() {
+		return englishPartners;
+	}
+
+	public void setEnglishPartners(String englishPartners) {
+		this.englishPartners = englishPartners;
+	}
+
+	@Column(name = "img_count")
+	public String getImageCount() {
+		return imageCount;
+	}
+
+	public void setImageCount(String imageCount) {
+		this.imageCount = imageCount;
+	}
+
+	@Column(name = "climate_2")
+	public String getClimate() {
+		return climate;
+	}
+
+	public void setClimate(String climate) {
+		this.climate = climate;
+	}
+
+	@Column(name = "youtube_link")
+	public String getYoutubeLink() {
+		return youtubeLink;
+	}
+
+	public void setYoutubeLink(String youtubeLink) {
+		this.youtubeLink = youtubeLink;
+	}
+
+	@Column(name = "international_phone_number")
+	public String getInternationalPhoneNumber() {
+		return internationalPhoneNumber;
+	}
+
+	public void setInternationalPhoneNumber(String internationalPhoneNumber) {
+		this.internationalPhoneNumber = internationalPhoneNumber;
+	}
+
+	@Column(name = "domestic_phone_number")
+	public String getDomesticPhoneNumber() {
+		return domesticPhoneNumber;
+	}
+
+	public void setDomesticPhoneNumber(String domesticPhoneNumber) {
+		this.domesticPhoneNumber = domesticPhoneNumber;
+	}
+
 	@Column(name = "city_name")
 	public String getCityName() {
 		return cityName;

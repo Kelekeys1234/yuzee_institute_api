@@ -358,7 +358,7 @@ public class CourseController {
 		courseRequest.setUserReviewResult(userReviewResultList);
 
 		StudentVisaDto studentVisaDto = commonHandler.getStudentVisaDetailsByCountryName(course.getInstitute().getCountryName());
-		if(!ObjectUtils.isEmpty(studentVisaDto)) {
+		if(!ObjectUtils.isEmpty(studentVisaDto.getId())) {
 			courseRequest.setStudentVisaDto(studentVisaDto);
 		}
 		response.put("status", HttpStatus.OK.value());

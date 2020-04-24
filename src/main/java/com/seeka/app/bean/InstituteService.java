@@ -32,7 +32,7 @@ public class InstituteService implements Serializable {
 	private static final long serialVersionUID = 7769981559211988511L;
 	private String id;
 	private Institute institute;
-	private Service service;
+	private String serviceName;
 	private String description;
 	private Boolean isActive;
 	private Date createdOn;
@@ -45,15 +45,15 @@ public class InstituteService implements Serializable {
 	public InstituteService() {
 	}
 
-	public InstituteService(Institute institute, Service service) {
+	public InstituteService(Institute institute, String serviceName) {
 		this.institute = institute;
-		this.service = service;
+		this.setServiceName(serviceName);
 	}
 
-	public InstituteService(Institute institute, Service service, String description, Boolean isActive, Date createdOn,
+	public InstituteService(Institute institute, String serviceName, String description, Boolean isActive, Date createdOn,
 			Date updatedOn, Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
 		this.institute = institute;
-		this.service = service;
+		this.setServiceName(serviceName);
 		this.description = description;
 		this.isActive = isActive;
 		this.createdOn = createdOn;
@@ -84,16 +84,6 @@ public class InstituteService implements Serializable {
 
 	public void setInstitute(Institute institute) {
 		this.institute = institute;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "service_id", nullable = false)
-	public Service getService() {
-		return this.service;
-	}
-
-	public void setService(Service service) {
-		this.service = service;
 	}
 
 	@Column(name = "description", length = 500)
@@ -183,7 +173,7 @@ public class InstituteService implements Serializable {
 		result = prime * result + ((institute == null) ? 0 : institute.hashCode());
 		result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
 		result = prime * result + ((isDeleted == null) ? 0 : isDeleted.hashCode());
-		result = prime * result + ((service == null) ? 0 : service.hashCode());
+		result = prime * result + ((getServiceName() == null) ? 0 : getServiceName().hashCode());
 		result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
 		result = prime * result + ((updatedOn == null) ? 0 : updatedOn.hashCode());
 		return result;
@@ -238,10 +228,10 @@ public class InstituteService implements Serializable {
 				return false;
 		} else if (!isDeleted.equals(other.isDeleted))
 			return false;
-		if (service == null) {
-			if (other.service != null)
+		if (getServiceName() == null) {
+			if (other.getServiceName() != null)
 				return false;
-		} else if (!service.equals(other.service))
+		} else if (!getServiceName().equals(other.getServiceName()))
 			return false;
 		if (updatedBy == null) {
 			if (other.updatedBy != null)
@@ -260,11 +250,20 @@ public class InstituteService implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("InstituteService [id=").append(id).append(", institute=").append(institute).append(", service=")
-				.append(service).append(", description=").append(description).append(", isActive=").append(isActive)
+				.append(getServiceName()).append(", description=").append(description).append(", isActive=").append(isActive)
 				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
 				.append(", deletedOn=").append(deletedOn).append(", createdBy=").append(createdBy)
 				.append(", updatedBy=").append(updatedBy).append(", isDeleted=").append(isDeleted).append("]");
 		return builder.toString();
+	}
+
+	@Column(name = "service_name")
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
 	}
 
 }
