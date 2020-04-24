@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,6 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Level;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
-import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
@@ -1117,38 +1115,7 @@ public class CourseDAO implements ICourseDAO {
 		return courseRequest;
 	}
 
-	@Override
-	public List<YoutubeVideo> getYoutubeDataforCourse(final String instituteId, final Set<String> keyword, final Integer startIndex,
-			final Integer pageSize) {
-		Session session = sessionFactory.getCurrentSession();
-		StringBuilder sqlQuery = new StringBuilder("select * from youtube_video where type ='Institution'");
-
-		if (!keyword.isEmpty()) {
-			String queryString = keyword.stream().collect(Collectors.joining("%' or '%"));
-			sqlQuery.append(" and ( (video_title like '%").append(queryString).append("%'").append(")");
-			sqlQuery.append(" or ( description like '%").append(queryString).append("%'").append("))");
-
-		}
-		if (startIndex != null && pageSize != null) {
-			sqlQuery.append(" LIMIT ").append(startIndex).append(",").append(pageSize);
-		}
-		Query query = session.createSQLQuery(sqlQuery.toString());
-		List<Object[]> rows = query.list();
-		List<YoutubeVideo> resultList = new ArrayList<>();
-		for (Object[] row : rows) {
-			YoutubeVideo youtubeVideo = new YoutubeVideo();
-			youtubeVideo.setYoutubeVideoId(row[0].toString());
-			youtubeVideo.setId(row[1].toString());
-			youtubeVideo.setVideoTitle(row[3].toString());
-			youtubeVideo.setDescription(row[4].toString());
-			youtubeVideo.setVedioId(row[5].toString());
-			youtubeVideo.setUrl(row[6].toString());
-			resultList.add(youtubeVideo);
-		}
-
-		return resultList;
-	}
-
+	
 	@Override
 	public Course getCourseData(final String id) {
 		Session session = sessionFactory.getCurrentSession();

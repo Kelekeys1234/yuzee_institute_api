@@ -57,6 +57,7 @@ public class CourseRequest {
 	
 	private String countryName;
 	private String cityName;
+	private StudentVisaDto studentVisaDto;
 
 	public List<UserReviewResultDto> getUserReviewResult() {
 		return userReviewResult;
@@ -664,6 +665,14 @@ public class CourseRequest {
 
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
+	}
+
+	public StudentVisaDto getStudentVisaDto() {
+		return studentVisaDto;
+	}
+
+	public void setStudentVisaDto(StudentVisaDto studentVisaDto) {
+		this.studentVisaDto = studentVisaDto;
 	}
 
 }

@@ -73,6 +73,7 @@ public class Institute implements Serializable {
 	private Integer domesticRanking;
 	private String cityName;
 	private String countryName;
+	private List<String> instituteServices;
 
 	@Column(name = "city_name")
 	public String getCityName() {
@@ -871,6 +872,15 @@ public class Institute implements Serializable {
 				.append(courseCount).append(", whatsNo=").append(whatsNo).append(", aboutInfo=").append(aboutInfo).append(", courseStart=").append(courseStart)
 				.append(", lastUpdated=").append(lastUpdated).append(", domesticRanking=").append(domesticRanking).append("]");
 		return builder.toString();
+	}
+
+	@Transient
+	public List<String> getInstituteServices() {
+		return instituteServices;
+	}
+
+	public void setInstituteServices(List<String> instituteServices) {
+		this.instituteServices = instituteServices;
 	}
 
 }

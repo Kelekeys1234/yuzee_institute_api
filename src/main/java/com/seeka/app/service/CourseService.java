@@ -35,7 +35,6 @@ import com.seeka.app.bean.Level;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.UserMyCourse;
-import com.seeka.app.bean.YoutubeVideo;
 import com.seeka.app.dao.CourseGradeEligibilityDAO;
 import com.seeka.app.dao.CurrencyDAO;
 import com.seeka.app.dao.ICourseDAO;
@@ -785,25 +784,6 @@ public class CourseService implements ICourseService {
 			courses.add(courseRequest);
 		}
 		return courses;
-	}
-
-	@Override
-	public List<YoutubeVideo> getYoutubeDataforCourse(final String courseId, final Integer startIndex, final Integer pageSize) {
-		Course courseData = iCourseDAO.getCourseData(courseId);
-		if (courseData == null) {
-			return new ArrayList<>();
-		}
-		String courseName = courseData.getName();
-		String instituteId = courseData.getInstitute().getId();
-		return getYoutubeDataforCourse(instituteId, courseName, startIndex, pageSize);
-	}
-
-	@Override
-	public List<YoutubeVideo> getYoutubeDataforCourse(final String instituteId, final String courseName, final Integer startIndex, final Integer pageSize) {
-		List<String> skipWords = Arrays.asList("Master`s", "Master", "International", "Bachelor", "of", "Bachelor's", "degree", "&", "and");
-		List<String> courseKeyword = Arrays.asList(courseName.split("\\s|,|\\.|-|:|\\(|\\)"));
-		Set<String> keyword = courseKeyword.stream().filter(i -> !i.isEmpty() && !skipWords.contains(i)).collect(Collectors.toSet());
-		return iCourseDAO.getYoutubeDataforCourse(instituteId, keyword, startIndex, pageSize);
 	}
 
 	@Override

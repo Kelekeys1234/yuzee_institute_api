@@ -10,9 +10,11 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +34,7 @@ import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteLevel;
-import com.seeka.app.bean.YoutubeVideo;
+import com.seeka.app.controller.handler.CommonHandler;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterDto;
@@ -45,9 +47,11 @@ import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
+import com.seeka.app.dto.StudentVisaDto;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.dto.UserReviewResultDto;
+import com.seeka.app.dto.YouTubeVideoDto;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.NotFoundException;
@@ -61,6 +65,7 @@ import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IEnrollmentService;
 import com.seeka.app.service.IInstituteGoogleReviewService;
 import com.seeka.app.service.IInstituteService;
+import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IStorageService;
 import com.seeka.app.service.IUserReviewService;
 import com.seeka.app.service.IUsersService;
@@ -108,9 +113,6 @@ public class CourseController {
 	@Autowired
 	private IUsersService iUsersService;
 
-//	@Autowired
-//	private ICountryService iCountryService;
-
 	@Autowired
 	private IEnrollmentService iEnrolmentService;
 
@@ -122,6 +124,12 @@ public class CourseController {
 
 	@Autowired
 	private IInstituteGoogleReviewService iInstituteGoogleReviewService;
+	
+	@Autowired
+	private IInstituteServiceDetailsService iInstituteServiceDetailsService;
+	
+	@Autowired
+	private CommonHandler commonHandler;
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException {
@@ -285,12 +293,17 @@ public class CourseController {
 		courseRequest.setLanguage(courseService.getCourseLanguageBasedOnCourseId(id).stream()
 				.map(CourseLanguage::getName).collect(Collectors.toList()));
 		Institute instituteObj = course.getInstitute();
-		List<YoutubeVideo> youtubeData = new ArrayList<>();
+		List<YouTubeVideoDto> youtubeData = new ArrayList<>();
 		if (instituteObj != null) {
+			List<String> instituteServices = iInstituteServiceDetailsService.getAllServices(instituteObj.getId());
+			if(!CollectionUtils.isEmpty(instituteServices)) {
+				instituteObj.setInstituteServices(instituteServices);
+			}
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
-			youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
+			//youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
+			youtubeData = commonHandler.getYoutubeDataforCourse(course.getName(), 1, 10);
 		}
 		List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
 		if (!englishCriteriaList.isEmpty()) {
@@ -344,6 +357,10 @@ public class CourseController {
 				null, null);
 		courseRequest.setUserReviewResult(userReviewResultList);
 
+		StudentVisaDto studentVisaDto = commonHandler.getStudentVisaDetailsByCountryName(course.getInstitute().getCountryName());
+		if(!ObjectUtils.isEmpty(studentVisaDto)) {
+			courseRequest.setStudentVisaDto(studentVisaDto);
+		}
 		response.put("status", HttpStatus.OK.value());
 		response.put("message", "Success.!");
 		response.put("courseObj", courseRequest);
@@ -545,25 +562,6 @@ public class CourseController {
 	@RequestMapping(value = "/compare/user/{userId}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getUserCompareCourse(@PathVariable final String userId) throws Exception {
 		return ResponseEntity.accepted().body(courseService.getUserCompareCourse(userId));
-	}
-
-	@RequestMapping(value = "/youtube/{courseId}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getYoutubeDataforCourse(@PathVariable final String courseId,
-			@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<YoutubeVideo> youtubeData = courseService.getYoutubeDataforCourse(courseId, startIndex, pageSize);
-		int totalCount = courseService.getYoutubeDataforCourse(courseId, null, null).size();
-		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-		Map<String, Object> responseMap = new HashMap<>(10);
-		responseMap.put("status", HttpStatus.OK);
-		responseMap.put("message", "Get Youtube  List successfully");
-		responseMap.put("data", youtubeData);
-		responseMap.put("totalCount", totalCount);
-		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
-		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
-		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
