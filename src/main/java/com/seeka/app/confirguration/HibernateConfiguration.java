@@ -19,16 +19,16 @@ public class HibernateConfiguration {
 	@Value("${db.driver}")
 	private String DB_DRIVER;
 	  
-	@Value("${db.password}")
+	@Value("${spring.datasource.password}")
 	private String DB_PASSWORD;
 	  
-	@Value("${db.url}")
+	@Value("${spring.datasource.url}")
 	private String DB_URL;
 	  
-	@Value("${db.username}")
+	@Value("${spring.datasource.username}")
 	private String DB_USERNAME;
 
-	@Value("${hibernate.dialect}")
+	@Value("${spring.jpa.properties.hibernate.dialect}")
 	private String HIBERNATE_DIALECT;
 	  
 	@Value("${hibernate.show_sql}")
@@ -40,7 +40,7 @@ public class HibernateConfiguration {
 	@Value("${entitymanager.packagesToScan}")
 	private String ENTITYMANAGER_PACKAGES_TO_SCAN;
 
-  @Bean
+  @Bean(name = "entityManagerFactory")
   public LocalSessionFactoryBean sessionFactory() {
 	  LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
       sessionFactory.setDataSource(dataSource());
@@ -48,11 +48,9 @@ public class HibernateConfiguration {
 	  Properties hibernateProperties = new Properties();
 	  hibernateProperties.put("hibernate.dialect", HIBERNATE_DIALECT);
 	  hibernateProperties.put("hibernate.show_sql", HIBERNATE_SHOW_SQL);
-	 // hibernateProperties.put("hibernate.hbm2ddl.auto", HIBERNATE_HBM2DDL_AUTO);
 	  sessionFactory.setHibernateProperties(hibernateProperties);
       return sessionFactory;
    }
-	
  
   @Bean
   public DataSource dataSource() {
@@ -63,7 +61,6 @@ public class HibernateConfiguration {
 	  dataSource.setPassword(DB_PASSWORD);
       return dataSource;
   }
-  
   
   @Bean
   public HibernateTransactionManager transactionManager() {

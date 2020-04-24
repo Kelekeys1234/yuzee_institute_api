@@ -5,12 +5,16 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.InstituteService;
+import com.seeka.app.repository.InstituteServiceRepository;
 
-@Repository
-public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO{
+@Component
+public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO {
+	
+	@Autowired
+	private InstituteServiceRepository instituteServiceRepository;
 	
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -48,6 +52,21 @@ public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO{
 				"select distinct s.name from service s inner join institute_service i on s.id =i.service_id where i.institute_id = '"+instituteId+"'");
 		List<String> rows = query.list();
 		return rows;
+	}
+
+	@Override
+	public List<InstituteService> getAllInstituteService(String instituteId) {
+		return instituteServiceRepository.findByInstituteId(instituteId);
+	}
+
+	@Override
+	public void saveInstituteServices(List<InstituteService> listOfInstituteService) {
+		instituteServiceRepository.saveAll(listOfInstituteService);
+	}
+
+	@Override
+	public void deleteServiceByIdAndInstituteId(String id, String instituteId) {
+		instituteServiceRepository.deleteByIdAndInstituteId(id, instituteId);
 	}
 	
 }
