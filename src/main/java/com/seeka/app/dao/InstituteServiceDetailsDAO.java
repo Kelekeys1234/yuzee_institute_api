@@ -49,7 +49,7 @@ public class InstituteServiceDetailsDAO implements IInstituteServiceDetailsDAO {
 	public List<String> getAllServices(String instituteId) {
 		Session session = sessionFactory.getCurrentSession();	
 		Query query = session.createSQLQuery(
-				"select distinct s.name from service s inner join institute_service i on s.id =i.service_id where i.institute_id = '"+instituteId+"'");
+				"select distinct i.service_name from institute_service i where i.institute_id = '"+instituteId+"'");
 		List<String> rows = query.list();
 		return rows;
 	}
