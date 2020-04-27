@@ -518,7 +518,7 @@ public class InstituteService implements IInstituteService {
 			com.seeka.app.bean.Service service = serviceDetailsDAO.getServiceById(id);
 			com.seeka.app.bean.InstituteService instituteServiceDetails = new com.seeka.app.bean.InstituteService();
 			instituteServiceDetails.setInstitute(institute);
-			instituteServiceDetails.setService(service);
+			instituteServiceDetails.setServiceName(service.getName());
 			instituteServiceDetails.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 			instituteServiceDetails.setIsActive(true);
 			instituteServiceDetails.setCreatedBy("AUTO");
