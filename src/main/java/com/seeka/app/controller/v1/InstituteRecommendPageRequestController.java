@@ -49,7 +49,7 @@ public class InstituteRecommendPageRequestController implements InstituteRecomme
 	}
 
 	@Override
-	public ResponseEntity<?> updateInstitueRecommendationStatus(String instituteRecommedRequestId, String status)
+	public ResponseEntity<?> updateInstitueRecommendationStatus(String instituteRecommendationRequestId, String status)
 			throws Exception {
 		boolean isStatusValid = EnumUtils.isValidEnum(RecommendRequestStatus.class, status);
 		if (!isStatusValid) {
@@ -62,7 +62,7 @@ public class InstituteRecommendPageRequestController implements InstituteRecomme
 			log.error("Can only change status from Pending to Processed");
 			throw new ValidationException("Can only change status from Pending to Processed");
 		}
-		instituteRecommendPageRequestProcessor.updateInstituteRecommedRequestStatus(instituteRecommedRequestId, status);
+		instituteRecommendPageRequestProcessor.updateInstituteRecommedRequestStatus(instituteRecommendationRequestId, status);
 		return new GenericResponseHandlers.Builder().setMessage("recommendation institute request updated successfully")
 				.setStatus(HttpStatus.OK).create();
 	}

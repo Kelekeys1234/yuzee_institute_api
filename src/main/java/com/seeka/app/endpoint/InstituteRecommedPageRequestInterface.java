@@ -29,6 +29,6 @@ public interface InstituteRecommedPageRequestInterface {
 
 	
 	@PutMapping("/recommend/institute/update-status/{instituteRecommendationRequestId}") 
-	public ResponseEntity<?> updateInstitueRecommendationStatus(@PathVariable final String institutePageRequestId, @RequestParam(name = "status") String status) throws Exception;
+	public ResponseEntity<?> updateInstitueRecommendationStatus(@PathVariable final String instituteRecommendationRequestId, @RequestParam(name = "status") String status) throws Exception;
 	 
 }

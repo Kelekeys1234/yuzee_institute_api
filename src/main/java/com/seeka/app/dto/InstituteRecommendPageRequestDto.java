@@ -1,6 +1,7 @@
 package com.seeka.app.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,11 +21,11 @@ public class InstituteRecommendPageRequestDto {
 	@JsonProperty("institute_name")
 	private String instituteName;
 	
-	@NotBlank(message = "is_working should not be blank")
+	@NotNull(message = "is_working should not be blank")
 	@JsonProperty("is_working")
 	private Boolean isWorking;
 	
-	@NotBlank(message = "knowing_someone_working should not be blank")
+	@NotNull(message = "knowing_someone_working should not be blank")
 	@JsonProperty("knowing_someone_working")
 	private Boolean knowingSomeoneWorking;
 	

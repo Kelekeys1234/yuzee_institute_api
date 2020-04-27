@@ -13,5 +13,5 @@ public interface InstituteRecommendationRequestRepository extends JpaRepository<
 
 	public List<InstituteRecommendRequest> findByInstituteName (String instituteName);
 	
-	public List<InstituteRecommendRequest> findByStatus (RecommendRequestStatus recommendRequestStatus);
+	public List<InstituteRecommendRequest> findByRecommendRequestStatus (RecommendRequestStatus recommendRequestStatus);
 }

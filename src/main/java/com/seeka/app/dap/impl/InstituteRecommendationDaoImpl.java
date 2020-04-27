@@ -31,7 +31,7 @@ public class InstituteRecommendationDaoImpl implements InstituteRecommendationRe
 	@Override
 	public List<InstituteRecommendRequest> getInstituteRecommendationRequestByStatus(
 			RecommendRequestStatus recommendRequestStatus) {	
-		return instituteRecommendationRequestRepository.findByStatus(recommendRequestStatus);
+		return instituteRecommendationRequestRepository.findByRecommendRequestStatus(recommendRequestStatus);
 		
 	}
 
