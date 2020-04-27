@@ -4,13 +4,20 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class InstitutePageRequestDto {
 
 	@JsonProperty("institute_page_request_id")
 	private String institutePageRequestId;
+	
+	@JsonProperty("user_id")
+	private String userId;
 	
 	@NotBlank(message = "first_name should not be blank")
 	@JsonProperty("first_name")
