@@ -29,7 +29,7 @@ public class CommonHandler {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	private static final String GET_YOUTUBE_VIDEO_BY_INSTITUTE_NAME = "/youtube/video/pageNumber/{pageNumber}/pageSize/{pageSize}?instituteName={name}";
+	private static final String GET_YOUTUBE_VIDEO_BY_INSTITUTE_NAME = "/youtube/video/pageNumber/{pageNumber}/pageSize/{pageSize}?name={name}";
 	private static final String GET_STUDENT_VISA_BY_COUNTRY_NAME = "/student/visa?countryName={countryName}";
 	
 	public List<YouTubeVideoDto> getYoutubeDataforCourse(String name, Integer pageNumber, Integer pageSize) throws Exception {
