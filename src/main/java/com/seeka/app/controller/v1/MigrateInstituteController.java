@@ -545,7 +545,7 @@ public class MigrateInstituteController {
 			Service details = serviceMap.get(serviceName);
 			if (null != details) {
 				InstituteService serviceDetails = new InstituteService();
-				serviceDetails.setService(details);
+				serviceDetails.setServiceName(details.getName());
 				serviceDetails.setIsActive(Boolean.valueOf(String.valueOf(Double.valueOf(field).intValue())));
 				return serviceDetails;
 			}

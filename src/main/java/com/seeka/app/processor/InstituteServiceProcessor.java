@@ -14,7 +14,6 @@ import org.springframework.util.ObjectUtils;
 import com.seeka.app.bean.InstituteService;
 import com.seeka.app.dao.IInstituteServiceDetailsDAO;
 import com.seeka.app.dto.InstituteServiceDto;
-import com.seeka.app.util.DTOUtils;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -78,7 +77,7 @@ public class InstituteServiceProcessor {
 		List<InstituteService> listOfExsistingInstituteServices  = instituteServiceDao.getAllInstituteService(instituteId);
 		if (!CollectionUtils.isEmpty(listOfExsistingInstituteServices)) {
 			log.info("Service from db not empty for institute id "+instituteId);
-			instituteServiceDto = DTOUtils.createInstituteServiceResponseDto(listOfExsistingInstituteServices);
+			//instituteServiceDto = DTOUtils.createInstituteServiceResponseDto(listOfExsistingInstituteServices);
 		}
 		return instituteServiceDto;	
 	}
@@ -90,7 +89,7 @@ public class InstituteServiceProcessor {
 		List<InstituteService> listOfExsistingInstituteServices  = instituteServiceDao.getAllInstituteService(instituteId);
 		if (!CollectionUtils.isEmpty(listOfExsistingInstituteServices)) {
 			log.info("Service from db not empty for institute id "+instituteId);
-			instituteServiceDto = DTOUtils.createInstituteServiceResponseDto(listOfExsistingInstituteServices);
+			//instituteServiceDto = DTOUtils.createInstituteServiceResponseDto(listOfExsistingInstituteServices);
 		}
 		return instituteServiceDto;	
 	}

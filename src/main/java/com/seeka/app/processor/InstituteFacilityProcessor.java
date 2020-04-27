@@ -14,7 +14,6 @@ import org.springframework.util.ObjectUtils;
 import com.seeka.app.bean.InstituteFacility;
 import com.seeka.app.dao.InstituteFacilityDao;
 import com.seeka.app.dto.InstituteFacilityDto;
-import com.seeka.app.util.DTOUtils;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -81,7 +80,7 @@ public class InstituteFacilityProcessor {
 		List<InstituteFacility> listOfExsistingInstituteFacility  = instituteFacilityDao.getAllInstituteFacility(instituteId);
 		if (!CollectionUtils.isEmpty(listOfExsistingInstituteFacility)) {
 			log.info("Facility from db not empty for institute id "+instituteId);
-			instituteFacilityDto = DTOUtils.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
+			//instituteFacilityDto = DTOUtils.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
 		}
 		return instituteFacilityDto;	
 	}
@@ -93,7 +92,7 @@ public class InstituteFacilityProcessor {
 		List<InstituteFacility> listOfExsistingInstituteFacility  = instituteFacilityDao.getAllInstituteFacility(instituteId);
 		if (!CollectionUtils.isEmpty(listOfExsistingInstituteFacility)) {
 			log.info("Facility from db not empty for institute id "+instituteId);
-			instituteFacilityDto = DTOUtils.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
+			//instituteFacilityDto = DTOUtils.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
 		}
 		return instituteFacilityDto;	
 	}
