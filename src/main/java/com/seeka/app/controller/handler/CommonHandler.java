@@ -33,7 +33,7 @@ public class CommonHandler {
 					+ "	&instituteName={instituteName}&countryName={countryName}&cityName={cityName}";
 	private static final String GET_STUDENT_VISA_BY_COUNTRY_NAME = "/student/visa?countryName={countryName}";
 	
-	public List<YouTubeVideoDto> getYoutubeDataforCourse(String instituteName, String countryName, String cityName,
+	public List<YouTubeVideoDto> getYoutubeDataBasedOnCriteria(String instituteName, String countryName, String cityName,
 				String courseName, Integer pageNumber, Integer pageSize) throws Exception {
 		ResponseEntity<CommonDtoWrapper> responseEntity = null;
 		Map<String, String> params = new HashMap<String, String>();
