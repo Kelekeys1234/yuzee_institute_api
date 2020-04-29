@@ -303,7 +303,8 @@ public class CourseController {
 			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
 			//youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
-			youtubeData = commonHandler.getYoutubeDataforCourse(course.getName(), 1, 10);
+			youtubeData = commonHandler.getYoutubeDataforCourse(instituteObj.getName(), instituteObj.getCountryName(),
+					instituteObj.getCityName(), course.getName(), 1, 10);
 		}
 		List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
 		if (!englishCriteriaList.isEmpty()) {
@@ -359,7 +360,7 @@ public class CourseController {
 
 		StudentVisaDto studentVisaDto = commonHandler.getStudentVisaDetailsByCountryName(course.getInstitute().getCountryName());
 		if(!ObjectUtils.isEmpty(studentVisaDto.getId())) {
-			courseRequest.setStudentVisaDto(studentVisaDto);
+			courseRequest.setStudentVisa(studentVisaDto);
 		}
 		response.put("status", HttpStatus.OK.value());
 		response.put("message", "Success.!");

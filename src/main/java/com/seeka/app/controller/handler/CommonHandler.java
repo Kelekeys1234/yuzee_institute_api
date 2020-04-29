@@ -29,14 +29,19 @@ public class CommonHandler {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	private static final String GET_YOUTUBE_VIDEO_BY_INSTITUTE_NAME = "/youtube/video/pageNumber/{pageNumber}/pageSize/{pageSize}?name={name}";
+	private static final String GET_YOUTUBE_VIDEO_BY_INSTITUTE_NAME = "/youtube/video/pageNumber/{pageNumber}/pageSize/{pageSize}?courseName={courseName}"
+					+ "	&instituteName={instituteName}&countryName={countryName}&cityName={cityName}";
 	private static final String GET_STUDENT_VISA_BY_COUNTRY_NAME = "/student/visa?countryName={countryName}";
 	
-	public List<YouTubeVideoDto> getYoutubeDataforCourse(String name, Integer pageNumber, Integer pageSize) throws Exception {
+	public List<YouTubeVideoDto> getYoutubeDataforCourse(String instituteName, String countryName, String cityName,
+				String courseName, Integer pageNumber, Integer pageSize) throws Exception {
 		ResponseEntity<CommonDtoWrapper> responseEntity = null;
 		Map<String, String> params = new HashMap<String, String>();
 		try {
-			params.put("name", name);
+			params.put("courseName", courseName);
+			params.put("instituteName", instituteName);
+			params.put("countryName", countryName);
+			params.put("cityName", cityName);
 			params.put("pageNumber", pageNumber.toString());
 			params.put("pageSize", pageSize.toString());
 			
@@ -49,7 +54,7 @@ public class CommonHandler {
 			}
 			
 			if(ObjectUtils.isEmpty(responseEntity.getBody())) {
-				throw new NotFoundException("No youTube videos found for given name " + name);
+				throw new NotFoundException("No youTube videos found for given name " + courseName);
 			}
 		} catch(Exception e) {
 			LOGGER.error("Error invoking common service {}", e);

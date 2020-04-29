@@ -57,7 +57,7 @@ public class CourseRequest {
 	
 	private String countryName;
 	private String cityName;
-	private StudentVisaDto studentVisaDto;
+	private StudentVisaDto studentVisa;
 
 	public List<UserReviewResultDto> getUserReviewResult() {
 		return userReviewResult;
@@ -667,12 +667,12 @@ public class CourseRequest {
 		this.cityName = cityName;
 	}
 
-	public StudentVisaDto getStudentVisaDto() {
-		return studentVisaDto;
+	public StudentVisaDto getStudentVisa() {
+		return studentVisa;
 	}
 
-	public void setStudentVisaDto(StudentVisaDto studentVisaDto) {
-		this.studentVisaDto = studentVisaDto;
+	public void setStudentVisa(StudentVisaDto studentVisa) {
+		this.studentVisa = studentVisa;
 	}
 
 }
