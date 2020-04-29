@@ -33,6 +33,7 @@ import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.InstituteTypeDto;
 import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.dto.PaginationUtilDto;
@@ -67,13 +68,20 @@ public class InstituteController {
 	private IStorageService iStorageService;
 
 	@RequestMapping(value = "/type", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> saveInstituteType(@Valid @RequestBody final InstituteType instituteTypeObj) throws Exception {
+	public ResponseEntity<?> saveInstituteType(@Valid @RequestBody final InstituteTypeDto instituteTypeDto) throws Exception {
 		Map<String, Object> response = new HashMap<>(3);
-		instituteTypeService.save(instituteTypeObj);
+		instituteTypeService.save(instituteTypeDto);
 		response.put("message", "Institute type saved successfully");
 		response.put("status", HttpStatus.OK.value());
-		response.put("data", instituteTypeObj);
+		response.put("data", instituteTypeDto);
 		return ResponseEntity.accepted().body(response);
+	}
+	
+	@RequestMapping(value = "/type", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam(name = "country_name") String countryName) throws Exception {
+		List<InstituteTypeDto> listOfInstituteTypes = instituteTypeService.getInstituteTypeByCountryName(countryName);
+		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage("Institute types fetched successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/service/{instituteTypeId}", method = RequestMethod.GET, produces = "application/json")

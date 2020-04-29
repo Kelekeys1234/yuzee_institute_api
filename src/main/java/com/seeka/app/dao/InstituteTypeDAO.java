@@ -8,16 +8,20 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Intake;
+import com.seeka.app.repository.InstituteTypeRepository;
 
-@Repository
+@Component
 public class InstituteTypeDAO implements IInstituteTypeDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
+    
+    @Autowired
+    private InstituteTypeRepository instituteTypeRepository;
 
     @Override
     public void save(InstituteType instituteType) {
@@ -60,5 +64,10 @@ public class InstituteTypeDAO implements IInstituteTypeDAO {
         }
         return hobbies;
     }
+
+	@Override
+	public List<InstituteType> getByCountryName(String countryName) {
+		return instituteTypeRepository.findByCountryName(countryName);
+	}
 
 }

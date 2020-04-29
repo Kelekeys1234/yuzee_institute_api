@@ -16,4 +16,6 @@ public interface IInstituteTypeDAO {
     List<Intake> getAllIntake();
 
     List<InstituteType> getAll();
+    
+    List<InstituteType> getByCountryName(String countryName);
 }
