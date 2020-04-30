@@ -9,8 +9,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +27,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Institute;
@@ -39,16 +41,20 @@ import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.dto.NearestInstituteDTO;
+import com.seeka.app.repository.InstituteRepository;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 
-@Repository
+@Component
 @SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
 public class InstituteDAO implements IInstituteDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private InstituteRepository instituteRepository;
 
 	@Override
 	public void save(final Institute obj) {
@@ -838,5 +844,10 @@ public class InstituteDAO implements IInstituteDAO {
 		Query query = session.createSQLQuery(sqlQuery.toString());
 		List<Object[]> rows = query.list();
 		return rows.size();
+	}
+
+	@Override
+	public Optional<Institute> getInstituteByInstituteId(String instituteId) {
+		return instituteRepository.findById(instituteId);
 	}
 }
