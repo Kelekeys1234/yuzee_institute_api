@@ -8,9 +8,6 @@ import lombok.Data;
 
 @Data
 public class InstituteAdditionalInfoDto {
-
-	@JsonProperty("institute_additional_info_id")
-	private String instituteAdditionalInfoId;
 	
 	@NotNull(message = "student_number is required")
 	@JsonProperty("student_number")
