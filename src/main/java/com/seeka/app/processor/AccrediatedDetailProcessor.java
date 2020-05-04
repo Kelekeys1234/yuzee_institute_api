@@ -89,6 +89,8 @@ public class AccrediatedDetailProcessor {
 	public void deleteAccrediationDetailByEntityId(String entityId) {
 		log.info("Delete accrediation for entityId " + entityId);
 		accrediatedDetailDao.deleteAccrediationDetailByEntityId(entityId);
+		log.info("Delete accrediation from storage service for entityId " + entityId);
+		iStorageService.deleteStorageBasedOnEntityId(entityId);
 	}
 	
 	public AccrediatedDetailDto updateAccrediatedDetails(String id, AccrediatedDetailDto accrediatedDetailDto) throws NotFoundException {
@@ -112,4 +114,61 @@ public class AccrediatedDetailProcessor {
 		}
 		return detailDto;
 	}
+	
+	public AccrediatedDetailDto getAccrediatedById(String id) throws NotFoundException {
+		log.info("Get accrediation details for id " + id);
+		AccrediatedDetailDto accrediatedDetailDto = new AccrediatedDetailDto();
+		log.info("fetching accrediated details by accrediated id " + id);
+		Optional<AccrediatedDetail> optAccrediatedDetail = accrediatedDetailDao.getAccrediatedDetailById(id);
+		if(optAccrediatedDetail.isPresent()) {
+			log.info("if accrediated details are present then copying values into DTO");
+			BeanUtils.copyProperties(optAccrediatedDetail.get(), accrediatedDetailDto);
+			try {
+				log.info("going to fetch storage details fro accrediatedId "+optAccrediatedDetail.get().getId());
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(optAccrediatedDetail.get().getId(), "ACCREDIATED", null, "en");
+				accrediatedDetailDto.setStorage(storageDTOList);
+			} catch (ValidationException e) {
+				log.error("Error invoking storage service for accrediatedId "+optAccrediatedDetail.get().getId());
+			}
+		} else {
+			log.error("No accrediation deails found for id "+id);
+			throw new NotFoundException("No accrediation deails found for id "+id);
+		}
+		return accrediatedDetailDto;
+	}
+	
+	public void deleteAccrediationDetailById(String id) {
+		log.info("Delete accrediation for id " + id);
+		accrediatedDetailDao.deleteAccrediationDetailById(id);
+		log.info("Delete accrediation from storage service for id " + id);
+		iStorageService.deleteStorageBasedOnEntityId(id);
+	}
+	
+	public List<AccrediatedDetailDto> getAllAccrediationDetails() {
+		log.info("getting all accrediation details");
+		List<AccrediatedDetailDto> accrediatedDetailDtos = new ArrayList<>();
+		log.info("going to fetch accrediated details from DB");
+		List<AccrediatedDetail> accrediatedDetails = accrediatedDetailDao.getAllAccrediationDetails();
+		if(!CollectionUtils.isEmpty(accrediatedDetails)) {
+			log.info("accrediated details are present and start iterating");
+			accrediatedDetails.stream().forEach(accrediatedDetail -> {
+				AccrediatedDetailDto accrediatedDetailDto = new AccrediatedDetailDto();
+				accrediatedDetailDto.setId(accrediatedDetail.getId());
+				accrediatedDetailDto.setAccrediatedName(accrediatedDetail.getAccrediatedName());
+				accrediatedDetailDto.setAccrediatedWebsite(accrediatedDetail.getAccrediatedWebsite());
+				accrediatedDetailDto.setEntityId(accrediatedDetail.getEntityId());
+				accrediatedDetailDto.setEntityType(accrediatedDetail.getEntityType());
+				try {
+					log.info("going to call storage service for id "+accrediatedDetail.getId());
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(accrediatedDetail.getId(), "ACCREDIATED", null, "en");
+					accrediatedDetailDto.setStorage(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Error invoking storage service for accrediatedId "+accrediatedDetail.getId());
+				}
+				accrediatedDetailDtos.add(accrediatedDetailDto);
+			});
+		}
+		return accrediatedDetailDtos;
+	}
 }
+ 

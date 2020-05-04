@@ -17,4 +17,8 @@ public interface AccrediatedDetailDao {
 	
 	public Optional<AccrediatedDetail> getAccrediatedDetailById (String id);
 	
+	public void deleteAccrediationDetailById (String id);
+	
+	public List<AccrediatedDetail> getAllAccrediationDetails();
+	
 }

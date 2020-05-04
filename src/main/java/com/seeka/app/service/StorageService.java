@@ -89,4 +89,11 @@ public class StorageService implements IStorageService {
 		}
 		return resultList;
 	}
+	
+	@Override
+	public void deleteStorageBasedOnEntityId(final String entityId) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL + "/deleteStorage");
+		builder.queryParam("entityId", entityId);
+		restTemplate.delete(builder.build().toUri());
+	}
 }

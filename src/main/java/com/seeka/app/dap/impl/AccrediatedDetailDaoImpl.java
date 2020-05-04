@@ -43,4 +43,15 @@ public class AccrediatedDetailDaoImpl implements AccrediatedDetailDao {
 	public Optional<AccrediatedDetail> getAccrediatedDetailById(String id) {
 		return accrediatedDetailRepository.findById(id);
 	}
+
+	@Override
+	@Transactional
+	public void deleteAccrediationDetailById(String id) {
+		accrediatedDetailRepository.deleteById(id);
+	}
+
+	@Override
+	public List<AccrediatedDetail> getAllAccrediationDetails() {
+		return accrediatedDetailRepository.findAll();
+	}
 }

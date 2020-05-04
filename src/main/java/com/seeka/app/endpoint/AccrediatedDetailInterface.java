@@ -17,14 +17,23 @@ import com.seeka.app.exception.NotFoundException;
 public interface AccrediatedDetailInterface {
 
 	@PostMapping("/accrediation")
-	public ResponseEntity<?> addAccrediationDetail(@RequestBody AccrediatedDetailDto accrediatedDetailDto) ;
+	public ResponseEntity<?> addAccrediationDetail(@RequestBody AccrediatedDetailDto accrediatedDetailDto);
 	
-	@GetMapping("/accrediation/{entityId}")
-	public ResponseEntity<?> getAccrediationDetail(@PathVariable("entityId") String entityId) throws NotFoundException ;
+	@GetMapping("/accrediation/entity/{id}")
+	public ResponseEntity<?> getAccrediationDetailByEntityId(@PathVariable("entityId") String entityId) throws NotFoundException;
 	
-	@DeleteMapping("/accrediation/{entityId}")
-	public ResponseEntity<?> deleteAccrediationDetail(@PathVariable("entityId") String entityId) ;
+	@DeleteMapping("/accrediation/entity/{id}")
+	public ResponseEntity<?> deleteAccrediationDetailByEntityId(@PathVariable("entityId") String entityId);
 	
 	@PutMapping("/accrediation/{id}")
 	public ResponseEntity<?> updateAccrediationDetail(@PathVariable("id") String id, @RequestBody AccrediatedDetailDto accrediatedDetailDto) throws NotFoundException;
+	
+	@GetMapping("/accrediation/{id}")
+	public ResponseEntity<?> getAccrediationDetailById(@PathVariable("id") String id) throws NotFoundException;
+	
+	@DeleteMapping("accrediation/{id}")
+	public ResponseEntity<?> deleteAccrediationDetailById(@PathVariable("id") String id);
+	
+	@GetMapping("/accrediation")
+	public ResponseEntity<?> getAllAccrediationDetails();
 }

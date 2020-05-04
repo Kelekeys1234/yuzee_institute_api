@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -16,8 +15,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "accredited_detail",  uniqueConstraints = @UniqueConstraint(columnNames = { "accrediated_name", "accrediated_website" } , name = "UK_NAME_WEBSITE"),
-indexes = { @Index (name = "IDX_ENTITY_ID", columnList="entity_id", unique = false)})
+@Table(name = "accredited_detail",indexes = { @Index (name = "IDX_ENTITY_ID", columnList="entity_id", unique = false)})
 public class AccrediatedDetail {
 
 	@Id
