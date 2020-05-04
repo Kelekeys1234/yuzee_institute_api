@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import com.seeka.app.bean.AccreditedInstituteDetail;
+import com.seeka.app.bean.AccrediatedDetail;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.Institute;
@@ -34,8 +34,7 @@ import com.seeka.app.bean.InstituteVideos;
 import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.bean.Level;
 import com.seeka.app.constant.Type;
-import com.seeka.app.dao.IAccreditedInstituteDao;
-import com.seeka.app.dao.IAccreditedInstituteDetailDao;
+import com.seeka.app.dao.AccrediatedDetailDao;
 import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dao.IInstituteDomesticRankingHistoryDAO;
@@ -43,6 +42,7 @@ import com.seeka.app.dao.IInstituteTypeDAO;
 import com.seeka.app.dao.IInstituteVideoDao;
 import com.seeka.app.dao.IInstituteWorldRankingHistoryDAO;
 import com.seeka.app.dao.ServiceDetailsDAO;
+import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ElasticSearchDTO;
 import com.seeka.app.dto.InstituteDetailsGetRequest;
@@ -94,12 +94,6 @@ public class InstituteService implements IInstituteService {
 	private ServiceDetailsDAO serviceDetailsDAO;
 
 	@Autowired
-	private IAccreditedInstituteDetailDao accreditedInstituteDetailDao;
-	
-	@Autowired
-	private IAccreditedInstituteDao accreditedInstituteDao;
-
-	@Autowired
 	private IStorageService iStorageService;
 
 	@Value("${s3.url}")
@@ -125,6 +119,9 @@ public class InstituteService implements IInstituteService {
 
 	@Autowired
 	private IInstituteLevelService iInstituteLevelService;
+	
+	@Autowired
+	private AccrediatedDetailDao accrediatedDetailDao;
 
 	@Override
 	public void save(final Institute institute) {
@@ -482,7 +479,7 @@ public class InstituteService implements IInstituteService {
 			saveInstituteService(institute, instituteRequest.getOfferService());
 		}
 		if (instituteRequest.getAccreditation() != null && !instituteRequest.getAccreditation().isEmpty()) {
-			saveAccreditedInstituteDetails(institute, instituteRequest.getAccreditation());
+			saveAccreditedInstituteDetails(institute, instituteRequest.getAccreditationDetails());
 		}
 		if (instituteRequest.getIntakes() != null && !instituteRequest.getIntakes().isEmpty()) {
 			saveIntakesInstituteDetails(institute, instituteRequest.getIntakes());
@@ -501,14 +498,17 @@ public class InstituteService implements IInstituteService {
 		}
 	}
 
-	private void saveAccreditedInstituteDetails(final Institute institute, final List<String> accreditation) {
-		accreditedInstituteDetailDao.deleteAccreditedInstitueDetailByEntityId(institute.getId());
-		for (String accreditedInstituteDetail2 : accreditation) {
-			AccreditedInstituteDetail accreditedInstituteDetail = new AccreditedInstituteDetail();
+	private void saveAccreditedInstituteDetails(final Institute institute, final List<AccrediatedDetailDto> accreditation) {
+		accrediatedDetailDao.deleteAccrediationDetailByEntityId(institute.getId());
+		for (AccrediatedDetailDto accreditedInstituteDetail2 : accreditation) {
+			AccrediatedDetail accreditedInstituteDetail = new AccrediatedDetail();
 			accreditedInstituteDetail.setEntityId(institute.getId());
 			accreditedInstituteDetail.setEntityType("INSTITUTE");
-			accreditedInstituteDetail.setAccreditedInstituteId(accreditedInstituteDetail2);
-			accreditedInstituteDetailDao.addAccreditedInstituteDetail(accreditedInstituteDetail);
+			accreditedInstituteDetail.setAccrediatedName(accreditedInstituteDetail2.getName());
+			accreditedInstituteDetail.setAccrediatedWebsite(accreditedInstituteDetail2.getWebsiteLink());
+			accreditedInstituteDetail.setCreatedBy("API");
+			accreditedInstituteDetail.setCreatedDate(new Date());
+			accrediatedDetailDao.addAccrediatedDetail(accreditedInstituteDetail);
 		}
 	}
 
@@ -632,8 +632,7 @@ public class InstituteService implements IInstituteService {
 		instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
 		instituteRequestDto.setOfferService(getOfferServices(id));
 		instituteRequestDto.setOfferServiceName(getOfferServiceNames(id));
-		instituteRequestDto.setAccreditation(getAccreditation(id));
-		instituteRequestDto.setAccreditationName(getAccreditationName(id));
+		instituteRequestDto.setAccreditationDetails(getAccreditationName(id));
 		instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
 		instituteRequestDto.setIntakes(getIntakes(id));
 		instituteRequestDto.setFacultyIds(getFacultyLevelData(id));
@@ -653,8 +652,7 @@ public class InstituteService implements IInstituteService {
 					instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(campus);
 					instituteRequestDto.setOfferService(getOfferServices(campus.getId()));
 					instituteRequestDto.setOfferServiceName(getOfferServiceNames(campus.getId()));
-					instituteRequestDto.setAccreditation(getAccreditation(campus.getId()));
-					instituteRequestDto.setAccreditationName(getAccreditationName(campus.getId()));
+					instituteRequestDto.setAccreditationDetails(getAccreditationName(campus.getId()));
 					instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
 					instituteRequestDto.setIntakes(getIntakes(campus.getId()));
 					instituteRequestDto.setFacultyIds(getFacultyLevelData(campus.getId()));
@@ -700,13 +698,20 @@ public class InstituteService implements IInstituteService {
 	private List<String> getIntakes(@Valid final String id) {
 		return dao.getIntakesById(id);
 	}
-
-	private List<String> getAccreditation(@Valid final String id) {
-		return accreditedInstituteDetailDao.getAccreditation(id);
-	}
 	
-	private List<String> getAccreditationName(@Valid final String id) {
-		return accreditedInstituteDao.getAccreditationNameByInstituteId(id);
+	private List<AccrediatedDetailDto> getAccreditationName(@Valid final String id) {
+		List<AccrediatedDetailDto> accrediatedDetailDtos = new ArrayList<>();
+		List<AccrediatedDetail> accrediatedDetails = accrediatedDetailDao.getAccrediationDetailByEntityId(id);
+		accrediatedDetails.stream().forEach(accrediatedDetail -> {
+			AccrediatedDetailDto accrediatedDetailDto = new AccrediatedDetailDto();
+			accrediatedDetailDto.setId(accrediatedDetail.getId());
+			accrediatedDetailDto.setEntityId(accrediatedDetail.getEntityId());
+			accrediatedDetailDto.setEntityType(accrediatedDetail.getEntityType());
+			accrediatedDetailDto.setName(accrediatedDetail.getAccrediatedName());
+			accrediatedDetailDto.setWebsiteLink(accrediatedDetail.getAccrediatedWebsite());
+			accrediatedDetailDtos.add(accrediatedDetailDto);
+		});
+		return accrediatedDetailDtos;
 	}
 
 	private List<String> getOfferServices(final String id) {

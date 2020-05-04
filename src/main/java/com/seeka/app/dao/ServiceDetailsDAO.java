@@ -75,7 +75,7 @@ public class ServiceDetailsDAO implements IServiceDetailsDAO {
     public List<String> getServicesById(String id) {
         List<String> list = new ArrayList<String>();
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select s.id, s.service_id from institute_service s where s.institute_id='" + id +"'");
+        Query query = session.createSQLQuery("select s.id, s.service_name from institute_service s where s.institute_id='" + id +"'");
         List<Object[]> rows = query.list();
         for (Object[] row : rows) {
             list.add(new String(row[1].toString()));
@@ -86,7 +86,7 @@ public class ServiceDetailsDAO implements IServiceDetailsDAO {
     public List<String> getServiceNameByInstituteId(String id) {
         List<String> list = new ArrayList<String>();
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select s.id, s.`name` from service s inner join institute_service i on s.id = i.service_id where i.institute_id='"+id+"'");
+        Query query = session.createSQLQuery("select s.id, s.`name` from service s inner join institute_service i on s.name = i.service_name where i.institute_id='"+id+"'");
         List<Object[]> rows = query.list();
         for (Object[] row : rows) {
             list.add(new String(row[1].toString()));

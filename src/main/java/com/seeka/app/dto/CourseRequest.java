@@ -58,6 +58,7 @@ public class CourseRequest {
 	private String countryName;
 	private String cityName;
 	private StudentVisaDto studentVisa;
+	private List<AccrediatedDetailDto> accrediatedDetail;
 
 	public List<UserReviewResultDto> getUserReviewResult() {
 		return userReviewResult;
@@ -673,6 +674,14 @@ public class CourseRequest {
 
 	public void setStudentVisa(StudentVisaDto studentVisa) {
 		this.studentVisa = studentVisa;
+	}
+
+	public List<AccrediatedDetailDto> getAccrediatedDetail() {
+		return accrediatedDetail;
+	}
+
+	public void setAccrediatedDetail(List<AccrediatedDetailDto> accrediatedDetail) {
+		this.accrediatedDetail = accrediatedDetail;
 	}
 
 }
