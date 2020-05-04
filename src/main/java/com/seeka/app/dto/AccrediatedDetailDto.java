@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class AccrediatedDetailDto {
 	
-	@NotBlank
+	@NotBlank(message = "accrediated_id is required")
 	@JsonProperty("accrediated_id")
 	private String id;
 	
@@ -20,6 +20,7 @@ public class AccrediatedDetailDto {
 	@JsonProperty("accrediated_name")
 	private String accrediatedName;
 	
+	@NotBlank(message = "accrediated_website is required")
 	@JsonProperty("accrediated_website")
 	private String accrediatedWebsite;
 	
