@@ -20,10 +20,10 @@ public interface AccrediatedDetailInterface {
 	public ResponseEntity<?> addAccrediationDetail(@RequestBody AccrediatedDetailDto accrediatedDetailDto);
 	
 	@GetMapping("/accrediation/entity/{id}")
-	public ResponseEntity<?> getAccrediationDetailByEntityId(@PathVariable("entityId") String entityId) throws NotFoundException;
+	public ResponseEntity<?> getAccrediationDetailByEntityId(@PathVariable("id") String id) throws NotFoundException;
 	
 	@DeleteMapping("/accrediation/entity/{id}")
-	public ResponseEntity<?> deleteAccrediationDetailByEntityId(@PathVariable("entityId") String entityId);
+	public ResponseEntity<?> deleteAccrediationDetailByEntityId (@PathVariable("id") String id);
 	
 	@PutMapping("/accrediation/{id}")
 	public ResponseEntity<?> updateAccrediationDetail(@PathVariable("id") String id, @RequestBody AccrediatedDetailDto accrediatedDetailDto) throws NotFoundException;
