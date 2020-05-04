@@ -25,8 +25,8 @@ public class AccrediationDetailController implements AccrediatedDetailInterface 
 	@Override
 	public ResponseEntity<?> addAccrediationDetail(AccrediatedDetailDto accrediatedDetailDto) {
 		log.info("Adding accrediation for entityId "+accrediatedDetailDto.getEntityId());
-		String accrediatedId = accrediatedDetailProcessor.addAccrediatedDetail(accrediatedDetailDto);
-		return new GenericResponseHandlers.Builder().setData(accrediatedId).setStatus(HttpStatus.OK).setMessage("Accrediation added successfully").create();
+		AccrediatedDetailDto detailDto = accrediatedDetailProcessor.addAccrediatedDetail(accrediatedDetailDto);
+		return new GenericResponseHandlers.Builder().setData(detailDto).setStatus(HttpStatus.OK).setMessage("Accrediation added successfully").create();
 	}
 
 	@Override
@@ -35,5 +35,18 @@ public class AccrediationDetailController implements AccrediatedDetailInterface 
 		List<AccrediatedDetailDto> accrediatedDetailDtos = accrediatedDetailProcessor.getAccrediationDetailByEntityId(entityId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(accrediatedDetailDtos)
 				.setMessage("Accrediation detail fetched successfully").create();
+	}
+
+	@Override
+	public ResponseEntity<?> deleteAccrediationDetail(String entityId) {
+		log.info("deleting accrediation for entityId "+entityId);
+		accrediatedDetailProcessor.deleteAccrediationDetailByEntityId(entityId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Accrediation detail deleted successfully").create();
+	}
+
+	@Override
+	public ResponseEntity<?> updateAccrediationDetail(String id, AccrediatedDetailDto accrediatedDetailDto) throws NotFoundException {
+		AccrediatedDetailDto detailDto = accrediatedDetailProcessor.updateAccrediatedDetails(id, accrediatedDetailDto);
+		return new GenericResponseHandlers.Builder().setData(detailDto).setStatus(HttpStatus.OK).setMessage("Accrediation updated successfully").create();
 	}
 }

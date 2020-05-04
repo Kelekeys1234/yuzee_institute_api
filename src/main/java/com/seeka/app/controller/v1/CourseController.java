@@ -78,11 +78,8 @@ import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
-import lombok.extern.apachecommons.CommonsLog;
-
 @RestController("courseControllerV1")
 @RequestMapping("/api/v1/course")
-@CommonsLog
 public class CourseController {
 
 	@Autowired
@@ -315,19 +312,9 @@ public class CourseController {
 					instituteObj.getCityName(), course.getName(), 1, 10);
 		}
 		
-		List<AccrediatedDetailDto> accrediatedInstituteDetails = new ArrayList<>();
 		List<AccrediatedDetailDto> accrediatedInstituteDetailsFromDB = accrediatedDetailProcessor.getAccrediationDetailByEntityId(instituteObj.getId());
 		if(!CollectionUtils.isEmpty(accrediatedInstituteDetailsFromDB)) {
-			accrediatedInstituteDetailsFromDB.stream().forEach(accrediatedDetail -> {
-				try {
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(accrediatedDetail.getId(), "ACCREDIATED", null, "en");
-					accrediatedDetail.setStorage(storageDTOList);
-					accrediatedInstituteDetails.add(accrediatedDetail);
-				} catch (ValidationException e) {
-					log.error("Exception invoking storage service for accrediatedId "+accrediatedDetail.getId()+" having exception "+e);
-				}
-			});
-			instituteObj.setAccrediatedDetail(accrediatedInstituteDetails);
+			instituteObj.setAccrediatedDetail(accrediatedInstituteDetailsFromDB);
 		}
 		
 		List<AccrediatedDetailDto> accrediatedCourseDetails = accrediatedDetailProcessor.getAccrediationDetailByEntityId(course.getId());

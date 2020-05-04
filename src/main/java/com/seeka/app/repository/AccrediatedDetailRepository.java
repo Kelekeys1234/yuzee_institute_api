@@ -10,9 +10,11 @@ import com.seeka.app.bean.AccrediatedDetail;
 @Repository
 public interface AccrediatedDetailRepository extends JpaRepository<AccrediatedDetail, String>{
 
-	List<AccrediatedDetail> findByEntityId (String entityId);
+	public List<AccrediatedDetail> findByEntityId (String entityId);
 	
-	AccrediatedDetail findByAccrediatedNameAndEntityId (String accrediatedName, String entityId);
+	public AccrediatedDetail findByAccrediatedNameAndEntityId (String accrediatedName, String entityId);
+	
+	public void deleteByEntityId (String entityId);
 	
 	
 }

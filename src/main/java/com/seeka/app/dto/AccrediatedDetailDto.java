@@ -16,10 +16,10 @@ public class AccrediatedDetailDto {
 	
 	@NotNull(message = "accrediated name is required")
 	@JsonProperty("accrediated_name")
-	private String name;
+	private String accrediatedName;
 	
 	@JsonProperty("accrediated_website")
-	private String websiteLink;
+	private String accrediatedWebsite;
 	
 	@JsonProperty("storage_list")
 	private List<StorageDto> storage;

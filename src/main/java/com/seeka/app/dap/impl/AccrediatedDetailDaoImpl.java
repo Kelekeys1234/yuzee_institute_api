@@ -1,6 +1,9 @@
 package com.seeka.app.dap.impl;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,9 +19,8 @@ public class AccrediatedDetailDaoImpl implements AccrediatedDetailDao {
 	private AccrediatedDetailRepository accrediatedDetailRepository;
 	
 	@Override
-	public String addAccrediatedDetail(AccrediatedDetail accrediatedDetail) {
-		AccrediatedDetail accrediatedDetailFromDB = accrediatedDetailRepository.save(accrediatedDetail);
-		return accrediatedDetailFromDB.getId();
+	public AccrediatedDetail addAccrediatedDetail(AccrediatedDetail accrediatedDetail) {
+		return accrediatedDetailRepository.save(accrediatedDetail);
 	}
 
 	@Override
@@ -27,15 +29,18 @@ public class AccrediatedDetailDaoImpl implements AccrediatedDetailDao {
 	}
 
 	@Override
+	@Transactional
 	public void deleteAccrediationDetailByEntityId(String entityId) {
-		List<AccrediatedDetail> accrediatedDetailList = accrediatedDetailRepository.findByEntityId(entityId);
-		accrediatedDetailList.stream().forEach(accrediatedDetail -> {
-			accrediatedDetailRepository.delete(accrediatedDetail);
-		});
+		accrediatedDetailRepository.deleteByEntityId(entityId);
 	}
 
 	@Override
 	public AccrediatedDetail getAccrediationBiNameAndEntityId(String accrediationName, String entityId) {
 		return accrediatedDetailRepository.findByAccrediatedNameAndEntityId(accrediationName, entityId);
+	}
+
+	@Override
+	public Optional<AccrediatedDetail> getAccrediatedDetailById(String id) {
+		return accrediatedDetailRepository.findById(id);
 	}
 }

@@ -504,10 +504,10 @@ public class InstituteService implements IInstituteService {
 			AccrediatedDetail accreditedInstituteDetail = new AccrediatedDetail();
 			accreditedInstituteDetail.setEntityId(institute.getId());
 			accreditedInstituteDetail.setEntityType("INSTITUTE");
-			accreditedInstituteDetail.setAccrediatedName(accreditedInstituteDetail2.getName());
-			accreditedInstituteDetail.setAccrediatedWebsite(accreditedInstituteDetail2.getWebsiteLink());
+			accreditedInstituteDetail.setAccrediatedName(accreditedInstituteDetail2.getAccrediatedName());
+			accreditedInstituteDetail.setAccrediatedWebsite(accreditedInstituteDetail2.getAccrediatedWebsite());
 			accreditedInstituteDetail.setCreatedBy("API");
-			accreditedInstituteDetail.setCreatedDate(new Date());
+			accreditedInstituteDetail.setCreatedOn(new Date());
 			accrediatedDetailDao.addAccrediatedDetail(accreditedInstituteDetail);
 		}
 	}
@@ -707,8 +707,8 @@ public class InstituteService implements IInstituteService {
 			accrediatedDetailDto.setId(accrediatedDetail.getId());
 			accrediatedDetailDto.setEntityId(accrediatedDetail.getEntityId());
 			accrediatedDetailDto.setEntityType(accrediatedDetail.getEntityType());
-			accrediatedDetailDto.setName(accrediatedDetail.getAccrediatedName());
-			accrediatedDetailDto.setWebsiteLink(accrediatedDetail.getAccrediatedWebsite());
+			accrediatedDetailDto.setAccrediatedName(accrediatedDetail.getAccrediatedName());
+			accrediatedDetailDto.setAccrediatedWebsite(accrediatedDetail.getAccrediatedWebsite());
 			accrediatedDetailDtos.add(accrediatedDetailDto);
 		});
 		return accrediatedDetailDtos;
