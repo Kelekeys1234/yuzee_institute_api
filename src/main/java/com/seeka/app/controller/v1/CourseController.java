@@ -36,6 +36,7 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.controller.handler.CommonHandler;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
@@ -57,6 +58,7 @@ import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
+import com.seeka.app.processor.AccrediatedDetailProcessor;
 import com.seeka.app.service.ICourseEnglishEligibilityService;
 import com.seeka.app.service.ICourseGradeEligibilityService;
 import com.seeka.app.service.ICourseKeywordService;
@@ -130,6 +132,9 @@ public class CourseController {
 	
 	@Autowired
 	private CommonHandler commonHandler;
+	
+	@Autowired
+	private AccrediatedDetailProcessor accrediatedDetailProcessor;
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException {
@@ -306,7 +311,18 @@ public class CourseController {
 			youtubeData = commonHandler.getYoutubeDataBasedOnCriteria(instituteObj.getName(), instituteObj.getCountryName(),
 					instituteObj.getCityName(), course.getName(), 1, 10);
 		}
+		
+		List<AccrediatedDetailDto> accrediatedInstituteDetailsFromDB = accrediatedDetailProcessor.getAccrediationDetailByEntityId(instituteObj.getId());
+		if(!CollectionUtils.isEmpty(accrediatedInstituteDetailsFromDB)) {
+			instituteObj.setAccrediatedDetail(accrediatedInstituteDetailsFromDB);
+		}
+		
+		List<AccrediatedDetailDto> accrediatedCourseDetails = accrediatedDetailProcessor.getAccrediationDetailByEntityId(course.getId());
+		if(!CollectionUtils.isEmpty(accrediatedCourseDetails)) {
+			courseRequest.setAccrediatedDetail(accrediatedCourseDetails);
+		}
 		List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
+		
 		if (!englishCriteriaList.isEmpty()) {
 			courseRequest.setEnglishEligibility(englishCriteriaList);
 		} else {

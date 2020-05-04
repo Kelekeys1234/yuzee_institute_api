@@ -11,4 +11,6 @@ public interface IStorageService {
 
 	List<StorageDto> getStorageInformationBasedOnEntityIdList(List<String> entityIds, String entityType, String type, String language)
 			throws ValidationException;
+
+	void deleteStorageBasedOnEntityId(String entityId);
 }

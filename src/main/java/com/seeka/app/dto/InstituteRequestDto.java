@@ -49,7 +49,7 @@ public class InstituteRequestDto {
 	private List<String> offerService;
 	private List<String> offerServiceName;
 	private List<String> accreditation;
-	private List<String> accreditationName;
+	private List<AccrediatedDetailDto> accreditationDetails;
 	private List<String> intakes;
 	private String createdBy;
 	private String updatedBy;
@@ -832,12 +832,12 @@ public class InstituteRequestDto {
 		this.levelNames = levelNames;
 	}
 
-	public List<String> getAccreditationName() {
-		return accreditationName;
+	public List<AccrediatedDetailDto> getAccreditationDetails() {
+		return accreditationDetails;
 	}
 
-	public void setAccreditationName(List<String> accreditationName) {
-		this.accreditationName = accreditationName;
+	public void setAccreditationDetails(List<AccrediatedDetailDto> accreditationDetails) {
+		this.accreditationDetails = accreditationDetails;
 	}
 
 }
