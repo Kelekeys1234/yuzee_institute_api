@@ -57,7 +57,16 @@ public class InstituteAdditionalInfo {
 	private int numberOfClassRoom;
 	
 	@Column(name ="campus_size", nullable = false)
-	private int sizeOfCampus;
+	private String sizeOfCampus;
+	
+	@Column(name ="lecture_hall_number", nullable = false)
+	private int numberOfLectureHall;
+	
+	@Column(name ="faculty_number", nullable = false)
+	private int numberOfFaculty;
+	
+	@Column(name ="employment_rate", nullable = false)
+	private String rateOfEmployment;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
@@ -76,10 +85,10 @@ public class InstituteAdditionalInfo {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn( name = "institute_id", insertable = false, updatable = false )
 	private Institute institute;
-	
+
 	public InstituteAdditionalInfo(String instituteId, int numberOfStudent, int numberOfEmployee, int numberOfTeacher,
-			int numberOfClassRoom, int sizeOfCampus, Date createdOn, Date updatedOn, String createdBy,
-			String updatedBy) {
+			int numberOfClassRoom, String sizeOfCampus, int numberOfLectureHall, int numberOfFaculty,
+			String rateOfEmployment, Date createdOn, Date updatedOn, String createdBy, String updatedBy) {
 		super();
 		this.instituteId = instituteId;
 		this.numberOfStudent = numberOfStudent;
@@ -87,6 +96,9 @@ public class InstituteAdditionalInfo {
 		this.numberOfTeacher = numberOfTeacher;
 		this.numberOfClassRoom = numberOfClassRoom;
 		this.sizeOfCampus = sizeOfCampus;
+		this.numberOfLectureHall = numberOfLectureHall;
+		this.numberOfFaculty = numberOfFaculty;
+		this.rateOfEmployment = rateOfEmployment;
 		this.createdOn = createdOn;
 		this.updatedOn = updatedOn;
 		this.createdBy = createdBy;

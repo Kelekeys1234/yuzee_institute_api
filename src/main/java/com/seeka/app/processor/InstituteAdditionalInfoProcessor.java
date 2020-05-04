@@ -3,6 +3,8 @@ package com.seeka.app.processor;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -22,6 +24,7 @@ public class InstituteAdditionalInfoProcessor {
 	@Autowired
 	private IInstituteDAO iInstituteDAO;
 	
+	@Transactional(rollbackOn = Throwable.class)
 	public void addUpdateInstituteAdditionalInfo (String userId, String instituteId , InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception {
 		log.debug("Inside addInstituteAdditionalInfo() method");
 		//TODO validate user ID passed in request have access to modify resource
@@ -36,8 +39,9 @@ public class InstituteAdditionalInfoProcessor {
 		InstituteAdditionalInfo instituteAdditionalInfoFromDB = institute.getInstituteAdditionalInfo();
 		if (ObjectUtils.isEmpty(instituteAdditionalInfoFromDB)) {
 			log.info("Institute dont have any additional info adding new one");
-			InstituteAdditionalInfo instituteAdditionalInfo = new InstituteAdditionalInfo(instituteId, instituteAdditionalInfoDto.getNumberOfStudent(), instituteAdditionalInfoDto.getNumberOfEmployee(), instituteAdditionalInfoDto.getNumberOfTeacher(), instituteAdditionalInfoDto.getNumberOfClassRoom(),
-					instituteAdditionalInfoDto.getSizeOfCampus(), new Date(), new Date(), "API", "API");
+			InstituteAdditionalInfo instituteAdditionalInfo = new  InstituteAdditionalInfo(instituteId, instituteAdditionalInfoDto.getNumberOfStudent(), instituteAdditionalInfoDto.getNumberOfEmployee(), 
+					instituteAdditionalInfoDto.getNumberOfTeacher(), instituteAdditionalInfoDto.getNumberOfClassRoom(), instituteAdditionalInfoDto.getSizeOfCampus(), instituteAdditionalInfoDto.getNumberOfLectureHall(), 
+					instituteAdditionalInfoDto.getNumberOfFaculty(), instituteAdditionalInfoDto.getEmploymentRate(), new Date(), new Date(), "API", "API");
 			institute.setInstituteAdditionalInfo(instituteAdditionalInfo);
 		} else {
 			log.info("Institute have additional info updating exsisting one");
@@ -46,6 +50,9 @@ public class InstituteAdditionalInfoProcessor {
 			instituteAdditionalInfoFromDB.setNumberOfStudent(instituteAdditionalInfoDto.getNumberOfStudent());
 			instituteAdditionalInfoFromDB.setNumberOfTeacher(instituteAdditionalInfoDto.getNumberOfTeacher());
 			instituteAdditionalInfoFromDB.setSizeOfCampus(instituteAdditionalInfoDto.getSizeOfCampus());
+			instituteAdditionalInfoFromDB.setNumberOfLectureHall(instituteAdditionalInfoDto.getNumberOfLectureHall());
+			instituteAdditionalInfoFromDB.setNumberOfFaculty(instituteAdditionalInfoDto.getNumberOfFaculty());
+			instituteAdditionalInfoFromDB.setRateOfEmployment(instituteAdditionalInfoDto.getEmploymentRate());
 			instituteAdditionalInfoFromDB.setUpdatedBy("API");
 			instituteAdditionalInfoFromDB.setUpdatedOn(new Date());
 			institute.setInstituteAdditionalInfo(instituteAdditionalInfoFromDB);
@@ -77,6 +84,9 @@ public class InstituteAdditionalInfoProcessor {
 			instituteAdditionalInfoDto.setNumberOfStudent(instituteAdditionalInfoFromDB.getNumberOfStudent());
 			instituteAdditionalInfoDto.setNumberOfTeacher(instituteAdditionalInfoFromDB.getNumberOfTeacher());
 			instituteAdditionalInfoDto.setSizeOfCampus(instituteAdditionalInfoFromDB.getSizeOfCampus());
+			instituteAdditionalInfoDto.setNumberOfLectureHall(instituteAdditionalInfoFromDB.getNumberOfLectureHall());
+			instituteAdditionalInfoDto.setNumberOfFaculty(instituteAdditionalInfoFromDB.getNumberOfFaculty());
+			instituteAdditionalInfoDto.setEmploymentRate(instituteAdditionalInfoFromDB.getRateOfEmployment());
 		}
 		
 		return instituteAdditionalInfoDto;

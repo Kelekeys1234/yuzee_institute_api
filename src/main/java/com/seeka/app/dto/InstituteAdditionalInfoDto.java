@@ -1,5 +1,6 @@
 package com.seeka.app.dto;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,7 +26,19 @@ public class InstituteAdditionalInfoDto {
 	@JsonProperty("class_number")
 	private int numberOfClassRoom;
 	
-	@NotNull(message = "campus_size is required")
+	@NotEmpty(message = "campus_size is required")
 	@JsonProperty("campus_size")
-	private int sizeOfCampus;
+	private String sizeOfCampus;
+	
+	@NotNull(message = "lecture_hall_number is required")
+	@JsonProperty("lecture_hall_number")
+	private int numberOfLectureHall;
+	
+	@NotNull(message = "faculty_number is required")
+	@JsonProperty("faculty_number")
+	private int numberOfFaculty;
+	
+	@NotNull(message = "employment_rate is required")
+	@JsonProperty("employment_rate")
+	private String employmentRate;
 }
