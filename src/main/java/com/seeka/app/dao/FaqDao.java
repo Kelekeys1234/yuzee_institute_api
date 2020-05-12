@@ -124,4 +124,15 @@ public class FaqDao implements IFaqDao {
 		return ((Long) criteria.uniqueResult()).intValue();
 	}
 
+	@Override
+	public List<Faq> getFaqBasedOnEntityId(String entityId) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Faq.class, "faq");
+		criteria.add(Restrictions.eq("entityId",entityId));
+		criteria.add(Restrictions.eq("isActive",true));
+		return criteria.list();
+	}
+	
+	
+
 }

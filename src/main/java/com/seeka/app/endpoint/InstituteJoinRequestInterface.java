@@ -19,15 +19,15 @@ import com.seeka.app.dto.InstituteJoinRequestDto;
 public interface InstituteJoinRequestInterface {
 
 	@PostMapping("/request/join")
-	public ResponseEntity<?> requestInstitutePageAccess(@RequestHeader("userId") final String userId,
+	public ResponseEntity<?> requestJoinInstitute(@RequestHeader("userId") final String userId,
 			 @Valid @RequestBody InstituteJoinRequestDto instituteJoinRequestDto)
 			throws Exception;
 
 	@GetMapping("/request/join")
-	public ResponseEntity<?> getRequestsOfInstitutePageAccess(@RequestParam(name = "status") String status) throws Exception;
+	public ResponseEntity<?> getRequestsOfInstituteJoinRequest(@RequestParam(name = "status") String status) throws Exception;
 
 	
 	@PutMapping("/request/join/update-status/{instituteJoinRequestId}") 
-	public ResponseEntity<?> updateInstituetPageRequestStatus(@PathVariable final String instituteJoinRequestId, @RequestParam(name = "status") String status) throws Exception;
+	public ResponseEntity<?> updateInstituetJoinRequestStatus(@PathVariable final String instituteJoinRequestId, @RequestParam(name = "status") String status) throws Exception;
 	
 }

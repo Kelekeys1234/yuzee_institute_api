@@ -87,7 +87,7 @@ public class FaqCategoryService implements IFaqCategoryService {
 
 		List<FaqResponseDto> faqResponseDtos = iFaqService.getFaqList(null, null, faqCategoryId, null, null, null, null);
 		for (FaqResponseDto faqResponseDto : faqResponseDtos) {
-			iFaqService.deleteFaq(faqResponseDto.getId());
+			iFaqService.deleteFaqById(faqResponseDto.getId());
 		}
 	}
 

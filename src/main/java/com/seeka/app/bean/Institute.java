@@ -1,6 +1,7 @@
 package com.seeka.app.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
@@ -15,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -87,9 +89,23 @@ public class Institute implements Serializable {
 	private String internationalPhoneNumber;
 	private String domesticPhoneNumber;
 	
+	
+	private List<InstituteEnglishRequirements> instituteEnglishRequirements = new ArrayList<InstituteEnglishRequirements>();
+	
 	private InstituteAdditionalInfo instituteAdditionalInfo;
+	
 	private List<AccrediatedDetailDto> accrediatedDetail;
 	
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY,  mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<InstituteEnglishRequirements> getInstituteEnglishRequirements() {
+		return instituteEnglishRequirements;
+	}
+
+	public void setInstituteEnglishRequirements(List<InstituteEnglishRequirements> instituteEnglishRequirements) {
+		this.instituteEnglishRequirements = instituteEnglishRequirements;
+	}
+
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "institute")
 	public InstituteAdditionalInfo getInstituteAdditionalInfo() {

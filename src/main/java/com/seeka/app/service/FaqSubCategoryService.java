@@ -99,7 +99,7 @@ public class FaqSubCategoryService implements IFaqSubCategoryService {
 
 		List<FaqResponseDto> faqResponseDtos = iFaqService.getFaqList(null, null, null, faqSubCategoryId, null, null, null);
 		for (FaqResponseDto faqResponseDto : faqResponseDtos) {
-			iFaqService.deleteFaq(faqResponseDto.getId());
+			iFaqService.deleteFaqById(faqResponseDto.getId());
 		}
 	}
 

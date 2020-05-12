@@ -27,7 +27,7 @@ public class InstituteJoinRequestController implements InstituteJoinRequestInter
 	private InstituteJoinRequestProcessor instituteJoinRequestProcessor;
 	
 	@Override
-	public ResponseEntity<?> requestInstitutePageAccess(String userId,
+	public ResponseEntity<?> requestJoinInstitute(String userId,
 			@Valid InstituteJoinRequestDto instituteJoinRequestDto) throws Exception {
 		InstituteJoinRequestDto instituteJoinRequestDtoResponse = instituteJoinRequestProcessor.instituteJoinRequest(userId, instituteJoinRequestDto);
 		return new GenericResponseHandlers.Builder().setData(instituteJoinRequestDtoResponse).setMessage("Institute join request successfully")
@@ -35,7 +35,7 @@ public class InstituteJoinRequestController implements InstituteJoinRequestInter
 	}
 
 	@Override
-	public ResponseEntity<?> getRequestsOfInstitutePageAccess(String status) throws Exception {
+	public ResponseEntity<?> getRequestsOfInstituteJoinRequest(String status) throws Exception {
 		boolean isStatusValid = EnumUtils.isValidEnum(InstituteJoinStatus.class, status);
 		if (!isStatusValid) {
 			log.error("status value is invalid in request passed " + status
@@ -49,7 +49,7 @@ public class InstituteJoinRequestController implements InstituteJoinRequestInter
 	}
 
 	@Override
-	public ResponseEntity<?> updateInstituetPageRequestStatus(String instituteJoinRequestId, String status)
+	public ResponseEntity<?> updateInstituetJoinRequestStatus(String instituteJoinRequestId, String status)
 			throws Exception {
 		boolean isStatusValid = EnumUtils.isValidEnum(InstituteJoinStatus.class, status);
 		if (!isStatusValid) {

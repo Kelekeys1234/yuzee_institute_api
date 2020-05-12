@@ -8,6 +8,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Faq;
 import com.seeka.app.bean.FaqCategory;
@@ -32,15 +34,17 @@ public class FaqService implements IFaqService {
 	private IFaqDao iFaqDao;
 
 	@Override
-	public void addFaq(final FaqRequestDto faqRequestDto) throws ValidationException {
-
+	public void addFaq(String userId ,final FaqRequestDto faqRequestDto) throws ValidationException {
+		if (!faqRequestDto.getEntityType().equalsIgnoreCase("PLATFORM")) {
+			//TODO validate user ID passed in request have access to modify resource
+		}
 		Faq faq = new Faq();
 		BeanUtils.copyProperties(faqRequestDto, faq);
 		if (faqRequestDto.getFaqCategoryId() != null) {
 			FaqCategory faqCategory = iFaqCategoryService.getFaqCategoryDetail(faqRequestDto.getFaqCategoryId());
 			if (faqCategory == null) {
 				throw new ValidationException("faq Category not found for id: " + faqRequestDto.getFaqCategoryId());
-			} else if (faqCategory.getIsActive() != null && faqCategory.getIsActive().equals(false)) {
+			} else if (faqCategory.getIsActive() != null && !faqCategory.getIsActive()) {
 				throw new ValidationException("faq Category not found for id: " + faqRequestDto.getFaqCategoryId());
 			} else {
 				faq.setFaqCategory(faqCategory);
@@ -50,7 +54,7 @@ public class FaqService implements IFaqService {
 			FaqSubCategory faqSubCategory = iFaqSubCategoryDao.getFaqSubCategoryDetail(faqRequestDto.getFaqSubCategoryId());
 			if (faqSubCategory == null) {
 				throw new ValidationException("faq Sub Category not found for id: " + faqRequestDto.getFaqSubCategoryId());
-			} else if (faqSubCategory.getIsActive() != null && faqSubCategory.getIsActive().equals(false)) {
+			} else if (faqSubCategory.getIsActive() != null && !faqSubCategory.getIsActive()) {
 				throw new ValidationException("faq Sub Category not found for id: " + faqRequestDto.getFaqSubCategoryId());
 			} else {
 				faq.setFaqSubCategory(faqSubCategory);
@@ -67,27 +71,24 @@ public class FaqService implements IFaqService {
 	}
 
 	@Override
-	public void updateFaq(final FaqRequestDto faqRequestDto, final String faqId) throws ValidationException {
+	public void updateFaq(String userId ,final FaqRequestDto faqRequestDto, final String faqId) throws ValidationException {
+		//TODO validate user ID passed in request have access to modify resource
 		Faq existingFaq = iFaqDao.getFaqDetail(faqId);
-		if (existingFaq == null) {
+		if (ObjectUtils.isEmpty(existingFaq)) {
 			throw new ValidationException("Faq not found for id: " + faqId);
 		}
 		BeanUtils.copyProperties(faqRequestDto, existingFaq);
 		if (faqRequestDto.getFaqCategoryId() != null) {
 			FaqCategory faqCategory = iFaqCategoryService.getFaqCategoryDetail(faqRequestDto.getFaqCategoryId());
-			if (faqCategory == null) {
+			if (faqCategory == null || !faqCategory.getIsActive()) {
 				throw new ValidationException("faq Category not found for id: " + faqRequestDto.getFaqCategoryId());
-			} else if (faqCategory.getIsActive() != null && faqCategory.getIsActive().equals(false)) {
-				throw new ValidationException("faq Category not found for id: " + faqRequestDto.getFaqCategoryId());
-			} else {
+			}else {
 				existingFaq.setFaqCategory(faqCategory);
 			}
 		}
 		if (faqRequestDto.getFaqSubCategoryId() != null) {
 			FaqSubCategory faqSubCategory = iFaqSubCategoryDao.getFaqSubCategoryDetail(faqRequestDto.getFaqSubCategoryId());
-			if (faqSubCategory == null) {
-				throw new ValidationException("faq Sub Category not found for id: " + faqRequestDto.getFaqSubCategoryId());
-			} else if (faqSubCategory.getIsActive() != null && faqSubCategory.getIsActive().equals(false)) {
+			if (faqSubCategory == null || !faqSubCategory.getIsActive()) {
 				throw new ValidationException("faq Sub Category not found for id: " + faqRequestDto.getFaqSubCategoryId());
 			} else {
 				existingFaq.setFaqSubCategory(faqSubCategory);
@@ -100,7 +101,9 @@ public class FaqService implements IFaqService {
 	}
 
 	@Override
-	public void deleteFaq(final String faqId) throws ValidationException {
+	public void deleteFaq(String userId ,final String faqId) throws ValidationException {
+		//TODO validate user ID passed in request have access to modify resource
+		
 		/**
 		 * Fetch existing FAQ based on id
 		 */
@@ -142,7 +145,8 @@ public class FaqService implements IFaqService {
 	}
 
 	@Override
-	public FaqResponseDto getFaqDetail(final String faqId) {
+	public FaqResponseDto getFaqDetail(String userId ,final String faqId) {
+		//TODO validate user ID passed in request have access to modify resource
 		Faq faq = iFaqDao.getFaqDetail(faqId);
 		FaqResponseDto faqResponseDto = new FaqResponseDto();
 		BeanUtils.copyProperties(faq, faqResponseDto);
@@ -155,6 +159,45 @@ public class FaqService implements IFaqService {
 			faqResponseDto.setFaqSubCategoryName(faq.getFaqSubCategory().getName());
 		}
 		return faqResponseDto;
+	}
+
+	@Override
+	public List<FaqResponseDto> getFaqListBasedOnEntityId(String userId, String entityId, String caller) {
+		if (caller.equalsIgnoreCase("PRIVATE")) {
+			//TODO validate user ID passed in request have access to modify resource
+		}
+		List<FaqResponseDto> faqResponseDtos = new ArrayList<>();
+		List<Faq> faqList = iFaqDao.getFaqBasedOnEntityId(entityId);
+		if (!CollectionUtils.isEmpty(faqList)) {
+			faqList.stream().forEach(faq -> {
+				FaqResponseDto faqResponseDto = new FaqResponseDto();
+				BeanUtils.copyProperties(faq, faqResponseDto);
+				if (faq.getFaqCategory() != null) {
+					faqResponseDto.setFaqCategoryId(faq.getFaqCategory().getId());
+					faqResponseDto.setFaqCategoryName(faq.getFaqCategory().getName());
+				}
+				if (faq.getFaqSubCategory() != null) {
+					faqResponseDto.setFaqSubCategoryId(faq.getFaqSubCategory().getId());
+					faqResponseDto.setFaqSubCategoryName(faq.getFaqSubCategory().getName());
+				}
+
+				faqResponseDtos.add(faqResponseDto);
+			});
+		}
+		return faqResponseDtos;
+	}
+
+	@Override
+	public void deleteFaqById(String id) throws ValidationException {
+		Faq existingFaq = iFaqDao.getFaqDetail(id);
+		if (existingFaq == null) {
+			throw new ValidationException("Faq not found for id: " +  id);
+		}
+		existingFaq.setIsActive(false);
+		existingFaq.setUpdatedBy("API");
+		existingFaq.setUpdatedOn(new Date());
+		iFaqDao.update(existingFaq);
+		
 	}
 
 }

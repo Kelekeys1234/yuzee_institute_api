@@ -16,5 +16,7 @@ public interface IFaqDao {
 			String searchKeyword);
 
 	int getFaqCount(String faqCategoryId, String faqSubCategoryId, String searchKeyword);
+	
+	List<Faq> getFaqBasedOnEntityId (String entityId) ;
 
 }
