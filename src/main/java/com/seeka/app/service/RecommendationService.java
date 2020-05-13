@@ -368,7 +368,7 @@ public class RecommendationService implements IRecommendationService {
 			 * Get Lis of all countries that users as interested to migrate to based on
 			 * user's country
 			 */
-			List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry("Australia");
+			List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
 			if ((distinctCountryList != null) && !distinctCountryList.isEmpty()) {
 				//List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
 				//List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
@@ -418,7 +418,7 @@ public class RecommendationService implements IRecommendationService {
 			 * more scholarships as per the Global Student Data file.
 			 */
 			if (recommendedScholarships.size() < totalScholarshipPerPage) {
-				List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry("Australia");
+				List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
 				//List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
 				// countries.stream().map(country ->
 				// country.getId()).collect(Collectors.toList());
