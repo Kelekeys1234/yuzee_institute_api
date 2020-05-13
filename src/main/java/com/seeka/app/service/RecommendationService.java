@@ -76,7 +76,7 @@ public class RecommendationService implements IRecommendationService {
 	@Autowired
 	private IScholarshipService iScholarshipService;
 
-	@Value("${total-scholarship-per-page}")
+	@Value("${total.scholarship.per.page}")
 	private Integer totalScholarshipPerPage;
 	
 	@Override
