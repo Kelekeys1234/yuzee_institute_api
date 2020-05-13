@@ -16,8 +16,11 @@ import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 @Service
 @Transactional(rollbackFor = Throwable.class)
+@CommonsLog
 public class UserRecommendationServiceImpl implements UserRecommendationService {
 
 	@Autowired
@@ -296,8 +299,12 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 				}
 				courseResponseDto.setCourseRanking(course.getWorldRanking());
 				courseResponseDto.setLanguageShortKey(course.getLanguage());
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null, "en");
-				courseResponseDto.setStorageList(storageDTOList);
+				try { 
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+					courseResponseDto.setStorageList(storageDTOList);
+				} catch (Exception e) {
+					log.error("Exception while invoking storage service",e);
+				}
 				resultList.add(courseResponseDto);
 			}
 		}

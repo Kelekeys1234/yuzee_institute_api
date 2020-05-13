@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.seeka.app.bean.Course;
@@ -75,6 +76,9 @@ public class RecommendationService implements IRecommendationService {
 	@Autowired
 	private IScholarshipService iScholarshipService;
 
+	@Value("${total-scholarship-per-page}")
+	private Integer totalScholarshipPerPage;
+	
 	@Override
 	public List<InstituteResponseDto> getRecommendedInstitutes(final String userId, /*
 																						 * Long startIndex, final Long pageSize, Long pageNumber,
@@ -364,23 +368,23 @@ public class RecommendationService implements IRecommendationService {
 			 * Get Lis of all countries that users as interested to migrate to based on
 			 * user's country
 			 */
-			List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
+			List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry("Australia");
 			if ((distinctCountryList != null) && !distinctCountryList.isEmpty()) {
 				//List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
 				//List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
 				/**
 				 * Get all scholarshipIds based on country
 				 */
-				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(distinctCountryList, IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE));
+				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(distinctCountryList, totalScholarshipPerPage));
 			}
 
 			/**
 			 * If recommended scholarships are not equal to 20 then fetch more on random
 			 * basis from the database
 			 */
-			if (recommendedScholarships.size() < IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE) {
+			if (recommendedScholarships.size() < totalScholarshipPerPage) {
 				recommendedScholarships
-						.addAll(iScholarshipService.getRandomScholarShipIds(IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE - recommendedScholarships.size()));
+						.addAll(iScholarshipService.getRandomScholarShipIds(totalScholarshipPerPage - recommendedScholarships.size()));
 			}
 		} else {
 			/**
@@ -404,7 +408,7 @@ public class RecommendationService implements IRecommendationService {
 				 * If recommended scholarships size exceeds 20, no need to consider other
 				 * countries
 				 */
-				if (recommendedScholarships.size() >= IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE) {
+				if (recommendedScholarships.size() >= totalScholarshipPerPage) {
 					break;
 				}
 			}
@@ -413,20 +417,20 @@ public class RecommendationService implements IRecommendationService {
 			 * If the recommended scholarship list is less than 20, then we need to consider
 			 * more scholarships as per the Global Student Data file.
 			 */
-			if (recommendedScholarships.size() < IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE) {
-				List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
+			if (recommendedScholarships.size() < totalScholarshipPerPage) {
+				List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry("Australia");
 				//List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
 				// countries.stream().map(country ->
 				// country.getId()).collect(Collectors.toList());
 				//List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
 
 				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(distinctCountryList,
-						IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE - recommendedScholarships.size()));
+						totalScholarshipPerPage - recommendedScholarships.size()));
 			}
 			
-			if (recommendedScholarships.size() < IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE) {
+			if (recommendedScholarships.size() < totalScholarshipPerPage) {
 				recommendedScholarships
-						.addAll(iScholarshipService.getRandomScholarShipIds(IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE - recommendedScholarships.size()));
+						.addAll(iScholarshipService.getRandomScholarShipIds(totalScholarshipPerPage - recommendedScholarships.size()));
 			}
 		}
 		/**
