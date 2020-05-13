@@ -423,6 +423,11 @@ public class RecommendationService implements IRecommendationService {
 				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(distinctCountryList,
 						IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE - recommendedScholarships.size()));
 			}
+			
+			if (recommendedScholarships.size() < IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE) {
+				recommendedScholarships
+						.addAll(iScholarshipService.getRandomScholarShipIds(IConstant.TOTAL_SCHOLARSHIPS_PER_PAGE - recommendedScholarships.size()));
+			}
 		}
 		/**
 		 * Get Scholarship details for recommended scholarships
@@ -430,8 +435,7 @@ public class RecommendationService implements IRecommendationService {
 		List<ScholarshipDto> scholarshipDtoList = new ArrayList<>();
 		if (!recommendedScholarships.isEmpty()) {
 			scholarshipDtoList = iScholarshipService.getAllScholarshipDetailsFromId(recommendedScholarships);
-		}
-
+		} 
 		return scholarshipDtoList;
 	}
 

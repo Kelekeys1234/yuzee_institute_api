@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.dao.UserRecommendationDao;
@@ -277,28 +278,29 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	private List<CourseResponseDto> convertCourseToCourseRespone(final List<Course> courseList) throws ValidationException {
 		List<CourseResponseDto> resultList = new ArrayList<>();
 		for (Course course : courseList) {
-			CourseResponseDto courseResponseDto = new CourseResponseDto();
-			courseResponseDto.setId(course.getId());
-			courseResponseDto.setCostRange(course.getCostRange());
-			courseResponseDto.setLanguage(course.getLanguage());
-			courseResponseDto.setName(course.getName());
-			courseResponseDto.setDuration(course.getDuration());
-			courseResponseDto.setDurationTime(course.getDurationTime());
-			courseResponseDto.setInstituteId(course.getInstitute().getId());
-			courseResponseDto.setInstituteName(course.getInstitute().getName());
-			courseResponseDto.setInternationalFee(course.getInternationalFee());
-			courseResponseDto.setDomesticFee(course.getDomesticFee());
-			courseResponseDto.setRequirements(course.getRemarks());
-			if(course.getStars() != null) {
-				courseResponseDto.setStars(Double.valueOf(course.getStars()));
+			if(!ObjectUtils.isEmpty(course.getInstitute())) {
+				CourseResponseDto courseResponseDto = new CourseResponseDto();
+				courseResponseDto.setId(course.getId());
+				courseResponseDto.setCostRange(course.getCostRange());
+				courseResponseDto.setLanguage(course.getLanguage());
+				courseResponseDto.setName(course.getName());
+				courseResponseDto.setDuration(course.getDuration());
+				courseResponseDto.setDurationTime(course.getDurationTime());
+				courseResponseDto.setInstituteId(course.getInstitute().getId());
+				courseResponseDto.setInstituteName(course.getInstitute().getName());
+				courseResponseDto.setInternationalFee(course.getInternationalFee());
+				courseResponseDto.setDomesticFee(course.getDomesticFee());
+				courseResponseDto.setRequirements(course.getRemarks());
+				if(course.getStars() != null) {
+					courseResponseDto.setStars(Double.valueOf(course.getStars()));
+				}
+				courseResponseDto.setCourseRanking(course.getWorldRanking());
+				courseResponseDto.setLanguageShortKey(course.getLanguage());
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+				courseResponseDto.setStorageList(storageDTOList);
+				resultList.add(courseResponseDto);
 			}
-			courseResponseDto.setCourseRanking(course.getWorldRanking());
-			courseResponseDto.setLanguageShortKey(course.getLanguage());
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null, "en");
-			courseResponseDto.setStorageList(storageDTOList);
-			resultList.add(courseResponseDto);
 		}
-
 		return resultList;
 	}
 
