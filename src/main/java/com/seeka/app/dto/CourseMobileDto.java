@@ -5,10 +5,17 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CourseMobileDto {
+	
+	@JsonProperty("course_id")
+	private String courseId;
 
 	@NotBlank(message = "course_name should not be blank")
 	@JsonProperty("course_name")
@@ -25,12 +32,16 @@ public class CourseMobileDto {
 	@JsonProperty("faculty_name")
 	private String facultyName;
 	
-	@NotNull(message = "domestic_fee should not be blank")
-	@JsonProperty("domestic_fee")
+	@NotNull(message = "gpa_required should not be blank")
+	@JsonProperty("gpa_required")
+	private Double gpaRequired;
+	
+	@NotNull(message = "usd_domestic_fee should not be blank")
+	@JsonProperty("usd_domestic_fee")
 	private Double usdDomesticFee;
 	
-	@NotNull(message = "international_fee should not be blank")
-	@JsonProperty("international_fee")
+	@NotNull(message = "usd_international_fee should not be blank")
+	@JsonProperty("usd_international_fee")
 	private Double usdInternationalFee;
 	
 	@NotNull(message = "duration should not be blank")

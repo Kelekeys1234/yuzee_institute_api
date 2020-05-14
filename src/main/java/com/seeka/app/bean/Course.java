@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,12 +14,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -81,6 +85,8 @@ public class Course implements Serializable {
 	private Double usdInternationFee;
 	private Double usdDomasticFee;
 	private Double costRange;
+	
+	private CourseGradeEligibility courseGradeEligibility;
 
 	public Course() {
 	}
@@ -332,9 +338,8 @@ public class Course implements Serializable {
 	/**
 	 * @return the levelCode
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "level_id")
-
 	public Level getLevel() {
 		return level;
 	}
@@ -593,5 +598,15 @@ public class Course implements Serializable {
 
 	public void setCostRange(final Double costRange) {
 		this.costRange = costRange;
+	}
+
+	@JsonIgnore
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
+	public CourseGradeEligibility getCourseGradeEligibility() {
+		return courseGradeEligibility;
+	}
+
+	public void setCourseGradeEligibility(CourseGradeEligibility courseGradeEligibility) {
+		this.courseGradeEligibility = courseGradeEligibility;
 	}
 }

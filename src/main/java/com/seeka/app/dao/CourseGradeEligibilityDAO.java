@@ -1,62 +1,44 @@
 package com.seeka.app.dao;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
-import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseGradeEligibility;
+import com.seeka.app.repository.CourseGradeEligibilityRepository;
 
-@Repository
+@Component
 public class CourseGradeEligibilityDAO implements ICourseGradeEligibilityDAO {
-
+	
 	@Autowired
-	private SessionFactory sessionFactory;
+	private CourseGradeEligibilityRepository courseGradeEligibilityRepository;
+
 
 	@Override
 	public void save(final CourseGradeEligibility obj) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(obj);
+		courseGradeEligibilityRepository.save(obj);
 	}
 
 	@Override
 	public void update(final CourseGradeEligibility obj) {
-		Session session = sessionFactory.getCurrentSession();
-		session.update(obj);
+		courseGradeEligibilityRepository.save(obj);
 	}
 
 	@Override
-	public CourseGradeEligibility get(final String id) {
-		Session session = sessionFactory.getCurrentSession();
-		CourseGradeEligibility obj = session.get(CourseGradeEligibility.class, id);
-		return obj;
+	public Optional<CourseGradeEligibility> get(final String id) {
+		return courseGradeEligibilityRepository.findById(id);
 	}
 
 	@Override
 	public List<CourseGradeEligibility> getAll() {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Course.class);
-		return crit.list();
+		return courseGradeEligibilityRepository.findAll();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public CourseGradeEligibility getAllEnglishEligibilityByCourse(final String courseID) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(CourseGradeEligibility.class);
-		crit.add(Restrictions.eq("course.id", courseID));
-
-		List<CourseGradeEligibility> result = crit.list();
-		if (result.isEmpty()) {
-			return null;
-		} else {
-			return result.get(0);
-		}
+	public CourseGradeEligibility getCourseGradeEligibilityByCourseId(final String courseId) {
+		return courseGradeEligibilityRepository.findByCourseId(courseId);
 	}
 
 }
