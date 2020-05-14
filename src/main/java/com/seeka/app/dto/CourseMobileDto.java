@@ -36,12 +36,12 @@ public class CourseMobileDto {
 	@JsonProperty("gpa_required")
 	private Double gpaRequired;
 	
-	@NotNull(message = "domestic_fee should not be blank")
-	@JsonProperty("domestic_fee")
+	@NotNull(message = "usd_domestic_fee should not be blank")
+	@JsonProperty("usd_domestic_fee")
 	private Double usdDomesticFee;
 	
-	@NotNull(message = "international_fee should not be blank")
-	@JsonProperty("international_fee")
+	@NotNull(message = "usd_international_fee should not be blank")
+	@JsonProperty("usd_international_fee")
 	private Double usdInternationalFee;
 	
 	@NotNull(message = "duration should not be blank")
