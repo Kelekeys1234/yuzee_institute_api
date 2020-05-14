@@ -219,7 +219,7 @@ public class Institute implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "institute_type_id", referencedColumnName = "name")
 	public InstituteType getInstituteType() {
 		return this.instituteType;
