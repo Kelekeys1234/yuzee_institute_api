@@ -8,5 +8,5 @@ public interface ICourseGradeEligibilityService {
 	public void update(CourseGradeEligibility obj);
 	public CourseGradeEligibility get(String id);
 	public List<CourseGradeEligibility> getAll();
-	public CourseGradeEligibility getAllEnglishEligibilityByCourse(String courseID);
+	public CourseGradeEligibility getCourseGradeEligibilityByCourseId(String courseID);
 }

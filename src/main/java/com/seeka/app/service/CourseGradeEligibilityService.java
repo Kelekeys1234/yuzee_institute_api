@@ -1,4 +1,5 @@
 package com.seeka.app.service;import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,12 @@ public class CourseGradeEligibilityService implements ICourseGradeEligibilitySer
 	
 	@Override
 	public CourseGradeEligibility get(String id) {
-		return iCourseGradeEligibilityDAO.get(id);
+		Optional<CourseGradeEligibility> courseGradeEligibility = iCourseGradeEligibilityDAO.get(id);
+		if (courseGradeEligibility.isPresent()) {
+			return courseGradeEligibility.get();
+		} else  {
+			return null;
+		}
 	}
 	
 	@Override
@@ -35,8 +41,8 @@ public class CourseGradeEligibilityService implements ICourseGradeEligibilitySer
 	} 
 	
 	@Override
-	public CourseGradeEligibility getAllEnglishEligibilityByCourse(String courseID) {
-		return iCourseGradeEligibilityDAO.getAllEnglishEligibilityByCourse(courseID);
+	public CourseGradeEligibility getCourseGradeEligibilityByCourseId(String courseId) {
+		return iCourseGradeEligibilityDAO.getCourseGradeEligibilityByCourseId(courseId);
 	}
 	
 }

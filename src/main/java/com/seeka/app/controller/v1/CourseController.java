@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +42,7 @@ import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
+import com.seeka.app.dto.CourseMobileDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -750,5 +753,45 @@ public class CourseController {
 		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
 		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 		
+	}
+	
+	@PostMapping(value = "/mobile/{instituteId}")
+	public ResponseEntity<?> addCourseViaMobile(@RequestHeader("userId") final String userId,@PathVariable final String instituteId, @Valid @RequestBody CourseMobileDto courseMobileDto) throws Exception {
+		courseService.addMobileCourse(userId, instituteId, courseMobileDto);
+		return new GenericResponseHandlers.Builder()
+				.setMessage("Mobile course added successfully").setStatus(HttpStatus.OK)
+				.create();
+	}
+	
+	@PutMapping(value = "/mobile/{courseId}")
+	public ResponseEntity<?> updateCourseViaMobile(@RequestHeader("userId") final String userId,@PathVariable final String courseId, @Valid @RequestBody CourseMobileDto courseMobileDto) throws Exception {
+		courseService.updateMobileCourse(userId, courseId, courseMobileDto);
+		return new GenericResponseHandlers.Builder()
+				.setMessage("Mobile course updated successfully").setStatus(HttpStatus.OK)
+				.create();
+	}
+	
+	@GetMapping(value = "/mobile/{instituteId}")
+	public ResponseEntity<?> getCourseViaMobile(@RequestHeader("userId") final String userId,@PathVariable final String instituteId,@RequestParam(name = "faculty_id" ,required = true) final String facultyId,@RequestParam(name = "status" ,required = true) final boolean status) throws Exception {
+		List<CourseMobileDto> listOfMobileCourseResponseDto = courseService.getAllMobileCourseByInstituteIdAndFacultyIdAndStatus(userId, instituteId, facultyId, status);
+		return new GenericResponseHandlers.Builder().setData(listOfMobileCourseResponseDto)
+				.setMessage("Mobile course fetched successfully").setStatus(HttpStatus.OK)
+				.create();
+	}
+
+	@GetMapping(value = "/public/mobile/{instituteId}")
+	public ResponseEntity<?> getCourseViaMobile(@PathVariable final String instituteId,@RequestParam(name = "faculty_id" ,required = true) final String facultyId) throws Exception {
+		List<CourseMobileDto> listOfMobileCourseResponseDto = courseService.getPublicMobileCourseByInstituteIdAndFacultyId(instituteId, facultyId);
+		return new GenericResponseHandlers.Builder().setData(listOfMobileCourseResponseDto)
+				.setMessage("Mobile course fetched successfully").setStatus(HttpStatus.OK)
+				.create();
+	}
+	
+	@PutMapping(value = "/mobile/change/status/{courseId}")
+	public ResponseEntity<?> changeStatus(@RequestHeader("userId") final String userId,@PathVariable final String courseId,@RequestParam(name = "status" ,required = true) final boolean  status) throws Exception {
+		courseService.changeCourseStatus(userId, courseId, status);
+		return new GenericResponseHandlers.Builder()
+				.setMessage("course status changed successfully").setStatus(HttpStatus.OK)
+				.create();
 	}
 }

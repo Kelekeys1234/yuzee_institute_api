@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
+import com.seeka.app.dto.CourseMobileDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -69,8 +71,11 @@ import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 @Service
 @Transactional
+@CommonsLog
 public class CourseService implements ICourseService {
 
 	@Autowired
@@ -80,7 +85,7 @@ public class CourseService implements ICourseService {
 	private ICourseEnglishEligibilityDAO courseEnglishEligibilityDAO;
 
 	@Autowired
-	private IInstituteDAO dao;
+	private IInstituteDAO iInstituteDAO;
 
 //	@Autowired
 //	private ICountryDAO countryDAO;
@@ -577,7 +582,7 @@ public class CourseService implements ICourseService {
 	private Institute getInstititute(final String instituteId) {
 		Institute institute = null;
 		if (instituteId != null) {
-			institute = dao.get(instituteId);
+			institute = iInstituteDAO.get(instituteId);
 		}
 		return institute;
 	}
@@ -796,7 +801,7 @@ public class CourseService implements ICourseService {
 		Map<String, Object> response = new HashMap<>();
 		List<com.seeka.app.bean.Service> services = new ArrayList<>();
 		try {
-			services = dao.getAllServices();
+			services = iInstituteDAO.getAllServices();
 		} catch (Exception exception) {
 			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.put("message", exception.getCause());
@@ -1030,7 +1035,7 @@ public class CourseService implements ICourseService {
 		gradeDto.setSubjectGrades(subjectGrade);
 		Double averageGPA = educationSystemService.calGpa(gradeDto);
 		CourseGradeEligibility courseGradeEligibility = null;
-		courseGradeEligibility = courseGradeEligibilityDao.getAllEnglishEligibilityByCourse(courseMinRequirementDto.getCourse());
+		courseGradeEligibility = courseGradeEligibilityDao.getCourseGradeEligibilityByCourseId(courseMinRequirementDto.getCourse());
 		if (courseGradeEligibility != null) {
 			courseGradeEligibility.setCountryLevelGpa(averageGPA);
 			courseGradeEligibilityDao.update(courseGradeEligibility);
@@ -1340,4 +1345,144 @@ public class CourseService implements ICourseService {
 		}
 		return courseLevelCount;
 	}
+
+	@Override
+	public void addMobileCourse(String userId, String instituteId, CourseMobileDto courseMobileDto) throws Exception {
+		log.debug("Inside addMobileCourse() method");
+		log.info("Validate user id "+userId+ " have appropriate access for institute id "+instituteId);
+		 // TODO validate user id have appropriate access for institute id 
+		log.info("Getting institute for institute id "+instituteId);
+		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		if (!instituteFromFb.isPresent()) {
+			log.error("No institute found for institute having id "+instituteId);
+			throw new NotFoundException("No institute found for institute having id "+instituteId);
+		}
+		Institute institute = instituteFromFb.get();
+		Course course = new Course();
+		course.setInstitute(institute);
+		course.setName(courseMobileDto.getCourseName());
+		course.setDescription(courseMobileDto.getCourseDescription());
+		course.setUsdDomasticFee(courseMobileDto.getUsdDomesticFee());
+		course.setUsdInternationFee(courseMobileDto.getUsdInternationalFee());
+		course.setDuration(courseMobileDto.getDuration());
+		course.setDurationTime(courseMobileDto.getDurationUnit());
+		course.setIsActive(false);
+		course.setCreatedBy("API");
+		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+		log.info("Fetch faculty with faulty id "+courseMobileDto.getFacultyId());
+		Faculty faculty = getFaculty(courseMobileDto.getFacultyId());
+		if (ObjectUtils.isEmpty(faculty)) {
+			log.error("No faculty found for faculty id "+courseMobileDto.getFacultyId());
+			throw new NotFoundException("No faculty found for faculty id "+courseMobileDto.getFacultyId());
+		}
+		course.setFaculty(faculty);
+		log.info("Creating course grade eligibility");
+		CourseGradeEligibility courseGradeEligibility = new CourseGradeEligibility(courseMobileDto.getGpaRequired(), true,
+				DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), null, "API", "API", null, null);
+		log.info("Association course grade eligibility with course");
+		course.setCourseGradeEligibility(courseGradeEligibility);
+		courseGradeEligibility.setCourse(course);
+		iCourseDAO.save(course);
+	}
+
+	@Override
+	public void updateMobileCourse(String userId, String courseId, CourseMobileDto courseMobileDto) throws Exception {
+		log.debug("Inside updateMobileCourse() method");
+		log.info("Getting course by course id "+courseId);
+		Course course =iCourseDAO.get(courseId);
+		if (ObjectUtils.isEmpty(course)) {
+			log.error("No course found for course having id "+courseId);
+			throw new NotFoundException("No course found for course having id "+courseId);
+		}
+		log.info("Getting institute id from course ");
+		String instituteId = course.getInstitute().getId();
+		log.info("Validate user id "+userId+ " have appropriate access for institute id "+instituteId);
+		 // TODO validate user id have appropriate access for institute id 
+		course.setName(courseMobileDto.getCourseName());
+		course.setDescription(courseMobileDto.getCourseDescription());
+		course.setUsdDomasticFee(courseMobileDto.getUsdDomesticFee());
+		course.setUsdInternationFee(courseMobileDto.getUsdInternationalFee());
+		course.setDuration(courseMobileDto.getDuration());
+		course.setDurationTime(courseMobileDto.getDurationUnit());
+		course.setCreatedBy("API");
+		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+		log.info("Updating course grade eligibility");
+		CourseGradeEligibility courseGradeEligibilityFromDb = course.getCourseGradeEligibility();
+		if (ObjectUtils.isEmpty(courseGradeEligibilityFromDb)) {
+			CourseGradeEligibility courseGradeEligibility = new CourseGradeEligibility(courseMobileDto.getGpaRequired(), true,
+					DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), null, "API", "API", null, null);
+			course.setCourseGradeEligibility(courseGradeEligibility);
+		} else {
+			courseGradeEligibilityFromDb.setGlobalGpa(courseMobileDto.getGpaRequired());
+			courseGradeEligibilityFromDb.setUpdatedBy("API");
+			courseGradeEligibilityFromDb.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+		}
+		iCourseDAO.save(course);
+	} 
+	
+	@Override
+	public List<CourseMobileDto> getAllMobileCourseByInstituteIdAndFacultyIdAndStatus(String userId, String instituteId, String facultyId, boolean status) throws Exception {
+		List<CourseMobileDto> listOfCourseMobileDto = new ArrayList<CourseMobileDto>();
+		log.debug("Inside getAllMobileCourseByInstituteIdAndFacultyId() method");
+		 // TODO validate user id have appropriate access for institute id 
+		log.info("Getting institute for institute id "+instituteId);
+		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		if (!instituteFromFb.isPresent()) {
+			log.error("No institute found for institute having id "+instituteId);
+			throw new NotFoundException("No institute found for institute having id "+instituteId);
+		}
+		log.info("Getting course for institute id "+instituteId+ " having faculty id "+facultyId);
+		List<Course> listOfCourse = iCourseDAO.getAllCourseByInstituteIdAndFacultyIdAndStatus(instituteId, facultyId, status);
+		if (!CollectionUtils.isEmpty(listOfCourse)) {
+			log.info("List of Course not empty creatng response DTO");
+			listOfCourse.stream().forEach(course -> {
+				CourseMobileDto courseMobileDto = new CourseMobileDto(course.getId(), course.getName(), course.getDescription(), course.getFaculty().getId(), 
+						course.getFaculty().getName(), null != course.getCourseGradeEligibility() ? course.getCourseGradeEligibility().getGlobalGpa() : null, course.getUsdDomasticFee(), course.getUsdInternationFee(), course.getDuration(), course.getDurationTime());
+				listOfCourseMobileDto.add(courseMobileDto);
+			});
+		}
+		return listOfCourseMobileDto;
+	}
+	
+	@Override
+	public List<CourseMobileDto> getPublicMobileCourseByInstituteIdAndFacultyId(String instituteId, String facultyId) throws Exception {
+		List<CourseMobileDto> listOfCourseMobileDto = new ArrayList<CourseMobileDto>();
+		log.debug("Inside getPublicMobileCourseByInstituteIdAndFacultyId() method");
+		log.info("Getting institute for institute id "+instituteId);
+		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		if (!instituteFromFb.isPresent()) {
+			log.error("No institute found for institute having id "+instituteId);
+			throw new NotFoundException("No institute found for institute having id "+instituteId);
+		}
+		log.info("Getting course for institute id "+instituteId+ " having faculty id "+facultyId + " and status active");
+		List<Course> listOfCourse = iCourseDAO.getAllCourseByInstituteIdAndFacultyIdAndStatus(instituteId, facultyId, true);
+		if (!CollectionUtils.isEmpty(listOfCourse)) {
+			log.info("List of Course not empty creatng response DTO");
+			listOfCourse.stream().forEach(course -> {
+				CourseMobileDto courseMobileDto = new CourseMobileDto(course.getId(), course.getName(), course.getDescription(), course.getFaculty().getId(), 
+						course.getFaculty().getName(), null != course.getCourseGradeEligibility() ? course.getCourseGradeEligibility().getGlobalGpa() : null, course.getUsdDomasticFee(), course.getUsdInternationFee(), course.getDuration(), course.getDurationTime());
+				listOfCourseMobileDto.add(courseMobileDto);
+			});
+		}
+		return listOfCourseMobileDto;
+	}
+	
+	@Override
+	public void changeCourseStatus (String userId , String courseId, boolean status) throws Exception {
+		log.debug("Inside updateMobileCourse() method");
+		log.info("Getting course by course id "+courseId);
+		Course course =iCourseDAO.get(courseId);
+		if (ObjectUtils.isEmpty(course)) {
+			log.error("No course found for course having id "+courseId);
+			throw new NotFoundException("No course found for course having id "+courseId);
+		}
+		log.info("Getting institute id from course ");
+		String instituteId = course.getInstitute().getId();
+		log.info("Validate user id "+userId+ " have appropriate access for institute id "+instituteId);
+		 // TODO validate user id have appropriate access for institute id 
+		log.info("Changing course having Id "+courseId+ " from status "+course.getIsActive()+ " to "+status );
+		course.setIsActive(status);
+		iCourseDAO.save(course);
+	}
 }
+

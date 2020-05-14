@@ -16,6 +16,7 @@ import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
+import com.seeka.app.dto.CourseMobileDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -148,4 +149,14 @@ public interface ICourseService {
 	double calculateAverageRating(Map<String, Double> googleReviewMap, Map<String, Double> seekaReviewMap, Double courseStar, String instituteId);
 
 	Map<String, Integer> getCourseCountByLevel();
+	
+	public void addMobileCourse(String userId, String instituteId, CourseMobileDto courseMobileDto) throws Exception;
+	
+	public List<CourseMobileDto> getAllMobileCourseByInstituteIdAndFacultyIdAndStatus(String userId, String instituteId, String facultyId, boolean status) throws Exception;
+
+	public void updateMobileCourse(String userId, String courseId, CourseMobileDto courseMobileDto) throws Exception;
+
+	public List<CourseMobileDto> getPublicMobileCourseByInstituteIdAndFacultyId(String instituteId, String facultyId) throws Exception;
+	
+	public void changeCourseStatus (String userId , String courseId, boolean status) throws Exception;
 }

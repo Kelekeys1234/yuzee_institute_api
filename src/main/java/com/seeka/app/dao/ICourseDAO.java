@@ -41,6 +41,10 @@ public interface ICourseDAO {
 	Map<String, Object> getCourse(String courseid);
 
 	List<CourseResponseDto> getCouresesByFacultyId(String facultyId);
+	
+	public List<Course> getAllCourseByInstituteIdAndFacultyIdAndStatus (String instituteId,String facultyId, boolean isActive);
+	
+	public List<Course> getAllCourseByInstituteIdAndFacultyId (String instituteId,String facultyId);
 
 	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 

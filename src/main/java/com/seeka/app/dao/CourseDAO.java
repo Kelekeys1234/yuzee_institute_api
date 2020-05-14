@@ -23,7 +23,7 @@ import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
@@ -50,14 +50,18 @@ import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.CourseSortBy;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.repository.CourseRepository;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.ConvertionUtil;
 import com.seeka.app.util.PaginationUtil;
 
-@Repository
+@Component
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
 public class CourseDAO implements ICourseDAO {
 
+	@Autowired
+	private CourseRepository courseRepository;
+	
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -664,6 +668,7 @@ public class CourseDAO implements ICourseDAO {
 		System.out.println(list);
 	}
 
+	// This is not recommended 
 	@Override
 	public List<CourseResponseDto> getCouresesByFacultyId(final String facultyId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -2109,4 +2114,15 @@ public class CourseDAO implements ICourseDAO {
 		Integer count =  Integer.valueOf(query.uniqueResult().toString());
 		return count;
 	}
+	
+	@Override
+	public List<Course> getAllCourseByInstituteIdAndFacultyIdAndStatus(String instituteId, String facultyId, boolean isActive) {
+		return courseRepository.findByInstituteIdAndFacultyIdAndIsActive(instituteId, facultyId, isActive);
+	}
+
+	@Override
+	public List<Course> getAllCourseByInstituteIdAndFacultyId(String instituteId, String facultyId) {
+		return courseRepository.findByInstituteIdAndFacultyId(instituteId, facultyId);
+	}
+	
 }
