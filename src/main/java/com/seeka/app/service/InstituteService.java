@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.bean.AccrediatedDetail;
@@ -122,7 +123,13 @@ public class InstituteService implements IInstituteService {
 	
 	@Autowired
 	private AccrediatedDetailDao accrediatedDetailDao;
-
+	
+	@Value("${min.radius}")
+	private Integer minRadius;
+	
+	@Value("${max.radius}")
+	private Integer maxRadius;
+	
 	@Override
 	public void save(final Institute institute) {
 		Date today = new Date();
@@ -935,14 +942,46 @@ public class InstituteService implements IInstituteService {
 
 	@Override
 	public List<NearestInstituteDTO> getNearestInstituteList(final Integer pageNumber, final Integer pageSize, final Double latitude, final Double longitude)
-			throws ValidationException {
+			throws Exception {
+		Boolean runMethodAgain = true;
+		Integer initialRadius = minRadius, increaseRadius = 5;
+		List<NearestInstituteDTO> nearestInstituteList = new ArrayList<>();
 		int startIndex = (pageNumber - 1) * pageSize;
-		List<NearestInstituteDTO> nearestInstituteDTOs = dao.getNearestInstituteList(startIndex, pageSize, latitude, longitude);
-		for (NearestInstituteDTO nearestInstituteDTO : nearestInstituteDTOs) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getInstituteId(), ImageCategory.INSTITUTE.toString(), Type.LOGO.name(), "en");
-			nearestInstituteDTO.setInstituteLogoImages(storageDTOList);
+		List<NearestInstituteDTO> nearestInstituteDTOs = dao.getNearestInstituteList(startIndex, pageSize, latitude, longitude, initialRadius);
+		
+		while (runMethodAgain) {
+			if (initialRadius != maxRadius && CollectionUtils.isEmpty(nearestInstituteDTOs)) {
+				runMethodAgain = true;
+				if(initialRadius == minRadius) {
+					initialRadius = initialRadius + 3;
+				} else {
+					initialRadius = initialRadius + increaseRadius;
+					increaseRadius = increaseRadius + 5;
+				}
+				nearestInstituteDTOs = dao.getNearestInstituteList(startIndex, pageSize, latitude, longitude, initialRadius);
+			} else {
+				runMethodAgain = false;
+				for (NearestInstituteDTO nearestInstituteDTO : nearestInstituteDTOs) {
+					NearestInstituteDTO nearestInstitute = new NearestInstituteDTO();
+					nearestInstitute.setInstituteId(nearestInstituteDTO.getInstituteId());
+					nearestInstitute.setInstituteName(nearestInstituteDTO.getInstituteName());
+					nearestInstitute.setTotalCourseCount(nearestInstituteDTO.getTotalCourseCount());
+					nearestInstitute.setMinPriceRange(nearestInstituteDTO.getMaxPriceRange());
+					nearestInstitute.setMaxPriceRange(nearestInstituteDTO.getMinPriceRange());
+					nearestInstitute.setLatitute(nearestInstituteDTO.getLatitute());
+					nearestInstitute.setLongitude(nearestInstituteDTO.getLongitude());
+					nearestInstitute.setWorldRanking(nearestInstituteDTO.getWorldRanking());
+					nearestInstitute.setDomesticRanking(nearestInstituteDTO.getDomesticRanking());
+					nearestInstitute.setStars(nearestInstituteDTO.getStars());
+
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getInstituteId(), 
+							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
+					nearestInstitute.setInstituteLogoImages(storageDTOList);
+					nearestInstituteList.add(nearestInstitute);
+				}
+			}
 		}
-		return nearestInstituteDTOs;
+		return nearestInstituteList;
 	}
 
 	@Override

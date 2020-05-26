@@ -586,7 +586,7 @@ public class InstituteController {
 	@GetMapping(value = "/nearest/pageNumber/{pageNumber}/pageSize/{pageSize}", produces = "application/json")
 	public ResponseEntity<?> getNearestInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(value = "latitude", required = true) final Double latitude,
-			@RequestParam(value = "longitude", required = true) final Double longitude) throws ValidationException {
+			@RequestParam(value = "longitude", required = true) final Double longitude) throws Exception {
 		List<NearestInstituteDTO> nearestInstituteDTOs = instituteService.getNearestInstituteList(pageNumber, pageSize, latitude, longitude);
 		return new GenericResponseHandlers.Builder().setData(nearestInstituteDTOs).setMessage("Nearest Institute Displayed Successfully.")
 				.setStatus(HttpStatus.OK).create();

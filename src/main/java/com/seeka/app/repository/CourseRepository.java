@@ -13,4 +13,6 @@ public interface CourseRepository extends JpaRepository<Course, String>{
 	public List<Course> findByInstituteIdAndFacultyIdAndIsActive (String instituteId , String facultyId, boolean isActive);
 	
 	public List<Course> findByInstituteIdAndFacultyId (String instituteId , String facultyId);
+	
+	public List<Course> findByInstituteId (String instituteId);
 }

@@ -760,18 +760,19 @@ public class InstituteDAO implements IInstituteDAO {
 	}
 
 	@Override
-	public List<NearestInstituteDTO> getNearestInstituteList(final Integer startIndex, final Integer pageSize, final Double latitude, final Double longitude) {
+	public List<NearestInstituteDTO> getNearestInstituteList(final Integer startIndex, final Integer pageSize, final Double latitude, final Double longitude,
+			Integer initialRadius) {
 		Session session = sessionFactory.getCurrentSession();
+		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(course.usd_international_fee),max(course.usd_international_fee),institute.latitute,institute.longitute," + 
+				" 6371 * ACOS(SIN(RADIANS('"+ latitude +"')) * SIN(RADIANS(institute.latitute)) +" + 
+				" COS(RADIANS('"+ latitude +"')) * COS(RADIANS(institute.latitute)) * COS(RADIANS(institute.longitute) -" + 
+				" RADIANS('"+ longitude +"'))) AS distance_in_km,institute.world_ranking,institute.domestic_ranking,MIN(course.stars) as stars" + 
+				" FROM institute institute inner join course on institute.id = course.institute_id where institute.latitute is not null and institute.longitute is not null" + 
+				" and institute.latitute!= " + latitude + " and institute.longitute!= "  + longitude + " group by institute.id" + 
+				" HAVING distance_in_km <= " + initialRadius + " ORDER BY distance_in_km ASC LIMIT "+ startIndex + "," + pageSize;
 
-		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(course.usd_international_fee),max(course.usd_international_fee),institute.latitute,institute.longitute, 111.045 * DEGREES(ACOS(COS(RADIANS('"
-				+ latitude + "'))" + "* COS(RADIANS(institute.latitute))\r\n" + "* COS(RADIANS(institute.longitute) - RADIANS('" + longitude + "'))\r\n"
-				+ "+ SIN(RADIANS('" + latitude + "'))\r\n" + "* SIN(RADIANS(institute.latitute))))\r\n" + "AS distance_in_km\r\n"
-				+ "FROM institute inner join course on institute.id = course.institute_id where institute.latitute is not null and institute.longitute is not null \r\n"
-				+ "and institute.latitute!=" + latitude + " and institute.longitute!=" + longitude + "\r\n" + "group by institute.id\r\n"
-				+ "ORDER BY distance_in_km ASC\r\n" + "LIMIT " + startIndex + "," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
-
 		List<NearestInstituteDTO> nearestInstituteDTOs = new ArrayList<>();
 		for (Object[] row : rows) {
 			NearestInstituteDTO nearestInstituteDTO = new NearestInstituteDTO();
@@ -782,6 +783,9 @@ public class InstituteDAO implements IInstituteDAO {
 			nearestInstituteDTO.setMaxPriceRange((Double) row[4]);
 			nearestInstituteDTO.setLatitute((Double) row[5]);
 			nearestInstituteDTO.setLongitude((Double) row[6]);
+			nearestInstituteDTO.setWorldRanking((Integer) row[8]);
+			nearestInstituteDTO.setDomesticRanking((Integer) row[9]);
+			nearestInstituteDTO.setStars((Integer) row[10]);
 			nearestInstituteDTOs.add(nearestInstituteDTO);
 		}
 		return nearestInstituteDTOs;
@@ -848,5 +852,9 @@ public class InstituteDAO implements IInstituteDAO {
 	@Override
 	public Optional<Institute> getInstituteByInstituteId(String instituteId) {
 		return instituteRepository.findById(instituteId);
+	}
+	
+	public Integer increaseIntitalRadiusCount(Integer initialRadius) {
+		return initialRadius + 2;
 	}
 }

@@ -36,6 +36,7 @@ import com.seeka.app.bean.Level;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.UserMyCourse;
+import com.seeka.app.constant.Type;
 import com.seeka.app.dao.CourseGradeEligibilityDAO;
 import com.seeka.app.dao.CurrencyDAO;
 import com.seeka.app.dao.ICourseDAO;
@@ -57,6 +58,7 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.GlobalData;
 import com.seeka.app.dto.GradeDto;
+import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserCompareCourseResponse;
@@ -67,6 +69,7 @@ import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
+import com.seeka.app.repository.CourseRepository;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -152,6 +155,9 @@ public class CourseService implements ICourseService {
 	
 	@Autowired
 	private ILevelDAO iLevelDao;
+	
+	@Autowired
+	private CourseRepository courseRepository;
 
 	@Override
 	public Course get(final String id) {
@@ -1483,6 +1489,28 @@ public class CourseService implements ICourseService {
 		log.info("Changing course having Id "+courseId+ " from status "+course.getIsActive()+ " to "+status );
 		course.setIsActive(status);
 		iCourseDAO.save(course);
+	}
+	
+	@Override
+	public List<NearestCoursesDto> getCourseByInstituteId(String instituteId) {
+		List<NearestCoursesDto> nearestCourseList = new ArrayList<>();
+		List<Course> courseList = courseRepository.findByInstituteId(instituteId);
+		courseList.stream().forEach(course -> {
+			NearestCoursesDto nearestCoursesDto = new NearestCoursesDto();
+			nearestCoursesDto.setId(course.getId());
+			nearestCoursesDto.setName(course.getName());
+			nearestCoursesDto.setDomesticFee(course.getDomesticFee());
+			nearestCoursesDto.setInternationalFee(course.getInternationalFee());
+			try {
+				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getId(), 
+						ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
+				nearestCoursesDto.setCourseLogoImages(storageDTOList);
+				nearestCourseList.add(nearestCoursesDto);
+			} catch (ValidationException e) {
+				log.error("Exception in calling storage service "+e);
+			}
+		});
+		return nearestCourseList;
 	}
 }
 

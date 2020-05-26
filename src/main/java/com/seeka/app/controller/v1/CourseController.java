@@ -48,6 +48,7 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
@@ -792,6 +793,14 @@ public class CourseController {
 		courseService.changeCourseStatus(userId, courseId, status);
 		return new GenericResponseHandlers.Builder()
 				.setMessage("course status changed successfully").setStatus(HttpStatus.OK)
+				.create();
+	}
+	
+	@GetMapping(value = "/institute/{id}")
+	public ResponseEntity<?> getCourseByInstituteId(@PathVariable final String id) {
+		List<NearestCoursesDto> nearestCourseList = courseService.getCourseByInstituteId(id);
+		return new GenericResponseHandlers.Builder().setData(nearestCourseList)
+				.setMessage("Courses displayed successfully").setStatus(HttpStatus.OK)
 				.create();
 	}
 }
