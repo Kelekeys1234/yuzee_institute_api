@@ -299,6 +299,16 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 				}
 				courseResponseDto.setCourseRanking(course.getWorldRanking());
 				courseResponseDto.setLanguageShortKey(course.getLanguage());
+				courseResponseDto.setCityName(course.getInstitute().getCityName());
+				courseResponseDto.setCountryName(course.getInstitute().getCountryName());
+				courseResponseDto.setLocation(course.getInstitute().getCityName() + "," + course.getInstitute().getCountryName());
+				courseResponseDto.setLatitude(course.getInstitute().getLatitute());
+				courseResponseDto.setLongitude(course.getInstitute().getLongitude());
+				courseResponseDto.setCurrencyCode(course.getCurrency());
+				if(!ObjectUtils.isEmpty(course.getFaculty())) {
+					courseResponseDto.setFacultyId(course.getFaculty().getId());
+					courseResponseDto.setFacultyName(course.getFaculty().getName());
+				}
 				try { 
 					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 					courseResponseDto.setStorageList(storageDTOList);

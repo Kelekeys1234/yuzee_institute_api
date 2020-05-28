@@ -16,6 +16,7 @@ import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.LatLongDto;
 import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.exception.ValidationException;
 
@@ -89,5 +90,7 @@ public interface IInstituteService {
 	public List<InstituteResponseDto> getDistinctInstituteList(Integer startIndex, Integer pageSize, String instituteName);
 	
 	public int getDistinctInstituteCount(String instituteName);
+	
+	public List<NearestInstituteDTO> getInstitutesUnderBoundRegion(Integer pageNumber, Integer pageSize, List<LatLongDto> latLongDtos) throws ValidationException;
 
 }

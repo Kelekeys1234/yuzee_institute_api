@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,7 @@ import com.seeka.app.bean.Todo;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.InstituteCampusDto;
 import com.seeka.app.dto.InstituteRequestDto;
+import com.seeka.app.dto.LatLongDto;
 import com.seeka.app.dto.TodoDto;
 
 public class CommonUtil {
@@ -442,4 +444,30 @@ public class CommonUtil {
 		state.setUpdatedDate(new Date());
 		return state;
 	}*/
+	
+	public static LatLongDto getCenterByLatituteAndLongitude(List<LatLongDto> latLongDtos) {
+		LatLongDto centerLatLong = new LatLongDto();
+		double pi = Math.PI / 180;
+		double xpi = 180 / Math.PI;
+		double x = 0, y = 0, z = 0;
+		for (LatLongDto latLong : latLongDtos) {
+			double latitude = latLong.getLatitude() * pi;
+			double longitude = latLong.getLongitude() * pi;
+			double c1 = Math.cos(latitude);
+			x = x + c1 * Math.cos(longitude);
+			y = y + c1 * Math.sin(longitude);
+			z = z + Math.sin(latitude);
+		}
+		int total = latLongDtos.size();
+		x = x / total;
+		y = y / total;
+		z = z / total;
+
+		double centralLongitude = Math.atan2(y, x);
+		double centralSquareRoot = Math.sqrt(x * x + y * y);
+		double centralLatitude = Math.atan2(z, centralSquareRoot);
+		centerLatLong.setLatitude(centralLatitude * xpi);
+		centerLatLong.setLongitude(centralLongitude * xpi);
+		return centerLatLong;
+	}
 }

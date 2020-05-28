@@ -54,6 +54,7 @@ import com.seeka.app.dto.InstituteMedia;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.LatLongDto;
 import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
@@ -973,6 +974,7 @@ public class InstituteService implements IInstituteService {
 					nearestInstitute.setWorldRanking(nearestInstituteDTO.getWorldRanking());
 					nearestInstitute.setDomesticRanking(nearestInstituteDTO.getDomesticRanking());
 					nearestInstitute.setStars(nearestInstituteDTO.getStars());
+					nearestInstitute.setCurrency(nearestInstituteDTO.getCurrency());
 
 					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getInstituteId(), 
 							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
@@ -992,5 +994,40 @@ public class InstituteService implements IInstituteService {
 	@Override
 	public int getDistinctInstituteCount(String instituteName) {
 		return dao.getDistinctInstituteCountByName(instituteName);
+	}
+
+	@Override
+	public List<NearestInstituteDTO> getInstitutesUnderBoundRegion(Integer pageNumber, Integer pageSize, List<LatLongDto> latLongDtos) throws ValidationException {
+		List<NearestInstituteDTO> nearestInstituteList = new ArrayList<>();
+		LatLongDto centerLatAndLong = CommonUtil.getCenterByLatituteAndLongitude(latLongDtos);
+		int radius = (int) (6371 * Math.acos(
+		        Math.sin(latLongDtos.get(0).getLatitude()) * Math.sin(latLongDtos.get(1).getLatitude())
+		        + Math.cos(latLongDtos.get(0).getLatitude()) * Math.cos(latLongDtos.get(1).getLatitude()) 
+		        * Math.cos(latLongDtos.get(0).getLongitude() - latLongDtos.get(1).getLongitude())));
+		
+		int startIndex = (pageNumber - 1) * pageSize;
+		List<NearestInstituteDTO> nearestInstituteDTOs = dao.getNearestInstituteList(startIndex, pageSize, centerLatAndLong.getLatitude(),
+				centerLatAndLong.getLongitude(), radius);
+		
+		for (NearestInstituteDTO nearestInstituteDTO : nearestInstituteDTOs) {
+			NearestInstituteDTO nearestInstitute = new NearestInstituteDTO();
+			nearestInstitute.setInstituteId(nearestInstituteDTO.getInstituteId());
+			nearestInstitute.setInstituteName(nearestInstituteDTO.getInstituteName());
+			nearestInstitute.setTotalCourseCount(nearestInstituteDTO.getTotalCourseCount());
+			nearestInstitute.setMinPriceRange(nearestInstituteDTO.getMaxPriceRange());
+			nearestInstitute.setMaxPriceRange(nearestInstituteDTO.getMinPriceRange());
+			nearestInstitute.setLatitute(nearestInstituteDTO.getLatitute());
+			nearestInstitute.setLongitude(nearestInstituteDTO.getLongitude());
+			nearestInstitute.setWorldRanking(nearestInstituteDTO.getWorldRanking());
+			nearestInstitute.setDomesticRanking(nearestInstituteDTO.getDomesticRanking());
+			nearestInstitute.setStars(nearestInstituteDTO.getStars());
+			nearestInstitute.setCurrency(nearestInstituteDTO.getCurrency());
+
+			/*List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getInstituteId(), 
+					ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
+			nearestInstitute.setInstituteLogoImages(storageDTOList);*/
+			nearestInstituteList.add(nearestInstitute);
+		}
+		return nearestInstituteList;
 	}
 }

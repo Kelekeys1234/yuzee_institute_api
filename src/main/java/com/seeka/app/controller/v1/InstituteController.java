@@ -34,6 +34,7 @@ import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteTypeDto;
+import com.seeka.app.dto.LatLongDto;
 import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.dto.PaginationUtilDto;
@@ -611,6 +612,14 @@ public class InstituteController {
 		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
 		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
 		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "/bounded/area/pageNumber/{pageNumber}/pageSize/{pageSize}",  produces = "application/json")
+	public ResponseEntity<?> getBoundedInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize, 
+			@RequestBody List<LatLongDto> latLongDto) throws ValidationException {
+		List<NearestInstituteDTO> nearestInstituteList = instituteService.getInstitutesUnderBoundRegion(pageNumber, pageSize, latLongDto);
+		return new GenericResponseHandlers.Builder().setData(nearestInstituteList)
+				.setMessage("Institute Displayed Successfully").setStatus(HttpStatus.OK).create();
 	}
 
 }
