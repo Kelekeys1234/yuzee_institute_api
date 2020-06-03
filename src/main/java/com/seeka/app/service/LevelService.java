@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Level;
 import com.seeka.app.dao.ILevelDAO;
+import com.seeka.app.dto.LevelDto;
 
 @Service
 @Transactional
@@ -58,7 +59,7 @@ public class LevelService implements ILevelService {
     @Override
     public Map<String, Object> getCountryLevel(String countryId) {
         Map<String, Object> response = new HashMap<>();
-        List<Level> levels = new ArrayList<Level>();
+        List<LevelDto> levels = new ArrayList<LevelDto>();
         try {
             levels = dao.getCountryLevel(countryId);
             if (levels != null && !levels.isEmpty()) {

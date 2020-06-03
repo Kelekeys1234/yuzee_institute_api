@@ -3,6 +3,7 @@ package com.seeka.app.dao;
 import java.util.List;
 
 import com.seeka.app.bean.Faculty;
+import com.seeka.app.dto.FacultyDto;
 
 public interface IFacultyDAO {
 
@@ -22,7 +23,7 @@ public interface IFacultyDAO {
 
 	List<Faculty> getFacultyByListOfInstituteId(String instituteId);
 
-	List<Faculty> getCourseFaculty(String countryId, String levelId);
+	List<FacultyDto> getCourseFaculty(String countryId, String levelId);
 
 	List<Faculty> getFacultyListByFacultyNames(List<String> facultyNameList);
 	

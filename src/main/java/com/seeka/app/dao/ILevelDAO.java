@@ -3,6 +3,7 @@ package com.seeka.app.dao;
 import java.util.List;
 
 import com.seeka.app.bean.Level;
+import com.seeka.app.dto.LevelDto;
 
 public interface ILevelDAO {
 
@@ -20,7 +21,7 @@ public interface ILevelDAO {
 
     public List<Level> getAllLevelByCountry();
 
-    public List<Level> getCountryLevel(String countryId);
+    public List<LevelDto> getCountryLevel(String countryId);
 
 	List<String> getAllLevelNamesByInstituteId(String instituteId);
 }

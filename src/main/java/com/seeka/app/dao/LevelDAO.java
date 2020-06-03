@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Level;
+import com.seeka.app.dto.LevelDto;
 
 @Repository
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
@@ -101,16 +102,15 @@ public class LevelDAO implements ILevelDAO {
     }
 
     @Override
-    public List<Level> getCountryLevel(String countryId) {
+    public List<LevelDto> getCountryLevel(String countryId) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery(
-                        "select distinct ll.id, ll.name as name,ll.code as levelkey from course c inner join institute_level il on il.institute_id = c.institute_id inner join level ll on il.level_id = ll.id "
-                                        + "inner join institute inst on inst.id = c.institute_id where inst.country_name = :countryId")
+        Query query = session.createSQLQuery("select ll.id, ll.name as name,ll.code as levelkey from level ll inner join institute_level il on il.level_id = ll.id" + 
+        		" inner join institute i on i.id = il.institute_id where i.country_name =:countryId")
                         .setParameter("countryId", countryId);
         List<Object[]> rows = query.list();
-        List<Level> level = new ArrayList<>();
+        List<LevelDto> level = new ArrayList<>();
         for (Object[] row : rows) {
-            Level obj = new Level();
+        	LevelDto obj = new LevelDto();
             obj.setId(row[0].toString());
             obj.setName(row[1].toString());
             obj.setCode(row[2].toString());

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.FacultyLevel;
+import com.seeka.app.dto.FacultyDto;
 import com.seeka.app.service.IFacultyLevelService;
 import com.seeka.app.service.IFacultyService;
 import com.seeka.app.util.IConstant;
@@ -108,7 +109,7 @@ public class FacultyController {
     @RequestMapping(value = "/course/country/{countryId}/level/{levelId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getCourseFaculty(@PathVariable String countryId, @PathVariable String levelId) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<Faculty> facultyList = facultyService.getCourseFaculty(countryId, levelId);
+        List<FacultyDto> facultyList = facultyService.getCourseFaculty(countryId, levelId);
         response.put("status", 1);
         response.put("message", "Success.!");
         response.put("facultyList", facultyList);

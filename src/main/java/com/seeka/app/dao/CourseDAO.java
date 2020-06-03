@@ -33,7 +33,6 @@ import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.Level;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.dto.AdvanceSearchDto;
@@ -45,8 +44,10 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
+import com.seeka.app.dto.FacultyDto;
 import com.seeka.app.dto.GlobalFilterSearchDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.LevelDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.CourseSortBy;
 import com.seeka.app.exception.ValidationException;
@@ -1536,12 +1537,12 @@ public class CourseDAO implements ICourseDAO {
 			if (row != null) {
 				countryDto.setName(row);
 			}
-			List<Level> levels = levelDAO.getCountryLevel(countryDto.getName());
-			for (Level level : levels) {
-				List<Faculty> facultyList = dao.getCourseFaculty(countryDto.getName(), level.getId());
-				level.setFacultyList(facultyList);
+			List<LevelDto> levels = levelDAO.getCountryLevel(countryDto.getName());
+			for (LevelDto level : levels) {
+				List<FacultyDto> facultyList = dao.getCourseFaculty(countryDto.getName(), level.getId());
+				level.setFaculty(facultyList);
 			}
-			countryDto.setLevelList(levels);
+			countryDto.setLevels(levels);
 			countryDtos.add(countryDto);
 		}
 		return countryDtos;

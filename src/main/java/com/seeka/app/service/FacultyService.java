@@ -9,6 +9,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.dao.IFacultyDAO;
+import com.seeka.app.dto.FacultyDto;
 import com.seeka.app.util.CDNServerUtil;
 
 @Service
@@ -72,7 +73,7 @@ public class FacultyService implements IFacultyService {
 	}
 
 	@Override
-	public List<Faculty> getCourseFaculty(final String countryId, final String levelId) {
+	public List<FacultyDto> getCourseFaculty(final String countryId, final String levelId) {
 		return dao.getCourseFaculty(countryId, levelId);
 	}
 

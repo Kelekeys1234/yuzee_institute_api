@@ -1,6 +1,7 @@
 package com.seeka.app.service;import java.util.List;
 
 import com.seeka.app.bean.Faculty;
+import com.seeka.app.dto.FacultyDto;
 
 public interface IFacultyService {
 
@@ -20,7 +21,7 @@ public interface IFacultyService {
 
     public List<Faculty> getFacultyByListOfInstituteId(String instituteId);
 
-    public List<Faculty> getCourseFaculty(String countryId, String levelId);
+    public List<FacultyDto> getCourseFaculty(String countryId, String levelId);
     
     List<Faculty> getFacultyListByName(List<String> facultyNames);
     

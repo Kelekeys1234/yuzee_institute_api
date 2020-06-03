@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Faculty;
+import com.seeka.app.dto.FacultyDto;
 
 @Repository
 @SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
@@ -137,16 +138,16 @@ public class FacultyDAO implements IFacultyDAO {
 	}
 
 	@Override
-	public List<Faculty> getCourseFaculty(final String countryId, final String levelId) {
+	public List<FacultyDto> getCourseFaculty(final String countryId, final String levelId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
 				"select distinct f.id, f.name as facultyName, il.level_id as levelid from course c inner join institute_level il on c.institute_id = il.institute_id inner join faculty f on c.faculty_id= f.id where il.country_name = :countryId and il.level_id = :levelId")
 				.setParameter("countryId", countryId).setParameter("levelId", levelId);
 		List<Object[]> rows = query.list();
-		List<Faculty> faculties = new ArrayList<>();
-		Faculty obj = null;
+		List<FacultyDto> faculties = new ArrayList<>();
+		FacultyDto obj = null;
 		for (Object[] row : rows) {
-			obj = new Faculty();
+			obj = new FacultyDto();
 			obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			faculties.add(obj);

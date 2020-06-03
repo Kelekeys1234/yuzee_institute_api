@@ -21,4 +21,6 @@ public class NearestInstituteDTO implements Serializable {
 	private Integer domesticRanking;
 	private Integer stars;
 	private String currency;
+	private String countryName;
+	private String cityName;
 }
