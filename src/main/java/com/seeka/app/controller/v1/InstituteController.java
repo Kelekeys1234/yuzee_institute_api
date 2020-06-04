@@ -28,6 +28,7 @@ import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.bean.Service;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteFilterDto;
@@ -584,11 +585,9 @@ public class InstituteController {
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@GetMapping(value = "/nearest/pageNumber/{pageNumber}/pageSize/{pageSize}", produces = "application/json")
-	public ResponseEntity<?> getNearestInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(value = "latitude", required = true) final Double latitude,
-			@RequestParam(value = "longitude", required = true) final Double longitude) throws Exception {
-		List<NearestInstituteDTO> nearestInstituteDTOs = instituteService.getNearestInstituteList(pageNumber, pageSize, latitude, longitude);
+	@PostMapping(value = "/nearest", produces = "application/json")
+	public ResponseEntity<?> getNearestInstituteList(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception {
+		List<NearestInstituteDTO> nearestInstituteDTOs = instituteService.getNearestInstituteList(courseSearchDto);
 		return new GenericResponseHandlers.Builder().setData(nearestInstituteDTOs).setMessage("Nearest Institute Displayed Successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

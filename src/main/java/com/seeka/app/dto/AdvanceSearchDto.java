@@ -29,7 +29,26 @@ public class AdvanceSearchDto {
 	private List<String> partFulls;
 	private List<String> deliveryMethods;
 	private String instituteId;	
+	private Double latitude;
+	private Double longitude;
+	private Integer initialRadius;
 	
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
 	public List<String> getPartFulls() {
 		return partFulls;
 	}
@@ -318,6 +337,14 @@ public class AdvanceSearchDto {
 				.append(", partFulls=").append(partFulls).append(", deliveryMethods=").append(deliveryMethods).append(", instituteId=").append(instituteId)
 				.append("]");
 		return builder.toString();
+	}
+
+	public Integer getInitialRadius() {
+		return initialRadius;
+	}
+
+	public void setInitialRadius(Integer initialRadius) {
+		this.initialRadius = initialRadius;
 	}
 
 }

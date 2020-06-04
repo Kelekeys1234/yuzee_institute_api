@@ -19,8 +19,9 @@ public class NearestInstituteDTO implements Serializable {
 	private List<StorageDto> instituteLogoImages;
 	private Integer worldRanking;
 	private Integer domesticRanking;
-	private Integer stars;
+	private Double stars;
 	private String currency;
 	private String countryName;
 	private String cityName;
+	private Integer radius;
 }

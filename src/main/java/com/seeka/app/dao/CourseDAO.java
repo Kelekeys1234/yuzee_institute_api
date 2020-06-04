@@ -48,6 +48,7 @@ import com.seeka.app.dto.FacultyDto;
 import com.seeka.app.dto.GlobalFilterSearchDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.LevelDto;
+import com.seeka.app.dto.NearestCourseResponseDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.CourseSortBy;
 import com.seeka.app.exception.ValidationException;
@@ -2124,6 +2125,96 @@ public class CourseDAO implements ICourseDAO {
 	@Override
 	public List<Course> getAllCourseByInstituteIdAndFacultyId(String instituteId, String facultyId) {
 		return courseRepository.findByInstituteIdAndFacultyId(instituteId, facultyId);
+	}
+
+	@Override
+	public List<NearestCourseResponseDto> getNearestCourseForAdvanceSearch(AdvanceSearchDto courseSearchDto) {
+		Session session = sessionFactory.getCurrentSession();
+		String sqlQuery = "SELECT crs.id as courseId,crs.name as courseName,crs.world_ranking,avg(crs.stars) as stars, crs.duration, crs.duration_time, crs.`language`, inst.id, inst.name as instituteName," + 
+				" crs.cost_range, crs.domestic_fee, crs.international_fee, inst.country_name, inst.city_name, crs.currency, inst.latitute,inst.longitute," + 
+				" 6371 * ACOS(SIN(RADIANS('"+ courseSearchDto.getLatitude() +"')) * SIN(RADIANS(inst.latitute)) + COS(RADIANS('"+ courseSearchDto.getLatitude() +"')) * COS(RADIANS(inst.latitute)) * COS(RADIANS(inst.longitute)-" + 
+				" RADIANS('"+ courseSearchDto.getLongitude() +"'))) AS distance_in_km FROM course crs inner join institute inst on inst.id = crs.institute_id inner join faculty f on f.id = crs.faculty_id" + 
+				" LEFT JOIN institute_service iis on iis.institute_id = inst.id where inst.latitute is not null and inst.longitute is not null and inst.latitute!= " + courseSearchDto.getLatitude() +
+				" and inst.longitute!= " + courseSearchDto.getLongitude();
+		
+		sqlQuery = addCondition(sqlQuery, courseSearchDto);
+		
+	    sqlQuery += " group by crs.id HAVING distance_in_km <= " + courseSearchDto.getInitialRadius();
+		
+		String sortingQuery = "";
+		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
+			sortingQuery = addSorting(sortingQuery, courseSearchDto);
+		}
+		
+		if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
+			PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+			sqlQuery += sortingQuery + " LIMIT " + PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage()) + " ,"
+					+ courseSearchDto.getMaxSizePerPage();
+		} else {
+			sqlQuery += sortingQuery;
+		}
+		System.out.println(sqlQuery);
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		List<NearestCourseResponseDto> nearestCourseDTOs = new ArrayList<>();
+		for (Object[] row : rows) {
+			NearestCourseResponseDto nearestCourseDTO = new NearestCourseResponseDto();
+			nearestCourseDTO.setId((String.valueOf(row[0])));
+			nearestCourseDTO.setName(String.valueOf(row[1]));
+			nearestCourseDTO.setCourseRanking((Integer) row[2]);
+			nearestCourseDTO.setStars(((BigDecimal) row[3]).doubleValue());
+			nearestCourseDTO.setDuration((Double) row[4]);
+			nearestCourseDTO.setDurationTime((String) row[5]);
+			nearestCourseDTO.setLanguage((String) row[6]);
+			nearestCourseDTO.setInstituteId((String) row[7]);
+			nearestCourseDTO.setInstituteName((String) row[8]);
+			nearestCourseDTO.setCostRange((Double) row[9]);
+			nearestCourseDTO.setDomesticFee((Double) row[10]);
+			nearestCourseDTO.setInternationalFee((Double) row[11]);
+			nearestCourseDTO.setCountryName((String) row[12]);
+			nearestCourseDTO.setCityName((String) row[13]);
+			nearestCourseDTO.setCurrencyCode((String) row[14]);
+			nearestCourseDTO.setLatitude((Double) row[15]);
+			nearestCourseDTO.setLongitude((Double) row[16]);
+			nearestCourseDTOs.add(nearestCourseDTO);
+		}
+		return nearestCourseDTOs;
+	}
+
+	@Override
+	public List<NearestCourseResponseDto> getCourseByCountryName(Integer pageNumber, Integer pageSize, String countryName) {
+		Session session = sessionFactory.getCurrentSession();
+		String sqlQuery = "Select DISTINCT crs.id as courseId, crs.name as courseName, crs.world_ranking,avg(crs.stars) as stars, crs.duration,"
+				+ " crs.duration_time, crs.`language`, institute.id, institute.name as instituteName,"
+				+ " crs.cost_range, crs.domestic_fee, crs.international_fee, institute.country_name, institute.city_name, "
+				+ " crs.currency, institute.latitute,institute.longitute from course crs left join institute institute on crs.institute_id ="
+				+ " institute.id where institute.country_name = '"+ countryName + "' GROUP BY crs.id limit "+ PaginationUtil.getStartIndex(pageNumber, pageSize) + " ," + pageSize;
+		
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		List<NearestCourseResponseDto> nearestCourseDTOs = new ArrayList<>();
+		for (Object[] row : rows) {
+			NearestCourseResponseDto nearestCourseDTO = new NearestCourseResponseDto();
+			nearestCourseDTO.setId((String.valueOf(row[0])));
+			nearestCourseDTO.setName(String.valueOf(row[1]));
+			nearestCourseDTO.setCourseRanking((Integer) row[2]);
+			nearestCourseDTO.setStars(((BigDecimal) row[3]).doubleValue());
+			nearestCourseDTO.setDuration((Double) row[4]);
+			nearestCourseDTO.setDurationTime((String) row[5]);
+			nearestCourseDTO.setLanguage((String) row[6]);
+			nearestCourseDTO.setInstituteId((String) row[7]);
+			nearestCourseDTO.setInstituteName((String) row[8]);
+			nearestCourseDTO.setCostRange((Double) row[9]);
+			nearestCourseDTO.setDomesticFee((Double) row[10]);
+			nearestCourseDTO.setInternationalFee((Double) row[11]);
+			nearestCourseDTO.setCountryName((String) row[12]);
+			nearestCourseDTO.setCityName((String) row[13]);
+			nearestCourseDTO.setCurrencyCode((String) row[14]);
+			nearestCourseDTO.setLatitude((Double) row[15]);
+			nearestCourseDTO.setLongitude((Double) row[16]);
+			nearestCourseDTOs.add(nearestCourseDTO);
+		}
+		return nearestCourseDTOs;
 	}
 	
 }

@@ -1,4 +1,4 @@
-package com.seeka.app.repository;
+/*package com.seeka.app.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,3 +10,4 @@ public interface CourseGradeEligibilityRepository extends JpaRepository<CourseGr
 
 	public CourseGradeEligibility findByCourseId (String courseId);
 }
+*/

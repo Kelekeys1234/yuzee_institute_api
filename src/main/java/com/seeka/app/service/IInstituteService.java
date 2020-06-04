@@ -11,6 +11,7 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteDomesticRankingHistory;
 import com.seeka.app.bean.InstituteWorldRankingHistory;
+import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
@@ -85,7 +86,7 @@ public interface IInstituteService {
 
 	Map<String, Integer> getDomesticRanking(List<String> instituteIdList);
 
-	List<NearestInstituteDTO> getNearestInstituteList(Integer pageNumber, Integer pageSize, final Double latitude, final Double longitude) throws Exception;
+	List<NearestInstituteDTO> getNearestInstituteList(AdvanceSearchDto courseSearchDto) throws Exception;
 	
 	public List<InstituteResponseDto> getDistinctInstituteList(Integer startIndex, Integer pageSize, String instituteName);
 	

@@ -44,6 +44,7 @@ import com.seeka.app.dao.IInstituteVideoDao;
 import com.seeka.app.dao.IInstituteWorldRankingHistoryDAO;
 import com.seeka.app.dao.ServiceDetailsDAO;
 import com.seeka.app.dto.AccrediatedDetailDto;
+import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ElasticSearchDTO;
 import com.seeka.app.dto.InstituteDetailsGetRequest;
@@ -67,8 +68,11 @@ import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 @Service
 @Transactional
+@CommonsLog
 public class InstituteService implements IInstituteService {
 
 	@Autowired
@@ -942,40 +946,33 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public List<NearestInstituteDTO> getNearestInstituteList(final Integer pageNumber, final Integer pageSize, final Double latitude, final Double longitude)
+	public List<NearestInstituteDTO> getNearestInstituteList(AdvanceSearchDto courseSearchDto)
 			throws Exception {
+	    log.debug("Inside getNearestInstituteList() method");
 		Boolean runMethodAgain = true;
-		Integer initialRadius = minRadius, increaseRadius = 5;
+		Integer initialRadius = courseSearchDto.getInitialRadius();
+		Integer increaseRadius = 25;
 		List<NearestInstituteDTO> nearestInstituteList = new ArrayList<>();
-		int startIndex = (pageNumber - 1) * pageSize;
-		List<NearestInstituteDTO> nearestInstituteDTOs = dao.getNearestInstituteList(startIndex, pageSize, latitude, longitude, initialRadius);
+		log.info("start getting nearest institutes from DB for latitude " + courseSearchDto.getLatitude()
+					+ " and longitude " + courseSearchDto.getLongitude() + " and initial radius is " + initialRadius);
+		List<NearestInstituteDTO> nearestInstituteDTOs = dao.getNearestInstituteListForAdvanceSearch(courseSearchDto);
 		
 		while (runMethodAgain) {
 			if (initialRadius != maxRadius && CollectionUtils.isEmpty(nearestInstituteDTOs)) {
+				log.info("institute is null for initial old radius "+initialRadius + "hence increase initial radius by "+increaseRadius);
 				runMethodAgain = true;
-				if(initialRadius == minRadius) {
-					initialRadius = initialRadius + 3;
-				} else {
-					initialRadius = initialRadius + increaseRadius;
-					increaseRadius = increaseRadius + 5;
-				}
-				nearestInstituteDTOs = dao.getNearestInstituteList(startIndex, pageSize, latitude, longitude, initialRadius);
+				initialRadius = initialRadius + increaseRadius;
+				log.info("institute is null for initial old radius so fetching institutes for new radius "+initialRadius);
+				courseSearchDto.setInitialRadius(initialRadius);
+				nearestInstituteDTOs = dao.getNearestInstituteListForAdvanceSearch(courseSearchDto);
 			} else {
+				log.info("institutes found for new radius "+initialRadius + " hence start iterating data");
 				runMethodAgain = false;
 				for (NearestInstituteDTO nearestInstituteDTO : nearestInstituteDTOs) {
 					NearestInstituteDTO nearestInstitute = new NearestInstituteDTO();
-					nearestInstitute.setInstituteId(nearestInstituteDTO.getInstituteId());
-					nearestInstitute.setInstituteName(nearestInstituteDTO.getInstituteName());
-					nearestInstitute.setTotalCourseCount(nearestInstituteDTO.getTotalCourseCount());
-					nearestInstitute.setMinPriceRange(nearestInstituteDTO.getMaxPriceRange());
-					nearestInstitute.setMaxPriceRange(nearestInstituteDTO.getMinPriceRange());
-					nearestInstitute.setLatitute(nearestInstituteDTO.getLatitute());
-					nearestInstitute.setLongitude(nearestInstituteDTO.getLongitude());
-					nearestInstitute.setWorldRanking(nearestInstituteDTO.getWorldRanking());
-					nearestInstitute.setDomesticRanking(nearestInstituteDTO.getDomesticRanking());
-					nearestInstitute.setStars(nearestInstituteDTO.getStars());
-					nearestInstitute.setCurrency(nearestInstituteDTO.getCurrency());
-
+					BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
+					nearestInstitute.setRadius(initialRadius);
+					log.info("going to fetch logo for institute from sotrage service for institutueID "+nearestInstituteDTO.getInstituteId());
 					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getInstituteId(), 
 							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
 					nearestInstitute.setInstituteLogoImages(storageDTOList);
@@ -998,35 +995,39 @@ public class InstituteService implements IInstituteService {
 
 	@Override
 	public List<NearestInstituteDTO> getInstitutesUnderBoundRegion(Integer pageNumber, Integer pageSize, List<LatLongDto> latLongDtos) throws ValidationException {
+		log.debug("Inside getInstitutesUnderBoundRegion() method");
 		List<NearestInstituteDTO> nearestInstituteList = new ArrayList<>();
+		log.info("finding center of bounded by for user passed latitude and longitude");
 		LatLongDto centerLatAndLong = CommonUtil.getCenterByLatituteAndLongitude(latLongDtos);
+		log.info("finding radius for centerLatitude "+ centerLatAndLong.getLatitude() + "and centerLongitude "+centerLatAndLong.getLongitude());
 		int radius = (int) (6371 * Math.acos(
 		        Math.sin(latLongDtos.get(0).getLatitude()) * Math.sin(latLongDtos.get(1).getLatitude())
 		        + Math.cos(latLongDtos.get(0).getLatitude()) * Math.cos(latLongDtos.get(1).getLatitude()) 
 		        * Math.cos(latLongDtos.get(0).getLongitude() - latLongDtos.get(1).getLongitude())));
 		
 		int startIndex = (pageNumber - 1) * pageSize;
+		log.info("fetching nearest institutes having latitude "+ centerLatAndLong.getLatitude() +"and longitude "+ centerLatAndLong.getLongitude() +
+					" and radius is "+radius);
 		List<NearestInstituteDTO> nearestInstituteDTOs = dao.getNearestInstituteList(startIndex, pageSize, centerLatAndLong.getLatitude(),
 				centerLatAndLong.getLongitude(), radius);
-		
-		for (NearestInstituteDTO nearestInstituteDTO : nearestInstituteDTOs) {
-			NearestInstituteDTO nearestInstitute = new NearestInstituteDTO();
-			nearestInstitute.setInstituteId(nearestInstituteDTO.getInstituteId());
-			nearestInstitute.setInstituteName(nearestInstituteDTO.getInstituteName());
-			nearestInstitute.setTotalCourseCount(nearestInstituteDTO.getTotalCourseCount());
-			nearestInstitute.setMinPriceRange(nearestInstituteDTO.getMaxPriceRange());
-			nearestInstitute.setMaxPriceRange(nearestInstituteDTO.getMinPriceRange());
-			nearestInstitute.setLatitute(nearestInstituteDTO.getLatitute());
-			nearestInstitute.setLongitude(nearestInstituteDTO.getLongitude());
-			nearestInstitute.setWorldRanking(nearestInstituteDTO.getWorldRanking());
-			nearestInstitute.setDomesticRanking(nearestInstituteDTO.getDomesticRanking());
-			nearestInstitute.setStars(nearestInstituteDTO.getStars());
-			nearestInstitute.setCurrency(nearestInstituteDTO.getCurrency());
-
-			/*List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getInstituteId(), 
-					ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
-			nearestInstitute.setInstituteLogoImages(storageDTOList);*/
-			nearestInstituteList.add(nearestInstitute);
+		if(!CollectionUtils.isEmpty(nearestInstituteDTOs)) {
+			log.info("institutes found, start iterating data into list");
+			nearestInstituteDTOs.stream().forEach(nearestInstituteDTO -> {
+				NearestInstituteDTO nearestInstitute = new NearestInstituteDTO();
+				BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
+				try {
+					log.info("calling storage service to fetch logos for institute for instituteID "+nearestInstituteDTO.getInstituteId());
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getInstituteId(), 
+							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
+					nearestInstitute.setInstituteLogoImages(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Error while fetching logos from storage service"+e);
+				}
+				nearestInstituteList.add(nearestInstitute);
+			});
+		} else {
+			log.warn("No institutes found for latitude"+ centerLatAndLong.getLatitude() +"and longitude "+ centerLatAndLong.getLongitude() +
+					" and radius is "+radius);
 		}
 		return nearestInstituteList;
 	}

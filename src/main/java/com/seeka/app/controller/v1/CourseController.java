@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseEnglishEligibility;
-import com.seeka.app.bean.CourseGradeEligibility;
 import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.bean.CourseLanguage;
@@ -48,6 +47,7 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.NearestCourseResponseDto;
 import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.dto.PaginationUtilDto;
@@ -64,7 +64,6 @@ import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.processor.AccrediatedDetailProcessor;
 import com.seeka.app.service.ICourseEnglishEligibilityService;
-import com.seeka.app.service.ICourseGradeEligibilityService;
 import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
@@ -104,8 +103,8 @@ public class CourseController {
 	@Autowired
 	private UserRecommendationService userRecommendationService;
 
-	@Autowired
-	private ICourseGradeEligibilityService courseGradeService;
+//	@Autowired
+//	private ICourseGradeEligibilityService courseGradeService;
 
 	@Autowired
 	private InstituteLevelService instituteLevelService;
@@ -489,7 +488,7 @@ public class CourseController {
 		Date now = new Date();
 
 		CourseEnglishEligibility englishEligibility = null;
-		CourseGradeEligibility courseGradeEligibility = null;
+//		CourseGradeEligibility courseGradeEligibility = null;
 
 		int size = courseList.size(), i = 1;
 
@@ -497,18 +496,18 @@ public class CourseController {
 			System.out.println("Total:  " + size + ",  Completed:  " + i + ",  CourseID:  " + course.getId());
 			i++;
 			try {
-				courseGradeEligibility = new CourseGradeEligibility();
+//				courseGradeEligibility = new CourseGradeEligibility();
 				// courseGradeEligibility.setCourseId(course.getId());
 				// courseGradeEligibility.setGlobalALevel1("A");
 				// courseGradeEligibility.setGlobalALevel2("A");
 				// courseGradeEligibility.setGlobalALevel3("A");
 				// courseGradeEligibility.setGlobalALevel4("A");
-				courseGradeEligibility.setGlobalGpa(3.5);
-				courseGradeEligibility.setIsActive(true);
-				courseGradeEligibility.setIsDeleted(false);
-				courseGradeEligibility.setCreatedBy("AUTO");
-				courseGradeEligibility.setCreatedOn(now);
-				courseGradeService.save(courseGradeEligibility);
+//				courseGradeEligibility.setGlobalGpa(3.5);
+//				courseGradeEligibility.setIsActive(true);
+//				courseGradeEligibility.setIsDeleted(false);
+//				courseGradeEligibility.setCreatedBy("AUTO");
+//				courseGradeEligibility.setCreatedOn(now);
+//				courseGradeService.save(courseGradeEligibility);
 
 				englishEligibility = new CourseEnglishEligibility();
 				englishEligibility.setCourse(course);
@@ -797,10 +796,17 @@ public class CourseController {
 	}
 	
 	@GetMapping(value = "/institute/{id}")
-	public ResponseEntity<?> getCourseByInstituteId(@PathVariable final String id) {
+	public ResponseEntity<?> getCourseByInstituteId(@PathVariable final String id) throws NotFoundException {
 		List<NearestCoursesDto> nearestCourseList = courseService.getCourseByInstituteId(id);
 		return new GenericResponseHandlers.Builder().setData(nearestCourseList)
 				.setMessage("Courses displayed successfully").setStatus(HttpStatus.OK)
 				.create();
+	}
+	
+	@PostMapping(value = "/nearest", produces = "application/json")
+	public ResponseEntity<?> getNearestCourseList(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception {
+		List<NearestCourseResponseDto> courseResponseDtoList = courseService.getNearestCourses(courseSearchDto);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtoList).setMessage("Nearest Courses Displayed Successfully.")
+				.setStatus(HttpStatus.OK).create();
 	}
 }

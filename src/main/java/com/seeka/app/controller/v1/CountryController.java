@@ -1,11 +1,20 @@
 package com.seeka.app.controller.v1;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.dto.NearestCourseResponseDto;
+import com.seeka.app.dto.NearestInstituteDTO;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.service.ICountryService;
 
 @RestController("countryControllerV1")
@@ -194,4 +203,20 @@ public class CountryController {
     public ResponseEntity<?> getCourseCountry() throws Exception {
         return ResponseEntity.accepted().body(countryService.getCourseCountry());
     }
+    
+	@GetMapping(value = "/course/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
+	public ResponseEntity<?> getCourseByCountryName(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
+			@PathVariable String countryName) throws NotFoundException {
+		List<NearestCourseResponseDto> courseResponse = countryService.getCourseByCountryName(countryName, pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setData(courseResponse)
+				.setMessage("Courses displayed successfully").setStatus(HttpStatus.OK).create();
+	}
+
+	@GetMapping(value = "/institute/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
+	public ResponseEntity<?> getInstituteByCountryName(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
+			@PathVariable String countryName) throws NotFoundException {
+		List<NearestInstituteDTO> instituteResponse = countryService.getInstituteByCountryName(countryName, pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setData(instituteResponse)
+				.setMessage("Institutes displayed successfully").setStatus(HttpStatus.OK).create();
+	}
 }

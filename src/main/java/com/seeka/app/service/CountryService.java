@@ -5,20 +5,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import com.seeka.app.bean.Institute;
+import com.seeka.app.constant.Type;
 import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dto.CountryDto;
+import com.seeka.app.dto.NearestCourseResponseDto;
+import com.seeka.app.dto.NearestInstituteDTO;
+import com.seeka.app.dto.StorageDto;
+import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.exception.ValidationException;
+import com.seeka.app.repository.InstituteRepository;
+import com.seeka.app.util.PaginationUtil;
+
+import lombok.extern.apachecommons.CommonsLog;
 
 @Service
 @Transactional
+@CommonsLog
 public class CountryService implements ICountryService {
 
 	@Autowired
 	private ICourseDAO courseDAO;
+	
+	@Autowired
+	private InstituteRepository instituteRepository;
+	
+	@Autowired
+	private IStorageService iStorageService;
 
 	@Override
 	public Map<String, Object> getCourseCountry() {
@@ -39,5 +63,71 @@ public class CountryService implements ICountryService {
 			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 		return response;
+	}
+
+	@Override
+	public List<NearestCourseResponseDto> getCourseByCountryName(String countryName, Integer pageNumber, Integer pageSize) throws NotFoundException {
+		log.debug("Inside getCourseByCountryName() method");
+		List<NearestCourseResponseDto> nearestCourseResponse = new ArrayList<>();
+		log.info("fetching courses from DB for countryName "+ countryName);
+		List<NearestCourseResponseDto> nearestCourseDTOs = courseDAO.getCourseByCountryName(pageNumber, pageSize, countryName);
+		if(!CollectionUtils.isEmpty(nearestCourseDTOs)) {
+			log.info("get data of courses for countryName, so start iterating data");
+			nearestCourseDTOs.stream().forEach(nearestCourseDTO -> {
+				NearestCourseResponseDto nearestCourse = new NearestCourseResponseDto();
+				BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
+				log.info("going to fetch logo for courses from storage service for courseID "+nearestCourseDTO.getId());
+				try {
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestCourseDTO.getId(), 
+							ImageCategory.COURSE.toString(), Type.LOGO.name(),"en");
+					nearestCourse.setStorageList(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Error while fetching logos from storage service"+e);
+				}
+				nearestCourseResponse.add(nearestCourse);
+			});
+		} else {
+			log.error("No course found for countryName "+countryName);
+			throw new NotFoundException("No course found for countryName "+countryName);
+		}
+		return nearestCourseDTOs;
+	}
+
+	@Override
+	public List<NearestInstituteDTO> getInstituteByCountryName(String countryName, Integer pageNumber,Integer pageSize) throws NotFoundException {
+		log.debug("Inside getInstituteByCountryName() method");
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Pageable paging = PageRequest.of(startIndex, pageSize);
+		log.info("fetching institutes from DB for countryName "+ countryName);
+		Page<Institute> instituteList = instituteRepository.findByCountryName(countryName, paging); 
+		List<NearestInstituteDTO> nearestInstituteDTOs = new ArrayList<>();
+		if(!CollectionUtils.isEmpty(instituteList.getContent())) {
+			log.info("institutes found in DB for countryName "+ countryName + " so start iterating data");
+			instituteList.getContent().stream().forEach(institute -> {
+				NearestInstituteDTO nearestInstitute = new NearestInstituteDTO();
+				nearestInstitute.setInstituteId(institute.getId());
+				nearestInstitute.setInstituteName(institute.getName());
+				nearestInstitute.setLatitute(institute.getLatitute());
+				nearestInstitute.setLongitude(institute.getLongitude());
+				nearestInstitute.setWorldRanking(institute.getWorldRanking());
+				nearestInstitute.setDomesticRanking(institute.getDomesticRanking());
+				nearestInstitute.setCountryName(institute.getCountryName());
+				nearestInstitute.setCityName(institute.getCityName());
+				log.info("going to fetch institute logo from storage service having instituteID "+institute.getId());
+				try {
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(institute.getId(), 
+							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
+					nearestInstitute.setInstituteLogoImages(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Error while fetching logos from storage service"+e);
+				}
+				nearestInstituteDTOs.add(nearestInstitute);
+			});
+		} else {
+			log.error("No institutes found for countryName "+countryName);
+			throw new NotFoundException("No institutes found for countryName "+countryName);
+		}
+		
+		return nearestInstituteDTOs;
 	}
 }

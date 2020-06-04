@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,6 @@ import org.springframework.util.ObjectUtils;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseEnglishEligibility;
-import com.seeka.app.bean.CourseGradeEligibility;
 import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CourseMinRequirement;
@@ -37,7 +37,6 @@ import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.constant.Type;
-import com.seeka.app.dao.CourseGradeEligibilityDAO;
 import com.seeka.app.dao.CurrencyDAO;
 import com.seeka.app.dao.ICourseDAO;
 import com.seeka.app.dao.ICourseEnglishEligibilityDAO;
@@ -58,6 +57,7 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.GlobalData;
 import com.seeka.app.dto.GradeDto;
+import com.seeka.app.dto.NearestCourseResponseDto;
 import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
@@ -108,11 +108,11 @@ public class CourseService implements ICourseService {
 	@Autowired
 	private ICourseMinRequirementDao courseMinRequirementDao;
 
-	@Autowired
-	private EducationSystemService educationSystemService;
+//	@Autowired
+//	private EducationSystemService educationSystemService;
 
-	@Autowired
-	private CourseGradeEligibilityDAO courseGradeEligibilityDao;
+//	@Autowired
+//	private CourseGradeEligibilityDAO courseGradeEligibilityDao;
 
 	@Autowired
 	private IStorageService iStorageService;
@@ -158,7 +158,10 @@ public class CourseService implements ICourseService {
 	
 	@Autowired
 	private CourseRepository courseRepository;
-
+	
+	@Value("${max.radius}")
+	private Integer maxRadius;
+	
 	@Override
 	public Course get(final String id) {
 		return iCourseDAO.get(id);
@@ -1039,7 +1042,7 @@ public class CourseService implements ICourseService {
 		gradeDto.setCountryName(courseMinRequirementDto.getCountry());
 		gradeDto.setEducationSystemId(courseMinRequirementDto.getSystem());
 		gradeDto.setSubjectGrades(subjectGrade);
-		Double averageGPA = educationSystemService.calGpa(gradeDto);
+		/*Double averageGPA = educationSystemService.calGpa(gradeDto);
 		CourseGradeEligibility courseGradeEligibility = null;
 		courseGradeEligibility = courseGradeEligibilityDao.getCourseGradeEligibilityByCourseId(courseMinRequirementDto.getCourse());
 		if (courseGradeEligibility != null) {
@@ -1053,7 +1056,7 @@ public class CourseService implements ICourseService {
 			courseGradeEligibility.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 			courseGradeEligibility.setCountryLevelGpa(averageGPA);
 			courseGradeEligibilityDao.save(courseGradeEligibility);
-		}
+		}*/
 	}
 
 	@Override
@@ -1375,6 +1378,7 @@ public class CourseService implements ICourseService {
 		course.setIsActive(false);
 		course.setCreatedBy("API");
 		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+		course.setGlobalGpa(courseMobileDto.getGpaRequired());
 		log.info("Fetch faculty with faulty id "+courseMobileDto.getFacultyId());
 		Faculty faculty = getFaculty(courseMobileDto.getFacultyId());
 		if (ObjectUtils.isEmpty(faculty)) {
@@ -1382,12 +1386,12 @@ public class CourseService implements ICourseService {
 			throw new NotFoundException("No faculty found for faculty id "+courseMobileDto.getFacultyId());
 		}
 		course.setFaculty(faculty);
-		log.info("Creating course grade eligibility");
+		/*log.info("Creating course grade eligibility");
 		CourseGradeEligibility courseGradeEligibility = new CourseGradeEligibility(courseMobileDto.getGpaRequired(), true,
 				DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), null, "API", "API", null, null);
 		log.info("Association course grade eligibility with course");
 		course.setCourseGradeEligibility(courseGradeEligibility);
-		courseGradeEligibility.setCourse(course);
+		courseGradeEligibility.setCourse(course);*/
 		iCourseDAO.save(course);
 	}
 
@@ -1412,7 +1416,8 @@ public class CourseService implements ICourseService {
 		course.setDurationTime(courseMobileDto.getDurationUnit());
 		course.setCreatedBy("API");
 		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-		log.info("Updating course grade eligibility");
+		course.setGlobalGpa(courseMobileDto.getGpaRequired());
+		/*log.info("Updating course grade eligibility");
 		CourseGradeEligibility courseGradeEligibilityFromDb = course.getCourseGradeEligibility();
 		if (ObjectUtils.isEmpty(courseGradeEligibilityFromDb)) {
 			CourseGradeEligibility courseGradeEligibility = new CourseGradeEligibility(courseMobileDto.getGpaRequired(), true,
@@ -1422,7 +1427,7 @@ public class CourseService implements ICourseService {
 			courseGradeEligibilityFromDb.setGlobalGpa(courseMobileDto.getGpaRequired());
 			courseGradeEligibilityFromDb.setUpdatedBy("API");
 			courseGradeEligibilityFromDb.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		}
+		}*/
 		iCourseDAO.save(course);
 	} 
 	
@@ -1443,7 +1448,7 @@ public class CourseService implements ICourseService {
 			log.info("List of Course not empty creatng response DTO");
 			listOfCourse.stream().forEach(course -> {
 				CourseMobileDto courseMobileDto = new CourseMobileDto(course.getId(), course.getName(), course.getDescription(), course.getFaculty().getId(), 
-						course.getFaculty().getName(), null != course.getCourseGradeEligibility() ? course.getCourseGradeEligibility().getGlobalGpa() : null, course.getUsdDomasticFee(), course.getUsdInternationFee(), course.getDuration(), course.getDurationTime());
+						course.getFaculty().getName(), course.getGlobalGpa() , course.getUsdDomasticFee(), course.getUsdInternationFee(), course.getDuration(), course.getDurationTime());
 				listOfCourseMobileDto.add(courseMobileDto);
 			});
 		}
@@ -1466,7 +1471,7 @@ public class CourseService implements ICourseService {
 			log.info("List of Course not empty creatng response DTO");
 			listOfCourse.stream().forEach(course -> {
 				CourseMobileDto courseMobileDto = new CourseMobileDto(course.getId(), course.getName(), course.getDescription(), course.getFaculty().getId(), 
-						course.getFaculty().getName(), null != course.getCourseGradeEligibility() ? course.getCourseGradeEligibility().getGlobalGpa() : null, course.getUsdDomasticFee(), course.getUsdInternationFee(), course.getDuration(), course.getDurationTime());
+						course.getFaculty().getName(), course.getGlobalGpa() , course.getUsdDomasticFee(), course.getUsdInternationFee(), course.getDuration(), course.getDurationTime());
 				listOfCourseMobileDto.add(courseMobileDto);
 			});
 		}
@@ -1492,25 +1497,72 @@ public class CourseService implements ICourseService {
 	}
 	
 	@Override
-	public List<NearestCoursesDto> getCourseByInstituteId(String instituteId) {
+	public List<NearestCoursesDto> getCourseByInstituteId(String instituteId) throws NotFoundException {
+		log.debug("Inside getCourseByInstituteId() method");
 		List<NearestCoursesDto> nearestCourseList = new ArrayList<>();
+		log.info("fetching courses from DB for instituteID "+instituteId);
 		List<Course> courseList = courseRepository.findByInstituteId(instituteId);
-		courseList.stream().forEach(course -> {
-			NearestCoursesDto nearestCoursesDto = new NearestCoursesDto();
-			nearestCoursesDto.setId(course.getId());
-			nearestCoursesDto.setName(course.getName());
-			nearestCoursesDto.setDomesticFee(course.getDomesticFee());
-			nearestCoursesDto.setInternationalFee(course.getInternationalFee());
-			try {
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getId(), 
-						ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
-				nearestCoursesDto.setCourseLogoImages(storageDTOList);
-				nearestCourseList.add(nearestCoursesDto);
-			} catch (ValidationException e) {
-				log.error("Exception in calling storage service "+e);
-			}
-		});
+		if(!CollectionUtils.isEmpty(courseList)) {
+			log.info("if course is not coming null then start iterating data");
+			courseList.stream().forEach(course -> {
+				NearestCoursesDto nearestCoursesDto = new NearestCoursesDto();
+				nearestCoursesDto.setId(course.getId());
+				nearestCoursesDto.setName(course.getName());
+				nearestCoursesDto.setDomesticFee(course.getDomesticFee());
+				nearestCoursesDto.setInternationalFee(course.getInternationalFee());
+				try {
+					log.info("going to fetch logo from storage service for courseId "+course.getId());
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getId(), 
+							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
+					nearestCoursesDto.setCourseLogoImages(storageDTOList);
+					nearestCourseList.add(nearestCoursesDto);
+				} catch (ValidationException e) {
+					log.error("Exception in calling storage service "+e);
+				}
+			});
+		} else {
+			log.error("No course found for instituteId "+instituteId);
+			throw new NotFoundException("No course found for instituteId "+instituteId);
+		}
 		return nearestCourseList;
+	}
+	
+	@Override
+	public List<NearestCourseResponseDto> getNearestCourses(AdvanceSearchDto courseSearchDto)
+			throws ValidationException {
+		log.debug("Inside getNearestCourses() method");
+		List<NearestCourseResponseDto> courseResponseDtoList = new ArrayList<>();
+		Boolean runMethodAgain = true;
+		Integer initialRadius = courseSearchDto.getInitialRadius();
+		Integer increaseRadius = 25;
+		log.info("start getting nearest courses from DB for latitude " + courseSearchDto.getLatitude()
+				+ " and longitude " + courseSearchDto.getLongitude() + " and initial radius is " + initialRadius);
+		List<NearestCourseResponseDto> nearestCourseDTOs = iCourseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
+		while (runMethodAgain) {
+			if (initialRadius != maxRadius && CollectionUtils.isEmpty(nearestCourseDTOs)) {
+				log.info("if data is comming as null from DB then increase radius, new radius is " + initialRadius);
+				runMethodAgain = true;
+				initialRadius = initialRadius + increaseRadius;
+				courseSearchDto.setInitialRadius(initialRadius);
+				log.info("for old radius data is not coming so start fetching nearest courses for new radius " + initialRadius);
+				nearestCourseDTOs = iCourseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
+			} else {
+				log.info("data is coming from DB for radius " + initialRadius);
+				runMethodAgain = false;
+				log.info("start iterating data which is coming from DB");
+				for (NearestCourseResponseDto nearestCourseDTO : nearestCourseDTOs) {
+					NearestCourseResponseDto nearestCourse = new NearestCourseResponseDto();
+					BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
+					nearestCourse.setRadius(initialRadius);
+					log.info("fetching institute logo from storage service for instituteID " + nearestCourseDTO.getId());
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestCourseDTO.getId(),
+							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
+					nearestCourse.setStorageList(storageDTOList);
+					courseResponseDtoList.add(nearestCourse);
+				}
+			}
+		}
+		return courseResponseDtoList;
 	}
 }
 

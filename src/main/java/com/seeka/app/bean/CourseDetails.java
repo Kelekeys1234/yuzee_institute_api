@@ -42,7 +42,7 @@ public class CourseDetails implements Serializable {
 
 	private InstituteLevel instituteLevelObj;
 
-	private CourseGradeEligibility gradeObj;
+	//private CourseGradeEligibility gradeObj;
 	
 	private String intake;
 	private String fileUrl;
@@ -218,17 +218,17 @@ public class CourseDetails implements Serializable {
 	/**
 	 * @return the gradeObj
 	 */
-	@Transient
+	/*@Transient
 	public CourseGradeEligibility getGradeObj() {
 		return gradeObj;
 	}
 
-	/**
+	*//**
 	 * @param gradeObj the gradeObj to set
-	 */
+	 *//*
 	public void setGradeObj(CourseGradeEligibility gradeObj) {
 		this.gradeObj = gradeObj;
-	}
+	}*/
 
 	/*
 	 * (non-Javadoc)
@@ -246,7 +246,6 @@ public class CourseDetails implements Serializable {
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((facultyLevelObj == null) ? 0 : facultyLevelObj.hashCode());
 		result = prime * result + ((facultyObj == null) ? 0 : facultyObj.hashCode());
-		result = prime * result + ((gradeObj == null) ? 0 : gradeObj.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((instituteLevelObj == null) ? 0 : instituteLevelObj.hashCode());
 		result = prime * result + ((partFull == null) ? 0 : partFull.hashCode());
@@ -304,11 +303,6 @@ public class CourseDetails implements Serializable {
 				return false;
 		} else if (!facultyObj.equals(other.facultyObj))
 			return false;
-		if (gradeObj == null) {
-			if (other.gradeObj != null)
-				return false;
-		} else if (!gradeObj.equals(other.gradeObj))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -345,8 +339,7 @@ public class CourseDetails implements Serializable {
 				.append(", studyMode=").append(studyMode).append(", description=").append(description)
 				.append(", coursePricingObj=").append(coursePricingObj).append(", facultyObj=").append(facultyObj)
 				.append(", LevelObj=").append(LevelObj).append(", facultyLevelObj=").append(facultyLevelObj)
-				.append(", instituteLevelObj=").append(instituteLevelObj).append(", gradeObj=").append(gradeObj)
-				.append("]");
+				.append(", instituteLevelObj=").append(instituteLevelObj).append("]");
 		return builder.toString();
 	}
 

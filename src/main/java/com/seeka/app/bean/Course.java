@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,15 +13,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -85,8 +81,13 @@ public class Course implements Serializable {
 	private Double usdInternationFee;
 	private Double usdDomasticFee;
 	private Double costRange;
+	private Boolean fullTimeStudyMode;
+    private Boolean partTimeStudyMode;
+    private Boolean onlineStudyMode;
+    private Boolean blendedStudyMode;
+    private Double globalGpa;
 	
-	private CourseGradeEligibility courseGradeEligibility;
+//	private CourseGradeEligibility courseGradeEligibility;
 
 	public Course() {
 	}
@@ -600,7 +601,52 @@ public class Course implements Serializable {
 		this.costRange = costRange;
 	}
 
-	@JsonIgnore
+	@Column(name = "full_time_study_mode")
+	public Boolean getFullTimeStudyMode() {
+		return fullTimeStudyMode;
+	}
+
+	public void setFullTimeStudyMode(Boolean fullTimeStudyMode) {
+		this.fullTimeStudyMode = fullTimeStudyMode;
+	}
+
+	@Column(name = "part_time_study_mode")
+	public Boolean getPartTimeStudyMode() {
+		return partTimeStudyMode;
+	}
+
+	public void setPartTimeStudyMode(Boolean partTimeStudyMode) {
+		this.partTimeStudyMode = partTimeStudyMode;
+	}
+
+	@Column(name = "online_study_mode")
+	public Boolean getOnlineStudyMode() {
+		return onlineStudyMode;
+	}
+
+	public void setOnlineStudyMode(Boolean onlineStudyMode) {
+		this.onlineStudyMode = onlineStudyMode;
+	}
+
+	@Column(name = "blended_study_mode")
+	public Boolean getBlendedStudyMode() {
+		return blendedStudyMode;
+	}
+
+	public void setBlendedStudyMode(Boolean blendedStudyMode) {
+		this.blendedStudyMode = blendedStudyMode;
+	}
+
+	@Column(name = "global_gpa")
+	public Double getGlobalGpa() {
+		return globalGpa;
+	}
+
+	public void setGlobalGpa(Double globalGpa) {
+		this.globalGpa = globalGpa;
+	}
+
+	/*@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
 	public CourseGradeEligibility getCourseGradeEligibility() {
 		return courseGradeEligibility;
@@ -608,5 +654,5 @@ public class Course implements Serializable {
 
 	public void setCourseGradeEligibility(CourseGradeEligibility courseGradeEligibility) {
 		this.courseGradeEligibility = courseGradeEligibility;
-	}
+	}*/
 }

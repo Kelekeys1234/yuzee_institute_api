@@ -1,4 +1,4 @@
-package com.seeka.app.dao;import java.util.List;
+/*package com.seeka.app.dao;import java.util.List;
 import java.util.Optional;
 
 import com.seeka.app.bean.CourseGradeEligibility;
@@ -11,3 +11,4 @@ public interface ICourseGradeEligibilityDAO {
 	public List<CourseGradeEligibility> getAll();	
 	public CourseGradeEligibility getCourseGradeEligibilityByCourseId(String courseID);
 }
+*/

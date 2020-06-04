@@ -13,12 +13,14 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
+import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.NearestCourseResponseDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.exception.ValidationException;
 
@@ -157,5 +159,9 @@ public interface ICourseDAO {
 	int getDistinctCourseCountbyName(String courseName);
 
 	List<CourseResponseDto> getDistinctCourseListByName(Integer startIndex, Integer pageSize, String courseName);
+	
+	public List<NearestCourseResponseDto> getNearestCourseForAdvanceSearch(AdvanceSearchDto courseSearchDto);
+	
+	public List<NearestCourseResponseDto> getCourseByCountryName(Integer startIndex, Integer pageSize, String countryName);
 
 }
