@@ -13,13 +13,14 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.UserViewData;
 import com.seeka.app.dto.UserCourseView;
 
-@SuppressWarnings("unchecked")
-@Repository
+@Component
+@SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
 public class ViewDao implements IViewDao {
 
 	@Autowired
@@ -159,5 +160,12 @@ public class ViewDao implements IViewDao {
 			result.add(userCourseView);
 		}
 		return result;
+	}
+
+	@Override
+	public List<String> getRandomUserWatchCourseIds(String userId, String entityType, Integer startIndex, Integer pageSize) {
+		Session session = sessionFactory.getCurrentSession();
+		return session.createSQLQuery("Select entity_id from user_view_data where user_id = ? and entity_type = ? ORDER BY rand() LIMIT "+ startIndex + " ," + pageSize)
+				.setParameter(1, userId).setParameter(2, entityType).getResultList();
 	}
 }

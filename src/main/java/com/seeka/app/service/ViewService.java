@@ -125,4 +125,9 @@ public class ViewService implements IViewService {
 			throw new ValidationException("Users country not found");
 		}
 	}
+
+	@Override
+	public List<String> getRandomUserWatchCourseIds(String userId, String entityType, Integer startIndex, Integer pageSize) {
+		return iViewDataDao.getRandomUserWatchCourseIds(userId, entityType, startIndex, pageSize);
+	}
 }

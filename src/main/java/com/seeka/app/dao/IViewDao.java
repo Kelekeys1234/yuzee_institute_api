@@ -25,4 +25,6 @@ public interface IViewDao {
 	List<UserCourseView> userVisistedCourseBasedOncity(String cityId, Date fromDate, Date toDate);
 
 	List<UserCourseView> userVisistedCourseBasedOnCountry(String countryId, Date fromDate, Date toDate);
+	
+	public List<String> getRandomUserWatchCourseIds(String userId, String entityType, Integer startIndex, Integer pageSize);
 }

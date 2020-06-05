@@ -189,7 +189,7 @@ public class CourseDAO implements ICourseDAO {
 		}
 
 		if (courseIds != null) {
-			sqlQuery += " and crs.id in ('" + courseIds.stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
+			sqlQuery += " and crs.id in (" + courseIds.stream().map(String::valueOf).collect(Collectors.joining("','", "'", "'")) + ")";
 		}
 
 		if (searchKeyword != null) {
@@ -1718,7 +1718,7 @@ public class CourseDAO implements ICourseDAO {
 		Session session = sessionFactory.getCurrentSession();
 		String ids = otherCountryIds.stream().map(String::toString).collect(Collectors.joining(","));
 		List<String> courseIdList = session.createNativeQuery("Select c.id from course c left join institute i on i.id = c.institute_id"
-				+ " where i.country_name in ('" + ids + "')").getResultList();
+				+ " where i.country_name in ('" + ids.replace("'", "") + "')").getResultList();
 		return courseIdList;
 	}
 

@@ -26,5 +26,7 @@ public interface IViewService {
 	List<UserCourseView> userVisistedCourseBasedOncity(String cityName, Date fromDate, Date toDate) throws ValidationException;
 
 	List<UserCourseView> userVisistedCourseBasedOnCountry(String countryName, Date fromDate, Date toDate) throws ValidationException;
+	
+	public List<String> getRandomUserWatchCourseIds(String userId, String entityType, Integer startIndex, Integer pageSize);
 
 }

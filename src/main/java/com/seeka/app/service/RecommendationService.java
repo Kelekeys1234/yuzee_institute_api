@@ -15,16 +15,21 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.bean.UserViewData;
+import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dto.ArticleResposeDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.GlobalData;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.MyHistoryDto;
 import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserDto;
@@ -34,7 +39,11 @@ import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.util.IConstant;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 @Service
+@Transactional
+@CommonsLog
 public class RecommendationService implements IRecommendationService {
 
 	@Autowired
@@ -75,6 +84,9 @@ public class RecommendationService implements IRecommendationService {
 
 	@Autowired
 	private IScholarshipService iScholarshipService;
+	
+	@Autowired
+	private IUserMyCourseDAO userMyCourseDAO;
 
 	@Value("${total.scholarship.per.page}")
 	private Integer totalScholarshipPerPage;
@@ -787,4 +799,75 @@ public class RecommendationService implements IRecommendationService {
 		return articleResposeDtolist;
 	}
 
+	@Override
+	public List<MyHistoryDto> getRecommendedMyHistory(String userId) {
+		log.debug("Inside getRecommendedMyHistory() method");
+		List<MyHistoryDto> myHistoryDtos = new ArrayList<>();
+		List<String> userViewCourseIds = null;
+		int courseToDisplay = 10;
+		log.info("fetching courseIDs from usermyCourses table for userId "+userId);
+		List<String> userMyCourseIds = userMyCourseDAO.getDataByUserIDWithPagination(userId, 0, courseToDisplay);
+
+		if (userMyCourseIds.size() < 10) {
+			log.info("if user saved course data is less than 10 then going to fetch user view courses from DB for userId "+userId);
+			courseToDisplay = courseToDisplay - userMyCourseIds.size();
+			userViewCourseIds = viewService.getRandomUserWatchCourseIds(userId, "COURSE", 0, courseToDisplay);
+		}
+
+		if (!CollectionUtils.isEmpty(userMyCourseIds)) {
+			log.info("if user my course are not empty then start fetching courseID from it");
+			userMyCourseIds.stream().forEach(userMyCourseId -> {
+				MyHistoryDto myHistoryDto = new MyHistoryDto();
+				log.info("fetching courses from DB having courseId "+userMyCourseId);
+				Course courseFromDB = iCourseService.getCourseData(userMyCourseId);
+				myHistoryDto.setId(courseFromDB.getId());
+				myHistoryDto.setName(courseFromDB.getName());
+				myHistoryDto.setInstituteId(courseFromDB.getInstitute().getId());
+				myHistoryDto.setInstituteName(courseFromDB.getInstitute().getName());
+				myHistoryDto.setCityName(courseFromDB.getInstitute().getCityName());
+				myHistoryDto.setCountryName(courseFromDB.getInstitute().getCountryName());
+				myHistoryDto.setStars(Double.valueOf(courseFromDB.getStars()));
+				try {
+					log.info("start fetching logos from storage service for institute having instituteID "+courseFromDB.getInstitute().getId());
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseFromDB.getInstitute().getId(), 
+							ImageCategory.INSTITUTE.toString(), null, "en");
+					myHistoryDto.setStorage(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Exception in invoking storage service to fetch institute logos "+e);
+				}
+				myHistoryDtos.add(myHistoryDto);
+			});
+		}
+		
+		if (!CollectionUtils.isEmpty(userViewCourseIds)) {
+			log.info("if user view course are not empty then start fetching courseID from it");
+			userViewCourseIds.stream().forEach(userViewCourseId -> {
+				log.info("checking for duplicacy for courseId in final response");
+				if(!myHistoryDtos.stream().anyMatch(s -> s.getId().equals(userViewCourseId))) {
+					log.info("fetching courses from DB having courseId "+userViewCourseId);
+					Course courseFromDB = iCourseService.getCourseData(userViewCourseId);
+					if(!ObjectUtils.isEmpty(courseFromDB)) {
+						MyHistoryDto myHistoryDto = new MyHistoryDto();
+						myHistoryDto.setId(courseFromDB.getId());
+						myHistoryDto.setName(courseFromDB.getName());
+						myHistoryDto.setInstituteId(courseFromDB.getInstitute().getId());
+						myHistoryDto.setInstituteName(courseFromDB.getInstitute().getName());
+						myHistoryDto.setCityName(courseFromDB.getInstitute().getCityName());
+						myHistoryDto.setCountryName(courseFromDB.getInstitute().getCountryName());
+						myHistoryDto.setStars(Double.valueOf(courseFromDB.getStars()));
+						try {
+							log.info("start fetching logos from storage service for institute having instituteID "+courseFromDB.getInstitute().getId());
+							List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseFromDB.getInstitute().getId(), 
+									ImageCategory.INSTITUTE.toString(), null, "en");
+							myHistoryDto.setStorage(storageDTOList);
+						} catch (ValidationException e) {
+							log.error("Exception in invoking storage service to fetch institute logos "+e);
+						}
+						myHistoryDtos.add(myHistoryDto);
+					}
+				}
+			});
+		}
+		return myHistoryDtos;
+	}
 }

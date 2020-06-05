@@ -7,6 +7,7 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.dto.ArticleResposeDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.MyHistoryDto;
 import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
@@ -29,4 +30,6 @@ public interface IRecommendationService {
 	List<ScholarshipDto> getRecommendedScholarships(String userId, String language) throws ValidationException, NotFoundException;
 
 	List<ArticleResposeDto> getRecommendedArticles(String userId) throws ValidationException;
+	
+	List<MyHistoryDto> getRecommendedMyHistory(String userId);
 }

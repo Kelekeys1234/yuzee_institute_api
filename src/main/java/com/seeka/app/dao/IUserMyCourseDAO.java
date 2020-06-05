@@ -16,4 +16,6 @@ public interface IUserMyCourseDAO {
 	List<UserMyCourse> getDataByUserID(String userId);
 
 	List<String> getAllCourseIdsByUser(String userId);
+	
+	public List<String> getDataByUserIDWithPagination(String userId, Integer startIndex, Integer pageSize);
 }

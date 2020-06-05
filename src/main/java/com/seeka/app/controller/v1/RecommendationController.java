@@ -17,6 +17,7 @@ import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.ArticleResposeDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.MyHistoryDto;
 import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
@@ -112,5 +113,12 @@ public class RecommendationController {
 		if (startIndex == null && pageNumber == null) {
 			throw new ValidationException(messageByLocalService.getMessage("start.index.or.page.number.mandatory", new Object[] {}, language));
 		}
+	}
+	
+	@GetMapping("/myHistory/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getRecommendedMyCourse(@PathVariable Integer pageNumber, @PathVariable Integer pageSize, @RequestHeader(value = "userId") String userId) {
+		List<MyHistoryDto> historyDtos = iRecommendationService.getRecommendedMyHistory(userId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(historyDtos)
+				.setMessage("Courses Displayed successfully").create();
 	}
 }

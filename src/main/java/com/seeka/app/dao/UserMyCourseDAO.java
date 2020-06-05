@@ -8,7 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.UserMyCourse;
 
@@ -17,7 +17,8 @@ import com.seeka.app.bean.UserMyCourse;
  * @author SeekADegree
  *
  */
-@Repository
+@Component
+@SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
 public class UserMyCourseDAO implements IUserMyCourseDAO {
 
 	@Autowired
@@ -70,4 +71,12 @@ public class UserMyCourseDAO implements IUserMyCourseDAO {
 		return rows;
 	}
 
+	@Override
+	public List<String> getDataByUserIDWithPagination(String userId, Integer startIndex, Integer pageSize) {
+		Session session = sessionFactory.getCurrentSession();
+		String sqlQuery = "select course_id from user_my_course where is_active = 1 and user_id ='" + userId + "' ORDER BY RAND() LIMIT "+ startIndex + ", "+pageSize;
+		Query query = session.createSQLQuery(sqlQuery);
+		List<String> rows = query.list();
+		return rows;
+	}
 }
