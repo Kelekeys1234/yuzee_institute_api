@@ -7,24 +7,26 @@ import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import com.seeka.app.bean.Institute;
 import com.seeka.app.constant.Type;
 import com.seeka.app.dao.ICourseDAO;
+import com.seeka.app.dao.IInstituteDAO;
 import com.seeka.app.dto.CountryDto;
-import com.seeka.app.dto.NearestCourseResponseDto;
+import com.seeka.app.dto.CourseResponseDto;
+import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.InstituteResponseDto;
+import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.NearestInstituteDTO;
+import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.repository.CourseRepository;
 import com.seeka.app.repository.InstituteRepository;
 import com.seeka.app.util.PaginationUtil;
 
@@ -43,7 +45,13 @@ public class CountryService implements ICountryService {
 	
 	@Autowired
 	private IStorageService iStorageService;
+	
+	@Autowired
+	private CourseRepository courseRepository;
 
+	@Autowired
+	private IInstituteDAO iInstituteDAO;
+	
 	@Override
 	public Map<String, Object> getCourseCountry() {
 		Map<String, Object> response = new HashMap<>();
@@ -66,15 +74,17 @@ public class CountryService implements ICountryService {
 	}
 
 	@Override
-	public List<NearestCourseResponseDto> getCourseByCountryName(String countryName, Integer pageNumber, Integer pageSize) throws NotFoundException {
+	public NearestCoursesDto getCourseByCountryName(String countryName, Integer pageNumber, Integer pageSize) throws NotFoundException {
 		log.debug("Inside getCourseByCountryName() method");
-		List<NearestCourseResponseDto> nearestCourseResponse = new ArrayList<>();
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<CourseResponseDto> nearestCourseResponse = new ArrayList<>();
 		log.info("fetching courses from DB for countryName "+ countryName);
-		List<NearestCourseResponseDto> nearestCourseDTOs = courseDAO.getCourseByCountryName(pageNumber, pageSize, countryName);
+		List<CourseResponseDto> nearestCourseDTOs = courseDAO.getCourseByCountryName(pageNumber, pageSize, countryName);
+		Long totalCount = courseRepository.getTotalCountOfCourseByCountryName(countryName);
 		if(!CollectionUtils.isEmpty(nearestCourseDTOs)) {
 			log.info("get data of courses for countryName, so start iterating data");
 			nearestCourseDTOs.stream().forEach(nearestCourseDTO -> {
-				NearestCourseResponseDto nearestCourse = new NearestCourseResponseDto();
+				CourseResponseDto nearestCourse = new CourseResponseDto();
 				BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
 				log.info("going to fetch logo for courses from storage service for courseID "+nearestCourseDTO.getId());
 				try {
@@ -86,48 +96,53 @@ public class CountryService implements ICountryService {
 				}
 				nearestCourseResponse.add(nearestCourse);
 			});
-		} else {
-			log.error("No course found for countryName "+countryName);
-			throw new NotFoundException("No course found for countryName "+countryName);
 		}
-		return nearestCourseDTOs;
+		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount.intValue());
+		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto();
+		nearestCoursesPaginationDto.setNearestCourses(nearestCourseResponse);
+		nearestCoursesPaginationDto.setPageNumber(paginationUtilDto.getPageNumber());
+		nearestCoursesPaginationDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		nearestCoursesPaginationDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		nearestCoursesPaginationDto.setTotalPages(paginationUtilDto.getTotalPages());
+		nearestCoursesPaginationDto.setTotalCount(totalCount.intValue());
+		return nearestCoursesPaginationDto;
 	}
 
 	@Override
-	public List<NearestInstituteDTO> getInstituteByCountryName(String countryName, Integer pageNumber,Integer pageSize) throws NotFoundException {
+	public NearestInstituteDTO getInstituteByCountryName(String countryName, Integer pageNumber,Integer pageSize) throws NotFoundException {
 		log.debug("Inside getInstituteByCountryName() method");
-		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		Pageable paging = PageRequest.of(startIndex, pageSize);
+		CourseSearchDto courseSearchDto = new CourseSearchDto();
+		courseSearchDto.setMaxSizePerPage(pageSize);
 		log.info("fetching institutes from DB for countryName "+ countryName);
-		Page<Institute> instituteList = instituteRepository.findByCountryName(countryName, paging); 
-		List<NearestInstituteDTO> nearestInstituteDTOs = new ArrayList<>();
-		if(!CollectionUtils.isEmpty(instituteList.getContent())) {
+		List<InstituteResponseDto> nearestInstituteDTOs = iInstituteDAO.getAllInstitutesByFilter(courseSearchDto, "countryName", 
+					null, countryName, pageNumber, null, null, null, null, null, null, null);
+		Integer totalCount = instituteRepository.getTotalCountOfInstituteByCountryName(countryName);
+		if(!CollectionUtils.isEmpty(nearestInstituteDTOs)) {
 			log.info("institutes found in DB for countryName "+ countryName + " so start iterating data");
-			instituteList.getContent().stream().forEach(institute -> {
-				NearestInstituteDTO nearestInstitute = new NearestInstituteDTO();
-				nearestInstitute.setInstituteId(institute.getId());
-				nearestInstitute.setInstituteName(institute.getName());
-				nearestInstitute.setLatitute(institute.getLatitute());
-				nearestInstitute.setLongitude(institute.getLongitude());
-				nearestInstitute.setWorldRanking(institute.getWorldRanking());
-				nearestInstitute.setDomesticRanking(institute.getDomesticRanking());
-				nearestInstitute.setCountryName(institute.getCountryName());
-				nearestInstitute.setCityName(institute.getCityName());
+			nearestInstituteDTOs.stream().forEach(institute -> {
+				InstituteResponseDto nearestInstitute = new InstituteResponseDto();
+				BeanUtils.copyProperties(institute, nearestInstitute);
 				log.info("going to fetch institute logo from storage service having instituteID "+institute.getId());
 				try {
 					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(institute.getId(), 
 							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
-					nearestInstitute.setInstituteLogoImages(storageDTOList);
+					nearestInstitute.setStorageList(storageDTOList);
 				} catch (ValidationException e) {
 					log.error("Error while fetching logos from storage service"+e);
 				}
 				nearestInstituteDTOs.add(nearestInstitute);
 			});
-		} else {
-			log.error("No institutes found for countryName "+countryName);
-			throw new NotFoundException("No institutes found for countryName "+countryName);
 		}
-		
-		return nearestInstituteDTOs;
+		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
+		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO();
+		institutePaginationResponseDto.setNearestInstitutes(nearestInstituteDTOs);
+		institutePaginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+		institutePaginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		institutePaginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		institutePaginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+		institutePaginationResponseDto.setTotalCount(totalCount);
+		return institutePaginationResponseDto;
 	}
 }

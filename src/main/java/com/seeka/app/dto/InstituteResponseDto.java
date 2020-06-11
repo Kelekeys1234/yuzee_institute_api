@@ -40,9 +40,28 @@ public class InstituteResponseDto implements Serializable {
 	private Integer stars;
 	private Integer domesticRanking;
 	private Double distance;
+	private Double minPriceRange;
+	private Double maxPriceRange;
+	private String currency;
 
 	public Double getDistance() {
 		return distance;
+	}
+
+	public Double getMinPriceRange() {
+		return minPriceRange;
+	}
+
+	public void setMinPriceRange(Double minPriceRange) {
+		this.minPriceRange = minPriceRange;
+	}
+
+	public Double getMaxPriceRange() {
+		return maxPriceRange;
+	}
+
+	public void setMaxPriceRange(Double maxPriceRange) {
+		this.maxPriceRange = maxPriceRange;
 	}
 
 	public void setDistance(final Double distance) {
@@ -605,6 +624,14 @@ public class InstituteResponseDto implements Serializable {
 				.append(", storageList=").append(storageList).append(", isActive=").append(isActive).append(", stars=").append(stars)
 				.append(", domesticRanking=").append(domesticRanking).append(", distance=").append(distance).append("]");
 		return builder.toString();
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
 }

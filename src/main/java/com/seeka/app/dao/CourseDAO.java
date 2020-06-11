@@ -48,7 +48,6 @@ import com.seeka.app.dto.FacultyDto;
 import com.seeka.app.dto.GlobalFilterSearchDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.LevelDto;
-import com.seeka.app.dto.NearestCourseResponseDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.CourseSortBy;
 import com.seeka.app.exception.ValidationException;
@@ -2128,7 +2127,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<NearestCourseResponseDto> getNearestCourseForAdvanceSearch(AdvanceSearchDto courseSearchDto) {
+	public List<CourseResponseDto> getNearestCourseForAdvanceSearch(AdvanceSearchDto courseSearchDto) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "SELECT crs.id as courseId,crs.name as courseName,crs.world_ranking,avg(crs.stars) as stars, crs.duration, crs.duration_time, crs.`language`, inst.id, inst.name as instituteName," + 
 				" crs.cost_range, crs.domestic_fee, crs.international_fee, inst.country_name, inst.city_name, crs.currency, inst.latitute,inst.longitute," + 
@@ -2156,9 +2155,9 @@ public class CourseDAO implements ICourseDAO {
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
-		List<NearestCourseResponseDto> nearestCourseDTOs = new ArrayList<>();
+		List<CourseResponseDto> nearestCourseDTOs = new ArrayList<>();
 		for (Object[] row : rows) {
-			NearestCourseResponseDto nearestCourseDTO = new NearestCourseResponseDto();
+			CourseResponseDto nearestCourseDTO = new CourseResponseDto();
 			nearestCourseDTO.setId((String.valueOf(row[0])));
 			nearestCourseDTO.setName(String.valueOf(row[1]));
 			nearestCourseDTO.setCourseRanking((Integer) row[2]);
@@ -2182,7 +2181,7 @@ public class CourseDAO implements ICourseDAO {
 	}
 
 	@Override
-	public List<NearestCourseResponseDto> getCourseByCountryName(Integer pageNumber, Integer pageSize, String countryName) {
+	public List<CourseResponseDto> getCourseByCountryName(Integer pageNumber, Integer pageSize, String countryName) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "Select DISTINCT crs.id as courseId, crs.name as courseName, crs.world_ranking,avg(crs.stars) as stars, crs.duration,"
 				+ " crs.duration_time, crs.`language`, institute.id, institute.name as instituteName,"
@@ -2192,9 +2191,9 @@ public class CourseDAO implements ICourseDAO {
 		
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
-		List<NearestCourseResponseDto> nearestCourseDTOs = new ArrayList<>();
+		List<CourseResponseDto> nearestCourseDTOs = new ArrayList<>();
 		for (Object[] row : rows) {
-			NearestCourseResponseDto nearestCourseDTO = new NearestCourseResponseDto();
+			CourseResponseDto nearestCourseDTO = new CourseResponseDto();
 			nearestCourseDTO.setId((String.valueOf(row[0])));
 			nearestCourseDTO.setName(String.valueOf(row[1]));
 			nearestCourseDTO.setCourseRanking((Integer) row[2]);
@@ -2216,5 +2215,19 @@ public class CourseDAO implements ICourseDAO {
 		}
 		return nearestCourseDTOs;
 	}
-	
+
+	@Override
+	public Integer getTotalCountOfNearestCourses(Double latitude, Double longitude, Integer initialRadius) {
+		Session session = sessionFactory.getCurrentSession();
+		String sqlQuery = "SELECT course.id," + 
+				" 6371 * ACOS(SIN(RADIANS('"+ latitude +"')) * SIN(RADIANS(institute.latitute)) + COS(RADIANS('"+ latitude +"')) * COS(RADIANS(institute.latitute)) *" + 
+				" COS(RADIANS(institute.longitute) - RADIANS('"+ longitude +"'))) AS distance_in_km FROM institute institute inner join course on \r\n" + 
+				" institute.id = course.institute_id where institute.latitute is not null" + 
+				" and institute.longitute is not null and institute.latitute!= "+ latitude +" and institute.longitute!= " + longitude +
+				" group by course.id HAVING distance_in_km <= "+initialRadius;
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		Integer totalCount = rows.size();
+		return totalCount;
+	}
 }

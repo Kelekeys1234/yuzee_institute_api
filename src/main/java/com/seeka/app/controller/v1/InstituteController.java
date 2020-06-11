@@ -587,8 +587,8 @@ public class InstituteController {
 
 	@PostMapping(value = "/nearest", produces = "application/json")
 	public ResponseEntity<?> getNearestInstituteList(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception {
-		List<NearestInstituteDTO> nearestInstituteDTOs = instituteService.getNearestInstituteList(courseSearchDto);
-		return new GenericResponseHandlers.Builder().setData(nearestInstituteDTOs).setMessage("Nearest Institute Displayed Successfully.")
+		NearestInstituteDTO nearestInstituteDTOs = instituteService.getNearestInstituteList(courseSearchDto);
+		return new GenericResponseHandlers.Builder().setData(nearestInstituteDTOs).setMessage("Institute Displayed Successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}
 	
@@ -616,7 +616,8 @@ public class InstituteController {
 	@PostMapping(value = "/bounded/area/pageNumber/{pageNumber}/pageSize/{pageSize}",  produces = "application/json")
 	public ResponseEntity<?> getBoundedInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize, 
 			@RequestBody List<LatLongDto> latLongDto) throws ValidationException {
-		List<NearestInstituteDTO> nearestInstituteList = instituteService.getInstitutesUnderBoundRegion(pageNumber, pageSize, latLongDto);
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		NearestInstituteDTO nearestInstituteList = instituteService.getInstitutesUnderBoundRegion(startIndex, pageSize, latLongDto);
 		return new GenericResponseHandlers.Builder().setData(nearestInstituteList)
 				.setMessage("Institute Displayed Successfully").setStatus(HttpStatus.OK).create();
 	}

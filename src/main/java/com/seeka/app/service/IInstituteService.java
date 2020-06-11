@@ -86,12 +86,12 @@ public interface IInstituteService {
 
 	Map<String, Integer> getDomesticRanking(List<String> instituteIdList);
 
-	List<NearestInstituteDTO> getNearestInstituteList(AdvanceSearchDto courseSearchDto) throws Exception;
+	public NearestInstituteDTO getNearestInstituteList(AdvanceSearchDto courseSearchDto) throws Exception;
 	
 	public List<InstituteResponseDto> getDistinctInstituteList(Integer startIndex, Integer pageSize, String instituteName);
 	
 	public int getDistinctInstituteCount(String instituteName);
 	
-	public List<NearestInstituteDTO> getInstitutesUnderBoundRegion(Integer pageNumber, Integer pageSize, List<LatLongDto> latLongDtos) throws ValidationException;
+	public NearestInstituteDTO getInstitutesUnderBoundRegion(Integer pageNumber, Integer pageSize, List<LatLongDto> latLongDtos) throws ValidationException;
 
 }

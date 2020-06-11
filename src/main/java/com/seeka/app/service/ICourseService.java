@@ -20,7 +20,6 @@ import com.seeka.app.dto.CourseMobileDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
-import com.seeka.app.dto.NearestCourseResponseDto;
 import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
@@ -162,7 +161,7 @@ public interface ICourseService {
 	
 	public void changeCourseStatus (String userId , String courseId, boolean status) throws Exception;
 	
-	public List<NearestCoursesDto> getCourseByInstituteId (String instituteId) throws NotFoundException;
+	public NearestCoursesDto getCourseByInstituteId (Integer startIndex, Integer pageSize, String instituteId) throws NotFoundException;
 	
-	public List<NearestCourseResponseDto> getNearestCourses(AdvanceSearchDto courseSearchDto) throws ValidationException;
+	public NearestCoursesDto getNearestCourses(AdvanceSearchDto courseSearchDto) throws ValidationException;
 }

@@ -17,7 +17,6 @@ import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
-import com.seeka.app.dto.NearestInstituteDTO;
 
 public interface IInstituteDAO {
 
@@ -94,7 +93,7 @@ public interface IInstituteDAO {
 
 	Map<String, Integer> getDomesticRanking(List<String> instituteIdList);
 
-	List<NearestInstituteDTO> getNearestInstituteListForAdvanceSearch(AdvanceSearchDto courseSearchDto);
+	List<InstituteResponseDto> getNearestInstituteListForAdvanceSearch(AdvanceSearchDto courseSearchDto);
 
 	List<String> getUserSearchInstituteRecommendation(Integer startIndex, Integer pageSize, String searchKeyword);
 	
@@ -104,5 +103,7 @@ public interface IInstituteDAO {
 	
 	public Optional<Institute> getInstituteByInstituteId (String instituteId);
 	
-	List<NearestInstituteDTO> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitutde, Double longitude, Integer initialRadius);
+	List<InstituteResponseDto> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitutde, Double longitude, Integer initialRadius);
+	
+	public Integer getTotalCountOfNearestInstitutes(Double latitude, Double longitude, Integer initialRadius);
 }

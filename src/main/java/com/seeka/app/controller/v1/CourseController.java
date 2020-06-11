@@ -47,7 +47,6 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
-import com.seeka.app.dto.NearestCourseResponseDto;
 import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.dto.PaginationUtilDto;
@@ -795,9 +794,10 @@ public class CourseController {
 				.create();
 	}
 	
-	@GetMapping(value = "/institute/{id}")
-	public ResponseEntity<?> getCourseByInstituteId(@PathVariable final String id) throws NotFoundException {
-		List<NearestCoursesDto> nearestCourseList = courseService.getCourseByInstituteId(id);
+	@GetMapping(value = "/institute/pageNumber/{pageNumber}/pageSize/{pageSize}/{id}")
+	public ResponseEntity<?> getCourseByInstituteId(@PathVariable Integer pageNumber, @PathVariable Integer pageSize, 
+			@PathVariable final String id) throws NotFoundException {
+		NearestCoursesDto nearestCourseList = courseService.getCourseByInstituteId(pageNumber, pageSize, id);
 		return new GenericResponseHandlers.Builder().setData(nearestCourseList)
 				.setMessage("Courses displayed successfully").setStatus(HttpStatus.OK)
 				.create();
@@ -805,8 +805,8 @@ public class CourseController {
 	
 	@PostMapping(value = "/nearest", produces = "application/json")
 	public ResponseEntity<?> getNearestCourseList(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception {
-		List<NearestCourseResponseDto> courseResponseDtoList = courseService.getNearestCourses(courseSearchDto);
-		return new GenericResponseHandlers.Builder().setData(courseResponseDtoList).setMessage("Nearest Courses Displayed Successfully.")
+		NearestCoursesDto courseResponseDtoList = courseService.getNearestCourses(courseSearchDto);
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtoList).setMessage("Courses Displayed Successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}
 }

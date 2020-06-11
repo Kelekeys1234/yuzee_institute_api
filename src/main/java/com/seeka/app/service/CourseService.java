@@ -16,6 +16,9 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +60,6 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.GlobalData;
 import com.seeka.app.dto.GradeDto;
-import com.seeka.app.dto.NearestCourseResponseDto;
 import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
@@ -1497,47 +1499,79 @@ public class CourseService implements ICourseService {
 	}
 	
 	@Override
-	public List<NearestCoursesDto> getCourseByInstituteId(String instituteId) throws NotFoundException {
+	public NearestCoursesDto getCourseByInstituteId(Integer pageNumber, Integer pageSize, String instituteId) throws NotFoundException {
 		log.debug("Inside getCourseByInstituteId() method");
-		List<NearestCoursesDto> nearestCourseList = new ArrayList<>();
+		List<CourseResponseDto> nearestCourseList = new ArrayList<>();
 		log.info("fetching courses from DB for instituteID "+instituteId);
-		List<Course> courseList = courseRepository.findByInstituteId(instituteId);
-		if(!CollectionUtils.isEmpty(courseList)) {
+		Pageable paging = PageRequest.of(pageNumber, pageSize);
+		Page<Course> courseList = courseRepository.findByInstituteId(paging, instituteId);
+		Long totalCount = courseRepository.getTotalCountOfCourseByInstituteId(instituteId);
+		if(!CollectionUtils.isEmpty(courseList.getContent())) {
 			log.info("if course is not coming null then start iterating data");
-			courseList.stream().forEach(course -> {
-				NearestCoursesDto nearestCoursesDto = new NearestCoursesDto();
-				nearestCoursesDto.setId(course.getId());
-				nearestCoursesDto.setName(course.getName());
-				nearestCoursesDto.setDomesticFee(course.getDomesticFee());
-				nearestCoursesDto.setInternationalFee(course.getInternationalFee());
+			courseList.getContent().stream().forEach(course -> {
+				CourseResponseDto nearestCourse = new CourseResponseDto();
+				nearestCourse.setId(course.getId());
+				nearestCourse.setName(course.getName());
+				nearestCourse.setDomesticFee(course.getDomesticFee());
+				nearestCourse.setInternationalFee(course.getInternationalFee());
+				nearestCourse.setCourseRanking(course.getWorldRanking());
+				nearestCourse.setCostRange(course.getCostRange());
+				nearestCourse.setStars(Double.valueOf(course.getStars()));
+				nearestCourse.setDuration(course.getDuration());
+				nearestCourse.setDurationTime(course.getDurationTime());
+				nearestCourse.setLanguage(course.getLanguage());
+				nearestCourse.setInstituteId(course.getInstitute().getId());
+				nearestCourse.setInstituteName(course.getInstitute().getName());
+				nearestCourse.setLocation(course.getInstitute().getCityName() + ", " + course.getInstitute().getCountryName());
+				nearestCourse.setCountryName(course.getInstitute().getCountryName());
+				nearestCourse.setCityName(course.getInstitute().getCityName());
+				nearestCourse.setCurrencyCode(course.getCurrency());
+				if(!ObjectUtils.isEmpty(course.getInstitute().getLatitute())) {
+					nearestCourse.setLatitude(course.getInstitute().getLatitute());
+				}
+				if(!ObjectUtils.isEmpty(course.getInstitute().getLongitude())) {
+					nearestCourse.setLongitude(course.getInstitute().getLongitude());
+				}
 				try {
 					log.info("going to fetch logo from storage service for courseId "+course.getId());
 					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getId(), 
 							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
-					nearestCoursesDto.setCourseLogoImages(storageDTOList);
-					nearestCourseList.add(nearestCoursesDto);
+					nearestCourse.setStorageList(storageDTOList);
 				} catch (ValidationException e) {
 					log.error("Exception in calling storage service "+e);
 				}
+				nearestCourseList.add(nearestCourse);
 			});
 		} else {
 			log.error("No course found for instituteId "+instituteId);
 			throw new NotFoundException("No course found for instituteId "+instituteId);
 		}
-		return nearestCourseList;
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount.intValue());
+		NearestCoursesDto nearestCourseResponse = new NearestCoursesDto();
+		nearestCourseResponse.setNearestCourses(nearestCourseList);
+		nearestCourseResponse.setPageNumber(paginationUtilDto.getPageNumber());
+		nearestCourseResponse.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		nearestCourseResponse.setHasNextPage(paginationUtilDto.isHasNextPage());
+		nearestCourseResponse.setTotalPages(paginationUtilDto.getTotalPages());
+		nearestCourseResponse.setTotalCount(totalCount.intValue());
+		return nearestCourseResponse;
 	}
 	
 	@Override
-	public List<NearestCourseResponseDto> getNearestCourses(AdvanceSearchDto courseSearchDto)
+	public NearestCoursesDto getNearestCourses(AdvanceSearchDto courseSearchDto)
 			throws ValidationException {
 		log.debug("Inside getNearestCourses() method");
-		List<NearestCourseResponseDto> courseResponseDtoList = new ArrayList<>();
+		List<CourseResponseDto> courseResponseDtoList = new ArrayList<>();
 		Boolean runMethodAgain = true;
 		Integer initialRadius = courseSearchDto.getInitialRadius();
-		Integer increaseRadius = 25;
+		Integer increaseRadius = 25, totalCount = 0;
 		log.info("start getting nearest courses from DB for latitude " + courseSearchDto.getLatitude()
 				+ " and longitude " + courseSearchDto.getLongitude() + " and initial radius is " + initialRadius);
-		List<NearestCourseResponseDto> nearestCourseDTOs = iCourseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
+		List<CourseResponseDto> nearestCourseDTOs = iCourseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
+		log.info("going to fetch total count of courses from DB");
+		totalCount = iCourseDAO.getTotalCountOfNearestCourses(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
 		while (runMethodAgain) {
 			if (initialRadius != maxRadius && CollectionUtils.isEmpty(nearestCourseDTOs)) {
 				log.info("if data is comming as null from DB then increase radius, new radius is " + initialRadius);
@@ -1546,14 +1580,15 @@ public class CourseService implements ICourseService {
 				courseSearchDto.setInitialRadius(initialRadius);
 				log.info("for old radius data is not coming so start fetching nearest courses for new radius " + initialRadius);
 				nearestCourseDTOs = iCourseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
+				totalCount = iCourseDAO.getTotalCountOfNearestCourses(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
 			} else {
 				log.info("data is coming from DB for radius " + initialRadius);
 				runMethodAgain = false;
 				log.info("start iterating data which is coming from DB");
-				for (NearestCourseResponseDto nearestCourseDTO : nearestCourseDTOs) {
-					NearestCourseResponseDto nearestCourse = new NearestCourseResponseDto();
+				for (CourseResponseDto nearestCourseDTO : nearestCourseDTOs) {
+					CourseResponseDto nearestCourse = new CourseResponseDto();
 					BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
-					nearestCourse.setRadius(initialRadius);
+					nearestCourse.setDistance(Double.valueOf(initialRadius));
 					log.info("fetching institute logo from storage service for instituteID " + nearestCourseDTO.getId());
 					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestCourseDTO.getId(),
 							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
@@ -1562,7 +1597,21 @@ public class CourseService implements ICourseService {
 				}
 			}
 		}
-		return courseResponseDtoList;
+		Integer startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
+		NearestCoursesDto coursePaginationResponseDto = new NearestCoursesDto();
+		coursePaginationResponseDto.setNearestCourses(courseResponseDtoList);
+		coursePaginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+		coursePaginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		if(initialRadius != maxRadius) {
+			coursePaginationResponseDto.setHasNextPage(true);
+		} else {
+			coursePaginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		}
+		coursePaginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+		coursePaginationResponseDto.setTotalCount(totalCount);
+		return coursePaginationResponseDto;
 	}
 }
 
