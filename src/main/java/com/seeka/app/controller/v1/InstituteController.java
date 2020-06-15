@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +48,7 @@ import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IInstituteTypeService;
 import com.seeka.app.service.IServiceDetailsService;
 import com.seeka.app.service.IStorageService;
+import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
@@ -324,13 +326,16 @@ public class InstituteController {
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
 			@RequestParam(required = false) final Integer fromWorldRanking, @RequestParam(required = false) final Integer toWorldRanking,
 			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
-			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String campusType) throws ValidationException {
+			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String campusType,
+			@RequestParam(required = false) final Double latitutde, @RequestParam(required = false) final Double longitude) throws ValidationException {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryIds(countryIds);
 		courseSearchDto.setFacultyIds(facultyIds);
 		courseSearchDto.setLevelIds(levelIds);
 		courseSearchDto.setPageNumber(pageNumber);
 		courseSearchDto.setMaxSizePerPage(pageSize);
+		courseSearchDto.setLatitude(latitutde);
+		courseSearchDto.setLongitude(longitude);
 		return getInstitutesBySearchFilters(courseSearchDto, sortByField, sortByType, searchKeyword, cityId, instituteTypeId, isActive, updatedOn,
 				fromWorldRanking, toWorldRanking, campusType);
 	}
@@ -346,8 +351,15 @@ public class InstituteController {
 		List<InstituteResponseDto> instituteList = instituteService.getAllInstitutesByFilter(request, sortByField, sortByType, searchKeyword, startIndex,
 				cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking, campusType);
 		for (InstituteResponseDto instituteResponseDto : instituteList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
-			instituteResponseDto.setStorageList(storageDTOList);
+			/*List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			instituteResponseDto.setStorageList(storageDTOList);*/
+			
+			if(!ObjectUtils.isEmpty(request.getLatitude()) && !ObjectUtils.isEmpty(request.getLongitude()) && 
+					!ObjectUtils.isEmpty(instituteResponseDto.getLatitude()) && !ObjectUtils.isEmpty(instituteResponseDto.getLongitude())) {
+				double distance = CommonUtil.getDistanceFromLatLonInKm(request.getLatitude(), request.getLongitude(), 
+						instituteResponseDto.getLatitude(), instituteResponseDto.getLongitude());
+				instituteResponseDto.setDistance(distance);
+			}
 		}
 
 		int totalCount = instituteService.getCountOfInstitute(request, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking,

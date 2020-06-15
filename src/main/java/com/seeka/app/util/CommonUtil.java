@@ -470,4 +470,15 @@ public class CommonUtil {
 		centerLatLong.setLongitude(centralLongitude * xpi);
 		return centerLatLong;
 	}
+	
+	public static double getDistanceFromLatLonInKm(Double userlatitude, Double userLongitude, Double courseLatitude,
+			Double coursLongitude) {
+		double latitude = (courseLatitude - userlatitude) * (Math.PI / 180);
+		double longitude = (coursLongitude - userLongitude) * (Math.PI / 180);
+		double angleValue = Math.sin(latitude / 2) * Math.sin(latitude / 2) + Math.cos((userlatitude) * (Math.PI / 180))
+				* Math.cos((courseLatitude) * (Math.PI / 180)) * Math.sin(longitude / 2) * Math.sin(longitude / 2);
+		double cordinate = 2 * Math.atan2(Math.sqrt(angleValue), Math.sqrt(1 - angleValue));
+		double distance = 6371 * cordinate; // Distance in km
+		return distance;
+	}
 }

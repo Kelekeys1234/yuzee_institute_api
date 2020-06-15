@@ -72,6 +72,7 @@ import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.repository.CourseRepository;
+import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -879,7 +880,12 @@ public class CourseService implements ICourseService {
 
 			courseResponseDto
 					.setStars(calculateAverageRating(googleReviewMap, seekaReviewMap, courseResponseDto.getStars(), courseResponseDto.getInstituteId()));
-
+			if(!ObjectUtils.isEmpty(courseSearchDto.getLatitude()) && !ObjectUtils.isEmpty(courseSearchDto.getLongitude()) && 
+					!ObjectUtils.isEmpty(courseResponseDto.getLatitude()) && !ObjectUtils.isEmpty(courseResponseDto.getLongitude())) {
+				double distanceInKM = CommonUtil.getDistanceFromLatLonInKm(courseSearchDto.getLatitude(), courseSearchDto.getLongitude(), 
+						courseResponseDto.getLatitude(), courseResponseDto.getLongitude());
+				courseResponseDto.setDistance(distanceInKM);
+			}
 		}
 		return courseResponseDtos;
 	}

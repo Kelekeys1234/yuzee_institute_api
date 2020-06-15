@@ -279,7 +279,7 @@ public class InstituteDAO implements IInstituteDAO {
 				instituteResponseDto.setDomesticRanking(Integer.valueOf(String.valueOf(row[11])));
 			}
 			if (row[12] != null) {
-				instituteResponseDto.setLatitute(Double.valueOf(row[12].toString()));
+				instituteResponseDto.setLatitude(Double.valueOf(row[12].toString()));
 			}
 			if (row[13] != null) {
 				instituteResponseDto.setLongitude(Double.valueOf(row[13].toString()));
@@ -824,7 +824,7 @@ public class InstituteDAO implements IInstituteDAO {
 			instituteResponseDto.setTotalCourses(((BigInteger) row[2]).intValue());
 			instituteResponseDto.setMinPriceRange((Double) row[3]);
 			instituteResponseDto.setMaxPriceRange((Double) row[4]);
-			instituteResponseDto.setLatitute((Double) row[5]);
+			instituteResponseDto.setLatitude((Double) row[5]);
 			instituteResponseDto.setLongitude((Double) row[6]);
 			instituteResponseDto.setWorldRanking((Integer) row[8]);
 			instituteResponseDto.setDomesticRanking((Integer) row[9]);
@@ -1049,7 +1049,7 @@ public class InstituteDAO implements IInstituteDAO {
 			instituteResponseDto.setTotalCourses(((BigInteger) row[2]).intValue());
 			instituteResponseDto.setMinPriceRange((Double) row[3]);
 			instituteResponseDto.setMaxPriceRange((Double) row[4]);
-			instituteResponseDto.setLatitute((Double) row[5]);
+			instituteResponseDto.setLatitude((Double) row[5]);
 			instituteResponseDto.setLongitude((Double) row[6]);
 			instituteResponseDto.setWorldRanking((Integer) row[8]);
 			instituteResponseDto.setDomesticRanking((Integer) row[9]);

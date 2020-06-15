@@ -23,7 +23,7 @@ public class InstituteResponseDto implements Serializable {
 	private String openingFrom;
 	private String openingTo;
 	private Integer totalStudent;
-	private Double latitute;
+	private Double latitude;
 	private Double longitude;
 	private String phoneNumber;
 	private String email;
@@ -122,14 +122,6 @@ public class InstituteResponseDto implements Serializable {
 
 	public void setAboutUs(final String aboutUs) {
 		this.aboutUs = aboutUs;
-	}
-
-	public Double getLatitute() {
-		return latitute;
-	}
-
-	public void setLatitute(final Double latitute) {
-		this.latitute = latitute;
 	}
 
 	public Double getLongitude() {
@@ -365,7 +357,7 @@ public class InstituteResponseDto implements Serializable {
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (instituteType == null ? 0 : instituteType.hashCode());
 		result = prime * result + (isActive == null ? 0 : isActive.hashCode());
-		result = prime * result + (latitute == null ? 0 : latitute.hashCode());
+		result = prime * result + (getLatitude() == null ? 0 : getLatitude().hashCode());
 		result = prime * result + (location == null ? 0 : location.hashCode());
 		result = prime * result + (longitude == null ? 0 : longitude.hashCode());
 		result = prime * result + (name == null ? 0 : name.hashCode());
@@ -488,11 +480,11 @@ public class InstituteResponseDto implements Serializable {
 		} else if (!isActive.equals(other.isActive)) {
 			return false;
 		}
-		if (latitute == null) {
-			if (other.latitute != null) {
+		if (getLatitude() == null) {
+			if (other.getLatitude() != null) {
 				return false;
 			}
-		} else if (!latitute.equals(other.latitute)) {
+		} else if (!getLatitude().equals(other.getLatitude())) {
 			return false;
 		}
 		if (location == null) {
@@ -617,7 +609,7 @@ public class InstituteResponseDto implements Serializable {
 				.append(", location=").append(location).append(", totalCourses=").append(totalCourses).append(", totalCount=").append(totalCount)
 				.append(", website=").append(website).append(", aboutUs=")
 				.append(aboutUs).append(", openingFrom=").append(openingFrom).append(", openingTo=").append(openingTo).append(", totalStudent=")
-				.append(totalStudent).append(", latitute=").append(latitute).append(", longitude=").append(longitude).append(", phoneNumber=")
+				.append(totalStudent).append(", latitute=").append(getLatitude()).append(", longitude=").append(longitude).append(", phoneNumber=")
 				.append(phoneNumber).append(", email=").append(email).append(", address=").append(address).append(", visaRequirement=").append(visaRequirement)
 				.append(", totalAvailableJobs=").append(totalAvailableJobs).append(", countryName=").append(countryName).append(", cityName=").append(cityName)
 				.append(", updatedOn=").append(updatedOn).append(", instituteType=").append(instituteType).append(", campusType=").append(campusType)
@@ -632,6 +624,14 @@ public class InstituteResponseDto implements Serializable {
 
 	public void setCurrency(String currency) {
 		this.currency = currency;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
 	}
 
 }

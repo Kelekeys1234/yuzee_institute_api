@@ -639,7 +639,7 @@ public class CourseDAO implements ICourseDAO {
 			instituteObj.setEmail(String.valueOf(row[10]));
 			instituteObj.setPhoneNumber(String.valueOf(row[11]));
 			instituteObj.setLongitude(Double.valueOf(String.valueOf(row[12])));
-			instituteObj.setLatitute(Double.valueOf(String.valueOf(row[13])));
+			instituteObj.setLatitude(Double.valueOf(String.valueOf(row[13])));
 			if (row[14] != null) {
 				instituteObj.setTotalStudent(Integer.parseInt(String.valueOf(row[14])));
 			}
@@ -2211,6 +2211,7 @@ public class CourseDAO implements ICourseDAO {
 			nearestCourseDTO.setCurrencyCode((String) row[14]);
 			nearestCourseDTO.setLatitude((Double) row[15]);
 			nearestCourseDTO.setLongitude((Double) row[16]);
+			nearestCourseDTO.setLocation((String) row[13] + ", " + (String) row[12]);
 			nearestCourseDTOs.add(nearestCourseDTO);
 		}
 		return nearestCourseDTOs;
