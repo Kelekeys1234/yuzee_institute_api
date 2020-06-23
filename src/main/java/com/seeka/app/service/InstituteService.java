@@ -37,6 +37,7 @@ import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ElasticSearchDTO;
+import com.seeka.app.dto.InstituteDomesticRankingHistoryDto;
 import com.seeka.app.dto.InstituteElasticSearchDTO;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteGetRequestDto;
@@ -846,8 +847,27 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public InstituteDomesticRankingHistory getHistoryOfDomesticRanking(final String instituteId) {
-		return instituteDomesticRankingHistoryDAO.getHistoryOfDomesticRanking(instituteId);
+	@Transactional
+	public List<InstituteDomesticRankingHistoryDto> getHistoryOfDomesticRanking(final String instituteId) {
+//		List<InstituteDomesticRankingHistory> instituteDomesticRankingHistory = new ArrayList<>();
+//		List<InstituteDomesticRankingHistory> domesticRankingHistories = 
+//		domesticRankingHistories.stream().forEach(domesticRankingHistory -> {
+//			//setting null so that it will not give lazyInitialize exception
+//			domesticRankingHistory.setInstitute(null);
+//			InstituteDomesticRankingHistory domesticRankingHistoryObj = new InstituteDomesticRankingHistory();
+//			BeanUtils.copyProperties(domesticRankingHistory, domesticRankingHistoryObj);
+//			Optional<Institute> instituteFromDB = instituteRepository.findById(instituteId);
+//			domesticRankingHistoryObj.setInstitute(instituteFromDB.get());
+//			instituteDomesticRankingHistory.add(domesticRankingHistoryObj);
+//		});
+		List<InstituteDomesticRankingHistoryDto> domesticRankingHistoryObj = new ArrayList<>();
+		List<InstituteDomesticRankingHistory> domesticRankingHistories = instituteDomesticRankingHistoryDAO.getHistoryOfDomesticRanking(instituteId);
+		domesticRankingHistories.stream().forEach(domesticRankingHistory -> {
+			InstituteDomesticRankingHistoryDto domesticRankingHistoryDto = new InstituteDomesticRankingHistoryDto();
+			domesticRankingHistoryDto.setDomesticRanking(domesticRankingHistory.getDomesticRanking());
+			domesticRankingHistoryObj.add(domesticRankingHistoryDto);
+		});
+		return domesticRankingHistoryObj;
 	}
 
 	@Override

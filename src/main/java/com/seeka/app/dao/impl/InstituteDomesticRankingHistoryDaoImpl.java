@@ -1,5 +1,7 @@
 package com.seeka.app.dao.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +21,7 @@ public class InstituteDomesticRankingHistoryDaoImpl implements InstituteDomestic
 	}
 
 	@Override
-	public InstituteDomesticRankingHistory getHistoryOfDomesticRanking(final String instituteId) {
+	public List<InstituteDomesticRankingHistory> getHistoryOfDomesticRanking(final String instituteId) {
 		return instituteDomesticRankingHistoryRepository.findByInstituteId(instituteId);
 	}
 

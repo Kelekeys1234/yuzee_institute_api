@@ -2,35 +2,24 @@ package com.seeka.app.controller.v1;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
-import com.seeka.app.bean.InstituteDomesticRankingHistory;
 import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.bean.Service;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.InstituteDomesticRankingHistoryDto;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteRequestDto;
@@ -42,6 +31,7 @@ import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
+import com.seeka.app.endpoint.InstituteInterface;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IInstituteService;
@@ -54,10 +44,9 @@ import com.seeka.app.util.PaginationUtil;
 
 import lombok.extern.apachecommons.CommonsLog;
 
-@RestController("instituteControllerV1")
-@RequestMapping("/api/v1/institute")
 @CommonsLog
-public class InstituteController {
+@RestController("instituteControllerV1")
+public class InstituteController implements InstituteInterface {
 
 	@Autowired
 	private IInstituteService instituteService;
@@ -74,23 +63,22 @@ public class InstituteController {
 	@Autowired
 	private IStorageService iStorageService;
 
-	@RequestMapping(value = "/type", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> saveInstituteType(@Valid @RequestBody final InstituteTypeDto instituteTypeDto) throws Exception {
+	@Override
+	public ResponseEntity<?> saveInstituteType(final InstituteTypeDto instituteTypeDto) throws Exception {
 		instituteTypeService.save(instituteTypeDto);
 		return new GenericResponseHandlers.Builder().setMessage("InstituteType Added successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 	
-	@RequestMapping(value = "/type", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam(name = "country_name") String countryName) throws Exception {
+	@Override
+	public ResponseEntity<?> getInstituteTypeByCountry(String countryName) throws Exception {
 		List<InstituteTypeDto> listOfInstituteTypes = instituteTypeService.getInstituteTypeByCountryName(countryName);
 		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage("Institute types fetched successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/service/{instituteTypeId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> saveService(@PathVariable final String instituteTypeId) throws Exception {
-		Map<String, Object> response = new HashMap<>();
+	@Override
+	public ResponseEntity<?> saveService(final String instituteTypeId) throws Exception {
 		List<Service> list = new ArrayList<>();
 		String createdBy = "AUTO";
 		Date createdOn = new Date();
@@ -279,44 +267,37 @@ public class InstituteController {
 			try {
 				serviceDetailsService.save(serviceDetails);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Exception while adding services in DB having exception = "+e);
 			}
 		}
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("serviceList", list);
-		return ResponseEntity.accepted().body(response);
+		return new GenericResponseHandlers.Builder().setMessage("Services Added successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/service/get", method = RequestMethod.GET, produces = "application/json")
+	@Override
 	public ResponseEntity<?> getAllInstituteService() throws Exception {
 		List<Service> serviceDetailsList = serviceDetailsService.getAll();
 		return new GenericResponseHandlers.Builder().setData(serviceDetailsList).setMessage("Services displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/{id}/service", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable final String id) throws Exception {
+	@Override
+	public ResponseEntity<?> getAllServicesByInstitute(final String id) throws Exception {
 		List<String> serviceNames = instituteServiceDetailsService.getAllServices(id);
 		return new GenericResponseHandlers.Builder().setData(serviceNames).setMessage("Services displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
-
-	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> instituteSearch(@RequestBody final CourseSearchDto request) throws Exception {
+	
+	@Override
+	public ResponseEntity<?> instituteSearch(final CourseSearchDto request) throws Exception {
 		return getInstitutesBySearchFilters(request, null, null, null, null, null, null, null, null, null);
 	}
 
-	@RequestMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> instituteSearch(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = false) final List<String> countryNames, @RequestParam(required = false) final List<String> facultyIds,
-			@RequestParam(required = false) final List<String> levelIds, @RequestParam(required = false) final String cityName,
-			@RequestParam(required = false) final String instituteType, @RequestParam(required = false) final Boolean isActive,
-			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
-			@RequestParam(required = false) final Integer fromWorldRanking, @RequestParam(required = false) final Integer toWorldRanking,
-			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
-			@RequestParam(required = false) final String searchKeyword,
-			@RequestParam(required = false) final Double latitutde, @RequestParam(required = false) final Double longitude) throws ValidationException {
+	@Override
+	public ResponseEntity<?> instituteSearch(final Integer pageNumber, final Integer pageSize, final List<String> countryNames, 
+			final List<String> facultyIds,final List<String> levelIds, final String cityName, final String instituteType, final Boolean isActive,
+			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking, final String sortByField, final String sortByType, 
+			final String searchKeyword, final Double latitutde, final Double longitude) throws ValidationException {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryNames(countryNames);
 		courseSearchDto.setFacultyIds(facultyIds);
@@ -373,8 +354,8 @@ public class InstituteController {
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/recommended", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> getAllRecommendedInstitutes(@RequestBody final CourseSearchDto request) throws Exception {
+	@Override
+	public ResponseEntity<?> getAllRecommendedInstitutes(final CourseSearchDto request) throws Exception {
 		log.debug("Inside getAllRecommendedInstitutes() method");
 		Boolean showMore = false;
 		Integer maxCount = 0, totalCount = 0;
@@ -413,145 +394,138 @@ public class InstituteController {
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/city/{cityName}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getInstituteByCityId(@Valid @PathVariable final String cityName) throws Exception {
+	@Override
+	public ResponseEntity<?> getInstituteByCityId(final String cityName) throws Exception {
 		List<InstituteResponseDto> institutes = instituteService.getInstitudeByCityId(cityName);
 		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institutes displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/multiple/city/{cityName}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getInstituteByListOfCityId(@Valid @PathVariable final String cityName) throws Exception {
+	@Override
+	public ResponseEntity<?> getInstituteByListOfCityId(final String cityName) throws Exception {
 		List<InstituteResponseDto> institutes = instituteService.getInstituteByListOfCityId(cityName);
 		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institutes displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> save(@Valid @RequestBody final List<InstituteRequestDto> institutes) throws Exception {
+	@Override
+	public ResponseEntity<?> save(final List<InstituteRequestDto> institutes) throws Exception {
 		instituteService.saveInstitute(institutes);
 		return new GenericResponseHandlers.Builder().setMessage("Institutes added successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@Valid @PathVariable final String id, @RequestBody final List<InstituteRequestDto> institute) throws Exception {
+	@Override
+	public ResponseEntity<?> update(final String id, final List<InstituteRequestDto> institute) throws Exception {
 		instituteService.updateInstitute(institute, id);
 		return new GenericResponseHandlers.Builder().setMessage("Institutes updated successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAllInstitute(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
+	@Override
+	public ResponseEntity<?> getAllInstitute(final Integer pageNumber, final Integer pageSize) throws Exception {
 		PaginationResponseDto paginationResponseDto = instituteService.getAllInstitute(pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
 				.create();
 	}
 
-	@RequestMapping(value = "/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAllInstitute(@PathVariable final String searchKey, @PathVariable final Integer pageNumber, 
-				@PathVariable final Integer pageSize) throws Exception {
+	@Override
+	public ResponseEntity<?> getAllInstitute(final String searchKey, final Integer pageNumber, final Integer pageSize) throws Exception {
 		PaginationResponseDto paginationResponseDto = instituteService.autoSearch(pageNumber, pageSize, searchKey);
 		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
 				.create();
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@PathVariable final String id) throws ValidationException {
+	@Override
+	public ResponseEntity<?> get(final String id) throws ValidationException {
 		List<InstituteRequestDto> instituteRequestDtos = instituteService.getById(id);
 		return new GenericResponseHandlers.Builder().setData(instituteRequestDtos).setMessage("Institute details get successfully").setStatus(HttpStatus.OK)
 				.create();
 	}
 
-	@RequestMapping(value = "search/{searchText}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> searchInstitute(@Valid @PathVariable final String searchText) throws Exception {
+	@Override
+	public ResponseEntity<?> searchInstitute(final String searchText) throws Exception {
 		List<InstituteGetRequestDto> instituteGetRequestDtos = instituteService.searchInstitute(searchText);
 		return new GenericResponseHandlers.Builder().setData(instituteGetRequestDtos).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
 				.create();
 	}
 
-	@RequestMapping(value = "all", method = RequestMethod.GET, produces = "application/json")
+	@Override
 	public ResponseEntity<?> getAllInstitute() throws Exception {
 		List<Institute> institutes = instituteService.getAll();
 		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
 				.create();
 	}
 
-	@RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> instituteFilter(@RequestBody final InstituteFilterDto instituteFilterDto) throws Exception {
+	@Override
+	public ResponseEntity<?> instituteFilter(final InstituteFilterDto instituteFilterDto) throws Exception {
 		PaginationResponseDto instituteResponseDto = instituteService.instituteFilter(instituteFilterDto);
 		return new GenericResponseHandlers.Builder().setData(instituteResponseDto)
 				.setMessage("Institute displayed successfully").setStatus(HttpStatus.OK).create();
 	}
-
-	@RequestMapping(value = "allCategoryType", method = RequestMethod.GET, produces = "application/json")
+	
+	@Override
 	public ResponseEntity<?> getAllCategoryType() throws Exception {
 		List<InstituteCategoryType> categoryTypes = instituteService.getAllCategories();
 		return new GenericResponseHandlers.Builder().setData(categoryTypes)
 				.setMessage("Institute Category Type fetched successfully").setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "type", method = RequestMethod.GET, produces = "application/json")
+	@Override
 	public ResponseEntity<?> getAllInstituteType() throws Exception {
 		List<InstituteTypeDto> instituteTypes = instituteTypeService.getAllInstituteType();
 		return new GenericResponseHandlers.Builder().setData(instituteTypes)
 				.setMessage("InstituteTypes fetched successfully").setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/{instituteId}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<?> delete(@PathVariable final String instituteId) throws ValidationException {
+	@Override
+	public ResponseEntity<?> delete(final String instituteId) throws ValidationException {
 		instituteService.deleteInstitute(instituteId);
 		return new GenericResponseHandlers.Builder().setMessage("Institute deleted successfully").setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/images/{instituteId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getInstituteImage(@PathVariable final String instituteId) throws Exception {
+	@Override
+	public ResponseEntity<?> getInstituteImage(final String instituteId) throws Exception {
 		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteId, ImageCategory.INSTITUTE.toString(), null, "en");
 		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
 	}
 
-	@GetMapping(value = "/totalCourseCount", produces = "application/json")
-	public ResponseEntity<?> getTotalCourseForInstitute(@RequestParam(value = "instituteId", required = true) final String instituteId)
-			throws ValidationException {
+	@Override
+	public ResponseEntity<?> getTotalCourseForInstitute(final String instituteId) throws ValidationException {
 		Integer courseCount = instituteService.getTotalCourseCountForInstitute(instituteId);
 		return new GenericResponseHandlers.Builder().setData(courseCount).setMessage("Course Count returned successfully").setStatus(HttpStatus.OK).create();
 	}
 
-	@GetMapping(value = "/history/domestic/ranking", produces = "application/json")
-	public ResponseEntity<?> getHistoryOfDomesticRanking(@RequestParam(value = "instituteId", required = true) final String instituteId)
-			throws ValidationException {
-		InstituteDomesticRankingHistory instituteDomesticRankingHistory = instituteService.getHistoryOfDomesticRanking(instituteId);
+	@Override
+	public ResponseEntity<?> getHistoryOfDomesticRanking(final String instituteId) throws ValidationException {
+		List<InstituteDomesticRankingHistoryDto> instituteDomesticRankingHistory = instituteService.getHistoryOfDomesticRanking(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteDomesticRankingHistory).setMessage("Get institute domestic ranking successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
-
-	@GetMapping(value = "/history/world/ranking", produces = "application/json")
-	public ResponseEntity<?> getHistoryOfWorldRanking(@RequestParam(value = "instituteId", required = true) final String instituteId)
-			throws ValidationException {
+	
+	@Override
+	public ResponseEntity<?> getHistoryOfWorldRanking(final String instituteId) throws ValidationException {
 		InstituteWorldRankingHistory instituteWorldRankingHistory = instituteService.getHistoryOfWorldRanking(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteWorldRankingHistory).setMessage("Get institute world ranking successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@PostMapping(value = "/domesticRankingForCourse", produces = "application/json")
-	public ResponseEntity<?> getDomesticRanking(@RequestBody final List<String> courseIds) throws ValidationException {
+	@Override
+	public ResponseEntity<?> getDomesticRanking(final List<String> courseIds) throws ValidationException {
 		Map<String, Integer> instituteIdDomesticRanking = instituteService.getDomesticRanking(courseIds);
 		return new GenericResponseHandlers.Builder().setData(instituteIdDomesticRanking).setMessage("Domestic Ranking Displayed Successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
-	@PostMapping(value = "/nearest", produces = "application/json")
-	public ResponseEntity<?> getNearestInstituteList(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception {
+	@Override
+	public ResponseEntity<?> getNearestInstituteList(final AdvanceSearchDto courseSearchDto) throws Exception {
 		NearestInstituteDTO nearestInstituteDTOs = instituteService.getNearestInstituteList(courseSearchDto);
 		return new GenericResponseHandlers.Builder().setData(nearestInstituteDTOs).setMessage("Institute Displayed Successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}
 	
-	
-	@RequestMapping(value = "/names/distinct/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getDistinctInstututes(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = false) final String name)
-			throws Exception {
+	@Override
+	public ResponseEntity<?> getDistinctInstututes(final Integer pageNumber, final Integer pageSize, final String name) throws Exception {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		int totalCount = instituteService.getDistinctInstituteCount(name);
 		List<InstituteResponseDto> instituteList = instituteService.getDistinctInstituteList(startIndex, pageSize, name);
@@ -568,9 +542,9 @@ public class InstituteController {
 				.setStatus(HttpStatus.OK).create();
 	}
 	
-	@PostMapping(value = "/bounded/area/pageNumber/{pageNumber}/pageSize/{pageSize}",  produces = "application/json")
-	public ResponseEntity<?> getBoundedInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize, 
-			@RequestBody List<LatLongDto> latLongDto) throws ValidationException {
+	@Override
+	public ResponseEntity<?> getBoundedInstituteList(final Integer pageNumber, final Integer pageSize, 
+			List<LatLongDto> latLongDto) throws ValidationException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		NearestInstituteDTO nearestInstituteList = instituteService.getInstitutesUnderBoundRegion(startIndex, pageSize, latLongDto);
 		return new GenericResponseHandlers.Builder().setData(nearestInstituteList)
