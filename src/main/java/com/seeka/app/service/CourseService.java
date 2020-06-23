@@ -46,7 +46,7 @@ import com.seeka.app.dao.ICourseEnglishEligibilityDAO;
 import com.seeka.app.dao.ICourseMinRequirementDao;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.IGlobalStudentDataDAO;
-import com.seeka.app.dao.IInstituteDAO;
+import com.seeka.app.dao.InstituteDAO;
 import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dao.ViewDao;
@@ -91,7 +91,7 @@ public class CourseService implements ICourseService {
 	private ICourseEnglishEligibilityDAO courseEnglishEligibilityDAO;
 
 	@Autowired
-	private IInstituteDAO iInstituteDAO;
+	private InstituteDAO iInstituteDAO;
 
 //	@Autowired
 //	private ICountryDAO countryDAO;
@@ -399,7 +399,7 @@ public class CourseService implements ICourseService {
 		courseElasticSearch.setFacultyName(course.getFaculty() != null ? course.getFaculty().getName() : null);
 		courseElasticSearch.setFacultyDescription(course.getFaculty() != null ? course.getFaculty().getDescription() : null);
 		courseElasticSearch.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
-		courseElasticSearch.setLatitute(course.getInstitute() != null ? String.valueOf(course.getInstitute().getLatitute()) : null);
+		courseElasticSearch.setLatitute(course.getInstitute() != null ? String.valueOf(course.getInstitute().getLatitude()) : null);
 		courseElasticSearch.setLongitude(course.getInstitute() != null ? String.valueOf(course.getInstitute().getLongitude()) : null);
 		courseElasticSearch.setLevelCode(course.getLevel() != null ? course.getLevel().getCode() : null);
 		courseElasticSearch.setLevelName(course.getLevel() != null ? course.getLevel().getName() : null);
@@ -547,7 +547,7 @@ public class CourseService implements ICourseService {
 		courseElasticSearch.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
 		courseElasticSearch.setLevelCode(course.getLevel() != null ? course.getLevel().getCode() : null);
 		courseElasticSearch.setLevelName(course.getLevel() != null ? course.getLevel().getName() : null);
-		courseElasticSearch.setLatitute(course.getInstitute() != null ? String.valueOf(course.getInstitute().getLatitute()) : null);
+		courseElasticSearch.setLatitute(course.getInstitute() != null ? String.valueOf(course.getInstitute().getLatitude()) : null);
 		courseElasticSearch.setLongitude(course.getInstitute() != null ? String.valueOf(course.getInstitute().getLongitude()) : null);
 		courseElasticSearch.setIntake(!intakeList.isEmpty() ? intakeList : null);
 		courseElasticSearch.setDeliveryMethod(courseDto.getDeliveryMethod());
@@ -1294,7 +1294,7 @@ public class CourseService implements ICourseService {
 			List<GlobalData> globalDatas = iGlobalStudentDataDAO.getCountryWiseStudentList(userCountry);
 			if (!globalDatas.isEmpty()) {
 				//Country country = countryDAO.getCountryByName(globalDatas.get(0).getDestinationCountry());
-				courseSearchDto.setCountryIds(Arrays.asList(globalDatas.get(0).getDestinationCountry()));
+				courseSearchDto.setCountryNames(Arrays.asList(globalDatas.get(0).getDestinationCountry()));
 				courseSearchDto.setMaxSizePerPage(pageSize - courseResponseDtos.size());
 				List<CourseResponseDto> courseResponseDtos2 = iCourseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, false);
 				courseResponseDtos.addAll(courseResponseDtos2);
@@ -1325,7 +1325,7 @@ public class CourseService implements ICourseService {
 		 */
 		if (courseKeywordRecommended.isEmpty()) {
 			CourseSearchDto courseSearchDto = new CourseSearchDto();
-			courseSearchDto.setCountryIds(Arrays.asList(countryId));
+			courseSearchDto.setCountryNames(Arrays.asList(countryId));
 			courseSearchDto.setFacultyIds(Arrays.asList(facultyId));
 			courseSearchDto.setLevelIds(Arrays.asList(levelId));
 			courseSearchDto.setMaxSizePerPage(pageSize);
@@ -1532,8 +1532,8 @@ public class CourseService implements ICourseService {
 				nearestCourse.setCountryName(course.getInstitute().getCountryName());
 				nearestCourse.setCityName(course.getInstitute().getCityName());
 				nearestCourse.setCurrencyCode(course.getCurrency());
-				if(!ObjectUtils.isEmpty(course.getInstitute().getLatitute())) {
-					nearestCourse.setLatitude(course.getInstitute().getLatitute());
+				if(!ObjectUtils.isEmpty(course.getInstitute().getLatitude())) {
+					nearestCourse.setLatitude(course.getInstitute().getLatitude());
 				}
 				if(!ObjectUtils.isEmpty(course.getInstitute().getLongitude())) {
 					nearestCourse.setLongitude(course.getInstitute().getLongitude());

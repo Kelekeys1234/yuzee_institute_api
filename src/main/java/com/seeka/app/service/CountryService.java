@@ -14,7 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.seeka.app.constant.Type;
 import com.seeka.app.dao.ICourseDAO;
-import com.seeka.app.dao.IInstituteDAO;
+import com.seeka.app.dao.InstituteDAO;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -50,7 +50,7 @@ public class CountryService implements ICountryService {
 	private CourseRepository courseRepository;
 
 	@Autowired
-	private IInstituteDAO iInstituteDAO;
+	private InstituteDAO iInstituteDAO;
 	
 	@Override
 	public Map<String, Object> getCourseCountry() {
@@ -117,7 +117,7 @@ public class CountryService implements ICountryService {
 		log.info("fetching institutes from DB for countryName "+ countryName);
 		List<InstituteResponseDto> nearestInstituteDTOs = new ArrayList<>();
 		List<InstituteResponseDto> institutesFromDB = iInstituteDAO.getAllInstitutesByFilter(courseSearchDto, "countryName", 
-					null, countryName, pageNumber, null, null, null, null, null, null, null);
+					null, countryName, pageNumber, null, null, null, null, null, null);
 		Integer totalCount = instituteRepository.getTotalCountOfInstituteByCountryName(countryName);
 		if(!CollectionUtils.isEmpty(institutesFromDB)) {
 			log.info("institutes found in DB for countryName "+ countryName + " so start iterating data");

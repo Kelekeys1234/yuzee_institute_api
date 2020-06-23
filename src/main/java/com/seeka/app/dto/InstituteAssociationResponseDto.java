@@ -14,8 +14,8 @@ public class InstituteAssociationResponseDto {
 	@JsonProperty("institute_association_id")
 	private String instituteAssociationId;
 	
-	@JsonProperty("latitute")
-	private Double latitute;
+	@JsonProperty("latitude")
+	private Double latitude;
 	
 	@JsonProperty("longitude")
 	private Double longitude;

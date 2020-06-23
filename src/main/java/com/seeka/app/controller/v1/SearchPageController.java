@@ -44,7 +44,7 @@ public class SearchPageController {
 		courseSearchDto.setPageNumber(1);
 		courseSearchDto.setMaxSizePerPage(3);
 		List<InstituteResponseDto> recommendedInstList = instituteService.getAllInstitutesByFilter(courseSearchDto, null, null, null, null, null, null, null,
-				null, null, null, null);
+				null, null, null);
 
 		for (InstituteResponseDto obj : recommendedInstList) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");

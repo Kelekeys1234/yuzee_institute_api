@@ -1,20 +1,22 @@
 package com.seeka.app.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.InstituteService;
-import com.seeka.app.dao.IInstituteServiceDetailsDAO;
+import com.seeka.app.dao.InstituteServiceDetailsDAO;
 
 @Service
 @Transactional
 public class InstituteServiceDetailsService implements IInstituteServiceDetailsService {
 
     @Autowired
-    private IInstituteServiceDetailsDAO iInstituteServiceDetailsDAO;
+    private InstituteServiceDetailsDAO iInstituteServiceDetailsDAO;
 
     @Override
     public void save(InstituteService instituteService) {
@@ -38,7 +40,14 @@ public class InstituteServiceDetailsService implements IInstituteServiceDetailsS
 
     @Override
     public List<String> getAllServices(String instituteId) {
-        return iInstituteServiceDetailsDAO.getAllServices(instituteId);
+    	List<String> instituteServiceNames = new ArrayList<>();
+    	List<InstituteService> instituteServices = iInstituteServiceDetailsDAO.getAllServices(instituteId);
+    	if(!CollectionUtils.isEmpty(instituteServices)) {
+			instituteServices.stream().forEach(instituteService -> {
+				instituteServiceNames.add(instituteService.getServiceName());
+			});
+		}
+        return instituteServiceNames;
     }
 
 }

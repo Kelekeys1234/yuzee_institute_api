@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,20 +26,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteDomesticRankingHistory;
-import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.bean.Service;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
-import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteFilterDto;
+import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteTypeDto;
 import com.seeka.app.dto.LatLongDto;
 import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
@@ -49,11 +50,13 @@ import com.seeka.app.service.IInstituteTypeService;
 import com.seeka.app.service.IServiceDetailsService;
 import com.seeka.app.service.IStorageService;
 import com.seeka.app.util.CommonUtil;
-import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
+
+import lombok.extern.apachecommons.CommonsLog;
 
 @RestController("instituteControllerV1")
 @RequestMapping("/api/v1/institute")
+@CommonsLog
 public class InstituteController {
 
 	@Autowired
@@ -73,12 +76,9 @@ public class InstituteController {
 
 	@RequestMapping(value = "/type", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> saveInstituteType(@Valid @RequestBody final InstituteTypeDto instituteTypeDto) throws Exception {
-		Map<String, Object> response = new HashMap<>(3);
 		instituteTypeService.save(instituteTypeDto);
-		response.put("message", "Institute type saved successfully");
-		response.put("status", HttpStatus.OK.value());
-		response.put("data", instituteTypeDto);
-		return ResponseEntity.accepted().body(response);
+		return new GenericResponseHandlers.Builder().setMessage("InstituteType Added successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 	
 	@RequestMapping(value = "/type", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
@@ -290,193 +290,170 @@ public class InstituteController {
 
 	@RequestMapping(value = "/service/get", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getAllInstituteService() throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		List<Service> list = serviceDetailsService.getAll();
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("serviceList", list);
-		return ResponseEntity.accepted().body(response);
+		List<Service> serviceDetailsList = serviceDetailsService.getAll();
+		return new GenericResponseHandlers.Builder().setData(serviceDetailsList).setMessage("Services displayed successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/{id}/service", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable final String id) throws Exception {
-		Map<String, Object> response = new HashMap<>();
 		List<String> serviceNames = instituteServiceDetailsService.getAllServices(id);
-		if (serviceNames != null && !serviceNames.isEmpty()) {
-			response.put("message", "Service fetched successfully");
-			response.put("status", HttpStatus.OK.value());
-		} else {
-			response.put("message", "Service not found");
-			response.put("status", HttpStatus.NOT_FOUND.value());
-		}
-		response.put("data", serviceNames);
-		return ResponseEntity.accepted().body(response);
+		return new GenericResponseHandlers.Builder().setData(serviceNames).setMessage("Services displayed successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> instituteSearch(@RequestBody final CourseSearchDto request) throws Exception {
-		return getInstitutesBySearchFilters(request, null, null, null, null, null, null, null, null, null, null);
+		return getInstitutesBySearchFilters(request, null, null, null, null, null, null, null, null, null);
 	}
 
 	@RequestMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> instituteSearch(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(required = false) final List<String> countryIds, @RequestParam(required = false) final List<String> facultyIds,
-			@RequestParam(required = false) final List<String> levelIds, @RequestParam(required = false) final String cityId,
-			@RequestParam(required = false) final String instituteTypeId, @RequestParam(required = false) final Boolean isActive,
+			@RequestParam(required = false) final List<String> countryNames, @RequestParam(required = false) final List<String> facultyIds,
+			@RequestParam(required = false) final List<String> levelIds, @RequestParam(required = false) final String cityName,
+			@RequestParam(required = false) final String instituteType, @RequestParam(required = false) final Boolean isActive,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
 			@RequestParam(required = false) final Integer fromWorldRanking, @RequestParam(required = false) final Integer toWorldRanking,
 			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
-			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String campusType,
+			@RequestParam(required = false) final String searchKeyword,
 			@RequestParam(required = false) final Double latitutde, @RequestParam(required = false) final Double longitude) throws ValidationException {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
-		courseSearchDto.setCountryIds(countryIds);
+		courseSearchDto.setCountryNames(countryNames);
 		courseSearchDto.setFacultyIds(facultyIds);
 		courseSearchDto.setLevelIds(levelIds);
 		courseSearchDto.setPageNumber(pageNumber);
 		courseSearchDto.setMaxSizePerPage(pageSize);
 		courseSearchDto.setLatitude(latitutde);
 		courseSearchDto.setLongitude(longitude);
-		return getInstitutesBySearchFilters(courseSearchDto, sortByField, sortByType, searchKeyword, cityId, instituteTypeId, isActive, updatedOn,
-				fromWorldRanking, toWorldRanking, campusType);
+		return getInstitutesBySearchFilters(courseSearchDto, sortByField, sortByType, searchKeyword, cityName, instituteType, isActive, updatedOn,
+				fromWorldRanking, toWorldRanking);
 	}
 
 	private ResponseEntity<?> getInstitutesBySearchFilters(final CourseSearchDto request, final String sortByField, final String sortByType,
 			final String searchKeyword, final String cityId, final String instituteTypeId, final Boolean isActive, final Date updatedOn,
-			final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) throws ValidationException {
-		List<String> countryIds = request.getCountryIds();
-		if (null == countryIds || countryIds.isEmpty()) {
-			countryIds = new ArrayList<>();
-		}
+			final Integer fromWorldRanking, final Integer toWorldRanking) throws ValidationException {
+		log.debug("Inside getInstitutesBySearchFilters() method");
 		int startIndex = PaginationUtil.getStartIndex(request.getPageNumber(), request.getMaxSizePerPage());
+		log.info("Calling DAO layer to search institutes based on passed filters");
 		List<InstituteResponseDto> instituteList = instituteService.getAllInstitutesByFilter(request, sortByField, sortByType, searchKeyword, startIndex,
-				cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking, campusType);
-		for (InstituteResponseDto instituteResponseDto : instituteList) {
-			/*List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
-			instituteResponseDto.setStorageList(storageDTOList);*/
-			
-			if(!ObjectUtils.isEmpty(request.getLatitude()) && !ObjectUtils.isEmpty(request.getLongitude()) && 
-					!ObjectUtils.isEmpty(instituteResponseDto.getLatitude()) && !ObjectUtils.isEmpty(instituteResponseDto.getLongitude())) {
-				double distance = CommonUtil.getDistanceFromLatLonInKm(request.getLatitude(), request.getLongitude(), 
-						instituteResponseDto.getLatitude(), instituteResponseDto.getLongitude());
-				instituteResponseDto.setDistance(distance);
-			}
+				cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
+		if(!CollectionUtils.isEmpty(instituteList)) {
+			log.info("Institutes fetched from DB, now iterating data to call Storage service");
+			instituteList.stream().forEach(instituteResponseDto -> {
+				try {
+					log.info("Calling Storage service to get imageCategories for Institute");
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+					instituteResponseDto.setStorageList(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Error invoking Storage service having exception ="+e);
+				}
+				if(!ObjectUtils.isEmpty(request.getLatitude()) && !ObjectUtils.isEmpty(request.getLongitude()) && 
+						!ObjectUtils.isEmpty(instituteResponseDto.getLatitude()) && !ObjectUtils.isEmpty(instituteResponseDto.getLongitude())) {
+					log.info("Calculating distance between institutes lat and long and user lat and long");
+					double distance = CommonUtil.getDistanceFromLatLonInKm(request.getLatitude(), request.getLongitude(), 
+							instituteResponseDto.getLatitude(), instituteResponseDto.getLongitude());
+					instituteResponseDto.setDistance(distance);
+				}
+			});
 		}
-
+		log.info("Fetching totalCount of institutes from DB based on passed filters to calculate pagination");
 		int totalCount = instituteService.getCountOfInstitute(request, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking,
-				toWorldRanking, campusType);
+				toWorldRanking);
+		log.info("Calling pagination class to calculate pagination based on startIndex, pageSixe and totalCount of institutes");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, request.getMaxSizePerPage(), totalCount);
-		Map<String, Object> responseMap = new HashMap<>(10);
-		responseMap.put("status", HttpStatus.OK);
-		responseMap.put("message", "Get Institute List successfully");
-		responseMap.put("data", instituteList);
-		responseMap.put("totalCount", totalCount);
-		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
-		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
-		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+		log.info("Adding values in paginationResponse DTO and returning final response");
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
+		paginationResponseDto.setInstitutes(instituteList);
+		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institutes displayed successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/recommended", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> getAllRecommendedInstitutes(@RequestBody final CourseSearchDto request) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		ErrorDto errorDto = null;
-		if (request.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
-			errorDto = new ErrorDto();
-			errorDto.setCode("400");
-			errorDto.setMessage("Maximum course limit per is " + PaginationUtil.courseResultPageMaxSize);
-			response.put("status", 0);
-			response.put("error", errorDto);
-			return ResponseEntity.badRequest().body(response);
-		}
-
-		if (null == request.getUserId()) {
-			errorDto = new ErrorDto();
-			errorDto.setCode("400");
-			errorDto.setMessage("Invalid user data.!");
-			response.put("status", 0);
-			response.put("error", errorDto);
-			return ResponseEntity.badRequest().body(response);
-		}
-
-		List<String> countryIds = request.getCountryIds();
-		if (null == countryIds || countryIds.isEmpty()) {
-			countryIds = new ArrayList<>();
-		}
-
-		List<InstituteResponseDto> instituteResponseDtoList = instituteService.getAllInstitutesByFilter(request, null, null, null, null, null, null, null, null,
-				null, null, null);
-		for (InstituteResponseDto instituteResponseDto : instituteResponseDtoList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
-			instituteResponseDto.setStorageList(storageDTOList);
-		}
+		log.debug("Inside getAllRecommendedInstitutes() method");
+		Boolean showMore = false;
 		Integer maxCount = 0, totalCount = 0;
-		if (null != instituteResponseDtoList && !instituteResponseDtoList.isEmpty()) {
+		if (request.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
+			log.error("Maximum course limit per is " + PaginationUtil.courseResultPageMaxSize);
+			throw new ValidationException("Maximum course limit per is " + PaginationUtil.courseResultPageMaxSize);
+		}
+		if (null == request.getUserId()) {
+			log.error("UserId is required");
+			throw new ValidationException("UserId is required");
+		}
+		log.info("Calling DAO layer to get all institutes based on filters");
+		List<InstituteResponseDto> instituteResponseDtoList = instituteService.getAllInstitutesByFilter(request, null, null, null,
+				null, null, null, null, null, null, null);
+		if(!CollectionUtils.isEmpty(instituteResponseDtoList)) {
+			log.info("Filtered institutes coming from DB, hence start iterating");
 			totalCount = instituteResponseDtoList.get(0).getTotalCount();
 			maxCount = instituteResponseDtoList.size();
+			instituteResponseDtoList.stream().forEach(instituteResponseDto -> {
+				try {
+					log.info("Invoking storage service to fetch images for institutes");
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+					instituteResponseDto.setStorageList(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Error invoking Storage service having exception "+e);
+				}
+			});
 		}
-		boolean showMore;
 		if (request.getMaxSizePerPage() == maxCount) {
+			log.info("if maxSize and max count are equal then showMore is visible");
 			showMore = true;
-		} else {
-			showMore = false;
 		}
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("paginationObj", new PaginationDto(totalCount, showMore));
-		response.put("instituteList", instituteResponseDtoList);
-		return ResponseEntity.accepted().body(response);
+		log.info("Adding values in PaginationDTO class and return in final response");
+		PaginationDto paginationDto = new PaginationDto(totalCount, showMore,instituteResponseDtoList);
+		return new GenericResponseHandlers.Builder().setData(paginationDto).setMessage("Recommended Institutes displayed successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/city/{cityId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getInstituteByCityId(@Valid @PathVariable final String cityId) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		List<InstituteResponseDto> institutes = instituteService.getInstitudeByCityId(cityId);
-		if (institutes != null && !institutes.isEmpty()) {
-			response.put("message", "Institute fetched successfully");
-			response.put("status", HttpStatus.OK.value());
-		} else {
-			response.put("message", IConstant.INSTITUDE_NOT_FOUND);
-			response.put("status", HttpStatus.NOT_FOUND.value());
-		}
-		response.put("data", institutes);
-		return ResponseEntity.accepted().body(response);
+	@RequestMapping(value = "/city/{cityName}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getInstituteByCityId(@Valid @PathVariable final String cityName) throws Exception {
+		List<InstituteResponseDto> institutes = instituteService.getInstitudeByCityId(cityName);
+		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institutes displayed successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
-	@RequestMapping(value = "/multiple/city/{cityId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getInstituteByListOfCityId(@Valid @PathVariable final String cityId) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		List<InstituteResponseDto> institutes = instituteService.getInstituteByListOfCityId(cityId);
-		if (institutes != null && !institutes.isEmpty()) {
-			response.put("message", "Institute fetched successfully");
-			response.put("status", HttpStatus.OK.value());
-		} else {
-			response.put("message", IConstant.INSTITUDE_NOT_FOUND);
-			response.put("status", HttpStatus.NOT_FOUND.value());
-		}
-		response.put("institutes", institutes);
-		return ResponseEntity.accepted().body(response);
+	@RequestMapping(value = "/multiple/city/{cityName}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getInstituteByListOfCityId(@Valid @PathVariable final String cityName) throws Exception {
+		List<InstituteResponseDto> institutes = instituteService.getInstituteByListOfCityId(cityName);
+		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institutes displayed successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final List<InstituteRequestDto> institutes) throws Exception {
-		return ResponseEntity.accepted().body(instituteService.save(institutes));
+		instituteService.saveInstitute(institutes);
+		return new GenericResponseHandlers.Builder().setMessage("Institutes added successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> update(@Valid @PathVariable final String id, @RequestBody final List<InstituteRequestDto> institute) throws Exception {
-		return ResponseEntity.accepted().body(instituteService.update(institute, id));
+		instituteService.updateInstitute(institute, id);
+		return new GenericResponseHandlers.Builder().setMessage("Institutes updated successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getAllInstitute(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
-		return ResponseEntity.accepted().body(instituteService.getAllInstitute(pageNumber, pageSize));
+		PaginationResponseDto paginationResponseDto = instituteService.getAllInstitute(pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@RequestMapping(value = "/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAllInstitute(@PathVariable final String searchKey, @PathVariable final Integer pageNumber, @PathVariable final Integer pageSize)
-			throws Exception {
-		return ResponseEntity.accepted().body(instituteService.autoSearch(pageNumber, pageSize, searchKey));
+	public ResponseEntity<?> getAllInstitute(@PathVariable final String searchKey, @PathVariable final Integer pageNumber, 
+				@PathVariable final Integer pageSize) throws Exception {
+		PaginationResponseDto paginationResponseDto = instituteService.autoSearch(pageNumber, pageSize, searchKey);
+		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -488,71 +465,37 @@ public class InstituteController {
 
 	@RequestMapping(value = "search/{searchText}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> searchInstitute(@Valid @PathVariable final String searchText) throws Exception {
-		return ResponseEntity.accepted().body(instituteService.searchInstitute(searchText));
+		List<InstituteGetRequestDto> instituteGetRequestDtos = instituteService.searchInstitute(searchText);
+		return new GenericResponseHandlers.Builder().setData(instituteGetRequestDtos).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@RequestMapping(value = "all", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getAllInstitute() throws Exception {
-		Map<String, Object> response = new HashMap<>();
 		List<Institute> institutes = instituteService.getAll();
-		if (institutes != null && !institutes.isEmpty()) {
-			response.put("message", "Institute fetched successfully");
-			response.put("status", HttpStatus.OK.value());
-		} else {
-			response.put("message", IConstant.INSTITUDE_NOT_FOUND);
-			response.put("status", HttpStatus.NOT_FOUND.value());
-		}
-		response.put("institutes", institutes);
-		return ResponseEntity.accepted().body(response);
+		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> instituteFilter(@RequestBody final InstituteFilterDto instituteFilterDto) throws Exception {
-		return ResponseEntity.ok().body(instituteService.instituteFilter(instituteFilterDto));
+		PaginationResponseDto instituteResponseDto = instituteService.instituteFilter(instituteFilterDto);
+		return new GenericResponseHandlers.Builder().setData(instituteResponseDto)
+				.setMessage("Institute displayed successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "allCategoryType", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getAllCategoryType() throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			List<InstituteCategoryType> categoryTypes = instituteService.getAllCategories();
-			if (categoryTypes != null && !categoryTypes.isEmpty()) {
-				response.put("message", "CategoryType fetched successfully");
-				response.put("status", HttpStatus.OK.value());
-				response.put("data", categoryTypes);
-			} else {
-				response.put("message", "CategoryType not found");
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("data", "Error");
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			response.put("message", "Error CategoryType fetched");
-			response.put("status", HttpStatus.BAD_REQUEST.value());
-			response.put("data", "Error");
-		}
-		return ResponseEntity.ok().body(response);
+		List<InstituteCategoryType> categoryTypes = instituteService.getAllCategories();
+		return new GenericResponseHandlers.Builder().setData(categoryTypes)
+				.setMessage("Institute Category Type fetched successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "type", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getAllInstituteType() throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			List<InstituteType> instituteTypes = instituteTypeService.getAllInstituteType();
-			if (instituteTypes != null && !instituteTypes.isEmpty()) {
-				response.put("message", "Institute type fetched successfully");
-				response.put("status", HttpStatus.OK.value());
-				response.put("data", instituteTypes);
-			} else {
-				response.put("message", "Institute type not vound");
-				response.put("status", HttpStatus.NOT_FOUND.value());
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			response.put("message", "Error CategoryType fetched");
-			response.put("status", HttpStatus.BAD_REQUEST.value());
-		}
-		return ResponseEntity.ok().body(response);
+		List<InstituteTypeDto> instituteTypes = instituteTypeService.getAllInstituteType();
+		return new GenericResponseHandlers.Builder().setData(instituteTypes)
+				.setMessage("InstituteTypes fetched successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@RequestMapping(value = "/{instituteId}", method = RequestMethod.DELETE, produces = "application/json")
@@ -613,16 +556,16 @@ public class InstituteController {
 		int totalCount = instituteService.getDistinctInstituteCount(name);
 		List<InstituteResponseDto> instituteList = instituteService.getDistinctInstituteList(startIndex, pageSize, name);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-		Map<String, Object> responseMap = new HashMap<>(10);
-		responseMap.put("status", HttpStatus.OK);
-		responseMap.put("message", "Get Institutes List Successfully");
-		responseMap.put("data", instituteList);
-		responseMap.put("totalCount", totalCount);
-		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
-		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
-		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+		
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
+		paginationResponseDto.setInstitutes(instituteList);
+		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institute Displayed Successfully.")
+				.setStatus(HttpStatus.OK).create();
 	}
 	
 	@PostMapping(value = "/bounded/area/pageNumber/{pageNumber}/pageSize/{pageSize}",  produces = "application/json")

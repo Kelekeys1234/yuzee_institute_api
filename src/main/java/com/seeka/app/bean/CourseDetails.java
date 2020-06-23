@@ -38,9 +38,7 @@ public class CourseDetails implements Serializable {
 
 	private Level LevelObj;
 
-	private FacultyLevel facultyLevelObj;
-
-	private InstituteLevel instituteLevelObj;
+//	private InstituteLevel instituteLevelObj;
 
 	//private CourseGradeEligibility gradeObj;
 	
@@ -186,36 +184,6 @@ public class CourseDetails implements Serializable {
 	}
 
 	/**
-	 * @return the facultyLevelObj
-	 */
-	@Transient
-	public FacultyLevel getFacultyLevelObj() {
-		return facultyLevelObj;
-	}
-
-	/**
-	 * @param facultyLevelObj the facultyLevelObj to set
-	 */
-	public void setFacultyLevelObj(FacultyLevel facultyLevelObj) {
-		this.facultyLevelObj = facultyLevelObj;
-	}
-
-	/**
-	 * @return the instituteLevelObj
-	 */
-	@Transient
-	public InstituteLevel getInstituteLevelObj() {
-		return instituteLevelObj;
-	}
-
-	/**
-	 * @param instituteLevelObj the instituteLevelObj to set
-	 */
-	public void setInstituteLevelObj(InstituteLevel instituteLevelObj) {
-		this.instituteLevelObj = instituteLevelObj;
-	}
-
-	/**
 	 * @return the gradeObj
 	 */
 	/*@Transient
@@ -244,10 +212,8 @@ public class CourseDetails implements Serializable {
 		result = prime * result + ((course == null) ? 0 : course.hashCode());
 		result = prime * result + ((coursePricingObj == null) ? 0 : coursePricingObj.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((facultyLevelObj == null) ? 0 : facultyLevelObj.hashCode());
 		result = prime * result + ((facultyObj == null) ? 0 : facultyObj.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((instituteLevelObj == null) ? 0 : instituteLevelObj.hashCode());
 		result = prime * result + ((partFull == null) ? 0 : partFull.hashCode());
 		result = prime * result + ((studyMode == null) ? 0 : studyMode.hashCode());
 		result = prime * result + ((wrRange == null) ? 0 : wrRange.hashCode());
@@ -293,11 +259,6 @@ public class CourseDetails implements Serializable {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (facultyLevelObj == null) {
-			if (other.facultyLevelObj != null)
-				return false;
-		} else if (!facultyLevelObj.equals(other.facultyLevelObj))
-			return false;
 		if (facultyObj == null) {
 			if (other.facultyObj != null)
 				return false;
@@ -307,11 +268,6 @@ public class CourseDetails implements Serializable {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
-			return false;
-		if (instituteLevelObj == null) {
-			if (other.instituteLevelObj != null)
-				return false;
-		} else if (!instituteLevelObj.equals(other.instituteLevelObj))
 			return false;
 		if (partFull == null) {
 			if (other.partFull != null)
@@ -338,8 +294,7 @@ public class CourseDetails implements Serializable {
 				.append(wrRange).append(", availbilty=").append(availbilty).append(", partFull=").append(partFull)
 				.append(", studyMode=").append(studyMode).append(", description=").append(description)
 				.append(", coursePricingObj=").append(coursePricingObj).append(", facultyObj=").append(facultyObj)
-				.append(", LevelObj=").append(LevelObj).append(", facultyLevelObj=").append(facultyLevelObj)
-				.append(", instituteLevelObj=").append(instituteLevelObj).append("]");
+				.append(", LevelObj=").append(LevelObj).append("]");
 		return builder.toString();
 	}
 

@@ -359,7 +359,7 @@ public class MigrateInstituteController {
 
 			InstituteType instituteType = new InstituteType();
 			instituteType.setId(("111111"));
-			object.setInstituteType(instituteType);
+//			object.setInstituteType(instituteType);
 			object.setIsActive(true);
 			object.setIsDeleted(false);
 			object.setName(Univeristy_Name);
@@ -530,7 +530,7 @@ public class MigrateInstituteController {
 				}
 			}
 
-			object.setServiceList(insServiceList);
+//			object.setServiceList(insServiceList);
 
 			String univName = Univeristy_Name.replaceAll("[^\\w]", "");
 			map.put(univName, object);
@@ -582,20 +582,20 @@ public class MigrateInstituteController {
 
 				instituteService.save(masterObj);
 
-				List<InstituteService> serviceList = masterObj.getServiceList();
-				if (null != serviceList && !serviceList.isEmpty() && serviceList.size() > 0) {
-					for (InstituteService obj : serviceList) {
-						try {
-							obj.setInstitute(masterObj);
-							obj.setCreatedBy("AUTO");
-							obj.setCreatedOn(new Date());
-							obj.setIsDeleted(false);
-							instituteServiceDetailsService.save(obj);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}
+//				List<InstituteService> serviceList = masterObj.getServiceList();
+//				if (null != serviceList && !serviceList.isEmpty() && serviceList.size() > 0) {
+//					for (InstituteService obj : serviceList) {
+//						try {
+//							obj.setInstitute(masterObj);
+//							obj.setCreatedBy("AUTO");
+//							obj.setCreatedOn(new Date());
+//							obj.setIsDeleted(false);
+//							instituteServiceDetailsService.save(obj);
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//						}
+//					}
+//				}
 				System.out.println("---------------------------------------------------------->" + i);
 			} catch (Exception e) {
 				e.printStackTrace();

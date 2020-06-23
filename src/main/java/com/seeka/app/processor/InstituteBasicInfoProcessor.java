@@ -13,7 +13,7 @@ import org.springframework.util.ObjectUtils;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.controller.handler.StorageHandler;
-import com.seeka.app.dao.IInstituteDAO;
+import com.seeka.app.dao.InstituteDAO;
 import com.seeka.app.dto.InstituteBasicInfoDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.exception.NotFoundException;
@@ -25,7 +25,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class InstituteBasicInfoProcessor {
 
 	@Autowired
-	private IInstituteDAO iInstituteDAO;
+	private InstituteDAO iInstituteDAO;
 	
 	@Autowired
 	private StorageHandler storageHandler;

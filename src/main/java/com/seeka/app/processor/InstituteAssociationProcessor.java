@@ -15,10 +15,9 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteAssociation;
 import com.seeka.app.constant.InstituteAssociationStatus;
 import com.seeka.app.constant.InstituteAssociationType;
-import com.seeka.app.constant.NotificationType;
 import com.seeka.app.controller.handler.StorageHandler;
 import com.seeka.app.controller.handler.UserInstituteAccessRoleHandler;
-import com.seeka.app.dao.IInstituteDAO;
+import com.seeka.app.dao.InstituteDAO;
 import com.seeka.app.dao.InstituteAssociationDao;
 import com.seeka.app.dto.InstituteAssociationDto;
 import com.seeka.app.dto.InstituteAssociationResponseDto;
@@ -26,7 +25,6 @@ import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserInstituteAccessInternalResponseDto;
 import com.seeka.app.exception.InternalServerException;
 import com.seeka.app.exception.NotFoundException;
-import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IUsersService;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -39,7 +37,7 @@ public class InstituteAssociationProcessor {
 	private InstituteAssociationDao instituteAssociationDao;
 	
 	@Autowired
-	private IInstituteDAO iInstituteDAO;
+	private InstituteDAO iInstituteDAO;
 	
 	@Autowired
 	private UserInstituteAccessRoleHandler userInstituteAccessRoleHandler;
@@ -180,7 +178,7 @@ public class InstituteAssociationProcessor {
 					Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(userAssociation.getSourceInstituteId());
 					if (sourceInstituteFromDB.isPresent()) {
 						log.info("Institute from DB found for institute id "+userAssociation.getSourceInstituteId());
-						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), sourceInstituteFromDB.get().getLatitute(), sourceInstituteFromDB.get().getLongitude(), sourceInstituteFromDB.get().getName(), sourceInstituteFromDB.get().getCityName(), sourceInstituteFromDB.get().getCountryName(),
+						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), sourceInstituteFromDB.get().getLatitude(), sourceInstituteFromDB.get().getLongitude(), sourceInstituteFromDB.get().getName(), sourceInstituteFromDB.get().getCityName(), sourceInstituteFromDB.get().getCountryName(),
 							!CollectionUtils.isEmpty(listOfStorageDto) ?listOfStorageDto.get(0).getImageURL() : null, userAssociation.getInstituteAssociationType().toString());
 						listOfUserInstituteAssociationResponseDto.add(instituteAssociationResponseDto);
 					}
@@ -196,7 +194,7 @@ public class InstituteAssociationProcessor {
 					Optional<Institute> destinationInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(userAssociation.getDestinationInstituteId());
 					if (destinationInstituteFromDB.isPresent()) {
 						log.info("Institute from DB found for institute id "+userAssociation.getDestinationInstituteId());
-						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), destinationInstituteFromDB.get().getLatitute(), destinationInstituteFromDB.get().getLongitude(), destinationInstituteFromDB.get().getName(), destinationInstituteFromDB.get().getCityName(), destinationInstituteFromDB.get().getCountryName(), !CollectionUtils.isEmpty(listOfStorageDto) ?listOfStorageDto.get(0).getImageURL() : null, userAssociation.getInstituteAssociationType().toString());
+						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), destinationInstituteFromDB.get().getLatitude(), destinationInstituteFromDB.get().getLongitude(), destinationInstituteFromDB.get().getName(), destinationInstituteFromDB.get().getCityName(), destinationInstituteFromDB.get().getCountryName(), !CollectionUtils.isEmpty(listOfStorageDto) ?listOfStorageDto.get(0).getImageURL() : null, userAssociation.getInstituteAssociationType().toString());
 						listOfUserInstituteAssociationResponseDto.add(instituteAssociationResponseDto);
 					}
 				}

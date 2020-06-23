@@ -3,10 +3,8 @@ package com.seeka.app.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,44 +21,38 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.bean.AccrediatedDetail;
-import com.seeka.app.bean.Faculty;
-import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteDomesticRankingHistory;
 import com.seeka.app.bean.InstituteIntake;
-import com.seeka.app.bean.InstituteLevel;
-import com.seeka.app.bean.InstituteVideos;
 import com.seeka.app.bean.InstituteWorldRankingHistory;
-import com.seeka.app.bean.Level;
 import com.seeka.app.constant.Type;
 import com.seeka.app.dao.AccrediatedDetailDao;
 import com.seeka.app.dao.ICourseDAO;
-import com.seeka.app.dao.IInstituteDAO;
-import com.seeka.app.dao.IInstituteDomesticRankingHistoryDAO;
-import com.seeka.app.dao.IInstituteTypeDAO;
-import com.seeka.app.dao.IInstituteVideoDao;
-import com.seeka.app.dao.IInstituteWorldRankingHistoryDAO;
+import com.seeka.app.dao.InstituteDAO;
+import com.seeka.app.dao.InstituteDomesticRankingHistoryDAO;
+import com.seeka.app.dao.InstituteWorldRankingHistoryDAO;
 import com.seeka.app.dao.ServiceDetailsDAO;
 import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.ElasticSearchDTO;
-import com.seeka.app.dto.InstituteDetailsGetRequest;
 import com.seeka.app.dto.InstituteElasticSearchDTO;
 import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteGetRequestDto;
-import com.seeka.app.dto.InstituteMedia;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.dto.LatLongDto;
 import com.seeka.app.dto.NearestInstituteDTO;
+import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.enumeration.SeekaEntityType;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.repository.InstituteRepository;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
@@ -76,25 +67,13 @@ import lombok.extern.apachecommons.CommonsLog;
 public class InstituteService implements IInstituteService {
 
 	@Autowired
-	private IInstituteDAO dao;
-
-//	@Autowired
-//	private ICountryDAO countryDAO;
+	private InstituteDAO dao;
 
 	@Autowired
-	private IInstituteWorldRankingHistoryDAO institudeWorldRankingHistoryDAO;
+	private InstituteWorldRankingHistoryDAO institudeWorldRankingHistoryDAO;
 
 	@Autowired
-	private IInstituteDomesticRankingHistoryDAO instituteDomesticRankingHistoryDAO;
-
-//	@Autowired
-//	private ICityDAO cityDAO;
-
-	@Autowired
-	private IInstituteTypeDAO instituteTypeDAO;
-
-	@Autowired
-	private IInstituteVideoDao instituteVideoDao;
+	private InstituteDomesticRankingHistoryDAO instituteDomesticRankingHistoryDAO;
 
 	@Autowired
 	private ServiceDetailsDAO serviceDetailsDAO;
@@ -114,18 +93,12 @@ public class InstituteService implements IInstituteService {
 	@Autowired
 	private ElasticSearchService elasticSearchService;
 
-	@Autowired
-	private IFacultyService iFacultyService;
+//	@Autowired
+//	private IFacultyService iFacultyService;
+//
+//	@Autowired
+//	private LevelService levelService;
 
-	@Autowired
-	private IFacultyLevelService iFacultyLevelService;
-
-	@Autowired
-	private LevelService levelService;
-
-	@Autowired
-	private IInstituteLevelService iInstituteLevelService;
-	
 	@Autowired
 	private AccrediatedDetailDao accrediatedDetailDao;
 	
@@ -134,6 +107,9 @@ public class InstituteService implements IInstituteService {
 	
 	@Value("${max.radius}")
 	private Integer maxRadius;
+	
+	@Autowired
+	private InstituteRepository instituteRepository;
 	
 	@Override
 	public void save(final Institute institute) {
@@ -178,9 +154,9 @@ public class InstituteService implements IInstituteService {
 	@Override
 	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto filterObj, final String sortByField, final String sortByType,
 			final String searchKeyword, final Integer startIndex, final String cityId, final String instituteTypeId, final Boolean isActive,
-			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) {
+			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
 		return dao.getAllInstitutesByFilter(filterObj, sortByField, sortByType, searchKeyword, startIndex, cityId, instituteTypeId, isActive, updatedOn,
-				fromWorldRanking, toWorldRanking, campusType);
+				fromWorldRanking, toWorldRanking);
 	}
 
 	@Override
@@ -202,7 +178,7 @@ public class InstituteService implements IInstituteService {
 				instituteResponseDTO.setCityName(institute.getCityName());
 			}
 			instituteResponseDTO.setWorldRanking(institute.getWorldRanking());
-			instituteResponseDTO.setLocation(institute.getLatitute() + "," + institute.getLongitude());
+			instituteResponseDTO.setLocation(institute.getLatitude() + "," + institute.getLongitude());
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDTO.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			instituteResponseDTO.setStorageList(storageDTOList);
 			instituteResponseDTOList.add(instituteResponseDTO);
@@ -212,7 +188,20 @@ public class InstituteService implements IInstituteService {
 
 	@Override
 	public List<InstituteResponseDto> getInstitudeByCityId(final String cityId) {
-		return dao.getInstitudeByCityId(cityId);
+		log.debug("Inside getInstitudeByCityId() method");
+		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
+		log.info("fetching institutes from DB having cityName = "+ cityId);
+		List<Institute> institutes = instituteRepository.findByCityName(cityId);
+		if(!CollectionUtils.isEmpty(institutes)) {
+			
+			institutes.stream().forEach(institute -> {
+				InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
+				log.info("Converting bean class to DTO class using beanUtils");
+				BeanUtils.copyProperties(institute, instituteResponseDto);
+				instituteResponseDtos.add(instituteResponseDto);
+			});
+		}
+		return instituteResponseDtos;
 	}
 
 	@Override
@@ -226,203 +215,134 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public Map<String, Object> save(final List<InstituteRequestDto> instituteRequests) {
-		Map<String, Object> response = new HashMap<>();
+	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) {
+		log.debug("Inside save() method");
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
+			log.info("start iterating data coming in request");
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
+				log.info("Going to save institute in DB");
 				Institute institute = saveInstitute(instituteRequest, null);
 				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
 				if (instituteRequest.getDomesticRanking() != null) {
+					log.info("if domesticRanking is not null then going to record domesticRankingHistory");
 					saveDomesticRankingHistory(institute, null);
 				}
 				if (instituteRequest.getWorldRanking() != null) {
+					log.info("if worldRanking is not null then going to record worldRankingHistory");
 					saveWorldRankingHistory(institute, null);
 				}
-				if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
-					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
-				}
-				if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
-					Map<String, String> facultyIdNameMap = saveFacultyLevel(institute, instituteRequest.getFacultyIds());
-					List<String> facultyNames = new ArrayList<>(facultyIdNameMap.values());
-					instituteElasticSearchDto.setFacultyNames(facultyNames);
-				}
-				if (instituteRequest.getLevelIds() != null && !instituteRequest.getLevelIds().isEmpty()) {
-					Map<String, String> levelNameLevelCodeMap = saveInstituteLevel(institute, instituteRequest.getLevelIds());
-					instituteElasticSearchDto.setLevelName(new ArrayList<>(levelNameLevelCodeMap.keySet()));
-					instituteElasticSearchDto.setLevelCode(new ArrayList<>(levelNameLevelCodeMap.values()));
-				}
-
+				log.info("Copying institute data from instituteBean to elasticSearchDTO");
 				BeanUtils.copyProperties(institute, instituteElasticSearchDto);
 				instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
 				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType().getName() : null);
+				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
 				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
-
+			log.info("Calling elasticSearch Service to add new institutes on elastic index");
 			elasticSearchService.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(),
 					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
-
-			response.put("message", "Institute saved successfully");
-			response.put("status", HttpStatus.OK.value());
 		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while saving institutes having exception = "+exception);
 		}
-		return response;
 	}
 
 	private void saveWorldRankingHistory(final Institute institute, final Institute oldInstitute) {
+		log.debug("Inside saveWorldRankingHistory() method");
 		InstituteWorldRankingHistory worldRanking = new InstituteWorldRankingHistory();
 		worldRanking.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		worldRanking.setCreatedBy(institute.getCreatedBy());
 		worldRanking.setWorldRanking(institute.getWorldRanking());
 		if (oldInstitute != null) {
+			log.info("Saving worldRanking for already existing institute having instituteId = "+ oldInstitute.getId());
 			worldRanking.setInstitute(oldInstitute);
 		} else {
+			log.info("Saving worldRanking for new institute having instituteId = "+ institute.getId());
 			worldRanking.setInstitute(institute);
 		}
+		log.info("Calling DAO layer to save world ranking history in DB");
 		institudeWorldRankingHistoryDAO.save(worldRanking);
 
 	}
 
 	private void saveDomesticRankingHistory(final Institute institute, final Institute oldInstitute) {
+		log.debug("Inside saveDomesticRankingHistory() method");
 		InstituteDomesticRankingHistory domesticRanking = new InstituteDomesticRankingHistory();
 		domesticRanking.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		domesticRanking.setCreatedBy(institute.getCreatedBy());
 		domesticRanking.setDomesticRanking(institute.getDomesticRanking());
 		if (oldInstitute != null) {
+			log.info("Saving domesticRanking for already existing institute having instituteId = "+ oldInstitute.getId());
 			domesticRanking.setInstitute(oldInstitute);
 		} else {
+			log.info("Saving domesticRanking for new institute having instituteId = "+ institute.getId());
 			domesticRanking.setInstitute(institute);
 		}
+		log.info("Calling DAO layer to save domestic ranking history in DB");
 		instituteDomesticRankingHistoryDAO.save(domesticRanking);
 	}
 
-	private Map<String, String> saveInstituteLevel(final Institute institute, final List<String> levelIds) {
-		iInstituteLevelService.deleteInstituteLevel(institute.getId());
-		Map<String, String> levelNameLevelCodeMap = new HashMap<>(); // contains Map<LevelName, LevelCode>
-
-		for (String levelId : levelIds) {
-			Level level = levelService.get(levelId);
-			InstituteLevel instituteLevel = new InstituteLevel();
-			instituteLevel.setLevel(level);
-			instituteLevel.setCountryName(institute.getCountryName());
-			instituteLevel.setCityName(institute.getCityName());
-			instituteLevel.setInstitute(institute);
-			instituteLevel.setCreatedBy("API");
-			instituteLevel.setCreatedOn(new Date());
-			instituteLevel.setUpdatedBy("API");
-			instituteLevel.setUpdatedOn(new Date());
-			instituteLevel.setIsActive(true);
-			levelNameLevelCodeMap.put(level.getName(), level.getCode());
-			iInstituteLevelService.save(instituteLevel);
-		}
-		return levelNameLevelCodeMap;
-	}
-
-	private Map<String, String> saveFacultyLevel(final Institute institute, final List<String> facultyIds) {
-		iFacultyLevelService.deleteFacultyLevel(institute.getId());
-		Map<String, String> facultyIdNameMap = new HashMap<>();
-		for (String facultyId : facultyIds) {
-			Faculty faculty = iFacultyService.get(facultyId);
-			FacultyLevel facultyLevel = new FacultyLevel();
-			facultyLevel.setFaculty(faculty);
-			facultyLevel.setInstitute(institute);
-			facultyLevel.setCreatedBy("API");
-			facultyLevel.setCreatedOn(new Date());
-			facultyLevel.setUpdatedBy("API");
-			facultyLevel.setUpdatedOn(new Date());
-			facultyLevel.setIsActive(true);
-			facultyIdNameMap.put(facultyId, faculty.getName());
-			iFacultyLevelService.save(facultyLevel);
-		}
-		return facultyIdNameMap;
-	}
-
 	@Override
-	public Map<String, Object> update(final List<InstituteRequestDto> instituteRequests, @Valid final String id) {
-		Map<String, Object> response = new HashMap<>();
+	public void updateInstitute(final List<InstituteRequestDto> instituteRequests, @Valid final String id) {
+		log.debug("Inside updateInstitute() method");
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
+			log.info("Start iterating institute coming in request");
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
+				log.info("fetching institute from DB having instituteId = "+id);
 				Institute oldInstitute = dao.get(id);
 				Institute newInstitute = new Institute();
 				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
+				log.info("Copying bean class to DTO class");
 				BeanUtils.copyProperties(instituteRequest, newInstitute);
 				if (instituteRequest.getDomesticRanking() != null && !instituteRequest.getDomesticRanking().equals(oldInstitute.getDomesticRanking())) {
+					log.info("DomesticRanking is not null hence saving domesticRanking History");
 					saveDomesticRankingHistory(newInstitute, oldInstitute);
 				}
 				if (instituteRequest.getWorldRanking() != null && !instituteRequest.getWorldRanking().equals(oldInstitute.getWorldRanking())) {
+					log.info("WorldRanking is not null hence saving worldRanking History");
 					saveWorldRankingHistory(newInstitute, oldInstitute);
 				}
+				log.info("Start updating institute for instituteId ="+id);
 				Institute institute = saveInstitute(instituteRequest, id);
-				if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
+				/*if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
 					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
-				}
-				if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
+				}*/
+				/*if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
 					Map<String, String> facultyIdNameMap = saveFacultyLevel(institute, instituteRequest.getFacultyIds());
 					List<String> facultyNames = (List<String>) facultyIdNameMap.values();
 					instituteElasticSearchDto.setFacultyNames(facultyNames);
-				}
-				if (instituteRequest.getLevelIds() != null && !instituteRequest.getLevelIds().isEmpty()) {
+				}*/
+				/*if (instituteRequest.getLevelIds() != null && !instituteRequest.getLevelIds().isEmpty()) {
 					Map<String, String> levelNameLevelCodeMap = saveInstituteLevel(institute, instituteRequest.getLevelIds());
 					instituteElasticSearchDto.setLevelName(new ArrayList<>(levelNameLevelCodeMap.keySet()));
 					instituteElasticSearchDto.setLevelCode(new ArrayList<>(levelNameLevelCodeMap.values()));
-				}
-
+				}*/
+				log.info("Copying DTO class to elasticSearch DTO");
 				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
 				instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
 				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType().getName() : null);
+				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
 				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
+			log.info("Calling elastic service to save instiutes on index");
 			elasticSearchService.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(),
 					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
-			response.put("message", "Institute update successfully");
-			response.put("status", HttpStatus.OK.value());
 		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while updating institute having exception ="+exception);
 		}
-		return response;
-	}
-
-	private void saveInstituteYoutubeVideos(final List<InstituteMedia> instituteMedias, final Institute institute) {
-		for (InstituteMedia instituteMedia : instituteMedias) {
-			InstituteVideos instituteVideo = new InstituteVideos();
-			instituteVideo.setInstitute(institute);
-			instituteVideo.setYouTubeChannel(instituteMedia.getYouTubeChannel());
-			instituteVideo.setYouTubeId1(instituteMedia.getYouTubeId1());
-			instituteVideo.setYouTubeId2(instituteMedia.getYouTubeId2());
-			instituteVideo.setYouTubeId3(instituteMedia.getYouTubeId3());
-			instituteVideo.setYouTubeId4(instituteMedia.getYouTubeId4());
-			instituteVideo.setCreatedBy("API");
-			instituteVideo.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-			instituteVideo.setUpdatedBy("API");
-			instituteVideo.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-			instituteVideoDao.save(instituteVideo);
-		}
-	}
-
-	private List<InstituteMedia> getInstituteMedia(final String instituteId) {
-		List<InstituteVideos> instituteVideos = instituteVideoDao.findByInstituteId(instituteId);
-		List<InstituteMedia> instituteMedias = new ArrayList<>();
-		for (InstituteVideos instituteVideos2 : instituteVideos) {
-			InstituteMedia instituteMedia = new InstituteMedia();
-			BeanUtils.copyProperties(instituteVideos2, instituteMedia);
-			instituteMedias.add(instituteMedia);
-		}
-		return instituteMedias;
 	}
 
 	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException {
+		log.debug("Inside saveInstitute() method");
 		Institute institute = null;
 		if (id != null) {
+			log.info("if instituteId in not null, then getInstitute from DB for id = "+id);
 			institute = dao.get(id);
 		} else {
+			log.info("instituteId is null, creating object and setting values in it");
 			institute = new Institute();
 			institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 			institute.setCreatedBy(instituteRequest.getCreatedBy());
@@ -434,18 +354,21 @@ public class InstituteService implements IInstituteService {
 		if (instituteRequest.getCountryName() != null) {
 			institute.setCountryName(instituteRequest.getCountryName());
 		} else {
-			throw new ValidationException("countryId is required");
+			log.error("CountryName is required");
+			throw new ValidationException("countryName is required");
 		}
 		if (instituteRequest.getCityName() != null) {
 			institute.setCityName(instituteRequest.getCityName());
 		} else {
-			throw new ValidationException("cityId is required");
+			log.error("CityName is required");
+			throw new ValidationException("cityName is required");
 		}
 
-		if (instituteRequest.getInstituteTypeId() != null) {
-			institute.setInstituteType(instituteTypeDAO.get(instituteRequest.getInstituteTypeId()));
+		if (instituteRequest.getInstituteType() != null) {
+			 institute.setInstituteType(instituteRequest.getInstituteType());
 		} else {
-			throw new ValidationException("instituteTypeId is required");
+			log.error("InstituteType is required like University, School, College etc");
+			throw new ValidationException("InstituteType is required like University, School, College etc");
 		}
 
 		institute.setIsActive(true);
@@ -455,14 +378,14 @@ public class InstituteService implements IInstituteService {
 		if (instituteRequest.getInstituteCategoryTypeId() != null) {
 			institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getInstituteCategoryTypeId()));
 		} else {
+			log.error("instituteCategoryTypeId is required");
 			throw new ValidationException("instituteCategoryTypeId is required");
 		}
 
-		institute.setCampusType(instituteRequest.getCampusType());
 		institute.setAddress(instituteRequest.getAddress());
 		institute.setEmail(instituteRequest.getEmail());
 		institute.setPhoneNumber(instituteRequest.getPhoneNumber());
-		institute.setLatitute(instituteRequest.getLatitude());
+		institute.setLatitude(instituteRequest.getLatitude());
 		institute.setLongitude(instituteRequest.getLongitude());
 		institute.setTotalStudent(instituteRequest.getTotalStudent());
 		institute.setOpeningFrom(instituteRequest.getOpeningFrom());
@@ -476,58 +399,75 @@ public class InstituteService implements IInstituteService {
 		institute.setAboutInfo(instituteRequest.getAboutInfo());
 		institute.setCourseStart(instituteRequest.getCourseStart());
 		if (id != null) {
+			log.info("if instituteId is not null then going to update institute for id ="+id);
 			dao.update(institute);
-			/**
-			 * Add this institute in elastic search
-			 */
+			// Adding data in Elastic DTO to save it on elasticSearch index
+			log.info("updation is done now adding data in elasticSearch DTO to add it on elastic indices for entityId = "+id);
 			InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
 			List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
 			BeanUtils.copyProperties(institute, instituteElasticDto);
 			instituteElasticDTOList.add(instituteElasticDto);
 		} else {
+			log.info("instituteId is null hence adding new institute in DB");
 			dao.save(institute);
 		}
 		if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
+			log.info("offer service is not null hence going to save institute service in DB");
 			saveInstituteService(institute, instituteRequest.getOfferService());
 		}
 		if (instituteRequest.getAccreditation() != null && !instituteRequest.getAccreditation().isEmpty()) {
+			log.info("accrediation detail is not null hence going to save institute accrediation details in DB");
 			saveAccreditedInstituteDetails(institute, instituteRequest.getAccreditationDetails());
 		}
 		if (instituteRequest.getIntakes() != null && !instituteRequest.getIntakes().isEmpty()) {
+			log.info("intakes is not null hence going to save institute intakes in DB");
 			saveIntakesInstituteDetails(institute, instituteRequest.getIntakes());
 		}
 		return institute;
 	}
 
 	private void saveIntakesInstituteDetails(final Institute institute, final List<String> intakes) {
+		log.debug("Inside saveIntakesInstituteDetails() method");
+		log.info("deleting existing instituteIntakes from DB for institute having instituteId = "+institute.getId());
 		dao.deleteInstituteIntakeById(institute.getId());
 		for (String intakeId : intakes) {
+			log.info("Start iterating new intakes which are coming in request");
 			InstituteIntake instituteIntake = new InstituteIntake();
-			instituteIntake.setEntityId(institute.getId());
-			instituteIntake.setEntityType("INSTITUTE");
+			instituteIntake.setInstitute(institute);
 			instituteIntake.setIntake(intakeId);
+			log.info("Calling DAO layer to save new intakes in DB for institute having instituteId ="+institute.getId());
 			dao.saveInstituteIntake(instituteIntake);
 		}
 	}
 
 	private void saveAccreditedInstituteDetails(final Institute institute, final List<AccrediatedDetailDto> accreditation) {
+		log.debug("Inside saveAccreditedInstituteDetails() method");
+		log.info("deleting existing accrediatedDetails from DB for institute having instituteId = "+institute.getId());
 		accrediatedDetailDao.deleteAccrediationDetailByEntityId(institute.getId());
-		for (AccrediatedDetailDto accreditedInstituteDetail2 : accreditation) {
-			AccrediatedDetail accreditedInstituteDetail = new AccrediatedDetail();
-			accreditedInstituteDetail.setEntityId(institute.getId());
-			accreditedInstituteDetail.setEntityType("INSTITUTE");
-			accreditedInstituteDetail.setAccrediatedName(accreditedInstituteDetail2.getAccrediatedName());
-			accreditedInstituteDetail.setAccrediatedWebsite(accreditedInstituteDetail2.getAccrediatedWebsite());
-			accreditedInstituteDetail.setCreatedBy("API");
-			accreditedInstituteDetail.setCreatedOn(new Date());
-			accrediatedDetailDao.addAccrediatedDetail(accreditedInstituteDetail);
+		if(!CollectionUtils.isEmpty(accreditation)) {
+			log.info("Start iterating new accrediation coming in request, if it is not null");
+			for (AccrediatedDetailDto accreditedInstituteDetail2 : accreditation) {
+				AccrediatedDetail accreditedInstituteDetail = new AccrediatedDetail();
+				accreditedInstituteDetail.setEntityId(institute.getId());
+				accreditedInstituteDetail.setEntityType("INSTITUTE");
+				accreditedInstituteDetail.setAccrediatedName(accreditedInstituteDetail2.getAccrediatedName());
+				accreditedInstituteDetail.setAccrediatedWebsite(accreditedInstituteDetail2.getAccrediatedWebsite());
+				accreditedInstituteDetail.setCreatedBy("API");
+				accreditedInstituteDetail.setCreatedOn(new Date());
+				log.info("Calling DAO layer to save accrediatedDetails in DB for institute ="+institute.getId());
+				accrediatedDetailDao.addAccrediatedDetail(accreditedInstituteDetail);
+			}
 		}
 	}
 
 	private void saveInstituteService(final Institute institute, final List<String> offerService) {
+		log.debug("Inside saveInstituteService() method");
+		log.info("deleting existing instituteService from DB having instituteId = "+institute.getId());
 		dao.deleteInstituteService(institute.getId());
+		log.info("start iterating new offerServices coming in request for institute");
 		for (String id : offerService) {
-			com.seeka.app.bean.Service service = serviceDetailsDAO.getServiceById(id);
+			log.info("fetching service from DB having by serviceId coming in request = "+id);
+			com.seeka.app.bean.Service service = serviceDetailsDAO.get(id);
 			com.seeka.app.bean.InstituteService instituteServiceDetails = new com.seeka.app.bean.InstituteService();
 			instituteServiceDetails.setInstitute(institute);
 			instituteServiceDetails.setServiceName(service.getName());
@@ -536,6 +476,7 @@ public class InstituteService implements IInstituteService {
 			instituteServiceDetails.setCreatedBy("AUTO");
 			instituteServiceDetails.setUpdatedBy("AUTO");
 			instituteServiceDetails.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+			log.info("Calling DAO layer to save institute service in DB");
 			dao.saveInstituteserviceDetails(instituteServiceDetails);
 		}
 	}
@@ -545,66 +486,71 @@ public class InstituteService implements IInstituteService {
 	}
 
 	@Override
-	public Map<String, Object> getAllInstitute(final Integer pageNumber, final Integer pageSize) {
-		Map<String, Object> response = new HashMap<>();
-		List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
-		int totalCount = 0;
-		PaginationUtilDto paginationUtilDto = null;
+	public PaginationResponseDto getAllInstitute(final Integer pageNumber, final Integer pageSize) {
+		log.debug("Inside getAllInstitute() method");
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		try {
-			totalCount = dao.findTotalCount();
+			log.info("Fetching total count of institutes from DB");
+			int totalCount = dao.findTotalCount();
 			int startIndex;
+			log.info("Calculating startIndex based of pageNumber nad pageSize");
 			if (pageNumber > 1) {
 				startIndex = (pageNumber - 1) * pageSize + 1;
 			} else {
 				startIndex = pageNumber;
 			}
-			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-			List<Institute> institutes = dao.getAll(startIndex, pageSize);
-			for (Institute institute : institutes) {
-				instituteGetRequestDtos.add(getInstitute(institute));
+			log.info("Calculating pagination based on startIndex, pageSize and totalCount");
+			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+			log.info("Fetching all institutes from DB based on pagination");
+			List<InstituteGetRequestDto> institutes = dao.getAll(startIndex, pageSize);
+			List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
+			if(!CollectionUtils.isEmpty(institutes)) {
+				log.info("Institues are not null from DB so start iterating data");
+				institutes.stream().forEach(institute -> {
+					log.info("start getting institute details");
+					InstituteGetRequestDto instituteGetRequestDto = new InstituteGetRequestDto();
+					log.info("copying bean class to DTO and fetching institute videos based on countryName and instituteName");
+					BeanUtils.copyProperties(institute, instituteGetRequestDto);
+					instituteGetRequestDto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
+					instituteGetRequestDtos.add(instituteGetRequestDto);
+				});
 			}
-			if (institutes != null && !institutes.isEmpty()) {
-				response.put("message", "Institute fetched successfully");
-				response.put("status", HttpStatus.OK.value());
-			} else {
-				response.put("message", IConstant.INSTITUDE_NOT_FOUND);
-				response.put("status", HttpStatus.NOT_FOUND.value());
-			}
+			log.info("setting values into pagination DTO with data and pagination value");
+			paginationResponseDto.setInstitutes(instituteGetRequestDtos);
+			paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+			paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+			paginationResponseDto.setTotalCount(totalCount);
+			paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+			paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while fetching all institutes from DB having exception = "+exception);
 		}
-		response.put("data", instituteGetRequestDtos);
-		response.put("totalCount", totalCount);
-		response.put("pageNumber", paginationUtilDto.getPageNumber());
-		response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		response.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		response.put("totalPages", paginationUtilDto.getTotalPages());
-		return response;
+		return paginationResponseDto;
 	}
 
 	private InstituteGetRequestDto getInstitute(final Institute institute) {
+		log.debug("Inside getInstitute() method");
 		InstituteGetRequestDto dto = new InstituteGetRequestDto();
+		log.info("Converting bean class response into DTO class response");
 		dto.setId(institute.getId());
 		dto.setCityName(institute.getCityName());
 		dto.setCountryName(institute.getCountryName());
 		dto.setInstituteType(institute.getInstituteType());
 		dto.setName(institute.getName());
-		dto.setIsActive(institute.getIsActive());
-		dto.setCreatedOn(institute.getCreatedOn());
-		dto.setCreatedBy(institute.getCreatedBy());
-		dto.setUpdatedOn(institute.getUpdatedOn());
-		dto.setUpdatedBy(institute.getUpdatedBy());
-		dto.setInstituteDetails(getInstituteDetails(institute.getId()));
+		log.info("fetching institute details from DB for instituteId = "+institute.getId());
+//		dto.setInstituteDetails(getInstituteDetails(institute.getId()));
+		log.info("fetching institute videos from DB having countryName = "+institute.getCountryName() + " and instituteName = "+institute.getName());
 		dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
-		dto.setCourseCount(institute.getCourseCount());
-		dto.setCampusType(institute.getCampusType());
+		log.info("Get total course count from DB for instituteId = "+institute.getId());
+		dto.setCourseCount(dao.getCourseCount(institute.getId()));
 		return dto;
 	}
 
 	private List<String> getInstituteYoutube(final String countryName, final String instituteName) {
+		log.debug("Inside getInstituteYoutube() method");
 		List<String> images = new ArrayList<>();
 		if (countryName != null) {
+			log.info("if countryName is not null then adding images in list");
 			for (int i = 1; i <= 20; i++) {
 				images.add(CDNServerUtil.getInstituteImages(countryName, instituteName, i));
 			}
@@ -612,12 +558,14 @@ public class InstituteService implements IInstituteService {
 		return images;
 	}
 
-	private List<InstituteDetailsGetRequest> getInstituteDetails(final String id) {
+	/*private List<InstituteDetailsGetRequest> getInstituteDetails(final String id) {
+		log.debug("Inside getInstituteDetails() method");
 		List<InstituteDetailsGetRequest> instituteDetailsGetRequests = new ArrayList<>();
+		log.info("fetching institutes from DB having instituteId = "+id);
 		Institute dto = dao.get(id);
 		InstituteDetailsGetRequest instituteDetail = new InstituteDetailsGetRequest();
-		if (dto.getLatitute() != null) {
-			instituteDetail.setLatitute(String.valueOf(dto.getLatitute()));
+		if (dto.getLatitude() != null) {
+			instituteDetail.setLatitude(String.valueOf(dto.getLatitude()));
 		}
 		if (dto.getLongitude() != null) {
 			instituteDetail.setLongitude(String.valueOf(dto.getLongitude()));
@@ -631,81 +579,48 @@ public class InstituteService implements IInstituteService {
 		instituteDetail.setAvgCostOfLiving(dto.getAvgCostOfLiving());
 		instituteDetailsGetRequests.add(instituteDetail);
 		return instituteDetailsGetRequests;
-	}
+	}*/
 
 	@Override
 	public List<InstituteRequestDto> getById(final String id) throws ValidationException {
+		log.debug("Inside getById() method");
 		InstituteRequestDto instituteRequestDto = null;
 		List<InstituteRequestDto> instituteRequestDtos = new ArrayList<>();
+		log.info("Fetching institute from DB for instituteId ="+id);
 		Institute institute = dao.get(id);
 		if (institute == null) {
+			log.error("No institute found in DB for instituteId =" +id);
 			throw new ValidationException("Institute not found for id" + id);
 		}
+		log.info("Converting bean to request DTO class");
 		instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
+		log.info("fetching institute services from DB fro instituteID = "+id);
 		instituteRequestDto.setOfferService(getOfferServices(id));
 		instituteRequestDto.setOfferServiceName(getOfferServiceNames(id));
+		log.info("fetching accrediation Details from DB fro instituteID = "+id);
 		instituteRequestDto.setAccreditationDetails(getAccreditationName(id));
-		instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
+		log.info("fetching institute intakes from DB fro instituteID = "+id);
 		instituteRequestDto.setIntakes(getIntakes(id));
-		instituteRequestDto.setFacultyIds(getFacultyLevelData(id));
-		instituteRequestDto.setFacultyNames(getFacultyByInstituteId(id));
-		instituteRequestDto.setLevelIds(getInstituteLevelData(id));
-		instituteRequestDto.setLevelNames(getInstituteLevelName(id));
+//		instituteRequestDto.setFacultyIds(getFacultyLevelData(id));
+//		instituteRequestDto.setFacultyNames(getFacultyByInstituteId(id));
+//		instituteRequestDto.setLevelIds(getInstituteLevelData(id));
+//		instituteRequestDto.setLevelNames(getInstituteLevelName(id));
 		
 		if (institute.getInstituteCategoryType() != null) {
+			log.info("Adding institute category type in final Response");
 			instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
 		}
-
 		instituteRequestDtos.add(instituteRequestDto);
-		if (institute != null && institute.getCampusType() != null && institute.getCampusType().equals("PRIMARY")) {
-			if (institute.getCountryName() != null && institute.getCityName() != null && institute.getName() != null) {
-				List<Institute> institutes = dao.getSecondayCampus(institute.getCountryName(), institute.getCityName(), institute.getName());
-				for (Institute campus : institutes) {
-					instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(campus);
-					instituteRequestDto.setOfferService(getOfferServices(campus.getId()));
-					instituteRequestDto.setOfferServiceName(getOfferServiceNames(campus.getId()));
-					instituteRequestDto.setAccreditationDetails(getAccreditationName(campus.getId()));
-					instituteRequestDto.setInstituteMedias(getInstituteMedia(id));
-					instituteRequestDto.setIntakes(getIntakes(campus.getId()));
-					instituteRequestDto.setFacultyIds(getFacultyLevelData(campus.getId()));
-					instituteRequestDto.setFacultyNames(getFacultyByInstituteId(campus.getId()));
-					instituteRequestDto.setLevelIds(getInstituteLevelData(campus.getId()));
-					instituteRequestDto.setLevelNames(getInstituteLevelName(campus.getId()));
-					if (institute.getInstituteCategoryType() != null) {
-						instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
-					}
-					instituteRequestDtos.add(instituteRequestDto);
-				}
-			}
-		}
 		return instituteRequestDtos;
 	}
 
-	private List<String> getFacultyLevelData(final String id) {
-		List<FacultyLevel> facultyLevel = iFacultyLevelService.getAllFacultyLevelByInstituteId(id);
-		if (facultyLevel != null && !facultyLevel.isEmpty()) {
-			return facultyLevel.stream().map(i -> i.getFaculty().getId()).collect(Collectors.toList());
-		} else {
-			return new ArrayList<>();
-		}
-	}
-	
-	private List<String> getFacultyByInstituteId(final String id) {
+	/*private List<String> getFacultyByInstituteId(final String id) {
 		return iFacultyService.getFacultyNameByInstituteId(id);
 	}
 
-	private List<String> getInstituteLevelData(final String id) {
-		List<InstituteLevel> instituteLevel = iInstituteLevelService.getAllLevelByInstituteId(id);
-		if (instituteLevel != null && !instituteLevel.isEmpty()) {
-			return instituteLevel.stream().map(i -> i.getLevel().getId()).collect(Collectors.toList());
-		} else {
-			return new ArrayList<>();
-		}
-	}
-	
 	private List<String> getInstituteLevelName(final String id) {
 		return levelService.getAllLevelNameByInstituteId(id);
-	}
+	}*/
 
 	private List<String> getIntakes(@Valid final String id) {
 		return dao.getIntakesById(id);
@@ -735,115 +650,117 @@ public class InstituteService implements IInstituteService {
 	}
 	
 	@Override
-	public Map<String, Object> searchInstitute(@Valid final String searchText) {
-		Map<String, Object> response = new HashMap<>();
+	public List<InstituteGetRequestDto> searchInstitute(@Valid final String searchText) {
+		log.debug("Inside searchInstitute() method");
 		List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
 		try {
-			if (searchText != null && !searchText.isEmpty()) {
-				String sqlQuery = "select inst.id, inst.name , inst.country_id , inst.city_id, inst.institute_type_id FROM institute inst where inst.is_active = 1  ";
-				String countryId = searchText.split(",")[0];
-				String name = searchText.split(",")[1];
-				String cityId = searchText.split(",")[2];
-				String worldRanking = searchText.split(",")[3];
-				String typeId = searchText.split(",")[4];
-				String postDate = searchText.split(",")[5];
-				if (countryId != null && !countryId.isEmpty()) {
-					sqlQuery += " and inst.country_id = " + Integer.valueOf(countryId);
-				} else if (name != null && !name.isEmpty()) {
-					sqlQuery += " and inst.name = '" + name + "'";
-				} else if (cityId != null && !cityId.isEmpty()) {
-					sqlQuery += " and inst.city_id = " + Integer.valueOf(cityId);
-				} else if (worldRanking != null && !worldRanking.isEmpty()) {
-					sqlQuery += " and inst.world_ranking = " + Integer.valueOf(worldRanking);
-				} else if (typeId != null && !typeId.isEmpty()) {
-					sqlQuery += " and inst.institute_type_id = " + Integer.valueOf(typeId);
-				} else if (postDate != null && !postDate.isEmpty()) {
-
-				}
-				List<Institute> institutes = dao.searchInstitute(sqlQuery);
-				for (Institute institute : institutes) {
+			log.info("Making sqlQuery to search institute based on passed searchString ="+searchText);
+			String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type FROM institute inst where inst.is_active = 1  ";
+			String countryName = searchText.split(",")[0];
+			String name = searchText.split(",")[1];
+			String cityName = searchText.split(",")[2];
+			String worldRanking = searchText.split(",")[3];
+			String instituteType = searchText.split(",")[4];
+			String postDate = searchText.split(",")[5];
+			if (countryName != null && !countryName.isEmpty()) {
+				log.info("adding countryName in sql Query");
+				sqlQuery += " and inst.country_name = '" + countryName + "'";
+			} else if (name != null && !name.isEmpty()) {
+				log.info("adding institue name in sql Query");
+				sqlQuery += " and inst.name = '" + name + "'";
+			} else if (cityName != null && !cityName.isEmpty()) {
+				log.info("adding countryName in sql Query");
+				sqlQuery += " and inst.city_name = '" + cityName + "'";
+			} else if (worldRanking != null && !worldRanking.isEmpty()) {
+				log.info("adding worldRanking in sql Query");
+				sqlQuery += " and inst.world_ranking = " + Integer.valueOf(worldRanking);
+			} else if (instituteType != null && !instituteType.isEmpty()) {
+				log.info("adding instituteType in sql Query");
+				sqlQuery += " and inst.institute_type = '" + instituteType + "'";
+			} else if(postDate != null && !postDate.isEmpty()) {
+				
+			}
+			log.info("Calling DAO layer to search institute based on searchText");
+			List<Institute> institutes = dao.searchInstitute(sqlQuery);
+			if(!CollectionUtils.isEmpty(institutes)) {
+				log.info("institutes coming in response, hence start iterating institutes ande getting institutes details");
+				institutes.stream().forEach(institute -> {
 					instituteGetRequestDtos.add(getInstitute(institute));
-				}
-			} else {
-				response.put("message", IConstant.INSTITUDE_NOT_FOUND);
-				response.put("status", HttpStatus.NOT_FOUND.value());
+				});
 			}
 		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while searching Institutes having exception ="+exception);
 		}
-		response.put("message", "Institute fetched successfully");
-		response.put("status", HttpStatus.OK.value());
-		response.put("institutes", instituteGetRequestDtos);
-		return response;
+		return instituteGetRequestDtos;
 	}
 
 	@Override
-	public Map<String, Object> instituteFilter(final InstituteFilterDto instituteFilterDto) {
-		Map<String, Object> response = new HashMap<>();
-		List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
-		int totalCount = 0;
-		PaginationUtilDto paginationUtilDto = null;
+	public PaginationResponseDto instituteFilter(final InstituteFilterDto instituteFilterDto) {
+		log.debug("Inside instituteFilter() method");
+		PaginationResponseDto paginationInstituteResponseDto = new PaginationResponseDto();
 		try {
-			totalCount = dao.findTotalCountFilterInstitute(instituteFilterDto);
+			List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
+			log.info("fetching total count of institutes from DB");
+			int totalCount = dao.findTotalCountFilterInstitute(instituteFilterDto);
 			int startIndex = (instituteFilterDto.getPageNumber() - 1) * instituteFilterDto.getMaxSizePerPage();
-			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, instituteFilterDto.getMaxSizePerPage(), totalCount);
+			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, instituteFilterDto.getMaxSizePerPage(), totalCount);
+			log.info("fetching insitutes from DB based on passed filters and startIndex and pageNumber");
 			List<Institute> institutes = dao.instituteFilter(startIndex, instituteFilterDto.getMaxSizePerPage(), instituteFilterDto);
-			for (Institute institute : institutes) {
-				instituteGetRequestDtos.add(getInstitute(institute));
-			}
-			if (institutes != null && !institutes.isEmpty()) {
-				response.put("message", "Institute fetched successfully");
-				response.put("status", HttpStatus.OK.value());
+			if(!CollectionUtils.isEmpty(institutes)) {
+				log.info("if institutes are not coming nul from DB thewn start iterating to find institute details");
+				institutes.stream().forEach(institute -> {
+					instituteGetRequestDtos.add(getInstitute(institute));
+				});
+				log.info("Setting values in pagination response DTO with institutes coming from DB");
+				paginationInstituteResponseDto.setInstitutes(instituteGetRequestDtos);
+				paginationInstituteResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+				paginationInstituteResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+				paginationInstituteResponseDto.setTotalCount(totalCount);
+				paginationInstituteResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+				paginationInstituteResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 			} else {
-				response.put("message", IConstant.INSTITUDE_NOT_FOUND);
-				response.put("status", HttpStatus.NOT_FOUND.value());
+				log.error("No institutes found in DB");
+				throw new NotFoundException("No Institute found in DB");
 			}
 		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while filtering institues based on passed filters, having exception = "+exception);
 		}
-		response.put("data", instituteGetRequestDtos);
-		response.put("totalCount", totalCount);
-		response.put("pageNumber", paginationUtilDto.getPageNumber());
-		response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		response.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		response.put("totalPages", paginationUtilDto.getTotalPages());
-		return response;
+		return paginationInstituteResponseDto;
 	}
 
 	@Override
-	public Map<String, Object> autoSearch(final Integer pageNumber, final Integer pageSize, final String searchKey) {
-		Map<String, Object> response = new HashMap<>();
-		List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
-		int totalCount = 0;
-		PaginationUtilDto paginationUtilDto = null;
+	public PaginationResponseDto autoSearch(final Integer pageNumber, final Integer pageSize, final String searchKey) {
+		log.debug("Inside autoSearch() method");
+		PaginationResponseDto paginationInstituteResponseDto = new PaginationResponseDto();
 		try {
-			totalCount = dao.findTotalCountForInstituteAutosearch(searchKey);
+			log.info("fetching total count from DB for searchKey = "+ searchKey);
+			int totalCount = dao.findTotalCountForInstituteAutosearch(searchKey);
 			int startIndex = (pageNumber - 1) * pageSize;
-			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-			List<Institute> institutes = dao.autoSearch(startIndex, pageSize, searchKey);
-			for (Institute institute : institutes) {
-				instituteGetRequestDtos.add(getInstitute(institute));
-			}
-			if (institutes != null && !institutes.isEmpty()) {
-				response.put("message", "Institute fetched successfully");
-				response.put("status", HttpStatus.OK.value());
-			} else {
-				response.put("message", IConstant.INSTITUDE_NOT_FOUND);
-				response.put("status", HttpStatus.NOT_FOUND.value());
+			log.info("Calculating pagination havinbg startIndex "+ startIndex + " and totalCount "+ totalCount);
+			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+			log.info("Fetching institutes from DB based on pageSize and having searchKey = "+ searchKey);
+			List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
+			List<InstituteGetRequestDto> institutes = dao.autoSearch(startIndex, pageSize, searchKey);
+			for (InstituteGetRequestDto institute : institutes) {
+				log.info("Start iterating institutes and set values in DTO for instituteId = " + institute.getId());
+				InstituteGetRequestDto instituteGetRequestDto = new InstituteGetRequestDto();
+				log.info("copying bean class to DTO and fetching institute videos based on countryName and instituteName");
+				BeanUtils.copyProperties(institute, instituteGetRequestDto);
+				instituteGetRequestDto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
+				instituteGetRequestDtos.add(instituteGetRequestDto);
+				
+				log.info("Setting values in pagination response DTO with institutes coming from DB");
+				paginationInstituteResponseDto.setInstitutes(instituteGetRequestDtos);
+				paginationInstituteResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+				paginationInstituteResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+				paginationInstituteResponseDto.setTotalCount(totalCount);
+				paginationInstituteResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+				paginationInstituteResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 			}
 		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while searching Institutes having exception = "+exception);
 		}
-		response.put("data", instituteGetRequestDtos);
-		response.put("totalCount", totalCount);
-		response.put("pageNumber", paginationUtilDto.getPageNumber());
-		response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		response.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		response.put("totalPages", paginationUtilDto.getTotalPages());
-		return response;
+		return paginationInstituteResponseDto;
 	}
 
 	@Override
@@ -888,9 +805,8 @@ public class InstituteService implements IInstituteService {
 
 	@Override
 	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final String cityId, final String instituteTypeId,
-			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking, final String campusType) {
-		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking,
-				campusType);
+			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
+		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
 	}
 
 	public void saveInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDTO> instituteList,

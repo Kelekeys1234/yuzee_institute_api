@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.UserSearch;
 import com.seeka.app.dao.CourseDAO;
-import com.seeka.app.dao.InstituteDAO;
 import com.seeka.app.dao.UserSearchDao;
+import com.seeka.app.dao.impl.InstituteDaoImpl;
 import com.seeka.app.dto.UserSearchDTO;
 
 @Service
@@ -25,7 +25,7 @@ public class UserSearchServiceImpl implements UserSearchService {
 	private CourseDAO courseDAO;
 
 	@Autowired
-	private InstituteDAO instituteDAO;
+	private InstituteDaoImpl instituteDAO;
 
 	@Override
 	public UserSearchDTO createUserSearchEntry(final UserSearchDTO userSearchDTO) {

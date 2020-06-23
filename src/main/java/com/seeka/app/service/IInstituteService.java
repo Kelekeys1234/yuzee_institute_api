@@ -14,11 +14,13 @@ import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
+import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 import com.seeka.app.dto.LatLongDto;
 import com.seeka.app.dto.NearestInstituteDTO;
+import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.exception.ValidationException;
 
 public interface IInstituteService {
@@ -39,7 +41,7 @@ public interface IInstituteService {
 
 	List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
 			Integer startIndex, String cityId, String instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
-			Integer toWorldRanking, String campusType);
+			Integer toWorldRanking);
 
 	InstituteResponseDto getInstituteByID(String instituteId);
 
@@ -47,19 +49,19 @@ public interface IInstituteService {
 
 	List<InstituteResponseDto> getInstituteByListOfCityId(String cityId);
 
-	Map<String, Object> save(List<InstituteRequestDto> institute);
+	public void saveInstitute(List<InstituteRequestDto> institute);
 
-	Map<String, Object> getAllInstitute(Integer pageNumber, Integer pageSize);
+	PaginationResponseDto getAllInstitute(Integer pageNumber, Integer pageSize);
 
 	List<InstituteRequestDto> getById(String id) throws ValidationException;
 
-	Map<String, Object> searchInstitute(@Valid String searchText);
+	public List<InstituteGetRequestDto> searchInstitute(@Valid String searchText);
 
-	Map<String, Object> update(List<InstituteRequestDto> institute, @Valid String id);
+	public void updateInstitute(List<InstituteRequestDto> institute, @Valid String id);
 
-	Map<String, Object> instituteFilter(InstituteFilterDto instituteFilterDto);
+	public PaginationResponseDto instituteFilter(InstituteFilterDto instituteFilterDto);
 
-	Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
+	public PaginationResponseDto autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
 
 	List<Institute> getAllInstitute();
 
@@ -76,7 +78,7 @@ public interface IInstituteService {
 	List<String> getInstituteIdsFromCountry(List<String> distinctCountryIds);
 
 	int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, String cityId, String instituteTypeId, Boolean isActive,
-			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking, String campusType);
+			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking);
 
 	Integer getTotalCourseCountForInstitute(String instituteId);
 

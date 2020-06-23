@@ -1,97 +1,55 @@
 package com.seeka.app.bean;
 
-import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "institute_intake")
-public class InstituteIntake implements Serializable {
+public class InstituteIntake {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 748946079064801464L;
-
-    @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@Id
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
-    private String id;
+	private String id;
 
-    @Column(name = "entity_id", nullable = false)
-    private String entityId;
+	@Column(name = "intake")
+	private String intake;
 
-    @Column(name = "entity_type", nullable = false)
-    private String entityType;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "institute_id", nullable = false)
+	private Institute institute;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on")
+	private Date createdOn;
 
-    @Column(name = "intake", nullable = false)
-    private String intake;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on")
+	private Date updatedOn;
 
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deleted_on")
+	private Date deletedOn;
 
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	@Column(name = "created_by")
+	private String createdBy;
 
-    /**
-     * @return the entityId
-     */
-    public String getEntityId() {
-        return entityId;
-    }
-
-    /**
-     * @param entityId
-     *            the entityId to set
-     */
-    public void setEntityId(String entityId) {
-        this.entityId = entityId;
-    }
-
-    /**
-     * @return the entityType
-     */
-    public String getEntityType() {
-        return entityType;
-    }
-
-    /**
-     * @param entityType
-     *            the entityType to set
-     */
-    public void setEntityType(String entityType) {
-        this.entityType = entityType;
-    }
-
-    /**
-     * @return the intake
-     */
-    public String getIntake() {
-        return intake;
-    }
-
-    /**
-     * @param intake the intake to set
-     */
-    public void setIntake(String intake) {
-        this.intake = intake;
-    }
-
-    
+	@Column(name = "updated_by")
+	private String updatedBy;
 }

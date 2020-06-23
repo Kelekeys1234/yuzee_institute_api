@@ -1,7 +1,5 @@
 package com.seeka.app.processor;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -9,10 +7,9 @@ import javax.transaction.Transactional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.InstituteService;
-import com.seeka.app.dao.IInstituteServiceDetailsDAO;
+import com.seeka.app.dao.InstituteServiceDetailsDAO;
 import com.seeka.app.dto.InstituteServiceDto;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -22,10 +19,12 @@ import lombok.extern.apachecommons.CommonsLog;
 public class InstituteServiceProcessor {
 
 	@Autowired
-	private IInstituteServiceDetailsDAO instituteServiceDao;
+	private InstituteServiceDetailsDAO instituteServiceDao;
 	
 	
-	public void addInstituteService (String userId ,String instituteId , InstituteServiceDto instituteServiceDto) throws Exception {
+	//Asif needs to look into these method, as per discussion with Asif comment it for now
+	
+	public void addInstituteService (String userId ,String instituteId , InstituteServiceDto instituteServiceDto) throws Exception {/*
 		List<InstituteService> listOfServiceToBeSaved = new ArrayList<InstituteService>();
 		log.debug("inside addInstituteService() method");
 		log.info("Getting all exsisting services");
@@ -53,7 +52,7 @@ public class InstituteServiceProcessor {
 		}
 		log.info("Persisting resource list to DB ");
 		instituteServiceDao.saveInstituteServices(listOfServiceToBeSaved);
-	}
+	*/}
 	
 	@Transactional(rollbackOn = Throwable.class)
 	public void deleteInstituteService (String userId, String instituteId , List<String> instituteServiceId ) throws Exception { 

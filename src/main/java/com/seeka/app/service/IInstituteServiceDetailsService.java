@@ -6,13 +6,13 @@ import com.seeka.app.bean.InstituteService;
 
 public interface IInstituteServiceDetailsService {
 
-    void save(com.seeka.app.bean.InstituteService obj);
+    public void save(com.seeka.app.bean.InstituteService obj);
 
-    void update(InstituteService obj);
+    public void update(InstituteService obj);
 
-    InstituteService get(String id);
+    public InstituteService get(String id);
 
-    List<InstituteService> getAll();
+    public List<InstituteService> getAll();
 
-    List<String> getAllServices(String instituteId);
+    public List<String> getAllServices(String instituteId);
 }

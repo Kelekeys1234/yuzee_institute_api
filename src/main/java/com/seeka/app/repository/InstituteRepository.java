@@ -1,5 +1,7 @@
 package com.seeka.app.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +18,6 @@ public interface InstituteRepository extends JpaRepository<Institute, String>{
 	
 	@Query("SELECT COUNT(*) FROM Institute i where i.countryName = :countryName")
 	public Integer getTotalCountOfInstituteByCountryName(String countryName);
+	
+	public List<Institute> findByCityName(String cityName);
 }

@@ -1,25 +1,15 @@
 package com.seeka.app.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaginationDto {
 	
 	private Integer totalCount;
 	private Boolean showMore;
-	
-	public PaginationDto(Integer totalCount,Boolean showMore) {
-		this.showMore=showMore;
-		this.totalCount=totalCount;
-	}
-	
-	public Integer getTotalCount() {
-		return totalCount;
-	}
-	public void setTotalCount(Integer totalCount) {
-		this.totalCount = totalCount;
-	}
-	public Boolean getShowMore() {
-		return showMore;
-	}
-	public void setShowMore(Boolean showMore) {
-		this.showMore = showMore;
-	}
+	private Object response;
 }

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seeka.app.bean.Institute;
-import com.seeka.app.dao.IInstituteDAO;
+import com.seeka.app.dao.InstituteDAO;
 import com.seeka.app.dto.InstituteContactInfoDto;
 import com.seeka.app.exception.NotFoundException;
 
@@ -19,7 +19,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class InstituteContactInfoProcessor {
 	
 	@Autowired
-	private IInstituteDAO iInstituteDAO;
+	private InstituteDAO iInstituteDAO;
 
 	@Transactional(rollbackOn = Throwable.class)
 	public void addUpdateInstituteContactInfo(String userId, String instituteId, InstituteContactInfoDto instituteContactInfoDto) throws Exception {
@@ -40,7 +40,7 @@ public class InstituteContactInfoProcessor {
 		institute.setPhoneNumber(instituteContactInfoDto.getContactNumber());
 		institute.setEmail(instituteContactInfoDto.getEmail());
 		institute.setAvgCostOfLiving(instituteContactInfoDto.getAveragelivingCost());
-		institute.setLatitute(instituteContactInfoDto.getLatitute());
+		institute.setLatitude(instituteContactInfoDto.getLatitute());
 		institute.setLongitude(instituteContactInfoDto.getLongitude());
 		log.info("persisting institute having id "+instituteId+ " with updated basic info");
 		iInstituteDAO.save(institute);
@@ -59,7 +59,7 @@ public class InstituteContactInfoProcessor {
 		}
 		Institute institute = instituteFromFb.get();
 		log.info("Setting institute contact info values in response DTO");
-		InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto(institute.getLatitute(), institute.getLongitude(), institute.getAddress(), institute.getOpeningFrom(), 
+		InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto(institute.getLatitude(), institute.getLongitude(), institute.getAddress(), institute.getOpeningFrom(), 
 				institute.getOpeningTo(), institute.getWebsite(), institute.getPhoneNumber(), institute.getEmail(), institute.getAvgCostOfLiving());
 		return instituteContactInfoDto;
 	}

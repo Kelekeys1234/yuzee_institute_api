@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Faculty;
-import com.seeka.app.bean.FacultyLevel;
 import com.seeka.app.dto.FacultyDto;
-import com.seeka.app.service.IFacultyLevelService;
 import com.seeka.app.service.IFacultyService;
 import com.seeka.app.util.IConstant;
 
@@ -29,25 +27,12 @@ public class FacultyController {
     @Autowired
     private IFacultyService facultyService;
 
-    @Autowired
-    private IFacultyLevelService facultyLevelService;
-
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> saveFaculty(@RequestBody Faculty obj) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         facultyService.save(obj);
         response.put("status", HttpStatus.OK.value());
         response.put("message", IConstant.FACULTY_SAVE_SUCCESS);
-        return ResponseEntity.accepted().body(response);
-    }
-
-    @RequestMapping(value = "level", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> saveFaultyLevel(@RequestBody FacultyLevel facultyLevelObj) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        facultyLevelService.save(facultyLevelObj);
-        response.put("status", HttpStatus.OK.value());
-        response.put("message", "Faculty level added successfully");
-        response.put("data", facultyLevelObj);
         return ResponseEntity.accepted().body(response);
     }
 

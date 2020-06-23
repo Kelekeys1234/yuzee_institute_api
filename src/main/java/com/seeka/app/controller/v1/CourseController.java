@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,6 @@ import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CoursePricing;
 import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.InstituteLevel;
 import com.seeka.app.controller.handler.CommonHandler;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.AccrediatedDetailDto;
@@ -74,7 +74,6 @@ import com.seeka.app.service.IStorageService;
 import com.seeka.app.service.IUserReviewService;
 import com.seeka.app.service.IUsersService;
 import com.seeka.app.service.IViewService;
-import com.seeka.app.service.InstituteLevelService;
 import com.seeka.app.service.UserRecommendationService;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.IConstant;
@@ -105,8 +104,8 @@ public class CourseController {
 //	@Autowired
 //	private ICourseGradeEligibilityService courseGradeService;
 
-	@Autowired
-	private InstituteLevelService instituteLevelService;
+//	@Autowired
+//	private InstituteLevelService instituteLevelService;
 
 	@Autowired
 	private IStorageService iStorageService;
@@ -194,10 +193,10 @@ public class CourseController {
 			@RequestHeader(required = true) final String userId, @RequestParam(required = false) final String date)
 			throws ValidationException {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
-		courseSearchDto.setCountryIds(countryIds);
+		courseSearchDto.setCountryNames(countryIds);
 		courseSearchDto.setInstituteId(instituteId);
 		courseSearchDto.setFacultyIds(facultyIds);
-		courseSearchDto.setCityIds(cityIds);
+		courseSearchDto.setCityNames(cityIds);
 		courseSearchDto.setLevelIds(levelIds);
 		courseSearchDto.setServiceIds(serviceIds);
 		courseSearchDto.setMinCost(minCost);
@@ -270,6 +269,7 @@ public class CourseController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> get(@RequestHeader(required = false) final String userId,
 			@Valid @PathVariable final String id) throws Exception {
+		InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
 		ErrorDto errorDto = null;
 		CourseRequest courseRequest = null;
 		Map<String, Object> response = new HashMap<>();
@@ -300,11 +300,12 @@ public class CourseController {
 		courseRequest.setLanguage(courseService.getCourseLanguageBasedOnCourseId(id).stream()
 				.map(CourseLanguage::getName).collect(Collectors.toList()));
 		Institute instituteObj = course.getInstitute();
+		BeanUtils.copyProperties(instituteObj, instituteResponseDto);
 		List<YouTubeVideoDto> youtubeData = new ArrayList<>();
 		if (instituteObj != null) {
 			List<String> instituteServices = iInstituteServiceDetailsService.getAllServices(instituteObj.getId());
 			if(!CollectionUtils.isEmpty(instituteServices)) {
-				instituteObj.setInstituteServices(instituteServices);
+				instituteResponseDto.setInstituteServices(instituteServices);
 			}
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
@@ -316,7 +317,7 @@ public class CourseController {
 		
 		List<AccrediatedDetailDto> accrediatedInstituteDetailsFromDB = accrediatedDetailProcessor.getAccrediationDetailByEntityId(instituteObj.getId());
 		if(!CollectionUtils.isEmpty(accrediatedInstituteDetailsFromDB)) {
-			instituteObj.setAccrediatedDetail(accrediatedInstituteDetailsFromDB);
+			instituteResponseDto.setAccrediatedDetail(accrediatedInstituteDetailsFromDB);
 		}
 		
 		List<AccrediatedDetailDto> accrediatedCourseDetails = accrediatedDetailProcessor.getAccrediationDetailByEntityId(course.getId());
@@ -333,19 +334,19 @@ public class CourseController {
 
 		List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
 		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(id);
-		if (course.getInstitute() != null) {
-			List<InstituteLevel> instituteLevels = instituteLevelService
-					.getAllLevelByInstituteId(course.getInstitute().getId());
-			if (instituteLevels != null && !instituteLevels.isEmpty()) {
-				if (instituteLevels.get(0).getLevel() != null) {
-					courseRequest.setLevelId(instituteLevels.get(0).getLevel().getId());
-					courseRequest.setLevelName(instituteLevels.get(0).getLevel().getName());
-				}
-			}
-		}
+//		if (course.getInstitute() != null) {
+//			List<InstituteLevel> instituteLevels = instituteLevelService
+//					.getAllLevelByInstituteId(course.getInstitute().getId());
+//			if (instituteLevels != null && !instituteLevels.isEmpty()) {
+//				if (instituteLevels.get(0).getLevel() != null) {
+//					courseRequest.setLevelId(instituteLevels.get(0).getLevel().getId());
+//					courseRequest.setLevelName(instituteLevels.get(0).getLevel().getName());
+//				}
+//			}
+//		}
 
 		if (course.getInstitute() != null) {
-			courseRequest.setLatitude(course.getInstitute().getLatitute());
+			courseRequest.setLatitude(course.getInstitute().getLatitude());
 			courseRequest.setLongitude(course.getInstitute().getLongitude());
 		}
 
@@ -385,7 +386,7 @@ public class CourseController {
 		response.put("courseObj", courseRequest);
 		response.put("recommendCourse", recommendCourse);
 		response.put("relatedCourse", relatedCourse);
-		response.put("instituteObj", instituteObj);
+		response.put("instituteObj", instituteResponseDto);
 		response.put("youtubeData", youtubeData);
 		return ResponseEntity.ok().body(response);
 	}
@@ -423,7 +424,7 @@ public class CourseController {
 		}
 		response.put("status", 1);
 		response.put("message", "Success.!");
-		response.put("paginationObj", new PaginationDto(totalCount, showMore));
+		response.put("paginationObj", new PaginationDto(totalCount, showMore,instituteResponseDto));
 		response.put("instituteObj", instituteResponseDto);
 		response.put("courseList", courseList);
 		return ResponseEntity.accepted().body(response);

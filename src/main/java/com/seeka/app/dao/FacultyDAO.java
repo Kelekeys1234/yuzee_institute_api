@@ -168,7 +168,8 @@ public class FacultyDAO implements IFacultyDAO {
 	public List<String> getAllFacultyNamesByInstituteId(final String instituteId) {
 		 List<String> list = new ArrayList<String>();
 	        Session session = sessionFactory.getCurrentSession();
-	        Query query = session.createSQLQuery("select f.id,f.`name` from faculty_level fl left join faculty f on f.id = fl.faculty_id where fl.institute_id='"+instituteId+"'");
+	        Query query = session.createSQLQuery("select f.id,f.`name`"
+	        		+ "from faculty_level fl left join faculty f on f.id = fl.faculty_id where fl.institute_id='"+instituteId+"'");
 	        List<Object[]> rows = query.list();
 	        for (Object[] row : rows) {
 	            list.add(new String(row[1].toString()));

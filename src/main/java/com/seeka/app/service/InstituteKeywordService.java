@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.InstituteKeywords;
-import com.seeka.app.dao.IInstituteKeywordDAO;
+import com.seeka.app.dao.InstituteKeywordDAO;
 
 @Service
 @Transactional
 public class InstituteKeywordService implements IInstituteKeywordService {
 	
 	@Autowired
-	IInstituteKeywordDAO dao;
+	InstituteKeywordDAO dao;
 	
 	@Override
 	public void save(InstituteKeywords obj) {

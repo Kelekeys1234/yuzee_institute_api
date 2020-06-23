@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.InstituteGoogleReview;
-import com.seeka.app.dao.IInstituteGoogleReviewDao;
+import com.seeka.app.dao.InstituteGoogleReviewDao;
 import com.seeka.app.dto.InstituteGoogleReviewDto;
 
 @Service(value = "iInstituteGoogleReviewService")
@@ -18,7 +18,7 @@ import com.seeka.app.dto.InstituteGoogleReviewDto;
 public class InstituteGoogleReviewService implements IInstituteGoogleReviewService {
 
 	@Autowired
-	private IInstituteGoogleReviewDao iInstituteGoogleReviewDao;
+	private InstituteGoogleReviewDao iInstituteGoogleReviewDao;
 
 	@Override
 	public List<InstituteGoogleReviewDto> getInstituteGoogleReview(final String instituteId, final Integer startIndex, final Integer pageSize) {

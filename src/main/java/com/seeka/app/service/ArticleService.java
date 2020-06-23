@@ -31,7 +31,7 @@ import com.seeka.app.dao.IArticleFolderDao;
 import com.seeka.app.dao.IArticleUserDemographicDao;
 import com.seeka.app.dao.ICategoryDAO;
 import com.seeka.app.dao.ISubCategoryDAO;
-import com.seeka.app.dao.InstituteDAO;
+import com.seeka.app.dao.impl.InstituteDaoImpl;
 import com.seeka.app.dto.ArticleCityDto;
 import com.seeka.app.dto.ArticleCountryDto;
 import com.seeka.app.dto.ArticleElasticSearchDto;
@@ -81,7 +81,7 @@ public class ArticleService implements IArticleService {
 //	private CityDAO cityDAO;
 
 	@Autowired
-	private InstituteDAO instituteDAO;
+	private InstituteDaoImpl instituteDAO;
 
 	@Autowired
 	private FacultyDAO facultyDAO;

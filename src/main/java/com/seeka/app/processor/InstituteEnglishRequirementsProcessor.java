@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteEnglishRequirements;
-import com.seeka.app.dao.IInstituteDAO;
+import com.seeka.app.dao.InstituteDAO;
 import com.seeka.app.dao.InstituteEnglishRequirementsDao;
 import com.seeka.app.dto.InstituteEnglishRequirementsDto;
 import com.seeka.app.exception.NotFoundException;
@@ -23,7 +23,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class InstituteEnglishRequirementsProcessor {
 	
 	@Autowired
-	private IInstituteDAO iInstituteDAO;
+	private InstituteDAO iInstituteDAO;
 	
 	@Autowired
 	private InstituteEnglishRequirementsDao instituteEnglishRequirementsDao;

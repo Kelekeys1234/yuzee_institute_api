@@ -82,10 +82,10 @@ public class CommonUtil {
 		instituteRequestDto.setId(institute.getId());
 		instituteRequestDto.setWebsite(institute.getWebsite());
 		if (institute.getInstituteType() != null) {
-			instituteRequestDto.setInstituteTypeId(institute.getInstituteType().getId());
+			instituteRequestDto.setInstituteType(institute.getInstituteType());
 		}
-		if (institute.getLatitute() != null) {
-			instituteRequestDto.setLatitude(institute.getLatitute());
+		if (institute.getLatitude() != null) {
+			instituteRequestDto.setLatitude(institute.getLatitude());
 		}
 		if (institute.getLongitude() != null) {
 			instituteRequestDto.setLongitude(institute.getLongitude());
@@ -97,7 +97,6 @@ public class CommonUtil {
 		instituteRequestDto.setTotalStudent(institute.getTotalStudent());
 		instituteRequestDto.setWorldRanking(institute.getWorldRanking());
 		instituteRequestDto.setName(institute.getName());
-		instituteRequestDto.setCampusType(institute.getCampusType());
 		instituteRequestDto.setCampusName(institute.getCampusName());
 		instituteRequestDto.setEmail(institute.getEmail());
 		instituteRequestDto.setEnrolmentLink(institute.getEnrolmentLink());
@@ -191,14 +190,13 @@ public class CommonUtil {
 		InstituteCampusDto campusDto = new InstituteCampusDto();
 		campusDto.setAddress(campus.getAddress());
 		campusDto.setEmail(campus.getEmail());
-		campusDto.setLatitute(campus.getLatitute());
+		campusDto.setLatitute(campus.getLatitude());
 		campusDto.setLongitute(campus.getLongitude());
 		campusDto.setOpeningFrom(campus.getOpeningFrom());
 		campusDto.setOpeningTo(campus.getOpeningTo());
 		campusDto.setPhoneNumber(campus.getPhoneNumber());
 		campusDto.setTotalStudent(campus.getTotalStudent());
 		campusDto.setId(campus.getId());
-		campusDto.setCampusType(campus.getCampusType());
 		return campusDto;
 	}
 
