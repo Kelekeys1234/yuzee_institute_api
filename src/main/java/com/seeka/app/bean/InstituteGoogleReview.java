@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -23,7 +24,7 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "institute_google_review")
+@Table(name = "institute_google_review", indexes = {@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false)})
 public class InstituteGoogleReview {
 
 	@Id

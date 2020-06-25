@@ -32,6 +32,7 @@ import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.EnrollmentStatusType;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.processor.InstituteProcessor;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -41,7 +42,7 @@ public class EnrollmentService implements IEnrollmentService {
 	private IEnrollmentDao iEnrollmentDao;
 
 	@Autowired
-	private IInstituteService iInstituteService;
+	private InstituteProcessor instituteProcessor;
 
 	@Autowired
 	private ICourseService iCourseService;
@@ -69,7 +70,7 @@ public class EnrollmentService implements IEnrollmentService {
 		enrollment.setCreatedOn(new Date());
 		enrollment.setUpdatedBy("API");
 		enrollment.setUpdatedOn(new Date());
-		Institute institute = iInstituteService.get(enrollmentDto.getInstituteId());
+		Institute institute = instituteProcessor.get(enrollmentDto.getInstituteId());
 		if (institute == null) {
 			throw new ValidationException("Institute not found for id: " + enrollmentDto.getInstituteId());
 		} else {
@@ -121,7 +122,7 @@ public class EnrollmentService implements IEnrollmentService {
 		existingEnrollment.setCreatedOn(createdOn);
 		existingEnrollment.setUpdatedBy("API");
 		existingEnrollment.setUpdatedOn(new Date());
-		Institute institute = iInstituteService.get(enrollmentDto.getInstituteId());
+		Institute institute = instituteProcessor.get(enrollmentDto.getInstituteId());
 		if (institute == null) {
 			throw new ValidationException("Institute not found for id: " + enrollmentDto.getInstituteId());
 		} else {

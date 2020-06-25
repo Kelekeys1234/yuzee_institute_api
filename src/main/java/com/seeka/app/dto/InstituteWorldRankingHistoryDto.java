@@ -3,10 +3,8 @@ package com.seeka.app.dto;
 import lombok.Data;
 
 @Data
-public class InstituteDomesticRankingHistoryDto {
-	
+public class InstituteWorldRankingHistoryDto {
 	private String id;
-	private Integer domesticRanking;
+	private Integer worldRanking;
 	private String instituteName;
-	
 }

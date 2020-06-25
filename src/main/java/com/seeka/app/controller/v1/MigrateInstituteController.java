@@ -21,7 +21,7 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteService;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
-import com.seeka.app.service.IInstituteService;
+import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IServiceDetailsService;
 
@@ -29,11 +29,8 @@ import com.seeka.app.service.IServiceDetailsService;
 @RequestMapping("/api/v1/migrate")
 public class MigrateInstituteController {
 
-//	@Autowired
-//	private ICityService cityService;
-
 	@Autowired
-	private IInstituteService instituteService;
+	private InstituteProcessor instituteProcessor;
 
 	@Autowired
 	private IServiceDetailsService serviceDetailsService;
@@ -580,7 +577,7 @@ public class MigrateInstituteController {
 				i++;
 				Institute masterObj = map.get(name);
 
-				instituteService.save(masterObj);
+				instituteProcessor.save(masterObj);
 
 //				List<InstituteService> serviceList = masterObj.getServiceList();
 //				if (null != serviceList && !serviceList.isEmpty() && serviceList.size() > 0) {

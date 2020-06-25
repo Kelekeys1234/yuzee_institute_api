@@ -22,8 +22,8 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "institute_type" , uniqueConstraints = @UniqueConstraint(columnNames = { "name", "country_name"} , name = "UK_IT_NAME_COUNTRY_NAME"),
-		indexes = { @Index (name = "IDX_IT_COUNTRY_NAME", columnList="country_name", unique = false)})
+@Table(name = "institute_type", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "type", "description" }, 
+		name = "UK_NA_CN_CN"), indexes = {@Index(name = "IDX_INSTITUTE_TYPE_NAME", columnList = "name", unique = false) })
 public class InstituteType {
 
 	@Id

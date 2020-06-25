@@ -20,7 +20,7 @@ import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.service.IInstituteService;
+import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.service.IStorageService;
 
 @RestController("searchPageControllerV1")
@@ -28,7 +28,7 @@ import com.seeka.app.service.IStorageService;
 public class SearchPageController {
 
 	@Autowired
-	private IInstituteService instituteService;
+	private InstituteProcessor instituteProcessor;
 
 	@Autowired
 	private IStorageService iStorageService;
@@ -43,7 +43,7 @@ public class SearchPageController {
 		courseSearchDto.setSortingObj(sortingObj);
 		courseSearchDto.setPageNumber(1);
 		courseSearchDto.setMaxSizePerPage(3);
-		List<InstituteResponseDto> recommendedInstList = instituteService.getAllInstitutesByFilter(courseSearchDto, null, null, null, null, null, null, null,
+		List<InstituteResponseDto> recommendedInstList = instituteProcessor.getAllInstitutesByFilter(courseSearchDto, null, null, null, null, null, null, null,
 				null, null, null);
 
 		for (InstituteResponseDto obj : recommendedInstList) {

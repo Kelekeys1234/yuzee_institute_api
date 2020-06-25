@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+package com.seeka.app.processor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.bean.AccrediatedDetail;
@@ -44,6 +45,8 @@ import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.InstituteTimingResponseDto;
+import com.seeka.app.dto.InstituteWorldRankingHistoryDto;
 import com.seeka.app.dto.LatLongDto;
 import com.seeka.app.dto.NearestInstituteDTO;
 import com.seeka.app.dto.PaginationResponseDto;
@@ -54,6 +57,8 @@ import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.repository.InstituteRepository;
+import com.seeka.app.service.ElasticSearchService;
+import com.seeka.app.service.IStorageService;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
@@ -63,10 +68,19 @@ import com.seeka.app.util.PaginationUtil;
 import lombok.extern.apachecommons.CommonsLog;
 
 @Service
-@Transactional
 @CommonsLog
-public class InstituteService implements IInstituteService {
+@Transactional
+public class InstituteProcessor {
 
+	@Value("${s3.url}")
+	private String s3URL;
+	
+	@Value("${min.radius}")
+	private Integer minRadius;
+	
+	@Value("${max.radius}")
+	private Integer maxRadius;
+	
 	@Autowired
 	private InstituteDAO dao;
 
@@ -82,9 +96,6 @@ public class InstituteService implements IInstituteService {
 	@Autowired
 	private IStorageService iStorageService;
 
-	@Value("${s3.url}")
-	private String s3URL;
-
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -94,25 +105,15 @@ public class InstituteService implements IInstituteService {
 	@Autowired
 	private ElasticSearchService elasticSearchService;
 
-//	@Autowired
-//	private IFacultyService iFacultyService;
-//
-//	@Autowired
-//	private LevelService levelService;
-
 	@Autowired
 	private AccrediatedDetailDao accrediatedDetailDao;
-	
-	@Value("${min.radius}")
-	private Integer minRadius;
-	
-	@Value("${max.radius}")
-	private Integer maxRadius;
 	
 	@Autowired
 	private InstituteRepository instituteRepository;
 	
-	@Override
+	@Autowired
+	private InstituteTimingProcessor instituteTimingProcessor;
+	
 	public void save(final Institute institute) {
 		Date today = new Date();
 		institute.setCreatedOn(today);
@@ -120,39 +121,32 @@ public class InstituteService implements IInstituteService {
 		dao.save(institute);
 	}
 
-	@Override
 	public void update(final Institute institute) {
 		Date today = new Date();
 		institute.setUpdatedOn(today);
 		dao.update(institute);
 	}
 
-	@Override
 	public Institute get(final String id) {
 		return dao.get(id);
 	}
 
-	@Override
+	
 	public List<String> getTopInstituteIdByCountry(final String countryId/* , Long startIndex, Long pageSize */) {
 		return dao.getTopInstituteByCountry(countryId/* , startIndex, pageSize */);
 	}
 
-	@Override
+	
 	public List<String> getRandomInstituteIdByCountry(final List<String> countryIdList/* , Long startIndex, Long pageSize */) {
 		return dao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
 	}
 
-	@Override
-	public List<Institute> getAll() {
-		return dao.getInstituteCampusWithInstitue();
-	}
-
-	@Override
+	
 	public List<InstituteSearchResultDto> getInstitueBySearchKey(final String searchKey) {
 		return dao.getInstitueBySearchKey(searchKey);
 	}
 
-	@Override
+	
 	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto filterObj, final String sortByField, final String sortByType,
 			final String searchKeyword, final Integer startIndex, final String cityId, final String instituteTypeId, final Boolean isActive,
 			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
@@ -160,34 +154,46 @@ public class InstituteService implements IInstituteService {
 				fromWorldRanking, toWorldRanking);
 	}
 
-	@Override
+	
 	public InstituteResponseDto getInstituteByID(final String instituteId) {
 		return dao.getInstituteByID(instituteId);
 	}
 
-	@Override
+	
 	public List<InstituteResponseDto> getAllInstituteByID(final Collection<String> listInstituteId) throws ValidationException {
-		List<Institute> inistituteList = dao.getAllInstituteByID(listInstituteId);
+		log.debug("Inside getAllInstituteByID() method");
 		List<InstituteResponseDto> instituteResponseDTOList = new ArrayList<>();
-		for (Institute institute : inistituteList) {
-			InstituteResponseDto instituteResponseDTO = new InstituteResponseDto();
-			BeanUtils.copyProperties(institute, instituteResponseDTO);
-			if (institute.getCountryName() != null) {
-				instituteResponseDTO.setCountryName(institute.getCountryName());
-			}
-			if (institute.getCityName() != null) {
-				instituteResponseDTO.setCityName(institute.getCityName());
-			}
-			instituteResponseDTO.setWorldRanking(institute.getWorldRanking());
-			instituteResponseDTO.setLocation(institute.getLatitude() + "," + institute.getLongitude());
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDTO.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
-			instituteResponseDTO.setStorageList(storageDTOList);
-			instituteResponseDTOList.add(instituteResponseDTO);
+		log.info("Fetching institute from DB based on passed instituteIds");
+		List<Institute> inistituteList = dao.getAllInstituteByID(listInstituteId);
+		if(!CollectionUtils.isEmpty(inistituteList)) {
+			log.info("Institute fetched from DB based on instituteId list, start iterating list to set value in DTO");
+			inistituteList.stream().forEach(institute -> {
+				InstituteResponseDto instituteResponseDTO = new InstituteResponseDto();
+				log.info("Copying bean class to DTO class");
+				BeanUtils.copyProperties(institute, instituteResponseDTO);
+				if (institute.getCountryName() != null) {
+					instituteResponseDTO.setCountryName(institute.getCountryName());
+				}
+				if (institute.getCityName() != null) {
+					instituteResponseDTO.setCityName(institute.getCityName());
+				}
+				instituteResponseDTO.setWorldRanking(institute.getWorldRanking());
+				instituteResponseDTO.setLocation(institute.getLatitude() + "," + institute.getLongitude());
+				try {
+					log.info("Invoking storage service to get images for instituteId = "+instituteResponseDTO.getId());
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDTO.getId(), ImageCategory.INSTITUTE.toString(),
+								null, "en");
+					instituteResponseDTO.setStorageList(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Error invoking Storage service having exception = "+e);
+				}
+				instituteResponseDTOList.add(instituteResponseDTO);
+			});
 		}
 		return instituteResponseDTOList;
 	}
 
-	@Override
+	
 	public List<InstituteResponseDto> getInstitudeByCityId(final String cityId) {
 		log.debug("Inside getInstitudeByCityId() method");
 		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
@@ -205,17 +211,30 @@ public class InstituteService implements IInstituteService {
 		return instituteResponseDtos;
 	}
 
-	@Override
+	
 	public List<InstituteResponseDto> getInstituteByListOfCityId(final String cityId) {
+		log.debug("Inside getInstituteByListOfCityId() method");
+		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
 		String[] citiesArray = cityId.split(",");
 		String tempList = "";
 		for (String id : citiesArray) {
 			tempList = tempList + "," + "'" + id + "'";
 		}
-		return dao.getInstituteByListOfCityId(tempList.substring(1, tempList.length()));
+		log.info("Calling DAO layer to fetch institutes based on cityName");
+		List<InstituteResponseDto> instituteResponseDtos = dao.getInstituteByListOfCityId(tempList.substring(1, tempList.length()));
+		if(!CollectionUtils.isEmpty(instituteResponseDtos)) {
+			log.info("Institutes fetched from DB, hence start iterating to make final response");
+			instituteResponseDtos.stream().forEach(instituteResponseDto -> {
+				log.info("fetching instituteTiming from DB for instituteId =" +instituteResponseDto.getId());
+				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(instituteResponseDto.getId());
+				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
+				instituteResponse.add(instituteResponseDto);
+			});
+		}
+		return instituteResponse;
 	}
 
-	@Override
+	
 	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) {
 		log.debug("Inside save() method");
 		try {
@@ -284,7 +303,7 @@ public class InstituteService implements IInstituteService {
 		instituteDomesticRankingHistoryDAO.save(domesticRanking);
 	}
 
-	@Override
+	
 	public void updateInstitute(final List<InstituteRequestDto> instituteRequests, @Valid final String id) {
 		log.debug("Inside updateInstitute() method");
 		try {
@@ -307,19 +326,6 @@ public class InstituteService implements IInstituteService {
 				}
 				log.info("Start updating institute for instituteId ="+id);
 				Institute institute = saveInstitute(instituteRequest, id);
-				/*if (instituteRequest.getInstituteMedias() != null && !instituteRequest.getInstituteMedias().isEmpty()) {
-					saveInstituteYoutubeVideos(instituteRequest.getInstituteMedias(), institute);
-				}*/
-				/*if (instituteRequest.getFacultyIds() != null && !instituteRequest.getFacultyIds().isEmpty()) {
-					Map<String, String> facultyIdNameMap = saveFacultyLevel(institute, instituteRequest.getFacultyIds());
-					List<String> facultyNames = (List<String>) facultyIdNameMap.values();
-					instituteElasticSearchDto.setFacultyNames(facultyNames);
-				}*/
-				/*if (instituteRequest.getLevelIds() != null && !instituteRequest.getLevelIds().isEmpty()) {
-					Map<String, String> levelNameLevelCodeMap = saveInstituteLevel(institute, instituteRequest.getLevelIds());
-					instituteElasticSearchDto.setLevelName(new ArrayList<>(levelNameLevelCodeMap.keySet()));
-					instituteElasticSearchDto.setLevelCode(new ArrayList<>(levelNameLevelCodeMap.values()));
-				}*/
 				log.info("Copying DTO class to elasticSearch DTO");
 				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
 				instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
@@ -389,8 +395,6 @@ public class InstituteService implements IInstituteService {
 		institute.setLatitude(instituteRequest.getLatitude());
 		institute.setLongitude(instituteRequest.getLongitude());
 		institute.setTotalStudent(instituteRequest.getTotalStudent());
-		institute.setOpeningFrom(instituteRequest.getOpeningFrom());
-		institute.setOpeningTo(instituteRequest.getOpeningTo());
 		institute.setCampusName(instituteRequest.getCampusName());
 		institute.setEnrolmentLink(instituteRequest.getEnrolmentLink());
 		institute.setTuitionFessPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
@@ -409,7 +413,7 @@ public class InstituteService implements IInstituteService {
 			BeanUtils.copyProperties(institute, instituteElasticDto);
 			instituteElasticDTOList.add(instituteElasticDto);
 		} else {
-			log.info("instituteId is null hence adding new institute in DB");
+			log.info("institute is not present in DB hence adding new institute in DB");
 			dao.save(institute);
 		}
 		if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
@@ -423,6 +427,10 @@ public class InstituteService implements IInstituteService {
 		if (instituteRequest.getIntakes() != null && !instituteRequest.getIntakes().isEmpty()) {
 			log.info("intakes is not null hence going to save institute intakes in DB");
 			saveIntakesInstituteDetails(institute, instituteRequest.getIntakes());
+		}
+		if(!CollectionUtils.isEmpty(instituteRequest.getInstituteTimings())) {
+			log.info("instituteTimings is not null hence going to save institute timings in DB");
+			instituteTimingProcessor.saveInstituteTiming(instituteRequest.getInstituteTimings(), institute);
 		}
 		return institute;
 	}
@@ -486,7 +494,7 @@ public class InstituteService implements IInstituteService {
 		return dao.getInstituteCategoryType(instituteCategoryTypeId);
 	}
 
-	@Override
+	
 	public PaginationResponseDto getAllInstitute(final Integer pageNumber, final Integer pageSize) {
 		log.debug("Inside getAllInstitute() method");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -538,8 +546,6 @@ public class InstituteService implements IInstituteService {
 		dto.setCountryName(institute.getCountryName());
 		dto.setInstituteType(institute.getInstituteType());
 		dto.setName(institute.getName());
-		log.info("fetching institute details from DB for instituteId = "+institute.getId());
-//		dto.setInstituteDetails(getInstituteDetails(institute.getId()));
 		log.info("fetching institute videos from DB having countryName = "+institute.getCountryName() + " and instituteName = "+institute.getName());
 		dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
 		log.info("Get total course count from DB for instituteId = "+institute.getId());
@@ -559,33 +565,9 @@ public class InstituteService implements IInstituteService {
 		return images;
 	}
 
-	/*private List<InstituteDetailsGetRequest> getInstituteDetails(final String id) {
-		log.debug("Inside getInstituteDetails() method");
-		List<InstituteDetailsGetRequest> instituteDetailsGetRequests = new ArrayList<>();
-		log.info("fetching institutes from DB having instituteId = "+id);
-		Institute dto = dao.get(id);
-		InstituteDetailsGetRequest instituteDetail = new InstituteDetailsGetRequest();
-		if (dto.getLatitude() != null) {
-			instituteDetail.setLatitude(String.valueOf(dto.getLatitude()));
-		}
-		if (dto.getLongitude() != null) {
-			instituteDetail.setLongitude(String.valueOf(dto.getLongitude()));
-		}
-		instituteDetail.setTotalStudent(dto.getTotalStudent());
-		instituteDetail.setWorldRanking(dto.getWorldRanking());
-		instituteDetail.setEmail(dto.getEmail());
-		instituteDetail.setPhoneNumber(dto.getPhoneNumber());
-		instituteDetail.setWebsite(dto.getWebsite());
-		instituteDetail.setAddress(dto.getAddress());
-		instituteDetail.setAvgCostOfLiving(dto.getAvgCostOfLiving());
-		instituteDetailsGetRequests.add(instituteDetail);
-		return instituteDetailsGetRequests;
-	}*/
-
-	@Override
+	
 	public List<InstituteRequestDto> getById(final String id) throws ValidationException {
 		log.debug("Inside getById() method");
-		InstituteRequestDto instituteRequestDto = null;
 		List<InstituteRequestDto> instituteRequestDtos = new ArrayList<>();
 		log.info("Fetching institute from DB for instituteId ="+id);
 		Institute institute = dao.get(id);
@@ -594,7 +576,7 @@ public class InstituteService implements IInstituteService {
 			throw new ValidationException("Institute not found for id" + id);
 		}
 		log.info("Converting bean to request DTO class");
-		instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
+		InstituteRequestDto instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
 		log.info("fetching institute services from DB fro instituteID = "+id);
 		instituteRequestDto.setOfferService(getOfferServices(id));
 		instituteRequestDto.setOfferServiceName(getOfferServiceNames(id));
@@ -602,43 +584,39 @@ public class InstituteService implements IInstituteService {
 		instituteRequestDto.setAccreditationDetails(getAccreditationName(id));
 		log.info("fetching institute intakes from DB fro instituteID = "+id);
 		instituteRequestDto.setIntakes(getIntakes(id));
-//		instituteRequestDto.setFacultyIds(getFacultyLevelData(id));
-//		instituteRequestDto.setFacultyNames(getFacultyByInstituteId(id));
-//		instituteRequestDto.setLevelIds(getInstituteLevelData(id));
-//		instituteRequestDto.setLevelNames(getInstituteLevelName(id));
-		
 		if (institute.getInstituteCategoryType() != null) {
 			log.info("Adding institute category type in final Response");
 			instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
 		}
+		InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(id);
+		if(!ObjectUtils.isEmpty(instituteTimingResponseDto)) {
+			instituteRequestDto.setInstituteTimings(CommonUtil.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
+		}
 		instituteRequestDtos.add(instituteRequestDto);
 		return instituteRequestDtos;
 	}
-
-	/*private List<String> getFacultyByInstituteId(final String id) {
-		return iFacultyService.getFacultyNameByInstituteId(id);
-	}
-
-	private List<String> getInstituteLevelName(final String id) {
-		return levelService.getAllLevelNameByInstituteId(id);
-	}*/
 
 	private List<String> getIntakes(@Valid final String id) {
 		return dao.getIntakesById(id);
 	}
 	
 	private List<AccrediatedDetailDto> getAccreditationName(@Valid final String id) {
+		log.debug("Inside getAccreditationName() method");
 		List<AccrediatedDetailDto> accrediatedDetailDtos = new ArrayList<>();
+		log.info("Fetching accrediation details from DB having entityId = "+id);
 		List<AccrediatedDetail> accrediatedDetails = accrediatedDetailDao.getAccrediationDetailByEntityId(id);
-		accrediatedDetails.stream().forEach(accrediatedDetail -> {
-			AccrediatedDetailDto accrediatedDetailDto = new AccrediatedDetailDto();
-			accrediatedDetailDto.setId(accrediatedDetail.getId());
-			accrediatedDetailDto.setEntityId(accrediatedDetail.getEntityId());
-			accrediatedDetailDto.setEntityType(accrediatedDetail.getEntityType());
-			accrediatedDetailDto.setAccrediatedName(accrediatedDetail.getAccrediatedName());
-			accrediatedDetailDto.setAccrediatedWebsite(accrediatedDetail.getAccrediatedWebsite());
-			accrediatedDetailDtos.add(accrediatedDetailDto);
-		});
+		if(!CollectionUtils.isEmpty(accrediatedDetails)) {
+			log.info("Acrediation details are fetched from DB, start iterating data to set value in DTO");
+			accrediatedDetails.stream().forEach(accrediatedDetail -> {
+				AccrediatedDetailDto accrediatedDetailDto = new AccrediatedDetailDto();
+				accrediatedDetailDto.setId(accrediatedDetail.getId());
+				accrediatedDetailDto.setEntityId(accrediatedDetail.getEntityId());
+				accrediatedDetailDto.setEntityType(accrediatedDetail.getEntityType());
+				accrediatedDetailDto.setAccrediatedName(accrediatedDetail.getAccrediatedName());
+				accrediatedDetailDto.setAccrediatedWebsite(accrediatedDetail.getAccrediatedWebsite());
+				accrediatedDetailDtos.add(accrediatedDetailDto);
+			});
+		}
 		return accrediatedDetailDtos;
 	}
 
@@ -650,7 +628,7 @@ public class InstituteService implements IInstituteService {
 		return serviceDetailsDAO.getServiceNameByInstituteId(id);
 	}
 	
-	@Override
+	
 	public List<InstituteGetRequestDto> searchInstitute(@Valid final String searchText) {
 		log.debug("Inside searchInstitute() method");
 		List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
@@ -695,7 +673,7 @@ public class InstituteService implements IInstituteService {
 		return instituteGetRequestDtos;
 	}
 
-	@Override
+	
 	public PaginationResponseDto instituteFilter(final InstituteFilterDto instituteFilterDto) {
 		log.debug("Inside instituteFilter() method");
 		PaginationResponseDto paginationInstituteResponseDto = new PaginationResponseDto();
@@ -729,7 +707,7 @@ public class InstituteService implements IInstituteService {
 		return paginationInstituteResponseDto;
 	}
 
-	@Override
+	
 	public PaginationResponseDto autoSearch(final Integer pageNumber, final Integer pageSize, final String searchKey) {
 		log.debug("Inside autoSearch() method");
 		PaginationResponseDto paginationInstituteResponseDto = new PaginationResponseDto();
@@ -764,47 +742,51 @@ public class InstituteService implements IInstituteService {
 		return paginationInstituteResponseDto;
 	}
 
-	@Override
+	
 	public List<Institute> getAllInstitute() {
 		return dao.getAll();
 	}
 
-	@Override
+	
 	public List<InstituteCategoryType> getAllCategories() {
 		return dao.getAllCategories();
 	}
 
-	@Override
+	
 	public void deleteInstitute(final String id) throws ValidationException {
+		log.debug("Inside deleteInstitute() method");
+		log.info("Fetching institute from DB for id = "+id);
 		Institute institute = dao.get(id);
 		if (institute != null) {
+			log.info("Institute found making institute inActive");
 			institute.setIsActive(false);
 			institute.setIsDeleted(true);
 			institute.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
+			log.info("Calling DAO layer to update institute status from active to inactive");
 			dao.update(institute);
 		} else {
+			log.error("Institute not found for id" + id);
 			throw new ValidationException("Institute not found for id" + id);
 		}
 	}
 
-	@Override
+	
 	public List<Institute> ratingWiseInstituteListByCountry(final String countryName) {
 		return dao.ratingWiseInstituteListByCountry(countryName);
 	}
 
-	@Override
+	
 	public List<String> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
 		return dao.getInstituteIdsBasedOnGlobalRanking(startIndex, pageSize);
 	}
 
-	@Override
+	
 	public List<String> getInstituteIdsFromCountry(final List<String> distinctCountryIds) {
-
 		List<String> instituteIds = dao.getInstitudeByCountry(distinctCountryIds);
 		return instituteIds;
 	}
 
-	@Override
+	
 	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final String cityId, final String instituteTypeId,
 			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
 		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
@@ -812,76 +794,89 @@ public class InstituteService implements IInstituteService {
 
 	public void saveInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDTO> instituteList,
 			final String elasticSearchName) {
-		for (InstituteElasticSearchDTO insitute : instituteList) {
+		log.debug("Inside saveInsituteOnElasticSearch() method");
+		instituteList.stream().forEach(institute -> {
 			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 			elasticSearchDto.setIndex(elasticSearchIndex);
 			elasticSearchDto.setType(type);
-			elasticSearchDto.setEntityId(String.valueOf(insitute.getId()));
-			elasticSearchDto.setObject(insitute);
+			elasticSearchDto.setEntityId(String.valueOf(institute.getId()));
+			elasticSearchDto.setObject(institute);
 			System.out.println(elasticSearchDto);
+			log.info("Calling elastic service to save institute data on elastic index");
 			ResponseEntity<Object> object = restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Object.class);
 			System.out.println(object);
-		}
+		});
 	}
 
 	public void updateInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDTO> instituteList,
 			final String elasticSearchName) {
-		for (InstituteElasticSearchDTO insitute : instituteList) {
+		log.debug("Inside updateInsituteOnElasticSearch() method");
+		instituteList.stream().forEach(institute -> {
 			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 			elasticSearchDto.setIndex(elasticSearchIndex);
 			elasticSearchDto.setType(type);
-			elasticSearchDto.setEntityId(String.valueOf(insitute.getId()));
-			elasticSearchDto.setObject(insitute);
+			elasticSearchDto.setEntityId(String.valueOf(institute.getId()));
+			elasticSearchDto.setObject(institute);
 			System.out.println(elasticSearchDto);
 			HttpHeaders headers = new HttpHeaders();
 			HttpEntity<ElasticSearchDTO> httpEntity = new HttpEntity<>(elasticSearchDto, headers);
+			log.info("Calling elastic service to update institute data on elastic index");
 			ResponseEntity<Object> object = restTemplate.exchange("http://" + IConstant.ELASTIC_SEARCH_URL, HttpMethod.PUT, httpEntity, Object.class,
 					new Object[] {});
 			System.out.println(object);
-		}
+		});
 	}
 
-	@Override
+	
 	public Integer getTotalCourseCountForInstitute(final String instituteId) {
 		return courseDao.getTotalCourseCountForInstitute(instituteId);
 	}
 
-	@Override
-	@Transactional
+	
 	public List<InstituteDomesticRankingHistoryDto> getHistoryOfDomesticRanking(final String instituteId) {
-//		List<InstituteDomesticRankingHistory> instituteDomesticRankingHistory = new ArrayList<>();
-//		List<InstituteDomesticRankingHistory> domesticRankingHistories = 
-//		domesticRankingHistories.stream().forEach(domesticRankingHistory -> {
-//			//setting null so that it will not give lazyInitialize exception
-//			domesticRankingHistory.setInstitute(null);
-//			InstituteDomesticRankingHistory domesticRankingHistoryObj = new InstituteDomesticRankingHistory();
-//			BeanUtils.copyProperties(domesticRankingHistory, domesticRankingHistoryObj);
-//			Optional<Institute> instituteFromDB = instituteRepository.findById(instituteId);
-//			domesticRankingHistoryObj.setInstitute(instituteFromDB.get());
-//			instituteDomesticRankingHistory.add(domesticRankingHistoryObj);
-//		});
+		log.debug("Inside getHistoryOfDomesticRanking() method");
 		List<InstituteDomesticRankingHistoryDto> domesticRankingHistoryObj = new ArrayList<>();
+		log.info("Calling DAO layer to fetch Domestic Ranking for instituteId = "+instituteId);
 		List<InstituteDomesticRankingHistory> domesticRankingHistories = instituteDomesticRankingHistoryDAO.getHistoryOfDomesticRanking(instituteId);
-		domesticRankingHistories.stream().forEach(domesticRankingHistory -> {
-			InstituteDomesticRankingHistoryDto domesticRankingHistoryDto = new InstituteDomesticRankingHistoryDto();
-			domesticRankingHistoryDto.setDomesticRanking(domesticRankingHistory.getDomesticRanking());
-			domesticRankingHistoryObj.add(domesticRankingHistoryDto);
-		});
+		if(!CollectionUtils.isEmpty(domesticRankingHistories)) {
+			log.info("Domestic Ranking history fetched from DB and start iterating to set values in DTO");
+			domesticRankingHistories.stream().forEach(domesticRankingHistory -> {
+				InstituteDomesticRankingHistoryDto domesticRankingHistoryDto = new InstituteDomesticRankingHistoryDto();
+				domesticRankingHistoryDto.setDomesticRanking(domesticRankingHistory.getDomesticRanking());
+				domesticRankingHistoryDto.setId(domesticRankingHistory.getId());
+				domesticRankingHistoryDto.setInstituteName(domesticRankingHistory.getInstitute().getName());
+				domesticRankingHistoryObj.add(domesticRankingHistoryDto);
+			});
+		}
 		return domesticRankingHistoryObj;
 	}
 
-	@Override
-	public InstituteWorldRankingHistory getHistoryOfWorldRanking(final String instituteId) {
-		return institudeWorldRankingHistoryDAO.getHistoryOfWorldRanking(instituteId);
+	
+	public List<InstituteWorldRankingHistoryDto> getHistoryOfWorldRanking(final String instituteId) {
+		log.debug("Inside getHistoryOfWorldRanking() method");
+		List<InstituteWorldRankingHistoryDto> instituteWorldRankingHistoryResponse = new ArrayList<>();
+		log.info("Calling DAO layer to fetch world ranking for instituteId ="+instituteId);
+		List<InstituteWorldRankingHistory> instituteWorldRankingHistories = institudeWorldRankingHistoryDAO.getHistoryOfWorldRanking(instituteId);
+		if(!CollectionUtils.isEmpty(instituteWorldRankingHistories)) {
+			log.info("World Ranking history fetched from DB and start iterating to set values in DTO");
+			instituteWorldRankingHistories.stream().forEach(instituteWorldRankingHistory -> {
+				InstituteWorldRankingHistoryDto instituteWorldRankingHistoryDto = new InstituteWorldRankingHistoryDto();
+				instituteWorldRankingHistoryDto.setId(instituteWorldRankingHistory.getId());
+				instituteWorldRankingHistoryDto.setWorldRanking(instituteWorldRankingHistory.getWorldRanking());
+				instituteWorldRankingHistoryDto.setInstituteName(instituteWorldRankingHistory.getInstitute().getName());
+				instituteWorldRankingHistoryResponse.add(instituteWorldRankingHistoryDto);
+			});
+		}
+		return instituteWorldRankingHistoryResponse;
 	}
 
-	@Override
+	
 	public Map<String, Integer> getDomesticRanking(final List<String> courseIdList) {
 		Map<String, Integer> courseDomesticRanking = dao.getDomesticRanking(courseIdList);
 		return courseDomesticRanking;
 	}
 
-	@Override
+	
 	public NearestInstituteDTO getNearestInstituteList(AdvanceSearchDto courseSearchDto)
 			throws Exception {
 	    log.debug("Inside getNearestInstituteList() method");
@@ -913,6 +908,9 @@ public class InstituteService implements IInstituteService {
 					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getId(), 
 							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
 					nearestInstitute.setStorageList(storageDTOList);
+					log.info("fetching instituteTiming from DB for instituteId = " +nearestInstituteDTO.getId());
+					InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(nearestInstituteDTO.getId());
+					nearestInstitute.setInstituteTiming(instituteTimingResponseDto);
 					nearestInstituteList.add(nearestInstitute);
 				}
 			}
@@ -934,17 +932,29 @@ public class InstituteService implements IInstituteService {
 		return institutePaginationResponseDto;
 	}
 
-	@Override
+	
 	public List<InstituteResponseDto> getDistinctInstituteList(Integer startIndex, Integer pageSize, String instituteName) {
-		return dao.getDistinctInstituteListByName(startIndex, pageSize, instituteName);
+		log.debug("Inside getDistinctInstituteList() method");
+		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
+		log.info("Calling DAO layer to getDistinct institutes from DB based on pagination");
+		List<InstituteResponseDto> instituteResponseDtos = dao.getDistinctInstituteListByName(startIndex, pageSize, instituteName);
+		if(!CollectionUtils.isEmpty(instituteResponseDtos)) {
+			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
+			instituteResponseDtos.stream().forEach(instituteResponseDto -> {
+				log.info("fetching instituteTiming from DB for instituteId =" +instituteResponseDto.getId());
+				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(instituteResponseDto.getId());
+				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
+				instituteResponse.add(instituteResponseDto);
+			});
+		}
+		return instituteResponse;
 	}
 
-	@Override
+	
 	public int getDistinctInstituteCount(String instituteName) {
 		return dao.getDistinctInstituteCountByName(instituteName);
 	}
 
-	@Override
 	public NearestInstituteDTO getInstitutesUnderBoundRegion(Integer pageNumber, Integer pageSize, List<LatLongDto> latLongDtos) throws ValidationException {
 		log.debug("Inside getInstitutesUnderBoundRegion() method");
 		List<InstituteResponseDto> nearestInstituteList = new ArrayList<>();
@@ -959,13 +969,14 @@ public class InstituteService implements IInstituteService {
 					" and radius is "+ radius);
 		List<InstituteResponseDto> nearestInstituteDTOs = dao.getNearestInstituteList(pageNumber, pageSize, centerLatAndLong.getLatitude(),
 				centerLatAndLong.getLongitude(), radius);
-		
+		log.info("Fetching total count of institute based on latitude and longitude from DB");
 		Integer totalCount = dao.getTotalCountOfNearestInstitutes(centerLatAndLong.getLatitude(),centerLatAndLong.getLongitude(), radius);
 		if(!CollectionUtils.isEmpty(nearestInstituteDTOs)) {
 			log.info("institutes found, start iterating data into list");
 			nearestInstituteDTOs.stream().forEach(nearestInstituteDTO -> {
 				InstituteResponseDto nearestInstitute = new InstituteResponseDto();
 				nearestInstitute.setDistance(Double.valueOf(radius));
+				log.info("Copying bean class to DTO class");
 				BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
 				try {
 					log.info("calling storage service to fetch logos for institute for instituteID "+nearestInstituteDTO.getId());
@@ -975,13 +986,16 @@ public class InstituteService implements IInstituteService {
 				} catch (ValidationException e) {
 					log.error("Error while fetching logos from storage service"+e);
 				}
+				log.info("fetching instituteTiming from DB for instituteId =" +nearestInstituteDTO.getId());
+				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(nearestInstituteDTO.getId());
+				nearestInstitute.setInstituteTiming(instituteTimingResponseDto);
 				nearestInstituteList.add(nearestInstitute);
 			});
 		} else {
 			log.warn("No institutes found for latitude"+ centerLatAndLong.getLatitude() +"and longitude "+ centerLatAndLong.getLongitude() +
 					" and radius is "+radius);
 		}
-		
+		log.info("Caliculating pagination based on pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
 		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO();
 		institutePaginationResponseDto.setNearestInstitutes(nearestInstituteList);
@@ -992,4 +1006,9 @@ public class InstituteService implements IInstituteService {
 		institutePaginationResponseDto.setTotalCount(totalCount);
 		return institutePaginationResponseDto;
 	}
+	
+	public List<Institute> getAllInstitutes() {
+		return instituteRepository.findAll();
+	}
+
 }

@@ -178,7 +178,7 @@ public class InstituteDaoImpl implements InstituteDAO {
 				+ "inst.Country_name as countryName,count(c.id) as courses, inst.world_ranking as world_ranking, MIN(c.stars) as stars "
 				+ " ,inst.updated_on as updatedOn, inst.institute_type as instituteType,"
 				+ " inst.is_active, inst.domestic_ranking, inst.latitude,inst.longitude,MIN(c.usd_international_fee), MAX(c.usd_international_fee),c.currency,"
-				+ " inst.website,inst.about_us_info,inst.opening_from,inst.opening_to,inst.total_student,inst.email,inst.address"
+				+ " inst.website,inst.about_us_info,inst.total_student,inst.email,inst.address"
 				+ " from institute inst "
 				+ "left join course c  on c.institute_id=inst.id where 1=1 ";
 
@@ -284,13 +284,11 @@ public class InstituteDaoImpl implements InstituteDAO {
 			instituteResponseDto.setCurrency(String.valueOf(row[15]));
 			instituteResponseDto.setWebsite(String.valueOf(row[16]));
 			instituteResponseDto.setAboutUs(String.valueOf(row[17]));
-			instituteResponseDto.setOpeningFrom(String.valueOf(row[18]));
-			instituteResponseDto.setOpeningTo(String.valueOf(row[19]));
-			if(row[20] != null) {
-				instituteResponseDto.setTotalStudent(Integer.valueOf(String.valueOf(row[20])));	
+			if(row[18] != null) {
+				instituteResponseDto.setTotalStudent(Integer.valueOf(String.valueOf(row[18])));	
 			}
-			instituteResponseDto.setEmail(String.valueOf(row[21]));
-			instituteResponseDto.setAddress(String.valueOf(row[22]));
+			instituteResponseDto.setEmail(String.valueOf(row[19]));
+			instituteResponseDto.setAddress(String.valueOf(row[20]));
 			list.add(instituteResponseDto);
 		}
 		return list;
@@ -353,7 +351,7 @@ public class InstituteDaoImpl implements InstituteDAO {
 	public List<InstituteResponseDto> getInstituteByListOfCityId(final String citisId) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.institute_type as institudeTypeId,"
-				+ " inst.world_ranking, inst.country_name, inst.city_name, inst.website, inst.about_us_info, inst.opening_from, inst.opening_to,"
+				+ " inst.world_ranking, inst.country_name, inst.city_name, inst.website, inst.about_us_info,"
 				+ " inst.total_student, inst.latitude, inst.longitude, inst.email, inst.address, inst.domestic_ranking"
 				+ " from institute inst where inst.city_name in ("+ citisId + ")  ORDER BY inst.name";
 		System.out.println(sqlQuery);
@@ -370,21 +368,19 @@ public class InstituteDaoImpl implements InstituteDAO {
 			instituteResponseDto.setCityName(String.valueOf(row[5]));
 			instituteResponseDto.setWebsite(String.valueOf(row[6]));
 			instituteResponseDto.setAboutUs(String.valueOf(row[7]));
-			instituteResponseDto.setOpeningFrom(String.valueOf(row[8]));
-			instituteResponseDto.setOpeningTo(String.valueOf(row[9]));
+			if(!ObjectUtils.isEmpty(row[8])) {
+				instituteResponseDto.setTotalStudent(Integer.parseInt(row[8].toString()));
+			}
+			if(!ObjectUtils.isEmpty(row[9])) {
+				instituteResponseDto.setLatitude(Double.parseDouble(row[9].toString()));
+			}
 			if(!ObjectUtils.isEmpty(row[10])) {
-				instituteResponseDto.setTotalStudent(Integer.parseInt(row[10].toString()));
+				instituteResponseDto.setLongitude(Double.parseDouble(row[10].toString()));
 			}
-			if(!ObjectUtils.isEmpty(row[11])) {
-				instituteResponseDto.setLatitude(Double.parseDouble(row[11].toString()));
-			}
-			if(!ObjectUtils.isEmpty(row[12])) {
-				instituteResponseDto.setLongitude(Double.parseDouble(row[12].toString()));
-			}
-			instituteResponseDto.setEmail(String.valueOf(row[13]));
-			instituteResponseDto.setAddress(String.valueOf(row[14]));
-			if(!ObjectUtils.isEmpty(row[15])) {
-				instituteResponseDto.setDomesticRanking(Integer.parseInt(row[15].toString()));
+			instituteResponseDto.setEmail(String.valueOf(row[11]));
+			instituteResponseDto.setAddress(String.valueOf(row[12]));
+			if(!ObjectUtils.isEmpty(row[13])) {
+				instituteResponseDto.setDomesticRanking(Integer.parseInt(row[13].toString()));
 			}
 			instituteResponseDto.setLocation(String.valueOf(row[5]) + ", " + String.valueOf(row[4]));
 			instituteResponseDtos.add(instituteResponseDto);
@@ -623,36 +619,6 @@ public class InstituteDaoImpl implements InstituteDAO {
 	}
 
 	@Override
-	public List<Institute> getInstituteCampusWithInstitue() {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type,"
-				+ " inst.description, inst.updated_on FROM institute as inst where inst.is_active = 1"
-				+ " and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		List<Institute> instituteList = new ArrayList<>();
-		Institute obj = null;
-		for (Object[] row : rows) {
-			obj = new Institute();
-			obj.setId(row[0].toString());
-			if (row[1] != null) {
-				obj.setName(row[1].toString());
-			}
-			if (row[5] != null) {
-				obj.setDescription(row[5].toString());
-			}
-			/*if (row[6] != null) {
-				Date createdDate = (Date) row[6];
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-				String dateResult = formatter.format(createdDate);
-				obj.setLastUpdated(dateResult);
-			}*/
-			instituteList.add(obj);
-		}
-		return instituteList;
-	}
-
-	@Override
 	public List<InstituteGetRequestDto> autoSearch(final int pageNumber, final Integer pageSize, final String searchKey) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description,"
@@ -814,7 +780,7 @@ public class InstituteDaoImpl implements InstituteDAO {
 				" COS(RADIANS('"+ courseSearchDto.getLatitude() +"')) * COS(RADIANS(institute.latitude)) * COS(RADIANS(institute.longitude) -" + 
 				" RADIANS('"+ courseSearchDto.getLongitude() +"'))) AS distance_in_km,institute.world_ranking,"+
 				" institute.domestic_ranking,MIN(course.stars) as stars,course.currency,institute.country_name,institute.city_name,course.name as courseName," +
-				" institute.total_student,institute.opening_from,institute.opening_to,institute.about_us_info,institute.website,institute.email,institute.address," +
+				" institute.total_student,institute.about_us_info,institute.website,institute.email,institute.address," +
 				" institute.is_active, institute.institute_type" +
 				" FROM institute institute inner join course on institute.id = course.institute_id" +
 				" inner join faculty f  on f.id = course.faculty_id "+
@@ -859,18 +825,16 @@ public class InstituteDaoImpl implements InstituteDAO {
 			instituteResponseDto.setCityName((String) row[13]);
 			instituteResponseDto.setLocation((String) row[13] + ", " + (String) row[12]);
 			instituteResponseDto.setTotalStudent((Integer) row[15]);
-			instituteResponseDto.setOpeningFrom((String) row[16]);
-			instituteResponseDto.setOpeningTo((String) row[17]);
-			instituteResponseDto.setAboutUs((String) row[18]);
-			instituteResponseDto.setWebsite((String) row[19]);
-			instituteResponseDto.setEmail((String) row[20]);
-			instituteResponseDto.setAddress((String) row[21]);
-			if((Byte) row[22] == 1) {
+			instituteResponseDto.setAboutUs((String) row[16]);
+			instituteResponseDto.setWebsite((String) row[17]);
+			instituteResponseDto.setEmail((String) row[18]);
+			instituteResponseDto.setAddress((String) row[19]);
+			if((Byte) row[20] == 1) {
 				instituteResponseDto.setIsActive(true);
 			} else { 
 				instituteResponseDto.setIsActive(false);
 			}
-			instituteResponseDto.setInstituteType((String) row[23]);
+			instituteResponseDto.setInstituteType((String) row[21]);
 			instituteResponseDtos.add(instituteResponseDto);
 		}
 		return instituteResponseDtos;
@@ -902,8 +866,6 @@ public class InstituteDaoImpl implements InstituteDAO {
 						.add(Projections.property("countryName").as("countryName"))
 						.add(Projections.property("website").as("website"))
 						.add(Projections.property("aboutInfo").as("aboutUs"))
-						.add(Projections.property("openingFrom").as("openingFrom"))
-						.add(Projections.property("openingTo").as("openingTo"))
 						.add(Projections.property("totalStudent").as("totalStudent"))
 						.add(Projections.property("latitude").as("latitude"))
 						.add(Projections.property("longitude").as("longitude"))
@@ -1058,7 +1020,7 @@ public class InstituteDaoImpl implements InstituteDAO {
 				" 6371 * ACOS(SIN(RADIANS('"+ latitutde +"')) * SIN(RADIANS(institute.latitude)) +" + 
 				" COS(RADIANS('"+ latitutde +"')) * COS(RADIANS(institute.latitude)) * COS(RADIANS(institute.longitude) -" + 
 				" RADIANS('"+ longitude +"'))) AS distance_in_km,institute.world_ranking,institute.domestic_ranking,MIN(course.stars) as stars,course.currency,institute.country_name,institute.city_name," + 
-				" institute.total_student,institute.opening_from,institute.opening_to,institute.about_us_info,institute.website,institute.email,institute.address," +
+				" institute.total_student,institute.about_us_info,institute.website,institute.email,institute.address," +
 				" institute.is_active, institute.institute_type" +
 				" FROM institute institute inner join course on institute.id = course.institute_id where institute.latitude is not null and institute.longitude is not null" + 
 				" and institute.latitude!= " + latitutde + " and institute.longitude!= "  + longitude + " group by institute.id" + 
@@ -1083,18 +1045,18 @@ public class InstituteDaoImpl implements InstituteDAO {
 			instituteResponseDto.setCityName((String) row[13]);
 			instituteResponseDto.setLocation((String) row[13] + ", " + (String) row[12]);
 			instituteResponseDto.setTotalStudent((Integer) row[14]);
-			instituteResponseDto.setOpeningFrom((String) row[15]);
-			instituteResponseDto.setOpeningTo((String) row[16]);
-			instituteResponseDto.setAboutUs((String) row[17]);
-			instituteResponseDto.setWebsite((String) row[18]);
-			instituteResponseDto.setEmail((String) row[19]);
-			instituteResponseDto.setAddress((String) row[20]);
-			if((Byte) row[21] == 1) {
+//			instituteResponseDto.setOpeningFrom((String) row[15]);
+//			instituteResponseDto.setOpeningTo((String) row[16]);
+			instituteResponseDto.setAboutUs((String) row[15]);
+			instituteResponseDto.setWebsite((String) row[16]);
+			instituteResponseDto.setEmail((String) row[17]);
+			instituteResponseDto.setAddress((String) row[18]);
+			if((Byte) row[19] == 1) {
 				instituteResponseDto.setIsActive(true);
 			} else {
 				instituteResponseDto.setIsActive(false);
 			}
-			instituteResponseDto.setInstituteType((String) row[22]);
+			instituteResponseDto.setInstituteType((String) row[20]);
 			instituteResponseDtos.add(instituteResponseDto);
 		}
 		return instituteResponseDtos;

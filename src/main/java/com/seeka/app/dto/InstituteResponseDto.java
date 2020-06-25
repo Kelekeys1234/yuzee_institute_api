@@ -15,8 +15,6 @@ public class InstituteResponseDto {
 	private Integer totalCount;
 	private String website;
 	private String aboutUs;
-	private String openingFrom;
-	private String openingTo;
 	private Integer totalStudent;
 	private Double latitude;
 	private Double longitude;
@@ -39,4 +37,5 @@ public class InstituteResponseDto {
 	private String currency;
 	private List<String> instituteServices;
 	private List<AccrediatedDetailDto> accrediatedDetail;
+	private InstituteTimingResponseDto instituteTiming;
 }

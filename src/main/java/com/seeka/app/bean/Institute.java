@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -18,6 +19,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -29,9 +31,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "institute")
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "institute", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "country_name", "city_name", "campus_name" }, 
+	 name = "UK_NA_CN_CN"), indexes = {@Index(name = "IDX_INSTITUTE_NAME", columnList = "name", unique = false) })
 public class Institute {
 
 	@Id
@@ -109,12 +112,6 @@ public class Institute {
 	@Column(name = "tution_fees_plan")
 	private String tuitionFessPaymentPlan;
 
-	@Column(name = "opening_from")
-	private String openingFrom;
-
-	@Column(name = "opening_to")
-	private String openingTo;
-
 	@Column(name = "enrolment_link")
 	private String enrolmentLink;
 
@@ -183,4 +180,8 @@ public class Institute {
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "institute")
 	private InstituteAdditionalInfo instituteAdditionalInfo;
+	
+	@JsonIgnore
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "institute")
+	private InstituteTiming instituteTiming;
 }

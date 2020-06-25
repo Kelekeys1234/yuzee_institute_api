@@ -33,14 +33,11 @@ public interface InstituteInterface {
 	@GetMapping("/type")
 	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam String countryName) throws Exception;
 	
-	@GetMapping("/service/{instituteTypeId}")
-	public ResponseEntity<?> saveService(@PathVariable final String instituteTypeId) throws Exception;
-	
 	@GetMapping("/service/get")
 	public ResponseEntity<?> getAllInstituteService() throws Exception;
 	
-	@GetMapping("/{id}/service")
-	public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable final String id) throws Exception;
+	@GetMapping("/{instituteId}/service")
+	public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable final String instituteId) throws Exception;
 	
 	@PostMapping("/search")
 	public ResponseEntity<?> instituteSearch(@RequestBody final CourseSearchDto request) throws Exception;
@@ -60,10 +57,10 @@ public interface InstituteInterface {
 	public ResponseEntity<?> getAllRecommendedInstitutes(@RequestBody final CourseSearchDto request) throws Exception;
 	
 	@GetMapping("/city/{cityName}")
-	public ResponseEntity<?> getInstituteByCityId(@Valid @PathVariable final String cityName) throws Exception;
+	public ResponseEntity<?> getInstituteByCityName(@Valid @PathVariable final String cityName) throws Exception;
 	
 	@GetMapping("/multiple/city/{cityName}")
-	public ResponseEntity<?> getInstituteByListOfCityId(@Valid @PathVariable final String cityName) throws Exception;
+	public ResponseEntity<?> getInstituteByListOfCityName(@Valid @PathVariable final String cityName) throws Exception;
 	
 	@PostMapping()
 	public ResponseEntity<?> save(@Valid @RequestBody final List<InstituteRequestDto> institutes) throws Exception;
@@ -78,14 +75,11 @@ public interface InstituteInterface {
 	public ResponseEntity<?> getAllInstitute(@PathVariable final String searchKey, @PathVariable final Integer pageNumber, 
 				@PathVariable final Integer pageSize) throws Exception;
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<?> get(@PathVariable final String id) throws ValidationException;
+	@GetMapping("/{instituteId}")
+	public ResponseEntity<?> get(@PathVariable final String instituteId) throws ValidationException;
 	
 	@GetMapping("/search/{searchText}")
 	public ResponseEntity<?> searchInstitute(@Valid @PathVariable final String searchText) throws Exception;
-	
-	@GetMapping("/all")
-	public ResponseEntity<?> getAllInstitute() throws Exception;
 	
 	@PostMapping("/filter")
 	public ResponseEntity<?> instituteFilter(@RequestBody final InstituteFilterDto instituteFilterDto) throws Exception;

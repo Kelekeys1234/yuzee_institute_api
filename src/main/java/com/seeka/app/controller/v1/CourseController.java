@@ -62,13 +62,13 @@ import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.processor.AccrediatedDetailProcessor;
+import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.service.ICourseEnglishEligibilityService;
 import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IEnrollmentService;
 import com.seeka.app.service.IInstituteGoogleReviewService;
-import com.seeka.app.service.IInstituteService;
 import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IStorageService;
 import com.seeka.app.service.IUserReviewService;
@@ -84,7 +84,7 @@ import com.seeka.app.util.PaginationUtil;
 public class CourseController {
 
 	@Autowired
-	private IInstituteService instituteService;
+	private InstituteProcessor instituteProcessor;
 
 	@Autowired
 	private ICourseService courseService;
@@ -100,12 +100,6 @@ public class CourseController {
 
 	@Autowired
 	private UserRecommendationService userRecommendationService;
-
-//	@Autowired
-//	private ICourseGradeEligibilityService courseGradeService;
-
-//	@Autowired
-//	private InstituteLevelService instituteLevelService;
 
 	@Autowired
 	private IStorageService iStorageService;
@@ -397,7 +391,7 @@ public class CourseController {
 		ErrorDto errorDto = null;
 		Map<String, Object> response = new HashMap<>();
 
-		InstituteResponseDto instituteResponseDto = instituteService.getInstituteByID(instituteId);
+		InstituteResponseDto instituteResponseDto = instituteProcessor.getInstituteByID(instituteId);
 		if (null == instituteResponseDto) {
 			errorDto = new ErrorDto();
 			errorDto.setCode("400");

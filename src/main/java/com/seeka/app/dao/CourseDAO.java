@@ -647,8 +647,8 @@ public class CourseDAO implements ICourseDAO {
 			instituteObj.setAddress(String.valueOf(row[16]));
 			instituteObj.setVisaRequirement(String.valueOf(row[32]));
 			instituteObj.setAboutUs(String.valueOf(row[28]));
-			instituteObj.setOpeningFrom(String.valueOf(row[29]));
-			instituteObj.setOpeningTo(String.valueOf(row[30]));
+//			instituteObj.setOpeningFrom(String.valueOf(row[29]));
+//			instituteObj.setOpeningTo(String.valueOf(row[30]));
 			instituteObj.setLocation(String.valueOf(row[21]) + "," + String.valueOf(row[22]));
 			instituteObj.setCountryName(String.valueOf(row[22]));
 			instituteObj.setCityName(String.valueOf(row[21]));

@@ -8,11 +8,14 @@ import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
@@ -26,6 +29,8 @@ import com.seeka.app.bean.Todo;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.InstituteCampusDto;
 import com.seeka.app.dto.InstituteRequestDto;
+import com.seeka.app.dto.InstituteTimingDto;
+import com.seeka.app.dto.InstituteTimingResponseDto;
 import com.seeka.app.dto.LatLongDto;
 import com.seeka.app.dto.TodoDto;
 
@@ -92,8 +97,8 @@ public class CommonUtil {
 		}
 		instituteRequestDto.setAddress(institute.getAddress());
 		instituteRequestDto.setPhoneNumber(institute.getPhoneNumber());
-		instituteRequestDto.setOpeningFrom(institute.getOpeningFrom());
-		instituteRequestDto.setOpeningTo(institute.getOpeningTo());
+//		instituteRequestDto.setOpeningFrom(institute.getOpeningFrom());
+//		instituteRequestDto.setOpeningTo(institute.getOpeningTo());
 		instituteRequestDto.setTotalStudent(institute.getTotalStudent());
 		instituteRequestDto.setWorldRanking(institute.getWorldRanking());
 		instituteRequestDto.setName(institute.getName());
@@ -192,8 +197,8 @@ public class CommonUtil {
 		campusDto.setEmail(campus.getEmail());
 		campusDto.setLatitute(campus.getLatitude());
 		campusDto.setLongitute(campus.getLongitude());
-		campusDto.setOpeningFrom(campus.getOpeningFrom());
-		campusDto.setOpeningTo(campus.getOpeningTo());
+//		campusDto.setOpeningFrom(campus.getOpeningFrom());
+//		campusDto.setOpeningTo(campus.getOpeningTo());
 		campusDto.setPhoneNumber(campus.getPhoneNumber());
 		campusDto.setTotalStudent(campus.getTotalStudent());
 		campusDto.setId(campus.getId());
@@ -478,5 +483,67 @@ public class CommonUtil {
 		double cordinate = 2 * Math.atan2(Math.sqrt(angleValue), Math.sqrt(1 - angleValue));
 		double distance = 6371 * cordinate; // Distance in km
 		return distance;
+	}
+	
+	public static List<InstituteTimingDto> convertInstituteTimingResponseDtoToInstituteRequestDto(InstituteTimingResponseDto instituteTimingResponseDto) {
+		List<InstituteTimingDto> instituteTimingDtos = new ArrayList<>();
+		InstituteTimingDto instituteTimingDto = null;
+		if(!StringUtils.isEmpty(instituteTimingResponseDto.getMonday()) && !instituteTimingResponseDto.getMonday().equalsIgnoreCase("CLOSED")) {
+			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto.setDay("Monday");
+			String time[] = instituteTimingResponseDto.getMonday().split("-");
+			instituteTimingDto.setOpeningFrom(time[0]);
+			instituteTimingDto.setOpeningTo(time[1]);
+			instituteTimingDtos.add(instituteTimingDto);
+		}
+		if(!StringUtils.isEmpty(instituteTimingResponseDto.getTuesday()) && !instituteTimingResponseDto.getTuesday().equalsIgnoreCase("CLOSED")) {
+			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto.setDay("Tuesday");
+			String time[] = instituteTimingResponseDto.getMonday().split("-");
+			instituteTimingDto.setOpeningFrom(time[0]);
+			instituteTimingDto.setOpeningTo(time[1]);
+			instituteTimingDtos.add(instituteTimingDto);
+		}
+		if(!StringUtils.isEmpty(instituteTimingResponseDto.getWednesday()) && !instituteTimingResponseDto.getWednesday().equalsIgnoreCase("CLOSED")) {
+			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto.setDay("Wednesday");
+			String time[] = instituteTimingResponseDto.getWednesday().split("-");
+			instituteTimingDto.setOpeningFrom(time[0]);
+			instituteTimingDto.setOpeningTo(time[1]);
+			instituteTimingDtos.add(instituteTimingDto);
+		}
+		if(!StringUtils.isEmpty(instituteTimingResponseDto.getThursday()) && !instituteTimingResponseDto.getThursday().equalsIgnoreCase("CLOSED")) {
+			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto.setDay("Thursday");
+			String time[] = instituteTimingResponseDto.getThursday().split("-");
+			instituteTimingDto.setOpeningFrom(time[0]);
+			instituteTimingDto.setOpeningTo(time[1]);
+			instituteTimingDtos.add(instituteTimingDto);
+		}
+		if(!StringUtils.isEmpty(instituteTimingResponseDto.getFriday()) && !instituteTimingResponseDto.getFriday().equalsIgnoreCase("CLOSED")) {
+			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto.setDay("Friday");
+			String time[] = instituteTimingResponseDto.getFriday().split("-");
+			instituteTimingDto.setOpeningFrom(time[0]);
+			instituteTimingDto.setOpeningTo(time[1]);
+			instituteTimingDtos.add(instituteTimingDto);
+		}
+		if(!StringUtils.isEmpty(instituteTimingResponseDto.getSaturday()) && !instituteTimingResponseDto.getSaturday().equalsIgnoreCase("CLOSED")) {
+			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto.setDay("Saturday");
+			String time[] = instituteTimingResponseDto.getSaturday().split("-");
+			instituteTimingDto.setOpeningFrom(time[0]);
+			instituteTimingDto.setOpeningTo(time[1]);
+			instituteTimingDtos.add(instituteTimingDto);
+		}
+		if(!StringUtils.isEmpty(instituteTimingResponseDto.getSunday()) && !instituteTimingResponseDto.getSunday().equalsIgnoreCase("CLOSED")) {
+			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto.setDay("Sunday");
+			String time[] = instituteTimingResponseDto.getSunday().split("-");
+			instituteTimingDto.setOpeningFrom(time[0]);
+			instituteTimingDto.setOpeningTo(time[1]);
+			instituteTimingDtos.add(instituteTimingDto);
+		}
+		return instituteTimingDtos;
 	}
 }

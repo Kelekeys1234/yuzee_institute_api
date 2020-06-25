@@ -57,8 +57,6 @@ public interface InstituteDAO {
 
 	public int findTotalCountFilterInstitute(InstituteFilterDto instituteFilterDto);
 
-	public List<Institute> getInstituteCampusWithInstitue();
-
 	public List<InstituteGetRequestDto> autoSearch(int startIndex, Integer pageSize, String searchKey);
 
 	public int findTotalCountForInstituteAutosearch(String searchKey);

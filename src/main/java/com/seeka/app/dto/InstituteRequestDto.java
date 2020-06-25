@@ -20,13 +20,12 @@ public class InstituteRequestDto {
 	private String scholarshipFinancingAssistance;
 	private String website;
 	private String instituteCategoryTypeId;
-	private String campusType;
 	private String campusName;
 	private Double latitude;
 	private Double longitude;
 	private Integer totalStudent;
-	private String openingFrom;
-	private String openingTo;
+//	private String openingFrom;
+//	private String openingTo;
 	private String email;
 	private String phoneNumber;
 	private String address;
@@ -39,14 +38,15 @@ public class InstituteRequestDto {
 	private String updatedBy;
 	private String whatsNo;
 	private Integer domesticRanking;
+	private List<InstituteTimingDto> instituteTimings; 
 	/**
 	 * There is no use of below fields in Admin panel.
 	 */
 	private String aboutInfo;
 	private String courseStart;
 
-	private List<String> facultyIds;
-	private List<String> facultyNames;
-	private List<String> levelIds;
-	private List<String> levelNames;
+//	private List<String> facultyIds;
+//	private List<String> facultyNames;
+//	private List<String> levelIds;
+//	private List<String> levelNames;
 }

@@ -34,8 +34,8 @@ public class InstituteContactInfoProcessor {
 		Institute institute = instituteFromFb.get();
 		log.info("adding updating contact info for institute id "+instituteId+ " by user id "+userId);
 		institute.setAddress(instituteContactInfoDto.getAddress());
-		institute.setOpeningFrom(instituteContactInfoDto.getOfficeHoursFrom());
-		institute.setOpeningTo(instituteContactInfoDto.getOfficeHoursTo());
+//		institute.setOpeningFrom(instituteContactInfoDto.getOfficeHoursFrom());
+//		institute.setOpeningTo(instituteContactInfoDto.getOfficeHoursTo());
 		institute.setWebsite(instituteContactInfoDto.getWebsite());
 		institute.setPhoneNumber(instituteContactInfoDto.getContactNumber());
 		institute.setEmail(instituteContactInfoDto.getEmail());
@@ -59,8 +59,8 @@ public class InstituteContactInfoProcessor {
 		}
 		Institute institute = instituteFromFb.get();
 		log.info("Setting institute contact info values in response DTO");
-		InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto(institute.getLatitude(), institute.getLongitude(), institute.getAddress(), institute.getOpeningFrom(), 
-				institute.getOpeningTo(), institute.getWebsite(), institute.getPhoneNumber(), institute.getEmail(), institute.getAvgCostOfLiving());
+		InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto(institute.getLatitude(), institute.getLongitude(), institute.getAddress(), null, 
+				null, institute.getWebsite(), institute.getPhoneNumber(), institute.getEmail(), institute.getAvgCostOfLiving());
 		return instituteContactInfoDto;
 	}
 }

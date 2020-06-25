@@ -37,6 +37,7 @@ import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
+import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.util.IConstant;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -59,13 +60,10 @@ public class RecommendationService implements IRecommendationService {
 	private ITop10CourseService iTop10CourseService;
 
 	@Autowired
-	private IInstituteService iInstituteService;
+	private InstituteProcessor instituteProcessor;
 
 	@Autowired
 	private ICourseService iCourseService;
-
-//	@Autowired
-//	private ICountryService iCountryService;
 
 	@Autowired
 	private IUsersService iUsersService;
@@ -126,7 +124,7 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get institutes Based on User's Country
 		 */
-		List<String> institutesBasedOnUserCountry = iInstituteService.getTopInstituteIdByCountry(userDto.getCitizenship());
+		List<String> institutesBasedOnUserCountry = instituteProcessor.getTopInstituteIdByCountry(userDto.getCitizenship());
 
 		/**
 		 * Get courses based on the country that other users from user's country are
@@ -137,7 +135,7 @@ public class RecommendationService implements IRecommendationService {
 
 		List<String> countryNames = globalDataDtoList.stream().map(i -> i.getDestinationCountry()).collect(Collectors.toList());
 		//List<String> allCountryIds = iCountryService.getCountryBasedOnCitizenship(countryNames);
-		List<String> institutesById = iInstituteService.getRandomInstituteIdByCountry(countryNames);
+		List<String> institutesById = instituteProcessor.getRandomInstituteIdByCountry(countryNames);
 		/**
 		 * Select Random two courses from User Past Search
 		 */
@@ -156,7 +154,7 @@ public class RecommendationService implements IRecommendationService {
 			count++;
 		}
 
-		return iInstituteService.getAllInstituteByID(instList);
+		return instituteProcessor.getAllInstituteByID(instList);
 
 	}
 
@@ -285,7 +283,7 @@ public class RecommendationService implements IRecommendationService {
 	}
 
 	private List<Institute> getAllInstituteRankingWisePerCountry(final String country) {
-		return iInstituteService.ratingWiseInstituteListByCountry(country);
+		return instituteProcessor.ratingWiseInstituteListByCountry(country);
 	}
 
 	private List<Course> facultyWiseCourseForInstitute(final List<Faculty> facultyList, final Institute instituteId) {
@@ -463,7 +461,7 @@ public class RecommendationService implements IRecommendationService {
 		if ((topSearchedCourseIds != null) && !topSearchedCourseIds.isEmpty()) {
 			List<String> countryForTopSearchedCourses = iCourseService.getCountryForTopSearchedCourses(topSearchedCourseIds);
 			for (String countryId : countryForTopSearchedCourses) {
-				List<String> insituteId = iInstituteService.getTopInstituteIdByCountry(countryId/* , 0L, 1L */);
+				List<String> insituteId = instituteProcessor.getTopInstituteIdByCountry(countryId/* , 0L, 1L */);
 				instituteList.addAll(insituteId);
 			}
 		}
@@ -635,7 +633,7 @@ public class RecommendationService implements IRecommendationService {
 			 * Get all institutes for the various countries that other users have searched
 			 * for
 			 */
-			List<String> allInstituteIds = iInstituteService.getInstituteIdsFromCountry(distinctCountryIds);
+			List<String> allInstituteIds = instituteProcessor.getInstituteIdsFromCountry(distinctCountryIds);
 
 			/**
 			 * If we dont get any institutes return an empty list
@@ -648,7 +646,7 @@ public class RecommendationService implements IRecommendationService {
 			 * If the list is less than 20 return all the institutes available
 			 */
 			if (allInstituteIds.size() < 20) {
-				return iInstituteService.getAllInstituteByID(allInstituteIds);
+				return instituteProcessor.getAllInstituteByID(allInstituteIds);
 			}
 			/**
 			 * If greater than 20 have a random logic for the same
@@ -666,7 +664,7 @@ public class RecommendationService implements IRecommendationService {
 						break;
 					}
 				}
-				return iInstituteService.getAllInstituteByID(randomInstituteIds);
+				return instituteProcessor.getAllInstituteByID(randomInstituteIds);
 			}
 
 		} catch (ValidationException e) {
