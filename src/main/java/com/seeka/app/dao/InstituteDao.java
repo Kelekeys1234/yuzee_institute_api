@@ -19,7 +19,7 @@ import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
 
-public interface InstituteDAO {
+public interface InstituteDao {
 
 	public void save(Institute obj);
 

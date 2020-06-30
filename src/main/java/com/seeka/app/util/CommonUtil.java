@@ -14,6 +14,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.util.StringUtils;
 
@@ -36,48 +40,6 @@ import com.seeka.app.dto.TodoDto;
 
 public class CommonUtil {
 
-	/*public static Country convertDTOToBean(final CountryRequestDto countryRequestDto) {
-		ObjectMapper mapper = new ObjectMapper();
-		Country country = null;
-		try {
-			country = mapper.readValue(mapper.writeValueAsString(countryRequestDto), Country.class);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return country;
-	}
-
-	public static CountryDetails convertCountryDetailsDTOToBean(final CountryDetailsDto countryDetailsDto, final Country country) {
-		ObjectMapper mapper = new ObjectMapper();
-		CountryDetails countryDetails = null;
-		try {
-			countryDetails = mapper.readValue(mapper.writeValueAsString(countryDetailsDto), CountryDetails.class);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return countryDetails;
-	}
-
-	public static CountryImages convertCountryImageDTOToBean(final CountryImageDto dto, final Country country) {
-		ObjectMapper mapper = new ObjectMapper();
-		CountryImages countryImages = null;
-		try {
-			countryImages = mapper.readValue(mapper.writeValueAsString(dto), CountryImages.class);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return countryImages;
-	}
-
-	public static City convertCityDTOToBean(final CityDto cityObj, final Country country) {
-		City city = new City();
-		city.setCountry(country);
-		city.setName(cityObj.getName());
-		city.setCreatedOn(new Date());
-		city.setUpdatedOn(new Date());
-		return city;
-	}*/
-
 	public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(final Institute institute) {
 		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
 		instituteRequestDto.setAvgCostOfLiving(institute.getAvgCostOfLiving());
@@ -97,8 +59,6 @@ public class CommonUtil {
 		}
 		instituteRequestDto.setAddress(institute.getAddress());
 		instituteRequestDto.setPhoneNumber(institute.getPhoneNumber());
-//		instituteRequestDto.setOpeningFrom(institute.getOpeningFrom());
-//		instituteRequestDto.setOpeningTo(institute.getOpeningTo());
 		instituteRequestDto.setTotalStudent(institute.getTotalStudent());
 		instituteRequestDto.setWorldRanking(institute.getWorldRanking());
 		instituteRequestDto.setName(institute.getName());
@@ -119,9 +79,6 @@ public class CommonUtil {
 		if (course.getStars() != null) {
 			courseRequest.setStars(String.valueOf(course.getStars()));
 		}
-		if (course.getDuration() != null) {
-			courseRequest.setDuration(String.valueOf(course.getDuration()));
-		}
 		if (course.getWorldRanking() != null) {
 			courseRequest.setWorldRanking(String.valueOf(course.getWorldRanking()));
 		}
@@ -130,25 +87,17 @@ public class CommonUtil {
 		} else {
 			courseRequest.setDescription(IConstant.COURSE_DEFAULT_DESCRPTION);
 		}
-
-		courseRequest.setDurationTime(course.getDurationTime());
-
 		courseRequest.setName(course.getName());
 		courseRequest.setLink(course.getLink());
 		if (course.getFaculty() != null) {
 			courseRequest.setFacultyId(course.getFaculty().getId());
 			courseRequest.setFacultyName(course.getFaculty().getName());
 		}
-		courseRequest.setDomasticFee(course.getUsdDomasticFee());
-		courseRequest.setInternationalFee(course.getUsdInternationFee());
-		courseRequest.setGrades(course.getGrades());
 		courseRequest.setContact(course.getContact());
 		courseRequest.setCampusLocation(course.getCampusLocation());
 		courseRequest.setCurrency(course.getCurrency());
 		courseRequest.setWebsite(course.getWebsite());
-		courseRequest.setPartFull(course.getPartFull());
-		courseRequest.setStudyMode(course.getStudyMode());
-		courseRequest.setAvailbility(course.getAvailbilty());
+		courseRequest.setAvailbility(course.getAvailabilty());
 		courseRequest.setJobFullTime(course.getJobFullTime());
 		courseRequest.setJobPartTime(course.getJobPartTime());
 		courseRequest.setOpeningHourFrom(course.getOpeningHourFrom());
@@ -545,5 +494,10 @@ public class CommonUtil {
 			instituteTimingDtos.add(instituteTimingDto);
 		}
 		return instituteTimingDtos;
+	}
+	
+	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+	    Set<Object> seen = ConcurrentHashMap.newKeySet();
+	    return t -> seen.add(keyExtractor.apply(t));
 	}
 }

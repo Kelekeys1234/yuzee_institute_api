@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.seeka.app.bean.InstituteService;
 
-public interface InstituteServiceDetailsDAO {
+public interface InstituteServiceDetailsDao {
 
     public void save(InstituteService obj);
 

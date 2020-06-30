@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.service.IInstituteTypeService;
+import com.seeka.app.processor.InstituteTypeProcessor;
 
 @RestController("intakeControllerV1")
 @RequestMapping("/api/v1/intake")
 public class IntakeController {
 
     @Autowired
-    private IInstituteTypeService instituteTypeService;
+    private InstituteTypeProcessor instituteTypeProcessor;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getAllIntake(@Valid @PathVariable final String id) throws Exception {
-        return ResponseEntity.accepted().body(instituteTypeService.getAllIntake());
+        return ResponseEntity.accepted().body(instituteTypeProcessor.getAllIntake());
     }
 }

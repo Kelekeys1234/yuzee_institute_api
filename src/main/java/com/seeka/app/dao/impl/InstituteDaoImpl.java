@@ -35,7 +35,7 @@ import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteIntake;
 import com.seeka.app.bean.InstituteService;
 import com.seeka.app.bean.Service;
-import com.seeka.app.dao.InstituteDAO;
+import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.InstituteFilterDto;
@@ -51,7 +51,7 @@ import com.seeka.app.util.PaginationUtil;
 
 @Component
 @SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
-public class InstituteDaoImpl implements InstituteDAO {
+public class InstituteDaoImpl implements InstituteDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -297,11 +297,10 @@ public class InstituteDaoImpl implements InstituteDAO {
 	@Override
 	public InstituteResponseDto getInstituteByID(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,ci.name as cityName,"
-				+ "ctry.name as countryName,crs.world_ranking,crs.stars,crs.totalCourse from institute inst  inner join country ctry  "
-				+ "on ctry.name = inst.country_name inner join city ci  on ci.id = inst.city_id "
-				+ "CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from " + "course c where "
-				+ "c.institute_id = inst.id group by c.institute_id ) crs where 1=1 and inst.id ='" + instituteId + "'";
+		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.city_name as cityName,"
+				+ " inst.country_name as countryName,crs.world_ranking,crs.stars,crs.totalCourse from institute inst"
+				+ " CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from course c where"
+				+ " c.institute_id = inst.id group by c.institute_id ) crs where 1=1 and inst.id ='" + instituteId + "'";
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();

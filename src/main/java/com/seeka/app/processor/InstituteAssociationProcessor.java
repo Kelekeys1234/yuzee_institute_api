@@ -17,7 +17,7 @@ import com.seeka.app.constant.InstituteAssociationStatus;
 import com.seeka.app.constant.InstituteAssociationType;
 import com.seeka.app.controller.handler.StorageHandler;
 import com.seeka.app.controller.handler.UserInstituteAccessRoleHandler;
-import com.seeka.app.dao.InstituteDAO;
+import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dao.InstituteAssociationDao;
 import com.seeka.app.dto.InstituteAssociationDto;
 import com.seeka.app.dto.InstituteAssociationResponseDto;
@@ -37,7 +37,7 @@ public class InstituteAssociationProcessor {
 	private InstituteAssociationDao instituteAssociationDao;
 	
 	@Autowired
-	private InstituteDAO iInstituteDAO;
+	private InstituteDao iInstituteDAO;
 	
 	@Autowired
 	private UserInstituteAccessRoleHandler userInstituteAccessRoleHandler;

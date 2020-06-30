@@ -1,5 +1,6 @@
 package com.seeka.app.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seeka.app.bean.InstituteService;
-import com.seeka.app.dao.InstituteServiceDetailsDAO;
+import com.seeka.app.dao.InstituteServiceDetailsDao;
 import com.seeka.app.dto.InstituteServiceDto;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -19,8 +20,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class InstituteServiceProcessor {
 
 	@Autowired
-	private InstituteServiceDetailsDAO instituteServiceDao;
-	
+	private InstituteServiceDetailsDao instituteServiceDao;
 	
 	//Asif needs to look into these method, as per discussion with Asif comment it for now
 	
@@ -92,4 +92,33 @@ public class InstituteServiceProcessor {
 		}
 		return instituteServiceDto;	
 	}
+
+    public void save(InstituteService instituteService) {
+    	instituteServiceDao.save(instituteService);
+    }
+
+    public void update(InstituteService instituteService) {
+    	instituteServiceDao.update(instituteService);
+    }
+
+    public InstituteService get(String id) {
+        return instituteServiceDao.get(id);
+    }
+
+    public List<InstituteService> getAll() {
+        return instituteServiceDao.getAll();
+    }
+
+    public List<String> getAllServices(String instituteId) {
+    	List<String> instituteServiceNames = new ArrayList<>();
+    	List<InstituteService> instituteServices = instituteServiceDao.getAllServices(instituteId);
+    	if(!CollectionUtils.isEmpty(instituteServices)) {
+			instituteServices.stream().forEach(instituteService -> {
+				instituteServiceNames.add(instituteService.getServiceName());
+			});
+		}
+        return instituteServiceNames;
+    }
+
+
 }

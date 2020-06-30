@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.InstituteService;
-import com.seeka.app.dao.InstituteServiceDetailsDAO;
+import com.seeka.app.dao.InstituteServiceDetailsDao;
 import com.seeka.app.repository.InstituteServiceRepository;
 
 @Component
-public class InstituteServiceDetailsDaoImpl implements InstituteServiceDetailsDAO {
+public class InstituteServiceDetailsDaoImpl implements InstituteServiceDetailsDao {
 	
 	@Autowired
 	private InstituteServiceRepository instituteServiceRepository;

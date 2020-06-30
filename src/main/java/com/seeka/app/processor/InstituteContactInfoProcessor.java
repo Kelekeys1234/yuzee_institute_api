@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seeka.app.bean.Institute;
-import com.seeka.app.dao.InstituteDAO;
+import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dto.InstituteContactInfoDto;
 import com.seeka.app.exception.NotFoundException;
 
@@ -19,7 +19,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class InstituteContactInfoProcessor {
 	
 	@Autowired
-	private InstituteDAO iInstituteDAO;
+	private InstituteDao iInstituteDAO;
 
 	@Transactional(rollbackOn = Throwable.class)
 	public void addUpdateInstituteContactInfo(String userId, String instituteId, InstituteContactInfoDto instituteContactInfoDto) throws Exception {

@@ -2,7 +2,7 @@ package com.seeka.app.dao;import java.util.List;
 
 import com.seeka.app.bean.InstituteKeywords;
 
-public interface InstituteKeywordDAO {
+public interface InstituteKeywordDao {
 	
 	public void save(InstituteKeywords obj);
 	

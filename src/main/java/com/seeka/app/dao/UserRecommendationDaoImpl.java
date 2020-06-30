@@ -1,16 +1,27 @@
 package com.seeka.app.dao;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.seeka.app.bean.Course;
+import com.seeka.app.bean.CurrencyRate;
+import com.seeka.app.dto.CourseAdditionalInfoDto;
+import com.seeka.app.dto.CourseResponseDto;
+import com.seeka.app.util.CommonUtil;
+import com.seeka.app.util.ConvertionUtil;
 
 @Repository
 public class UserRecommendationDaoImpl implements UserRecommendationDao {
@@ -85,25 +96,39 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 	public List<Course> getCheapestCourse(final String facultyId, final String countryId, final String levelId, final String cityId,
 			final List<String> courseIds, final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Course.class, "course");
-		crit.createAlias("course.faculty", "faculty");
-		crit.createAlias("course.level", "level");
-		if (facultyId != null) {
-			crit.add(Restrictions.eq("faculty.id", facultyId));
+		
+		String sqlQuery = "select c.id, c.name, c.world_ranking, c.stars, c.availabilty, c.currency, c.website, c.recognition, c.description"
+				+ " from course c left join course_additional_info cai on cai.course_id = c.id";
+		
+		if(!StringUtils.isEmpty(facultyId)) {
+			sqlQuery+= " where c.faculty_id = '"+ facultyId +"'";
 		}
-		if (levelId != null) {
-			crit.add(Restrictions.eq("level.id", levelId));
+		
+		if(!StringUtils.isEmpty(levelId)) {
+			sqlQuery+= " and c.level_id = '"+ levelId +"'";
 		}
-		if (courseIds != null && !courseIds.isEmpty()) {
-			crit.add(Restrictions.not(Restrictions.in("course.id", courseIds.toArray())));
+		
+		if(!CollectionUtils.isEmpty(courseIds)) {
+			sqlQuery += " and c.id not in ("+ courseIds.stream().map(String::valueOf).collect(Collectors.joining("','", "'", "'")) + ")";
 		}
-		crit.addOrder(Order.asc("course.usdInternationFee"));
-
-		if (startIndex != null && pageSize != null) {
-			crit.setFirstResult(startIndex);
-			crit.setMaxResults(pageSize);
+		sqlQuery += " order by cai.usd_international_fee desc limit " + startIndex + ", " + pageSize;
+		
+		Query query = session.createSQLQuery(sqlQuery);
+		List<Object[]> rows = query.list();
+		List<Course> courses = new ArrayList<>();
+		for (Object[] row : rows) {
+			Course course = new Course();
+			course.setId(row[0].toString());
+			course.setName(row[1].toString());
+			course.setWorldRanking(Integer.parseInt(row[2].toString()));
+			course.setStars(Integer.parseInt(row[3].toString()));
+			course.setAvailabilty(row[4].toString());
+			course.setCurrency(row[5].toString());
+			course.setWebsite(row[6].toString());
+			course.setRecognition(row[7].toString());
+			course.setDescription(row[8].toString());
+			courses.add(course);
 		}
-		return crit.list();
+		return courses;
 	}
-
 }

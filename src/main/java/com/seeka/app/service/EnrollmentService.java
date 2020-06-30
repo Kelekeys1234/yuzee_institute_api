@@ -33,6 +33,7 @@ import com.seeka.app.enumeration.EnrollmentStatusType;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.processor.InstituteProcessor;
+import com.seeka.app.processor.InstituteTypeProcessor;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -48,7 +49,7 @@ public class EnrollmentService implements IEnrollmentService {
 	private ICourseService iCourseService;
 
 	@Autowired
-	private IInstituteTypeService iInstituteTypeService;
+	private InstituteTypeProcessor instituteTypeProcessor;
 
 //	@Autowired
 //	private ICountryService iCountryService;
@@ -84,7 +85,7 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollment.setCourse(course);
 		}
 
-		InstituteType instituteType = iInstituteTypeService.get(enrollmentDto.getInstituteTypeId());
+		InstituteType instituteType = instituteTypeProcessor.get(enrollmentDto.getInstituteTypeId());
 		if (instituteType == null) {
 			throw new ValidationException("Institute type not found for id: " + enrollmentDto.getInstituteTypeId());
 		} else {
@@ -136,7 +137,7 @@ public class EnrollmentService implements IEnrollmentService {
 			existingEnrollment.setCourse(course);
 		}
 
-		InstituteType instituteType = iInstituteTypeService.get(enrollmentDto.getInstituteTypeId());
+		InstituteType instituteType = instituteTypeProcessor.get(enrollmentDto.getInstituteTypeId());
 		if (instituteType == null) {
 			throw new ValidationException("Institute type not found for id: " + enrollmentDto.getInstituteTypeId());
 		} else {

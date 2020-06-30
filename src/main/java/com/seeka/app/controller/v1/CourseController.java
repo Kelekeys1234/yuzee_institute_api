@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.CourseDeliveryMethod;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseKeywords;
@@ -39,6 +38,7 @@ import com.seeka.app.controller.handler.CommonHandler;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.AdvanceSearchDto;
+import com.seeka.app.dto.CourseEnglishEligibilityDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseMobileDto;
@@ -49,9 +49,11 @@ import com.seeka.app.dto.ErrorDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.PaginationDto;
+import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.StudentVisaDto;
+import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.dto.UserReviewResultDto;
@@ -62,14 +64,14 @@ import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.processor.AccrediatedDetailProcessor;
+import com.seeka.app.processor.CourseEnglishEligibilityProcessor;
+import com.seeka.app.processor.InstituteGoogleReviewProcessor;
 import com.seeka.app.processor.InstituteProcessor;
-import com.seeka.app.service.ICourseEnglishEligibilityService;
+import com.seeka.app.processor.InstituteServiceProcessor;
 import com.seeka.app.service.ICourseKeywordService;
 import com.seeka.app.service.ICoursePricingService;
 import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.IEnrollmentService;
-import com.seeka.app.service.IInstituteGoogleReviewService;
-import com.seeka.app.service.IInstituteServiceDetailsService;
 import com.seeka.app.service.IStorageService;
 import com.seeka.app.service.IUserReviewService;
 import com.seeka.app.service.IUsersService;
@@ -79,6 +81,9 @@ import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
 
+import lombok.extern.apachecommons.CommonsLog;
+
+@CommonsLog
 @RestController("courseControllerV1")
 @RequestMapping("/api/v1/course")
 public class CourseController {
@@ -96,7 +101,7 @@ public class CourseController {
 	private ICourseKeywordService courseKeywordService;
 
 	@Autowired
-	private ICourseEnglishEligibilityService courseEnglishService;
+	private CourseEnglishEligibilityProcessor courseEnglishEligibilityProcessor;
 
 	@Autowired
 	private UserRecommendationService userRecommendationService;
@@ -120,10 +125,10 @@ public class CourseController {
 	private IUserReviewService iUserReviewService;
 
 	@Autowired
-	private IInstituteGoogleReviewService iInstituteGoogleReviewService;
+	private InstituteGoogleReviewProcessor instituteGoogleReviewProcessor;
 	
 	@Autowired
-	private IInstituteServiceDetailsService iInstituteServiceDetailsService;
+	private InstituteServiceProcessor instituteServiceProcessor;
 	
 	@Autowired
 	private CommonHandler commonHandler;
@@ -133,7 +138,7 @@ public class CourseController {
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException {
-		String courseId = courseService.save(course);
+		String courseId = courseService.saveCourse(course);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Created successfully").create();
 	}
@@ -141,7 +146,7 @@ public class CourseController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final String id)
 			throws ValidationException {
-		String courseId = courseService.update(course, id);
+		String courseId = courseService.updateCourse(course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Updated successfully").create();
 	}
@@ -149,15 +154,20 @@ public class CourseController {
 	@RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize)
 			throws Exception {
-		return ResponseEntity.accepted().body(courseService.getAllCourse(pageNumber, pageSize));
+		PaginationResponseDto paginationResponseDto = courseService.getAllCourse(pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
+				.setMessage("Courses Displayed successfully").create();
 	}
 
 	@RequestMapping(value = "/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> autoSearch(@PathVariable final String searchKey, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) throws Exception {
-		return ResponseEntity.accepted().body(courseService.autoSearch(pageNumber, pageSize, searchKey));
+		PaginationResponseDto paginationResponseDto = courseService.autoSearch(pageNumber, pageSize, searchKey);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
+				.setMessage("Courses Displayed successfully").create();
 	}
 
+	@Deprecated
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getAllCourse() throws Exception {
 		return ResponseEntity.accepted().body(courseService.getAllCourse());
@@ -165,7 +175,8 @@ public class CourseController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	public ResponseEntity<?> delete(@Valid @PathVariable final String id) throws Exception {
-		return ResponseEntity.accepted().body(courseService.deleteCourse(id));
+		courseService.deleteCourse(id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Courses Deleted successfully").create();
 	}
 
 	@RequestMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
@@ -211,53 +222,53 @@ public class CourseController {
 	@RequestMapping(value = "/search", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final String userId,
 			@RequestBody final CourseSearchDto courseSearchDto) throws Exception {
+		log.info("Start process to search courses based on passed filters");
 		courseSearchDto.setUserId(userId);
 		return courseSearch(courseSearchDto, null);
 	}
 
 	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto, final String searchKeyword)
 			throws ValidationException {
-		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),
-				courseSearchDto.getMaxSizePerPage());
-		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, startIndex,
-				courseSearchDto.getMaxSizePerPage(), searchKeyword);
+		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+		
+		List<CourseResponseDto> courseList = courseService.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage(), searchKeyword);
 		int totalCount = courseService.getCountforNormalCourse(courseSearchDto, searchKeyword);
-		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,
-				courseSearchDto.getMaxSizePerPage(), totalCount);
-		Map<String, Object> responseMap = new HashMap<>(10);
-		responseMap.put("status", HttpStatus.OK);
-		responseMap.put("message", "Get course List successfully");
-		responseMap.put("data", courseList);
-		responseMap.put("totalCount", totalCount);
-		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
-		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
-		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+		
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
+		
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
+		paginationResponseDto.setResponse(courseList);
+		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).
+				setMessage("Courses Displayed successfully").setData(paginationResponseDto).create();
 	}
 
 	@RequestMapping(value = "/advanceSearch", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> advanceSearch(@RequestHeader(required = true) final String userId,
 			@RequestHeader(required = false) final String language, @RequestBody final AdvanceSearchDto courseSearchDto)
 			throws Exception {
-		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),
-				courseSearchDto.getMaxSizePerPage());
+		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
 		
 		List<CourseResponseDto> courseList = courseService.advanceSearch(courseSearchDto);
 		int totalCount = courseService.getCountOfAdvanceSearch(courseSearchDto);
-		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,
-				courseSearchDto.getMaxSizePerPage(), totalCount);
-		Map<String, Object> responseMap = new HashMap<>(10);
-		responseMap.put("status", HttpStatus.OK);
-		responseMap.put("message", "Get course List successfully");
-		responseMap.put("data", courseList);
-		responseMap.put("totalCount", totalCount);
-		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
-		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
-		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+		
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,courseSearchDto.getMaxSizePerPage(), totalCount);
+		
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
+		paginationResponseDto.setResponse(courseList);
+		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).
+				setMessage("Courses Displayed successfully").setData(paginationResponseDto).create();
 	}
 
 	@GetMapping("/{id}")
@@ -277,7 +288,7 @@ public class CourseController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
-		Map<String, Double> googleReviewMap = iInstituteGoogleReviewService
+		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
 				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
 		Map<String, Double> seekaReviewMap = iUserReviewService
 				.getUserAverageReviewBasedOnDataList("INSTITUTE", Arrays.asList(courseRequest.getInstituteId()));
@@ -289,22 +300,21 @@ public class CourseController {
 		
 		courseRequest.setIntake(courseService.getCourseIntakeBasedOnCourseId(id).stream()
 				.map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
-		courseRequest.setDeliveryMethod(courseService.getCourseDeliveryMethodBasedOnCourseId(id).stream()
-				.map(CourseDeliveryMethod::getName).collect(Collectors.toList()));
+		
 		courseRequest.setLanguage(courseService.getCourseLanguageBasedOnCourseId(id).stream()
-				.map(CourseLanguage::getName).collect(Collectors.toList()));
+				.map(CourseLanguage::getLanguage).collect(Collectors.toList()));
+		
 		Institute instituteObj = course.getInstitute();
 		BeanUtils.copyProperties(instituteObj, instituteResponseDto);
 		List<YouTubeVideoDto> youtubeData = new ArrayList<>();
 		if (instituteObj != null) {
-			List<String> instituteServices = iInstituteServiceDetailsService.getAllServices(instituteObj.getId());
+			List<String> instituteServices = instituteServiceProcessor.getAllServices(instituteObj.getId());
 			if(!CollectionUtils.isEmpty(instituteServices)) {
 				instituteResponseDto.setInstituteServices(instituteServices);
 			}
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
-			//youtubeData = courseService.getYoutubeDataforCourse(instituteObj.getId(), course.getName(), 1, 10);
 			youtubeData = commonHandler.getYoutubeDataBasedOnCriteria(instituteObj.getName(), instituteObj.getCountryName(),
 					instituteObj.getCityName(), course.getName(), 1, 10);
 		}
@@ -318,7 +328,7 @@ public class CourseController {
 		if(!CollectionUtils.isEmpty(accrediatedCourseDetails)) {
 			courseRequest.setAccrediatedDetail(accrediatedCourseDetails);
 		}
-		List<CourseEnglishEligibility> englishCriteriaList = courseEnglishService.getAllEnglishEligibilityByCourse(id);
+		List<CourseEnglishEligibilityDto> englishCriteriaList = courseEnglishEligibilityProcessor.getAllEnglishEligibilityByCourse(id);
 		
 		if (!englishCriteriaList.isEmpty()) {
 			courseRequest.setEnglishEligibility(englishCriteriaList);
@@ -436,27 +446,16 @@ public class CourseController {
 	@RequestMapping(value = "/keyword", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> searchCourseKeyword(@RequestParam(value = "keyword") final String keyword)
 			throws Exception {
-		Map<String, Object> response = new HashMap<>();
 		List<CourseKeywords> searchkeywordList = courseKeywordService.searchCourseKeyword(keyword);
-		response.put("status", 1);
-		response.put("searchkeywordList", searchkeywordList);
-		response.put("message", "Success");
-		return ResponseEntity.accepted().body(response);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Courses Keyword Displayed successfully").setData(searchkeywordList).create();
 	}
 
 	@RequestMapping(value = "/faculty/{facultyId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCouresesByFacultyId(@Valid @PathVariable final String facultyId) throws Exception {
-		Map<String, Object> response = new HashMap<>();
-		List<CourseResponseDto> courseDtos = courseService.getCouresesByFacultyId(facultyId);
-		if (courseDtos != null && !courseDtos.isEmpty()) {
-			response.put("status", IConstant.SUCCESS_CODE);
-			response.put("message", IConstant.SUCCESS_MESSAGE);
-		} else {
-			response.put("status", HttpStatus.NOT_FOUND.value());
-			response.put("message", IConstant.COURSES_NOT_FOUND);
-		}
-		response.put("courses", courseDtos);
-		return ResponseEntity.accepted().body(response);
+	public ResponseEntity<?> getCoursesByFacultyId(@Valid @PathVariable final String facultyId) throws Exception {
+		List<CourseResponseDto> courseResponseDtos = courseService.getCouresesByFacultyId(facultyId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Courses Displayed successfully").setData(courseResponseDtos).create();
 	}
 
 	@RequestMapping(value = "/multiple/faculty/{facultyId}", method = RequestMethod.GET, produces = "application/json")
@@ -475,6 +474,7 @@ public class CourseController {
 		return ResponseEntity.accepted().body(response);
 	}
 
+	@Deprecated
 	@RequestMapping(value = "/eligibility/update", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception {
 		Map<String, Object> response = new HashMap<>();
@@ -482,7 +482,6 @@ public class CourseController {
 		Date now = new Date();
 
 		CourseEnglishEligibility englishEligibility = null;
-//		CourseGradeEligibility courseGradeEligibility = null;
 
 		int size = courseList.size(), i = 1;
 
@@ -490,19 +489,6 @@ public class CourseController {
 			System.out.println("Total:  " + size + ",  Completed:  " + i + ",  CourseID:  " + course.getId());
 			i++;
 			try {
-//				courseGradeEligibility = new CourseGradeEligibility();
-				// courseGradeEligibility.setCourseId(course.getId());
-				// courseGradeEligibility.setGlobalALevel1("A");
-				// courseGradeEligibility.setGlobalALevel2("A");
-				// courseGradeEligibility.setGlobalALevel3("A");
-				// courseGradeEligibility.setGlobalALevel4("A");
-//				courseGradeEligibility.setGlobalGpa(3.5);
-//				courseGradeEligibility.setIsActive(true);
-//				courseGradeEligibility.setIsDeleted(false);
-//				courseGradeEligibility.setCreatedBy("AUTO");
-//				courseGradeEligibility.setCreatedOn(now);
-//				courseGradeService.save(courseGradeEligibility);
-
 				englishEligibility = new CourseEnglishEligibility();
 				englishEligibility.setCourse(course);
 				englishEligibility.setEnglishType(EnglishType.IELTS.toString());
@@ -515,7 +501,7 @@ public class CourseController {
 				englishEligibility.setIsDeleted(false);
 				englishEligibility.setCreatedBy("AUTO");
 				englishEligibility.setCreatedOn(now);
-				courseEnglishService.save(englishEligibility);
+				courseEnglishEligibilityProcessor.save(englishEligibility);
 				englishEligibility = new CourseEnglishEligibility();
 				englishEligibility.setCourse(course);
 				englishEligibility.setEnglishType(EnglishType.TOEFL.toString());
@@ -528,7 +514,7 @@ public class CourseController {
 				englishEligibility.setIsDeleted(false);
 				englishEligibility.setCreatedBy("AUTO");
 				englishEligibility.setCreatedOn(now);
-				courseEnglishService.save(englishEligibility);
+				courseEnglishEligibilityProcessor.save(englishEligibility);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -569,13 +555,17 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/compare", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> userCompareCourse(@Valid @RequestBody final UserCourse userCourse) throws Exception {
-		return ResponseEntity.accepted().body(courseService.addUserCompareCourse(userCourse));
+	public ResponseEntity<?> addUserCompareCourse(@Valid @RequestBody final UserCourse userCourse) throws Exception {
+		courseService.addUserCompareCourse(userCourse);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("User Compare Courses add successfully").create();
 	}
 
 	@RequestMapping(value = "/compare/user/{userId}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getUserCompareCourse(@PathVariable final String userId) throws Exception {
-		return ResponseEntity.accepted().body(courseService.getUserCompareCourse(userId));
+		List<UserCompareCourseResponse> compareCourseResponses = courseService.getUserCompareCourse(userId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(compareCourseResponses)
+				.setMessage("User Courses displayed successfully").create();
 	}
 
 	@RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -595,18 +585,10 @@ public class CourseController {
 					new Object[] { userId }, language));
 		}
 
-		/**
-		 * Get Country Id Based on citizenship
-		 */
-//		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
-//		if (country == null || country.getId() == null) {
-//			throw new ValidationException(messageByLocalService.getMessage("invalid.citizenship.for.user",
-//					new Object[] { userDto.getCitizenship() }, language));
-//		}
-
 		courseFilter.setUserCountryId(userDto.getCitizenship());
-
-		return ResponseEntity.ok().body(courseService.courseFilter(courseFilter));
+		PaginationResponseDto paginationResponseDto = courseService.courseFilter(courseFilter);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
+				.setMessage("Course Displayed Successfully").create();
 	}
 
 	@RequestMapping(value = "/minimumRequirement", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -628,7 +610,9 @@ public class CourseController {
 
 	@RequestMapping(value = "/autoSearch/{searchKey}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> autoSearchByCharacter(@PathVariable final String searchKey) throws Exception {
-		return ResponseEntity.accepted().body(courseService.autoSearchByCharacter(searchKey));
+		List<CourseRequest> courses = courseService.autoSearchByCharacter(searchKey);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Courses fetched successfully").setData(courses).create();
 	}
 
 	@GetMapping(value = "/viewCourse/filter")

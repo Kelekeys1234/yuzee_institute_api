@@ -21,6 +21,8 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.NearestCoursesDto;
+import com.seeka.app.dto.PaginationResponseDto;
+import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.exception.NotFoundException;
@@ -39,24 +41,24 @@ public interface ICourseService {
 
 	Map<String, Object> getCourse(String courseid);
 
-	List<CourseResponseDto> getCouresesByFacultyId(String facultyId);
+	public List<CourseResponseDto> getCouresesByFacultyId(String facultyId) throws NotFoundException;
 
 	List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
 
-	String save(CourseRequest courseDto) throws ValidationException;
+	public String saveCourse(CourseRequest courseDto) throws ValidationException;
 
-	Map<String, Object> getAllCourse(Integer pageNumber, Integer pageSize);
+	public PaginationResponseDto getAllCourse(Integer pageNumber, Integer pageSize);
 
-	Map<String, Object> deleteCourse(String courseId);
+	public void deleteCourse(String courseId);
 
 	Map<String, Object> addUserCourses(UserCourse userCourse);
 
 	Map<String, Object> getUserCourse(String userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, Boolean sortAsscending)
 			throws ValidationException;
 
-	Map<String, Object> addUserCompareCourse(UserCourse userCourse);
+	public void addUserCompareCourse(UserCourse userCourse);
 
-	Map<String, Object> getUserCompareCourse(String userId);
+	public List<UserCompareCourseResponse> getUserCompareCourse(String userId) throws NotFoundException;
 
 	Course getCourseData(String courseId);
 
@@ -74,11 +76,11 @@ public interface ICourseService {
 	 * @return
 	 * @throws ValidationException
 	 */
-	String update(CourseRequest courseDto, String id) throws ValidationException;
+	public String updateCourse(CourseRequest courseDto, String id) throws ValidationException;
 
-	Map<String, Object> courseFilter(CourseFilterDto courseFilter);
+	public PaginationResponseDto courseFilter(CourseFilterDto courseFilter);
 
-	Map<String, Object> autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
+	public PaginationResponseDto autoSearch(Integer pageNumber, Integer pageSize, String searchKey);
 
 	List<Course> facultyWiseCourseForInstitute(List<Faculty> facultyList, Institute institute);
 
@@ -86,7 +88,7 @@ public interface ICourseService {
 
 	List<CourseMinRequirementDto> getCourseMinRequirement(String courseId);
 
-	Map<String, Object> autoSearchByCharacter(String searchKey);
+	public List<CourseRequest> autoSearchByCharacter(String searchKey) throws NotFoundException;
 
 	long checkIfCoursesPresentForCountry(String country);
 

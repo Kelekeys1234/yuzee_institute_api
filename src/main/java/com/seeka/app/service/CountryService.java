@@ -14,7 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.seeka.app.constant.Type;
 import com.seeka.app.dao.ICourseDAO;
-import com.seeka.app.dao.InstituteDAO;
+import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -50,7 +50,7 @@ public class CountryService implements ICountryService {
 	private CourseRepository courseRepository;
 
 	@Autowired
-	private InstituteDAO iInstituteDAO;
+	private InstituteDao iInstituteDAO;
 	
 	@Override
 	public Map<String, Object> getCourseCountry() {

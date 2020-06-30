@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.seeka.app.bean.InstituteDomesticRankingHistory;
 
-public interface InstituteDomesticRankingHistoryDAO {
+public interface InstituteDomesticRankingHistoryDao {
 
 	public void save(InstituteDomesticRankingHistory domesticRanking);
 

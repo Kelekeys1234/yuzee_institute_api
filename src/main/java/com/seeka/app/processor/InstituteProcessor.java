@@ -30,9 +30,9 @@ import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.constant.Type;
 import com.seeka.app.dao.AccrediatedDetailDao;
 import com.seeka.app.dao.ICourseDAO;
-import com.seeka.app.dao.InstituteDAO;
-import com.seeka.app.dao.InstituteDomesticRankingHistoryDAO;
-import com.seeka.app.dao.InstituteWorldRankingHistoryDAO;
+import com.seeka.app.dao.InstituteDao;
+import com.seeka.app.dao.InstituteDomesticRankingHistoryDao;
+import com.seeka.app.dao.InstituteWorldRankingHistoryDao;
 import com.seeka.app.dao.ServiceDetailsDAO;
 import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.AdvanceSearchDto;
@@ -82,13 +82,13 @@ public class InstituteProcessor {
 	private Integer maxRadius;
 	
 	@Autowired
-	private InstituteDAO dao;
+	private InstituteDao dao;
 
 	@Autowired
-	private InstituteWorldRankingHistoryDAO institudeWorldRankingHistoryDAO;
+	private InstituteWorldRankingHistoryDao institudeWorldRankingHistoryDAO;
 
 	@Autowired
-	private InstituteDomesticRankingHistoryDAO instituteDomesticRankingHistoryDAO;
+	private InstituteDomesticRankingHistoryDao instituteDomesticRankingHistoryDAO;
 
 	@Autowired
 	private ServiceDetailsDAO serviceDetailsDAO;
@@ -525,7 +525,7 @@ public class InstituteProcessor {
 				});
 			}
 			log.info("setting values into pagination DTO with data and pagination value");
-			paginationResponseDto.setInstitutes(instituteGetRequestDtos);
+			paginationResponseDto.setResponse(instituteGetRequestDtos);
 			paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 			paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 			paginationResponseDto.setTotalCount(totalCount);
@@ -691,7 +691,7 @@ public class InstituteProcessor {
 					instituteGetRequestDtos.add(getInstitute(institute));
 				});
 				log.info("Setting values in pagination response DTO with institutes coming from DB");
-				paginationInstituteResponseDto.setInstitutes(instituteGetRequestDtos);
+				paginationInstituteResponseDto.setResponse(instituteGetRequestDtos);
 				paginationInstituteResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 				paginationInstituteResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 				paginationInstituteResponseDto.setTotalCount(totalCount);
@@ -729,7 +729,7 @@ public class InstituteProcessor {
 				instituteGetRequestDtos.add(instituteGetRequestDto);
 				
 				log.info("Setting values in pagination response DTO with institutes coming from DB");
-				paginationInstituteResponseDto.setInstitutes(instituteGetRequestDtos);
+				paginationInstituteResponseDto.setResponse(instituteGetRequestDtos);
 				paginationInstituteResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 				paginationInstituteResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 				paginationInstituteResponseDto.setTotalCount(totalCount);
@@ -995,7 +995,7 @@ public class InstituteProcessor {
 			log.warn("No institutes found for latitude"+ centerLatAndLong.getLatitude() +"and longitude "+ centerLatAndLong.getLongitude() +
 					" and radius is "+radius);
 		}
-		log.info("Caliculating pagination based on pageNumber, pageSize and totalCount");
+		log.info("Calculating pagination based on pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
 		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO();
 		institutePaginationResponseDto.setNearestInstitutes(nearestInstituteList);

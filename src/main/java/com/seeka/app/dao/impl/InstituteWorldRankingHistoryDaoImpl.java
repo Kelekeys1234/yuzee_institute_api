@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.InstituteWorldRankingHistory;
-import com.seeka.app.dao.InstituteWorldRankingHistoryDAO;
+import com.seeka.app.dao.InstituteWorldRankingHistoryDao;
 import com.seeka.app.repository.InstituteWorldRankingHistoryRepository;
 
 @Component
-public class InstituteWorldRankingHistoryDaoImpl implements InstituteWorldRankingHistoryDAO {
+public class InstituteWorldRankingHistoryDaoImpl implements InstituteWorldRankingHistoryDao {
 
 	@Autowired
 	private InstituteWorldRankingHistoryRepository instituteWorldRankingHistoryRepository;

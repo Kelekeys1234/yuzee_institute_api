@@ -22,7 +22,7 @@ import com.seeka.app.bean.InstituteService;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Service;
 import com.seeka.app.processor.InstituteProcessor;
-import com.seeka.app.service.IInstituteServiceDetailsService;
+import com.seeka.app.processor.InstituteServiceProcessor;
 import com.seeka.app.service.IServiceDetailsService;
 
 @RestController("migrateInstituteControllerV1")
@@ -36,7 +36,7 @@ public class MigrateInstituteController {
 	private IServiceDetailsService serviceDetailsService;
 
 	@Autowired
-	private IInstituteServiceDetailsService instituteServiceDetailsService;
+	private InstituteServiceProcessor instituteServiceProcessor;
 
 	public Map<String, Institute> get() throws Exception {
 		File myFile = new File("E:\\Softwares\\Seeka\\March-2019\\Course\\University\\university_names_malaysia.xlsx");

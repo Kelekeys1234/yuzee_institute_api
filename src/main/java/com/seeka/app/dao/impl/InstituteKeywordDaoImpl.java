@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.InstituteKeywords;
-import com.seeka.app.dao.InstituteKeywordDAO;
+import com.seeka.app.dao.InstituteKeywordDao;
 
 @Repository
-public class InstituteKeywordDaoImpl implements InstituteKeywordDAO {
+public class InstituteKeywordDaoImpl implements InstituteKeywordDao {
 	
 	@Autowired
 	private SessionFactory sessionFactory;

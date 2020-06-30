@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.InstituteGoogleReviewDto;
 import com.seeka.app.dto.PaginationUtilDto;
-import com.seeka.app.service.IInstituteGoogleReviewService;
+import com.seeka.app.processor.InstituteGoogleReviewProcessor;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("instituteGoogleReviewControllerV1")
@@ -23,7 +23,7 @@ import com.seeka.app.util.PaginationUtil;
 public class InstituteGoogleReviewController {
 
 	@Autowired
-	private IInstituteGoogleReviewService iInstituteGoogleReviewService;
+	private InstituteGoogleReviewProcessor instituteGoogleReviewProcessor;
 
 	/**
 	 *
@@ -36,8 +36,8 @@ public class InstituteGoogleReviewController {
 	public ResponseEntity<Object> getInstituteGoogleReview(@PathVariable final String instituteId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<InstituteGoogleReviewDto> instituteGoogleReviewList = iInstituteGoogleReviewService.getInstituteGoogleReview(instituteId, startIndex, pageSize);
-		int totalCount = iInstituteGoogleReviewService.getCountInstituteGoogleReview(instituteId);
+		List<InstituteGoogleReviewDto> instituteGoogleReviewList = instituteGoogleReviewProcessor.getInstituteGoogleReview(instituteId, startIndex, pageSize);
+		int totalCount = instituteGoogleReviewProcessor.getCountInstituteGoogleReview(instituteId);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
@@ -58,7 +58,7 @@ public class InstituteGoogleReviewController {
 	 */
 	@GetMapping("/average/{instituteId}")
 	public ResponseEntity<Object> getInstituteAvgGoogleReview(@PathVariable final String instituteId) {
-		Double rating = iInstituteGoogleReviewService.getInstituteAvgGoogleReview(instituteId);
+		Double rating = instituteGoogleReviewProcessor.getInstituteAvgGoogleReview(instituteId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(rating).setMessage("Get Institute average rating successfully").create();
 	}
 

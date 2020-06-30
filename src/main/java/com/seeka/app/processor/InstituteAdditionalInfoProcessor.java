@@ -11,7 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteAdditionalInfo;
-import com.seeka.app.dao.InstituteDAO;
+import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dto.InstituteAdditionalInfoDto;
 import com.seeka.app.exception.NotFoundException;
 
@@ -22,7 +22,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class InstituteAdditionalInfoProcessor {
 	
 	@Autowired
-	private InstituteDAO iInstituteDAO;
+	private InstituteDao iInstituteDAO;
 	
 	@Transactional(rollbackOn = Throwable.class)
 	public void addUpdateInstituteAdditionalInfo (String userId, String instituteId , InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception {

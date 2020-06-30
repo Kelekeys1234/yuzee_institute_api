@@ -78,11 +78,9 @@ public interface ICourseDAO {
 
 	List<CourseRequest> autoSearch(int startIndex, Integer pageSize, String searchKey);
 
-	int autoSearchTotalCount(String searchKey);
+	public Long autoSearchTotalCount(String searchKey);
 
 	List<Course> facultyWiseCourseForTopInstitute(List<Faculty> facultyList, Institute institute);
-
-	List<CourseRequest> autoSearchByCharacter(int pageNumber, Integer pageSize, String searchKey);
 
 	List<CountryDto> getCourseCountry();
 

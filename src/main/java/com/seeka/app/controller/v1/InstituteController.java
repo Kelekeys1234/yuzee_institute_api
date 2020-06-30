@@ -36,9 +36,9 @@ import com.seeka.app.endpoint.InstituteInterface;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.processor.InstituteProcessor;
+import com.seeka.app.processor.InstituteServiceProcessor;
 import com.seeka.app.processor.InstituteTimingProcessor;
-import com.seeka.app.service.IInstituteServiceDetailsService;
-import com.seeka.app.service.IInstituteTypeService;
+import com.seeka.app.processor.InstituteTypeProcessor;
 import com.seeka.app.service.IServiceDetailsService;
 import com.seeka.app.service.IStorageService;
 import com.seeka.app.util.CommonUtil;
@@ -54,13 +54,13 @@ public class InstituteController implements InstituteInterface {
 	private InstituteProcessor instituteProcessor;
 
 	@Autowired
-	private IInstituteTypeService instituteTypeService;
+	private InstituteTypeProcessor instituteTypeProcessor;
 
 	@Autowired
 	private IServiceDetailsService serviceDetailsService;
 
 	@Autowired
-	private IInstituteServiceDetailsService instituteServiceDetailsService;
+	private InstituteServiceProcessor instituteServiceProcessor;
 
 	@Autowired
 	private IStorageService iStorageService;
@@ -71,7 +71,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> saveInstituteType(final InstituteTypeDto instituteTypeDto) throws Exception {
 		log.info("Start process to save new institute types in DB");
-		instituteTypeService.save(instituteTypeDto);
+		instituteTypeProcessor.save(instituteTypeDto);
 		return new GenericResponseHandlers.Builder().setMessage("InstituteType Added successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -79,7 +79,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> getInstituteTypeByCountry(String countryName) throws Exception {
 		log.info("Start process to fetch instituteType from DB for countryName = "+countryName);
-		List<InstituteTypeDto> listOfInstituteTypes = instituteTypeService.getInstituteTypeByCountryName(countryName);
+		List<InstituteTypeDto> listOfInstituteTypes = instituteTypeProcessor.getInstituteTypeByCountryName(countryName);
 		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage("Institute types fetched successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -95,7 +95,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> getAllServicesByInstitute(final String instituteId) throws Exception {
 		log.info("Start process to fetch all service having instituteId = "+instituteId);
-		List<String> serviceNames = instituteServiceDetailsService.getAllServices(instituteId);
+		List<String> serviceNames = instituteServiceProcessor.getAllServices(instituteId);
 		return new GenericResponseHandlers.Builder().setData(serviceNames).setMessage("Services displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -161,7 +161,7 @@ public class InstituteController implements InstituteInterface {
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, request.getMaxSizePerPage(), totalCount);
 		log.info("Adding values in paginationResponse DTO and returning final response");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
-		paginationResponseDto.setInstitutes(instituteList);
+		paginationResponseDto.setResponse(instituteList);
 		paginationResponseDto.setTotalCount(totalCount);
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
@@ -300,7 +300,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> getAllInstituteType() throws Exception {
 		log.info("Start process to fetch all InstituteTypes from DB");
-		List<InstituteTypeDto> instituteTypes = instituteTypeService.getAllInstituteType();
+		List<InstituteTypeDto> instituteTypes = instituteTypeProcessor.getAllInstituteType();
 		return new GenericResponseHandlers.Builder().setData(instituteTypes)
 				.setMessage("InstituteTypes fetched successfully").setStatus(HttpStatus.OK).create();
 	}
@@ -369,7 +369,7 @@ public class InstituteController implements InstituteInterface {
 		log.info("Calculating pagination based on pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
-		paginationResponseDto.setInstitutes(instituteList);
+		paginationResponseDto.setResponse(instituteList);
 		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setTotalCount(totalCount);

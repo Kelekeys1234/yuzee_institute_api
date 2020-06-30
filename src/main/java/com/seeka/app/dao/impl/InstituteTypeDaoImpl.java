@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Intake;
-import com.seeka.app.dao.InstituteTypeDAO;
+import com.seeka.app.dao.InstituteTypeDao;
 import com.seeka.app.dto.InstituteTypeDto;
 import com.seeka.app.repository.InstituteTypeRepository;
 import com.seeka.app.repository.IntakeRepository;
 
 @Component
-public class InstituteTypeDaoImpl implements InstituteTypeDAO {
+public class InstituteTypeDaoImpl implements InstituteTypeDao {
 
     @Autowired
     private InstituteTypeRepository instituteTypeRepository;

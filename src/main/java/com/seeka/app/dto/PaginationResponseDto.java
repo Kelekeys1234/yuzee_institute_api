@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class PaginationResponseDto {
-	private Object institutes;
+	private Object response;
 	private Integer totalCount;
 	private Integer pageNumber;
 	private Boolean hasPreviousPage;

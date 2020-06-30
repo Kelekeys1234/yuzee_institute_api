@@ -6,7 +6,7 @@ import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Intake;
 import com.seeka.app.dto.InstituteTypeDto;
 
-public interface InstituteTypeDAO {
+public interface InstituteTypeDao {
 
     public void save(InstituteType obj);
 

@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+package com.seeka.app.processor;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,7 +12,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.bean.Intake;
-import com.seeka.app.dao.InstituteTypeDAO;
+import com.seeka.app.dao.InstituteTypeDao;
 import com.seeka.app.dto.InstituteTypeDto;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -20,12 +20,11 @@ import lombok.extern.apachecommons.CommonsLog;
 @Service
 @CommonsLog
 @Transactional
-public class InstituteTypeService implements IInstituteTypeService {
+public class InstituteTypeProcessor {
 
     @Autowired
-    private InstituteTypeDAO iInstituteTypeDAO;
+    private InstituteTypeDao iInstituteTypeDAO;
 
-    @Override
     public void save(InstituteTypeDto instituteTypeDto) {
     	log.debug("Inside getInstituteTypeByCountryName() method");
     	InstituteType instituteType = new InstituteType();
@@ -41,30 +40,25 @@ public class InstituteTypeService implements IInstituteTypeService {
         iInstituteTypeDAO.save(instituteType);
     }
 
-    @Override
-    public void update(InstituteTypeDto instituteType) {
+    /*public void update(InstituteTypeDto instituteType) {
         Date today = new Date();
-		/*
+		
 		 * instituteType.setUpdatedOn(today); iInstituteTypeDAO.update(instituteType);
-		 */
-    }
+		 
+    }*/
 
-    @Override
     public InstituteType get(String id) {
         return iInstituteTypeDAO.get(id);
     }
 
-    @Override
     public List<Intake> getAllIntake() {
         return  iInstituteTypeDAO.getAllIntake();
     }
 
-    @Override
     public List<InstituteTypeDto> getAllInstituteType() {
         return iInstituteTypeDAO.getAll();
     }
 
-	@Override
 	public List<InstituteTypeDto> getInstituteTypeByCountryName(String countryName) {
 		log.debug("Inside getInstituteTypeByCountryName() method");
 		List<InstituteTypeDto> listOfInstituteDto = new ArrayList<InstituteTypeDto>();
@@ -86,4 +80,5 @@ public class InstituteTypeService implements IInstituteTypeService {
 		log.info("returning instituteType in final response");
 		return listOfInstituteDto;
 	}
+
 }

@@ -545,10 +545,10 @@ public class MigrateCourseControllerTesting {
             courseDetails = new CourseDetails();
 
             course.setAbbreviation(abbreviation);
-            course.setLanguage(language);
+//            course.setLanguage(language);
             course.setDescription(description);
            //course.setDuration(Duration);
-            course.setDurationTime(Duration_Time);
+//            course.setDurationTime(Duration_Time);
             // course.setFacultyObj(facultyObj);
             // course.setInstituteObj(instituteObj);
             course.setIsActive(true);
