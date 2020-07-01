@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.seeka.app.bean.UserViewData;
-import com.seeka.app.dao.ICourseDAO;
+import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dao.IViewDao;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -28,7 +28,7 @@ public class ViewService implements IViewService {
 	private IViewDao iViewDataDao;
 
 	@Autowired
-	private ICourseDAO iCourseDAO;
+	private CourseDAO iCourseDAO;
 
 	@Override
 	public void createUserViewData(final UserViewDataRequestDto userViewDataRequestDto) {

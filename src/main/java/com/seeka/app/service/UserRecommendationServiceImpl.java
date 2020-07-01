@@ -15,6 +15,8 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.processor.CourseAdditionalInfoProcessor;
+import com.seeka.app.processor.CourseProcessor;
 import com.seeka.app.util.CommonUtil;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -28,14 +30,17 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	private UserRecommendationDao userRecommendationDao;
 
 	@Autowired
-	private ICourseService iCourseService;
+	private CourseProcessor courseProcessor;
 
 	@Autowired
 	private IStorageService iStorageService;
+	
+	@Autowired
+	private CourseAdditionalInfoProcessor courseAdditionalInfoProcessor;
 
 	@Override
 	public List<Course> getRecommendCourse(final String courseId, final String userId) throws ValidationException {
-		Course existingCourse = iCourseService.getCourseData(courseId);
+		Course existingCourse = courseProcessor.getCourseData(courseId);
 		if (existingCourse == null) {
 			throw new ValidationException("Course not found for Id : " + courseId);
 		}
@@ -131,7 +136,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if (remainingCourse < 5 && userId != null) {
 			courseIds = resultList.stream().map(Course::getId).collect(Collectors.toList());
 			courseIds.add(courseId);
-			List<Course> courseWatchList = iCourseService.getAllCoursesUsingId(courseIds);
+			List<Course> courseWatchList = courseProcessor.getAllCoursesUsingId(courseIds);
 
 			while (remainingCourse != 0) {
 				for (Course course : courseWatchList) {
@@ -147,7 +152,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 
 	@Override
 	public List<Course> getRelatedCourse(final String courseId) throws ValidationException {
-		Course existingCourse = iCourseService.getCourseData(courseId);
+		Course existingCourse = courseProcessor.getCourseData(courseId);
 		if (existingCourse == null) {
 			throw new ValidationException("Course not found for Id : " + courseId);
 		}
@@ -279,46 +284,44 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		return convertCourseToCourseRespone(courseList);
 	}
 
+	private List<CourseResponseDto> convertCourseToCourseRespone(final List<Course> courseList)
+			throws ValidationException {
 		List<CourseResponseDto> resultList = new ArrayList<>();
-		private List<CourseResponseDto> convertCourseToCourseRespone(final List<Course> courseList) throws ValidationException {
-		for (Course course : courseList) {
-			if(!ObjectUtils.isEmpty(course.getInstitute())) {
+		courseList.stream().forEach(course -> {
+			if (!ObjectUtils.isEmpty(course.getInstitute())) {
 				CourseResponseDto courseResponseDto = new CourseResponseDto();
 				courseResponseDto.setId(course.getId());
 				courseResponseDto.setCostRange(course.getCostRange());
-//				courseResponseDto.setLanguage(course.getLanguage());
 				courseResponseDto.setName(course.getName());
-//				courseResponseDto.setDuration(course.getDuration());
-//				courseResponseDto.setDurationTime(course.getDurationTime());
 				courseResponseDto.setInstituteId(course.getInstitute().getId());
 				courseResponseDto.setInstituteName(course.getInstitute().getName());
-//				courseResponseDto.setInternationalFee(course.getInternationalFee());
-//				courseResponseDto.setDomesticFee(course.getDomesticFee());
 				courseResponseDto.setRequirements(course.getRemarks());
-				if(course.getStars() != null) {
+				if (course.getStars() != null) {
 					courseResponseDto.setStars(Double.valueOf(course.getStars()));
 				}
 				courseResponseDto.setCourseRanking(course.getWorldRanking());
-//				courseResponseDto.setLanguageShortKey(course.getLanguage());
 				courseResponseDto.setCityName(course.getInstitute().getCityName());
 				courseResponseDto.setCountryName(course.getInstitute().getCountryName());
 				courseResponseDto.setLocation(course.getInstitute().getCityName() + "," + course.getInstitute().getCountryName());
 				courseResponseDto.setLatitude(course.getInstitute().getLatitude());
 				courseResponseDto.setLongitude(course.getInstitute().getLongitude());
 				courseResponseDto.setCurrencyCode(course.getCurrency());
-				if(!ObjectUtils.isEmpty(course.getFaculty())) {
+				if (!ObjectUtils.isEmpty(course.getFaculty())) {
 					courseResponseDto.setFacultyId(course.getFaculty().getId());
 					courseResponseDto.setFacultyName(course.getFaculty().getName());
 				}
-				try { 
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+				try {
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(
+							course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 					courseResponseDto.setStorageList(storageDTOList);
 				} catch (Exception e) {
-					log.error("Exception while invoking storage service",e);
+					log.error("Exception while invoking storage service", e);
 				}
+				courseResponseDto.setCourseAdditionalInfo(
+						courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId()));
 				resultList.add(courseResponseDto);
 			}
-		}
+		});
 		return resultList;
 	}
 

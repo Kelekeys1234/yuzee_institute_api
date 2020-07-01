@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.CourseKeywords;
-import com.seeka.app.service.ICourseKeywordService;
+import com.seeka.app.processor.CourseKeywordProcessor;
 import com.seeka.app.util.IConstant;
 
 @RestController("globalSearchControllerV1")
@@ -21,7 +21,7 @@ import com.seeka.app.util.IConstant;
 public class GlobalSearchController {
 
     @Autowired
-    private ICourseKeywordService courseKeywordService;
+    private CourseKeywordProcessor courseKeywordProcessor;
 
     public static void main(String[] args) {
         String str = "Hello I'm your String";
@@ -34,7 +34,7 @@ public class GlobalSearchController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> searchCourseKeyword(@RequestParam(value = "keyword") String keyword) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<CourseKeywords> searchkeywordList = courseKeywordService.searchCourseKeyword(keyword);
+        List<CourseKeywords> searchkeywordList = courseKeywordProcessor.searchCourseKeyword(keyword);
         if (searchkeywordList != null && !searchkeywordList.isEmpty()) {
             response.put("status", HttpStatus.OK.value());
             response.put("message", "Course fetched successfully");

@@ -2,13 +2,13 @@ package com.seeka.app.dao;
 
 import java.util.List;
 
-import com.seeka.app.bean.CourseAdditionalInfo;
+import com.seeka.app.bean.CourseDeliveryModes;
 
 public interface CourseAdditionalInfoDao {
 
-	public void saveCourseAdditionalInfo(CourseAdditionalInfo courseAdditionalInfo);
+	public void saveCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo);
 	
-	public void deleteCourseAdditionalInfo(CourseAdditionalInfo courseAdditionalInfo);
+	public void deleteCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo);
 	
-	public List<CourseAdditionalInfo> getCourseAdditionalInfoByCourseId(String courseId);
+	public List<CourseDeliveryModes> getCourseAdditionalInfoByCourseId(String courseId);
 }

@@ -15,12 +15,12 @@ import org.springframework.web.client.RestTemplate;
 
 import com.seeka.app.util.FileStorageProperties;
 
-@SpringBootApplication
 @EnableScheduling
-@EnableConfigurationProperties({ FileStorageProperties.class })
 @EnableEurekaClient
-@EnableJpaRepositories(basePackages = "com.seeka.app")
+@SpringBootApplication
 @EntityScan(basePackages = "com.seeka.app")
+@EnableJpaRepositories(basePackages = "com.seeka.app")
+@EnableConfigurationProperties({ FileStorageProperties.class })
 public class SeekaApplication {
 
 	public static void main(final String[] args) {

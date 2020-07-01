@@ -24,8 +24,8 @@ import com.google.gson.JsonParser;
 import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.enumeration.SeekaEntityType;
+import com.seeka.app.processor.CourseProcessor;
 import com.seeka.app.service.ElasticSearchService;
-import com.seeka.app.service.ICourseService;
 import com.seeka.app.service.ICurrencyRateService;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
@@ -44,7 +44,7 @@ public class CurrencyConversionRateUtil {
 	private ObjectMapper objectMapper;
 
 	@Autowired
-	private ICourseService courseService;
+	private CourseProcessor courseProcessor;
 	
 	@Autowired
 	private ElasticSearchService elasticSearchService;
@@ -141,16 +141,16 @@ public class CurrencyConversionRateUtil {
 	public void updateCourses() {
 		List<CurrencyRate> currencyRateList = currencyRateService.getChangedCurrency();
 		for (CurrencyRate currencyRate : currencyRateList) {
-			courseService.updateCourseForCurrency(currencyRate);
+			courseProcessor.updateCourseForCurrency(currencyRate);
 		}
 	}
 	
 	public void updateCoursesInElasticSearch() {
-		Integer totalUpdatedCourses = courseService.getCountOfTotalUpdatedCourses(DateUtil.getUTCdatetimeAsOnlyDate());
+		Integer totalUpdatedCourses = courseProcessor.getCountOfTotalUpdatedCourses(DateUtil.getUTCdatetimeAsOnlyDate());
 		System.out.println("Total COurses to be updated --- "+totalUpdatedCourses);
 		
 		for (int i = 0; i < totalUpdatedCourses; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
-			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseService.getUpdatedCourses(DateUtil.getUTCdatetimeAsOnlyDate(), i, IConstant.COURSES_PER_SCHEDULER_LOOP);
+			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseProcessor.getUpdatedCourses(DateUtil.getUTCdatetimeAsOnlyDate(), i, IConstant.COURSES_PER_SCHEDULER_LOOP);
 			// List<CourseDTOElasticSearch> courseDtoElasticSearchList = new ArrayList<>();
 //			for (Course course : courseList) {
 //				CourseDTOElasticSearch courseDtoElasticSearch = new CourseDTOElasticSearch();
@@ -175,7 +175,7 @@ public class CurrencyConversionRateUtil {
 		
 		for (int i = 0; i < totalCourseToBeRetried; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
 			List<String> courseIds = failedRecordsInElasticSearch.subList(i, i+IConstant.COURSES_PER_SCHEDULER_LOOP < totalCourseToBeRetried ? i+IConstant.COURSES_PER_SCHEDULER_LOOP: totalCourseToBeRetried);
-			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseService.getCoursesToBeRetriedForElasticSearch(courseIds, i, IConstant.COURSES_PER_SCHEDULER_LOOP);
+			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseProcessor.getCoursesToBeRetriedForElasticSearch(courseIds, i, IConstant.COURSES_PER_SCHEDULER_LOOP);
 			elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
 		}
 		

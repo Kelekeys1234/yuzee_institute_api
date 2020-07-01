@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.app.dao.ICourseDAO;
+import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.GlobalFilterSearchDto;
@@ -23,7 +23,7 @@ import com.seeka.app.exception.ValidationException;
 public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 
 	@Autowired
-	private ICourseDAO icourseDao;
+	private CourseDAO icourseDao;
 
 	@Autowired
 	private IStorageService iStorageService;

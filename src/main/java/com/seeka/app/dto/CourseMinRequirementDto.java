@@ -2,52 +2,25 @@ package com.seeka.app.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+
+@Data
 public class CourseMinRequirementDto {
-
+	
+	@JsonProperty("country")
 	private String country;
+	
+	@JsonProperty("system")
 	private String system;
+	
+	@JsonProperty("subject")
 	private List<String> subject;
+	
+	@JsonProperty("grade")
 	private List<String> grade;
+	
+	@JsonProperty("course")
 	private String course;
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(final String country) {
-		this.country = country;
-	}
-
-	public String getSystem() {
-		return system;
-	}
-
-	public void setSystem(final String system) {
-		this.system = system;
-	}
-
-	public List<String> getSubject() {
-		return subject;
-	}
-
-	public void setSubject(final List<String> subject) {
-		this.subject = subject;
-	}
-
-	public List<String> getGrade() {
-		return grade;
-	}
-
-	public void setGrade(final List<String> grade) {
-		this.grade = grade;
-	}
-
-	public String getCourse() {
-		return course;
-	}
-
-	public void setCourse(final String course) {
-		this.course = course;
-	}
-
 }

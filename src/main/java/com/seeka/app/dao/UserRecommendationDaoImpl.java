@@ -1,7 +1,6 @@
 package com.seeka.app.dao;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,11 +16,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.CurrencyRate;
-import com.seeka.app.dto.CourseAdditionalInfoDto;
-import com.seeka.app.dto.CourseResponseDto;
-import com.seeka.app.util.CommonUtil;
-import com.seeka.app.util.ConvertionUtil;
 
 @Repository
 public class UserRecommendationDaoImpl implements UserRecommendationDao {
@@ -98,7 +92,7 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 		Session session = sessionFactory.getCurrentSession();
 		
 		String sqlQuery = "select c.id, c.name, c.world_ranking, c.stars, c.availabilty, c.currency, c.website, c.recognition, c.description"
-				+ " from course c left join course_additional_info cai on cai.course_id = c.id";
+				+ " from course c left join course_delivery_modes cai on cai.course_id = c.id";
 		
 		if(!StringUtils.isEmpty(facultyId)) {
 			sqlQuery+= " where c.faculty_id = '"+ facultyId +"'";

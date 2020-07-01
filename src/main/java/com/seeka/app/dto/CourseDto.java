@@ -1,218 +1,48 @@
 package com.seeka.app.dto;
 
+import javax.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+import lombok.ToString;
+
+@Data
+@ToString
 public class CourseDto {
 
+	@JsonProperty("course_id")
     private String id;
-    private String levelId;
+    
+	@JsonProperty("level_id")
+	@NotBlank(message = "level_id should not be blank")
+	private String levelId;
+	
+	@JsonProperty("name")
+	@NotBlank(message = "name should not be blank")
     private String name;
-    private String language;
-    private String languageShortKey;
+	
+	@JsonProperty("cost")
     private String cost;
-    private String duration;
-    private String durationTime;
-    private Double domasticFee;
-    private Double internationalFee;
+	
+	@JsonProperty("world_ranking")
     private String worldRanking;
+	
+	@JsonProperty("stars")
     private String stars;
+	
+	@JsonProperty("faculty_name")
     private String facultyName;
+	
+	@JsonProperty("level_name")
     private String levelName;
+	
+	@JsonProperty("cost_of_living")
     private String costOfLiving;
+	
+	@JsonProperty("description")
     private String description;
-    private String delivery;
-    private String intakeDate;
+	
+	@JsonProperty("remarks")
     private String remarks;
-
-    public String getLanguageShortKey() {
-        return languageShortKey;
-    }
-
-    public void setLanguageShortKey(final String languageShortKey) {
-        this.languageShortKey = languageShortKey;
-    }
-
-    public String getCost() {
-        return cost;
-    }
-
-    public void setCost(final String cost) {
-        this.cost = cost;
-    }
-
-    public String getDuration() {
-        return duration;
-    }
-
-    public void setDuration(final String duration) {
-        this.duration = duration;
-    }
-
-    public String getDurationTime() {
-        return durationTime;
-    }
-
-    public void setDurationTime(final String durationTime) {
-        this.durationTime = durationTime;
-    }
-
-    public String getWorldRanking() {
-        return worldRanking;
-    }
-
-    public void setWorldRanking(final String worldRanking) {
-        this.worldRanking = worldRanking;
-    }
-
-    public String getStars() {
-        return stars;
-    }
-
-    public void setStars(final String stars) {
-        this.stars = stars;
-    }
-
-    public String getFacultyName() {
-        return facultyName;
-    }
-
-    public void setFacultyName(final String facultyName) {
-        this.facultyName = facultyName;
-    }
-
-    public String getLevelName() {
-        return levelName;
-    }
-
-    public void setLevelName(final String levelName) {
-        this.levelName = levelName;
-    }
-
-    public String getCostOfLiving() {
-        return costOfLiving;
-    }
-
-    public void setCostOfLiving(final String costOfLiving) {
-        this.costOfLiving = costOfLiving;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
-    public String getDelivery() {
-        if (null == delivery) {
-            delivery = "";
-        }
-        return delivery;
-    }
-
-    public void setDelivery(final String delivery) {
-        this.delivery = delivery;
-    }
-
-    public String getIntakeDate() {
-        if (null == intakeDate) {
-            intakeDate = "";
-        }
-        return intakeDate;
-    }
-
-    public void setIntakeDate(final String intakeDate) {
-        this.intakeDate = intakeDate;
-    }
-
-    public String getLevelId() {
-        return levelId;
-    }
-
-    public void setLevelId(final String levelId) {
-        this.levelId = levelId;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(final String remarks) {
-        this.remarks = remarks;
-    }
-
-    /**
-     * @return the domasticFee
-     */
-    public Double getDomasticFee() {
-        return domasticFee;
-    }
-
-    /**
-     * @param domasticFee
-     *            the domasticFee to set
-     */
-    public void setDomasticFee(Double domasticFee) {
-        this.domasticFee = domasticFee;
-    }
-
-    /**
-     * @return the internationalFee
-     */
-    public Double getInternationalFee() {
-        return internationalFee;
-    }
-
-    /**
-     * @param internationalFee
-     *            the internationalFee to set
-     */
-    public void setInternationalFee(Double internationalFee) {
-        this.internationalFee = internationalFee;
-    }
-
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the language
-     */
-    public String getLanguage() {
-        return language;
-    }
-
-    /**
-     * @param language
-     *            the language to set
-     */
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
 }

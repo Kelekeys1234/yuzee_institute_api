@@ -37,6 +37,7 @@ import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
+import com.seeka.app.processor.CourseProcessor;
 import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.util.IConstant;
 
@@ -63,7 +64,7 @@ public class RecommendationService implements IRecommendationService {
 	private InstituteProcessor instituteProcessor;
 
 	@Autowired
-	private ICourseService iCourseService;
+	private CourseProcessor courseProcessor;
 
 	@Autowired
 	private IUsersService iUsersService;
@@ -192,18 +193,18 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get courses based on Past User Search based on country of courses
 		 */
-		List<String> coursesBasedOnPastSearch = iCourseService.getTopSearchedCoursesByUsers(userId);
+		List<String> coursesBasedOnPastSearch = courseProcessor.getTopSearchedCoursesByUsers(userId);
 
 		/**
 		 * Get Courses Based on User's Country
 		 */
-		List<String> coursesBasedOnUserCountry = iCourseService.courseIdsForCountry(userDto.getCitizenship());
+		List<String> coursesBasedOnUserCountry = courseProcessor.courseIdsForCountry(userDto.getCitizenship());
 
 		/**
 		 * Get courses based on the country that other users from user's country are
 		 * most interested to migrate to.
 		 */
-		List<String> coursesBasedOnUserMigrationCountry = iCourseService.courseIdsForMigratedCountries(userDto.getCitizenship());
+		List<String> coursesBasedOnUserMigrationCountry = courseProcessor.courseIdsForMigratedCountries(userDto.getCitizenship());
 		/**
 		 * Select Random two courses from User Past Search
 		 */
@@ -258,7 +259,7 @@ public class RecommendationService implements IRecommendationService {
 		if ((courseListToRecommend == null) || courseListToRecommend.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<Course> courseList = iCourseService.getCoursesById(courseListToRecommend);
+		List<Course> courseList = courseProcessor.getCoursesById(courseListToRecommend);
 		List<CourseResponseDto> courseResponseDTOList = new ArrayList<>();
 		for (Course course : courseList) {
 			CourseResponseDto courseResponseDto = new CourseResponseDto();
@@ -287,11 +288,11 @@ public class RecommendationService implements IRecommendationService {
 	}
 
 	private List<Course> facultyWiseCourseForInstitute(final List<Faculty> facultyList, final Institute instituteId) {
-		return iCourseService.facultyWiseCourseForInstitute(facultyList, instituteId);
+		return courseProcessor.facultyWiseCourseForInstitute(facultyList, instituteId);
 	}
 
 	private Map<String, String> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final Institute instituteId) {
-		return iCourseService.facultyWiseCourseIdMapForInstitute(facultyList, instituteId.getId());
+		return courseProcessor.facultyWiseCourseIdMapForInstitute(facultyList, instituteId.getId());
 	}
 
 //	private Country getCountryBasedOnCitizenship(final String citizenship) {
@@ -299,12 +300,12 @@ public class RecommendationService implements IRecommendationService {
 //	}
 
 	private long checkIfCoursesPresentForCountry(final String country) {
-		return iCourseService.checkIfCoursesPresentForCountry(country);
+		return courseProcessor.checkIfCoursesPresentForCountry(country);
 	}
 
 	private List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
 		if (country != null) {
-			return iCourseService.getTopRatedCoursesForCountryWorldRankingWise(country);
+			return courseProcessor.getTopRatedCoursesForCountryWorldRankingWise(country);
 		} else {
 			return new ArrayList<>();
 		}
@@ -312,7 +313,7 @@ public class RecommendationService implements IRecommendationService {
 
 	private List<String> getTopRatedCourseIdsForCountryWorldRankingWise(final String country) {
 		if (country != null) {
-			return iCourseService.getTopRatedCourseIdForCountryWorldRankingWise(country);
+			return courseProcessor.getTopRatedCourseIdForCountryWorldRankingWise(country);
 		} else {
 			return new ArrayList<>();
 		}
@@ -320,20 +321,20 @@ public class RecommendationService implements IRecommendationService {
 
 	@Override
 	public List<Course> getTopSearchedCoursesForFaculty(final String facultyId, final String userId) {
-		List<String> facultyWiseCourses = iCourseService.getAllCourseUsingFacultyId(facultyId);
-		List<String> allSearchCourses = iCourseService.getTopSearchedCoursesByOtherUsers(userId);
+		List<String> facultyWiseCourses = courseProcessor.getAllCourseUsingFacultyId(facultyId);
+		List<String> allSearchCourses = courseProcessor.getTopSearchedCoursesByOtherUsers(userId);
 		allSearchCourses.retainAll(facultyWiseCourses);
 		System.out.println("All Course Size -- " + allSearchCourses.size());
 		if ((allSearchCourses == null) || (allSearchCourses.size() == 0)) {
 			allSearchCourses = facultyWiseCourses.size() > 10 ? facultyWiseCourses.subList(0, 9) : facultyWiseCourses;
 		}
 
-		return iCourseService.getCoursesById(allSearchCourses);
+		return courseProcessor.getCoursesById(allSearchCourses);
 	}
 
 	@Override
 	public Set<Course> displayRelatedCourseAsPerUserPastSearch(final String userId) throws ValidationException {
-		List<String> userSearchCourseIdList = iCourseService.getTopSearchedCoursesByUsers(userId);
+		List<String> userSearchCourseIdList = courseProcessor.getTopSearchedCoursesByUsers(userId);
 
 		/**
 		 * Keeping this code to get related courses only for top 3 courses searched.
@@ -347,7 +348,7 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Logic ends
 		 */
-		Set<Course> userRelatedCourses = iCourseService.getRelatedCoursesBasedOnPastSearch(userSearchCourseIdList);
+		Set<Course> userRelatedCourses = courseProcessor.getRelatedCoursesBasedOnPastSearch(userSearchCourseIdList);
 		return userRelatedCourses;
 	}
 
@@ -366,7 +367,7 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get courses based on Past User Search based on country of courses
 		 */
-		List<String> coursesBasedOnPastSearch = iCourseService.getTopSearchedCoursesByUsers(userId);
+		List<String> coursesBasedOnPastSearch = courseProcessor.getTopSearchedCoursesByUsers(userId);
 
 		List<String> recommendedScholarships = new ArrayList<>();
 		if ((coursesBasedOnPastSearch == null) || coursesBasedOnPastSearch.isEmpty()) {
@@ -400,7 +401,7 @@ public class RecommendationService implements IRecommendationService {
 			/**
 			 * If users have past search history run the below logic.
 			 */
-			List<String> countryList = iCourseService.getCountryForTopSearchedCourses(coursesBasedOnPastSearch);
+			List<String> countryList = courseProcessor.getCountryForTopSearchedCourses(coursesBasedOnPastSearch);
 
 			/**
 			 * Convert the countryList to Set to make it more random.
@@ -457,9 +458,9 @@ public class RecommendationService implements IRecommendationService {
 
 		List<String> instituteList = new ArrayList<>();
 
-		List<String> topSearchedCourseIds = iCourseService.getTopSearchedCoursesByUsers(userId);
+		List<String> topSearchedCourseIds = courseProcessor.getTopSearchedCoursesByUsers(userId);
 		if ((topSearchedCourseIds != null) && !topSearchedCourseIds.isEmpty()) {
-			List<String> countryForTopSearchedCourses = iCourseService.getCountryForTopSearchedCourses(topSearchedCourseIds);
+			List<String> countryForTopSearchedCourses = courseProcessor.getCountryForTopSearchedCourses(topSearchedCourseIds);
 			for (String countryId : countryForTopSearchedCourses) {
 				List<String> insituteId = instituteProcessor.getTopInstituteIdByCountry(countryId/* , 0L, 1L */);
 				instituteList.addAll(insituteId);
@@ -550,7 +551,7 @@ public class RecommendationService implements IRecommendationService {
 			}
 			System.out.println("insititute count -- " + allInstitutesRankingWise.size());
 
-			listOfRecommendedCourses = iCourseService.getAllCoursesUsingId(listOfRecommendedCourseIds);
+			listOfRecommendedCourses = courseProcessor.getAllCoursesUsingId(listOfRecommendedCourseIds);
 			return listOfRecommendedCourses;
 		} else {
 
@@ -608,7 +609,7 @@ public class RecommendationService implements IRecommendationService {
 				i++;
 			}
 
-			recommendedCourseList = iCourseService.getCoursesById(recommendedCourseListIds);
+			recommendedCourseList = courseProcessor.getCoursesById(recommendedCourseListIds);
 
 			System.out.println(recommendedCourseList);
 
@@ -622,12 +623,12 @@ public class RecommendationService implements IRecommendationService {
 		/**
 		 * Get all distinct courseIds searched by other users
 		 */
-		List<String> distinctCourseIds = iCourseService.getTopSearchedCoursesByOtherUsers(userId);
+		List<String> distinctCourseIds = courseProcessor.getTopSearchedCoursesByOtherUsers(userId);
 		try {
 			/**
 			 * Get all distinct country Ids for the course ids
 			 */
-			List<String> distinctCountryIds = iCourseService.getCountryForTopSearchedCourses(distinctCourseIds);
+			List<String> distinctCountryIds = courseProcessor.getCountryForTopSearchedCourses(distinctCourseIds);
 
 			/**
 			 * Get all institutes for the various countries that other users have searched
@@ -817,7 +818,7 @@ public class RecommendationService implements IRecommendationService {
 			userMyCourseIds.stream().forEach(userMyCourseId -> {
 				MyHistoryDto myHistoryDto = new MyHistoryDto();
 				log.info("fetching courses from DB having courseId "+userMyCourseId);
-				Course courseFromDB = iCourseService.getCourseData(userMyCourseId);
+				Course courseFromDB = courseProcessor.getCourseData(userMyCourseId);
 				myHistoryDto.setId(courseFromDB.getId());
 				myHistoryDto.setName(courseFromDB.getName());
 				myHistoryDto.setInstituteId(courseFromDB.getInstitute().getId());
@@ -843,7 +844,7 @@ public class RecommendationService implements IRecommendationService {
 				log.info("checking for duplicacy for courseId in final response");
 				if(!myHistoryDtos.stream().anyMatch(s -> s.getId().equals(userViewCourseId))) {
 					log.info("fetching courses from DB having courseId "+userViewCourseId);
-					Course courseFromDB = iCourseService.getCourseData(userViewCourseId);
+					Course courseFromDB = courseProcessor.getCourseData(userViewCourseId);
 					if(!ObjectUtils.isEmpty(courseFromDB)) {
 						MyHistoryDto myHistoryDto = new MyHistoryDto();
 						myHistoryDto.setId(courseFromDB.getId());

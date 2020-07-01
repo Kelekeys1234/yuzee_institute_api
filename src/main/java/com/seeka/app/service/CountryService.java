@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.seeka.app.constant.Type;
-import com.seeka.app.dao.ICourseDAO;
+import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseResponseDto;
@@ -38,7 +38,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class CountryService implements ICountryService {
 
 	@Autowired
-	private ICourseDAO courseDAO;
+	private CourseDAO courseDAO;
 	
 	@Autowired
 	private InstituteRepository instituteRepository;

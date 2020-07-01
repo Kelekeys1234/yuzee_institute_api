@@ -12,12 +12,8 @@ import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dto.UserCourseRequestDto;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.processor.CourseProcessor;
 
-/**
- *
- * @author SeekADegree
- *
- */
 @Service
 @Transactional
 public class UserMyCourseService implements IUserMyCourseService {
@@ -26,7 +22,7 @@ public class UserMyCourseService implements IUserMyCourseService {
 	private IUserMyCourseDAO iUserMyCourseDAO;
 
 	@Autowired
-	private ICourseService iCourseService;
+	private CourseProcessor courseProcessor;
 
 	@Override
 	public void createUserMyCourse(final UserCourseRequestDto courseRequestDto) throws ValidationException {
@@ -37,7 +33,7 @@ public class UserMyCourseService implements IUserMyCourseService {
 			existingUserMyCourse.setUpdatedOn(now);
 			iUserMyCourseDAO.save(existingUserMyCourse);
 		} else {
-			Course existingCourse = iCourseService.getCourseData(courseRequestDto.getCourseId());
+			Course existingCourse = courseProcessor.getCourseData(courseRequestDto.getCourseId());
 			if (existingCourse == null) {
 				throw new ValidationException("Course not found for Id : " + courseRequestDto.getCourseId());
 			}

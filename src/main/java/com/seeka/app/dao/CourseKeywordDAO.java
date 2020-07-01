@@ -1,44 +1,15 @@
 package com.seeka.app.dao;import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.seeka.app.bean.CourseKeywords;
 
-@Repository
-@SuppressWarnings("unchecked")
-public class CourseKeywordDAO implements ICourseKeywordDAO {
+public interface CourseKeywordDAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    public void save(CourseKeywords obj);
 
-    @Override
-    public void save(CourseKeywords obj) {
-        Session session = sessionFactory.getCurrentSession();
-        session.save(obj);
-    }
+    public void update(CourseKeywords obj);
 
-    @Override
-    public void update(CourseKeywords obj) {
-        Session session = sessionFactory.getCurrentSession();
-        session.update(obj);
-    }
+    public List<CourseKeywords> getAll();
 
-    @Override
-    public List<CourseKeywords> getAll() {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(CourseKeywords.class);
-        return crit.list();
-    }
+    public List<CourseKeywords> searchCourseKeyword(String keyword);
 
-    @Override
-    public List<CourseKeywords> searchCourseKeyword(String keyword) {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("SELECT sk.keyword FROM search_keywords sk WHERE sk.keyword LIKE '%" + keyword + "%'");
-        return query.list();
-    }
 }

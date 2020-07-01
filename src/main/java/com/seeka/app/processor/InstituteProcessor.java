@@ -29,7 +29,7 @@ import com.seeka.app.bean.InstituteIntake;
 import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.constant.Type;
 import com.seeka.app.dao.AccrediatedDetailDao;
-import com.seeka.app.dao.ICourseDAO;
+import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dao.InstituteDomesticRankingHistoryDao;
 import com.seeka.app.dao.InstituteWorldRankingHistoryDao;
@@ -100,7 +100,7 @@ public class InstituteProcessor {
 	private RestTemplate restTemplate;
 
 	@Autowired
-	private ICourseDAO courseDao;
+	private CourseDAO courseDao;
 
 	@Autowired
 	private ElasticSearchService elasticSearchService;

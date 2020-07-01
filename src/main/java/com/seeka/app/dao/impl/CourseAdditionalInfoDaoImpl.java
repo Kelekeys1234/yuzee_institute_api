@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.seeka.app.bean.CourseAdditionalInfo;
+import com.seeka.app.bean.CourseDeliveryModes;
 import com.seeka.app.dao.CourseAdditionalInfoDao;
 import com.seeka.app.repository.CourseAdditionalInfoRepository;
 
@@ -16,17 +16,17 @@ public class CourseAdditionalInfoDaoImpl implements CourseAdditionalInfoDao {
 	private CourseAdditionalInfoRepository courseAdditionalInfoRepository;
 
 	@Override
-	public void saveCourseAdditionalInfo(CourseAdditionalInfo courseAdditionalInfo) {
+	public void saveCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo) {
 		courseAdditionalInfoRepository.save(courseAdditionalInfo);
 	}
 
 	@Override
-	public void deleteCourseAdditionalInfo(CourseAdditionalInfo courseAdditionalInfo) {
+	public void deleteCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo) {
 		courseAdditionalInfoRepository.delete(courseAdditionalInfo);
 	}
 
 	@Override
-	public List<CourseAdditionalInfo> getCourseAdditionalInfoByCourseId(String courseId) {
+	public List<CourseDeliveryModes> getCourseAdditionalInfoByCourseId(String courseId) {
 		return courseAdditionalInfoRepository.findByCourseId(courseId);
 	}
 }

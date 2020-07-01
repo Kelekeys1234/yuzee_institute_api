@@ -21,10 +21,10 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "course_additional_info", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "study_mode",
+@Table(name = "course_delivery_modes", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "study_mode",
 		"delivery_type" }, name = "UK_COURSE_ID_STUDY_MODE_DELIVERY_TYPE"), indexes = {
 				@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
-public class CourseAdditionalInfo {
+public class CourseDeliveryModes {
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})

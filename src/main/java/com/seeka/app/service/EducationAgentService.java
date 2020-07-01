@@ -18,7 +18,7 @@ import com.seeka.app.bean.EducationAgent;
 import com.seeka.app.bean.EducationAgentAccomplishment;
 import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
-import com.seeka.app.dao.ICourseDAO;
+import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dao.IEducationAgentDAO;
 import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dao.IServiceDetailsDAO;
@@ -51,7 +51,7 @@ public class EducationAgentService implements IEducationAgentService {
     private InstituteDao instituteDao;
 
     @Autowired
-    private ICourseDAO courseDao;
+    private CourseDAO courseDao;
 
     @Override
     public void save(@Valid EducationAgentDto educationAgentDto) {

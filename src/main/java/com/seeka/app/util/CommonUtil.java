@@ -91,7 +91,6 @@ public class CommonUtil {
 		courseRequest.setLink(course.getLink());
 		if (course.getFaculty() != null) {
 			courseRequest.setFacultyId(course.getFaculty().getId());
-			courseRequest.setFacultyName(course.getFaculty().getName());
 		}
 		courseRequest.setContact(course.getContact());
 		courseRequest.setCampusLocation(course.getCampusLocation());

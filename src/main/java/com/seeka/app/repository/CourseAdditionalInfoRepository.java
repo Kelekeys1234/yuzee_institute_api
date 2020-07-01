@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.CourseAdditionalInfo;
+import com.seeka.app.bean.CourseDeliveryModes;
 
 @Repository
-public interface CourseAdditionalInfoRepository extends JpaRepository<CourseAdditionalInfo, String>{
+public interface CourseAdditionalInfoRepository extends JpaRepository<CourseDeliveryModes, String>{
 
-	public List<CourseAdditionalInfo> findByCourseId(String courseId);
+	public List<CourseDeliveryModes> findByCourseId(String courseId);
 }

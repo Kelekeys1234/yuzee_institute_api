@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+package com.seeka.app.processor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,8 +25,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.CourseAdditionalInfo;
-import com.seeka.app.bean.CourseDeliveryMethod;
+import com.seeka.app.bean.CourseDeliveryModes;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseLanguage;
@@ -39,20 +38,22 @@ import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.constant.Type;
+import com.seeka.app.controller.handler.CommonHandler;
 import com.seeka.app.dao.CourseAdditionalInfoDao;
+import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dao.CourseEnglishEligibilityDao;
+import com.seeka.app.dao.CourseMinRequirementDao;
 import com.seeka.app.dao.CurrencyDAO;
-import com.seeka.app.dao.ICourseDAO;
-import com.seeka.app.dao.ICourseMinRequirementDao;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.IGlobalStudentDataDAO;
 import com.seeka.app.dao.ILevelDAO;
 import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dao.ViewDao;
+import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.AdvanceSearchDto;
-import com.seeka.app.dto.CourseAdditionalInfoDto;
-import com.seeka.app.dto.CourseAddtionalInfoElasticDto;
+import com.seeka.app.dto.CourseDeliveryModesDto;
+import com.seeka.app.dto.CourseDeliveryModesElasticDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseEnglishEligibilityDto;
 import com.seeka.app.dto.CourseFilterDto;
@@ -62,23 +63,32 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.GlobalData;
-import com.seeka.app.dto.GradeDto;
+import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
+import com.seeka.app.dto.StudentVisaDto;
 import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
+import com.seeka.app.dto.UserReviewResultDto;
+import com.seeka.app.dto.YouTubeVideoDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
-import com.seeka.app.processor.CourseAdditionalInfoProcessor;
-import com.seeka.app.processor.CourseEnglishEligibilityProcessor;
-import com.seeka.app.processor.InstituteGoogleReviewProcessor;
 import com.seeka.app.repository.CourseRepository;
+import com.seeka.app.service.ElasticSearchService;
+import com.seeka.app.service.IEnrollmentService;
+import com.seeka.app.service.IGlobalStudentData;
+import com.seeka.app.service.ILevelService;
+import com.seeka.app.service.IStorageService;
+import com.seeka.app.service.ITop10CourseService;
+import com.seeka.app.service.IUserReviewService;
+import com.seeka.app.service.IViewService;
+import com.seeka.app.service.UserRecommendationService;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -89,10 +99,10 @@ import lombok.extern.apachecommons.CommonsLog;
 @Service
 @CommonsLog
 @Transactional
-public class CourseService implements ICourseService {
+public class CourseProcessor {
 
 	@Autowired
-	private ICourseDAO iCourseDAO;
+	private CourseDAO iCourseDAO;
 
 	@Autowired
 	private CourseEnglishEligibilityDao courseEnglishEligibilityDAO;
@@ -110,7 +120,7 @@ public class CourseService implements ICourseService {
 	private CurrencyDAO currencyDAO;
 
 	@Autowired
-	private ICourseMinRequirementDao courseMinRequirementDao;
+	private CourseMinRequirementDao courseMinRequirementDao;
 
 	@Autowired
 	private IStorageService iStorageService;
@@ -163,20 +173,35 @@ public class CourseService implements ICourseService {
 	@Autowired
 	private CourseEnglishEligibilityProcessor courseEnglishEligibilityProcessor;
 	
+	@Autowired
+	private InstituteServiceProcessor instituteServiceProcessor;
+	
+	@Autowired
+	private InstituteProcessor instituteProcessor;
+	
+	@Autowired
+	private CommonHandler commonHandler;
+	
+	@Autowired
+	private IEnrollmentService iEnrolmentService;
+
+	@Autowired
+	private AccrediatedDetailProcessor accrediatedDetailProcessor;
+	
+	@Autowired
+	private UserRecommendationService userRecommendationService;
+	
 	@Value("${max.radius}")
 	private Integer maxRadius;
 	
-	@Override
 	public Course get(final String id) {
 		return iCourseDAO.get(id);
 	}
 
-	@Override
 	public List<Course> getAll() {
 		return iCourseDAO.getAll();
 	}
 
-	@Override
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
 			final String searchKeyword) throws ValidationException {
 		log.debug("Inside getAllCoursesByFilter() method");
@@ -226,7 +251,7 @@ public class CourseService implements ICourseService {
 					courseResponseDto.setIsViewed(true);
 				}
 				log.info("Filtering course additional info by matching courseIds");
-				List<CourseAdditionalInfoDto> additionalInfoDtos = courseResponseDto.getCourseAdditionalInfo().stream().
+				List<CourseDeliveryModesDto> additionalInfoDtos = courseResponseDto.getCourseAdditionalInfo().stream().
 							filter(x -> x.getCourseId().equals(courseResponseDto.getId())).collect(Collectors.toList());
 				courseResponseDto.setCourseAdditionalInfo(additionalInfoDtos);
 				
@@ -251,22 +276,18 @@ public class CourseService implements ICourseService {
 		return courseResponseFinalResponse;
 	}
 
-	@Override
 	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword) {
 		return iCourseDAO.getCountforNormalCourse(courseSearchDto, searchKeyword);
 	}
 
-	@Override
 	public List<CourseResponseDto> getAllCoursesByInstitute(final String instituteId, final CourseSearchDto courseSearchDto) {
 		return iCourseDAO.getAllCoursesByInstitute(instituteId, courseSearchDto);
 	}
 
-	@Override
 	public Map<String, Object> getCourse(final String courseId) {
 		return iCourseDAO.getCourse(courseId);
 	}
 
-	@Override
 	public List<CourseResponseDto> getCouresesByFacultyId(final String facultyId) throws NotFoundException {
 		log.debug("Inside getCouresesByFacultyId() method");
 		log.info("fetching courses from DB for facultyId = "+facultyId);
@@ -290,17 +311,18 @@ public class CourseService implements ICourseService {
 		return courseResponseDtos;
 	}
 
-	@Override
 	public List<CourseResponseDto> getCouresesByListOfFacultyId(final String facultyId) {
-		String[] citiesArray = facultyId.split(",");
-		String tempList = "";
-		for (String id : citiesArray) {
-			tempList = tempList + "," + "'" + id + "'";
+		log.debug("Inside getCouresesByListOfFacultyId() method");
+		String[] facultyIds = facultyId.split(",");
+		log.info("Seperate facultyIds on the basis of comma");
+		String facultyIdtempList = "";
+		for (String id : facultyIds) {
+			facultyIdtempList = facultyIdtempList + "," + "'" + id + "'";
 		}
-		return iCourseDAO.getCouresesByListOfFacultyId(tempList.substring(1, tempList.length()));
+		log.info("Callig DAO layer to fetch courseList by FacultyId");
+		return iCourseDAO.getCouresesByListOfFacultyId(facultyIdtempList.substring(1, facultyIdtempList.length()));
 	}
 
-	@Override
 	public String saveCourse(@Valid final CourseRequest courseDto) throws ValidationException {
 		log.debug("Inside saveCourse() method");
 		Course course = new Course();
@@ -405,11 +427,11 @@ public class CourseService implements ICourseService {
 		}
 		
 		// Here we are adding course additional informations like courseFee, duration, studyMode etc
-		List<CourseAddtionalInfoElasticDto> courseAddtionalInfoElasticDtos = new ArrayList<>();
+		List<CourseDeliveryModesElasticDto> courseAddtionalInfoElasticDtos = new ArrayList<>();
 		if(!CollectionUtils.isEmpty(courseDto.getCourseAdditionalInfo()) && !ObjectUtils.isEmpty(currencyRate)) {
 			log.info("Course saved now going to save course AdditionalInfo in DB");
-			for (CourseAdditionalInfoDto courseAdditionalInfo : courseDto.getCourseAdditionalInfo()) {
-				CourseAdditionalInfo additionalInfo = new CourseAdditionalInfo();
+			for (CourseDeliveryModesDto courseAdditionalInfo : courseDto.getCourseAdditionalInfo()) {
+				CourseDeliveryModes additionalInfo = new CourseDeliveryModes();
 				if (courseDto.getCurrency() != null) {
 					if (courseAdditionalInfo.getDomesticFee() != null) {
 						log.info("converting domestic fee into usdDomestic fee having conversionRate = "+currencyRate.getConversionRate());
@@ -440,7 +462,7 @@ public class CourseService implements ICourseService {
 				courseAdditionalInfoDao.saveCourseAdditionalInfo(additionalInfo);
 				
 				// Adding course additionalInfo in elastic DTO to save it on course elastic index
-				CourseAddtionalInfoElasticDto courseAddtionalInfoElasticDto = new CourseAddtionalInfoElasticDto();
+				CourseDeliveryModesElasticDto courseAddtionalInfoElasticDto = new CourseDeliveryModesElasticDto();
 				BeanUtils.copyProperties(additionalInfo, courseAddtionalInfoElasticDto);
 				courseAddtionalInfoElasticDtos.add(courseAddtionalInfoElasticDto);
 			}
@@ -474,7 +496,6 @@ public class CourseService implements ICourseService {
 		return course.getId();
 	}
 
-	@Override
 	public String updateCourse(final CourseRequest courseDto, final String id) throws ValidationException {
 		log.debug("Inside updateCourse() method");
 		Course course = new Course();
@@ -600,16 +621,16 @@ public class CourseService implements ICourseService {
 		}
 
 		// Here we are adding course additional informations like courseFee, duration, studyMode etc
-		List<CourseAddtionalInfoElasticDto> courseAddtionalInfoElasticDtos = new ArrayList<>();
+		List<CourseDeliveryModesElasticDto> courseAddtionalInfoElasticDtos = new ArrayList<>();
 		if (!CollectionUtils.isEmpty(courseDto.getCourseAdditionalInfo()) && !ObjectUtils.isEmpty(currencyRate)) {
 			log.info("Course saved now going to update course AdditionalInfo in DB and fetching additionalInfo from DB");
-			List<CourseAdditionalInfo> courseAdditionalInfoListFromDB = courseAdditionalInfoDao.getCourseAdditionalInfoByCourseId(id);
+			List<CourseDeliveryModes> courseAdditionalInfoListFromDB = courseAdditionalInfoDao.getCourseAdditionalInfoByCourseId(id);
 			courseAdditionalInfoListFromDB.stream().forEach(courseAdditionalInfoFromDB -> {
 				log.info("Deleting courseAdditional Info from DB for infoId = "+courseAdditionalInfoFromDB.getId());
 				courseAdditionalInfoDao.deleteCourseAdditionalInfo(courseAdditionalInfoFromDB);
 			});
-			for (CourseAdditionalInfoDto courseAdditionalInfo : courseDto.getCourseAdditionalInfo()) {
-				CourseAdditionalInfo additionalInfo = new CourseAdditionalInfo();
+			for (CourseDeliveryModesDto courseAdditionalInfo : courseDto.getCourseAdditionalInfo()) {
+				CourseDeliveryModes additionalInfo = new CourseDeliveryModes();
 				if (courseDto.getCurrency() != null) {
 					if (courseAdditionalInfo.getDomesticFee() != null) {
 						log.info("converting domestic fee into usdDomestic fee having conversionRate = "
@@ -642,7 +663,7 @@ public class CourseService implements ICourseService {
 				courseAdditionalInfoDao.saveCourseAdditionalInfo(additionalInfo);
 
 				// Adding course additionalInfo in elastic DTO to save it on course elastic index
-				CourseAddtionalInfoElasticDto courseAddtionalInfoElasticDto = new CourseAddtionalInfoElasticDto();
+				CourseDeliveryModesElasticDto courseAddtionalInfoElasticDto = new CourseDeliveryModesElasticDto();
 				BeanUtils.copyProperties(additionalInfo, courseAddtionalInfoElasticDto);
 				courseAddtionalInfoElasticDtos.add(courseAddtionalInfoElasticDto);
 			}
@@ -686,22 +707,6 @@ public class CourseService implements ICourseService {
 		return currencyRate;
 	}
 
-//	private Country getCountry(final String countryId) {
-//		Country country = null;
-//		if (countryId != null) {
-//			country = countryDAO.get(countryId);
-//		}
-//		return country;
-//	}
-
-//	private City getCity(final String cityId) {
-//		City city = null;
-//		if (cityId != null) {
-//			city = cityDAO.get(cityId);
-//		}
-//		return city;
-//	}
-
 	private Faculty getFaculty(final String facultyId) {
 		Faculty faculty = null;
 		if (facultyId != null) {
@@ -718,7 +723,6 @@ public class CourseService implements ICourseService {
 		return institute;
 	}
 
-	@Override
 	public PaginationResponseDto getAllCourse(final Integer pageNumber, final Integer pageSize) {
 		log.debug("Inside getAllCourse() method");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -740,7 +744,7 @@ public class CourseService implements ICourseService {
 						log.error("Error invoking Storage service exception {}",e);
 					}
 					log.info("Fetching courseAdditionalInfo from DB having courseId = "+course.getId());
-					List<CourseAdditionalInfoDto> courseAdditionalInfoDtos = courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId());
+					List<CourseDeliveryModesDto> courseAdditionalInfoDtos = courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId());
 					if(!CollectionUtils.isEmpty(courseAdditionalInfoDtos)) {
 						log.info("courseAdditionalInfo is fetched from DB, hence adding courseAdditionalInfo in response");
 						course.setCourseAdditionalInfo(courseAdditionalInfoDtos);
@@ -772,7 +776,6 @@ public class CourseService implements ICourseService {
 		return paginationResponseDto;
 	}
 
-	@Override
 	public void deleteCourse(final String courseId) {
 		log.debug("Inside deleteCourse() method");
 		try {
@@ -803,63 +806,68 @@ public class CourseService implements ICourseService {
 		}
 	}
 
-	@Override
-	public Map<String, Object> addUserCourses(@Valid final UserCourse userCourse) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			if (userCourse.getCourses() != null && !userCourse.getCourses().isEmpty()) {
-				for (String courseId : userCourse.getCourses()) {
-					UserMyCourse myCourse = new UserMyCourse();
-					myCourse.setCourse(iCourseDAO.get(courseId));
-					myCourse.setUserId(userCourse.getUserId());
-					myCourse.setIsActive(true);
-					myCourse.setCreatedBy("API");
-					myCourse.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-					myCourse.setUpdatedBy("API");
-					myCourse.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-					myCourseDAO.save(myCourse);
-					response.put("status", HttpStatus.OK.value());
-					response.put("message", "Course added successfully");
+	public void addUserCourses(@Valid final UserCourse userCourse) throws ValidationException {
+		log.debug("Inside addUserCourses() method");
+		if (userCourse.getCourses() != null && !userCourse.getCourses().isEmpty()) {
+			log.info("Start ierating data comes in request to save in DB");
+			for (String courseId : userCourse.getCourses()) {
+				UserMyCourse myCourse = new UserMyCourse();
+				log.info("Fetching course details based on courseId = " + courseId);
+				Course course = iCourseDAO.get(courseId);
+				if (ObjectUtils.isEmpty(course)) {
+					log.error("Passed courseId is not found in DB");
+					throw new ValidationException("Passed courseId is not found in DB");
 				}
+				myCourse.setCourse(course);
+				myCourse.setUserId(userCourse.getUserId());
+				myCourse.setIsActive(true);
+				myCourse.setCreatedBy("API");
+				myCourse.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+				myCourse.setUpdatedBy("API");
+				myCourse.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+				log.info("Calling DAO layer to save user courses in DB");
+				myCourseDAO.save(myCourse);
 			}
-		} catch (Exception exception) {
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", exception.getCause());
 		}
-		return response;
 	}
 
-	@Override
-	public Map<String, Object> getUserCourse(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
+	public PaginationResponseDto getUserCourse(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
 			final String sortBy, final Boolean sortAsscending) throws ValidationException {
-		Map<String, Object> response = new HashMap<>();
-		String status = IConstant.SUCCESS;
-		List<CourseRequest> courses;
-		int totalCount = 0;
-		PaginationUtilDto paginationUtilDto = null;
+		log.debug("Inside getUserCourse() method");
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		List<CourseRequest> resultList = new ArrayList<>();
-		totalCount = iCourseDAO.findTotalCountByUserId(userId);
+		log.info("Gettin total count of courses by userId = "+userId);
+		int totalCount = iCourseDAO.findTotalCountByUserId(userId);
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-		courses = iCourseDAO.getUserCourse(userId, startIndex, pageSize, currencyCode, sortBy, sortAsscending);
-		for (CourseRequest courseRequest : courses) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null,
-					"en");
-			courseRequest.setStorageList(storageDTOList);
-			resultList.add(courseRequest);
+		log.info("Fetching courses from DB based on filters and having userId = "+userId);
+		List<CourseRequest> courses = iCourseDAO.getUserCourse(userId, startIndex, pageSize, currencyCode, sortBy, sortAsscending);
+		if(!CollectionUtils.isEmpty(courses)) {
+			log.info("Courses fetched from DB hence strat iterating data");
+			courses.stream().forEach(courseRequest -> {
+				try {
+					log.info("Calling Storage Service to fetch images based for instituteId = "+courseRequest.getInstituteId());
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), 
+							ImageCategory.INSTITUTE.toString(), null, "en");
+					courseRequest.setStorageList(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Error invoking Storage Service having exception = "+e);
+				}
+				log.info("Fetching course additional info based on courseId = "+courseRequest.getId());
+				courseRequest.setCourseAdditionalInfo(courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(courseRequest.getId()));
+				resultList.add(courseRequest);
+			});
+			log.info("Calculating pagination based on startIndex, pageSize and totalCount");
+			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+			paginationResponseDto.setResponse(resultList);
+			paginationResponseDto.setTotalCount(totalCount);
+			paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+			paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+			paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+			paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 		}
-		response.put("status", HttpStatus.OK.value());
-		response.put("message", status);
-		response.put("courses", resultList);
-		response.put("totalCount", totalCount);
-		response.put("pageNumber", paginationUtilDto.getPageNumber());
-		response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		response.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		response.put("totalPages", paginationUtilDto.getTotalPages());
-		return response;
+		return paginationResponseDto;
 	}
 
-	@Override
 	public void addUserCompareCourse(@Valid final UserCourse userCourse) {
 		log.debug("Inside addUserCompareCourse() method");
 		try {
@@ -892,7 +900,6 @@ public class CourseService implements ICourseService {
 		}
 	}
 
-	@Override
 	public List<UserCompareCourseResponse> getUserCompareCourse(final String userId) throws NotFoundException {
 		log.debug("Inside getUserCompareCourse() method");
 		List<UserCompareCourseResponse> compareCourseResponses = new ArrayList<>();
@@ -930,12 +937,10 @@ public class CourseService implements ICourseService {
 		return courses;
 	}
 
-	@Override
 	public Course getCourseData(final String courseId) {
 		return iCourseDAO.getCourseData(courseId);
 	}
 
-	@Override
 	public Map<String, Object> getAllServices() {
 		Map<String, Object> response = new HashMap<>();
 		List<com.seeka.app.bean.Service> services = new ArrayList<>();
@@ -951,7 +956,6 @@ public class CourseService implements ICourseService {
 		return response;
 	}
 
-	@Override
 	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException {
 		log.debug("Inside advanceSearch() method");
 		
@@ -1006,7 +1010,7 @@ public class CourseService implements ICourseService {
 				}
 				
 				log.info("Grouping course delivery modes data and add it in final response");
-				List<CourseAdditionalInfoDto> additionalInfoDtos = courseResponseDto.getCourseAdditionalInfo().stream().
+				List<CourseDeliveryModesDto> additionalInfoDtos = courseResponseDto.getCourseAdditionalInfo().stream().
 						filter(x -> x.getCourseId().equals(courseResponseDto.getId())).collect(Collectors.toList());
 				courseResponseDto.setCourseAdditionalInfo(additionalInfoDtos);
 
@@ -1044,7 +1048,6 @@ public class CourseService implements ICourseService {
 		return courseResponseFinalResponse;
 	}
 
-	@Override
 	public double calculateAverageRating(final Map<String, Double> googleReviewMap, final Map<String, Double> seekaReviewMap, final Double courseStar,
 			final String instituteId) {
 		log.debug("Inside calculateAverageRating() method");
@@ -1063,7 +1066,7 @@ public class CourseService implements ICourseService {
 			count++;
 		}
 		log.info("course Google Rating" + googleReview);
-		if (seekaReviewMap.get(instituteId) != null) {
+		if (seekaReviewMap != null && seekaReviewMap.get(instituteId) != null) {
 			seekaReview = seekaReviewMap.get(instituteId);
 			count++;
 		}
@@ -1077,7 +1080,6 @@ public class CourseService implements ICourseService {
 		}
 	}
 
-	@Override
 	public Map<String, Object> getAllCourse() {
 		Map<String, Object> response = new HashMap<>();
 		List<Course> courses = new ArrayList<>();
@@ -1098,7 +1100,6 @@ public class CourseService implements ICourseService {
 		return response;
 	}
 
-	@Override
 	public PaginationResponseDto courseFilter(final CourseFilterDto courseFilter) {
 		log.debug("Inside courseFilter() method");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -1146,7 +1147,6 @@ public class CourseService implements ICourseService {
 		return paginationResponseDto;
 	}
 
-	@Override
 	public PaginationResponseDto autoSearch(final Integer pageNumber, final Integer pageSize, final String searchKey) {
 		log.debug("Inside autoSearch() method");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -1168,7 +1168,7 @@ public class CourseService implements ICourseService {
 						log.error("Error invoking Storage service having exception = "+e);
 					}
 					log.info("Fetching courseAdditionalInfo from DB having courseId = "+course.getId());
-					List<CourseAdditionalInfoDto> courseAdditionalInfoDtos = courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId());
+					List<CourseDeliveryModesDto> courseAdditionalInfoDtos = courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId());
 					if(!CollectionUtils.isEmpty(courseAdditionalInfoDtos)) {
 						log.info("courseAdditionalInfo is fetched from DB, hence adding courseAdditionalInfo in response");
 						course.setCourseAdditionalInfo(courseAdditionalInfoDtos);
@@ -1214,12 +1214,10 @@ public class CourseService implements ICourseService {
 		return paginationResponseDto;
 	}
 
-	@Override
 	public List<Course> facultyWiseCourseForInstitute(final List<Faculty> facultyList, final Institute institute) {
 		return iCourseDAO.facultyWiseCourseForTopInstitute(facultyList, institute);
 	}
 
-	@Override
 	public void saveCourseMinrequirement(final CourseMinRequirementDto courseMinRequirementDto) {
 		convertDtoToCourseMinRequirement(courseMinRequirementDto);
 	}
@@ -1227,7 +1225,6 @@ public class CourseService implements ICourseService {
 	public void convertDtoToCourseMinRequirement(final CourseMinRequirementDto courseMinRequirementDto) {
 		log.debug("Inside convertDtoToCourseMinRequirement() method");
 		Integer i = 0;
-		GradeDto gradeDto = new GradeDto();
 		List<String> subjectGrade = new ArrayList<>();
 		for (String subject : courseMinRequirementDto.getSubject()) {
 			System.out.println(subject);
@@ -1238,25 +1235,25 @@ public class CourseService implements ICourseService {
 			courseMinRequirement.setGrade(courseMinRequirementDto.getGrade().get(i));
 			subjectGrade.add(courseMinRequirementDto.getGrade().get(i));
 			courseMinRequirement.setCourse(iCourseDAO.get(courseMinRequirementDto.getCourse()));
+			log.info("Calling DAO layer to save course minimun requirements");
 			courseMinRequirementDao.save(courseMinRequirement);
 			i++;
 		}
-		gradeDto.setCountryName(courseMinRequirementDto.getCountry());
-		gradeDto.setEducationSystemId(courseMinRequirementDto.getSystem());
-		gradeDto.setSubjectGrades(subjectGrade);
 	}
 
-	@Override
 	public List<CourseMinRequirementDto> getCourseMinRequirement(final String course) {
-		return convertCourseMinRequirementToDto(courseMinRequirementDao.get(course));
+		return convertCourseMinRequirementToDto(courseMinRequirementDao.getCourseMinRequirementByCourseId(course));
 	}
 
 	public List<CourseMinRequirementDto> convertCourseMinRequirementToDto(final List<CourseMinRequirement> courseMinRequirement) {
+		log.debug("Inside convertCourseMinRequirementToDto() method");
 		List<CourseMinRequirementDto> resultList = new ArrayList<>();
+		log.info("Collecting countryNames and start iterating based on countryName");
 		Set<String> countryIds = courseMinRequirement.stream().map(c -> c.getCountryName()).collect(Collectors.toSet());
 		for (String countryId : countryIds) {
 			List<String> subject = new ArrayList<>();
 			List<String> grade = new ArrayList<>();
+			log.info("Filtering courseMinimum requirements based on countryName");
 			List<CourseMinRequirement> filterList = courseMinRequirement.stream().filter(x -> x.getCountryName().equals(countryId))
 					.collect(Collectors.toList());
 			CourseMinRequirementDto courseMinRequirementDto = new CourseMinRequirementDto();
@@ -1275,7 +1272,6 @@ public class CourseService implements ICourseService {
 		return resultList;
 	}
 
-	@Override
 	public List<CourseRequest> autoSearchByCharacter(final String searchKey) throws NotFoundException {
 		log.debug("Inside autoSearchByCharacter() method");
 		List<CourseRequest> coursesRequests = new ArrayList<>();
@@ -1294,57 +1290,46 @@ public class CourseService implements ICourseService {
 		return coursesRequests;
 	}
 
-	@Override
 	public long checkIfCoursesPresentForCountry(final String country) {
 		return iCourseDAO.getCourseCountForCountry(country);
 	}
 
-	@Override
 	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
 		return iCourseDAO.getTopRatedCoursesForCountryWorldRankingWise(country);
 	}
 
-	@Override
 	public List<Course> getAllCourseUsingFaculty(final String facultyId) {
 		return iCourseDAO.getAllCourseForFacultyWorldRankingWise(facultyId);
 	}
 
-	@Override
 	public List<String> getAllCourseUsingFacultyId(final String facultyId) {
 		return iCourseDAO.getAllCourseForFacultyWorldRankingWises(facultyId);
 	}
 
-	@Override
 	public List<String> getTopSearchedCoursesByOtherUsers(final String userId) {
 		return viewDao.getOtherUserWatchCourse(userId, "COURSE");
 	}
 
-	@Override
 	public List<Course> getCoursesById(final List<String> allSearchCourses) {
 		return iCourseDAO.getCoursesFromId(allSearchCourses);
 	}
 
-	@Override
 	public Map<String, String> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final String instituteId) {
 		return iCourseDAO.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
 	}
 
-	@Override
 	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
 		return iCourseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
 	}
 
-	@Override
 	public List<String> getTopRatedCourseIdForCountryWorldRankingWise(final String country) {
 		return iCourseDAO.getTopRatedCourseIdsForCountryWorldRankingWise(country);
 	}
 
-	@Override
 	public List<String> getTopSearchedCoursesByUsers(final String userId) {
 		return viewDao.getUserWatchCourseIds(userId, "COURSE");
 	}
 
-	@Override
 	public Set<Course> getRelatedCoursesBasedOnPastSearch(final List<String> courseList) throws ValidationException {
 		Set<Course> relatedCourses = new HashSet<>();
 		for (String courseId : courseList) {
@@ -1353,12 +1338,10 @@ public class CourseService implements ICourseService {
 		return relatedCourses;
 	}
 
-	@Override
 	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final String country) {
 		return iCourseDAO.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto, country);
 	}
 
-	@Override
 	public List<String> getCountryForTopSearchedCourses(final List<String> topSearchedCourseIds) throws ValidationException {
 		if (topSearchedCourseIds == null || topSearchedCourseIds.isEmpty()) {
 			throw new ValidationException(messageByLocaleService.getMessage("no.course.id.specified", new Object[] {}));
@@ -1372,7 +1355,6 @@ public class CourseService implements ICourseService {
 		return courseIdList;
 	}
 
-	@Override
 	public List<Long> getUserListForUserWatchCourseFilter(final String courseId, final String instituteId, final String facultyId,
 			final String countryId, final String cityId) {
 		List<String> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
@@ -1383,12 +1365,10 @@ public class CourseService implements ICourseService {
 		return userIdList;
 	}
 
-	@Override
 	public List<String> courseIdsForCountry(final String country) {
 		return iCourseDAO.getCourseIdsForCountry(country);
 	}
 
-	@Override
 	public List<String> courseIdsForMigratedCountries(final String country) {
 		List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country);
 		List<String> otherCountryIds = new ArrayList<>();
@@ -1406,47 +1386,34 @@ public class CourseService implements ICourseService {
 		return new ArrayList<>();
 	}
 
-	@Override
 	public void updateCourseForCurrency(final CurrencyRate currencyRate) {
 		iCourseDAO.updateCourseForCurrency(currencyRate);
 	}
 
-	@Override
 	public int getCountOfAdvanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException, NotFoundException {
 		return iCourseDAO.getCountOfAdvanceSearch(courseSearchDto);
 	}
 
-	@Override
 	public List<CourseDTOElasticSearch> getUpdatedCourses(final Date date, final Integer startIndex, final Integer limit) {
 		return iCourseDAO.getUpdatedCourses(date, startIndex, limit);
 	}
 
-	@Override
 	public Integer getCountOfTotalUpdatedCourses(final Date utCdatetimeAsOnlyDate) {
 		return iCourseDAO.getCountOfTotalUpdatedCourses(utCdatetimeAsOnlyDate);
 	}
 
-	@Override
 	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds, final Integer startIndex, final Integer limit) {
 		return iCourseDAO.getCoursesToBeRetriedForElasticSearch(courseIds, startIndex, limit);
 	}
 
-	@Override
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(final String courseId) {
 		return iCourseDAO.getCourseIntakeBasedOnCourseId(courseId);
 	}
 
-	@Override
-	public List<CourseDeliveryMethod> getCourseDeliveryMethodBasedOnCourseId(final String courseId) {
-		return iCourseDAO.getCourseDeliveryMethodBasedOnCourseId(courseId);
-	}
-
-	@Override
 	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(final String courseId) {
 		return iCourseDAO.getCourseLanguageBasedOnCourseId(courseId);
 	}
 
-	@Override
 	public List<CourseResponseDto> getCourseNoResultRecommendation(final String userCountry, final String facultyId, final String countryId,
 			final Integer startIndex, final Integer pageSize) throws ValidationException {
 		/**
@@ -1480,7 +1447,6 @@ public class CourseService implements ICourseService {
 
 	}
 
-	@Override
 	public List<String> getCourseKeywordRecommendation(final String facultyId, final String countryId, final String levelId,
 			final Integer startIndex, final Integer pageSize) {
 		List<String> courseKeywordRecommended = new ArrayList<>();
@@ -1512,12 +1478,10 @@ public class CourseService implements ICourseService {
 		return courseKeywordRecommended;
 	}
 
-	@Override
 	public int getDistinctCourseCount(String courseName) {
 		return iCourseDAO.getDistinctCourseCountbyName(courseName);
 	}
 
-	@Override
 	public List<CourseResponseDto> getDistinctCourseList(Integer startIndex, Integer pageSize,String courseName) {
 		return iCourseDAO.getDistinctCourseListByName(startIndex, pageSize, courseName);
 	}
@@ -1543,7 +1507,6 @@ public class CourseService implements ICourseService {
 		return courseLevelCount;
 	}
 
-	@Override
 	public void addMobileCourse(String userId, String instituteId, CourseMobileDto courseMobileDto) throws Exception {
 		log.debug("Inside addMobileCourse() method");
 		log.info("Validate user id "+userId+ " have appropriate access for institute id "+instituteId);
@@ -1583,7 +1546,6 @@ public class CourseService implements ICourseService {
 		iCourseDAO.save(course);
 	}
 
-	@Override
 	public void updateMobileCourse(String userId, String courseId, CourseMobileDto courseMobileDto) throws Exception {
 		log.debug("Inside updateMobileCourse() method");
 		log.info("Getting course by course id "+courseId);
@@ -1619,7 +1581,6 @@ public class CourseService implements ICourseService {
 		iCourseDAO.save(course);
 	} 
 	
-	@Override
 	public List<CourseMobileDto> getAllMobileCourseByInstituteIdAndFacultyIdAndStatus(String userId, String instituteId, String facultyId, boolean status) throws Exception {
 		List<CourseMobileDto> listOfCourseMobileDto = new ArrayList<CourseMobileDto>();
 		log.debug("Inside getAllMobileCourseByInstituteIdAndFacultyId() method");
@@ -1643,7 +1604,6 @@ public class CourseService implements ICourseService {
 		return listOfCourseMobileDto;
 	}
 	
-	@Override
 	public List<CourseMobileDto> getPublicMobileCourseByInstituteIdAndFacultyId(String instituteId, String facultyId) throws Exception {
 		List<CourseMobileDto> listOfCourseMobileDto = new ArrayList<CourseMobileDto>();
 		log.debug("Inside getPublicMobileCourseByInstituteIdAndFacultyId() method");
@@ -1666,7 +1626,6 @@ public class CourseService implements ICourseService {
 		return listOfCourseMobileDto;
 	}
 	
-	@Override
 	public void changeCourseStatus (String userId , String courseId, boolean status) throws Exception {
 		log.debug("Inside updateMobileCourse() method");
 		log.info("Getting course by course id "+courseId);
@@ -1684,7 +1643,6 @@ public class CourseService implements ICourseService {
 		iCourseDAO.save(course);
 	}
 	
-	@Override
 	public NearestCoursesDto getCourseByInstituteId(Integer pageNumber, Integer pageSize, String instituteId) throws NotFoundException {
 		log.debug("Inside getCourseByInstituteId() method");
 		List<CourseResponseDto> nearestCourseList = new ArrayList<>();
@@ -1715,7 +1673,7 @@ public class CourseService implements ICourseService {
 				}
 				
 				log.info("Fetching courseAdditionalInfo from DB having courseId = "+course.getId());
-				List<CourseAdditionalInfoDto> courseAdditionalInfoDtos = courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId());
+				List<CourseDeliveryModesDto> courseAdditionalInfoDtos = courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId());
 				if(!CollectionUtils.isEmpty(courseAdditionalInfoDtos)) {
 					log.info("courseAdditionalInfo is fetched from DB, hence adding courseAdditionalInfo in response");
 					nearestCourse.setCourseAdditionalInfo(courseAdditionalInfoDtos);
@@ -1761,7 +1719,6 @@ public class CourseService implements ICourseService {
 		return nearestCourseResponse;
 	}
 	
-	@Override
 	public NearestCoursesDto getNearestCourses(AdvanceSearchDto courseSearchDto)
 			throws ValidationException {
 		log.debug("Inside getNearestCourses() method");
@@ -1787,7 +1744,13 @@ public class CourseService implements ICourseService {
 				log.info("data is coming from DB for radius " + initialRadius);
 				runMethodAgain = false;
 				log.info("start iterating data which is coming from DB");
-				for (CourseResponseDto nearestCourseDTO : nearestCourseDTOs) {
+				
+				log.info("Filering course response if ID is coming duplicate in response");
+				List<CourseResponseDto> courseResponseFinalResponse = nearestCourseDTOs.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId))
+						.collect(Collectors.toList());
+				log.info("Collecting CourseIds by stream API and calling store it in list");
+				
+				for (CourseResponseDto nearestCourseDTO : courseResponseFinalResponse) {
 					CourseResponseDto nearestCourse = new CourseResponseDto();
 					BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
 					nearestCourse.setDistance(Double.valueOf(initialRadius));
@@ -1795,6 +1758,28 @@ public class CourseService implements ICourseService {
 					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestCourseDTO.getId(),
 							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
 					nearestCourse.setStorageList(storageDTOList);
+					
+					log.info("Filtering course additional info by matching courseId");
+					List<CourseDeliveryModesDto> additionalInfoDtos = nearestCourseDTO.getCourseAdditionalInfo().stream().
+								filter(x -> x.getCourseId().equals(nearestCourseDTO.getId())).collect(Collectors.toList());
+					nearestCourse.setCourseAdditionalInfo(additionalInfoDtos);
+					
+					log.info("Fetching courseIntake from DB having courseId = "+nearestCourseDTO.getId());
+					List<CourseIntake> courseIntakes = iCourseDAO.getCourseIntakeBasedOnCourseId(nearestCourseDTO.getId());
+					if (!CollectionUtils.isEmpty(courseIntakes)) {
+						log.info("Filtering courseIntakes data based on courseId");
+						nearestCourse.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+					} else {
+						nearestCourse.setIntake(new ArrayList<>());
+					}
+					
+					log.info("Fetching courseLanguages from DB having courseId = "+nearestCourseDTO.getId());
+					List<CourseLanguage> courseLanguages = iCourseDAO.getCourseLanguageBasedOnCourseId(nearestCourseDTO.getId());
+					if(!CollectionUtils.isEmpty(courseLanguages)) {
+						nearestCourse.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
+					} else {
+						nearestCourse.setLanguage(new ArrayList<>());
+					}
 					courseResponseDtoList.add(nearestCourse);
 				}
 			}
@@ -1815,5 +1800,126 @@ public class CourseService implements ICourseService {
 		coursePaginationResponseDto.setTotalCount(totalCount);
 		return coursePaginationResponseDto;
 	}
-}
 
+	public Map<String, Object> getCourseById(String userId, String id) throws Exception {
+		log.debug("Inside getCourseById() method");
+		InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
+		Map<String, Object> response = new HashMap<>();
+		log.info("Fetching course from DB having courseId = "+id);
+		Course course = get(id);
+		if (course == null) {
+			log.error("Course not found for courseId = "+id);
+			throw new NotFoundException("Course not found for courseId = "+id);
+		}
+		log.info("Course fetched from data start copying bean class data to DTO class");
+		CourseRequest courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
+		
+		log.info("Fetching institute google review based on instituteID to calculate average review");
+		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
+				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
+		
+		log.info("Calling review service to fetch user average review based on instituteID  to calculate average review");
+		Map<String, Double> seekaReviewMap = iUserReviewService
+				.getUserAverageReviewBasedOnDataList("INSTITUTE", Arrays.asList(courseRequest.getInstituteId()));
+		
+		if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
+			log.info("Calculating average review based on instituteGoogleReview and userReview and stars");
+			courseRequest.setStars(String.valueOf(calculateAverageRating(googleReviewMap, seekaReviewMap,
+					Double.valueOf(courseRequest.getStars()), courseRequest.getInstituteId())));
+		}
+		
+		log.info("Fetching courseIntake for courseId = "+id);
+		courseRequest.setIntake(getCourseIntakeBasedOnCourseId(id).stream()
+				.map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+		log.info("Fetching courseLanguage for courseId = "+id);
+		courseRequest.setLanguage(getCourseLanguageBasedOnCourseId(id).stream()
+				.map(CourseLanguage::getLanguage).collect(Collectors.toList()));
+		log.info("Fetching courseAdditionalInfo for courseId = "+id);
+		courseRequest.setCourseAdditionalInfo(courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(id));
+		
+		log.info("Fetching institute data from DB having instututeId = "+courseRequest.getInstituteId());
+		Institute instituteObj = instituteProcessor.get(courseRequest.getInstituteId());
+		BeanUtils.copyProperties(instituteObj, instituteResponseDto);
+		List<YouTubeVideoDto> youtubeData = new ArrayList<>();
+		if (!ObjectUtils.isEmpty(instituteObj)) {
+			log.info("Institutes fetched from DB now fetching instituteServices from DB based on instituteId");
+			List<String> instituteServices = instituteServiceProcessor.getAllServices(instituteObj.getId());
+			if(!CollectionUtils.isEmpty(instituteServices)) {
+				instituteResponseDto.setInstituteServices(instituteServices);
+			}
+			log.info("Calling Storage Service to fetch institute images");
+			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
+			courseRequest.setStorageList(storageDTOList);
+			
+			log.info("Invoking Common Service to fetch youtube videos for instituteName = "+ instituteObj.getName() + 
+						" and countryName = "+instituteObj.getCountryName() + " and coureName = "+course.getName());
+			youtubeData = commonHandler.getYoutubeDataBasedOnCriteria(instituteObj.getName(), instituteObj.getCountryName(),
+					instituteObj.getCityName(), course.getName(), 1, 10);
+		}
+		
+		log.info("Fetching accrediated details for institute from DB having instituteID = "+instituteObj.getId());
+		List<AccrediatedDetailDto> accrediatedInstituteDetailsFromDB = accrediatedDetailProcessor.getAccrediationDetailByEntityId(instituteObj.getId());
+		if(!CollectionUtils.isEmpty(accrediatedInstituteDetailsFromDB)) {
+			instituteResponseDto.setAccrediatedDetail(accrediatedInstituteDetailsFromDB);
+		}
+		
+		log.info("Fetching accrediated details for course from DB having courseId = "+course.getId());
+		List<AccrediatedDetailDto> accrediatedCourseDetails = accrediatedDetailProcessor.getAccrediationDetailByEntityId(course.getId());
+		if(!CollectionUtils.isEmpty(accrediatedCourseDetails)) {
+			courseRequest.setAccrediatedDetail(accrediatedCourseDetails);
+		}
+		
+		log.info("Fetching courseEnglish Eligibility from DB based on courseId = "+id);
+		List<CourseEnglishEligibilityDto> englishCriteriaList = courseEnglishEligibilityProcessor.getAllEnglishEligibilityByCourse(id);
+		
+		if (!englishCriteriaList.isEmpty()) {
+			courseRequest.setEnglishEligibility(englishCriteriaList);
+		} else {
+			courseRequest.setEnglishEligibility(new ArrayList<>());
+		}
+
+		List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
+		
+		log.info("Fetching related courses to add in response based on courseId = "+id);
+		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(id);
+		if (instituteObj.getLatitude() != null && instituteObj.getLongitude() != null) {
+			courseRequest.setLatitude(instituteObj.getLatitude());
+			courseRequest.setLongitude(instituteObj.getLongitude());
+		}
+
+		// Get Enrollment details for the course
+		if (userId != null) {
+			int count = iEnrolmentService.countOfEnrollment(userId, id, null, null, null, null, null);
+			courseRequest.setApplied(count == 0 ? false : true);
+		} else {
+			courseRequest.setApplied(false);
+		}
+
+		// Get User View Course Details
+		if (userId != null) {
+			int count = iViewService.getUserViewDataCountBasedOnUserId(userId, id, "COURSE");
+			courseRequest.setViewCourse(count == 0 ? false : true);
+		} else {
+			courseRequest.setViewCourse(false);
+		}
+
+		// Add User Review to the course info response
+		log.info("Calling review service to get user review for course");
+		List<UserReviewResultDto> userReviewResultList = iUserReviewService.getUserReviewBasedOnData(id, "COURSE", 1, 5,
+				null, null);
+		courseRequest.setUserReviewResult(userReviewResultList);
+
+		log.info("Calling Common Service to get Student visa details having countryName = "+instituteObj.getCountryName());
+		StudentVisaDto studentVisaDto = commonHandler.getStudentVisaDetailsByCountryName(instituteObj.getCountryName());
+		if(!ObjectUtils.isEmpty(studentVisaDto.getId())) {
+			courseRequest.setStudentVisa(studentVisaDto);
+		}
+		response.put("courseObj", courseRequest);
+		response.put("recommendCourse", recommendCourse);
+		response.put("relatedCourse", relatedCourse);
+		response.put("instituteObj", instituteResponseDto);
+		response.put("youtubeData", youtubeData);
+		return response;
+	}
+}

@@ -32,6 +32,7 @@ import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.EnrollmentStatusType;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.processor.CourseProcessor;
 import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.processor.InstituteTypeProcessor;
 
@@ -46,13 +47,10 @@ public class EnrollmentService implements IEnrollmentService {
 	private InstituteProcessor instituteProcessor;
 
 	@Autowired
-	private ICourseService iCourseService;
+	private CourseProcessor courseProcessor;
 
 	@Autowired
 	private InstituteTypeProcessor instituteTypeProcessor;
-
-//	@Autowired
-//	private ICountryService iCountryService;
 
 	@Autowired
 	private IUsersService iUsersService;
@@ -78,7 +76,7 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollment.setInstitute(institute);
 		}
 
-		Course course = iCourseService.getCourseData(enrollmentDto.getCourseId());
+		Course course = courseProcessor.getCourseData(enrollmentDto.getCourseId());
 		if (course == null) {
 			throw new ValidationException("Course not found for id: " + enrollmentDto.getCourseId());
 		} else {
@@ -130,7 +128,7 @@ public class EnrollmentService implements IEnrollmentService {
 			existingEnrollment.setInstitute(institute);
 		}
 
-		Course course = iCourseService.getCourseData(enrollmentDto.getCourseId());
+		Course course = courseProcessor.getCourseData(enrollmentDto.getCourseId());
 		if (course == null) {
 			throw new ValidationException("Course not found for id: " + enrollmentDto.getCourseId());
 		} else {

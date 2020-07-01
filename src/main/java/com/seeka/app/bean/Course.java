@@ -86,9 +86,6 @@ public class Course implements Serializable {
 	@Column(name = "intake")
 	private String intake;
 
-//	private String fileUrl;
-//	private String grades;
-
 	@Column(name = "contact")
 	private String contact;
 
