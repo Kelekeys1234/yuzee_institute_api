@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.seeka.app.bean.InstituteType;
-import com.seeka.app.bean.Intake;
 import com.seeka.app.dao.InstituteTypeDao;
 import com.seeka.app.dto.InstituteTypeDto;
 
@@ -49,10 +48,6 @@ public class InstituteTypeProcessor {
 
     public InstituteType get(String id) {
         return iInstituteTypeDAO.get(id);
-    }
-
-    public List<Intake> getAllIntake() {
-        return  iInstituteTypeDAO.getAllIntake();
     }
 
     public List<InstituteTypeDto> getAllInstituteType() {

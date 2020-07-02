@@ -13,7 +13,6 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.dto.AdvanceSearchDto;
-import com.seeka.app.dto.CountryDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
@@ -80,8 +79,6 @@ public interface CourseDAO {
 	public Long autoSearchTotalCount(String searchKey);
 
 	public List<Course> facultyWiseCourseForTopInstitute(List<Faculty> facultyList, Institute institute);
-
-	public List<CountryDto> getCourseCountry();
 
 	public long getCourseCountForCountry(String countryName);
 

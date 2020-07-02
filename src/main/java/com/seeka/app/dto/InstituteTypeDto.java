@@ -1,5 +1,7 @@
 package com.seeka.app.dto;
 
+import javax.validation.constraints.NotBlank;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -11,6 +13,7 @@ public class  InstituteTypeDto {
 	private String instituteTypeId;
 	
 	@JsonProperty("institute_type")
+	@NotBlank(message = "institute_type should not be blank")
 	private String name;
 	
 	@JsonProperty("type")

@@ -39,7 +39,7 @@ import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.constant.Type;
 import com.seeka.app.controller.handler.CommonHandler;
-import com.seeka.app.dao.CourseAdditionalInfoDao;
+import com.seeka.app.dao.CourseDeliveryModesDao;
 import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dao.CourseEnglishEligibilityDao;
 import com.seeka.app.dao.CourseMinRequirementDao;
@@ -165,10 +165,10 @@ public class CourseProcessor {
 	private CourseRepository courseRepository;
 	
 	@Autowired
-	private CourseAdditionalInfoDao courseAdditionalInfoDao;
+	private CourseDeliveryModesDao courseAdditionalInfoDao;
 	
 	@Autowired
-	private CourseAdditionalInfoProcessor courseAdditionalInfoProcessor;
+	private CourseDeliveryModesProcessor courseAdditionalInfoProcessor;
 	
 	@Autowired
 	private CourseEnglishEligibilityProcessor courseEnglishEligibilityProcessor;
@@ -1921,5 +1921,40 @@ public class CourseProcessor {
 		response.put("instituteObj", instituteResponseDto);
 		response.put("youtubeData", youtubeData);
 		return response;
+	}
+	
+	public NearestCoursesDto getCourseByCountryName(String countryName, Integer pageNumber, Integer pageSize) throws NotFoundException {
+		log.debug("Inside getCourseByCountryName() method");
+		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<CourseResponseDto> nearestCourseResponse = new ArrayList<>();
+		log.info("fetching courses from DB for countryName "+ countryName);
+		List<CourseResponseDto> nearestCourseDTOs = iCourseDAO.getCourseByCountryName(pageNumber, pageSize, countryName);
+		Long totalCount = courseRepository.getTotalCountOfCourseByCountryName(countryName);
+		if(!CollectionUtils.isEmpty(nearestCourseDTOs)) {
+			log.info("get data of courses for countryName, so start iterating data");
+			nearestCourseDTOs.stream().forEach(nearestCourseDTO -> {
+				CourseResponseDto nearestCourse = new CourseResponseDto();
+				BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
+				log.info("going to fetch logo for courses from storage service for courseID "+nearestCourseDTO.getId());
+				try {
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestCourseDTO.getId(), 
+							ImageCategory.COURSE.toString(), Type.LOGO.name(),"en");
+					nearestCourse.setStorageList(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Error while fetching logos from storage service"+e);
+				}
+				nearestCourseResponse.add(nearestCourse);
+			});
+		}
+		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount.intValue());
+		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto();
+		nearestCoursesPaginationDto.setNearestCourses(nearestCourseResponse);
+		nearestCoursesPaginationDto.setPageNumber(paginationUtilDto.getPageNumber());
+		nearestCoursesPaginationDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		nearestCoursesPaginationDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		nearestCoursesPaginationDto.setTotalPages(paginationUtilDto.getTotalPages());
+		nearestCoursesPaginationDto.setTotalCount(totalCount.intValue());
+		return nearestCoursesPaginationDto;
 	}
 }

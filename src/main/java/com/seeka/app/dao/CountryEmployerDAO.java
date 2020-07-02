@@ -1,4 +1,4 @@
-package com.seeka.app.dao;import java.util.ArrayList;
+/*package com.seeka.app.dao;import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -95,3 +95,4 @@ public class CountryEmployerDAO implements ICountryEmployerDAO {
 	}
 
 }
+*/

@@ -352,10 +352,10 @@ public class InstituteProcessor {
 			log.info("instituteId is null, creating object and setting values in it");
 			institute = new Institute();
 			institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-			institute.setCreatedBy(instituteRequest.getCreatedBy());
+			institute.setCreatedBy("API");
 		}
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		institute.setUpdatedBy(instituteRequest.getUpdatedBy());
+		institute.setUpdatedBy("API");
 		institute.setName(instituteRequest.getName());
 		institute.setDescription(instituteRequest.getDescription());
 		if (instituteRequest.getCountryName() != null) {
@@ -1009,6 +1009,43 @@ public class InstituteProcessor {
 	
 	public List<Institute> getAllInstitutes() {
 		return instituteRepository.findAll();
+	}
+	
+	public NearestInstituteDTO getInstituteByCountryName(String countryName, Integer pageNumber,Integer pageSize) throws NotFoundException {
+		log.debug("Inside getInstituteByCountryName() method");
+		CourseSearchDto courseSearchDto = new CourseSearchDto();
+		courseSearchDto.setMaxSizePerPage(pageSize);
+		log.info("fetching institutes from DB for countryName "+ countryName);
+		List<InstituteResponseDto> nearestInstituteDTOs = new ArrayList<>();
+		List<InstituteResponseDto> institutesFromDB = dao.getAllInstitutesByFilter(courseSearchDto, "countryName", 
+					null, countryName, pageNumber, null, null, null, null, null, null);
+		Integer totalCount = instituteRepository.getTotalCountOfInstituteByCountryName(countryName);
+		if(!CollectionUtils.isEmpty(institutesFromDB)) {
+			log.info("institutes found in DB for countryName "+ countryName + " so start iterating data");
+			institutesFromDB.stream().forEach(institute -> {
+				InstituteResponseDto nearestInstitute = new InstituteResponseDto();
+				BeanUtils.copyProperties(institute, nearestInstitute);
+				log.info("going to fetch institute logo from storage service having instituteID "+institute.getId());
+				try {
+					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(institute.getId(), 
+							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
+					nearestInstitute.setStorageList(storageDTOList);
+				} catch (ValidationException e) {
+					log.error("Error while fetching logos from storage service"+e);
+				}
+				nearestInstituteDTOs.add(nearestInstitute);
+			});
+		}
+		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
+		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO();
+		institutePaginationResponseDto.setNearestInstitutes(nearestInstituteDTOs);
+		institutePaginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+		institutePaginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		institutePaginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		institutePaginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+		institutePaginationResponseDto.setTotalCount(totalCount);
+		return institutePaginationResponseDto;
 	}
 
 }

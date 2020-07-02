@@ -22,6 +22,7 @@ import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteTypeDto;
 import com.seeka.app.dto.LatLongDto;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 
 @RequestMapping(path = "/api/v1")
@@ -122,4 +123,8 @@ public interface InstituteInterface {
 	@PostMapping("/bounded/area/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getBoundedInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize, 
 			@RequestBody List<LatLongDto> latLongDto) throws ValidationException;
+	
+	@GetMapping(value = "/institute/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
+	public ResponseEntity<?> getInstituteByCountryName(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
+			@PathVariable String countryName) throws NotFoundException;
 }

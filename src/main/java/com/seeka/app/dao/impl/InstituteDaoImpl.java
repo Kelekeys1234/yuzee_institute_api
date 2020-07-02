@@ -177,10 +177,10 @@ public class InstituteDaoImpl implements InstituteDao {
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.city_name as cityName,"
 				+ "inst.Country_name as countryName,count(c.id) as courses, inst.world_ranking as world_ranking, MIN(c.stars) as stars "
 				+ " ,inst.updated_on as updatedOn, inst.institute_type as instituteType,"
-				+ " inst.is_active, inst.domestic_ranking, inst.latitude,inst.longitude,MIN(c.usd_international_fee), MAX(c.usd_international_fee),c.currency,"
+				+ " inst.is_active, inst.domestic_ranking, inst.latitude,inst.longitude,MIN(cai.usd_international_fee), MAX(cai.usd_international_fee),c.currency,"
 				+ " inst.website,inst.about_us_info,inst.total_student,inst.email,inst.address"
 				+ " from institute inst "
-				+ "left join course c  on c.institute_id=inst.id where 1=1 ";
+				+ "left join course c  on c.institute_id=inst.id LEFT JOIN course_delivery_modes cai on cai.course_id = c.id where 1=1 ";
 
 		if (null != courseSearchDto.getCountryNames() && !courseSearchDto.getCountryNames().isEmpty()) {
 			sqlQuery += " and inst.country_name in ('" + courseSearchDto.getCountryNames().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
@@ -263,9 +263,7 @@ public class InstituteDaoImpl implements InstituteDao {
 				instituteResponseDto.setStars(0);
 			}
 
-			instituteResponseDto.setUpdatedOn((Date) row[7]);
 			instituteResponseDto.setInstituteType(String.valueOf(row[8]));
-			instituteResponseDto.setIsActive(Boolean.valueOf(String.valueOf(row[9])));
 			if (row[10] != null) {
 				instituteResponseDto.setDomesticRanking(Integer.valueOf(String.valueOf(row[10])));
 			}
@@ -774,7 +772,7 @@ public class InstituteDaoImpl implements InstituteDao {
 	@Override
 	public List<InstituteResponseDto> getNearestInstituteListForAdvanceSearch(AdvanceSearchDto courseSearchDto) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(course.usd_international_fee),max(course.usd_international_fee),institute.latitude,institute.longitude," + 
+		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(cai.usd_international_fee),max(cai.usd_international_fee),institute.latitude,institute.longitude," + 
 				" 6371 * ACOS(SIN(RADIANS('"+ courseSearchDto.getLatitude() +"')) * SIN(RADIANS(institute.latitude)) +" + 
 				" COS(RADIANS('"+ courseSearchDto.getLatitude() +"')) * COS(RADIANS(institute.latitude)) * COS(RADIANS(institute.longitude) -" + 
 				" RADIANS('"+ courseSearchDto.getLongitude() +"'))) AS distance_in_km,institute.world_ranking,"+
@@ -784,6 +782,7 @@ public class InstituteDaoImpl implements InstituteDao {
 				" FROM institute institute inner join course on institute.id = course.institute_id" +
 				" inner join faculty f  on f.id = course.faculty_id "+
 				" left join institute_service iis  on iis.institute_id = institute.id"+
+				" LEFT JOIN course_delivery_modes cai on cai.course_id = course.id"+
 				" where institute.latitude is not null and institute.longitude is not null" + 
 				" and institute.latitude!= " + courseSearchDto.getLatitude() + " and institute.longitude!= "  + courseSearchDto.getLongitude();
 		
@@ -828,11 +827,6 @@ public class InstituteDaoImpl implements InstituteDao {
 			instituteResponseDto.setWebsite((String) row[17]);
 			instituteResponseDto.setEmail((String) row[18]);
 			instituteResponseDto.setAddress((String) row[19]);
-			if((Byte) row[20] == 1) {
-				instituteResponseDto.setIsActive(true);
-			} else { 
-				instituteResponseDto.setIsActive(false);
-			}
 			instituteResponseDto.setInstituteType((String) row[21]);
 			instituteResponseDtos.add(instituteResponseDto);
 		}
@@ -942,11 +936,11 @@ public class InstituteDaoImpl implements InstituteDao {
 		}
 
 		if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
-			sqlQuery += " and cast(course.duration as DECIMAL(9,2)) >= " + courseSearchDto.getMinDuration();
+			sqlQuery += " and cast(cai.duration as DECIMAL(9,2)) >= " + courseSearchDto.getMinDuration();
 		}
 
 		if (null != courseSearchDto.getMaxDuration() && courseSearchDto.getMaxDuration() >= 0) {
-			sqlQuery += " and cast(course.duration as DECIMAL(9,2)) <= " + courseSearchDto.getMaxDuration();
+			sqlQuery += " and cast(cai.duration as DECIMAL(9,2)) <= " + courseSearchDto.getMaxDuration();
 		}
 
 		if (null != courseSearchDto.getInstituteId()) {
@@ -960,12 +954,12 @@ public class InstituteDaoImpl implements InstituteDao {
 		}
 
 		if (courseSearchDto.getStudyModes() != null) {
-			sqlQuery += " and course.part_full in ("+ courseSearchDto.getStudyModes().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
+			sqlQuery += " and cai.study_mode in ("+ courseSearchDto.getStudyModes().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
 		}
 
-//		if (courseSearchDto.getDeliveryMethods() != null) {
-//			sqlQuery += " and cd.name in (" + courseSearchDto.getDeliveryMethods().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
-//		}
+		if (courseSearchDto.getDeliveryMethods() != null) {
+			sqlQuery += " and cai.delivery_type in (" + courseSearchDto.getDeliveryMethods().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
+		}
 
 		/**
 		 * This filter is added to get domestic courses from user country and
@@ -1002,7 +996,7 @@ public class InstituteDaoImpl implements InstituteDao {
 			sortingQuery = sortingQuery + " , institute.country_name " + sortTypeValue + " ";
 		} else if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.PRICE.toString())) {
 			sortingQuery = sortingQuery + " , IF(course.currency='" + courseSearchDto.getCurrencyCode()
-					+ "', course.usd_domestic_fee, course.usd_international_fee) " + sortTypeValue + " ";
+					+ "', cai.usd_domestic_fee, cai.usd_international_fee) " + sortTypeValue + " ";
 		} else if (courseSearchDto.getSortBy().equalsIgnoreCase("instituteName")) {
 			sortingQuery = sortingQuery + " , institute.name " + sortTypeValue.toLowerCase();
 		} else if (courseSearchDto.getSortBy().equalsIgnoreCase("countryName")) {
@@ -1015,13 +1009,14 @@ public class InstituteDaoImpl implements InstituteDao {
 	public List<InstituteResponseDto> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitutde,
 			Double longitude, Integer initialRadius) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(course.usd_international_fee),max(course.usd_international_fee),institute.latitude,institute.longitude," + 
+		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(cai.usd_international_fee),max(cai.usd_international_fee),institute.latitude,institute.longitude," + 
 				" 6371 * ACOS(SIN(RADIANS('"+ latitutde +"')) * SIN(RADIANS(institute.latitude)) +" + 
 				" COS(RADIANS('"+ latitutde +"')) * COS(RADIANS(institute.latitude)) * COS(RADIANS(institute.longitude) -" + 
 				" RADIANS('"+ longitude +"'))) AS distance_in_km,institute.world_ranking,institute.domestic_ranking,MIN(course.stars) as stars,course.currency,institute.country_name,institute.city_name," + 
 				" institute.total_student,institute.about_us_info,institute.website,institute.email,institute.address," +
 				" institute.is_active, institute.institute_type" +
-				" FROM institute institute inner join course on institute.id = course.institute_id where institute.latitude is not null and institute.longitude is not null" + 
+				" FROM institute institute inner join course on institute.id = course.institute_id LEFT JOIN course_delivery_modes cai on cai.course_id = course.id" +
+				" where institute.latitude is not null and institute.longitude is not null" + 
 				" and institute.latitude!= " + latitutde + " and institute.longitude!= "  + longitude + " group by institute.id" + 
 				" HAVING distance_in_km <= " + initialRadius + " ORDER BY distance_in_km ASC LIMIT "+ pageNumber + "," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery);
@@ -1044,17 +1039,10 @@ public class InstituteDaoImpl implements InstituteDao {
 			instituteResponseDto.setCityName((String) row[13]);
 			instituteResponseDto.setLocation((String) row[13] + ", " + (String) row[12]);
 			instituteResponseDto.setTotalStudent((Integer) row[14]);
-//			instituteResponseDto.setOpeningFrom((String) row[15]);
-//			instituteResponseDto.setOpeningTo((String) row[16]);
 			instituteResponseDto.setAboutUs((String) row[15]);
 			instituteResponseDto.setWebsite((String) row[16]);
 			instituteResponseDto.setEmail((String) row[17]);
 			instituteResponseDto.setAddress((String) row[18]);
-			if((Byte) row[19] == 1) {
-				instituteResponseDto.setIsActive(true);
-			} else {
-				instituteResponseDto.setIsActive(false);
-			}
 			instituteResponseDto.setInstituteType((String) row[20]);
 			instituteResponseDtos.add(instituteResponseDto);
 		}

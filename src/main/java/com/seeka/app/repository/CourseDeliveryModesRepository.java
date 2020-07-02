@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.CourseDeliveryModes;
 
 @Repository
-public interface CourseAdditionalInfoRepository extends JpaRepository<CourseDeliveryModes, String>{
+public interface CourseDeliveryModesRepository extends JpaRepository<CourseDeliveryModes, String>{
 
 	public List<CourseDeliveryModes> findByCourseId(String courseId);
 }

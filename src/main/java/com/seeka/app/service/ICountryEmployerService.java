@@ -1,4 +1,4 @@
-package com.seeka.app.service;import java.util.List;
+/*package com.seeka.app.service;import java.util.List;
 
 import com.seeka.app.bean.CountryEmployers;
 import com.seeka.app.dto.CountryDto;
@@ -13,4 +13,4 @@ public interface ICountryEmployerService {
 	public List<CountryDto> searchInterestByCountry(String name);
 	public List<CountryDto> getAllCountries();
 }
- 
+ */

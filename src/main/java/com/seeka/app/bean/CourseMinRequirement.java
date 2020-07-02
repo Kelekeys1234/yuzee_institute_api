@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -21,7 +22,7 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "course_min_requirement")
+@Table(name = "course_min_requirement", indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
 public class CourseMinRequirement implements Serializable {
 
 	private static final long serialVersionUID = 6903674843134844883L;

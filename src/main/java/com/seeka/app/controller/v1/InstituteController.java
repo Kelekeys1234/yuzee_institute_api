@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Institute;
@@ -34,6 +35,7 @@ import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.endpoint.InstituteInterface;
 import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.processor.InstituteServiceProcessor;
@@ -388,6 +390,15 @@ public class InstituteController implements InstituteInterface {
 		return new GenericResponseHandlers.Builder().setData(nearestInstituteList)
 				.setMessage("Institute Displayed Successfully").setStatus(HttpStatus.OK).create();
 	}
+	
+	@GetMapping(value = "/institute/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
+	public ResponseEntity<?> getInstituteByCountryName(Integer pageNumber, Integer pageSize,
+			String countryName) throws NotFoundException {
+		NearestInstituteDTO instituteResponse = instituteProcessor.getInstituteByCountryName(countryName, pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setData(instituteResponse)
+				.setMessage("Institutes displayed successfully").setStatus(HttpStatus.OK).create();
+	}
+	
 	
     @Deprecated
     public ResponseEntity<?> saveService(final String instituteTypeId) throws Exception {

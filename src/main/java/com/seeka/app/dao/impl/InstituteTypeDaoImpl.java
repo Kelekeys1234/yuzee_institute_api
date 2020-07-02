@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.InstituteType;
-import com.seeka.app.bean.Intake;
 import com.seeka.app.dao.InstituteTypeDao;
 import com.seeka.app.dto.InstituteTypeDto;
 import com.seeka.app.repository.InstituteTypeRepository;
-import com.seeka.app.repository.IntakeRepository;
 
 @Component
 public class InstituteTypeDaoImpl implements InstituteTypeDao {
@@ -20,9 +18,6 @@ public class InstituteTypeDaoImpl implements InstituteTypeDao {
     @Autowired
     private InstituteTypeRepository instituteTypeRepository;
     
-    @Autowired
-    private IntakeRepository intakeRepository ;
-
     @Override
     public void save(InstituteType instituteType) {
         instituteTypeRepository.save(instituteType);
@@ -37,11 +32,6 @@ public class InstituteTypeDaoImpl implements InstituteTypeDao {
     public InstituteType get(String id) {
         Optional<InstituteType> optionalInstituteType = instituteTypeRepository.findById(id);
         return optionalInstituteType.get();
-    }
-
-    @Override
-    public List<Intake> getAllIntake() {
-        return intakeRepository.findAll();
     }
 
     @Override

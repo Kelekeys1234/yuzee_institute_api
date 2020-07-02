@@ -15,7 +15,7 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.processor.CourseAdditionalInfoProcessor;
+import com.seeka.app.processor.CourseDeliveryModesProcessor;
 import com.seeka.app.processor.CourseProcessor;
 import com.seeka.app.util.CommonUtil;
 
@@ -36,7 +36,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	private IStorageService iStorageService;
 	
 	@Autowired
-	private CourseAdditionalInfoProcessor courseAdditionalInfoProcessor;
+	private CourseDeliveryModesProcessor courseAdditionalInfoProcessor;
 
 	@Override
 	public List<Course> getRecommendCourse(final String courseId, final String userId) throws ValidationException {

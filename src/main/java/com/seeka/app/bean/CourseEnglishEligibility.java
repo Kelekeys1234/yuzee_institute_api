@@ -7,11 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -23,7 +25,8 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "course_english_eligibility")
+@Table(name = "course_english_eligibility", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "english_type" }, 
+name = "UK_COURSE_ID_ENGLISH_TYPE"), indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
 public class CourseEnglishEligibility {
 
 	@Id

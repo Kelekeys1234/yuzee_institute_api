@@ -31,7 +31,6 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Todo;
 import com.seeka.app.dto.CourseRequest;
-import com.seeka.app.dto.InstituteCampusDto;
 import com.seeka.app.dto.InstituteRequestDto;
 import com.seeka.app.dto.InstituteTimingDto;
 import com.seeka.app.dto.InstituteTimingResponseDto;
@@ -137,20 +136,6 @@ public class CommonUtil {
 		}
 		return new HashMap<>();
 
-	}
-
-	public static InstituteCampusDto convertInstituteCampusToInstituteCampusDto(final Institute campus) {
-		InstituteCampusDto campusDto = new InstituteCampusDto();
-		campusDto.setAddress(campus.getAddress());
-		campusDto.setEmail(campus.getEmail());
-		campusDto.setLatitute(campus.getLatitude());
-		campusDto.setLongitute(campus.getLongitude());
-//		campusDto.setOpeningFrom(campus.getOpeningFrom());
-//		campusDto.setOpeningTo(campus.getOpeningTo());
-		campusDto.setPhoneNumber(campus.getPhoneNumber());
-		campusDto.setTotalStudent(campus.getTotalStudent());
-		campusDto.setId(campus.getId());
-		return campusDto;
 	}
 
 	public static Todo convertTodoDtoIntoTodo(final TodoDto todoDto) {
@@ -385,17 +370,6 @@ public class CommonUtil {
 		currencyNameMap.put("BRL", "Brazilian Real");
 	}
 
-/*	public static State convertStateDTOToBean(final StateDto stateObj, final Country country) {
-		State state = new State();
-		state.setCountry(country);
-		state.setName(stateObj.getName());
-		state.setCreatedBy(stateObj.getCreatedBy());
-		state.setUpdatedBy(stateObj.getUpdatedBy());
-		state.setCreatedDate(new Date());
-		state.setUpdatedDate(new Date());
-		return state;
-	}*/
-	
 	public static LatLongDto getCenterByLatituteAndLongitude(List<LatLongDto> latLongDtos) {
 		LatLongDto centerLatLong = new LatLongDto();
 		double pi = Math.PI / 180;

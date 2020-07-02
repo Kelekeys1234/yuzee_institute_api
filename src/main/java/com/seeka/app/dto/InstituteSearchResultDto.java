@@ -1,29 +1,18 @@
 package com.seeka.app.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+
+@Data
 public class InstituteSearchResultDto {
-	
+
+	@JsonProperty("institute_id")
 	private String instituteId;
+
+	@JsonProperty("institute_name")
 	private String instituteName;
+
+	@JsonProperty("location")
 	private String location;
-	
-	
-	public String getInstituteId() {
-		return instituteId;
-	}
-	public void setInstituteId(String instituteId) {
-		this.instituteId = instituteId;
-	}
-	public String getInstituteName() {
-		return instituteName;
-	}
-	public void setInstituteName(String instituteName) {
-		this.instituteName = instituteName;
-	}
-	public String getLocation() {
-		return location;
-	}
-	public void setLocation(String location) {
-		this.location = location;
-	}
-	 
 }

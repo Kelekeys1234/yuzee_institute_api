@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.CourseDeliveryModes;
-import com.seeka.app.dao.CourseAdditionalInfoDao;
-import com.seeka.app.repository.CourseAdditionalInfoRepository;
+import com.seeka.app.dao.CourseDeliveryModesDao;
+import com.seeka.app.repository.CourseDeliveryModesRepository;
 
 @Component
-public class CourseAdditionalInfoDaoImpl implements CourseAdditionalInfoDao {
+public class CourseDeliveryModesDaoImpl implements CourseDeliveryModesDao {
 
 	@Autowired
-	private CourseAdditionalInfoRepository courseAdditionalInfoRepository;
+	private CourseDeliveryModesRepository courseAdditionalInfoRepository;
 
 	@Override
 	public void saveCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo) {

@@ -162,6 +162,10 @@ public interface CourseInterface {
 	@PostMapping(value = "/nearest", produces = "application/json")
 	public ResponseEntity<?> getNearestCourseList(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception;
 
+	@GetMapping(value = "/course/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
+	public ResponseEntity<?> getCourseByCountryName(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
+			@PathVariable String countryName) throws NotFoundException;
+	
 	@Deprecated
 	@GetMapping
 	public ResponseEntity<?> getAllCourse() throws Exception;

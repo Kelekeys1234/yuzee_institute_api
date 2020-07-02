@@ -39,19 +39,16 @@ import com.seeka.app.dao.CurrencyRateDAO;
 import com.seeka.app.dao.IFacultyDAO;
 import com.seeka.app.dao.LevelDAO;
 import com.seeka.app.dto.AdvanceSearchDto;
-import com.seeka.app.dto.CountryDto;
-import com.seeka.app.dto.CourseDeliveryModesDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
+import com.seeka.app.dto.CourseDeliveryModesDto;
 import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
-import com.seeka.app.dto.FacultyDto;
 import com.seeka.app.dto.GlobalFilterSearchDto;
 import com.seeka.app.dto.InstituteResponseDto;
-import com.seeka.app.dto.LevelDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.CourseSortBy;
 import com.seeka.app.exception.ValidationException;
@@ -1395,31 +1392,6 @@ public class CourseDaoImpl implements CourseDAO {
 		crit.add(Restrictions.eq("institute", institute));
 		crit.add(Restrictions.in("faculty", facultyList));
 		return crit.list();
-	}
-
-	@Override
-	public List<CountryDto> getCourseCountry() {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select distinct inst.country_name as countryName from course crs inner join institute inst on crs.institute_id = inst.id"
-				+ " where crs.deleted_on IS NULL";
-		Query query = session.createSQLQuery(sqlQuery);
-		List<String> rows = query.list();
-		List<CountryDto> countryDtos = new ArrayList<>();
-		CountryDto countryDto = null;
-		for (String row : rows) {
-			countryDto = new CountryDto();
-			if (row != null) {
-				countryDto.setName(row);
-			}
-			List<LevelDto> levels = levelDAO.getCountryLevel(countryDto.getName());
-			for (LevelDto level : levels) {
-				List<FacultyDto> facultyList = dao.getCourseFaculty(countryDto.getName(), level.getId());
-				level.setFaculty(facultyList);
-			}
-			countryDto.setLevels(levels);
-			countryDtos.add(countryDto);
-		}
-		return countryDtos;
 	}
 
 	@Override

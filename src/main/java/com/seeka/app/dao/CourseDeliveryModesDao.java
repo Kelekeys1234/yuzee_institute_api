@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.seeka.app.bean.CourseDeliveryModes;
 
-public interface CourseAdditionalInfoDao {
+public interface CourseDeliveryModesDao {
 
 	public void saveCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo);
 	

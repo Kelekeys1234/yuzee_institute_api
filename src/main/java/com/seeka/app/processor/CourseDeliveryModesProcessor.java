@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.seeka.app.bean.CourseDeliveryModes;
-import com.seeka.app.dao.CourseAdditionalInfoDao;
+import com.seeka.app.dao.CourseDeliveryModesDao;
 import com.seeka.app.dto.CourseDeliveryModesDto;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -18,10 +18,10 @@ import lombok.extern.apachecommons.CommonsLog;
 @Service
 @CommonsLog
 @Transactional
-public class CourseAdditionalInfoProcessor {
+public class CourseDeliveryModesProcessor {
 
 	@Autowired
-	private CourseAdditionalInfoDao courseAdditionalInfoDao;
+	private CourseDeliveryModesDao courseAdditionalInfoDao;
 	
 	public void saveCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo) {
 		courseAdditionalInfoDao.saveCourseAdditionalInfo(courseAdditionalInfo);
