@@ -959,8 +959,8 @@ public class InstituteDaoImpl implements InstituteDao {
 			sqlQuery += " or course.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%' )";
 		}
 
-		if (courseSearchDto.getPartFulls() != null) {
-			sqlQuery += " and course.part_full in ("+ courseSearchDto.getPartFulls().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
+		if (courseSearchDto.getStudyModes() != null) {
+			sqlQuery += " and course.part_full in ("+ courseSearchDto.getStudyModes().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
 		}
 
 //		if (courseSearchDto.getDeliveryMethods() != null) {
@@ -982,7 +982,7 @@ public class InstituteDaoImpl implements InstituteDao {
 	
 	private String addSorting(String sortingQuery, final AdvanceSearchDto courseSearchDto) {
 		String sortTypeValue = "ASC";
-		if (!courseSearchDto.getSortAsscending()) {
+		if (!courseSearchDto.isSortAsscending()) {
 			sortTypeValue = "DESC";
 		}
 		sortingQuery = sortingQuery + " ORDER BY distance_in_km ";

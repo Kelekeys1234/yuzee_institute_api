@@ -2,349 +2,93 @@ package com.seeka.app.dto;
 
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+import lombok.ToString;
+
+@Data
+@ToString
 public class AdvanceSearchDto {
 
+	@JsonProperty("faculties")
 	private List<String> faculties;
+
+	@JsonProperty("level_ids")
 	private List<String> levelIds;
+
+	@JsonProperty("service_ids")
 	private List<String> serviceIds;
+
+	@JsonProperty("country_names")
 	private List<String> countryNames;
+
+	@JsonProperty("course_keys")
 	private List<String> courseKeys;
+
+	@JsonProperty("city_names")
 	private List<String> cityNames;
+
+	@JsonProperty("min_cost")
 	private Double minCost;
+
+	@JsonProperty("max_cost")
 	private Double maxCost;
+
+	@JsonProperty("min_duration")
 	private Integer minDuration;
+
+	@JsonProperty("max_duration")
 	private Integer maxDuration;
 
+	@JsonProperty("sort_asscending")
 	private boolean sortAsscending;
+
+	@JsonProperty("sort_by")
 	private String sortBy;
+
+	@JsonProperty("max_size_per_page")
+	@NotNull(message = "max_size_per_page should not be blank")
 	private Integer maxSizePerPage;
+
+	@JsonProperty("page_number")
+	@NotNull(message = "page_number should not be blank")
 	private Integer pageNumber;
+
+	@JsonProperty("currency_code")
+	@NotBlank(message = "currency_code should not be blank")
 	private String currencyCode;
+
+	@JsonProperty("user_id")
 	private String userId;
 
+	@JsonProperty("user_country_id")
 	private String userCountryId;
 
+	@JsonProperty("names")
 	private List<String> names;
+
+	@JsonProperty("search_keyword")
 	private String searchKeyword;
-	private List<String> partFulls;
+
+	@JsonProperty("study_modes")
+	private List<String> studyModes;
+
+	@JsonProperty("delivery_methods")
 	private List<String> deliveryMethods;
-	private String instituteId;	
+
+	@JsonProperty("institute_id")
+	private String instituteId;
+
+	@JsonProperty("latitude")
 	private Double latitude;
+
+	@JsonProperty("longitude")
 	private Double longitude;
+
+	@JsonProperty("initial_radius")
 	private Integer initialRadius;
-	
-	public Double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
-	}
-
-	public Double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(Double longitude) {
-		this.longitude = longitude;
-	}
-
-	public List<String> getPartFulls() {
-		return partFulls;
-	}
-
-	public void setPartFulls(List<String> partFulls) {
-		this.partFulls = partFulls;
-	}
-
-	public List<String> getDeliveryMethods() {
-		return deliveryMethods;
-	}
-
-	public void setDeliveryMethods(List<String> deliveryMethods) {
-		this.deliveryMethods = deliveryMethods;
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public List<String> getNames() {
-		return names;
-	}
-
-	/**
-	 *
-	 * @param names
-	 */
-	public void setNames(final List<String> names) {
-		this.names = names;
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public String getUserCountryId() {
-		return userCountryId;
-	}
-
-	/**
-	 *
-	 * @param userCountryId
-	 */
-	public void setUserCountryId(final String userCountryId) {
-		this.userCountryId = userCountryId;
-	}
-
-	/**
-	 * @return the faculties
-	 */
-	public List<String> getFaculties() {
-		return faculties;
-	}
-
-	/**
-	 * @param faculties the faculties to set
-	 */
-	public void setFaculties(final List<String> faculties) {
-		this.faculties = faculties;
-	}
-
-	/**
-	 * @return the levelIds
-	 */
-	public List<String> getLevelIds() {
-		return levelIds;
-	}
-
-	/**
-	 * @param levelIds the levelIds to set
-	 */
-	public void setLevelIds(final List<String> levelIds) {
-		this.levelIds = levelIds;
-	}
-
-	/**
-	 * @return the serviceIds
-	 */
-	public List<String> getServiceIds() {
-		return serviceIds;
-	}
-
-	/**
-	 * @param serviceIds the serviceIds to set
-	 */
-	public void setServiceIds(final List<String> serviceIds) {
-		this.serviceIds = serviceIds;
-	}
-
-	/**
-	 * @return the minCost
-	 */
-	public Double getMinCost() {
-		return minCost;
-	}
-
-	/**
-	 * @param minCost the minCost to set
-	 */
-	public void setMinCost(final Double minCost) {
-		this.minCost = minCost;
-	}
-
-	/**
-	 * @return the maxCost
-	 */
-	public Double getMaxCost() {
-		return maxCost;
-	}
-
-	/**
-	 * @param maxCost the maxCost to set
-	 */
-	public void setMaxCost(final Double maxCost) {
-		this.maxCost = maxCost;
-	}
-
-	/**
-	 * @return the minDuration
-	 */
-	public Integer getMinDuration() {
-		return minDuration;
-	}
-
-	/**
-	 * @param minDuration the minDuration to set
-	 */
-	public void setMinDuration(final Integer minDuration) {
-		this.minDuration = minDuration;
-	}
-
-	/**
-	 * @return the maxDuration
-	 */
-	public Integer getMaxDuration() {
-		return maxDuration;
-	}
-
-	/**
-	 * @param maxDuration the maxDuration to set
-	 */
-	public void setMaxDuration(final Integer maxDuration) {
-		this.maxDuration = maxDuration;
-	}
-
-	/**
-	 * @return the sortAsscending
-	 */
-	public boolean getSortAsscending() {
-		return sortAsscending;
-	}
-
-	/**
-	 * @param sortAsscending the sortAsscending to set
-	 */
-	public void setSortAsscending(final boolean sortAsscending) {
-		this.sortAsscending = sortAsscending;
-	}
-
-	/**
-	 * @return the sortBy
-	 */
-	public String getSortBy() {
-		return sortBy;
-	}
-
-	/**
-	 * @param sortBy the sortBy to set
-	 */
-	public void setSortBy(final String sortBy) {
-		this.sortBy = sortBy;
-	}
-
-	/**
-	 * @return the courseKeys
-	 */
-	public List<String> getCourseKeys() {
-		return courseKeys;
-	}
-
-	/**
-	 * @param courseKeys the courseKeys to set
-	 */
-	public void setCourseKeys(final List<String> courseKeys) {
-		this.courseKeys = courseKeys;
-	}
-
-	/**
-	 * @return the maxSizePerPage
-	 */
-	public Integer getMaxSizePerPage() {
-		return maxSizePerPage;
-	}
-
-	/**
-	 * @param maxSizePerPage the maxSizePerPage to set
-	 */
-	public void setMaxSizePerPage(final Integer maxSizePerPage) {
-		this.maxSizePerPage = maxSizePerPage;
-	}
-
-	/**
-	 * @return the pageNumber
-	 */
-	public Integer getPageNumber() {
-		return pageNumber;
-	}
-
-	/**
-	 * @param pageNumber the pageNumber to set
-	 */
-	public void setPageNumber(final Integer pageNumber) {
-		this.pageNumber = pageNumber;
-	}
-
-	/**
-	 * @return the currencyCode
-	 */
-	public String getCurrencyCode() {
-		return currencyCode;
-	}
-
-	/**
-	 * @param currencyCode the currencyCode to set
-	 */
-	public void setCurrencyCode(final String currencyCode) {
-		this.currencyCode = currencyCode;
-	}
-
-	/**
-	 * @return the userId
-	 */
-	public String getUserId() {
-		return userId;
-	}
-
-	/**
-	 * @param userId the userId to set
-	 */
-	public void setUserId(final String userId) {
-		this.userId = userId;
-	}
-
-	public String getSearchKeyword() {
-		return searchKeyword;
-	}
-
-	public void setSearchKeyword(final String searchKeyword) {
-		this.searchKeyword = searchKeyword;
-	}
-
-	public String getInstituteId() {
-		return instituteId;
-	}
-
-	public void setInstituteId(final String instituteId) {
-		this.instituteId = instituteId;
-	}
-	
-	public List<String> getCountryNames() {
-		return countryNames;
-	}
-
-	public void setCountryNames(List<String> countryNames) {
-		this.countryNames = countryNames;
-	}
-
-	public List<String> getCityNames() {
-		return cityNames;
-	}
-
-	public void setCityNames(List<String> cityNames) {
-		this.cityNames = cityNames;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("AdvanceSearchDto [faculties=").append(faculties).append(", levelIds=").append(levelIds).append(", serviceIds=").append(serviceIds)
-				.append(", courseKeys=").append(courseKeys).append(", minCost=")
-				.append(minCost).append(", maxCost=").append(maxCost).append(", minDuration=").append(minDuration).append(", maxDuration=").append(maxDuration)
-				.append(", sortAsscending=").append(sortAsscending).append(", sortBy=").append(sortBy).append(", maxSizePerPage=").append(maxSizePerPage)
-				.append(", pageNumber=").append(pageNumber).append(", currencyCode=").append(currencyCode).append(", userId=").append(userId)
-				.append(", userCountryId=").append(userCountryId).append(", names=").append(names).append(", searchKeyword=").append(searchKeyword)
-				.append(", partFulls=").append(partFulls).append(", deliveryMethods=").append(deliveryMethods).append(", instituteId=").append(instituteId)
-				.append("]");
-		return builder.toString();
-	}
-
-	public Integer getInitialRadius() {
-		return initialRadius;
-	}
-
-	public void setInitialRadius(Integer initialRadius) {
-		this.initialRadius = initialRadius;
-	}
-
 }

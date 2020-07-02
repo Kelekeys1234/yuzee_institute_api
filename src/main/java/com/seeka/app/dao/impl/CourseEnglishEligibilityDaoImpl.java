@@ -3,13 +3,13 @@ package com.seeka.app.dao.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.dao.CourseEnglishEligibilityDao;
 import com.seeka.app.repository.CourseEnglishEligibilityRepository;
 
-@Repository
+@Component
 public class CourseEnglishEligibilityDaoImpl implements CourseEnglishEligibilityDao {
 
 	@Autowired

@@ -1171,7 +1171,7 @@ public class CourseDaoImpl implements CourseDAO {
 
 	private String addSorting(String sortingQuery, final AdvanceSearchDto courseSearchDto) {
 		String sortTypeValue = "ASC";
-		if (!courseSearchDto.getSortAsscending()) {
+		if (!courseSearchDto.isSortAsscending()) {
 			sortTypeValue = "DESC";
 		}
 		if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.NAME.toString())) {
@@ -1255,8 +1255,8 @@ public class CourseDaoImpl implements CourseDAO {
 			sqlQuery += " or crs.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%' )";
 		}
 
-		if (courseSearchDto.getPartFulls() != null) {
-			sqlQuery += " and cai.study_mode in ("+ courseSearchDto.getPartFulls().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
+		if (courseSearchDto.getStudyModes() != null) {
+			sqlQuery += " and cai.study_mode in ("+ courseSearchDto.getStudyModes().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
 		}
 
 		if (courseSearchDto.getDeliveryMethods() != null) {
