@@ -30,7 +30,6 @@ import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CourseMinRequirement;
-import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Level;
@@ -39,22 +38,22 @@ import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.bean.UserMyCourse;
 import com.seeka.app.constant.Type;
 import com.seeka.app.controller.handler.CommonHandler;
+import com.seeka.app.controller.handler.ReviewHandler;
+import com.seeka.app.dao.CourseDao;
 import com.seeka.app.dao.CourseDeliveryModesDao;
-import com.seeka.app.dao.CourseDAO;
 import com.seeka.app.dao.CourseEnglishEligibilityDao;
 import com.seeka.app.dao.CourseMinRequirementDao;
-import com.seeka.app.dao.CurrencyDAO;
-import com.seeka.app.dao.IFacultyDAO;
+import com.seeka.app.dao.FacultyDao;
 import com.seeka.app.dao.IGlobalStudentDataDAO;
-import com.seeka.app.dao.ILevelDAO;
+import com.seeka.app.dao.LevelDao;
 import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dao.ViewDao;
 import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.AdvanceSearchDto;
+import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseDeliveryModesDto;
 import com.seeka.app.dto.CourseDeliveryModesElasticDto;
-import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseEnglishEligibilityDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
@@ -62,11 +61,13 @@ import com.seeka.app.dto.CourseMobileDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
+import com.seeka.app.dto.CurrencyRateDto;
 import com.seeka.app.dto.GlobalData;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.dto.ServiceDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.StudentVisaDto;
 import com.seeka.app.dto.UserCompareCourseResponse;
@@ -76,6 +77,7 @@ import com.seeka.app.dto.UserReviewResultDto;
 import com.seeka.app.dto.YouTubeVideoDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.enumeration.SeekaEntityType;
+import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
@@ -83,10 +85,8 @@ import com.seeka.app.repository.CourseRepository;
 import com.seeka.app.service.ElasticSearchService;
 import com.seeka.app.service.IEnrollmentService;
 import com.seeka.app.service.IGlobalStudentData;
-import com.seeka.app.service.ILevelService;
 import com.seeka.app.service.IStorageService;
 import com.seeka.app.service.ITop10CourseService;
-import com.seeka.app.service.IUserReviewService;
 import com.seeka.app.service.IViewService;
 import com.seeka.app.service.UserRecommendationService;
 import com.seeka.app.util.CommonUtil;
@@ -102,22 +102,19 @@ import lombok.extern.apachecommons.CommonsLog;
 public class CourseProcessor {
 
 	@Autowired
-	private CourseDAO iCourseDAO;
+	private CourseDao courseDAO;
 
 	@Autowired
 	private CourseEnglishEligibilityDao courseEnglishEligibilityDAO;
 
 	@Autowired
-	private InstituteDao iInstituteDAO;
+	private InstituteDao instituteDAO;
 
 	@Autowired
-	private IFacultyDAO facultyDAO;
+	private FacultyDao facultyDAO;
 
 	@Autowired
 	private IUserMyCourseDAO myCourseDAO;
-
-	@Autowired
-	private CurrencyDAO currencyDAO;
 
 	@Autowired
 	private CourseMinRequirementDao courseMinRequirementDao;
@@ -138,7 +135,7 @@ public class CourseProcessor {
 	private ViewDao viewDao;
 
 	@Autowired
-	private ILevelService iLevelService;
+	private LevelProcessor levelProcessor;
 
 	@Autowired
 	private UserRecommendationService userRecommedationService;
@@ -156,10 +153,10 @@ public class CourseProcessor {
 	private InstituteGoogleReviewProcessor instituteGoogleReviewProcessor;
 	
 	@Autowired
-	private IUserReviewService iUserReviewService;
+	private ReviewHandler reviewHandler;
 	
 	@Autowired
-	private ILevelDAO iLevelDao;
+	private LevelDao iLevelDao;
 	
 	@Autowired
 	private CourseRepository courseRepository;
@@ -195,18 +192,18 @@ public class CourseProcessor {
 	private Integer maxRadius;
 	
 	public Course get(final String id) {
-		return iCourseDAO.get(id);
+		return courseDAO.get(id);
 	}
 
 	public List<Course> getAll() {
-		return iCourseDAO.getAll();
+		return courseDAO.getAll();
 	}
 
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
 			final String searchKeyword) throws ValidationException {
 		log.debug("Inside getAllCoursesByFilter() method");
 		log.info("CAlling DAO layer to fetch courses based on passed filters and pagination");
-		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword, null, startIndex, false);
+		List<CourseResponseDto> courseResponseDtos = courseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword, null, startIndex, false);
 		return getExtraInfoOfCourseFilter(courseSearchDto, courseResponseDtos);
 	}
 
@@ -256,7 +253,7 @@ public class CourseProcessor {
 				courseResponseDto.setCourseAdditionalInfo(additionalInfoDtos);
 				
 				log.info("Fetching courseIntake from DB having courseIds = "+courseIds);
-				List<CourseIntake> courseIntakes = iCourseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
+				List<CourseIntake> courseIntakes = courseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
 				if (!CollectionUtils.isEmpty(courseIntakes)) {
 					log.info("Filtering courseIntakes data based on courseId");
 					courseResponseDto.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -265,7 +262,7 @@ public class CourseProcessor {
 				}
 				
 				log.info("Fetching courseLanguages from DB having courseIds = "+courseIds);
-				List<CourseLanguage> courseLanguages = iCourseDAO.getCourseLanguageBasedOnCourseId(courseResponseDto.getId());
+				List<CourseLanguage> courseLanguages = courseDAO.getCourseLanguageBasedOnCourseId(courseResponseDto.getId());
 				if(!CollectionUtils.isEmpty(courseLanguages)) {
 					courseResponseDto.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 				} else {
@@ -277,31 +274,31 @@ public class CourseProcessor {
 	}
 
 	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword) {
-		return iCourseDAO.getCountforNormalCourse(courseSearchDto, searchKeyword);
+		return courseDAO.getCountforNormalCourse(courseSearchDto, searchKeyword);
 	}
 
 	public List<CourseResponseDto> getAllCoursesByInstitute(final String instituteId, final CourseSearchDto courseSearchDto) {
-		return iCourseDAO.getAllCoursesByInstitute(instituteId, courseSearchDto);
+		return courseDAO.getAllCoursesByInstitute(instituteId, courseSearchDto);
 	}
 
 	public Map<String, Object> getCourse(final String courseId) {
-		return iCourseDAO.getCourse(courseId);
+		return courseDAO.getCourse(courseId);
 	}
 
 	public List<CourseResponseDto> getCouresesByFacultyId(final String facultyId) throws NotFoundException {
 		log.debug("Inside getCouresesByFacultyId() method");
 		log.info("fetching courses from DB for facultyId = "+facultyId);
-		List<CourseResponseDto> courseResponseDtos = iCourseDAO.getCouresesByFacultyId(facultyId);
+		List<CourseResponseDto> courseResponseDtos = courseDAO.getCouresesByFacultyId(facultyId);
 		if(!CollectionUtils.isEmpty(courseResponseDtos)) {
 			log.info("Courses coming from DB start iterating data to make final response");
 			courseResponseDtos.stream().forEach(courseResponseDto -> {
 				log.info("Fetching course additional info from DB having courseId = "+courseResponseDto.getId());
 				courseResponseDto.setCourseAdditionalInfo(courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(courseResponseDto.getId()));
 				log.info("Fetching course intakes from DB having courseId = "+courseResponseDto.getId());
-				courseResponseDto.setIntake(iCourseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId())
+				courseResponseDto.setIntake(courseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId())
 							.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
 				log.info("Fetching course languages from DB having courseId = "+courseResponseDto.getId());
-				courseResponseDto.setLanguage(iCourseDAO.getCourseLanguageBasedOnCourseId(courseResponseDto.getId())
+				courseResponseDto.setLanguage(courseDAO.getCourseLanguageBasedOnCourseId(courseResponseDto.getId())
 						.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 			});
 		} else {
@@ -320,10 +317,10 @@ public class CourseProcessor {
 			facultyIdtempList = facultyIdtempList + "," + "'" + id + "'";
 		}
 		log.info("Callig DAO layer to fetch courseList by FacultyId");
-		return iCourseDAO.getCouresesByListOfFacultyId(facultyIdtempList.substring(1, facultyIdtempList.length()));
+		return courseDAO.getCouresesByListOfFacultyId(facultyIdtempList.substring(1, facultyIdtempList.length()));
 	}
 
-	public String saveCourse(@Valid final CourseRequest courseDto) throws ValidationException {
+	public String saveCourse(@Valid final CourseRequest courseDto) throws ValidationException, CommonInvokeException {
 		log.debug("Inside saveCourse() method");
 		Course course = new Course();
 		log.info("Fetching institute details from DB for instituteId = "+courseDto.getInstituteId());
@@ -335,7 +332,7 @@ public class CourseProcessor {
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
 		if (courseDto.getLevelId() != null) {
 			log.info("Fetching level details from DB for levelId = "+courseDto.getLevelId());
-			course.setLevel(iLevelService.get(courseDto.getLevelId()));
+			course.setLevel(levelProcessor.get(courseDto.getLevelId()));
 		}
 		if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
 			log.info("Course stars is present adding it in course bean class");
@@ -363,7 +360,7 @@ public class CourseProcessor {
 		course.setOpeningHourFrom(courseDto.getOpeningHourFrom() != null ? courseDto.getOpeningHourFrom() : null);
 		
 		// Here we convert price in USD and everywhere we used USD price column only.
-		CurrencyRate currencyRate = null;
+		CurrencyRateDto currencyRate = null;
 		if (courseDto.getCurrency() != null) {
 			course.setCurrency(courseDto.getCurrency());
 			log.info("Currency code is not null, hence fetching currencyRate from DB having currencyCode = "+courseDto.getCurrency());
@@ -381,7 +378,7 @@ public class CourseProcessor {
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		
 		log.info("Calling DAO layer to save course in DB");
-		iCourseDAO.save(course);
+		courseDAO.save(course);
 
 		// Here multiple intakes are possible.
 		List<Date> intakeList = new ArrayList<>();
@@ -393,7 +390,7 @@ public class CourseProcessor {
 				courseIntake.setIntakeDates(intake);
 				intakeList.add(intake);
 				log.info("Calling DAO layer to save courseIntakes");
-				iCourseDAO.saveCourseIntake(courseIntake);
+				courseDAO.saveCourseIntake(courseIntake);
 			}
 		}
 		
@@ -407,7 +404,7 @@ public class CourseProcessor {
 				courseLanguage.setCreatedBy("API");
 				courseLanguage.setCreatedOn(new Date());
 				log.info("Calling DAO layer to save courseLanguages");
-				iCourseDAO.saveCourseLanguage(courseLanguage);
+				courseDAO.saveCourseLanguage(courseLanguage);
 			}
 		}
 
@@ -496,11 +493,11 @@ public class CourseProcessor {
 		return course.getId();
 	}
 
-	public String updateCourse(final CourseRequest courseDto, final String id) throws ValidationException {
+	public String updateCourse(final CourseRequest courseDto, final String id) throws ValidationException, CommonInvokeException {
 		log.debug("Inside updateCourse() method");
 		Course course = new Course();
 		log.info("fetching course from DB having courseId = "+id);
-		course = iCourseDAO.get(id);
+		course = courseDAO.get(id);
 		course.setId(id);
 		log.info("Fetching institute details from DB for instituteId = "+courseDto.getInstituteId());
 		course.setInstitute(getInstititute(courseDto.getInstituteId()));
@@ -510,7 +507,7 @@ public class CourseProcessor {
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
 		if (courseDto.getLevelId() != null) {
 			log.info("Fetching level details from DB for levelId = "+courseDto.getLevelId());
-			course.setLevel(iLevelService.get(courseDto.getLevelId()));
+			course.setLevel(levelProcessor.get(courseDto.getLevelId()));
 		}
 		course.setIsActive(true);
 		if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
@@ -540,7 +537,7 @@ public class CourseProcessor {
 		course.setOpeningHourFrom(courseDto.getOpeningHourFrom() != null ? courseDto.getOpeningHourFrom() : null);
 		
 		// Here we convert price in USD and everywhere we used USD price column only.
-		CurrencyRate currencyRate = null;
+		CurrencyRateDto currencyRate = null;
 		if (courseDto.getCurrency() != null) {
 			course.setCurrency(courseDto.getCurrency());
 			log.info("Currency code is not null, hence fetching currencyRate from DB having currencyCode = "+courseDto.getCurrency());
@@ -558,11 +555,11 @@ public class CourseProcessor {
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		
 		log.info("Calling DAO layer to update course in DB for courseId = "+id);
-		iCourseDAO.update(course);
+		courseDAO.update(course);
 		log.info("Delete existing courseIntakes from DB");
-		iCourseDAO.deleteCourseIntake(id);
+		courseDAO.deleteCourseIntake(id);
 		log.info("Delete existing courseLanguage from DB");
-		iCourseDAO.deleteCourseLanguage(id);
+		courseDAO.deleteCourseLanguage(id);
 		
 		// Here multiple intakes are possible.
 		List<Date> intakeList = new ArrayList<>();
@@ -574,7 +571,7 @@ public class CourseProcessor {
 				courseIntake.setIntakeDates(intake);
 				intakeList.add(intake);
 				log.info("Calling DAO layer to update courseIntakes");
-				iCourseDAO.saveCourseIntake(courseIntake);
+				courseDAO.saveCourseIntake(courseIntake);
 			}
 		}
 
@@ -586,7 +583,7 @@ public class CourseProcessor {
 				courseLanguage.setCourse(course);
 				courseLanguage.setLanguage(language);
 				log.info("Calling DAO layer to update courseLanguages");
-				iCourseDAO.saveCourseLanguage(courseLanguage);
+				courseDAO.saveCourseLanguage(courseLanguage);
 			}
 		}
 
@@ -700,10 +697,10 @@ public class CourseProcessor {
 		return id;
 	}
 
-	private CurrencyRate getCurrencyRate(final String courseCurrency) {
+	private CurrencyRateDto getCurrencyRate(final String courseCurrency) throws CommonInvokeException {
 		log.debug("Inside getCurrencyRate() method");
 		log.info("Calling DAO layer to getCurrencyRate from DB having currencyCode = "+courseCurrency);
-		CurrencyRate currencyRate = currencyDAO.getCurrencyRate(courseCurrency);
+		CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseCurrency);
 		return currencyRate;
 	}
 
@@ -718,7 +715,7 @@ public class CourseProcessor {
 	private Institute getInstititute(final String instituteId) {
 		Institute institute = null;
 		if (instituteId != null) {
-			institute = iInstituteDAO.get(instituteId);
+			institute = instituteDAO.get(instituteId);
 		}
 		return institute;
 	}
@@ -728,10 +725,10 @@ public class CourseProcessor {
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		try {
 			log.info("Getting total count for course to calculate pagination");
-			int totalCount = iCourseDAO.findTotalCount();
+			int totalCount = courseDAO.findTotalCount();
 			int startIndex = (pageNumber - 1) * pageSize;
 			log.info("Calling DAO layer to fetch courses from DB with limit = " + startIndex + ", " + pageSize);
-			List<CourseRequest> courses = iCourseDAO.getAll(startIndex, pageSize);
+			List<CourseRequest> courses = courseDAO.getAll(startIndex, pageSize);
 			if(!CollectionUtils.isEmpty(courses)) {
 				log.info("Courses fetched from DB hence start iterating courses");
 				List<CourseRequest> resultList = new ArrayList<>();
@@ -780,7 +777,7 @@ public class CourseProcessor {
 		log.debug("Inside deleteCourse() method");
 		try {
 			log.info("Fetching course from DB having courseId = "+ courseId);
-			Course course = iCourseDAO.get(courseId);
+			Course course = courseDAO.get(courseId);
 			if (!ObjectUtils.isEmpty(course)) {
 				log.info("Course found hence making course inactive");
 				course.setIsActive(false);
@@ -788,7 +785,7 @@ public class CourseProcessor {
 				course.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
 				course.setIsDeleted(true);
 				log.info("Calling DAO layer to update existing course and make in in-active");
-				iCourseDAO.update(course);
+				courseDAO.update(course);
 
 				CourseDTOElasticSearch elasticSearchCourseDto = new CourseDTOElasticSearch();
 				elasticSearchCourseDto.setId(courseId);
@@ -813,7 +810,7 @@ public class CourseProcessor {
 			for (String courseId : userCourse.getCourses()) {
 				UserMyCourse myCourse = new UserMyCourse();
 				log.info("Fetching course details based on courseId = " + courseId);
-				Course course = iCourseDAO.get(courseId);
+				Course course = courseDAO.get(courseId);
 				if (ObjectUtils.isEmpty(course)) {
 					log.error("Passed courseId is not found in DB");
 					throw new ValidationException("Passed courseId is not found in DB");
@@ -832,15 +829,15 @@ public class CourseProcessor {
 	}
 
 	public PaginationResponseDto getUserCourse(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
-			final String sortBy, final Boolean sortAsscending) throws ValidationException {
+			final String sortBy, final Boolean sortAsscending) throws ValidationException, CommonInvokeException {
 		log.debug("Inside getUserCourse() method");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		List<CourseRequest> resultList = new ArrayList<>();
 		log.info("Gettin total count of courses by userId = "+userId);
-		int totalCount = iCourseDAO.findTotalCountByUserId(userId);
+		int totalCount = courseDAO.findTotalCountByUserId(userId);
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		log.info("Fetching courses from DB based on filters and having userId = "+userId);
-		List<CourseRequest> courses = iCourseDAO.getUserCourse(userId, startIndex, pageSize, currencyCode, sortBy, sortAsscending);
+		List<CourseRequest> courses = courseDAO.getUserCourse(userId, startIndex, pageSize, currencyCode, sortBy, sortAsscending);
 		if(!CollectionUtils.isEmpty(courses)) {
 			log.info("Courses fetched from DB hence strat iterating data");
 			courses.stream().forEach(courseRequest -> {
@@ -885,14 +882,14 @@ public class CourseProcessor {
 				compareCourse.setUpdatedOn(new Date());
 				compareCourse.setUserId(userCourse.getUserId());
 				log.info("Calling DAO layer to save user compare courses");
-				iCourseDAO.saveUserCompareCourse(compareCourse);
+				courseDAO.saveUserCompareCourse(compareCourse);
 				for (String courseId : userCourse.getCourses()) {
 					UserCompareCourseBundle compareCourseBundle = new UserCompareCourseBundle();
 					compareCourseBundle.setUserId(userCourse.getUserId());
 					compareCourseBundle.setCompareCourse(compareCourse);
-					compareCourseBundle.setCourse(iCourseDAO.get(courseId));
+					compareCourseBundle.setCourse(courseDAO.get(courseId));
 					log.info("Calling DAO layer to add user compare course bundle in DB");
-					iCourseDAO.saveUserCompareCourseBundle(compareCourseBundle);
+					courseDAO.saveUserCompareCourseBundle(compareCourseBundle);
 				}
 			}
 		} catch (Exception exception) {
@@ -904,7 +901,7 @@ public class CourseProcessor {
 		log.debug("Inside getUserCompareCourse() method");
 		List<UserCompareCourseResponse> compareCourseResponses = new ArrayList<>();
 		log.info("Fetching user compare courses from DB having userId = "+userId);
-		List<UserCompareCourse> compareCourses = iCourseDAO.getUserCompareCourse(userId);
+		List<UserCompareCourse> compareCourses = courseDAO.getUserCompareCourse(userId);
 		if(!CollectionUtils.isEmpty(compareCourses)) {
 			log.info("User compare courses found in DB star iterating data to make response");
 			compareCourses.stream().forEach(compareCourse -> {
@@ -929,7 +926,7 @@ public class CourseProcessor {
 		List<CourseRequest> courses = new ArrayList<>();
 		String[] compareValues = compareValue.split(",");
 		for (String id : compareValues) {
-			CourseRequest courseRequest = iCourseDAO.getCourseById(id);
+			CourseRequest courseRequest = courseDAO.getCourseById(id);
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setStorageList(storageDTOList);
 			courses.add(courseRequest);
@@ -938,29 +935,33 @@ public class CourseProcessor {
 	}
 
 	public Course getCourseData(final String courseId) {
-		return iCourseDAO.getCourseData(courseId);
+		return courseDAO.getCourseData(courseId);
 	}
 
-	public Map<String, Object> getAllServices() {
-		Map<String, Object> response = new HashMap<>();
-		List<com.seeka.app.bean.Service> services = new ArrayList<>();
+	public List<ServiceDto> getAllServices() {
+		log.debug("Inside getAllServices() method");
+		List<ServiceDto> serviceDtos = new ArrayList<>();
 		try {
-			services = iInstituteDAO.getAllServices();
+			log.info("Fetching all services from DB");
+			List<com.seeka.app.bean.Service> servicesFromDB = instituteDAO.getAllServices();
+			if(!CollectionUtils.isEmpty(servicesFromDB)) {
+				log.info("Services fetched from DB, start iterating and makie final response");
+				servicesFromDB.stream().forEach(service -> {
+					ServiceDto serviceDto = new ServiceDto(service.getId(), service.getName());
+					serviceDtos.add(serviceDto);
+				});
+			}
 		} catch (Exception exception) {
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", exception.getCause());
+			log.error("Exception while fetching services having exception = "+exception);
 		}
-		response.put("status", HttpStatus.OK);
-		response.put("message", "Service retrieve succesfully");
-		response.put("servies", services);
-		return response;
+		return serviceDtos;
 	}
 
-	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException {
+	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException, CommonInvokeException {
 		log.debug("Inside advanceSearch() method");
 		
 		log.info("Calling DAO layer to fetch courses from DB based on passed filters");
-		List<CourseResponseDto> courseResponseDtos = iCourseDAO.advanceSearch(courseSearchDto);
+		List<CourseResponseDto> courseResponseDtos = courseDAO.advanceSearch(courseSearchDto);
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			log.info("No courses found in DB for passed filters");
 			return new ArrayList<>();
@@ -985,7 +986,7 @@ public class CourseProcessor {
 		Map<String, Double> seekaReviewMap = null;
 		try {
 			log.info("Calling review service to fetch user average review for instituteId");
-			seekaReviewMap = iUserReviewService.getUserAverageReviewBasedOnDataList(
+			seekaReviewMap = reviewHandler.getUserAverageReviewBasedOnDataList(
 					"INSTITUTE", courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
 		} catch (Exception e) {
 			log.error("Error invoking review service having exception = "+e);
@@ -1015,7 +1016,7 @@ public class CourseProcessor {
 				courseResponseDto.setCourseAdditionalInfo(additionalInfoDtos);
 
 				log.info("Fetching courseIntake from DB having courseIds = "+courseIds);
-				List<CourseIntake> courseIntake = iCourseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
+				List<CourseIntake> courseIntake = courseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
 				if (courseIntake != null && !courseIntake.isEmpty()) {
 					log.info("Filtering courseIntakes data based on courseId");
 					courseResponseDto.setIntake(courseIntake.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -1024,7 +1025,7 @@ public class CourseProcessor {
 				}
 				
 				log.info("Fetching courseLanguages from DB having courseIds = "+courseIds);
-				List<CourseLanguage> courseLanguages = iCourseDAO.getCourseLanguageBasedOnCourseId(courseResponseDto.getId());
+				List<CourseLanguage> courseLanguages = courseDAO.getCourseLanguageBasedOnCourseId(courseResponseDto.getId());
 				if(!CollectionUtils.isEmpty(courseLanguages)) {
 					log.info("Filtering courseLanguages data based on courseId");
 					courseResponseDto.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
@@ -1084,7 +1085,7 @@ public class CourseProcessor {
 		Map<String, Object> response = new HashMap<>();
 		List<Course> courses = new ArrayList<>();
 		try {
-			courses = iCourseDAO.getAllCourse();
+			courses = courseDAO.getAllCourse();
 			if (courses != null && !courses.isEmpty()) {
 				response.put("status", HttpStatus.OK);
 				response.put("message", "Course retrieve succesfully");
@@ -1105,10 +1106,10 @@ public class CourseProcessor {
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		try {
 			log.info("fetched total count of courses based on passed filters");
-			int totalCount = iCourseDAO.findTotalCountCourseFilter(courseFilter);
+			int totalCount = courseDAO.findTotalCountCourseFilter(courseFilter);
 			int startIndex = (courseFilter.getPageNumber() - 1) * courseFilter.getMaxSizePerPage();
 			log.info("Fetching course data from DB based on filters and pagination");
-			List<CourseRequest> courses = iCourseDAO.courseFilter(startIndex, courseFilter.getMaxSizePerPage(), courseFilter);
+			List<CourseRequest> courses = courseDAO.courseFilter(startIndex, courseFilter.getMaxSizePerPage(), courseFilter);
 
 			List<CourseRequest> resultList = new ArrayList<>();
 			if(!CollectionUtils.isEmpty(courses)) {
@@ -1124,10 +1125,10 @@ public class CourseProcessor {
 					log.info("Fetching course additional info from DB having courseId = "+courseRequest.getId());
 					courseRequest.setCourseAdditionalInfo(courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(courseRequest.getId()));
 					log.info("Fetching course intakes from DB having courseId = "+courseRequest.getId());
-					courseRequest.setIntake(iCourseDAO.getCourseIntakeBasedOnCourseId(courseRequest.getId())
+					courseRequest.setIntake(courseDAO.getCourseIntakeBasedOnCourseId(courseRequest.getId())
 								.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
 					log.info("Fetching course languages from DB having courseId = "+courseRequest.getId());
-					courseRequest.setLanguage(iCourseDAO.getCourseLanguageBasedOnCourseId(courseRequest.getId())
+					courseRequest.setLanguage(courseDAO.getCourseLanguageBasedOnCourseId(courseRequest.getId())
 							.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 					
 					resultList.add(courseRequest);
@@ -1153,10 +1154,10 @@ public class CourseProcessor {
 		try {
 			List<CourseRequest> resultList = new ArrayList<>();
 			log.info("Fetching total count of courses from DB for searchKey = "+searchKey);
-			Long totalCount = iCourseDAO.autoSearchTotalCount(searchKey);
+			Long totalCount = courseDAO.autoSearchTotalCount(searchKey);
 			int startIndex = (pageNumber - 1) * pageSize;
 			log.info("Fetching courses from DB based on pagination and having searchKeyword = "+searchKey);
-			List<CourseRequest> courses = iCourseDAO.autoSearch(startIndex, pageSize, searchKey);
+			List<CourseRequest> courses = courseDAO.autoSearch(startIndex, pageSize, searchKey);
 			if(!CollectionUtils.isEmpty(courses)) {
 				log.info("Courses fetched from DB, hence start iterating data");
 				courses.stream().forEach(course -> {
@@ -1182,14 +1183,14 @@ public class CourseProcessor {
 					}
 					
 					log.info("Fetching courseLanguage from DB having courseId = "+course.getId());
-					List<CourseLanguage> courseLanguages = iCourseDAO.getCourseLanguageBasedOnCourseId(course.getId());
+					List<CourseLanguage> courseLanguages = courseDAO.getCourseLanguageBasedOnCourseId(course.getId());
 					if(!CollectionUtils.isEmpty(courseLanguages)) {
 						log.info("courseLanguage is fetched from DB, hence adding englishEligibilities in response");
 						course.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 					}
 					
 					log.info("Fetching courseIntake from DB having courseId = "+course.getId());
-					List<CourseIntake> courseIntakes = iCourseDAO.getCourseIntakeBasedOnCourseId(course.getId());
+					List<CourseIntake> courseIntakes = courseDAO.getCourseIntakeBasedOnCourseId(course.getId());
 					if(!CollectionUtils.isEmpty(courseIntakes)) {
 						log.info("courseIntake is fetched from DB, hence adding englishEligibilities in response");
 						course.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -1215,7 +1216,7 @@ public class CourseProcessor {
 	}
 
 	public List<Course> facultyWiseCourseForInstitute(final List<Faculty> facultyList, final Institute institute) {
-		return iCourseDAO.facultyWiseCourseForTopInstitute(facultyList, institute);
+		return courseDAO.facultyWiseCourseForTopInstitute(facultyList, institute);
 	}
 
 	public void saveCourseMinrequirement(final CourseMinRequirementDto courseMinRequirementDto) {
@@ -1234,7 +1235,7 @@ public class CourseProcessor {
 			courseMinRequirement.setSubject(courseMinRequirementDto.getSubject().get(i));
 			courseMinRequirement.setGrade(courseMinRequirementDto.getGrade().get(i));
 			subjectGrade.add(courseMinRequirementDto.getGrade().get(i));
-			courseMinRequirement.setCourse(iCourseDAO.get(courseMinRequirementDto.getCourse()));
+			courseMinRequirement.setCourse(courseDAO.get(courseMinRequirementDto.getCourse()));
 			log.info("Calling DAO layer to save course minimun requirements");
 			courseMinRequirementDao.save(courseMinRequirement);
 			i++;
@@ -1291,19 +1292,19 @@ public class CourseProcessor {
 	}
 
 	public long checkIfCoursesPresentForCountry(final String country) {
-		return iCourseDAO.getCourseCountForCountry(country);
+		return courseDAO.getCourseCountForCountry(country);
 	}
 
 	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
-		return iCourseDAO.getTopRatedCoursesForCountryWorldRankingWise(country);
+		return courseDAO.getTopRatedCoursesForCountryWorldRankingWise(country);
 	}
 
 	public List<Course> getAllCourseUsingFaculty(final String facultyId) {
-		return iCourseDAO.getAllCourseForFacultyWorldRankingWise(facultyId);
+		return courseDAO.getAllCourseForFacultyWorldRankingWise(facultyId);
 	}
 
 	public List<String> getAllCourseUsingFacultyId(final String facultyId) {
-		return iCourseDAO.getAllCourseForFacultyWorldRankingWises(facultyId);
+		return courseDAO.getAllCourseForFacultyWorldRankingWises(facultyId);
 	}
 
 	public List<String> getTopSearchedCoursesByOtherUsers(final String userId) {
@@ -1311,19 +1312,19 @@ public class CourseProcessor {
 	}
 
 	public List<Course> getCoursesById(final List<String> allSearchCourses) {
-		return iCourseDAO.getCoursesFromId(allSearchCourses);
+		return courseDAO.getCoursesFromId(allSearchCourses);
 	}
 
 	public Map<String, String> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final String instituteId) {
-		return iCourseDAO.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
+		return courseDAO.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
 	}
 
 	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
-		return iCourseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
+		return courseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
 	}
 
 	public List<String> getTopRatedCourseIdForCountryWorldRankingWise(final String country) {
-		return iCourseDAO.getTopRatedCourseIdsForCountryWorldRankingWise(country);
+		return courseDAO.getTopRatedCourseIdsForCountryWorldRankingWise(country);
 	}
 
 	public List<String> getTopSearchedCoursesByUsers(final String userId) {
@@ -1339,19 +1340,19 @@ public class CourseProcessor {
 	}
 
 	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final String country) {
-		return iCourseDAO.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto, country);
+		return courseDAO.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto, country);
 	}
 
 	public List<String> getCountryForTopSearchedCourses(final List<String> topSearchedCourseIds) throws ValidationException {
 		if (topSearchedCourseIds == null || topSearchedCourseIds.isEmpty()) {
 			throw new ValidationException(messageByLocaleService.getMessage("no.course.id.specified", new Object[] {}));
 		}
-		return iCourseDAO.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
+		return courseDAO.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
 	}
 
 	private List<String> getCourseListBasedForCourseOnParameters(final String courseId, final String instituteId, final String facultyId,
 			final String countryId, final String cityId) {
-		List<String> courseIdList = iCourseDAO.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId, countryId, cityId);
+		List<String> courseIdList = courseDAO.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId, countryId, cityId);
 		return courseIdList;
 	}
 
@@ -1361,12 +1362,12 @@ public class CourseProcessor {
 		if (courseIdList == null || courseIdList.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<Long> userIdList = iCourseDAO.getUserListFromUserWatchCoursesBasedOnCourses(courseIdList);
+		List<Long> userIdList = courseDAO.getUserListFromUserWatchCoursesBasedOnCourses(courseIdList);
 		return userIdList;
 	}
 
 	public List<String> courseIdsForCountry(final String country) {
-		return iCourseDAO.getCourseIdsForCountry(country);
+		return courseDAO.getCourseIdsForCountry(country);
 	}
 
 	public List<String> courseIdsForMigratedCountries(final String country) {
@@ -1380,38 +1381,38 @@ public class CourseProcessor {
 				otherCountryIds.add(globalDataDto.getDestinationCountry());
 		}
 		if (!otherCountryIds.isEmpty()) {
-			List<String> courseIds = iCourseDAO.getAllCoursesForCountry(otherCountryIds);
+			List<String> courseIds = courseDAO.getAllCoursesForCountry(otherCountryIds);
 			return courseIds;
 		}
 		return new ArrayList<>();
 	}
 
-	public void updateCourseForCurrency(final CurrencyRate currencyRate) {
-		iCourseDAO.updateCourseForCurrency(currencyRate);
+	public void updateCourseForCurrency(final CurrencyRateDto currencyRate) {
+		courseDAO.updateCourseForCurrency(currencyRate);
 	}
 
 	public int getCountOfAdvanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException, NotFoundException {
-		return iCourseDAO.getCountOfAdvanceSearch(courseSearchDto);
+		return courseDAO.getCountOfAdvanceSearch(courseSearchDto);
 	}
 
 	public List<CourseDTOElasticSearch> getUpdatedCourses(final Date date, final Integer startIndex, final Integer limit) {
-		return iCourseDAO.getUpdatedCourses(date, startIndex, limit);
+		return courseDAO.getUpdatedCourses(date, startIndex, limit);
 	}
 
 	public Integer getCountOfTotalUpdatedCourses(final Date utCdatetimeAsOnlyDate) {
-		return iCourseDAO.getCountOfTotalUpdatedCourses(utCdatetimeAsOnlyDate);
+		return courseDAO.getCountOfTotalUpdatedCourses(utCdatetimeAsOnlyDate);
 	}
 
 	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds, final Integer startIndex, final Integer limit) {
-		return iCourseDAO.getCoursesToBeRetriedForElasticSearch(courseIds, startIndex, limit);
+		return courseDAO.getCoursesToBeRetriedForElasticSearch(courseIds, startIndex, limit);
 	}
 
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(final String courseId) {
-		return iCourseDAO.getCourseIntakeBasedOnCourseId(courseId);
+		return courseDAO.getCourseIntakeBasedOnCourseId(courseId);
 	}
 
 	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(final String courseId) {
-		return iCourseDAO.getCourseLanguageBasedOnCourseId(courseId);
+		return courseDAO.getCourseLanguageBasedOnCourseId(courseId);
 	}
 
 	public List<CourseResponseDto> getCourseNoResultRecommendation(final String userCountry, final String facultyId, final String countryId,
@@ -1439,7 +1440,7 @@ public class CourseProcessor {
 				//Country country = countryDAO.getCountryByName(globalDatas.get(0).getDestinationCountry());
 				courseSearchDto.setCountryNames(Arrays.asList(globalDatas.get(0).getDestinationCountry()));
 				courseSearchDto.setMaxSizePerPage(pageSize - courseResponseDtos.size());
-				List<CourseResponseDto> courseResponseDtos2 = iCourseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, false);
+				List<CourseResponseDto> courseResponseDtos2 = courseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, false);
 				courseResponseDtos.addAll(courseResponseDtos2);
 			}
 		}
@@ -1472,18 +1473,18 @@ public class CourseProcessor {
 			courseSearchDto.setLevelIds(Arrays.asList(levelId));
 			courseSearchDto.setMaxSizePerPage(pageSize);
 			courseSearchDto.setSortBy("instituteName");
-			List<CourseResponseDto> courseResponseDtos = iCourseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, true);
+			List<CourseResponseDto> courseResponseDtos = courseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, true);
 			courseKeywordRecommended = courseResponseDtos.stream().map(CourseResponseDto::getName).collect(Collectors.toList());
 		}
 		return courseKeywordRecommended;
 	}
 
 	public int getDistinctCourseCount(String courseName) {
-		return iCourseDAO.getDistinctCourseCountbyName(courseName);
+		return courseDAO.getDistinctCourseCountbyName(courseName);
 	}
 
 	public List<CourseResponseDto> getDistinctCourseList(Integer startIndex, Integer pageSize,String courseName) {
-		return iCourseDAO.getDistinctCourseListByName(startIndex, pageSize, courseName);
+		return courseDAO.getDistinctCourseListByName(startIndex, pageSize, courseName);
 	}
 
 	public Map<String, Integer> getCourseCountByLevel() {
@@ -1497,7 +1498,7 @@ public class CourseProcessor {
 				Integer courseCount = null;
 				if (!ObjectUtils.isEmpty(level.getId())) {
 					log.info("Caliling DAO layer to get course count for levelId = "+level.getId());
-					courseCount = iCourseDAO.getCoursesCountBylevelId(level.getId());
+					courseCount = courseDAO.getCoursesCountBylevelId(level.getId());
 				}
 				if (!ObjectUtils.isEmpty(courseCount)) {
 					courseLevelCount.put(level.getName(), courseCount);
@@ -1512,7 +1513,7 @@ public class CourseProcessor {
 		log.info("Validate user id "+userId+ " have appropriate access for institute id "+instituteId);
 		 // TODO validate user id have appropriate access for institute id 
 		log.info("Getting institute for institute id "+instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		Optional<Institute> instituteFromFb = instituteDAO.getInstituteByInstituteId(instituteId);
 		if (!instituteFromFb.isPresent()) {
 			log.error("No institute found for institute having id "+instituteId);
 			throw new NotFoundException("No institute found for institute having id "+instituteId);
@@ -1543,13 +1544,13 @@ public class CourseProcessor {
 		log.info("Association course grade eligibility with course");
 		course.setCourseGradeEligibility(courseGradeEligibility);
 		courseGradeEligibility.setCourse(course);*/
-		iCourseDAO.save(course);
+		courseDAO.save(course);
 	}
 
 	public void updateMobileCourse(String userId, String courseId, CourseMobileDto courseMobileDto) throws Exception {
 		log.debug("Inside updateMobileCourse() method");
 		log.info("Getting course by course id "+courseId);
-		Course course =iCourseDAO.get(courseId);
+		Course course =courseDAO.get(courseId);
 		if (ObjectUtils.isEmpty(course)) {
 			log.error("No course found for course having id "+courseId);
 			throw new NotFoundException("No course found for course having id "+courseId);
@@ -1578,7 +1579,7 @@ public class CourseProcessor {
 			courseGradeEligibilityFromDb.setUpdatedBy("API");
 			courseGradeEligibilityFromDb.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		}*/
-		iCourseDAO.save(course);
+		courseDAO.save(course);
 	} 
 	
 	public List<CourseMobileDto> getAllMobileCourseByInstituteIdAndFacultyIdAndStatus(String userId, String instituteId, String facultyId, boolean status) throws Exception {
@@ -1586,13 +1587,13 @@ public class CourseProcessor {
 		log.debug("Inside getAllMobileCourseByInstituteIdAndFacultyId() method");
 		 // TODO validate user id have appropriate access for institute id 
 		log.info("Getting institute for institute id "+instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		Optional<Institute> instituteFromFb = instituteDAO.getInstituteByInstituteId(instituteId);
 		if (!instituteFromFb.isPresent()) {
 			log.error("No institute found for institute having id "+instituteId);
 			throw new NotFoundException("No institute found for institute having id "+instituteId);
 		}
 		log.info("Getting course for institute id "+instituteId+ " having faculty id "+facultyId);
-		List<Course> listOfCourse = iCourseDAO.getAllCourseByInstituteIdAndFacultyIdAndStatus(instituteId, facultyId, status);
+		List<Course> listOfCourse = courseDAO.getAllCourseByInstituteIdAndFacultyIdAndStatus(instituteId, facultyId, status);
 		if (!CollectionUtils.isEmpty(listOfCourse)) {
 			log.info("List of Course not empty creatng response DTO");
 			listOfCourse.stream().forEach(course -> {
@@ -1608,13 +1609,13 @@ public class CourseProcessor {
 		List<CourseMobileDto> listOfCourseMobileDto = new ArrayList<CourseMobileDto>();
 		log.debug("Inside getPublicMobileCourseByInstituteIdAndFacultyId() method");
 		log.info("Getting institute for institute id "+instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		Optional<Institute> instituteFromFb = instituteDAO.getInstituteByInstituteId(instituteId);
 		if (!instituteFromFb.isPresent()) {
 			log.error("No institute found for institute having id "+instituteId);
 			throw new NotFoundException("No institute found for institute having id "+instituteId);
 		}
 		log.info("Getting course for institute id "+instituteId+ " having faculty id "+facultyId + " and status active");
-		List<Course> listOfCourse = iCourseDAO.getAllCourseByInstituteIdAndFacultyIdAndStatus(instituteId, facultyId, true);
+		List<Course> listOfCourse = courseDAO.getAllCourseByInstituteIdAndFacultyIdAndStatus(instituteId, facultyId, true);
 		if (!CollectionUtils.isEmpty(listOfCourse)) {
 			log.info("List of Course not empty creatng response DTO");
 			listOfCourse.stream().forEach(course -> {
@@ -1629,7 +1630,7 @@ public class CourseProcessor {
 	public void changeCourseStatus (String userId , String courseId, boolean status) throws Exception {
 		log.debug("Inside updateMobileCourse() method");
 		log.info("Getting course by course id "+courseId);
-		Course course =iCourseDAO.get(courseId);
+		Course course =courseDAO.get(courseId);
 		if (ObjectUtils.isEmpty(course)) {
 			log.error("No course found for course having id "+courseId);
 			throw new NotFoundException("No course found for course having id "+courseId);
@@ -1640,7 +1641,7 @@ public class CourseProcessor {
 		 // TODO validate user id have appropriate access for institute id 
 		log.info("Changing course having Id "+courseId+ " from status "+course.getIsActive()+ " to "+status );
 		course.setIsActive(status);
-		iCourseDAO.save(course);
+		courseDAO.save(course);
 	}
 	
 	public NearestCoursesDto getCourseByInstituteId(Integer pageNumber, Integer pageSize, String instituteId) throws NotFoundException {
@@ -1680,14 +1681,14 @@ public class CourseProcessor {
 				}
 				
 				log.info("Fetching courseLanguage from DB having courseId = "+course.getId());
-				List<CourseLanguage> courseLanguages = iCourseDAO.getCourseLanguageBasedOnCourseId(course.getId());
+				List<CourseLanguage> courseLanguages = courseDAO.getCourseLanguageBasedOnCourseId(course.getId());
 				if(!CollectionUtils.isEmpty(courseLanguages)) {
 					log.info("courseLanguage is fetched from DB, hence adding englishEligibilities in response");
 					nearestCourse.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 				}
 				
 				log.info("Fetching courseIntake from DB having courseId = "+course.getId());
-				List<CourseIntake> courseIntakes = iCourseDAO.getCourseIntakeBasedOnCourseId(course.getId());
+				List<CourseIntake> courseIntakes = courseDAO.getCourseIntakeBasedOnCourseId(course.getId());
 				if(!CollectionUtils.isEmpty(courseIntakes)) {
 					log.info("courseIntake is fetched from DB, hence adding englishEligibilities in response");
 					nearestCourse.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -1728,9 +1729,9 @@ public class CourseProcessor {
 		Integer increaseRadius = 25, totalCount = 0;
 		log.info("start getting nearest courses from DB for latitude " + courseSearchDto.getLatitude()
 				+ " and longitude " + courseSearchDto.getLongitude() + " and initial radius is " + initialRadius);
-		List<CourseResponseDto> nearestCourseDTOs = iCourseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
+		List<CourseResponseDto> nearestCourseDTOs = courseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
 		log.info("going to fetch total count of courses from DB");
-		totalCount = iCourseDAO.getTotalCountOfNearestCourses(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
+		totalCount = courseDAO.getTotalCountOfNearestCourses(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
 		while (runMethodAgain) {
 			if (initialRadius != maxRadius && CollectionUtils.isEmpty(nearestCourseDTOs)) {
 				log.info("if data is comming as null from DB then increase radius, new radius is " + initialRadius);
@@ -1738,8 +1739,8 @@ public class CourseProcessor {
 				initialRadius = initialRadius + increaseRadius;
 				courseSearchDto.setInitialRadius(initialRadius);
 				log.info("for old radius data is not coming so start fetching nearest courses for new radius " + initialRadius);
-				nearestCourseDTOs = iCourseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
-				totalCount = iCourseDAO.getTotalCountOfNearestCourses(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
+				nearestCourseDTOs = courseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
+				totalCount = courseDAO.getTotalCountOfNearestCourses(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
 			} else {
 				log.info("data is coming from DB for radius " + initialRadius);
 				runMethodAgain = false;
@@ -1765,7 +1766,7 @@ public class CourseProcessor {
 					nearestCourse.setCourseAdditionalInfo(additionalInfoDtos);
 					
 					log.info("Fetching courseIntake from DB having courseId = "+nearestCourseDTO.getId());
-					List<CourseIntake> courseIntakes = iCourseDAO.getCourseIntakeBasedOnCourseId(nearestCourseDTO.getId());
+					List<CourseIntake> courseIntakes = courseDAO.getCourseIntakeBasedOnCourseId(nearestCourseDTO.getId());
 					if (!CollectionUtils.isEmpty(courseIntakes)) {
 						log.info("Filtering courseIntakes data based on courseId");
 						nearestCourse.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -1774,7 +1775,7 @@ public class CourseProcessor {
 					}
 					
 					log.info("Fetching courseLanguages from DB having courseId = "+nearestCourseDTO.getId());
-					List<CourseLanguage> courseLanguages = iCourseDAO.getCourseLanguageBasedOnCourseId(nearestCourseDTO.getId());
+					List<CourseLanguage> courseLanguages = courseDAO.getCourseLanguageBasedOnCourseId(nearestCourseDTO.getId());
 					if(!CollectionUtils.isEmpty(courseLanguages)) {
 						nearestCourse.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 					} else {
@@ -1819,7 +1820,7 @@ public class CourseProcessor {
 				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
 		
 		log.info("Calling review service to fetch user average review based on instituteID  to calculate average review");
-		Map<String, Double> seekaReviewMap = iUserReviewService
+		Map<String, Double> seekaReviewMap = reviewHandler
 				.getUserAverageReviewBasedOnDataList("INSTITUTE", Arrays.asList(courseRequest.getInstituteId()));
 		
 		if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
@@ -1906,7 +1907,7 @@ public class CourseProcessor {
 
 		// Add User Review to the course info response
 		log.info("Calling review service to get user review for course");
-		List<UserReviewResultDto> userReviewResultList = iUserReviewService.getUserReviewBasedOnData(id, "COURSE", 1, 5,
+		List<UserReviewResultDto> userReviewResultList = reviewHandler.getUserReviewBasedOnData(id, "COURSE", 1, 5,
 				null, null);
 		courseRequest.setUserReviewResult(userReviewResultList);
 
@@ -1928,7 +1929,7 @@ public class CourseProcessor {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> nearestCourseResponse = new ArrayList<>();
 		log.info("fetching courses from DB for countryName "+ countryName);
-		List<CourseResponseDto> nearestCourseDTOs = iCourseDAO.getCourseByCountryName(pageNumber, pageSize, countryName);
+		List<CourseResponseDto> nearestCourseDTOs = courseDAO.getCourseByCountryName(pageNumber, pageSize, countryName);
 		Long totalCount = courseRepository.getTotalCountOfCourseByCountryName(countryName);
 		if(!CollectionUtils.isEmpty(nearestCourseDTOs)) {
 			log.info("get data of courses for countryName, so start iterating data");

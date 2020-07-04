@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.Course;
-import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Top10Course;
 import com.seeka.app.dao.ITop10CourseDAO;
 import com.seeka.app.dto.CourseResponseDto;
+import com.seeka.app.dto.FacultyDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.processor.FacultyProcessor;
 import com.seeka.app.util.IConstant;
 
 @Service
@@ -29,7 +30,7 @@ public class Top10CourseService implements ITop10CourseService {
 	private ITop10CourseDAO iTop10CourseDao;
 
 	@Autowired
-	private IFacultyService iFacultyService;
+	private FacultyProcessor facultyProcessor;
 
 	@Autowired
 	private IStorageService iStorageService;
@@ -55,7 +56,7 @@ public class Top10CourseService implements ITop10CourseService {
 
 	@Override
 	public List<String> getTop10CourseKeyword(final String facultyId) {
-		Faculty faculty = iFacultyService.get(facultyId);
+		FacultyDto faculty = facultyProcessor.getFacultyById(facultyId);
 		return iTop10CourseDao.getTop10CourseKeyword(faculty.getName()).stream().map(Top10Course::getCourse).collect(Collectors.toList());
 	}
 

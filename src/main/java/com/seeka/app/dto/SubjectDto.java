@@ -1,21 +1,23 @@
 package com.seeka.app.dto;
 
+import javax.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SubjectDto {
 
+	@JsonProperty("subject_id")
 	private String id;
-	private String subjectName;
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getSubjectName() {
-		return subjectName;
-	}
-	public void setSubjectName(String subjectName) {
-		this.subjectName = subjectName;
-	}
+	@JsonProperty("subject_name")
+	@NotBlank(message = "subject_name should not be blank")
+	private String subjectName;
 
 }

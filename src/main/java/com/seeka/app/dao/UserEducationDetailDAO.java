@@ -55,7 +55,7 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
 		String gpaGrade = "0.0";
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(GradeDetails.class);
-		crit.add(Restrictions.eq("countryId", countryId)).add(Restrictions.eq("educationSystemId", educationSystemId)).add(Restrictions.eq("grade", grade));
+		crit.add(Restrictions.eq("countryName", countryId)).add(Restrictions.eq("educationSystemId", educationSystemId)).add(Restrictions.eq("grade", grade));
 		List<GradeDetails> details = crit.list();
 		System.out.println("The List: " + details.size());
 		ArrayList<GradeDetails> min = new ArrayList<>();
@@ -76,7 +76,7 @@ public class UserEducationDetailDAO implements IUserEducationDetailDAO {
 	public List<GradeDetails> getGrades(final String countryId, final String systemId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(GradeDetails.class);
-		crit.add(Restrictions.eq("countryId", countryId));
+		crit.add(Restrictions.eq("countryName", countryId));
 		crit.add(Restrictions.eq("educationSystemId", systemId));
 		return crit.list();
 	}

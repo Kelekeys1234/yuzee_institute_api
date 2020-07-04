@@ -21,12 +21,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.seeka.app.bean.CurrencyRate;
+import com.seeka.app.controller.handler.CommonHandler;
 import com.seeka.app.dto.CourseDTOElasticSearch;
+import com.seeka.app.dto.CurrencyRateDto;
 import com.seeka.app.enumeration.SeekaEntityType;
+import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.processor.CourseProcessor;
 import com.seeka.app.service.ElasticSearchService;
-import com.seeka.app.service.ICurrencyRateService;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -38,9 +39,6 @@ public class CurrencyConversionRateUtil {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
 	@Autowired
-	private ICurrencyRateService currencyRateService;
-
-	@Autowired
 	private ObjectMapper objectMapper;
 
 	@Autowired
@@ -49,11 +47,14 @@ public class CurrencyConversionRateUtil {
 	@Autowired
 	private ElasticSearchService elasticSearchService;
 	
+	@Autowired
+	private CommonHandler commonHandler;
+	
 	private static List<String> failedRecordsInElasticSearch = new ArrayList<>();
 
 	// @Scheduled(fixedRate = 86400000, initialDelay = 10000)
 	@Scheduled(cron = "0 30 0 * * ?")
-	public void curencySchedulerMethod() {
+	public void curencySchedulerMethod() throws CommonInvokeException {
 		log.info("CurrencyConversionRateUtil -- Start: The time is now {}", dateFormat.format(new Date()));
 		System.out.println("CurrencyConversionRateUtil -- Start: The time is now {}" + dateFormat.format(new Date()));
         run();
@@ -68,7 +69,7 @@ public class CurrencyConversionRateUtil {
 		System.out.println("Update COurses In Elastic Search End -- End: The time is now {}" + dateFormat.format(new Date()));
 	}
 
-	public void run() {
+	public void run() throws CommonInvokeException {
 		System.out.println("CurrencyConversionRateUtil: Job Started: " + new Date());
 		try {
 			RestTemplate restTemplate = new RestTemplate();
@@ -86,34 +87,31 @@ public class CurrencyConversionRateUtil {
 			}
 			for (Map.Entry<String, Double> currency : map.entrySet()) {
 				String currencyCode = currency.getKey();
-				CurrencyRate currencyRate = currencyRateService.getCurrencyRate(currencyCode);
+				CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(currencyCode);
 				if(currencyRate == null) {
-					CurrencyRate currRate = new CurrencyRate();
+					CurrencyRateDto currRate = new CurrencyRateDto();
 					currRate.setFromCurrencyCode(IConstant.USD_CODE);
 					currRate.setToCurrencyCode(currencyCode);
 					currRate.setConversionRate(Double.parseDouble(String.valueOf(currency.getValue())));
 					currRate.setToCurrencyName(CommonUtil.currencyNameMap.get(currency.getKey()));
 					currRate.setFromCurrencyName(CommonUtil.currencyNameMap.get(IConstant.USD_CODE));
-					currRate.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
-					currRate.setCreatedAt(DateUtil.getUTCdatetimeAsDate());
 					currRate.setHasChanged(false);
-					currencyRateService.save(currRate);
+					commonHandler.saveCurrencyRate(currRate);
 					currencyRate = currRate;
 				}
 				Double oldRate = currencyRate.getConversionRate();
 				currencyRate.setConversionRate(Double.parseDouble(String.valueOf(currency.getValue())));
-				currencyRate.setUpdatedAt(DateUtil.getUTCdatetimeAsDate());
 				Integer thresholdValue = IConstant.CURRENCY_THRESHOLD;
 				if (thresholdValue != null && thresholdValue != 0) {
 					boolean isGreaterThanThreshold = checkForDifferenceGreaterThanThreshold(oldRate, Double.valueOf(String.valueOf(currency.getValue())),
 							thresholdValue);
 					if (isGreaterThanThreshold) {
 						currencyRate.setHasChanged(true);
-						currencyRateService.save(currencyRate);
+						commonHandler.saveCurrencyRate(currencyRate);
 					}
 				} else if (thresholdValue <= 0) {
 					currencyRate.setHasChanged(true);
-					currencyRateService.save(currencyRate);
+					commonHandler.saveCurrencyRate(currencyRate);
 				}
 			}
 		} catch (JsonParseException e) {
@@ -138,9 +136,9 @@ public class CurrencyConversionRateUtil {
 		}
 	}
 
-	public void updateCourses() {
-		List<CurrencyRate> currencyRateList = currencyRateService.getChangedCurrency();
-		for (CurrencyRate currencyRate : currencyRateList) {
+	public void updateCourses() throws CommonInvokeException {
+		List<CurrencyRateDto> currencyRateList = commonHandler.getChangedCurrencyRate(true);
+		for (CurrencyRateDto currencyRate : currencyRateList) {
 			courseProcessor.updateCourseForCurrency(currencyRate);
 		}
 	}

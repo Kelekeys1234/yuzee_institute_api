@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.jobs.CurrencyConversionRateUtil;
 
 @RestController("schedulerControllerV1")
@@ -15,7 +16,7 @@ public class SchedulerController {
 	private CurrencyConversionRateUtil currencyConversionRateUtil;
 
 	@GetMapping("/run")
-	public void runScheduler() {
+	public void runScheduler() throws CommonInvokeException {
 		currencyConversionRateUtil.curencySchedulerMethod();
 	}
 }

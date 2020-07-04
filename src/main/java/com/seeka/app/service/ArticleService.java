@@ -24,8 +24,8 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.bean.SubCategory;
 import com.seeka.app.dao.ArticleFolderMapDao;
-import com.seeka.app.dao.CourseDAO;
-import com.seeka.app.dao.FacultyDAO;
+import com.seeka.app.dao.CourseDao;
+import com.seeka.app.dao.FacultyDao;
 import com.seeka.app.dao.IArticleDAO;
 import com.seeka.app.dao.IArticleFolderDao;
 import com.seeka.app.dao.IArticleUserDemographicDao;
@@ -72,7 +72,7 @@ public class ArticleService implements IArticleService {
 	private ArticleFolderMapDao articleFolderMapDao;
 
 	@Autowired
-	private CourseDAO courseDAO;
+	private CourseDao courseDAO;
 
 //	@Autowired
 //	private CountryDAO countryDAO;
@@ -84,7 +84,7 @@ public class ArticleService implements IArticleService {
 	private InstituteDaoImpl instituteDAO;
 
 	@Autowired
-	private FacultyDAO facultyDAO;
+	private FacultyDao facultyDAO;
 
 	@Autowired
 	private IArticleUserDemographicDao iArticleUserDemographicDao;

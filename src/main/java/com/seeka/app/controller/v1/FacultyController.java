@@ -1,127 +1,81 @@
 package com.seeka.app.controller.v1;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Faculty;
+import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.FacultyDto;
-import com.seeka.app.service.IFacultyService;
-import com.seeka.app.util.IConstant;
+import com.seeka.app.endpoint.FacultyEndpoint;
+import com.seeka.app.processor.FacultyProcessor;
 
 @RestController("facultyControllerV1")
-@RequestMapping("/api/v1/faculty")
-public class FacultyController {
+public class FacultyController implements FacultyEndpoint {
 
-    @Autowired
-    private IFacultyService facultyService;
+	@Autowired
+	private FacultyProcessor facultyProcessor;
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> saveFaculty(@RequestBody Faculty obj) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        facultyService.save(obj);
-        response.put("status", HttpStatus.OK.value());
-        response.put("message", IConstant.FACULTY_SAVE_SUCCESS);
-        return ResponseEntity.accepted().body(response);
-    }
+	@Override
+	public ResponseEntity<?> saveFaculty(FacultyDto faculty) throws Exception {
+		facultyProcessor.saveFaculty(faculty);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Faculty Created successfully")
+				.create();
+	}
 
-    @RequestMapping(value = "/country/{countryId}/level/{levelId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getFacultyeByCountryAndLevelId(@PathVariable String countryId, @PathVariable String levelId) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        List<Faculty> facultyList = facultyService.getFacultyByCountryIdAndLevelId(countryId, levelId);
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("facultyList", facultyList);
-        return ResponseEntity.accepted().body(response);
-    }
+	@Override
+	public ResponseEntity<?> getFacultyById(String facultyId) throws Exception {
+		FacultyDto faculty = facultyProcessor.getFacultyById(facultyId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Faculty Fetched successfully")
+				.setData(faculty).create();
+	}
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getAll() throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        List<Faculty> facultyList = facultyService.getAll();
-        if (facultyList != null && !facultyList.isEmpty()) {
-            response.put("status", HttpStatus.OK.value());
-            response.put("message", "Faculty fetched successfully");
-        } else {
-            response.put("status", HttpStatus.NOT_FOUND.value());
-            response.put("message", "Faculty data not found");
-        }
-        response.put("data", facultyList);
-        return ResponseEntity.accepted().body(response);
-    }
+	@Override
+	public ResponseEntity<?> getFacultyByFacultyName(String facultyName) throws Exception {
+		FacultyDto faculty = facultyProcessor.getFacultyByFacultyName(facultyName);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Faculty Fetched successfully")
+				.setData(faculty).create();
+	}
+	
+	@Override
+	public ResponseEntity<?> getAll() throws Exception {
+		List<FacultyDto> facultyList = facultyProcessor.getAllFaculties();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Faculties Fetched successfully").setData(facultyList).create();
+	}
+	
+	@Override
+	@Deprecated
+	public ResponseEntity<?> getFacultyeByCountryAndLevelId(String countryId, String levelId) throws Exception {
+		List<Faculty> facultyList = facultyProcessor.getFacultyByCountryIdAndLevelId(countryId, levelId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Faculties Fetched successfully").setData(facultyList).create();
+	}
 
-    @RequestMapping(value = "/institute/{instituteId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getFacultyByInstituteId(@Valid @PathVariable String instituteId) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        List<Faculty> faculties = facultyService.getFacultyByInstituteId(instituteId);
-        if (faculties != null && !faculties.isEmpty()) {
-            response.put("status", HttpStatus.OK.value());
-            response.put("message", "Faculty fetched successfully");
-        } else {
-            response.put("status", HttpStatus.NOT_FOUND.value());
-            response.put("message", IConstant.FACULTY_NOT_FOUND);
-        }
-        response.put("data", faculties);
-        return ResponseEntity.accepted().body(response);
-    }
+	@Override
+	@Deprecated
+	public ResponseEntity<?> getFacultyByInstituteId(String instituteId) throws Exception {
+		List<FacultyDto> faculties = facultyProcessor.getFacultyByInstituteId(instituteId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Faculties Fetched successfully").setData(faculties).create();
+	}
 
-    @RequestMapping(value = "/multiple/institute/{instituteId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getFacultyByListOfInstituteId(@Valid @PathVariable String instituteId) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        List<Faculty> faculties = facultyService.getFacultyByListOfInstituteId(instituteId);
-        if (faculties != null && !faculties.isEmpty()) {
-            response.put("status", HttpStatus.OK.value());
-            response.put("message", "Faculty fetched successfully");
-        } else {
-            response.put("status", HttpStatus.NOT_FOUND.value());
-            response.put("message", IConstant.FACULTY_NOT_FOUND);
-        }
-        response.put("data", faculties);
-        return ResponseEntity.accepted().body(response);
-    }
-    
-    @RequestMapping(value = "/course/country/{countryId}/level/{levelId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getCourseFaculty(@PathVariable String countryId, @PathVariable String levelId) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        List<FacultyDto> facultyList = facultyService.getCourseFaculty(countryId, levelId);
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("facultyList", facultyList);
-        return ResponseEntity.accepted().body(response);
-    }
-    
-    @RequestMapping(value = "/{feildId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getFacultyById(@PathVariable String feildId) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        Faculty faculty = facultyService.get(feildId);
-        response.put("status", 1);
-        response.put("message", "Success.!");
-        response.put("faculty", faculty);
-        return ResponseEntity.accepted().body(response);
-    }
-    
-    
-    @RequestMapping(value = "/name/{facultyName}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getFacultyByFacultyName(@PathVariable("facultyName") String facultyName) throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
-        Faculty faculty = facultyService.getFacultyByFacultyName(facultyName);
-        response.put("status", 1);
-        response.put("message", "Faculty Fetched Successfully");
-        response.put("faculty", faculty);
-        return ResponseEntity.accepted().body(response);
-    }
+	@Override
+	@Deprecated
+	public ResponseEntity<?> getFacultyByListOfInstituteId(String instituteId) throws Exception {
+		List<FacultyDto> faculties = facultyProcessor.getFacultyByListOfInstituteId(instituteId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Faculties Fetched successfully").setData(faculties).create();
+	}
+
+	@Override
+	@Deprecated
+	public ResponseEntity<?> getCourseFaculty(String countryId, String levelId) throws Exception {
+		List<FacultyDto> facultyList = facultyProcessor.getCourseFaculty(countryId, levelId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Faculties Fetched successfully").setData(facultyList).create();
+	}
 }
-
-
-

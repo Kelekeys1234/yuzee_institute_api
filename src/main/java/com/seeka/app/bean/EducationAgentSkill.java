@@ -11,122 +11,56 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@Data
 @Entity
+@ToString
+@EqualsAndHashCode
 @Table(name = "education_agent_skill")
 public class EducationAgentSkill implements Serializable {
 
-    /**
-    *
-    */
-    private static final long serialVersionUID = 8492390790670110780L;
-    private String id;
-    //private Skill skill;
-    private EducationAgent educationAgent;
-    private String createdBy;
-    private Date createdOn;
-    private String updatedBy;
-    private Date updatedOn;
-    private String deletedBy;
-    private Date deletedOn;
+	private static final long serialVersionUID = 8492390790670110780L;
 
-    public EducationAgentSkill() {
-        super();
-    }
-
-    public EducationAgentSkill(String id, EducationAgent educationAgent) {
-        super();
-        this.id = id;
-       // this.skill = skill;
-        this.educationAgent = educationAgent;
-    }
-
-    @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@Id
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
-    public String getId() {
-        return id;
-    }
+	private String id;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	@Column(name = "skill", nullable = false)
+	private String skill;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "skill_id")
-//    public Skill getSkill() {
-//        return skill;
-//    }
-//
-//    public void setSkill(Skill skill) {
-//        this.skill = skill;
-//    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "education_agent_id", nullable = false)
+	private EducationAgent educationAgent;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "education_agent")
-    public EducationAgent getEducationAgent() {
-        return educationAgent;
-    }
+	@Column(name = "created_by", length = 50)
+	private String createdBy;
 
-    public void setEducationAgent(EducationAgent educationAgent) {
-        this.educationAgent = educationAgent;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on", length = 19)
+	private Date createdOn;
 
-    @Column(name = "created_by")
-    public String getCreatedBy() {
-        return createdBy;
-    }
+	@Column(name = "updated_by", length = 50)
+	private String updatedBy;
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on", length = 19)
+	private Date updatedOn;
 
-    @Column(name = "created_on")
-    public Date getCreatedOn() {
-        return createdOn;
-    }
+	@Column(name = "deleted_by", length = 50)
+	private String deletedBy;
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    @Column(name = "updated_by")
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    @Column(name = "updated_on")
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    @Column(name = "deleted_by")
-    public String getDeletedBy() {
-        return deletedBy;
-    }
-
-    public void setDeletedBy(String deletedBy) {
-        this.deletedBy = deletedBy;
-    }
-
-    @Column(name = "deleted_on")
-    public Date getDeletedOn() {
-        return deletedOn;
-    }
-
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deleted_on", length = 19)
+	private Date deletedOn;
 
 }

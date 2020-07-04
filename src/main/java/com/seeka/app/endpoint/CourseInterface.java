@@ -22,6 +22,7 @@ import com.seeka.app.dto.CourseMobileDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.UserCourse;
+import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 
@@ -29,10 +30,10 @@ import com.seeka.app.exception.ValidationException;
 public interface CourseInterface {
 
 	@PostMapping
-	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException;
+	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException, CommonInvokeException;
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final String id) throws ValidationException;
+	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final String id) throws ValidationException, CommonInvokeException;
 
 	@GetMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception;
@@ -87,7 +88,8 @@ public interface CourseInterface {
 	@GetMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getUserCourses(@PathVariable final String userId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(required = false) final String currencyCode,
-			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final boolean sortAsscending) throws ValidationException;
+			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final boolean sortAsscending) 
+			throws ValidationException, CommonInvokeException;
 
 	@PostMapping(value = "/compare")
 	public ResponseEntity<?> addUserCompareCourse(@Valid @RequestBody final UserCourse userCourse) throws Exception;

@@ -1,4 +1,3 @@
-
 package com.seeka.app;
 
 import org.springframework.boot.SpringApplication;

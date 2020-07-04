@@ -16,7 +16,7 @@ import com.seeka.app.dto.UserAchivements;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.dto.UserManagement;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.service.EducationSystemService;
+import com.seeka.app.processor.EducationSystemProcessor;
 import com.seeka.app.service.UsersService;
 
 @RestController("userManagementControllerV1")
@@ -27,7 +27,7 @@ public class UserManagementController {
 	private UsersService usersService;
 
 	@Autowired
-	private EducationSystemService educationSystemService;
+	private EducationSystemProcessor educationSystemService;
 
 	@GetMapping("/{userId}")
 	public ResponseEntity<Object> getUserManagementData(@PathVariable final String userId) throws ValidationException {

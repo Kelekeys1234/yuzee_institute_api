@@ -29,15 +29,12 @@ import org.springframework.util.ObjectUtils;
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseLanguage;
-import com.seeka.app.bean.CurrencyRate;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.UserCompareCourse;
 import com.seeka.app.bean.UserCompareCourseBundle;
-import com.seeka.app.dao.CourseDAO;
-import com.seeka.app.dao.CurrencyRateDAO;
-import com.seeka.app.dao.IFacultyDAO;
-import com.seeka.app.dao.LevelDAO;
+import com.seeka.app.controller.handler.CommonHandler;
+import com.seeka.app.dao.CourseDao;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseDeliveryModesDto;
@@ -47,10 +44,12 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CourseSearchFilterDto;
+import com.seeka.app.dto.CurrencyRateDto;
 import com.seeka.app.dto.GlobalFilterSearchDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.enumeration.CourseSortBy;
+import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.repository.CourseRepository;
 import com.seeka.app.util.CommonUtil;
@@ -59,23 +58,17 @@ import com.seeka.app.util.PaginationUtil;
 
 @Component
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
-public class CourseDaoImpl implements CourseDAO {
+public class CourseDaoImpl implements CourseDao {
 
 	@Autowired
 	private CourseRepository courseRepository;
 	
 	@Autowired
 	private SessionFactory sessionFactory;
-
-	@Autowired
-	private LevelDAO levelDAO;
-
-	@Autowired
-	private IFacultyDAO dao;
-
-	@Autowired
-	private CurrencyRateDAO currencyRateDao;
 	
+	@Autowired
+	private CommonHandler commonHandler;
+
 	@Value("${s3.url}")
 	private String s3URL;
 	
@@ -286,7 +279,7 @@ public class CourseDaoImpl implements CourseDAO {
 				if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
 					courseResponseDto.setCurrencyCode(courseSearchDto.getCurrencyCode());
 					if (row[14] != null) {
-						CurrencyRate currencyRate = currencyRateDao.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
+						CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
 						Double amt = Double.valueOf(row[14].toString());
 						Double convertedRate = amt * currencyRate.getConversionRate();
 						if (convertedRate != null) {
@@ -294,7 +287,7 @@ public class CourseDaoImpl implements CourseDAO {
 						}
 					}
 					if (row[15] != null) {
-						CurrencyRate currencyRate = currencyRateDao.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
+						CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
 						Double amt = Double.valueOf(row[15].toString());
 						Double convertedRate = amt * currencyRate.getConversionRate();
 						if (convertedRate != null) {
@@ -802,7 +795,7 @@ public class CourseDaoImpl implements CourseDAO {
 
 	@Override
 	public List<CourseRequest> getUserCourse(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
-			final String sortBy, final boolean sortType) throws ValidationException {
+			final String sortBy, final boolean sortType) throws ValidationException, CommonInvokeException {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select c.id , c.institute_id, i.country_name , i.city_name, c.faculty_id, c.name ,"
 				+ " c.description, c.availabilty, c.created_by, c.updated_by, c.campus_location, c.website,"
@@ -823,7 +816,7 @@ public class CourseDaoImpl implements CourseDAO {
 		List<CourseRequest> courses = new ArrayList<>();
 		CourseRequest obj = null;
 
-		CurrencyRate curencyRate = currencyRateDao.getCurrencyRateByCurrencyCode(currencyCode);
+		CurrencyRateDto curencyRate = commonHandler.getCurrencyRateByCurrencyCode(currencyCode);
 		if (curencyRate == null || curencyRate.getConversionRate() == null || curencyRate.getConversionRate() == 0) {
 			throw new ValidationException("Either No Currency found or Conversion rate is 0 for specified currency - " + currencyCode);
 		}
@@ -1043,7 +1036,7 @@ public class CourseDaoImpl implements CourseDAO {
 	}
 
 	@Override
-	public List<CourseResponseDto> advanceSearch(final Object... values) {
+	public List<CourseResponseDto> advanceSearch(final Object... values) throws CommonInvokeException {
 		AdvanceSearchDto courseSearchDto = (AdvanceSearchDto) values[0];
 		GlobalFilterSearchDto globalSearchFilterDto = null;
 
@@ -1097,7 +1090,7 @@ public class CourseDaoImpl implements CourseDAO {
 	}
 
 	private CourseResponseDto getCourseData(final Object[] row, final AdvanceSearchDto courseSearchDto, final boolean showIntlCost, 
-			List<CourseDeliveryModesDto> additionalInfoDtos) {
+			List<CourseDeliveryModesDto> additionalInfoDtos) throws CommonInvokeException {
 		CourseResponseDto courseResponseDto = null;
 		CourseDeliveryModesDto additionalInfoDto = new CourseDeliveryModesDto();
 		Long cost = 0l;
@@ -1130,13 +1123,13 @@ public class CourseDaoImpl implements CourseDAO {
 		courseResponseDto.setRequirements(String.valueOf(row[15]));
 		if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
 			if (row[16] != null) {
-				CurrencyRate currencyRate = currencyRateDao.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
+				CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[16].toString());
 				Double convertedRate = amt * currencyRate.getConversionRate();
 				additionalInfoDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
 			}
 			if (row[17] != null) {
-				CurrencyRate currencyRate = currencyRateDao.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
+				CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[17].toString());
 				Double convertedRate = amt * currencyRate.getConversionRate();
 				additionalInfoDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
@@ -1567,11 +1560,12 @@ public class CourseDaoImpl implements CourseDAO {
 	}
 
 	@Override
-	public int updateCourseForCurrency(final CurrencyRate currencyRate) {
+	public int updateCourseForCurrency(final CurrencyRateDto currencyRate) {
 		Session session = sessionFactory.getCurrentSession();
 		System.out.println(currencyRate);
 		Integer count = session.createNativeQuery(
-				"update course set usd_domestic_fee = domestic_fee * ?, usd_international_fee = international_fee * ?, updated_on = now() where currency =?")
+				"update course_delivery_modes cai inner join course c on c.id = cai.course_id " + 
+				"set cai.usd_domestic_fee = domestic_fee * ?, cai.usd_international_fee = international_fee * ?, cai.updated_on = now() where c.currency = ?")
 				.setParameter(1, 1 / currencyRate.getConversionRate()).setParameter(2, 1 / currencyRate.getConversionRate())
 				.setParameter(3, currencyRate.getToCurrencyCode()).executeUpdate();
 		System.out.println("courses updated for " + currencyRate.getToCurrencyCode() + "-" + count);

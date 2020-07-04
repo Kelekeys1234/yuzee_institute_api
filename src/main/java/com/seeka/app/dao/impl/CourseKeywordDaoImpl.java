@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.seeka.app.bean.CourseKeywords;
-import com.seeka.app.dao.CourseKeywordDAO;
+import com.seeka.app.dao.CourseKeywordDao;
 import com.seeka.app.repository.CourseKeywordRepository;
 
 @Component
-public class CourseKeywordDaoImpl implements CourseKeywordDAO {
+public class CourseKeywordDaoImpl implements CourseKeywordDao {
 
     @Autowired
     private CourseKeywordRepository courseKeywordRepository;

@@ -14,130 +14,56 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@Data
 @Entity
+@ToString
+@EqualsAndHashCode
 @Table(name = "education_agent_partnerships")
 public class EducationAgentPartnerships implements Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -3766742694768712352L;
-    private String id;
-    private Course course;
-    private Institute institute;
-    private Date createdOn;
-    private String createdBy;
-    private Date UpdatedOn;
-    private String UpdatedBy;
-    private Date DeletedOn;
-    private Boolean isDeleted;
-    private EducationAgent educationAgent;
-    private String countryName;
+	private static final long serialVersionUID = -3766742694768712352L;
 
-    @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@Id
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
-    public String getId() {
-        return id;
-    }
+	private String id;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "course_id", nullable = false)
+	private Course course;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "course_id")
-    public Course getCourse() {
-        return course;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "institute_id", nullable = false)
+	private Institute institute;
 
-    public void setCourse(Course course) {
-        this.course = course;
-    }
+	@Column(name = "created_on")
+	private Date createdOn;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "institute_id")
-    public Institute getInstitute() {
-        return institute;
-    }
+	@Column(name = "created_by")
+	private String createdBy;
 
-    public void setInstitute(Institute institute) {
-        this.institute = institute;
-    }
+	@Column(name = "updated_on")
+	private Date updatedOn;
 
-    @Column(name = "created_on")
-    public Date getCreatedOn() {
-        return createdOn;
-    }
+	@Column(name = "updated_by")
+	private String updatedBy;
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+	@Column(name = "deleted_on")
+	private Date DeletedOn;
 
-    @Column(name = "created_by")
-    public String getCreatedBy() {
-        return createdBy;
-    }
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "education_agent_id", nullable = false)
+	private EducationAgent educationAgent;
 
-    @Column(name = "updated_on")
-    public Date getUpdatedOn() {
-        return UpdatedOn;
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        UpdatedOn = updatedOn;
-    }
-
-    @Column(name = "updated_by")
-    public String getUpdatedBy() {
-        return UpdatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        UpdatedBy = updatedBy;
-    }
-
-    @Column(name = "deleted_on")
-    public Date getDeletedOn() {
-        return DeletedOn;
-    }
-
-    public void setDeletedOn(Date deletedOn) {
-        DeletedOn = deletedOn;
-    }
-
-    @Column(name = "is_deleted")
-    public Boolean getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "education_agent")
-    public EducationAgent getEducationAgent() {
-        return educationAgent;
-    }
-
-    public void setEducationAgent(EducationAgent educationAgent) {
-        this.educationAgent = educationAgent;
-    }
-
-    @Column(name = "country_name")
-	public String getCountryName() {
-		return countryName;
-	}
-
-	public void setCountryName(String countryName) {
-		this.countryName = countryName;
-	}
-
+	@Column(name = "country_name")
+	private String countryName;
 
 }

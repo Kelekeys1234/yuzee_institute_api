@@ -1,102 +1,30 @@
 package com.seeka.app.dto;
 
+import javax.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+import lombok.ToString;
+
+@Data
+@ToString
 public class EducationAgentPartnershipsDto {
 
-    private String agentId;
-    private String courseId;
-    private String instituteId;
-    private String createdBy;
-    private String UpdatedBy;
-    private String countryId;
+	@JsonProperty("agent_id")
+	@NotBlank(message = "agent_id should not be blank")
+	private String agentId;
 
-    /**
-     * @return the agentId
-     */
-    public String getAgentId() {
-        return agentId;
-    }
+	@JsonProperty("course_id")
+	@NotBlank(message = "course_id should not be blank")
+	private String courseId;
 
-    /**
-     * @param agentId
-     *            the agentId to set
-     */
-    public void setAgentId(String agentId) {
-        this.agentId = agentId;
-    }
+	@JsonProperty("institute_id")
+	@NotBlank(message = "institute_id should not be blank")
+	private String instituteId;
 
-    /**
-     * @return the courseId
-     */
-    public String getCourseId() {
-        return courseId;
-    }
-
-    /**
-     * @param courseId
-     *            the courseId to set
-     */
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
-    }
-
-    /**
-     * @return the instituteId
-     */
-    public String getInstituteId() {
-        return instituteId;
-    }
-
-    /**
-     * @param instituteId
-     *            the instituteId to set
-     */
-    public void setInstituteId(String instituteId) {
-        this.instituteId = instituteId;
-    }
-
-    /**
-     * @return the createdBy
-     */
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    /**
-     * @param createdBy
-     *            the createdBy to set
-     */
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    /**
-     * @return the updatedBy
-     */
-    public String getUpdatedBy() {
-        return UpdatedBy;
-    }
-
-    /**
-     * @param updatedBy
-     *            the updatedBy to set
-     */
-    public void setUpdatedBy(String updatedBy) {
-        UpdatedBy = updatedBy;
-    }
-
-    /**
-     * @return the countryId
-     */
-    public String getCountryId() {
-        return countryId;
-    }
-
-    /**
-     * @param countryId
-     *            the countryId to set
-     */
-    public void setCountryId(String countryId) {
-        this.countryId = countryId;
-    }
+	@JsonProperty("country_name")
+	@NotBlank(message = "country_name should not be blank")
+	private String countryName;
 
 }

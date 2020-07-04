@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ServiceDto {
 
-	private String institute_service_id;
-	
 	@NotBlank(message = "service_id is required") 
 	@JsonProperty("service_id")
 	private String serviceId;

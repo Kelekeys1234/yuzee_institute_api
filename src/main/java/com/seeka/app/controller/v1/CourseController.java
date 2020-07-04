@@ -33,6 +33,7 @@ import com.seeka.app.dto.UserDto;
 import com.seeka.app.endpoint.CourseInterface;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.enumeration.ImageCategory;
+import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
@@ -75,14 +76,14 @@ public class CourseController implements CourseInterface {
 	@Autowired
 	private IUsersService iUsersService;
 
-	public ResponseEntity<?> save(final CourseRequest course) throws ValidationException {
+	public ResponseEntity<?> save(final CourseRequest course) throws ValidationException, CommonInvokeException {
 		log.info("Start process to save new course in DB");
 		String courseId = courseProcessor.saveCourse(course);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Created successfully").create();
 	}
 
-	public ResponseEntity<?> update(final CourseRequest course, final String id) throws ValidationException {
+	public ResponseEntity<?> update(final CourseRequest course, final String id) throws ValidationException, CommonInvokeException {
 		log.info("Start process to update existing course in DB");
 		String courseId = courseProcessor.updateCourse(course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
@@ -252,7 +253,7 @@ public class CourseController implements CourseInterface {
 
 	// Get My course List
 	public ResponseEntity<?> getUserCourses(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
-			final String sortBy, final boolean sortAsscending) throws ValidationException {
+			final String sortBy, final boolean sortAsscending) throws ValidationException, CommonInvokeException {
 		log.info("Start process to get user course from DB based on pagination and userID");
 		PaginationResponseDto paginationResponseDto = courseProcessor.getUserCourse(userId, pageNumber, pageSize, currencyCode, sortBy, sortAsscending);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)

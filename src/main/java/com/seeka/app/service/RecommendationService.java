@@ -38,7 +38,9 @@ import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.processor.CourseProcessor;
+import com.seeka.app.processor.FacultyProcessor;
 import com.seeka.app.processor.InstituteProcessor;
+import com.seeka.app.processor.ScholarshipProcessor;
 import com.seeka.app.util.IConstant;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -49,7 +51,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class RecommendationService implements IRecommendationService {
 
 	@Autowired
-	private IFacultyService iFacultyService;
+	private FacultyProcessor facultyProcessor;
 
 	@Autowired
 	private IArticleService iArticleService;
@@ -82,7 +84,7 @@ public class RecommendationService implements IRecommendationService {
 	private IStorageService iStorageService;
 
 	@Autowired
-	private IScholarshipService iScholarshipService;
+	private ScholarshipProcessor scholarshipProcessor;
 	
 	@Autowired
 	private IUserMyCourseDAO userMyCourseDAO;
@@ -279,7 +281,7 @@ public class RecommendationService implements IRecommendationService {
 
 	private List<Faculty> getAllFacultyIds() {
 		List<String> facultyNames = iTop10CourseService.getAllDistinctFaculty();
-		List<Faculty> facultyList = iFacultyService.getFacultyListByName(facultyNames);
+		List<Faculty> facultyList = facultyProcessor.getFacultyListByName(facultyNames);
 		return facultyList;
 	}
 
@@ -386,7 +388,7 @@ public class RecommendationService implements IRecommendationService {
 				/**
 				 * Get all scholarshipIds based on country
 				 */
-				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(distinctCountryList, totalScholarshipPerPage));
+				recommendedScholarships.addAll(scholarshipProcessor.getScholarshipIdsByCountryId(distinctCountryList, totalScholarshipPerPage));
 			}
 
 			/**
@@ -395,7 +397,7 @@ public class RecommendationService implements IRecommendationService {
 			 */
 			if (recommendedScholarships.size() < totalScholarshipPerPage) {
 				recommendedScholarships
-						.addAll(iScholarshipService.getRandomScholarShipIds(totalScholarshipPerPage - recommendedScholarships.size()));
+						.addAll(scholarshipProcessor.getRandomScholarShipIds(totalScholarshipPerPage - recommendedScholarships.size()));
 			}
 		} else {
 			/**
@@ -414,7 +416,7 @@ public class RecommendationService implements IRecommendationService {
 				List<String> countryListForScholarship = new ArrayList<>();
 				countryListForScholarship.add(countryId);
 				recommendedScholarships.addAll(
-						iScholarshipService.getScholarshipIdsByCountryId(countryListForScholarship, IConstant.SCHOLARSHIPS_PER_COUNTRY_FOR_RECOMMENDATION));
+						scholarshipProcessor.getScholarshipIdsByCountryId(countryListForScholarship, IConstant.SCHOLARSHIPS_PER_COUNTRY_FOR_RECOMMENDATION));
 				/**
 				 * If recommended scholarships size exceeds 20, no need to consider other
 				 * countries
@@ -435,13 +437,13 @@ public class RecommendationService implements IRecommendationService {
 				// country.getId()).collect(Collectors.toList());
 				//List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
 
-				recommendedScholarships.addAll(iScholarshipService.getScholarshipIdsByCountryId(distinctCountryList,
+				recommendedScholarships.addAll(scholarshipProcessor.getScholarshipIdsByCountryId(distinctCountryList,
 						totalScholarshipPerPage - recommendedScholarships.size()));
 			}
 			
 			if (recommendedScholarships.size() < totalScholarshipPerPage) {
 				recommendedScholarships
-						.addAll(iScholarshipService.getRandomScholarShipIds(totalScholarshipPerPage - recommendedScholarships.size()));
+						.addAll(scholarshipProcessor.getRandomScholarShipIds(totalScholarshipPerPage - recommendedScholarships.size()));
 			}
 		}
 		/**
@@ -449,7 +451,7 @@ public class RecommendationService implements IRecommendationService {
 		 */
 		List<ScholarshipDto> scholarshipDtoList = new ArrayList<>();
 		if (!recommendedScholarships.isEmpty()) {
-			scholarshipDtoList = iScholarshipService.getAllScholarshipDetailsFromId(recommendedScholarships);
+			scholarshipDtoList = scholarshipProcessor.getAllScholarshipDetailsFromId(recommendedScholarships);
 		} 
 		return scholarshipDtoList;
 	}

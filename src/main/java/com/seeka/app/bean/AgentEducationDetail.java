@@ -10,139 +10,64 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@Data
 @Entity
+@ToString
+@EqualsAndHashCode
 @Table(name = "agent_education_detail")
 public class AgentEducationDetail {
 
-    /**
-    *
-    */
-    private String id;
-    private String course;
-    private String durationFrom;
-    private String durationTo;
-    private String institute;
-    private EducationAgent educationAgent;
-    private String createdBy;
-    private Date createdOn;
-    private String updatedBy;
-    private Date updatedOn;
-    private String deletedBy;
-    private Date deletedOn;
-
-    @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@Id
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
-    public String getId() {
-        return id;
-    }
+	private String id;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+	private Course course;
 
-    @Column(name = "course")
-    public String getCourse() {
-        return course;
-    }
+	@Column(name = "duration_from", nullable = false)
+	private String durationFrom;
 
-    public void setCourse(String course) {
-        this.course = course;
-    }
+	@Column(name = "duration_to", nullable = false)
+	private String durationTo;
 
-    @Column(name = "duration_from")
-    public String getDurationFrom() {
-        return durationFrom;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "institute_id" , nullable = false)
+	private Institute institute;
 
-    public void setDurationFrom(String durationFrom) {
-        this.durationFrom = durationFrom;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "education_agent_id", nullable = false)
+	private EducationAgent educationAgent;
 
-    @Column(name = "duration_to")
-    public String getDurationTo() {
-        return durationTo;
-    }
+	@Column(name = "created_by", length = 50)
+	private String createdBy;
 
-    public void setDurationTo(String durationTo) {
-        this.durationTo = durationTo;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on", length = 19)
+	private Date createdOn;
 
-    @Column(name = "institute")
-    public String getInstitute() {
-        return institute;
-    }
+	@Column(name = "updated_by", length = 50)
+	private String updatedBy;
 
-    public void setInstitute(String institute) {
-        this.institute = institute;
-    }
-    
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "education_agent")
-    public EducationAgent getEducationAgent() {
-        return educationAgent;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on", length = 19)
+	private Date updatedOn;
 
-    public void setEducationAgent(EducationAgent educationAgent) {
-        this.educationAgent = educationAgent;
-    }
+	@Column(name = "deleted_by", length = 50)
+	private String deletedBy;
 
-    @Column(name = "created_by")
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    @Column(name = "created_on")
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    @Column(name = "updated_by")
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    @Column(name = "updated_on")
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    @Column(name = "deleted_by")
-    public String getDeletedBy() {
-        return deletedBy;
-    }
-
-    public void setDeletedBy(String deletedBy) {
-        this.deletedBy = deletedBy;
-    }
-
-    @Column(name = "deleted_on")
-    public Date getDeletedOn() {
-        return deletedOn;
-    }
-
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
-
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deleted_on", length = 19)
+	private Date deletedOn;
 }

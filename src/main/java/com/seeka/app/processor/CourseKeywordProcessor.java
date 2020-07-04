@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.seeka.app.bean.CourseKeywords;
-import com.seeka.app.dao.CourseKeywordDAO;
+import com.seeka.app.dao.CourseKeywordDao;
 
 @Service
 @Transactional
 public class CourseKeywordProcessor {
 
 	@Autowired
-	private CourseKeywordDAO iCourseKeywordDAO;
+	private CourseKeywordDao iCourseKeywordDAO;
 
 	public void save(CourseKeywords courseKeywords) {
 		iCourseKeywordDAO.save(courseKeywords);

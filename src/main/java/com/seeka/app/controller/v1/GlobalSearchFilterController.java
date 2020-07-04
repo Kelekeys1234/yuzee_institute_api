@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.GlobalFilterSearchDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.IGlobalSearchFilterService;
 import com.seeka.app.util.PaginationUtil;
@@ -27,7 +28,8 @@ public class GlobalSearchFilterController {
 	private IGlobalSearchFilterService globalSearchFilterService;
 	
 	@PostMapping(value = "/filter")
-	public ResponseEntity<?> filterEntityBasedOnParameters(@RequestBody GlobalFilterSearchDto globalFilterSearchDto) throws ValidationException{
+	public ResponseEntity<?> filterEntityBasedOnParameters(@RequestBody GlobalFilterSearchDto globalFilterSearchDto) 
+			throws ValidationException, CommonInvokeException{
 		Map<String,Object> responseEntityMap = globalSearchFilterService.filterByEntity(globalFilterSearchDto);
 		if(globalFilterSearchDto == null || globalFilterSearchDto.getIds() == null || globalFilterSearchDto.getIds().isEmpty()) {
 			throw new ValidationException("No Courses specified to Filter");
