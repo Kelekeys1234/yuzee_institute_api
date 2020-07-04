@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.seeka.app.dao.IServiceDetailsDAO;
+import com.seeka.app.dao.ServiceDetailsDao;
 
 @Service
 @Transactional
 public class ServiceDetailsService implements IServiceDetailsService {
 
 	@Autowired
-	private IServiceDetailsDAO iServiceDetailsDAO;
+	private ServiceDetailsDao iServiceDetailsDAO;
 
 	@Override
 	public void save(com.seeka.app.bean.Service obj) {

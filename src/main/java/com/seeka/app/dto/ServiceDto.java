@@ -19,4 +19,10 @@ public class ServiceDto {
 	
 	@JsonProperty("service_name")
 	private String serviceName;
+	
+	@JsonProperty("description")
+	private String description;
+	
+	@JsonProperty("icon")
+	private String icon;
 }

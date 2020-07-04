@@ -34,7 +34,6 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
 import com.seeka.app.bean.InstituteIntake;
 import com.seeka.app.bean.InstituteService;
-import com.seeka.app.bean.Service;
 import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -42,6 +41,7 @@ import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.ServiceDto;
 import com.seeka.app.enumeration.CourseSortBy;
 import com.seeka.app.repository.InstituteRepository;
 import com.seeka.app.util.CDNServerUtil;
@@ -499,17 +499,17 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	@Override
-	public List<Service> getAllServices() {
+	public List<ServiceDto> getAllServices() {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select inst.id, inst.name , inst.description FROM service as inst where inst.is_active = 1 ORDER BY inst.created_on DESC";
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
-		List<Service> services = new ArrayList<>();
-		Service obj = null;
+		List<ServiceDto> services = new ArrayList<>();
+		ServiceDto obj = null;
 		for (Object[] row : rows) {
-			obj = new Service();
-			obj.setId(row[0].toString());
-			obj.setName(row[1].toString());
+			obj = new ServiceDto();
+			obj.setServiceId(row[0].toString());
+			obj.setServiceName(row[1].toString());
 			if (row[2] != null) {
 				obj.setDescription(row[2].toString());
 			}

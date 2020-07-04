@@ -18,6 +18,7 @@ import com.seeka.app.dto.InstituteFilterDto;
 import com.seeka.app.dto.InstituteGetRequestDto;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.InstituteSearchResultDto;
+import com.seeka.app.dto.ServiceDto;
 
 public interface InstituteDao {
 
@@ -49,7 +50,7 @@ public interface InstituteDao {
 
 	public List<InstituteGetRequestDto> getAll(Integer pageNumber, Integer pageSize);
 
-	public List<com.seeka.app.bean.Service> getAllServices();
+	public List<ServiceDto> getAllServices();
 
 	public void delete(Institute obj);
 

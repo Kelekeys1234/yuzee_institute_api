@@ -21,7 +21,7 @@ import com.seeka.app.bean.EducationAgentPartnerships;
 import com.seeka.app.bean.EducationAgentSkill;
 import com.seeka.app.dao.CourseDao;
 import com.seeka.app.dao.EducationAgentDao;
-import com.seeka.app.dao.IServiceDetailsDAO;
+import com.seeka.app.dao.ServiceDetailsDao;
 import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dto.AgentEducationDetailDto;
 import com.seeka.app.dto.AgentMediaDocumentationDto;
@@ -46,7 +46,7 @@ public class EducationAgentProcessor {
     private EducationAgentDao educationAgentDao;
 
     @Autowired
-    private IServiceDetailsDAO serviceDao;
+    private ServiceDetailsDao serviceDao;
 
     @Autowired
     private InstituteDao instituteDao;

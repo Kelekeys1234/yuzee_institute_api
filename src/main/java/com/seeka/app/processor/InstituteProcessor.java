@@ -33,7 +33,7 @@ import com.seeka.app.dao.CourseDao;
 import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dao.InstituteDomesticRankingHistoryDao;
 import com.seeka.app.dao.InstituteWorldRankingHistoryDao;
-import com.seeka.app.dao.ServiceDetailsDAO;
+import com.seeka.app.dao.ServiceDetailsDao;
 import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseSearchDto;
@@ -91,7 +91,7 @@ public class InstituteProcessor {
 	private InstituteDomesticRankingHistoryDao instituteDomesticRankingHistoryDAO;
 
 	@Autowired
-	private ServiceDetailsDAO serviceDetailsDAO;
+	private ServiceDetailsDao serviceDetailsDAO;
 
 	@Autowired
 	private IStorageService iStorageService;

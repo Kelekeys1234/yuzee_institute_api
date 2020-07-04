@@ -940,21 +940,7 @@ public class CourseProcessor {
 
 	public List<ServiceDto> getAllServices() {
 		log.debug("Inside getAllServices() method");
-		List<ServiceDto> serviceDtos = new ArrayList<>();
-		try {
-			log.info("Fetching all services from DB");
-			List<com.seeka.app.bean.Service> servicesFromDB = instituteDAO.getAllServices();
-			if(!CollectionUtils.isEmpty(servicesFromDB)) {
-				log.info("Services fetched from DB, start iterating and makie final response");
-				servicesFromDB.stream().forEach(service -> {
-					ServiceDto serviceDto = new ServiceDto(service.getId(), service.getName());
-					serviceDtos.add(serviceDto);
-				});
-			}
-		} catch (Exception exception) {
-			log.error("Exception while fetching services having exception = "+exception);
-		}
-		return serviceDtos;
+		return instituteDAO.getAllServices();
 	}
 
 	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto) throws ValidationException, CommonInvokeException {

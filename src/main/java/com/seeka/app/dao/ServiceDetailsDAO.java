@@ -1,96 +1,24 @@
 package com.seeka.app.dao;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import com.seeka.app.bean.Service;
 
-@Repository
-@SuppressWarnings({ "deprecation", "unchecked", "rawtypes" })
-public class ServiceDetailsDAO implements IServiceDetailsDAO {
+public interface ServiceDetailsDao {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    public void save(Service obj);
 
-    @Override
-    public void save(Service obj) {
-        Session session = sessionFactory.getCurrentSession();
-        session.save(obj);
-    }
+    public void update(Service obj);
 
-    @Override
-    public void update(Service obj) {
-        Session session = sessionFactory.getCurrentSession();
-        session.update(obj);
-    }
+    public Service get(String id);
 
-    @Override
-    public Service get(String id) {
-        Session session = sessionFactory.getCurrentSession();
-        Service obj = session.get(Service.class, id);
-        return obj;
-    }
+    public List<Service> getAllInstituteByCountry(String countryId);
 
-    @Override
-    public List<Service> getAllInstituteByCountry(String countryId) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Service.class);
-        crit.add(Restrictions.eq("countryObj.id", countryId));
-        return crit.list();
-    }
+    public List<Service> getAll();
 
-    @Override
-    public List<Service> getAll() {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Service.class).addOrder(Order.asc("name"));
-        return crit.list();
-    }
+    public com.seeka.app.bean.Service getServiceById(String id);
 
-    public List<String> getServices(String id) {
-        List<String> list = new ArrayList<>();
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select s.id, s.name as name, s.description from service s");
-        List<Object[]> rows = query.list();
-        for (Object[] row : rows) {
-            list.add(row[0].toString());
-        }
-        return list;
-    }
+	public List<String> getServicesById(String id);
 
-    public Service getServiceById(String id) {
-        Service service = new Service();
-        service.setId(id);
-        return service;
-    }
-
-    public List<String> getServicesById(String id) {
-        List<String> list = new ArrayList<String>();
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select s.id, s.service_name from institute_service s where s.institute_id='" + id +"'");
-        List<Object[]> rows = query.list();
-        for (Object[] row : rows) {
-            list.add(new String(row[1].toString()));
-        }
-        return list;
-    }
-    
-    public List<String> getServiceNameByInstituteId(String id) {
-        List<String> list = new ArrayList<String>();
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select s.id, s.`name` from service s inner join institute_service i on s.name = i.service_name where i.institute_id='"+id+"'");
-        List<Object[]> rows = query.list();
-        for (Object[] row : rows) {
-            list.add(new String(row[1].toString()));
-        }
-        return list;
-    }
+	public List<String> getServiceNameByInstituteId(String id);
 }
