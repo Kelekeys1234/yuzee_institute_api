@@ -17,7 +17,6 @@ import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.service.IStorageService;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -29,7 +28,7 @@ public class AccrediatedDetailProcessor {
 	private AccrediatedDetailDao accrediatedDetailDao;
 	
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor storageProcessor;
 
 	public AccrediatedDetailDto addAccrediatedDetail(AccrediatedDetailDto accrediatedDetailDto) {
 		log.info("Checking accrediation is already exists or not" + accrediatedDetailDto.getEntityId());
@@ -72,7 +71,7 @@ public class AccrediatedDetailProcessor {
 				accrediatedDetailDto.setAccrediatedName(accrediatedDetail.getAccrediatedName());
 				accrediatedDetailDto.setAccrediatedWebsite(accrediatedDetail.getAccrediatedWebsite());
 				try {
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(accrediatedDetail.getId(), "ACCREDIATED", null, "en");
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(accrediatedDetail.getId(), "ACCREDIATED", null, "en");
 					accrediatedDetailDto.setStorage(storageDTOList);
 				} catch (ValidationException e) {
 					log.error("Error invoking storage service for accrediatedId "+accrediatedDetail.getId());
@@ -90,7 +89,7 @@ public class AccrediatedDetailProcessor {
 		log.info("Delete accrediation for entityId " + entityId);
 		accrediatedDetailDao.deleteAccrediationDetailByEntityId(entityId);
 		log.info("Delete accrediation from storage service for entityId " + entityId);
-		iStorageService.deleteStorageBasedOnEntityId(entityId);
+		storageProcessor.deleteStorageBasedOnEntityId(entityId);
 	}
 	
 	public AccrediatedDetailDto updateAccrediatedDetails(String id, AccrediatedDetailDto accrediatedDetailDto) throws NotFoundException {
@@ -125,7 +124,7 @@ public class AccrediatedDetailProcessor {
 			BeanUtils.copyProperties(optAccrediatedDetail.get(), accrediatedDetailDto);
 			try {
 				log.info("going to fetch storage details fro accrediatedId "+optAccrediatedDetail.get().getId());
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(optAccrediatedDetail.get().getId(), "ACCREDIATED", null, "en");
+				List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(optAccrediatedDetail.get().getId(), "ACCREDIATED", null, "en");
 				accrediatedDetailDto.setStorage(storageDTOList);
 			} catch (ValidationException e) {
 				log.error("Error invoking storage service for accrediatedId "+optAccrediatedDetail.get().getId());
@@ -141,7 +140,7 @@ public class AccrediatedDetailProcessor {
 		log.info("Delete accrediation for id " + id);
 		accrediatedDetailDao.deleteAccrediationDetailById(id);
 		log.info("Delete accrediation from storage service for id " + id);
-		iStorageService.deleteStorageBasedOnEntityId(id);
+		storageProcessor.deleteStorageBasedOnEntityId(id);
 	}
 	
 	public List<AccrediatedDetailDto> getAllAccrediationDetails() {
@@ -160,7 +159,7 @@ public class AccrediatedDetailProcessor {
 				accrediatedDetailDto.setEntityType(accrediatedDetail.getEntityType());
 				try {
 					log.info("going to call storage service for id "+accrediatedDetail.getId());
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(accrediatedDetail.getId(), "ACCREDIATED", null, "en");
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(accrediatedDetail.getId(), "ACCREDIATED", null, "en");
 					accrediatedDetailDto.setStorage(storageDTOList);
 				} catch (ValidationException e) {
 					log.error("Error invoking storage service for accrediatedId "+accrediatedDetail.getId());

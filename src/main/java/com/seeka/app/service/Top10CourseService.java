@@ -18,6 +18,7 @@ import com.seeka.app.dto.FacultyDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.processor.FacultyProcessor;
+import com.seeka.app.processor.StorageProcessor;
 import com.seeka.app.util.IConstant;
 
 @Service
@@ -33,7 +34,7 @@ public class Top10CourseService implements ITop10CourseService {
 	private FacultyProcessor facultyProcessor;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor iStorageService;
 
 	@Override
 	public void saveTop10Courses(final Top10Course top10Course) {

@@ -18,8 +18,8 @@ import com.seeka.app.bean.Level;
 import com.seeka.app.bean.Scholarship;
 import com.seeka.app.bean.ScholarshipIntakes;
 import com.seeka.app.bean.ScholarshipLanguage;
-import com.seeka.app.dao.ScholarshipDao;
 import com.seeka.app.dao.LevelDao;
+import com.seeka.app.dao.ScholarshipDao;
 import com.seeka.app.dto.LevelDto;
 import com.seeka.app.dto.MediaDto;
 import com.seeka.app.dto.ScholarshipDto;
@@ -30,7 +30,6 @@ import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.service.ElasticSearchService;
-import com.seeka.app.service.IStorageService;
 import com.seeka.app.util.IConstant;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -50,7 +49,7 @@ public class ScholarshipProcessor {
 	private ElasticSearchService elasticSearchService;
 	
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor storageProcessor;
 
 	public Scholarship saveScholarship(final ScholarshipDto scholarshipDto) throws ValidationException {
 		log.debug("Inside saveScholarship() method");
@@ -153,7 +152,7 @@ public class ScholarshipProcessor {
 		scholarshipResponseDTO.setInstituteName(scholarship.getInstituteName());
 		
 		log.info("Calling Storage Service to get scholarship images having entityId = "+id);
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(id, ImageCategory.SCHOLARSHIP.name(), null, "en");
+		List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(id, ImageCategory.SCHOLARSHIP.name(), null, "en");
 		List<MediaDto> mediaDtos = new ArrayList<>();
 		if(!CollectionUtils.isEmpty(storageDTOList)) {
 			log.info("Storage data fetched from storage service, start iterating data");

@@ -35,6 +35,7 @@ import com.seeka.app.exception.ValidationException;
 import com.seeka.app.processor.CourseProcessor;
 import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.processor.InstituteTypeProcessor;
+import com.seeka.app.processor.StorageProcessor;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -56,7 +57,7 @@ public class EnrollmentService implements IEnrollmentService {
 	private IUsersService iUsersService;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor iStorageService;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 

@@ -41,6 +41,7 @@ import com.seeka.app.processor.CourseProcessor;
 import com.seeka.app.processor.FacultyProcessor;
 import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.processor.ScholarshipProcessor;
+import com.seeka.app.processor.StorageProcessor;
 import com.seeka.app.util.IConstant;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -81,7 +82,7 @@ public class RecommendationService implements IRecommendationService {
 	private MessageByLocaleService messageByLocalService;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor iStorageService;
 
 	@Autowired
 	private ScholarshipProcessor scholarshipProcessor;

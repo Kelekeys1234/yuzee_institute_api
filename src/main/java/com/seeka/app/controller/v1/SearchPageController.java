@@ -21,7 +21,7 @@ import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.processor.InstituteProcessor;
-import com.seeka.app.service.IStorageService;
+import com.seeka.app.processor.StorageProcessor;
 
 @RestController("searchPageControllerV1")
 @RequestMapping("/api/v1/search")
@@ -31,7 +31,7 @@ public class SearchPageController {
 	private InstituteProcessor instituteProcessor;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor storageProcessor;
 
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
 	public ResponseEntity<?> getAllCountries(@PathVariable("userId") final String userId) throws ValidationException {
@@ -47,7 +47,7 @@ public class SearchPageController {
 				null, null, null);
 
 		for (InstituteResponseDto obj : recommendedInstList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(obj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(obj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			obj.setStorageList(storageDTOList);
 		}
 		//List<CountryDto> countryList = CountryLevelFacultyUtil.getCountryList();

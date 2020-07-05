@@ -26,6 +26,7 @@ import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.processor.StorageProcessor;
 import com.seeka.app.util.DateUtil;
 
 @Service
@@ -39,7 +40,7 @@ public class ErrorReportService implements IErrorReportService {
 	private IUsersService iUsersService;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor iStorageService;
 
 	@Override
 	public void saveErrorReportCategory(final ErrorReportCategoryDto errorReportCategoryDto) {

@@ -17,6 +17,7 @@ import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.processor.CourseDeliveryModesProcessor;
 import com.seeka.app.processor.CourseProcessor;
+import com.seeka.app.processor.StorageProcessor;
 import com.seeka.app.util.CommonUtil;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -33,7 +34,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	private CourseProcessor courseProcessor;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor iStorageService;
 	
 	@Autowired
 	private CourseDeliveryModesProcessor courseAdditionalInfoProcessor;

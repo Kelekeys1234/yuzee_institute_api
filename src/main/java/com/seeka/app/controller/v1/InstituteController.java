@@ -41,8 +41,8 @@ import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.processor.InstituteServiceProcessor;
 import com.seeka.app.processor.InstituteTimingProcessor;
 import com.seeka.app.processor.InstituteTypeProcessor;
-import com.seeka.app.service.IServiceDetailsService;
-import com.seeka.app.service.IStorageService;
+import com.seeka.app.processor.ServiceDetailsProcessor;
+import com.seeka.app.processor.StorageProcessor;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.PaginationUtil;
 
@@ -59,13 +59,13 @@ public class InstituteController implements InstituteInterface {
 	private InstituteTypeProcessor instituteTypeProcessor;
 
 	@Autowired
-	private IServiceDetailsService serviceDetailsService;
+	private ServiceDetailsProcessor serviceDetailsProcessor;
 
 	@Autowired
 	private InstituteServiceProcessor instituteServiceProcessor;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor storageProcessor;
 	
 	@Autowired
 	private InstituteTimingProcessor instituteTimingProcessor;
@@ -89,7 +89,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> getAllInstituteService() throws Exception {
 		log.info("Start process to fetch all institute services from DB");
-		List<Service> serviceDetailsList = serviceDetailsService.getAll();
+		List<Service> serviceDetailsList = serviceDetailsProcessor.getAll();
 		return new GenericResponseHandlers.Builder().setData(serviceDetailsList).setMessage("Services displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -139,7 +139,7 @@ public class InstituteController implements InstituteInterface {
 			instituteList.stream().forEach(instituteResponseDto -> {
 				try {
 					log.info("Calling Storage service to get imageCategories for Institute");
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 					instituteResponseDto.setStorageList(storageDTOList);
 				} catch (ValidationException e) {
 					log.error("Error invoking Storage service having exception ="+e);
@@ -198,7 +198,7 @@ public class InstituteController implements InstituteInterface {
 			instituteResponseDtoList.stream().forEach(instituteResponseDto -> {
 				try {
 					log.info("Invoking storage service to fetch images for institutes");
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 					instituteResponseDto.setStorageList(storageDTOList);
 				} catch (ValidationException e) {
 					log.error("Error invoking Storage service having exception "+e);
@@ -317,7 +317,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> getInstituteImage(final String instituteId) throws Exception {
 		log.info("Start process to fetch all InstituteImages for instituteId = "+instituteId);
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteId, ImageCategory.INSTITUTE.toString(), null, "en");
+		List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteId, ImageCategory.INSTITUTE.toString(), null, "en");
 		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
 	}
 
@@ -588,7 +588,7 @@ public class InstituteController implements InstituteInterface {
 
         for (Service serviceDetails : list) {
             try {
-                serviceDetailsService.save(serviceDetails);
+            	serviceDetailsProcessor.save(serviceDetails);
             } catch (Exception e) {
                 log.error("Exception while adding services in DB having exception = "+e);
             }

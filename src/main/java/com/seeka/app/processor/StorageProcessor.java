@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+package com.seeka.app.processor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import com.seeka.app.util.IConstant;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
-public class StorageService implements IStorageService {
+public class StorageProcessor {
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -28,7 +28,6 @@ public class StorageService implements IStorageService {
 	@Autowired
 	private MessageByLocaleService messageByLocalService;
 
-	@Override
 	public List<StorageDto> getStorageInformation(final String entityId, String entityType, final String type, final String language)
 			throws ValidationException {
 
@@ -60,7 +59,6 @@ public class StorageService implements IStorageService {
 		return resultList;
 	}
 
-	@Override
 	public List<StorageDto> getStorageInformationBasedOnEntityIdList(final List<String> entityIds, String entityType, final String type,
 			final String language) throws ValidationException {
 		String url = IConstant.STORAGE_CONNECTION_URL + "/get";
@@ -90,10 +88,10 @@ public class StorageService implements IStorageService {
 		return resultList;
 	}
 	
-	@Override
 	public void deleteStorageBasedOnEntityId(final String entityId) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.STORAGE_CONNECTION_URL + "/deleteStorage");
 		builder.queryParam("entityId", entityId);
 		restTemplate.delete(builder.build().toUri());
 	}
+
 }

@@ -32,6 +32,7 @@ import com.seeka.app.enumeration.HelpEnum;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.processor.StorageProcessor;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
 import com.seeka.app.util.PaginationUtil;
@@ -108,7 +109,7 @@ public class HelpService implements IHelpService {
 	private IMediaService iMediaService;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor iStorageService;
 
 	@Override
 	public Map<String, Object> save(@Valid final HelpDto helpDto, final String userId) {

@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+package com.seeka.app.processor;
 
 import java.util.List;
 
@@ -10,32 +10,27 @@ import com.seeka.app.dao.ServiceDetailsDao;
 
 @Service
 @Transactional
-public class ServiceDetailsService implements IServiceDetailsService {
+public class ServiceDetailsProcessor {
 
 	@Autowired
 	private ServiceDetailsDao iServiceDetailsDAO;
 
-	@Override
 	public void save(com.seeka.app.bean.Service obj) {
 		iServiceDetailsDAO.save(obj);
 	}
 
-	@Override
 	public void update(com.seeka.app.bean.Service obj) {
 		iServiceDetailsDAO.update(obj);
 	}
 
-	@Override
 	public com.seeka.app.bean.Service get(String id) {
 		return iServiceDetailsDAO.get(id);
 	}
 
-	@Override
 	public List<com.seeka.app.bean.Service> getAllInstituteByCountry(String countryId) {
 		return iServiceDetailsDAO.getAllInstituteByCountry(countryId);
 	}
 
-	@Override
 	public List<com.seeka.app.bean.Service> getAll() {
 		return iServiceDetailsDAO.getAll();
 	}

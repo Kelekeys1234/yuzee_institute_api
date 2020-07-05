@@ -45,9 +45,9 @@ import com.seeka.app.dao.CourseEnglishEligibilityDao;
 import com.seeka.app.dao.CourseMinRequirementDao;
 import com.seeka.app.dao.FacultyDao;
 import com.seeka.app.dao.IGlobalStudentDataDAO;
-import com.seeka.app.dao.LevelDao;
 import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dao.InstituteDao;
+import com.seeka.app.dao.LevelDao;
 import com.seeka.app.dao.ViewDao;
 import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.dto.AdvanceSearchDto;
@@ -85,7 +85,6 @@ import com.seeka.app.repository.CourseRepository;
 import com.seeka.app.service.ElasticSearchService;
 import com.seeka.app.service.IEnrollmentService;
 import com.seeka.app.service.IGlobalStudentData;
-import com.seeka.app.service.IStorageService;
 import com.seeka.app.service.ITop10CourseService;
 import com.seeka.app.service.IViewService;
 import com.seeka.app.service.UserRecommendationService;
@@ -120,7 +119,7 @@ public class CourseProcessor {
 	private CourseMinRequirementDao courseMinRequirementDao;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor storageProcessor;
 
 	@Autowired
 	private MessageByLocaleService messageByLocaleService;
@@ -227,7 +226,7 @@ public class CourseProcessor {
 		}
 		
 		log.info("Calling Storage service to get institute images from DB");
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
+		List<StorageDto> storageDTOList = storageProcessor.getStorageInformationBasedOnEntityIdList(
 				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), 
 				ImageCategory.INSTITUTE.toString(), null, "en");
 		
@@ -735,7 +734,7 @@ public class CourseProcessor {
 				courses.stream().forEach(course -> {
 					try {
 						log.info("Calling Storage service to fetch course images");
-						List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
+						List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(course.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 						course.setStorageList(storageDTOList);
 					} catch (ValidationException e) {
 						log.error("Error invoking Storage service exception {}",e);
@@ -843,7 +842,7 @@ public class CourseProcessor {
 			courses.stream().forEach(courseRequest -> {
 				try {
 					log.info("Calling Storage Service to fetch images based for instituteId = "+courseRequest.getInstituteId());
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), 
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(courseRequest.getInstituteId(), 
 							ImageCategory.INSTITUTE.toString(), null, "en");
 					courseRequest.setStorageList(storageDTOList);
 				} catch (ValidationException e) {
@@ -927,7 +926,7 @@ public class CourseProcessor {
 		String[] compareValues = compareValue.split(",");
 		for (String id : compareValues) {
 			CourseRequest courseRequest = courseDAO.getCourseById(id);
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setStorageList(storageDTOList);
 			courses.add(courseRequest);
 		}
@@ -963,7 +962,7 @@ public class CourseProcessor {
 		List<String> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
 		
 		log.info("Calling Storage service to get images based on entityId");
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformationBasedOnEntityIdList(
+		List<StorageDto> storageDTOList = storageProcessor.getStorageInformationBasedOnEntityIdList(
 				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
 		
 		log.info("Fetching institute google review from DB based on instituteId");
@@ -1103,7 +1102,7 @@ public class CourseProcessor {
 				courses.stream().forEach(courseRequest -> {
 					try {
 						log.info("Start invoking Storage service to fetch images");
-						List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
+						List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 						courseRequest.setStorageList(storageDTOList);
 					} catch (ValidationException e) {
 						log.error("Error invoking Storage service having exception = "+e);
@@ -1149,7 +1148,7 @@ public class CourseProcessor {
 				courses.stream().forEach(course -> {
 					try {
 						log.info("Calling storage service to fetch course images");
-						List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
+						List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(course.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 						course.setStorageList(storageDTOList);
 					} catch (ValidationException e) {
 						log.error("Error invoking Storage service having exception = "+e);
@@ -1681,7 +1680,7 @@ public class CourseProcessor {
 				}
 				try {
 					log.info("going to fetch logo from storage service for courseId "+course.getId());
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(course.getId(), 
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(course.getId(), 
 							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
 					nearestCourse.setStorageList(storageDTOList);
 				} catch (ValidationException e) {
@@ -1742,7 +1741,7 @@ public class CourseProcessor {
 					BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
 					nearestCourse.setDistance(Double.valueOf(initialRadius));
 					log.info("fetching institute logo from storage service for instituteID " + nearestCourseDTO.getId());
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestCourseDTO.getId(),
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestCourseDTO.getId(),
 							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
 					nearestCourse.setStorageList(storageDTOList);
 					
@@ -1835,7 +1834,7 @@ public class CourseProcessor {
 				instituteResponseDto.setInstituteServices(instituteServices);
 			}
 			log.info("Calling Storage Service to fetch institute images");
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
 			
@@ -1924,7 +1923,7 @@ public class CourseProcessor {
 				BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
 				log.info("going to fetch logo for courses from storage service for courseID "+nearestCourseDTO.getId());
 				try {
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestCourseDTO.getId(), 
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestCourseDTO.getId(), 
 							ImageCategory.COURSE.toString(), Type.LOGO.name(),"en");
 					nearestCourse.setStorageList(storageDTOList);
 				} catch (ValidationException e) {

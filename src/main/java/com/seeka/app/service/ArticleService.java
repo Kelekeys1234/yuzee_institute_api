@@ -45,6 +45,7 @@ import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
+import com.seeka.app.processor.StorageProcessor;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -90,7 +91,7 @@ public class ArticleService implements IArticleService {
 	private IArticleUserDemographicDao iArticleUserDemographicDao;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor storageProcessor;
 
 	@Autowired
 	private MessageByLocaleService messageByLocalService;
@@ -112,7 +113,7 @@ public class ArticleService implements IArticleService {
 	@Override
 	public ArticleResponseDetailsDto getArticleById(final String articleId) throws ValidationException {
 		SeekaArticles article = articleDAO.findById(articleId);
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
+		List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
 		ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
 		articleResponseDetailsDto.setStorageList(storageDTOList);
 		return articleResponseDetailsDto;
@@ -149,7 +150,7 @@ public class ArticleService implements IArticleService {
 			 * Remove this once there is API available to get storage based on all articles
 			 * in list with a single API.
 			 */
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
+			List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
 			articleResponseDetailsDto.setStorageList(storageDTOList);
 		}
 		return articleResponseDetailsDtoList;

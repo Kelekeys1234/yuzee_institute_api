@@ -58,7 +58,6 @@ import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.repository.InstituteRepository;
 import com.seeka.app.service.ElasticSearchService;
-import com.seeka.app.service.IStorageService;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
@@ -94,7 +93,7 @@ public class InstituteProcessor {
 	private ServiceDetailsDao serviceDetailsDAO;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor storageProcessor;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -181,7 +180,7 @@ public class InstituteProcessor {
 				instituteResponseDTO.setLocation(institute.getLatitude() + "," + institute.getLongitude());
 				try {
 					log.info("Invoking storage service to get images for instituteId = "+instituteResponseDTO.getId());
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDTO.getId(), ImageCategory.INSTITUTE.toString(),
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteResponseDTO.getId(), ImageCategory.INSTITUTE.toString(),
 								null, "en");
 					instituteResponseDTO.setStorageList(storageDTOList);
 				} catch (ValidationException e) {
@@ -905,7 +904,7 @@ public class InstituteProcessor {
 					BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
 					nearestInstitute.setDistance(Double.valueOf(initialRadius));
 					log.info("going to fetch logo for institute from sotrage service for institutueID "+nearestInstituteDTO.getId());
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getId(), 
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestInstituteDTO.getId(), 
 							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
 					nearestInstitute.setStorageList(storageDTOList);
 					log.info("fetching instituteTiming from DB for instituteId = " +nearestInstituteDTO.getId());
@@ -980,7 +979,7 @@ public class InstituteProcessor {
 				BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
 				try {
 					log.info("calling storage service to fetch logos for institute for instituteID "+nearestInstituteDTO.getId());
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(nearestInstituteDTO.getId(), 
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestInstituteDTO.getId(), 
 							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
 					nearestInstitute.setStorageList(storageDTOList);
 				} catch (ValidationException e) {
@@ -1027,7 +1026,7 @@ public class InstituteProcessor {
 				BeanUtils.copyProperties(institute, nearestInstitute);
 				log.info("going to fetch institute logo from storage service having instituteID "+institute.getId());
 				try {
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(institute.getId(), 
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(institute.getId(), 
 							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
 					nearestInstitute.setStorageList(storageDTOList);
 				} catch (ValidationException e) {

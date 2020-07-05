@@ -18,6 +18,7 @@ import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.processor.StorageProcessor;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -27,7 +28,7 @@ public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 	private CourseDao icourseDao;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor iStorageService;
 
 	@Override
 	public Map<String, Object> filterByEntity(GlobalFilterSearchDto globalSearchFilterDto) throws ValidationException, CommonInvokeException {

@@ -41,7 +41,7 @@ import com.seeka.app.processor.CourseEnglishEligibilityProcessor;
 import com.seeka.app.processor.CourseKeywordProcessor;
 import com.seeka.app.processor.CourseProcessor;
 import com.seeka.app.processor.InstituteProcessor;
-import com.seeka.app.service.IStorageService;
+import com.seeka.app.processor.StorageProcessor;
 import com.seeka.app.service.IUsersService;
 import com.seeka.app.service.UserRecommendationService;
 import com.seeka.app.util.PaginationUtil;
@@ -68,7 +68,7 @@ public class CourseController implements CourseInterface {
 	private UserRecommendationService userRecommendationService;
 
 	@Autowired
-	private IStorageService iStorageService;
+	private StorageProcessor storageProcessor;
 
 	@Autowired
 	private MessageByLocaleService messageByLocalService;
@@ -201,7 +201,7 @@ public class CourseController implements CourseInterface {
 		if (null == instituteResponseDto) {
 			throw new NotFoundException("No Institute found in DB for instituteId = "+instituteId);
 		}
-		List<StorageDto> storageDTOList = iStorageService.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+		List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 		instituteResponseDto.setStorageList(storageDTOList);
 
 		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByInstitute(instituteId, request);
