@@ -1,4 +1,4 @@
-package com.seeka.app.controller.v1;
+/*package com.seeka.app.controller.v1;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -116,3 +116,4 @@ public class ViewsController {
 	}
 
 }
+*/

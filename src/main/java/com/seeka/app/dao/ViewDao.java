@@ -1,4 +1,4 @@
-package com.seeka.app.dao;
+/*package com.seeka.app.dao;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -169,3 +169,4 @@ public class ViewDao implements IViewDao {
 				.setParameter(1, userId).setParameter(2, entityType).getResultList();
 	}
 }
+*/

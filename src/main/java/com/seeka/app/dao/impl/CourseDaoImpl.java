@@ -101,8 +101,7 @@ public class CourseDaoImpl implements CourseDao {
 
 		String sqlQuery = "select count(*) from course crs inner join institute inst "
 				+ " on crs.institute_id = inst.id"
-				+ " where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id='"
-				+ courseSearchDto.getUserId() + "')";
+				+ " where 1=1 and crs.is_active=1";
 		if (null != courseSearchDto.getInstituteId()) {
 			sqlQuery += " and inst.id ='" + courseSearchDto.getInstituteId() + "'";
 		}
@@ -150,8 +149,7 @@ public class CourseDaoImpl implements CourseDao {
 				+ " crs.updated_on, crs.is_active ,inst.latitude as latitude,inst.longitude as longitute,inst.country_name as countryName,"
 				+ " inst.city_name as cityName, cai.delivery_type, cai.study_mode from course crs inner join institute inst  on crs.institute_id = inst.id "
 				+ " left join course_delivery_modes cai on cai.course_id = crs.id"
-				+ " where 1=1 and crs.is_active=1 and crs.id not in (select umc.course_id from user_my_course umc where umc.user_id='"
-				+ courseSearchDto.getUserId() + "')";
+				+ " where 1=1 and crs.is_active=1";
 
 		boolean showIntlCost = false;
 		if (null != courseSearchDto.getInstituteId()) {
@@ -1023,9 +1021,7 @@ public class CourseDaoImpl implements CourseDao {
 		String sizeSqlQuery = "select count(*) from course crs inner join institute inst "
 				+ " on crs.institute_id = inst.id"
 				+ " left join course_delivery_modes cai on cai.course_id = crs.id"
-				+ " left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id "
-				+ " not in (select umc.course_id from user_my_course umc where umc.user_id='"
-				+ courseSearchDto.getUserId() + "') ";
+				+ " left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.is_active=1";
 		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
 			sizeSqlQuery = addConditionForCourseList(sizeSqlQuery, globalSearchFilterDto.getIds());
 		}
@@ -1054,8 +1050,7 @@ public class CourseDaoImpl implements CourseDao {
 				+ " on crs.institute_id = inst.id"
 				+ " left join course_delivery_modes cai on cai.course_id = crs.id"
 				+ " inner join faculty f on f.id = crs.faculty_id"
-				+ " left join institute_service iis on iis.institute_id = inst.id where 1=1 and crs.is_active=1 and crs.id not in"
-				+ " (select umc.course_id from user_my_course umc where umc.user_id='"+ courseSearchDto.getUserId() + "')";
+				+ " left join institute_service iis on iis.institute_id = inst.id where 1=1 and crs.is_active=1";
 
 		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
 			sqlQuery = addConditionForCourseList(sqlQuery, globalSearchFilterDto.getIds());

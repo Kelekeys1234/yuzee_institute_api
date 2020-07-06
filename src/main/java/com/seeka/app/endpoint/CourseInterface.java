@@ -23,6 +23,7 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.exception.CommonInvokeException;
+import com.seeka.app.exception.InvokeException;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 
@@ -55,7 +56,7 @@ public interface CourseInterface {
 			@RequestParam(required = false) final String courseName, @RequestParam(required = false) final String currencyCode,
 			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String sortBy, 
 			@RequestParam(required = false) final boolean sortAsscending, @RequestHeader(required = true) final String userId,
-			@RequestParam(required = false) final String date) throws ValidationException;
+			@RequestParam(required = false) final String date) throws ValidationException, InvokeException;
 
 	@PostMapping(value = "/search")
 	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final String userId,
@@ -82,14 +83,14 @@ public interface CourseInterface {
 	@GetMapping(value = "/multiple/faculty/{facultyId}")
 	public ResponseEntity<?> getCouresesByListOfFacultyId(@Valid @PathVariable final String facultyId) throws Exception;
 
-	@PostMapping(value = "/user")
-	public ResponseEntity<?> userCourses(@Valid @RequestBody final UserCourse userCourse) throws Exception;
+//	@PostMapping(value = "/user")
+//	public ResponseEntity<?> userCourses(@Valid @RequestBody final UserCourse userCourse) throws Exception;
 
-	@GetMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getUserCourses(@PathVariable final String userId, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = false) final String currencyCode,
-			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final boolean sortAsscending) 
-			throws ValidationException, CommonInvokeException;
+//	@GetMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
+//	public ResponseEntity<?> getUserCourses(@PathVariable final String userId, @PathVariable final Integer pageNumber,
+//			@PathVariable final Integer pageSize, @RequestParam(required = false) final String currencyCode,
+//			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final boolean sortAsscending) 
+//			throws ValidationException, CommonInvokeException;
 
 	@PostMapping(value = "/compare")
 	public ResponseEntity<?> addUserCompareCourse(@Valid @RequestBody final UserCourse userCourse) throws Exception;
@@ -115,7 +116,7 @@ public interface CourseInterface {
 	public ResponseEntity<Object> getCourseNoResultRecommendation(@PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(required = true) final String facultyId,
 			@RequestParam(required = true) final String countryId,
-			@RequestParam(required = true) final String userCountry) throws ValidationException;
+			@RequestParam(required = true) final String userCountry) throws ValidationException, InvokeException;
 
 	@GetMapping(value = "/keyword/recommendatation/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<Object> getCourseKeywordRecommendation(@PathVariable final Integer pageNumber,

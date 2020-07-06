@@ -1,4 +1,4 @@
-package com.seeka.app.bean;
+/*package com.seeka.app.bean;
 
 import java.io.Serializable;
 
@@ -16,18 +16,18 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
-/**
+*//**
  *
  * @author SeekADegree
  *
- */
+ *//*
 @Entity
 @Table(name = "user_view_data")
 public class UserViewData implements Serializable {
 
-	/**
+	*//**
 	 *
-	 */
+	 *//*
 	private static final long serialVersionUID = 2268386819742613960L;
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
@@ -173,3 +173,4 @@ public class UserViewData implements Serializable {
 	}
 
 }
+*/

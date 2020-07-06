@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+/*package com.seeka.app.service;
 
 import java.util.Date;
 import java.util.List;
@@ -30,3 +30,4 @@ public interface IViewService {
 	public List<String> getRandomUserWatchCourseIds(String userId, String entityType, Integer startIndex, Integer pageSize);
 
 }
+*/

@@ -14,6 +14,7 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.controller.handler.ViewTransactionHandler;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
@@ -30,10 +31,12 @@ import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
+import com.seeka.app.dto.UserMyCourseDto;
 import com.seeka.app.endpoint.CourseInterface;
 import com.seeka.app.enumeration.EnglishType;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.CommonInvokeException;
+import com.seeka.app.exception.InvokeException;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
@@ -75,6 +78,9 @@ public class CourseController implements CourseInterface {
 
 	@Autowired
 	private IUsersService iUsersService;
+	
+	@Autowired
+	private ViewTransactionHandler viewTransactionHandler;
 
 	public ResponseEntity<?> save(final CourseRequest course) throws ValidationException, CommonInvokeException {
 		log.info("Start process to save new course in DB");
@@ -114,7 +120,7 @@ public class CourseController implements CourseInterface {
 			final List<String> facultyIds, final List<String> cityIds, final List<String> levelIds, final List<String> serviceIds, final Double minCost, 
 			final Double maxCost, final Integer minDuration, final Integer maxDuration, final String courseName, final String currencyCode, 
 			final String searchKeyword, final String sortBy, final boolean sortAsscending, final String userId, final String date) 
-			throws ValidationException {
+			throws ValidationException, InvokeException {
 		log.info("Start process to search course based on different passed filters");
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryNames(countryIds);
@@ -145,12 +151,16 @@ public class CourseController implements CourseInterface {
 	}
 
 	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto, final String searchKeyword)
-			throws ValidationException {
+			throws ValidationException, InvokeException {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		
+		log.info("Calling view transaction service to fetch user my course data");
+		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
+				"COURSE", "savedCourse");
+		
 		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage(), 
-					searchKeyword);
-		int totalCount = courseProcessor.getCountforNormalCourse(courseSearchDto, searchKeyword);
+					searchKeyword, userMyCourseDtos);
+		int totalCount = courseProcessor.getCountforNormalCourse(courseSearchDto, searchKeyword, userMyCourseDtos);
 		
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
 		
@@ -170,14 +180,17 @@ public class CourseController implements CourseInterface {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
 		
-		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto);
-		int totalCount = courseProcessor.getCountOfAdvanceSearch(courseSearchDto);
+		log.info("Calling view transaction service to fetch user my course data");
+		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
+				"COURSE", "savedCourse");
 		
-		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,courseSearchDto.getMaxSizePerPage(), totalCount);
+		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto, userMyCourseDtos);
+		int totalCount = courseProcessor.getCountOfAdvanceSearch(courseSearchDto, userMyCourseDtos);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,courseSearchDto.getMaxSizePerPage(), courseList.size());
 		
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(courseList);
-		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalCount(courseList.size());
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
@@ -245,20 +258,14 @@ public class CourseController implements CourseInterface {
 				.setMessage("Courses Displayed successfully").setData(courseResponseDto).create();
 	}
 
-	public ResponseEntity<?> userCourses(final UserCourse userCourse) throws Exception {
-		log.info("Start process to save user courses in DB");
-		courseProcessor.addUserCourses(userCourse);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("User Course added successfully").create();
-	}
-
-	// Get My course List
+	/*// Get My course List
 	public ResponseEntity<?> getUserCourses(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
 			final String sortBy, final boolean sortAsscending) throws ValidationException, CommonInvokeException {
 		log.info("Start process to get user course from DB based on pagination and userID");
 		PaginationResponseDto paginationResponseDto = courseProcessor.getUserCourse(userId, pageNumber, pageSize, currencyCode, sortBy, sortAsscending);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
 				.setMessage("User Courses displayed successfully").create();
-	}
+	}*/
 
 	public ResponseEntity<?> addUserCompareCourse(final UserCourse userCourse) throws Exception {
 		log.info("Start process to save user compare couses in DB");
@@ -313,7 +320,7 @@ public class CourseController implements CourseInterface {
 
 	// This API is used when in normal or global search if data is not available based on filter.
 	public ResponseEntity<Object> getCourseNoResultRecommendation(final Integer pageNumber, final Integer pageSize, final String facultyId,
-			final String countryId, final String userCountry) throws ValidationException {
+			final String countryId, final String userCountry) throws ValidationException, InvokeException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> courseResponseDtos = courseProcessor.getCourseNoResultRecommendation(userCountry,
 				facultyId, countryId, startIndex, pageSize);

@@ -1,4 +1,4 @@
-package com.seeka.app.dao;
+/*package com.seeka.app.dao;
 
 import java.util.Date;
 import java.util.List;
@@ -28,3 +28,4 @@ public interface IViewDao {
 	
 	public List<String> getRandomUserWatchCourseIds(String userId, String entityType, Integer startIndex, Integer pageSize);
 }
+*/

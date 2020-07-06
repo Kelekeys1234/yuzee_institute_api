@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+/*package com.seeka.app.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,7 +89,7 @@ public class ViewService implements IViewService {
 
 	@Override
 	public List<UserCourseView> userVisistedCourseBasedOncity(final String cityName, final Date fromDate, final Date toDate) throws ValidationException {
-		/**
+		*//**
 		 * Find unique courses viewed by how many unique users based on city.
 		 *
 		 * It is not required that the user's citizenship must be the same city.
@@ -98,7 +98,7 @@ public class ViewService implements IViewService {
 		 * how many users visited courses of new york irrespective of whether visited
 		 * the user is lived anywhere in the world.
 		 *
-		 */
+		 *//*
 		if (cityName != null) {
 			return iViewDataDao.userVisistedCourseBasedOncity(cityName, fromDate, toDate);
 		} else {
@@ -109,7 +109,7 @@ public class ViewService implements IViewService {
 	@Override
 	public List<UserCourseView> userVisistedCourseBasedOnCountry(final String countryName, final Date fromDate, final Date toDate) throws ValidationException {
 
-		/**
+		*//**
 		 * Find unique courses viewed by how many unique users based on country.
 		 *
 		 * It is not required that the user's citizenship must be the same country.
@@ -118,7 +118,7 @@ public class ViewService implements IViewService {
 		 * many users visited courses of USA irrespective of whether visited the user is
 		 * lived anywhere in the world.
 		 *
-		 */
+		 *//*
 		if (StringUtils.isEmpty(countryName)) {
 			return iViewDataDao.userVisistedCourseBasedOnCountry(countryName, fromDate, toDate);
 		} else {
@@ -131,3 +131,4 @@ public class ViewService implements IViewService {
 		return iViewDataDao.getRandomUserWatchCourseIds(userId, entityType, startIndex, pageSize);
 	}
 }
+*/

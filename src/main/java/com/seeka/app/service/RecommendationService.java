@@ -24,7 +24,6 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.bean.UserViewData;
-import com.seeka.app.dao.IUserMyCourseDAO;
 import com.seeka.app.dto.ArticleResposeDto;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.GlobalData;
@@ -87,8 +86,8 @@ public class RecommendationService implements IRecommendationService {
 	@Autowired
 	private ScholarshipProcessor scholarshipProcessor;
 	
-	@Autowired
-	private IUserMyCourseDAO userMyCourseDAO;
+//	@Autowired
+//	private IUserMyCourseDAO userMyCourseDAO;
 
 	@Value("${total.scholarship.per.page}")
 	private Integer totalScholarshipPerPage;
@@ -808,9 +807,9 @@ public class RecommendationService implements IRecommendationService {
 		List<String> userViewCourseIds = null;
 		int courseToDisplay = 10;
 		log.info("fetching courseIDs from usermyCourses table for userId "+userId);
-		List<String> userMyCourseIds = userMyCourseDAO.getDataByUserIDWithPagination(userId, 0, courseToDisplay);
+//		List<String> userMyCourseIds = userMyCourseDAO.getDataByUserIDWithPagination(userId, 0, courseToDisplay);
 
-		if (userMyCourseIds.size() < 10) {
+		/*if (userMyCourseIds.size() < 10) {
 			log.info("if user saved course data is less than 10 then going to fetch user view courses from DB for userId "+userId);
 			courseToDisplay = courseToDisplay - userMyCourseIds.size();
 			userViewCourseIds = viewService.getRandomUserWatchCourseIds(userId, "COURSE", 0, courseToDisplay);
@@ -839,7 +838,7 @@ public class RecommendationService implements IRecommendationService {
 				}
 				myHistoryDtos.add(myHistoryDto);
 			});
-		}
+		}*/
 		
 		if (!CollectionUtils.isEmpty(userViewCourseIds)) {
 			log.info("if user view course are not empty then start fetching courseID from it");
