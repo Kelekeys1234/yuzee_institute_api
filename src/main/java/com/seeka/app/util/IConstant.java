@@ -101,7 +101,7 @@ public class IConstant {
 	public static final String COMMON_CONNECTION_URL = "http://" + COMMON;
 	public static final String REVIEW_CONNECTION_URL = "http://" + REVIEW;
 	
-	public static final String VIEW_TRANSACTION = "VIEW-TRANSACTION/transaction/api/v1/course";
+	public static final String VIEW_TRANSACTION = "VIEW-TRANSACTION/transaction/api/v1";
 	public static final String VIEW_TRANSACTION_URL = "http://" + VIEW_TRANSACTION;
 
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";

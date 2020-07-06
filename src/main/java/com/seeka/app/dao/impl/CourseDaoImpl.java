@@ -24,6 +24,7 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Course;
@@ -96,12 +97,17 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	@Override
-	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword) {
+	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword, List<String> entityIds) {
 		Session session = sessionFactory.getCurrentSession();
 
 		String sqlQuery = "select count(*) from course crs inner join institute inst "
 				+ " on crs.institute_id = inst.id"
 				+ " where 1=1 and crs.is_active=1";
+		
+		if(!CollectionUtils.isEmpty(entityIds)) {
+			sqlQuery += " and crs.id NOT IN (" +entityIds.stream().map(String::valueOf).collect(Collectors.joining("','", "'", "'")) + ")";
+		}
+		
 		if (null != courseSearchDto.getInstituteId()) {
 			sqlQuery += " and inst.id ='" + courseSearchDto.getInstituteId() + "'";
 		}
@@ -140,7 +146,7 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final String searchKeyword, final List<String> courseIds,
-			final Integer startIndex, final boolean uniqueCourseName) {
+			final Integer startIndex, final boolean uniqueCourseName, List<String> entityIds) {
 		Session session = sessionFactory.getCurrentSession();
 
 		String sqlQuery = "select distinct crs.id as courseId, crs.name as courseName, inst.id as instId, inst.name as instName, crs.cost_range,"
@@ -152,6 +158,11 @@ public class CourseDaoImpl implements CourseDao {
 				+ " where 1=1 and crs.is_active=1";
 
 		boolean showIntlCost = false;
+		
+		if(!CollectionUtils.isEmpty(entityIds)) {
+			sqlQuery += " and crs.id NOT IN (" +entityIds.stream().map(String::valueOf).collect(Collectors.joining("','", "'", "'")) + ")";
+		}
+		
 		if (null != courseSearchDto.getInstituteId()) {
 			sqlQuery += " and inst.id ='" + courseSearchDto.getInstituteId() +"'";
 		}
@@ -1011,7 +1022,7 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	@Override
-	public int getCountOfAdvanceSearch(final Object... values) {
+	public int getCountOfAdvanceSearch(List<String> entityIds, final Object... values) {
 		AdvanceSearchDto courseSearchDto = (AdvanceSearchDto) values[0];
 		GlobalFilterSearchDto globalSearchFilterDto = null;
 
@@ -1022,6 +1033,11 @@ public class CourseDaoImpl implements CourseDao {
 				+ " on crs.institute_id = inst.id"
 				+ " left join course_delivery_modes cai on cai.course_id = crs.id"
 				+ " left join institute_service iis  on iis.institute_id = inst.id where 1=1 and crs.is_active=1";
+		
+		if(!CollectionUtils.isEmpty(entityIds)) {
+			sizeSqlQuery += " and crs.id NOT IN (" + entityIds.stream().map(String::valueOf).collect(Collectors.joining("','", "'", "'")) + ")";
+		}
+		
 		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
 			sizeSqlQuery = addConditionForCourseList(sizeSqlQuery, globalSearchFilterDto.getIds());
 		}
@@ -1032,7 +1048,7 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	@Override
-	public List<CourseResponseDto> advanceSearch(final Object... values) throws CommonInvokeException {
+	public List<CourseResponseDto> advanceSearch(List<String> entityIds, final Object... values) throws CommonInvokeException {
 		AdvanceSearchDto courseSearchDto = (AdvanceSearchDto) values[0];
 		GlobalFilterSearchDto globalSearchFilterDto = null;
 
@@ -1052,6 +1068,10 @@ public class CourseDaoImpl implements CourseDao {
 				+ " inner join faculty f on f.id = crs.faculty_id"
 				+ " left join institute_service iis on iis.institute_id = inst.id where 1=1 and crs.is_active=1";
 
+		if(!CollectionUtils.isEmpty(entityIds)) {
+			sqlQuery += " and crs.id NOT IN (" + entityIds.stream().map(String::valueOf).collect(Collectors.joining("','", "'", "'")) + ")";
+		}
+		
 		if (globalSearchFilterDto != null && globalSearchFilterDto.getIds() != null && globalSearchFilterDto.getIds().size() > 0) {
 			sqlQuery = addConditionForCourseList(sqlQuery, globalSearchFilterDto.getIds());
 		}

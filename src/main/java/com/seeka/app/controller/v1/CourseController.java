@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -157,10 +158,11 @@ public class CourseController implements CourseInterface {
 		log.info("Calling view transaction service to fetch user my course data");
 		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
 				"COURSE", "savedCourse");
+		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
 		
 		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage(), 
-					searchKeyword, userMyCourseDtos);
-		int totalCount = courseProcessor.getCountforNormalCourse(courseSearchDto, searchKeyword, userMyCourseDtos);
+					searchKeyword, entityIds);
+		int totalCount = courseProcessor.getCountforNormalCourse(courseSearchDto, searchKeyword, entityIds);
 		
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
 		
@@ -183,14 +185,15 @@ public class CourseController implements CourseInterface {
 		log.info("Calling view transaction service to fetch user my course data");
 		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
 				"COURSE", "savedCourse");
+		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
 		
-		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto, userMyCourseDtos);
-		int totalCount = courseProcessor.getCountOfAdvanceSearch(courseSearchDto, userMyCourseDtos);
-		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,courseSearchDto.getMaxSizePerPage(), courseList.size());
+		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto, entityIds);
+		int totalCount = courseProcessor.getCountOfAdvanceSearch(courseSearchDto, entityIds);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,courseSearchDto.getMaxSizePerPage(), totalCount);
 		
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(courseList);
-		paginationResponseDto.setTotalCount(courseList.size());
+		paginationResponseDto.setTotalCount(totalCount);
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());

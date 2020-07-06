@@ -1,4 +1,4 @@
-package com.seeka.app.controller.v1;
+/*package com.seeka.app.controller.v1;
 
 import java.util.List;
 import java.util.Set;
@@ -37,16 +37,16 @@ public class RecommendationController {
 
 	@GetMapping("/institute")
 	public ResponseEntity<?> getRecommendedInstitutes(@RequestHeader(value = "userId") final String userId,
-			@RequestHeader(value = "language") final String language/*
+			@RequestHeader(value = "language") final String language
 																	 * , @RequestParam(value = "startIndex", required = false) Long startIndex,
 																	 *
 																	 * @RequestParam(value = "pageSize") Long pageSize, @RequestParam(value =
 																	 * "pageNumber", required=false) Long pageNumber
-																	 */) throws ValidationException, NotFoundException {
+																	 ) throws ValidationException, NotFoundException {
 
 		// paginationValidations(language, startIndex, pageSize, pageNumber);
 		List<InstituteResponseDto> instituteResponseList = iRecommendationService.getRecommendedInstitutes(userId,
-				/* startIndex, pageSize, pageNumber, */language);
+				 startIndex, pageSize, pageNumber, language);
 
 		return new GenericResponseHandlers.Builder().setData(instituteResponseList)
 				.setMessage(messageByLocalService.getMessage("list.display.successfully", new Object[] { IConstant.INSTITUTE }, language))
@@ -122,3 +122,4 @@ public class RecommendationController {
 				.setMessage("Courses Displayed successfully").create();
 	}
 }
+*/

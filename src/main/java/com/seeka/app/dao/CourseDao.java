@@ -33,8 +33,7 @@ public interface CourseDao {
 	public List<Course> getAll();
 
 	public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, String searchKeyword, List<String> courseIds, Integer startIndex,
-			boolean uniqueCourseName);
-	
+			boolean uniqueCourseName, List<String> entityIds);
 	
 	public List<CourseResponseDto> getAllCoursesByInstitute(String instituteId, CourseSearchDto filterObj);
 
@@ -67,7 +66,7 @@ public interface CourseDao {
 
 	public Course getCourseData(String id);
 
-	public List<CourseResponseDto> advanceSearch(Object... values/* AdvanceSearchDto courseSearchDto */) throws CommonInvokeException;
+	public List<CourseResponseDto> advanceSearch(List<String> entityIds,Object... values) throws CommonInvokeException;
 
 	public List<Course> getAllCourse();
 
@@ -112,9 +111,9 @@ public interface CourseDao {
 
 	public int updateCourseForCurrency(CurrencyRateDto currencyRate);
 
-	public int getCountforNormalCourse(CourseSearchDto courseSearchDto, String searchKeyword);
+	public int getCountforNormalCourse(CourseSearchDto courseSearchDto, String searchKeyword, List<String> entityIds);
 
-	public int getCountOfAdvanceSearch(Object... values);
+	public int getCountOfAdvanceSearch(List<String> entityIds, Object... values);
 
 	public Integer getTotalCourseCountForInstitute(String instituteId);
 

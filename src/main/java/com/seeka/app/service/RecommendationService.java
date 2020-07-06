@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+/*package com.seeka.app.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,9 +93,9 @@ public class RecommendationService implements IRecommendationService {
 	private Integer totalScholarshipPerPage;
 	
 	@Override
-	public List<InstituteResponseDto> getRecommendedInstitutes(final String userId, /*
+	public List<InstituteResponseDto> getRecommendedInstitutes(final String userId, 
 																						 * Long startIndex, final Long pageSize, Long pageNumber,
-																						 */
+																						 
 			final String language) throws ValidationException, NotFoundException {
 
 		UserDto userDto = iUsersService.getUserById(userId);
@@ -105,43 +105,43 @@ public class RecommendationService implements IRecommendationService {
 			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present", new Object[] { userId }, language));
 		}
 
-		/**
+		*//**
 		 * Get Country Id Based on citizenship
-		 */
+		 *//*
 //		Country country = iCountryService.getCountryBasedOnCitizenship(userDto.getCitizenship());
 //		if ((country == null) || (country.getId() == null)) {
 //			throw new ValidationException(
 //					messageByLocalService.getMessage("invalid.citizenship.for.user", new Object[] { userDto.getCitizenship() }, language));
 //		}
 
-		/**
+		*//**
 		 * Final institute list to recommend
-		 */
+		 *//*
 		Set<String> instituteListToRecommend = new HashSet<>();
 
-		/**
+		*//**
 		 * Get institutes based on Past User Search based on country of courses
-		 */
+		 *//*
 		List<String> instituteBasedOnPastSearch = getInstituteIdsBasedOnPastSearch(userId);
 
-		/**
+		*//**
 		 * Get institutes Based on User's Country
-		 */
+		 *//*
 		List<String> institutesBasedOnUserCountry = instituteProcessor.getTopInstituteIdByCountry(userDto.getCitizenship());
 
-		/**
+		*//**
 		 * Get courses based on the country that other users from user's country are
 		 * most interested to migrate to.
-		 */
+		 *//*
 
 		List<GlobalData> globalDataDtoList = iGlobalStudentDataService.getCountryWiseStudentList(userDto.getCitizenship());
 
 		List<String> countryNames = globalDataDtoList.stream().map(i -> i.getDestinationCountry()).collect(Collectors.toList());
 		//List<String> allCountryIds = iCountryService.getCountryBasedOnCitizenship(countryNames);
 		List<String> institutesById = instituteProcessor.getRandomInstituteIdByCountry(countryNames);
-		/**
+		*//**
 		 * Select Random two courses from User Past Search
-		 */
+		 *//*
 		instituteListToRecommend.addAll(instituteBasedOnPastSearch);
 		instituteListToRecommend.addAll(institutesBasedOnUserCountry);
 		instituteListToRecommend.addAll(institutesById);
@@ -170,46 +170,46 @@ public class RecommendationService implements IRecommendationService {
 	@Override
 	public List<CourseResponseDto> getRecommendedCourses(final String userId) throws ValidationException {
 		UserDto userDto = iUsersService.getUserById(userId);
-		/**
+		*//**
 		 * Validations of for user.
-		 */
+		 *//*
 		if (userDto == null) {
 			throw new ValidationException("Invalid User");
 		} else if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
 			throw new ValidationException("User needs to have a citizenship");
 		}
 
-		/**
+		*//**
 		 * Get country object based on citizenship
-		 */
+		 *//*
 //		Country country = getCountryBasedOnCitizenship(userDto.getCitizenship());
 //
 //		if ((country == null) || (country.getId() == null)) {
 //			throw new ValidationException("Invalid country citizenship for the user");
 //		}
-		/**
+		*//**
 		 * Final course list to recommend
-		 */
+		 *//*
 		List<String> courseListToRecommend = new ArrayList<>();
 
-		/**
+		*//**
 		 * Get courses based on Past User Search based on country of courses
-		 */
+		 *//*
 		List<String> coursesBasedOnPastSearch = courseProcessor.getTopSearchedCoursesByUsers(userId);
 
-		/**
+		*//**
 		 * Get Courses Based on User's Country
-		 */
+		 *//*
 		List<String> coursesBasedOnUserCountry = courseProcessor.courseIdsForCountry(userDto.getCitizenship());
 
-		/**
+		*//**
 		 * Get courses based on the country that other users from user's country are
 		 * most interested to migrate to.
-		 */
+		 *//*
 		List<String> coursesBasedOnUserMigrationCountry = courseProcessor.courseIdsForMigratedCountries(userDto.getCitizenship());
-		/**
+		*//**
 		 * Select Random two courses from User Past Search
-		 */
+		 *//*
 		Random rand = new Random();
 		if (coursesBasedOnPastSearch != null) {
 			for (int i = 0; i < 2; i++) {
@@ -223,9 +223,9 @@ public class RecommendationService implements IRecommendationService {
 				}
 			}
 		}
-		/**
+		*//**
 		 * Select Random five courses from User's Country
-		 */
+		 *//*
 		if (coursesBasedOnUserCountry != null) {
 			for (int i = 0; i < 5; i++) {
 				if (coursesBasedOnUserCountry.size() > 0) {
@@ -239,10 +239,10 @@ public class RecommendationService implements IRecommendationService {
 			}
 		}
 
-		/**
+		*//**
 		 * Select remaining random courses from most migrated countries as per users
 		 * current country.
-		 */
+		 *//*
 		if (coursesBasedOnUserMigrationCountry != null) {
 			while ((20 - courseListToRecommend.size()) > 0) {
 				if (coursesBasedOnUserMigrationCountry.size() > 0) {
@@ -255,9 +255,9 @@ public class RecommendationService implements IRecommendationService {
 				}
 			}
 		}
-		/**
+		*//**
 		 * If no recommended courses are available, return an empty array.
-		 */
+		 *//*
 		if ((courseListToRecommend == null) || courseListToRecommend.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -338,18 +338,18 @@ public class RecommendationService implements IRecommendationService {
 	public Set<Course> displayRelatedCourseAsPerUserPastSearch(final String userId) throws ValidationException {
 		List<String> userSearchCourseIdList = courseProcessor.getTopSearchedCoursesByUsers(userId);
 
-		/**
+		*//**
 		 * Keeping this code to get related courses only for top 3 courses searched.
-		 */
+		 *//*
 		if (userSearchCourseIdList.size() > 0) {
 			userSearchCourseIdList = userSearchCourseIdList.size() > 3 ? userSearchCourseIdList.subList(0, 2)
 					: userSearchCourseIdList.subList(0, userSearchCourseIdList.size() - 1);
 		} else {
 			return new HashSet<>();
 		}
-		/**
+		*//**
 		 * Logic ends
-		 */
+		 *//*
 		Set<Course> userRelatedCourses = courseProcessor.getRelatedCoursesBasedOnPastSearch(userSearchCourseIdList);
 		return userRelatedCourses;
 	}
@@ -357,79 +357,79 @@ public class RecommendationService implements IRecommendationService {
 	@Override
 	public List<ScholarshipDto> getRecommendedScholarships(final String userId, final String language) throws ValidationException, NotFoundException {
 
-		/**
+		*//**
 		 * Get user details from userId
-		 */
+		 *//*
 		UserDto userDto = iUsersService.getUserById(userId);
 		if (userDto == null) {
 			throw new NotFoundException(messageByLocalService.getMessage("user.not.found", new Object[] { userId }, language));
 		} else if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
 			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present", new Object[] { userId }, language));
 		}
-		/**
+		*//**
 		 * Get courses based on Past User Search based on country of courses
-		 */
+		 *//*
 		List<String> coursesBasedOnPastSearch = courseProcessor.getTopSearchedCoursesByUsers(userId);
 
 		List<String> recommendedScholarships = new ArrayList<>();
 		if ((coursesBasedOnPastSearch == null) || coursesBasedOnPastSearch.isEmpty()) {
-			/**
+			*//**
 			 * If users donot have past search history run the below logic
-			 */
+			 *//*
 
-			/**
+			*//**
 			 * Get Lis of all countries that users as interested to migrate to based on
 			 * user's country
-			 */
+			 *//*
 			List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
 			if ((distinctCountryList != null) && !distinctCountryList.isEmpty()) {
 				//List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
 				//List<String> countryIdList = countries.stream().map(Country::getId).collect(Collectors.toList());
-				/**
+				*//**
 				 * Get all scholarshipIds based on country
-				 */
+				 *//*
 				recommendedScholarships.addAll(scholarshipProcessor.getScholarshipIdsByCountryId(distinctCountryList, totalScholarshipPerPage));
 			}
 
-			/**
+			*//**
 			 * If recommended scholarships are not equal to 20 then fetch more on random
 			 * basis from the database
-			 */
+			 *//*
 			if (recommendedScholarships.size() < totalScholarshipPerPage) {
 				recommendedScholarships
 						.addAll(scholarshipProcessor.getRandomScholarShipIds(totalScholarshipPerPage - recommendedScholarships.size()));
 			}
 		} else {
-			/**
+			*//**
 			 * If users have past search history run the below logic.
-			 */
+			 *//*
 			List<String> countryList = courseProcessor.getCountryForTopSearchedCourses(coursesBasedOnPastSearch);
 
-			/**
+			*//**
 			 * Convert the countryList to Set to make it more random.
-			 */
+			 *//*
 			Set<String> countrySet = new HashSet<>(countryList);
 			for (String countryId : countrySet) {
-				/**
+				*//**
 				 * Add all scholarship Ids obtained to recommended scholarships
-				 */
+				 *//*
 				List<String> countryListForScholarship = new ArrayList<>();
 				countryListForScholarship.add(countryId);
 				recommendedScholarships.addAll(
 						scholarshipProcessor.getScholarshipIdsByCountryId(countryListForScholarship, IConstant.SCHOLARSHIPS_PER_COUNTRY_FOR_RECOMMENDATION));
-				/**
+				*//**
 				 * If recommended scholarships size exceeds 20, no need to consider other
 				 * countries
-				 */
+				 *//*
 				if (recommendedScholarships.size() >= totalScholarshipPerPage) {
 					break;
 				}
 			}
 
-			/**
+			*//**
 			 * If the recommended scholarship list is less than 20, then we need to consider
 			 * more scholarships as per the Global Student Data file.
-			 */
+			 *//*
 			if (recommendedScholarships.size() < totalScholarshipPerPage) {
 				List<String> distinctCountryList = iGlobalStudentDataService.getDistinctMigratedCountryForUserCountry(userDto.getCitizenship());
 				//List<Country> countries = iCountryService.getCountryListBasedOnCitizenship(distinctCountryList);
@@ -446,9 +446,9 @@ public class RecommendationService implements IRecommendationService {
 						.addAll(scholarshipProcessor.getRandomScholarShipIds(totalScholarshipPerPage - recommendedScholarships.size()));
 			}
 		}
-		/**
+		*//**
 		 * Get Scholarship details for recommended scholarships
-		 */
+		 *//*
 		List<ScholarshipDto> scholarshipDtoList = new ArrayList<>();
 		if (!recommendedScholarships.isEmpty()) {
 			scholarshipDtoList = scholarshipProcessor.getAllScholarshipDetailsFromId(recommendedScholarships);
@@ -464,7 +464,7 @@ public class RecommendationService implements IRecommendationService {
 		if ((topSearchedCourseIds != null) && !topSearchedCourseIds.isEmpty()) {
 			List<String> countryForTopSearchedCourses = courseProcessor.getCountryForTopSearchedCourses(topSearchedCourseIds);
 			for (String countryId : countryForTopSearchedCourses) {
-				List<String> insituteId = instituteProcessor.getTopInstituteIdByCountry(countryId/* , 0L, 1L */);
+				List<String> insituteId = instituteProcessor.getTopInstituteIdByCountry(countryId , 0L, 1L );
 				instituteList.addAll(insituteId);
 			}
 		}
@@ -474,43 +474,43 @@ public class RecommendationService implements IRecommendationService {
 
 	private List<Course> oldLogic(final String userId) throws ValidationException {
 		UserDto userDto = iUsersService.getUserById(userId);
-		/**
+		*//**
 		 * Validations of for user.
-		 */
+		 *//*
 		if (userDto == null) {
 			throw new ValidationException("Invalid User");
 		} else if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
 			throw new ValidationException("User needs to have a citizenship");
 		}
 
-		/**
+		*//**
 		 * Get country object based on citizenship
-		 */
+		 *//*
 //		Country country = getCountryBasedOnCitizenship(userDto.getCitizenship());
 //
 //		if ((country == null) || (country.getId() == null)) {
 //			throw new ValidationException("Invalid country citizenship for the user");
 //		}
 
-		/**
+		*//**
 		 * Get all facultyIds from the excel uploaded by Top10Courses
-		 */
+		 *//*
 		List<Faculty> allFaculty = getAllFacultyIds();
 
-		/**
+		*//**
 		 * Check if the courses are present for the user's citizenship in our database.
-		 */
+		 *//*
 		long courseCount = checkIfCoursesPresentForCountry(userDto.getCitizenship());
 
 		if (courseCount > 0) {
-			/**
+			*//**
 			 * Get all institutes based on world ranking for a particular country (of User)
-			 */
+			 *//*
 			List<Institute> allInstitutesRankingWise = getAllInstituteRankingWisePerCountry(userDto.getCitizenship());
 
-			/**
+			*//**
 			 * This list contains the details of the courses that are to be returned
-			 */
+			 *//*
 			List<String> listOfRecommendedCourseIds = new ArrayList<>();
 			List<Course> listOfRecommendedCourses = new ArrayList<>();
 			Map<String, Faculty> facultyMap = new HashMap<>();
@@ -523,8 +523,8 @@ public class RecommendationService implements IRecommendationService {
 			System.out.println("insititute count -- " + allInstitutesRankingWise.size());
 
 			for (Institute institute : allInstitutesRankingWise) {
-				List<Course> listOfCourse = facultyWiseCourseForInstitute(/* allFaculty */new ArrayList<>(facultyMap.values()),
-						institute/* .getId().longValue() */);
+				List<Course> listOfCourse = facultyWiseCourseForInstitute( allFaculty new ArrayList<>(facultyMap.values()),
+						institute .getId().longValue() );
 				Map<String, String> mapFacultyIdCourseId = facultyWiseCourseIdMapForInstitute(new ArrayList<>(facultyMap.values()), institute);
 				System.out.println(count++);
 				System.out.println("CourseList -- " + listOfCourse.size());
@@ -532,20 +532,20 @@ public class RecommendationService implements IRecommendationService {
 				for (Entry<String, String> entry : mapFacultyIdCourseId.entrySet()) {
 					if (facultyMap.containsKey(entry.getValue())) {
 						listOfRecommendedCourseIds.add(entry.getKey());
-						/**
+						*//**
 						 * removing facultyIds from faculty map for which courses are already obtained
 						 * so that we do not get any courses corresponding to those faculty for the next
 						 * intitutes, also we get only one course per faculty in our final list of
 						 * courses.
-						 */
+						 *//*
 						facultyMap.remove(entry.getValue());
 					}
 				}
 
-				/**
+				*//**
 				 * If we have obtained list of courses for all faculties then no need to further
 				 * navigate through other institutes and hence breaking the loop
-				 */
+				 *//*
 				if (facultyMap.isEmpty()) {
 					break;
 				}
@@ -564,20 +564,20 @@ public class RecommendationService implements IRecommendationService {
 			List<String> recommendedCourseListIds = new ArrayList<>();
 
 			long count = iGlobalStudentDataService.checkForPresenceOfUserCountryInGlobalDataFile(userDto.getCitizenship());
-			/**
+			*//**
 			 * If we dont get any country based on citizenship of user get data of China by
 			 * default
-			 */
+			 *//*
 			String countryName = null;
 			if (count == 0) {
 				countryName = "China";
 			}
 
-			/**
+			*//**
 			 * Get List of countries in which the people from user's country are interested
 			 * in moving to. This data will be obtained from the table that contains the
 			 * data from GlobalStudentData.xlsx file uploaded.
-			 */
+			 *//*
 			List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(countryName);
 			List<String> courseList = new ArrayList<>();
 			for (GlobalData globalDataDto : countryWiseStudentCountListForUserCountry) {
@@ -622,38 +622,38 @@ public class RecommendationService implements IRecommendationService {
 	@Override
 	public List<InstituteResponseDto> getinstitutesBasedOnOtherPeopleSearch(final String userId) {
 
-		/**
+		*//**
 		 * Get all distinct courseIds searched by other users
-		 */
+		 *//*
 		List<String> distinctCourseIds = courseProcessor.getTopSearchedCoursesByOtherUsers(userId);
 		try {
-			/**
+			*//**
 			 * Get all distinct country Ids for the course ids
-			 */
+			 *//*
 			List<String> distinctCountryIds = courseProcessor.getCountryForTopSearchedCourses(distinctCourseIds);
 
-			/**
+			*//**
 			 * Get all institutes for the various countries that other users have searched
 			 * for
-			 */
+			 *//*
 			List<String> allInstituteIds = instituteProcessor.getInstituteIdsFromCountry(distinctCountryIds);
 
-			/**
+			*//**
 			 * If we dont get any institutes return an empty list
-			 */
+			 *//*
 			if ((allInstituteIds == null) || allInstituteIds.isEmpty()) {
 				return new ArrayList<>();
 			}
 
-			/**
+			*//**
 			 * If the list is less than 20 return all the institutes available
-			 */
+			 *//*
 			if (allInstituteIds.size() < 20) {
 				return instituteProcessor.getAllInstituteByID(allInstituteIds);
 			}
-			/**
+			*//**
 			 * If greater than 20 have a random logic for the same
-			 */
+			 *//*
 			else {
 				List<String> randomInstituteIds = new ArrayList<>();
 				Random rand = new Random();
@@ -682,21 +682,21 @@ public class RecommendationService implements IRecommendationService {
 
 	@Override
 	public List<ArticleResposeDto> getRecommendedArticles(final String userId) throws ValidationException {
-		/**
+		*//**
 		 * Query Identity to get UserDto from userId.
-		 */
+		 *//*
 
 		UserDto userDto = iUsersService.getUserById(userId);
-		/**
+		*//**
 		 * Validations of for user.
-		 */
+		 *//*
 		if (userDto == null) {
 			throw new ValidationException("Invalid User");
 		}
 
-		/**
+		*//**
 		 * Get List of all user viewd articles
-		 */
+		 *//*
 		List<UserViewData> userViewDataList = viewService.getUserViewData((userDto.getId()), "ARTICLE", false, null, null);
 		List<String> viewArticleIds = new ArrayList<>();
 		for (UserViewData userViewData : userViewDataList) {
@@ -708,15 +708,15 @@ public class RecommendationService implements IRecommendationService {
 		List<SeekaArticles> seekaArticlelist = new ArrayList<>();
 
 		if ((userDto.getCitizenship() == null) || userDto.getCitizenship().isEmpty()) {
-			/**
+			*//**
 			 * If user citizenship doesn't exists use United States as a country by default.
-			 */
+			 *//*
 			//country = getCountryBasedOnCitizenship("United States");
 
-			/**
+			*//**
 			 * Get 2 articles per category from static list of categories provided by
 			 * stakeholders.
-			 */
+			 *//*
 			for (String categoryName : IConstant.LIST_OF_ARTICLE_CATEGORY) {
 				List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId("United States", categoryName,
 						IConstant.ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION, viewArticleIds);
@@ -724,35 +724,35 @@ public class RecommendationService implements IRecommendationService {
 			}
 		} else {
 			//country = getCountryBasedOnCitizenship(userDto.getCitizenship());
-			/**
+			*//**
 			 * If the citizenship obtained from user doesn't exists in database
-			 */
+			 *//*
 //			if (country == null) {
 //				throw new ValidationException("Invalid country citizenship for the user");
 //			}
 
-			/**
+			*//**
 			 * Get 2 articles per category from static list of categories provided by
 			 * stakeholders.
-			 */
+			 *//*
 			for (String categoryName : IConstant.LIST_OF_ARTICLE_CATEGORY) {
 				List<SeekaArticles> articlelist = iArticleService.findArticleByCountryId(userDto.getCitizenship(), categoryName,
 						IConstant.ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION, viewArticleIds);
 				seekaArticlelist.addAll(articlelist);
 			}
 
-			/**
+			*//**
 			 * If No articles are obtained get the country from the global data student list
 			 * and start displaying the articles
-			 */
+			 *//*
 			if (seekaArticlelist.isEmpty() || (seekaArticlelist == null)) {
 				List<GlobalData> globalDataList = iGlobalStudentData.getCountryWiseStudentList(userDto.getCitizenship());
 				if ((globalDataList != null) && !globalDataList.isEmpty()) {
 
-					/**
+					*//**
 					 * if first globalData destination country has no record for article then it's
 					 * check for second globalData destination country and so on..
-					 */
+					 *//*
 					for (GlobalData globalData : globalDataList) {
 						//country = getCountryBasedOnCitizenship(globalData.getDestinationCountry());
 						for (String categoryName : IConstant.LIST_OF_ARTICLE_CATEGORY) {
@@ -760,9 +760,9 @@ public class RecommendationService implements IRecommendationService {
 							seekaArticlelist.addAll(articlelist);
 						}
 
-						/**
+						*//**
 						 * If articles are found break the loop
-						 */
+						 *//*
 						if (!seekaArticlelist.isEmpty()) {
 							break;
 						}
@@ -771,9 +771,9 @@ public class RecommendationService implements IRecommendationService {
 				}
 			}
 		}
-		/**
+		*//**
 		 * bean converted into response Dto.
-		 */
+		 *//*
 		for (SeekaArticles seekaArticles : seekaArticlelist) {
 			ArticleResposeDto articleResposeDto = new ArticleResposeDto();
 			BeanUtils.copyProperties(seekaArticles, articleResposeDto);
@@ -809,7 +809,7 @@ public class RecommendationService implements IRecommendationService {
 		log.info("fetching courseIDs from usermyCourses table for userId "+userId);
 //		List<String> userMyCourseIds = userMyCourseDAO.getDataByUserIDWithPagination(userId, 0, courseToDisplay);
 
-		/*if (userMyCourseIds.size() < 10) {
+		if (userMyCourseIds.size() < 10) {
 			log.info("if user saved course data is less than 10 then going to fetch user view courses from DB for userId "+userId);
 			courseToDisplay = courseToDisplay - userMyCourseIds.size();
 			userViewCourseIds = viewService.getRandomUserWatchCourseIds(userId, "COURSE", 0, courseToDisplay);
@@ -838,7 +838,7 @@ public class RecommendationService implements IRecommendationService {
 				}
 				myHistoryDtos.add(myHistoryDto);
 			});
-		}*/
+		}
 		
 		if (!CollectionUtils.isEmpty(userViewCourseIds)) {
 			log.info("if user view course are not empty then start fetching courseID from it");
@@ -872,3 +872,4 @@ public class RecommendationService implements IRecommendationService {
 		return myHistoryDtos;
 	}
 }
+*/

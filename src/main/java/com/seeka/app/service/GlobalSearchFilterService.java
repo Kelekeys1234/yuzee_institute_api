@@ -44,7 +44,7 @@ public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 	private Map<String, Object> filterCoursesByParameters(GlobalFilterSearchDto globalSearchFilterDto, AdvanceSearchDto advacneSearchDto)
 			throws ValidationException, CommonInvokeException {
 
-		List<CourseResponseDto> courseList = icourseDao.advanceSearch(advacneSearchDto, globalSearchFilterDto);
+		List<CourseResponseDto> courseList = icourseDao.advanceSearch(null, advacneSearchDto, globalSearchFilterDto);
 		for (CourseResponseDto courseResponseDto : courseList) {
 			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseResponseDto.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseResponseDto.setStorageList(storageDTOList);

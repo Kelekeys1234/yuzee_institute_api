@@ -38,6 +38,7 @@ import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.constant.Type;
 import com.seeka.app.controller.handler.CommonHandler;
 import com.seeka.app.controller.handler.ReviewHandler;
+import com.seeka.app.controller.handler.ViewTransactionHandler;
 import com.seeka.app.dao.CourseDao;
 import com.seeka.app.dao.CourseDeliveryModesDao;
 import com.seeka.app.dao.CourseEnglishEligibilityDao;
@@ -70,8 +71,8 @@ import com.seeka.app.dto.StudentVisaDto;
 import com.seeka.app.dto.UserCompareCourseResponse;
 import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
-import com.seeka.app.dto.UserMyCourseDto;
 import com.seeka.app.dto.UserReviewResultDto;
+import com.seeka.app.dto.UserViewCourseDto;
 import com.seeka.app.dto.YouTubeVideoDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.enumeration.SeekaEntityType;
@@ -121,9 +122,6 @@ public class CourseProcessor {
 
 	@Autowired
 	private IGlobalStudentData iGlobalStudentDataService;
-
-//	@Autowired
-//	private IViewService iViewService;
 
 //	@Autowired
 //	private ViewDao viewDao;
@@ -182,6 +180,9 @@ public class CourseProcessor {
 	@Autowired
 	private UserRecommendationService userRecommendationService;
 	
+	@Autowired
+	private ViewTransactionHandler viewTransactionHandler;
+	
 	@Value("${max.radius}")
 	private Integer maxRadius;
 	
@@ -194,38 +195,27 @@ public class CourseProcessor {
 	}
 
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
-			final String searchKeyword,List<UserMyCourseDto> userMyCourseDtos) throws ValidationException, InvokeException {
+			final String searchKeyword, List<String> entityIds) throws ValidationException, InvokeException {
 		log.debug("Inside getAllCoursesByFilter() method");
 		log.info("CAlling DAO layer to fetch courses based on passed filters and pagination");
-		List<CourseResponseDto> courseResponseDtos = courseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword, null, startIndex, false);
-		return getExtraInfoOfCourseFilter(courseSearchDto, courseResponseDtos, userMyCourseDtos);
+		List<CourseResponseDto> courseResponseDtos = courseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword, null, 
+					startIndex, false, entityIds);
+		return getExtraInfoOfCourseFilter(courseSearchDto, courseResponseDtos);
 	}
 
-	private List<CourseResponseDto> getExtraInfoOfCourseFilter(final CourseSearchDto courseSearchDto, final List<CourseResponseDto> courseResponseDtos,
-			List<UserMyCourseDto> userMyCourseDtos) throws ValidationException, InvokeException {
+	private List<CourseResponseDto> getExtraInfoOfCourseFilter(final CourseSearchDto courseSearchDto, 
+				final List<CourseResponseDto> courseResponseDtos) throws ValidationException, InvokeException {
 		log.debug("Inside getExtraInfoOfCourseFilter() method");
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			log.info("Data is coming null from DB based on filter hence making new Object");
 			return new ArrayList<>();
 		}
-		
 		log.info("Filering course response if courseId is coming duplicate in response");
 		List<CourseResponseDto> courseResponseFinalResponse = courseResponseDtos.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId))
 				.collect(Collectors.toList());
-		
-		//Filtering out response if user saved any course then remove that course from final response
-		if(!CollectionUtils.isEmpty(userMyCourseDtos)) {
-			courseResponseFinalResponse = courseResponseFinalResponse.stream().filter(courseResponse -> (userMyCourseDtos.stream()
-	                .filter(d -> d.getEntityId().equals(courseResponse.getId())).count()) < 1).collect(Collectors.toList());
-		}
+	
 		log.info("Collecting CourseIds by stream API and calling store it in list");
 		List<String> courseIds = courseResponseFinalResponse.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
-
-		List<String> viewedCourseIds = new ArrayList<>();
-		if (courseSearchDto.getUserId() != null) {
-			log.info("Fetching user view data from DB based on userId = "+courseSearchDto.getUserId());
-//			viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
-		}
 		
 		log.info("Calling Storage service to get institute images from DB");
 		List<StorageDto> storageDTOList = storageProcessor.getStorageInformationBasedOnEntityIdList(
@@ -245,9 +235,17 @@ public class CourseProcessor {
 					courseResponseDto.setStorageList(new ArrayList<>(1));
 				}
 				
-				if (!viewedCourseIds.isEmpty() && viewedCourseIds.contains(courseResponseDto.getId())) {
+				// Calling viewTransaction Service to fetch viewedCourse of User to set whether course is viewed by user or not
+				log.info("Invoking viewTransaction service to fetched view course by user");
+				UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(
+						courseSearchDto.getUserId(), "COURSE", courseResponseDto.getId(), "viewCourse");
+				if(!ObjectUtils.isEmpty(userViewCourseDto)) {
+					log.info("User view course data is coming for courseId = " + courseResponseDto.getId() + " ,hence marking course as viewed");
 					courseResponseDto.setIsViewed(true);
+				} else {
+					courseResponseDto.setIsViewed(false);
 				}
+				
 				log.info("Filtering course additional info by matching courseIds");
 				List<CourseDeliveryModesDto> additionalInfoDtos = courseResponseDto.getCourseAdditionalInfo().stream().
 							filter(x -> x.getCourseId().equals(courseResponseDto.getId())).collect(Collectors.toList());
@@ -274,15 +272,8 @@ public class CourseProcessor {
 		return courseResponseFinalResponse;
 	}
 
-	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword, List<UserMyCourseDto> userMyCourseDtos) {
-		int totalCount = 0;
-		int totalCountForCourse = courseDAO.getCountforNormalCourse(courseSearchDto, searchKeyword);
-		if(!CollectionUtils.isEmpty(userMyCourseDtos)) {
-			totalCount = totalCountForCourse - userMyCourseDtos.size();
-		} else {
-			totalCount = totalCountForCourse;
-		}
-		return totalCount;
+	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword, List<String> entityIds) {
+		return courseDAO.getCountforNormalCourse(courseSearchDto, searchKeyword, entityIds);
 	}
 
 	public List<CourseResponseDto> getAllCoursesByInstitute(final String instituteId, final CourseSearchDto courseSearchDto) {
@@ -926,12 +917,12 @@ public class CourseProcessor {
 		return instituteDAO.getAllServices();
 	}
 
-	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto, List<UserMyCourseDto> userMyCourseDtos) 
+	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto, List<String> entityIds) 
 			throws ValidationException, CommonInvokeException, InvokeException {
 		log.debug("Inside advanceSearch() method");
 		
 		log.info("Calling DAO layer to fetch courses from DB based on passed filters");
-		List<CourseResponseDto> courseResponseDtos = courseDAO.advanceSearch(courseSearchDto);
+		List<CourseResponseDto> courseResponseDtos = courseDAO.advanceSearch(entityIds, courseSearchDto);
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			log.info("No courses found in DB for passed filters");
 			return new ArrayList<>();
@@ -941,15 +932,10 @@ public class CourseProcessor {
 		List<CourseResponseDto> courseResponseFinalResponse = courseResponseDtos.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId))
 				.collect(Collectors.toList());
 		
-		//Filtering out response if user saved any course then remove that course from final response
-		courseResponseFinalResponse = courseResponseFinalResponse.stream().filter(courseResponse -> (userMyCourseDtos.stream()
-		        .filter(d -> d.getEntityId().equals(courseResponse.getId())).count()) < 1).collect(Collectors.toList());
-		
 		log.info("Filtering distinct courseIds");
 		List<String> courseIds = courseResponseDtos.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId)).map(CourseResponseDto::getId).collect(Collectors.toList());
 		
 		log.info("Fetching user view data from DB having userId = "+courseSearchDto.getUserId());
-//		List<String> viewedCourseIds = iViewService.getUserViewDataBasedOnEntityIdList(courseSearchDto.getUserId(), "COURSE", courseIds);
 		
 		/*log.info("Calling Storage service to get images based on entityId");
 		List<StorageDto> storageDTOList = storageProcessor.getStorageInformationBasedOnEntityIdList(
@@ -980,11 +966,14 @@ public class CourseProcessor {
 				} else {
 					courseResponseDto.setStorageList(new ArrayList<>(1));
 				}*/
-//				if (!viewedCourseIds.isEmpty() && viewedCourseIds.contains(courseResponseDto.getId())) {
-//					courseResponseDto.setIsViewed(true);
-//				} else {
-//					courseResponseDto.setIsViewed(false);
-//				}
+				
+				UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
+						"COURSE", courseResponseDto.getId(), "viewCourse");
+				if(!ObjectUtils.isEmpty(userViewCourseDto)) {
+					courseResponseDto.setIsViewed(true);
+				} else {
+					courseResponseDto.setIsViewed(false);
+				}
 				
 				log.info("Grouping course delivery modes data and add it in final response");
 				List<CourseDeliveryModesDto> additionalInfoDtos = courseResponseDto.getCourseAdditionalInfo().stream().
@@ -1367,16 +1356,9 @@ public class CourseProcessor {
 		courseDAO.updateCourseForCurrency(currencyRate);
 	}
 
-	public int getCountOfAdvanceSearch(final AdvanceSearchDto courseSearchDto, List<UserMyCourseDto> userMyCourseDtos) 
+	public int getCountOfAdvanceSearch(final AdvanceSearchDto courseSearchDto, List<String> entityIds) 
 			throws ValidationException, NotFoundException {
-		int totalCount = 0;
-		int totalCountForCourse = courseDAO.getCountOfAdvanceSearch(courseSearchDto);
-		if(!CollectionUtils.isEmpty(userMyCourseDtos)) {
-			totalCount = totalCountForCourse - userMyCourseDtos.size();
-		} else {
-			totalCount = totalCountForCourse;
-		}
-		return totalCount;
+		return courseDAO.getCountOfAdvanceSearch(entityIds, courseSearchDto);
 	}
 
 	public List<CourseDTOElasticSearch> getUpdatedCourses(final Date date, final Integer startIndex, final Integer limit) {
@@ -1424,11 +1406,11 @@ public class CourseProcessor {
 				//Country country = countryDAO.getCountryByName(globalDatas.get(0).getDestinationCountry());
 				courseSearchDto.setCountryNames(Arrays.asList(globalDatas.get(0).getDestinationCountry()));
 				courseSearchDto.setMaxSizePerPage(pageSize - courseResponseDtos.size());
-				List<CourseResponseDto> courseResponseDtos2 = courseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, false);
+				List<CourseResponseDto> courseResponseDtos2 = courseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, false, null);
 				courseResponseDtos.addAll(courseResponseDtos2);
 			}
 		}
-		return getExtraInfoOfCourseFilter(courseSearchDto, courseResponseDtos, null);
+		return getExtraInfoOfCourseFilter(courseSearchDto, courseResponseDtos);
 
 	}
 
@@ -1457,7 +1439,7 @@ public class CourseProcessor {
 			courseSearchDto.setLevelIds(Arrays.asList(levelId));
 			courseSearchDto.setMaxSizePerPage(pageSize);
 			courseSearchDto.setSortBy("instituteName");
-			List<CourseResponseDto> courseResponseDtos = courseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, true);
+			List<CourseResponseDto> courseResponseDtos = courseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, true, null);
 			courseKeywordRecommended = courseResponseDtos.stream().map(CourseResponseDto::getName).collect(Collectors.toList());
 		}
 		return courseKeywordRecommended;
@@ -1883,8 +1865,13 @@ public class CourseProcessor {
 
 		// Get User View Course Details
 		if (userId != null) {
-//			int count = iViewService.getUserViewDataCountBasedOnUserId(userId, id, "COURSE");
-//			courseRequest.setViewCourse(count == 0 ? false : true);
+			UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(userId, 
+					"COURSE", id, "viewCourse");
+			if(!ObjectUtils.isEmpty(userViewCourseDto)) {
+				courseRequest.setViewCourse(true);
+			} else {
+				courseRequest.setViewCourse(false);
+			}
 		} else {
 			courseRequest.setViewCourse(false);
 		}
