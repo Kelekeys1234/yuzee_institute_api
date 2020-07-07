@@ -21,7 +21,6 @@ import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseMobileDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseSearchDto;
-import com.seeka.app.dto.UserCourse;
 import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.exception.InvokeException;
 import com.seeka.app.exception.NotFoundException;
@@ -33,20 +32,20 @@ public interface CourseInterface {
 	@PostMapping
 	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException, CommonInvokeException;
 
-	@PutMapping(value = "/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final String id) throws ValidationException, CommonInvokeException;
 
-	@GetMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception;
 
-	@GetMapping(value = "/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	@GetMapping("/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> autoSearch(@PathVariable final String searchKey, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) throws Exception;
 
-	@DeleteMapping(value = "/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@Valid @PathVariable final String id) throws Exception;
 
-	@GetMapping(value = "/search/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	@GetMapping("/search/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> searchCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final List<String> countryIds, @RequestParam(required = false) final String instituteId,
 			@RequestParam(required = false) final List<String> facultyIds, @RequestParam(required = false) final List<String> cityIds,
@@ -83,20 +82,10 @@ public interface CourseInterface {
 	@GetMapping(value = "/multiple/faculty/{facultyId}")
 	public ResponseEntity<?> getCouresesByListOfFacultyId(@Valid @PathVariable final String facultyId) throws Exception;
 
-//	@PostMapping(value = "/user")
-//	public ResponseEntity<?> userCourses(@Valid @RequestBody final UserCourse userCourse) throws Exception;
-
-//	@GetMapping(value = "user/{userId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
-//	public ResponseEntity<?> getUserCourses(@PathVariable final String userId, @PathVariable final Integer pageNumber,
-//			@PathVariable final Integer pageSize, @RequestParam(required = false) final String currencyCode,
-//			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final boolean sortAsscending) 
-//			throws ValidationException, CommonInvokeException;
-
-	@PostMapping(value = "/compare")
-	public ResponseEntity<?> addUserCompareCourse(@Valid @RequestBody final UserCourse userCourse) throws Exception;
-
-	@GetMapping(value = "/compare/user/{userId}")
-	public ResponseEntity<?> getUserCompareCourse(@PathVariable final String userId) throws Exception;
+	@PostMapping(value = "/user")
+	public ResponseEntity<?> getUserCourses(@RequestBody final List<String> courseIds,
+			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final String sortAsscending) 
+			throws ValidationException, CommonInvokeException;
 
 	@PostMapping(value = "/filter")
 	public ResponseEntity<?> courseFilter(@RequestHeader(required = true) final String userId,
@@ -168,6 +157,9 @@ public interface CourseInterface {
 	@GetMapping(value = "/course/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
 	public ResponseEntity<?> getCourseByCountryName(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
 			@PathVariable String countryName) throws NotFoundException;
+	
+	@PostMapping("/courseIds")
+	public ResponseEntity<?> getCourseByIds(@RequestBody List<String> courseIds);
 	
 	@Deprecated
 	@GetMapping

@@ -20,6 +20,7 @@ import com.seeka.app.bean.HelpAnswer;
 import com.seeka.app.bean.HelpCategory;
 import com.seeka.app.bean.HelpSubCategory;
 import com.seeka.app.bean.SeekaHelp;
+import com.seeka.app.controller.handler.IdentityHandler;
 import com.seeka.app.dao.IHelpDAO;
 import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
@@ -103,7 +104,7 @@ public class HelpService implements IHelpService {
 	private IHelpDAO helpDAO;
 
 	@Autowired
-	private IUsersService iUsersService;
+	private IdentityHandler identityHandler;
 
 	@Autowired
 	private IMediaService iMediaService;
@@ -184,7 +185,7 @@ public class HelpService implements IHelpService {
 		dto.setIsArchive(seekaHelp.getIsArchive());
 		if (seekaHelp.getUserId() != null) {
 			try {
-				UserDto userDto = iUsersService.getUserById(seekaHelp.getUserId());
+				UserDto userDto = identityHandler.getUserById(seekaHelp.getUserId());
 				if (userDto != null) {
 					if (userDto.getFirstName() != null) {
 						dto.setCreatedUser(userDto.getFirstName());

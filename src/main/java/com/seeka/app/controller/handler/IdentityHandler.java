@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+package com.seeka.app.controller.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +22,12 @@ import com.seeka.app.util.IConstant;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
-public class UsersService implements IUsersService {
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public class IdentityHandler {
 
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public UserDto getUserById(final String userId) throws ValidationException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_DETAIL_CONNECTION_URL).pathSegment(String.valueOf(userId));
 		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
@@ -45,8 +44,6 @@ public class UsersService implements IUsersService {
 		return userDto;
 	}
 
-	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<UserAchivements> getUserAchivementsByUserId(final String userId) throws ValidationException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_ACHIVEMENT_CONNECTION_URL).pathSegment(String.valueOf(userId));
 		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
@@ -67,7 +64,7 @@ public class UsersService implements IUsersService {
 		return resultList;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
 	private List<UserDeviceInfoDto> getUserDeviceById(final String userId) throws ValidationException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_DEVICE_CONNECTION_URL).pathSegment(String.valueOf(userId));
 		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
@@ -84,7 +81,6 @@ public class UsersService implements IUsersService {
 		return userDeviceInfoDto;
 	}
 
-	@SuppressWarnings("rawtypes")
 	private void sendPushNotification(final UserDeviceInfoDto userDeviceInfoDto, final String message, final String notificationType) {
 		NotificationBean pushNotification = new NotificationBean();
 		PayloadDto payloadDto = new PayloadDto();
@@ -104,10 +100,8 @@ public class UsersService implements IUsersService {
 		System.out.println(result.getStatusCode());
 	}
 
-	@Override
 	public void sendPushNotification(final String userId, final String message, final String notificationType) throws ValidationException {
 		List<UserDeviceInfoDto> userDeviceInfoDto = getUserDeviceById(userId);
-
 		if (userDeviceInfoDto != null) {
 			ObjectMapper objMapper = new ObjectMapper();
 			for (Object obj : userDeviceInfoDto) {
@@ -116,5 +110,4 @@ public class UsersService implements IUsersService {
 			}
 		}
 	}
-
 }

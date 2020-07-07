@@ -32,8 +32,6 @@ import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.UserCompareCourse;
-import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.controller.handler.CommonHandler;
 import com.seeka.app.dao.CourseDao;
 import com.seeka.app.dto.AdvanceSearchDto;
@@ -803,90 +801,59 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	@Override
-	public List<CourseRequest> getUserCourse(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
-			final String sortBy, final boolean sortType) throws ValidationException, CommonInvokeException {
+	public List<CourseDto> getUserCourse(final List<String> courseIds,final String sortBy, final boolean sortType) 
+			throws ValidationException, CommonInvokeException {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select c.id , c.institute_id, i.country_name , i.city_name, c.faculty_id, c.name ,"
-				+ " c.description, c.availabilty, c.created_by, c.updated_by, c.campus_location, c.website,"
-				+ " c.recognition_type, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.remarks, c.currency,"
-				+ " i.latitude, i.longitude FROM user_my_course umc inner join course c on umc.course_id = c.id"
-				+ " left join institute i on c.institute_id = i.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on"
-				+ " IS NULL and umc.user_id = '"+ userId + "'";
-		if (sortBy != null && "institute_name".contentEquals(sortBy)) {
+		String sqlQuery = "select c.id ,c.name, c.cost_range, c.world_ranking, c.stars, c.description, "
+				+ " c.remarks, i.name as instituteName, cai.domestic_fee, cai.international_fee, cai.usd_domestic_fee, cai.usd_international_fee,"
+				+ " cai.delivery_type, cai.study_mode, cai.duration, cai.duration_time FROM course c left join institute i on c.institute_id = i.id"
+				+ " left join course_delivery_modes cai on cai.course_id = c.id"
+				+ " where c.is_active = 1 and c.id in ("
+				+ courseIds.stream().map(String::valueOf).collect(Collectors.joining("','", "'", "'")) +")";
+		
+		if (!StringUtils.isEmpty(sortBy) && "institute_name".contentEquals(sortBy)) {
 			sqlQuery = sqlQuery + " ORDER BY i.name " + (sortType ? "ASC" : "DESC");
-		} else if (sortBy != null) {
+		} else if (!StringUtils.isEmpty(sortBy) && ("domestic_fee".contentEquals(sortBy) || "duration".contentEquals(sortBy))) {
+			sqlQuery = sqlQuery + " ORDER BY cai." + sortBy + " " + (sortType ? "ASC" : "DESC");
+		} else if (!StringUtils.isEmpty(sortBy)) {
 			sqlQuery = sqlQuery + " ORDER BY c." + sortBy + " " + (sortType ? "ASC" : "DESC");
 		} else {
 			sqlQuery = sqlQuery + " ORDER BY c.created_on DESC";
 		}
-		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
-		List<CourseRequest> courses = new ArrayList<>();
-		CourseRequest obj = null;
-
-		CurrencyRateDto curencyRate = commonHandler.getCurrencyRateByCurrencyCode(currencyCode);
-		if (curencyRate == null || curencyRate.getConversionRate() == null || curencyRate.getConversionRate() == 0) {
-			throw new ValidationException("Either No Currency found or Conversion rate is 0 for specified currency - " + currencyCode);
-		}
-//		double conversionRate = curencyRate.getConversionRate();
-
+		List<CourseDto> courses = new ArrayList<>();
+		List<CourseDeliveryModesDto> additionalInfoDtos = new ArrayList<>(); 
 		for (Object[] row : rows) {
-			obj = new CourseRequest();
-			obj.setId(row[0].toString());
-			if (row[1] != null) {
-				Institute institute = getInstitute(row[1].toString(), session);
-				obj.setInstituteId(row[1].toString());
-				obj.setInstituteName(institute.getName());
-				obj.setCost(getCost(row[1].toString(), session));
-			}
+			CourseDeliveryModesDto additionalInfoDto = new CourseDeliveryModesDto();
+			CourseDto courseDto = new CourseDto();
+			courseDto.setId(row[0].toString());
+			courseDto.setName(row[1].toString());
 			if (row[2] != null) {
-				obj.setCountryName(row[2].toString());
+				courseDto.setCost(row[2].toString());
 			}
-            obj.setCityName(row[3].toString());
-            obj.setLocation(row[3].toString() + ", " + row[2].toString());
-			obj.setFacultyId(row[4].toString());
-			obj.setName(row[5].toString());
-			if (row[6] != null) {
-				obj.setDescription(row[6].toString());
+			if(row[3] != null) {
+				courseDto.setWorldRanking(row[3].toString());
 			}
-			if (row[7] != null) {
-				obj.setAvailbility(row[7].toString());
-			}
-			if (row[10] != null) {
-				obj.setCampusLocation(row[10].toString());
-			}
-			if (row[11] != null) {
-				obj.setWebsite(row[11].toString());
-			}
-			if (row[12] != null) {
-				obj.setRecognitionType(row[12].toString());
-			}
-			if (row[13] != null) {
-				obj.setAbbreviation(row[13].toString());
-			}
-			if (row[15] != null) {
-				obj.setWorldRanking(row[15].toString());
-			}
-			if (row[16] != null) {
-				obj.setStars(row[16].toString());
-			}
-			if (row[17] != null) {
-				obj.setRequirements(row[17].toString());
-			}
-			if (row[18] != null) {
-				obj.setCurrency(row[18].toString());
-			}
-			if (row[19] != null && !row[19].toString().isEmpty()) {
-				obj.setLatitude(Double.parseDouble(row[19].toString()));
-			}
-			if (row[20] != null && !row[20].toString().isEmpty()) {
-				obj.setLongitude(Double.parseDouble(row[20].toString()));
-			}
-			
-			obj.setIntake(getCourseIntakeBasedOnCourseId(obj.getId()).stream().map(x -> x.getIntakeDates()).collect(Collectors.toList()));
-			obj.setLanguage(getCourseLanguageBasedOnCourseId(obj.getId()).stream().map(x -> x.getLanguage()).collect(Collectors.toList()));
-			courses.add(obj);
+            if(row[4] != null) {
+            	courseDto.setStars(row[4].toString());
+            }
+            courseDto.setDescription(row[5].toString());
+            courseDto.setRemarks(row[6].toString());
+            courseDto.setInstituteName(row[7].toString());
+            
+            additionalInfoDto.setDomesticFee(Double.parseDouble(row[8].toString()));
+            additionalInfoDto.setInternationalFee(Double.parseDouble(row[9].toString()));
+            additionalInfoDto.setUsdDomesticFee(Double.parseDouble(row[10].toString()));
+            additionalInfoDto.setUsdInternationalFee(Double.parseDouble(row[11].toString()));
+            additionalInfoDto.setDeliveryType(row[12].toString());
+            additionalInfoDto.setStudyMode(row[13].toString());
+            additionalInfoDto.setDuration(Integer.parseInt(row[14].toString()));
+            additionalInfoDto.setDurationTime(row[15].toString());
+            additionalInfoDto.setCourseId(row[0].toString());
+            additionalInfoDtos.add(additionalInfoDto);
+            courseDto.setCourseAdditionalInfo(additionalInfoDtos);
+			courses.add(courseDto);
 		}
 		return courses;
 	}
@@ -910,37 +877,6 @@ public class CourseDaoImpl implements CourseDao {
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
 		return ((Number) query.uniqueResult()).intValue();
-	}
-
-	@Override
-	public void saveUserCompareCourse(final UserCompareCourse compareCourse) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(compareCourse);
-	}
-
-	@Override
-	public void saveUserCompareCourseBundle(final UserCompareCourseBundle compareCourseBundle) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(compareCourseBundle);
-	}
-
-	@Override
-	public List<UserCompareCourse> getUserCompareCourse(final String userId) {
-		List<UserCompareCourse> compareCourses = new ArrayList<>();
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select ucc.id, ucc.compare_value FROM  user_compare_course ucc where ucc.deleted_on IS NULL and ucc.user_id='" + userId +"'";
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		UserCompareCourse obj = null;
-		for (Object[] row : rows) {
-			obj = new UserCompareCourse();
-			obj.setId(row[0].toString());
-			if (row[1] != null) {
-				obj.setCompareValue(row[1].toString());
-			}
-			compareCourses.add(obj);
-		}
-		return compareCourses;
 	}
 
 	@Override

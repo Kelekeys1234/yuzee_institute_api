@@ -15,8 +15,10 @@ import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseEnglishEligibility;
 import com.seeka.app.bean.CourseKeywords;
 import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.controller.handler.IdentityHandler;
 import com.seeka.app.controller.handler.ViewTransactionHandler;
 import com.seeka.app.dto.AdvanceSearchDto;
+import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
 import com.seeka.app.dto.CourseMobileDto;
@@ -29,8 +31,6 @@ import com.seeka.app.dto.PaginationDto;
 import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
-import com.seeka.app.dto.UserCompareCourseResponse;
-import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.dto.UserMyCourseDto;
 import com.seeka.app.endpoint.CourseInterface;
@@ -46,7 +46,6 @@ import com.seeka.app.processor.CourseKeywordProcessor;
 import com.seeka.app.processor.CourseProcessor;
 import com.seeka.app.processor.InstituteProcessor;
 import com.seeka.app.processor.StorageProcessor;
-import com.seeka.app.service.IUsersService;
 import com.seeka.app.service.UserRecommendationService;
 import com.seeka.app.util.PaginationUtil;
 
@@ -78,7 +77,7 @@ public class CourseController implements CourseInterface {
 	private MessageByLocaleService messageByLocalService;
 
 	@Autowired
-	private IUsersService iUsersService;
+	private IdentityHandler identityHandler;
 	
 	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
@@ -261,32 +260,17 @@ public class CourseController implements CourseInterface {
 				.setMessage("Courses Displayed successfully").setData(courseResponseDto).create();
 	}
 
-	/*// Get My course List
-	public ResponseEntity<?> getUserCourses(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
-			final String sortBy, final boolean sortAsscending) throws ValidationException, CommonInvokeException {
+	public ResponseEntity<?> getUserCourses(final List<String> courseIds,final String sortBy, final String sortAsscending) 
+			throws ValidationException, CommonInvokeException {
 		log.info("Start process to get user course from DB based on pagination and userID");
-		PaginationResponseDto paginationResponseDto = courseProcessor.getUserCourse(userId, pageNumber, pageSize, currencyCode, sortBy, sortAsscending);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
-				.setMessage("User Courses displayed successfully").create();
-	}*/
-
-	public ResponseEntity<?> addUserCompareCourse(final UserCourse userCourse) throws Exception {
-		log.info("Start process to save user compare couses in DB");
-		courseProcessor.addUserCompareCourse(userCourse);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("User Compare Courses add successfully").create();
-	}
-
-	public ResponseEntity<?> getUserCompareCourse(final String userId) throws Exception {
-		log.info("Start process to get user compare course from DB based on userID");
-		List<UserCompareCourseResponse> compareCourseResponses = courseProcessor.getUserCompareCourse(userId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(compareCourseResponses)
+		List<CourseDto> courses = courseProcessor.getUserCourse(courseIds, sortBy, sortAsscending);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courses)
 				.setMessage("User Courses displayed successfully").create();
 	}
 
 	public ResponseEntity<?> courseFilter(final String userId, String language, final CourseFilterDto courseFilter) throws Exception {
 		//Get userCountry Based on userId
-		UserDto userDto = iUsersService.getUserById(userId);
+		UserDto userDto = identityHandler.getUserById(userId);
 		if (userDto == null) {
 			throw new NotFoundException(
 					messageByLocalService.getMessage("user.not.found", new Object[] { userId }, language));
@@ -496,5 +480,12 @@ public class CourseController implements CourseInterface {
 		response.put("message", "Success.!");
 		response.put("courseList", courseList);
 		return ResponseEntity.accepted().body(response);
+	}
+
+	@Override
+	public ResponseEntity<?> getCourseByIds(List<String> courseIds) {
+		List<CourseDto> courseDtos = courseProcessor.getCourseByMultipleId(courseIds);
+		return new GenericResponseHandlers.Builder().setData(courseDtos).setMessage("Course List Displayed Successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 }

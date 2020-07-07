@@ -11,20 +11,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.controller.handler.IdentityHandler;
 import com.seeka.app.dto.EducationSystemResponse;
 import com.seeka.app.dto.UserAchivements;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.dto.UserManagement;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.processor.EducationSystemProcessor;
-import com.seeka.app.service.UsersService;
 
 @RestController("userManagementControllerV1")
 @RequestMapping("/api/v1/user")
 public class UserManagementController {
 
 	@Autowired
-	private UsersService usersService;
+	private IdentityHandler identityHandler;
 
 	@Autowired
 	private EducationSystemProcessor educationSystemService;
@@ -32,9 +32,9 @@ public class UserManagementController {
 	@GetMapping("/{userId}")
 	public ResponseEntity<Object> getUserManagementData(@PathVariable final String userId) throws ValidationException {
 		UserManagement userManagement = new UserManagement();
-		UserDto userDto = usersService.getUserById(userId);
+		UserDto userDto = identityHandler.getUserById(userId);
 		userManagement.setUserDto(userDto);
-		List<UserAchivements> userAchivements = usersService.getUserAchivementsByUserId(userId);
+		List<UserAchivements> userAchivements = identityHandler.getUserAchivementsByUserId(userId);
 		userManagement.setUserAchivementsList(userAchivements);
 		EducationSystemResponse educationSystemResponse = educationSystemService.getEducationSystemsDetailByUserId(userId);
 		userManagement.setEducationSystemResponse(educationSystemResponse);

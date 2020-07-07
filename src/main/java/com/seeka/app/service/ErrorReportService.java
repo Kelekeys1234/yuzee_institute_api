@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.seeka.app.bean.AuditErrorReport;
 import com.seeka.app.bean.ErrorReport;
 import com.seeka.app.bean.ErrorReportCategory;
+import com.seeka.app.controller.handler.IdentityHandler;
 import com.seeka.app.dao.IErrorReportDAO;
 import com.seeka.app.dto.ErrorReportCategoryDto;
 import com.seeka.app.dto.ErrorReportDto;
@@ -37,7 +38,7 @@ public class ErrorReportService implements IErrorReportService {
 	private IErrorReportDAO errorReportDAO;
 
 	@Autowired
-	private IUsersService iUsersService;
+	private IdentityHandler identityHandler;
 
 	@Autowired
 	private StorageProcessor iStorageService;
@@ -107,11 +108,11 @@ public class ErrorReportService implements IErrorReportService {
 		BeanUtils.copyProperties(errorReport, errorReportResponseDto);
 		errorReportResponseDto.setErrorReportCategoryName(errorReport.getErrorReportCategory().getName());
 		errorReportResponseDto.setErrorReportCategoryId(errorReport.getErrorReportCategory().getId());
-		UserDto userDto = iUsersService.getUserById(errorReport.getUserId());
+		UserDto userDto = identityHandler.getUserById(errorReport.getUserId());
 		errorReportResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
 		errorReportResponseDto.setUserEmail(userDto.getEmail());
 		if (errorReport.getAssigneeUserId() != null) {
-			UserDto assignUserDto = iUsersService.getUserById(errorReport.getAssigneeUserId());
+			UserDto assignUserDto = identityHandler.getUserById(errorReport.getAssigneeUserId());
 			errorReportResponseDto.setAssigneeUserName(assignUserDto.getFirstName() + " " + assignUserDto.getLastName());
 		}
 		return errorReportResponseDto;
@@ -129,11 +130,11 @@ public class ErrorReportService implements IErrorReportService {
 			BeanUtils.copyProperties(errorReport, errorReportResponseDto);
 			errorReportResponseDto.setErrorReportCategoryName(errorReport.getErrorReportCategory().getName());
 			errorReportResponseDto.setErrorReportCategoryId(errorReport.getErrorReportCategory().getId());
-			UserDto userDto = iUsersService.getUserById(errorReport.getUserId());
+			UserDto userDto = identityHandler.getUserById(errorReport.getUserId());
 			errorReportResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
 			errorReportResponseDto.setUserEmail(userDto.getEmail());
 			if (errorReport.getAssigneeUserId() != null) {
-				UserDto assignUserDto = iUsersService.getUserById(errorReport.getAssigneeUserId());
+				UserDto assignUserDto = identityHandler.getUserById(errorReport.getAssigneeUserId());
 				errorReportResponseDto.setAssigneeUserName(assignUserDto.getFirstName() + " " + assignUserDto.getLastName());
 				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(errorReport.getAssigneeUserId(), "USER_PROFILE", null, "en");
 				if (storageDTOList != null && !storageDTOList.isEmpty()) {

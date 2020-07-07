@@ -15,17 +15,17 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteAssociation;
 import com.seeka.app.constant.InstituteAssociationStatus;
 import com.seeka.app.constant.InstituteAssociationType;
+import com.seeka.app.controller.handler.IdentityHandler;
 import com.seeka.app.controller.handler.StorageHandler;
 import com.seeka.app.controller.handler.UserInstituteAccessRoleHandler;
-import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dao.InstituteAssociationDao;
+import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dto.InstituteAssociationDto;
 import com.seeka.app.dto.InstituteAssociationResponseDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserInstituteAccessInternalResponseDto;
 import com.seeka.app.exception.InternalServerException;
 import com.seeka.app.exception.NotFoundException;
-import com.seeka.app.service.IUsersService;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -46,7 +46,7 @@ public class InstituteAssociationProcessor {
 	private StorageHandler storageHandler;
 	
 	@Autowired
-	private IUsersService iUserService;
+	private IdentityHandler identityHandler;
 	
 	@Value("${rejection.count}")
 	public Integer rejectionCount;

@@ -1,25 +1,27 @@
 package com.seeka.app.dto;
 
-import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class CourseDto {
 
 	@JsonProperty("course_id")
     private String id;
     
 	@JsonProperty("level_id")
-	@NotBlank(message = "level_id should not be blank")
 	private String levelId;
 	
 	@JsonProperty("name")
-	@NotBlank(message = "name should not be blank")
     private String name;
 	
 	@JsonProperty("cost")
@@ -45,4 +47,10 @@ public class CourseDto {
 	
 	@JsonProperty("remarks")
     private String remarks;
+	
+	@JsonProperty("institute_name")
+	private String instituteName;
+	
+	@JsonProperty("course_delivery_modes")
+	private List<CourseDeliveryModesDto> courseAdditionalInfo;
 }

@@ -23,6 +23,7 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteType;
 import com.seeka.app.constant.BasicStatus;
 import com.seeka.app.constant.NotificationType;
+import com.seeka.app.controller.handler.IdentityHandler;
 import com.seeka.app.dao.IEnrollmentDao;
 import com.seeka.app.dto.EnrollmentDto;
 import com.seeka.app.dto.EnrollmentResponseDto;
@@ -54,7 +55,7 @@ public class EnrollmentService implements IEnrollmentService {
 	private InstituteTypeProcessor instituteTypeProcessor;
 
 	@Autowired
-	private IUsersService iUsersService;
+	private IdentityHandler identityHandler;
 
 	@Autowired
 	private StorageProcessor iStorageService;
@@ -191,7 +192,7 @@ public class EnrollmentService implements IEnrollmentService {
 		if (!userId.equals(enrollmentStatus.getEnrollment().getUserId())) {
 			String message = "Your application status changed to "
 					+ com.seeka.app.constant.EnrollmentStatus.getByValue(enrollmentStatus.getStatus()).getDisplayValue();
-			iUsersService.sendPushNotification(enrollmentStatus.getEnrollment().getUserId(), message, NotificationType.ENROLLMENT.name());
+			identityHandler.sendPushNotification(enrollmentStatus.getEnrollment().getUserId(), message, NotificationType.ENROLLMENT.name());
 		} else {
 			logger.info("Message trigger by user");
 		}
@@ -220,7 +221,7 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollmentResponseDto.setCountryName(enrollment.getCountryName());
 		}
 		if (enrollment.getUserId() != null) {
-			UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
+			UserDto userDto = identityHandler.getUserById(enrollment.getUserId());
 			enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
 			enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
 		}
@@ -267,7 +268,7 @@ public class EnrollmentService implements IEnrollmentService {
 				enrollmentResponseDto.setDeadLine(enrollmentStatus.getDeadLine());
 			}
 			if (enrollment.getUserId() != null) {
-				UserDto userDto = iUsersService.getUserById(enrollment.getUserId());
+				UserDto userDto = identityHandler.getUserById(enrollment.getUserId());
 				enrollmentResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
 				enrollmentResponseDto.setCitizenship(userDto.getCitizenship());
 			}

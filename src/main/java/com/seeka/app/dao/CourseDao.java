@@ -9,10 +9,9 @@ import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
-import com.seeka.app.bean.UserCompareCourse;
-import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
+import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
@@ -51,16 +50,10 @@ public interface CourseDao {
 	
 	public List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
 
-	public List<CourseRequest> getUserCourse(String userId, Integer pageNumber, Integer pageSize, String currencyCode, String sortBy, boolean sortType)
-			throws ValidationException, CommonInvokeException;
+	public List<CourseDto> getUserCourse(List<String> courseIds, String sortBy, boolean sortType) throws ValidationException, 
+			CommonInvokeException;
 
 	public int findTotalCountByUserId(String userId);
-
-	public void saveUserCompareCourse(UserCompareCourse compareCourse);
-
-	public void saveUserCompareCourseBundle(UserCompareCourseBundle compareCourseBundle);
-
-	public List<UserCompareCourse> getUserCompareCourse(String userId);
 
 	public CourseRequest getCourseById(String valueOf);
 

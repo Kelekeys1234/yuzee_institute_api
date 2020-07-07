@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryModes;
@@ -33,8 +34,6 @@ import com.seeka.app.bean.CourseMinRequirement;
 import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Level;
-import com.seeka.app.bean.UserCompareCourse;
-import com.seeka.app.bean.UserCompareCourseBundle;
 import com.seeka.app.constant.Type;
 import com.seeka.app.controller.handler.CommonHandler;
 import com.seeka.app.controller.handler.ReviewHandler;
@@ -52,6 +51,7 @@ import com.seeka.app.dto.AdvanceSearchDto;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CourseDeliveryModesDto;
 import com.seeka.app.dto.CourseDeliveryModesElasticDto;
+import com.seeka.app.dto.CourseDto;
 import com.seeka.app.dto.CourseEnglishEligibilityDto;
 import com.seeka.app.dto.CourseFilterDto;
 import com.seeka.app.dto.CourseMinRequirementDto;
@@ -68,8 +68,6 @@ import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.ServiceDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.StudentVisaDto;
-import com.seeka.app.dto.UserCompareCourseResponse;
-import com.seeka.app.dto.UserCourse;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.dto.UserReviewResultDto;
 import com.seeka.app.dto.UserViewCourseDto;
@@ -122,9 +120,6 @@ public class CourseProcessor {
 
 	@Autowired
 	private IGlobalStudentData iGlobalStudentDataService;
-
-//	@Autowired
-//	private ViewDao viewDao;
 
 	@Autowired
 	private LevelProcessor levelProcessor;
@@ -802,108 +797,27 @@ public class CourseProcessor {
 		}
 	}
 
-	/*public PaginationResponseDto getUserCourse(final String userId, final Integer pageNumber, final Integer pageSize, final String currencyCode,
-			final String sortBy, final Boolean sortAsscending) throws ValidationException, CommonInvokeException {
+	public List<CourseDto> getUserCourse(final List<String> courseIds, final String sortBy, final String sortAsscending) throws ValidationException, CommonInvokeException {
 		log.debug("Inside getUserCourse() method");
-		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
-		List<CourseRequest> resultList = new ArrayList<>();
-		log.info("Gettin total count of courses by userId = "+userId);
-		int totalCount = courseDAO.findTotalCountByUserId(userId);
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		log.info("Fetching courses from DB based on filters and having userId = "+userId);
-		List<CourseRequest> courses = courseDAO.getUserCourse(userId, startIndex, pageSize, currencyCode, sortBy, sortAsscending);
+		log.info("Extracting courses from DB based on pagination and courseIds");
+		List<CourseDto> courses = new ArrayList<>();
+		if(sortAsscending.equalsIgnoreCase("true")) {
+			courses = courseDAO.getUserCourse(courseIds, sortBy, true);
+		} else {
+			courses = courseDAO.getUserCourse(courseIds, sortBy, false);
+		}
+		
+		log.info("Filering course response if courseId is coming duplicate in response");
+		courses = courses.stream().filter(CommonUtil.distinctByKey(CourseDto::getId)).collect(Collectors.toList());
+		
 		if(!CollectionUtils.isEmpty(courses)) {
 			log.info("Courses fetched from DB hence strat iterating data");
 			courses.stream().forEach(courseRequest -> {
-				try {
-					log.info("Calling Storage Service to fetch images based for instituteId = "+courseRequest.getInstituteId());
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(courseRequest.getInstituteId(), 
-							ImageCategory.INSTITUTE.toString(), null, "en");
-					courseRequest.setStorageList(storageDTOList);
-				} catch (ValidationException e) {
-					log.error("Error invoking Storage Service having exception = "+e);
-				}
-				log.info("Fetching course additional info based on courseId = "+courseRequest.getId());
-				courseRequest.setCourseAdditionalInfo(courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(courseRequest.getId()));
-				resultList.add(courseRequest);
+				log.info("Filtering course additional info by matching courseIds");
+				List<CourseDeliveryModesDto> additionalInfoDtos = courseRequest.getCourseAdditionalInfo().stream().
+							filter(x -> x.getCourseId().equals(courseRequest.getId())).collect(Collectors.toList());
+				courseRequest.setCourseAdditionalInfo(additionalInfoDtos);
 			});
-			log.info("Calculating pagination based on startIndex, pageSize and totalCount");
-			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-			paginationResponseDto.setResponse(resultList);
-			paginationResponseDto.setTotalCount(totalCount);
-			paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
-			paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-			paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
-			paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
-		}
-		return paginationResponseDto;
-	}*/
-
-	public void addUserCompareCourse(@Valid final UserCourse userCourse) {
-		log.debug("Inside addUserCompareCourse() method");
-		try {
-			if (userCourse.getCourses() != null && !userCourse.getCourses().isEmpty()) {
-				String compareValue = "";
-				log.info("Iterating courseIds comin in request and add in string");
-				for (String courseId : userCourse.getCourses()) {
-					compareValue += courseId + ",";
-				}
-				UserCompareCourse compareCourse = new UserCompareCourse();
-				compareCourse.setCompareValue(compareValue);
-				compareCourse.setCreatedBy(userCourse.getCreatedBy());
-				compareCourse.setCreatedOn(new Date());
-				compareCourse.setUpdatedBy(userCourse.getUpdatedBy());
-				compareCourse.setUpdatedOn(new Date());
-				compareCourse.setUserId(userCourse.getUserId());
-				log.info("Calling DAO layer to save user compare courses");
-				courseDAO.saveUserCompareCourse(compareCourse);
-				for (String courseId : userCourse.getCourses()) {
-					UserCompareCourseBundle compareCourseBundle = new UserCompareCourseBundle();
-					compareCourseBundle.setUserId(userCourse.getUserId());
-					compareCourseBundle.setCompareCourse(compareCourse);
-					compareCourseBundle.setCourse(courseDAO.get(courseId));
-					log.info("Calling DAO layer to add user compare course bundle in DB");
-					courseDAO.saveUserCompareCourseBundle(compareCourseBundle);
-				}
-			}
-		} catch (Exception exception) {
-			log.error("Error invoke while adding user compare courses in DB having exception = "+exception);
-		}
-	}
-
-	public List<UserCompareCourseResponse> getUserCompareCourse(final String userId) throws NotFoundException {
-		log.debug("Inside getUserCompareCourse() method");
-		List<UserCompareCourseResponse> compareCourseResponses = new ArrayList<>();
-		log.info("Fetching user compare courses from DB having userId = "+userId);
-		List<UserCompareCourse> compareCourses = courseDAO.getUserCompareCourse(userId);
-		if(!CollectionUtils.isEmpty(compareCourses)) {
-			log.info("User compare courses found in DB star iterating data to make response");
-			compareCourses.stream().forEach(compareCourse -> {
-				UserCompareCourseResponse courseResponse = new UserCompareCourseResponse();
-				courseResponse.setUserCourseCompareId(compareCourse.getId().toString());
-				try {
-					log.info("Fetching course information from DB having courseId = "+compareCourse.getCompareValue());
-					courseResponse.setCourses(getCourses(compareCourse.getCompareValue()));
-				} catch (ValidationException e) {
-					log.error("Exception while fetching course from DB for courseId = "+compareCourse.getCompareValue());
-				}
-				compareCourseResponses.add(courseResponse);
-			});
-		} else {
-			log.error("No user course found in BD for userId = "+userId);
-			throw new NotFoundException("No user course found in BD for userId = "+userId);
-		}
-		return compareCourseResponses;
-	}
-
-	private List<CourseRequest> getCourses(final String compareValue) throws ValidationException {
-		List<CourseRequest> courses = new ArrayList<>();
-		String[] compareValues = compareValue.split(",");
-		for (String id : compareValues) {
-			CourseRequest courseRequest = courseDAO.getCourseById(id);
-			List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
-			courseRequest.setStorageList(storageDTOList);
-			courses.add(courseRequest);
 		}
 		return courses;
 	}
@@ -1928,5 +1842,24 @@ public class CourseProcessor {
 		nearestCoursesPaginationDto.setTotalPages(paginationUtilDto.getTotalPages());
 		nearestCoursesPaginationDto.setTotalCount(totalCount.intValue());
 		return nearestCoursesPaginationDto;
+	}
+	
+	public List<CourseDto> getCourseByMultipleId(List<String> courseIds) {
+		List<CourseDto> courseDtos = new ArrayList<>();
+		List<Course> courseDetails = courseDAO.getAllCoursesUsingId(courseIds);
+		if(!CollectionUtils.isEmpty(courseDetails)) {
+			courseDetails.stream().forEach(courseDetail -> {
+				CourseDto courseResponse = new CourseDto(courseDetail.getId(), courseDetail.getLevel().getId(), 
+						courseDetail.getName(), ((courseDetail.getCostRange() != null) ? courseDetail.getCostRange().toString() : null), 
+						((courseDetail.getWorldRanking() != null) ? courseDetail.getWorldRanking().toString() : null),
+						((courseDetail.getStars() != null) ? courseDetail.getStars().toString() : null),
+						courseDetail.getFaculty().getName(), courseDetail.getLevel().getName(), null,
+						courseDetail.getDescription(), courseDetail.getRemarks(),
+						courseDetail.getInstitute().getName(),
+						courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(courseDetail.getId()));
+				courseDtos.add(courseResponse);
+			});
+		}
+		return courseDtos;
 	}
 }
