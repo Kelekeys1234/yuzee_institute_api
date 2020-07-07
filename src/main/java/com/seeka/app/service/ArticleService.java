@@ -23,6 +23,7 @@ import com.seeka.app.bean.Faculty;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.SeekaArticles;
 import com.seeka.app.bean.SubCategory;
+import com.seeka.app.controller.handler.ElasticHandler;
 import com.seeka.app.dao.ArticleFolderMapDao;
 import com.seeka.app.dao.CourseDao;
 import com.seeka.app.dao.FacultyDao;
@@ -75,12 +76,6 @@ public class ArticleService implements IArticleService {
 	@Autowired
 	private CourseDao courseDAO;
 
-//	@Autowired
-//	private CountryDAO countryDAO;
-
-//	@Autowired
-//	private CityDAO cityDAO;
-
 	@Autowired
 	private InstituteDaoImpl instituteDAO;
 
@@ -97,7 +92,7 @@ public class ArticleService implements IArticleService {
 	private MessageByLocaleService messageByLocalService;
 
 	@Autowired
-	private ElasticSearchService elasticSearchService;
+	private ElasticHandler elasticHandler;
 
 	@Override
 	public SeekaArticles deleteArticle(final String articleId) {
@@ -295,10 +290,10 @@ public class ArticleService implements IArticleService {
 		articleElasticSearchDTO.setCourse(article.getCourse() != null ? article.getCourse().getName() : null);
 		articleElasticSearchDTO.setPostDate(CommonUtil.getDateWithoutTime(articleDto.getPostDate()));
 		if (updateCase) {
-			elasticSearchService.updateArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
+			elasticHandler.updateArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
 					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
 		} else {
-			elasticSearchService.saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
+			elasticHandler.saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
 					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
 		}
 		return articleDto;

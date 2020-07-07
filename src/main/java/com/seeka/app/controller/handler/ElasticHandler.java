@@ -1,4 +1,4 @@
-package com.seeka.app.service;
+package com.seeka.app.controller.handler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import com.seeka.app.dto.ScholarshipElasticDTO;
 import com.seeka.app.util.IConstant;
 
 @Service
-public class ElasticSearchService {
+public class ElasticHandler {
 
 	@Autowired
 	private RestTemplate restTemplate;

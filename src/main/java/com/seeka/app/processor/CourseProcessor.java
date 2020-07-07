@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import com.seeka.app.bean.Course;
 import com.seeka.app.bean.CourseDeliveryModes;
@@ -36,6 +35,7 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Level;
 import com.seeka.app.constant.Type;
 import com.seeka.app.controller.handler.CommonHandler;
+import com.seeka.app.controller.handler.ElasticHandler;
 import com.seeka.app.controller.handler.ReviewHandler;
 import com.seeka.app.controller.handler.ViewTransactionHandler;
 import com.seeka.app.dao.CourseDao;
@@ -80,7 +80,6 @@ import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.repository.CourseRepository;
-import com.seeka.app.service.ElasticSearchService;
 import com.seeka.app.service.IEnrollmentService;
 import com.seeka.app.service.IGlobalStudentData;
 import com.seeka.app.service.ITop10CourseService;
@@ -128,7 +127,7 @@ public class CourseProcessor {
 	private UserRecommendationService userRecommedationService;
 
 	@Autowired
-	private ElasticSearchService elasticSearchService;
+	private ElasticHandler elasticHandler;
 
 	@Autowired
 	private IGlobalStudentDataDAO iGlobalStudentDataDAO;
@@ -482,7 +481,7 @@ public class CourseProcessor {
 		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
 		courseListElasticDTO.add(courseElasticSearch);
 		log.info("Calling elastic service to add courses on elastic index");
-		elasticSearchService.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseListElasticDTO,
+		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseListElasticDTO,
 				IConstant.ELASTIC_SEARCH);
 		return course.getId();
 	}
@@ -786,7 +785,7 @@ public class CourseProcessor {
 				List<CourseDTOElasticSearch> courseDtoESList = new ArrayList<>();
 				courseDtoESList.add(elasticSearchCourseDto);
 				log.info("Calling elastic service to update course having entityId = "+ courseId);
-				elasticSearchService.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, 
+				elasticHandler.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, 
 						SeekaEntityType.COURSE.name().toLowerCase(), courseDtoESList, IConstant.ELASTIC_SEARCH);
 			} else {
 				log.error("Course not found for courseId = "+ courseId);

@@ -18,6 +18,7 @@ import com.seeka.app.bean.Level;
 import com.seeka.app.bean.Scholarship;
 import com.seeka.app.bean.ScholarshipIntakes;
 import com.seeka.app.bean.ScholarshipLanguage;
+import com.seeka.app.controller.handler.ElasticHandler;
 import com.seeka.app.dao.LevelDao;
 import com.seeka.app.dao.ScholarshipDao;
 import com.seeka.app.dto.LevelDto;
@@ -29,7 +30,6 @@ import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.service.ElasticSearchService;
 import com.seeka.app.util.IConstant;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -46,7 +46,7 @@ public class ScholarshipProcessor {
 	private LevelDao levelDAO;
 
 	@Autowired
-	private ElasticSearchService elasticSearchService;
+	private ElasticHandler elasticHandler;
 	
 	@Autowired
 	private StorageProcessor storageProcessor;
@@ -113,7 +113,7 @@ public class ScholarshipProcessor {
 		scholarshipElasticDto.setLanguages(scholarshipDto.getLanguages());
 		
 		log.info("Calling elastic search service to save data on elastic index");
-		elasticSearchService.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
+		elasticHandler.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
 				SeekaEntityType.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 		return scholarship;
 	}
@@ -241,7 +241,7 @@ public class ScholarshipProcessor {
 		scholarshipElasticDto.setIntake(scholarshipDto.getIntakes());
 		
 		log.info("Calling elastic search service to update existing scholarship data in DB");
-		elasticSearchService.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
+		elasticHandler.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
 				SeekaEntityType.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 	}
 

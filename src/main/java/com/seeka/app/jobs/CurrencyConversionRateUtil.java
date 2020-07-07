@@ -22,12 +22,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.seeka.app.controller.handler.CommonHandler;
+import com.seeka.app.controller.handler.ElasticHandler;
 import com.seeka.app.dto.CourseDTOElasticSearch;
 import com.seeka.app.dto.CurrencyRateDto;
 import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.processor.CourseProcessor;
-import com.seeka.app.service.ElasticSearchService;
 import com.seeka.app.util.CommonUtil;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -45,7 +45,7 @@ public class CurrencyConversionRateUtil {
 	private CourseProcessor courseProcessor;
 	
 	@Autowired
-	private ElasticSearchService elasticSearchService;
+	private ElasticHandler elasticHandler;
 	
 	@Autowired
 	private CommonHandler commonHandler;
@@ -161,7 +161,7 @@ public class CurrencyConversionRateUtil {
 //				courseDtoElasticSearch.setLevelName(course.getLevel()!=null?course.getLevel().getName():null);
 //				courseDtoElasticSearchList.add(courseDtoElasticSearch);
 //			}
-			Map<String, List<String>> courseUpdateStatus = elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+			Map<String, List<String>> courseUpdateStatus = elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
 			failedRecordsInElasticSearch.addAll(courseUpdateStatus.get("failed"));
 		}
 	}
@@ -174,7 +174,7 @@ public class CurrencyConversionRateUtil {
 		for (int i = 0; i < totalCourseToBeRetried; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
 			List<String> courseIds = failedRecordsInElasticSearch.subList(i, i+IConstant.COURSES_PER_SCHEDULER_LOOP < totalCourseToBeRetried ? i+IConstant.COURSES_PER_SCHEDULER_LOOP: totalCourseToBeRetried);
 			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseProcessor.getCoursesToBeRetriedForElasticSearch(courseIds, i, IConstant.COURSES_PER_SCHEDULER_LOOP);
-			elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+			elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
 		}
 		
 		failedRecordsInElasticSearch.clear();
