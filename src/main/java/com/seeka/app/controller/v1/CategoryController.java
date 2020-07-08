@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Category;
 import com.seeka.app.dto.CategoryDto;
-import com.seeka.app.service.ICategoryService;
+import com.seeka.app.processor.CategoryProcessor;
 import com.seeka.app.util.IConstant;
 
 @RestController("categoryControllerV1")
@@ -24,14 +24,14 @@ import com.seeka.app.util.IConstant;
 public class CategoryController {
 
     @Autowired
-    private ICategoryService categoryService;
+    private CategoryProcessor categoryProcessor;
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getAll(@RequestHeader(value = IConstant.CORRELATION_ID, required = false, defaultValue = "") String correlationId,
                     @RequestHeader(value = IConstant.USER_ID, required = false) String userId, @RequestHeader(value = IConstant.SESSION_ID, required = false) String sessionId,
                     @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode) {
         Map<String, Object> response = new HashMap<String, Object>();
-        List<CategoryDto> categoryDtos = categoryService.getAllCategories();
+        List<CategoryDto> categoryDtos = categoryProcessor.getAllCategories();
         if (categoryDtos != null && !categoryDtos.isEmpty()) {
             response.put("status", HttpStatus.OK.value());
             response.put("message", IConstant.CATEGORY_GET_SUCCESS);
@@ -48,7 +48,7 @@ public class CategoryController {
                     @RequestHeader(value = IConstant.USER_ID, required = false) String userId, @RequestHeader(value = IConstant.SESSION_ID, required = false) String sessionId,
                     @RequestHeader(value = IConstant.TENANT_CODE, required = false) String tenantCode, @PathVariable String id) {
         Map<String, Object> response = new HashMap<String, Object>();
-        CategoryDto categoryDto = categoryService.getCategoryById(id);
+        CategoryDto categoryDto = categoryProcessor.getCategoryById(id);
         if (categoryDto != null) {
             response.put("status", HttpStatus.OK.value());
             response.put("message", IConstant.CATEGORY_GET_SUCCESS);
@@ -62,13 +62,13 @@ public class CategoryController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveCategory(@RequestBody Category category) {
-        return ResponseEntity.accepted().body(categoryService.saveCategory(category));
+        return ResponseEntity.accepted().body(categoryProcessor.saveCategory(category));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteSuCategory(@PathVariable String id) {
         Map<String, Object> response = new HashMap<String, Object>();
-        boolean status = categoryService.deleteCategory(id);
+        boolean status = categoryProcessor.deleteCategory(id);
         if (status) {
             response.put("status", HttpStatus.OK.value());
             response.put("message", IConstant.CATEGORY_DELETE_SUCCESS);

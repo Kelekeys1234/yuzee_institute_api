@@ -1,4 +1,4 @@
-package com.seeka.app.dto;
+package com.seeka.app.bean;
 
 import java.io.Serializable;
 import java.util.Date;

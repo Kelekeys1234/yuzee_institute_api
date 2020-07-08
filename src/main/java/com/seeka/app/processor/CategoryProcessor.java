@@ -1,4 +1,6 @@
-package com.seeka.app.service;import java.util.HashMap;
+package com.seeka.app.processor;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,22 +16,19 @@ import com.seeka.app.util.IConstant;
 
 @Service
 @Transactional
-public class CategoryService implements ICategoryService {
+public class CategoryProcessor {
 
     @Autowired
     private ICategoryDAO categoryDAO;
-
-    @Override
+    
     public List<CategoryDto> getAllCategories() {
         return categoryDAO.getAllCategories();
     }
 
-    @Override
     public CategoryDto getCategoryById(String categoryId) {
         return categoryDAO.getCategoryById(categoryId);
     }
 
-    @Override
     public Map<String, Object> saveCategory(Category categoryRequest) {
         Map<String, Object> response = new HashMap<String, Object>();
         Category category = null;
@@ -57,7 +56,7 @@ public class CategoryService implements ICategoryService {
         return response;
     }
 
-    @Override
+    
     public boolean deleteCategory(String categoryId) {
         boolean status = true;
         try {
@@ -77,4 +76,5 @@ public class CategoryService implements ICategoryService {
         }
         return status;
     }
+
 }

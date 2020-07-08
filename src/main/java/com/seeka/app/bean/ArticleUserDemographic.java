@@ -33,7 +33,7 @@ public class ArticleUserDemographic implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = true)
 	@JoinColumn(name = "article_id", nullable = false)
-	private SeekaArticles article;
+	private Articles article;
 
 	@Column(name = "country_name")
 	private String countryName;
@@ -66,11 +66,11 @@ public class ArticleUserDemographic implements Serializable {
 		this.id = id;
 	}
 
-	public SeekaArticles getArticle() {
+	public Articles getArticle() {
 		return article;
 	}
 
-	public void setArticle(SeekaArticles article) {
+	public void setArticle(Articles article) {
 		this.article = article;
 	}
 

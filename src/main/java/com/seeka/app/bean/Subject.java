@@ -20,7 +20,7 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "seeka_subject")
+@Table(name = "subject")
 public class Subject implements java.io.Serializable {
 
 	private static final long serialVersionUID = -4896547771928499529L;

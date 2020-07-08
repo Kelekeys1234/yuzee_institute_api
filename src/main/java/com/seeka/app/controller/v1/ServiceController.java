@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.ServiceDto;
 import com.seeka.app.endpoint.ServiceInterface;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.CourseProcessor;
 
 @RestController("serviceControllerV1")

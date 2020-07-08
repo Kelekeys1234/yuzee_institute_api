@@ -18,7 +18,6 @@ import com.seeka.app.bean.Level;
 import com.seeka.app.bean.Scholarship;
 import com.seeka.app.bean.ScholarshipIntakes;
 import com.seeka.app.bean.ScholarshipLanguage;
-import com.seeka.app.controller.handler.ElasticHandler;
 import com.seeka.app.dao.LevelDao;
 import com.seeka.app.dao.ScholarshipDao;
 import com.seeka.app.dto.LevelDto;
@@ -28,8 +27,9 @@ import com.seeka.app.dto.ScholarshipElasticDTO;
 import com.seeka.app.dto.ScholarshipResponseDTO;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
-import com.seeka.app.enumeration.SeekaEntityType;
+import com.seeka.app.enumeration.EntityType;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.ElasticHandler;
 import com.seeka.app.util.IConstant;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -114,7 +114,7 @@ public class ScholarshipProcessor {
 		
 		log.info("Calling elastic search service to save data on elastic index");
 		elasticHandler.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
-				SeekaEntityType.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
+				EntityType.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 		return scholarship;
 	}
 
@@ -242,7 +242,7 @@ public class ScholarshipProcessor {
 		
 		log.info("Calling elastic search service to update existing scholarship data in DB");
 		elasticHandler.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
-				SeekaEntityType.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
+				EntityType.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 	}
 
 	

@@ -7,10 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.AccrediatedDetailDto;
 import com.seeka.app.endpoint.AccrediatedDetailInterface;
 import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.AccrediatedDetailProcessor;
 
 import lombok.extern.apachecommons.CommonsLog;

@@ -12,7 +12,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.dto.GlobalData;
+import com.seeka.app.bean.GlobalData;
 
 @Repository
 public class GlobalStudentDataDAO implements IGlobalStudentDataDAO {

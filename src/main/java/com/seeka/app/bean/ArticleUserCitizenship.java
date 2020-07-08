@@ -33,7 +33,7 @@ public class ArticleUserCitizenship implements Serializable {
 	private String id;
 	private String cityName;
 	private String countryName;
-	private SeekaArticles seekaArticles;
+	private Articles seekaArticles;
 	private String createdBy;
 	private Date createdDate;
 	private String updatedBy;
@@ -42,7 +42,7 @@ public class ArticleUserCitizenship implements Serializable {
 	public ArticleUserCitizenship() {
 	}
 
-	public ArticleUserCitizenship(String countryName, SeekaArticles seekaArticles, String createdBy,
+	public ArticleUserCitizenship(String countryName, Articles seekaArticles, String createdBy,
 			Date createdDate, String updatedBy, Date updatedDate) {
 		this.setCountryName(countryName);
 		this.seekaArticles = seekaArticles;
@@ -65,11 +65,11 @@ public class ArticleUserCitizenship implements Serializable {
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "article_id")
-	public SeekaArticles getSeekaArticles() {
+	public Articles getSeekaArticles() {
 		return this.seekaArticles;
 	}
 
-	public void setSeekaArticles(SeekaArticles seekaArticles) {
+	public void setSeekaArticles(Articles seekaArticles) {
 		this.seekaArticles = seekaArticles;
 	}
 

@@ -27,17 +27,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.ArticleFolder;
-import com.seeka.app.bean.SeekaArticles;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.bean.Articles;
 import com.seeka.app.dto.ArticleFilterDto;
 import com.seeka.app.dto.ArticleFolderDto;
 import com.seeka.app.dto.ArticleFolderMapDto;
 import com.seeka.app.dto.ArticleResponseDetailsDto;
 import com.seeka.app.dto.PaginationUtilDto;
-import com.seeka.app.dto.SeekaArticleDto;
+import com.seeka.app.dto.ArticlesDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
-import com.seeka.app.service.IArticleService;
+import com.seeka.app.handler.GenericResponseHandlers;
+import com.seeka.app.processor.ArticleProcessor;
 import com.seeka.app.util.PaginationUtil;
 
 @RestController("articleControllerV1")
@@ -45,7 +45,7 @@ import com.seeka.app.util.PaginationUtil;
 public class ArticleController {
 
 	@Autowired
-	private IArticleService articleService;
+	private ArticleProcessor articleProcessor;
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllArticles(@PathVariable final Integer pageNumber,
@@ -63,9 +63,9 @@ public class ArticleController {
 			filterDate = df.parse(date);
 		}
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<ArticleResponseDetailsDto> articleList = articleService.getArticleList(startIndex, pageSize, sortByField,
+		List<ArticleResponseDetailsDto> articleList = articleProcessor.getArticleList(startIndex, pageSize, sortByField,
 				sortByType, searchKeyword, categoryId, tags, status, filterDate);
-		Integer totalCount = articleService.getTotalSearchCount(startIndex, pageSize, sortByField,
+		Integer totalCount = articleProcessor.getTotalSearchCount(startIndex, pageSize, sortByField,
 				sortByType, searchKeyword, categoryId, tags, status, filterDate);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
@@ -92,10 +92,10 @@ public class ArticleController {
 			throw new ValidationException("Page Size Cannot Be 0");
 		}
 		int startIndex = PaginationUtil.getStartIndex(articleFilterDTO.getPageNumber(), articleFilterDTO.getPageSize());
-		List<ArticleResponseDetailsDto> articleList = articleService.getArticleList(startIndex, articleFilterDTO.getPageSize(), 
+		List<ArticleResponseDetailsDto> articleList = articleProcessor.getArticleList(startIndex, articleFilterDTO.getPageSize(), 
 				articleFilterDTO.getSortByField(), articleFilterDTO.getSortByType(), articleFilterDTO.getSearchKeyword(), articleFilterDTO.getCategoryId(), 
 				articleFilterDTO.getTags(), articleFilterDTO.getStatus(), null);
-		Integer totalCount = articleService.getTotalSearchCount(startIndex, articleFilterDTO.getPageSize(), 
+		Integer totalCount = articleProcessor.getTotalSearchCount(startIndex, articleFilterDTO.getPageSize(), 
 				articleFilterDTO.getSortByField(), articleFilterDTO.getSortByType(), articleFilterDTO.getSearchKeyword(), articleFilterDTO.getCategoryId(), 
 				articleFilterDTO.getTags(), articleFilterDTO.getStatus(), null);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, articleFilterDTO.getPageSize(), totalCount);
@@ -113,31 +113,31 @@ public class ArticleController {
 
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteArticle(@PathVariable final String id) {
-		SeekaArticles article = articleService.deleteArticle(id);
+		Articles article = articleProcessor.deleteArticle(id);
 		return new GenericResponseHandlers.Builder().setData(article).setMessage("Article deleted Successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getArticleById(@PathVariable final String id) throws ValidationException {
-		ArticleResponseDetailsDto articleDto = articleService.getArticleById(id);
+		ArticleResponseDetailsDto articleDto = articleProcessor.getArticleById(id);
 		return new GenericResponseHandlers.Builder().setData(articleDto).setMessage("Data Displayed Successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@PostMapping()
-	public ResponseEntity<?> saveMultiArticle(@RequestBody SeekaArticleDto article,
+	public ResponseEntity<?> saveMultiArticle(@RequestBody ArticlesDto article,
 			@RequestHeader(name = "userId") final String userId) throws ParseException, ValidationException {
-		SeekaArticleDto articleDto = articleService.saveMultiArticle(article, userId);
+		ArticlesDto articleDto = articleProcessor.saveMultiArticle(article, userId);
 		return new GenericResponseHandlers.Builder().setData(articleDto).setMessage("Article Created Successfully")
 					.setStatus(HttpStatus.OK).create();
 	}
 	
 	
 	@PutMapping()
-	public ResponseEntity<?> updateArticle(@RequestBody SeekaArticleDto article,
+	public ResponseEntity<?> updateArticle(@RequestBody ArticlesDto article,
 			@RequestHeader(name = "userId") final String userId) throws ParseException, ValidationException {
-		SeekaArticleDto articleDto = articleService.saveMultiArticle(article, userId);
+		ArticlesDto articleDto = articleProcessor.saveMultiArticle(article, userId);
 		if(article == null || article.getId() ==null) {
 			throw new ValidationException("Please specify Id to update article");
 		}
@@ -148,7 +148,7 @@ public class ArticleController {
 
 	@PostMapping(value = "/folder")
 	public ResponseEntity<Object> saveArticleFolder(@RequestBody ArticleFolderDto articleFolderDto, @RequestHeader final String language) throws NotFoundException, ValidationException{
-		articleFolderDto = articleService.saveArticleFolder(articleFolderDto, language);
+		articleFolderDto = articleProcessor.saveArticleFolder(articleFolderDto, language);
 		return new GenericResponseHandlers.Builder().setData(articleFolderDto).setMessage("Folder Created Successfully").setStatus(HttpStatus.OK).create();
 	}
 	
@@ -157,19 +157,19 @@ public class ArticleController {
 		if(articleFolderDto.getId() ==null) {
 			throw new ValidationException("Please specify Id to update folder date");
 		}
-		articleFolderDto = articleService.saveArticleFolder(articleFolderDto, language);
+		articleFolderDto = articleProcessor.saveArticleFolder(articleFolderDto, language);
 		return new GenericResponseHandlers.Builder().setData(articleFolderDto).setMessage("folder Updated Successfully")
 					.setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping(value = "/folder/{id}")
 	public ResponseEntity<Object> getArticleFolderById(@PathVariable final String id) throws ValidationException {
-		return new GenericResponseHandlers.Builder().setData(articleService.getArticleFolderById(id)).setMessage("get Folder Successfully").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(articleProcessor.getArticleFolderById(id)).setMessage("get Folder Successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping(value = "/folder/all")
 	public ResponseEntity<?> getAllArticleFolder() {
-		List<ArticleFolder> articleFolderList =  articleService.getAllArticleFolder();
+		List<ArticleFolder> articleFolderList =  articleProcessor.getAllArticleFolder();
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);
 		responseMap.put("message", "Get Article List successfully");
@@ -179,7 +179,7 @@ public class ArticleController {
 
 	@DeleteMapping(value = "/folder/{id}")
 	public ResponseEntity<?> deleteArticleFolderById(@PathVariable final String id) throws ValidationException {
-		return new GenericResponseHandlers.Builder().setData(articleService.deleteArticleFolderById(id)).setMessage("Folder deleted Successfully").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(articleProcessor.deleteArticleFolderById(id)).setMessage("Folder deleted Successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@PostMapping(value = "/folder/user/mapping")
@@ -189,21 +189,21 @@ public class ArticleController {
 		if(!fieldErrors.isEmpty()) {
 			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
 		}
-		articleFolderMapDto = articleService.mapArticleFolder(articleFolderMapDto,language);
+		articleFolderMapDto = articleProcessor.mapArticleFolder(articleFolderMapDto,language);
 		return new GenericResponseHandlers.Builder().setData(articleFolderMapDto).setMessage("User mapping Inserted Successfully").setStatus(HttpStatus.OK).create();
 		
 	}
 
 	@GetMapping(value = "/folder/user/{userId}")
 	public ResponseEntity<?> getFolderWithArticle(@PathVariable final String userId) throws ValidationException {
-		return new GenericResponseHandlers.Builder().setData( articleService.getFolderByUserId(userId)).setMessage("get Folder by User Successfully").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData( articleProcessor.getFolderByUserId(userId)).setMessage("get Folder by User Successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping(value = "/folder/{folderId}/all/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getArticleByFolderId(@PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize,@PathVariable final String folderId) throws ValidationException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<ArticleResponseDetailsDto> articleList  = articleService.getArticleByFolderId(startIndex, pageSize,folderId);
+		List<ArticleResponseDetailsDto> articleList  = articleProcessor.getArticleByFolderId(startIndex, pageSize,folderId);
 		return new GenericResponseHandlers.Builder().setData(articleList).setMessage("get Articles Successfully").setStatus(HttpStatus.OK).create();
 
 	}
@@ -218,8 +218,8 @@ public class ArticleController {
 			throw new ValidationException("Please Specify Proper Page Number");
 		}
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		int totalCount = articleService.getTotalAuthorCount(searchString);
-		List<String> authorList  = articleService.getAuthors(startIndex, pageSize,searchString);
+		int totalCount = articleProcessor.getTotalAuthorCount(searchString);
+		List<String> authorList  = articleProcessor.getAuthors(startIndex, pageSize,searchString);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
 		responseMap.put("status", HttpStatus.OK);

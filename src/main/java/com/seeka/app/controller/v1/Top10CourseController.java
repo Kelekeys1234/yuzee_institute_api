@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.service.ITop10CourseService;
 
 @RestController("top10CourseControllerV1")

@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Level;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.LevelDto;
 import com.seeka.app.endpoint.LevelInterface;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.LevelProcessor;
 
 @RestController("levelControllerV1")

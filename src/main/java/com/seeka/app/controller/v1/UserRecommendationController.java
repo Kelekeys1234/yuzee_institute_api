@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Course;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.service.UserRecommendationService;
 
 /**

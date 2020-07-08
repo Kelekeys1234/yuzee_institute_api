@@ -7,7 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.seeka.app.bean.SeekaHelp;
+import com.seeka.app.bean.Help;
 import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
@@ -51,7 +51,7 @@ public interface IHelpService {
 
 	Map<String, Object> filter(String status, String mostRecent, String categoryId);
 
-	List<SeekaHelp> getUserHelpList(String userId, int startIndex, Integer pageSize, Boolean isArchive);
+	List<Help> getUserHelpList(String userId, int startIndex, Integer pageSize, Boolean isArchive);
 
 	int getUserHelpCount(String userId, Boolean isArchive);
 

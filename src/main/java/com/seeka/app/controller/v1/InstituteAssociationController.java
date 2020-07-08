@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.constant.InstituteAssociationStatus;
 import com.seeka.app.constant.InstituteAssociationType;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.InstituteAssociationDto;
 import com.seeka.app.dto.InstituteAssociationResponseDto;
 import com.seeka.app.endpoint.InstituteAssociationInterface;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.InstituteAssociationProcessor;
 
 import lombok.extern.apachecommons.CommonsLog;

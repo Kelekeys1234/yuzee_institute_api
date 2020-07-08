@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.InstituteAdditionalInfoDto;
 import com.seeka.app.endpoint.InstituteAdditionalInfoInterface;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.InstituteAdditionalInfoProcessor;
 
 @RestController

@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -20,7 +21,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "service")
+@Table(name = "service", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }, name = "UK_NA"))
 public class Service implements Serializable {
 
 	private static final long serialVersionUID = 4519552942642063759L;

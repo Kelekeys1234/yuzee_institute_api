@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.constant.PageRequestStatus;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.InstitutePageRequestDto;
 import com.seeka.app.endpoint.InstitutePageRequestInterface;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.InstitutePageRequestProcessor;
 
 import lombok.extern.apachecommons.CommonsLog;

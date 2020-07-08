@@ -7,12 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.EducationSystemDto;
-import com.seeka.app.dto.EducationSystemRequest;
-import com.seeka.app.dto.EducationSystemResponse;
 import com.seeka.app.dto.GradeDto;
 import com.seeka.app.endpoint.EducationSystemInterface;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.EducationSystemProcessor;
 
 @RestController("educationSystemControllerV1")
@@ -33,28 +31,6 @@ public class EducationSystemController implements EducationSystemInterface {
 		educationSystemProcessor.saveEducationSystems(educationSystem);
 		return new GenericResponseHandlers.Builder().setMessage("Education system saved successfully")
 				.setStatus(HttpStatus.OK).create();
-	}
-
-	@Override
-	@Deprecated
-	public ResponseEntity<?> saveUserEducationDetails(final EducationSystemRequest educationSystemDetails) throws Exception {
-		educationSystemProcessor.saveUserEducationDetails(educationSystemDetails);
-		return new GenericResponseHandlers.Builder().setMessage("Create User Education system successfully").setStatus(HttpStatus.OK).create();
-	}
-
-	@Override
-	@Deprecated
-	public ResponseEntity<?> getEducationSystemsDetailByUserId(final String userId) throws Exception {
-		EducationSystemResponse educationSystemResponse = educationSystemProcessor.getEducationSystemsDetailByUserId(userId);
-		return new GenericResponseHandlers.Builder().setData(educationSystemResponse).setMessage("Get user education system details successfully")
-				.setStatus(HttpStatus.OK).create();
-	}
-
-	@Override
-	@Deprecated
-	public ResponseEntity<?> delete(final String userId) throws Exception {
-		educationSystemProcessor.deleteEducationSystemDetailByUserId(userId);
-		return new GenericResponseHandlers.Builder().setMessage("Delete user education system details successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@Override

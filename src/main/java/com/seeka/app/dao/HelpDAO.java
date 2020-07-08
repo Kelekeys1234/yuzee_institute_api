@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
 import com.seeka.app.bean.HelpAnswer;
 import com.seeka.app.bean.HelpCategory;
 import com.seeka.app.bean.HelpSubCategory;
-import com.seeka.app.bean.SeekaHelp;
+import com.seeka.app.bean.Help;
 import com.seeka.app.exception.NotFoundException;
 
 @Repository
@@ -30,7 +30,7 @@ public class HelpDAO implements IHelpDAO {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public void save(final SeekaHelp seekaHelp) {
+	public void save(final Help seekaHelp) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(seekaHelp);
 	}
@@ -50,14 +50,14 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public SeekaHelp get(final String id) {
+	public Help get(final String id) {
 		Session session = sessionFactory.getCurrentSession();
-		SeekaHelp obj = session.get(SeekaHelp.class, id);
+		Help obj = session.get(Help.class, id);
 		return obj;
 	}
 
 	@Override
-	public void update(final SeekaHelp seekaHelp) {
+	public void update(final Help seekaHelp) {
 		Session session = sessionFactory.getCurrentSession();
 		session.update(seekaHelp);
 	}
@@ -80,9 +80,9 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<SeekaHelp> getAll(final Integer startIndex, final Integer pageSize, final String userId, final Boolean isArchive) {
+	public List<Help> getAll(final Integer startIndex, final Integer pageSize, final String userId, final Boolean isArchive) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+		Criteria crit = session.createCriteria(Help.class, "seekaHelp");
 		if (userId != null) {
 			crit.add(Restrictions.eq("seekaHelp.userId", userId));
 		}
@@ -129,9 +129,9 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<SeekaHelp> getHelpByCategory(final String categoryId) {
+	public List<Help> getHelpByCategory(final String categoryId) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+		Criteria crit = session.createCriteria(Help.class, "seekaHelp");
 		crit.createAlias("seekaHelp.category", "category");
 		return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("isActive", true)).list();
 	}
@@ -187,35 +187,35 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public List<SeekaHelp> findByStatus(final String status, final String categoryId) {
+	public List<Help> findByStatus(final String status, final String categoryId) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+		Criteria crit = session.createCriteria(Help.class, "seekaHelp");
 		return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true)).list();
 	}
 
 	@Override
-	public List<SeekaHelp> findByMostRecent(final String mostRecent, final String categoryId) {
+	public List<Help> findByMostRecent(final String mostRecent, final String categoryId) {
 		if ((mostRecent != null) && mostRecent.equals("asc")) {
 			Session session = sessionFactory.getCurrentSession();
-			Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+			Criteria crit = session.createCriteria(Help.class, "seekaHelp");
 			return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("isActive", true)).addOrder(Order.asc("createdOn")).list();
 		} else {
 			Session session = sessionFactory.getCurrentSession();
-			Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+			Criteria crit = session.createCriteria(Help.class, "seekaHelp");
 			return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("isActive", true)).addOrder(Order.desc("createdOn")).list();
 		}
 	}
 
 	@Override
-	public List<SeekaHelp> findByStatusAndMostRecent(final String status, final String mostRecent, final String categoryId) {
+	public List<Help> findByStatusAndMostRecent(final String status, final String mostRecent, final String categoryId) {
 		if ((mostRecent != null) && mostRecent.equals("asc")) {
 			Session session = sessionFactory.getCurrentSession();
-			Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+			Criteria crit = session.createCriteria(Help.class, "seekaHelp");
 			return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true))
 					.addOrder(Order.asc("createdOn")).list();
 		} else {
 			Session session = sessionFactory.getCurrentSession();
-			Criteria crit = session.createCriteria(SeekaHelp.class, "seekaHelp");
+			Criteria crit = session.createCriteria(Help.class, "seekaHelp");
 			return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true))
 					.addOrder(Order.desc("createdOn")).list();
 		}
@@ -262,7 +262,7 @@ public class HelpDAO implements IHelpDAO {
 	@Override
 	public List<String> getRelatedSearchQuestions(final List<String> searchKeywords) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(SeekaHelp.class, "seeka_help");
+		Criteria crit = session.createCriteria(Help.class, "seeka_help");
 		Disjunction disjunction = Restrictions.disjunction();
 		for (String string : searchKeywords) {
 			Criterion keywordCriteria = Restrictions.ilike("seeka_help.descritpion", string, MatchMode.ANYWHERE);

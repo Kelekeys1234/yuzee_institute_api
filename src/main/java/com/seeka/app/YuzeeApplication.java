@@ -20,10 +20,10 @@ import com.seeka.app.util.FileStorageProperties;
 @EntityScan(basePackages = "com.seeka.app")
 @EnableJpaRepositories(basePackages = "com.seeka.app")
 @EnableConfigurationProperties({ FileStorageProperties.class })
-public class SeekaApplication {
+public class YuzeeApplication {
 
 	public static void main(final String[] args) {
-		SpringApplication.run(SeekaApplication.class, args);
+		SpringApplication.run(YuzeeApplication.class, args);
 	}
 
 	@Bean

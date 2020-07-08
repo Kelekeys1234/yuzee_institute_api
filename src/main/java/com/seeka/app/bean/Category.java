@@ -34,7 +34,7 @@ public class Category implements Serializable {
 	}
 
 	public Category(String name, Boolean active, Set<SubCategory> subcategories,
-			Set<CategorySeekaArticle> categorySeekaArticles, Set<SeekaArticles> seekaArticleses) {
+			Set<CategoryArticle> categorySeekaArticles, Set<Articles> seekaArticleses) {
 		this.name = name;
 		this.active = active;
 	}

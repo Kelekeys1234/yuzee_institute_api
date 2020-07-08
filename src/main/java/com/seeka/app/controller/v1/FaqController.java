@@ -25,11 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.constant.FaqEntityType;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.FaqRequestDto;
 import com.seeka.app.dto.FaqResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.service.IFaqService;
 import com.seeka.app.util.PaginationUtil;
 

@@ -10,9 +10,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -28,7 +30,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "level")
+@Table(name = "level", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "code" }, name = "UK_NA_CO"),
+       indexes = {@Index(name = "IDX_NAME", columnList = "name", unique = false)})
 public class Level implements Serializable {
 
 	private static final long serialVersionUID = 9149617652748065109L;

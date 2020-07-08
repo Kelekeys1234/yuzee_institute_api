@@ -5,24 +5,24 @@ import java.util.List;
 import com.seeka.app.bean.HelpAnswer;
 import com.seeka.app.bean.HelpCategory;
 import com.seeka.app.bean.HelpSubCategory;
-import com.seeka.app.bean.SeekaHelp;
+import com.seeka.app.bean.Help;
 import com.seeka.app.exception.NotFoundException;
 
 public interface IHelpDAO {
 
-	void save(SeekaHelp seekaHelp);
+	void save(Help seekaHelp);
 
 	HelpCategory getHelpCategory(String id);
 
 	HelpSubCategory getHelpSubCategory(String id);
 
-	SeekaHelp get(String id);
+	Help get(String id);
 
-	void update(SeekaHelp seekaHelp);
+	void update(Help seekaHelp);
 
 	int findTotalHelpRecord(String userId, Boolean isArchive);
 
-	List<SeekaHelp> getAll(Integer startIndex, Integer pageSize, String userId, Boolean isArchive);
+	List<Help> getAll(Integer startIndex, Integer pageSize, String userId, Boolean isArchive);
 
 	void save(HelpCategory helpCategory);
 
@@ -34,7 +34,7 @@ public interface IHelpDAO {
 
 	List<HelpSubCategory> getAllHelpSubCategories();
 
-	List<SeekaHelp> getHelpByCategory(String id);
+	List<Help> getHelpByCategory(String id);
 
 	HelpAnswer save(HelpAnswer helpAnswer);
 
@@ -42,11 +42,11 @@ public interface IHelpDAO {
 
 	List<HelpCategory> getAllCategory(Integer startIndex, Integer pageSize);
 
-	List<SeekaHelp> findByStatus(String status, String categoryId);
+	List<Help> findByStatus(String status, String categoryId);
 
-	List<SeekaHelp> findByMostRecent(String status, String categoryId);
+	List<Help> findByMostRecent(String status, String categoryId);
 
-	List<SeekaHelp> findByStatusAndMostRecent(String status, String mostRecent, String categoryId);
+	List<Help> findByStatusAndMostRecent(String status, String mostRecent, String categoryId);
 
 	void updateAnwser(HelpAnswer helpAnswer);
 

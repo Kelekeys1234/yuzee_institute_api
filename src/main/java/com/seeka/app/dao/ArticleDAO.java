@@ -15,7 +15,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.seeka.app.bean.SeekaArticles;
+import com.seeka.app.bean.Articles;
 
 @Repository
 @SuppressWarnings({ "unchecked", "deprecation" })
@@ -27,7 +27,7 @@ public class ArticleDAO implements IArticleDAO {
 	@Override
 	public Integer getTotalSearchCount(final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
+		Criteria criteria = session.createCriteria(Articles.class, "seeka_article");
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
 		}
@@ -36,20 +36,20 @@ public class ArticleDAO implements IArticleDAO {
 	}
 
 	@Override
-	public SeekaArticles save(final SeekaArticles article) {
+	public Articles save(final Articles article) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(article);
 		return article;
 	}
 
 	@Override
-	public SeekaArticles findById(final String uId) {
+	public Articles findById(final String uId) {
 		Session session = sessionFactory.getCurrentSession();
-		return session.get(SeekaArticles.class, uId);
+		return session.get(Articles.class, uId);
 	}
 
 	@Override
-	public SeekaArticles deleteArticle(final SeekaArticles article) {
+	public Articles deleteArticle(final Articles article) {
 		Session session = sessionFactory.getCurrentSession();
 		session.update(article);
 		return article;
@@ -57,10 +57,10 @@ public class ArticleDAO implements IArticleDAO {
 	}
 
 	@Override
-	public List<SeekaArticles> getAll(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
+	public List<Articles> getAll(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
 			final String searchKeyword, final List<String> categoryId, final List<String> tags, final Boolean status, final Date filterDate) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
+		Criteria criteria = session.createCriteria(Articles.class, "seeka_article");
 
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
@@ -109,7 +109,7 @@ public class ArticleDAO implements IArticleDAO {
 	public Integer getTotalSearchCount(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
 			final String searchKeyword, final List<String> categoryIdList, final List<String> tagList, final Boolean status, final Date date) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(SeekaArticles.class, "seeka_article");
+		Criteria criteria = session.createCriteria(Articles.class, "seeka_article");
 		if (searchKeyword != null) {
 			criteria.add(Restrictions.ilike("seeka_article.heading", searchKeyword, MatchMode.ANYWHERE));
 		}
@@ -144,7 +144,7 @@ public class ArticleDAO implements IArticleDAO {
 	@Override
 	public List<String> getAuthors(final int startIndex, final Integer pageSize, final String searchString) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
+		Criteria criteria = session.createCriteria(Articles.class, "article");
 		if ((searchString != null) && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
 			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
 		}
@@ -162,7 +162,7 @@ public class ArticleDAO implements IArticleDAO {
 	@Override
 	public int getTotalAuthorCount(final String searchString) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
+		Criteria criteria = session.createCriteria(Articles.class, "article");
 		if ((searchString != null) && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
 			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
 		}
@@ -175,10 +175,10 @@ public class ArticleDAO implements IArticleDAO {
 	}
 
 	@Override
-	public List<SeekaArticles> findArticleByCountryId(final String countryId, final String categoryName, final Integer count,
+	public List<Articles> findArticleByCountryId(final String countryId, final String categoryName, final Integer count,
 			final List<String> viewArticleIds) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(SeekaArticles.class, "article");
+		Criteria criteria = session.createCriteria(Articles.class, "article");
 		criteria.createAlias("article.country", "country");
 		criteria.createAlias("article.category", "category");
 		criteria.add(Restrictions.in("country.id", countryId));

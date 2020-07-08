@@ -14,12 +14,12 @@ import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.InstituteJoinRequest;
 import com.seeka.app.constant.InstituteJoinStatus;
-import com.seeka.app.controller.handler.StorageHandler;
 import com.seeka.app.dao.InstituteJoinRequestDao;
 import com.seeka.app.dto.InstituteJoinRequestDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.StorageHandler;
 
 import lombok.extern.apachecommons.CommonsLog;
 

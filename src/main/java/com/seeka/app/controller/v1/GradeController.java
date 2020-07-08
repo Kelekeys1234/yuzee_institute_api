@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.GradeDto;
 import com.seeka.app.endpoint.GradeInterface;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.EducationSystemProcessor;
 
 @RestController("gradeControllerV1")

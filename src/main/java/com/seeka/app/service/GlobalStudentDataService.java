@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.seeka.app.bean.GlobalData;
 import com.seeka.app.dao.IGlobalStudentDataDAO;
-import com.seeka.app.dto.GlobalData;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)

@@ -28,7 +28,6 @@ import com.seeka.app.bean.InstituteDomesticRankingHistory;
 import com.seeka.app.bean.InstituteIntake;
 import com.seeka.app.bean.InstituteWorldRankingHistory;
 import com.seeka.app.constant.Type;
-import com.seeka.app.controller.handler.ElasticHandler;
 import com.seeka.app.dao.AccrediatedDetailDao;
 import com.seeka.app.dao.CourseDao;
 import com.seeka.app.dao.InstituteDao;
@@ -54,9 +53,10 @@ import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
-import com.seeka.app.enumeration.SeekaEntityType;
+import com.seeka.app.enumeration.EntityType;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.ElasticHandler;
 import com.seeka.app.repository.InstituteRepository;
 import com.seeka.app.util.CDNServerUtil;
 import com.seeka.app.util.CommonUtil;
@@ -260,7 +260,7 @@ public class InstituteProcessor {
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
-			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(),
+			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityType.INSTITUTE.name().toLowerCase(),
 					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while saving institutes having exception = "+exception);
@@ -334,7 +334,7 @@ public class InstituteProcessor {
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
 			log.info("Calling elastic service to save instiutes on index");
-			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, SeekaEntityType.INSTITUTE.name().toLowerCase(),
+			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityType.INSTITUTE.name().toLowerCase(),
 					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ="+exception);

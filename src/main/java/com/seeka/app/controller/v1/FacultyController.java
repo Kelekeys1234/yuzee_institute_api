@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Faculty;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.FacultyDto;
 import com.seeka.app.endpoint.FacultyEndpoint;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.FacultyProcessor;
 
 @RestController("facultyControllerV1")

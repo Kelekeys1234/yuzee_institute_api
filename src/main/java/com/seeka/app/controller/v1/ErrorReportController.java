@@ -28,13 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.AuditErrorReport;
 import com.seeka.app.bean.ErrorReportCategory;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.ErrorReportCategoryDto;
 import com.seeka.app.dto.ErrorReportDto;
 import com.seeka.app.dto.ErrorReportResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.service.IErrorReportService;
 import com.seeka.app.util.PaginationUtil;
 

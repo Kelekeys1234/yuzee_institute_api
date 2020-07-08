@@ -15,9 +15,6 @@ import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteAssociation;
 import com.seeka.app.constant.InstituteAssociationStatus;
 import com.seeka.app.constant.InstituteAssociationType;
-import com.seeka.app.controller.handler.IdentityHandler;
-import com.seeka.app.controller.handler.StorageHandler;
-import com.seeka.app.controller.handler.UserInstituteAccessRoleHandler;
 import com.seeka.app.dao.InstituteAssociationDao;
 import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dto.InstituteAssociationDto;
@@ -26,6 +23,9 @@ import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserInstituteAccessInternalResponseDto;
 import com.seeka.app.exception.InternalServerException;
 import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.handler.IdentityHandler;
+import com.seeka.app.handler.StorageHandler;
+import com.seeka.app.handler.UserInstituteAccessRoleHandler;
 
 import lombok.extern.apachecommons.CommonsLog;
 

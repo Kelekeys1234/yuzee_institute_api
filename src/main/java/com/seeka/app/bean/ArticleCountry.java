@@ -28,12 +28,12 @@ public class ArticleCountry implements Serializable {
 	private static final long serialVersionUID = 6903674843134844883L;
 	private String id;
 	private String countryName;
-	private SeekaArticles seekaArticles;
+	private Articles seekaArticles;
 
 	public ArticleCountry() {
 	}
 
-	public ArticleCountry(SeekaArticles seekaArticles) {
+	public ArticleCountry(Articles seekaArticles) {
 		this.seekaArticles = seekaArticles;
 	}
 
@@ -51,11 +51,11 @@ public class ArticleCountry implements Serializable {
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "article_id")
-	public SeekaArticles getSeekaArticles() {
+	public Articles getSeekaArticles() {
 		return this.seekaArticles;
 	}
 
-	public void setSeekaArticles(SeekaArticles seekaArticles) {
+	public void setSeekaArticles(Articles seekaArticles) {
 		this.seekaArticles = seekaArticles;
 	}
 

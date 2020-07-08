@@ -160,7 +160,7 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<finalName>seeka-institute</finalName>
+		<finalName>yuzee-institute</finalName>
 	</build>
 
 	<repositories>

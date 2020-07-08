@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.seeka.app.bean.SeekaHelp;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
+import com.seeka.app.bean.Help;
 import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
 import com.seeka.app.dto.HelpDto;
@@ -30,6 +29,7 @@ import com.seeka.app.dto.HelpSubCategoryDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.service.IHelpService;
 import com.seeka.app.util.PaginationUtil;
 
@@ -159,7 +159,7 @@ public class HelpController {
 	public ResponseEntity<?> getUserHelpList(@RequestHeader final String userId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(name = "isArchive", required = false) final boolean isArchive) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<SeekaHelp> helps = helpService.getUserHelpList(userId, startIndex, pageSize, isArchive);
+		List<Help> helps = helpService.getUserHelpList(userId, startIndex, pageSize, isArchive);
 		int totalCount = helpService.getUserHelpCount(userId, isArchive);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);

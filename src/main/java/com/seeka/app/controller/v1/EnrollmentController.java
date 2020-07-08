@@ -26,12 +26,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.EnrollmentStatus;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.EnrollmentDto;
 import com.seeka.app.dto.EnrollmentResponseDto;
 import com.seeka.app.dto.EnrollmentStatusDto;
 import com.seeka.app.dto.PaginationUtilDto;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.service.IEnrollmentService;
 import com.seeka.app.util.PaginationUtil;
 

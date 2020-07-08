@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -20,8 +21,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "institute_intake", indexes = {@Index(name = "IDX_INSTITUTE_ID", 
-		columnList = "institute_id", unique = false) })
+@Table(name = "institute_intake", uniqueConstraints = @UniqueConstraint(columnNames = { "intake", "institute_id" } , name = "UK_INSTITUTE_ID_INTAKE"),
+       indexes = {@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false) })
 public class InstituteIntake {
 
 	@Id

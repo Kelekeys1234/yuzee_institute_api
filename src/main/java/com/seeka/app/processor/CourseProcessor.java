@@ -31,13 +31,10 @@ import com.seeka.app.bean.CourseIntake;
 import com.seeka.app.bean.CourseLanguage;
 import com.seeka.app.bean.CourseMinRequirement;
 import com.seeka.app.bean.Faculty;
+import com.seeka.app.bean.GlobalData;
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.Level;
 import com.seeka.app.constant.Type;
-import com.seeka.app.controller.handler.CommonHandler;
-import com.seeka.app.controller.handler.ElasticHandler;
-import com.seeka.app.controller.handler.ReviewHandler;
-import com.seeka.app.controller.handler.ViewTransactionHandler;
 import com.seeka.app.dao.CourseDao;
 import com.seeka.app.dao.CourseDeliveryModesDao;
 import com.seeka.app.dao.CourseEnglishEligibilityDao;
@@ -60,7 +57,6 @@ import com.seeka.app.dto.CourseRequest;
 import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.CourseSearchDto;
 import com.seeka.app.dto.CurrencyRateDto;
-import com.seeka.app.dto.GlobalData;
 import com.seeka.app.dto.InstituteResponseDto;
 import com.seeka.app.dto.NearestCoursesDto;
 import com.seeka.app.dto.PaginationResponseDto;
@@ -72,12 +68,16 @@ import com.seeka.app.dto.UserDto;
 import com.seeka.app.dto.UserReviewResultDto;
 import com.seeka.app.dto.UserViewCourseDto;
 import com.seeka.app.dto.YouTubeVideoDto;
+import com.seeka.app.enumeration.EntityType;
 import com.seeka.app.enumeration.ImageCategory;
-import com.seeka.app.enumeration.SeekaEntityType;
 import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.exception.InvokeException;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.CommonHandler;
+import com.seeka.app.handler.ElasticHandler;
+import com.seeka.app.handler.ReviewHandler;
+import com.seeka.app.handler.ViewTransactionHandler;
 import com.seeka.app.message.MessageByLocaleService;
 import com.seeka.app.repository.CourseRepository;
 import com.seeka.app.service.IEnrollmentService;
@@ -481,7 +481,7 @@ public class CourseProcessor {
 		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
 		courseListElasticDTO.add(courseElasticSearch);
 		log.info("Calling elastic service to add courses on elastic index");
-		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, SeekaEntityType.COURSE.name().toLowerCase(), courseListElasticDTO,
+		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, EntityType.COURSE.name().toLowerCase(), courseListElasticDTO,
 				IConstant.ELASTIC_SEARCH);
 		return course.getId();
 	}
@@ -685,8 +685,8 @@ public class CourseProcessor {
 		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
 		courseListElasticDTO.add(courseElasticSearch);
 		log.info("Calling elastic service to update courses on elastic index having entityId = "+id);
-		/*elasticSearchService.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
-				SeekaEntityType.COURSE.name().toLowerCase(), courseListElasticDTO, IConstant.ELASTIC_SEARCH);*/
+		elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
+				EntityType.COURSE.name().toLowerCase(), courseListElasticDTO, IConstant.ELASTIC_SEARCH);
 		return id;
 	}
 
@@ -786,7 +786,7 @@ public class CourseProcessor {
 				courseDtoESList.add(elasticSearchCourseDto);
 				log.info("Calling elastic service to update course having entityId = "+ courseId);
 				elasticHandler.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, 
-						SeekaEntityType.COURSE.name().toLowerCase(), courseDtoESList, IConstant.ELASTIC_SEARCH);
+						EntityType.COURSE.name().toLowerCase(), courseDtoESList, IConstant.ELASTIC_SEARCH);
 			} else {
 				log.error("Course not found for courseId = "+ courseId);
 				throw new NotFoundException("Course not found for courseId = "+ courseId);
@@ -850,27 +850,27 @@ public class CourseProcessor {
 		
 		log.info("Fetching user view data from DB having userId = "+courseSearchDto.getUserId());
 		
-		/*log.info("Calling Storage service to get images based on entityId");
+		log.info("Calling Storage service to get images based on entityId");
 		List<StorageDto> storageDTOList = storageProcessor.getStorageInformationBasedOnEntityIdList(
-				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");*/
+				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
 		
 		log.info("Fetching institute google review from DB based on instituteId");
 		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
 				.getInstituteAvgGoogleReviewForList(courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
 		
-		/*Map<String, Double> seekaReviewMap = null;
+		Map<String, Double> seekaReviewMap = null;
 		try {
 			log.info("Calling review service to fetch user average review for instituteId");
 			seekaReviewMap = reviewHandler.getUserAverageReviewBasedOnDataList(
 					"INSTITUTE", courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
 		} catch (Exception e) {
 			log.error("Error invoking review service having exception = "+e);
-		}*/
+		}
 		
 		if(!CollectionUtils.isEmpty(courseResponseFinalResponse)) {
 			log.info("Courses coming in response, now start iterating courses");
 			for (CourseResponseDto courseResponseDto : courseResponseFinalResponse) {
-				/*if (storageDTOList != null && !storageDTOList.isEmpty()) {
+				if (storageDTOList != null && !storageDTOList.isEmpty()) {
 					log.info("Storage data is coming hence iterating storage data and set it in response");
 					List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))
 							.collect(Collectors.toList());
@@ -878,7 +878,7 @@ public class CourseProcessor {
 					storageDTOList.removeAll(storageDTO);
 				} else {
 					courseResponseDto.setStorageList(new ArrayList<>(1));
-				}*/
+				}
 				
 				UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
 						"COURSE", courseResponseDto.getId(), "viewCourse");
@@ -913,7 +913,7 @@ public class CourseProcessor {
 				
 				log.info("Calculating average review rating based on reviews");
 				courseResponseDto
-						.setStars(calculateAverageRating(googleReviewMap, null, courseResponseDto.getStars(), courseResponseDto.getInstituteId()));
+						.setStars(calculateAverageRating(googleReviewMap, seekaReviewMap, courseResponseDto.getStars(), courseResponseDto.getInstituteId()));
 				
 				if(!ObjectUtils.isEmpty(courseSearchDto.getLatitude()) && !ObjectUtils.isEmpty(courseSearchDto.getLongitude()) && 
 						!ObjectUtils.isEmpty(courseResponseDto.getLatitude()) && !ObjectUtils.isEmpty(courseResponseDto.getLongitude())) {
@@ -1844,9 +1844,12 @@ public class CourseProcessor {
 	}
 	
 	public List<CourseDto> getCourseByMultipleId(List<String> courseIds) {
+		log.debug("Inside getCourseByMultipleId() method");
 		List<CourseDto> courseDtos = new ArrayList<>();
+		log.info("Extracting courses from DB based on multiple courseIds");
 		List<Course> courseDetails = courseDAO.getAllCoursesUsingId(courseIds);
 		if(!CollectionUtils.isEmpty(courseDetails)) {
+			log.info("Courses fetched from DB, start iterating data to make final response");
 			courseDetails.stream().forEach(courseDetail -> {
 				CourseDto courseResponse = new CourseDto(courseDetail.getId(), courseDetail.getLevel().getId(), 
 						courseDetail.getName(), ((courseDetail.getCostRange() != null) ? courseDetail.getCostRange().toString() : null), 

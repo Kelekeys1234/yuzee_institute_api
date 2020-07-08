@@ -28,12 +28,12 @@ public class ArticleInstitute implements Serializable {
 	private static final long serialVersionUID = 8193692047761850471L;
 	private String id;
 	private Institute institute;
-	private SeekaArticles seekaArticles;
+	private Articles seekaArticles;
 
 	public ArticleInstitute() {
 	}
 
-	public ArticleInstitute(Institute institute, SeekaArticles seekaArticles) {
+	public ArticleInstitute(Institute institute, Articles seekaArticles) {
 		this.institute = institute;
 		this.seekaArticles = seekaArticles;
 	}
@@ -61,11 +61,11 @@ public class ArticleInstitute implements Serializable {
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "article_id")
-	public SeekaArticles getSeekaArticles() {
+	public Articles getSeekaArticles() {
 		return this.seekaArticles;
 	}
 
-	public void setSeekaArticles(SeekaArticles seekaArticles) {
+	public void setSeekaArticles(Articles seekaArticles) {
 		this.seekaArticles = seekaArticles;
 	}
 

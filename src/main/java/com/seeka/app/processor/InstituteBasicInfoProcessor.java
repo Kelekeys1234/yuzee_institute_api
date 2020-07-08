@@ -12,11 +12,11 @@ import org.springframework.util.ObjectUtils;
 
 import com.seeka.app.bean.Institute;
 import com.seeka.app.bean.InstituteCategoryType;
-import com.seeka.app.controller.handler.StorageHandler;
 import com.seeka.app.dao.InstituteDao;
 import com.seeka.app.dto.InstituteBasicInfoDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.handler.StorageHandler;
 
 import lombok.extern.apachecommons.CommonsLog;
 

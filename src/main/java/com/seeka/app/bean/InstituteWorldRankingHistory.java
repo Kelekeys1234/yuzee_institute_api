@@ -7,11 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -23,7 +25,8 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "institute_world_ranking_history")
+@Table(name = "institute_world_ranking_history", uniqueConstraints = @UniqueConstraint(columnNames = { "world_ranking", "institute_id" }, name = "UK_WR_IN"),
+       indexes = {@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false)})
 public class InstituteWorldRankingHistory {
 
 
@@ -36,7 +39,7 @@ public class InstituteWorldRankingHistory {
 	@Column(name = "world_ranking")
 	private Integer worldRanking;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "institute_id")
 	private Institute institute;
 

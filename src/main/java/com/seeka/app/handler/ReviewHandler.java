@@ -1,4 +1,4 @@
-package com.seeka.app.controller.handler;
+package com.seeka.app.handler;
 
 import java.util.ArrayList;
 import java.util.HashMap;

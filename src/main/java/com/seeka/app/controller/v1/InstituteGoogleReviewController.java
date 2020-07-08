@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.InstituteGoogleReviewDto;
 import com.seeka.app.dto.PaginationUtilDto;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.InstituteGoogleReviewProcessor;
 import com.seeka.app.util.PaginationUtil;
 

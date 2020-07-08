@@ -2,7 +2,7 @@ package com.seeka.app.dao;
 
 import java.util.List;
 
-import com.seeka.app.dto.GlobalData;
+import com.seeka.app.bean.GlobalData;
 
 public interface IGlobalStudentDataDAO {
 

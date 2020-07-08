@@ -15,7 +15,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.bean.Scholarship;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.LevelDto;
 import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.dto.PaginationUtilDto;
@@ -23,6 +22,7 @@ import com.seeka.app.dto.ScholarshipDto;
 import com.seeka.app.dto.ScholarshipResponseDTO;
 import com.seeka.app.endpoint.ScholarshipInterface;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.LevelProcessor;
 import com.seeka.app.processor.ScholarshipProcessor;
 import com.seeka.app.util.PaginationUtil;

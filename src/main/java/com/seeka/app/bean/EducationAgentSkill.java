@@ -8,11 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -24,7 +26,8 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "education_agent_skill")
+@Table(name = "education_agent_skill", uniqueConstraints = @UniqueConstraint(columnNames = { "education_agent_id", "skill" }, name = "UK_EA_SKILL"),
+	   indexes = {@Index(name = "IDX_EDUCATION_AGENT_ID", columnList = "education_agent_id", unique = false)})
 public class EducationAgentSkill implements Serializable {
 
 	private static final long serialVersionUID = 8492390790670110780L;

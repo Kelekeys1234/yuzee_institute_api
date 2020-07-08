@@ -19,8 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.seeka.app.bean.HelpAnswer;
 import com.seeka.app.bean.HelpCategory;
 import com.seeka.app.bean.HelpSubCategory;
-import com.seeka.app.bean.SeekaHelp;
-import com.seeka.app.controller.handler.IdentityHandler;
+import com.seeka.app.bean.Help;
 import com.seeka.app.dao.IHelpDAO;
 import com.seeka.app.dto.HelpAnswerDto;
 import com.seeka.app.dto.HelpCategoryDto;
@@ -33,6 +32,7 @@ import com.seeka.app.enumeration.HelpEnum;
 import com.seeka.app.enumeration.ImageCategory;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.IdentityHandler;
 import com.seeka.app.processor.StorageProcessor;
 import com.seeka.app.util.DateUtil;
 import com.seeka.app.util.IConstant;
@@ -126,12 +126,12 @@ public class HelpService implements IHelpService {
 		return response;
 	}
 
-	public SeekaHelp convertDtoToSeekaHelp(final HelpDto dto, final String id, final String userId) {
-		SeekaHelp seekaHelp = null;
+	public Help convertDtoToSeekaHelp(final HelpDto dto, final String id, final String userId) {
+		Help seekaHelp = null;
 		if (id != null) {
 			seekaHelp = helpDAO.get(id);
 		} else {
-			seekaHelp = new SeekaHelp();
+			seekaHelp = new Help();
 			seekaHelp.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 			seekaHelp.setStatus(HelpEnum.NOTASSIGNED.toString());
 		}
@@ -170,7 +170,7 @@ public class HelpService implements IHelpService {
 		return response;
 	}
 
-	public HelpDto convertSeekaHelpToDto(final SeekaHelp seekaHelp) {
+	public HelpDto convertSeekaHelpToDto(final Help seekaHelp) {
 		HelpDto dto = new HelpDto();
 
 		dto.setId(seekaHelp.getId());
@@ -223,7 +223,7 @@ public class HelpService implements IHelpService {
 	public Map<String, Object> getAll(final Integer pageNumber, final Integer pageSize) {
 		Map<String, Object> response = new HashMap<>();
 		String status = IConstant.SUCCESS;
-		List<SeekaHelp> helps = new ArrayList<>();
+		List<Help> helps = new ArrayList<>();
 		int totalCount = 0;
 		PaginationUtilDto paginationUtilDto = null;
 		try {
@@ -377,9 +377,9 @@ public class HelpService implements IHelpService {
 		Map<String, Object> response = new HashMap<>();
 		List<HelpDto> helpDtos = new ArrayList<>();
 		try {
-			List<SeekaHelp> seekHelps = helpDAO.getHelpByCategory(categoryId);
+			List<Help> seekHelps = helpDAO.getHelpByCategory(categoryId);
 			try {
-				for (SeekaHelp seekaHelp : seekHelps) {
+				for (Help seekaHelp : seekHelps) {
 					helpDtos.add(convertSeekaHelpToDto(seekaHelp));
 				}
 			} catch (Exception exception) {
@@ -526,7 +526,7 @@ public class HelpService implements IHelpService {
 	public Map<String, Object> delete(@Valid final String id) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-			SeekaHelp help = helpDAO.get(id);
+			Help help = helpDAO.get(id);
 			if (help != null) {
 				help.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
 				help.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -550,7 +550,7 @@ public class HelpService implements IHelpService {
 	public Map<String, Object> updateStatus(final String id, final String userId, final String status) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-			SeekaHelp help = helpDAO.get(id);
+			Help help = helpDAO.get(id);
 			if (help != null) {
 				help.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 				help.setStatus(status);
@@ -577,7 +577,7 @@ public class HelpService implements IHelpService {
 		Map<String, Object> response = new HashMap<>();
 		List<HelpDto> helpDtos = new ArrayList<>();
 		try {
-			List<SeekaHelp> seekaHelps = new ArrayList<>();
+			List<Help> seekaHelps = new ArrayList<>();
 			if ((status != null) && !status.isEmpty()) {
 				seekaHelps = helpDAO.findByStatus(status, categoryId);
 			}
@@ -590,7 +590,7 @@ public class HelpService implements IHelpService {
 			if ((status == null) && (mostRecent == null)) {
 				seekaHelps = helpDAO.getHelpByCategory(categoryId);
 			}
-			for (SeekaHelp seekaHelp : seekaHelps) {
+			for (Help seekaHelp : seekaHelps) {
 				helpDtos.add(convertSeekaHelpToDto(seekaHelp));
 			}
 			if ((helpDtos != null) && !helpDtos.isEmpty()) {
@@ -610,7 +610,7 @@ public class HelpService implements IHelpService {
 	}
 
 	@Override
-	public List<SeekaHelp> getUserHelpList(final String userId, final int startIndex, final Integer pageSize, final Boolean isArchive) {
+	public List<Help> getUserHelpList(final String userId, final int startIndex, final Integer pageSize, final Boolean isArchive) {
 		return helpDAO.getAll(startIndex, pageSize, userId, isArchive);
 	}
 
@@ -636,7 +636,7 @@ public class HelpService implements IHelpService {
 
 	@Override
 	public void archiveHelpSupport(final String entityId, final boolean isArchive) {
-		SeekaHelp seekaHelp = helpDAO.get(entityId);
+		Help seekaHelp = helpDAO.get(entityId);
 		seekaHelp.setIsArchive(isArchive);
 		seekaHelp.setUpdatedBy("API");
 		seekaHelp.setUpdatedOn(new Date());

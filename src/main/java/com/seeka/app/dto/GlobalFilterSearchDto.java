@@ -3,7 +3,7 @@ package com.seeka.app.dto;
 import java.io.Serializable;
 import java.util.List;
 
-import com.seeka.app.enumeration.SeekaEntityType;
+import com.seeka.app.enumeration.EntityType;
 
 public class GlobalFilterSearchDto implements Serializable {
 
@@ -13,7 +13,7 @@ public class GlobalFilterSearchDto implements Serializable {
 	private static final long serialVersionUID = 8396029582988011591L;
 
 	private List<String> ids;
-	private SeekaEntityType seekaEntityType;
+	private EntityType seekaEntityType;
 	private List<String> faculties;
 	private List<String> levelIds;
 	private List<String> serviceIds;
@@ -36,11 +36,11 @@ public class GlobalFilterSearchDto implements Serializable {
 		this.ids = ids;
 	}
 
-	public SeekaEntityType getSeekaEntityType() {
+	public EntityType getSeekaEntityType() {
 		return seekaEntityType;
 	}
 
-	public void setSeekaEntityType(SeekaEntityType seekaEntityType) {
+	public void setSeekaEntityType(EntityType seekaEntityType) {
 		this.seekaEntityType = seekaEntityType;
 	}
 

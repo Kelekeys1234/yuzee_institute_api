@@ -8,173 +8,66 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.Data;
+
+@Data
 @Entity
-@Table(name = "education_agent")
+@Table(name = "education_agent", uniqueConstraints = @UniqueConstraint(columnNames = { "first_name" , "last_name", "email" }, name = "UK_FN_LN_EM"))
 public class EducationAgent implements Serializable {
 
-    /**
-    *
-    */
-    private static final long serialVersionUID = 8492390790670110780L;
-    private String id;
-    private String firstName;
-    private String lastName;
-    private String description;
-    private String cityName;
-    private String countryName;
-    private String phoneNumber;
-    private String email;
-    private String createdBy;
-    private Date createdOn;
-    private String updatedBy;
-    private Date updatedOn;
-    private String deletedBy;
-    private Date deletedOn;
+	private static final long serialVersionUID = 8492390790670110780L;
 
-    public EducationAgent() {
-        super();
-    }
-
-    public EducationAgent(String id, String firstName, String lastName, String description,String phoneNumber, String email) {
-        super();
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.description = description;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-    }
-
-    @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@Id
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
-    public String getId() {
-        return id;
-    }
+	private String id;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	@Column(name = "first_name", nullable = false)
+	private String firstName;
 
-    @Column(name = "first_name")
-    public String getFirstName() {
-        return firstName;
-    }
+	@Column(name = "last_name", nullable = false)
+	private String lastName;
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	@Column(name = "description")
+	private String description;
 
-    @Column(name = "last_name")
-    public String getLastName() {
-        return lastName;
-    }
+	@Column(name = "city_name", nullable = false)
+	private String cityName;
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	@Column(name = "country_name", nullable = false)
+	private String countryName;
 
-    @Column(name = "description")
-    public String getDescription() {
-        return description;
-    }
+	@Column(name = "phone_number", nullable = false)
+	private String phoneNumber;
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	@Column(name = "email", nullable = false)
+	private String email;
 
-    @Column(name = "phone_number")
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+	@Column(name = "created_by", length = 50)
+	private String createdBy;
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on", length = 19)
+	private Date createdOn;
 
-    @Column(name = "email")
-    public String getEmail() {
-        return email;
-    }
+	@Column(name = "updated_by", length = 50)
+	private String updatedBy;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on", length = 19)
+	private Date updatedOn;
 
-    @Column(name = "created_by")
-    public String getCreatedBy() {
-        return createdBy;
-    }
+	@Column(name = "deleted_by", length = 50)
+	private String deletedBy;
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    @Column(name = "created_on")
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    @Column(name = "updated_by")
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    @Column(name = "updated_on")
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    @Column(name = "deleted_by")
-    public String getDeletedBy() {
-        return deletedBy;
-    }
-
-    public void setDeletedBy(String deletedBy) {
-        this.deletedBy = deletedBy;
-    }
-
-    @Column(name = "deleted_on")
-    public Date getDeletedOn() {
-        return deletedOn;
-    }
-
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
-
-    @Column(name = "country_name")
-	public String getCountryName() {
-		return countryName;
-	}
-
-	public void setCountryName(String countryName) {
-		this.countryName = countryName;
-	}
-
-	@Column(name = "city_name")
-	public String getCityName() {
-		return cityName;
-	}
-
-	public void setCityName(String cityName) {
-		this.cityName = cityName;
-	}
-
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deleted_on", length = 19)
+	private Date deletedOn;
 }

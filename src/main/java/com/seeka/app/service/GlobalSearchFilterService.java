@@ -15,7 +15,7 @@ import com.seeka.app.dto.CourseResponseDto;
 import com.seeka.app.dto.GlobalFilterSearchDto;
 import com.seeka.app.dto.StorageDto;
 import com.seeka.app.enumeration.ImageCategory;
-import com.seeka.app.enumeration.SeekaEntityType;
+import com.seeka.app.enumeration.EntityType;
 import com.seeka.app.exception.CommonInvokeException;
 import com.seeka.app.exception.ValidationException;
 import com.seeka.app.processor.StorageProcessor;
@@ -32,7 +32,7 @@ public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 
 	@Override
 	public Map<String, Object> filterByEntity(GlobalFilterSearchDto globalSearchFilterDto) throws ValidationException, CommonInvokeException {
-		if (SeekaEntityType.COURSE.equals(globalSearchFilterDto.getSeekaEntityType())) {
+		if (EntityType.COURSE.equals(globalSearchFilterDto.getSeekaEntityType())) {
 			AdvanceSearchDto advanceSearchDto = new AdvanceSearchDto();
 			BeanUtils.copyProperties(globalSearchFilterDto, advanceSearchDto);
 			return filterCoursesByParameters(globalSearchFilterDto, advanceSearchDto);

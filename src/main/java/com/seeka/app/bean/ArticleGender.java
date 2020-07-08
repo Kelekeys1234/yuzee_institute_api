@@ -27,13 +27,13 @@ public class ArticleGender implements Serializable {
 	 */
 	private static final long serialVersionUID = -7477761309981871867L;
 	private String id;
-	private SeekaArticles seekaArticles;
+	private Articles seekaArticles;
 	private String gender;
 
 	public ArticleGender() {
 	}
 
-	public ArticleGender(SeekaArticles seekaArticles, String gender) {
+	public ArticleGender(Articles seekaArticles, String gender) {
 		this.seekaArticles = seekaArticles;
 		this.gender = gender;
 	}
@@ -51,11 +51,11 @@ public class ArticleGender implements Serializable {
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "article_id")
-	public SeekaArticles getSeekaArticles() {
+	public Articles getSeekaArticles() {
 		return this.seekaArticles;
 	}
 
-	public void setSeekaArticles(SeekaArticles seekaArticles) {
+	public void setSeekaArticles(Articles seekaArticles) {
 		this.seekaArticles = seekaArticles;
 	}
 

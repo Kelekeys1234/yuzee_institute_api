@@ -26,7 +26,7 @@ public class HelpAnswer implements Serializable {
     private static final long serialVersionUID = 6922844940897956622L;
     private String id;
     private String user;
-    private SeekaHelp seekaHelp;
+    private Help seekaHelp;
     private String answer;
     private Date createdOn;
     private Date updatedOn;
@@ -68,11 +68,11 @@ public class HelpAnswer implements Serializable {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "help_id")
-    public SeekaHelp getSeekaHelp() {
+    public Help getSeekaHelp() {
         return seekaHelp;
     }
 
-    public void setSeekaHelp(SeekaHelp seekaHelp) {
+    public void setSeekaHelp(Help seekaHelp) {
         this.seekaHelp = seekaHelp;
     }
 

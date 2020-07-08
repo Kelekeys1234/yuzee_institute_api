@@ -3,7 +3,7 @@ package com.seeka.app.dto;
 import java.util.Date;
 import java.util.List;
 
-public class SeekaArticleDto {
+public class ArticlesDto {
 
 	private String id;
 	private String heading;

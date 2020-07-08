@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,7 +21,8 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "grade_details")
+@Table(name = "grade_details", indexes = {@Index(name = "IDX_COUNTRY_NAME", columnList = "country_name", unique = false),
+		   @Index(name = "IDX_EDUCATION_SYSTEM_ID", columnList = "education_system_id", unique = false) })
 public class GradeDetails implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;

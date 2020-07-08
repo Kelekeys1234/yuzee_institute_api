@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.EducationAgentDto;
 import com.seeka.app.dto.EducationAgentPartnershipsDto;
 import com.seeka.app.dto.PaginationResponseDto;
 import com.seeka.app.endpoint.EducationAgentInterface;
 import com.seeka.app.exception.NotFoundException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.EducationAgentProcessor;
 
 @RestController("educationAgentControllerV1")

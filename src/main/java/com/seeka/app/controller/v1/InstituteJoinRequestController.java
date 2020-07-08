@@ -11,10 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.constant.InstituteJoinStatus;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.InstituteJoinRequestDto;
 import com.seeka.app.endpoint.InstituteJoinRequestInterface;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.InstituteJoinRequestProcessor;
 
 import lombok.extern.apachecommons.CommonsLog;

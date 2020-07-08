@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.seeka.app.bean.AuditErrorReport;
 import com.seeka.app.bean.ErrorReport;
 import com.seeka.app.bean.ErrorReportCategory;
-import com.seeka.app.controller.handler.IdentityHandler;
 import com.seeka.app.dao.IErrorReportDAO;
 import com.seeka.app.dto.ErrorReportCategoryDto;
 import com.seeka.app.dto.ErrorReportDto;
@@ -27,6 +26,7 @@ import com.seeka.app.dto.StorageDto;
 import com.seeka.app.dto.UserDto;
 import com.seeka.app.exception.NotFoundException;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.IdentityHandler;
 import com.seeka.app.processor.StorageProcessor;
 import com.seeka.app.util.DateUtil;
 

@@ -3,18 +3,18 @@ package com.seeka.app.dao;
 import java.util.Date;
 import java.util.List;
 
-import com.seeka.app.bean.SeekaArticles;
+import com.seeka.app.bean.Articles;
 
 public interface IArticleDAO {
 
-	List<SeekaArticles> getAll(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword, List<String> categoryId,
+	List<Articles> getAll(Integer startIndex, Integer pageSize, String sortByField, String sortByType, String searchKeyword, List<String> categoryId,
 			List<String> tags, Boolean status, Date filterDate);
 
-	SeekaArticles findById(String uId);
+	Articles findById(String uId);
 
-	SeekaArticles deleteArticle(SeekaArticles article);
+	Articles deleteArticle(Articles article);
 
-	SeekaArticles save(SeekaArticles article);
+	Articles save(Articles article);
 
 	Integer getTotalSearchCount(String searchKeyword);
 
@@ -25,6 +25,6 @@ public interface IArticleDAO {
 
 	int getTotalAuthorCount(String searchString);
 
-	List<SeekaArticles> findArticleByCountryId(String countryId, String categoryName, Integer count, List<String> viewArticleIds);
+	List<Articles> findArticleByCountryId(String countryId, String categoryName, Integer count, List<String> viewArticleIds);
 
 }

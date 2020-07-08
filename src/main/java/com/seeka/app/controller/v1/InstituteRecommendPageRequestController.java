@@ -11,10 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.constant.RecommendRequestStatus;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.dto.InstituteRecommendPageRequestDto;
 import com.seeka.app.endpoint.InstituteRecommedPageRequestInterface;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.processor.InstituteRecommendPageRequestProcessor;
 
 import lombok.extern.apachecommons.CommonsLog;

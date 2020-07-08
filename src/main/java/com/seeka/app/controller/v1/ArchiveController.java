@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seeka.app.constant.ArchiveEntityType;
-import com.seeka.app.controller.handler.GenericResponseHandlers;
 import com.seeka.app.exception.ValidationException;
+import com.seeka.app.handler.GenericResponseHandlers;
 import com.seeka.app.service.IEnrollmentService;
 import com.seeka.app.service.IErrorReportService;
 import com.seeka.app.service.IHelpService;

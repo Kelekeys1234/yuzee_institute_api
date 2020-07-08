@@ -28,12 +28,12 @@ public class ArticleCity implements Serializable {
 	private static final long serialVersionUID = 3834995480494335769L;
 	private String id;
 	private String cityName;
-	private SeekaArticles seekaArticles;
+	private Articles seekaArticles;
 
 	public ArticleCity() {
 	}
 
-	public ArticleCity(SeekaArticles seekaArticles) {
+	public ArticleCity(Articles seekaArticles) {
 		this.seekaArticles = seekaArticles;
 	}
 
@@ -51,11 +51,11 @@ public class ArticleCity implements Serializable {
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "article_id")
-	public SeekaArticles getSeekaArticles() {
+	public Articles getSeekaArticles() {
 		return this.seekaArticles;
 	}
 
-	public void setSeekaArticles(SeekaArticles seekaArticles) {
+	public void setSeekaArticles(Articles seekaArticles) {
 		this.seekaArticles = seekaArticles;
 	}
 
