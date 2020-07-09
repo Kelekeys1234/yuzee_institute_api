@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -124,12 +123,5 @@ public class Scholarship implements java.io.Serializable {
 	
 	@Column(name = "requirements", nullable = false)
 	private String requirements;
-	
-	@Transient
-	private String entityId;
-	@Transient
-	private String imageName;
-	@Transient
-	private String imageUrl;
 
 }

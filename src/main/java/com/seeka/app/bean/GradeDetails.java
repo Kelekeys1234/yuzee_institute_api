@@ -33,17 +33,20 @@ public class GradeDetails implements java.io.Serializable {
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
 	private String id;
 	
-	@Column(name = "country_name")
+	@Column(name = "country_name", nullable = false)
 	private String countryName;
 	
-	@Column(name = "education_system_id")
+	@Column(name = "education_system_id", nullable = false)
 	private String educationSystemId;
 	
-	@Column(name = "grade")
+	@Column(name = "grade", nullable = false)
 	private String grade;
 	
-	@Column(name = "gpa_grade")
+	@Column(name = "gpa_grade", nullable = false)
 	private String gpaGrade;
+	
+	@Column(name = "state_name", nullable = false)
+	private String stateName;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)

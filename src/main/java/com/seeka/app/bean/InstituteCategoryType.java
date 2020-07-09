@@ -20,9 +20,6 @@ import lombok.Data;
 indexes = {@Index(name = "IDX_CATEGORY_TYPE", columnList = "name", unique = false) })
 public class InstituteCategoryType implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
