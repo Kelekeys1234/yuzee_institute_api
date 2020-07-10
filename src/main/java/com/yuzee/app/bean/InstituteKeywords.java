@@ -1,0 +1,31 @@
+package com.yuzee.app.bean;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@Data
+@Entity
+@ToString
+@EqualsAndHashCode
+@Table(name = "institute_keywords")
+public class InstituteKeywords {
+
+	@Id
+	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+	@GeneratedValue(generator = "generator")
+	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	private String id;
+
+	@Column(name = "keyword")
+	private String keyword;
+
+}

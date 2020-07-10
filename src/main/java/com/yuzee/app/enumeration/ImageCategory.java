@@ -1,0 +1,6 @@
+package com.yuzee.app.enumeration;
+
+public enum ImageCategory {
+
+	SCHOLARSHIP, ENROLLMENT, INSTITUTE, COURSE, CITY, CHAT_CONVERSATION, ACCREDITED_INSTITUTE, ARTICLE, HELP_SUPPORT
+}
