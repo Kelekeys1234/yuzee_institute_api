@@ -18,8 +18,6 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 @Data
@@ -77,15 +75,12 @@ public class EducationAgent implements Serializable {
 	@Column(name = "deleted_on", length = 19)
 	private Date deletedOn;
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "educationAgent" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<EducationAgentAccomplishment> educationAgentAccomplishments = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "educationAgent" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<EducationAgentPartnerships> educationAgentPartnerships = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "educationAgent" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<EducationAgentSkill> educationAgentSkills = new ArrayList<>();
 }

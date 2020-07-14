@@ -395,7 +395,7 @@ public class InstituteProcessor {
 		institute.setTotalStudent(instituteRequest.getTotalStudent());
 		institute.setCampusName(instituteRequest.getCampusName());
 		institute.setEnrolmentLink(instituteRequest.getEnrolmentLink());
-		institute.setTuitionFessPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
+		institute.setTuitionFeesPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
 		institute.setScholarshipFinancingAssistance(instituteRequest.getScholarshipFinancingAssistance());
 		institute.setAvgCostOfLiving(instituteRequest.getAvgCostOfLiving());
 		institute.setWhatsNo(instituteRequest.getWhatsNo());

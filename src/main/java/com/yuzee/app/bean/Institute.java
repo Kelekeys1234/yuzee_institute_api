@@ -1,7 +1,6 @@
 package com.yuzee.app.bean;
 
 import java.util.ArrayList;
-
 import java.util.Date;
 import java.util.List;
 
@@ -22,8 +21,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -110,7 +107,7 @@ public class Institute {
 	private String avgCostOfLiving;
 
 	@Column(name = "tution_fees_plan")
-	private String tuitionFessPaymentPlan;
+	private String tuitionFeesPaymentPlan;
 
 	@Column(name = "enrolment_link")
 	private String enrolmentLink;
@@ -173,39 +170,30 @@ public class Institute {
 	@Column(name = "accreditation")
 	private String accreditation;
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteEnglishRequirements> instituteEnglishRequirements = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "institute")
 	private InstituteAdditionalInfo instituteAdditionalInfo;
 	
-	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "institute")
 	private InstituteTiming instituteTiming;
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteDomesticRankingHistory> instituteDomesticRankingHistories = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteFacility> instituteFacilities = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteGoogleReview> instituteGoogleReviews = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteIntake> instituteIntakes = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteService> instituteServices = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteWorldRankingHistory> instituteWorldRankingHistories = new ArrayList<>();
 }

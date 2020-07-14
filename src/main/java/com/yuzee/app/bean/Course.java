@@ -24,8 +24,6 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -154,23 +152,18 @@ public class Course implements Serializable {
 	@Column(name = "deleted_on", length = 19)
 	private Date deletedOn;
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseEnglishEligibility> courseEnglishEligibilities = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseIntake> courseIntakes = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseLanguage> courseLanguages = new ArrayList<>();
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseMinRequirement> courseMinRequirements = new ArrayList<>();
 

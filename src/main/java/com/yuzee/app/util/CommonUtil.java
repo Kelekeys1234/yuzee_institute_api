@@ -65,7 +65,7 @@ public class CommonUtil {
 		instituteRequestDto.setEmail(institute.getEmail());
 		instituteRequestDto.setEnrolmentLink(institute.getEnrolmentLink());
 		instituteRequestDto.setScholarshipFinancingAssistance(institute.getScholarshipFinancingAssistance());
-		instituteRequestDto.setTuitionFessPaymentPlan(institute.getTuitionFessPaymentPlan());
+		instituteRequestDto.setTuitionFessPaymentPlan(institute.getTuitionFeesPaymentPlan());
 		instituteRequestDto.setWhatsNo(institute.getWhatsNo());
 		instituteRequestDto.setAboutInfo(institute.getAboutInfo());
 		instituteRequestDto.setCourseStart(institute.getCourseStart());
