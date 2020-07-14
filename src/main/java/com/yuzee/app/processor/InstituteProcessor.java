@@ -11,15 +11,10 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.client.RestTemplate;
 
 import com.yuzee.app.bean.AccrediatedDetail;
 import com.yuzee.app.bean.Institute;
@@ -37,7 +32,6 @@ import com.yuzee.app.dao.ServiceDetailsDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseSearchDto;
-import com.yuzee.app.dto.ElasticSearchDTO;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
 import com.yuzee.app.dto.InstituteElasticSearchDTO;
 import com.yuzee.app.dto.InstituteFilterDto;
@@ -96,9 +90,6 @@ public class InstituteProcessor {
 	private StorageProcessor storageProcessor;
 
 	@Autowired
-	private RestTemplate restTemplate;
-
-	@Autowired
 	private CourseDao courseDao;
 
 	@Autowired
@@ -117,13 +108,13 @@ public class InstituteProcessor {
 		Date today = new Date();
 		institute.setCreatedOn(today);
 		institute.setUpdatedOn(today);
-		dao.save(institute);
+		dao.addUpdateInstitute(institute);
 	}
 
 	public void update(final Institute institute) {
 		Date today = new Date();
 		institute.setUpdatedOn(today);
-		dao.update(institute);
+		dao.addUpdateInstitute(institute);
 	}
 
 	public Institute get(final String id) {
@@ -155,7 +146,7 @@ public class InstituteProcessor {
 
 	
 	public InstituteResponseDto getInstituteByID(final String instituteId) {
-		return dao.getInstituteByID(instituteId);
+		return dao.getInstituteById(instituteId);
 	}
 
 	
@@ -193,13 +184,13 @@ public class InstituteProcessor {
 	}
 
 	
-	public List<InstituteResponseDto> getInstitudeByCityId(final String cityId) {
+	public List<InstituteResponseDto> getInstituteByCityName(final String cityName) {
 		log.debug("Inside getInstitudeByCityId() method");
 		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
-		log.info("fetching institutes from DB having cityName = "+ cityId);
-		List<Institute> institutes = instituteRepository.findByCityName(cityId);
+		log.info("fetching institutes from DB having cityName = "+ cityName);
+		List<Institute> institutes = instituteRepository.findByCityName(cityName);
 		if(!CollectionUtils.isEmpty(institutes)) {
-			
+			log.info("Institutes fetched from DB, start iterating data to make response");
 			institutes.stream().forEach(institute -> {
 				InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
 				log.info("Converting bean class to DTO class using beanUtils");
@@ -239,31 +230,35 @@ public class InstituteProcessor {
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("start iterating data coming in request");
-			for (InstituteRequestDto instituteRequest : instituteRequests) {
+			instituteRequests.stream().forEach(instituteRequest -> {
 				log.info("Going to save institute in DB");
-				Institute institute = saveInstitute(instituteRequest, null);
-				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
-				if (instituteRequest.getDomesticRanking() != null) {
-					log.info("if domesticRanking is not null then going to record domesticRankingHistory");
-					saveDomesticRankingHistory(institute, null);
+				try {
+					Institute institute = saveInstitute(instituteRequest, null);
+					InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
+					if (instituteRequest.getDomesticRanking() != null) {
+						log.info("if domesticRanking is not null then going to record domesticRankingHistory");
+						saveDomesticRankingHistory(institute, null);
+					}
+					if (instituteRequest.getWorldRanking() != null) {
+						log.info("if worldRanking is not null then going to record worldRankingHistory");
+						saveWorldRankingHistory(institute, null);
+					}
+					log.info("Copying institute data from instituteBean to elasticSearchDTO");
+					BeanUtils.copyProperties(institute, instituteElasticSearchDto);
+					instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
+					instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
+					instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
+					instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
+					instituteElasticDtoList.add(instituteElasticSearchDto);
+				} catch (ValidationException exception) {
+					log.error("Exception while saving institute in DB = " + exception);
 				}
-				if (instituteRequest.getWorldRanking() != null) {
-					log.info("if worldRanking is not null then going to record worldRankingHistory");
-					saveWorldRankingHistory(institute, null);
-				}
-				log.info("Copying institute data from instituteBean to elasticSearchDTO");
-				BeanUtils.copyProperties(institute, instituteElasticSearchDto);
-				instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
-				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
-				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
-				instituteElasticDtoList.add(instituteElasticSearchDto);
-			}
+			});
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
-			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityType.INSTITUTE.name().toLowerCase(),
-					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
+					EntityType.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
-			log.error("Exception while saving institutes having exception = "+exception);
+			log.error("Exception while saving institutes having exception = " + exception);
 		}
 	}
 
@@ -308,7 +303,7 @@ public class InstituteProcessor {
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("Start iterating institute coming in request");
-			for (InstituteRequestDto instituteRequest : instituteRequests) {
+			instituteRequests.stream().forEach(instituteRequest -> {
 				log.info("fetching institute from DB having instituteId = "+id);
 				Institute oldInstitute = dao.get(id);
 				Institute newInstitute = new Institute();
@@ -324,15 +319,19 @@ public class InstituteProcessor {
 					saveWorldRankingHistory(newInstitute, oldInstitute);
 				}
 				log.info("Start updating institute for instituteId ="+id);
-				Institute institute = saveInstitute(instituteRequest, id);
-				log.info("Copying DTO class to elasticSearch DTO");
-				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
-				instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
-				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-				instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
-				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
-				instituteElasticDtoList.add(instituteElasticSearchDto);
-			}
+				try {
+					Institute institute = saveInstitute(instituteRequest, id);
+					log.info("Copying DTO class to elasticSearch DTO");
+					BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
+					instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
+					instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
+					instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
+					instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
+					instituteElasticDtoList.add(instituteElasticSearchDto);
+				} catch (ValidationException e) {
+					log.error("Exception while updating institute in DB = "+e);
+				}
+			});
 			log.info("Calling elastic service to save instiutes on index");
 			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityType.INSTITUTE.name().toLowerCase(),
 					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
@@ -404,7 +403,7 @@ public class InstituteProcessor {
 		institute.setCourseStart(instituteRequest.getCourseStart());
 		if (id != null) {
 			log.info("if instituteId is not null then going to update institute for id ="+id);
-			dao.update(institute);
+			dao.addUpdateInstitute(institute);
 			// Adding data in Elastic DTO to save it on elasticSearch index
 			log.info("updation is done now adding data in elasticSearch DTO to add it on elastic indices for entityId = "+id);
 			InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
@@ -413,7 +412,7 @@ public class InstituteProcessor {
 			instituteElasticDTOList.add(instituteElasticDto);
 		} else {
 			log.info("institute is not present in DB hence adding new institute in DB");
-			dao.save(institute);
+			dao.addUpdateInstitute(institute);
 		}
 		if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
 			log.info("offer service is not null hence going to save institute service in DB");
@@ -454,17 +453,17 @@ public class InstituteProcessor {
 		accrediatedDetailDao.deleteAccrediationDetailByEntityId(institute.getId());
 		if(!CollectionUtils.isEmpty(accreditation)) {
 			log.info("Start iterating new accrediation coming in request, if it is not null");
-			for (AccrediatedDetailDto accreditedInstituteDetail2 : accreditation) {
+			accreditation.stream().forEach(accreditedInstitute -> {
 				AccrediatedDetail accreditedInstituteDetail = new AccrediatedDetail();
 				accreditedInstituteDetail.setEntityId(institute.getId());
 				accreditedInstituteDetail.setEntityType("INSTITUTE");
-				accreditedInstituteDetail.setAccrediatedName(accreditedInstituteDetail2.getAccrediatedName());
-				accreditedInstituteDetail.setAccrediatedWebsite(accreditedInstituteDetail2.getAccrediatedWebsite());
+				accreditedInstituteDetail.setAccrediatedName(accreditedInstitute.getAccrediatedName());
+				accreditedInstituteDetail.setAccrediatedWebsite(accreditedInstitute.getAccrediatedWebsite());
 				accreditedInstituteDetail.setCreatedBy("API");
 				accreditedInstituteDetail.setCreatedOn(new Date());
 				log.info("Calling DAO layer to save accrediatedDetails in DB for institute ="+institute.getId());
 				accrediatedDetailDao.addAccrediatedDetail(accreditedInstituteDetail);
-			}
+			});
 		}
 	}
 
@@ -473,9 +472,9 @@ public class InstituteProcessor {
 		log.info("deleting existing instituteService from DB having instituteId = "+institute.getId());
 		dao.deleteInstituteService(institute.getId());
 		log.info("start iterating new offerServices coming in request for institute");
-		for (String id : offerService) {
-			log.info("fetching service from DB having by serviceId coming in request = "+id);
-			com.yuzee.app.bean.Service service = serviceDetailsDAO.get(id);
+		offerService.stream().forEach(serviceId -> {
+			log.info("fetching service from DB having by serviceId coming in request = "+serviceId);
+			com.yuzee.app.bean.Service service = serviceDetailsDAO.getService(serviceId);
 			com.yuzee.app.bean.InstituteService instituteServiceDetails = new com.yuzee.app.bean.InstituteService();
 			instituteServiceDetails.setInstitute(institute);
 			instituteServiceDetails.setServiceName(service.getName());
@@ -486,7 +485,7 @@ public class InstituteProcessor {
 			instituteServiceDetails.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 			log.info("Calling DAO layer to save institute service in DB");
 			dao.saveInstituteserviceDetails(instituteServiceDetails);
-		}
+		});
 	}
 
 	private InstituteCategoryType getInstituteCategoryType(final String instituteCategoryTypeId) {
@@ -536,7 +535,7 @@ public class InstituteProcessor {
 		return paginationResponseDto;
 	}
 
-	private InstituteGetRequestDto getInstitute(final Institute institute) {
+	private InstituteGetRequestDto convertInstituteToInstituteGetRequestDto(final Institute institute) {
 		log.debug("Inside getInstitute() method");
 		InstituteGetRequestDto dto = new InstituteGetRequestDto();
 		log.info("Converting bean class response into DTO class response");
@@ -663,7 +662,7 @@ public class InstituteProcessor {
 			if(!CollectionUtils.isEmpty(institutes)) {
 				log.info("institutes coming in response, hence start iterating institutes ande getting institutes details");
 				institutes.stream().forEach(institute -> {
-					instituteGetRequestDtos.add(getInstitute(institute));
+					instituteGetRequestDtos.add(convertInstituteToInstituteGetRequestDto(institute));
 				});
 			}
 		} catch (Exception exception) {
@@ -687,7 +686,7 @@ public class InstituteProcessor {
 			if(!CollectionUtils.isEmpty(institutes)) {
 				log.info("if institutes are not coming nul from DB thewn start iterating to find institute details");
 				institutes.stream().forEach(institute -> {
-					instituteGetRequestDtos.add(getInstitute(institute));
+					instituteGetRequestDtos.add(convertInstituteToInstituteGetRequestDto(institute));
 				});
 				log.info("Setting values in pagination response DTO with institutes coming from DB");
 				paginationInstituteResponseDto.setResponse(instituteGetRequestDtos);
@@ -741,17 +740,10 @@ public class InstituteProcessor {
 		return paginationInstituteResponseDto;
 	}
 
-	
-	public List<Institute> getAllInstitute() {
-		return dao.getAll();
-	}
-
-	
 	public List<InstituteCategoryType> getAllCategories() {
 		return dao.getAllCategories();
 	}
 
-	
 	public void deleteInstitute(final String id) throws ValidationException {
 		log.debug("Inside deleteInstitute() method");
 		log.info("Fetching institute from DB for id = "+id);
@@ -762,7 +754,7 @@ public class InstituteProcessor {
 			institute.setIsDeleted(true);
 			institute.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
 			log.info("Calling DAO layer to update institute status from active to inactive");
-			dao.update(institute);
+			dao.addUpdateInstitute(institute);
 		} else {
 			log.error("Institute not found for id" + id);
 			throw new ValidationException("Institute not found for id" + id);
@@ -791,42 +783,6 @@ public class InstituteProcessor {
 		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
 	}
 
-	public void saveInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDTO> instituteList,
-			final String elasticSearchName) {
-		log.debug("Inside saveInsituteOnElasticSearch() method");
-		instituteList.stream().forEach(institute -> {
-			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-			elasticSearchDto.setIndex(elasticSearchIndex);
-			elasticSearchDto.setType(type);
-			elasticSearchDto.setEntityId(String.valueOf(institute.getId()));
-			elasticSearchDto.setObject(institute);
-			System.out.println(elasticSearchDto);
-			log.info("Calling elastic service to save institute data on elastic index");
-			ResponseEntity<Object> object = restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Object.class);
-			System.out.println(object);
-		});
-	}
-
-	public void updateInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDTO> instituteList,
-			final String elasticSearchName) {
-		log.debug("Inside updateInsituteOnElasticSearch() method");
-		instituteList.stream().forEach(institute -> {
-			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-			elasticSearchDto.setIndex(elasticSearchIndex);
-			elasticSearchDto.setType(type);
-			elasticSearchDto.setEntityId(String.valueOf(institute.getId()));
-			elasticSearchDto.setObject(institute);
-			System.out.println(elasticSearchDto);
-			HttpHeaders headers = new HttpHeaders();
-			HttpEntity<ElasticSearchDTO> httpEntity = new HttpEntity<>(elasticSearchDto, headers);
-			log.info("Calling elastic service to update institute data on elastic index");
-			ResponseEntity<Object> object = restTemplate.exchange("http://" + IConstant.ELASTIC_SEARCH_URL, HttpMethod.PUT, httpEntity, Object.class,
-					new Object[] {});
-			System.out.println(object);
-		});
-	}
-
-	
 	public Integer getTotalCourseCountForInstitute(final String instituteId) {
 		return courseDao.getTotalCourseCountForInstitute(instituteId);
 	}
@@ -904,9 +860,9 @@ public class InstituteProcessor {
 					BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
 					nearestInstitute.setDistance(Double.valueOf(initialRadius));
 					log.info("going to fetch logo for institute from sotrage service for institutueID "+nearestInstituteDTO.getId());
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestInstituteDTO.getId(), 
+					/*List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestInstituteDTO.getId(), 
 							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
-					nearestInstitute.setStorageList(storageDTOList);
+					nearestInstitute.setStorageList(storageDTOList);*/
 					log.info("fetching instituteTiming from DB for instituteId = " +nearestInstituteDTO.getId());
 					InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(nearestInstituteDTO.getId());
 					nearestInstitute.setInstituteTiming(instituteTimingResponseDto);
@@ -936,7 +892,7 @@ public class InstituteProcessor {
 		log.debug("Inside getDistinctInstituteList() method");
 		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
 		log.info("Calling DAO layer to getDistinct institutes from DB based on pagination");
-		List<InstituteResponseDto> instituteResponseDtos = dao.getDistinctInstituteListByName(startIndex, pageSize, instituteName);
+		List<InstituteResponseDto> instituteResponseDtos = dao.getInstitutesByInstituteName(startIndex, pageSize, instituteName);
 		if(!CollectionUtils.isEmpty(instituteResponseDtos)) {
 			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
 			instituteResponseDtos.stream().forEach(instituteResponseDto -> {

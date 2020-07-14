@@ -26,20 +26,14 @@ public class LevelProcessor {
     @Autowired
     private LevelDao levelDao;
 
-    public void saveLevel(LevelDto levelDto) {
+    public void addUpdateLevel(LevelDto levelDto) {
     	Level level = new Level(null, levelDto.getName(), levelDto.getCode(), null, true, new Date(), null, null, "API", null, null);
-    	levelDao.save(level);
+    	levelDao.addUpdateLevel(level);
     }
 
-    public void update(Level obj) {
-    	levelDao.update(obj);
-    }
-
-    
     public Level get(String id) {
-        return levelDao.get(id);
+        return levelDao.getLevel(id);
     }
-
     
     public List<LevelDto> getAllLevels() {
     	log.debug("Inside getAllLevels() method");

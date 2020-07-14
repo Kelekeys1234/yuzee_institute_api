@@ -175,7 +175,7 @@ public class Institute {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<InstituteEnglishRequirements> instituteEnglishRequirements = new ArrayList<InstituteEnglishRequirements>();
+	private List<InstituteEnglishRequirements> instituteEnglishRequirements = new ArrayList<>();
 	
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "institute")
@@ -184,4 +184,28 @@ public class Institute {
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "institute")
 	private InstituteTiming instituteTiming;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<InstituteDomesticRankingHistory> instituteDomesticRankingHistories = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<InstituteFacility> instituteFacilities = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<InstituteGoogleReview> instituteGoogleReviews = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<InstituteIntake> instituteIntakes = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<InstituteService> instituteServices = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<InstituteWorldRankingHistory> instituteWorldRankingHistories = new ArrayList<>();
 }

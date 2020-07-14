@@ -23,13 +23,9 @@ import com.yuzee.app.exception.ValidationException;
 
 public interface CourseDao {
 
-	public void save(Course obj);
-
-	public void update(Course obj);
+	public void addUpdateCourse(Course obj);
 
 	public Course get(String id);
-
-	public List<Course> getAll();
 
 	public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, String searchKeyword, List<String> courseIds, Integer startIndex,
 			boolean uniqueCourseName, List<String> entityIds);
@@ -55,13 +51,9 @@ public interface CourseDao {
 
 	public int findTotalCountByUserId(String userId);
 
-	public CourseRequest getCourseById(String valueOf);
-
 	public Course getCourseData(String id);
 
 	public List<CourseResponseDto> advanceSearch(List<String> entityIds,Object... values) throws CommonInvokeException;
-
-	public List<Course> getAllCourse();
 
 	public List<CourseRequest> courseFilter(int pageNumber, Integer pageSize, CourseFilterDto courseFilter);
 
@@ -75,19 +67,19 @@ public interface CourseDao {
 
 	public long getCourseCountForCountry(String countryName);
 
-	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(String countryName);
+//	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(String countryName);
 
-	public List<Course> getAllCourseForFacultyWorldRankingWise(String facultyId);
+//	public List<Course> getAllCourseForFacultyWorldRankingWise(String facultyId);
 
-	public List<String> getAllCourseForFacultyWorldRankingWises(String facultyId);
+//	public List<String> getAllCourseForFacultyWorldRankingWises(String facultyId);
 
-	public List<Course> getCoursesFromId(List<String> allSearchCourses);
+//	public List<Course> getCoursesFromId(List<String> allSearchCourses);
 
-	public Map<String, String> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, String instituteId);
+//	public Map<String, String> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, String instituteId);
 
 	public List<Course> getAllCoursesUsingId(List<String> listOfRecommendedCourseIds);
 
-	public List<String> getTopRatedCourseIdsForCountryWorldRankingWise(String countryName);
+//	public List<String> getTopRatedCourseIdsForCountryWorldRankingWise(String countryName);
 
 	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, String countryName);
 
@@ -99,8 +91,6 @@ public interface CourseDao {
 	public List<String> getCourseIdsForCountry(final String countryName);
 
 	public List<String> getAllCoursesForCountry(List<String> otherCountryIds);
-
-	public List<Long> getUserListFromUserWatchCoursesBasedOnCourses(List<String> courseIds);
 
 	public int updateCourseForCurrency(CurrencyRateDto currencyRate);
 

@@ -13,26 +13,25 @@ import com.yuzee.app.dao.ServiceDetailsDao;
 public class ServiceDetailsProcessor {
 
 	@Autowired
-	private ServiceDetailsDao iServiceDetailsDAO;
+	private ServiceDetailsDao serviceDetailsDAO;
 
-	public void save(com.yuzee.app.bean.Service obj) {
-		iServiceDetailsDAO.save(obj);
+	public void save(com.yuzee.app.bean.Service service) {
+		serviceDetailsDAO.addUpdateServiceDetails(service);
 	}
 
-	public void update(com.yuzee.app.bean.Service obj) {
-		iServiceDetailsDAO.update(obj);
+	public void update(com.yuzee.app.bean.Service service) {
+		serviceDetailsDAO.addUpdateServiceDetails(service);
 	}
 
-	public com.yuzee.app.bean.Service get(String id) {
-		return iServiceDetailsDAO.get(id);
+	public com.yuzee.app.bean.Service get(String serviceId) {
+		return serviceDetailsDAO.getService(serviceId);
 	}
 
 	public List<com.yuzee.app.bean.Service> getAllInstituteByCountry(String countryId) {
-		return iServiceDetailsDAO.getAllInstituteByCountry(countryId);
+		return serviceDetailsDAO.getAllInstituteByCountry(countryId);
 	}
 
 	public List<com.yuzee.app.bean.Service> getAll() {
-		return iServiceDetailsDAO.getAll();
+		return serviceDetailsDAO.getAll();
 	}
-
 }

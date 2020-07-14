@@ -21,7 +21,7 @@ public class LevelController implements LevelInterface {
 
     @Override
     public ResponseEntity<?> saveLevel(LevelDto levelDto) throws Exception {
-        levelProcessor.saveLevel(levelDto);
+        levelProcessor.addUpdateLevel(levelDto);
         return new GenericResponseHandlers.Builder()
 				.setMessage("Level saved successfully").setStatus(HttpStatus.OK).create();
     }

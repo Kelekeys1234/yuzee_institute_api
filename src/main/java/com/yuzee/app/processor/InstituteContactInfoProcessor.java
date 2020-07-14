@@ -43,7 +43,7 @@ public class InstituteContactInfoProcessor {
 		institute.setLatitude(instituteContactInfoDto.getLatitute());
 		institute.setLongitude(instituteContactInfoDto.getLongitude());
 		log.info("persisting institute having id "+instituteId+ " with updated basic info");
-		iInstituteDAO.save(institute);
+		iInstituteDAO.addUpdateInstitute(institute);
 	}
 	
 	public InstituteContactInfoDto getInstituteContactInfo (String userId , String instituteId, String caller) throws Exception {

@@ -6,11 +6,9 @@ import com.yuzee.app.bean.Service;
 
 public interface ServiceDetailsDao {
 
-    public void save(Service obj);
+    public void addUpdateServiceDetails(Service service);
 
-    public void update(Service obj);
-
-    public Service get(String id);
+    public Service getService(String id);
 
     public List<Service> getAllInstituteByCountry(String countryId);
 

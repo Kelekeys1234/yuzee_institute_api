@@ -73,7 +73,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> saveInstituteType(final InstituteTypeDto instituteTypeDto) throws Exception {
 		log.info("Start process to save new institute types in DB");
-		instituteTypeProcessor.save(instituteTypeDto);
+		instituteTypeProcessor.addUpdateInstituteType(instituteTypeDto);
 		return new GenericResponseHandlers.Builder().setMessage("InstituteType Added successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -222,7 +222,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> getInstituteByCityName(final String cityName) throws Exception {
 		log.info("Start process to fetch institutes from DB for cityName = "+cityName);
-		List<InstituteResponseDto> institutes = instituteProcessor.getInstitudeByCityId(cityName);
+		List<InstituteResponseDto> institutes = instituteProcessor.getInstituteByCityName(cityName);
 		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institutes displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}

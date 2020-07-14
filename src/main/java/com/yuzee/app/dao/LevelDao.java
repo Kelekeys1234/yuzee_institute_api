@@ -7,11 +7,9 @@ import com.yuzee.app.dto.LevelDto;
 
 public interface LevelDao {
 
-    public void save(Level obj);
+    public void addUpdateLevel(Level level);
 
-    public void update(Level obj);
-
-    public Level get(String id);
+    public Level getLevel(String levelId);
 
     public List<Level> getAll();
 

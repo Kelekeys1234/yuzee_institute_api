@@ -1,11 +1,14 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,11 +17,14 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -147,5 +153,25 @@ public class Course implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "deleted_on", length = 19)
 	private Date deletedOn;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseEnglishEligibility> courseEnglishEligibilities = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseIntake> courseIntakes = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseLanguage> courseLanguages = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseMinRequirement> courseMinRequirements = new ArrayList<>();
 
 }

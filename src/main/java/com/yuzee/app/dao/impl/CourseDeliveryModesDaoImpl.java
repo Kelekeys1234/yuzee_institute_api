@@ -13,20 +13,20 @@ import com.yuzee.app.repository.CourseDeliveryModesRepository;
 public class CourseDeliveryModesDaoImpl implements CourseDeliveryModesDao {
 
 	@Autowired
-	private CourseDeliveryModesRepository courseAdditionalInfoRepository;
+	private CourseDeliveryModesRepository courseDeliveryModesRepository;
 
 	@Override
-	public void saveCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo) {
-		courseAdditionalInfoRepository.save(courseAdditionalInfo);
+	public void saveCourseDeliveryModes(CourseDeliveryModes courseDeliveryModes) {
+		courseDeliveryModesRepository.save(courseDeliveryModes);
 	}
 
 	@Override
-	public void deleteCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo) {
-		courseAdditionalInfoRepository.delete(courseAdditionalInfo);
+	public void deleteCourseDeliveryModes(String courseDeliveryModeId) {
+		courseDeliveryModesRepository.deleteById(courseDeliveryModeId);
 	}
 
 	@Override
-	public List<CourseDeliveryModes> getCourseAdditionalInfoByCourseId(String courseId) {
-		return courseAdditionalInfoRepository.findByCourseId(courseId);
+	public List<CourseDeliveryModes> getCourseDeliveryModesByCourseId(String courseId) {
+		return courseDeliveryModesRepository.findByCourseId(courseId);
 	}
 }

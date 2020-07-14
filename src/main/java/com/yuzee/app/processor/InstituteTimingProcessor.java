@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteTiming;
@@ -39,31 +38,31 @@ public class InstituteTimingProcessor {
 				instituteTiming.setCreatedOn(new Date());
 			}
 			log.info("Mathcing days with ENUM and adding opening and closing time in Object");
-			if(DaysEnum.Monday.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
+			if(DaysEnum.MONDAY.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
 				log.info("Adding Monday's opening and closing time");
 				instituteTiming.setMonday(instituteTimingDto.getOpeningFrom() + "-" + instituteTimingDto.getOpeningTo());
 			}
-			if(DaysEnum.Tuesday.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
+			if(DaysEnum.TUESDAY.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
 				log.info("Adding Tuesday's opening and closing time");
 				instituteTiming.setTuesday(instituteTimingDto.getOpeningFrom() + "-" + instituteTimingDto.getOpeningTo());
 			} 
-			if(DaysEnum.Wednesday.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
+			if(DaysEnum.WEDNESDAY.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
 				log.info("Adding Wednesday's opening and closing time");
 				instituteTiming.setWednesday(instituteTimingDto.getOpeningFrom() + "-" + instituteTimingDto.getOpeningTo());
 			} 
-			if(DaysEnum.Thursday.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
+			if(DaysEnum.THURSDAY.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
 				log.info("Adding Thursday's opening and closing time");
 				instituteTiming.setThursday(instituteTimingDto.getOpeningFrom() + "-" + instituteTimingDto.getOpeningTo());
 			} 
-			if(DaysEnum.Friday.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
+			if(DaysEnum.FRIDAY.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
 				log.info("Adding Friday's opening and closing time");
 				instituteTiming.setFriday(instituteTimingDto.getOpeningFrom() + "-" + instituteTimingDto.getOpeningTo());
 			}
-			if(DaysEnum.Saturday.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
+			if(DaysEnum.SATURDAY.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
 				log.info("Adding Saturday's opening and closing time");
 				instituteTiming.setSaturday(instituteTimingDto.getOpeningFrom() + "-" + instituteTimingDto.getOpeningTo());
 			} 
-			if(DaysEnum.Sunday.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
+			if(DaysEnum.SUNDAY.toString().equalsIgnoreCase(instituteTimingDto.getDay())) {
 				log.info("Adding Sunday's opening and closing time");
 				instituteTiming.setSunday(instituteTimingDto.getOpeningFrom() + "-" + instituteTimingDto.getOpeningTo());
 			}
@@ -79,9 +78,8 @@ public class InstituteTimingProcessor {
 		log.debug("Inside getInstituteTimeByInstituteId() method");
 		log.info("fetching isntitute timing from DB for instituteId "+instituteId);
 		InstituteTiming instituteTiming = instituteTimingDao.getInstituteTimeByInstituteId(instituteId);
-		InstituteTimingResponseDto instituteTimingResponseDto = null;
+		InstituteTimingResponseDto instituteTimingResponseDto = new InstituteTimingResponseDto();
 		if(!ObjectUtils.isEmpty(instituteTiming)) {
-			instituteTimingResponseDto = new InstituteTimingResponseDto();
 			log.info("Institute timing is not null, hence coping bean to DTO class");
 			BeanUtils.copyProperties(instituteTiming, instituteTimingResponseDto);
 		}

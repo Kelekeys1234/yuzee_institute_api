@@ -21,27 +21,27 @@ import lombok.extern.apachecommons.CommonsLog;
 public class CourseDeliveryModesProcessor {
 
 	@Autowired
-	private CourseDeliveryModesDao courseAdditionalInfoDao;
+	private CourseDeliveryModesDao courseDeliveryModesDao;
 	
-	public void saveCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo) {
-		courseAdditionalInfoDao.saveCourseAdditionalInfo(courseAdditionalInfo);
+	public void saveCourseDeliveryModes(CourseDeliveryModes courseDeliveryModes) {
+		courseDeliveryModesDao.saveCourseDeliveryModes(courseDeliveryModes);
 	}
 	
-	public List<CourseDeliveryModesDto> getCourseAdditionalInfoByCourseId(String courseId) {
-		log.debug("Inside getCourseAdditionalInfoByCourseId() method");
-		List<CourseDeliveryModesDto> courseAdditionalInfoResponse = new ArrayList<>();
+	public List<CourseDeliveryModesDto> getCourseDeliveryModesByCourseId(String courseId) {
+		log.debug("Inside getCourseDeliveryModesByCourseId() method");
+		List<CourseDeliveryModesDto> courseDeliveryModesResponse = new ArrayList<>();
 		log.info("Fetching copurseAdditionalInfo from DB for courseId = "+ courseId);
-		List<CourseDeliveryModes> courseAdditionalInfosFromDB = courseAdditionalInfoDao.getCourseAdditionalInfoByCourseId(courseId);
-		if(!CollectionUtils.isEmpty(courseAdditionalInfosFromDB)) {
+		List<CourseDeliveryModes> courseDeliveryModesFromDB = courseDeliveryModesDao.getCourseDeliveryModesByCourseId(courseId);
+		if(!CollectionUtils.isEmpty(courseDeliveryModesFromDB)) {
 			log.info("Additional Info is not null, then start iterating list");
-			courseAdditionalInfosFromDB.stream().forEach(courseAdditionalInfo -> {
-				CourseDeliveryModesDto additionalInfoDto = new CourseDeliveryModesDto();
+			courseDeliveryModesFromDB.stream().forEach(courseDeliveryMode -> {
+				CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 				log.info("Copying Bean class values to DTO class using beanUtils");
-				BeanUtils.copyProperties(courseAdditionalInfo, additionalInfoDto);
-				courseAdditionalInfoResponse.add(additionalInfoDto);
+				BeanUtils.copyProperties(courseDeliveryMode, courseDeliveryModesDto);
+				courseDeliveryModesResponse.add(courseDeliveryModesDto);
 			});
 		}
-		return courseAdditionalInfoResponse;
+		return courseDeliveryModesResponse;
 	}
 	
 }

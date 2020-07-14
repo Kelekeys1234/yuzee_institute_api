@@ -1,10 +1,14 @@
 package com.yuzee.app.bean;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -27,5 +31,22 @@ public class InstituteKeywords {
 
 	@Column(name = "keyword")
 	private String keyword;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on")
+	private Date createdOn;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on")
+	private Date updatedOn;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deleted_on")
+	private Date deletedOn;
+
+	@Column(name = "created_by")
+	private String createdBy;
+
+	@Column(name = "updated_by")
+	private String updatedBy;
 }

@@ -26,16 +26,15 @@ public class FacultyProcessor {
 	private FacultyDao facultyDAO;
 
 	public void saveFaculty(final FacultyDto facultyDto) {
+		log.debug("Inside saveFaculty() method");
 		Faculty faculty = new Faculty();
+		log.info("saving faculty data in DB having facultyName = "+facultyDto.getName());
 		faculty.setName(facultyDto.getName());
 		faculty.setIsActive(true);
 		faculty.setCreatedBy("API");
 		faculty.setCreatedOn(new Date());
-		facultyDAO.save(faculty);
-	}
-
-	public void update(final Faculty obj) {
-		facultyDAO.update(obj);
+		log.info("Calling DAO layer to save faculty data in DB");
+		facultyDAO.saveOrUpdateFaculty(faculty);
 	}
 
 	public FacultyDto getFacultyById(final String id) {
@@ -79,7 +78,11 @@ public class FacultyProcessor {
 			log.info("Faculty coming from DB hence start making response");
 			facultyDto.setName(facultyFromDB.getName());
 			facultyDto.setId(facultyFromDB.getId());
-			facultyDto.setIcon(CDNServerUtil.getFacultyIconUrl(facultyFromDB.getName()));
+			try {
+				facultyDto.setIcon(CDNServerUtil.getFacultyIconUrl(facultyFromDB.getName()));
+			} catch (Exception exception) {
+				log.error("Exception while fetching faculty icon URL = "+exception);
+			}
 		}
 		return facultyDto;
 	}

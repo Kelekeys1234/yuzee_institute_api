@@ -158,5 +158,5 @@ public class CourseRequest {
 	private List<AccrediatedDetailDto> accrediatedDetail;
 
 	@JsonProperty("course_delivery_modes")
-	private List<CourseDeliveryModesDto> courseAdditionalInfo;
+	private List<CourseDeliveryModesDto> courseDeliveryModes;
 }

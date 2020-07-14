@@ -1,9 +1,8 @@
 package com.yuzee.app.controller.v1;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.dto.LevelDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
+import com.yuzee.app.dto.ScholarshipCountDto;
 import com.yuzee.app.dto.ScholarshipDto;
 import com.yuzee.app.dto.ScholarshipResponseDTO;
 import com.yuzee.app.endpoint.ScholarshipInterface;
@@ -91,12 +91,12 @@ public class ScholarshipController implements ScholarshipInterface {
 	
 	@Override
 	public ResponseEntity<?> getScholarshipCountByLevel() throws Exception {
-		Map<String, Object> response = new HashMap<String, Object>();
+		List<ScholarshipCountDto> scholarshipCountDtos = new ArrayList<>();
 		List<LevelDto> levels = levelProcessor.getAllLevels();
 		if (!CollectionUtils.isEmpty(levels)) {
-			response = scholarshipProcessor.getScholarshipCountByLevelId(levels);
+			scholarshipCountDtos = scholarshipProcessor.getScholarshipCountByLevelId(levels);
 		}
-		return new GenericResponseHandlers.Builder().setMessage("Scholarship count fetched Successfully").setData(response)
+		return new GenericResponseHandlers.Builder().setMessage("Scholarship count fetched Successfully").setData(scholarshipCountDtos)
 				.setStatus(HttpStatus.OK).create();
 	}
 }

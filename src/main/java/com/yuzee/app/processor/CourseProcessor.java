@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -148,10 +148,10 @@ public class CourseProcessor {
 	private CourseRepository courseRepository;
 	
 	@Autowired
-	private CourseDeliveryModesDao courseAdditionalInfoDao;
+	private CourseDeliveryModesDao courseDeliveryModesDao;
 	
 	@Autowired
-	private CourseDeliveryModesProcessor courseAdditionalInfoProcessor;
+	private CourseDeliveryModesProcessor courseDeliveryModesProcessor;
 	
 	@Autowired
 	private CourseEnglishEligibilityProcessor courseEnglishEligibilityProcessor;
@@ -184,9 +184,9 @@ public class CourseProcessor {
 		return courseDAO.get(id);
 	}
 
-	public List<Course> getAll() {
+	/*public List<Course> getAll() {
 		return courseDAO.getAll();
-	}
+	}*/
 
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
 			final String searchKeyword, List<String> entityIds) throws ValidationException, InvokeException {
@@ -241,9 +241,9 @@ public class CourseProcessor {
 				}
 				
 				log.info("Filtering course additional info by matching courseIds");
-				List<CourseDeliveryModesDto> additionalInfoDtos = courseResponseDto.getCourseAdditionalInfo().stream().
+				List<CourseDeliveryModesDto> additionalInfoDtos = courseResponseDto.getCourseDeliveryModes().stream().
 							filter(x -> x.getCourseId().equals(courseResponseDto.getId())).collect(Collectors.toList());
-				courseResponseDto.setCourseAdditionalInfo(additionalInfoDtos);
+				courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 				
 				log.info("Fetching courseIntake from DB having courseIds = "+courseIds);
 				List<CourseIntake> courseIntakes = courseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
@@ -286,7 +286,7 @@ public class CourseProcessor {
 			log.info("Courses coming from DB start iterating data to make final response");
 			courseResponseDtos.stream().forEach(courseResponseDto -> {
 				log.info("Fetching course additional info from DB having courseId = "+courseResponseDto.getId());
-				courseResponseDto.setCourseAdditionalInfo(courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(courseResponseDto.getId()));
+				courseResponseDto.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseResponseDto.getId()));
 				log.info("Fetching course intakes from DB having courseId = "+courseResponseDto.getId());
 				courseResponseDto.setIntake(courseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId())
 							.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -371,7 +371,7 @@ public class CourseProcessor {
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		
 		log.info("Calling DAO layer to save course in DB");
-		courseDAO.save(course);
+		courseDAO.addUpdateCourse(course);
 
 		// Here multiple intakes are possible.
 		List<Date> intakeList = new ArrayList<>();
@@ -417,44 +417,44 @@ public class CourseProcessor {
 		}
 		
 		// Here we are adding course additional informations like courseFee, duration, studyMode etc
-		List<CourseDeliveryModesElasticDto> courseAddtionalInfoElasticDtos = new ArrayList<>();
-		if(!CollectionUtils.isEmpty(courseDto.getCourseAdditionalInfo()) && !ObjectUtils.isEmpty(currencyRate)) {
+		List<CourseDeliveryModesElasticDto> courseDeliveryModesElasticDtos = new ArrayList<>();
+		if(!CollectionUtils.isEmpty(courseDto.getCourseDeliveryModes()) && !ObjectUtils.isEmpty(currencyRate)) {
 			log.info("Course saved now going to save course AdditionalInfo in DB");
-			for (CourseDeliveryModesDto courseAdditionalInfo : courseDto.getCourseAdditionalInfo()) {
-				CourseDeliveryModes additionalInfo = new CourseDeliveryModes();
+			for (CourseDeliveryModesDto courseDeliveryModes : courseDto.getCourseDeliveryModes()) {
+				CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
 				if (courseDto.getCurrency() != null) {
-					if (courseAdditionalInfo.getDomesticFee() != null) {
+					if (courseDeliveryModes.getDomesticFee() != null) {
 						log.info("converting domestic fee into usdDomestic fee having conversionRate = "+currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseAdditionalInfo.getDomesticFee()) / currencyRate.getConversionRate();
+						Double convertedRate = Double.valueOf(courseDeliveryModes.getDomesticFee()) / currencyRate.getConversionRate();
 						if (convertedRate != null) {
-							additionalInfo.setUsdDomesticFee(convertedRate);
+							courseDeliveryMode.setUsdDomesticFee(convertedRate);
 						}
 					}
-					if (courseAdditionalInfo.getInternationalFee() != null) {
+					if (courseDeliveryModes.getInternationalFee() != null) {
 						log.info("converting international fee into usdInternational fee having conversionRate = "+currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseAdditionalInfo.getInternationalFee()) / currencyRate.getConversionRate();
+						Double convertedRate = Double.valueOf(courseDeliveryModes.getInternationalFee()) / currencyRate.getConversionRate();
 						if (convertedRate != null) {
-							additionalInfo.setUsdInternationalFee(convertedRate);
+							courseDeliveryMode.setUsdInternationalFee(convertedRate);
 						}
 					}
 				}
-				additionalInfo.setCourse(course);
-				additionalInfo.setCreatedBy("API");
-				additionalInfo.setCreatedOn(new Date());
+				courseDeliveryMode.setCourse(course);
+				courseDeliveryMode.setCreatedBy("API");
+				courseDeliveryMode.setCreatedOn(new Date());
 				log.info("Adding additional infos like deliveryType, studyMode etc");
-				additionalInfo.setDeliveryType(courseAdditionalInfo.getDeliveryType());
-				additionalInfo.setDomesticFee(courseAdditionalInfo.getDomesticFee());
-				additionalInfo.setInternationalFee(courseAdditionalInfo.getInternationalFee());
-				additionalInfo.setStudyMode(courseAdditionalInfo.getStudyMode());
-				additionalInfo.setDuration(courseAdditionalInfo.getDuration());
-				additionalInfo.setDurationTime(courseAdditionalInfo.getDurationTime());
-				log.info("Calling DAO layer to save courseAdditionalInfo in DB");
-				courseAdditionalInfoDao.saveCourseAdditionalInfo(additionalInfo);
+				courseDeliveryMode.setDeliveryType(courseDeliveryModes.getDeliveryType());
+				courseDeliveryMode.setDomesticFee(courseDeliveryModes.getDomesticFee());
+				courseDeliveryMode.setInternationalFee(courseDeliveryModes.getInternationalFee());
+				courseDeliveryMode.setStudyMode(courseDeliveryModes.getStudyMode());
+				courseDeliveryMode.setDuration(courseDeliveryModes.getDuration());
+				courseDeliveryMode.setDurationTime(courseDeliveryModes.getDurationTime());
+				log.info("Calling DAO layer to save courseDeliveryModes in DB");
+				courseDeliveryModesDao.saveCourseDeliveryModes(courseDeliveryMode);
 				
 				// Adding course additionalInfo in elastic DTO to save it on course elastic index
-				CourseDeliveryModesElasticDto courseAddtionalInfoElasticDto = new CourseDeliveryModesElasticDto();
-				BeanUtils.copyProperties(additionalInfo, courseAddtionalInfoElasticDto);
-				courseAddtionalInfoElasticDtos.add(courseAddtionalInfoElasticDto);
+				CourseDeliveryModesElasticDto courseDeliveryModesElasticDto = new CourseDeliveryModesElasticDto();
+				BeanUtils.copyProperties(courseDeliveryMode, courseDeliveryModesElasticDto);
+				courseDeliveryModesElasticDtos.add(courseDeliveryModesElasticDto);
 			}
 		}
 
@@ -475,7 +475,7 @@ public class CourseProcessor {
 		log.info("Adding intakes in elastic DTO");
 		courseElasticSearch.setIntake(!intakeList.isEmpty() ? intakeList : null);
 		log.info("Adding courseAddtionalInfos in elastic DTO");
-		courseElasticSearch.setCourseAdditionalInfo(courseAddtionalInfoElasticDtos);
+		courseElasticSearch.setCourseDeliveryModes(courseDeliveryModesElasticDtos);
 		log.info("Adding courseLanguages in elastic DTO");
 		courseElasticSearch.setLanguage(courseDto.getLanguage());
 		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
@@ -548,7 +548,7 @@ public class CourseProcessor {
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		
 		log.info("Calling DAO layer to update course in DB for courseId = "+id);
-		courseDAO.update(course);
+		courseDAO.addUpdateCourse(course);
 		log.info("Delete existing courseIntakes from DB");
 		courseDAO.deleteCourseIntake(id);
 		log.info("Delete existing courseLanguage from DB");
@@ -611,51 +611,51 @@ public class CourseProcessor {
 		}
 
 		// Here we are adding course additional informations like courseFee, duration, studyMode etc
-		List<CourseDeliveryModesElasticDto> courseAddtionalInfoElasticDtos = new ArrayList<>();
-		if (!CollectionUtils.isEmpty(courseDto.getCourseAdditionalInfo()) && !ObjectUtils.isEmpty(currencyRate)) {
+		List<CourseDeliveryModesElasticDto> courseDeliveryModesElasticDtos = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(courseDto.getCourseDeliveryModes()) && !ObjectUtils.isEmpty(currencyRate)) {
 			log.info("Course saved now going to update course AdditionalInfo in DB and fetching additionalInfo from DB");
-			List<CourseDeliveryModes> courseAdditionalInfoListFromDB = courseAdditionalInfoDao.getCourseAdditionalInfoByCourseId(id);
-			courseAdditionalInfoListFromDB.stream().forEach(courseAdditionalInfoFromDB -> {
-				log.info("Deleting courseAdditional Info from DB for infoId = "+courseAdditionalInfoFromDB.getId());
-				courseAdditionalInfoDao.deleteCourseAdditionalInfo(courseAdditionalInfoFromDB);
+			List<CourseDeliveryModes> courseDeliveryModesInfoListFromDB = courseDeliveryModesDao.getCourseDeliveryModesByCourseId(id);
+			courseDeliveryModesInfoListFromDB.stream().forEach(courseDeliveryModesFromDB -> {
+				log.info("Deleting courseDeliveryModes from DB for infoId = "+courseDeliveryModesFromDB.getId());
+				courseDeliveryModesDao.deleteCourseDeliveryModes(courseDeliveryModesFromDB.getId());
 			});
-			for (CourseDeliveryModesDto courseAdditionalInfo : courseDto.getCourseAdditionalInfo()) {
-				CourseDeliveryModes additionalInfo = new CourseDeliveryModes();
+			for (CourseDeliveryModesDto courseDeliveryModesDto : courseDto.getCourseDeliveryModes()) {
+				CourseDeliveryModes courseDeliveryModes = new CourseDeliveryModes();
 				if (courseDto.getCurrency() != null) {
-					if (courseAdditionalInfo.getDomesticFee() != null) {
+					if (courseDeliveryModesDto.getDomesticFee() != null) {
 						log.info("converting domestic fee into usdDomestic fee having conversionRate = "
 									+ currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseAdditionalInfo.getDomesticFee()) / currencyRate.getConversionRate();
+						Double convertedRate = Double.valueOf(courseDeliveryModesDto.getDomesticFee()) / currencyRate.getConversionRate();
 						if (convertedRate != null) {
-							additionalInfo.setUsdDomesticFee(convertedRate);
+							courseDeliveryModes.setUsdDomesticFee(convertedRate);
 						}
 					}
-					if (courseAdditionalInfo.getInternationalFee() != null) {
+					if (courseDeliveryModesDto.getInternationalFee() != null) {
 						log.info("converting international fee into usdInternational fee having conversionRate = "
 									+ currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseAdditionalInfo.getInternationalFee()) / currencyRate.getConversionRate();
+						Double convertedRate = Double.valueOf(courseDeliveryModesDto.getInternationalFee()) / currencyRate.getConversionRate();
 						if (convertedRate != null) {
-							additionalInfo.setUsdInternationalFee(convertedRate);
+							courseDeliveryModes.setUsdInternationalFee(convertedRate);
 						}
 					}
 				}
-				additionalInfo.setCourse(course);
-				additionalInfo.setCreatedBy("API");
-				additionalInfo.setCreatedOn(new Date());
+				courseDeliveryModes.setCourse(course);
+				courseDeliveryModes.setCreatedBy("API");
+				courseDeliveryModes.setCreatedOn(new Date());
 				log.info("Adding additional infos like deliveryType, studyMode etc");
-				additionalInfo.setDeliveryType(courseAdditionalInfo.getDeliveryType());
-				additionalInfo.setDomesticFee(courseAdditionalInfo.getDomesticFee());
-				additionalInfo.setInternationalFee(courseAdditionalInfo.getInternationalFee());
-				additionalInfo.setStudyMode(courseAdditionalInfo.getStudyMode());
-				additionalInfo.setDuration(courseAdditionalInfo.getDuration());
-				additionalInfo.setDurationTime(courseAdditionalInfo.getDurationTime());
-				log.info("Calling DAO layer to save courseAdditionalInfo in DB");
-				courseAdditionalInfoDao.saveCourseAdditionalInfo(additionalInfo);
+				courseDeliveryModes.setDeliveryType(courseDeliveryModesDto.getDeliveryType());
+				courseDeliveryModes.setDomesticFee(courseDeliveryModesDto.getDomesticFee());
+				courseDeliveryModes.setInternationalFee(courseDeliveryModesDto.getInternationalFee());
+				courseDeliveryModes.setStudyMode(courseDeliveryModesDto.getStudyMode());
+				courseDeliveryModes.setDuration(courseDeliveryModesDto.getDuration());
+				courseDeliveryModes.setDurationTime(courseDeliveryModesDto.getDurationTime());
+				log.info("Calling DAO layer to save courseDeliveryModesDto in DB");
+				courseDeliveryModesDao.saveCourseDeliveryModes(courseDeliveryModes);
 
 				// Adding course additionalInfo in elastic DTO to save it on course elastic index
-				CourseDeliveryModesElasticDto courseAddtionalInfoElasticDto = new CourseDeliveryModesElasticDto();
-				BeanUtils.copyProperties(additionalInfo, courseAddtionalInfoElasticDto);
-				courseAddtionalInfoElasticDtos.add(courseAddtionalInfoElasticDto);
+				CourseDeliveryModesElasticDto courseDeliveryModesElasticDto = new CourseDeliveryModesElasticDto();
+				BeanUtils.copyProperties(courseDeliveryModes, courseDeliveryModesElasticDto);
+				courseDeliveryModesElasticDtos.add(courseDeliveryModesElasticDto);
 			}
 		}
 
@@ -679,7 +679,7 @@ public class CourseProcessor {
 		log.info("Adding intakes in elastic DTO");
 		courseElasticSearch.setIntake(!intakeList.isEmpty() ? intakeList : null);
 		log.info("Adding courseAddtionalInfos in elastic DTO");
-		courseElasticSearch.setCourseAdditionalInfo(courseAddtionalInfoElasticDtos);
+		courseElasticSearch.setCourseDeliveryModes(courseDeliveryModesElasticDtos);
 		log.info("Adding courseLanguages in elastic DTO");
 		courseElasticSearch.setLanguage(courseDto.getLanguage());
 		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
@@ -733,11 +733,11 @@ public class CourseProcessor {
 					} catch (ValidationException e) {
 						log.error("Error invoking Storage service exception {}",e);
 					}
-					log.info("Fetching courseAdditionalInfo from DB having courseId = "+course.getId());
-					List<CourseDeliveryModesDto> courseAdditionalInfoDtos = courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId());
-					if(!CollectionUtils.isEmpty(courseAdditionalInfoDtos)) {
-						log.info("courseAdditionalInfo is fetched from DB, hence adding courseAdditionalInfo in response");
-						course.setCourseAdditionalInfo(courseAdditionalInfoDtos);
+					log.info("Fetching courseDeliveryModes from DB having courseId = "+course.getId());
+					List<CourseDeliveryModesDto> courseDeliveryModesDtos = courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(course.getId());
+					if(!CollectionUtils.isEmpty(courseDeliveryModesDtos)) {
+						log.info("courseDeliveryMode is fetched from DB, hence adding courseDeliveryModesDto in response");
+						course.setCourseDeliveryModes(courseDeliveryModesDtos);
 					}
 					
 					log.info("Fetching courseEnglishEligibility from DB having courseId = "+course.getId());
@@ -778,7 +778,7 @@ public class CourseProcessor {
 				course.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
 				course.setIsDeleted(true);
 				log.info("Calling DAO layer to update existing course and make in in-active");
-				courseDAO.update(course);
+				courseDAO.addUpdateCourse(course);
 
 				CourseDTOElasticSearch elasticSearchCourseDto = new CourseDTOElasticSearch();
 				elasticSearchCourseDto.setId(courseId);
@@ -800,7 +800,7 @@ public class CourseProcessor {
 		log.debug("Inside getUserCourse() method");
 		log.info("Extracting courses from DB based on pagination and courseIds");
 		List<CourseDto> courses = new ArrayList<>();
-		if(sortAsscending.equalsIgnoreCase("true")) {
+		if(!StringUtils.isEmpty(sortAsscending) && sortAsscending.equalsIgnoreCase("true")) {
 			courses = courseDAO.getUserCourse(courseIds, sortBy, true);
 		} else {
 			courses = courseDAO.getUserCourse(courseIds, sortBy, false);
@@ -813,9 +813,9 @@ public class CourseProcessor {
 			log.info("Courses fetched from DB hence strat iterating data");
 			courses.stream().forEach(courseRequest -> {
 				log.info("Filtering course additional info by matching courseIds");
-				List<CourseDeliveryModesDto> additionalInfoDtos = courseRequest.getCourseAdditionalInfo().stream().
+				List<CourseDeliveryModesDto> additionalInfoDtos = courseRequest.getCourseDeliveryModes().stream().
 							filter(x -> x.getCourseId().equals(courseRequest.getId())).collect(Collectors.toList());
-				courseRequest.setCourseAdditionalInfo(additionalInfoDtos);
+				courseRequest.setCourseDeliveryModes(additionalInfoDtos);
 			});
 		}
 		return courses;
@@ -889,9 +889,9 @@ public class CourseProcessor {
 				}
 				
 				log.info("Grouping course delivery modes data and add it in final response");
-				List<CourseDeliveryModesDto> additionalInfoDtos = courseResponseDto.getCourseAdditionalInfo().stream().
+				List<CourseDeliveryModesDto> additionalInfoDtos = courseResponseDto.getCourseDeliveryModes().stream().
 						filter(x -> x.getCourseId().equals(courseResponseDto.getId())).collect(Collectors.toList());
-				courseResponseDto.setCourseAdditionalInfo(additionalInfoDtos);
+				courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 
 				log.info("Fetching courseIntake from DB having courseIds = "+courseIds);
 				List<CourseIntake> courseIntake = courseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
@@ -959,26 +959,6 @@ public class CourseProcessor {
 		}
 	}
 
-	public Map<String, Object> getAllCourse() {
-		Map<String, Object> response = new HashMap<>();
-		List<Course> courses = new ArrayList<>();
-		try {
-			courses = courseDAO.getAllCourse();
-			if (courses != null && !courses.isEmpty()) {
-				response.put("status", HttpStatus.OK);
-				response.put("message", "Course retrieve succesfully");
-				response.put("courses", courses);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND);
-				response.put("message", "Course Not Found");
-			}
-		} catch (Exception exception) {
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.put("message", exception.getCause());
-		}
-		return response;
-	}
-
 	public PaginationResponseDto courseFilter(final CourseFilterDto courseFilter) {
 		log.debug("Inside courseFilter() method");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -1001,7 +981,7 @@ public class CourseProcessor {
 						log.error("Error invoking Storage service having exception = "+e);
 					}
 					log.info("Fetching course additional info from DB having courseId = "+courseRequest.getId());
-					courseRequest.setCourseAdditionalInfo(courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(courseRequest.getId()));
+					courseRequest.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseRequest.getId()));
 					log.info("Fetching course intakes from DB having courseId = "+courseRequest.getId());
 					courseRequest.setIntake(courseDAO.getCourseIntakeBasedOnCourseId(courseRequest.getId())
 								.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -1046,11 +1026,11 @@ public class CourseProcessor {
 					} catch (ValidationException e) {
 						log.error("Error invoking Storage service having exception = "+e);
 					}
-					log.info("Fetching courseAdditionalInfo from DB having courseId = "+course.getId());
-					List<CourseDeliveryModesDto> courseAdditionalInfoDtos = courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId());
-					if(!CollectionUtils.isEmpty(courseAdditionalInfoDtos)) {
-						log.info("courseAdditionalInfo is fetched from DB, hence adding courseAdditionalInfo in response");
-						course.setCourseAdditionalInfo(courseAdditionalInfoDtos);
+					log.info("Fetching courseDeliveryModes from DB having courseId = "+course.getId());
+					List<CourseDeliveryModesDto> courseDeliveryModesDtos = courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(course.getId());
+					if(!CollectionUtils.isEmpty(courseDeliveryModesDtos)) {
+						log.info("courseDeliveryModes is fetched from DB, hence adding courseDeliveryModes in response");
+						course.setCourseDeliveryModes(courseDeliveryModesDtos);
 					}
 					
 					log.info("Fetching courseEnglishEligibility from DB having courseId = "+course.getId());
@@ -1173,41 +1153,41 @@ public class CourseProcessor {
 		return courseDAO.getCourseCountForCountry(country);
 	}
 
-	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
+	/*public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
 		return courseDAO.getTopRatedCoursesForCountryWorldRankingWise(country);
-	}
+	}*/
 
-	public List<Course> getAllCourseUsingFaculty(final String facultyId) {
+	/*public List<Course> getAllCourseUsingFaculty(final String facultyId) {
 		return courseDAO.getAllCourseForFacultyWorldRankingWise(facultyId);
 	}
 
 	public List<String> getAllCourseUsingFacultyId(final String facultyId) {
 		return courseDAO.getAllCourseForFacultyWorldRankingWises(facultyId);
-	}
+	}*/
 
 	/*public List<String> getTopSearchedCoursesByOtherUsers(final String userId) {
 		return viewDao.getOtherUserWatchCourse(userId, "COURSE");
 	}*/
 
-	public List<Course> getCoursesById(final List<String> allSearchCourses) {
-		return courseDAO.getCoursesFromId(allSearchCourses);
-	}
+	/*public List<Course> getCoursesById(final List<String> allSearchCourses) {
+		return courseDAO.getAllCoursesUsingId(allSearchCourses);
+	}*/
 
-	public Map<String, String> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final String instituteId) {
+	/*public Map<String, String> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final String instituteId) {
 		return courseDAO.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
-	}
-
-	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
-		return courseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
 	}
 
 	public List<String> getTopRatedCourseIdForCountryWorldRankingWise(final String country) {
 		return courseDAO.getTopRatedCourseIdsForCountryWorldRankingWise(country);
-	}
+	}*/
 
 	/*public List<String> getTopSearchedCoursesByUsers(final String userId) {
 		return viewDao.getUserWatchCourseIds(userId, "COURSE");
 	}*/
+	
+	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
+		return courseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
+	}
 
 	public Set<Course> getRelatedCoursesBasedOnPastSearch(final List<String> courseList) throws ValidationException {
 		Set<Course> relatedCourses = new HashSet<>();
@@ -1228,13 +1208,13 @@ public class CourseProcessor {
 		return courseDAO.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
 	}
 
-	private List<String> getCourseListBasedForCourseOnParameters(final String courseId, final String instituteId, final String facultyId,
+	/*private List<String> getCourseListBasedForCourseOnParameters(final String courseId, final String instituteId, final String facultyId,
 			final String countryId, final String cityId) {
 		List<String> courseIdList = courseDAO.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId, countryId, cityId);
 		return courseIdList;
-	}
+	}*/
 
-	public List<Long> getUserListForUserWatchCourseFilter(final String courseId, final String instituteId, final String facultyId,
+	/*public List<Long> getUserListForUserWatchCourseFilter(final String courseId, final String instituteId, final String facultyId,
 			final String countryId, final String cityId) {
 		List<String> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
 		if (courseIdList == null || courseIdList.isEmpty()) {
@@ -1242,7 +1222,7 @@ public class CourseProcessor {
 		}
 		List<Long> userIdList = courseDAO.getUserListFromUserWatchCoursesBasedOnCourses(courseIdList);
 		return userIdList;
-	}
+	}*/
 
 	public List<String> courseIdsForCountry(final String country) {
 		return courseDAO.getCourseIdsForCountry(country);
@@ -1423,7 +1403,7 @@ public class CourseProcessor {
 		log.info("Association course grade eligibility with course");
 		course.setCourseGradeEligibility(courseGradeEligibility);
 		courseGradeEligibility.setCourse(course);*/
-		courseDAO.save(course);
+		courseDAO.addUpdateCourse(course);
 	}
 
 	public void updateMobileCourse(String userId, String courseId, CourseMobileDto courseMobileDto) throws Exception {
@@ -1458,7 +1438,7 @@ public class CourseProcessor {
 			courseGradeEligibilityFromDb.setUpdatedBy("API");
 			courseGradeEligibilityFromDb.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		}*/
-		courseDAO.save(course);
+		courseDAO.addUpdateCourse(course);
 	} 
 	
 	public List<CourseMobileDto> getAllMobileCourseByInstituteIdAndFacultyIdAndStatus(String userId, String instituteId, String facultyId, boolean status) throws Exception {
@@ -1520,7 +1500,7 @@ public class CourseProcessor {
 		 // TODO validate user id have appropriate access for institute id 
 		log.info("Changing course having Id "+courseId+ " from status "+course.getIsActive()+ " to "+status );
 		course.setIsActive(status);
-		courseDAO.save(course);
+		courseDAO.addUpdateCourse(course);
 	}
 	
 	public NearestCoursesDto getCourseByInstituteId(Integer pageNumber, Integer pageSize, String instituteId) throws NotFoundException {
@@ -1552,11 +1532,11 @@ public class CourseProcessor {
 					nearestCourse.setLongitude(course.getInstitute().getLongitude());
 				}
 				
-				log.info("Fetching courseAdditionalInfo from DB having courseId = "+course.getId());
-				List<CourseDeliveryModesDto> courseAdditionalInfoDtos = courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId());
-				if(!CollectionUtils.isEmpty(courseAdditionalInfoDtos)) {
-					log.info("courseAdditionalInfo is fetched from DB, hence adding courseAdditionalInfo in response");
-					nearestCourse.setCourseAdditionalInfo(courseAdditionalInfoDtos);
+				log.info("Fetching courseDeliveryModes from DB having courseId = "+course.getId());
+				List<CourseDeliveryModesDto> courseDeliveryModesDtos = courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(course.getId());
+				if(!CollectionUtils.isEmpty(courseDeliveryModesDtos)) {
+					log.info("courseDeliveryModes is fetched from DB, hence adding courseDeliveryModes in response");
+					nearestCourse.setCourseDeliveryModes(courseDeliveryModesDtos);
 				}
 				
 				log.info("Fetching courseLanguage from DB having courseId = "+course.getId());
@@ -1635,14 +1615,14 @@ public class CourseProcessor {
 					BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
 					nearestCourse.setDistance(Double.valueOf(initialRadius));
 					log.info("fetching institute logo from storage service for instituteID " + nearestCourseDTO.getId());
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestCourseDTO.getId(),
+					/*List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestCourseDTO.getId(),
 							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
-					nearestCourse.setStorageList(storageDTOList);
+					nearestCourse.setStorageList(storageDTOList);*/
 					
 					log.info("Filtering course additional info by matching courseId");
-					List<CourseDeliveryModesDto> additionalInfoDtos = nearestCourseDTO.getCourseAdditionalInfo().stream().
+					List<CourseDeliveryModesDto> additionalInfoDtos = nearestCourseDTO.getCourseDeliveryModes().stream().
 								filter(x -> x.getCourseId().equals(nearestCourseDTO.getId())).collect(Collectors.toList());
-					nearestCourse.setCourseAdditionalInfo(additionalInfoDtos);
+					nearestCourse.setCourseDeliveryModes(additionalInfoDtos);
 					
 					log.info("Fetching courseIntake from DB having courseId = "+nearestCourseDTO.getId());
 					List<CourseIntake> courseIntakes = courseDAO.getCourseIntakeBasedOnCourseId(nearestCourseDTO.getId());
@@ -1714,8 +1694,8 @@ public class CourseProcessor {
 		log.info("Fetching courseLanguage for courseId = "+id);
 		courseRequest.setLanguage(getCourseLanguageBasedOnCourseId(id).stream()
 				.map(CourseLanguage::getLanguage).collect(Collectors.toList()));
-		log.info("Fetching courseAdditionalInfo for courseId = "+id);
-		courseRequest.setCourseAdditionalInfo(courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(id));
+		log.info("Fetching courseDeliveryModes for courseId = "+id);
+		courseRequest.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(id));
 		
 		log.info("Fetching institute data from DB having instututeId = "+courseRequest.getInstituteId());
 		Institute instituteObj = instituteProcessor.get(courseRequest.getInstituteId());
@@ -1828,6 +1808,9 @@ public class CourseProcessor {
 				} catch (ValidationException e) {
 					log.error("Error while fetching logos from storage service"+e);
 				}
+				log.info("Fetching courseDeliveryModes for courseId = "+ nearestCourseDTO.getId());
+				nearestCourse.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(nearestCourseDTO.getId()));
+				
 				nearestCourseResponse.add(nearestCourse);
 			});
 		}
@@ -1858,7 +1841,7 @@ public class CourseProcessor {
 						courseDetail.getFaculty().getName(), courseDetail.getLevel().getName(), null,
 						courseDetail.getDescription(), courseDetail.getRemarks(),
 						courseDetail.getInstitute().getName(),
-						courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(courseDetail.getId()));
+						courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseDetail.getId()));
 				courseDtos.add(courseResponse);
 			});
 		}

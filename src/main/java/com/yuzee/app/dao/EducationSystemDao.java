@@ -18,13 +18,11 @@ public interface EducationSystemDao {
 
 	public List<EducationSystem> getAllGlobeEducationSystems();
 
-	public List<EducationSystem> getEducationSystemsByCountryId(final String countryId);
+	public List<EducationSystem> getEducationSystemsByCountryName(final String countryId);
 
 	public List<Subject> getSubject();
 
 	public List<Subject> getSubjectByEducationSystem(final String educationSystemId);
 
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName);
-
-
 }

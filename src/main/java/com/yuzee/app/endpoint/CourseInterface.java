@@ -162,19 +162,6 @@ public interface CourseInterface {
 	public ResponseEntity<?> getCourseByIds(@RequestBody List<String> courseIds);
 	
 	@Deprecated
-	@GetMapping
-	public ResponseEntity<?> getAllCourse() throws Exception;
-
-	@Deprecated
-	@GetMapping(value = "/viewCourse/filter")
-	public ResponseEntity<?> getUserListForUserWatchCourseFilter(@RequestHeader(required = false) final String language,
-			@RequestParam(name = "courseId", required = false) final String courseId,
-			@RequestParam(name = "facultyId", required = false) final String facultyId,
-			@RequestParam(name = "instituteId", required = false) final String instituteId,
-			@RequestParam(name = "countryName", required = false) final String countryName,
-			@RequestParam(name = "cityName", required = false) final String cityName) throws ValidationException;
-
-	@Deprecated
 	@GetMapping(value = "/eligibility/update")
 	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception;
 

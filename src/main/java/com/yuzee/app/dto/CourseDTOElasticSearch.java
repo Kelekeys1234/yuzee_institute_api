@@ -117,5 +117,5 @@ public class CourseDTOElasticSearch implements Serializable {
 	private List<String> language;
 
 	@JsonProperty("course_delivery_modes")
-	private List<CourseDeliveryModesElasticDto> courseAdditionalInfo;
+	private List<CourseDeliveryModesElasticDto> courseDeliveryModes;
 }

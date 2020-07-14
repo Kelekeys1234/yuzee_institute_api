@@ -69,7 +69,7 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 	}
 
 	@Override
-	public List<EducationSystem> getEducationSystemsByCountryId(final String countryId) {
+	public List<EducationSystem> getEducationSystemsByCountryName(final String countryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(EducationSystem.class, "educationSystem");
 		criteria.add(Restrictions.eq("educationSystem.countryName", countryId));

@@ -26,7 +26,7 @@ public class ViewTransactionHandler {
 
 	private static final String GET_USER_MY_COURSE = "/course/user/favourite/{userId}/entityType/{entityType}/transactionType/{transactionType}";
 	
-	private static final String GET_USER_VIEW_COURSE = "/transaction/view?entityType={entityType}&entityId={entityId}"
+	private static final String GET_USER_VIEW_COURSE = "/transaction/viewed/course?entityType={entityType}&entityId={entityId}"
 			+ "&transactionType={transactionType}";
 
 	@Autowired

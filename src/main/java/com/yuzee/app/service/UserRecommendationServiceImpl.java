@@ -37,7 +37,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	private StorageProcessor iStorageService;
 	
 	@Autowired
-	private CourseDeliveryModesProcessor courseAdditionalInfoProcessor;
+	private CourseDeliveryModesProcessor courseDeliveryModesProcessor;
 
 	@Override
 	public List<Course> getRecommendCourse(final String courseId, final String userId) throws ValidationException {
@@ -318,8 +318,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 				} catch (Exception e) {
 					log.error("Exception while invoking storage service", e);
 				}
-				courseResponseDto.setCourseAdditionalInfo(
-						courseAdditionalInfoProcessor.getCourseAdditionalInfoByCourseId(course.getId()));
+				courseResponseDto.setCourseDeliveryModes(
+						courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(course.getId()));
 				resultList.add(courseResponseDto);
 			}
 		});

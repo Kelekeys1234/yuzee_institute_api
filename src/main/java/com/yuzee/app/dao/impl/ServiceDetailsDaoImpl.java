@@ -24,19 +24,13 @@ public class ServiceDetailsDaoImpl implements ServiceDetailsDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public void save(Service obj) {
+    public void addUpdateServiceDetails(Service service) {
         Session session = sessionFactory.getCurrentSession();
-        session.save(obj);
+        session.saveOrUpdate(service);
     }
 
     @Override
-    public void update(Service obj) {
-        Session session = sessionFactory.getCurrentSession();
-        session.update(obj);
-    }
-
-    @Override
-    public Service get(String id) {
+    public Service getService(String id) {
         Session session = sessionFactory.getCurrentSession();
         Service obj = session.get(Service.class, id);
         return obj;

@@ -22,21 +22,15 @@ public class LevelDaoImpl implements LevelDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public void save(Level obj) {
+    public void addUpdateLevel(Level level) {
         Session session = sessionFactory.getCurrentSession();
-        session.save(obj);
+        session.saveOrUpdate(level);
     }
 
     @Override
-    public void update(Level obj) {
+    public Level getLevel(String levelId) {
         Session session = sessionFactory.getCurrentSession();
-        session.update(obj);
-    }
-
-    @Override
-    public Level get(String id) {
-        Session session = sessionFactory.getCurrentSession();
-        Level obj = session.get(Level.class, id);
+        Level obj = session.get(Level.class, levelId);
         return obj;
     }
 

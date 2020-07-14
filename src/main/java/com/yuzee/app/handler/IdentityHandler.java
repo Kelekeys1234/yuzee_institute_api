@@ -1,6 +1,5 @@
 package com.yuzee.app.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuzee.app.dto.NotificationBean;
 import com.yuzee.app.dto.PayloadDto;
-import com.yuzee.app.dto.UserAchivements;
 import com.yuzee.app.dto.UserDeviceInfoDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.exception.ValidationException;
@@ -44,27 +42,6 @@ public class IdentityHandler {
 		return userDto;
 	}
 
-	public List<UserAchivements> getUserAchivementsByUserId(final String userId) throws ValidationException {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_ACHIVEMENT_CONNECTION_URL).pathSegment(String.valueOf(userId));
-		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);
-		Map<String, Object> responseMap = result.getBody();
-		Integer status = (Integer) responseMap.get("status");
-		System.out.println(status);
-		if (status != 200) {
-			throw new ValidationException((String) responseMap.get("message"));
-		}
-		responseMap.get("data");
-		ObjectMapper mapper = new ObjectMapper();
-		List<UserAchivements> userAchivementList = mapper.convertValue(responseMap.get("data"), List.class);
-		List<UserAchivements> resultList = new ArrayList<>();
-		for (Object obj : userAchivementList) {
-			UserAchivements userAchivements = mapper.convertValue(obj, UserAchivements.class);
-			resultList.add(userAchivements);
-		}
-		return resultList;
-	}
-
-	
 	private List<UserDeviceInfoDto> getUserDeviceById(final String userId) throws ValidationException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(IConstant.USER_DEVICE_CONNECTION_URL).pathSegment(String.valueOf(userId));
 		ResponseEntity<Map> result = restTemplate.getForEntity(builder.build().toUri(), Map.class);

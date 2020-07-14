@@ -85,7 +85,7 @@ public class EnrollmentService implements IEnrollmentService {
 			enrollment.setCourse(course);
 		}
 
-		InstituteType instituteType = instituteTypeProcessor.get(enrollmentDto.getInstituteTypeId());
+		InstituteType instituteType = instituteTypeProcessor.getInstituteType(enrollmentDto.getInstituteTypeId());
 		if (instituteType == null) {
 			throw new ValidationException("Institute type not found for id: " + enrollmentDto.getInstituteTypeId());
 		} else {
@@ -137,7 +137,7 @@ public class EnrollmentService implements IEnrollmentService {
 			existingEnrollment.setCourse(course);
 		}
 
-		InstituteType instituteType = instituteTypeProcessor.get(enrollmentDto.getInstituteTypeId());
+		InstituteType instituteType = instituteTypeProcessor.getInstituteType(enrollmentDto.getInstituteTypeId());
 		if (instituteType == null) {
 			throw new ValidationException("Institute type not found for id: " + enrollmentDto.getInstituteTypeId());
 		} else {

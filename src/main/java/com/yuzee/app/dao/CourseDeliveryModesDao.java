@@ -6,9 +6,9 @@ import com.yuzee.app.bean.CourseDeliveryModes;
 
 public interface CourseDeliveryModesDao {
 
-	public void saveCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo);
+	public void saveCourseDeliveryModes(CourseDeliveryModes courseDeliveryModes);
 	
-	public void deleteCourseAdditionalInfo(CourseDeliveryModes courseAdditionalInfo);
+	public void deleteCourseDeliveryModes(String courseDeliveryModeId);
 	
-	public List<CourseDeliveryModes> getCourseAdditionalInfoByCourseId(String courseId);
+	public List<CourseDeliveryModes> getCourseDeliveryModesByCourseId(String courseId);
 }

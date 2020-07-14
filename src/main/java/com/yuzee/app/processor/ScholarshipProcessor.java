@@ -1,11 +1,8 @@
 package com.yuzee.app.processor;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +19,7 @@ import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dto.LevelDto;
 import com.yuzee.app.dto.MediaDto;
+import com.yuzee.app.dto.ScholarshipCountDto;
 import com.yuzee.app.dto.ScholarshipDto;
 import com.yuzee.app.dto.ScholarshipElasticDTO;
 import com.yuzee.app.dto.ScholarshipResponseDTO;
@@ -62,7 +60,7 @@ public class ScholarshipProcessor {
 		scholarship.setCreatedBy("API");
 		if (scholarshipDto.getLevelId() != null) {
 			log.info("LevelId is not nll, hence fetching level data from DB");
-			Level level = levelDAO.get(scholarshipDto.getLevelId());
+			Level level = levelDAO.getLevel(scholarshipDto.getLevelId());
 			if (level == null) {
 				log.error("Level not found for id" + scholarshipDto.getLevelId());
 				throw new ValidationException("Level not found for id" + scholarshipDto.getLevelId());
@@ -193,7 +191,7 @@ public class ScholarshipProcessor {
 		iScholarshipDAO.deleteScholarshipLanguage(scholarshipId);
 		if (scholarshipDto.getLevelId() != null) {
 			log.info("LevelId is not null, fetching level data from DB fro levelId = "+scholarshipDto.getLevelId());
-			Level level = levelDAO.get(scholarshipDto.getLevelId());
+			Level level = levelDAO.getLevel(scholarshipDto.getLevelId());
 			if (level == null) {
 				log.error("Level not found for id" + scholarshipDto.getLevelId());
 				throw new ValidationException("Level not found for id" + scholarshipDto.getLevelId());
@@ -331,18 +329,19 @@ public class ScholarshipProcessor {
 		return iScholarshipDAO.getRandomScholarships(i);
 	}
 	
-	public Map<String, Object> getScholarshipCountByLevelId(List<LevelDto> levelList) {
+	public List<ScholarshipCountDto> getScholarshipCountByLevelId(List<LevelDto> levelList) {
 		log.debug("Inside getScholarshipCountByLevelId() method");
-		Map<String, Object> map = new HashMap<>();
+		List<ScholarshipCountDto> scholarshipCountDtos = new ArrayList<>();
 		levelList.stream().forEach(level -> {
-			BigInteger count = null;
 			if (!ObjectUtils.isEmpty(level) && !ObjectUtils.isEmpty(level.getId())) {
+				ScholarshipCountDto scholarshipCountDto = new ScholarshipCountDto();
 				log.info("Fetching scholarship count having levelId = "+level.getId());
-				count = iScholarshipDAO.getScholarshipCountByLevelId(level.getId());
-				map.put(level.getName(), count);
+				Long count = iScholarshipDAO.getScholarshipCountByLevelId(level.getId());
+				scholarshipCountDto.setLevelName(level.getName());
+				scholarshipCountDto.setCount(count);
+				scholarshipCountDtos.add(scholarshipCountDto);
 			}
 		});
-		return map;
+		return scholarshipCountDtos;
 	}
-
 }

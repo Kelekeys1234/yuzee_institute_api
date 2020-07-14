@@ -24,7 +24,7 @@ public class InstituteTypeProcessor {
     @Autowired
     private InstituteTypeDao iInstituteTypeDAO;
 
-    public void save(InstituteTypeDto instituteTypeDto) {
+    public void addUpdateInstituteType(InstituteTypeDto instituteTypeDto) {
     	log.debug("Inside getInstituteTypeByCountryName() method");
     	InstituteType instituteType = new InstituteType();
     	log.info("Copying bean class to DTO class");
@@ -39,14 +39,7 @@ public class InstituteTypeProcessor {
         iInstituteTypeDAO.save(instituteType);
     }
 
-    /*public void update(InstituteTypeDto instituteType) {
-        Date today = new Date();
-		
-		 * instituteType.setUpdatedOn(today); iInstituteTypeDAO.update(instituteType);
-		 
-    }*/
-
-    public InstituteType get(String id) {
+    public InstituteType getInstituteType(String id) {
         return iInstituteTypeDAO.get(id);
     }
 

@@ -22,15 +22,11 @@ import com.yuzee.app.dto.ServiceDto;
 
 public interface InstituteDao {
 
-	public void save(Institute obj);
-
-	public void update(Institute obj);
+	public void addUpdateInstitute(Institute obj);
 
 	public Institute get(String id);
 
 	public List<String> getTopInstituteByCountry(String countryId/* , Long startIndex, Long pageSize */);
-
-	public List<Institute> getAll();
 
 	public List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
 
@@ -38,9 +34,9 @@ public interface InstituteDao {
 			Integer startIndex, String cityId, String instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
 			Integer toWorldRanking);
 
-	public InstituteResponseDto getInstituteByID(String instituteId);
+	public InstituteResponseDto getInstituteById(String instituteId);
 
-	public List<InstituteResponseDto> getInstitudeByCityId(String cityId);
+	public List<InstituteResponseDto> getInstituteByCityId(String cityId);
 
 	public List<InstituteResponseDto> getInstituteByListOfCityId(String citisId);
 
@@ -97,7 +93,7 @@ public interface InstituteDao {
 
 	public List<String> getUserSearchInstituteRecommendation(Integer startIndex, Integer pageSize, String searchKeyword);
 	
-	public List<InstituteResponseDto> getDistinctInstituteListByName(Integer startIndex, Integer pageSize, String institueName);
+	public List<InstituteResponseDto> getInstitutesByInstituteName(Integer startIndex, Integer pageSize, String institueName);
 	
 	public int getDistinctInstituteCountByName(String skillName);
 	

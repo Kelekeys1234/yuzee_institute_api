@@ -58,7 +58,7 @@ public class InstituteAdditionalInfoProcessor {
 			institute.setInstituteAdditionalInfo(instituteAdditionalInfoFromDB);
 		}
 		log.info("Persisting institute into Db with updated institute addition info");
-		iInstituteDAO.save(institute);
+		iInstituteDAO.addUpdateInstitute(institute);
 	}
 	
 	public InstituteAdditionalInfoDto getInstituteAdditionalInfo (String userId , String instituteId, String caller) throws Exception {

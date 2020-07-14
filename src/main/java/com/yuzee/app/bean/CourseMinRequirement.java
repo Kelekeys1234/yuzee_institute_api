@@ -11,6 +11,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -22,7 +23,8 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "course_min_requirement", indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
+@Table(name = "course_min_requirement", uniqueConstraints = @UniqueConstraint(columnNames = { "country_name" , "system_id", "course_id" }, name = "UK_CN_SI_CI"), 
+	indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
 public class CourseMinRequirement implements Serializable {
 
 	private static final long serialVersionUID = 6903674843134844883L;

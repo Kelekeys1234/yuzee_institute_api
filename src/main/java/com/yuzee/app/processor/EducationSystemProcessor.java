@@ -41,7 +41,7 @@ public class EducationSystemProcessor {
 		List<EducationSystemDto> educationSystemDtos = new ArrayList<>();
 		List<SubjectDto> subjectDtos = new ArrayList<>();
 		log.info("Fetching education system from DB based on countryName = " + countryName);
-		List<EducationSystem> educationSystems = educationSystemDAO.getEducationSystemsByCountryId(countryName);
+		List<EducationSystem> educationSystems = educationSystemDAO.getEducationSystemsByCountryName(countryName);
 		if (!CollectionUtils.isEmpty(educationSystems)) {
 			log.info("Education system fetched from DB based on countryName");
 			educationSystems.stream().forEach(educationSystem -> {
@@ -113,30 +113,23 @@ public class EducationSystemProcessor {
 		log.debug("Inside calculateGrade() method");
 		Double averageGpa = 0.0;
 		try {
-			averageGpa = calculateGpa(gradeDto);
+			DecimalFormat decimalFormat = new DecimalFormat("0.00");
+			Double gpaGrade = 0.0;
+			List<String> gpaGrades = new ArrayList<>();
+			for (String grade : gradeDto.getSubjectGrades()) {
+				log.info("Fetching grade details from DB having countryName = "+ gradeDto.getCountryName() +
+						" and systemId = " + gradeDto.getEducationSystemId() + "and grade = "+grade);
+				gpaGrades.add(gradeDao.getGradeDetails(gradeDto.getCountryName(), gradeDto.getEducationSystemId(), grade));
+			}
+			for (String grade : gpaGrades) {
+				gpaGrade = gpaGrade + Double.valueOf(grade);
+			}
+			averageGpa = gpaGrade / gpaGrades.size();
+			if (averageGpa != null) {
+				averageGpa = Double.valueOf(decimalFormat.format(averageGpa));
+			}
 		} catch (Exception exception) {
 			log.error("Exception while calculating grade having exception = "+exception);
-		}
-		return averageGpa;
-	}
-
-	private Double calculateGpa(final GradeDto gradeDto) {
-		log.info("Calculating GPA on basis of globalGPA and grade");
-		DecimalFormat decimalFormat = new DecimalFormat("0.00");
-		Double averageGpa = null;
-		Double gpaGrade = 0.0;
-		List<String> gpaGrades = new ArrayList<>();
-		for (String grade : gradeDto.getSubjectGrades()) {
-			log.info("Fetching grade details from DB having countryName = "+ gradeDto.getCountryName() +
-					" and systemId = " + gradeDto.getEducationSystemId() + "and grade = "+grade);
-			gpaGrades.add(gradeDao.getGradeDetails(gradeDto.getCountryName(), gradeDto.getEducationSystemId(), grade));
-		}
-		for (String grade : gpaGrades) {
-			gpaGrade = gpaGrade + Double.valueOf(grade);
-		}
-		averageGpa = gpaGrade / gpaGrades.size();
-		if (averageGpa != null) {
-			averageGpa = Double.valueOf(decimalFormat.format(averageGpa));
 		}
 		return averageGpa;
 	}
@@ -160,5 +153,4 @@ public class EducationSystemProcessor {
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName) {
 		return educationSystemDAO.getEducationSystemByCountryNameAndStateName(countryName, stateName);
 	}
-
 }

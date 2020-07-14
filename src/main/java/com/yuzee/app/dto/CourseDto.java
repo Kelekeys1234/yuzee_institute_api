@@ -52,5 +52,5 @@ public class CourseDto {
 	private String instituteName;
 	
 	@JsonProperty("course_delivery_modes")
-	private List<CourseDeliveryModesDto> courseAdditionalInfo;
+	private List<CourseDeliveryModesDto> courseDeliveryModes;
 }

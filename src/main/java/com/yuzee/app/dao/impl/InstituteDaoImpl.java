@@ -27,6 +27,7 @@ import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
@@ -62,15 +63,8 @@ public class InstituteDaoImpl implements InstituteDao {
 	Function<String,String> addQuotes =  s -> "\"" + s + "\"";
 	
 	@Override
-	public void save(final Institute obj) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(obj);
-	}
-
-	@Override
-	public void update(final Institute obj) {
-		Session session = sessionFactory.getCurrentSession();
-		session.update(obj);
+	public void addUpdateInstitute(final Institute institute) {
+		instituteRepository.save(institute);
 	}
 
 	@Override
@@ -94,13 +88,6 @@ public class InstituteDaoImpl implements InstituteDao {
 		List<String> idList = session.createNativeQuery("select id from institute where country_name = ? order by world_ranking").setParameter(1, countryId)
 				.getResultList();
 		return idList;
-	}
-
-	@Override
-	public List<Institute> getAll() {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Institute.class);
-		return crit.list();
 	}
 
 	@Override
@@ -293,7 +280,7 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	@Override
-	public InstituteResponseDto getInstituteByID(final String instituteId) {
+	public InstituteResponseDto getInstituteById(final String instituteId) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.city_name as cityName,"
 				+ " inst.country_name as countryName,crs.world_ranking,crs.stars,crs.totalCourse from institute inst"
@@ -325,7 +312,7 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	@Override
-	public List<InstituteResponseDto> getInstitudeByCityId(final String cityId) {
+	public List<InstituteResponseDto> getInstituteByCityId(final String cityId) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.institute_type as institudeTypeId "
 				+ "from institute inst where inst.city_name ='" + cityId
@@ -849,7 +836,7 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	@Override
-	public List<InstituteResponseDto> getDistinctInstituteListByName(Integer startIndex, Integer pageSize, String instituteName) {
+	public List<InstituteResponseDto> getInstitutesByInstituteName(Integer startIndex, Integer pageSize, String instituteName) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Institute.class)
 				.setProjection(Projections.projectionList().add(Projections.groupProperty("name").as("name"))
@@ -865,7 +852,6 @@ public class InstituteDaoImpl implements InstituteDao {
 						.add(Projections.property("phoneNumber").as("phoneNumber"))
 						.add(Projections.property("email").as("email"))
 						.add(Projections.property("address").as("address"))
-						.add(Projections.property("updatedOn").as("updatedOn"))
 						.add(Projections.property("domesticRanking").as("domesticRanking")))
 				.setResultTransformer(Transformers.aliasToBean(InstituteResponseDto.class));
 		if (StringUtils.isNotEmpty(instituteName)) {
@@ -953,11 +939,11 @@ public class InstituteDaoImpl implements InstituteDao {
 			sqlQuery += " or course.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%' )";
 		}
 
-		if (courseSearchDto.getStudyModes() != null) {
+		if (!CollectionUtils.isEmpty(courseSearchDto.getStudyModes()) && courseSearchDto.getStudyModes() != null) {
 			sqlQuery += " and cai.study_mode in ("+ courseSearchDto.getStudyModes().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (courseSearchDto.getDeliveryMethods() != null) {
+		if (!CollectionUtils.isEmpty(courseSearchDto.getDeliveryMethods()) && courseSearchDto.getDeliveryMethods() != null) {
 			sqlQuery += " and cai.delivery_type in (" + courseSearchDto.getDeliveryMethods().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
 		}
 

@@ -104,5 +104,5 @@ public class CourseResponseDto {
 	private Double longitude;
 
 	@JsonProperty("course_delivery_modes")
-	private List<CourseDeliveryModesDto> courseAdditionalInfo;
+	private List<CourseDeliveryModesDto> courseDeliveryModes;
 }

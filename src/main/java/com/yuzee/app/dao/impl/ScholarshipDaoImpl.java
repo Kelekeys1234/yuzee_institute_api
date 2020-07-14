@@ -1,6 +1,5 @@
 package com.yuzee.app.dao.impl;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -263,7 +262,6 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 
 	@Override
 	public List<String> getRandomScholarShipsForCountry(final List<String> countryId, final Integer limit) {
-
 		Session session = sessionFactory.getCurrentSession();
 		String ids = countryId.stream().map(String::toString).collect(Collectors.joining(","));
 		String query = "Select id from scholarship where country_name in ('" + ids.replace("'", "") + "') order by Rand() LIMIT ?";
@@ -273,7 +271,6 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 
 	@Override
 	public List<Scholarship> getAllScholarshipDetailsFromId(final List<String> recommendedScholarships) {
-
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Scholarship.class, "scholarship");
 		criteria.add(Restrictions.in("id", recommendedScholarships));
@@ -289,10 +286,10 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 	}
 
 	@Override
-	public BigInteger getScholarshipCountByLevelId(String levelId) {
+	public Long getScholarshipCountByLevelId(String levelId) {
 		Session session = sessionFactory.getCurrentSession();
 		StringBuilder query = new StringBuilder("Select count(*) from scholarship where level_id='" + levelId + "'");
-		BigInteger count = (BigInteger) session.createNativeQuery(query.toString()).uniqueResult();
+		Long count = (Long) session.createNativeQuery(query.toString()).uniqueResult();
 		return count;
 	}
 }

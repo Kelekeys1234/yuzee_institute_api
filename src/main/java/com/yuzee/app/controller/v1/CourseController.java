@@ -181,13 +181,13 @@ public class CourseController implements CourseInterface {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
 		
-		log.info("Calling view transaction service to fetch user my course data");
+		/*log.info("Calling view transaction service to fetch user my course data");
 		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
 				"COURSE", "savedCourse");
-		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
+		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());*/
 		
-		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto, entityIds);
-		int totalCount = courseProcessor.getCountOfAdvanceSearch(courseSearchDto, entityIds);
+		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto, null);
+		int totalCount = courseProcessor.getCountOfAdvanceSearch(courseSearchDto, null);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,courseSearchDto.getMaxSizePerPage(), totalCount);
 		
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -418,27 +418,10 @@ public class CourseController implements CourseInterface {
 	}
 	
 	@Deprecated
-	public ResponseEntity<?> getAllCourse() throws Exception {
-		return ResponseEntity.accepted().body(courseProcessor.getAllCourse());
-	}
-	
-	@Deprecated
-	public ResponseEntity<?> getUserListForUserWatchCourseFilter(final String language, final String courseId, final String facultyId,
-			final String instituteId, final String countryName, final String cityName) throws ValidationException {
-		if (courseId == null && facultyId == null && instituteId == null && countryName == null && cityName == null) {
-			throw new ValidationException(
-					messageByLocalService.getMessage("specify.filter.parameters", new Object[] {}));
-		}
-		List<Long> userList = courseProcessor.getUserListForUserWatchCourseFilter(courseId, instituteId, facultyId,
-				countryName, cityName);
-		return new GenericResponseHandlers.Builder().setData(userList).setMessage("User List Displayed Successfully")
-				.setStatus(HttpStatus.OK).create();
-	}
-	
-	@Deprecated
 	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception {
 		Map<String, Object> response = new HashMap<>();
-		List<Course> courseList = courseProcessor.getAll();
+//		List<Course> courseList = courseProcessor.getAll();
+		List<Course> courseList = null;
 		Date now = new Date();
 		CourseEnglishEligibility englishEligibility = null;
 		int size = courseList.size(), i = 1;

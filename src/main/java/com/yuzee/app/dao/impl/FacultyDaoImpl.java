@@ -23,15 +23,9 @@ public class FacultyDaoImpl implements FacultyDao {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public void save(final Faculty obj) {
+	public void saveOrUpdateFaculty(final Faculty obj) {
 		Session session = sessionFactory.getCurrentSession();
-		session.save(obj);
-	}
-
-	@Override
-	public void update(final Faculty obj) {
-		Session session = sessionFactory.getCurrentSession();
-		session.update(obj);
+		session.saveOrUpdate(obj);
 	}
 
 	@Override

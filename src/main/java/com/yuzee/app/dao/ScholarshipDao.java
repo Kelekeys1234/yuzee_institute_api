@@ -1,6 +1,5 @@
 package com.yuzee.app.dao;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -40,5 +39,5 @@ public interface ScholarshipDao {
 
 	public List<String> getRandomScholarships(int i);
 	
-	public BigInteger getScholarshipCountByLevelId(String levelId);
+	public Long getScholarshipCountByLevelId(String levelId);
 }

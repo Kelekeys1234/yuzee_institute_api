@@ -74,25 +74,24 @@ public class CourseDaoImpl implements CourseDao {
 	Function<String,String> addQuotes =  s -> "\'" + s + "\'";
 
 	@Override
-	public void save(final Course course) {
+	public void addUpdateCourse(final Course course) {
 		courseRepository.save(course);
 	}
 
-	@Override
+	/*@Override
 	public void update(final Course course) {
-		Session session = sessionFactory.getCurrentSession();
-		session.update(course);
-	}
+		courseRepository.save(course);
+	}*/
 
 	@Override
 	public Course get(final String courseId) {
 		return courseRepository.findById(courseId).get();
 	}
 
-	@Override
+	/*@Override
 	public List<Course> getAll() {
 		return courseRepository.findAll();
-	}
+	}*/
 
 	@Override
 	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword, List<String> entityIds) {
@@ -322,7 +321,7 @@ public class CourseDaoImpl implements CourseDao {
 				additionalInfoDto.setStudyMode(row[23].toString());
 				additionalInfoDto.setCourseId(String.valueOf(row[0]));
 				additionalInfoDtos.add(additionalInfoDto);
-				courseResponseDto.setCourseAdditionalInfo(additionalInfoDtos);
+				courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 				list.add(courseResponseDto);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -843,7 +842,7 @@ public class CourseDaoImpl implements CourseDao {
             additionalInfoDto.setDurationTime(row[15].toString());
             additionalInfoDto.setCourseId(row[0].toString());
             additionalInfoDtos.add(additionalInfoDto);
-            courseDto.setCourseAdditionalInfo(additionalInfoDtos);
+            courseDto.setCourseDeliveryModes(additionalInfoDtos);
 			courses.add(courseDto);
 		}
 		return courses;
@@ -870,7 +869,7 @@ public class CourseDaoImpl implements CourseDao {
 		return ((Number) query.uniqueResult()).intValue();
 	}
 
-	@Override
+	/*@Override
 	public CourseRequest getCourseById(final String courseId) {
 		Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select c.id , c.institute_id, i.country_name , i.city_name, c.faculty_id, c.name , "
@@ -935,17 +934,12 @@ public class CourseDaoImpl implements CourseDao {
 			}
 		}
 		return courseRequest;
-	}
+	}*/
 
 	
 	@Override
 	public Course getCourseData(final String id) {
-		Session session = sessionFactory.getCurrentSession();
-		Course course = null;
-		if (id != null) {
-			course = session.get(Course.class, id);
-		}
-		return course;
+		return courseRepository.findById(id).get();
 	}
 
 	@Override
@@ -1063,7 +1057,7 @@ public class CourseDaoImpl implements CourseDao {
 		courseResponseDto.setCourseRanking(worldRanking);
 		courseResponseDto.setStars(Double.valueOf(String.valueOf(row[11])));
 		courseResponseDto.setRequirements(String.valueOf(row[15]));
-		if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
+		/*if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
 			if (row[16] != null) {
 				CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
 				Double amt = Double.valueOf(row[16].toString());
@@ -1083,7 +1077,7 @@ public class CourseDaoImpl implements CourseDao {
 			if (row[17] != null) {
 				additionalInfoDto.setInternationalFee(CommonUtil.foundOff2Digit(Double.valueOf(row[17].toString())));
 			}
-		}
+		}*/
 		if (row[5] != null) {
 			courseResponseDto.setCurrencyCode(row[5].toString());
 		}
@@ -1097,7 +1091,7 @@ public class CourseDaoImpl implements CourseDao {
 		additionalInfoDto.setStudyMode(String.valueOf(row[21]));
 		additionalInfoDto.setCourseId(String.valueOf(row[0]));
 		additionalInfoDtos.add(additionalInfoDto);
-		courseResponseDto.setCourseAdditionalInfo(additionalInfoDtos);
+		courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 		return courseResponseDto;
 	}
 
@@ -1187,11 +1181,11 @@ public class CourseDaoImpl implements CourseDao {
 			sqlQuery += " or crs.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%' )";
 		}
 
-		if (courseSearchDto.getStudyModes() != null) {
+		if (courseSearchDto.getStudyModes() != null && !CollectionUtils.isEmpty(courseSearchDto.getStudyModes())) {
 			sqlQuery += " and cai.study_mode in ("+ courseSearchDto.getStudyModes().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
 		}
 
-		if (courseSearchDto.getDeliveryMethods() != null) {
+		if (courseSearchDto.getDeliveryMethods() != null && !CollectionUtils.isEmpty(courseSearchDto.getDeliveryMethods())) {
 			sqlQuery += " and cai.delivery_type in (" + courseSearchDto.getDeliveryMethods().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
 		}
 
@@ -1208,7 +1202,7 @@ public class CourseDaoImpl implements CourseDao {
 		return sqlQuery;
 	}
 
-	@Override
+	/*@Override
 	public List<Course> getAllCourse() {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery("select distinct c.id, c.name as name from course c");
@@ -1223,7 +1217,7 @@ public class CourseDaoImpl implements CourseDao {
 			courses.add(obj);
 		}
 		return courses;
-	}
+	}*/
 
 	@Override
 	public List<CourseRequest> courseFilter(final int pageNumber, final Integer pageSize, final CourseFilterDto courseFilter) {
@@ -1338,16 +1332,16 @@ public class CourseDaoImpl implements CourseDao {
 		return (long) crit.uniqueResult();
 	}
 
-	@Override
+	/*@Override
 	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
 		crit.add(Restrictions.eq("country", country));
 		crit.addOrder(Order.desc("worldRanking"));
 		return crit.list();
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public List<Course> getAllCourseForFacultyWorldRankingWise(final String facultyId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
@@ -1355,9 +1349,9 @@ public class CourseDaoImpl implements CourseDao {
 		crit.add(Restrictions.eq("courseFaculty.id",facultyId));
 		crit.addOrder(Order.asc("worldRanking"));
 		return crit.list();
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public List<String> getAllCourseForFacultyWorldRankingWises(final String facultyId) {
 
 		Session session = sessionFactory.getCurrentSession();
@@ -1365,17 +1359,17 @@ public class CourseDaoImpl implements CourseDao {
 				.setString(1, facultyId).getResultList();
 		return courseList;
 
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public List<Course> getCoursesFromId(final List<String> allSearchCourses) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Course.class, "course");
 		crit.add(Restrictions.in("id", allSearchCourses));
 		return crit.list();
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public Map<String, String> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final String instituteId) {
 		Map<String, String> mapOfCourseIdFacultyId = new HashMap<>();
 		StringBuilder facultyIds = new StringBuilder();
@@ -1401,7 +1395,7 @@ public class CourseDaoImpl implements CourseDao {
 		}
 
 		return mapOfCourseIdFacultyId;
-	}
+	}*/
 
 	@Override
 	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
@@ -1411,7 +1405,7 @@ public class CourseDaoImpl implements CourseDao {
 		return crit.list();
 	}
 
-	@Override
+	/*@Override
 	public List<String> getTopRatedCourseIdsForCountryWorldRankingWise(final String country) {
 		Session session = sessionFactory.getCurrentSession();
 		List<String> rows = session.createNativeQuery("select id from course where country_name = ? order by world_ranking desc")
@@ -1419,7 +1413,7 @@ public class CourseDaoImpl implements CourseDao {
 		List<String> courseIds = rows;
 
 		return courseIds;
-	}
+	}*/
 
 	private String addConditionForCourseList(String sqlQuery, final List<String> courseIds) {
 		if (null != courseIds) {
@@ -1440,11 +1434,8 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public List<String> getDistinctCountryBasedOnCourses(final List<String> topSearchedCourseIds) {
-
 		Session session = sessionFactory.getCurrentSession();
-
 		String ids = topSearchedCourseIds.stream().map(String::toString).collect(Collectors.joining(","));
-
 		System.out.println("IDs -- " + ids);
 		List<String> countryIds = session
                 .createNativeQuery("Select distinct i.country_name from course c join institute i on i.id=c.institute_id  where i.country_name is not null and " + "c.id in ('" + ids.replace(",", "','") + "')").getResultList();
@@ -1474,14 +1465,6 @@ public class CourseDaoImpl implements CourseDao {
 		}
 		List<String> courseIds = session.createNativeQuery(query.toString()).getResultList();
 		return courseIds;
-	}
-
-	@Override
-	public List<Long> getUserListFromUserWatchCoursesBasedOnCourses(final List<String> courseIds) {
-		Session session = sessionFactory.getCurrentSession();
-		String ids = courseIds.stream().map(String::toString).collect(Collectors.joining(","));
-		List<Long> userIds = session.createNativeQuery("select distinct user_id from user_watch_course where course_id in (" + ids + ")").getResultList();
-		return userIds;
 	}
 
 	@Override
@@ -1822,7 +1805,7 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public List<CourseResponseDto> getNearestCourseForAdvanceSearch(AdvanceSearchDto courseSearchDto) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "SELECT crs.id as courseId,crs.name as courseName,crs.world_ranking,crs.stars as stars, inst.id, inst.name as instituteName," + 
+		String sqlQuery = "SELECT DISTINCT crs.id as courseId,crs.name as courseName,crs.world_ranking,crs.stars as stars, inst.id, inst.name as instituteName," + 
 				" crs.cost_range, inst.country_name, inst.city_name, crs.currency, inst.latitude, inst.longitude, cai.duration, cai.duration_time," +
 				" cai.study_mode, cai.usd_domestic_fee, cai.usd_international_fee, cai.id as additionalInfoId, cai.delivery_type,"+
 				" 6371 * ACOS(SIN(RADIANS('"+ courseSearchDto.getLatitude() +"')) * SIN(RADIANS(inst.latitude)) + COS(RADIANS('"+ courseSearchDto.getLatitude() +"')) * COS(RADIANS(inst.latitude)) * COS(RADIANS(inst.longitude)-" + 
@@ -1889,7 +1872,7 @@ public class CourseDaoImpl implements CourseDao {
 				additionalInfoDto.setCourseId(String.valueOf(row[0]));
 				additionalInfoDtos.add(additionalInfoDto);
 			}
-			nearestCourseDTO.setCourseAdditionalInfo(additionalInfoDtos);
+			nearestCourseDTO.setCourseDeliveryModes(additionalInfoDtos);
 			nearestCourseDTOs.add(nearestCourseDTO);
 		}
 		return nearestCourseDTOs;
@@ -1898,10 +1881,10 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public List<CourseResponseDto> getCourseByCountryName(Integer pageNumber, Integer pageSize, String countryName) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "Select DISTINCT crs.id as courseId, crs.name as courseName, crs.world_ranking,avg(crs.stars) as stars, crs.duration,"
-				+ " crs.duration_time, crs.`language`, institute.id, institute.name as instituteName,"
-				+ " crs.cost_range, crs.domestic_fee, crs.international_fee, institute.country_name, institute.city_name, "
-				+ " crs.currency, institute.latitute,institute.longitute from course crs left join institute institute on crs.institute_id ="
+		String sqlQuery = "Select DISTINCT crs.id as courseId, crs.name as courseName, crs.world_ranking,avg(crs.stars) as stars,"
+				+ " institute.id as instituteId, institute.name as instituteName, institute.country_name, institute.city_name, "
+				+ " crs.currency, institute.latitude,institute.longitude from"
+				+ " course crs left join institute institute on crs.institute_id ="
 				+ " institute.id where institute.country_name = '"+ countryName + "' GROUP BY crs.id limit "+ PaginationUtil.getStartIndex(pageNumber, pageSize) + " ," + pageSize;
 		
 		Query query = session.createSQLQuery(sqlQuery);
@@ -1913,19 +1896,14 @@ public class CourseDaoImpl implements CourseDao {
 			nearestCourseDTO.setName(String.valueOf(row[1]));
 			nearestCourseDTO.setCourseRanking((Integer) row[2]);
 			nearestCourseDTO.setStars(((BigDecimal) row[3]).doubleValue());
-//			nearestCourseDTO.setDuration((Double) row[4]);
-//			nearestCourseDTO.setDurationTime((String) row[5]);
-			nearestCourseDTO.setInstituteId((String) row[7]);
-			nearestCourseDTO.setInstituteName((String) row[8]);
-			nearestCourseDTO.setCostRange((Double) row[9]);
-//			nearestCourseDTO.setDomesticFee((Double) row[10]);
-//			nearestCourseDTO.setInternationalFee((Double) row[11]);
-			nearestCourseDTO.setCountryName((String) row[12]);
-			nearestCourseDTO.setCityName((String) row[13]);
-			nearestCourseDTO.setCurrencyCode((String) row[14]);
-			nearestCourseDTO.setLatitude((Double) row[15]);
-			nearestCourseDTO.setLongitude((Double) row[16]);
-			nearestCourseDTO.setLocation((String) row[13] + ", " + (String) row[12]);
+			nearestCourseDTO.setInstituteId((String) row[4]);
+			nearestCourseDTO.setInstituteName((String) row[5]);
+			nearestCourseDTO.setCountryName((String) row[6]);
+			nearestCourseDTO.setCityName((String) row[7]);
+			nearestCourseDTO.setCurrencyCode((String) row[8]);
+			nearestCourseDTO.setLatitude((Double) row[9]);
+			nearestCourseDTO.setLongitude((Double) row[10]);
+			nearestCourseDTO.setLocation((String) row[7] + ", " + (String) row[6]);
 			nearestCourseDTOs.add(nearestCourseDTO);
 		}
 		return nearestCourseDTOs;

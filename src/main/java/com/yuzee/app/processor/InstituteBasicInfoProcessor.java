@@ -53,7 +53,7 @@ public class InstituteBasicInfoProcessor {
 		}
 		institute.setInstituteCategoryType(instituteCategoryType);
 		log.info("persisting institute having id "+instituteId+ " with updated basic info");
-		iInstituteDAO.save(institute);
+		iInstituteDAO.addUpdateInstitute(institute);
 	}
 	
 	public InstituteBasicInfoDto getInstituteBasicInfo (String userId , String instituteId, String caller) throws Exception {

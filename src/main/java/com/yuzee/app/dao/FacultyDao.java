@@ -7,9 +7,7 @@ import com.yuzee.app.dto.FacultyDto;
 
 public interface FacultyDao {
 
-	public void save(final Faculty obj);
-
-	public void update(final Faculty obj);
+	public void saveOrUpdateFaculty(final Faculty obj);
 
 	public Faculty get(final String id);
 
