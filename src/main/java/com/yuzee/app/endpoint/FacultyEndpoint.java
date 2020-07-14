@@ -1,7 +1,5 @@
 package com.yuzee.app.endpoint;
 
-import javax.validation.Valid;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,23 +24,4 @@ public interface FacultyEndpoint {
 	@GetMapping("/name/{facultyName}")
 	public ResponseEntity<?> getFacultyByFacultyName(@PathVariable("facultyName") String facultyName) throws Exception;
 	
-	@Deprecated
-	@GetMapping("/institute/{instituteId}")
-	public ResponseEntity<?> getFacultyByInstituteId(@Valid @PathVariable String instituteId) throws Exception;
-
-	@Deprecated
-	@GetMapping("/multiple/institute/{instituteId}")
-	public ResponseEntity<?> getFacultyByListOfInstituteId(@Valid @PathVariable String instituteId) throws Exception;
-
-	@Deprecated
-	@GetMapping("/course/country/{countryId}/level/{levelId}")
-	public ResponseEntity<?> getCourseFaculty(@PathVariable String countryId, @PathVariable String levelId)
-			throws Exception;
-
-	@Deprecated
-	@GetMapping("/country/{countryId}/level/{levelId}")
-	public ResponseEntity<?> getFacultyeByCountryAndLevelId(@PathVariable String countryId,
-			@PathVariable String levelId) throws Exception;
-	
-
 }

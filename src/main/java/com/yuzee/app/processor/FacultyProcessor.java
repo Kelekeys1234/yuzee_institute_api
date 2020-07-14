@@ -87,36 +87,7 @@ public class FacultyProcessor {
 		return facultyDto;
 	}
 
-	public List<Faculty> getFacultyByCountryIdAndLevelId(final String countryID, final String levelId) {
-		return facultyDAO.getFacultyByCountryIdAndLevelId(countryID, levelId);
-	}
-
-	public List<FacultyDto> getAllFacultyByCountryIdAndLevel() {
-		return facultyDAO.getAllFacultyByCountryIdAndLevel();
-	}
-
-	public List<FacultyDto> getFacultyByInstituteId(final String instituteId) {
-		return facultyDAO.getFacultyByInstituteId(instituteId);
-	}
-
-	public List<FacultyDto> getFacultyByListOfInstituteId(final String instituteId) {
-		String[] citiesArray = instituteId.split(",");
-		String tempList = "";
-		for (String id : citiesArray) {
-			tempList = tempList + "," + "'" + id + "'";
-		}
-		return facultyDAO.getFacultyByListOfInstituteId(tempList.substring(1, tempList.length()));
-	}
-
-	public List<FacultyDto> getCourseFaculty(final String countryId, final String levelId) {
-		return facultyDAO.getCourseFaculty(countryId, levelId);
-	}
-
 	public List<Faculty> getFacultyListByName(final List<String> facultyNames) {
 		return facultyDAO.getFacultyListByFacultyNames(facultyNames);
-	}
-
-	public List<String> getFacultyNameByInstituteId(String id) {
-		return facultyDAO.getAllFacultyNamesByInstituteId(id);
 	}
 }

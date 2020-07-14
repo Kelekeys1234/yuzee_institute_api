@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.dto.FacultyDto;
 import com.yuzee.app.endpoint.FacultyEndpoint;
 import com.yuzee.app.handler.GenericResponseHandlers;
@@ -43,38 +42,6 @@ public class FacultyController implements FacultyEndpoint {
 	@Override
 	public ResponseEntity<?> getAll() throws Exception {
 		List<FacultyDto> facultyList = facultyProcessor.getAllFaculties();
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Faculties Fetched successfully").setData(facultyList).create();
-	}
-	
-	@Override
-	@Deprecated
-	public ResponseEntity<?> getFacultyeByCountryAndLevelId(String countryId, String levelId) throws Exception {
-		List<Faculty> facultyList = facultyProcessor.getFacultyByCountryIdAndLevelId(countryId, levelId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Faculties Fetched successfully").setData(facultyList).create();
-	}
-
-	@Override
-	@Deprecated
-	public ResponseEntity<?> getFacultyByInstituteId(String instituteId) throws Exception {
-		List<FacultyDto> faculties = facultyProcessor.getFacultyByInstituteId(instituteId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Faculties Fetched successfully").setData(faculties).create();
-	}
-
-	@Override
-	@Deprecated
-	public ResponseEntity<?> getFacultyByListOfInstituteId(String instituteId) throws Exception {
-		List<FacultyDto> faculties = facultyProcessor.getFacultyByListOfInstituteId(instituteId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Faculties Fetched successfully").setData(faculties).create();
-	}
-
-	@Override
-	@Deprecated
-	public ResponseEntity<?> getCourseFaculty(String countryId, String levelId) throws Exception {
-		List<FacultyDto> facultyList = facultyProcessor.getCourseFaculty(countryId, levelId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
 				.setMessage("Faculties Fetched successfully").setData(facultyList).create();
 	}
