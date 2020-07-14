@@ -97,21 +97,6 @@ public class Course implements Serializable {
 	@Column(name = "contact")
 	private String contact;
 
-	@Column(name = "opening_hour_from")
-	private String openingHourFrom;
-
-	@Column(name = "opening_hour_to")
-	private String openingHourTo;
-
-	@Column(name = "campus_location")
-	private String campusLocation;
-
-	@Column(name = "job_full_time")
-	private String jobFullTime;
-
-	@Column(name = "job_part_time")
-	private String jobPartTime;
-
 	@Column(name = "link")
 	private String link;
 

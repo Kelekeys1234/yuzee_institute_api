@@ -47,21 +47,6 @@ public class CourseRequest {
 	@JsonProperty("contact")
 	private String contact;
 
-	@JsonProperty("opening_hour_from")
-	private String openingHourFrom;
-
-	@JsonProperty("opening_hour_to")
-	private String openingHourTo;
-
-	@JsonProperty("job_full_time")
-	private String jobFullTime;
-
-	@JsonProperty("job_part_time")
-	private String jobPartTime;
-
-	@JsonProperty("campus_location")
-	private String campusLocation;
-
 	@JsonProperty("website")
 	private String website;
 

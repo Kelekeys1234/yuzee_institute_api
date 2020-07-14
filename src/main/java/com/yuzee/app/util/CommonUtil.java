@@ -92,14 +92,9 @@ public class CommonUtil {
 			courseRequest.setFacultyId(course.getFaculty().getId());
 		}
 		courseRequest.setContact(course.getContact());
-		courseRequest.setCampusLocation(course.getCampusLocation());
 		courseRequest.setCurrency(course.getCurrency());
 		courseRequest.setWebsite(course.getWebsite());
 		courseRequest.setAvailbility(course.getAvailabilty());
-		courseRequest.setJobFullTime(course.getJobFullTime());
-		courseRequest.setJobPartTime(course.getJobPartTime());
-		courseRequest.setOpeningHourFrom(course.getOpeningHourFrom());
-		courseRequest.setOpeningHourTo(course.getOpeningHourTo());
 		if (course.getInstitute() != null) {
 			courseRequest.setInstituteId(course.getInstitute().getId());
 		}

@@ -343,14 +343,9 @@ public class CourseProcessor {
 		course.setWebsite(courseDto.getWebsite() != null ? courseDto.getWebsite() : null);
 		course.setAvailabilty(courseDto.getAvailbility() != null ? courseDto.getAvailbility(): null);
 		course.setRecognition(courseDto.getRecognition() != null ? courseDto.getRecognition() : null);
-		course.setJobFullTime(courseDto.getJobFullTime() != null ? courseDto.getJobFullTime() : null);
-		course.setJobPartTime(courseDto.getJobPartTime() != null ? courseDto.getJobPartTime() : null);
 		course.setAbbreviation(courseDto.getAbbreviation() != null ? courseDto.getAbbreviation() : null);
 		course.setCurrencyTime(courseDto.getCurrencyTime() != null ? courseDto.getCurrencyTime() : null);
-		course.setOpeningHourTo(courseDto.getOpeningHourTo() != null ? courseDto.getOpeningHourTo() : null);
-		course.setCampusLocation(courseDto.getCampusLocation() != null ? courseDto.getCampusLocation() : null);
 		course.setRecognitionType(courseDto.getRecognitionType() != null ? courseDto.getRecognitionType() : null);
-		course.setOpeningHourFrom(courseDto.getOpeningHourFrom() != null ? courseDto.getOpeningHourFrom() : null);
 		
 		// Here we convert price in USD and everywhere we used USD price column only.
 		CurrencyRateDto currencyRate = null;
@@ -520,14 +515,9 @@ public class CourseProcessor {
 		course.setWebsite(courseDto.getWebsite() != null ? courseDto.getWebsite() : null);
 		course.setAvailabilty(courseDto.getAvailbility() != null ? courseDto.getAvailbility(): null);
 		course.setRecognition(courseDto.getRecognition() != null ? courseDto.getRecognition() : null);
-		course.setJobFullTime(courseDto.getJobFullTime() != null ? courseDto.getJobFullTime() : null);
-		course.setJobPartTime(courseDto.getJobPartTime() != null ? courseDto.getJobPartTime() : null);
 		course.setAbbreviation(courseDto.getAbbreviation() != null ? courseDto.getAbbreviation() : null);
 		course.setCurrencyTime(courseDto.getCurrencyTime() != null ? courseDto.getCurrencyTime() : null);
-		course.setOpeningHourTo(courseDto.getOpeningHourTo() != null ? courseDto.getOpeningHourTo() : null);
-		course.setCampusLocation(courseDto.getCampusLocation() != null ? courseDto.getCampusLocation() : null);
 		course.setRecognitionType(courseDto.getRecognitionType() != null ? courseDto.getRecognitionType() : null);
-		course.setOpeningHourFrom(courseDto.getOpeningHourFrom() != null ? courseDto.getOpeningHourFrom() : null);
 		
 		// Here we convert price in USD and everywhere we used USD price column only.
 		CurrencyRateDto currencyRate = null;
