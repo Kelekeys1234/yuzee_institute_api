@@ -33,7 +33,7 @@ public interface ScholarshipInterface {
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllScholarship(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
-			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String countryId,
+			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String countryName,
 			@RequestParam(required = false) final String instituteId, @RequestParam(required = false) final String validity,
 			@RequestParam(required = false) final Boolean isActive,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn) throws Exception;

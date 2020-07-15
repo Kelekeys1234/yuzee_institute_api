@@ -65,12 +65,12 @@ public class ScholarshipController implements ScholarshipInterface {
 
 	@Override
 	public ResponseEntity<?> getAllScholarship(final Integer pageNumber, final Integer pageSize,
-			final String sortByField, final String sortByType, final String searchKeyword, final String countryId,
+			final String sortByField, final String sortByType, final String searchKeyword, final String countryName,
 			final String instituteId, final String validity, final Boolean isActive, final Date updatedOn) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<ScholarshipResponseDTO> scholarshipResponseDTOs = scholarshipProcessor.getScholarshipList(startIndex, pageSize, countryId, instituteId, 
+		List<ScholarshipResponseDTO> scholarshipResponseDTOs = scholarshipProcessor.getScholarshipList(startIndex, pageSize, countryName, instituteId, 
 				validity, isActive, updatedOn, searchKeyword, sortByField, sortByType);
-		int totalCount = scholarshipProcessor.countScholarshipList(countryId, instituteId, validity, isActive, updatedOn, searchKeyword);
+		int totalCount = scholarshipProcessor.countScholarshipList(countryName, instituteId, validity, isActive, updatedOn, searchKeyword);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(scholarshipResponseDTOs);

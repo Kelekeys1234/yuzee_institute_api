@@ -78,20 +78,10 @@ public class CourseDaoImpl implements CourseDao {
 		courseRepository.save(course);
 	}
 
-	/*@Override
-	public void update(final Course course) {
-		courseRepository.save(course);
-	}*/
-
 	@Override
 	public Course get(final String courseId) {
 		return courseRepository.findById(courseId).get();
 	}
-
-	/*@Override
-	public List<Course> getAll() {
-		return courseRepository.findAll();
-	}*/
 
 	@Override
 	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword, List<String> entityIds) {
@@ -596,24 +586,14 @@ public class CourseDaoImpl implements CourseDao {
 			courseObj.setId(String.valueOf(row[0]));
 			courseObj.setStars(String.valueOf(row[1]));
 			courseObj.setName(String.valueOf(row[2]));
-//			courseObj.setLanguage(String.valueOf(row[3]));
 			courseObj.setDescription(String.valueOf(row[4]));
-//			courseObj.setDuration(String.valueOf(row[5]));
-//			courseObj.setDurationTime(String.valueOf(row[6]));
 			courseObj.setWorldRanking(String.valueOf(row[7]));
-//			if (row[19] != null) {
-//				courseObj.setInternationalFee(Double.valueOf(String.valueOf(row[19])));
-//			}
-//			if (row[20] != null) {
-//				courseObj.setDomasticFee(Double.valueOf(String.valueOf(row[20])));
-//			}
 			courseObj.setCost(String.valueOf(row[18]) + " " + String.valueOf(row[17]));
 			courseObj.setFacultyName(String.valueOf(row[23]));
 			if (row[24] != null) {
 				courseObj.setLevelId(String.valueOf(row[24]));
 			}
 			courseObj.setLevelName(String.valueOf(row[25]));
-//			courseObj.setIntakeDate(String.valueOf(row[34]));
 			courseObj.setRemarks(String.valueOf(row[33]));
 
 			instituteObj = new InstituteResponseDto();
@@ -866,74 +846,6 @@ public class CourseDaoImpl implements CourseDao {
 		return ((Number) query.uniqueResult()).intValue();
 	}
 
-	/*@Override
-	public CourseRequest getCourseById(final String courseId) {
-		Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select c.id , c.institute_id, i.country_name , i.city_name, c.faculty_id, c.name , "
-				+ "c.description, c.intake, c.availabilty, c.created_by, c.updated_by, c.campus_location, c.website,"
-				+ " c.recognition_type, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.remarks  FROM course c"
-                + " left join institute i on c.institute_id=i.id where c.id='" + courseId + "'";
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		CourseRequest courseRequest = null;
-		for (Object[] row : rows) {
-			courseRequest = new CourseRequest();
-			courseRequest.setId(row[0].toString());
-			if (row[1] != null) {
-				courseRequest.setInstituteId(row[1].toString());
-				courseRequest.setInstituteName(getInstituteName(row[1].toString(), session));
-				Institute institute = getInstitute(row[1].toString(), session);
-				courseRequest.setInstituteId(row[1].toString());
-				courseRequest.setInstituteName(institute.getName());
-				courseRequest.setCost(getCost(row[1].toString(), session));
-			}
-			if (row[2] != null) {
-				courseRequest.setCountryName(row[2].toString());
-			}
-			
-			if(row[3] != null) {
-				courseRequest.setCityName(row[3].toString());
-			}
-			
-			courseRequest.setFacultyId(row[4].toString());
-			courseRequest.setName(row[5].toString());
-			if (row[6] != null) {
-				courseRequest.setDescription(row[6].toString());
-			}
-			if (row[7] != null) {
-				courseRequest
-						.setIntake(getCourseIntakeBasedOnCourseId(courseRequest.getId()).stream().map(x -> x.getIntakeDates()).collect(Collectors.toList()));
-			}
-			if (row[8] != null) {
-				courseRequest.setAvailbility(row[8].toString());
-			}
-			if (row[11] != null) {
-				courseRequest.setCampusLocation(row[11].toString());
-			}
-			if (row[12] != null) {
-				courseRequest.setWebsite(row[12].toString());
-			}
-			if (row[13] != null) {
-				courseRequest.setRecognitionType(row[13].toString());
-			}
-			
-			if (row[14] != null) {
-				courseRequest.setAbbreviation(row[14].toString());
-			}
-			if (row[15] != null) {
-				courseRequest.setWorldRanking(row[15].toString());
-			}
-			if (row[16] != null) {
-				courseRequest.setStars(row[16].toString());
-			}
-			if (row[17] != null) {
-				courseRequest.setRequirements(row[17].toString());
-			}
-		}
-		return courseRequest;
-	}*/
-
-	
 	@Override
 	public Course getCourseData(final String id) {
 		return courseRepository.findById(id).get();
@@ -1054,27 +966,6 @@ public class CourseDaoImpl implements CourseDao {
 		courseResponseDto.setCourseRanking(worldRanking);
 		courseResponseDto.setStars(Double.valueOf(String.valueOf(row[11])));
 		courseResponseDto.setRequirements(String.valueOf(row[15]));
-		/*if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
-			if (row[16] != null) {
-				CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
-				Double amt = Double.valueOf(row[16].toString());
-				Double convertedRate = amt * currencyRate.getConversionRate();
-				additionalInfoDto.setDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
-			}
-			if (row[17] != null) {
-				CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
-				Double amt = Double.valueOf(row[17].toString());
-				Double convertedRate = amt * currencyRate.getConversionRate();
-				additionalInfoDto.setInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
-			}
-		} else {
-			if (row[16] != null) {
-				additionalInfoDto.setDomesticFee(CommonUtil.foundOff2Digit(Double.valueOf(row[16].toString())));
-			}
-			if (row[17] != null) {
-				additionalInfoDto.setInternationalFee(CommonUtil.foundOff2Digit(Double.valueOf(row[17].toString())));
-			}
-		}*/
 		if (row[5] != null) {
 			courseResponseDto.setCurrencyCode(row[5].toString());
 		}
@@ -1198,23 +1089,6 @@ public class CourseDaoImpl implements CourseDao {
 		}
 		return sqlQuery;
 	}
-
-	/*@Override
-	public List<Course> getAllCourse() {
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createSQLQuery("select distinct c.id, c.name as name from course c");
-		List<Object[]> rows = query.list();
-		List<Course> courses = new ArrayList<>();
-		for (Object[] row : rows) {
-			Course obj = new Course();
-			obj.setId(row[0].toString());
-			if (row[1] != null) {
-				obj.setName(row[1].toString());
-			}
-			courses.add(obj);
-		}
-		return courses;
-	}*/
 
 	@Override
 	public List<CourseRequest> courseFilter(final int pageNumber, final Integer pageSize, final CourseFilterDto courseFilter) {

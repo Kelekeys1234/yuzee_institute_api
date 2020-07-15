@@ -221,7 +221,7 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 			final Date updatedOn, final String searchKeyword) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select sch.id from scholarship sch inner join level level on sch.level_id = level.id inner join"
-				+ " institute ins on sch.institute_name = ins.name where 1 = 1";
+				+ " course course on course.id = sch.course_id inner join institute ins on sch.institute_id = ins.id where 1 = 1";
 		if (null != countryId) {
 			sqlQuery += " and sch.country_name ='" + countryId + "'";
 		}
@@ -244,7 +244,7 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 		}
 		if (searchKeyword != null) {
 			sqlQuery += " and ( sch.name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or sch.course_name like '%" + searchKeyword.trim() + "%'";
+			sqlQuery += " or course.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or sch.country_name like '%" + searchKeyword.trim() + "%' )";
 			sqlQuery += " or sch.validity like '%" + searchKeyword.trim() + "%' )";
 		}
