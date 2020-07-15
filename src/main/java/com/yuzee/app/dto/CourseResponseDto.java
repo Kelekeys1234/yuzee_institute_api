@@ -41,9 +41,6 @@ public class CourseResponseDto {
 	@NotBlank(message = "institute_name should not be blank")
 	private String instituteName;
 
-	@JsonProperty("cost_range")
-	private Double costRange;
-
 	@JsonProperty("location")
 	private String location;
 

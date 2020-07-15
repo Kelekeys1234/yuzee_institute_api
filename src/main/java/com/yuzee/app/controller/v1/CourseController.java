@@ -181,13 +181,13 @@ public class CourseController implements CourseInterface {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
 		
-		/*log.info("Calling view transaction service to fetch user my course data");
+		log.info("Calling view transaction service to fetch user my course data");
 		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
 				"COURSE", "savedCourse");
-		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());*/
+		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
 		
-		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto, null);
-		int totalCount = courseProcessor.getCountOfAdvanceSearch(courseSearchDto, null);
+		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto, entityIds);
+		int totalCount = courseProcessor.getCountOfAdvanceSearch(courseSearchDto, entityIds);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,courseSearchDto.getMaxSizePerPage(), totalCount);
 		
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -279,7 +279,7 @@ public class CourseController implements CourseInterface {
 					new Object[] { userId }, language));
 		}
 
-		courseFilter.setUserCountryId(userDto.getCitizenship());
+		courseFilter.setUserCountryName(userDto.getCitizenship());
 		PaginationResponseDto paginationResponseDto = courseProcessor.courseFilter(courseFilter);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
 				.setMessage("Course Displayed Successfully").create();

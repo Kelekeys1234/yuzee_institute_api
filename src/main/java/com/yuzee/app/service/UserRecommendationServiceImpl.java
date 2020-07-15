@@ -292,7 +292,6 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			if (!ObjectUtils.isEmpty(course.getInstitute())) {
 				CourseResponseDto courseResponseDto = new CourseResponseDto();
 				courseResponseDto.setId(course.getId());
-				courseResponseDto.setCostRange(course.getCostRange());
 				courseResponseDto.setName(course.getName());
 				courseResponseDto.setInstituteId(course.getInstitute().getId());
 				courseResponseDto.setInstituteName(course.getInstitute().getName());

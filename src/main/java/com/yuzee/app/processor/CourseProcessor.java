@@ -184,10 +184,6 @@ public class CourseProcessor {
 		return courseDAO.get(id);
 	}
 
-	/*public List<Course> getAll() {
-		return courseDAO.getAll();
-	}*/
-
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
 			final String searchKeyword, List<String> entityIds) throws ValidationException, InvokeException {
 		log.debug("Inside getAllCoursesByFilter() method");
@@ -1503,7 +1499,6 @@ public class CourseProcessor {
 				nearestCourse.setId(course.getId());
 				nearestCourse.setName(course.getName());
 				nearestCourse.setCourseRanking(course.getWorldRanking());
-				nearestCourse.setCostRange(course.getCostRange());
 				nearestCourse.setStars(Double.valueOf(course.getStars()));
 				nearestCourse.setInstituteId(course.getInstitute().getId());
 				nearestCourse.setInstituteName(course.getInstitute().getName());
@@ -1601,9 +1596,9 @@ public class CourseProcessor {
 					BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
 					nearestCourse.setDistance(Double.valueOf(initialRadius));
 					log.info("fetching institute logo from storage service for instituteID " + nearestCourseDTO.getId());
-					/*List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestCourseDTO.getId(),
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestCourseDTO.getId(),
 							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
-					nearestCourse.setStorageList(storageDTOList);*/
+					nearestCourse.setStorageList(storageDTOList);
 					
 					log.info("Filtering course additional info by matching courseId");
 					List<CourseDeliveryModesDto> additionalInfoDtos = nearestCourseDTO.getCourseDeliveryModes().stream().
@@ -1821,7 +1816,7 @@ public class CourseProcessor {
 			log.info("Courses fetched from DB, start iterating data to make final response");
 			courseDetails.stream().forEach(courseDetail -> {
 				CourseDto courseResponse = new CourseDto(courseDetail.getId(), courseDetail.getLevel().getId(), 
-						courseDetail.getName(), ((courseDetail.getCostRange() != null) ? courseDetail.getCostRange().toString() : null), 
+						courseDetail.getName(), 
 						((courseDetail.getWorldRanking() != null) ? courseDetail.getWorldRanking().toString() : null),
 						((courseDetail.getStars() != null) ? courseDetail.getStars().toString() : null),
 						courseDetail.getFaculty().getName(), courseDetail.getLevel().getName(), null,

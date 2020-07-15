@@ -65,8 +65,8 @@ public class AdvanceSearchDto {
 	@JsonProperty("user_id")
 	private String userId;
 
-	@JsonProperty("user_country_id")
-	private String userCountryId;
+	@JsonProperty("user_country_name")
+	private String userCountryName;
 
 	@JsonProperty("names")
 	private List<String> names;

@@ -83,4 +83,7 @@ public class CourseSearchDto {
 
 	@JsonProperty("longitude")
 	private Double longitude;
+	
+	@JsonProperty("user_country_name")
+	private String userCountryName;
 }

@@ -953,9 +953,9 @@ public class InstituteDaoImpl implements InstituteDao {
 		 * will be shown to all users and with availbilty='N' will be shown to no one.
 		 *
 		 */
-		if (null != courseSearchDto.getUserCountryId()) {
-			sqlQuery += " and ((institute.country_name ='" + courseSearchDto.getUserCountryId() + "' and course.availbilty = 'D') OR (institute.country_name <>'"
-					+ courseSearchDto.getUserCountryId() + "' and course.availbilty = 'I') OR course.availbilty = 'A')";
+		if (null != courseSearchDto.getUserCountryName()) {
+			sqlQuery += " and ((institute.country_name ='" + courseSearchDto.getUserCountryName() + "' and course.availbilty = 'D') OR (institute.country_name <>'"
+					+ courseSearchDto.getUserCountryName() + "' and course.availbilty = 'I') OR course.availbilty = 'A')";
 		}
 		return sqlQuery;
 	}

@@ -46,6 +46,6 @@ public class CourseFilterDto {
 	 * derived based on logged in user country
 	 */
 	
-	@JsonProperty("user_country_id")
-	private String userCountryId;
+	@JsonProperty("user_country_name")
+	private String userCountryName;
 }

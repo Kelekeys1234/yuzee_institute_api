@@ -24,9 +24,6 @@ public class CourseDto {
 	@JsonProperty("name")
     private String name;
 	
-	@JsonProperty("cost")
-    private String cost;
-	
 	@JsonProperty("world_ranking")
     private String worldRanking;
 	

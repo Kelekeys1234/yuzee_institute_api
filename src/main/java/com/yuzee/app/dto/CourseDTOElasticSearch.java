@@ -83,9 +83,6 @@ public class CourseDTOElasticSearch implements Serializable {
 	@JsonProperty("currency_time")
 	private String currencyTime;
 
-	@JsonProperty("cost_range")
-	private Double costRange;
-
 	@JsonProperty("content")
 	private String content;
 
