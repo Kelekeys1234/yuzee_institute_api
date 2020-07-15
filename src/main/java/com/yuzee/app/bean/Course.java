@@ -123,6 +123,9 @@ public class Course implements Serializable {
 	@Column(name = "deleted_on", length = 19)
 	private Date deletedOn;
 	
+	@Column(name = "content")
+	private String content;
+	
 	@Column(name = "examination_board")
 	private String examinationBoard;
 	
@@ -137,6 +140,9 @@ public class Course implements Serializable {
 	
 	@Column(name = "international_enrollment_fee")
 	private Double internationalEnrollmentFee;
+	
+	@Column(name = "entrance_exam")
+	private String entranceExam;
 	
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
