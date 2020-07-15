@@ -3,8 +3,6 @@ package com.yuzee.app.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-// Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
-
 import java.util.Date;
 import java.util.List;
 
@@ -97,9 +95,6 @@ public class Course implements Serializable {
 	@Column(name = "currency_time", nullable = false)
 	private String currencyTime;
 
-	@Column(name = "cost_range", precision = 18, scale = 3)
-	private Double costRange;
-
 	@Column(name = "global_gpa")
 	private Double globalGpa;
 	
@@ -127,6 +122,21 @@ public class Course implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "deleted_on", length = 19)
 	private Date deletedOn;
+	
+	@Column(name = "examination_board")
+	private String examinationBoard;
+	
+	@Column(name = "domestic_application_fee")
+	private Double domesticApplicationFee;
+	
+	@Column(name = "international_application_fee")
+	private Double internationalApplicationFee;
+	
+	@Column(name = "domestic_enrollment_fee")
+	private Double domesticEnrollmentFee;
+	
+	@Column(name = "international_enrollment_fee")
+	private Double internationalEnrollmentFee;
 	
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
