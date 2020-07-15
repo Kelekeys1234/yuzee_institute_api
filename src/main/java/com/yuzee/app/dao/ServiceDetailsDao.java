@@ -12,7 +12,7 @@ public interface ServiceDetailsDao {
 
     public List<Service> getAllInstituteByCountry(String countryId);
 
-    public List<Service> getAll();
+    public List<Service> getAllServices();
 
     public com.yuzee.app.bean.Service getServiceById(String id);
 

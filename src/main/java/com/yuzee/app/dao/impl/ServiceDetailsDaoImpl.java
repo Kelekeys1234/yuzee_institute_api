@@ -45,7 +45,7 @@ public class ServiceDetailsDaoImpl implements ServiceDetailsDao {
     }
 
     @Override
-    public List<Service> getAll() {
+    public List<Service> getAllServices() {
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(Service.class).addOrder(Order.asc("name"));
         return crit.list();

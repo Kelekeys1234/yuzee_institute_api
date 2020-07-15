@@ -23,7 +23,7 @@ public class ServiceDetailsProcessor {
 		serviceDetailsDAO.addUpdateServiceDetails(service);
 	}
 
-	public com.yuzee.app.bean.Service get(String serviceId) {
+	public com.yuzee.app.bean.Service getService(String serviceId) {
 		return serviceDetailsDAO.getService(serviceId);
 	}
 
@@ -31,7 +31,7 @@ public class ServiceDetailsProcessor {
 		return serviceDetailsDAO.getAllInstituteByCountry(countryId);
 	}
 
-	public List<com.yuzee.app.bean.Service> getAll() {
-		return serviceDetailsDAO.getAll();
+	public List<com.yuzee.app.bean.Service> getAllServices() {
+		return serviceDetailsDAO.getAllServices();
 	}
 }

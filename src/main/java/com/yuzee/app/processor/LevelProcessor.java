@@ -31,7 +31,7 @@ public class LevelProcessor {
     	levelDao.addUpdateLevel(level);
     }
 
-    public Level get(String id) {
+    public Level getLevel(String id) {
         return levelDao.getLevel(id);
     }
     

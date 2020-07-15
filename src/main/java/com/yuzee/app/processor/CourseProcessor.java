@@ -321,7 +321,7 @@ public class CourseProcessor {
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
 		if (courseDto.getLevelId() != null) {
 			log.info("Fetching level details from DB for levelId = "+courseDto.getLevelId());
-			course.setLevel(levelProcessor.get(courseDto.getLevelId()));
+			course.setLevel(levelProcessor.getLevel(courseDto.getLevelId()));
 		}
 		if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
 			log.info("Course stars is present adding it in course bean class");
@@ -489,7 +489,7 @@ public class CourseProcessor {
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
 		if (courseDto.getLevelId() != null) {
 			log.info("Fetching level details from DB for levelId = "+courseDto.getLevelId());
-			course.setLevel(levelProcessor.get(courseDto.getLevelId()));
+			course.setLevel(levelProcessor.getLevel(courseDto.getLevelId()));
 		}
 		course.setIsActive(true);
 		if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
