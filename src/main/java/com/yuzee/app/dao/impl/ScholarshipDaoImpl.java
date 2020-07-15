@@ -12,12 +12,15 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.yuzee.app.bean.Scholarship;
+import com.yuzee.app.bean.ScholarshipEligibleNationality;
 import com.yuzee.app.bean.ScholarshipIntakes;
 import com.yuzee.app.bean.ScholarshipLanguage;
 import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dto.ScholarshipResponseDTO;
+import com.yuzee.app.repository.ScholarshipEligibleNationalityRepository;
 import com.yuzee.app.util.CommonUtil;
 
 @Component
@@ -26,6 +29,9 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private ScholarshipEligibleNationalityRepository scholarshipEligibleNationalityRepository;
 
 	@Override
 	public Scholarship saveScholarship(final Scholarship scholarship) {
@@ -100,22 +106,21 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 	}
 
 	@Override
-	public List<ScholarshipResponseDTO> getScholarshipList(final Integer startIndex, final Integer pageSize, final String countryId,
+	public List<ScholarshipResponseDTO> getScholarshipList(final Integer startIndex, final Integer pageSize, final String countryName,
 			final String instituteId, final String validity, final Boolean isActive, final Date updatedOn, final String searchKeyword,
 			final String sortByField, String sortByType) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select sch.id, sch.name, sch.course_name, sch.description, sch.scholarship_award, sch.country_name, level.id as level_id,"
-				+ " sch.number_of_avaliability, sch.scholarship_amount,"
-				+ " sch.validity, sch.how_to_apply, sch.gender, sch.eligible_nationality, sch.headquaters, sch.email, sch.address, sch.created_on,"
-				+ " sch.updated_on, sch.created_by,sch.updated_by,"
-				+ " sch.deleted_on, sch.is_active, sch.website, sch.institute_name, sch.application_deadline, level.name as level_name,"
-				+ " sch.currency,sch.requirements,level.code as level_code"
-				+ " from scholarship sch inner join level level on sch.level_id = level.id";
-		if (null != countryId) {
-			sqlQuery += " and sch.country_name ='" + countryId + "'";
+		String sqlQuery = "select sch.id, sch.name, course.name as courseName, sch.description, sch.scholarship_award, sch.country_name, level.id as level_id,"
+				+ " sch.number_of_avaliability, sch.scholarship_amount, sch.validity, sch.how_to_apply, sch.gender, sch.headquaters, sch.email,"
+				+ " sch.address, sch.website, "
+				+ " institute.name as instituteName, sch.application_deadline, level.name as level_name, sch.currency, sch.requirements,"
+				+ " level.code as level_code from scholarship sch inner join level level on sch.level_id = level.id"
+				+ " inner join course course on sch.course_id = course.id inner join institute institute on sch.institute_id = institute.id";
+		if (null != countryName) {
+			sqlQuery += " and sch.country_name ='" + countryName + "'";
 		}
 		if (null != instituteId) {
-			sqlQuery += " and sch.institute_name ='" + instituteId + "'";
+			sqlQuery += " and sch.institute_id ='" + instituteId + "'";
 		}
 		if (null != validity) {
 			sqlQuery += " and sch.validity =" + validity;
@@ -123,7 +128,7 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 		if (null != isActive) {
 			sqlQuery += " and sch.is_active =" + isActive;
 		} else {
-			sqlQuery += " and sch.is_active =1";
+			sqlQuery += " and sch.is_active = 1";
 		}
 		if (null != updatedOn) {
 			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
@@ -133,7 +138,7 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 		}
 		if (searchKeyword != null) {
 			sqlQuery += " and ( sch.name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or sch.course_name like '%" + searchKeyword.trim() + "%'";
+			sqlQuery += " or course.name like '%" + searchKeyword.trim() + "%'";
 			sqlQuery += " or sch.validity like '%" + searchKeyword.trim() + "%' )";
 		}
 		sqlQuery += " ";
@@ -145,8 +150,8 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 			if ("name".equals(sortByField)) {
 				sortingQuery = sortingQuery + " ORDER BY sch.name " + sortByType + " ";
 			} else if ("offeredBy".equals(sortByField)) {
-				sortingQuery = sortingQuery + " ORDER BY sch.course_name " + sortByType + " ";
-			} else if ("countryId".equals(sortByField)) {
+				sortingQuery = sortingQuery + " ORDER BY course.name " + sortByType + " ";
+			} else if ("countryName".equals(sortByField)) {
 				sortingQuery = sortingQuery + " ORDER BY sch.country_name " + sortByType + " ";
 			} else if ("validity".equals(sortByField)) {
 				sortingQuery = sortingQuery + " ORDER BY sch.validity " + sortByType + " ";
@@ -192,32 +197,20 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 			scholarshipResponseDTO.setValidity(String.valueOf(row[9]));
 			scholarshipResponseDTO.setHowToApply(String.valueOf(row[10]));
 			scholarshipResponseDTO.setGender(String.valueOf(row[11]));
-			scholarshipResponseDTO.setEligibleNationality(String.valueOf(row[12]));
-			scholarshipResponseDTO.setHeadquaters(String.valueOf(row[13]));
-			scholarshipResponseDTO.setEmail(String.valueOf(row[14]));
-			scholarshipResponseDTO.setAddress(String.valueOf(row[15]));
-			scholarshipResponseDTO.setCreatedOn((Date) row[16]);
-			scholarshipResponseDTO.setUpdatedOn((Date) row[17]);
-			scholarshipResponseDTO.setCreatedBy(String.valueOf(row[18]));
-			scholarshipResponseDTO.setUpdatedBy(String.valueOf(row[19]));
-			scholarshipResponseDTO.setDeletedOn((Date) row[20]);
-			if (String.valueOf(row[21]) != null && String.valueOf(row[21]).equals("1")) {
-				scholarshipResponseDTO.setIsActive(true);
-			} else {
-				scholarshipResponseDTO.setIsActive(false);
-			}
-
-			scholarshipResponseDTO.setWebsite(String.valueOf(row[22]));
-			if (row[23] != null) {
-				scholarshipResponseDTO.setInstituteName(String.valueOf(row[23]));
+			scholarshipResponseDTO.setHeadquaters(String.valueOf(row[12]));
+			scholarshipResponseDTO.setEmail(String.valueOf(row[13]));
+			scholarshipResponseDTO.setAddress(String.valueOf(row[14]));
+			scholarshipResponseDTO.setWebsite(String.valueOf(row[15]));
+			if (row[16] != null) {
+				scholarshipResponseDTO.setInstituteName(String.valueOf(row[16]));
 			} else {
 				scholarshipResponseDTO.setInstituteName(null);
 			}
-			scholarshipResponseDTO.setApplicationDeadline((Date) row[24]);
-			scholarshipResponseDTO.setLevelName(String.valueOf(row[25]));
-			scholarshipResponseDTO.setCurrency(String.valueOf(row[26]));
-			scholarshipResponseDTO.setRequirements(String.valueOf(row[27]));
-			scholarshipResponseDTO.setLevelCode(String.valueOf(row[28]));
+			scholarshipResponseDTO.setApplicationDeadline((Date) row[17]);
+			scholarshipResponseDTO.setLevelName(String.valueOf(row[18]));
+			scholarshipResponseDTO.setCurrency(String.valueOf(row[19]));
+			scholarshipResponseDTO.setRequirements(String.valueOf(row[20]));
+			scholarshipResponseDTO.setLevelCode(String.valueOf(row[21]));
 			list.add(scholarshipResponseDTO);
 		}
 		return list;
@@ -291,5 +284,25 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 		StringBuilder query = new StringBuilder("Select count(*) from scholarship where level_id='" + levelId + "'");
 		Long count = (Long) session.createNativeQuery(query.toString()).uniqueResult();
 		return count;
+	}
+
+	@Override
+	public void saveScholarshipEligibileNationality(ScholarshipEligibleNationality scholarshipEligibleNationality) {
+		scholarshipEligibleNationalityRepository.save(scholarshipEligibleNationality);		
+	}
+
+	@Override
+	public void deleteScholarshipEligibileNationality(String scholarshipId) {
+		List<ScholarshipEligibleNationality> eligibleNationalitiesFromDB = scholarshipEligibleNationalityRepository.findByScholarshipId(scholarshipId);
+		if(!CollectionUtils.isEmpty(eligibleNationalitiesFromDB)) {
+			eligibleNationalitiesFromDB.stream().forEach(eligibleNationality -> {
+				scholarshipEligibleNationalityRepository.delete(eligibleNationality);
+			});
+		}
+	}
+
+	@Override
+	public List<ScholarshipEligibleNationality> getScholarshipEligibileNationalityByScholarshipId(String scholarshipId) {
+		return scholarshipEligibleNationalityRepository.findByScholarshipId(scholarshipId);
 	}
 }

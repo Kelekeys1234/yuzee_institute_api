@@ -44,14 +44,8 @@ public class CourseRequest {
 	@JsonProperty("document_url")
 	private String documentUrl;
 
-	@JsonProperty("contact")
-	private String contact;
-
 	@JsonProperty("website")
 	private String website;
-
-	@JsonProperty("link")
-	private String link;
 
 	@JsonProperty("last_updated")
 	private String lastUpdated;

@@ -104,14 +104,29 @@ public class InstituteRequestDto {
 	
 	@JsonProperty("institute_timings")
 	private List<InstituteTimingDto> instituteTimings; 
+	
 	/**
 	 * There is no use of below fields in Admin panel.
 	 */
-	
 	@JsonProperty("about_info")
 	private String aboutInfo;
 	
 	@JsonProperty("course_start")
 	private String courseStart;
+	
+	@JsonProperty("link")
+	private String link;
+	
+	@JsonProperty("contact")
+	private String contact;
+	
+	@JsonProperty("curriculum")
+	private String curriculum;
+	
+	@JsonProperty("domestic_boarding_fee")
+	private Double domesticBoardingFee;
+	
+	@JsonProperty("international_boarding_fee")
+	private Double internationalBoardingFee;
 
 }

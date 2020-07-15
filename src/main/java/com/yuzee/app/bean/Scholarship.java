@@ -1,7 +1,10 @@
 package com.yuzee.app.bean;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,7 +29,7 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "scholarship", uniqueConstraints = @UniqueConstraint(columnNames = { "country_name", "level_id", "institute_name", "course_name" },
+@Table(name = "scholarship", uniqueConstraints = @UniqueConstraint(columnNames = { "country_name", "level_id", "institute_id", "course_id" },
 	   name = "UK_CN_LE_IN_CN"), indexes = {@Index(name = "IDX_LEVEL_ID", columnList = "level_id", unique = false),
 	   @Index(name = "IDX_COUNTRY_NAME", columnList = "country_name", unique = false) })
 public class Scholarship implements java.io.Serializable {
@@ -69,9 +73,6 @@ public class Scholarship implements java.io.Serializable {
 	@Column(name = "gender", nullable = false)
 	private String gender;
 	
-	@Column(name = "eligible_nationality", nullable = false)
-	private String eligibleNationality;
-	
 	@Column(name = "headquaters", nullable = false)
 	private String headquaters;
 	
@@ -105,11 +106,13 @@ public class Scholarship implements java.io.Serializable {
 	@Column(name = "website", nullable = false)
 	private String website;
 	
-	@Column(name = "institute_name", nullable = false)
-	private String instituteName;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "institute_id", nullable = false)
+	private Institute institute;
 	
-	@Column(name = "course_name", nullable = false)
-	private String courseName;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "course_id", nullable = false)
+	private Course course;
 	
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -123,5 +126,13 @@ public class Scholarship implements java.io.Serializable {
 	
 	@Column(name = "requirements", nullable = false)
 	private String requirements;
-
+	
+	@OneToMany(mappedBy = "scholarship" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ScholarshipIntakes> scholarshipIntakes = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "scholarship" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ScholarshipLanguage> scholarshipLanguages = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "scholarship" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ScholarshipEligibleNationality> scholarshipEligibleNationalities = new ArrayList<>();
 }

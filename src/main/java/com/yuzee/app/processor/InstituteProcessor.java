@@ -333,8 +333,8 @@ public class InstituteProcessor {
 				}
 			});
 			log.info("Calling elastic service to save instiutes on index");
-			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityType.INSTITUTE.name().toLowerCase(),
-					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+			/*elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityType.INSTITUTE.name().toLowerCase(),
+					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);*/
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ="+exception);
 		}
@@ -401,6 +401,11 @@ public class InstituteProcessor {
 		institute.setWhatsNo(instituteRequest.getWhatsNo());
 		institute.setAboutInfo(instituteRequest.getAboutInfo());
 		institute.setCourseStart(instituteRequest.getCourseStart());
+		institute.setLink(instituteRequest.getLink());
+		institute.setContact(instituteRequest.getContact());
+		institute.setCurriculum(instituteRequest.getCurriculum());
+		institute.setDomesticBoardingFee(instituteRequest.getDomesticBoardingFee());
+		institute.setInternationalBoardingFee(instituteRequest.getInternationalBoardingFee());
 		if (id != null) {
 			log.info("if instituteId is not null then going to update institute for id ="+id);
 			dao.addUpdateInstitute(institute);

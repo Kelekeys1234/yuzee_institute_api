@@ -91,15 +91,6 @@ public class Course implements Serializable {
 	@Column(name = "availabilty", nullable = false)
 	private String availabilty;
 
-	@Column(name = "intake")
-	private String intake;
-
-	@Column(name = "contact")
-	private String contact;
-
-	@Column(name = "link")
-	private String link;
-
 	@Column(name = "currency", nullable = false)
 	private String currency;
 	

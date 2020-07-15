@@ -87,11 +87,9 @@ public class CommonUtil {
 			courseRequest.setDescription(IConstant.COURSE_DEFAULT_DESCRPTION);
 		}
 		courseRequest.setName(course.getName());
-		courseRequest.setLink(course.getLink());
 		if (course.getFaculty() != null) {
 			courseRequest.setFacultyId(course.getFaculty().getId());
 		}
-		courseRequest.setContact(course.getContact());
 		courseRequest.setCurrency(course.getCurrency());
 		courseRequest.setWebsite(course.getWebsite());
 		courseRequest.setAvailbility(course.getAvailabilty());

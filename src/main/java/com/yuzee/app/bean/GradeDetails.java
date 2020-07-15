@@ -21,8 +21,9 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "grade_details", indexes = {@Index(name = "IDX_COUNTRY_NAME", columnList = "country_name", unique = false),
-		   @Index(name = "IDX_EDUCATION_SYSTEM_ID", columnList = "education_system_id", unique = false) })
+@Table(name = "grade_details", indexes = {
+		@Index(name = "IDX_COUNTRY_NAME", columnList = "country_name", unique = false),
+		@Index(name = "IDX_EDUCATION_SYSTEM_ID", columnList = "education_system_id", unique = false) })
 public class GradeDetails implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -32,33 +33,33 @@ public class GradeDetails implements java.io.Serializable {
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", columnDefinition = "uniqueidentifier")
 	private String id;
-	
+
 	@Column(name = "country_name", nullable = false)
 	private String countryName;
-	
+
 	@Column(name = "education_system_id", nullable = false)
 	private String educationSystemId;
-	
+
 	@Column(name = "grade", nullable = false)
 	private String grade;
-	
+
 	@Column(name = "gpa_grade", nullable = false)
 	private String gpaGrade;
-	
+
 	@Column(name = "state_name", nullable = false)
 	private String stateName;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
 	private Date createdOn;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
-	
+
 	@Column(name = "created_by", length = 50)
 	private String createdBy;
-	
+
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 }

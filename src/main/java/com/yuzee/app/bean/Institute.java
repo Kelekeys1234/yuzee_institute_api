@@ -170,6 +170,21 @@ public class Institute {
 	@Column(name = "accreditation")
 	private String accreditation;
 	
+	@Column(name = "link")
+	private String link;
+	
+	@Column(name = "contact")
+	private String contact;
+	
+	@Column(name = "curriculum")
+	private String curriculum;
+	
+	@Column(name = "domestic_boarding_fee")
+	private Double domesticBoardingFee;
+	
+	@Column(name = "international_boarding_fee")
+	private Double internationalBoardingFee;
+	
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteEnglishRequirements> instituteEnglishRequirements = new ArrayList<>();
 	

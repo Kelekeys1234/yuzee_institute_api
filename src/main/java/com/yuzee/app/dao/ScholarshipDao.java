@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.yuzee.app.bean.Scholarship;
+import com.yuzee.app.bean.ScholarshipEligibleNationality;
 import com.yuzee.app.bean.ScholarshipIntakes;
 import com.yuzee.app.bean.ScholarshipLanguage;
 import com.yuzee.app.dto.ScholarshipResponseDTO;
@@ -40,4 +41,11 @@ public interface ScholarshipDao {
 	public List<String> getRandomScholarships(int i);
 	
 	public Long getScholarshipCountByLevelId(String levelId);
+	
+	public void saveScholarshipEligibileNationality(ScholarshipEligibleNationality scholarshipEligibleNationality);
+	
+	public void deleteScholarshipEligibileNationality(String scholarshipId);
+	
+	public List<ScholarshipEligibleNationality> getScholarshipEligibileNationalityByScholarshipId(String scholarshipId);
 }
+

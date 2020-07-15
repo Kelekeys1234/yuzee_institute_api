@@ -337,9 +337,7 @@ public class CourseProcessor {
 		}
 		
 		// Adding course details in bean class
-		course.setLink(courseDto.getLink() != null ? courseDto.getLink() : null);
 		course.setRemarks(courseDto.getRemarks() != null ? courseDto.getRemarks() : null);
-		course.setContact(courseDto.getContact() != null ? courseDto.getContact() : null);
 		course.setWebsite(courseDto.getWebsite() != null ? courseDto.getWebsite() : null);
 		course.setAvailabilty(courseDto.getAvailbility() != null ? courseDto.getAvailbility(): null);
 		course.setRecognition(courseDto.getRecognition() != null ? courseDto.getRecognition() : null);
@@ -509,9 +507,7 @@ public class CourseProcessor {
 		}
 		
 		// Adding course details in bean class
-		course.setLink(courseDto.getLink() != null ? courseDto.getLink() : null);
 		course.setRemarks(courseDto.getRemarks() != null ? courseDto.getRemarks() : null);
-		course.setContact(courseDto.getContact() != null ? courseDto.getContact() : null);
 		course.setWebsite(courseDto.getWebsite() != null ? courseDto.getWebsite() : null);
 		course.setAvailabilty(courseDto.getAvailbility() != null ? courseDto.getAvailbility(): null);
 		course.setRecognition(courseDto.getRecognition() != null ? courseDto.getRecognition() : null);

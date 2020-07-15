@@ -57,7 +57,7 @@ public class ScholarshipDto implements Serializable {
 	private String gender;
 
 	@JsonProperty("eligible_nationality")
-	private String eligibleNationality;
+	private List<String> eligibleNationality;
 
 	@JsonProperty("headquaters")
 	private String headquaters;
@@ -71,13 +71,17 @@ public class ScholarshipDto implements Serializable {
 	@JsonProperty("website")
 	private String website;
 
+	@JsonProperty("institute_id")
+	@NotBlank(message = "institute_id should not be blank")
+	private String instituteId;
+	
 	@JsonProperty("institute_name")
 	@NotBlank(message = "institute_name should not be blank")
 	private String instituteName;
 
-	@JsonProperty("course_name")
-	@NotBlank(message = "course_name should not be blank")
-	private String courseName;
+	@JsonProperty("course_id")
+	@NotBlank(message = "course_id should not be blank")
+	private String courseId;
 
 	@JsonProperty("application_deadline")
 	private Date applicationDeadline;

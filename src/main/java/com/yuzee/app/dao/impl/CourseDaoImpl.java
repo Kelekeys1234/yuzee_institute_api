@@ -748,9 +748,6 @@ public class CourseDaoImpl implements CourseDao {
 			if (row[12] != null) {
 				obj.setWebsite(row[12].toString());
 			}
-			if (row[14] != null) {
-				obj.setLink(row[14].toString());
-			}
 			if (row[15] != null) {
 				System.out.println(row[15].toString());
 				Date updatedDate = (Date) row[15];

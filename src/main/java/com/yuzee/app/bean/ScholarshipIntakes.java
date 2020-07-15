@@ -1,6 +1,7 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,8 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -34,4 +37,22 @@ public class ScholarshipIntakes implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scholarship_id")
 	private Scholarship scholarship;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_on")
+	private Date createdOn;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated_on")
+	private Date updatedOn;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deleted_on")
+	private Date deletedOn;
+
+	@Column(name = "created_by")
+	private String createdBy;
+
+	@Column(name = "updated_by")
+	private String updatedBy;
 }

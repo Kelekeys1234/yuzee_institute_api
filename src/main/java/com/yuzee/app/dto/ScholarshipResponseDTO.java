@@ -53,9 +53,6 @@ public class ScholarshipResponseDTO implements Serializable {
 	@JsonProperty("gender")
 	private String gender;
 	
-	@JsonProperty("eligible_nationality")
-	private String eligibleNationality;
-	
 	@JsonProperty("headquaters")
 	private String headquaters;
 	
@@ -64,24 +61,6 @@ public class ScholarshipResponseDTO implements Serializable {
 	
 	@JsonProperty("address")
 	private String address;
-	
-	@JsonProperty("created_on")
-	private Date createdOn;
-	
-	@JsonProperty("updated_on")
-	private Date updatedOn;
-	
-	@JsonProperty("created_by")
-	private String createdBy;
-	
-	@JsonProperty("updated_by")
-	private String updatedBy;
-	
-	@JsonProperty("deleted_on")
-	private Date deletedOn;
-	
-	@JsonProperty("is_active")
-	private Boolean isActive;
 	
 	@JsonProperty("website")
 	private String website;
@@ -94,6 +73,9 @@ public class ScholarshipResponseDTO implements Serializable {
 	
 	@JsonProperty("languages")
 	private List<String> languages;
+	
+	@JsonProperty("eligible_nationality")
+	private List<String> eligibleNationality;
 	
 	@JsonProperty("level_name")
 	private String levelName;
