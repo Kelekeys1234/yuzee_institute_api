@@ -97,7 +97,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class CourseProcessor {
 
 	@Autowired
-	private CourseDao courseDAO;
+	private CourseDao courseDao;
 
 	@Autowired
 	private CourseEnglishEligibilityDao courseEnglishEligibilityDAO;
@@ -142,7 +142,7 @@ public class CourseProcessor {
 	private ReviewHandler reviewHandler;
 	
 	@Autowired
-	private LevelDao iLevelDao;
+	private LevelDao levelDao;
 	
 	@Autowired
 	private CourseRepository courseRepository;
@@ -181,14 +181,14 @@ public class CourseProcessor {
 	private Integer maxRadius;
 	
 	public Course get(final String id) {
-		return courseDAO.get(id);
+		return courseDao.get(id);
 	}
 
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
 			final String searchKeyword, List<String> entityIds) throws ValidationException, InvokeException {
 		log.debug("Inside getAllCoursesByFilter() method");
 		log.info("CAlling DAO layer to fetch courses based on passed filters and pagination");
-		List<CourseResponseDto> courseResponseDtos = courseDAO.getAllCoursesByFilter(courseSearchDto, searchKeyword, null, 
+		List<CourseResponseDto> courseResponseDtos = courseDao.getAllCoursesByFilter(courseSearchDto, searchKeyword, null, 
 					startIndex, false, entityIds);
 		return getExtraInfoOfCourseFilter(courseSearchDto, courseResponseDtos);
 	}
@@ -214,7 +214,7 @@ public class CourseProcessor {
 		
 		if(!CollectionUtils.isEmpty(courseResponseFinalResponse)) {
 			log.info("Courses are coming from DB hence start iterating data");
-			for (CourseResponseDto courseResponseDto : courseResponseFinalResponse) {
+			courseResponseFinalResponse.stream().forEach(courseResponseDto -> {
 				if (storageDTOList != null && !storageDTOList.isEmpty()) {
 					log.info("Storage data is coming hence iterating storage data and set it in response");
 					List<StorageDto> storageDTO = storageDTOList.stream().filter(x -> courseResponseDto.getInstituteId().equals(x.getEntityId()))
@@ -227,22 +227,25 @@ public class CourseProcessor {
 				
 				// Calling viewTransaction Service to fetch viewedCourse of User to set whether course is viewed by user or not
 				log.info("Invoking viewTransaction service to fetched view course by user");
-				UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(
-						courseSearchDto.getUserId(), "COURSE", courseResponseDto.getId(), "viewCourse");
-				if(!ObjectUtils.isEmpty(userViewCourseDto)) {
-					log.info("User view course data is coming for courseId = " + courseResponseDto.getId() + " ,hence marking course as viewed");
-					courseResponseDto.setIsViewed(true);
-				} else {
-					courseResponseDto.setIsViewed(false);
+				try {
+					UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(
+							courseSearchDto.getUserId(), "COURSE", courseResponseDto.getId(), "viewCourse");
+					if(!ObjectUtils.isEmpty(userViewCourseDto)) {
+						log.info("User view course data is coming for courseId = " + courseResponseDto.getId() + " ,hence marking course as viewed");
+						courseResponseDto.setIsViewed(true);
+					} else {
+						courseResponseDto.setIsViewed(false);
+					}
+				} catch (InvokeException e) {
+					log.error("Exception while fetching user view courseshaving exception =" + e);
 				}
-				
 				log.info("Filtering course additional info by matching courseIds");
 				List<CourseDeliveryModesDto> additionalInfoDtos = courseResponseDto.getCourseDeliveryModes().stream().
 							filter(x -> x.getCourseId().equals(courseResponseDto.getId())).collect(Collectors.toList());
 				courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 				
 				log.info("Fetching courseIntake from DB having courseIds = "+courseIds);
-				List<CourseIntake> courseIntakes = courseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
+				List<CourseIntake> courseIntakes = courseDao.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
 				if (!CollectionUtils.isEmpty(courseIntakes)) {
 					log.info("Filtering courseIntakes data based on courseId");
 					courseResponseDto.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -251,43 +254,44 @@ public class CourseProcessor {
 				}
 				
 				log.info("Fetching courseLanguages from DB having courseIds = "+courseIds);
-				List<CourseLanguage> courseLanguages = courseDAO.getCourseLanguageBasedOnCourseId(courseResponseDto.getId());
+				List<CourseLanguage> courseLanguages = courseDao.getCourseLanguageBasedOnCourseId(courseResponseDto.getId());
 				if(!CollectionUtils.isEmpty(courseLanguages)) {
+					log.info("Filtering courseLanguages data based on courseId");
 					courseResponseDto.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 				} else {
 					courseResponseDto.setLanguage(new ArrayList<>());
 				}
-			}
+			});
 		}
 		return courseResponseFinalResponse;
 	}
 
 	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword, List<String> entityIds) {
-		return courseDAO.getCountforNormalCourse(courseSearchDto, searchKeyword, entityIds);
+		return courseDao.getCountforNormalCourse(courseSearchDto, searchKeyword, entityIds);
 	}
 
 	public List<CourseResponseDto> getAllCoursesByInstitute(final String instituteId, final CourseSearchDto courseSearchDto) {
-		return courseDAO.getAllCoursesByInstitute(instituteId, courseSearchDto);
+		return courseDao.getAllCoursesByInstitute(instituteId, courseSearchDto);
 	}
 
 	public Map<String, Object> getCourse(final String courseId) {
-		return courseDAO.getCourse(courseId);
+		return courseDao.getCourse(courseId);
 	}
 
 	public List<CourseResponseDto> getCouresesByFacultyId(final String facultyId) throws NotFoundException {
 		log.debug("Inside getCouresesByFacultyId() method");
 		log.info("fetching courses from DB for facultyId = "+facultyId);
-		List<CourseResponseDto> courseResponseDtos = courseDAO.getCouresesByFacultyId(facultyId);
+		List<CourseResponseDto> courseResponseDtos = courseDao.getCouresesByFacultyId(facultyId);
 		if(!CollectionUtils.isEmpty(courseResponseDtos)) {
 			log.info("Courses coming from DB start iterating data to make final response");
 			courseResponseDtos.stream().forEach(courseResponseDto -> {
 				log.info("Fetching course additional info from DB having courseId = "+courseResponseDto.getId());
 				courseResponseDto.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseResponseDto.getId()));
 				log.info("Fetching course intakes from DB having courseId = "+courseResponseDto.getId());
-				courseResponseDto.setIntake(courseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId())
+				courseResponseDto.setIntake(courseDao.getCourseIntakeBasedOnCourseId(courseResponseDto.getId())
 							.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
 				log.info("Fetching course languages from DB having courseId = "+courseResponseDto.getId());
-				courseResponseDto.setLanguage(courseDAO.getCourseLanguageBasedOnCourseId(courseResponseDto.getId())
+				courseResponseDto.setLanguage(courseDao.getCourseLanguageBasedOnCourseId(courseResponseDto.getId())
 						.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 			});
 		} else {
@@ -306,7 +310,7 @@ public class CourseProcessor {
 			facultyIdtempList = facultyIdtempList + "," + "'" + id + "'";
 		}
 		log.info("Callig DAO layer to fetch courseList by FacultyId");
-		return courseDAO.getCouresesByListOfFacultyId(facultyIdtempList.substring(1, facultyIdtempList.length()));
+		return courseDao.getCouresesByListOfFacultyId(facultyIdtempList.substring(1, facultyIdtempList.length()));
 	}
 
 	public String saveCourse(@Valid final CourseRequest courseDto) throws ValidationException, CommonInvokeException {
@@ -360,40 +364,40 @@ public class CourseProcessor {
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		
 		log.info("Calling DAO layer to save course in DB");
-		courseDAO.addUpdateCourse(course);
+		courseDao.addUpdateCourse(course);
 
 		// Here multiple intakes are possible.
 		List<Date> intakeList = new ArrayList<>();
 		if (courseDto.getIntake() != null) {
 			log.info("Course saved now going to save course intakes in DB");
-			for (Date intake : courseDto.getIntake()) {
+			courseDto.getIntake().stream().forEach(intake -> {
 				CourseIntake courseIntake = new CourseIntake();
 				courseIntake.setCourse(course);
 				courseIntake.setIntakeDates(intake);
 				intakeList.add(intake);
 				log.info("Calling DAO layer to save courseIntakes");
-				courseDAO.saveCourseIntake(courseIntake);
-			}
+				courseDao.saveCourseIntake(courseIntake);
+			});
 		}
 		
 		// Course can have multiple language
 		if (courseDto.getLanguage() != null && !courseDto.getLanguage().isEmpty()) {
 			log.info("Course saved now going to save course languages in DB");
-			for (String language : courseDto.getLanguage()) {
+			courseDto.getLanguage().stream().forEach(language -> {
 				CourseLanguage courseLanguage = new CourseLanguage();
 				courseLanguage.setCourse(course);
 				courseLanguage.setLanguage(language);
 				courseLanguage.setCreatedBy("API");
 				courseLanguage.setCreatedOn(new Date());
 				log.info("Calling DAO layer to save courseLanguages");
-				courseDAO.saveCourseLanguage(courseLanguage);
-			}
+				courseDao.saveCourseLanguage(courseLanguage);
+			});
 		}
 
 		// There are EnglishEligibility means IELTS & TOFEL score
 		if (courseDto.getEnglishEligibility() != null) {
 			log.info("Course saved now going to save course EnglishEligibility in DB");
-			for (CourseEnglishEligibilityDto courseEnglishEligibilityDto : courseDto.getEnglishEligibility()) {
+			courseDto.getEnglishEligibility().stream().forEach(courseEnglishEligibilityDto -> {
 				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
 				BeanUtils.copyProperties(courseEnglishEligibilityDto, courseEnglishEligibility);
 				courseEnglishEligibility.setCourse(course);
@@ -402,7 +406,7 @@ public class CourseProcessor {
 				courseEnglishEligibility.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 				log.info("Calling DAO layer to save englishEligibilties in DB");
 				courseEnglishEligibilityDAO.save(courseEnglishEligibility);
-			}
+			});
 		}
 		
 		// Here we are adding course additional informations like courseFee, duration, studyMode etc
@@ -479,7 +483,7 @@ public class CourseProcessor {
 		log.debug("Inside updateCourse() method");
 		Course course = new Course();
 		log.info("fetching course from DB having courseId = "+id);
-		course = courseDAO.get(id);
+		course = courseDao.get(id);
 		course.setId(id);
 		log.info("Fetching institute details from DB for instituteId = "+courseDto.getInstituteId());
 		course.setInstitute(getInstititute(courseDto.getInstituteId()));
@@ -530,11 +534,11 @@ public class CourseProcessor {
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		
 		log.info("Calling DAO layer to update course in DB for courseId = "+id);
-		courseDAO.addUpdateCourse(course);
+		courseDao.addUpdateCourse(course);
 		log.info("Delete existing courseIntakes from DB");
-		courseDAO.deleteCourseIntake(id);
+		courseDao.deleteCourseIntake(id);
 		log.info("Delete existing courseLanguage from DB");
-		courseDAO.deleteCourseLanguage(id);
+		courseDao.deleteCourseLanguage(id);
 		
 		// Here multiple intakes are possible.
 		List<Date> intakeList = new ArrayList<>();
@@ -546,7 +550,7 @@ public class CourseProcessor {
 				courseIntake.setIntakeDates(intake);
 				intakeList.add(intake);
 				log.info("Calling DAO layer to update courseIntakes");
-				courseDAO.saveCourseIntake(courseIntake);
+				courseDao.saveCourseIntake(courseIntake);
 			}
 		}
 
@@ -558,7 +562,7 @@ public class CourseProcessor {
 				courseLanguage.setCourse(course);
 				courseLanguage.setLanguage(language);
 				log.info("Calling DAO layer to update courseLanguages");
-				courseDAO.saveCourseLanguage(courseLanguage);
+				courseDao.saveCourseLanguage(courseLanguage);
 			}
 		}
 
@@ -570,7 +574,7 @@ public class CourseProcessor {
 			log.info("The English Eligibility Size: " + courseEnglishEligibilityList.size());
 			if (!courseEnglishEligibilityList.isEmpty()) {
 				log.info("EnglishEligibilty is present in DB hence making it inactive");
-				for (CourseEnglishEligibility courseEnglishEligibility : courseEnglishEligibilityList) {
+				courseEnglishEligibilityList.stream().forEach(courseEnglishEligibility -> {
 					if (courseEnglishEligibility.getIsActive()) {
 						courseEnglishEligibility.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
 						courseEnglishEligibility.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -578,7 +582,7 @@ public class CourseProcessor {
 						log.info("Going to update englishEligibilty from DB and make it inactive");
 						courseEnglishEligibilityDAO.update(courseEnglishEligibility);
 					}
-				}
+				});
 			}
 			for (CourseEnglishEligibilityDto courseEnglishEligibilityDto : courseDto.getEnglishEligibility()) {
 				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
@@ -700,10 +704,10 @@ public class CourseProcessor {
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		try {
 			log.info("Getting total count for course to calculate pagination");
-			int totalCount = courseDAO.findTotalCount();
+			int totalCount = courseDao.findTotalCount();
 			int startIndex = (pageNumber - 1) * pageSize;
 			log.info("Calling DAO layer to fetch courses from DB with limit = " + startIndex + ", " + pageSize);
-			List<CourseRequest> courses = courseDAO.getAll(startIndex, pageSize);
+			List<CourseRequest> courses = courseDao.getAll(startIndex, pageSize);
 			if(!CollectionUtils.isEmpty(courses)) {
 				log.info("Courses fetched from DB hence start iterating courses");
 				List<CourseRequest> resultList = new ArrayList<>();
@@ -752,7 +756,7 @@ public class CourseProcessor {
 		log.debug("Inside deleteCourse() method");
 		try {
 			log.info("Fetching course from DB having courseId = "+ courseId);
-			Course course = courseDAO.get(courseId);
+			Course course = courseDao.get(courseId);
 			if (!ObjectUtils.isEmpty(course)) {
 				log.info("Course found hence making course inactive");
 				course.setIsActive(false);
@@ -760,7 +764,7 @@ public class CourseProcessor {
 				course.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
 				course.setIsDeleted(true);
 				log.info("Calling DAO layer to update existing course and make in in-active");
-				courseDAO.addUpdateCourse(course);
+				courseDao.addUpdateCourse(course);
 
 				CourseDTOElasticSearch elasticSearchCourseDto = new CourseDTOElasticSearch();
 				elasticSearchCourseDto.setId(courseId);
@@ -783,9 +787,9 @@ public class CourseProcessor {
 		log.info("Extracting courses from DB based on pagination and courseIds");
 		List<CourseDto> courses = new ArrayList<>();
 		if(!StringUtils.isEmpty(sortAsscending) && sortAsscending.equalsIgnoreCase("true")) {
-			courses = courseDAO.getUserCourse(courseIds, sortBy, true);
+			courses = courseDao.getUserCourse(courseIds, sortBy, true);
 		} else {
-			courses = courseDAO.getUserCourse(courseIds, sortBy, false);
+			courses = courseDao.getUserCourse(courseIds, sortBy, false);
 		}
 		
 		log.info("Filering course response if courseId is coming duplicate in response");
@@ -804,7 +808,7 @@ public class CourseProcessor {
 	}
 
 	public Course getCourseData(final String courseId) {
-		return courseDAO.getCourseData(courseId);
+		return courseDao.getCourseData(courseId);
 	}
 
 	public List<ServiceDto> getAllServices() {
@@ -817,7 +821,7 @@ public class CourseProcessor {
 		log.debug("Inside advanceSearch() method");
 		
 		log.info("Calling DAO layer to fetch courses from DB based on passed filters");
-		List<CourseResponseDto> courseResponseDtos = courseDAO.advanceSearch(entityIds, courseSearchDto);
+		List<CourseResponseDto> courseResponseDtos = courseDao.advanceSearch(entityIds, courseSearchDto);
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			log.info("No courses found in DB for passed filters");
 			return new ArrayList<>();
@@ -827,10 +831,8 @@ public class CourseProcessor {
 		List<CourseResponseDto> courseResponseFinalResponse = courseResponseDtos.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId))
 				.collect(Collectors.toList());
 		
-		log.info("Filtering distinct courseIds");
-		List<String> courseIds = courseResponseDtos.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId)).map(CourseResponseDto::getId).collect(Collectors.toList());
-		
-		log.info("Fetching user view data from DB having userId = "+courseSearchDto.getUserId());
+		//log.info("Filtering distinct courseIds");
+		//List<String> courseIds = courseResponseDtos.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId)).map(CourseResponseDto::getId).collect(Collectors.toList());
 		
 		log.info("Calling Storage service to get images based on entityId");
 		List<StorageDto> storageDTOList = storageProcessor.getStorageInformationBasedOnEntityIdList(
@@ -875,8 +877,8 @@ public class CourseProcessor {
 						filter(x -> x.getCourseId().equals(courseResponseDto.getId())).collect(Collectors.toList());
 				courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 
-				log.info("Fetching courseIntake from DB having courseIds = "+courseIds);
-				List<CourseIntake> courseIntake = courseDAO.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
+				log.info("Fetching courseIntake from DB having courseId = "+courseResponseDto);
+				List<CourseIntake> courseIntake = courseDao.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
 				if (courseIntake != null && !courseIntake.isEmpty()) {
 					log.info("Filtering courseIntakes data based on courseId");
 					courseResponseDto.setIntake(courseIntake.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -884,8 +886,8 @@ public class CourseProcessor {
 					courseResponseDto.setIntake(new ArrayList<>());
 				}
 				
-				log.info("Fetching courseLanguages from DB having courseIds = "+courseIds);
-				List<CourseLanguage> courseLanguages = courseDAO.getCourseLanguageBasedOnCourseId(courseResponseDto.getId());
+				log.info("Fetching courseLanguages from DB having courseId = "+courseResponseDto);
+				List<CourseLanguage> courseLanguages = courseDao.getCourseLanguageBasedOnCourseId(courseResponseDto.getId());
 				if(!CollectionUtils.isEmpty(courseLanguages)) {
 					log.info("Filtering courseLanguages data based on courseId");
 					courseResponseDto.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
@@ -946,10 +948,10 @@ public class CourseProcessor {
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		try {
 			log.info("fetched total count of courses based on passed filters");
-			int totalCount = courseDAO.findTotalCountCourseFilter(courseFilter);
+			int totalCount = courseDao.findTotalCountCourseFilter(courseFilter);
 			int startIndex = (courseFilter.getPageNumber() - 1) * courseFilter.getMaxSizePerPage();
 			log.info("Fetching course data from DB based on filters and pagination");
-			List<CourseRequest> courses = courseDAO.courseFilter(startIndex, courseFilter.getMaxSizePerPage(), courseFilter);
+			List<CourseRequest> courses = courseDao.courseFilter(startIndex, courseFilter.getMaxSizePerPage(), courseFilter);
 
 			List<CourseRequest> resultList = new ArrayList<>();
 			if(!CollectionUtils.isEmpty(courses)) {
@@ -965,10 +967,10 @@ public class CourseProcessor {
 					log.info("Fetching course additional info from DB having courseId = "+courseRequest.getId());
 					courseRequest.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseRequest.getId()));
 					log.info("Fetching course intakes from DB having courseId = "+courseRequest.getId());
-					courseRequest.setIntake(courseDAO.getCourseIntakeBasedOnCourseId(courseRequest.getId())
+					courseRequest.setIntake(courseDao.getCourseIntakeBasedOnCourseId(courseRequest.getId())
 								.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
 					log.info("Fetching course languages from DB having courseId = "+courseRequest.getId());
-					courseRequest.setLanguage(courseDAO.getCourseLanguageBasedOnCourseId(courseRequest.getId())
+					courseRequest.setLanguage(courseDao.getCourseLanguageBasedOnCourseId(courseRequest.getId())
 							.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 					
 					resultList.add(courseRequest);
@@ -994,10 +996,10 @@ public class CourseProcessor {
 		try {
 			List<CourseRequest> resultList = new ArrayList<>();
 			log.info("Fetching total count of courses from DB for searchKey = "+searchKey);
-			Long totalCount = courseDAO.autoSearchTotalCount(searchKey);
+			Long totalCount = courseDao.autoSearchTotalCount(searchKey);
 			int startIndex = (pageNumber - 1) * pageSize;
 			log.info("Fetching courses from DB based on pagination and having searchKeyword = "+searchKey);
-			List<CourseRequest> courses = courseDAO.autoSearch(startIndex, pageSize, searchKey);
+			List<CourseRequest> courses = courseDao.autoSearch(startIndex, pageSize, searchKey);
 			if(!CollectionUtils.isEmpty(courses)) {
 				log.info("Courses fetched from DB, hence start iterating data");
 				courses.stream().forEach(course -> {
@@ -1023,14 +1025,14 @@ public class CourseProcessor {
 					}
 					
 					log.info("Fetching courseLanguage from DB having courseId = "+course.getId());
-					List<CourseLanguage> courseLanguages = courseDAO.getCourseLanguageBasedOnCourseId(course.getId());
+					List<CourseLanguage> courseLanguages = courseDao.getCourseLanguageBasedOnCourseId(course.getId());
 					if(!CollectionUtils.isEmpty(courseLanguages)) {
 						log.info("courseLanguage is fetched from DB, hence adding englishEligibilities in response");
 						course.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 					}
 					
 					log.info("Fetching courseIntake from DB having courseId = "+course.getId());
-					List<CourseIntake> courseIntakes = courseDAO.getCourseIntakeBasedOnCourseId(course.getId());
+					List<CourseIntake> courseIntakes = courseDao.getCourseIntakeBasedOnCourseId(course.getId());
 					if(!CollectionUtils.isEmpty(courseIntakes)) {
 						log.info("courseIntake is fetched from DB, hence adding englishEligibilities in response");
 						course.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -1056,7 +1058,7 @@ public class CourseProcessor {
 	}
 
 	public List<Course> facultyWiseCourseForInstitute(final List<Faculty> facultyList, final Institute institute) {
-		return courseDAO.facultyWiseCourseForTopInstitute(facultyList, institute);
+		return courseDao.facultyWiseCourseForTopInstitute(facultyList, institute);
 	}
 
 	public void saveCourseMinrequirement(final CourseMinRequirementDto courseMinRequirementDto) {
@@ -1075,7 +1077,7 @@ public class CourseProcessor {
 			courseMinRequirement.setSubject(courseMinRequirementDto.getSubject().get(i));
 			courseMinRequirement.setGrade(courseMinRequirementDto.getGrade().get(i));
 			subjectGrade.add(courseMinRequirementDto.getGrade().get(i));
-			courseMinRequirement.setCourse(courseDAO.get(courseMinRequirementDto.getCourse()));
+			courseMinRequirement.setCourse(courseDao.get(courseMinRequirementDto.getCourse()));
 			log.info("Calling DAO layer to save course minimun requirements");
 			courseMinRequirementDao.save(courseMinRequirement);
 			i++;
@@ -1091,7 +1093,7 @@ public class CourseProcessor {
 		List<CourseMinRequirementDto> resultList = new ArrayList<>();
 		log.info("Collecting countryNames and start iterating based on countryName");
 		Set<String> countryIds = courseMinRequirement.stream().map(c -> c.getCountryName()).collect(Collectors.toSet());
-		for (String countryId : countryIds) {
+		countryIds.stream().forEach(countryId -> {
 			List<String> subject = new ArrayList<>();
 			List<String> grade = new ArrayList<>();
 			log.info("Filtering courseMinimum requirements based on countryName");
@@ -1108,8 +1110,7 @@ public class CourseProcessor {
 			courseMinRequirementDto.setSubject(subject);
 			courseMinRequirementDto.setGrade(grade);
 			resultList.add(courseMinRequirementDto);
-		}
-
+		});
 		return resultList;
 	}
 
@@ -1132,19 +1133,19 @@ public class CourseProcessor {
 	}
 
 	public long checkIfCoursesPresentForCountry(final String country) {
-		return courseDAO.getCourseCountForCountry(country);
+		return courseDao.getCourseCountForCountry(country);
 	}
 
 	/*public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
-		return courseDAO.getTopRatedCoursesForCountryWorldRankingWise(country);
+		return courseDao.getTopRatedCoursesForCountryWorldRankingWise(country);
 	}*/
 
 	/*public List<Course> getAllCourseUsingFaculty(final String facultyId) {
-		return courseDAO.getAllCourseForFacultyWorldRankingWise(facultyId);
+		return courseDao.getAllCourseForFacultyWorldRankingWise(facultyId);
 	}
 
 	public List<String> getAllCourseUsingFacultyId(final String facultyId) {
-		return courseDAO.getAllCourseForFacultyWorldRankingWises(facultyId);
+		return courseDao.getAllCourseForFacultyWorldRankingWises(facultyId);
 	}*/
 
 	/*public List<String> getTopSearchedCoursesByOtherUsers(final String userId) {
@@ -1152,15 +1153,15 @@ public class CourseProcessor {
 	}*/
 
 	/*public List<Course> getCoursesById(final List<String> allSearchCourses) {
-		return courseDAO.getAllCoursesUsingId(allSearchCourses);
+		return courseDao.getAllCoursesUsingId(allSearchCourses);
 	}*/
 
 	/*public Map<String, String> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final String instituteId) {
-		return courseDAO.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
+		return courseDao.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
 	}
 
 	public List<String> getTopRatedCourseIdForCountryWorldRankingWise(final String country) {
-		return courseDAO.getTopRatedCourseIdsForCountryWorldRankingWise(country);
+		return courseDao.getTopRatedCourseIdsForCountryWorldRankingWise(country);
 	}*/
 
 	/*public List<String> getTopSearchedCoursesByUsers(final String userId) {
@@ -1168,31 +1169,37 @@ public class CourseProcessor {
 	}*/
 	
 	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
-		return courseDAO.getAllCoursesUsingId(listOfRecommendedCourseIds);
+		return courseDao.getAllCoursesUsingId(listOfRecommendedCourseIds);
 	}
 
 	public Set<Course> getRelatedCoursesBasedOnPastSearch(final List<String> courseList) throws ValidationException {
+		log.debug("Inside getRelatedCoursesBasedOnPastSearch() method");
 		Set<Course> relatedCourses = new HashSet<>();
-		for (String courseId : courseList) {
-			relatedCourses.addAll(userRecommedationService.getRelatedCourse(courseId));
-		}
+		courseList.stream().forEach(courseId -> {
+			try {
+				log.info("Getting related course from DB having courseId = "+courseId);
+				relatedCourses.addAll(userRecommedationService.getRelatedCourse(courseId));
+			} catch (ValidationException e) {
+				log.error("Exception while fetching related courses having exception = "+e);
+			}
+		});
 		return relatedCourses;
 	}
 
 	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final String country) {
-		return courseDAO.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto, country);
+		return courseDao.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto, country);
 	}
 
 	public List<String> getCountryForTopSearchedCourses(final List<String> topSearchedCourseIds) throws ValidationException {
 		if (topSearchedCourseIds == null || topSearchedCourseIds.isEmpty()) {
 			throw new ValidationException(messageByLocaleService.getMessage("no.course.id.specified", new Object[] {}));
 		}
-		return courseDAO.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
+		return courseDao.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
 	}
 
 	/*private List<String> getCourseListBasedForCourseOnParameters(final String courseId, final String instituteId, final String facultyId,
 			final String countryId, final String cityId) {
-		List<String> courseIdList = courseDAO.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId, countryId, cityId);
+		List<String> courseIdList = courseDao.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId, countryId, cityId);
 		return courseIdList;
 	}*/
 
@@ -1202,12 +1209,12 @@ public class CourseProcessor {
 		if (courseIdList == null || courseIdList.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<Long> userIdList = courseDAO.getUserListFromUserWatchCoursesBasedOnCourses(courseIdList);
+		List<Long> userIdList = courseDao.getUserListFromUserWatchCoursesBasedOnCourses(courseIdList);
 		return userIdList;
 	}*/
 
 	public List<String> courseIdsForCountry(final String country) {
-		return courseDAO.getCourseIdsForCountry(country);
+		return courseDao.getCourseIdsForCountry(country);
 	}
 
 	public List<String> courseIdsForMigratedCountries(final String country) {
@@ -1221,39 +1228,39 @@ public class CourseProcessor {
 				otherCountryIds.add(globalDataDto.getDestinationCountry());
 		}
 		if (!otherCountryIds.isEmpty()) {
-			List<String> courseIds = courseDAO.getAllCoursesForCountry(otherCountryIds);
+			List<String> courseIds = courseDao.getAllCoursesForCountry(otherCountryIds);
 			return courseIds;
 		}
 		return new ArrayList<>();
 	}
 
 	public void updateCourseForCurrency(final CurrencyRateDto currencyRate) {
-		courseDAO.updateCourseForCurrency(currencyRate);
+		courseDao.updateCourseForCurrency(currencyRate);
 	}
 
 	public int getCountOfAdvanceSearch(final AdvanceSearchDto courseSearchDto, List<String> entityIds) 
 			throws ValidationException, NotFoundException {
-		return courseDAO.getCountOfAdvanceSearch(entityIds, courseSearchDto);
+		return courseDao.getCountOfAdvanceSearch(entityIds, courseSearchDto);
 	}
 
 	public List<CourseDTOElasticSearch> getUpdatedCourses(final Date date, final Integer startIndex, final Integer limit) {
-		return courseDAO.getUpdatedCourses(date, startIndex, limit);
+		return courseDao.getUpdatedCourses(date, startIndex, limit);
 	}
 
 	public Integer getCountOfTotalUpdatedCourses(final Date utCdatetimeAsOnlyDate) {
-		return courseDAO.getCountOfTotalUpdatedCourses(utCdatetimeAsOnlyDate);
+		return courseDao.getCountOfTotalUpdatedCourses(utCdatetimeAsOnlyDate);
 	}
 
 	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds, final Integer startIndex, final Integer limit) {
-		return courseDAO.getCoursesToBeRetriedForElasticSearch(courseIds, startIndex, limit);
+		return courseDao.getCoursesToBeRetriedForElasticSearch(courseIds, startIndex, limit);
 	}
 
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(final String courseId) {
-		return courseDAO.getCourseIntakeBasedOnCourseId(courseId);
+		return courseDao.getCourseIntakeBasedOnCourseId(courseId);
 	}
 
 	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(final String courseId) {
-		return courseDAO.getCourseLanguageBasedOnCourseId(courseId);
+		return courseDao.getCourseLanguageBasedOnCourseId(courseId);
 	}
 
 	public List<CourseResponseDto> getCourseNoResultRecommendation(final String userCountry, final String facultyId, final String countryId,
@@ -1281,7 +1288,7 @@ public class CourseProcessor {
 				//Country country = countryDAO.getCountryByName(globalDatas.get(0).getDestinationCountry());
 				courseSearchDto.setCountryNames(Arrays.asList(globalDatas.get(0).getDestinationCountry()));
 				courseSearchDto.setMaxSizePerPage(pageSize - courseResponseDtos.size());
-				List<CourseResponseDto> courseResponseDtos2 = courseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, false, null);
+				List<CourseResponseDto> courseResponseDtos2 = courseDao.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, false, null);
 				courseResponseDtos.addAll(courseResponseDtos2);
 			}
 		}
@@ -1314,32 +1321,32 @@ public class CourseProcessor {
 			courseSearchDto.setLevelIds(Arrays.asList(levelId));
 			courseSearchDto.setMaxSizePerPage(pageSize);
 			courseSearchDto.setSortBy("instituteName");
-			List<CourseResponseDto> courseResponseDtos = courseDAO.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, true, null);
+			List<CourseResponseDto> courseResponseDtos = courseDao.getAllCoursesByFilter(courseSearchDto, null, null, startIndex, true, null);
 			courseKeywordRecommended = courseResponseDtos.stream().map(CourseResponseDto::getName).collect(Collectors.toList());
 		}
 		return courseKeywordRecommended;
 	}
 
 	public int getDistinctCourseCount(String courseName) {
-		return courseDAO.getDistinctCourseCountbyName(courseName);
+		return courseDao.getDistinctCourseCountbyName(courseName);
 	}
 
 	public List<CourseResponseDto> getDistinctCourseList(Integer startIndex, Integer pageSize,String courseName) {
-		return courseDAO.getDistinctCourseListByName(startIndex, pageSize, courseName);
+		return courseDao.getDistinctCourseListByName(startIndex, pageSize, courseName);
 	}
 
 	public Map<String, Integer> getCourseCountByLevel() {
 		log.debug("Inside getCourseCountByLevel() method");
 		Map<String, Integer> courseLevelCount = new HashMap<>();
 		log.info("Fetching all levels from DB");
-		List<Level> levels = iLevelDao.getAll();
+		List<Level> levels = levelDao.getAll();
 		if (!CollectionUtils.isEmpty(levels)) {
 			log.info("Levels fetched from DB, now fetching course count for each level");
 			levels.stream().forEach(level -> {
 				Integer courseCount = null;
 				if (!ObjectUtils.isEmpty(level.getId())) {
 					log.info("Caliling DAO layer to get course count for levelId = "+level.getId());
-					courseCount = courseDAO.getCoursesCountBylevelId(level.getId());
+					courseCount = courseDao.getCoursesCountBylevelId(level.getId());
 				}
 				if (!ObjectUtils.isEmpty(courseCount)) {
 					courseLevelCount.put(level.getName(), courseCount);
@@ -1385,13 +1392,13 @@ public class CourseProcessor {
 		log.info("Association course grade eligibility with course");
 		course.setCourseGradeEligibility(courseGradeEligibility);
 		courseGradeEligibility.setCourse(course);*/
-		courseDAO.addUpdateCourse(course);
+		courseDao.addUpdateCourse(course);
 	}
 
 	public void updateMobileCourse(String userId, String courseId, CourseMobileDto courseMobileDto) throws Exception {
 		log.debug("Inside updateMobileCourse() method");
 		log.info("Getting course by course id "+courseId);
-		Course course =courseDAO.get(courseId);
+		Course course =courseDao.get(courseId);
 		if (ObjectUtils.isEmpty(course)) {
 			log.error("No course found for course having id "+courseId);
 			throw new NotFoundException("No course found for course having id "+courseId);
@@ -1420,7 +1427,7 @@ public class CourseProcessor {
 			courseGradeEligibilityFromDb.setUpdatedBy("API");
 			courseGradeEligibilityFromDb.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		}*/
-		courseDAO.addUpdateCourse(course);
+		courseDao.addUpdateCourse(course);
 	} 
 	
 	public List<CourseMobileDto> getAllMobileCourseByInstituteIdAndFacultyIdAndStatus(String userId, String instituteId, String facultyId, boolean status) throws Exception {
@@ -1434,7 +1441,7 @@ public class CourseProcessor {
 			throw new NotFoundException("No institute found for institute having id "+instituteId);
 		}
 		log.info("Getting course for institute id "+instituteId+ " having faculty id "+facultyId);
-		List<Course> listOfCourse = courseDAO.getAllCourseByInstituteIdAndFacultyIdAndStatus(instituteId, facultyId, status);
+		List<Course> listOfCourse = courseDao.getAllCourseByInstituteIdAndFacultyIdAndStatus(instituteId, facultyId, status);
 		if (!CollectionUtils.isEmpty(listOfCourse)) {
 			log.info("List of Course not empty creatng response DTO");
 			listOfCourse.stream().forEach(course -> {
@@ -1456,7 +1463,7 @@ public class CourseProcessor {
 			throw new NotFoundException("No institute found for institute having id "+instituteId);
 		}
 		log.info("Getting course for institute id "+instituteId+ " having faculty id "+facultyId + " and status active");
-		List<Course> listOfCourse = courseDAO.getAllCourseByInstituteIdAndFacultyIdAndStatus(instituteId, facultyId, true);
+		List<Course> listOfCourse = courseDao.getAllCourseByInstituteIdAndFacultyIdAndStatus(instituteId, facultyId, true);
 		if (!CollectionUtils.isEmpty(listOfCourse)) {
 			log.info("List of Course not empty creatng response DTO");
 			listOfCourse.stream().forEach(course -> {
@@ -1471,7 +1478,7 @@ public class CourseProcessor {
 	public void changeCourseStatus (String userId , String courseId, boolean status) throws Exception {
 		log.debug("Inside updateMobileCourse() method");
 		log.info("Getting course by course id "+courseId);
-		Course course =courseDAO.get(courseId);
+		Course course =courseDao.get(courseId);
 		if (ObjectUtils.isEmpty(course)) {
 			log.error("No course found for course having id "+courseId);
 			throw new NotFoundException("No course found for course having id "+courseId);
@@ -1482,7 +1489,7 @@ public class CourseProcessor {
 		 // TODO validate user id have appropriate access for institute id 
 		log.info("Changing course having Id "+courseId+ " from status "+course.getIsActive()+ " to "+status );
 		course.setIsActive(status);
-		courseDAO.addUpdateCourse(course);
+		courseDao.addUpdateCourse(course);
 	}
 	
 	public NearestCoursesDto getCourseByInstituteId(Integer pageNumber, Integer pageSize, String instituteId) throws NotFoundException {
@@ -1521,14 +1528,14 @@ public class CourseProcessor {
 				}
 				
 				log.info("Fetching courseLanguage from DB having courseId = "+course.getId());
-				List<CourseLanguage> courseLanguages = courseDAO.getCourseLanguageBasedOnCourseId(course.getId());
+				List<CourseLanguage> courseLanguages = courseDao.getCourseLanguageBasedOnCourseId(course.getId());
 				if(!CollectionUtils.isEmpty(courseLanguages)) {
 					log.info("courseLanguage is fetched from DB, hence adding englishEligibilities in response");
 					nearestCourse.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 				}
 				
 				log.info("Fetching courseIntake from DB having courseId = "+course.getId());
-				List<CourseIntake> courseIntakes = courseDAO.getCourseIntakeBasedOnCourseId(course.getId());
+				List<CourseIntake> courseIntakes = courseDao.getCourseIntakeBasedOnCourseId(course.getId());
 				if(!CollectionUtils.isEmpty(courseIntakes)) {
 					log.info("courseIntake is fetched from DB, hence adding englishEligibilities in response");
 					nearestCourse.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -1550,14 +1557,9 @@ public class CourseProcessor {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount.intValue());
-		NearestCoursesDto nearestCourseResponse = new NearestCoursesDto();
-		nearestCourseResponse.setNearestCourses(nearestCourseList);
-		nearestCourseResponse.setPageNumber(paginationUtilDto.getPageNumber());
-		nearestCourseResponse.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-		nearestCourseResponse.setHasNextPage(paginationUtilDto.isHasNextPage());
-		nearestCourseResponse.setTotalPages(paginationUtilDto.getTotalPages());
-		nearestCourseResponse.setTotalCount(totalCount.intValue());
-		return nearestCourseResponse;
+		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto(nearestCourseList, totalCount.intValue(), paginationUtilDto.getPageNumber(), 
+				paginationUtilDto.isHasPreviousPage(), paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
+		return nearestCoursesPaginationDto;
 	}
 	
 	public NearestCoursesDto getNearestCourses(AdvanceSearchDto courseSearchDto)
@@ -1569,9 +1571,9 @@ public class CourseProcessor {
 		Integer increaseRadius = 25, totalCount = 0;
 		log.info("start getting nearest courses from DB for latitude " + courseSearchDto.getLatitude()
 				+ " and longitude " + courseSearchDto.getLongitude() + " and initial radius is " + initialRadius);
-		List<CourseResponseDto> nearestCourseDTOs = courseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
+		List<CourseResponseDto> nearestCourseDTOs = courseDao.getNearestCourseForAdvanceSearch(courseSearchDto);
 		log.info("going to fetch total count of courses from DB");
-		totalCount = courseDAO.getTotalCountOfNearestCourses(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
+		totalCount = courseDao.getTotalCountOfNearestCourses(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
 		while (runMethodAgain) {
 			if (initialRadius != maxRadius && CollectionUtils.isEmpty(nearestCourseDTOs)) {
 				log.info("if data is comming as null from DB then increase radius, new radius is " + initialRadius);
@@ -1579,8 +1581,8 @@ public class CourseProcessor {
 				initialRadius = initialRadius + increaseRadius;
 				courseSearchDto.setInitialRadius(initialRadius);
 				log.info("for old radius data is not coming so start fetching nearest courses for new radius " + initialRadius);
-				nearestCourseDTOs = courseDAO.getNearestCourseForAdvanceSearch(courseSearchDto);
-				totalCount = courseDAO.getTotalCountOfNearestCourses(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
+				nearestCourseDTOs = courseDao.getNearestCourseForAdvanceSearch(courseSearchDto);
+				totalCount = courseDao.getTotalCountOfNearestCourses(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
 			} else {
 				log.info("data is coming from DB for radius " + initialRadius);
 				runMethodAgain = false;
@@ -1606,7 +1608,7 @@ public class CourseProcessor {
 					nearestCourse.setCourseDeliveryModes(additionalInfoDtos);
 					
 					log.info("Fetching courseIntake from DB having courseId = "+nearestCourseDTO.getId());
-					List<CourseIntake> courseIntakes = courseDAO.getCourseIntakeBasedOnCourseId(nearestCourseDTO.getId());
+					List<CourseIntake> courseIntakes = courseDao.getCourseIntakeBasedOnCourseId(nearestCourseDTO.getId());
 					if (!CollectionUtils.isEmpty(courseIntakes)) {
 						log.info("Filtering courseIntakes data based on courseId");
 						nearestCourse.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -1615,7 +1617,7 @@ public class CourseProcessor {
 					}
 					
 					log.info("Fetching courseLanguages from DB having courseId = "+nearestCourseDTO.getId());
-					List<CourseLanguage> courseLanguages = courseDAO.getCourseLanguageBasedOnCourseId(nearestCourseDTO.getId());
+					List<CourseLanguage> courseLanguages = courseDao.getCourseLanguageBasedOnCourseId(nearestCourseDTO.getId());
 					if(!CollectionUtils.isEmpty(courseLanguages)) {
 						nearestCourse.setLanguage(courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 					} else {
@@ -1628,18 +1630,13 @@ public class CourseProcessor {
 		Integer startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
-		NearestCoursesDto coursePaginationResponseDto = new NearestCoursesDto();
-		coursePaginationResponseDto.setNearestCourses(courseResponseDtoList);
-		coursePaginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
-		coursePaginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		Boolean hasNextPage = false;
 		if(initialRadius != maxRadius) {
-			coursePaginationResponseDto.setHasNextPage(true);
-		} else {
-			coursePaginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
-		}
-		coursePaginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
-		coursePaginationResponseDto.setTotalCount(totalCount);
-		return coursePaginationResponseDto;
+			hasNextPage = true;
+		} 
+		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto(courseResponseDtoList, totalCount.intValue(), paginationUtilDto.getPageNumber(), 
+				paginationUtilDto.isHasPreviousPage(), hasNextPage, paginationUtilDto.getTotalPages());
+		return nearestCoursesPaginationDto;
 	}
 
 	public Map<String, Object> getCourseById(String userId, String id) throws Exception {
@@ -1774,7 +1771,7 @@ public class CourseProcessor {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> nearestCourseResponse = new ArrayList<>();
 		log.info("fetching courses from DB for countryName "+ countryName);
-		List<CourseResponseDto> nearestCourseDTOs = courseDAO.getCourseByCountryName(pageNumber, pageSize, countryName);
+		List<CourseResponseDto> nearestCourseDTOs = courseDao.getCourseByCountryName(pageNumber, pageSize, countryName);
 		Long totalCount = courseRepository.getTotalCountOfCourseByCountryName(countryName);
 		if(!CollectionUtils.isEmpty(nearestCourseDTOs)) {
 			log.info("get data of courses for countryName, so start iterating data");
@@ -1797,13 +1794,8 @@ public class CourseProcessor {
 		}
 		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount.intValue());
-		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto();
-		nearestCoursesPaginationDto.setNearestCourses(nearestCourseResponse);
-		nearestCoursesPaginationDto.setPageNumber(paginationUtilDto.getPageNumber());
-		nearestCoursesPaginationDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-		nearestCoursesPaginationDto.setHasNextPage(paginationUtilDto.isHasNextPage());
-		nearestCoursesPaginationDto.setTotalPages(paginationUtilDto.getTotalPages());
-		nearestCoursesPaginationDto.setTotalCount(totalCount.intValue());
+		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto(nearestCourseResponse, totalCount.intValue(), paginationUtilDto.getPageNumber(), 
+				paginationUtilDto.isHasPreviousPage(), paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return nearestCoursesPaginationDto;
 	}
 	
@@ -1811,7 +1803,7 @@ public class CourseProcessor {
 		log.debug("Inside getCourseByMultipleId() method");
 		List<CourseDto> courseDtos = new ArrayList<>();
 		log.info("Extracting courses from DB based on multiple courseIds");
-		List<Course> courseDetails = courseDAO.getAllCoursesUsingId(courseIds);
+		List<Course> courseDetails = courseDao.getAllCoursesUsingId(courseIds);
 		if(!CollectionUtils.isEmpty(courseDetails)) {
 			log.info("Courses fetched from DB, start iterating data to make final response");
 			courseDetails.stream().forEach(courseDetail -> {

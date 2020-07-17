@@ -24,8 +24,7 @@ import com.yuzee.app.util.IConstant;
 @Transactional(rollbackFor = Throwable.class)
 public class ViewTransactionHandler {
 
-	private static final String GET_USER_MY_COURSE = "/course/user/favourite/{userId}/entityType/{entityType}/transactionType/{transactionType}";
-	
+	private static final String GET_USER_MY_COURSE = "/course/user/favourite/entityType/{entityType}/transactionType/{transactionType}";
 	private static final String GET_USER_VIEW_COURSE = "/transaction/viewed/course?entityType={entityType}&entityId={entityId}"
 			+ "&transactionType={transactionType}";
 
@@ -37,13 +36,16 @@ public class ViewTransactionHandler {
 		ResponseEntity<UserMyCourseWrapperDto> responseEntity = null;
 		Map<String, String> params = new HashMap<String, String>();
 		try {
-			params.put("userId", userId);
 			params.put("entityType", entityType);
 			params.put("transactionType", transactionType);
 
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("userId", userId);
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+			
 			StringBuilder path = new StringBuilder();
 			path.append(IConstant.VIEW_TRANSACTION_URL).append(GET_USER_MY_COURSE);
-			responseEntity = restTemplate.exchange(path.toString(), HttpMethod.GET, null, UserMyCourseWrapperDto.class, params);
+			responseEntity = restTemplate.exchange(path.toString(), HttpMethod.GET, entity, UserMyCourseWrapperDto.class, params);
 			if (responseEntity.getStatusCode().value() != 200) {
 				throw new InvokeException("Error response recieved from View transaction service with error code "
 						+ responseEntity.getStatusCode().value());

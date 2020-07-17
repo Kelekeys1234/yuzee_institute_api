@@ -5,8 +5,10 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class NearestInstituteDTO  {
 	
 	@JsonProperty("nearest_institutes")
@@ -26,4 +28,14 @@ public class NearestInstituteDTO  {
 	
 	@JsonProperty("total_pages")
 	private Integer totalPages;
+	
+	public NearestInstituteDTO(List<InstituteResponseDto> nearestInstitutes, Integer totalCount, Integer pageNumber, Boolean hasPreviousPage,
+			Boolean hasNextPage, Integer totalPages) {
+		this.nearestInstitutes = nearestInstitutes;
+		this.totalCount = totalCount;
+		this.pageNumber = pageNumber;
+		this.hasPreviousPage = hasPreviousPage;
+		this.hasNextPage = hasNextPage;
+		this.totalPages = totalPages;
+	}
 }

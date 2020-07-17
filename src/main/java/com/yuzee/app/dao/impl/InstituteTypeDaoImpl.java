@@ -41,7 +41,7 @@ public class InstituteTypeDaoImpl implements InstituteTypeDao {
         instituteTypes.stream().forEach(instituteType -> {
             InstituteTypeDto obj  = new InstituteTypeDto();
             obj.setInstituteTypeId(instituteType.getId());
-            obj.setName(instituteType.getName());
+            obj.setInstituteTypeName(instituteType.getName());
             obj.setCountryName(instituteType.getCountryName());
             obj.setDescription(instituteType.getDescription());
             instituteTypeDtos.add(obj);

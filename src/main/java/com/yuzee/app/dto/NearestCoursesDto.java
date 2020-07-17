@@ -26,4 +26,14 @@ public class NearestCoursesDto {
 	
 	@JsonProperty("total_pages")
 	private Integer totalPages;
+	
+	public NearestCoursesDto(List<CourseResponseDto> nearestCourses, Integer totalCount, Integer pageNumber, Boolean hasPreviousPage,
+			Boolean hasNextPage, Integer totalPages) {
+		this.nearestCourses = nearestCourses;
+		this.totalCount = totalCount;
+		this.pageNumber = pageNumber;
+		this.hasPreviousPage = hasPreviousPage;
+		this.hasNextPage = hasNextPage;
+		this.totalPages = totalPages;
+	}
 }

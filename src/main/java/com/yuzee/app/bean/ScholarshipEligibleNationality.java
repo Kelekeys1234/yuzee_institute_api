@@ -19,12 +19,14 @@ import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @Entity
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor
 @Table(name = "scholarship_eligible_nationality", uniqueConstraints = @UniqueConstraint(columnNames = { "country_name",
 		"scholarship_id" }, name = "UK_CN_LE_IN_CN"), indexes = {
 				@Index(name = "IDX_SCHOLARSHIP_ID", columnList = "scholarship_id", unique = false) })
@@ -60,4 +62,11 @@ public class ScholarshipEligibleNationality {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "deleted_on", length = 19)
 	private Date deletedOn;
+	
+	public ScholarshipEligibleNationality(String countryName, Scholarship scholarship, String createdBy, Date createdOn) {
+		this.countryName = countryName;
+		this.scholarship = scholarship;
+		this.createdBy = createdBy;
+		this.createdOn = createdOn;
+	}
 }

@@ -17,4 +17,9 @@ public class ScholarshipCountDto {
 	@JsonProperty("level_name")
 	@NotNull(message = "level_name should not be blank")
 	private Long count;
+	
+	public ScholarshipCountDto(String levelName, Long count) {
+		this.levelName = levelName;
+		this.count = count;
+	}
 }

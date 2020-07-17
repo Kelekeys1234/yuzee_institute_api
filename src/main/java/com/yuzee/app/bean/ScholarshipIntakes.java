@@ -18,9 +18,11 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "scholarship_intake", indexes = {@Index(name = "IDX_SCHOLARSHIP_ID", columnList = "scholarship_id", unique = false)})
 public class ScholarshipIntakes implements Serializable {
 	
@@ -55,4 +57,11 @@ public class ScholarshipIntakes implements Serializable {
 
 	@Column(name = "updated_by")
 	private String updatedBy;
+	
+	public ScholarshipIntakes(Scholarship scholarship, String name, String createdBy, Date createdOn) {
+		this.scholarship = scholarship;
+		this.name = name;
+		this.createdBy = createdBy;
+		this.createdOn = createdOn;
+	}
 }

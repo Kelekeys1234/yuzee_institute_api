@@ -119,11 +119,7 @@ public class ScholarshipProcessor {
 		if ((scholarshipDto.getIntakes() != null) && !scholarshipDto.getIntakes().isEmpty()) {
 			log.info("Scholarship intakes is not null, start iterating data");
 			scholarshipDto.getIntakes().stream().forEach(intake -> {
-				ScholarshipIntakes scholarshipIntakes = new ScholarshipIntakes();
-				scholarshipIntakes.setScholarship(scholarship);
-				scholarshipIntakes.setName(intake);
-				scholarshipIntakes.setCreatedBy("API");
-				scholarshipIntakes.setCreatedOn(new Date());
+				ScholarshipIntakes scholarshipIntakes = new ScholarshipIntakes(scholarship, intake, "API", new Date());
 				log.info("Calling DAO layer to save scholarship intakes in DB");
 				scholarshipDAO.saveScholarshipIntake(scholarshipIntakes);
 			
@@ -132,11 +128,7 @@ public class ScholarshipProcessor {
 		if ((scholarshipDto.getLanguages() != null) && !scholarshipDto.getLanguages().isEmpty()) {
 			log.info("Scholarship languages is not null, start iterating data");
 			scholarshipDto.getLanguages().stream().forEach(language -> {
-				ScholarshipLanguage scholarshipLanguage = new ScholarshipLanguage();
-				scholarshipLanguage.setScholarship(scholarship);
-				scholarshipLanguage.setName(language);
-				scholarshipLanguage.setCreatedBy("API");
-				scholarshipLanguage.setCreatedOn(new Date());
+				ScholarshipLanguage scholarshipLanguage = new ScholarshipLanguage(scholarship, language, "API", new Date());
 				log.info("Calling DAO layer to save scholarship language in DB");
 				scholarshipDAO.saveScholarshipLanguage(scholarshipLanguage);
 			
@@ -145,13 +137,9 @@ public class ScholarshipProcessor {
 		
 		if (!CollectionUtils.isEmpty(scholarshipDto.getEligibleNationality())) {
 			log.info("Scholarship eligibleNationality is not null, start iterating data");
-			
 			scholarshipDto.getEligibleNationality().stream().forEach(eligibleNationality -> {
-				ScholarshipEligibleNationality scholarshipEligibleNationality = new ScholarshipEligibleNationality();
-				scholarshipEligibleNationality.setScholarship(scholarship);
-				scholarshipEligibleNationality.setCountryName(eligibleNationality);
-				scholarshipEligibleNationality.setCreatedBy("API");
-				scholarshipEligibleNationality.setCreatedOn(new Date());
+				ScholarshipEligibleNationality scholarshipEligibleNationality = new ScholarshipEligibleNationality(eligibleNationality, scholarship, 
+						"API", new Date()) ;
 				log.info("Calling DAO layer to save scholarship eligibleNationality in DB");
 				scholarshipDAO.saveScholarshipEligibileNationality(scholarshipEligibleNationality);
 			});
@@ -213,13 +201,10 @@ public class ScholarshipProcessor {
 		List<MediaDto> mediaDtos = new ArrayList<>();
 		if(!CollectionUtils.isEmpty(storageDTOList)) {
 			log.info("Storage data fetched from storage service, start iterating data");
-			for (StorageDto storageDto : storageDTOList) {
-				MediaDto mediaDto = new MediaDto();
-				mediaDto.setId(storageDto.getEntityId());
-				mediaDto.setName(storageDto.getImageName());
-				mediaDto.setUrl(storageDto.getImageURL());
+			storageDTOList.stream().forEach(storageDto -> {
+				MediaDto mediaDto = new MediaDto(storageDto.getEntityId(), storageDto.getImageName(), storageDto.getImageURL());
 				mediaDtos.add(mediaDto);
-			}
+			});
 		}
 		scholarshipResponseDTO.setFiles(mediaDtos);
 		return scholarshipResponseDTO;
@@ -287,11 +272,7 @@ public class ScholarshipProcessor {
 		if ((scholarshipDto.getIntakes() != null) && !scholarshipDto.getIntakes().isEmpty()) {
 			log.info("Scholarship Intakes is coming in request, start iterating data to save in DB");
 			scholarshipDto.getIntakes().stream().forEach(intake -> {
-				ScholarshipIntakes scholarshipIntakes = new ScholarshipIntakes();
-				scholarshipIntakes.setScholarship(existingScholarship);
-				scholarshipIntakes.setName(intake);
-				scholarshipIntakes.setUpdatedBy("API");
-				scholarshipIntakes.setUpdatedOn(new Date());
+				ScholarshipIntakes scholarshipIntakes = new ScholarshipIntakes(existingScholarship, intake, "API", new Date());
 				log.info("Calling DAO layer to save scholarship intakes in DB");
 				scholarshipDAO.saveScholarshipIntake(scholarshipIntakes);
 			});
@@ -300,11 +281,7 @@ public class ScholarshipProcessor {
 		if ((scholarshipDto.getLanguages() != null) && !scholarshipDto.getLanguages().isEmpty()) {
 			log.info("Scholarship languages is coming in request, start iterating data to save in DB");
 			scholarshipDto.getLanguages().stream().forEach(language -> {
-				ScholarshipLanguage scholarshipLanguage = new ScholarshipLanguage();
-				scholarshipLanguage.setScholarship(existingScholarship);
-				scholarshipLanguage.setName(language);
-				scholarshipLanguage.setUpdatedBy("API");
-				scholarshipLanguage.setUpdatedOn(new Date());
+				ScholarshipLanguage scholarshipLanguage = new ScholarshipLanguage(existingScholarship, language, "API", new Date());
 				log.info("Calling DAO layer to save schloarship language in DB");
 				scholarshipDAO.saveScholarshipLanguage(scholarshipLanguage);
 			});
@@ -313,11 +290,8 @@ public class ScholarshipProcessor {
 		if (!CollectionUtils.isEmpty(scholarshipDto.getEligibleNationality())) {
 			log.info("Scholarship eligibleNationality is not null, start iterating data");
 			scholarshipDto.getEligibleNationality().stream().forEach(eligibleNationality -> {
-				ScholarshipEligibleNationality scholarshipEligibleNationality = new ScholarshipEligibleNationality();
-				scholarshipEligibleNationality.setScholarship(existingScholarship);
-				scholarshipEligibleNationality.setCountryName(eligibleNationality);
-				scholarshipEligibleNationality.setCreatedBy("API");
-				scholarshipEligibleNationality.setCreatedOn(new Date());
+				ScholarshipEligibleNationality scholarshipEligibleNationality = new ScholarshipEligibleNationality(eligibleNationality, existingScholarship,
+						"API", new Date());
 				log.info("Calling DAO layer to save scholarship eligibleNationality in DB");
 				scholarshipDAO.saveScholarshipEligibileNationality(scholarshipEligibleNationality);
 			});
@@ -382,7 +356,6 @@ public class ScholarshipProcessor {
 		}
 		return scholarships;
 	}
-
 	
 	public int countScholarshipList(final String countryId, final String instituteId, final String validity, final Boolean isActive,
 			final Date filterDate, final String searchKeyword) {
@@ -442,11 +415,9 @@ public class ScholarshipProcessor {
 		List<ScholarshipCountDto> scholarshipCountDtos = new ArrayList<>();
 		levelList.stream().forEach(level -> {
 			if (!ObjectUtils.isEmpty(level) && !ObjectUtils.isEmpty(level.getId())) {
-				ScholarshipCountDto scholarshipCountDto = new ScholarshipCountDto();
 				log.info("Fetching scholarship count having levelId = "+level.getId());
 				Long count = scholarshipDAO.getScholarshipCountByLevelId(level.getId());
-				scholarshipCountDto.setLevelName(level.getName());
-				scholarshipCountDto.setCount(count);
+				ScholarshipCountDto scholarshipCountDto = new ScholarshipCountDto(level.getName(), count);
 				scholarshipCountDtos.add(scholarshipCountDto);
 			}
 		});

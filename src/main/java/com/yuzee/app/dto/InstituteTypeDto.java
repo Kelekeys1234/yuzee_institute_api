@@ -12,9 +12,9 @@ public class  InstituteTypeDto {
 	@JsonProperty("institute_type_id")
 	private String instituteTypeId;
 	
-	@JsonProperty("institute_type")
-	@NotBlank(message = "institute_type should not be blank")
-	private String name;
+	@JsonProperty("institute_type_name")
+	@NotBlank(message = "institute_type_name should not be blank")
+	private String instituteTypeName;
 	
 	@JsonProperty("type")
 	private String type;

@@ -333,8 +333,8 @@ public class InstituteProcessor {
 				}
 			});
 			log.info("Calling elastic service to save instiutes on index");
-			/*elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityType.INSTITUTE.name().toLowerCase(),
-					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);*/
+			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityType.INSTITUTE.name().toLowerCase(),
+					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ="+exception);
 		}
@@ -723,7 +723,7 @@ public class InstituteProcessor {
 			log.info("Fetching institutes from DB based on pageSize and having searchKey = "+ searchKey);
 			List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
 			List<InstituteGetRequestDto> institutes = dao.autoSearch(startIndex, pageSize, searchKey);
-			for (InstituteGetRequestDto institute : institutes) {
+			institutes.stream().forEach(institute -> {
 				log.info("Start iterating institutes and set values in DTO for instituteId = " + institute.getId());
 				InstituteGetRequestDto instituteGetRequestDto = new InstituteGetRequestDto();
 				log.info("copying bean class to DTO and fetching institute videos based on countryName and instituteName");
@@ -738,7 +738,7 @@ public class InstituteProcessor {
 				paginationInstituteResponseDto.setTotalCount(totalCount);
 				paginationInstituteResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 				paginationInstituteResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
-			}
+			});
 		} catch (Exception exception) {
 			log.error("Exception while searching Institutes having exception = "+exception);
 		}
@@ -865,9 +865,9 @@ public class InstituteProcessor {
 					BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
 					nearestInstitute.setDistance(Double.valueOf(initialRadius));
 					log.info("going to fetch logo for institute from sotrage service for institutueID "+nearestInstituteDTO.getId());
-					/*List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestInstituteDTO.getId(), 
+					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestInstituteDTO.getId(), 
 							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
-					nearestInstitute.setStorageList(storageDTOList);*/
+					nearestInstitute.setStorageList(storageDTOList);
 					log.info("fetching instituteTiming from DB for instituteId = " +nearestInstituteDTO.getId());
 					InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(nearestInstituteDTO.getId());
 					nearestInstitute.setInstituteTiming(instituteTimingResponseDto);
@@ -878,17 +878,13 @@ public class InstituteProcessor {
 		Integer startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
-		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO();
-		institutePaginationResponseDto.setNearestInstitutes(nearestInstituteList);
-		institutePaginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
-		institutePaginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		
+		Boolean hasNextPage = false;
 		if(initialRadius != maxRadius) {
-			institutePaginationResponseDto.setHasNextPage(true);
-		} else {
-			institutePaginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+			hasNextPage = true;
 		}
-		institutePaginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
-		institutePaginationResponseDto.setTotalCount(totalCount);
+		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO(nearestInstituteList, totalCount, paginationUtilDto.getPageNumber(),
+				paginationUtilDto.isHasPreviousPage(), hasNextPage, paginationUtilDto.getTotalPages());
 		return institutePaginationResponseDto;
 	}
 
@@ -957,13 +953,8 @@ public class InstituteProcessor {
 		}
 		log.info("Calculating pagination based on pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
-		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO();
-		institutePaginationResponseDto.setNearestInstitutes(nearestInstituteList);
-		institutePaginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
-		institutePaginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-		institutePaginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
-		institutePaginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
-		institutePaginationResponseDto.setTotalCount(totalCount);
+		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO(nearestInstituteList, totalCount, paginationUtilDto.getPageNumber(),
+				paginationUtilDto.isHasPreviousPage(), paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return institutePaginationResponseDto;
 	}
 	
@@ -998,13 +989,8 @@ public class InstituteProcessor {
 		}
 		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
-		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO();
-		institutePaginationResponseDto.setNearestInstitutes(nearestInstituteDTOs);
-		institutePaginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
-		institutePaginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-		institutePaginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
-		institutePaginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
-		institutePaginationResponseDto.setTotalCount(totalCount);
+		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO(nearestInstituteDTOs, totalCount, paginationUtilDto.getPageNumber(),
+				paginationUtilDto.isHasPreviousPage(), paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return institutePaginationResponseDto;
 	}
 
