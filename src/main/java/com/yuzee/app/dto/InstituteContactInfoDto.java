@@ -42,8 +42,8 @@ public class InstituteContactInfoDto {
 	@JsonProperty("contact_number")
 	private String contactNumber;
 	
-	@NotEmpty(message = "eamil is required")
-	@JsonProperty("eamil")
+	@NotEmpty(message = "email is required")
+	@JsonProperty("email")
 	private String email;
 	
 	@NotEmpty(message = "average_living_cost is required")
