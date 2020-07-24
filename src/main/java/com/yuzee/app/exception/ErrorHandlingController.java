@@ -14,11 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuzee.app.handler.GenericResponseHandlers;
 
-/**
- *
- * @author SeekADegree
- *
- */
 @ControllerAdvice(basePackages = "com.yuzee.app")
 public class ErrorHandlingController {
 

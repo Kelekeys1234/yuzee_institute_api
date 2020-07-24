@@ -23,7 +23,7 @@ public class IConstant {
 	public static final String FAIL = "Fail.!";
 	public static final String DELETE_FAILURE = "Getting issue when article is deleting";
 	public static final String DELETE_FAILURE_ID_NOT_FOUND = "Specified article not found";
-	public static final String DELETE_SUCCESS = "SeekaArticles deleted successfully";
+	public static final String DELETE_SUCCESS = "YuzeeArticles deleted successfully";
 	public static final String SUB_CATEGORY_ERROR = "Getting datbase transaction error";
 	public static final String BASE_PACKAGE = "com.yuzee";
 	public static final String INSTITUDE_API = "Api Document";
@@ -77,20 +77,23 @@ public class IConstant {
 	
 	public static final String VIEW_TRANSACTION = "VIEW-TRANSACTION/transaction/api/v1";
 	public static final String VIEW_TRANSACTION_URL = "http://" + VIEW_TRANSACTION;
+	
+	public static final String APPLICATION = "APPLICATION-SERVICE/application/api/v1";
+	public static final String APPILICATION_URL = "http://" + APPLICATION;
 
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";
-	public static final String ELASTIC_SEARCH_INDEX_COURSE = "seeka_dev";
+	public static final String ELASTIC_SEARCH_INDEX_COURSE = "yuzee_dev_course";
 
-	public static final String ELASTIC_SEARCH_INDEX_ARTICLE = "seeka_dev_article";
-	public static final String ELASTIC_SEARCH_INDEX_INSTITUTE = "seeka_dev_institute";
+	public static final String ELASTIC_SEARCH_INDEX_ARTICLE = "yuzee_dev_article";
+	public static final String ELASTIC_SEARCH_INDEX_INSTITUTE = "yuzee_dev_institute";
 
-	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP = "seeka_dev_scholarship";
+	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP = "yuzee_dev_scholarship";
 
 	public static final String ELASTIC_SEARCH_URL = ELASTIC_SEARCH + "/";
 
 	public static final String ELASTIC_SEARCH_COURSE_TYPE = "course";
 	public static final String ELASTIC_SEARCH_ARTICLE_TYPE = "article";
-	public static final String COURSE_DEFAULT_DESCRPTION = "Seeka believes that every person deserves an equal opportunity in education, career aspirations and life. Our database is developed to match users no matter where they live. With over 200,000 scholarships available to choose from, we have carefully paired you with the best.";
+	public static final String COURSE_DEFAULT_DESCRPTION = "Yuzee believes that every person deserves an equal opportunity in education, career aspirations and life. Our database is developed to match users no matter where they live. With over 200,000 scholarships available to choose from, we have carefully paired you with the best.";
 
 	public static final Integer INSITUTE_PER_COUNTRY = 2;
 	public static final Integer COUNTRY_PER_PAGE = 10;

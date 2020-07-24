@@ -4,11 +4,6 @@ import java.io.Serializable;
 
 import lombok.Data;
 
-/**
- *
- * @author SeekADegree
- *
- */
 @Data
 public class UserDeviceInfoDto implements Serializable {
 

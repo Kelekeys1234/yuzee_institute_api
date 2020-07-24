@@ -109,7 +109,7 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 			obj.setDescription(row[4].toString());
 			obj.setStateName(row[5].toString());
 			
-			Query subjectQuery = session.createSQLQuery("select id,subject_name from seeka_subject where education_system_id ='"+row[0].toString()+"'");
+			Query subjectQuery = session.createSQLQuery("select id,subject_name from subject where education_system_id ='"+row[0].toString()+"'");
 			List<Object[]> subjectRows = subjectQuery.list();
 			for (Object[] subjectRow : subjectRows) {
 				SubjectDto subject = new SubjectDto();

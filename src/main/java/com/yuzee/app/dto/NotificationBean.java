@@ -2,11 +2,6 @@ package com.yuzee.app.dto;
 
 import java.io.Serializable;
 
-/**
- *
- * @author SeekADegree
- *
- */
 public class NotificationBean implements Serializable {
 
 	/**

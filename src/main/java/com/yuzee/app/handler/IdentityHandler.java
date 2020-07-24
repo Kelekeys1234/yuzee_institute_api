@@ -68,7 +68,7 @@ public class IdentityHandler {
 		payloadDto.setTitle("Application Update");
 
 		pushNotification.setChannel("PUSH");
-		pushNotification.setTenantCode("SEEKA-DEGREE");
+		pushNotification.setTenantCode("Yuzee");
 		pushNotification.setUser(userDeviceInfoDto.getFirstName() + " " + userDeviceInfoDto.getLastName());
 		pushNotification.setPayload(payloadDto);
 		pushNotification.setUserId(userDeviceInfoDto.getUserId());

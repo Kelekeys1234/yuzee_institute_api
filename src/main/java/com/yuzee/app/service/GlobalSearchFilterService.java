@@ -32,7 +32,7 @@ public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 
 	@Override
 	public Map<String, Object> filterByEntity(GlobalFilterSearchDto globalSearchFilterDto) throws ValidationException, CommonInvokeException {
-		if (EntityType.COURSE.equals(globalSearchFilterDto.getSeekaEntityType())) {
+		if (EntityType.COURSE.equals(globalSearchFilterDto.getEntityType())) {
 			AdvanceSearchDto advanceSearchDto = new AdvanceSearchDto();
 			BeanUtils.copyProperties(globalSearchFilterDto, advanceSearchDto);
 			return filterCoursesByParameters(globalSearchFilterDto, advanceSearchDto);

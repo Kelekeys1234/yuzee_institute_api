@@ -2,11 +2,6 @@ package com.yuzee.app.exception;
 
 import org.springframework.http.HttpStatus;
 
-/**
- *
- * @author SeekADegree
- *
- */
 public class FileNotFoundException extends BaseException {
 
 	/**

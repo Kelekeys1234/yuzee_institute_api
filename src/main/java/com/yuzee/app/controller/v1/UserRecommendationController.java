@@ -15,11 +15,6 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.service.UserRecommendationService;
 
-/**
- *
- * @author SeekADegree
- *
- */
 @RestController("userRecommendationControllerV1")
 @RequestMapping("/api/v1/user")
 public class UserRecommendationController {

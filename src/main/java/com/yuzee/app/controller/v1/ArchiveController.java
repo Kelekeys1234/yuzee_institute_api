@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.constant.ArchiveEntityType;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
-import com.yuzee.app.service.IEnrollmentService;
 import com.yuzee.app.service.IErrorReportService;
 import com.yuzee.app.service.IHelpService;
 
@@ -20,8 +19,8 @@ import com.yuzee.app.service.IHelpService;
 @RequestMapping("/api/v1/archive")
 public class ArchiveController {
 
-	@Autowired
-	private IEnrollmentService iEnrollmentService;
+//	@Autowired
+//	private IEnrollmentService iEnrollmentService;
 
 	@Autowired
 	private IHelpService iHelpService;
@@ -33,7 +32,8 @@ public class ArchiveController {
 	public ResponseEntity<Object> addArchive(@PathVariable final String entityType, @PathVariable final String entityId,
 			@RequestParam final boolean isArchive) throws ValidationException {
 		if (entityType.equals(ArchiveEntityType.ENROLLMENT.name())) {
-			iEnrollmentService.archiveEnrollment(entityId, isArchive);
+			// TODO call enrollment API to make it archive
+			// iEnrollmentService.archiveEnrollment(entityId, isArchive);
 		} else if (entityType.equals(ArchiveEntityType.ERROR_REPORT.name())) {
 			iErrorReportService.archiveErrorReport(entityId, isArchive);
 		} else if (entityType.equals(ArchiveEntityType.HELP_SUPPORT.name())) {

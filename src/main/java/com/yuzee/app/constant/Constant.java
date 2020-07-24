@@ -11,7 +11,7 @@ public class Constant {
 
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch/";
 	
-	public static final String ELASTIC_SEARCH_INDEX_IDENTITY = "seeka_dev_identity";
+	public static final String ELASTIC_SEARCH_INDEX_IDENTITY = "yuzee_dev_identity";
 	
 	public static final String STORAGE_BASE_PATH = "http://STORAGE-SERVICE/storage";
 	

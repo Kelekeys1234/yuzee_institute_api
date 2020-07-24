@@ -6,13 +6,6 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-/**
- *
- * Generate custom response for success and error
- *
- * @author SeekADegree
- *
- */
 public class GenericResponseHandlers {
 
 	private static final String DATA_CONST = "data";
