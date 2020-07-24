@@ -569,9 +569,8 @@ public class InstituteProcessor {
 	}
 
 	
-	public List<InstituteRequestDto> getById(final String id) throws ValidationException {
+	public InstituteRequestDto getById(final String id) throws ValidationException {
 		log.debug("Inside getById() method");
-		List<InstituteRequestDto> instituteRequestDtos = new ArrayList<>();
 		log.info("Fetching institute from DB for instituteId ="+id);
 		Institute institute = dao.get(id);
 		if (institute == null) {
@@ -595,8 +594,7 @@ public class InstituteProcessor {
 		if(!ObjectUtils.isEmpty(instituteTimingResponseDto)) {
 			instituteRequestDto.setInstituteTimings(CommonUtil.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
 		}
-		instituteRequestDtos.add(instituteRequestDto);
-		return instituteRequestDtos;
+		return instituteRequestDto;
 	}
 
 	private List<String> getIntakes(@Valid final String id) {

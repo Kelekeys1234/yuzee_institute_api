@@ -138,4 +138,11 @@ public class CourseRequest {
 
 	@JsonProperty("course_delivery_modes")
 	private List<CourseDeliveryModesDto> courseDeliveryModes;
+	
+	@JsonProperty("course_subjects")
+	private List<CoursePrerequisiteSubjectDto> courseSubjects;
+	
+	@JsonProperty("career_outcome")
+	private List<String> careerOutcome;
+	
 }

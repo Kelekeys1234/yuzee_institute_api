@@ -25,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
+import com.yuzee.app.bean.CourseCareerOutcome;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseIntake;
@@ -35,6 +36,7 @@ import com.yuzee.app.bean.GlobalData;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.constant.Type;
+import com.yuzee.app.dao.CourseCareerOutComeDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseDeliveryModesDao;
 import com.yuzee.app.dao.CourseEnglishEligibilityDao;
@@ -176,6 +178,12 @@ public class CourseProcessor {
 	
 	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
+	
+	@Autowired
+	private CoursePrerequisiteProcessor coursePrerequisiteProcessor;
+	
+	@Autowired
+	private CourseCareerOutComeDao courseCareerOutComeDao;
 	
 	@Value("${max.radius}")
 	private Integer maxRadius;
@@ -1262,6 +1270,10 @@ public class CourseProcessor {
 	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(final String courseId) {
 		return courseDao.getCourseLanguageBasedOnCourseId(courseId);
 	}
+	
+	public List<CourseCareerOutcome> getCourseCareerOutComeBasedOnCourseId(final String courseId) {
+		return courseCareerOutComeDao.getCourseCareerOutcome(courseId);
+	}
 
 	public List<CourseResponseDto> getCourseNoResultRecommendation(final String userCountry, final String facultyId, final String countryId,
 			final Integer startIndex, final Integer pageSize) throws ValidationException, InvokeException {
@@ -1669,11 +1681,18 @@ public class CourseProcessor {
 		log.info("Fetching courseIntake for courseId = "+id);
 		courseRequest.setIntake(getCourseIntakeBasedOnCourseId(id).stream()
 				.map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+		
 		log.info("Fetching courseLanguage for courseId = "+id);
 		courseRequest.setLanguage(getCourseLanguageBasedOnCourseId(id).stream()
 				.map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 		log.info("Fetching courseDeliveryModes for courseId = "+id);
 		courseRequest.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(id));
+		
+		log.info("Fetching coursePrerequisites for courseId = "+id);
+		courseRequest.setCourseSubjects(coursePrerequisiteProcessor.getCoursePrerequisite(id));
+		log.info("Fetching courseCareerOutCome for courseId = "+id);
+		courseRequest.setCareerOutcome(getCourseCareerOutComeBasedOnCourseId(id).stream().
+				map(CourseCareerOutcome::getCareerOutcome).collect(Collectors.toList()));
 		
 		log.info("Fetching institute data from DB having instututeId = "+courseRequest.getInstituteId());
 		Institute instituteObj = instituteProcessor.get(courseRequest.getInstituteId());

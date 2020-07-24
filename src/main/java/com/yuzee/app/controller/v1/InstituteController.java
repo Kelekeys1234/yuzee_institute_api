@@ -270,7 +270,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> get(final String instituteId) throws ValidationException {
 		log.info("Start process to fetch Institutes from DB for instituteId = "+instituteId);
-		List<InstituteRequestDto> instituteRequestDtos = instituteProcessor.getById(instituteId);
+		InstituteRequestDto instituteRequestDtos = instituteProcessor.getById(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteRequestDtos).setMessage("Institute details get successfully").setStatus(HttpStatus.OK)
 				.create();
 	}
