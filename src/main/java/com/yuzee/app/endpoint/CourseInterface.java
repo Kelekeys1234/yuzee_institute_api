@@ -161,6 +161,12 @@ public interface CourseInterface {
 	@PostMapping("/courseIds")
 	public ResponseEntity<?> getCourseByIds(@RequestBody List<String> courseIds);
 	
+	@GetMapping("/recommendation/{courseId}")
+	public ResponseEntity<?> getRecommendateCourses(@PathVariable String courseId) throws ValidationException;
+	
+	@GetMapping("/related/{courseId}")
+	public ResponseEntity<?> getRelatedCourses(@PathVariable String courseId) throws ValidationException;
+	
 	@Deprecated
 	@GetMapping(value = "/eligibility/update")
 	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception;

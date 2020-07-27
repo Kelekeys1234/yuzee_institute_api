@@ -471,4 +471,18 @@ public class CourseController implements CourseInterface {
 		return new GenericResponseHandlers.Builder().setData(courseDtos).setMessage("Course List Displayed Successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
+
+	@Override
+	public ResponseEntity<?> getRecommendateCourses(String courseId) throws ValidationException {
+		List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(courseId);
+		return new GenericResponseHandlers.Builder().setData(recommendCourse).setMessage("Recommendate Courses Displayed Successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> getRelatedCourses(String courseId) throws ValidationException {
+		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(courseId);
+		return new GenericResponseHandlers.Builder().setData(relatedCourse).setMessage("Related Courses Displayed Successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
 }

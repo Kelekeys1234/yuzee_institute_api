@@ -65,11 +65,8 @@ import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.dto.StudentVisaDto;
 import com.yuzee.app.dto.UserDto;
-import com.yuzee.app.dto.UserReviewResultDto;
 import com.yuzee.app.dto.UserViewCourseDto;
-import com.yuzee.app.dto.YouTubeVideoDto;
 import com.yuzee.app.enumeration.EntityType;
 import com.yuzee.app.enumeration.ImageCategory;
 import com.yuzee.app.exception.CommonInvokeException;
@@ -78,7 +75,6 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.CommonHandler;
 import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.handler.EnrollmentHandler;
 import com.yuzee.app.handler.ReviewHandler;
 import com.yuzee.app.handler.ViewTransactionHandler;
 import com.yuzee.app.message.MessageByLocaleService;
@@ -168,13 +164,7 @@ public class CourseProcessor {
 	private CommonHandler commonHandler;
 	
 	@Autowired
-	private EnrollmentHandler enrollmentHandler;
-
-	@Autowired
 	private AccrediatedDetailProcessor accrediatedDetailProcessor;
-	
-	@Autowired
-	private UserRecommendationService userRecommendationService;
 	
 	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
@@ -1685,40 +1675,38 @@ public class CourseProcessor {
 		log.info("Fetching courseLanguage for courseId = "+id);
 		courseRequest.setLanguage(getCourseLanguageBasedOnCourseId(id).stream()
 				.map(CourseLanguage::getLanguage).collect(Collectors.toList()));
+		
 		log.info("Fetching courseDeliveryModes for courseId = "+id);
 		courseRequest.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(id));
 		
 		log.info("Fetching coursePrerequisites for courseId = "+id);
 		courseRequest.setCourseSubjects(coursePrerequisiteProcessor.getCoursePrerequisite(id));
-		log.info("Fetching courseCareerOutCome for courseId = "+id);
-		courseRequest.setCareerOutcome(getCourseCareerOutComeBasedOnCourseId(id).stream().
-				map(CourseCareerOutcome::getCareerOutcome).collect(Collectors.toList()));
+		
+		log.info("Fetching courseEnglish Eligibility from DB based on courseId = "+id);
+		courseRequest.setEnglishEligibility(courseEnglishEligibilityProcessor.getAllEnglishEligibilityByCourse(id));
 		
 		log.info("Fetching institute data from DB having instututeId = "+courseRequest.getInstituteId());
 		Institute instituteObj = instituteProcessor.get(courseRequest.getInstituteId());
 		BeanUtils.copyProperties(instituteObj, instituteResponseDto);
-		List<YouTubeVideoDto> youtubeData = new ArrayList<>();
 		if (!ObjectUtils.isEmpty(instituteObj)) {
 			log.info("Institutes fetched from DB now fetching instituteServices from DB based on instituteId");
 			List<String> instituteServices = instituteServiceProcessor.getAllServices(instituteObj.getId());
 			if(!CollectionUtils.isEmpty(instituteServices)) {
 				instituteResponseDto.setInstituteServices(instituteServices);
 			}
+			if (instituteObj.getLatitude() != null && instituteObj.getLongitude() != null) {
+				courseRequest.setLatitude(instituteObj.getLatitude());
+				courseRequest.setLongitude(instituteObj.getLongitude());
+			}
+			log.info("Fetching accrediated details for institute from DB having instituteID = "+instituteObj.getId());
+			List<AccrediatedDetailDto> accrediatedInstituteDetailsFromDB = accrediatedDetailProcessor.getAccrediationDetailByEntityId(instituteObj.getId());
+			if(!CollectionUtils.isEmpty(accrediatedInstituteDetailsFromDB)) {
+				instituteResponseDto.setAccrediatedDetail(accrediatedInstituteDetailsFromDB);
+			}
 			log.info("Calling Storage Service to fetch institute images");
 			List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
 			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
-			
-			log.info("Invoking Common Service to fetch youtube videos for instituteName = "+ instituteObj.getName() + 
-						" and countryName = "+instituteObj.getCountryName() + " and coureName = "+course.getName());
-			youtubeData = commonHandler.getYoutubeDataBasedOnCriteria(instituteObj.getName(), instituteObj.getCountryName(),
-					instituteObj.getCityName(), course.getName(), 1, 10);
-		}
-		
-		log.info("Fetching accrediated details for institute from DB having instituteID = "+instituteObj.getId());
-		List<AccrediatedDetailDto> accrediatedInstituteDetailsFromDB = accrediatedDetailProcessor.getAccrediationDetailByEntityId(instituteObj.getId());
-		if(!CollectionUtils.isEmpty(accrediatedInstituteDetailsFromDB)) {
-			instituteResponseDto.setAccrediatedDetail(accrediatedInstituteDetailsFromDB);
 		}
 		
 		log.info("Fetching accrediated details for course from DB having courseId = "+course.getId());
@@ -1726,63 +1714,8 @@ public class CourseProcessor {
 		if(!CollectionUtils.isEmpty(accrediatedCourseDetails)) {
 			courseRequest.setAccrediatedDetail(accrediatedCourseDetails);
 		}
-		
-		log.info("Fetching courseEnglish Eligibility from DB based on courseId = "+id);
-		List<CourseEnglishEligibilityDto> englishCriteriaList = courseEnglishEligibilityProcessor.getAllEnglishEligibilityByCourse(id);
-		
-		if (!englishCriteriaList.isEmpty()) {
-			courseRequest.setEnglishEligibility(englishCriteriaList);
-		} else {
-			courseRequest.setEnglishEligibility(new ArrayList<>());
-		}
-
-		List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(id);
-		
-		log.info("Fetching related courses to add in response based on courseId = "+id);
-		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(id);
-		if (instituteObj.getLatitude() != null && instituteObj.getLongitude() != null) {
-			courseRequest.setLatitude(instituteObj.getLatitude());
-			courseRequest.setLongitude(instituteObj.getLongitude());
-		}
-
-		// Get Enrollment details for the course
-		if (userId != null) {
-			log.info("UserId is not null, calling Application service to fetch totalCount of enrollment for courseId "+id);
-			Integer count = enrollmentHandler.getTotalCountOfEnrollment(userId, id);
-			courseRequest.setApplied(count == 0 ? false : true);
-		} else {
-			courseRequest.setApplied(false);
-		}
-
-		// Get User View Course Details
-		if (userId != null) {
-			UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(userId, 
-					"COURSE", id, "viewCourse");
-			if(!ObjectUtils.isEmpty(userViewCourseDto)) {
-				courseRequest.setViewCourse(true);
-			} else {
-				courseRequest.setViewCourse(false);
-			}
-		} else {
-			courseRequest.setViewCourse(false);
-		}
-
-		// Add User Review to the course info response
-		log.info("Calling review service to get user review for course");
-		List<UserReviewResultDto> userReviewResultList = reviewHandler.getUserReviewBasedOnData(id, "COURSE", 1, 5,
-				null, null);
-		courseRequest.setUserReviewResult(userReviewResultList);
-
-		log.info("Calling Common Service to get Student visa details having countryName = "+instituteObj.getCountryName());
-		StudentVisaDto studentVisaDto = commonHandler.getStudentVisaDetailsByCountryName(instituteObj.getCountryName());
-		if(!ObjectUtils.isEmpty(studentVisaDto.getId())) {
-			courseRequest.setStudentVisa(studentVisaDto);
-		}
 		response.put("courseObj", courseRequest);
-		response.put("recommendCourse", recommendCourse);
-		response.put("relatedCourse", relatedCourse);
 		response.put("instituteObj", instituteResponseDto);
-		response.put("youtubeData", youtubeData);
 		return response;
 	}
 	
