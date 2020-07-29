@@ -1,23 +1,11 @@
 package com.yuzee.app.controller.v1;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,165 +14,190 @@ import com.yuzee.app.dto.HelpAnswerDto;
 import com.yuzee.app.dto.HelpCategoryDto;
 import com.yuzee.app.dto.HelpDto;
 import com.yuzee.app.dto.HelpSubCategoryDto;
+import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
+import com.yuzee.app.endpoint.HelpInterface;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
-import com.yuzee.app.service.IHelpService;
+import com.yuzee.app.processor.HelpProcessor;
 import com.yuzee.app.util.PaginationUtil;
 
 @RestController("helpControllerV1")
-@RequestMapping("/api/v1/help")
-public class HelpController {
+public class HelpController implements HelpInterface {
 
 	@Autowired
-	private IHelpService helpService;
+	private HelpProcessor helpProcessor;
 
-	@RequestMapping(value = "/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAll(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
-		return ResponseEntity.accepted().body(helpService.getAll(pageNumber, pageSize));
+	@Override
+	public ResponseEntity<?> getAll(final Integer pageNumber, final Integer pageSize) throws Exception {
+		PaginationResponseDto paginationResponseDto = helpProcessor.getAll(pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
+				.setMessage("Help Fetched Successfully").create();
 	}
 
-	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> save(@Valid @RequestBody final HelpDto helpDto, @RequestHeader final String userId) throws Exception {
-		return ResponseEntity.accepted().body(helpService.save(helpDto, userId));
+	@Override
+	public ResponseEntity<?> save(final HelpDto helpDto, final String userId) throws Exception {
+		helpProcessor.saveHelp(helpDto, userId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Help Saved Successfully").create();
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> get(@PathVariable final String id) throws Exception {
-		return ResponseEntity.accepted().body(helpService.get(id));
+	@Override
+	public ResponseEntity<?> get(final String id) throws Exception {
+		HelpDto helpDto = helpProcessor.getYuzeeHelp(id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(helpDto)
+				.setMessage("Help Fetched Successfully").create();
 	}
 
-	@RequestMapping(value = "/by/category/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getHelpByCategoryId(@PathVariable final String id) throws Exception {
-		return ResponseEntity.accepted().body(helpService.getHelpByCategory(id));
+	@Override
+	public ResponseEntity<?> getHelpByCategoryId(final String id) throws Exception {
+		List<HelpDto> helpDtos = helpProcessor.getHelpByCategory(id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(helpDtos)
+				.setMessage("Help Category Fetched Successfully").create();
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> update(@PathVariable final String id, @RequestBody final HelpDto helpDto, @RequestHeader final String userId) {
-		return ResponseEntity.accepted().body(helpService.update(helpDto, id, userId));
+	@Override
+	public ResponseEntity<?> update(final String id, final HelpDto helpDto, @RequestHeader final String userId) {
+		helpProcessor.updateHelp(helpDto, id, userId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Help Updated Successfully").create();
 	}
 
-	@RequestMapping(value = "/category", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> saveCategory(@Valid @RequestBody final HelpCategoryDto categoryDto) throws Exception {
-		return ResponseEntity.accepted().body(helpService.save(categoryDto));
+	@Override
+	public ResponseEntity<?> saveCategory(final HelpCategoryDto categoryDto) throws Exception {
+		helpProcessor.saveHelpCategory(categoryDto);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Help Category Saved Successfully").create();
+	}
+	
+	@Override
+	public ResponseEntity<?> getCatgeory(final String id) throws Exception {
+		HelpCategoryDto helpCategoryDto = helpProcessor.getCategory(id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(helpCategoryDto)
+				.setMessage("Help Category Fetched Successfully").create();
 	}
 
-	@RequestMapping(value = "/category/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCatgeory(@PathVariable final String id) throws Exception {
-		return ResponseEntity.accepted().body(helpService.getCategory(id));
+	@Override
+	public ResponseEntity<?> saveSubCategory(final HelpSubCategoryDto subCategoryDto) throws Exception {
+		helpProcessor.saveHelpSubCategory(subCategoryDto);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Help SubCategory Saved Successfully").create();
 	}
 
-	@RequestMapping(value = "/subCategory", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> saveSubCategory(@Valid @RequestBody final HelpSubCategoryDto subCategoryDto) throws Exception {
-		return ResponseEntity.accepted().body(helpService.save(subCategoryDto));
+	@Override
+	public ResponseEntity<?> getSubCatgeory(final String id) throws Exception {
+		HelpSubCategoryDto helpSubCategoryDto = helpProcessor.getSubCategory(id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(helpSubCategoryDto)
+				.setMessage("Help SubCategory fetched Successfully").create();
 	}
 
-	@RequestMapping(value = "/subCategory/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getSubCatgeory(@PathVariable final String id) throws Exception {
-		return ResponseEntity.accepted().body(helpService.getSubCategory(id));
-	}
-
-	@RequestMapping(value = "/category/{categoryId}/subCategory/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getSubCatgeoryByCategory(@PathVariable final String categoryId, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize) throws Exception {
+	@Override
+	public ResponseEntity<?> getSubCategoryByCategory(final String categoryId, final Integer pageNumber,
+			final Integer pageSize) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<HelpSubCategoryDto> subCategoryDtos = helpService.getSubCategoryByCategory(categoryId, startIndex, pageSize);
-		int totalCount = helpService.getSubCategoryCount(categoryId);
+		List<HelpSubCategoryDto> subCategoryDtos = helpProcessor.getSubCategoryByCategory(categoryId, startIndex, pageSize);
+		int totalCount = helpProcessor.getSubCategoryCount(categoryId);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-		Map<String, Object> responseMap = new HashMap<>(10);
-		responseMap.put("status", HttpStatus.OK);
-		responseMap.put("message", "Get help sub category list successfully");
-		responseMap.put("data", subCategoryDtos);
-		responseMap.put("totalCount", totalCount);
-		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
-		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
-		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
+		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+		paginationResponseDto.setResponse(subCategoryDtos);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
+				.setMessage("Help SubCategory fetched Successfully").create();
 	}
 
-	@RequestMapping(value = "/subCategory/count", method = RequestMethod.GET, produces = "application/json")
+	@Override
 	public ResponseEntity<?> getSubCategoryCount() throws Exception {
-		return ResponseEntity.accepted().body(helpService.getSubCategoryCount());
+		List<HelpSubCategoryDto> helpSubCategories = helpProcessor.getSubCategoryCount();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(helpSubCategories)
+				.setMessage("Help SubCategory Count fetched Successfully").create();
 	}
 
-	@RequestMapping(value = "/answer", method = RequestMethod.POST)
-	public ResponseEntity<?> saveAnswer(@RequestParam(name = "file", required = false) final MultipartFile file,
-			@ModelAttribute final HelpAnswerDto helpAnswerDto) throws Exception {
-		return ResponseEntity.accepted().body(helpService.saveAnswer(helpAnswerDto, file));
+	@Override
+	public ResponseEntity<?> saveAnswer(final MultipartFile file, final HelpAnswerDto helpAnswerDto) throws Exception {
+		helpProcessor.saveAnswer(helpAnswerDto, file);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Help Answer saved Successfully").create();
 	}
 
-	@RequestMapping(value = "/answer/{helpId}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getAnswerByHelpId(@PathVariable final String helpId) throws Exception {
-		return ResponseEntity.accepted().body(helpService.getAnswerByHelpId(helpId));
+	@Override
+	public ResponseEntity<?> getAnswerByHelpId(final String helpId) throws Exception {
+		List<HelpAnswerDto> helpAnswerDtos = helpProcessor.getAnswerByHelpId(helpId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(helpAnswerDtos)
+				.setMessage("Help Answer fetched Successfully").create();
 	}
 
-	@RequestMapping(value = "/category/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getCategory(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception {
+	@Override
+	public ResponseEntity<?> getCategory(final Integer pageNumber, final Integer pageSize) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<HelpCategoryDto> helpCategoryDtos = helpService.getCategory(startIndex, pageSize);
-		int totalCount = helpService.getCategoryCount();
+		List<HelpCategoryDto> helpCategoryDtos = helpProcessor.getCategory(startIndex, pageSize);
+		int totalCount = helpProcessor.getCategoryCount();
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-		Map<String, Object> responseMap = new HashMap<>(10);
-		responseMap.put("status", HttpStatus.OK);
-		responseMap.put("message", "Get Help Category list successfully");
-		responseMap.put("data", helpCategoryDtos);
-		responseMap.put("totalCount", totalCount);
-		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
-		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
-		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
+		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+		paginationResponseDto.setResponse(helpCategoryDtos);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
+				.setMessage("Help Category fetched Successfully").create();
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public ResponseEntity<?> delete(@Valid @PathVariable final String id) throws Exception {
-		return ResponseEntity.accepted().body(helpService.delete(id));
+	@Override
+	public ResponseEntity<?> delete(final String id) throws Exception {
+		helpProcessor.delete(id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Help deleted Successfully").create();
 	}
 
-	@RequestMapping(value = "/status/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> updateStatus(@PathVariable final String id, @RequestHeader(required = false) final String userId,
-			@RequestParam final String status, @RequestParam(required = false) final String assignedUserId) throws Exception {
-		return ResponseEntity.accepted().body(helpService.updateStatus(id, assignedUserId, status));
+	@Override
+	public ResponseEntity<?> updateStatus(final String id, final String userId,
+			final String status, final String assignedUserId) throws Exception {
+		helpProcessor.updateStatus(id, assignedUserId, status);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Help status updated Successfully").create();
 	}
 
-	@RequestMapping(value = "/filter", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> filter(@RequestParam(required = false) final String status, @RequestParam(required = false) final String mostRecent,
-			@RequestParam final String categoryId) throws Exception {
-		return ResponseEntity.accepted().body(helpService.filter(status, mostRecent, categoryId));
+	@Override
+	public ResponseEntity<?> filter(final String status, final String mostRecent,
+			final String categoryId) throws Exception {
+		List<HelpDto> helpDtos = helpProcessor.filter(status, mostRecent, categoryId);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(helpDtos)
+				.setMessage("Help fetched Successfully").create();
 	}
 
-	@RequestMapping(value = "/user/pageNumber/{pageNumber}/pageSize/{pageSize}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> getUserHelpList(@RequestHeader final String userId, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(name = "isArchive", required = false) final boolean isArchive) throws Exception {
+	@Override
+	public ResponseEntity<?> getUserHelpList(final String userId, final Integer pageNumber,
+			final Integer pageSize, final boolean isArchive) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<Help> helps = helpService.getUserHelpList(userId, startIndex, pageSize, isArchive);
-		int totalCount = helpService.getUserHelpCount(userId, isArchive);
+		List<Help> helps = helpProcessor.getUserHelpList(userId, startIndex, pageSize, isArchive);
+		int totalCount = helpProcessor.getUserHelpCount(userId, isArchive);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-		Map<String, Object> responseMap = new HashMap<>(10);
-		responseMap.put("status", HttpStatus.OK);
-		responseMap.put("message", "Get Help List successfully");
-		responseMap.put("data", helps);
-		responseMap.put("totalCount", totalCount);
-		responseMap.put("pageNumber", paginationUtilDto.getPageNumber());
-		responseMap.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
-		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
+		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+		paginationResponseDto.setResponse(helps);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
+				.setMessage("User Help list fetched Successfully").create();
 	}
 
-	@PutMapping(value = "/{id}/isFavourite/{isFavourite}")
-	public ResponseEntity<?> setIsFavourite(@RequestHeader(value = "userId") final String userId, @PathVariable(value = "id") final String id,
-			@PathVariable(value = "isFavourite") final boolean isFavourite) throws NotFoundException {
-		helpService.setIsFavouriteFlag(id, isFavourite);
+	@Override
+	public ResponseEntity<?> setIsFavourite(final String userId, final String id, final boolean isFavourite) throws NotFoundException {
+		helpProcessor.setIsFavouriteFlag(id, isFavourite);
 		return new GenericResponseHandlers.Builder().setMessage("Updated Successfuly").setStatus(HttpStatus.OK).create();
 	}
 
-	@PostMapping(value = "/relatedQuestions")
-	public ResponseEntity<?> getOptionOnUserSearch(@RequestHeader(value = "userId") final String userId,
-			@RequestBody(required = true) final String searchString) throws ValidationException {
-		List<String> questionList = helpService.getRelatedSearchQuestions(searchString);
+	@Override
+	public ResponseEntity<?> getOptionOnUserSearch(final String userId, final String searchString) throws ValidationException {
+		List<String> questionList = helpProcessor.getRelatedSearchQuestions(searchString);
 		return new GenericResponseHandlers.Builder().setMessage("Related Questions Displayed Successfully").setStatus(HttpStatus.OK).setData(questionList)
 				.create();
 	}

@@ -1,4 +1,4 @@
-package com.yuzee.app.dao;
+package com.yuzee.app.dao.impl;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -20,19 +20,20 @@ import com.yuzee.app.bean.Help;
 import com.yuzee.app.bean.HelpAnswer;
 import com.yuzee.app.bean.HelpCategory;
 import com.yuzee.app.bean.HelpSubCategory;
+import com.yuzee.app.dao.HelpDao;
 import com.yuzee.app.exception.NotFoundException;
 
 @Repository
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
-public class HelpDAO implements IHelpDAO {
+public class HelpDaoImpl implements HelpDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public void save(final Help seekaHelp) {
+	public void save(final Help help) {
 		Session session = sessionFactory.getCurrentSession();
-		session.save(seekaHelp);
+		session.save(help);
 	}
 
 	@Override
@@ -57,16 +58,16 @@ public class HelpDAO implements IHelpDAO {
 	}
 
 	@Override
-	public void update(final Help seekaHelp) {
+	public void update(final Help help) {
 		Session session = sessionFactory.getCurrentSession();
-		session.update(seekaHelp);
+		session.update(help);
 	}
 
 	@Override
 	public int findTotalHelpRecord(final String userId, final Boolean isArchive) {
 		int status = 1;
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select count(*) from seeka_help sa where sa.is_active = " + status + " and sa.deleted_on IS NULL";
+		String sqlQuery = "select count(*) from help sa where sa.is_active = " + status + " and sa.deleted_on IS NULL";
 		if (userId != null) {
 			sqlQuery = sqlQuery + " and sa.user_id = '" + userId + "'";
 		}
@@ -82,21 +83,21 @@ public class HelpDAO implements IHelpDAO {
 	@Override
 	public List<Help> getAll(final Integer startIndex, final Integer pageSize, final String userId, final Boolean isArchive) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Help.class, "seekaHelp");
+		Criteria crit = session.createCriteria(Help.class, "help");
 		if (userId != null) {
-			crit.add(Restrictions.eq("seekaHelp.userId", userId));
+			crit.add(Restrictions.eq("help.userId", userId));
 		}
-		crit.add(Restrictions.eq("seekaHelp.isActive", true));
+		crit.add(Restrictions.eq("help.isActive", true));
 		if (isArchive != null) {
-			crit.add(Restrictions.eq("seekaHelp.isArchive", isArchive));
+			crit.add(Restrictions.eq("help.isArchive", isArchive));
 		}
 
 		if ((startIndex != null) && (pageSize != null)) {
 			crit.setFirstResult(startIndex);
 			crit.setMaxResults(pageSize);
 		}
-		crit.addOrder(Order.desc("seekaHelp.isFavourite"));
-		crit.addOrder(Order.desc("seekaHelp.createdOn"));
+		crit.addOrder(Order.desc("help.isFavourite"));
+		crit.addOrder(Order.desc("help.createdOn"));
 		return crit.list();
 
 	}
@@ -117,7 +118,7 @@ public class HelpDAO implements IHelpDAO {
 	public List<HelpSubCategory> getSubCategoryByCategory(final String categoryId, final Integer startIndex, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(HelpSubCategory.class, "helpSubCategory");
-		crit.createAlias("helpSubCategory.categoryId", "helpCategory");
+		crit.createAlias("helpSubCategory.helpCategory", "helpCategory");
 		crit.add(Restrictions.eq("helpCategory.id", categoryId));
 		crit.add(Restrictions.eq("helpCategory.isActive", true));
 		if ((startIndex != null) && (pageSize != null)) {
@@ -131,8 +132,8 @@ public class HelpDAO implements IHelpDAO {
 	@Override
 	public List<Help> getHelpByCategory(final String categoryId) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Help.class, "seekaHelp");
-		crit.createAlias("seekaHelp.category", "category");
+		Criteria crit = session.createCriteria(Help.class, "help");
+		crit.createAlias("help.category", "category");
 		return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("isActive", true)).list();
 	}
 
@@ -141,8 +142,8 @@ public class HelpDAO implements IHelpDAO {
 		int status = 1;
 		Integer helpCount = null;
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select count(*) from seeka_help sa where sa.is_active = " + status + " and sa.deleted_on IS NULL and sub_category_id="
-				+ sub_category_id;
+		String sqlQuery = "select count(*) from help sa where sa.is_active = " + status + " and sa.deleted_on IS NULL and sub_category_id='"
+				+ sub_category_id + "'";
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
 		BigInteger count = (BigInteger) query.uniqueResult();
@@ -170,8 +171,8 @@ public class HelpDAO implements IHelpDAO {
 	public List<HelpAnswer> getAnswerByHelpId(final String userId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(HelpAnswer.class, "helpAnswer");
-		crit.createAlias("helpAnswer.seekaHelp", "seekaHelp");
-		return crit.add(Restrictions.eq("seekaHelp.id", userId)).list();
+		crit.createAlias("helpAnswer.help", "help");
+		return crit.add(Restrictions.eq("help.id", userId)).list();
 	}
 
 	@Override
@@ -189,7 +190,7 @@ public class HelpDAO implements IHelpDAO {
 	@Override
 	public List<Help> findByStatus(final String status, final String categoryId) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Help.class, "seekaHelp");
+		Criteria crit = session.createCriteria(Help.class, "help");
 		return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true)).list();
 	}
 
@@ -197,11 +198,11 @@ public class HelpDAO implements IHelpDAO {
 	public List<Help> findByMostRecent(final String mostRecent, final String categoryId) {
 		if ((mostRecent != null) && mostRecent.equals("asc")) {
 			Session session = sessionFactory.getCurrentSession();
-			Criteria crit = session.createCriteria(Help.class, "seekaHelp");
+			Criteria crit = session.createCriteria(Help.class, "help");
 			return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("isActive", true)).addOrder(Order.asc("createdOn")).list();
 		} else {
 			Session session = sessionFactory.getCurrentSession();
-			Criteria crit = session.createCriteria(Help.class, "seekaHelp");
+			Criteria crit = session.createCriteria(Help.class, "help");
 			return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("isActive", true)).addOrder(Order.desc("createdOn")).list();
 		}
 	}
@@ -210,12 +211,12 @@ public class HelpDAO implements IHelpDAO {
 	public List<Help> findByStatusAndMostRecent(final String status, final String mostRecent, final String categoryId) {
 		if ((mostRecent != null) && mostRecent.equals("asc")) {
 			Session session = sessionFactory.getCurrentSession();
-			Criteria crit = session.createCriteria(Help.class, "seekaHelp");
+			Criteria crit = session.createCriteria(Help.class, "help");
 			return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true))
 					.addOrder(Order.asc("createdOn")).list();
 		} else {
 			Session session = sessionFactory.getCurrentSession();
-			Criteria crit = session.createCriteria(Help.class, "seekaHelp");
+			Criteria crit = session.createCriteria(Help.class, "help");
 			return crit.add(Restrictions.eq("category.id", categoryId)).add(Restrictions.eq("status", status)).add(Restrictions.eq("isActive", true))
 					.addOrder(Order.desc("createdOn")).list();
 		}
@@ -230,7 +231,7 @@ public class HelpDAO implements IHelpDAO {
 	@Override
 	public void setIsFavouriteFlag(final String id, final boolean isFavourite) throws NotFoundException {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "update seeka_help set is_favourite = ? where id = ?";
+		String sqlQuery = "update help set is_favourite = ? where id = ?";
 		int updateCount = session.createNativeQuery(sqlQuery).setParameter(1, isFavourite).setParameter(2, id).executeUpdate();
 		if (updateCount == 0) {
 			throw new NotFoundException("No Help Found with Id : " + id);
@@ -251,7 +252,7 @@ public class HelpDAO implements IHelpDAO {
 	public int getSubCategoryCount(final String categoryId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(HelpSubCategory.class, "helpSubCategory");
-		crit.createAlias("helpSubCategory.categoryId", "helpCategory");
+		crit.createAlias("helpSubCategory.helpCategory", "helpCategory");
 		crit.add(Restrictions.eq("helpSubCategory.isActive", true));
 		crit.add(Restrictions.eq("helpCategory.isActive", true));
 		crit.add(Restrictions.eq("helpCategory.id", categoryId));
@@ -262,17 +263,18 @@ public class HelpDAO implements IHelpDAO {
 	@Override
 	public List<String> getRelatedSearchQuestions(final List<String> searchKeywords) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Help.class, "seeka_help");
+		Criteria crit = session.createCriteria(Help.class, "help");
 		Disjunction disjunction = Restrictions.disjunction();
 		for (String string : searchKeywords) {
-			Criterion keywordCriteria = Restrictions.ilike("seeka_help.descritpion", string, MatchMode.ANYWHERE);
+			Criterion keywordCriteria = Restrictions.ilike("help.descritpion", string, MatchMode.ANYWHERE);
 			disjunction.add(keywordCriteria);
 		}
 		crit.add(disjunction);
 		crit.add(Restrictions.sqlRestriction("1=1 order by rand()"));
 		crit.setMaxResults(3);
-		crit.setProjection(Projections.property("seeka_help.title"));
+		crit.setProjection(Projections.property("help.title"));
 		return crit.list();
 	}
+
 
 }

@@ -15,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.yuzee.app.dto.EnrollmentWrapperDto;
 import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.util.IConstant;
 
 @Service
@@ -45,7 +44,7 @@ public class EnrollmentHandler {
 			}
 		} catch(Exception e) {
 			LOGGER.error("Error invoking common service {}", e);
-			if (e instanceof InvokeException || e instanceof NotFoundException) {
+			if (e instanceof InvokeException) {
 				throw e;
 			} else {
 				throw new InvokeException("Error invoking Application service");

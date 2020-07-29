@@ -1,30 +1,30 @@
-package com.yuzee.app.service;
+package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.bean.Help;
 import com.yuzee.app.bean.HelpAnswer;
 import com.yuzee.app.bean.HelpCategory;
 import com.yuzee.app.bean.HelpSubCategory;
-import com.yuzee.app.dao.IHelpDAO;
+import com.yuzee.app.dao.HelpDao;
 import com.yuzee.app.dto.HelpAnswerDto;
 import com.yuzee.app.dto.HelpCategoryDto;
 import com.yuzee.app.dto.HelpDto;
 import com.yuzee.app.dto.HelpSubCategoryDto;
+import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UserDto;
@@ -33,14 +33,16 @@ import com.yuzee.app.enumeration.ImageCategory;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.IdentityHandler;
-import com.yuzee.app.processor.StorageProcessor;
+import com.yuzee.app.service.IMediaService;
 import com.yuzee.app.util.DateUtil;
-import com.yuzee.app.util.IConstant;
 import com.yuzee.app.util.PaginationUtil;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 @Service
+@CommonsLog
 @Transactional
-public class HelpService implements IHelpService {
+public class HelpProcessor {
 
 	List<String> stopWordsForRelatedQuestions = Arrays.asList(new String[] { "a", "able", "about", "above", "abroad", "abst", "accordance", "according",
 			"accordingly", "across", "act", "actually", "added", "adj", "adopted", "affected", "affecting", "affects", "after", "afterwards", "again",
@@ -101,7 +103,7 @@ public class HelpService implements IHelpService {
 			"yourself", "yourselves", "you've", "z", "zero" });
 
 	@Autowired
-	private IHelpDAO helpDAO;
+	private HelpDao helpDAO;
 
 	@Autowired
 	private IdentityHandler identityHandler;
@@ -112,529 +114,420 @@ public class HelpService implements IHelpService {
 	@Autowired
 	private StorageProcessor iStorageService;
 
-	@Override
-	public Map<String, Object> save(@Valid final HelpDto helpDto, final String userId) {
-		Map<String, Object> response = new HashMap<>();
+	public void saveHelp(@Valid final HelpDto helpDto, final String userId) {
+		log.debug("Inside saveHelp() method");
 		try {
-			helpDAO.save(convertDtoToSeekaHelp(helpDto, null, userId));
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", IConstant.HELP_SUCCESS_MESSAGE);
+			log.info("Calling DAO layer to save Help data in DB");
+			helpDAO.save(convertDtoToYuzeeHelp(helpDto, null, userId));
 		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while adding help data in DB having exception = "+exception);
 		}
-		return response;
 	}
 
-	public Help convertDtoToSeekaHelp(final HelpDto dto, final String id, final String userId) {
-		Help seekaHelp = null;
+	public Help convertDtoToYuzeeHelp(final HelpDto dto, final String id, final String userId) {
+		Help help = null;
 		if (id != null) {
-			seekaHelp = helpDAO.get(id);
+			help = helpDAO.get(id);
 		} else {
-			seekaHelp = new Help();
-			seekaHelp.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-			seekaHelp.setStatus(HelpEnum.NOTASSIGNED.toString());
+			help = new Help();
+			help.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+			help.setStatus(HelpEnum.NOTASSIGNED.toString());
 		}
-		seekaHelp.setUserId(userId);
-		seekaHelp.setCategory(helpDAO.getHelpCategory(dto.getCategoryId()));
-		seekaHelp.setSubCategory(helpDAO.getHelpSubCategory(dto.getSubCategoryId()));
-		seekaHelp.setCreatedBy(dto.getCreatedBy());
-		seekaHelp.setUpdatedBy(dto.getUpdatedBy());
-		seekaHelp.setTitle(dto.getTitle());
-		seekaHelp.setDescritpion(dto.getDescription());
-		seekaHelp.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		seekaHelp.setIsActive(true);
-		seekaHelp.setIsQuestioning(dto.getIsQuestioning());
-		return seekaHelp;
+		help.setUserId(userId);
+		help.setCategory(helpDAO.getHelpCategory(dto.getCategoryId()));
+		help.setSubCategory(helpDAO.getHelpSubCategory(dto.getSubCategoryId()));
+		help.setCreatedBy("API");
+		help.setUpdatedBy("API");
+		help.setTitle(dto.getTitle());
+		help.setDescription(dto.getDescription());
+		help.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+		help.setIsActive(true);
+		help.setIsQuestioning(dto.getIsQuestioning());
+		return help;
 	}
 
-	@Override
-	public Map<String, Object> get(final String id) {
-		Map<String, Object> response = new HashMap<>();
-		HelpDto dto = null;
-		try {
-			dto = convertSeekaHelpToDto(helpDAO.get(id));
-			if (dto != null) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.HELP_SUCCESS);
-				response.put("data", dto);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_NOT_FOUND);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+	public HelpDto getYuzeeHelp(final String id) throws NotFoundException {
+		log.debug("Inside getYuzeeHelp() method");
+		HelpDto helpDto = null;
+		log.info("Extracting Yuzee Help data from DB for id = "+id);
+		helpDto = convertYuzeeHelpToDto(helpDAO.get(id));
+		if (ObjectUtils.isArray(helpDto)) {
+			log.error("Yuzee Help not found in DB for id " + id);
+			throw new NotFoundException("Yuzee Help not found in DB for id " + id);
 		}
-		return response;
+		return helpDto;
 	}
 
-	public HelpDto convertSeekaHelpToDto(final Help seekaHelp) {
-		HelpDto dto = new HelpDto();
-
-		dto.setId(seekaHelp.getId());
-		dto.setTitle(seekaHelp.getTitle());
-		dto.setDescription(seekaHelp.getDescritpion());
-		dto.setCategoryId(seekaHelp.getCategory().getId());
-		dto.setSubCategoryId(seekaHelp.getSubCategory().getId());
-		dto.setCreatedBy(seekaHelp.getCreatedBy());
-		dto.setUpdatedBy(seekaHelp.getUpdatedBy());
-		dto.setIsQuestioning(seekaHelp.getIsQuestioning());
-		dto.setStatus(seekaHelp.getStatus());
-		dto.setIsArchive(seekaHelp.getIsArchive());
-		if (seekaHelp.getUserId() != null) {
+	public HelpDto convertYuzeeHelpToDto(final Help help) {
+		log.debug("Inside convertSeekaHelpToDto() method");
+		HelpDto helpDto = new HelpDto();
+		helpDto.setId(help.getId());
+		helpDto.setTitle(help.getTitle());
+		helpDto.setDescription(help.getDescription());
+		helpDto.setCategoryId(help.getCategory().getId());
+		helpDto.setSubCategoryId(help.getSubCategory().getId());
+		helpDto.setIsQuestioning(help.getIsQuestioning());
+		helpDto.setStatus(help.getStatus());
+		if (help.getUserId() != null) {
 			try {
-				UserDto userDto = identityHandler.getUserById(seekaHelp.getUserId());
+				log.info("Calling Identity Service to fetch userInfo for userId "+help.getUserId());
+				UserDto userDto = identityHandler.getUserById(help.getUserId());
 				if (userDto != null) {
 					if (userDto.getFirstName() != null) {
-						dto.setCreatedUser(userDto.getFirstName());
+						helpDto.setCreatedUser(userDto.getFirstName());
 					}
 					if ((userDto.getFirstName() != null) && (userDto.getLastName() != null)) {
-						dto.setCreatedUser(userDto.getFirstName() + " " + userDto.getLastName());
+						helpDto.setCreatedUser(userDto.getFirstName() + " " + userDto.getLastName());
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Exception while calling Identity Service having exception = "+e);
 			}
 		}
-		if (seekaHelp.getCreatedOn() != null) {
-			dto.setCreatedOn(DateUtil.convertDateToString(seekaHelp.getCreatedOn()));
-		}
-		return dto;
+		return helpDto;
 	}
 
-	@Override
-	public Map<String, Object> update(final HelpDto helpDto, final String id, final String userId) {
-		Map<String, Object> response = new HashMap<>();
+	public void updateHelp(final HelpDto helpDto, final String id, final String userId) {
+		log.debug("Inside updateHelp() method");
 		try {
-			helpDAO.update(convertDtoToSeekaHelp(helpDto, id, userId));
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", IConstant.HELP_UPDATE_MESSAGE);
+			log.info("Calling DAO layer to update help data in DB");
+			helpDAO.update(convertDtoToYuzeeHelp(helpDto, id, userId));
 		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while updating Help having exception = "+exception);
 		}
-		return response;
 	}
 
-	@Override
-	public Map<String, Object> getAll(final Integer pageNumber, final Integer pageSize) {
-		Map<String, Object> response = new HashMap<>();
-		String status = IConstant.SUCCESS;
-		List<Help> helps = new ArrayList<>();
-		int totalCount = 0;
-		PaginationUtilDto paginationUtilDto = null;
+	public PaginationResponseDto getAll(final Integer pageNumber, final Integer pageSize) {
+		log.debug("Inside getAll() method");
+		PaginationResponseDto paginationResponseDto = null;
 		try {
-			totalCount = helpDAO.findTotalHelpRecord(null, null);
+			log.info("Extracting total count of helps data from DB");
+			int totalCount = helpDAO.findTotalHelpRecord(null, null);
 			int startIndex = (pageNumber - 1) * pageSize;
-			paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-			helps = helpDAO.getAll(startIndex, pageSize, null, null);
+			log.info("Calculating Pagination on based on startIndex, pageSize and totalCount");
+			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+			log.info("Extracting all helps data from DB based on pagination");
+			List<Help> helps = helpDAO.getAll(startIndex, pageSize, null, null);
+			List<HelpDto> helpDto = new ArrayList<>();
+			if(!CollectionUtils.isEmpty(helps)) {
+				helps.stream().forEach(help -> {
+					helpDto.add(convertYuzeeHelpToDto(help));
+				});
+			}
+			
+			paginationResponseDto = new PaginationResponseDto();
+			paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
+			paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
+			paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
+			paginationResponseDto.setTotalCount(totalCount);
+			paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
+			paginationResponseDto.setResponse(helps);
 		} catch (Exception exception) {
-			status = IConstant.FAIL;
+			log.error("Exception while fetching helps data ="+exception);
 		}
-		response.put("status", HttpStatus.OK.value());
-		response.put("message", status);
-		response.put("courses", helps);
-		response.put("totalCount", totalCount);
-		response.put("pageNumber", paginationUtilDto.getPageNumber());
-		response.put("hasPreviousPage", paginationUtilDto.isHasPreviousPage());
-		response.put("hasNextPage", paginationUtilDto.isHasNextPage());
-		response.put("totalPages", paginationUtilDto.getTotalPages());
-		return response;
+		return paginationResponseDto;
 	}
 
-	@Override
-	public Map<String, Object> save(@Valid final HelpCategoryDto helpCategoryDto) {
-		Map<String, Object> response = new HashMap<>();
+	public void saveHelpCategory(@Valid final HelpCategoryDto helpCategoryDto) {
+		log.debug("Inside saveHelpCategory() method");
 		try {
+			log.info("Calling DAO layer to add helpCategory data in DB");
 			helpDAO.save(convertHelpCategoryDtoToBean(helpCategoryDto));
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", IConstant.HELP_CATEGORY_SUCCESS_MESSAGE);
 		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while adding helpCategory in DB having exception "+exception);
 		}
-		return response;
 	}
 
 	public HelpCategory convertHelpCategoryDtoToBean(final HelpCategoryDto helpCategoryDto) {
 		HelpCategory helpCategory = new HelpCategory();
 		helpCategory.setName(helpCategoryDto.getName());
-		helpCategory.setCreatedBy(helpCategoryDto.getCreatedBy());
-		helpCategory.setUpdatedBy(helpCategoryDto.getUpdatedBy());
+		helpCategory.setCreatedBy("API");
+		helpCategory.setUpdatedBy("API");
 		helpCategory.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		helpCategory.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		helpCategory.setIsActive(true);
 		return helpCategory;
-
 	}
 
-	@Override
-	public Map<String, Object> save(@Valid final HelpSubCategoryDto helpSubCategoryDto) {
-		Map<String, Object> response = new HashMap<>();
+	public void saveHelpSubCategory(@Valid final HelpSubCategoryDto helpSubCategoryDto) {
+		log.debug("Inside saveHelpSubCategory() method");
 		try {
+			log.info("Calling DAO layer to add helpSubCategory data in DB");
 			helpDAO.save(convertHelpCategoryDtoToBean(helpSubCategoryDto));
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", IConstant.HELP_SUBCATEGORY_SUCCESS_MESSAGE);
 		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while adding helpSubCategory in DB having exception ");
 		}
-		return response;
 	}
 
 	public HelpSubCategory convertHelpCategoryDtoToBean(final HelpSubCategoryDto helpSubCategoryDto) {
 		HelpSubCategory helpSubCategory = new HelpSubCategory();
 		helpSubCategory.setName(helpSubCategoryDto.getName());
-		helpSubCategory.setCreatedBy(helpSubCategoryDto.getCreatedBy());
-		helpSubCategory.setUpdatedBy(helpSubCategoryDto.getUpdatedBy());
+		helpSubCategory.setCreatedBy("API");
+		helpSubCategory.setUpdatedBy("API");
 		helpSubCategory.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		helpSubCategory.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		helpSubCategory.setCategoryId(helpDAO.getHelpCategory(helpSubCategoryDto.getCategoryId()));
+		helpSubCategory.setHelpCategory(helpDAO.getHelpCategory(helpSubCategoryDto.getCategoryId()));
 		helpSubCategory.setIsActive(true);
 		return helpSubCategory;
 	}
 
-	@Override
-	public Map<String, Object> getCategory(final String id) {
-		Map<String, Object> response = new HashMap<>();
-		HelpCategoryDto dto = null;
+	public HelpCategoryDto getCategory(final String id) {
+		log.debug("Inside getCategory() method");
+		HelpCategoryDto helpCategoryDto = null;
 		try {
-			dto = convertHelpCategoryToDto(helpDAO.getHelpCategory(id));
-			if (dto != null) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.HELP_CATEGORY_SUCCESS);
-				response.put("data", dto);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_CATEGORY_NOT_FOUND);
-			}
+			log.info("Extracting help category data from DB having id "+id);
+			helpCategoryDto = convertHelpCategoryToDto(helpDAO.getHelpCategory(id));
 		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while fetching category having exception "+exception);
 		}
-		return response;
+		return helpCategoryDto;
 	}
 
 	public HelpCategoryDto convertHelpCategoryToDto(final HelpCategory helpCategory) {
 		HelpCategoryDto helpCategoryDto = new HelpCategoryDto();
-		helpCategoryDto.setCreatedBy(helpCategory.getCreatedBy());
 		helpCategoryDto.setName(helpCategory.getName());
-		helpCategoryDto.setUpdatedBy(helpCategory.getUpdatedBy());
 		helpCategoryDto.setId(helpCategory.getId());
 		return helpCategoryDto;
 	}
 
-	@Override
-	public Map<String, Object> getSubCategory(final String id) {
-		Map<String, Object> response = new HashMap<>();
-		HelpSubCategoryDto dto = null;
+	public HelpSubCategoryDto getSubCategory(final String id) {
+		log.debug("Inside getSubCategory() method");
+		HelpSubCategoryDto helpSubCategoryDto = null;
 		try {
-			dto = convertHelpSubCategoryToDto(helpDAO.getHelpSubCategory(id));
-			if (dto != null) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.HELP_SUBCATEGORY_SUCCESS);
-				response.put("data", dto);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_SUBCATEGORY_NOT_FOUND);
-			}
+			log.info("Extracting help SubCategory data from DB having id "+id);
+			helpSubCategoryDto = convertHelpSubCategoryToDto(helpDAO.getHelpSubCategory(id), 0);
 		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while fetching sub-category having exception "+exception);
 		}
-		return response;
-	}
-
-	public HelpSubCategoryDto convertHelpSubCategoryToDto(final HelpSubCategory helpSubCategory) {
-		HelpSubCategoryDto helpSubCategoryDto = new HelpSubCategoryDto();
-		helpSubCategoryDto.setCategoryId(helpSubCategory.getCategoryId().getId());
-		helpSubCategoryDto.setName(helpSubCategory.getName());
-		helpSubCategoryDto.setCreatedBy(helpSubCategory.getCreatedBy());
-		helpSubCategoryDto.setUpdatedBy(helpSubCategory.getUpdatedBy());
-		helpSubCategoryDto.setId(helpSubCategory.getId());
-		helpSubCategoryDto.setHelpCount(helpSubCategory.getHelpCount());
 		return helpSubCategoryDto;
 	}
 
-	@Override
+	public HelpSubCategoryDto convertHelpSubCategoryToDto(final HelpSubCategory helpSubCategory, Integer subCategoryCount) {
+		HelpSubCategoryDto helpSubCategoryDto = new HelpSubCategoryDto();
+		helpSubCategoryDto.setCategoryId(helpSubCategory.getHelpCategory().getId());
+		helpSubCategoryDto.setName(helpSubCategory.getName());
+		helpSubCategoryDto.setId(helpSubCategory.getId());
+		helpSubCategoryDto.setHelpCount(subCategoryCount);
+		return helpSubCategoryDto;
+	}
+
 	public List<HelpSubCategoryDto> getSubCategoryByCategory(final String categoryId, final Integer startIndex, final Integer pageSize) {
+		log.debug("Inside getSubCategoryByCategory() method");
 		List<HelpSubCategoryDto> subCategoryDtos = new ArrayList<>();
+		log.info("Extracting SubCategory data having categoryId "+categoryId);
 		List<HelpSubCategory> categories = helpDAO.getSubCategoryByCategory(categoryId, startIndex, pageSize);
 		for (HelpSubCategory helpSubCategory : categories) {
-			helpSubCategory.setHelpCount(helpDAO.findTotalHelpRecordBySubCategory(helpSubCategory.getId()));
-			subCategoryDtos.add(convertHelpSubCategoryToDto(helpSubCategory));
+			log.info("Fetching total count of subCategories having subCategoryId "+helpSubCategory.getId());
+			Integer subCategoryCount = helpDAO.findTotalHelpRecordBySubCategory(helpSubCategory.getId());
+			subCategoryDtos.add(convertHelpSubCategoryToDto(helpSubCategory, subCategoryCount));
 		}
 		return subCategoryDtos;
 	}
 
-	@Override
-	public Map<String, Object> getHelpByCategory(final String categoryId) {
-		Map<String, Object> response = new HashMap<>();
+	public List<HelpDto> getHelpByCategory(final String categoryId) {
+		log.debug("Inside getHelpByCategory() method"); 
 		List<HelpDto> helpDtos = new ArrayList<>();
+		log.info("Extracting Help for categoryId "+categoryId);
+		List<Help> seekHelps = helpDAO.getHelpByCategory(categoryId);
 		try {
-			List<Help> seekHelps = helpDAO.getHelpByCategory(categoryId);
-			try {
-				for (Help seekaHelp : seekHelps) {
-					helpDtos.add(convertSeekaHelpToDto(seekaHelp));
-				}
-			} catch (Exception exception) {
-			}
-			if ((helpDtos != null) && !helpDtos.isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.HELP_SUCCESS);
-				response.put("data", helpDtos);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_NOT_FOUND);
+			for (Help seekaHelp : seekHelps) {
+				helpDtos.add(convertYuzeeHelpToDto(seekaHelp));
 			}
 		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Excpetion while fetching data having exception = "+exception);
 		}
-		return response;
+		return helpDtos;
 	}
 
-	@Override
-	public Map<String, Object> getSubCategoryCount() {
-		Map<String, Object> response = new HashMap<>();
-		List<HelpSubCategory> helpSubCategories = new ArrayList<>();
+	public List<HelpSubCategoryDto> getSubCategoryCount() {
+		log.debug("Inside getSubCategoryCount() method"); 
+		List<HelpSubCategoryDto> helpSubCategories = new ArrayList<>();
 		try {
+			log.info("Extracting all help subCategories from DB");
 			List<HelpSubCategory> subCatgories = helpDAO.getAllHelpSubCategories();
 			for (HelpSubCategory helpSubCategory : subCatgories) {
-				helpSubCategory.setHelpCount(helpDAO.findTotalHelpRecordBySubCategory(helpSubCategory.getId()));
-				helpSubCategories.add(helpSubCategory);
-			}
-			if ((helpSubCategories != null) && !helpSubCategories.isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.HELP_SUBCATEGORY_SUCCESS);
-				response.put("data", helpSubCategories);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_SUBCATEGORY_NOT_FOUND);
+				log.info("Fetching total HelpRecord for subCtaegory "+helpSubCategory.getId());
+				Integer subCategoryCount = helpDAO.findTotalHelpRecordBySubCategory(helpSubCategory.getId());
+				helpSubCategories.add(convertHelpSubCategoryToDto(helpSubCategory, subCategoryCount));
 			}
 		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while fetching subCategoryCount having exception "+exception);
 		}
-		return response;
+		return helpSubCategories;
 	}
 
-	@Override
-	public Map<String, Object> saveAnswer(@Valid final HelpAnswerDto helpAnswerDto, final MultipartFile file) {
-		Map<String, Object> response = new HashMap<>();
+	public void saveAnswer(@Valid final HelpAnswerDto helpAnswerDto, final MultipartFile file) {
+		log.debug("Inside saveAnswer() method");
 		try {
+			log.info("Calling DAO layer to sabe HelpAnswer in DB");
 			HelpAnswer helpAnswer = helpDAO.save(convertDtoToHelpAnswerBeans(helpAnswerDto));
 			if ((helpAnswer != null) && (file != null)) {
+				log.info("Uploading image on Storage Service for helpAnswerId "+helpAnswer.getId());
 				String logoName = iMediaService.uploadImage(file, helpAnswer.getId(), ImageCategory.HELP_SUPPORT.name(), null);
-				System.out.println("Help answer media upload for id - >" + helpAnswer.getId() + " and Image  name :" + logoName);
+				log.info("Help answer media upload for id - >" + helpAnswer.getId() + " and Image  name :" + logoName);
 				if ((logoName != null) && !logoName.isEmpty() && !logoName.equals("null")) {
 					helpAnswer.setFileName(logoName);
+					log.info("Calling DAO layer to update Answer in DB");
 					helpDAO.updateAnwser(helpAnswer);
 				}
 			}
-			response.put("status", HttpStatus.OK.value());
-			response.put("message", IConstant.HELP_ANSWER_SUCCESS_MESSAGE);
 		} catch (Exception exception) {
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while adding answer having exception "+exception);
 		}
-		return response;
 	}
 
 	public HelpAnswer convertDtoToHelpAnswerBeans(final HelpAnswerDto answerDto) {
 		HelpAnswer helpAnswer = new HelpAnswer();
 		helpAnswer.setAnswer(answerDto.getAnswer());
-		helpAnswer.setSeekaHelp(helpDAO.get(answerDto.getHelpId()));
+		helpAnswer.setHelp(helpDAO.get(answerDto.getHelpId()));
 		helpAnswer.setUser(answerDto.getUserId());
 		helpAnswer.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-		helpAnswer.setCreatedBy(answerDto.getCreatedBy());
+		helpAnswer.setCreatedBy("API");
 		helpAnswer.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		helpAnswer.setUpdatedBy(answerDto.getUpdatedBy());
+		helpAnswer.setUpdatedBy("API");
 		helpAnswer.setIsDeleted(false);
 		return helpAnswer;
 	}
 
-	@Override
-	public Map<String, Object> getAnswerByHelpId(final String helpId) {
-		Map<String, Object> response = new HashMap<>();
-		List<HelpAnswerDto> dtos = new ArrayList<>();
-		try {
-			List<HelpAnswer> helpAnswers = helpDAO.getAnswerByHelpId(helpId);
-			for (HelpAnswer helpAnswer : helpAnswers) {
-				dtos.add(convertBeanToHelpAnswerDto(helpAnswer));
-			}
-			if ((dtos != null) && !dtos.isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.HELP_ANSWER_SUCCESS);
-				response.put("data", dtos);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_ANSWER_NOT_FOUND);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+	public List<HelpAnswerDto> getAnswerByHelpId(final String helpId) throws NotFoundException {
+		log.debug("Inside getAnswerByHelpId() method");
+		List<HelpAnswerDto> helpAnswerDtos = new ArrayList<>();
+		log.info("Extracting helpAnswer for helpId "+helpId);
+		List<HelpAnswer> helpAnswers = helpDAO.getAnswerByHelpId(helpId);
+		if(!CollectionUtils.isEmpty(helpAnswers)) {
+			log.info("Help Answers fetched from DB, start iterating data");
+			helpAnswers.stream().forEach(helpAnswer -> {
+				helpAnswerDtos.add(convertBeanToHelpAnswerDto(helpAnswer));
+			});
+		} else {
+			log.error("Yuzee Help Answer not found in DB for id " + helpId);
+			throw new NotFoundException("Yuzee Help Answer not found in DB for id " + helpId);
 		}
-		return response;
+		return helpAnswerDtos;
 	}
 
 	public HelpAnswerDto convertBeanToHelpAnswerDto(final HelpAnswer helpAnswer) {
+		log.debug("Inside convertBeanToHelpAnswerDto() method");
 		HelpAnswerDto helpAnswerDto = new HelpAnswerDto();
 		helpAnswerDto.setAnswer(helpAnswer.getAnswer());
 		helpAnswerDto.setUserId(helpAnswer.getUser());
-		helpAnswerDto.setHelpId(helpAnswer.getSeekaHelp().getId());
-		helpAnswerDto.setCreatedBy(helpAnswer.getCreatedBy());
-		helpAnswerDto.setUpdatedBy(helpAnswer.getUpdatedBy());
-		if (helpAnswer.getCreatedOn() != null) {
-			helpAnswerDto.setCreatedOn(DateUtil.convertDateToString(helpAnswer.getCreatedOn()));
-		}
+		helpAnswerDto.setHelpId(helpAnswer.getHelp().getId());
 		if (helpAnswer.getFileName() != null) {
 			try {
+				log.info("Calling Storage Service to fetch helpSupport images for helpAnswerId "+helpAnswer.getId());
 				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(helpAnswer.getId(), ImageCategory.HELP_SUPPORT.toString(), null, "en");
-				if ((storageDTOList != null) && !storageDTOList.isEmpty()) {
+				if (!CollectionUtils.isEmpty(storageDTOList)) {
 					StorageDto storageDto = storageDTOList.get(0);
 					if (storageDto != null) {
 						helpAnswerDto.setFileUrl(storageDto.getImageURL());
 					}
 				}
 			} catch (ValidationException e) {
-				e.printStackTrace();
+				log.error("Exception while invoking Storage Service, exception = "+e);
 			}
 		}
 		return helpAnswerDto;
 	}
 
-	@Override
 	public List<HelpCategoryDto> getCategory(final Integer startIndex, final Integer pageSize) {
+		log.debug("Inside getCategory() method");
 		List<HelpCategoryDto> dtos = new ArrayList<>();
+		log.info("Extracting all help categories from DB based on pagination");
 		List<HelpCategory> categories = helpDAO.getAllCategory(startIndex, pageSize);
-		for (HelpCategory category : categories) {
-			dtos.add(convertHelpCategoryToDto(category));
+		if(!CollectionUtils.isEmpty(categories)) {
+			log.info("Help Categories fetched from DB, start iterating data");
+			categories.stream().forEach(category -> {
+				dtos.add(convertHelpCategoryToDto(category));
+			});
 		}
 		return dtos;
 	}
 
-	@Override
-	public Map<String, Object> delete(@Valid final String id) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			Help help = helpDAO.get(id);
-			if (help != null) {
-				help.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
-				help.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-				help.setIsActive(false);
-				helpDAO.update(help);
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", "Help deleted successfully");
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_NOT_FOUND);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+	public void delete(@Valid final String id) throws NotFoundException {
+		log.debug("Inside delete() method");
+		log.info("Extracting Help data from DB for helpId " + id);
+		Help help = helpDAO.get(id);
+		if (!ObjectUtils.isEmpty(help)) {
+			help.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
+			help.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+			help.setIsActive(false);
+			log.info("Calling DAO layer to update existing help data in DB");
+			helpDAO.update(help);
+		} else {
+			log.error("Yuzee Help not found in DB for id " + id);
+			throw new NotFoundException("Yuzee Help not found in DB for id " + id);
 		}
-		return response;
 	}
 
-	@Override
-	public Map<String, Object> updateStatus(final String id, final String userId, final String status) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			Help help = helpDAO.get(id);
-			if (help != null) {
-				help.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-				help.setStatus(status);
-				if (userId != null) {
-					help.setAssignedUserId(userId);
-				}
-				helpDAO.update(help);
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", "Help deleted successfully");
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_NOT_FOUND);
+	public void updateStatus(final String id, final String userId, final String status) throws NotFoundException {
+		log.debug("Inside updateStatus() method");
+		log.info("Extracting Help data from DB for helpId " + id);
+		Help help = helpDAO.get(id);
+		if (!ObjectUtils.isEmpty(help)) {
+			help.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+			help.setStatus(status);
+			if (userId != null) {
+				help.setAssignedUserId(userId);
 			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.info("Calling DAO layer to update existing help data in DB");
+			helpDAO.update(help);
+		} else {
+			log.error("Yuzee Help not found in DB for id " + id);
+			throw new NotFoundException("Yuzee Help not found in DB for id " + id);
 		}
-		return response;
 	}
 
-	@Override
-	public Map<String, Object> filter(final String status, final String mostRecent, final String categoryId) {
-		Map<String, Object> response = new HashMap<>();
+	public List<HelpDto> filter(final String status, final String mostRecent, final String categoryId) {
+		log.debug("Inside filter() method");
 		List<HelpDto> helpDtos = new ArrayList<>();
 		try {
-			List<Help> seekaHelps = new ArrayList<>();
+			List<Help> yuzeeHelps = new ArrayList<>();
 			if ((status != null) && !status.isEmpty()) {
-				seekaHelps = helpDAO.findByStatus(status, categoryId);
+				log.info("Filtering helps data based on status "+ status + " and categoryId "+categoryId);
+				yuzeeHelps = helpDAO.findByStatus(status, categoryId);
 			}
 			if ((mostRecent != null) && !mostRecent.isEmpty()) {
-				seekaHelps = helpDAO.findByMostRecent(mostRecent, categoryId);
+				log.info("Filtering helps data based on mostRecent "+ mostRecent + " and categoryId "+categoryId);
+				yuzeeHelps = helpDAO.findByMostRecent(mostRecent, categoryId);
 			}
 			if ((status != null) && !status.isEmpty() && (mostRecent != null) && !mostRecent.isEmpty()) {
-				seekaHelps = helpDAO.findByStatusAndMostRecent(status, mostRecent, categoryId);
+				log.info("Filtering helps data based on mostRecent "+ mostRecent + " and categoryId "
+						+ categoryId + " and status "+status);
+				yuzeeHelps = helpDAO.findByStatusAndMostRecent(status, mostRecent, categoryId);
 			}
 			if ((status == null) && (mostRecent == null)) {
-				seekaHelps = helpDAO.getHelpByCategory(categoryId);
+				log.info("Filtering helps data based on categoryId "+categoryId);
+				yuzeeHelps = helpDAO.getHelpByCategory(categoryId);
 			}
-			for (Help seekaHelp : seekaHelps) {
-				helpDtos.add(convertSeekaHelpToDto(seekaHelp));
-			}
-			if ((helpDtos != null) && !helpDtos.isEmpty()) {
-				response.put("status", HttpStatus.OK.value());
-				response.put("message", IConstant.HELP_SUCCESS);
-				response.put("data", helpDtos);
-			} else {
-				response.put("status", HttpStatus.NOT_FOUND.value());
-				response.put("message", IConstant.HELP_NOT_FOUND);
-			}
+			yuzeeHelps.stream().forEach(seekaHelp -> {
+				helpDtos.add(convertYuzeeHelpToDto(seekaHelp));
+			});
 		} catch (Exception exception) {
-			exception.printStackTrace();
-			response.put("message", exception.getCause());
-			response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			log.error("Exception while filtering helps having exception "+exception);
 		}
-		return response;
+		return helpDtos;
 	}
 
-	@Override
 	public List<Help> getUserHelpList(final String userId, final int startIndex, final Integer pageSize, final Boolean isArchive) {
 		return helpDAO.getAll(startIndex, pageSize, userId, isArchive);
 	}
 
-	@Override
 	public int getUserHelpCount(final String userId, final Boolean isArchive) {
 		return helpDAO.findTotalHelpRecord(userId, isArchive);
 	}
 
-	@Override
 	public void setIsFavouriteFlag(final String id, final boolean isFavourite) throws NotFoundException {
 		helpDAO.setIsFavouriteFlag(id, isFavourite);
 	}
 
-	@Override
 	public int getCategoryCount() {
 		return helpDAO.getCategoryCount();
 	}
 
-	@Override
 	public int getSubCategoryCount(final String categoryId) {
 		return helpDAO.getSubCategoryCount(categoryId);
 	}
 
-	@Override
 	public void archiveHelpSupport(final String entityId, final boolean isArchive) {
 		Help seekaHelp = helpDAO.get(entityId);
 		seekaHelp.setIsArchive(isArchive);
@@ -643,7 +536,6 @@ public class HelpService implements IHelpService {
 		helpDAO.update(seekaHelp);
 	}
 
-	@Override
 	public List<String> getRelatedSearchQuestions(String searchString) throws ValidationException {
 		searchString = searchString.toLowerCase();
 		List<String> searchKeywords = new LinkedList<>(Arrays.asList(searchString.split(" ")));
@@ -651,9 +543,6 @@ public class HelpService implements IHelpService {
 		if ((searchKeywords == null) || searchKeywords.isEmpty()) {
 			throw new ValidationException("Please Search using proper keywords");
 		}
-		System.out.println(searchKeywords);
-
 		return helpDAO.getRelatedSearchQuestions(searchKeywords);
 	}
-
 }

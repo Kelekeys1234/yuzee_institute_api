@@ -1,5 +1,6 @@
 package com.yuzee.app.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -100,12 +101,6 @@ public class CourseRequest {
 	@JsonProperty("abbreviation")
 	private String abbreviation;
 
-	@JsonProperty("english_eligibility")
-	private List<CourseEnglishEligibilityDto> englishEligibility;
-
-	@JsonProperty("storage_list")
-	private List<StorageDto> storageList;
-
 	@JsonProperty("remarks")
 	private String remarks;
 
@@ -121,9 +116,6 @@ public class CourseRequest {
 	@JsonProperty("longitude")
 	private Double longitude;
 
-	@JsonProperty("user_review_result")
-	private List<UserReviewResultDto> userReviewResult;
-
 	@JsonProperty("country_name")
 	private String countryName;
 
@@ -132,13 +124,22 @@ public class CourseRequest {
 
 	@JsonProperty("student_visa")
 	private StudentVisaDto studentVisa;
+	
+	@JsonProperty("storage_list")
+	private List<StorageDto> storageList = new ArrayList<>();
+	
+	@JsonProperty("user_review_result")
+	private List<UserReviewResultDto> userReviewResult = new ArrayList<>();
 
 	@JsonProperty("accrediated_detail")
-	private List<AccrediatedDetailDto> accrediatedDetail;
+	private List<AccrediatedDetailDto> accrediatedDetail = new ArrayList<>();
 
 	@JsonProperty("course_delivery_modes")
-	private List<CourseDeliveryModesDto> courseDeliveryModes;
+	private List<CourseDeliveryModesDto> courseDeliveryModes = new ArrayList<>();
 	
 	@JsonProperty("course_subjects")
-	private List<CoursePrerequisiteSubjectDto> courseSubjects;
+	private List<CoursePrerequisiteSubjectDto> courseSubjects = new ArrayList<>();
+	
+	@JsonProperty("english_eligibility")
+	private List<CourseEnglishEligibilityDto> englishEligibility = new ArrayList<>();
 }

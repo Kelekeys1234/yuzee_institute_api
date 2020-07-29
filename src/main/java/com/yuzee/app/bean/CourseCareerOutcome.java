@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -18,15 +19,21 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Entity
+@ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 @Table(name = "course_career_outcome", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "career_outcome" }, 
 	   	 name = "UK_CO_COURSE_ID"), indexes = {@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false)})
-public class CourseCareerOutcome {
+public class CourseCareerOutcome implements Serializable {
 
+	private static final long serialVersionUID = 8492390790670110780L;
+	
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")

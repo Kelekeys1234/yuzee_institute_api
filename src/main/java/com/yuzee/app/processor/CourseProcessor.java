@@ -1680,7 +1680,7 @@ public class CourseProcessor {
 		courseRequest.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(id));
 		
 		log.info("Fetching coursePrerequisites for courseId = "+id);
-		courseRequest.setCourseSubjects(coursePrerequisiteProcessor.getCoursePrerequisite(id));
+		courseRequest.setCourseSubjects(coursePrerequisiteProcessor.getCoursePrerequisiteSubjectsByCourseId(id));
 		
 		log.info("Fetching courseEnglish Eligibility from DB based on courseId = "+id);
 		courseRequest.setEnglishEligibility(courseEnglishEligibilityProcessor.getAllEnglishEligibilityByCourse(id));

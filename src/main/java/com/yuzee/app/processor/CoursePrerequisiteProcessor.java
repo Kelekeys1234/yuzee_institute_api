@@ -21,7 +21,7 @@ public class CoursePrerequisiteProcessor {
 	@Autowired
 	private CoursePrerequisiteDao coursePrerequisiteDao;
 	
-	public List<CoursePrerequisiteSubjectDto> getCoursePrerequisite(String courseId) {
+	public List<CoursePrerequisiteSubjectDto> getCoursePrerequisiteSubjectsByCourseId(String courseId) {
 		log.debug("Inside getCoursePrerequisite() method");
 		List<CoursePrerequisiteSubjectDto> coursePrerequisiteSubjectDtos = new ArrayList<>();
 		log.info("Extracting Course Prerequisites from DB for courseId "+ courseId);
