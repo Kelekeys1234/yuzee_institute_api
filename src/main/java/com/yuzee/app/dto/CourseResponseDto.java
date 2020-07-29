@@ -1,5 +1,6 @@
 package com.yuzee.app.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,10 +29,7 @@ public class CourseResponseDto {
 	private Double stars;
 
 	@JsonProperty("language")
-	private List<String> language;
-
-	@JsonProperty("language_short_key")
-	private String languageShortKey;
+	private List<String> language = new ArrayList<>();
 
 	@JsonProperty("institute_id")
 	@NotBlank(message = "institute_id should not be blank")
@@ -66,7 +64,7 @@ public class CourseResponseDto {
 	private String currencyCode;
 
 	@JsonProperty("storage_list")
-	private List<StorageDto> storageList;
+	private List<StorageDto> storageList = new ArrayList<>();
 
 	@JsonProperty("is_viewed")
 	private Boolean isViewed = false;
@@ -81,7 +79,7 @@ public class CourseResponseDto {
 	private Date updatedOn;
 
 	@JsonProperty("intake")
-	private List<Date> intake;
+	private List<Date> intake = new ArrayList<>();
 
 	@JsonProperty("faculty_name")
 	@NotBlank(message = "faculty_name should not be blank")
@@ -101,5 +99,5 @@ public class CourseResponseDto {
 	private Double longitude;
 
 	@JsonProperty("course_delivery_modes")
-	private List<CourseDeliveryModesDto> courseDeliveryModes;
+	private List<CourseDeliveryModesDto> courseDeliveryModes = new ArrayList<>();
 }

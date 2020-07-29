@@ -560,13 +560,8 @@ public class CourseDaoImpl implements CourseDao {
 			obj.setId(String.valueOf(row[0]));
 			obj.setName(String.valueOf(row[1]));
 			obj.setCost(String.valueOf(row[4]) + " " + String.valueOf(row[5]));
-//			obj.setDuration(Double.valueOf(String.valueOf(row[6])));
-//			obj.setDurationTime(String.valueOf(row[7]));
 			obj.setCourseRanking(Integer.valueOf(String.valueOf(row[12])));
-			obj.setLanguageShortKey(String.valueOf(row[13]));
 			obj.setStars(Double.valueOf(String.valueOf(row[14])));
-//			obj.setDomesticFee(Double.valueOf(String.valueOf(row[16])));
-//			obj.setInternationalFee(Double.valueOf(String.valueOf(row[17])));
 			obj.setTotalCount(Integer.parseInt(String.valueOf(row[18])));
 			list.add(obj);
 		}
