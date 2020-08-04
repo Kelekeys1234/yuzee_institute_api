@@ -221,7 +221,7 @@ public class HelpProcessor {
 			paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 			paginationResponseDto.setTotalCount(totalCount);
 			paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
-			paginationResponseDto.setResponse(helps);
+			paginationResponseDto.setResponse(helpDto);
 		} catch (Exception exception) {
 			log.error("Exception while fetching helps data ="+exception);
 		}
@@ -508,8 +508,15 @@ public class HelpProcessor {
 		return helpDtos;
 	}
 
-	public List<Help> getUserHelpList(final String userId, final int startIndex, final Integer pageSize, final Boolean isArchive) {
-		return helpDAO.getAll(startIndex, pageSize, userId, isArchive);
+	public List<HelpDto> getUserHelpList(final String userId, final int startIndex, final Integer pageSize, final Boolean isArchive) {
+		List<HelpDto> helpDto = new ArrayList<>();
+		List<Help> helpFromDB = helpDAO.getAll(startIndex, pageSize, userId, isArchive);
+		if(!CollectionUtils.isEmpty(helpFromDB)) {
+			helpFromDB.stream().forEach(help -> {
+				helpDto.add(convertYuzeeHelpToDto(help));
+			});
+		}
+		return helpDto;
 	}
 
 	public int getUserHelpCount(final String userId, final Boolean isArchive) {

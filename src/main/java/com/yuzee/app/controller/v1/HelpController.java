@@ -175,7 +175,7 @@ public class HelpController implements HelpInterface {
 	public ResponseEntity<?> getUserHelpList(final String userId, final Integer pageNumber,
 			final Integer pageSize, final boolean isArchive) throws Exception {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<Help> helps = helpProcessor.getUserHelpList(userId, startIndex, pageSize, isArchive);
+		List<HelpDto> helps = helpProcessor.getUserHelpList(userId, startIndex, pageSize, isArchive);
 		int totalCount = helpProcessor.getUserHelpCount(userId, isArchive);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
