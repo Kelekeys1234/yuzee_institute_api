@@ -67,7 +67,7 @@ public class CourseDaoImpl implements CourseDao {
 	
 	@Autowired
 	private CommonHandler commonHandler;
-
+	
 	@Value("${s3.url}")
 	private String s3URL;
 	
@@ -1789,4 +1789,60 @@ public class CourseDaoImpl implements CourseDao {
 		return courseRepository.getTotalCountOfCourseByInstituteId(instituteId);
 	}
 
+	@Override
+	public List<CourseResponseDto> getRelatedCourseBasedOnCareerTest(List<String> searchKeyword, Integer startIndex, Integer pageSize) {
+		Session session = sessionFactory.getCurrentSession();
+		List<CourseResponseDto> careerJobRelatedCourseDtos = new ArrayList<>();
+		if(!CollectionUtils.isEmpty(searchKeyword)) {
+			Integer count = 0;
+			StringBuilder sqlQuery = new StringBuilder("select c.id, c.name as courseName, inst.id as instituteId, inst.name as instituteName, inst.country_name,"
+					+ "inst.city_name, c.currency, c.world_ranking from course c left join institute inst on c.institute_id = inst.id where ");
+			for(String keyword : searchKeyword) {
+				count++;
+				sqlQuery.append("INSTR(c.name,'" + keyword + "')");
+				if(searchKeyword.size() > 1 && searchKeyword.size() != count) {
+					sqlQuery.append(" OR ");
+				}
+			}
+			sqlQuery.append(" LIMIT " + startIndex + ", " + pageSize);
+			System.out.println(sqlQuery.toString());
+			Query query = session.createSQLQuery(sqlQuery.toString());
+			List<Object[]> rows = query.list();
+			for (Object[] row : rows) {
+				CourseResponseDto careerJobRelatedCourseDto = new CourseResponseDto();
+				careerJobRelatedCourseDto.setId(String.valueOf(row[0]));
+				careerJobRelatedCourseDto.setName(String.valueOf(row[1]));
+				careerJobRelatedCourseDto.setInstituteId(String.valueOf(row[2]));
+				careerJobRelatedCourseDto.setInstituteName(String.valueOf(row[3]));
+				careerJobRelatedCourseDto.setCountryName(String.valueOf(row[4]));
+				careerJobRelatedCourseDto.setCityName(String.valueOf(row[5]));
+				careerJobRelatedCourseDto.setCurrencyCode(String.valueOf(row[6]));
+				careerJobRelatedCourseDto.setCourseRanking(Integer.parseInt(String.valueOf(row[7])));
+				careerJobRelatedCourseDto.setLocation(String.valueOf(row[5]) + ", " + String.valueOf(row[4]));
+				careerJobRelatedCourseDtos.add(careerJobRelatedCourseDto);
+			}
+		}
+		return careerJobRelatedCourseDtos;
+	}
+
+	@Override
+	public Integer getRelatedCourseBasedOnCareerTestCount(List<String> searchKeyword) {
+		Session session = sessionFactory.getCurrentSession();
+		Integer totalCount = 0;
+		if(!CollectionUtils.isEmpty(searchKeyword)) {
+			Integer count = 0;
+			StringBuilder sqlQuery = new StringBuilder("select count(*) from course c where ");
+			for(String keyword : searchKeyword) {
+				count++;
+				sqlQuery.append("INSTR(NAME,'" + keyword + "')");
+				if(searchKeyword.size() > 1 && searchKeyword.size() != count) {
+					sqlQuery.append(" OR ");
+				}
+			}
+			System.out.println(sqlQuery.toString());
+			Query query = session.createSQLQuery(sqlQuery.toString());
+			totalCount = ((Number) query.getSingleResult()).intValue();
+		}
+		return totalCount;
+	}
 }

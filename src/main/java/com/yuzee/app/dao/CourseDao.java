@@ -125,4 +125,8 @@ public interface CourseDao {
 	public List<CourseResponseDto> getCourseByCountryName(Integer startIndex, Integer pageSize, String countryName);
 	
 	public Integer getTotalCountOfNearestCourses(Double latitude, Double longitude, Integer initialRadius);
+	
+	public List<CourseResponseDto> getRelatedCourseBasedOnCareerTest(List<String> searchKeyword, Integer startIndex, Integer pageSize);
+	
+	public Integer getRelatedCourseBasedOnCareerTestCount(List<String> searchKeyword);
 }
