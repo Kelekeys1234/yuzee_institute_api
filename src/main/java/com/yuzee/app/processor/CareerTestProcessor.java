@@ -66,7 +66,7 @@ public class CareerTestProcessor {
 	public PaginationResponseDto getCareerJobWorkingStyles(List<String> jobIds, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getCareerJobWorkingStyles() method");
 		List<CareerJobWorkingStyleDto> careerJobWorkingStyleDtos = new ArrayList<>();
-		int startIndex = pageNumber - 1;
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		log.info("Calculating Pageable size based on pageNumber nad pageSize");
 		Pageable pageable = PageRequest.of(startIndex, pageSize);
 		Integer totalCount = 0;
@@ -153,19 +153,22 @@ public class CareerTestProcessor {
 	
 	public PaginationResponseDto getRelatedCourseBasedOnCareerTest(List<String> jobIds, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getRelatedCourseBasedOnCareerTest() method");
+		List<String> courseSearchkeyword = new ArrayList<>();
+		log.info("Extracting job courseSearchKeyword from DB to match possible courses");
 		List<CareerJobCourseSearchKeyword> careerJobCourseSearchKeywords = careerTestDao.getCareerJobCourseSearchKeyword(jobIds);
 		int startIndex = pageNumber - 1;
 		log.info("Calculating Pageable size based on pageNumber nad pageSize");
-		List<String> courseSearchkeyword = new ArrayList<>();
+		
 		if(!CollectionUtils.isEmpty(careerJobCourseSearchKeywords)) {
 			log.info("Career courseSearchKeyword fetched, iterating data to extract search keywords");
 			careerJobCourseSearchKeywords.stream().forEach(careerJobCourseSearchKeyword -> {
+				log.info("Adding searchKeyword in list, to fetch all possible course having searchKeyword from DB");
 				courseSearchkeyword.add(careerJobCourseSearchKeyword.getCourseSearchKeyword());
 			});
 		}
 		log.info("Extracting total count of courses based on courseSearchKeywords");
 		Integer totalCount = courseDao.getRelatedCourseBasedOnCareerTestCount(courseSearchkeyword);
-		log.info("Extracting  courses data based on courseSearchKeywords from DB");
+		log.info("Extracting courses data based on job courseSearchKeywords from DB");
 		List<CourseResponseDto> careerJobRelatedCourseDtos = courseDao.getRelatedCourseBasedOnCareerTest(courseSearchkeyword, 
 				startIndex, pageSize);
 		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
