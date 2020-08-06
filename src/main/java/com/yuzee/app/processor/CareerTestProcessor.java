@@ -46,8 +46,9 @@ public class CareerTestProcessor {
 		log.info("Extracting career job levels from DB for levelId " + levelId);
 		List<CareerJobSkill> careerJobSkillsFromDB = careerTestDao.getCareerJobSkills(levelId, startIndex, pageSize);
 		log.info("Fetching totalCount of careerJobLevels for jobIds " + levelId);
-		int totalCount = careerTestDao.getCareerJobSkillCount(levelId);
+		int totalCount = 0;
 		if (!CollectionUtils.isEmpty(careerJobSkillsFromDB)) {
+			totalCount = careerTestDao.getCareerJobSkillCount(levelId);
 			log.info("Career JobSkills fetched from DB, start iterating data to make final response");
 			careerJobSkillsFromDB.stream().forEach(careerJobSkill -> {
 				CareerJobSkillDto careerJobSkillDto = new CareerJobSkillDto(careerJobSkill.getId(),
@@ -137,7 +138,7 @@ public class CareerTestProcessor {
 			if (!CollectionUtils.isEmpty(careerJobs)) {
 				log.info("Career Jobs fetched from DB, start iterating data");
 				careerJobs.stream().forEach(careerJob -> {
-					CareerJobDto careerJobDto = new CareerJobDto(careerJob.getId(), careerJob.getJobs(), careerJob.getJobDescription());
+					CareerJobDto careerJobDto = new CareerJobDto(careerJob.getId(), careerJob.getJob(), careerJob.getJobDescription());
 					careerJobDtos.add(careerJobDto);
 				});
 			}

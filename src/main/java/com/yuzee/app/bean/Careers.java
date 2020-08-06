@@ -54,9 +54,9 @@ public class Careers implements Serializable {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 	
-	@OneToMany(mappedBy = "careerList" , cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "careers" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RelatedCareer> relatedCareers = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "careerList" , cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "careers" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CareerJob> careerJobs = new ArrayList<>();
 }

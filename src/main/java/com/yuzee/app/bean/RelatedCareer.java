@@ -45,7 +45,7 @@ public class RelatedCareer implements Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "career_id")
-	private Careers careerList;
+	private Careers careers;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
@@ -61,9 +61,9 @@ public class RelatedCareer implements Serializable {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 	
-	public RelatedCareer(String relatedCareer, Careers careerList, String createdBy, Date createdOn) {
+	public RelatedCareer(String relatedCareer, Careers careers, String createdBy, Date createdOn) {
 		this.relatedCareer = relatedCareer;
-		this.careerList = careerList;
+		this.careers = careers;
 		this.createdBy = createdBy;
 		this.createdOn = createdOn;
 	}

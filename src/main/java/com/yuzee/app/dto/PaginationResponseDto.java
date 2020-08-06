@@ -1,10 +1,12 @@
 package com.yuzee.app.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class PaginationResponseDto {
 	
 	private Object response;
@@ -13,14 +15,4 @@ public class PaginationResponseDto {
 	private Boolean hasPreviousPage;
 	private Boolean hasNextPage;
 	private Integer totalPages;
-	
-	public PaginationResponseDto(Object response, Integer totalCount, Integer pageNumber, Boolean hasPreviousPage,
-			Boolean hasNextPage, Integer totalPages) {
-		this.response = response;
-		this.totalCount = totalCount;
-		this.pageNumber = pageNumber;
-		this.hasPreviousPage = hasPreviousPage;
-		this.hasNextPage = hasNextPage;
-		this.totalPages = totalPages;
-	}
 }

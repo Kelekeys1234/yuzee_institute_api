@@ -32,7 +32,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode
-@Table(name = "jobs", uniqueConstraints = @UniqueConstraint(columnNames = { "jobs", "career_id" }, 
+@Table(name = "jobs", uniqueConstraints = @UniqueConstraint(columnNames = { "job", "career_id" }, 
 	 name = "UK_JOB_CAREER_ID"), indexes = {@Index(name = "IDX_CAREER_ID", columnList = "career_id", unique = false)})
 public class CareerJob implements Serializable {
 	
@@ -44,15 +44,15 @@ public class CareerJob implements Serializable {
 	@Column(name = "id", columnDefinition = "uniqueidentifier", nullable = false)
 	private String id;
 	
-	@Column(name = "jobs", nullable = false)
-	private String jobs;
+	@Column(name = "job", nullable = false)
+	private String job;
 	
 	@Column(name = "job_description", nullable = false)
 	private String jobDescription;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "career_id")
-	private Careers careerList;
+	private Careers careers;
 	
 	@Column(name = "course_level", nullable = false)
 	private Integer courseLevel;
@@ -92,10 +92,10 @@ public class CareerJob implements Serializable {
 	@OneToMany(mappedBy = "careerJobs" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CareerJobWorkingStyle> careerJobWorkingStyles = new ArrayList<>();
 	
-	public CareerJob(String jobs, String jobDescription, Careers careerList, Integer courseLevel, Date createdOn, String createdBy) {
-		this.jobs = jobs;
+	public CareerJob(String job, String jobDescription, Careers careers, Integer courseLevel, Date createdOn, String createdBy) {
+		this.job = job;
 		this.jobDescription = jobDescription;
-		this.careerList = careerList;
+		this.careers = careers;
 		this.courseLevel = courseLevel;
 		this.createdOn = createdOn;
 		this.createdBy = createdBy;
