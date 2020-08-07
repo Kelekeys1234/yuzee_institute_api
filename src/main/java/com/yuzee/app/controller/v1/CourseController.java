@@ -15,6 +15,7 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseKeywords;
 import com.yuzee.app.dto.AdvanceSearchDto;
+import com.yuzee.app.dto.CourseCountDto;
 import com.yuzee.app.dto.CourseDto;
 import com.yuzee.app.dto.CourseFilterDto;
 import com.yuzee.app.dto.CourseMinRequirementDto;
@@ -483,6 +484,13 @@ public class CourseController implements CourseInterface {
 	public ResponseEntity<?> getRelatedCourses(String courseId) throws ValidationException {
 		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(courseId);
 		return new GenericResponseHandlers.Builder().setData(relatedCourse).setMessage("Related Courses Displayed Successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> getCourseCountByInstituteId(String instituteId) throws ValidationException {
+		CourseCountDto courseCountDto  = courseProcessor.getCourseCountByInstitute(instituteId);
+		return new GenericResponseHandlers.Builder().setData(courseCountDto).setMessage("Course count fetched successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 }

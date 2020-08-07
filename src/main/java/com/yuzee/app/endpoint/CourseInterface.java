@@ -167,6 +167,9 @@ public interface CourseInterface {
 	@GetMapping("/related/{courseId}")
 	public ResponseEntity<?> getRelatedCourses(@PathVariable String courseId) throws ValidationException;
 	
+	@GetMapping("/count/{instituteId}")
+	public ResponseEntity<?> getCourseCountByInstituteId(@PathVariable String instituteId) throws ValidationException;
+	
 	@Deprecated
 	@GetMapping(value = "/eligibility/update")
 	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception;

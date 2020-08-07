@@ -47,6 +47,7 @@ import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
+import com.yuzee.app.dto.CourseCountDto;
 import com.yuzee.app.dto.CourseDTOElasticSearch;
 import com.yuzee.app.dto.CourseDeliveryModesDto;
 import com.yuzee.app.dto.CourseDeliveryModesElasticDto;
@@ -1133,38 +1134,6 @@ public class CourseProcessor {
 	public long checkIfCoursesPresentForCountry(final String country) {
 		return courseDao.getCourseCountForCountry(country);
 	}
-
-	/*public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
-		return courseDao.getTopRatedCoursesForCountryWorldRankingWise(country);
-	}*/
-
-	/*public List<Course> getAllCourseUsingFaculty(final String facultyId) {
-		return courseDao.getAllCourseForFacultyWorldRankingWise(facultyId);
-	}
-
-	public List<String> getAllCourseUsingFacultyId(final String facultyId) {
-		return courseDao.getAllCourseForFacultyWorldRankingWises(facultyId);
-	}*/
-
-	/*public List<String> getTopSearchedCoursesByOtherUsers(final String userId) {
-		return viewDao.getOtherUserWatchCourse(userId, "COURSE");
-	}*/
-
-	/*public List<Course> getCoursesById(final List<String> allSearchCourses) {
-		return courseDao.getAllCoursesUsingId(allSearchCourses);
-	}*/
-
-	/*public Map<String, String> facultyWiseCourseIdMapForInstitute(final List<Faculty> facultyList, final String instituteId) {
-		return courseDao.facultyWiseCourseIdMapForInstitute(facultyList, instituteId);
-	}
-
-	public List<String> getTopRatedCourseIdForCountryWorldRankingWise(final String country) {
-		return courseDao.getTopRatedCourseIdsForCountryWorldRankingWise(country);
-	}*/
-
-	/*public List<String> getTopSearchedCoursesByUsers(final String userId) {
-		return viewDao.getUserWatchCourseIds(userId, "COURSE");
-	}*/
 	
 	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
 		return courseDao.getAllCoursesUsingId(listOfRecommendedCourseIds);
@@ -1194,22 +1163,6 @@ public class CourseProcessor {
 		}
 		return courseDao.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
 	}
-
-	/*private List<String> getCourseListBasedForCourseOnParameters(final String courseId, final String instituteId, final String facultyId,
-			final String countryId, final String cityId) {
-		List<String> courseIdList = courseDao.getCourseListForCourseBasedOnParameters(courseId, instituteId, facultyId, countryId, cityId);
-		return courseIdList;
-	}*/
-
-	/*public List<Long> getUserListForUserWatchCourseFilter(final String courseId, final String instituteId, final String facultyId,
-			final String countryId, final String cityId) {
-		List<String> courseIdList = getCourseListBasedForCourseOnParameters(courseId, instituteId, facultyId, countryId, cityId);
-		if (courseIdList == null || courseIdList.isEmpty()) {
-			return new ArrayList<>();
-		}
-		List<Long> userIdList = courseDao.getUserListFromUserWatchCoursesBasedOnCourses(courseIdList);
-		return userIdList;
-	}*/
 
 	public List<String> courseIdsForCountry(final String country) {
 		return courseDao.getCourseIdsForCountry(country);
@@ -1772,5 +1725,15 @@ public class CourseProcessor {
 			});
 		}
 		return courseDtos;
+	}
+	
+	public CourseCountDto getCourseCountByInstitute(String instituteId) {
+		CourseCountDto courseCountDto = new CourseCountDto();
+		log.debug("Inside getCourseCountByInstitute method () ");
+		log.info("Getting course count for institute id "+instituteId);
+		long courseCount = courseDao.getCourseCountByInstituteId(instituteId);
+		log.info("Total number of course found for institute id " + instituteId+" is "+courseCount);
+		courseCountDto.setCourseCount(courseCount);
+		return courseCountDto;
 	}
 }

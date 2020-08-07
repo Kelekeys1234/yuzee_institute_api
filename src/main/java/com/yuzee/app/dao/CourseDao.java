@@ -66,20 +66,10 @@ public interface CourseDao {
 	public List<Course> facultyWiseCourseForTopInstitute(List<Faculty> facultyList, Institute institute);
 
 	public long getCourseCountForCountry(String countryName);
-
-//	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(String countryName);
-
-//	public List<Course> getAllCourseForFacultyWorldRankingWise(String facultyId);
-
-//	public List<String> getAllCourseForFacultyWorldRankingWises(String facultyId);
-
-//	public List<Course> getCoursesFromId(List<String> allSearchCourses);
-
-//	public Map<String, String> facultyWiseCourseIdMapForInstitute(List<Faculty> facultyList, String instituteId);
-
+	
+	public long getCourseCountByInstituteId (String instituted);
+	
 	public List<Course> getAllCoursesUsingId(List<String> listOfRecommendedCourseIds);
-
-//	public List<String> getTopRatedCourseIdsForCountryWorldRankingWise(String countryName);
 
 	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(UserDto userDto, String countryName);
 

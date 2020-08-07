@@ -1784,4 +1784,9 @@ public class CourseDaoImpl implements CourseDao {
 		return totalCount;
 	}
 
+	@Override
+	public long getCourseCountByInstituteId(String instituteId) {
+		return courseRepository.getTotalCountOfCourseByInstituteId(instituteId);
+	}
+
 }
