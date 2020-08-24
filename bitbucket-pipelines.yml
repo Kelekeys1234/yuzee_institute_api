@@ -31,7 +31,7 @@ pipelines:
                  AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
                  COMMAND: 'upload'
                  APPLICATION_NAME: ${APPLICATION_NAME}
-                 ZIP_FILE: 'yuzee-test-storage-app-$BITBUCKET_BUILD_NUMBER.zip'
+                 ZIP_FILE: 'yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip'
        - step:
            name: Deploy with CodeDeploy
            deployment: production
