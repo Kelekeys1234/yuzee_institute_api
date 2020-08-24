@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo service yuzee-storage-api stop
+sudo service yuzee-institute  stop

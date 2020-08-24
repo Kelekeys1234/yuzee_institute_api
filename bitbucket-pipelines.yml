@@ -13,9 +13,9 @@ pipelines:
              - maven
            script: # Modify the commands below to build your repository.
              - mvn -B verify # -B batch mode makes Maven less verbose
-             - zip -r yuzee-test-storage-app-$BITBUCKET_BUILD_NUMBER.zip target/yuzee-app-storage.jar
-             - zip -r yuzee-test-storage-app-$BITBUCKET_BUILD_NUMBER.zip appspec.yml
-             - zip -r yuzee-test-storage-app-$BITBUCKET_BUILD_NUMBER.zip scripts/*
+             - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip target/yuzee-institute.jar
+             - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip appspec.yml
+             - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip scripts/*
            artifacts:
              - yuzee-test-storage-app-*.zip
        - step:
