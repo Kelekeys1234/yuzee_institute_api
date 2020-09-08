@@ -17,6 +17,8 @@ import com.yuzee.app.constant.InstituteJoinStatus;
 import com.yuzee.app.dao.InstituteJoinRequestDao;
 import com.yuzee.app.dto.InstituteJoinRequestDto;
 import com.yuzee.app.dto.StorageDto;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.StorageHandler;
@@ -63,16 +65,17 @@ public class InstituteJoinRequestProcessor {
 		if (!CollectionUtils.isEmpty(listOfInstituteJoinRequest)) {
 			log.info("list of institute join request for status "+status+ " is not empty");
 			listOfInstituteJoinRequest.stream().forEach(instituteJoinRequest -> {
-				List<StorageDto> listOfCertificates = null;
+				List<StorageDto> joinRequestStorages = null;
 				log.info("calling storage service for getting certificate associated with id "+instituteJoinRequest.getId());
 				try {
-					listOfCertificates =storageHandler.getCertificates(instituteJoinRequest.getId(), "JOIN REQUEST");
+					joinRequestStorages = storageHandler.getStorages(instituteJoinRequest.getId(),
+							EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.JOIN_REQUEST);
 				} catch (Exception e) {
-					log.error("Exception "+e);
+					log.error("Exception "+e.getMessage());
 				}
 				InstituteJoinRequestDto instituteJoinRequestDto = new InstituteJoinRequestDto(instituteJoinRequest.getId(), instituteJoinRequest.getUserId(), instituteJoinRequest.getInstituteCountry(),
 						instituteJoinRequest.getInstituteName(), instituteJoinRequest.getTypeOfInstitute(), instituteJoinRequest.getType(), instituteJoinRequest.getFirstName(), instituteJoinRequest.getLastName(), instituteJoinRequest.getTitle(), instituteJoinRequest.getWorkEmail(), instituteJoinRequest.getWorkPhoneNumber(), 
-						instituteJoinRequest.getManagementName(), instituteJoinRequest.getManagementEmail(), instituteJoinRequest.getManagementPhoneNumber(), listOfCertificates);
+						instituteJoinRequest.getManagementName(), instituteJoinRequest.getManagementEmail(), instituteJoinRequest.getManagementPhoneNumber(), joinRequestStorages);
 				listOfInstituteJoinRequestDto.add(instituteJoinRequestDto);
 			});
 		}

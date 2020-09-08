@@ -419,7 +419,7 @@ public class HelpProcessor {
 				if (!CollectionUtils.isEmpty(storageDTOList)) {
 					StorageDto storageDto = storageDTOList.get(0);
 					if (storageDto != null) {
-						helpAnswerDto.setFileUrl(storageDto.getImageURL());
+						helpAnswerDto.setFileUrl(storageDto.getFileURL());
 					}
 				}
 			} catch (ValidationException e) {

@@ -138,7 +138,7 @@ public class ErrorReportService implements IErrorReportService {
 				errorReportResponseDto.setAssigneeUserName(assignUserDto.getFirstName() + " " + assignUserDto.getLastName());
 				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(errorReport.getAssigneeUserId(), "USER_PROFILE", null, "en");
 				if (storageDTOList != null && !storageDTOList.isEmpty()) {
-					errorReportResponseDto.setAssigneeUserImageUrl(storageDTOList.get(0).getImageURL());
+					errorReportResponseDto.setAssigneeUserImageUrl(storageDTOList.get(0).getFileURL());
 				}
 			}
 

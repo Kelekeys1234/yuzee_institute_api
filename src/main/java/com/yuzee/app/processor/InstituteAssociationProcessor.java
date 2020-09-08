@@ -21,6 +21,8 @@ import com.yuzee.app.dto.InstituteAssociationDto;
 import com.yuzee.app.dto.InstituteAssociationResponseDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UserInstituteAccessInternalResponseDto;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.handler.IdentityHandler;
@@ -170,7 +172,7 @@ public class InstituteAssociationProcessor {
 				if (userAssociation.getDestinationInstituteId().equals(instituteId)) {
 					try {
 						 log.info("calling storage to get logo for institute id "+userAssociation.getSourceInstituteId());
-						 listOfStorageDto = storageHandler.getCertificates(userAssociation.getSourceInstituteId(), "LOGO");
+						 listOfStorageDto = storageHandler.getStorages(userAssociation.getSourceInstituteId(),EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.LOGO);
 					} catch (Exception e) {
 						log.error("Error occured while fetching logo for institute id "+userAssociation.getSourceInstituteId());
 					}
@@ -179,14 +181,14 @@ public class InstituteAssociationProcessor {
 					if (sourceInstituteFromDB.isPresent()) {
 						log.info("Institute from DB found for institute id "+userAssociation.getSourceInstituteId());
 						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), sourceInstituteFromDB.get().getLatitude(), sourceInstituteFromDB.get().getLongitude(), sourceInstituteFromDB.get().getName(), sourceInstituteFromDB.get().getCityName(), sourceInstituteFromDB.get().getCountryName(),
-							!CollectionUtils.isEmpty(listOfStorageDto) ?listOfStorageDto.get(0).getImageURL() : null, userAssociation.getInstituteAssociationType().toString());
+							!CollectionUtils.isEmpty(listOfStorageDto) ?listOfStorageDto.get(0).getFileURL() : null, userAssociation.getInstituteAssociationType().toString());
 						listOfUserInstituteAssociationResponseDto.add(instituteAssociationResponseDto);
 					}
 				} else {
 					log.info("calling storage to get logo for institute id "+userAssociation.getDestinationInstituteId());
 					try {
 						 log.info("calling storage to get logo for institute id "+userAssociation.getDestinationInstituteId());
-						 listOfStorageDto = storageHandler.getCertificates(userAssociation.getDestinationInstituteId(), "LOGO");
+						 listOfStorageDto = storageHandler.getStorages(userAssociation.getDestinationInstituteId(), EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.LOGO);
 					} catch (Exception e) {
 						log.error("Error occured while fetching logo for institute id "+userAssociation.getDestinationInstituteId());
 					}
@@ -194,7 +196,7 @@ public class InstituteAssociationProcessor {
 					Optional<Institute> destinationInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(userAssociation.getDestinationInstituteId());
 					if (destinationInstituteFromDB.isPresent()) {
 						log.info("Institute from DB found for institute id "+userAssociation.getDestinationInstituteId());
-						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), destinationInstituteFromDB.get().getLatitude(), destinationInstituteFromDB.get().getLongitude(), destinationInstituteFromDB.get().getName(), destinationInstituteFromDB.get().getCityName(), destinationInstituteFromDB.get().getCountryName(), !CollectionUtils.isEmpty(listOfStorageDto) ?listOfStorageDto.get(0).getImageURL() : null, userAssociation.getInstituteAssociationType().toString());
+						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), destinationInstituteFromDB.get().getLatitude(), destinationInstituteFromDB.get().getLongitude(), destinationInstituteFromDB.get().getName(), destinationInstituteFromDB.get().getCityName(), destinationInstituteFromDB.get().getCountryName(), !CollectionUtils.isEmpty(listOfStorageDto) ?listOfStorageDto.get(0).getFileURL() : null, userAssociation.getInstituteAssociationType().toString());
 						listOfUserInstituteAssociationResponseDto.add(instituteAssociationResponseDto);
 					}
 				}

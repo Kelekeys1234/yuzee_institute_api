@@ -2,8 +2,6 @@ package com.yuzee.app.handler;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -14,71 +12,48 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.yuzee.app.constant.Constant;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.StorageDtoWrapper;
-import com.yuzee.app.exception.FileStorageException;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class StorageHandler {
-
-	public static final Logger LOGGER = LoggerFactory.getLogger(StorageHandler.class);
-
 	@Autowired
 	private RestTemplate restTemplate;
 
-	private static final String GET_CERTIFICATES_BY_ID = "/api/v1";
-	private static final String DELETE_CERTIFICATES_BY_ID = "/api/v1/deleteStorage";
+	private static final String GET_STORAGE = "/api/v1/storage";
 
-	public List<StorageDto> getCertificates(String entityId, String entityType) throws Exception {
-		ResponseEntity<StorageDtoWrapper> listOfCertificatesResponse = null;
+	public List<StorageDto> getStorages(String entityId, EntityTypeEnum entityType,
+			EntitySubTypeEnum entitySubType) throws Exception {
+		ResponseEntity<StorageDtoWrapper> getStoragesResponse = null;
 		try {
 			StringBuilder path = new StringBuilder();
-			path.append(Constant.STORAGE_BASE_PATH).append(GET_CERTIFICATES_BY_ID);
+			path.append(Constant.STORAGE_BASE_PATH).append(GET_STORAGE);
 			// adding the query params to the URL
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(path.toString())
-					.queryParam("type", entityType).queryParam("entityId", entityId)
-					.queryParam("entityType", entityType);
-			LOGGER.info("Calling storage service to fetch certificates for asset Id {}", entityId);
-			listOfCertificatesResponse = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, null,
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(path.toString());
+			uriBuilder.queryParam("entity_id", entityId);
+			uriBuilder.queryParam("entity_type", entityType.name());
+			uriBuilder.queryParam("entity_sub_type", entitySubType.name());
+			log.info("Calling storage service to fetch certificates for asset Id {}", entityId);
+			getStoragesResponse = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, null,
 					StorageDtoWrapper.class);
-			if (listOfCertificatesResponse.getStatusCode().value() != 200) {
-				throw new FileStorageException("Error response recieved from storage service with error code "
-						+ listOfCertificatesResponse.getStatusCode().value());
+			if (getStoragesResponse.getStatusCode().value() != 200) {
+				throw new InvokeException("Error response recieved from storage service with error code "
+						+ getStoragesResponse.getStatusCode().value());
 			}
 
 		} catch (Exception e) {
-			LOGGER.error("Error invoking storage service {}", e);
-			if (e instanceof FileStorageException) {
+			log.error("Error invoking storage service {}", e);
+			if (e instanceof InvokeException || e instanceof NotFoundException) {
 				throw e;
 			} else {
-				throw new FileStorageException("Error invoking storage service");
+				throw new InvokeException("Error invoking storage service");
 			}
 		}
-		return listOfCertificatesResponse.getBody().getData();
+		return getStoragesResponse.getBody().getData();
 	}
-
-	public void deleteCertificates(String assetID) throws Exception {
-		ResponseEntity<Void> response;
-		try {
-			StringBuilder path = new StringBuilder();
-			path.append(Constant.STORAGE_BASE_PATH).append(DELETE_CERTIFICATES_BY_ID);
-			// adding the query params to the URL
-			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(path.toString()).queryParam("entityId",
-					assetID);
-			LOGGER.info("Calling storage service to delete certificates for asset Id {}", assetID);
-			response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.DELETE, null, Void.class);
-			if (response.getStatusCode().value() != 200) {
-				throw new FileStorageException("Error response recieved from storage service with error code "
-						+ response.getStatusCode().value());
-			}
-
-		} catch (Exception e) {
-			LOGGER.error("Error invoking storage service {}", e);
-			if (e instanceof FileStorageException) {
-				throw e;
-			} else {
-				throw new FileStorageException("Error invoking storage service");
-			}
-		}
-	}
-
 }

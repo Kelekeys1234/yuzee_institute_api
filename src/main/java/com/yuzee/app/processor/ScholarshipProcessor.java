@@ -202,7 +202,7 @@ public class ScholarshipProcessor {
 		if(!CollectionUtils.isEmpty(storageDTOList)) {
 			log.info("Storage data fetched from storage service, start iterating data");
 			storageDTOList.stream().forEach(storageDto -> {
-				MediaDto mediaDto = new MediaDto(storageDto.getEntityId(), storageDto.getImageName(), storageDto.getImageURL());
+				MediaDto mediaDto = new MediaDto(storageDto.getEntityId(), storageDto.getOriginalFileName(), storageDto.getFileURL());
 				mediaDtos.add(mediaDto);
 			});
 		}

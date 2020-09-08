@@ -15,6 +15,8 @@ import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.InstituteBasicInfoDto;
 import com.yuzee.app.dto.StorageDto;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.handler.StorageHandler;
 
@@ -72,14 +74,14 @@ public class InstituteBasicInfoProcessor {
 		Institute institute = instituteFromFb.get();
 		log.info("Getting institute logo for institute id "+instituteId);
 		try {
-			listOfStorageDto = storageHandler.getCertificates(instituteId, "INSTITUTE_LOGO");
+			listOfStorageDto = storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
 		} catch (Exception e) {
 			log.error("Not able to fetch logo for institue id "+instituteId);
 		}
 		
 		if (!CollectionUtils.isEmpty(listOfStorageDto)) {
 			log.info("Setting logo URL for institute id "+instituteId);
-			instituteBasicInfoDto.setInstituteLogoPath(listOfStorageDto.get(0).getImageURL());
+			instituteBasicInfoDto.setInstituteLogoPath(listOfStorageDto.get(0).getFileURL());
 		} 
 		instituteBasicInfoDto.setDescription(institute.getDescription());
 		instituteBasicInfoDto.setNameOfUniversity(institute.getName());
