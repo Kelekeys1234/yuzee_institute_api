@@ -16,9 +16,13 @@ import com.yuzee.app.dao.ITop10CourseDAO;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.FacultyDto;
 import com.yuzee.app.dto.StorageDto;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.processor.FacultyProcessor;
-import com.yuzee.app.processor.StorageProcessor;
 import com.yuzee.app.util.IConstant;
 
 @Service
@@ -34,7 +38,7 @@ public class Top10CourseService implements ITop10CourseService {
 	private FacultyProcessor facultyProcessor;
 
 	@Autowired
-	private StorageProcessor iStorageService;
+	private StorageHandler storageHandler;
 
 	@Override
 	public void saveTop10Courses(final Top10Course top10Course) {
@@ -62,7 +66,7 @@ public class Top10CourseService implements ITop10CourseService {
 	}
 
 	@Override
-	public List<CourseResponseDto> getTop10RandomCoursesForGlobalSearchLandingPage() throws ValidationException {
+	public List<CourseResponseDto> getTop10RandomCoursesForGlobalSearchLandingPage() throws ValidationException, NotFoundException, InvokeException {
 		List<String> countryListForCourses = IConstant.COUNTRY_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE;
 		List<String> levelList = IConstant.LEVEL_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE;
 		List<CourseResponseDto> listOfTop10Course = new ArrayList<>();
@@ -88,7 +92,8 @@ public class Top10CourseService implements ITop10CourseService {
 			}
 		}
 		if ((responseCourseIds != null) && !responseCourseIds.isEmpty()) {
-			List<StorageDto> storageList = iStorageService.getStorageInformationBasedOnEntityIdList(responseCourseIds, "COURSE", null, "en");
+			List<StorageDto> storageList = storageHandler.getStorages(responseCourseIds,
+					EntityTypeEnum.COURSE, EntitySubTypeEnum.IMAGES);
 			for (CourseResponseDto courseResponseDto : listOfTop10Course) {
 				List<StorageDto> s = new ArrayList<>();
 				for (StorageDto storageDto : storageList) {

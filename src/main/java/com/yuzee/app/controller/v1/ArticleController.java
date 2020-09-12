@@ -34,6 +34,7 @@ import com.yuzee.app.dto.ArticleFolderMapDto;
 import com.yuzee.app.dto.ArticleResponseDetailsDto;
 import com.yuzee.app.dto.ArticlesDto;
 import com.yuzee.app.dto.PaginationUtilDto;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
@@ -56,7 +57,7 @@ public class ArticleController {
 			@RequestParam(required = false) final String tags,
 			@RequestParam(required = false) final Boolean status,
 			@RequestParam(required = false) final String date
-			) throws ValidationException, ParseException {
+			) throws ValidationException, ParseException, NotFoundException, InvokeException {
 		Date filterDate = null;
 		if(date != null) {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -81,7 +82,7 @@ public class ArticleController {
 	}
 	
 	@PostMapping("/filter")
-	public ResponseEntity<?> getAllArticlesByFilter(@RequestBody ArticleFilterDto articleFilterDTO) throws ValidationException {
+	public ResponseEntity<?> getAllArticlesByFilter(@RequestBody ArticleFilterDto articleFilterDTO) throws ValidationException, NotFoundException, InvokeException {
 		if(articleFilterDTO.getPageNumber() == null ) {
 			throw new ValidationException("Please Specify Page Number");
 		}
@@ -119,7 +120,7 @@ public class ArticleController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getArticleById(@PathVariable final String id) throws ValidationException {
+	public ResponseEntity<?> getArticleById(@PathVariable final String id) throws ValidationException, NotFoundException, InvokeException {
 		ArticleResponseDetailsDto articleDto = articleProcessor.getArticleById(id);
 		return new GenericResponseHandlers.Builder().setData(articleDto).setMessage("Data Displayed Successfully")
 				.setStatus(HttpStatus.OK).create();

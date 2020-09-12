@@ -24,10 +24,13 @@ import com.yuzee.app.dto.ErrorReportDto;
 import com.yuzee.app.dto.ErrorReportResponseDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UserDto;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.IdentityHandler;
-import com.yuzee.app.processor.StorageProcessor;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.util.DateUtil;
 
 @Service
@@ -41,7 +44,7 @@ public class ErrorReportService implements IErrorReportService {
 	private IdentityHandler identityHandler;
 
 	@Autowired
-	private StorageProcessor iStorageService;
+	private StorageHandler storageHandler;
 
 	@Override
 	public void saveErrorReportCategory(final ErrorReportCategoryDto errorReportCategoryDto) {
@@ -121,7 +124,7 @@ public class ErrorReportService implements IErrorReportService {
 	@Override
 	public List<ErrorReportResponseDto> getAllErrorReport(final String userId, final Integer startIndex, final Integer pageSize,
 			final String errorReportCategoryId, final String errorReportStatus, final Date updatedOn, final Boolean isFavourite, final Boolean isArchive,
-			final String sortByField, final String sortByType, final String searchKeyword) throws ValidationException {
+			final String sortByField, final String sortByType, final String searchKeyword) throws ValidationException, NotFoundException, InvokeException {
 		List<ErrorReport> errorReports = errorReportDAO.getAllErrorReport(userId, startIndex, pageSize, errorReportCategoryId, errorReportStatus, updatedOn,
 				isFavourite, isArchive, sortByField, sortByType, searchKeyword);
 		List<ErrorReportResponseDto> errorReportResponseDtos = new ArrayList<>();
@@ -136,7 +139,7 @@ public class ErrorReportService implements IErrorReportService {
 			if (errorReport.getAssigneeUserId() != null) {
 				UserDto assignUserDto = identityHandler.getUserById(errorReport.getAssigneeUserId());
 				errorReportResponseDto.setAssigneeUserName(assignUserDto.getFirstName() + " " + assignUserDto.getLastName());
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(errorReport.getAssigneeUserId(), "USER_PROFILE", null, "en");
+				List<StorageDto> storageDTOList = storageHandler.getStorages(errorReport.getAssigneeUserId(), EntityTypeEnum.USER,EntitySubTypeEnum.PROFILE);
 				if (storageDTOList != null && !storageDTOList.isEmpty()) {
 					errorReportResponseDto.setAssigneeUserImageUrl(storageDTOList.get(0).getFileURL());
 				}

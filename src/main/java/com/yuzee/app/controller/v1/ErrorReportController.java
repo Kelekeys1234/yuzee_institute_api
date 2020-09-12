@@ -32,6 +32,7 @@ import com.yuzee.app.dto.ErrorReportCategoryDto;
 import com.yuzee.app.dto.ErrorReportDto;
 import com.yuzee.app.dto.ErrorReportResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
@@ -91,7 +92,7 @@ public class ErrorReportController {
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final Date updatedOn,
 			@RequestParam(required = false) final String errorReportStatus, @RequestParam(required = false) final Boolean isFavourite,
 			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
-			@RequestParam(required = false) final String searchKeyword) throws ValidationException {
+			@RequestParam(required = false) final String searchKeyword) throws ValidationException, NotFoundException, InvokeException {
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<ErrorReportResponseDto> errorReports = errorReportService.getAllErrorReport(null, startIndex, pageSize, errorReportCategoryId, errorReportStatus,
 				updatedOn, isFavourite, null, sortByField, sortByType, searchKeyword);

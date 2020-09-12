@@ -28,11 +28,14 @@ import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UserDto;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.HelpEnum;
-import com.yuzee.app.enumeration.ImageCategory;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.IdentityHandler;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.service.IMediaService;
 import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.PaginationUtil;
@@ -112,7 +115,7 @@ public class HelpProcessor {
 	private IMediaService iMediaService;
 
 	@Autowired
-	private StorageProcessor iStorageService;
+	private StorageHandler storageHandler;
 
 	public void saveHelp(@Valid final HelpDto helpDto, final String userId) {
 		log.debug("Inside saveHelp() method");
@@ -363,7 +366,7 @@ public class HelpProcessor {
 			HelpAnswer helpAnswer = helpDAO.save(convertDtoToHelpAnswerBeans(helpAnswerDto));
 			if ((helpAnswer != null) && (file != null)) {
 				log.info("Uploading image on Storage Service for helpAnswerId "+helpAnswer.getId());
-				String logoName = iMediaService.uploadImage(file, helpAnswer.getId(), ImageCategory.HELP_SUPPORT.name(), null);
+				String logoName = iMediaService.uploadImage(file, helpAnswer.getId(), EntityTypeEnum.HELP_SUPPORT.name(), null);
 				log.info("Help answer media upload for id - >" + helpAnswer.getId() + " and Image  name :" + logoName);
 				if ((logoName != null) && !logoName.isEmpty() && !logoName.equals("null")) {
 					helpAnswer.setFileName(logoName);
@@ -397,7 +400,11 @@ public class HelpProcessor {
 		if(!CollectionUtils.isEmpty(helpAnswers)) {
 			log.info("Help Answers fetched from DB, start iterating data");
 			helpAnswers.stream().forEach(helpAnswer -> {
-				helpAnswerDtos.add(convertBeanToHelpAnswerDto(helpAnswer));
+				try {
+					helpAnswerDtos.add(convertBeanToHelpAnswerDto(helpAnswer));
+				} catch (NotFoundException | InvokeException e) {
+					log.error("Exception while convertBeanToHelpAnswerDto :" + e.getMessage());
+				}
 			});
 		} else {
 			log.error("Yuzee Help Answer not found in DB for id " + helpId);
@@ -406,24 +413,20 @@ public class HelpProcessor {
 		return helpAnswerDtos;
 	}
 
-	public HelpAnswerDto convertBeanToHelpAnswerDto(final HelpAnswer helpAnswer) {
+	public HelpAnswerDto convertBeanToHelpAnswerDto(final HelpAnswer helpAnswer) throws NotFoundException, InvokeException {
 		log.debug("Inside convertBeanToHelpAnswerDto() method");
 		HelpAnswerDto helpAnswerDto = new HelpAnswerDto();
 		helpAnswerDto.setAnswer(helpAnswer.getAnswer());
 		helpAnswerDto.setUserId(helpAnswer.getUser());
 		helpAnswerDto.setHelpId(helpAnswer.getHelp().getId());
 		if (helpAnswer.getFileName() != null) {
-			try {
-				log.info("Calling Storage Service to fetch helpSupport images for helpAnswerId "+helpAnswer.getId());
-				List<StorageDto> storageDTOList = iStorageService.getStorageInformation(helpAnswer.getId(), ImageCategory.HELP_SUPPORT.toString(), null, "en");
-				if (!CollectionUtils.isEmpty(storageDTOList)) {
-					StorageDto storageDto = storageDTOList.get(0);
-					if (storageDto != null) {
-						helpAnswerDto.setFileUrl(storageDto.getFileURL());
-					}
+			log.info("Calling Storage Service to fetch helpSupport images for helpAnswerId "+helpAnswer.getId());
+			List<StorageDto> storageDTOList = storageHandler.getStorages(helpAnswer.getId(), EntityTypeEnum.HELP_SUPPORT, EntitySubTypeEnum.IMAGES);
+			if (!CollectionUtils.isEmpty(storageDTOList)) {
+				StorageDto storageDto = storageDTOList.get(0);
+				if (storageDto != null) {
+					helpAnswerDto.setFileUrl(storageDto.getFileURL());
 				}
-			} catch (ValidationException e) {
-				log.error("Exception while invoking Storage Service, exception = "+e);
 			}
 		}
 		return helpAnswerDto;

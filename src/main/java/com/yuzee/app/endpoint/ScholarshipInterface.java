@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.ScholarshipDto;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
 @RequestMapping("/api/v1/scholarship")
@@ -28,7 +30,7 @@ public interface ScholarshipInterface {
 			@PathVariable final String id) throws Exception;
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> get(@PathVariable final String id) throws ValidationException;
+	public ResponseEntity<?> get(@PathVariable final String id) throws ValidationException, NotFoundException, InvokeException;
 	
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllScholarship(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,

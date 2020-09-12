@@ -10,6 +10,7 @@ import com.yuzee.app.bean.ErrorReportCategory;
 import com.yuzee.app.dto.ErrorReportCategoryDto;
 import com.yuzee.app.dto.ErrorReportDto;
 import com.yuzee.app.dto.ErrorReportResponseDto;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
@@ -23,7 +24,7 @@ public interface IErrorReportService {
 
 	List<ErrorReportResponseDto> getAllErrorReport(String userId, Integer startIndex, Integer pageSize, String errorReportCategoryId,
 			String errorReportStatus, Date updatedOn, Boolean isFavourite, Boolean isArchive, String sortByField, String sortByType, String searchKeyword)
-			throws ValidationException;
+			throws ValidationException, NotFoundException, InvokeException;
 
 	ResponseEntity<?> deleteByUserId(String userId);
 

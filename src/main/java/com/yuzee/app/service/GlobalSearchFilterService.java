@@ -14,25 +14,27 @@ import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.GlobalFilterSearchDto;
 import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntityType;
-import com.yuzee.app.enumeration.ImageCategory;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.CommonInvokeException;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.processor.StorageProcessor;
+import com.yuzee.app.handler.StorageHandler;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
 public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 
 	@Autowired
-	private CourseDao icourseDao;
+	private CourseDao icourseDaso;
 
 	@Autowired
-	private StorageProcessor iStorageService;
+	private StorageHandler storageHandler;
 
 	@Override
-	public Map<String, Object> filterByEntity(GlobalFilterSearchDto globalSearchFilterDto) throws ValidationException, CommonInvokeException {
-		if (EntityType.COURSE.equals(globalSearchFilterDto.getEntityType())) {
+	public Map<String, Object> filterByEntity(GlobalFilterSearchDto globalSearchFilterDto) throws ValidationException, CommonInvokeException, NotFoundException, InvokeException {
+		if (EntityTypeEnum.COURSE.equals(globalSearchFilterDto.getEntityType())) {
 			AdvanceSearchDto advanceSearchDto = new AdvanceSearchDto();
 			BeanUtils.copyProperties(globalSearchFilterDto, advanceSearchDto);
 			return filterCoursesByParameters(globalSearchFilterDto, advanceSearchDto);
@@ -42,11 +44,11 @@ public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 	}
 
 	private Map<String, Object> filterCoursesByParameters(GlobalFilterSearchDto globalSearchFilterDto, AdvanceSearchDto advacneSearchDto)
-			throws ValidationException, CommonInvokeException {
+			throws ValidationException, CommonInvokeException, NotFoundException, InvokeException {
 
-		List<CourseResponseDto> courseList = icourseDao.advanceSearch(null, advacneSearchDto, globalSearchFilterDto);
+		List<CourseResponseDto> courseList = icourseDaso.advanceSearch(null, advacneSearchDto, globalSearchFilterDto);
 		for (CourseResponseDto courseResponseDto : courseList) {
-			List<StorageDto> storageDTOList = iStorageService.getStorageInformation(courseResponseDto.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			List<StorageDto> storageDTOList = storageHandler.getStorages(courseResponseDto.getInstituteId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 			courseResponseDto.setStorageList(storageDTOList);
 		}
 		Map<String, Object> returnMap = new HashMap<>();

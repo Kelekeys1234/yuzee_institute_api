@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseResponseDto;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.service.ITop10CourseService;
@@ -23,7 +25,7 @@ public class Top10CourseController {
 	private ITop10CourseService iTop10CourseService;
 
 	@GetMapping("/random")
-	public ResponseEntity<?> getTop10RandomCoursesForGlobalSearchLandingPage(@RequestHeader final String userId) throws ValidationException {
+	public ResponseEntity<?> getTop10RandomCoursesForGlobalSearchLandingPage(@RequestHeader final String userId) throws ValidationException, NotFoundException, InvokeException {
 
 		List<CourseResponseDto> courseResponseDto = iTop10CourseService.getTop10RandomCoursesForGlobalSearchLandingPage();
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Random List of Courses.").setData(courseResponseDto).create();

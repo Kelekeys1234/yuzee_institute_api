@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.yuzee.app.bean.Top10Course;
 import com.yuzee.app.dto.CourseResponseDto;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
 public interface ITop10CourseService {
@@ -16,5 +18,5 @@ public interface ITop10CourseService {
 
 	List<String> getTop10CourseKeyword(String facultyId);
 
-	List<CourseResponseDto> getTop10RandomCoursesForGlobalSearchLandingPage() throws ValidationException;
+	List<CourseResponseDto> getTop10RandomCoursesForGlobalSearchLandingPage() throws ValidationException, NotFoundException, InvokeException;
 }

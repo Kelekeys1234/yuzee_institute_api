@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.endpoint.AccrediatedDetailInterface;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.AccrediatedDetailProcessor;
@@ -38,7 +39,7 @@ public class AccrediationDetailController implements AccrediatedDetailInterface 
 	}
 
 	@Override
-	public ResponseEntity<?> deleteAccrediationDetailByEntityId(String entityId) {
+	public ResponseEntity<?> deleteAccrediationDetailByEntityId(String entityId) throws NotFoundException, InvokeException {
 		log.info("start deleting accrediation for entityId "+entityId);
 		accrediatedDetailProcessor.deleteAccrediationDetailByEntityId(entityId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Accrediation deleted successfully").create();
@@ -52,14 +53,14 @@ public class AccrediationDetailController implements AccrediatedDetailInterface 
 	}
 
 	@Override
-	public ResponseEntity<?> getAccrediationDetailById(String id) throws NotFoundException {
+	public ResponseEntity<?> getAccrediationDetailById(String id) throws NotFoundException, InvokeException {
 		log.info("start getting accrediation details for id "+id);
 		AccrediatedDetailDto detailDto = accrediatedDetailProcessor.getAccrediatedById(id);
 		return new GenericResponseHandlers.Builder().setData(detailDto).setStatus(HttpStatus.OK).setMessage("Accrediation Details fetched successfully").create();
 	}
 
 	@Override
-	public ResponseEntity<?> deleteAccrediationDetailById(String id) {
+	public ResponseEntity<?> deleteAccrediationDetailById(String id) throws NotFoundException, InvokeException {
 		log.info("start deleting accrediation details for id "+id);
 		accrediatedDetailProcessor.deleteAccrediationDetailById(id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Accrediation deleted successfully").create();

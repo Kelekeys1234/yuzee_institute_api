@@ -21,6 +21,8 @@ import com.yuzee.app.dto.ScholarshipCountDto;
 import com.yuzee.app.dto.ScholarshipDto;
 import com.yuzee.app.dto.ScholarshipResponseDTO;
 import com.yuzee.app.endpoint.ScholarshipInterface;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.LevelProcessor;
@@ -58,7 +60,7 @@ public class ScholarshipController implements ScholarshipInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> get(final String id) throws ValidationException {
+	public ResponseEntity<?> get(final String id) throws ValidationException, NotFoundException, InvokeException {
 		return new GenericResponseHandlers.Builder().setMessage("Get Scholarship Successfully").setData(scholarshipProcessor.getScholarshipById(id))
 				.setStatus(HttpStatus.OK).create();
 	}

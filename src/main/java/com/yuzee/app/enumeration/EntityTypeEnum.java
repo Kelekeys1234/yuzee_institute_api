@@ -13,5 +13,9 @@ public enum EntityTypeEnum {
 	
 	USER,
 	
-	EVENT;
+	EVENT,
+	
+	HELP_SUPPORT,
+	
+	SCHOLARSHIP;
 }

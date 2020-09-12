@@ -41,10 +41,13 @@ import com.yuzee.app.dto.ArticleResponseDetailsDto;
 import com.yuzee.app.dto.ArticleUserDemographicDto;
 import com.yuzee.app.dto.ArticlesDto;
 import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.ImageCategory;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ElasticHandler;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.message.MessageByLocaleService;
 import com.yuzee.app.util.CommonUtil;
 import com.yuzee.app.util.DateUtil;
@@ -85,7 +88,7 @@ public class ArticleProcessor {
 	private IArticleUserDemographicDao iArticleUserDemographicDao;
 
 	@Autowired
-	private StorageProcessor storageProcessor;
+	private StorageHandler storageHandler;
 
 	@Autowired
 	private MessageByLocaleService messageByLocalService;
@@ -105,9 +108,9 @@ public class ArticleProcessor {
 	}
 
 	
-	public ArticleResponseDetailsDto getArticleById(final String articleId) throws ValidationException {
+	public ArticleResponseDetailsDto getArticleById(final String articleId) throws ValidationException, NotFoundException, InvokeException {
 		Articles article = articleDAO.findById(articleId);
-		List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
+		List<StorageDto> storageDTOList = storageHandler.getStorages(article.getId(), EntityTypeEnum.ARTICLE, EntitySubTypeEnum.IMAGES);
 		ArticleResponseDetailsDto articleResponseDetailsDto = getResponseObject(article);
 		articleResponseDetailsDto.setStorageList(storageDTOList);
 		return articleResponseDetailsDto;
@@ -115,7 +118,7 @@ public class ArticleProcessor {
 
 	
 	public List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
-			final String searchKeyword, final String categoryId, final String tags, final Boolean status, final Date date) throws ValidationException {
+			final String searchKeyword, final String categoryId, final String tags, final Boolean status, final Date date) throws ValidationException, NotFoundException, InvokeException {
 
 		List<String> categoryIdList = new ArrayList<>();
 		List<String> tagList = new ArrayList<>();
@@ -132,7 +135,7 @@ public class ArticleProcessor {
 	
 	public List<ArticleResponseDetailsDto> getArticleList(final Integer startIndex, final Integer pageSize, final String sortByField, final String sortByType,
 			final String searchKeyword, final List<String> categoryIdList, final List<String> tagList, final Boolean status, final Date filterDate)
-			throws ValidationException {
+			throws ValidationException, NotFoundException, InvokeException {
 
 		List<Articles> articleList = articleDAO.getAll(startIndex, pageSize, sortByField, sortByType, searchKeyword, categoryIdList, tagList, status,
 				null);
@@ -144,7 +147,7 @@ public class ArticleProcessor {
 			 * Remove this once there is API available to get storage based on all articles
 			 * in list with a single API.
 			 */
-			List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(article.getId(), ImageCategory.ARTICLE.toString(), null, "en");
+			List<StorageDto> storageDTOList = storageHandler.getStorages(article.getId(), EntityTypeEnum.ARTICLE, EntitySubTypeEnum.IMAGES);
 			articleResponseDetailsDto.setStorageList(storageDTOList);
 		}
 		return articleResponseDetailsDtoList;
@@ -218,8 +221,6 @@ public class ArticleProcessor {
 
 	
 	public ArticlesDto saveMultiArticle(final ArticlesDto articleDto, final String userId) throws ValidationException, ParseException {
-		Map<String, String> countryMap = new HashMap<>();
-		Map<String, String> cityMap = new HashMap<>();
 		Articles article = new Articles();
 		Boolean updateCase = false;
 		if ((articleDto != null) && (articleDto.getId() != null)) {

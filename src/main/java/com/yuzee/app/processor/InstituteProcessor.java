@@ -22,7 +22,6 @@ import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteDomesticRankingHistory;
 import com.yuzee.app.bean.InstituteIntake;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
-import com.yuzee.app.constant.Type;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.InstituteDao;
@@ -46,11 +45,13 @@ import com.yuzee.app.dto.NearestInstituteDTO;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntityType;
-import com.yuzee.app.enumeration.ImageCategory;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ElasticHandler;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.app.util.CDNServerUtil;
 import com.yuzee.app.util.CommonUtil;
@@ -87,7 +88,7 @@ public class InstituteProcessor {
 	private ServiceDetailsDao serviceDetailsDAO;
 
 	@Autowired
-	private StorageProcessor storageProcessor;
+	private StorageHandler storageHandler;
 
 	@Autowired
 	private CourseDao courseDao;
@@ -171,10 +172,9 @@ public class InstituteProcessor {
 				instituteResponseDTO.setLocation(institute.getLatitude() + "," + institute.getLongitude());
 				try {
 					log.info("Invoking storage service to get images for instituteId = "+instituteResponseDTO.getId());
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteResponseDTO.getId(), ImageCategory.INSTITUTE.toString(),
-								null, "en");
+					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDTO.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 					instituteResponseDTO.setStorageList(storageDTOList);
-				} catch (ValidationException e) {
+				} catch (NotFoundException | InvokeException e) {
 					log.error("Error invoking Storage service having exception = "+e);
 				}
 				instituteResponseDTOList.add(instituteResponseDTO);
@@ -256,7 +256,7 @@ public class InstituteProcessor {
 			});
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
 			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
-					EntityType.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while saving institutes having exception = " + exception);
 		}
@@ -333,7 +333,7 @@ public class InstituteProcessor {
 				}
 			});
 			log.info("Calling elastic service to save instiutes on index");
-			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityType.INSTITUTE.name().toLowerCase(),
+			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityTypeEnum.INSTITUTE.name().toLowerCase(),
 					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ="+exception);
@@ -863,8 +863,8 @@ public class InstituteProcessor {
 					BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
 					nearestInstitute.setDistance(Double.valueOf(initialRadius));
 					log.info("going to fetch logo for institute from sotrage service for institutueID "+nearestInstituteDTO.getId());
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestInstituteDTO.getId(), 
-							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
+					List<StorageDto> storageDTOList = storageHandler.getStorages(nearestInstituteDTO.getId(), 
+							EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
 					nearestInstitute.setStorageList(storageDTOList);
 					log.info("fetching instituteTiming from DB for instituteId = " +nearestInstituteDTO.getId());
 					InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(nearestInstituteDTO.getId());
@@ -934,10 +934,10 @@ public class InstituteProcessor {
 				BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
 				try {
 					log.info("calling storage service to fetch logos for institute for instituteID "+nearestInstituteDTO.getId());
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestInstituteDTO.getId(), 
-							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
+					List<StorageDto> storageDTOList = storageHandler.getStorages(nearestInstituteDTO.getId(), 
+							EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
 					nearestInstitute.setStorageList(storageDTOList);
-				} catch (ValidationException e) {
+				} catch (NotFoundException | InvokeException e) {
 					log.error("Error while fetching logos from storage service"+e);
 				}
 				log.info("fetching instituteTiming from DB for instituteId =" +nearestInstituteDTO.getId());
@@ -976,10 +976,10 @@ public class InstituteProcessor {
 				BeanUtils.copyProperties(institute, nearestInstitute);
 				log.info("going to fetch institute logo from storage service having instituteID "+institute.getId());
 				try {
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(institute.getId(), 
-							ImageCategory.INSTITUTE.toString(), Type.LOGO.name(),"en");
+					List<StorageDto> storageDTOList = storageHandler.getStorages(institute.getId(), 
+							EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
 					nearestInstitute.setStorageList(storageDTOList);
-				} catch (ValidationException e) {
+				} catch (NotFoundException | InvokeException e) {
 					log.error("Error while fetching logos from storage service"+e);
 				}
 				nearestInstituteDTOs.add(nearestInstitute);

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.dto.GlobalFilterSearchDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.exception.CommonInvokeException;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.service.IGlobalSearchFilterService;
@@ -29,7 +31,7 @@ public class GlobalSearchFilterController {
 	
 	@PostMapping(value = "/filter")
 	public ResponseEntity<?> filterEntityBasedOnParameters(@RequestBody GlobalFilterSearchDto globalFilterSearchDto) 
-			throws ValidationException, CommonInvokeException{
+			throws ValidationException, CommonInvokeException, NotFoundException, InvokeException{
 		Map<String,Object> responseEntityMap = globalSearchFilterService.filterByEntity(globalFilterSearchDto);
 		if(globalFilterSearchDto == null || globalFilterSearchDto.getIds() == null || globalFilterSearchDto.getIds().isEmpty()) {
 			throw new ValidationException("No Courses specified to Filter");

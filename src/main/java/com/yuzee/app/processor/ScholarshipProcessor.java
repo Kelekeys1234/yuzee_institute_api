@@ -29,10 +29,13 @@ import com.yuzee.app.dto.ScholarshipDto;
 import com.yuzee.app.dto.ScholarshipElasticDTO;
 import com.yuzee.app.dto.ScholarshipResponseDTO;
 import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntityType;
-import com.yuzee.app.enumeration.ImageCategory;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ElasticHandler;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.util.IConstant;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -52,7 +55,7 @@ public class ScholarshipProcessor {
 	private ElasticHandler elasticHandler;
 	
 	@Autowired
-	private StorageProcessor storageProcessor;
+	private StorageHandler storageHandler;
 	
 	@Autowired
 	private CourseDao courseDao;
@@ -149,12 +152,12 @@ public class ScholarshipProcessor {
 		
 		log.info("Calling elastic search service to save data on elastic index");
 		elasticHandler.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
-				EntityType.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
+				EntityTypeEnum.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 		return scholarship;
 	}
 
 	
-	public ScholarshipResponseDTO getScholarshipById(final String id) throws ValidationException {
+	public ScholarshipResponseDTO getScholarshipById(final String id) throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside getScholarshipById() method");
 		ScholarshipResponseDTO scholarshipResponseDTO = new ScholarshipResponseDTO();
 		log.info("Fetching scholarship from DB having scholarshipId = "+id);
@@ -197,7 +200,7 @@ public class ScholarshipProcessor {
 		scholarshipResponseDTO.setInstituteName(scholarship.getInstitute().getName());
 		
 		log.info("Calling Storage Service to get scholarship images having entityId = "+id);
-		List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(id, ImageCategory.SCHOLARSHIP.name(), null, "en");
+		List<StorageDto> storageDTOList = storageHandler.getStorages(id, EntityTypeEnum.SCHOLARSHIP, EntitySubTypeEnum.IMAGES);
 		List<MediaDto> mediaDtos = new ArrayList<>();
 		if(!CollectionUtils.isEmpty(storageDTOList)) {
 			log.info("Storage data fetched from storage service, start iterating data");
@@ -313,7 +316,7 @@ public class ScholarshipProcessor {
 		
 		log.info("Calling elastic search service to update existing scholarship data in DB");
 		elasticHandler.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
-				EntityType.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
+				EntityTypeEnum.SCHOLARSHIP.name().toLowerCase(), scholarshipElasticDto, IConstant.ELASTIC_SEARCH);
 	}
 
 	

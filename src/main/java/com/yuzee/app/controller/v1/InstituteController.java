@@ -33,16 +33,18 @@ import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.endpoint.InstituteInterface;
-import com.yuzee.app.enumeration.ImageCategory;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.processor.InstituteServiceProcessor;
 import com.yuzee.app.processor.InstituteTimingProcessor;
 import com.yuzee.app.processor.InstituteTypeProcessor;
 import com.yuzee.app.processor.ServiceDetailsProcessor;
-import com.yuzee.app.processor.StorageProcessor;
 import com.yuzee.app.util.CommonUtil;
 import com.yuzee.app.util.PaginationUtil;
 
@@ -65,7 +67,7 @@ public class InstituteController implements InstituteInterface {
 	private InstituteServiceProcessor instituteServiceProcessor;
 
 	@Autowired
-	private StorageProcessor storageProcessor;
+	private StorageHandler storageHandler;
 	
 	@Autowired
 	private InstituteTimingProcessor instituteTimingProcessor;
@@ -139,9 +141,9 @@ public class InstituteController implements InstituteInterface {
 			instituteList.stream().forEach(instituteResponseDto -> {
 				try {
 					log.info("Calling Storage service to get imageCategories for Institute");
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 					instituteResponseDto.setStorageList(storageDTOList);
-				} catch (ValidationException e) {
+				} catch (NotFoundException | InvokeException e) {
 					log.error("Error invoking Storage service having exception ="+e);
 				}
 				log.info("fetching instituteTiming from DB for instituteId =" +instituteResponseDto.getId());
@@ -198,9 +200,9 @@ public class InstituteController implements InstituteInterface {
 			instituteResponseDtoList.stream().forEach(instituteResponseDto -> {
 				try {
 					log.info("Invoking storage service to fetch images for institutes");
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 					instituteResponseDto.setStorageList(storageDTOList);
-				} catch (ValidationException e) {
+				} catch (NotFoundException | InvokeException e) {
 					log.error("Error invoking Storage service having exception "+e);
 				}
 				log.info("fetching instituteTiming from DB for instituteId =" +instituteResponseDto.getId());
@@ -317,7 +319,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> getInstituteImage(final String instituteId) throws Exception {
 		log.info("Start process to fetch all InstituteImages for instituteId = "+instituteId);
-		List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteId, ImageCategory.INSTITUTE.toString(), null, "en");
+		List<StorageDto> storageDTOList = storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
 	}
 

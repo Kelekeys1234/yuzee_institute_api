@@ -33,20 +33,21 @@ import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.dto.UserMyCourseDto;
 import com.yuzee.app.endpoint.CourseInterface;
 import com.yuzee.app.enumeration.EnglishType;
-import com.yuzee.app.enumeration.ImageCategory;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.handler.IdentityHandler;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.handler.ViewTransactionHandler;
 import com.yuzee.app.message.MessageByLocaleService;
 import com.yuzee.app.processor.CourseEnglishEligibilityProcessor;
 import com.yuzee.app.processor.CourseKeywordProcessor;
 import com.yuzee.app.processor.CourseProcessor;
 import com.yuzee.app.processor.InstituteProcessor;
-import com.yuzee.app.processor.StorageProcessor;
 import com.yuzee.app.service.UserRecommendationService;
 import com.yuzee.app.util.PaginationUtil;
 
@@ -72,7 +73,7 @@ public class CourseController implements CourseInterface {
 	private UserRecommendationService userRecommendationService;
 
 	@Autowired
-	private StorageProcessor storageProcessor;
+	private StorageHandler storageHandler;
 
 	@Autowired
 	private MessageByLocaleService messageByLocalService;
@@ -121,7 +122,7 @@ public class CourseController implements CourseInterface {
 			final List<String> facultyIds, final List<String> cityIds, final List<String> levelIds, final List<String> serviceIds, final Double minCost, 
 			final Double maxCost, final Integer minDuration, final Integer maxDuration, final String courseName, final String currencyCode, 
 			final String searchKeyword, final String sortBy, final boolean sortAsscending, final String userId, final String date) 
-			throws ValidationException, InvokeException {
+			throws ValidationException, InvokeException, NotFoundException {
 		log.info("Start process to search course based on different passed filters");
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCountryNames(countryIds);
@@ -152,7 +153,7 @@ public class CourseController implements CourseInterface {
 	}
 
 	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto, final String searchKeyword)
-			throws ValidationException, InvokeException {
+			throws ValidationException, InvokeException, NotFoundException {
 		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		
 		log.info("Calling view transaction service to fetch user my course data");
@@ -217,7 +218,7 @@ public class CourseController implements CourseInterface {
 		if (null == instituteResponseDto) {
 			throw new NotFoundException("No Institute found in DB for instituteId = "+instituteId);
 		}
-		List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteResponseDto.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+		List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 		instituteResponseDto.setStorageList(storageDTOList);
 
 		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByInstitute(instituteId, request);
@@ -308,7 +309,7 @@ public class CourseController implements CourseInterface {
 
 	// This API is used when in normal or global search if data is not available based on filter.
 	public ResponseEntity<Object> getCourseNoResultRecommendation(final Integer pageNumber, final Integer pageSize, final String facultyId,
-			final String countryId, final String userCountry) throws ValidationException, InvokeException {
+			final String countryId, final String userCountry) throws ValidationException, InvokeException, NotFoundException {
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> courseResponseDtos = courseProcessor.getCourseNoResultRecommendation(userCountry,
 				facultyId, countryId, startIndex, pageSize);

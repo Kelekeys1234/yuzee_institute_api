@@ -13,11 +13,12 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.dao.UserRecommendationDao;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.ImageCategory;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.ValidationException;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.processor.CourseDeliveryModesProcessor;
 import com.yuzee.app.processor.CourseProcessor;
-import com.yuzee.app.processor.StorageProcessor;
 import com.yuzee.app.util.CommonUtil;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -34,7 +35,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	private CourseProcessor courseProcessor;
 
 	@Autowired
-	private StorageProcessor iStorageService;
+	private StorageHandler storageHandler;
 	
 	@Autowired
 	private CourseDeliveryModesProcessor courseDeliveryModesProcessor;
@@ -311,8 +312,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 					courseResponseDto.setFacultyName(course.getFaculty().getName());
 				}
 				try {
-					List<StorageDto> storageDTOList = iStorageService.getStorageInformation(
-							course.getInstitute().getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+					List<StorageDto> storageDTOList = storageHandler.getStorages(
+							course.getInstitute().getId(), EntityTypeEnum.COURSE,EntitySubTypeEnum.IMAGES);
 					courseResponseDto.setStorageList(storageDTOList);
 				} catch (Exception e) {
 					log.error("Exception while invoking storage service", e);

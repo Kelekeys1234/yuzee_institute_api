@@ -18,10 +18,13 @@ import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.CourseSearchFilterDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.ImageCategory;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.processor.InstituteProcessor;
-import com.yuzee.app.processor.StorageProcessor;
 
 @RestController("searchPageControllerV1")
 @RequestMapping("/api/v1/search")
@@ -31,10 +34,10 @@ public class SearchPageController {
 	private InstituteProcessor instituteProcessor;
 
 	@Autowired
-	private StorageProcessor storageProcessor;
+	private StorageHandler storageHandler;
 
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-	public ResponseEntity<?> getAllCountries(@PathVariable("userId") final String userId) throws ValidationException {
+	public ResponseEntity<?> getAllCountries(@PathVariable("userId") final String userId) throws ValidationException, NotFoundException, InvokeException {
 		Map<String, Object> response = new HashMap<>();
 		Date now = new Date();
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
@@ -47,7 +50,7 @@ public class SearchPageController {
 				null, null, null);
 
 		for (InstituteResponseDto obj : recommendedInstList) {
-			List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(obj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			List<StorageDto> storageDTOList = storageHandler.getStorages(obj.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 			obj.setStorageList(storageDTOList);
 		}
 		//List<CountryDto> countryList = CountryLevelFacultyUtil.getCountryList();

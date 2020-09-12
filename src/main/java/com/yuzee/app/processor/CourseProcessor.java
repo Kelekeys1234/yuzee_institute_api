@@ -35,7 +35,6 @@ import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.GlobalData;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
-import com.yuzee.app.constant.Type;
 import com.yuzee.app.dao.CourseCareerOutComeDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseDeliveryModesDao;
@@ -68,8 +67,8 @@ import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.dto.UserViewCourseDto;
-import com.yuzee.app.enumeration.EntityType;
-import com.yuzee.app.enumeration.ImageCategory;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
@@ -77,6 +76,7 @@ import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.CommonHandler;
 import com.yuzee.app.handler.ElasticHandler;
 import com.yuzee.app.handler.ReviewHandler;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.handler.ViewTransactionHandler;
 import com.yuzee.app.message.MessageByLocaleService;
 import com.yuzee.app.repository.CourseRepository;
@@ -111,7 +111,7 @@ public class CourseProcessor {
 	private CourseMinRequirementDao courseMinRequirementDao;
 
 	@Autowired
-	private StorageProcessor storageProcessor;
+	private StorageHandler storageHandler;
 
 	@Autowired
 	private MessageByLocaleService messageByLocaleService;
@@ -184,7 +184,7 @@ public class CourseProcessor {
 	}
 
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
-			final String searchKeyword, List<String> entityIds) throws ValidationException, InvokeException {
+			final String searchKeyword, List<String> entityIds) throws ValidationException, InvokeException, NotFoundException {
 		log.debug("Inside getAllCoursesByFilter() method");
 		log.info("CAlling DAO layer to fetch courses based on passed filters and pagination");
 		List<CourseResponseDto> courseResponseDtos = courseDao.getAllCoursesByFilter(courseSearchDto, searchKeyword, null, 
@@ -193,7 +193,7 @@ public class CourseProcessor {
 	}
 
 	private List<CourseResponseDto> getExtraInfoOfCourseFilter(final CourseSearchDto courseSearchDto, 
-				final List<CourseResponseDto> courseResponseDtos) throws ValidationException, InvokeException {
+				final List<CourseResponseDto> courseResponseDtos) throws ValidationException, InvokeException, NotFoundException {
 		log.debug("Inside getExtraInfoOfCourseFilter() method");
 		if (courseResponseDtos == null || courseResponseDtos.isEmpty()) {
 			log.info("Data is coming null from DB based on filter hence making new Object");
@@ -207,9 +207,9 @@ public class CourseProcessor {
 		List<String> courseIds = courseResponseFinalResponse.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
 		
 		log.info("Calling Storage service to get institute images from DB");
-		List<StorageDto> storageDTOList = storageProcessor.getStorageInformationBasedOnEntityIdList(
+		List<StorageDto> storageDTOList = storageHandler.getStorages(
 				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), 
-				ImageCategory.INSTITUTE.toString(), null, "en");
+				EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 		
 		if(!CollectionUtils.isEmpty(courseResponseFinalResponse)) {
 			log.info("Courses are coming from DB hence start iterating data");
@@ -473,7 +473,7 @@ public class CourseProcessor {
 		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
 		courseListElasticDTO.add(courseElasticSearch);
 		log.info("Calling elastic service to add courses on elastic index");
-		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, EntityType.COURSE.name().toLowerCase(), courseListElasticDTO,
+		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, EntityTypeEnum.COURSE.name().toLowerCase(), courseListElasticDTO,
 				IConstant.ELASTIC_SEARCH);
 		return course.getId();
 	}
@@ -671,7 +671,7 @@ public class CourseProcessor {
 		courseListElasticDTO.add(courseElasticSearch);
 		log.info("Calling elastic service to update courses on elastic index having entityId = "+id);
 		elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
-				EntityType.COURSE.name().toLowerCase(), courseListElasticDTO, IConstant.ELASTIC_SEARCH);
+				EntityTypeEnum.COURSE.name().toLowerCase(), courseListElasticDTO, IConstant.ELASTIC_SEARCH);
 		return id;
 	}
 
@@ -713,9 +713,9 @@ public class CourseProcessor {
 				courses.stream().forEach(course -> {
 					try {
 						log.info("Calling Storage service to fetch course images");
-						List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(course.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
+						List<StorageDto> storageDTOList = storageHandler.getStorages(course.getInstituteId(), EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES);
 						course.setStorageList(storageDTOList);
-					} catch (ValidationException e) {
+					} catch (NotFoundException | InvokeException e) {
 						log.error("Error invoking Storage service exception {}",e);
 					}
 					log.info("Fetching courseDeliveryModes from DB having courseId = "+course.getId());
@@ -771,7 +771,7 @@ public class CourseProcessor {
 				courseDtoESList.add(elasticSearchCourseDto);
 				log.info("Calling elastic service to update course having entityId = "+ courseId);
 				elasticHandler.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, 
-						EntityType.COURSE.name().toLowerCase(), courseDtoESList, IConstant.ELASTIC_SEARCH);
+						EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoESList, IConstant.ELASTIC_SEARCH);
 			} else {
 				log.error("Course not found for courseId = "+ courseId);
 				throw new NotFoundException("Course not found for courseId = "+ courseId);
@@ -816,7 +816,7 @@ public class CourseProcessor {
 	}
 
 	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto, List<String> entityIds) 
-			throws ValidationException, CommonInvokeException, InvokeException {
+			throws ValidationException, CommonInvokeException, InvokeException, NotFoundException {
 		log.debug("Inside advanceSearch() method");
 		
 		log.info("Calling DAO layer to fetch courses from DB based on passed filters");
@@ -834,8 +834,8 @@ public class CourseProcessor {
 		//List<String> courseIds = courseResponseDtos.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId)).map(CourseResponseDto::getId).collect(Collectors.toList());
 		
 		log.info("Calling Storage service to get images based on entityId");
-		List<StorageDto> storageDTOList = storageProcessor.getStorageInformationBasedOnEntityIdList(
-				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), ImageCategory.INSTITUTE.toString(), null, "en");
+		List<StorageDto> storageDTOList = storageHandler.getStorages(
+				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 		
 		log.info("Fetching institute google review from DB based on instituteId");
 		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
@@ -958,9 +958,9 @@ public class CourseProcessor {
 				courses.stream().forEach(courseRequest -> {
 					try {
 						log.info("Start invoking Storage service to fetch images");
-						List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(courseRequest.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
+						List<StorageDto> storageDTOList = storageHandler.getStorages(courseRequest.getInstituteId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 						courseRequest.setStorageList(storageDTOList);
-					} catch (ValidationException e) {
+					} catch (NotFoundException | InvokeException e) {
 						log.error("Error invoking Storage service having exception = "+e);
 					}
 					log.info("Fetching course additional info from DB having courseId = "+courseRequest.getId());
@@ -1004,9 +1004,9 @@ public class CourseProcessor {
 				courses.stream().forEach(course -> {
 					try {
 						log.info("Calling storage service to fetch course images");
-						List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(course.getInstituteId(), ImageCategory.INSTITUTE.toString(), null, "en");
+						List<StorageDto> storageDTOList = storageHandler.getStorages(course.getInstituteId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 						course.setStorageList(storageDTOList);
-					} catch (ValidationException e) {
+					} catch (NotFoundException | InvokeException e) {
 						log.error("Error invoking Storage service having exception = "+e);
 					}
 					log.info("Fetching courseDeliveryModes from DB having courseId = "+course.getId());
@@ -1219,7 +1219,7 @@ public class CourseProcessor {
 	}
 
 	public List<CourseResponseDto> getCourseNoResultRecommendation(final String userCountry, final String facultyId, final String countryId,
-			final Integer startIndex, final Integer pageSize) throws ValidationException, InvokeException {
+			final Integer startIndex, final Integer pageSize) throws ValidationException, InvokeException, NotFoundException {
 		/**
 		 * Find course based on faculty and country.
 		 */
@@ -1497,10 +1497,10 @@ public class CourseProcessor {
 				}
 				try {
 					log.info("going to fetch logo from storage service for courseId "+course.getId());
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(course.getId(), 
-							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
+					List<StorageDto> storageDTOList = storageHandler.getStorages(course.getId(), 
+							EntityTypeEnum.COURSE,EntitySubTypeEnum.LOGO);
 					nearestCourse.setStorageList(storageDTOList);
-				} catch (ValidationException e) {
+				} catch (NotFoundException | InvokeException e) {
 					log.error("Exception in calling storage service "+e);
 				}
 				nearestCourseList.add(nearestCourse);
@@ -1518,7 +1518,7 @@ public class CourseProcessor {
 	}
 	
 	public NearestCoursesDto getNearestCourses(AdvanceSearchDto courseSearchDto)
-			throws ValidationException {
+			throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside getNearestCourses() method");
 		List<CourseResponseDto> courseResponseDtoList = new ArrayList<>();
 		Boolean runMethodAgain = true;
@@ -1553,8 +1553,8 @@ public class CourseProcessor {
 					BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
 					nearestCourse.setDistance(Double.valueOf(initialRadius));
 					log.info("fetching institute logo from storage service for instituteID " + nearestCourseDTO.getId());
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestCourseDTO.getId(),
-							ImageCategory.COURSE.toString(), Type.LOGO.name(), "en");
+					List<StorageDto> storageDTOList = storageHandler.getStorages(nearestCourseDTO.getId(),
+							EntityTypeEnum.COURSE, EntitySubTypeEnum.LOGO);
 					nearestCourse.setStorageList(storageDTOList);
 					
 					log.info("Filtering course additional info by matching courseId");
@@ -1657,7 +1657,7 @@ public class CourseProcessor {
 				instituteResponseDto.setAccrediatedDetail(accrediatedInstituteDetailsFromDB);
 			}
 			log.info("Calling Storage Service to fetch institute images");
-			List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(instituteObj.getId(), ImageCategory.INSTITUTE.toString(), null, "en");
+			List<StorageDto> storageDTOList = storageHandler.getStorages(instituteObj.getId(), EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES);
 			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
 			courseRequest.setStorageList(storageDTOList);
 		}
@@ -1686,10 +1686,10 @@ public class CourseProcessor {
 				BeanUtils.copyProperties(nearestCourseDTO, nearestCourse);
 				log.info("going to fetch logo for courses from storage service for courseID "+nearestCourseDTO.getId());
 				try {
-					List<StorageDto> storageDTOList = storageProcessor.getStorageInformation(nearestCourseDTO.getId(), 
-							ImageCategory.COURSE.toString(), Type.LOGO.name(),"en");
+					List<StorageDto> storageDTOList = storageHandler.getStorages(nearestCourseDTO.getId(), 
+							EntityTypeEnum.COURSE, EntitySubTypeEnum.LOGO);
 					nearestCourse.setStorageList(storageDTOList);
-				} catch (ValidationException e) {
+				} catch (NotFoundException | InvokeException e) {
 					log.error("Error while fetching logos from storage service"+e);
 				}
 				log.info("Fetching courseDeliveryModes for courseId = "+ nearestCourseDTO.getId());

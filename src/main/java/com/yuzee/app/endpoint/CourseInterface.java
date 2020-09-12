@@ -55,7 +55,7 @@ public interface CourseInterface {
 			@RequestParam(required = false) final String courseName, @RequestParam(required = false) final String currencyCode,
 			@RequestParam(required = false) final String searchKeyword, @RequestParam(required = false) final String sortBy, 
 			@RequestParam(required = false) final boolean sortAsscending, @RequestHeader(required = true) final String userId,
-			@RequestParam(required = false) final String date) throws ValidationException, InvokeException;
+			@RequestParam(required = false) final String date) throws ValidationException, InvokeException, NotFoundException;
 
 	@PostMapping(value = "/search")
 	public ResponseEntity<?> searchCourse(@RequestHeader(required = true) final String userId,
@@ -105,7 +105,7 @@ public interface CourseInterface {
 	public ResponseEntity<Object> getCourseNoResultRecommendation(@PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(required = true) final String facultyId,
 			@RequestParam(required = true) final String countryId,
-			@RequestParam(required = true) final String userCountry) throws ValidationException, InvokeException;
+			@RequestParam(required = true) final String userCountry) throws ValidationException, InvokeException, NotFoundException;
 
 	@GetMapping(value = "/keyword/recommendatation/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<Object> getCourseKeywordRecommendation(@PathVariable final Integer pageNumber,
