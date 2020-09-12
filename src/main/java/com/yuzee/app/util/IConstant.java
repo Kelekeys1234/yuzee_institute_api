@@ -65,7 +65,7 @@ public class IConstant {
 	public static final String COMMON = "COMMON-API/common/api/v1";
 	public static final String REVIEW = "REVIEW-SERVICE/review/api/v1/review/user";
 
-	public static final String STORAGE_CONNECTION_URL = "http://" + STORAGE + "/api/v1";
+	public static final String STORAGE_CONNECTION_URL = "http://" + STORAGE + "/api/v1/storage";
 	public static final String IDENTITY_CONNECTION_URL = "http://" + IDENTITY + "/api/v1";
 	public static final String USER_DETAIL_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/users/basic";
 	public static final String USER_ACHIVEMENT_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/user/achivement/user";

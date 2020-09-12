@@ -24,8 +24,8 @@ import com.yuzee.app.util.IConstant;
 @Transactional(rollbackFor = Throwable.class)
 public class ViewTransactionHandler {
 
-	private static final String GET_USER_MY_COURSE = "/course/user/favourite/entityType/{entityType}/transactionType/{transactionType}";
-	private static final String GET_USER_VIEW_COURSE = "/transaction/viewed/course?entityType={entityType}&entityId={entityId}"
+	private static final String GET_USER_MY_COURSE = "/transaction/user/entityType/{entityType}/transactionType/{transactionType}";
+	private static final String GET_USER_VIEW_COURSE = "/transaction/user/view?entityType={entityType}&entityId={entityId}"
 			+ "&transactionType={transactionType}";
 
 	@Autowired
