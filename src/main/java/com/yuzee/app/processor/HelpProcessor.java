@@ -36,7 +36,6 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.IdentityHandler;
 import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.service.IMediaService;
 import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.PaginationUtil;
 
@@ -110,9 +109,6 @@ public class HelpProcessor {
 
 	@Autowired
 	private IdentityHandler identityHandler;
-
-	@Autowired
-	private IMediaService iMediaService;
 
 	@Autowired
 	private StorageHandler storageHandler;
@@ -359,14 +355,15 @@ public class HelpProcessor {
 		return helpSubCategories;
 	}
 
-	public void saveAnswer(@Valid final HelpAnswerDto helpAnswerDto, final MultipartFile file) {
+	public void saveAnswer(@Valid final HelpAnswerDto helpAnswerDto, final MultipartFile file) throws Exception {
 		log.debug("Inside saveAnswer() method");
 		try {
 			log.info("Calling DAO layer to sabe HelpAnswer in DB");
 			HelpAnswer helpAnswer = helpDAO.save(convertDtoToHelpAnswerBeans(helpAnswerDto));
 			if ((helpAnswer != null) && (file != null)) {
-				log.info("Uploading image on Storage Service for helpAnswerId "+helpAnswer.getId());
-				String logoName = iMediaService.uploadImage(file, helpAnswer.getId(), EntityTypeEnum.HELP_SUPPORT.name(), null);
+				log.info("Uploading image on Storage Service for helpAnswerId " + helpAnswer.getId());
+				String logoName = storageHandler.uploadFileInStorage(file, helpAnswer.getId(),
+						EntityTypeEnum.HELP_SUPPORT, EntitySubTypeEnum.IMAGES);
 				log.info("Help answer media upload for id - >" + helpAnswer.getId() + " and Image  name :" + logoName);
 				if ((logoName != null) && !logoName.isEmpty() && !logoName.equals("null")) {
 					helpAnswer.setFileName(logoName);
@@ -376,6 +373,7 @@ public class HelpProcessor {
 			}
 		} catch (Exception exception) {
 			log.error("Exception while adding answer having exception "+exception);
+			throw exception;
 		}
 	}
 
