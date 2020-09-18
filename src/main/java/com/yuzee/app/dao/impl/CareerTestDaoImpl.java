@@ -19,6 +19,7 @@ import com.yuzee.app.bean.CareerJobSubject;
 import com.yuzee.app.bean.CareerJobType;
 import com.yuzee.app.bean.CareerJobWorkingStyle;
 import com.yuzee.app.bean.Careers;
+import com.yuzee.app.bean.RelatedCareer;
 import com.yuzee.app.dao.CareerTestDao;
 import com.yuzee.app.repository.CareerJobCourseSearchKeywordRepository;
 import com.yuzee.app.repository.CareerJobRepository;
@@ -26,6 +27,7 @@ import com.yuzee.app.repository.CareerJobSubjectRepository;
 import com.yuzee.app.repository.CareerJobTypeRepository;
 import com.yuzee.app.repository.CareerJobWorkingStyleRepository;
 import com.yuzee.app.repository.CareerRepository;
+import com.yuzee.app.repository.RelatedCareerRepository;
 
 @Component
 @Transactional
@@ -48,6 +50,9 @@ public class CareerTestDaoImpl implements CareerTestDao {
 
 	@Autowired
 	private CareerJobRepository careerJobRepository;
+
+	@Autowired
+	private RelatedCareerRepository relatedCareerRepository;
 
 	@Autowired
 	private CareerJobCourseSearchKeywordRepository careerJobCourseSearchKeywordRepository;
@@ -111,6 +116,11 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	public Integer getCareerJobCount(List<String> jobIds) {
 		Long totalCount = careerJobRepository.countByIdIn(jobIds);
 		return totalCount.intValue();
+	}
+
+	@Override
+	public Page<RelatedCareer> getRelatedCareers(List<String> carrerIds, Pageable pageable) {
+		return relatedCareerRepository.findByCareersIdIn(carrerIds, pageable);
 	}
 
 	@Override

@@ -63,6 +63,13 @@ public class CareerTestController implements CareerTestInterface {
 	}
 
 	@Override
+	public ResponseEntity<?> getRelatedCareers(List<String> careerIds, Integer pageNumber, Integer pageSize) {
+		PaginationResponseDto careerJobs = careerTestProcessor.getRealtedCareers(careerIds, pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setData(careerJobs).setStatus(HttpStatus.OK)
+				.setMessage("Related Careers Fetched successfully").create();
+	}
+
+	@Override
 	public ResponseEntity<?> getRelatedCourseBasedOnCareerTest(List<String> jobIds, Integer pageNumber, Integer pageSize) {
 		PaginationResponseDto careerJobRelatedCourse = careerTestProcessor.getRelatedCourseBasedOnCareerTest(jobIds, pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder().setData(careerJobRelatedCourse)

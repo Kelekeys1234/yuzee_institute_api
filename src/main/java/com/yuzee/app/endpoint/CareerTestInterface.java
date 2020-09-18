@@ -36,6 +36,10 @@ public interface CareerTestInterface {
 			@PathVariable Integer pageSize);
 	
 	@GetMapping("/related/career/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getRelatedCareers(@RequestParam List<String> careerIds, @PathVariable Integer pageNumber,
+			@PathVariable Integer pageSize);
+	
+	@GetMapping("/related/course/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getRelatedCourseBasedOnCareerTest(@RequestParam List<String> jobIds, @PathVariable Integer pageNumber,
 			@PathVariable Integer pageSize);
 }

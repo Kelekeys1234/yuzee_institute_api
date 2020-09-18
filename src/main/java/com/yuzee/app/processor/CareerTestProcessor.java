@@ -19,6 +19,7 @@ import com.yuzee.app.bean.CareerJobSubject;
 import com.yuzee.app.bean.CareerJobType;
 import com.yuzee.app.bean.CareerJobWorkingStyle;
 import com.yuzee.app.bean.Careers;
+import com.yuzee.app.bean.RelatedCareer;
 import com.yuzee.app.dao.CareerTestDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dto.CareerDto;
@@ -30,6 +31,7 @@ import com.yuzee.app.dto.CareerJobWorkingStyleDto;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
+import com.yuzee.app.dto.RelatedCareerDto;
 import com.yuzee.app.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -211,6 +213,35 @@ public class CareerTestProcessor {
 		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto(careerJobDtos, totalCount,
+				paginationUtilDto.getPageNumber(), paginationUtilDto.isHasPreviousPage(),
+				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
+		return paginationResponseDto;
+	}
+	
+	public PaginationResponseDto getRealtedCareers(List<String> careerIds, Integer pageNumber, Integer pageSize) {
+		log.debug("Inside getRealtedCareers() method");
+		List<RelatedCareerDto> realtedCareerDtos = new ArrayList<>();
+		int startIndex = pageNumber - 1;
+		log.info("Calculating Pageable size based on pageNumber and pageSize");
+		Pageable pageable = PageRequest.of(startIndex, pageSize);
+		Integer totalCount = 0;
+		if (!CollectionUtils.isEmpty(careerIds)) {
+			log.info("Extracting related careers from DB");
+			Page<RelatedCareer> relatedCarrersPage = careerTestDao.getRelatedCareers(careerIds, pageable);
+			totalCount = ((Long) relatedCarrersPage.getTotalElements()).intValue();
+			List<RelatedCareer> realtedCarrers = relatedCarrersPage.getContent();
+			if (!CollectionUtils.isEmpty(realtedCarrers)) {
+				log.info("Career Jobs fetched from DB, start iterating data");
+				realtedCarrers.stream().forEach(careerJob -> {
+					RelatedCareerDto careerJobDto = new RelatedCareerDto(careerJob.getId(),
+							careerJob.getRelatedCareer(), careerJob.getCareers().getId());
+					realtedCareerDtos.add(careerJobDto);
+				});
+			}
+		}
+		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto(realtedCareerDtos, totalCount,
 				paginationUtilDto.getPageNumber(), paginationUtilDto.isHasPreviousPage(),
 				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return paginationResponseDto;
