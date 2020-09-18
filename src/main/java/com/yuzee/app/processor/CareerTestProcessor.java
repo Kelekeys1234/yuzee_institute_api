@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,22 +15,24 @@ import com.yuzee.app.bean.CareerJob;
 import com.yuzee.app.bean.CareerJobCourseSearchKeyword;
 import com.yuzee.app.bean.CareerJobSkill;
 import com.yuzee.app.bean.CareerJobSubject;
+import com.yuzee.app.bean.CareerJobType;
 import com.yuzee.app.bean.CareerJobWorkingStyle;
 import com.yuzee.app.dao.CareerTestDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dto.CareerJobDto;
 import com.yuzee.app.dto.CareerJobSkillDto;
 import com.yuzee.app.dto.CareerJobSubjectDto;
+import com.yuzee.app.dto.CareerJobTypeDto;
 import com.yuzee.app.dto.CareerJobWorkingStyleDto;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.util.PaginationUtil;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-@CommonsLog
+@Slf4j
 @Transactional
 public class CareerTestProcessor {
 
@@ -118,6 +121,36 @@ public class CareerTestProcessor {
 		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto(careerJobSubjectDtos, totalCount,
+				paginationUtilDto.getPageNumber(), paginationUtilDto.isHasPreviousPage(),
+				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
+		return paginationResponseDto;
+	}
+	
+	public PaginationResponseDto getCareerJobTypes(List<String> jobIds, Integer pageNumber, Integer pageSize) {
+		log.debug("Inside getCareerJobTypes() method");
+		List<CareerJobTypeDto> careerJobTypeDtos = new ArrayList<>();
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+		Integer totalCount = 0;
+		if (!CollectionUtils.isEmpty(jobIds)) {
+			log.info("Extracting career job types from DB");
+			Page<CareerJobType> careerJobTypesPage = careerTestDao.getCareerJobType(jobIds, pageable);
+			log.info("Extracting total Count of jobs from DB having jobId ", jobIds);
+			totalCount = ((Long) careerJobTypesPage.getTotalElements()).intValue();
+
+			List<CareerJobType> careerJobTypes = careerJobTypesPage.getContent();
+			if (!CollectionUtils.isEmpty(careerJobTypes)) {
+				log.info("Career Job Types fetched from DB, start iterating data");
+				careerJobTypes.stream().forEach(careerJob -> {
+					CareerJobTypeDto careerJobTypeDto = new CareerJobTypeDto(careerJob.getId(), careerJob.getJobType());
+					careerJobTypeDtos.add(careerJobTypeDto);
+				});
+			}
+		}
+		
+		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto(careerJobTypeDtos, totalCount,
 				paginationUtilDto.getPageNumber(), paginationUtilDto.isHasPreviousPage(),
 				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return paginationResponseDto;

@@ -2,12 +2,14 @@ package com.yuzee.app.dao;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.yuzee.app.bean.CareerJob;
 import com.yuzee.app.bean.CareerJobCourseSearchKeyword;
 import com.yuzee.app.bean.CareerJobSkill;
 import com.yuzee.app.bean.CareerJobSubject;
+import com.yuzee.app.bean.CareerJobType;
 import com.yuzee.app.bean.CareerJobWorkingStyle;
 
 public interface CareerTestDao {
@@ -23,6 +25,8 @@ public interface CareerTestDao {
 	public List<CareerJobSubject> getCareerJobSubject(List<String> jobIds, Pageable pageable);
 	
 	public Integer getCareerJobSubjectCount(List<String> jobIds);
+	
+	public Page<CareerJobType> getCareerJobType(List<String> jobIds, Pageable pageable);
 	
 	public List<CareerJob> getCareerJob(List<String> jobIds, Pageable pageable);
 	

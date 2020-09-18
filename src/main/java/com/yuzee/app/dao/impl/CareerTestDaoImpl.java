@@ -7,6 +7,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +16,13 @@ import com.yuzee.app.bean.CareerJob;
 import com.yuzee.app.bean.CareerJobCourseSearchKeyword;
 import com.yuzee.app.bean.CareerJobSkill;
 import com.yuzee.app.bean.CareerJobSubject;
+import com.yuzee.app.bean.CareerJobType;
 import com.yuzee.app.bean.CareerJobWorkingStyle;
 import com.yuzee.app.dao.CareerTestDao;
 import com.yuzee.app.repository.CareerJobCourseSearchKeywordRepository;
 import com.yuzee.app.repository.CareerJobRepository;
 import com.yuzee.app.repository.CareerJobSubjectRepository;
+import com.yuzee.app.repository.CareerJobTypeRepository;
 import com.yuzee.app.repository.CareerJobWorkingStyleRepository;
 
 @Component
@@ -35,6 +38,9 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	@Autowired
 	private CareerJobSubjectRepository careerJobSubjectRepository;
 	
+	@Autowired
+	private CareerJobTypeRepository careerJobTypeRepository;
+
 	@Autowired
 	private CareerJobRepository careerJobRepository;
 	
@@ -77,6 +83,11 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	public Integer getCareerJobSubjectCount(List<String> jobIds) {
 		Long totalCount = careerJobSubjectRepository.countByCareerJobsIdIn(jobIds);
 		return totalCount.intValue();
+	}
+
+	@Override
+	public Page<CareerJobType> getCareerJobType(List<String> jobIds, Pageable pageable) {
+		return careerJobTypeRepository.findByCareerJobsIdIn(jobIds, pageable);
 	}
 
 	@Override
