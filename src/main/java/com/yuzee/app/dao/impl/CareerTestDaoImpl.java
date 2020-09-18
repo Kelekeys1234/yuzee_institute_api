@@ -18,39 +18,45 @@ import com.yuzee.app.bean.CareerJobSkill;
 import com.yuzee.app.bean.CareerJobSubject;
 import com.yuzee.app.bean.CareerJobType;
 import com.yuzee.app.bean.CareerJobWorkingStyle;
+import com.yuzee.app.bean.Careers;
 import com.yuzee.app.dao.CareerTestDao;
 import com.yuzee.app.repository.CareerJobCourseSearchKeywordRepository;
 import com.yuzee.app.repository.CareerJobRepository;
 import com.yuzee.app.repository.CareerJobSubjectRepository;
 import com.yuzee.app.repository.CareerJobTypeRepository;
 import com.yuzee.app.repository.CareerJobWorkingStyleRepository;
+import com.yuzee.app.repository.CareerRepository;
 
 @Component
 @Transactional
 public class CareerTestDaoImpl implements CareerTestDao {
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	@Autowired
 	private CareerJobWorkingStyleRepository careerJobWorkingStyleRepository;
-	
+
 	@Autowired
 	private CareerJobSubjectRepository careerJobSubjectRepository;
-	
+
 	@Autowired
 	private CareerJobTypeRepository careerJobTypeRepository;
 
 	@Autowired
+	private CareerRepository careerRepository;
+
+	@Autowired
 	private CareerJobRepository careerJobRepository;
-	
+
 	@Autowired
 	private CareerJobCourseSearchKeywordRepository careerJobCourseSearchKeywordRepository;
-	
+
 	@Override
 	public List<CareerJobSkill> getCareerJobSkills(String levelId, Integer startIndex, Integer pageSize) {
 		TypedQuery<CareerJobSkill> query = entityManager.createQuery("SELECT JS from CareerJobLevel JL LEFT JOIN "
-				+ "CareerJobSkill JS on JL.careerJobs.id = JS.careerJobs.id where JL.level.id = '"+ levelId + "'", CareerJobSkill.class);
+				+ "CareerJobSkill JS on JL.careerJobs.id = JS.careerJobs.id where JL.level.id = '" + levelId + "'",
+				CareerJobSkill.class);
 		query.setFirstResult(startIndex);
 		query.setMaxResults(pageSize);
 		return query.getResultList();
@@ -59,10 +65,11 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	@Override
 	public Integer getCareerJobSkillCount(String levelId) {
 		TypedQuery<Long> query = entityManager.createQuery("SELECT count(JS.id) from CareerJobLevel JL LEFT JOIN "
-				+ "CareerJobSkill JS on JL.careerJobs.id = JS.careerJobs.id where JL.level.id = '"+ levelId + "'", Long.class);
+				+ "CareerJobSkill JS on JL.careerJobs.id = JS.careerJobs.id where JL.level.id = '" + levelId + "'",
+				Long.class);
 		return query.getSingleResult().intValue();
 	}
-	
+
 	@Override
 	public List<CareerJobWorkingStyle> getCareerJobWorkingStyle(List<String> jobIds, Pageable pageable) {
 		return careerJobWorkingStyleRepository.findByCareerJobsIdIn(jobIds, pageable);
@@ -88,6 +95,11 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	@Override
 	public Page<CareerJobType> getCareerJobType(List<String> jobIds, Pageable pageable) {
 		return careerJobTypeRepository.findByCareerJobsIdIn(jobIds, pageable);
+	}
+
+	@Override
+	public Page<Careers> getCareers(List<String> jobTypeIds, Pageable pageable) {
+		return careerRepository.findByCareerJobsCareerJobTypesIdIn(jobTypeIds, pageable);
 	}
 
 	@Override

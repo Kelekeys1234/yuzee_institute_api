@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.PaginationResponseDto;
@@ -45,12 +47,19 @@ public class CareerTestController implements CareerTestInterface {
 		return new GenericResponseHandlers.Builder().setData(careerJobTypes).setStatus(HttpStatus.OK)
 				.setMessage("Career Job Types Fetched successfully").create();
 	}
+
+	@Override
+	public ResponseEntity<?> getCareers(List<String> jobTypeIds, Integer pageNumber, Integer pageSize) {
+		PaginationResponseDto careerJobTypes = careerTestProcessor.getCareers(jobTypeIds, pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setData(careerJobTypes).setStatus(HttpStatus.OK)
+				.setMessage("Career Job Types Fetched successfully").create();
+	}
 	
 	@Override
 	public ResponseEntity<?> getCareerJobs(List<String> jobIds, Integer pageNumber, Integer pageSize) {
 		PaginationResponseDto careerJobs = careerTestProcessor.getCareerJobs(jobIds, pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder().setData(careerJobs).setStatus(HttpStatus.OK)
-				.setMessage("Career Jobs Fetched successfully").create();
+				.setMessage("Careers Fetched successfully").create();
 	}
 
 	@Override
