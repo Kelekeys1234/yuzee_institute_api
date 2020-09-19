@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.CareerJob;
 import com.yuzee.app.bean.CareerJobCourseSearchKeyword;
@@ -32,6 +34,7 @@ import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.RelatedCareerDto;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +46,13 @@ public class CareerTestProcessor {
 
 	@Autowired
 	private CareerTestDao careerTestDao;
-	
+
 	@Autowired
 	private CourseDao courseDao;
-	
+
+	@Autowired
+	private ModelMapper modelMapper;
+
 	public PaginationResponseDto getCareerJobSkills(String levelId, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getCareerJobSkills() method");
 		List<CareerJobSkillDto> careerJobSkillDtos = new ArrayList<>();
@@ -66,8 +72,9 @@ public class CareerTestProcessor {
 		}
 		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
-		PaginationResponseDto paginationResponseDto = new PaginationResponseDto(careerJobSkillDtos, totalCount, paginationUtilDto.getPageNumber(), 
-				paginationUtilDto.isHasPreviousPage(), paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
+		PaginationResponseDto paginationResponseDto = new PaginationResponseDto(careerJobSkillDtos, totalCount,
+				paginationUtilDto.getPageNumber(), paginationUtilDto.isHasPreviousPage(),
+				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return paginationResponseDto;
 	}
 
@@ -80,15 +87,17 @@ public class CareerTestProcessor {
 		Integer totalCount = 0;
 		if (!CollectionUtils.isEmpty(jobIds)) {
 			log.info("Extracting career job workingStyles from DB for jobId " + jobIds);
-			List<CareerJobWorkingStyle> careerJobWorkingStyles = careerTestDao.getCareerJobWorkingStyle(jobIds, pageable);
-			log.info("Extracting total Count of workingStyles from DB having jobId "+ jobIds);
+			List<CareerJobWorkingStyle> careerJobWorkingStyles = careerTestDao.getCareerJobWorkingStyle(jobIds,
+					pageable);
+			log.info("Extracting total Count of workingStyles from DB having jobId " + jobIds);
 			totalCount = careerTestDao.getCareerJobWorkingStyleCount(jobIds);
 			if (!CollectionUtils.isEmpty(careerJobWorkingStyles)) {
 				log.info("Career Working Style fetched from DB, start iterating data");
 				careerJobWorkingStyles.stream().forEach(careerJobWorkingStyle -> {
 					log.info("Start adding values in DTO class");
-					CareerJobWorkingStyleDto careerJobWorkingStyleDto = new CareerJobWorkingStyleDto(careerJobWorkingStyle.getId(), 
-							careerJobWorkingStyle.getWorkStyle(), careerJobWorkingStyle.getCareerJobs().getId());
+					CareerJobWorkingStyleDto careerJobWorkingStyleDto = new CareerJobWorkingStyleDto(
+							careerJobWorkingStyle.getId(), careerJobWorkingStyle.getWorkStyle(),
+							careerJobWorkingStyle.getCareerJobs().getId());
 					careerJobWorkingStyleDtos.add(careerJobWorkingStyleDto);
 				});
 			}
@@ -100,7 +109,7 @@ public class CareerTestProcessor {
 				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return paginationResponseDto;
 	}
-	
+
 	public PaginationResponseDto getCareerJobSubjects(List<String> jobIds, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getCareerJobSubjects() method");
 		List<CareerJobSubjectDto> careerJobSubjectDtos = new ArrayList<>();
@@ -111,14 +120,14 @@ public class CareerTestProcessor {
 		if (!CollectionUtils.isEmpty(jobIds)) {
 			log.info("Extracting career job Subjects from DB for jobId " + jobIds);
 			List<CareerJobSubject> careerJobSubjects = careerTestDao.getCareerJobSubject(jobIds, pageable);
-			log.info("Extracting total Count of jobSubjects from DB having jobId "+ jobIds);
+			log.info("Extracting total Count of jobSubjects from DB having jobId " + jobIds);
 			totalCount = careerTestDao.getCareerJobSubjectCount(jobIds);
 			if (!CollectionUtils.isEmpty(careerJobSubjects)) {
 				log.info("Career JobSubjects fetched from DB, start iterating data");
 				careerJobSubjects.stream().forEach(careerJobSubject -> {
 					log.info("Start adding values in DTO class");
-					CareerJobSubjectDto careerJobSubjectDto = new CareerJobSubjectDto(careerJobSubject.getId(), careerJobSubject.getSubject(),
-							careerJobSubject.getCareerJobs().getId());
+					CareerJobSubjectDto careerJobSubjectDto = new CareerJobSubjectDto(careerJobSubject.getId(),
+							careerJobSubject.getSubject(), careerJobSubject.getCareerJobs().getId());
 					careerJobSubjectDtos.add(careerJobSubjectDto);
 				});
 			}
@@ -130,7 +139,7 @@ public class CareerTestProcessor {
 				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return paginationResponseDto;
 	}
-	
+
 	public PaginationResponseDto getCareerJobTypes(List<String> jobIds, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getCareerJobTypes() method");
 		List<CareerJobTypeDto> careerJobTypeDtos = new ArrayList<>();
@@ -150,7 +159,7 @@ public class CareerTestProcessor {
 				});
 			}
 		}
-		
+
 		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
@@ -159,7 +168,7 @@ public class CareerTestProcessor {
 				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return paginationResponseDto;
 	}
-	
+
 	public PaginationResponseDto getCareers(List<String> jobTypeIds, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getCareers() method");
 		List<CareerDto> careerDtos = new ArrayList<>();
@@ -180,7 +189,7 @@ public class CareerTestProcessor {
 				});
 			}
 		}
-		
+
 		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
 		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
@@ -189,7 +198,7 @@ public class CareerTestProcessor {
 				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return paginationResponseDto;
 	}
-	
+
 	public PaginationResponseDto getCareerJobs(List<String> jobIds, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getCareerJobs() method");
 		List<CareerJobDto> careerJobDtos = new ArrayList<>();
@@ -200,12 +209,12 @@ public class CareerTestProcessor {
 		if (!CollectionUtils.isEmpty(jobIds)) {
 			log.info("Extracting career jobs from DB for jobId " + jobIds);
 			List<CareerJob> careerJobs = careerTestDao.getCareerJob(jobIds, pageable);
-			log.info("Extracting total Count of jobs from DB having jobId "+ jobIds);
+			log.info("Extracting total Count of jobs from DB having jobId " + jobIds);
 			totalCount = careerTestDao.getCareerJobCount(jobIds);
 			if (!CollectionUtils.isEmpty(careerJobs)) {
 				log.info("Career Jobs fetched from DB, start iterating data");
 				careerJobs.stream().forEach(careerJob -> {
-					CareerJobDto careerJobDto = new CareerJobDto(careerJob.getId(), careerJob.getJob(), careerJob.getJobDescription());
+					CareerJobDto careerJobDto = modelMapper.map(careerJob, CareerJobDto.class);
 					careerJobDtos.add(careerJobDto);
 				});
 			}
@@ -217,7 +226,7 @@ public class CareerTestProcessor {
 				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return paginationResponseDto;
 	}
-	
+
 	public PaginationResponseDto getRealtedCareers(List<String> careerIds, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getRealtedCareers() method");
 		List<RelatedCareerDto> realtedCareerDtos = new ArrayList<>();
@@ -246,16 +255,18 @@ public class CareerTestProcessor {
 				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return paginationResponseDto;
 	}
-	
-	public PaginationResponseDto getRelatedCourseBasedOnCareerTest(List<String> jobIds, Integer pageNumber, Integer pageSize) {
+
+	public PaginationResponseDto getRelatedCourseBasedOnCareerTest(List<String> jobIds, Integer pageNumber,
+			Integer pageSize) {
 		log.debug("Inside getRelatedCourseBasedOnCareerTest() method");
 		List<String> courseSearchkeyword = new ArrayList<>();
 		log.info("Extracting job courseSearchKeyword from DB to match possible courses");
-		List<CareerJobCourseSearchKeyword> careerJobCourseSearchKeywords = careerTestDao.getCareerJobCourseSearchKeyword(jobIds);
+		List<CareerJobCourseSearchKeyword> careerJobCourseSearchKeywords = careerTestDao
+				.getCareerJobCourseSearchKeyword(jobIds);
 		int startIndex = pageNumber - 1;
 		log.info("Calculating Pageable size based on pageNumber nad pageSize");
-		
-		if(!CollectionUtils.isEmpty(careerJobCourseSearchKeywords)) {
+
+		if (!CollectionUtils.isEmpty(careerJobCourseSearchKeywords)) {
 			log.info("Career courseSearchKeyword fetched, iterating data to extract search keywords");
 			careerJobCourseSearchKeywords.stream().forEach(careerJobCourseSearchKeyword -> {
 				log.info("Adding searchKeyword in list, to fetch all possible course having searchKeyword from DB");
@@ -265,8 +276,8 @@ public class CareerTestProcessor {
 		log.info("Extracting total count of courses based on courseSearchKeywords");
 		Integer totalCount = courseDao.getRelatedCourseBasedOnCareerTestCount(courseSearchkeyword);
 		log.info("Extracting courses data based on job courseSearchKeywords from DB");
-		List<CourseResponseDto> careerJobRelatedCourseDtos = courseDao.getRelatedCourseBasedOnCareerTest(courseSearchkeyword, 
-				startIndex, pageSize);
+		List<CourseResponseDto> careerJobRelatedCourseDtos = courseDao
+				.getRelatedCourseBasedOnCareerTest(courseSearchkeyword, startIndex, pageSize);
 		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto(careerJobRelatedCourseDtos, totalCount,
@@ -274,4 +285,14 @@ public class CareerTestProcessor {
 				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return paginationResponseDto;
 	}
+
+	public CareerJobDto getCareerJobById(String jobId) throws NotFoundException {
+		CareerJob careerJob = careerTestDao.getCareerJob(jobId);
+		if (ObjectUtils.isEmpty(careerJob)) {
+			throw new NotFoundException("Career Job with id" + jobId);
+		}
+		CareerJobDto careerJobDto = modelMapper.map(careerJob, CareerJobDto.class);
+		
+		return careerJobDto;
+	}	
 }

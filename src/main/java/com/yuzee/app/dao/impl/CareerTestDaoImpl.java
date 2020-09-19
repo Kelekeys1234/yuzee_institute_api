@@ -1,6 +1,7 @@
 package com.yuzee.app.dao.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -126,5 +127,14 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	@Override
 	public List<CareerJobCourseSearchKeyword> getCareerJobCourseSearchKeyword(List<String> jobIds) {
 		return careerJobCourseSearchKeywordRepository.findByCareerJobsIdIn(jobIds);
+	}
+
+	@Override
+	public CareerJob getCareerJob(String careerJobId) {
+		Optional<CareerJob> careerJob = careerJobRepository.findById(careerJobId);
+		if (careerJob.isPresent()) {
+			return careerJob.get();
+		}
+		return null;
 	}
 }

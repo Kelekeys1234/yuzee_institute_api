@@ -39,4 +39,6 @@ public interface CareerTestDao {
 	public Page<RelatedCareer> getRelatedCareers(List<String> carrerIds, Pageable pageable);
 	
 	public List<CareerJobCourseSearchKeyword> getCareerJobCourseSearchKeyword(List<String> jobIds);
+	
+	public CareerJob getCareerJob(String careerJobId); 
 }
