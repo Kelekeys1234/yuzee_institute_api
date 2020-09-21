@@ -6,8 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class CareerDto {
 
@@ -15,7 +17,7 @@ public class CareerDto {
 	private String id;
 
 	@JsonProperty("career_name")
-	private String name;
+	private String career;
 
 	@JsonProperty("job_ids")
 	private List<String> jobIds;

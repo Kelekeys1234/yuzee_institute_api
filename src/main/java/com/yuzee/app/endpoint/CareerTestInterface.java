@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.yuzee.app.exception.NotFoundException;
+
 @RequestMapping("/api/v1/career/job")
 public interface CareerTestInterface {
 
@@ -27,10 +29,6 @@ public interface CareerTestInterface {
 	public ResponseEntity<?> getCareerJobTypes(@RequestParam List<String> jobIds, @PathVariable Integer pageNumber,
 			@PathVariable Integer pageSize);
 	
-	@GetMapping("/career/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getCareers(@RequestParam List<String> jobTypeIds, @PathVariable Integer pageNumber,
-			@PathVariable Integer pageSize);
-	
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getCareerJobs(@RequestParam List<String> jobIds, @PathVariable Integer pageNumber,
 			@PathVariable Integer pageSize);
@@ -42,4 +40,7 @@ public interface CareerTestInterface {
 	@GetMapping("/related/course/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getRelatedCourseBasedOnCareerTest(@RequestParam List<String> jobIds, @PathVariable Integer pageNumber,
 			@PathVariable Integer pageSize);
+	
+	@GetMapping("/{jobId}")
+	public ResponseEntity<?> getCareerJobById(@PathVariable String jobId) throws NotFoundException;
 }

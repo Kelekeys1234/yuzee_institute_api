@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CareerJobWorkingStyleDto {
+public class CareerJobWorkingActivityDto {
 
-	@JsonProperty("working_style_id")
-	@NotBlank(message = "working_style_id should not be blank")
+	@JsonProperty("working_activity_id")
+	@NotBlank(message = "working_activity_id should not be blank")
 	private String id;
 	
-	@JsonProperty("working_style")
-	@NotBlank(message = "working_style should not be blank")
-	private String workStyle;
+	@JsonProperty("working_activity")
+	@NotBlank(message = "working_activity should not be blank")
+	private String workActivity;
 	
 	@JsonProperty("job_id")
 	@NotBlank(message = "job_id should not be blank")
