@@ -1796,7 +1796,7 @@ public class CourseDaoImpl implements CourseDao {
 		if(!CollectionUtils.isEmpty(searchKeyword)) {
 			Integer count = 0;
 			StringBuilder sqlQuery = new StringBuilder("select c.id, c.name as courseName, inst.id as instituteId, inst.name as instituteName, inst.country_name,"
-					+ "inst.city_name, c.currency, c.world_ranking from course c left join institute inst on c.institute_id = inst.id where ");
+					+ "inst.city_name, c.currency, c.world_ranking,c.name as courseDescription from course c left join institute inst on c.institute_id = inst.id where ");
 			for(String keyword : searchKeyword) {
 				count++;
 				sqlQuery.append("INSTR(c.name,'" + keyword + "')");
@@ -1819,6 +1819,7 @@ public class CourseDaoImpl implements CourseDao {
 				careerJobRelatedCourseDto.setCurrencyCode(String.valueOf(row[6]));
 				careerJobRelatedCourseDto.setCourseRanking(Integer.parseInt(String.valueOf(row[7])));
 				careerJobRelatedCourseDto.setLocation(String.valueOf(row[5]) + ", " + String.valueOf(row[4]));
+				careerJobRelatedCourseDto.setCourseDescription(String.valueOf(row[8]));
 				careerJobRelatedCourseDtos.add(careerJobRelatedCourseDto);
 			}
 		}
