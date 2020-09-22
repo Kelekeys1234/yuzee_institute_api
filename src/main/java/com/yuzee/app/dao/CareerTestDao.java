@@ -13,6 +13,7 @@ import com.yuzee.app.bean.CareerJobSubject;
 import com.yuzee.app.bean.CareerJobType;
 import com.yuzee.app.bean.CareerJobWorkingStyle;
 import com.yuzee.app.bean.RelatedCareer;
+import com.yuzee.app.dto.JobIdProjection;
 
 public interface CareerTestDao {
 
@@ -23,6 +24,8 @@ public interface CareerTestDao {
 	public Page<CareerJobSubject> getCareerJobSubject(List<String> jobIds, Pageable pageable);
 	
 	public Page<CareerJobType> getCareerJobType(List<String> jobIds, Pageable pageable);
+
+	public List<JobIdProjection> getCareerJobIdsByJobTypeId(String jobTypeId);
 		
 	public Page<CareerJob> getCareerJob(List<String> jobIds, Pageable pageable);
 	

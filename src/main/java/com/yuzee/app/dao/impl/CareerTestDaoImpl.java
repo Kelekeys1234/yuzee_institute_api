@@ -20,6 +20,7 @@ import com.yuzee.app.bean.CareerJobType;
 import com.yuzee.app.bean.CareerJobWorkingStyle;
 import com.yuzee.app.bean.RelatedCareer;
 import com.yuzee.app.dao.CareerTestDao;
+import com.yuzee.app.dto.JobIdProjection;
 import com.yuzee.app.repository.CareerJobCourseSearchKeywordRepository;
 import com.yuzee.app.repository.CareerJobRepository;
 import com.yuzee.app.repository.CareerJobSkillRepository;
@@ -74,6 +75,11 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	@Override
 	public Page<CareerJobType> getCareerJobType(List<String> jobIds, Pageable pageable) {
 		return careerJobTypeRepository.findByCareerJobsIdIn(jobIds, pageable);
+	}
+	
+	@Override
+	public List<JobIdProjection> getCareerJobIdsByJobTypeId(String jobTypeId){
+		return careerJobTypeRepository.findJobIdsById(jobTypeId);
 	}
 
 	@Override
