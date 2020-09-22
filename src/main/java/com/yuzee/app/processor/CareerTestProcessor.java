@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,7 +155,12 @@ public class CareerTestProcessor {
 			if (!CollectionUtils.isEmpty(careerJobTypes)) {
 				log.info("Career Job Types fetched from DB, start iterating data");
 				careerJobTypes.stream().forEach(careerJob -> {
-					CareerJobTypeDto careerJobTypeDto = new CareerJobTypeDto(careerJob.getId(), careerJob.getJobType());
+
+					List<String> careerjobIds = careerTestDao.getCareerJobIdsByJobTypeId(careerJob.getId()).stream()
+							.map(e -> e.getJobId()).collect(Collectors.toList());
+
+					CareerJobTypeDto careerJobTypeDto = new CareerJobTypeDto(careerJob.getId(), careerJob.getJobType(),
+							careerjobIds);
 					careerJobTypeDtos.add(careerJobTypeDto);
 				});
 			}

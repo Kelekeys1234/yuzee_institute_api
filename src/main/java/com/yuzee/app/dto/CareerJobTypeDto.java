@@ -1,5 +1,7 @@
 package com.yuzee.app.dto;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -14,4 +16,7 @@ public class CareerJobTypeDto {
 	
 	@JsonProperty("job_type")
 	private String type;
+	
+	@JsonProperty("job_ids")
+	private List<String> jobIds;
 }
