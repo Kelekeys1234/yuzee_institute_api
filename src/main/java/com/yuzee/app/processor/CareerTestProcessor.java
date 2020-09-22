@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.CareerJob;
 import com.yuzee.app.bean.CareerJobCourseSearchKeyword;
@@ -32,7 +33,10 @@ import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.RelatedCareerDto;
+import com.yuzee.app.dto.UserViewCourseDto;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.handler.ViewTransactionHandler;
 import com.yuzee.app.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +52,9 @@ public class CareerTestProcessor {
 	@Autowired
 	private CourseDao courseDao;
 
+	@Autowired
+	private ViewTransactionHandler viewTransacationHandler;
+	
 	@Autowired
 	private ModelMapper modelMapper;
 
@@ -175,7 +182,7 @@ public class CareerTestProcessor {
 		return paginationResponseDto;
 	}
 
-	public PaginationResponseDto getCareerJobs(List<String> jobIds, Integer pageNumber, Integer pageSize) {
+	public PaginationResponseDto getCareerJobs(String userId, List<String> jobIds, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getCareerJobs() method");
 		List<CareerJobDto> careerJobDtos = new ArrayList<>();
 		
@@ -190,6 +197,15 @@ public class CareerTestProcessor {
 				log.info("Career Jobs fetched from DB, start iterating data");
 				careerJobs.getContent().stream().forEach(careerJob -> {
 					CareerJobDto careerJobDto = modelMapper.map(careerJob, CareerJobDto.class);
+					try {
+						UserViewCourseDto viewTransactionDto = viewTransacationHandler.getUserViewedCourseByEntityIdAndTransactionType(userId, "CAREER_JOB",
+								careerJob.getId(), "FAVOURITE");
+						if (!ObjectUtils.isEmpty(viewTransactionDto)) {
+							careerJobDto.setFavouriteJob(true);
+						}
+					} catch (InvokeException e1) {
+						log.error("Error invoking view transaction service");
+					}
 					careerJobDtos.add(careerJobDto);
 				});
 			}

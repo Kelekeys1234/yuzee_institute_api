@@ -38,4 +38,7 @@ public class CareerJobDto {
 	
 	@JsonProperty("job_skills")
 	List<CareerJobSkillDto> careerJobSkills;
+	
+	@JsonProperty("is_favourite_job")
+	boolean favouriteJob;
 }
