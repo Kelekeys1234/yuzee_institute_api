@@ -44,13 +44,13 @@ import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.processor.InstituteServiceProcessor;
 import com.yuzee.app.processor.InstituteTimingProcessor;
 import com.yuzee.app.processor.InstituteTypeProcessor;
-import com.yuzee.app.processor.ServiceDetailsProcessor;
+import com.yuzee.app.processor.ServiceProcessor;
 import com.yuzee.app.util.CommonUtil;
 import com.yuzee.app.util.PaginationUtil;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 
-@CommonsLog
+@Slf4j
 @RestController("instituteControllerV1")
 public class InstituteController implements InstituteInterface {
 
@@ -61,7 +61,7 @@ public class InstituteController implements InstituteInterface {
 	private InstituteTypeProcessor instituteTypeProcessor;
 
 	@Autowired
-	private ServiceDetailsProcessor serviceDetailsProcessor;
+	private ServiceProcessor serviceDetailsProcessor;
 
 	@Autowired
 	private InstituteServiceProcessor instituteServiceProcessor;
@@ -82,23 +82,15 @@ public class InstituteController implements InstituteInterface {
 	
 	@Override
 	public ResponseEntity<?> getInstituteTypeByCountry(String countryName) throws Exception {
-		log.info("Start process to fetch instituteType from DB for countryName = "+countryName);
+		log.info("Start process to fetch instituteType from DB for countryName = [}",countryName);
 		List<InstituteTypeDto> listOfInstituteTypes = instituteTypeProcessor.getInstituteTypeByCountryName(countryName);
 		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage("Institute types fetched successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> getAllInstituteService() throws Exception {
-		log.info("Start process to fetch all institute services from DB");
-		List<Service> serviceDetailsList = serviceDetailsProcessor.getAllServices();
-		return new GenericResponseHandlers.Builder().setData(serviceDetailsList).setMessage("Services displayed successfully")
-				.setStatus(HttpStatus.OK).create();
-	}
-
-	@Override
 	public ResponseEntity<?> getAllServicesByInstitute(final String instituteId) throws Exception {
-		log.info("Start process to fetch all service having instituteId = "+instituteId);
+		log.info("Start process to fetch all service having instituteId = {}",instituteId);
 		List<String> serviceNames = instituteServiceProcessor.getAllServices(instituteId);
 		return new GenericResponseHandlers.Builder().setData(serviceNames).setMessage("Services displayed successfully")
 				.setStatus(HttpStatus.OK).create();
@@ -144,9 +136,9 @@ public class InstituteController implements InstituteInterface {
 					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 					instituteResponseDto.setStorageList(storageDTOList);
 				} catch (NotFoundException | InvokeException e) {
-					log.error("Error invoking Storage service having exception ="+e);
+					log.error("Error invoking Storage service having exception = {}",e);
 				}
-				log.info("fetching instituteTiming from DB for instituteId =" +instituteResponseDto.getId());
+				log.info("fetching instituteTiming from DB for instituteId ={}", instituteResponseDto.getId());
 				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
 				if(!ObjectUtils.isEmpty(request.getLatitude()) && !ObjectUtils.isEmpty(request.getLongitude()) && 
@@ -203,9 +195,9 @@ public class InstituteController implements InstituteInterface {
 					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 					instituteResponseDto.setStorageList(storageDTOList);
 				} catch (NotFoundException | InvokeException e) {
-					log.error("Error invoking Storage service having exception "+e);
+					log.error("Error invoking Storage service having exception {}", e);
 				}
-				log.info("fetching instituteTiming from DB for instituteId =" +instituteResponseDto.getId());
+				log.info("fetching instituteTiming from DB for instituteId = {}", instituteResponseDto.getId());
 				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
 				instituteResponse.add(instituteResponseDto);
@@ -223,7 +215,7 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public ResponseEntity<?> getInstituteByCityName(final String cityName) throws Exception {
-		log.info("Start process to fetch institutes from DB for cityName = "+cityName);
+		log.info("Start process to fetch institutes from DB for cityName = {}", cityName);
 		List<InstituteResponseDto> institutes = instituteProcessor.getInstituteByCityName(cityName);
 		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institutes displayed successfully")
 				.setStatus(HttpStatus.OK).create();
@@ -231,7 +223,7 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public ResponseEntity<?> getInstituteByListOfCityName(final String cityName) throws Exception {
-		log.info("Start process to fetch institutes from DB for multiple cityNames = "+cityName);
+		log.info("Start process to fetch institutes from DB for multiple cityNames = {}", cityName);
 		List<InstituteResponseDto> institutes = instituteProcessor.getInstituteByListOfCityId(cityName);
 		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institutes displayed successfully")
 				.setStatus(HttpStatus.OK).create();
@@ -247,7 +239,7 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public ResponseEntity<?> update(final String id, final List<InstituteRequestDto> institute) throws Exception {
-		log.info("Start process to update existing Institue having instituteId = "+id);
+		log.info("Start process to update existing Institue having instituteId = {}",id);
 		instituteProcessor.updateInstitute(institute, id);
 		return new GenericResponseHandlers.Builder().setMessage("Institutes updated successfully")
 				.setStatus(HttpStatus.OK).create();
@@ -271,7 +263,7 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public ResponseEntity<?> get(final String instituteId) throws ValidationException {
-		log.info("Start process to fetch Institutes from DB for instituteId = "+instituteId);
+		log.info("Start process to fetch Institutes from DB for instituteId = {}", instituteId);
 		InstituteRequestDto instituteRequestDtos = instituteProcessor.getById(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteRequestDtos).setMessage("Institute details get successfully").setStatus(HttpStatus.OK)
 				.create();
@@ -279,7 +271,7 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public ResponseEntity<?> searchInstitute(final String searchText) throws Exception {
-		log.info("Start process to search Institutes from DB for searchKeyword = "+searchText);
+		log.info("Start process to search Institutes from DB for searchKeyword = {}", searchText);
 		List<InstituteGetRequestDto> instituteGetRequestDtos = instituteProcessor.searchInstitute(searchText);
 		return new GenericResponseHandlers.Builder().setData(instituteGetRequestDtos).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
 				.create();
@@ -311,28 +303,28 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public ResponseEntity<?> delete(final String instituteId) throws ValidationException {
-		log.info("Start process to inactive existing Institute for instituteId = "+instituteId);
+		log.info("Start process to inactive existing Institute for instituteId = {}",instituteId);
 		instituteProcessor.deleteInstitute(instituteId);
 		return new GenericResponseHandlers.Builder().setMessage("Institute deleted successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getInstituteImage(final String instituteId) throws Exception {
-		log.info("Start process to fetch all InstituteImages for instituteId = "+instituteId);
+		log.info("Start process to fetch all InstituteImages for instituteId = {}", instituteId);
 		List<StorageDto> storageDTOList = storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getTotalCourseForInstitute(final String instituteId) throws ValidationException {
-		log.info("Start process to get total count of courses for institute having instituteId = "+instituteId);
+		log.info("Start process to get total count of courses for institute having instituteId = {}", instituteId);
 		Integer courseCount = instituteProcessor.getTotalCourseCountForInstitute(instituteId);
 		return new GenericResponseHandlers.Builder().setData(courseCount).setMessage("Course Count returned successfully").setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getHistoryOfDomesticRanking(final String instituteId) throws ValidationException {
-		log.info("Start process to get history of domesticRanking for institute having instituteId = "+instituteId);
+		log.info("Start process to get history of domesticRanking for institute having instituteId = {}", instituteId);
 		List<InstituteDomesticRankingHistoryDto> instituteDomesticRankingHistory = instituteProcessor.getHistoryOfDomesticRanking(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteDomesticRankingHistory).setMessage("Get institute domestic ranking successfully")
 				.setStatus(HttpStatus.OK).create();
@@ -340,7 +332,7 @@ public class InstituteController implements InstituteInterface {
 	
 	@Override
 	public ResponseEntity<?> getHistoryOfWorldRanking(final String instituteId) throws ValidationException {
-		log.info("Start process to get history of worldRanking for institute having instituteId = "+instituteId);
+		log.info("Start process to get history of worldRanking for institute having instituteId = {}", instituteId);
 		List<InstituteWorldRankingHistoryDto> instituteWorldRankingHistory = instituteProcessor.getHistoryOfWorldRanking(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteWorldRankingHistory).setMessage("Get institute world ranking successfully")
 				.setStatus(HttpStatus.OK).create();
@@ -366,9 +358,9 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getDistinctInstututes(final Integer pageNumber, final Integer pageSize, final String name) throws Exception {
 		log.debug("Inside getDistinctInstututes() method");
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		log.info("Getting total count of institute having instituteName = "+name);
+		log.info("Getting total count of institute having instituteName = {}", name);
 		int totalCount = instituteProcessor.getDistinctInstituteCount(name);
-		log.info("Fetching distinct institutes from DB based on pagination for instituteName = "+name);
+		log.info("Fetching distinct institutes from DB based on pagination for instituteName = {}", name);
 		List<InstituteResponseDto> instituteList = instituteProcessor.getDistinctInstituteList(startIndex, pageSize, name);
 		log.info("Calculating pagination based on pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
@@ -592,7 +584,7 @@ public class InstituteController implements InstituteInterface {
             try {
             	serviceDetailsProcessor.save(serviceDetails);
             } catch (Exception e) {
-                log.error("Exception while adding services in DB having exception = "+e);
+                log.error("Exception while adding services in DB having exception = {}", e);
             }
         }
         return new GenericResponseHandlers.Builder().setMessage("Services Added successfully")

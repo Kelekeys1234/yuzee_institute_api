@@ -46,8 +46,6 @@ public interface InstituteDao {
 
 	public List<InstituteGetRequestDto> getAll(Integer pageNumber, Integer pageSize);
 
-	public List<ServiceDto> getAllServices();
-
 	public void delete(Institute obj);
 
 	public List<Institute> instituteFilter(int startIndex, Integer maxSizePerPage, InstituteFilterDto instituteFilterDto);

@@ -29,8 +29,11 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.Institute;
+import com.yuzee.app.bean.InstituteFacility;
 import com.yuzee.app.bean.Todo;
 import com.yuzee.app.dto.CourseRequest;
+import com.yuzee.app.dto.FacilityDto;
+import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteTimingDto;
 import com.yuzee.app.dto.InstituteTimingResponseDto;
@@ -465,5 +468,16 @@ public class CommonUtil {
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
 	    Set<Object> seen = ConcurrentHashMap.newKeySet();
 	    return t -> seen.add(keyExtractor.apply(t));
+	}
+	
+	public static InstituteFacilityDto createInstituteFacilityResponseDto(
+			List<InstituteFacility> listOfInstituteFacility) {
+		InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
+		listOfInstituteFacility.stream().forEach(instituteFacility -> {
+			FacilityDto facilityDto = new FacilityDto(instituteFacility.getId(),
+					instituteFacility.getService().getName(), instituteFacility.getService().getId());
+			instituteFacilityDto.getFacilities().add(facilityDto);
+		});
+		return instituteFacilityDto;
 	}
 }

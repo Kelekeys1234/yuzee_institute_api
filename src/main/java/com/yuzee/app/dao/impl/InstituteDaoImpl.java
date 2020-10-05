@@ -486,27 +486,6 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	@Override
-	public List<ServiceDto> getAllServices() {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select inst.id, inst.name , inst.description FROM service as inst where inst.is_active = 1 ORDER BY inst.created_on DESC";
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		List<ServiceDto> services = new ArrayList<>();
-		ServiceDto obj = null;
-		for (Object[] row : rows) {
-			obj = new ServiceDto();
-			obj.setServiceId(row[0].toString());
-			obj.setServiceName(row[1].toString());
-			if (row[2] != null) {
-				obj.setDescription(row[2].toString());
-			}
-			obj.setIcon(CDNServerUtil.getServiceIconUrl(row[1].toString()));
-			services.add(obj);
-		}
-		return services;
-	}
-
-	@Override
 	public List<Institute> instituteFilter(final int pageNumber, final Integer pageSize, final InstituteFilterDto instituteFilterDto) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = getFilterInstituteSqlQuery(instituteFilterDto);

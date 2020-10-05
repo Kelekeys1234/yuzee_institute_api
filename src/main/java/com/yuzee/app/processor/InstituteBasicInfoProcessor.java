@@ -58,6 +58,7 @@ public class InstituteBasicInfoProcessor {
 		iInstituteDAO.addUpdateInstitute(institute);
 	}
 	
+	@Transactional
 	public InstituteBasicInfoDto getInstituteBasicInfo (String userId , String instituteId, String caller) throws Exception {
 		InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto();
 		List<StorageDto> listOfStorageDto = null;

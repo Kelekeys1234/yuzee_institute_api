@@ -41,12 +41,6 @@ public class InstituteFacility {
 	@Column(name = "id", unique = true, nullable = false)
 	private String id;
 	
-	@Column(name = "institute_id", nullable = false)
-	private String instituteId;
-	
-	@Column(name ="facility_id", nullable = false)
-	private String facilityId;
-	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
 	private Date createdOn;
@@ -62,18 +56,18 @@ public class InstituteFacility {
 	private String updatedBy;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "institute_id", nullable = false, updatable = false, insertable =  false)
+	@JoinColumn(name = "institute_id", nullable = false)
 	private Institute institute;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "service_id", nullable = false,updatable = false, insertable =  false)
+	@ManyToOne
+	@JoinColumn(name = "facility_id", nullable = false)
 	private Service service;
 
-	public InstituteFacility(String instituteId, String facilityId, Date createdOn, Date updatedOn, String createdBy,
+	public InstituteFacility(Institute institute,Service service, Date createdOn, Date updatedOn, String createdBy,
 			String updatedBy) {
 		super();
-		this.instituteId = instituteId;
-		this.facilityId = facilityId;
+		this.institute = institute;
+		this.service = service;
 		this.createdOn = createdOn;
 		this.updatedOn = updatedOn;
 		this.createdBy = createdBy;

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -27,7 +28,7 @@ import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.InstituteDomesticRankingHistoryDao;
 import com.yuzee.app.dao.InstituteWorldRankingHistoryDao;
-import com.yuzee.app.dao.ServiceDetailsDao;
+import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseSearchDto;
@@ -59,10 +60,10 @@ import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.app.util.PaginationUtil;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-@CommonsLog
+@Slf4j
 @Transactional
 public class InstituteProcessor {
 
@@ -85,7 +86,7 @@ public class InstituteProcessor {
 	private InstituteDomesticRankingHistoryDao instituteDomesticRankingHistoryDAO;
 
 	@Autowired
-	private ServiceDetailsDao serviceDetailsDAO;
+	private ServiceDao serviceDetailsDAO;
 
 	@Autowired
 	private StorageHandler storageHandler;
@@ -479,10 +480,12 @@ public class InstituteProcessor {
 		log.info("start iterating new offerServices coming in request for institute");
 		offerService.stream().forEach(serviceId -> {
 			log.info("fetching service from DB having by serviceId coming in request = "+serviceId);
-			com.yuzee.app.bean.Service service = serviceDetailsDAO.getService(serviceId);
+			Optional<com.yuzee.app.bean.Service> service = serviceDetailsDAO.getServiceById(serviceId);
 			com.yuzee.app.bean.InstituteService instituteServiceDetails = new com.yuzee.app.bean.InstituteService();
 			instituteServiceDetails.setInstitute(institute);
-			instituteServiceDetails.setServiceName(service.getName());
+			if (service.isPresent()) {
+				instituteServiceDetails.setServiceName(service.get().getName());
+			}
 			instituteServiceDetails.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 			instituteServiceDetails.setIsActive(true);
 			instituteServiceDetails.setCreatedBy("AUTO");
@@ -571,20 +574,20 @@ public class InstituteProcessor {
 	
 	public InstituteRequestDto getById(final String id) throws ValidationException {
 		log.debug("Inside getById() method");
-		log.info("Fetching institute from DB for instituteId ="+id);
+		log.info("Fetching institute from DB for instituteId = {}", id);
 		Institute institute = dao.get(id);
 		if (institute == null) {
-			log.error("No institute found in DB for instituteId =" +id);
+			log.error("No institute found in DB for instituteId = {}", id);
 			throw new ValidationException("Institute not found for id" + id);
 		}
 		log.info("Converting bean to request DTO class");
 		InstituteRequestDto instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
-		log.info("fetching institute services from DB fro instituteID = "+id);
-		instituteRequestDto.setOfferService(getOfferServices(id));
+		log.info("fetching institute services from DB fro instituteID = {}", id);
+		instituteRequestDto.setOfferService(getOfferServiceNames(id));
 		instituteRequestDto.setOfferServiceName(getOfferServiceNames(id));
-		log.info("fetching accrediation Details from DB fro instituteID = "+id);
+		log.info("fetching accrediation Details from DB fro instituteID = {}", id);
 		instituteRequestDto.setAccreditationDetails(getAccreditationName(id));
-		log.info("fetching institute intakes from DB fro instituteID = "+id);
+		log.info("fetching institute intakes from DB fro instituteID = {}", id);
 		instituteRequestDto.setIntakes(getIntakes(id));
 		if (institute.getInstituteCategoryType() != null) {
 			log.info("Adding institute category type in final Response");
@@ -619,10 +622,6 @@ public class InstituteProcessor {
 			});
 		}
 		return accrediatedDetailDtos;
-	}
-
-	private List<String> getOfferServices(final String id) {
-		return serviceDetailsDAO.getServicesById(id);
 	}
 
 	private List<String> getOfferServiceNames(final String id) {

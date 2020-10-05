@@ -810,11 +810,6 @@ public class CourseProcessor {
 		return courseDao.getCourseData(courseId);
 	}
 
-	public List<ServiceDto> getAllServices() {
-		log.debug("Inside getAllServices() method");
-		return instituteDAO.getAllServices();
-	}
-
 	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto, List<String> entityIds) 
 			throws ValidationException, CommonInvokeException, InvokeException, NotFoundException {
 		log.debug("Inside advanceSearch() method");
