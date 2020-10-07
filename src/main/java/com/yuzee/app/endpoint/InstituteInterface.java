@@ -124,4 +124,8 @@ public interface InstituteInterface {
 	@GetMapping(value = "/institute/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
 	public ResponseEntity<?> getInstituteByCountryName(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
 			@PathVariable String countryName) throws NotFoundException;
+	
+	@GetMapping("/institute/campus/institute/id/{instituteId}")
+	public ResponseEntity<?> getInstituteCampuses(@PathVariable final String instituteId) throws NotFoundException;
+	
 }

@@ -18,6 +18,7 @@ import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseSearchDto;
+import com.yuzee.app.dto.InstituteCampusDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
@@ -597,4 +598,11 @@ public class InstituteController implements InstituteInterface {
         return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
                 .create();
     }
+
+	@Override
+	public ResponseEntity<?> getInstituteCampuses(String instituteId) throws NotFoundException {
+		List<InstituteCampusDto> instituteCampuses = instituteProcessor.getInstituteCampuses(instituteId);
+		return new GenericResponseHandlers.Builder().setData(instituteCampuses)
+				.setMessage("Institute campuses displayed successfully").setStatus(HttpStatus.OK).create();
+	}
 }

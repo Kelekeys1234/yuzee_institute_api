@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.Institute;
+import com.yuzee.app.dto.InstituteCampusDto;
 
 @Repository
 public interface InstituteRepository extends JpaRepository<Institute, String>{
@@ -20,4 +21,6 @@ public interface InstituteRepository extends JpaRepository<Institute, String>{
 	public Integer getTotalCountOfInstituteByCountryName(String countryName);
 	
 	public List<Institute> findByCityName(String cityName);
+	
+	public List<InstituteCampusDto> findByIdNotAndName(String id,String name);
 }

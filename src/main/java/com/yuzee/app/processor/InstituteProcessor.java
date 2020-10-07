@@ -32,6 +32,7 @@ import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseSearchDto;
+import com.yuzee.app.dto.InstituteCampusDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
 import com.yuzee.app.dto.InstituteElasticSearchDTO;
 import com.yuzee.app.dto.InstituteFilterDto;
@@ -991,4 +992,14 @@ public class InstituteProcessor {
 		return institutePaginationResponseDto;
 	}
 
+	public List<InstituteCampusDto> getInstituteCampuses(String instituteId) throws NotFoundException {
+		log.debug("inside getInstitutCampuses method.");
+		Optional<Institute> institute = instituteRepository.findById(instituteId);
+		if (institute.isPresent()) {
+			return instituteRepository.findByIdNotAndName(instituteId, institute.get().getName());
+		}else {
+			log.error("Institute not found against id: {}", instituteId);
+			throw new NotFoundException("Institute not found against id: " + instituteId);
+		}
+	}
 }
