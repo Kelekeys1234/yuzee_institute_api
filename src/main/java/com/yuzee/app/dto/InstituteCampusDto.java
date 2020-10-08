@@ -14,6 +14,9 @@ public class InstituteCampusDto {
 	@JsonProperty("institute_id")
 	private String id;
 	
+	@JsonProperty("campus_name")
+	private String campusName;
+	
 	@JsonProperty("latitude")
 	private Double latitude;
 	
