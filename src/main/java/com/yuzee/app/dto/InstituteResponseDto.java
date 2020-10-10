@@ -100,4 +100,7 @@ public class InstituteResponseDto {
 
 	@JsonProperty("institute_timing")
 	private InstituteTimingResponseDto instituteTiming;
+	
+	@JsonProperty("tag_line")
+	private String tagLine;
 }

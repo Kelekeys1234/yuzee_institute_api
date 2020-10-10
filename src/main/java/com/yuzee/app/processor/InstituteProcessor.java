@@ -335,6 +335,7 @@ public class InstituteProcessor {
 					instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
 					instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
 					instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
+					instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
 					instituteElasticDtoList.add(instituteElasticSearchDto);
 				} catch (ValidationException e) {
 					log.error("Exception while updating institute in DB = "+e);
@@ -414,6 +415,7 @@ public class InstituteProcessor {
 		institute.setCurriculum(instituteRequest.getCurriculum());
 		institute.setDomesticBoardingFee(instituteRequest.getDomesticBoardingFee());
 		institute.setInternationalBoardingFee(instituteRequest.getInternationalBoardingFee());
+		institute.setTagLine(instituteRequest.getTagLine());
 		if (id != null) {
 			log.info("if instituteId is not null then going to update institute for id ="+id);
 			dao.addUpdateInstitute(institute);
