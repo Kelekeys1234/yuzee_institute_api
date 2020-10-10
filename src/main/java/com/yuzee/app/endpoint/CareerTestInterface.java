@@ -27,7 +27,7 @@ public interface CareerTestInterface {
 			@PathVariable Integer pageSize);
 
 	@GetMapping("/type/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getCareerJobTypes(List<String> jobIds, @PathVariable Integer pageNumber,
+	public ResponseEntity<?> getCareerJobTypes(@RequestParam List<String> jobIds, @PathVariable Integer pageNumber,
 			@PathVariable Integer pageSize);
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
