@@ -34,6 +34,9 @@ public interface InstituteInterface {
 	@GetMapping("/type")
 	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam String countryName) throws Exception;
 	
+	@GetMapping("/service/get")
+	public ResponseEntity<?> getAllInstituteService() throws Exception;
+	
 	@GetMapping("/{instituteId}/service")
 	public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable final String instituteId) throws Exception;
 	
@@ -125,7 +128,10 @@ public interface InstituteInterface {
 	public ResponseEntity<?> getInstituteByCountryName(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
 			@PathVariable String countryName) throws NotFoundException;
 	
-	@GetMapping("/institute/campus/institute/id/{instituteId}")
+	@GetMapping("/campus/instituteId/{instituteId}")
 	public ResponseEntity<?> getInstituteCampuses(@PathVariable final String instituteId) throws NotFoundException;
+
+	@GetMapping("/faculty/instituteId/{instituteId}")
+	public ResponseEntity<?> getInstituteFaculties(@PathVariable final String instituteId) throws NotFoundException;
 	
 }

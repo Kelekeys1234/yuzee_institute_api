@@ -5,10 +5,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,13 +29,14 @@ import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.InstituteDomesticRankingHistoryDao;
 import com.yuzee.app.dao.InstituteWorldRankingHistoryDao;
-import com.yuzee.app.dao.ServiceDao;
+import com.yuzee.app.dao.ServiceDetailsDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.InstituteCampusDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
 import com.yuzee.app.dto.InstituteElasticSearchDTO;
+import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteRequestDto;
@@ -87,7 +89,7 @@ public class InstituteProcessor {
 	private InstituteDomesticRankingHistoryDao instituteDomesticRankingHistoryDAO;
 
 	@Autowired
-	private ServiceDao serviceDetailsDAO;
+	private ServiceDetailsDao serviceDetailsDAO;
 
 	@Autowired
 	private StorageHandler storageHandler;
@@ -106,6 +108,9 @@ public class InstituteProcessor {
 	
 	@Autowired
 	private InstituteTimingProcessor instituteTimingProcessor;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	public void save(final Institute institute) {
 		Date today = new Date();
@@ -481,12 +486,10 @@ public class InstituteProcessor {
 		log.info("start iterating new offerServices coming in request for institute");
 		offerService.stream().forEach(serviceId -> {
 			log.info("fetching service from DB having by serviceId coming in request = "+serviceId);
-			Optional<com.yuzee.app.bean.Service> service = serviceDetailsDAO.getServiceById(serviceId);
+			com.yuzee.app.bean.Service service = serviceDetailsDAO.getService(serviceId);
 			com.yuzee.app.bean.InstituteService instituteServiceDetails = new com.yuzee.app.bean.InstituteService();
 			instituteServiceDetails.setInstitute(institute);
-			if (service.isPresent()) {
-				instituteServiceDetails.setServiceName(service.get().getName());
-			}
+			instituteServiceDetails.setServiceName(service.getName());
 			instituteServiceDetails.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 			instituteServiceDetails.setIsActive(true);
 			instituteServiceDetails.setCreatedBy("AUTO");
@@ -575,20 +578,20 @@ public class InstituteProcessor {
 	
 	public InstituteRequestDto getById(final String id) throws ValidationException {
 		log.debug("Inside getById() method");
-		log.info("Fetching institute from DB for instituteId = {}", id);
+		log.info("Fetching institute from DB for instituteId ="+id);
 		Institute institute = dao.get(id);
 		if (institute == null) {
-			log.error("No institute found in DB for instituteId = {}", id);
+			log.error("No institute found in DB for instituteId =" +id);
 			throw new ValidationException("Institute not found for id" + id);
 		}
 		log.info("Converting bean to request DTO class");
 		InstituteRequestDto instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
-		log.info("fetching institute services from DB fro instituteID = {}", id);
-		instituteRequestDto.setOfferService(getOfferServiceNames(id));
+		log.info("fetching institute services from DB fro instituteID = "+id);
+		instituteRequestDto.setOfferService(getOfferServices(id));
 		instituteRequestDto.setOfferServiceName(getOfferServiceNames(id));
-		log.info("fetching accrediation Details from DB fro instituteID = {}", id);
+		log.info("fetching accrediation Details from DB fro instituteID = "+id);
 		instituteRequestDto.setAccreditationDetails(getAccreditationName(id));
-		log.info("fetching institute intakes from DB fro instituteID = {}", id);
+		log.info("fetching institute intakes from DB fro instituteID = "+id);
 		instituteRequestDto.setIntakes(getIntakes(id));
 		if (institute.getInstituteCategoryType() != null) {
 			log.info("Adding institute category type in final Response");
@@ -623,6 +626,10 @@ public class InstituteProcessor {
 			});
 		}
 		return accrediatedDetailDtos;
+	}
+
+	private List<String> getOfferServices(final String id) {
+		return serviceDetailsDAO.getServicesById(id);
 	}
 
 	private List<String> getOfferServiceNames(final String id) {
@@ -993,10 +1000,21 @@ public class InstituteProcessor {
 	}
 
 	public List<InstituteCampusDto> getInstituteCampuses(String instituteId) throws NotFoundException {
-		log.debug("inside getInstitutCampuses method.");
-		Optional<Institute> institute = instituteRepository.findById(instituteId);
-		if (institute.isPresent()) {
-			return instituteRepository.findByIdNotAndName(instituteId, institute.get().getName());
+		log.debug("inside processor.getInstitutCampuses method.");
+		Institute institute = dao.get(instituteId);
+		if (!ObjectUtils.isEmpty(institute)) {
+			List<Institute> institutes = dao.getInstituteCampuses(instituteId,institute.getName());
+			return institutes.stream().map(e->modelMapper.map(e, InstituteCampusDto.class)).collect(Collectors.toList());
+		}else {
+			log.error("Institute not found against id: {}", instituteId);
+			throw new NotFoundException("Institute not found against id: " + instituteId);
+		}
+	}
+
+	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {
+		log.debug("inside processor.getInstituteFaculties method.");
+		if (!ObjectUtils.isEmpty(dao.get(instituteId))) {
+			return dao.getInstituteFaculties(instituteId);
 		}else {
 			log.error("Institute not found against id: {}", instituteId);
 			throw new NotFoundException("Institute not found against id: " + instituteId);

@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +33,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "institute", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "country_name", "city_name", "campus_name" }, 
 	 name = "UK_NA_CN_CN"), indexes = {@Index(name = "IDX_INSTITUTE_NAME", columnList = "name", unique = false) })
-public class Institute {
+public class Institute implements Serializable {
+
+	private static final long serialVersionUID = 8492390790670110780L;
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})

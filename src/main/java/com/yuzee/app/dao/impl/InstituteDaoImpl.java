@@ -26,7 +26,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -38,19 +38,24 @@ import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseSearchDto;
+import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.InstituteSearchResultDto;
 import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.enumeration.CourseSortBy;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.app.util.CDNServerUtil;
 import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.app.util.PaginationUtil;
 
-@Component
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
 @SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
 public class InstituteDaoImpl implements InstituteDao {
 
@@ -1027,5 +1032,15 @@ public class InstituteDaoImpl implements InstituteDao {
 		List<Object[]> rows = query.list();
 		Integer totalCount = rows.size();
 		return totalCount;
+	}
+	
+	public List<Institute> getInstituteCampuses(String instituteId, String instituteName) throws NotFoundException {
+		log.debug("inside dao.getInstitutCampuses method.");
+		return instituteRepository.findByIdNotAndName(instituteId, instituteName);
+	}
+
+	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {
+		log.debug("inside dao.getInstituteFaculties method.");
+		return instituteRepository.findFacultyWithCourseCountById(instituteId);
 	}
 }

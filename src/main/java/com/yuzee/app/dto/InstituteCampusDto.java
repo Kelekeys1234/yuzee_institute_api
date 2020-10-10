@@ -2,27 +2,33 @@ package com.yuzee.app.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public interface InstituteCampusDto {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class InstituteCampusDto {
 
 	@JsonProperty("institute_id")
-	String getId();
+	private String id;
 	
 	@JsonProperty("latitude")
-	Double getLatitude();
+	private Double latitude;
 	
 	@JsonProperty("longitude")
-	Double getLongitude();
+	private Double longitude;
 	
 	@JsonProperty("address")
-	String getAddress();
+	private String address;
 	
 	@JsonProperty("website")
-	String getWebsite();
+	private String website;
 	
 	@JsonProperty("phone_number")
-	String getPhoneNumber();
+	private String phoneNumber;
 	
-	@JsonProperty("email") 
-	String getEmail();
-	
+	@JsonProperty("email")
+	private String email;
 }
