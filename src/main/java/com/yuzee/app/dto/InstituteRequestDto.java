@@ -132,4 +132,7 @@ public class InstituteRequestDto {
 	@JsonProperty("tag_line")
 	private String tagLine;
 	
+	@JsonProperty("followers_count")
+	private long followersCount;
+	
 }

@@ -58,6 +58,7 @@ import com.yuzee.app.exception.ConstraintVoilationException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
+import com.yuzee.app.handler.ConnectionHandler;
 import com.yuzee.app.handler.ElasticHandler;
 import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.repository.InstituteRepository;
@@ -112,6 +113,9 @@ public class InstituteProcessor {
 	
 	@Autowired
 	private InstituteTimingProcessor instituteTimingProcessor;
+	
+	@Autowired
+	private ConnectionHandler connectionHandler;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -591,7 +595,7 @@ public class InstituteProcessor {
 	}
 
 	
-	public InstituteRequestDto getById(final String id) throws ValidationException {
+	public InstituteRequestDto getById(final String id) throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);
 		Institute institute = dao.get(id);
@@ -612,15 +616,19 @@ public class InstituteProcessor {
 			log.info("Adding institute category type in final Response");
 			instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
 		}
-		InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(id);
-		if(!ObjectUtils.isEmpty(instituteTimingResponseDto)) {
-			instituteRequestDto.setInstituteTimings(CommonUtil.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
+		InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
+				.getInstituteTimeByInstituteId(id);
+		if (!ObjectUtils.isEmpty(instituteTimingResponseDto)) {
+			instituteRequestDto.setInstituteTimings(
+					CommonUtil.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
 		}
+
+		instituteRequestDto.setFollowersCount(connectionHandler.getFollowersCount(id));
 		return instituteRequestDto;
 	}
 
 	private List<String> getIntakes(@Valid final String id) {
-		return dao.getIntakesById(id);
+		return dao.getIntakesById(id); 
 	}
 	
 	private List<AccrediatedDetailDto> getAccreditationName(@Valid final String id) {

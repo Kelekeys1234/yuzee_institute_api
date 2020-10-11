@@ -22,6 +22,7 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteTypeDto;
 import com.yuzee.app.dto.LatLongDto;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
@@ -74,8 +75,9 @@ public interface InstituteInterface {
 				@PathVariable final Integer pageSize) throws Exception;
 	
 	@GetMapping("/{instituteId}")
-	public ResponseEntity<?> get(@PathVariable final String instituteId) throws ValidationException;
-	
+	public ResponseEntity<?> get(@PathVariable final String instituteId)
+			throws ValidationException, NotFoundException, InvokeException;
+
 	@GetMapping("/search/{searchText}")
 	public ResponseEntity<?> searchInstitute(@Valid @PathVariable final String searchText) throws Exception;
 	
