@@ -69,7 +69,7 @@ public class InstituteDaoImpl implements InstituteDao {
 	
 	@Override
 	public void addUpdateInstitute(final Institute institute) {
-		instituteRepository.save(institute);
+		instituteRepository.saveAndFlush(institute);
 	}
 
 	@Override

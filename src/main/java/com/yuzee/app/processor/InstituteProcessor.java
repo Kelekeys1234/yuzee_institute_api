@@ -14,10 +14,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.AccrediatedDetail;
 import com.yuzee.app.bean.Institute;
@@ -52,6 +54,7 @@ import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.ConstraintVoilationException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -68,7 +71,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@Transactional
+@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 public class InstituteProcessor {
 
 	@Value("${s3.url}")
@@ -112,19 +115,6 @@ public class InstituteProcessor {
 	
 	@Autowired
 	private ModelMapper modelMapper;
-	
-	public void save(final Institute institute) {
-		Date today = new Date();
-		institute.setCreatedOn(today);
-		institute.setUpdatedOn(today);
-		dao.addUpdateInstitute(institute);
-	}
-
-	public void update(final Institute institute) {
-		Date today = new Date();
-		institute.setUpdatedOn(today);
-		dao.addUpdateInstitute(institute);
-	}
 
 	public Institute get(final String id) {
 		return dao.get(id);
@@ -232,41 +222,40 @@ public class InstituteProcessor {
 		return instituteResponse;
 	}
 
-	
-	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) {
+	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) throws ValidationException {
 		log.debug("Inside save() method");
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("start iterating data coming in request");
-			instituteRequests.stream().forEach(instituteRequest -> {
+			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				log.info("Going to save institute in DB");
-				try {
-					Institute institute = saveInstitute(instituteRequest, null);
-					InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
-					if (instituteRequest.getDomesticRanking() != null) {
-						log.info("if domesticRanking is not null then going to record domesticRankingHistory");
-						saveDomesticRankingHistory(institute, null);
-					}
-					if (instituteRequest.getWorldRanking() != null) {
-						log.info("if worldRanking is not null then going to record worldRankingHistory");
-						saveWorldRankingHistory(institute, null);
-					}
-					log.info("Copying institute data from instituteBean to elasticSearchDTO");
-					BeanUtils.copyProperties(institute, instituteElasticSearchDto);
-					instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
-					instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-					instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
-					instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
-					instituteElasticDtoList.add(instituteElasticSearchDto);
-				} catch (ValidationException exception) {
-					log.error("Exception while saving institute in DB = " + exception);
+				Institute institute = saveInstitute(instituteRequest, null);
+				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
+				if (instituteRequest.getDomesticRanking() != null) {
+					log.info("if domesticRanking is not null then going to record domesticRankingHistory");
+					saveDomesticRankingHistory(institute, null);
 				}
-			});
+				if (instituteRequest.getWorldRanking() != null) {
+					log.info("if worldRanking is not null then going to record worldRankingHistory");
+					saveWorldRankingHistory(institute, null);
+				}
+				log.info("Copying institute data from instituteBean to elasticSearchDTO");
+				BeanUtils.copyProperties(institute, instituteElasticSearchDto);
+				instituteElasticSearchDto
+						.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
+				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
+				instituteElasticSearchDto.setInstituteTypeName(
+						institute.getInstituteType() != null ? institute.getInstituteType() : null);
+				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
+				instituteElasticDtoList.add(instituteElasticSearchDto);
+
+			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
 			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
 					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
-			log.error("Exception while saving institutes having exception = " + exception);
+			log.error("Exception while saving institutes having exception = " + exception.getMessage());
+			throw exception;
 		}
 	}
 
@@ -306,46 +295,49 @@ public class InstituteProcessor {
 	}
 
 	
-	public void updateInstitute(final List<InstituteRequestDto> instituteRequests, @Valid final String id) {
+	public void updateInstitute(final List<InstituteRequestDto> instituteRequests, @Valid final String id)
+			throws Exception {
 		log.debug("Inside updateInstitute() method");
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("Start iterating institute coming in request");
-			instituteRequests.stream().forEach(instituteRequest -> {
-				log.info("fetching institute from DB having instituteId = "+id);
+			for (InstituteRequestDto instituteRequest : instituteRequests) {
+				log.info("fetching institute from DB having instituteId = " + id);
 				Institute oldInstitute = dao.get(id);
 				Institute newInstitute = new Institute();
 				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
 				log.info("Copying bean class to DTO class");
 				BeanUtils.copyProperties(instituteRequest, newInstitute);
-				if (instituteRequest.getDomesticRanking() != null && !instituteRequest.getDomesticRanking().equals(oldInstitute.getDomesticRanking())) {
+				if (instituteRequest.getDomesticRanking() != null
+						&& !instituteRequest.getDomesticRanking().equals(oldInstitute.getDomesticRanking())) {
 					log.info("DomesticRanking is not null hence saving domesticRanking History");
 					saveDomesticRankingHistory(newInstitute, oldInstitute);
 				}
-				if (instituteRequest.getWorldRanking() != null && !instituteRequest.getWorldRanking().equals(oldInstitute.getWorldRanking())) {
+				if (instituteRequest.getWorldRanking() != null
+						&& !instituteRequest.getWorldRanking().equals(oldInstitute.getWorldRanking())) {
 					log.info("WorldRanking is not null hence saving worldRanking History");
 					saveWorldRankingHistory(newInstitute, oldInstitute);
 				}
-				log.info("Start updating institute for instituteId ="+id);
-				try {
-					Institute institute = saveInstitute(instituteRequest, id);
-					log.info("Copying DTO class to elasticSearch DTO");
-					BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
-					instituteElasticSearchDto.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
-					instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-					instituteElasticSearchDto.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
-					instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
-					instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
-					instituteElasticDtoList.add(instituteElasticSearchDto);
-				} catch (ValidationException e) {
-					log.error("Exception while updating institute in DB = "+e);
-				}
-			});
+				log.info("Start updating institute for instituteId =" + id);
+				Institute institute = saveInstitute(instituteRequest, id);
+				log.info("Copying DTO class to elasticSearch DTO");
+				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
+				instituteElasticSearchDto
+						.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
+				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
+				instituteElasticSearchDto.setInstituteTypeName(
+						institute.getInstituteType() != null ? institute.getInstituteType() : null);
+				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
+				instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
+				instituteElasticDtoList.add(instituteElasticSearchDto);
+
+			}
 			log.info("Calling elastic service to save instiutes on index");
-			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE, EntityTypeEnum.INSTITUTE.name().toLowerCase(),
-					instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
+					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
-			log.error("Exception while updating institute having exception ="+exception);
+			log.error("Exception while updating institute having exception ={}", exception.getMessage());
+			throw exception;
 		}
 	}
 
@@ -363,22 +355,27 @@ public class InstituteProcessor {
 		}
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setUpdatedBy("API");
-		institute.setName(instituteRequest.getName());
+		if (!StringUtils.isEmpty(instituteRequest.getName())) {
+			institute.setName(instituteRequest.getName());
+		} else {
+			log.error("InstituteName is required");
+			throw new ValidationException("InstituteName is required");
+		}
 		institute.setDescription(instituteRequest.getDescription());
-		if (instituteRequest.getCountryName() != null) {
+		if (!StringUtils.isEmpty(instituteRequest.getCountryName())) {
 			institute.setCountryName(instituteRequest.getCountryName());
 		} else {
 			log.error("CountryName is required");
 			throw new ValidationException("countryName is required");
 		}
-		if (instituteRequest.getCityName() != null) {
+		if (!StringUtils.isEmpty(instituteRequest.getCityName())) {
 			institute.setCityName(instituteRequest.getCityName());
 		} else {
 			log.error("CityName is required");
 			throw new ValidationException("cityName is required");
 		}
 
-		if (instituteRequest.getInstituteType() != null) {
+		if (!StringUtils.isEmpty(instituteRequest.getInstituteType())) {
 			 institute.setInstituteType(instituteRequest.getInstituteType());
 		} else {
 			log.error("InstituteType is required like University, School, College etc");
@@ -389,7 +386,7 @@ public class InstituteProcessor {
 		institute.setDomesticRanking(instituteRequest.getDomesticRanking());
 		institute.setWorldRanking(instituteRequest.getWorldRanking());
 		institute.setWebsite(instituteRequest.getWebsite());
-		if (instituteRequest.getInstituteCategoryTypeId() != null) {
+		if (!StringUtils.isEmpty(instituteRequest.getInstituteCategoryTypeId())) {
 			institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getInstituteCategoryTypeId()));
 		} else {
 			log.error("instituteCategoryTypeId is required");
@@ -416,19 +413,32 @@ public class InstituteProcessor {
 		institute.setDomesticBoardingFee(instituteRequest.getDomesticBoardingFee());
 		institute.setInternationalBoardingFee(instituteRequest.getInternationalBoardingFee());
 		institute.setTagLine(instituteRequest.getTagLine());
-		if (id != null) {
-			log.info("if instituteId is not null then going to update institute for id ="+id);
-			dao.addUpdateInstitute(institute);
-			// Adding data in Elastic DTO to save it on elasticSearch index
-			log.info("updation is done now adding data in elasticSearch DTO to add it on elastic indices for entityId = "+id);
-			InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
-			List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
-			BeanUtils.copyProperties(institute, instituteElasticDto);
-			instituteElasticDTOList.add(instituteElasticDto);
-		} else {
-			log.info("institute is not present in DB hence adding new institute in DB");
-			dao.addUpdateInstitute(institute);
+		try {
+			if (id != null) {
+				log.info("if instituteId is not null then going to update institute for id =" + id);
+				dao.addUpdateInstitute(institute);
+				// Adding data in Elastic DTO to save it on elasticSearch index
+				log.info(
+						"updation is done now adding data in elasticSearch DTO to add it on elastic indices for entityId = "
+								+ id);
+				InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
+				List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
+				BeanUtils.copyProperties(institute, instituteElasticDto);
+				instituteElasticDTOList.add(instituteElasticDto);
+			} else {
+				log.info("institute is not present in DB hence adding new institute in DB");
+				dao.addUpdateInstitute(institute);
+			}
+		} catch (DataIntegrityViolationException exception) {
+			log.error("Institute already exists having \nname: {},\ncampus_name: {},\ncity_Name: {},\ncountry_name: {}",
+					instituteRequest.getName(), instituteRequest.getCampusName(), instituteRequest.getCityName(),
+					instituteRequest.getCountryName());
+			throw new ConstraintVoilationException(
+					"Institute already exists having name: " + instituteRequest.getName() + ", campus_name: "
+							+ instituteRequest.getCampusName() + ", city_Name: " + instituteRequest.getCityName()
+							+ ", country_name: " + instituteRequest.getCountryName());
 		}
+
 		if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
 			log.info("offer service is not null hence going to save institute service in DB");
 			saveInstituteService(institute, instituteRequest.getOfferService());
