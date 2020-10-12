@@ -75,7 +75,7 @@ public class InstituteResponseDto {
 	private List<StorageDto> storageList;
 
 	@JsonProperty("stars")
-	private Integer stars;
+	private Double stars;
 
 	@JsonProperty("domestic_ranking")
 	private Integer domesticRanking;

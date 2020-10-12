@@ -76,7 +76,7 @@ public interface InstituteInterface {
 	
 	@GetMapping("/{instituteId}")
 	public ResponseEntity<?> get(@PathVariable final String instituteId)
-			throws ValidationException, NotFoundException, InvokeException;
+			throws ValidationException, NotFoundException, InvokeException, Exception;
 
 	@GetMapping("/search/{searchText}")
 	public ResponseEntity<?> searchInstitute(@Valid @PathVariable final String searchText) throws Exception;

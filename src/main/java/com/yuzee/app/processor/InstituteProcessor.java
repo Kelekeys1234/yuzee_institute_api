@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -60,6 +61,7 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ConnectionHandler;
 import com.yuzee.app.handler.ElasticHandler;
+import com.yuzee.app.handler.ReviewHandler;
 import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.app.util.CDNServerUtil;
@@ -119,6 +121,12 @@ public class InstituteProcessor {
 	
 	@Autowired
 	private ModelMapper modelMapper;
+
+	@Autowired
+	private InstituteGoogleReviewProcessor instituteGoogleReviewProcessor;
+
+	@Autowired
+	private ReviewHandler reviewHandler;
 
 	public Institute get(final String id) {
 		return dao.get(id);
@@ -595,7 +603,7 @@ public class InstituteProcessor {
 	}
 
 	
-	public InstituteRequestDto getById(final String id) throws ValidationException, NotFoundException, InvokeException {
+	public InstituteRequestDto getById(final String id) throws Exception {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);
 		Institute institute = dao.get(id);
@@ -623,7 +631,22 @@ public class InstituteProcessor {
 					CommonUtil.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
 		}
 
-		instituteRequestDto.setFollowersCount(connectionHandler.getFollowersCount(id));
+		//instituteRequestDto.setFollowersCount(connectionHandler.getFollowersCount(id));
+
+		log.info("Fetching institute google review from DB based on instituteId");
+		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
+				.getInstituteAvgGoogleReviewForList(Arrays.asList(instituteRequestDto.getId()));
+		
+		Map<String, Double> yuzeeReviewMap = null;
+		try {
+			log.info("Calling review service to fetch user average review for instituteId");
+			yuzeeReviewMap = reviewHandler.getUserReviewAverageBasedOnEntityType(
+					"INSTITUTE", Arrays.asList(instituteRequestDto.getId()));
+		} catch (Exception e) {
+			log.error("Error invoking review service having exception = "+e);
+			throw e;
+		}
+		instituteRequestDto.setStars(calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteRequestDto.getId()));
 		return instituteRequestDto;
 	}
 
@@ -913,19 +936,37 @@ public class InstituteProcessor {
 	}
 
 	
-	public List<InstituteResponseDto> getDistinctInstituteList(Integer startIndex, Integer pageSize, String instituteName) {
+	public List<InstituteResponseDto> getDistinctInstituteList(Integer startIndex, Integer pageSize, String instituteName) throws Exception {
 		log.debug("Inside getDistinctInstituteList() method");
 		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
 		log.info("Calling DAO layer to getDistinct institutes from DB based on pagination");
 		List<InstituteResponseDto> instituteResponseDtos = dao.getInstitutesByInstituteName(startIndex, pageSize, instituteName);
 		if(!CollectionUtils.isEmpty(instituteResponseDtos)) {
+			
+			List<String> instituteIds = instituteResponseDtos.stream().map(InstituteResponseDto::getId).collect(Collectors.toList());
+			
+			log.info("Fetching institute google review from DB based on instituteId");
+			Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
+					.getInstituteAvgGoogleReviewForList(instituteIds);
+			
+			Map<String, Double> yuzeeReviewMap = null;
+			try {
+				log.info("Calling review service to fetch user average review for instituteId");
+				yuzeeReviewMap = reviewHandler.getUserReviewAverageBasedOnEntityType(
+						"INSTITUTE", instituteIds);
+			} catch (Exception e) {
+				log.error("Error invoking review service having exception = "+e);
+				throw e;
+			}
+			
 			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
-			instituteResponseDtos.stream().forEach(instituteResponseDto -> {
+			for(InstituteResponseDto instituteResponseDto : instituteResponseDtos) {
 				log.info("fetching instituteTiming from DB for instituteId =" +instituteResponseDto.getId());
 				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
+				instituteResponseDto.setStars(calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteResponseDto.getId()));
 				instituteResponse.add(instituteResponseDto);
-			});
+			}
 		}
 		return instituteResponse;
 	}
@@ -1037,6 +1078,31 @@ public class InstituteProcessor {
 		}else {
 			log.error("Institute not found against id: {}", instituteId);
 			throw new NotFoundException("Institute not found against id: " + instituteId);
+		}
+	}
+
+	private double calculateAverageRating(Map<String, Double> googleReviewMap, Map<String, Double> yuzeeReviewMap,
+			String instituteId) {
+		log.debug("Inside calculateAverageRating() method");
+		Double googleReview = 0d;
+		Double yuzeeReview = 0d;
+		log.info("Calculating avearge rating based on googleReview, yuzeeReview");
+		int count = 0;
+
+		if (yuzeeReviewMap != null && googleReviewMap.get(instituteId) != null) {
+			googleReview = googleReviewMap.get(instituteId);
+			count++;
+		}
+		log.info("course Google Rating" + googleReview);
+		if (yuzeeReviewMap != null && yuzeeReviewMap.get(instituteId) != null) {
+			yuzeeReview = yuzeeReviewMap.get(instituteId);
+			count++;
+		}
+		if (count != 0) {
+			Double rating= Double.sum(googleReview, yuzeeReview);
+			return rating / count;
+		} else {
+			return 0d;
 		}
 	}
 }

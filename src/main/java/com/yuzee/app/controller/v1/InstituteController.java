@@ -265,7 +265,7 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public ResponseEntity<?> get(final String instituteId)
-			throws ValidationException, NotFoundException, InvokeException {
+			throws Exception {
 		log.info("Start process to fetch Institutes from DB for instituteId = {}", instituteId);
 		InstituteRequestDto instituteRequestDtos = instituteProcessor.getById(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteRequestDtos)

@@ -250,9 +250,9 @@ public class InstituteDaoImpl implements InstituteDao {
 			}
 			instituteResponseDto.setWorldRanking(worldRanking);
 			if (null != row[6]) {
-				instituteResponseDto.setStars(Integer.parseInt(String.valueOf(row[6])));
+				instituteResponseDto.setStars(Double.parseDouble(String.valueOf(row[6])));
 			} else {
-				instituteResponseDto.setStars(0);
+				instituteResponseDto.setStars(0.0);
 			}
 
 			instituteResponseDto.setInstituteType(String.valueOf(row[8]));
@@ -793,7 +793,7 @@ public class InstituteDaoImpl implements InstituteDao {
 			instituteResponseDto.setLongitude((Double) row[6]);
 			instituteResponseDto.setWorldRanking((Integer) row[8]);
 			instituteResponseDto.setDomesticRanking((Integer) row[9]);
-			instituteResponseDto.setStars(Integer.parseInt(String.valueOf(row[10])));
+			instituteResponseDto.setStars(Double.parseDouble(String.valueOf(row[10])));
 			instituteResponseDto.setCurrency((String) row[11]);
 			instituteResponseDto.setCountryName((String) row[12]);
 			instituteResponseDto.setCityName((String) row[13]);
@@ -1010,7 +1010,7 @@ public class InstituteDaoImpl implements InstituteDao {
 			instituteResponseDto.setLongitude((Double) row[6]);
 			instituteResponseDto.setWorldRanking((Integer) row[8]);
 			instituteResponseDto.setDomesticRanking((Integer) row[9]);
-			instituteResponseDto.setStars(Integer.parseInt(String.valueOf(row[10])));
+			instituteResponseDto.setStars(Double.parseDouble(String.valueOf(row[10])));
 			instituteResponseDto.setCurrency((String) row[11]);
 			instituteResponseDto.setCountryName((String) row[12]);
 			instituteResponseDto.setCityName((String) row[13]);

@@ -134,5 +134,7 @@ public class InstituteRequestDto {
 	
 	@JsonProperty("followers_count")
 	private long followersCount;
-	
+
+	@JsonProperty("stars")
+	private double stars;
 }
