@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +34,7 @@ import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.InstituteDomesticRankingHistoryDao;
 import com.yuzee.app.dao.InstituteWorldRankingHistoryDao;
+import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
@@ -131,6 +133,9 @@ public class InstituteProcessor {
 	
 	@Autowired
 	private IdentityHandler userHandler;
+	
+	@Autowired
+	private ScholarshipDao scholarshipDao;
 
 	public Institute get(final String id) {
 		return dao.get(id);
@@ -1120,5 +1125,13 @@ public class InstituteProcessor {
 		} else {
 			return 0d;
 		}
+	}
+	
+	public Map<String, Long> getInstituteCourseScholarshipAndFacultyCount(String instituteId) throws NotFoundException {
+		Map<String, Long> counts = new HashMap<>();
+		counts.put("course", Long.valueOf(courseDao.getTotalCourseCountForInstitute(instituteId)));
+		counts.put("faculty", Long.valueOf(dao.getInstituteFaculties(instituteId).size()));
+		counts.put("scholarship", scholarshipDao.getCountByInstituteId(instituteId));
+		return counts;
 	}
 }

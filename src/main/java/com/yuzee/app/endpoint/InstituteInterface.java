@@ -133,4 +133,7 @@ public interface InstituteInterface {
 
 	@GetMapping("/faculty/instituteId/{instituteId}")
 	public ResponseEntity<?> getInstituteFaculties(@PathVariable final String instituteId) throws NotFoundException;
+
+	@GetMapping("/course-faculty-scholarship/count/instituteId/{instituteId}")
+	public ResponseEntity<?> getInstituteCourseScholarshipAndFacultyCount(@PathVariable final String instituteId) throws NotFoundException;
 }

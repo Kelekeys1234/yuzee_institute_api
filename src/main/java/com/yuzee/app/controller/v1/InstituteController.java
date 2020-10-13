@@ -614,4 +614,13 @@ public class InstituteController implements InstituteInterface {
 		return new GenericResponseHandlers.Builder().setData(instituteFaculties)
 				.setMessage("Institute faculties displayed successfully").setStatus(HttpStatus.OK).create();
 	}
+
+	@Override
+	public ResponseEntity<?> getInstituteCourseScholarshipAndFacultyCount(String instituteId) throws NotFoundException {
+		Map<String,Long> instituteFaculties = instituteProcessor.getInstituteCourseScholarshipAndFacultyCount(instituteId);
+		return new GenericResponseHandlers.Builder().setData(instituteFaculties)
+				.setMessage("Institute Course,Scholarship and faculty count displayed successfully").setStatus(HttpStatus.OK).create();
+	}
+	
+	
 }
