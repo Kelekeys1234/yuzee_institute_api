@@ -232,17 +232,17 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> save(final List<InstituteRequestDto> institutes) throws Exception {
+	public ResponseEntity<?> save(final String userId, final List<InstituteRequestDto> institutes) throws Exception {
 		log.info("Start process to add new Institues in DB");
-		instituteProcessor.saveInstitute(institutes);
+		instituteProcessor.saveInstitute(userId, institutes);
 		return new GenericResponseHandlers.Builder().setMessage("Institutes added successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> update(final String id, final List<InstituteRequestDto> institute) throws Exception {
+	public ResponseEntity<?> update(final String userId, final String id, final List<InstituteRequestDto> institute) throws Exception {
 		log.info("Start process to update existing Institue having instituteId = {}",id);
-		instituteProcessor.updateInstitute(institute, id);
+		instituteProcessor.updateInstitute(userId, institute, id);
 		return new GenericResponseHandlers.Builder().setMessage("Institutes updated successfully")
 				.setStatus(HttpStatus.OK).create();
 	}

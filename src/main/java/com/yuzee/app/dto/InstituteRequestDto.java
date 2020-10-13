@@ -137,4 +137,7 @@ public class InstituteRequestDto {
 
 	@JsonProperty("stars")
 	private double stars;
+	
+	@JsonProperty("profile_permission")
+	private String profilePermission;
 }

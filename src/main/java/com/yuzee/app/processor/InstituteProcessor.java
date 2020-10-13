@@ -61,6 +61,7 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ConnectionHandler;
 import com.yuzee.app.handler.ElasticHandler;
+import com.yuzee.app.handler.IdentityHandler;
 import com.yuzee.app.handler.ReviewHandler;
 import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.repository.InstituteRepository;
@@ -127,6 +128,9 @@ public class InstituteProcessor {
 
 	@Autowired
 	private ReviewHandler reviewHandler;
+	
+	@Autowired
+	private IdentityHandler userHandler;
 
 	public Institute get(final String id) {
 		return dao.get(id);
@@ -234,7 +238,7 @@ public class InstituteProcessor {
 		return instituteResponse;
 	}
 
-	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) throws ValidationException {
+	public void saveInstitute(final String userId, final List<InstituteRequestDto> instituteRequests) throws Exception {
 		log.debug("Inside save() method");
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
@@ -260,6 +264,12 @@ public class InstituteProcessor {
 						institute.getInstituteType() != null ? institute.getInstituteType() : null);
 				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 				instituteElasticDtoList.add(instituteElasticSearchDto);
+				
+				if (!ObjectUtils.isEmpty(instituteRequest.getProfilePermission())) {
+					log.info("if profile permission is not empty then going to save/update userProfilePermission");
+					userHandler.saveOrUpdateUserProfileDataPermission(userId, EntityTypeEnum.INSTITUTE.name(),
+							institute.getId(), instituteRequest.getProfilePermission());
+				}
 
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
@@ -307,7 +317,7 @@ public class InstituteProcessor {
 	}
 
 	
-	public void updateInstitute(final List<InstituteRequestDto> instituteRequests, @Valid final String id)
+	public void updateInstitute(final String userId, final List<InstituteRequestDto> instituteRequests, @Valid final String id)
 			throws Exception {
 		log.debug("Inside updateInstitute() method");
 		try {
@@ -343,6 +353,11 @@ public class InstituteProcessor {
 				instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 
+				if (!ObjectUtils.isEmpty(instituteRequest.getProfilePermission())) {
+					log.info("if profile permission is not empty then going to save/update userProfilePermission");
+					userHandler.saveOrUpdateUserProfileDataPermission(userId, EntityTypeEnum.INSTITUTE.name(),
+							institute.getId(), instituteRequest.getProfilePermission());
+				}
 			}
 			log.info("Calling elastic service to save instiutes on index");
 			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
@@ -631,7 +646,10 @@ public class InstituteProcessor {
 					CommonUtil.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
 		}
 
-		//instituteRequestDto.setFollowersCount(connectionHandler.getFollowersCount(id));
+		Map<String,String> profilePermissionsMap = userHandler.getUserProfileDataPermission(Arrays.asList(id));
+		instituteRequestDto.setProfilePermission(profilePermissionsMap.get(id));
+		
+		instituteRequestDto.setFollowersCount(connectionHandler.getFollowersCount(id));
 
 		log.info("Fetching institute google review from DB based on instituteId");
 		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
@@ -950,14 +968,11 @@ public class InstituteProcessor {
 					.getInstituteAvgGoogleReviewForList(instituteIds);
 			
 			Map<String, Double> yuzeeReviewMap = null;
-			try {
 				log.info("Calling review service to fetch user average review for instituteId");
 				yuzeeReviewMap = reviewHandler.getUserReviewAverageBasedOnEntityType(
 						"INSTITUTE", instituteIds);
-			} catch (Exception e) {
-				log.error("Error invoking review service having exception = "+e);
-				throw e;
-			}
+			
+			Map<String,String> profilePermissionsMap = userHandler.getUserProfileDataPermission(instituteIds);
 			
 			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
 			for(InstituteResponseDto instituteResponseDto : instituteResponseDtos) {
@@ -965,6 +980,7 @@ public class InstituteProcessor {
 				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
 				instituteResponseDto.setStars(calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteResponseDto.getId()));
+				instituteResponseDto.setProfilePermission(profilePermissionsMap.get(instituteResponseDto.getId()));
 				instituteResponse.add(instituteResponseDto);
 			}
 		}

@@ -103,4 +103,7 @@ public class InstituteResponseDto {
 	
 	@JsonProperty("tag_line")
 	private String tagLine;
+	
+	@JsonProperty("profile_permission")
+	private String profilePermission;
 }
