@@ -17,6 +17,7 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.dto.AdvanceSearchDto;
+import com.yuzee.app.dto.CourseScholarshipAndFacultyCountDto;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.InstituteCampusDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
@@ -232,17 +233,17 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> save(final String userId, final List<InstituteRequestDto> institutes) throws Exception {
+	public ResponseEntity<?> save(final List<InstituteRequestDto> institutes) throws Exception {
 		log.info("Start process to add new Institues in DB");
-		instituteProcessor.saveInstitute(userId, institutes);
+		instituteProcessor.saveInstitute(institutes);
 		return new GenericResponseHandlers.Builder().setMessage("Institutes added successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> update(final String userId, final String id, final List<InstituteRequestDto> institute) throws Exception {
+	public ResponseEntity<?> update(final String id, final List<InstituteRequestDto> institute) throws Exception {
 		log.info("Start process to update existing Institue having instituteId = {}",id);
-		instituteProcessor.updateInstitute(userId, institute, id);
+		instituteProcessor.updateInstitute(institute, id);
 		return new GenericResponseHandlers.Builder().setMessage("Institutes updated successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -617,10 +618,10 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public ResponseEntity<?> getInstituteCourseScholarshipAndFacultyCount(String instituteId) throws NotFoundException {
-		Map<String,Long> instituteFaculties = instituteProcessor.getInstituteCourseScholarshipAndFacultyCount(instituteId);
-		return new GenericResponseHandlers.Builder().setData(instituteFaculties)
-				.setMessage("Institute Course,Scholarship and faculty count displayed successfully").setStatus(HttpStatus.OK).create();
-	}
-	
-	
+		CourseScholarshipAndFacultyCountDto data = instituteProcessor
+				.getInstituteCourseScholarshipAndFacultyCount(instituteId);
+		return new GenericResponseHandlers.Builder().setData(data)
+				.setMessage("Institute Course,Scholarship and faculty count displayed successfully")
+				.setStatus(HttpStatus.OK).create();
+	}	
 }

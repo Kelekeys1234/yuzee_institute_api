@@ -1,16 +1,15 @@
 package com.yuzee.app.handler;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.yuzee.app.constant.Constant;
+import com.yuzee.app.dto.FollowerCountDto;
+import com.yuzee.app.dto.FollowerCountResponseDto;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@Transactional(rollbackFor = Throwable.class)
 public class ConnectionHandler {
 
 	@Autowired
@@ -28,8 +26,8 @@ public class ConnectionHandler {
 
 	private static final String FOLLOWERS_COUNT = "/count";
 
-	public long getFollowersCount(String entityId) throws InvokeException, NotFoundException {
-		ResponseEntity<Map> getFollowersCountResponse = null;
+	public FollowerCountDto getFollowersCount(String entityId) throws InvokeException, NotFoundException {
+		ResponseEntity<FollowerCountResponseDto> getFollowersCountResponse = null;
 		try {
 			StringBuilder path = new StringBuilder();
 			path.append(Constant.CONNECTION_BASE_PATH).append(FOLLOW).append(FOLLOWERS_COUNT);
@@ -37,7 +35,7 @@ public class ConnectionHandler {
 			uriBuilder.pathSegment(entityId);
 
 			getFollowersCountResponse = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, null,
-					Map.class);
+					FollowerCountResponseDto.class);
 			if (getFollowersCountResponse.getStatusCode().value() != 200) {
 				throw new InvokeException("Error response recieved from storage service with error code "
 						+ getFollowersCountResponse.getStatusCode().value());
@@ -51,7 +49,6 @@ public class ConnectionHandler {
 				throw new InvokeException("Error invoking connection service");
 			}
 		}
-		return Long
-				.valueOf(((Map) getFollowersCountResponse.getBody().get("data")).get("connection_number").toString());
+		return getFollowersCountResponse.getBody().getData();
 	}
 }

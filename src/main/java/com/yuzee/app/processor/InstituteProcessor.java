@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +38,16 @@ import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
+import com.yuzee.app.dto.CourseScholarshipAndFacultyCountDto;
 import com.yuzee.app.dto.CourseSearchDto;
+import com.yuzee.app.dto.FollowerCountDto;
 import com.yuzee.app.dto.InstituteCampusDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
 import com.yuzee.app.dto.InstituteElasticSearchDTO;
 import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
+import com.yuzee.app.dto.InstituteProfilePermissionDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.InstituteSearchResultDto;
@@ -243,7 +246,7 @@ public class InstituteProcessor {
 		return instituteResponse;
 	}
 
-	public void saveInstitute(final String userId, final List<InstituteRequestDto> instituteRequests) throws Exception {
+	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) throws Exception {
 		log.debug("Inside save() method");
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
@@ -269,19 +272,12 @@ public class InstituteProcessor {
 						institute.getInstituteType() != null ? institute.getInstituteType() : null);
 				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 				instituteElasticDtoList.add(instituteElasticSearchDto);
-				
-				if (!ObjectUtils.isEmpty(instituteRequest.getProfilePermission())) {
-					log.info("if profile permission is not empty then going to save/update userProfilePermission");
-					userHandler.saveOrUpdateUserProfileDataPermission(userId, EntityTypeEnum.INSTITUTE.name(),
-							institute.getId(), instituteRequest.getProfilePermission());
-				}
-
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
 			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
 					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
-			log.error("Exception while saving institutes having exception = " + exception.getMessage());
+			log.error("Exception while saving institutes having exception ", exception.getMessage());
 			throw exception;
 		}
 	}
@@ -322,7 +318,7 @@ public class InstituteProcessor {
 	}
 
 	
-	public void updateInstitute(final String userId, final List<InstituteRequestDto> instituteRequests, @Valid final String id)
+	public void updateInstitute(final List<InstituteRequestDto> instituteRequests, @Valid final String id)
 			throws Exception {
 		log.debug("Inside updateInstitute() method");
 		try {
@@ -357,16 +353,10 @@ public class InstituteProcessor {
 				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 				instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
 				instituteElasticDtoList.add(instituteElasticSearchDto);
-
-				if (!ObjectUtils.isEmpty(instituteRequest.getProfilePermission())) {
-					log.info("if profile permission is not empty then going to save/update userProfilePermission");
-					userHandler.saveOrUpdateUserProfileDataPermission(userId, EntityTypeEnum.INSTITUTE.name(),
-							institute.getId(), instituteRequest.getProfilePermission());
-				}
 			}
 			log.info("Calling elastic service to save instiutes on index");
-			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
-					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+//			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
+//					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ={}", exception.getMessage());
 			throw exception;
@@ -444,15 +434,17 @@ public class InstituteProcessor {
 		institute.setCurriculum(instituteRequest.getCurriculum());
 		institute.setDomesticBoardingFee(instituteRequest.getDomesticBoardingFee());
 		institute.setInternationalBoardingFee(instituteRequest.getInternationalBoardingFee());
-		institute.setTagLine(instituteRequest.getTagLine());
+		if (StringUtils.isEmpty(instituteRequest.getTagLine())) {
+			institute.setTagLine(instituteRequest.getTagLine());	
+		}
 		try {
 			if (id != null) {
-				log.info("if instituteId is not null then going to update institute for id =" + id);
+				log.info("if instituteId is not null then going to update institute for id = {}", id);
 				dao.addUpdateInstitute(institute);
 				// Adding data in Elastic DTO to save it on elasticSearch index
 				log.info(
-						"updation is done now adding data in elasticSearch DTO to add it on elastic indices for entityId = "
-								+ id);
+						"updation is done now adding data in elasticSearch DTO to add it on elastic indices for entityId = {}"
+								, id);
 				InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
 				List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
 				BeanUtils.copyProperties(institute, instituteElasticDto);
@@ -652,19 +644,24 @@ public class InstituteProcessor {
 		}
 
 		Map<String,String> profilePermissionsMap = userHandler.getUserProfileDataPermission(Arrays.asList(id));
-		instituteRequestDto.setProfilePermission(profilePermissionsMap.get(id));
+		if (!CollectionUtils.isEmpty(profilePermissionsMap)) {
+			instituteRequestDto.setProfilePermission(profilePermissionsMap.get(id));	
+		}
 		
-		instituteRequestDto.setFollowersCount(connectionHandler.getFollowersCount(id));
+		FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
+		if (!ObjectUtils.isEmpty(followerCountDto)) {
+			instituteRequestDto.setFollowersCount(followerCountDto.getConnection_number());
+		}
 
 		log.info("Fetching institute google review from DB based on instituteId");
 		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
 				.getInstituteAvgGoogleReviewForList(Arrays.asList(instituteRequestDto.getId()));
 		
+		
 		Map<String, Double> yuzeeReviewMap = null;
 		try {
 			log.info("Calling review service to fetch user average review for instituteId");
-			yuzeeReviewMap = reviewHandler.getUserReviewAverageBasedOnEntityType(
-					"INSTITUTE", Arrays.asList(instituteRequestDto.getId()));
+			yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", Arrays.asList(instituteRequestDto.getId()));
 		} catch (Exception e) {
 			log.error("Error invoking review service having exception = "+e);
 			throw e;
@@ -973,19 +970,27 @@ public class InstituteProcessor {
 					.getInstituteAvgGoogleReviewForList(instituteIds);
 			
 			Map<String, Double> yuzeeReviewMap = null;
+			try {
 				log.info("Calling review service to fetch user average review for instituteId");
-				yuzeeReviewMap = reviewHandler.getUserReviewAverageBasedOnEntityType(
-						"INSTITUTE", instituteIds);
+				yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
+			} catch (Exception e) {
+				log.error("Error invoking review service having exception = "+e);
+				throw e;
+			}
 			
-			Map<String,String> profilePermissionsMap = userHandler.getUserProfileDataPermission(instituteIds);
-			
+			Map<String, String> profilePermissionsMap = userHandler.getUserProfileDataPermission(instituteIds);
+
 			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
-			for(InstituteResponseDto instituteResponseDto : instituteResponseDtos) {
-				log.info("fetching instituteTiming from DB for instituteId =" +instituteResponseDto.getId());
-				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(instituteResponseDto.getId());
+			for (InstituteResponseDto instituteResponseDto : instituteResponseDtos) {
+				log.info("fetching instituteTiming from DB for instituteId =" + instituteResponseDto.getId());
+				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
+						.getInstituteTimeByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
-				instituteResponseDto.setStars(calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteResponseDto.getId()));
-				instituteResponseDto.setProfilePermission(profilePermissionsMap.get(instituteResponseDto.getId()));
+				instituteResponseDto.setStars(
+						calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteResponseDto.getId()));
+				if (!CollectionUtils.isEmpty(profilePermissionsMap)) {
+					instituteResponseDto.setProfilePermission(profilePermissionsMap.get(instituteResponseDto.getId()));
+				}
 				instituteResponse.add(instituteResponseDto);
 			}
 		}
@@ -1126,12 +1131,13 @@ public class InstituteProcessor {
 			return 0d;
 		}
 	}
-	
-	public Map<String, Long> getInstituteCourseScholarshipAndFacultyCount(String instituteId) throws NotFoundException {
-		Map<String, Long> counts = new HashMap<>();
-		counts.put("course", Long.valueOf(courseDao.getTotalCourseCountForInstitute(instituteId)));
-		counts.put("faculty", Long.valueOf(dao.getInstituteFaculties(instituteId).size()));
-		counts.put("scholarship", scholarshipDao.getCountByInstituteId(instituteId));
-		return counts;
+
+	public CourseScholarshipAndFacultyCountDto getInstituteCourseScholarshipAndFacultyCount(String instituteId)
+			throws NotFoundException {
+		CourseScholarshipAndFacultyCountDto dto = new CourseScholarshipAndFacultyCountDto();
+		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(instituteId));
+		dto.setFacultyCount(dao.getInstituteFaculties(instituteId).size());
+		dto.setScholarshipCount(scholarshipDao.getCountByInstituteId(instituteId));
+		return dto;
 	}
 }

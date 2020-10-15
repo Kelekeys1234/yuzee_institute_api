@@ -63,10 +63,10 @@ public interface InstituteInterface {
 	public ResponseEntity<?> getInstituteByListOfCityName(@Valid @PathVariable final String cityName) throws Exception;
 	
 	@PostMapping()
-	public ResponseEntity<?> save(@RequestHeader("userId") final String userId, @Valid @RequestBody final List<InstituteRequestDto> institutes) throws Exception;
+	public ResponseEntity<?> save(@Valid @RequestBody final List<InstituteRequestDto> institutes) throws Exception;
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@RequestHeader("userId") final String userId, @Valid @PathVariable final String id, @RequestBody final List<InstituteRequestDto> institute) throws Exception;
+	public ResponseEntity<?> update(@Valid @PathVariable final String id, @RequestBody final List<InstituteRequestDto> institute) throws Exception;
 	
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllInstitute(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception;
