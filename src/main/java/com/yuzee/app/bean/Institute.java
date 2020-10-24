@@ -188,6 +188,9 @@ public class Institute implements Serializable {
 	@Column(name = "international_boarding_fee")
 	private Double internationalBoardingFee;
 	
+	@Column(name = "tag_line")
+	private String tagLine;
+	
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteEnglishRequirements> instituteEnglishRequirements = new ArrayList<>();
 	

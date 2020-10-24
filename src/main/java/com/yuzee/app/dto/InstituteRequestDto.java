@@ -128,5 +128,16 @@ public class InstituteRequestDto {
 	
 	@JsonProperty("international_boarding_fee")
 	private Double internationalBoardingFee;
+	
+	@JsonProperty("tag_line")
+	private String tagLine;
+	
+	@JsonProperty("followers_count")
+	private long followersCount;
 
+	@JsonProperty("stars")
+	private double stars;
+	
+	@JsonProperty("profile_permission")
+	private String profilePermission;
 }

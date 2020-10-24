@@ -75,7 +75,7 @@ public class InstituteResponseDto {
 	private List<StorageDto> storageList;
 
 	@JsonProperty("stars")
-	private Integer stars;
+	private Double stars;
 
 	@JsonProperty("domestic_ranking")
 	private Integer domesticRanking;
@@ -100,4 +100,10 @@ public class InstituteResponseDto {
 
 	@JsonProperty("institute_timing")
 	private InstituteTimingResponseDto instituteTiming;
+	
+	@JsonProperty("tag_line")
+	private String tagLine;
+	
+	@JsonProperty("profile_permission")
+	private String profilePermission;
 }

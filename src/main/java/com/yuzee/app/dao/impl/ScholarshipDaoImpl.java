@@ -21,6 +21,7 @@ import com.yuzee.app.bean.ScholarshipLanguage;
 import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dto.ScholarshipResponseDTO;
 import com.yuzee.app.repository.ScholarshipEligibleNationalityRepository;
+import com.yuzee.app.repository.ScholarshipRepository;
 import com.yuzee.app.util.CommonUtil;
 
 @Component
@@ -29,6 +30,9 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private ScholarshipRepository scholarshipRepository;
 	
 	@Autowired
 	private ScholarshipEligibleNationalityRepository scholarshipEligibleNationalityRepository;
@@ -304,5 +308,10 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 	@Override
 	public List<ScholarshipEligibleNationality> getScholarshipEligibileNationalityByScholarshipId(String scholarshipId) {
 		return scholarshipEligibleNationalityRepository.findByScholarshipId(scholarshipId);
+	}
+
+	@Override
+	public Long getCountByInstituteId(String instituteId) {
+		return scholarshipRepository.countByInstituteId(instituteId);
 	}
 }

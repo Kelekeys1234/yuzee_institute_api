@@ -61,4 +61,7 @@ public class InstituteElasticSearchDTO {
 
 	@JsonProperty("level_name")
 	private List<String> levelName;
+
+	@JsonProperty("tag_line")
+	private String tagLine;
 }

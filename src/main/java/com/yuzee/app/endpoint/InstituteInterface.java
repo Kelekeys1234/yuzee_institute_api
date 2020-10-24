@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,6 +23,7 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteTypeDto;
 import com.yuzee.app.dto.LatLongDto;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
@@ -74,8 +76,9 @@ public interface InstituteInterface {
 				@PathVariable final Integer pageSize) throws Exception;
 	
 	@GetMapping("/{instituteId}")
-	public ResponseEntity<?> get(@PathVariable final String instituteId) throws ValidationException;
-	
+	public ResponseEntity<?> get(@PathVariable final String instituteId)
+			throws ValidationException, NotFoundException, InvokeException, Exception;
+
 	@GetMapping("/search/{searchText}")
 	public ResponseEntity<?> searchInstitute(@Valid @PathVariable final String searchText) throws Exception;
 	
@@ -130,4 +133,7 @@ public interface InstituteInterface {
 
 	@GetMapping("/faculty/instituteId/{instituteId}")
 	public ResponseEntity<?> getInstituteFaculties(@PathVariable final String instituteId) throws NotFoundException;
+
+	@GetMapping("/course-faculty-scholarship/count/instituteId/{instituteId}")
+	public ResponseEntity<?> getInstituteCourseScholarshipAndFacultyCount(@PathVariable final String instituteId) throws NotFoundException;
 }

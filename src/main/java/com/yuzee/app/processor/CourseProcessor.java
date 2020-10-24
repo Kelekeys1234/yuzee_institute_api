@@ -63,7 +63,6 @@ import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.NearestCoursesDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.dto.UserViewCourseDto;
@@ -839,10 +838,10 @@ public class CourseProcessor {
 		Map<String, Double> yuzeeReviewMap = null;
 		try {
 			log.info("Calling review service to fetch user average review for instituteId");
-			yuzeeReviewMap = reviewHandler.getUserAverageReviewBasedOnDataList(
-					"INSTITUTE", courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
+			yuzeeReviewMap = reviewHandler.getUserAverageReviewBasedOnDataList("INSTITUTE",
+					courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
 		} catch (Exception e) {
-			log.error("Error invoking review service having exception = "+e);
+			log.error("Error invoking review service having exception = " + e);
 		}
 		
 		if(!CollectionUtils.isEmpty(courseResponseFinalResponse)) {
@@ -1606,9 +1605,15 @@ public class CourseProcessor {
 		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
 				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
 		
-		log.info("Calling review service to fetch user average review based on instituteID  to calculate average review");
-		Map<String, Double> yuzeeReviewMap = reviewHandler
-				.getUserAverageReviewBasedOnDataList("INSTITUTE", Arrays.asList(courseRequest.getInstituteId()));
+		Map<String, Double> yuzeeReviewMap = null;
+		try {
+			log.info(
+					"Calling review service to fetch user average review based on instituteID  to calculate average review");
+			yuzeeReviewMap = reviewHandler.getUserAverageReviewBasedOnDataList("INSTITUTE",
+					Arrays.asList(courseRequest.getInstituteId()));
+		} catch (Exception e) {
+			log.error("Error invoking review service having exception = " + e);
+		}
 		
 		if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
 			log.info("Calculating average review based on instituteGoogleReview and userReview and stars");

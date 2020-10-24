@@ -67,5 +67,8 @@ public class InstituteGetRequestDto {
 	
 	@JsonProperty("description")
     private String description;
+	
+	@JsonProperty("tag_line")
+	private String tagLine;
 
 }

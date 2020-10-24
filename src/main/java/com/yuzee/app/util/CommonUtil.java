@@ -72,6 +72,8 @@ public class CommonUtil {
 		instituteRequestDto.setWhatsNo(institute.getWhatsNo());
 		instituteRequestDto.setAboutInfo(institute.getAboutInfo());
 		instituteRequestDto.setCourseStart(institute.getCourseStart());
+		instituteRequestDto.setDomesticRanking(institute.getDomesticRanking());
+		instituteRequestDto.setTagLine(institute.getTagLine());
 		return instituteRequestDto;
 	}
 

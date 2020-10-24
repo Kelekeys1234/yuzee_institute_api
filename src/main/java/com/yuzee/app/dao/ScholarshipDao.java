@@ -47,5 +47,7 @@ public interface ScholarshipDao {
 	public void deleteScholarshipEligibileNationality(String scholarshipId);
 	
 	public List<ScholarshipEligibleNationality> getScholarshipEligibileNationalityByScholarshipId(String scholarshipId);
+
+	public Long getCountByInstituteId(String instituteId);
 }
 
