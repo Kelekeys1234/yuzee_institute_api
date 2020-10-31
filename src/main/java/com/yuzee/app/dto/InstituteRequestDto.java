@@ -7,10 +7,12 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString
+@NoArgsConstructor
 public class InstituteRequestDto {
 	
 	@JsonProperty("institute_id")
@@ -140,4 +142,34 @@ public class InstituteRequestDto {
 	
 	@JsonProperty("profile_permission")
 	private String profilePermission;
+
+	@JsonProperty("state_name")
+	private String stateName;
+
+	@JsonProperty("total_courses")
+	private Long totalCourses;
+
+	public InstituteRequestDto(String id, String name, Integer worldRanking, String cityName, String countryName,
+			String stateName, String campusName, String website, String aboutInfo,
+			Double latitude, Double longitude, String phoneNumber, String whatsNo, Long totalCourses, String email, String address,
+			Integer domesticRanking, String tagLine) {
+		this.id = id;
+		this.name = name;
+		this.worldRanking = worldRanking;
+		this.cityName = cityName;
+		this.countryName = countryName;
+		this.stateName = stateName;
+		this.campusName = campusName;
+		this.website = website;
+		this.aboutInfo = aboutInfo;
+		this.totalCourses = totalCourses;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.phoneNumber = phoneNumber;
+		this.whatsNo = whatsNo;
+		this.email = email;
+		this.address = address;
+		this.domesticRanking = domesticRanking;
+		this.tagLine = tagLine;
+	}
 }

@@ -41,13 +41,12 @@ import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
+import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.InstituteSearchResultDto;
-import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.enumeration.CourseSortBy;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.repository.InstituteRepository;
-import com.yuzee.app.util.CDNServerUtil;
 import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.app.util.PaginationUtil;
@@ -1050,5 +1049,10 @@ public class InstituteDaoImpl implements InstituteDao {
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {
 		log.debug("inside dao.getInstituteFaculties method.");
 		return instituteRepository.findFacultyWithCourseCountById(instituteId);
+	}
+
+	@Override
+	public List<InstituteRequestDto> findByIds(List<String> instituteIds) {
+		return instituteRepository.findByIdIn(instituteIds);
 	}
 }

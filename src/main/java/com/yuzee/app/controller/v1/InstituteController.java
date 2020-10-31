@@ -623,5 +623,16 @@ public class InstituteController implements InstituteInterface {
 		return new GenericResponseHandlers.Builder().setData(data)
 				.setMessage("Institute Course,Scholarship and faculty count displayed successfully")
 				.setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> getInstitutesByIdList(List<String> instituteIds) throws NotFoundException, InvokeException, Exception {
+		if (ObjectUtils.isEmpty(instituteIds)) {
+			log.error("institute_ids must not be empty");
+			throw new ValidationException("institute_ids must not be empty");
+		}
+		List<InstituteRequestDto> instituteList = instituteProcessor.getInstitutesByIdList(instituteIds);
+		return new GenericResponseHandlers.Builder().setData(instituteList).setMessage("Institute Displayed Successfully.")
+				.setStatus(HttpStatus.OK).create();
 	}	
 }
