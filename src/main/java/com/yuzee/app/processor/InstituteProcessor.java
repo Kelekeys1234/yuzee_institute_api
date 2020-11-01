@@ -315,46 +315,49 @@ public class InstituteProcessor {
 		instituteDomesticRankingHistoryDAO.save(domesticRanking);
 	}
 
-	
-	public void updateInstitute(final List<InstituteRequestDto> instituteRequests, @Valid final String id)
-			throws Exception {
+	public void updateInstitute(final String userId, final String instituteId, final InstituteRequestDto instituteRequest) throws Exception {
 		log.debug("Inside updateInstitute() method");
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
-			log.info("Start iterating institute coming in request");
-			for (InstituteRequestDto instituteRequest : instituteRequests) {
-				log.info("fetching institute from DB having instituteId = " + id);
-				Institute oldInstitute = dao.get(id);
-				Institute newInstitute = new Institute();
-				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
-				log.info("Copying bean class to DTO class");
-				BeanUtils.copyProperties(instituteRequest, newInstitute);
-				if (instituteRequest.getDomesticRanking() != null
-						&& !instituteRequest.getDomesticRanking().equals(oldInstitute.getDomesticRanking())) {
-					log.info("DomesticRanking is not null hence saving domesticRanking History");
-					saveDomesticRankingHistory(newInstitute, oldInstitute);
-				}
-				if (instituteRequest.getWorldRanking() != null
-						&& !instituteRequest.getWorldRanking().equals(oldInstitute.getWorldRanking())) {
-					log.info("WorldRanking is not null hence saving worldRanking History");
-					saveWorldRankingHistory(newInstitute, oldInstitute);
-				}
-				log.info("Start updating institute for instituteId =" + id);
-				Institute institute = saveInstitute(instituteRequest, id);
-				log.info("Copying DTO class to elasticSearch DTO");
-				BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
-				instituteElasticSearchDto
-						.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
-				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-				instituteElasticSearchDto.setInstituteTypeName(
-						institute.getInstituteType() != null ? institute.getInstituteType() : null);
-				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
-				instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
-				instituteElasticDtoList.add(instituteElasticSearchDto);
+			log.info("fetching institute from DB having instituteId = " + instituteId);
+			Institute oldInstitute = dao.get(instituteId);
+			Institute newInstitute = new Institute();
+			InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
+			log.info("Copying bean class to DTO class");
+			BeanUtils.copyProperties(instituteRequest, newInstitute);
+			if (instituteRequest.getDomesticRanking() != null
+					&& !instituteRequest.getDomesticRanking().equals(oldInstitute.getDomesticRanking())) {
+				log.info("DomesticRanking is not null hence saving domesticRanking History");
+				saveDomesticRankingHistory(newInstitute, oldInstitute);
 			}
+			if (instituteRequest.getWorldRanking() != null
+					&& !instituteRequest.getWorldRanking().equals(oldInstitute.getWorldRanking())) {
+				log.info("WorldRanking is not null hence saving worldRanking History");
+				saveWorldRankingHistory(newInstitute, oldInstitute);
+			}
+			log.info("Start updating institute for instituteId =" + instituteId);
+			Institute institute = saveInstitute(instituteRequest, instituteId);
+			log.info("Copying DTO class to elasticSearch DTO");
+			BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
+			instituteElasticSearchDto
+					.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
+			instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
+			instituteElasticSearchDto
+					.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
+			instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
+			instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
+			instituteElasticDtoList.add(instituteElasticSearchDto);
+			
+			// TODO: need to check user access before updating
+			if (!ObjectUtils.isEmpty(instituteRequest.getProfilePermission())) {
+				log.info("if profile permission is not empty then going to save/update userProfilePermission");
+				userHandler.saveOrUpdateUserProfileDataPermission(userId, EntityTypeEnum.INSTITUTE.name(),
+						institute.getId(), instituteRequest.getProfilePermission());
+			}
+
 			log.info("Calling elastic service to save instiutes on index");
-//			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
-//					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
+					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ={}", exception.getMessage());
 			throw exception;
@@ -405,6 +408,7 @@ public class InstituteProcessor {
 		institute.setIsActive(true);
 		institute.setDomesticRanking(instituteRequest.getDomesticRanking());
 		institute.setWorldRanking(instituteRequest.getWorldRanking());
+		institute.setPostalCode(instituteRequest.getPostalCode());
 		institute.setWebsite(instituteRequest.getWebsite());
 		if (!StringUtils.isEmpty(instituteRequest.getInstituteCategoryTypeId())) {
 			institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getInstituteCategoryTypeId()));
@@ -412,7 +416,7 @@ public class InstituteProcessor {
 			log.error("instituteCategoryTypeId is required");
 			throw new ValidationException("instituteCategoryTypeId is required");
 		}
-
+		institute.setState(instituteRequest.getStateName());
 		institute.setAddress(instituteRequest.getAddress());
 		institute.setEmail(instituteRequest.getEmail());
 		institute.setPhoneNumber(instituteRequest.getPhoneNumber());
@@ -432,7 +436,7 @@ public class InstituteProcessor {
 		institute.setCurriculum(instituteRequest.getCurriculum());
 		institute.setDomesticBoardingFee(instituteRequest.getDomesticBoardingFee());
 		institute.setInternationalBoardingFee(instituteRequest.getInternationalBoardingFee());
-		if (StringUtils.isEmpty(instituteRequest.getTagLine())) {
+		if (!StringUtils.isEmpty(instituteRequest.getTagLine())) {
 			institute.setTagLine(instituteRequest.getTagLine());	
 		}
 		try {

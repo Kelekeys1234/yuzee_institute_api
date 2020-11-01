@@ -148,6 +148,9 @@ public class InstituteRequestDto {
 
 	@JsonProperty("total_courses")
 	private Long totalCourses;
+	
+	@JsonProperty("postal_code")
+	private Integer postalCode;
 
 	public InstituteRequestDto(String id, String name, Integer worldRanking, String cityName, String countryName,
 			String stateName, String campusName, String website, String aboutInfo,
