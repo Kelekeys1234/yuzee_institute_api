@@ -60,7 +60,6 @@ public class InstituteTypeProcessor {
 				instituteTypeDto.setCountryName(instituteType.getCountryName());
 				instituteTypeDto.setDescription(instituteType.getDescription());
 				instituteTypeDto.setInstituteTypeName(instituteType.getName());
-				instituteTypeDto.setType(instituteType.getType());
 				log.info("Adding instiuteType in list");
 				listOfInstituteDto.add(instituteTypeDto);
 			});

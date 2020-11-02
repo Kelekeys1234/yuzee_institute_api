@@ -35,7 +35,7 @@ public class CareerJobWorkingStyle implements Serializable {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier", nullable = false)
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
 	@Column(name = "work_style", nullable = false)

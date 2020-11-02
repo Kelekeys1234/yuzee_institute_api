@@ -43,11 +43,9 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.InstituteSearchResultDto;
-import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.enumeration.CourseSortBy;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.repository.InstituteRepository;
-import com.yuzee.app.util.CDNServerUtil;
 import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.app.util.PaginationUtil;
@@ -1040,6 +1038,15 @@ public class InstituteDaoImpl implements InstituteDao {
 		List<Object[]> rows = query.list();
 		Integer totalCount = rows.size();
 		return totalCount;
+	}
+
+	@Override
+	public List<InstituteCategoryType> addInstituteCategoryTypes(List<InstituteCategoryType> instituteCategoryTypes) {
+		Session session = sessionFactory.getCurrentSession();
+		instituteCategoryTypes.stream().forEach(type -> 
+			session.save(type)	
+		);
+		return instituteCategoryTypes;
 	}
 	
 	public List<Institute> getInstituteCampuses(String instituteId, String instituteName) throws NotFoundException {

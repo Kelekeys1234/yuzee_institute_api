@@ -40,10 +40,10 @@ public class InstituteJoinRequest {
 	@Id
 	@GenericGenerator(name = "GUID" , strategy = "org.hibernate.id.GUIDGenerator")
 	@GeneratedValue(generator = "GUID")
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
-	@Column(name = "user_id", nullable = false)
+	@Column(name = "user_id", nullable = false, length=36)
 	private String userId;
 	
 	@Column(name = "institute_name", nullable = false)

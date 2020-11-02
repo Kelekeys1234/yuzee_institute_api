@@ -28,13 +28,13 @@ public class Subject implements java.io.Serializable {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 
 	@Column(name = "subject_name", nullable = false)
 	private String subjectName;
 
-	@Column(name = "education_system_id", nullable = false)
+	@Column(name = "education_system_id", nullable = false, length = 36)
 	private String educationSystemId;
 
 	@Temporal(TemporalType.TIMESTAMP)

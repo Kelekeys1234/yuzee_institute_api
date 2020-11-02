@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.yuzee.app.dto.GlobalSearchKeyword;
+import com.yuzee.app.bean.GlobalSearchKeyword;
 
 @Repository
 public class GlobalSearchKeywordDAO implements IGlobalSearchKeywordDAO {

@@ -54,7 +54,7 @@ public class ErrorReport implements java.io.Serializable {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	public String getId() {
 		return id;
 	}
@@ -208,7 +208,7 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the coreArticalDetail
 	 */
-	@Column(name = "course_article_id")
+	@Column(name = "course_article_id",length=36)
 	public String getCourseArticleId() {
 		return courseArticleId;
 	}
@@ -236,7 +236,7 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the assigneeUserId
 	 */
-	@Column(name = "assignee_user_id")
+	@Column(name = "assignee_user_id", length=36)
 	public String getAssigneeUserId() {
 		return assigneeUserId;
 	}

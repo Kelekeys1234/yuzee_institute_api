@@ -73,6 +73,8 @@ public interface InstituteDao {
 	public List<String> getIntakesById(@Valid String id);
 
 	public List<InstituteCategoryType> getAllCategories();
+	
+	public List<InstituteCategoryType> addInstituteCategoryTypes(List<InstituteCategoryType> instituteCategoryTypes);
 
 	public List<Institute> ratingWiseInstituteListByCountry(String countryName);
 

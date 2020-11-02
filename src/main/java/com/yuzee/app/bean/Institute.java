@@ -40,7 +40,7 @@ public class Institute implements Serializable {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 
 	@Column(name = "institute_type")
@@ -82,7 +82,7 @@ public class Institute implements Serializable {
 	@Column(name = "email")
 	private String email;
 
-	@Column(name = "website")
+	@Column(name = "website", columnDefinition = "TEXT")
 	private String website;
 
 	@Column(name = "total_student")
@@ -94,28 +94,28 @@ public class Institute implements Serializable {
 	@Column(name = "longitude")
 	private Double longitude;
 
-	@Column(name = "address")
+	@Column(name = "address", columnDefinition = "TEXT")
 	private String address;
 
-	@Column(name = "description")
+	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 
-	@Column(name = "country_name")
+	@Column(name = "country_name", length = 50)
 	private String countryName;
 
-	@Column(name = "city_name")
+	@Column(name = "city_name", length = 100)
 	private String cityName;
 
 	@Column(name = "avg_cost_of_living")
 	private String avgCostOfLiving;
 
-	@Column(name = "tution_fees_plan")
+	@Column(name = "tution_fees_plan", columnDefinition = "TEXT")
 	private String tuitionFeesPaymentPlan;
 
-	@Column(name = "enrolment_link")
+	@Column(name = "enrolment_link", columnDefinition = "TEXT")
 	private String enrolmentLink;
 
-	@Column(name = "about_us_info")
+	@Column(name = "about_us_info", columnDefinition = "TEXT")
 	private String aboutInfo;
 
 	@Column(name = "course_start")
@@ -131,7 +131,7 @@ public class Institute implements Serializable {
 	@Column(name = "campus_name")
 	private String campusName;
 
-	@Column(name = "scholarship_financing_assistance")
+	@Column(name = "scholarship_financing_assistance", columnDefinition = "TEXT")
 	private String scholarshipFinancingAssistance;
 
 	@Column(name = "domestic_ranking")

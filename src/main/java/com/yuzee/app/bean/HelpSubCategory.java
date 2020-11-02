@@ -35,7 +35,7 @@ public class HelpSubCategory implements Serializable {
     @Id
     @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
     private String id;
     
     @Column(name = "name", nullable = false)

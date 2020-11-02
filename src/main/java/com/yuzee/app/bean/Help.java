@@ -37,7 +37,7 @@ public class Help implements Serializable {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -78,13 +78,13 @@ public class Help implements Serializable {
 	@Column(name = "is_questioning")
 	private Boolean isQuestioning;
 
-	@Column(name = "user_id", nullable = false)
+	@Column(name = "user_id", nullable = false, length = 36)
 	private String userId;
 
 	@Column(name = "status", nullable = false)
 	private String status;
 
-	@Column(name = "assigned_user_id", nullable = false)
+	@Column(name = "assigned_user_id", nullable = false, length = 36)
 	private String assignedUserId;
 
 	@Column(name = "is_favourite")

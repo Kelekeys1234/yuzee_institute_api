@@ -527,7 +527,7 @@ public class InstituteProcessor {
 			com.yuzee.app.bean.InstituteService instituteServiceDetails = new com.yuzee.app.bean.InstituteService();
 			instituteServiceDetails.setInstitute(institute);
 			if (service.isPresent()) {
-				instituteServiceDetails.setServiceName(service.get().getName());
+				instituteServiceDetails.setService(service.get());
 			}
 			instituteServiceDetails.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 			instituteServiceDetails.setIsActive(true);

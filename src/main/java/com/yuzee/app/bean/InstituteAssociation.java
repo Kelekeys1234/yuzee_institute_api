@@ -39,13 +39,13 @@ public class InstituteAssociation implements Serializable {
 	@Id
 	@GenericGenerator(name = "GUID" , strategy = "org.hibernate.id.GUIDGenerator")
 	@GeneratedValue(generator = "GUID")
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
-	@Column(name = "source_institute_id", nullable = false)
+	@Column(name = "source_institute_id", nullable = false, length=36)
 	private String sourceInstituteId;
 	
-	@Column(name = "destination_institute_id", nullable = false)
+	@Column(name = "destination_institute_id", nullable = false, length = 36)
 	private String destinationInstituteId;
 	
 	@Enumerated(EnumType.STRING)

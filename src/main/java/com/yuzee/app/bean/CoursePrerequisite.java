@@ -37,14 +37,14 @@ public class CoursePrerequisite implements Serializable{
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
 	@Column(name = "prerequisite", nullable = false)
 	private String prerequisite;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "course_id")
+	@JoinColumn(name = "course_id", nullable = false)
 	private Course course;
 	
 	@Temporal(TemporalType.TIMESTAMP)

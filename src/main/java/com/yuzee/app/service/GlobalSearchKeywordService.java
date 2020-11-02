@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.yuzee.app.bean.GlobalSearchKeyword;
 import com.yuzee.app.dao.IGlobalSearchKeywordDAO;
-import com.yuzee.app.dto.GlobalSearchKeyword;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)

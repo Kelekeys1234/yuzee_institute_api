@@ -23,7 +23,7 @@ public class AccrediatedDetail {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 
 	@Column(name = "accrediated_name")
@@ -32,7 +32,7 @@ public class AccrediatedDetail {
 	@Column(name = "accrediated_website")
 	private String accrediatedWebsite;
 
-	@Column(name = "entity_id")
+	@Column(name = "entity_id", length=36)
 	private String entityId;
 
 	@Column(name = "entity_type")

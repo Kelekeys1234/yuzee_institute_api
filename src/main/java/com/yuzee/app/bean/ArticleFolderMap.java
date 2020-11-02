@@ -27,7 +27,7 @@ public class ArticleFolderMap implements Serializable {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	public String getId() {
 		return id;
 	}
@@ -36,7 +36,7 @@ public class ArticleFolderMap implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "folder_id")
+	@Column(name = "folder_id", length=36)
 	public String getFolderId() {
 		return folderId;
 	}
@@ -44,7 +44,7 @@ public class ArticleFolderMap implements Serializable {
 	public void setFolderId(String folderId) {
 		this.folderId = folderId;
 	}
-	@Column(name = "article_id")
+	@Column(name = "article_id", length=36)
 	public String getArticleId() {
 		return articleId;
 	}

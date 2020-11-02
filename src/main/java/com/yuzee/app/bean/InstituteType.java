@@ -22,21 +22,18 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "institute_type", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "type", "description" }, 
+@Table(name = "institute_type", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "country_name" }, 
 		name = "UK_NA_CN_CN"), indexes = {@Index(name = "IDX_INSTITUTE_TYPE_NAME", columnList = "name", unique = false) })
 public class InstituteType {
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
 	@Column(name = "name")
 	private String name;
-	
-	@Column(name = "type")
-	private String type;
 	
 	@Column(name = "description")
 	private String description;

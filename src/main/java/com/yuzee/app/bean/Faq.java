@@ -43,10 +43,10 @@ public class Faq implements Serializable {
 	@Id
 	@GenericGenerator(name = "GUID" , strategy = "org.hibernate.id.GUIDGenerator")
 	@GeneratedValue(generator = "GUID")
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
-	@Column(name = "entity_id", nullable = false)
+	@Column(name = "entity_id", nullable = false, length=36)
 	private String entityId;
 	
 	@Column(name = "entity_type", nullable = false)

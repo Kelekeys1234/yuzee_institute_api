@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "institute_service",  uniqueConstraints = @UniqueConstraint(columnNames = { "institute_id", "service_name" } , name = "UK_INSTITUTE_ID_SERVICE_ID"),
+@Table(name = "institute_service",  uniqueConstraints = @UniqueConstraint(columnNames = { "institute_id", "service_id" } , name = "UK_INSTITUTE_ID_SERVICE_ID"),
           indexes = { @Index (name = "IDX_SERVICE_INSTITUTE_ID", columnList="institute_id", unique = false)})
 @Data
 @NoArgsConstructor
@@ -35,18 +35,16 @@ public class InstituteService {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "institute_id", nullable = false)
 	private Institute institute;
-
-	@Column(name = "service_name")
-	private String serviceName;
-
-	@Column(name = "description")
-	private String description;
+	
+	@ManyToOne
+	@JoinColumn(name = "service_id", nullable = false)
+	private Service service;
 
 	@Column(name = "is_active")
 	private Boolean isActive;
@@ -72,4 +70,20 @@ public class InstituteService {
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
+	public InstituteService(Institute institute,Service service, boolean isActive, Date createdOn, Date updatedOn, String createdBy,
+			String updatedBy) {
+		super();
+		this.institute = institute;
+		this.service = service;
+		this.createdOn = createdOn;
+		this.updatedOn = updatedOn;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+	}
+	
+	@Override
+	public String toString() {
+		return "InstituteFacility [id=" + id + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + ", createdBy="
+				+ createdBy + ", updatedBy=" + updatedBy + ", institute=" + institute.getName() + ", service=" + service.getName() + "]";
+	}
 }

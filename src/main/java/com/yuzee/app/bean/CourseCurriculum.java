@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -24,37 +26,43 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "course_intake", indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
-public class CourseIntake {
-	
+@Table(name = "course_curriculum",uniqueConstraints = @UniqueConstraint(columnNames = { "name" }, name = "UK_CURRICULUM_NAME"))
+public class CourseCurriculum implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8970688340243493406L;
+
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
-	@Column(name = "intake_date", nullable = false)
-	private Date intakeDates;
+	@Column(name = "name")
+	private String name;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "course_id", nullable = false)
-	private Course course;
+	@Column(name = "is_active")
+	private Boolean isActive;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
+	@Column(name = "created_on")
 	private Date createdOn;
-
+	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
+	@Column(name = "updated_on")
 	private Date updatedOn;
-
+	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on", length = 19)
+	@Column(name = "deleted_on")
 	private Date deletedOn;
-
-	@Column(name = "created_by", length = 50)
+	
+	@Column(name = "created_by")
 	private String createdBy;
-
-	@Column(name = "updated_by", length = 50)
+	
+	@Column(name = "updated_by")
 	private String updatedBy;
+	
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
 }

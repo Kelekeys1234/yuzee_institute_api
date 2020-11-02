@@ -1,5 +1,7 @@
 package com.yuzee.app.dto;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
@@ -31,4 +33,8 @@ public class StorageDto {
 
 	@JsonProperty("file_url")
 	private String fileURL;
+	
+	@JsonProperty("thumbnails")
+	private List<ThumbnailsDTO> thumbnails;
+
 }

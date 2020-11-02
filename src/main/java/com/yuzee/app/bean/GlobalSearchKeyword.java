@@ -1,4 +1,4 @@
-package com.yuzee.app.dto;
+package com.yuzee.app.bean;
 
 import java.util.Date;
 
@@ -20,9 +20,9 @@ public class GlobalSearchKeyword {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier")
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
-	@Column(name = "user_id")
+	@Column(name = "user_id", length=36)
 	private String userId;
 	@Column(name = "search_keyword")
 	private String searchKeyword;

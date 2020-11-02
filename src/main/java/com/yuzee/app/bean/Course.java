@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,10 +31,11 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "course", indexes = { @Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false),
+@Table(name = "course", uniqueConstraints = @UniqueConstraint(columnNames = { "faculty_id", "level_id", "institute_id", "name" }), indexes = { @Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false),
 		@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),
 		@Index(name = "IDX_LEVEL_ID", columnList = "level_id", unique = false),
-		@Index(name = "IDX_COURSE_NAME", columnList = "name", unique = false) })
+		@Index(name = "IDX_COURSE_NAME", columnList = "name", unique = false),
+		@Index(name = "IDX_COURSE_CURRICULUM", columnList = "curriculum_id", unique = false)})
 public class Course implements Serializable {
 
 	private static final long serialVersionUID = 8492390790670110780L;
@@ -41,20 +43,24 @@ public class Course implements Serializable {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", columnDefinition = "uniqueidentifier", nullable = false)
+	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "faculty_id")
+	@JoinColumn(name = "faculty_id", nullable = false)
 	private Faculty faculty;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "institute_id")
+	@JoinColumn(name = "institute_id", nullable = false)
 	private Institute institute;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "level_id")
+	@JoinColumn(name = "level_id", nullable = false)
 	private Level level;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "curriculum_id")
+	private CourseCurriculum courseCurriculum;
 	
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -71,16 +77,16 @@ public class Course implements Serializable {
 	@Column(name = "recognition_type")
 	private String recognitionType;
 
-	@Column(name = "website")
+	@Column(name = "website", columnDefinition = "TEXT")
 	private String website;
 
-	@Column(name = "abbreviation")
+	@Column(name = "abbreviation", columnDefinition = "TEXT")
 	private String abbreviation;
 
-	@Column(name = "remarks")
+	@Column(name = "remarks", columnDefinition = "TEXT")
 	private String remarks;
 
-	@Column(name = "description")
+	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 
 	@Column(name = "is_active")
@@ -123,7 +129,7 @@ public class Course implements Serializable {
 	@Column(name = "deleted_on", length = 19)
 	private Date deletedOn;
 	
-	@Column(name = "content")
+	@Column(name = "content", columnDefinition = "TEXT")
 	private String content;
 	
 	@Column(name = "examination_board")
@@ -140,9 +146,23 @@ public class Course implements Serializable {
 	
 	@Column(name = "international_enrollment_fee")
 	private Double internationalEnrollmentFee;
+
+	@Column(name = "usd_domestic_application_fee")
+	private Double usdDomesticApplicationFee;
 	
+	@Column(name = "usd_international_application_fee")
+	private Double usdInternationalApplicationFee;
+	
+	@Column(name = "usd_domestic_enrollment_fee")
+	private Double usdDomesticEnrollmentFee;
+	
+	@Column(name = "usd_international_enrollment_fee")
+	private Double usdInternationalEnrollmentFee;
+
 	@Column(name = "entrance_exam")
 	private String entranceExam;
+	
+	
 	
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
@@ -159,4 +179,9 @@ public class Course implements Serializable {
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseMinRequirement> courseMinRequirements = new ArrayList<>();
 
+	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CoursePrerequisite> coursePrerequisites = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseCareerOutcome> courseCareerOutcomes = new ArrayList<>();
 }
