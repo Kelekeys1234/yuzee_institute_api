@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dto.InstituteFacultyDto;
-import com.yuzee.app.dto.InstituteRequestDto;
+import com.yuzee.app.dto.InstituteResponseDto;
 
 @Repository
 public interface InstituteRepository extends JpaRepository<Institute, String> {
@@ -33,9 +33,9 @@ public interface InstituteRepository extends JpaRepository<Institute, String> {
 			+ "order by f.name")
 	public List<InstituteFacultyDto> findFacultyWithCourseCountById(String instituteId);
 
-	@Query("SELECT new com.yuzee.app.dto.InstituteRequestDto(i.id,i.name, i.worldRanking, i.cityName, i.countryName,i.state, "
+	@Query("SELECT new com.yuzee.app.dto.InstituteResponseDto(i.id,i.name, i.worldRanking, i.cityName, i.countryName,i.state, "
 			+ "i.campusName, i.website, i.aboutInfo, i.latitude, i.longitude, i.phoneNumber,i.whatsNo, "
 			+ "(select count(c.id) from Course c where c.institute.id = i.id ), i.email, i.address, i.domesticRanking, "
 			+ "i.tagLine) from Institute i  where i.id in :instituteIds")
-	public List<InstituteRequestDto> findByIdIn(List<String> instituteIds);
+	public List<InstituteResponseDto> findByIdIn(List<String> instituteIds);
 }

@@ -17,7 +17,6 @@ import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
-import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.InstituteSearchResultDto;
 import com.yuzee.app.exception.NotFoundException;
@@ -109,5 +108,5 @@ public interface InstituteDao {
 	
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException;
 
-	public List<InstituteRequestDto> findByIds(List<String> instituteIds);
+	public List<InstituteResponseDto> findByIds(List<String> instituteIds);
 }

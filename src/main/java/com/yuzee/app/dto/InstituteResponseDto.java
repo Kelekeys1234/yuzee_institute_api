@@ -6,8 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 public class InstituteResponseDto extends InstituteDto {
 
@@ -49,5 +51,29 @@ public class InstituteResponseDto extends InstituteDto {
 
 	@JsonProperty("institute_timing")
 	private InstituteTimingResponseDto instituteTiming;
+	
+	public InstituteResponseDto(String id, String name, Integer worldRanking, String cityName, String countryName,
+			String stateName, String campusName, String website, String aboutUs,
+			Double latitude, Double longitude, String phoneNumber, String whatsNo, Long totalCourses, String email, String address,
+			Integer domesticRanking, String tagLine) {
+		super.setId(id);
+		super.setName(name);
+		super.setWorldRanking(worldRanking);
+		super.setCityName(cityName);
+		super.setCountryName(countryName);
+		super.setStateName(stateName);
+		super.setCampusName(campusName);
+		super.setWebsite(website);
+		this.aboutUs = aboutUs;
+		super.setTotalCourses(totalCourses.intValue());
+		super.setLatitude(latitude);
+		super.setLongitude(longitude);
+		super.setPhoneNumber(phoneNumber);
+		super.setWhatsNo(whatsNo);
+		super.setEmail(email);
+		super.setAddress(address);
+		super.setDomesticRanking(domesticRanking);
+		super.setTagLine(tagLine);
+	}
 
 }

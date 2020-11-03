@@ -68,4 +68,16 @@ public class InstituteDto {
 	
 	@JsonProperty("total_courses")
 	private Integer totalCourses;
+	
+	@JsonProperty("campus_name")
+	private String campusName;
+	
+	@JsonProperty("state_name")
+	private String stateName;
+	
+	@JsonProperty("whatsapp_number")
+	private String whatsNo;
+	
+	@JsonProperty("logo_url")
+	private String logoUrl;
 }

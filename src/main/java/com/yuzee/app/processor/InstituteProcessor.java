@@ -1144,13 +1144,12 @@ public class InstituteProcessor {
 	}
 
 
-
-	public List<InstituteRequestDto> getInstitutesByIdList(List<String> instituteIds) throws Exception {
+	public List<InstituteResponseDto> getInstitutesByIdList(List<String> instituteIds) throws Exception {
 		log.info("inside InstituteProcessor.getInstitutesByIdList");
-		List<InstituteRequestDto> instituteRequestDtos = dao.findByIds(instituteIds);
-		if (!CollectionUtils.isEmpty(instituteRequestDtos)) {
+		List<InstituteResponseDto> instituteResponseDtos = dao.findByIds(instituteIds);
+		if (!CollectionUtils.isEmpty(instituteResponseDtos)) {
 
-			instituteIds = instituteRequestDtos.stream().map(InstituteRequestDto::getId).collect(Collectors.toList());
+			instituteIds = instituteResponseDtos.stream().map(InstituteResponseDto::getId).collect(Collectors.toList());
 			List<StorageDto> instituteLogos = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
 					EntitySubTypeEnum.LOGO);
 			log.info("Fetching institute google review from DB based on instituteId");
@@ -1160,7 +1159,7 @@ public class InstituteProcessor {
 			log.info("Calling review service to fetch user average review for instituteId");
 			Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
 
-			instituteRequestDtos.stream().forEach(instituteResponseDto -> {
+			instituteResponseDtos.stream().forEach(instituteResponseDto -> {
 				instituteResponseDto.setStars(
 						calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteResponseDto.getId()));
 				Optional<StorageDto> logoStorage = instituteLogos.stream()
@@ -1168,6 +1167,6 @@ public class InstituteProcessor {
 				instituteResponseDto.setLogoUrl(logoStorage.isPresent() ? logoStorage.get().getFileURL() : null);
 			});
 		}
-		return instituteRequestDtos;
+		return instituteResponseDtos;
 	}
 }

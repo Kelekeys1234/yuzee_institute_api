@@ -631,7 +631,7 @@ public class InstituteController implements InstituteInterface {
 			log.error("institute_ids must not be empty");
 			throw new ValidationException("institute_ids must not be empty");
 		}
-		List<InstituteRequestDto> instituteList = instituteProcessor.getInstitutesByIdList(instituteIds);
+		List<InstituteResponseDto> instituteList = instituteProcessor.getInstitutesByIdList(instituteIds);
 		return new GenericResponseHandlers.Builder().setData(instituteList).setMessage("Institute Displayed Successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}	

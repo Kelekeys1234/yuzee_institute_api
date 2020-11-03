@@ -20,9 +20,6 @@ public class InstituteRequestDto extends InstituteDto {
 	@JsonProperty("description")
 	private String description;
 	
-	@JsonProperty("logo_url")
-	private String logoUrl;
-	
 	@JsonProperty("avg_cost_of_living")
 	private String avgCostOfLiving;
 	
@@ -39,9 +36,6 @@ public class InstituteRequestDto extends InstituteDto {
 	@NotBlank(message = "institute_category_type_id should not be blank")
 	private String instituteCategoryTypeId;
 	
-	@JsonProperty("campus_name")
-	private String campusName;
-	
 	@JsonProperty("offer_service")
 	private List<String> offerService;
 	
@@ -56,9 +50,6 @@ public class InstituteRequestDto extends InstituteDto {
 	
 	@JsonProperty("intakes")
 	private List<String> intakes;
-	
-	@JsonProperty("whatsapp_number")
-	private String whatsNo;
 	
 	@JsonProperty("institute_timings")
 	private List<InstituteTimingDto> instituteTimings; 
@@ -90,33 +81,6 @@ public class InstituteRequestDto extends InstituteDto {
 	@JsonProperty("followers_count")
 	private long followersCount;
 
-	@JsonProperty("state_name")
-	private String stateName;
-
 	@JsonProperty("postal_code")
 	private Integer postalCode;
-
-	public InstituteRequestDto(String id, String name, Integer worldRanking, String cityName, String countryName,
-			String stateName, String campusName, String website, String aboutInfo,
-			Double latitude, Double longitude, String phoneNumber, String whatsNo, Long totalCourses, String email, String address,
-			Integer domesticRanking, String tagLine) {
-		super.setId(id);
-		super.setName(name);
-		super.setWorldRanking(worldRanking);
-		super.setCityName(cityName);
-		super.setCountryName(countryName);
-		this.stateName = stateName;
-		this.campusName = campusName;
-		super.setWebsite(website);
-		this.aboutInfo = aboutInfo;
-		super.setTotalCourses(totalCourses.intValue());
-		super.setLatitude(latitude);
-		super.setLongitude(longitude);
-		super.setPhoneNumber(phoneNumber);
-		this.whatsNo = whatsNo;
-		super.setEmail(email);
-		super.setAddress(address);
-		super.setDomesticRanking(domesticRanking);
-		super.setTagLine(tagLine);
-	}
 }
