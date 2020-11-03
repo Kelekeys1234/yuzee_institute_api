@@ -1140,8 +1140,9 @@ public class InstituteProcessor {
 	}
 
 
-	public List<InstituteRequestDto> getInstitutesByIdList(List<String> instituteIds)
-			throws Exception {
+
+	public List<InstituteRequestDto> getInstitutesByIdList(List<String> instituteIds) throws Exception {
+		log.info("inside InstituteProcessor.getInstitutesByIdList");
 		List<InstituteRequestDto> instituteRequestDtos = dao.findByIds(instituteIds);
 		if (!CollectionUtils.isEmpty(instituteRequestDtos)) {
 
@@ -1152,25 +1153,17 @@ public class InstituteProcessor {
 			Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
 					.getInstituteAvgGoogleReviewForList(instituteIds);
 
-			Map<String, Double> yuzeeReviewMap = null;
-			try {
-				log.info("Calling review service to fetch user average review for instituteId");
-				yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
-			} catch (Exception e) {
-				log.error("Error invoking review service having exception = " + e);
-				throw e;
-			}
+			log.info("Calling review service to fetch user average review for instituteId");
+			Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
 
-			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
-			for (InstituteRequestDto instituteRequestDto : instituteRequestDtos) {
-				instituteRequestDto.setStars(
-						calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteRequestDto.getId()));
+			instituteRequestDtos.stream().forEach(instituteResponseDto -> {
+				instituteResponseDto.setStars(
+						calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteResponseDto.getId()));
 				Optional<StorageDto> logoStorage = instituteLogos.stream()
-						.filter(e -> e.getEntityId().equals(instituteRequestDto.getId())
-								&& e.getEntitySubType().equals(EntitySubTypeEnum.LOGO))
-						.findFirst();
-				instituteRequestDto.setLogoUrl(logoStorage.isPresent() ? logoStorage.get().getFileURL() : null);
-			}
+						.filter(e -> e.getEntityId().equals(instituteResponseDto.getId())).findFirst();
+				instituteResponseDto.setLogoUrl(logoStorage.isPresent() ? logoStorage.get().getFileURL() : null);
+			});
+
 		}
 		return instituteRequestDtos;
 	}
