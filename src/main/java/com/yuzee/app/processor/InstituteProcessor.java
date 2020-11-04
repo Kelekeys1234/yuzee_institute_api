@@ -319,7 +319,7 @@ public class InstituteProcessor {
 		log.debug("Inside updateInstitute() method");
 		try {
 			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
-			log.info("fetching institute from DB having instituteId = ", instituteId);
+			log.info("fetching institute from DB having instituteId: {}", instituteId);
 			Institute oldInstitute = dao.get(instituteId);
 			Institute newInstitute = new Institute();
 			InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
@@ -335,7 +335,7 @@ public class InstituteProcessor {
 				log.info("WorldRanking is not null hence saving worldRanking History");
 				saveWorldRankingHistory(newInstitute, oldInstitute);
 			}
-			log.info("Start updating institute for instituteId =", instituteId);
+			log.info("Start updating institute for instituteId: {}", instituteId);
 			Institute institute = saveInstitute(instituteRequest, instituteId);
 			log.info("Copying DTO class to elasticSearch DTO");
 			BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
