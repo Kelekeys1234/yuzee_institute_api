@@ -241,9 +241,9 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> update(final String id, final List<InstituteRequestDto> institute) throws Exception {
-		log.info("Start process to update existing Institue having instituteId = {}",id);
-		instituteProcessor.updateInstitute(institute, id);
+	public ResponseEntity<?> update(final String userId, final String instituteId, final InstituteRequestDto institute) throws Exception {
+		log.info("Start process to update existing Institue having instituteId = {}",instituteId);
+		instituteProcessor.updateInstitute(userId, instituteId, institute);
 		return new GenericResponseHandlers.Builder().setMessage("Institutes updated successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -631,7 +631,7 @@ public class InstituteController implements InstituteInterface {
 			log.error("institute_ids must not be empty");
 			throw new ValidationException("institute_ids must not be empty");
 		}
-		List<InstituteRequestDto> instituteList = instituteProcessor.getInstitutesByIdList(instituteIds);
+		List<InstituteResponseDto> instituteList = instituteProcessor.getInstitutesByIdList(instituteIds);
 		return new GenericResponseHandlers.Builder().setData(instituteList).setMessage("Institute Displayed Successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}	
