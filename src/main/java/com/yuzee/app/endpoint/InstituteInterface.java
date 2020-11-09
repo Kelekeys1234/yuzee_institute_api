@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -136,4 +134,7 @@ public interface InstituteInterface {
 
 	@GetMapping("/course-faculty-scholarship/count/instituteId/{instituteId}")
 	public ResponseEntity<?> getInstituteCourseScholarshipAndFacultyCount(@PathVariable final String instituteId) throws NotFoundException;
+
+	@GetMapping("/institute/multiple/id")
+	public ResponseEntity<?> getInstitutesByIdList(@RequestParam(name = "institute_ids", required = true) List<String> instituteIds) throws ValidationException, NotFoundException, InvokeException, Exception;
 }

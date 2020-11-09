@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,6 @@ import com.yuzee.app.dto.InstituteElasticSearchDTO;
 import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
-import com.yuzee.app.dto.InstituteProfilePermissionDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.InstituteSearchResultDto;
@@ -1139,5 +1137,34 @@ public class InstituteProcessor {
 		dto.setFacultyCount(dao.getInstituteFaculties(instituteId).size());
 		dto.setScholarshipCount(scholarshipDao.getCountByInstituteId(instituteId));
 		return dto;
+	}
+
+
+
+	public List<InstituteRequestDto> getInstitutesByIdList(List<String> instituteIds) throws Exception {
+		log.info("inside InstituteProcessor.getInstitutesByIdList");
+		List<InstituteRequestDto> instituteRequestDtos = dao.findByIds(instituteIds);
+		if (!CollectionUtils.isEmpty(instituteRequestDtos)) {
+
+			instituteIds = instituteRequestDtos.stream().map(InstituteRequestDto::getId).collect(Collectors.toList());
+			List<StorageDto> instituteLogos = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
+					EntitySubTypeEnum.LOGO);
+			log.info("Fetching institute google review from DB based on instituteId");
+			Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
+					.getInstituteAvgGoogleReviewForList(instituteIds);
+
+			log.info("Calling review service to fetch user average review for instituteId");
+			Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
+
+			instituteRequestDtos.stream().forEach(instituteResponseDto -> {
+				instituteResponseDto.setStars(
+						calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteResponseDto.getId()));
+				Optional<StorageDto> logoStorage = instituteLogos.stream()
+						.filter(e -> e.getEntityId().equals(instituteResponseDto.getId())).findFirst();
+				instituteResponseDto.setLogoUrl(logoStorage.isPresent() ? logoStorage.get().getFileURL() : null);
+			});
+
+		}
+		return instituteRequestDtos;
 	}
 }
