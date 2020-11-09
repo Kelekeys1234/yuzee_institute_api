@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.InstituteBasicInfoDto;
 
@@ -23,6 +24,6 @@ public interface InstituteBasicInfoInterface {
 	public ResponseEntity<?> getInstituteBasicInfo (@RequestHeader("userId") final String userId,@PathVariable final String instituteId) throws Exception;
 	
 	@GetMapping("/public/basic/info/{instituteId}")
-	public ResponseEntity<?> getInstitutePublicBasicInfo (@PathVariable final String instituteId) throws Exception; 
+	public ResponseEntity<?> getInstitutePublicBasicInfo (@PathVariable final String instituteId, @RequestParam(name = "includeInstituteLogo", defaultValue = "true") boolean includeInstituteLogo ) throws Exception; 
 
 }

@@ -27,4 +27,10 @@ public class InstituteBasicInfoDto {
 	@NotBlank(message = "description should not be blank")
 	@JsonProperty("description")
 	private String description;
+	
+	@JsonProperty("country_name")
+	private String countryName;
+	
+	@JsonProperty("city_name")
+	private String cityName;
 }

@@ -59,7 +59,7 @@ public class InstituteBasicInfoProcessor {
 	}
 	
 	@Transactional
-	public InstituteBasicInfoDto getInstituteBasicInfo (String userId , String instituteId, String caller) throws Exception {
+	public InstituteBasicInfoDto getInstituteBasicInfo (String userId , String instituteId, String caller, boolean includeInstituteLogo) throws Exception {
 		InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto();
 		List<StorageDto> listOfStorageDto = null;
 		log.debug("Inside getInstituteBasicInfo() method");
@@ -74,10 +74,12 @@ public class InstituteBasicInfoProcessor {
 		}
 		Institute institute = instituteFromFb.get();
 		log.info("Getting institute logo for institute id "+instituteId);
-		try {
-			listOfStorageDto = storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
-		} catch (Exception e) {
-			log.error("Not able to fetch logo for institue id "+instituteId);
+		if(includeInstituteLogo) {
+			try {
+				listOfStorageDto = storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
+			} catch (Exception e) {
+				log.error("Not able to fetch logo for institue id "+instituteId);
+			}			
 		}
 		
 		if (!CollectionUtils.isEmpty(listOfStorageDto)) {
@@ -86,6 +88,8 @@ public class InstituteBasicInfoProcessor {
 		} 
 		instituteBasicInfoDto.setDescription(institute.getDescription());
 		instituteBasicInfoDto.setNameOfUniversity(institute.getName());
+		instituteBasicInfoDto.setCountryName(institute.getCountryName());
+		instituteBasicInfoDto.setCityName(institute.getCityName());
 		if (!ObjectUtils.isEmpty(institute.getInstituteCategoryType())) {
 			instituteBasicInfoDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId() );
 			instituteBasicInfoDto.setInstituteCategoryTypeName(institute.getInstituteCategoryType().getName());

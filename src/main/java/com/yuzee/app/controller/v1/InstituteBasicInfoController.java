@@ -33,15 +33,15 @@ public class InstituteBasicInfoController implements InstituteBasicInfoInterface
 
 	@Override
 	public ResponseEntity<?> getInstituteBasicInfo(String userId, String instituteId) throws Exception {
-		InstituteBasicInfoDto instituteBasicInfoDto = instituteBasicInfoProcessor.getInstituteBasicInfo(userId, instituteId, "PRIVATE");
+		InstituteBasicInfoDto instituteBasicInfoDto = instituteBasicInfoProcessor.getInstituteBasicInfo(userId, instituteId, "PRIVATE", true);
 		return new GenericResponseHandlers.Builder().setData(instituteBasicInfoDto).setMessage("Institute basic info fetched successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	// passing null user id as dont want to duplicate same set of code 
 	@Override
-	public ResponseEntity<?> getInstitutePublicBasicInfo(String instituteId) throws Exception {
-		InstituteBasicInfoDto instituteBasicInfoDto = instituteBasicInfoProcessor.getInstituteBasicInfo(null, instituteId, "PUBLIC");
+	public ResponseEntity<?> getInstitutePublicBasicInfo(String instituteId, boolean includeInstituteLogo) throws Exception {
+		InstituteBasicInfoDto instituteBasicInfoDto = instituteBasicInfoProcessor.getInstituteBasicInfo(null, instituteId, "PUBLIC",includeInstituteLogo);
 		return new GenericResponseHandlers.Builder().setData(instituteBasicInfoDto).setMessage("Institute basic info fetched successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
