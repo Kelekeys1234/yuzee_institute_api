@@ -127,9 +127,6 @@ public class InstituteProcessor {
 	private ModelMapper modelMapper;
 
 	@Autowired
-	private InstituteGoogleReviewProcessor instituteGoogleReviewProcessor;
-
-	@Autowired
 	private ReviewHandler reviewHandler;
 	
 	@Autowired
@@ -655,20 +652,10 @@ public class InstituteProcessor {
 			instituteRequestDto.setFollowersCount(followerCountDto.getConnection_number());
 		}
 
-		log.info("Fetching institute google review from DB based on instituteId");
-		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
-				.getInstituteAvgGoogleReviewForList(Arrays.asList(instituteRequestDto.getId()));
-		
-		
-		Map<String, Double> yuzeeReviewMap = null;
-		try {
-			log.info("Calling review service to fetch user average review for instituteId");
-			yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", Arrays.asList(instituteRequestDto.getId()));
-		} catch (Exception e) {
-			log.error("Error invoking review service having exception = "+e);
-			throw e;
-		}
-		instituteRequestDto.setStars(calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteRequestDto.getId()));
+		log.info("Calling review service to fetch user average review for instituteId");
+		Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE",
+				Arrays.asList(instituteRequestDto.getId()));
+		instituteRequestDto.setStars(yuzeeReviewMap.get(instituteRequestDto.getId()));
 		return instituteRequestDto;
 	}
 
@@ -967,18 +954,8 @@ public class InstituteProcessor {
 			
 			List<String> instituteIds = instituteResponseDtos.stream().map(InstituteResponseDto::getId).collect(Collectors.toList());
 			
-			log.info("Fetching institute google review from DB based on instituteId");
-			Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
-					.getInstituteAvgGoogleReviewForList(instituteIds);
-			
-			Map<String, Double> yuzeeReviewMap = null;
-			try {
-				log.info("Calling review service to fetch user average review for instituteId");
-				yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
-			} catch (Exception e) {
-				log.error("Error invoking review service having exception = "+e);
-				throw e;
-			}
+			log.info("Calling review service to fetch user average review for instituteId");
+			Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
 			
 			Map<String, String> profilePermissionsMap = userHandler.getUserProfileDataPermission(instituteIds);
 
@@ -988,8 +965,7 @@ public class InstituteProcessor {
 				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
 						.getInstituteTimeByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
-				instituteResponseDto.setStars(
-						calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteResponseDto.getId()));
+				instituteResponseDto.setStars(yuzeeReviewMap.get(instituteResponseDto.getId()));
 				if (!CollectionUtils.isEmpty(profilePermissionsMap)) {
 					instituteResponseDto.setProfilePermission(profilePermissionsMap.get(instituteResponseDto.getId()));
 				}
@@ -1109,31 +1085,6 @@ public class InstituteProcessor {
 		}
 	}
 
-	private double calculateAverageRating(Map<String, Double> googleReviewMap, Map<String, Double> yuzeeReviewMap,
-			String instituteId) {
-		log.debug("Inside calculateAverageRating() method");
-		Double googleReview = 0d;
-		Double yuzeeReview = 0d;
-		log.info("Calculating avearge rating based on googleReview, yuzeeReview");
-		int count = 0;
-
-		if (yuzeeReviewMap != null && googleReviewMap.get(instituteId) != null) {
-			googleReview = googleReviewMap.get(instituteId);
-			count++;
-		}
-		log.info("course Google Rating" + googleReview);
-		if (yuzeeReviewMap != null && yuzeeReviewMap.get(instituteId) != null) {
-			yuzeeReview = yuzeeReviewMap.get(instituteId);
-			count++;
-		}
-		if (count != 0) {
-			Double rating= Double.sum(googleReview, yuzeeReview);
-			return rating / count;
-		} else {
-			return 0d;
-		}
-	}
-
 	public CourseScholarshipAndFacultyCountDto getInstituteCourseScholarshipAndFacultyCount(String instituteId)
 			throws NotFoundException {
 		CourseScholarshipAndFacultyCountDto dto = new CourseScholarshipAndFacultyCountDto();
@@ -1152,16 +1103,12 @@ public class InstituteProcessor {
 			instituteIds = instituteResponseDtos.stream().map(InstituteResponseDto::getId).collect(Collectors.toList());
 			List<StorageDto> instituteLogos = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
 					EntitySubTypeEnum.LOGO);
-			log.info("Fetching institute google review from DB based on instituteId");
-			Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
-					.getInstituteAvgGoogleReviewForList(instituteIds);
 
 			log.info("Calling review service to fetch user average review for instituteId");
 			Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
 
 			instituteResponseDtos.stream().forEach(instituteResponseDto -> {
-				instituteResponseDto.setStars(
-						calculateAverageRating(googleReviewMap, yuzeeReviewMap, instituteResponseDto.getId()));
+				instituteResponseDto.setStars(yuzeeReviewMap.get(instituteResponseDto.getId()));
 				Optional<StorageDto> logoStorage = instituteLogos.stream()
 						.filter(e -> e.getEntityId().equals(instituteResponseDto.getId())).findFirst();
 				instituteResponseDto.setLogoUrl(logoStorage.isPresent() ? logoStorage.get().getFileURL() : null);

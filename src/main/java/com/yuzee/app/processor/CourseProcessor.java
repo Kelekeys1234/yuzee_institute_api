@@ -87,10 +87,10 @@ import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.app.util.PaginationUtil;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-@CommonsLog
+@Slf4j
 @Transactional
 public class CourseProcessor {
 
@@ -133,9 +133,6 @@ public class CourseProcessor {
 	@Autowired
 	private ITop10CourseService iTop10CourseService;
 
-	@Autowired
-	private InstituteGoogleReviewProcessor instituteGoogleReviewProcessor;
-	
 	@Autowired
 	private ReviewHandler reviewHandler;
 	
@@ -831,15 +828,11 @@ public class CourseProcessor {
 		List<StorageDto> storageDTOList = storageHandler.getStorages(
 				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 		
-		log.info("Fetching institute google review from DB based on instituteId");
-		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
-				.getInstituteAvgGoogleReviewForList(courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
-		
 		Map<String, Double> yuzeeReviewMap = null;
 		try {
 			log.info("Calling review service to fetch user average review for instituteId");
-			yuzeeReviewMap = reviewHandler.getUserAverageReviewBasedOnDataList("INSTITUTE",
-					courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()));
+			yuzeeReviewMap = reviewHandler.getAverageReview("COURSE",
+					courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList()));
 		} catch (Exception e) {
 			log.error("Error invoking review service having exception = " + e);
 		}
@@ -890,7 +883,7 @@ public class CourseProcessor {
 				
 				log.info("Calculating average review rating based on reviews");
 				courseResponseDto
-						.setStars(calculateAverageRating(googleReviewMap, yuzeeReviewMap, courseResponseDto.getStars(), courseResponseDto.getInstituteId()));
+						.setStars(calculateAverageRating(yuzeeReviewMap, courseResponseDto.getStars(), courseResponseDto.getInstituteId()));
 				
 				if(!ObjectUtils.isEmpty(courseSearchDto.getLatitude()) && !ObjectUtils.isEmpty(courseSearchDto.getLongitude()) && 
 						!ObjectUtils.isEmpty(courseResponseDto.getLatitude()) && !ObjectUtils.isEmpty(courseResponseDto.getLongitude())) {
@@ -904,7 +897,7 @@ public class CourseProcessor {
 		return courseResponseFinalResponse;
 	}
 
-	public double calculateAverageRating(final Map<String, Double> googleReviewMap, final Map<String, Double> yuzeeReviewMap, final Double courseStar,
+	public double calculateAverageRating(final Map<String, Double> yuzeeReviewMap, final Double courseStar,
 			final String instituteId) {
 		log.debug("Inside calculateAverageRating() method");
 		Double courseStars = 0d;
@@ -916,17 +909,12 @@ public class CourseProcessor {
 			courseStars = courseStar;
 			count++;
 		}
-		log.info("course Rating = "+ courseStar );
-		if (googleReviewMap.get(instituteId) != null) {
-			googleReview = googleReviewMap.get(instituteId);
-			count++;
-		}
-		log.info("course Google Rating" + googleReview);
+		log.info("course Rating = ", courseStar );
 		if (yuzeeReviewMap != null && yuzeeReviewMap.get(instituteId) != null) {
 			yuzeeReview = yuzeeReviewMap.get(instituteId);
 			count++;
 		}
-		log.info("course Yuzee Rating" + yuzeeReview);
+		log.info("course Yuzee Rating", yuzeeReview);
 		Double rating = Double.sum(courseStars, googleReview);
 		if (count != 0) {
 			Double finalRating = Double.sum(rating, yuzeeReview);
@@ -1601,24 +1589,16 @@ public class CourseProcessor {
 		log.info("Course fetched from data start copying bean class data to DTO class");
 		CourseRequest courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
 		
-		log.info("Fetching institute google review based on instituteID to calculate average review");
-		Map<String, Double> googleReviewMap = instituteGoogleReviewProcessor
-				.getInstituteAvgGoogleReviewForList(Arrays.asList(courseRequest.getInstituteId()));
-		
 		Map<String, Double> yuzeeReviewMap = null;
-		try {
 			log.info(
 					"Calling review service to fetch user average review based on instituteID  to calculate average review");
-			yuzeeReviewMap = reviewHandler.getUserAverageReviewBasedOnDataList("INSTITUTE",
+			yuzeeReviewMap = reviewHandler.getAverageReview("COURSE",
 					Arrays.asList(courseRequest.getInstituteId()));
-		} catch (Exception e) {
-			log.error("Error invoking review service having exception = " + e);
-		}
-		
-		if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
+
+			if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
 			log.info("Calculating average review based on instituteGoogleReview and userReview and stars");
-			courseRequest.setStars(String.valueOf(calculateAverageRating(googleReviewMap, yuzeeReviewMap,
-					Double.valueOf(courseRequest.getStars()), courseRequest.getInstituteId())));
+			courseRequest.setStars(String.valueOf(calculateAverageRating(yuzeeReviewMap,
+					Double.valueOf(courseRequest.getStars()), courseRequest.getId())));
 		}
 		
 		log.info("Fetching courseIntake for courseId = "+id);
