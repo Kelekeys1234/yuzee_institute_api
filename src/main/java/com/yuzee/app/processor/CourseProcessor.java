@@ -1593,7 +1593,7 @@ public class CourseProcessor {
 			log.info(
 					"Calling review service to fetch user average review based on instituteID  to calculate average review");
 			yuzeeReviewMap = reviewHandler.getAverageReview("COURSE",
-					Arrays.asList(courseRequest.getInstituteId()));
+					Arrays.asList(courseRequest.getId()));
 
 			if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
 			log.info("Calculating average review based on instituteGoogleReview and userReview and stars");
