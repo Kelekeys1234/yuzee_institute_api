@@ -168,8 +168,8 @@ public class InstituteDaoImpl implements InstituteDao {
 				+ "inst.Country_name as countryName,count(c.id) as courses, inst.world_ranking as world_ranking, MIN(c.stars) as stars "
 				+ " ,inst.updated_on as updatedOn, inst.institute_type as instituteType,"
 				+ " inst.is_active, inst.domestic_ranking, inst.latitude,inst.longitude,MIN(cai.usd_international_fee), MAX(cai.usd_international_fee),c.currency,"
-				+ " inst.website,inst.about_us_info,inst.total_student,inst.email,inst.address,inst.tag_line as tagLine"
-				+ " from institute inst "
+				+ " inst.website,inst.about_us_info,instAdd.student_number,inst.email,inst.address,inst.tag_line as tagLine"
+				+ " from institute inst left join institute_additional_info instAdd  on instAdd.institute_id=inst.id "
 				+ "left join course c  on c.institute_id=inst.id LEFT JOIN course_delivery_modes cai on cai.course_id = c.id where 1=1 ";
 
 		if (null != courseSearchDto.getCountryNames() && !courseSearchDto.getCountryNames().isEmpty()) {
@@ -340,8 +340,8 @@ public class InstituteDaoImpl implements InstituteDao {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.institute_type as institudeTypeId,"
 				+ " inst.world_ranking, inst.country_name, inst.city_name, inst.website, inst.about_us_info,"
-				+ " inst.total_student, inst.latitude, inst.longitude, inst.email, inst.address, inst.domestic_ranking, inst.tag_line"
-				+ " from institute inst where inst.city_name in ("+ citisId + ")  ORDER BY inst.name";
+				+ " instAdd.student_number, inst.latitude, inst.longitude, inst.email, inst.address, inst.domestic_ranking, inst.tag_line"
+				+ " from institute inst left join institute_additional_info instAdd  on instAdd.institute_id=inst.id  where inst.city_name in ("+ citisId + ")  ORDER BY inst.name";
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
@@ -425,9 +425,9 @@ public class InstituteDaoImpl implements InstituteDao {
 	public List<InstituteGetRequestDto> getAll(final Integer pageNumber, final Integer pageSize) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description,"
-				+ " inst.latitude, inst.longitude, inst.total_student, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
+				+ " inst.latitude, inst.longitude, instAdd.student_number, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
 				+ "inst.address, inst.avg_cost_of_living, inst.tag_line"
-				+ " FROM institute as inst where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
+				+ " FROM institute as inst left join institute_additional_info instAdd  on instAdd.institute_id=inst.id  where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
@@ -593,8 +593,9 @@ public class InstituteDaoImpl implements InstituteDao {
 	public List<InstituteGetRequestDto> autoSearch(final int pageNumber, final Integer pageSize, final String searchKey) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description,"
-				+ " inst.latitude, inst.longitude, inst.total_student, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
-				+ " inst.address, inst.avg_cost_of_living,inst.tag_line FROM institute as inst where  inst.deleted_on IS NULL and (inst.name like '%"
+				+ " inst.latitude, inst.longitude, instAdd.student_number, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
+				+ " inst.address, inst.avg_cost_of_living,inst.tag_line FROM institute as inst left join institute_additional_info instAdd on instAdd.institute_id=inst.id "
+				+ " where  inst.deleted_on IS NULL and (inst.name like '%"
 				+ searchKey + "%' or inst.description like '%" + searchKey + "%' or inst.country_name like '%" + searchKey + "%' or inst.city_name like '%" + searchKey
 				+ "%' or inst.institute_type like '%" + searchKey + "%') " + " ORDER BY inst.created_on DESC";
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
@@ -751,9 +752,10 @@ public class InstituteDaoImpl implements InstituteDao {
 				" COS(RADIANS('"+ courseSearchDto.getLatitude() +"')) * COS(RADIANS(institute.latitude)) * COS(RADIANS(institute.longitude) -" + 
 				" RADIANS('"+ courseSearchDto.getLongitude() +"'))) AS distance_in_km,institute.world_ranking,"+
 				" institute.domestic_ranking,MIN(course.stars) as stars,course.currency,institute.country_name,institute.city_name,course.name as courseName," +
-				" institute.total_student,institute.about_us_info,institute.website,institute.email,institute.address," +
+				" instAdd.student_number,institute.about_us_info,institute.website,institute.email,institute.address," +
 				" institute.is_active, institute.institute_type,institute.tag_line" +
-				" FROM institute institute inner join course on institute.id = course.institute_id" +
+				" FROM institute left join institute_additional_info instAdd  on instAdd.institute_id=institute.id " + 
+				" institute inner join course on institute.id = course.institute_id" +
 				" inner join faculty f  on f.id = course.faculty_id "+
 				" left join institute_service iis  on iis.institute_id = institute.id"+
 				" LEFT JOIN course_delivery_modes cai on cai.course_id = course.id"+
@@ -834,7 +836,6 @@ public class InstituteDaoImpl implements InstituteDao {
 						.add(Projections.property("countryName").as("countryName"))
 						.add(Projections.property("website").as("website"))
 						.add(Projections.property("aboutInfo").as("aboutUs"))
-						.add(Projections.property("totalStudent").as("totalStudent"))
 						.add(Projections.property("latitude").as("latitude"))
 						.add(Projections.property("longitude").as("longitude"))
 						.add(Projections.property("phoneNumber").as("phoneNumber"))
@@ -988,9 +989,9 @@ public class InstituteDaoImpl implements InstituteDao {
 				" 6371 * ACOS(SIN(RADIANS('"+ latitutde +"')) * SIN(RADIANS(institute.latitude)) +" + 
 				" COS(RADIANS('"+ latitutde +"')) * COS(RADIANS(institute.latitude)) * COS(RADIANS(institute.longitude) -" + 
 				" RADIANS('"+ longitude +"'))) AS distance_in_km,institute.world_ranking,institute.domestic_ranking,MIN(course.stars) as stars,course.currency,institute.country_name,institute.city_name," + 
-				" institute.total_student,institute.about_us_info,institute.website,institute.email,institute.address," +
+				" instAdd.student_number,institute.about_us_info,institute.website,institute.email,institute.address," +
 				" institute.is_active, institute.institute_type,institute.tag_line" +
-				" FROM institute institute inner join course on institute.id = course.institute_id LEFT JOIN course_delivery_modes cai on cai.course_id = course.id" +
+				" FROM institute institute left join institute_additional_info instAdd  on instAdd.institute_id=institute.id  inner join course on institute.id = course.institute_id LEFT JOIN course_delivery_modes cai on cai.course_id = course.id" +
 				" where institute.latitude is not null and institute.longitude is not null" + 
 				" and institute.latitude!= " + latitutde + " and institute.longitude!= "  + longitude + " group by institute.id" + 
 				" HAVING distance_in_km <= " + initialRadius + " ORDER BY distance_in_km ASC LIMIT "+ pageNumber + "," + pageSize;

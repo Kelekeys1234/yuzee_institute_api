@@ -61,7 +61,7 @@ public class CommonUtil {
 		}
 		instituteRequestDto.setAddress(institute.getAddress());
 		instituteRequestDto.setPhoneNumber(institute.getPhoneNumber());
-		instituteRequestDto.setTotalStudent(institute.getTotalStudent());
+		instituteRequestDto.setTotalStudent(institute.getInstituteAdditionalInfo().getNumberOfStudent());
 		instituteRequestDto.setWorldRanking(institute.getWorldRanking());
 		instituteRequestDto.setName(institute.getName());
 		instituteRequestDto.setCampusName(institute.getCampusName());

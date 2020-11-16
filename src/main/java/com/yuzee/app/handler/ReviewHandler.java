@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReviewHandler {
 
-	private static final String GET_USER_AVERAGE_REVIEW = "/average/entityType/{entityType}";
+	private static final String GET_USER_AVERAGE_REVIEW = "/user/review/average/entityType/{entityType}";
 
 	private static final String INVOKE_EXCEPTION = "Error invoking review service {}";
 

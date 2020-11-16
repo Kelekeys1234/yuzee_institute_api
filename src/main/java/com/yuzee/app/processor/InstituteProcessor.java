@@ -419,7 +419,6 @@ public class InstituteProcessor {
 		institute.setPhoneNumber(instituteRequest.getPhoneNumber());
 		institute.setLatitude(instituteRequest.getLatitude());
 		institute.setLongitude(instituteRequest.getLongitude());
-		institute.setTotalStudent(instituteRequest.getTotalStudent());
 		institute.setCampusName(instituteRequest.getCampusName());
 		institute.setEnrolmentLink(instituteRequest.getEnrolmentLink());
 		institute.setTuitionFeesPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
@@ -613,7 +612,7 @@ public class InstituteProcessor {
 		return images;
 	}
 
-	
+	@Transactional
 	public InstituteRequestDto getById(final String id) throws Exception {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);

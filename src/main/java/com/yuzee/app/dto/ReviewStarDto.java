@@ -11,5 +11,5 @@ public class ReviewStarDto {
 	private String entityId;
 
 	@JsonProperty("review_stars")
-	private double reviewStars;
+	private Double reviewStars;
 }
