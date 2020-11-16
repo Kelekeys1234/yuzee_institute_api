@@ -68,6 +68,7 @@ import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.dto.UserViewCourseDto;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.enumeration.TransactionTypeEnum;
 import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
@@ -224,7 +225,7 @@ public class CourseProcessor {
 				log.info("Invoking viewTransaction service to fetched view course by user");
 				try {
 					UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(
-							courseSearchDto.getUserId(), "COURSE", courseResponseDto.getId(), "viewCourse");
+							courseSearchDto.getUserId(), EntityTypeEnum.COURSE.name(), courseResponseDto.getId(), TransactionTypeEnum.VIEWED_COURSE.name());
 					if(!ObjectUtils.isEmpty(userViewCourseDto)) {
 						log.info("User view course data is coming for courseId = " + courseResponseDto.getId() + " ,hence marking course as viewed");
 						courseResponseDto.setIsViewed(true);
@@ -851,7 +852,7 @@ public class CourseProcessor {
 				}
 				
 				UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
-						"COURSE", courseResponseDto.getId(), "viewCourse");
+						EntityTypeEnum.COURSE.name(), courseResponseDto.getId(), TransactionTypeEnum.VIEWED_COURSE.name());
 				if(!ObjectUtils.isEmpty(userViewCourseDto)) {
 					courseResponseDto.setIsViewed(true);
 				} else {

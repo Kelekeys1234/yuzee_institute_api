@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.netflix.eureka.registry.Key.EntityType;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseKeywords;
@@ -35,6 +36,7 @@ import com.yuzee.app.endpoint.CourseInterface;
 import com.yuzee.app.enumeration.EnglishType;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.enumeration.TransactionTypeEnum;
 import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
@@ -158,7 +160,7 @@ public class CourseController implements CourseInterface {
 		
 		log.info("Calling view transaction service to fetch user my course data");
 		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
-				"COURSE", "savedCourse");
+				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.SAVED_COURSE.name());
 		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
 		
 		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage(), 
@@ -185,7 +187,7 @@ public class CourseController implements CourseInterface {
 		
 		log.info("Calling view transaction service to fetch user my course data");
 		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
-				"COURSE", "savedCourse");
+				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.SAVED_COURSE.name());
 		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
 		
 		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto, entityIds);
