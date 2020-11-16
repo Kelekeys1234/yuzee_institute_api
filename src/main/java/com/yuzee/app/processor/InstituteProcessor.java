@@ -613,7 +613,6 @@ public class InstituteProcessor {
 		return images;
 	}
 
-	@Transactional
 	public InstituteRequestDto getById(final String id) throws Exception {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);
@@ -660,6 +659,25 @@ public class InstituteProcessor {
 		if (!ObjectUtils.isEmpty(reviewStarDto)) {
 			instituteRequestDto.setStars(reviewStarDto.getReviewStars());
 			instituteRequestDto.setReviewsCount(reviewStarDto.getReviewsCount());
+		}
+		
+		List<StorageDto> imageStorages = storageHandler.getStorages(Arrays.asList(instituteRequestDto.getId()), EntityTypeEnum.INSTITUTE,
+				Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
+		
+		if (!CollectionUtils.isEmpty(imageStorages)) {
+			List<StorageDto> instituteImages = imageStorages.stream()
+					.filter(s -> s.getEntityId().equals(instituteRequestDto.getId()))
+					.collect(Collectors.toList());
+			
+			StorageDto logoStorage = instituteImages.stream().filter(e->e.getEntitySubType().equals(EntitySubTypeEnum.LOGO)).findAny().orElse(null);
+			if (!ObjectUtils.isEmpty(logoStorage)) {
+				instituteRequestDto.setLogoUrl(logoStorage.getFileURL());
+			}
+			
+			StorageDto coverStorage = instituteImages.stream().filter(e->e.getEntitySubType().equals(EntitySubTypeEnum.COVER_PHOTO)).findAny().orElse(null);
+			if (!ObjectUtils.isEmpty(coverStorage)) {
+				instituteRequestDto.setCoverPhotoUrl(coverStorage.getFileURL());
+			}
 		}
 		return instituteRequestDto;
 	}
@@ -962,6 +980,8 @@ public class InstituteProcessor {
 			log.info("Calling review service to fetch user average review for instituteId");
 			Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
 			
+			List<StorageDto> imageStorages = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
+					Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
 			Map<String, String> profilePermissionsMap = userHandler.getUserProfileDataPermission(instituteIds);
 
 			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
@@ -979,6 +999,21 @@ public class InstituteProcessor {
 				
 				if (!CollectionUtils.isEmpty(profilePermissionsMap)) {
 					instituteResponseDto.setProfilePermission(profilePermissionsMap.get(instituteResponseDto.getId()));
+				}
+				if (!CollectionUtils.isEmpty(imageStorages)) {
+					List<StorageDto> instituteImages = imageStorages.stream()
+							.filter(s -> s.getEntityId().equals(instituteResponseDto.getId()))
+							.collect(Collectors.toList());
+					
+					StorageDto logoStorage = instituteImages.stream().filter(e->e.getEntitySubType().equals(EntitySubTypeEnum.LOGO)).findAny().orElse(null);
+					if (!ObjectUtils.isEmpty(logoStorage)) {
+						instituteResponseDto.setLogoUrl(logoStorage.getFileURL());
+					}
+					
+					StorageDto coverStorage = instituteImages.stream().filter(e->e.getEntitySubType().equals(EntitySubTypeEnum.COVER_PHOTO)).findAny().orElse(null);
+					if (!ObjectUtils.isEmpty(coverStorage)) {
+						instituteResponseDto.setCoverPhotoUrl(coverStorage.getFileURL());
+					}
 				}
 				instituteResponse.add(instituteResponseDto);
 			}
