@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.Institute;
+import com.yuzee.app.bean.InstituteAdditionalInfo;
 import com.yuzee.app.bean.InstituteFacility;
 import com.yuzee.app.bean.Todo;
 import com.yuzee.app.dto.CourseRequest;
@@ -46,6 +48,7 @@ public class CommonUtil {
 		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
 		instituteRequestDto.setAvgCostOfLiving(institute.getAvgCostOfLiving());
 		instituteRequestDto.setCityName(institute.getCityName());
+		instituteRequestDto.setStateName(institute.getState());
 		instituteRequestDto.setCountryName(institute.getCountryName());
 		instituteRequestDto.setDescription(institute.getDescription());
 		instituteRequestDto.setId(institute.getId());
@@ -61,7 +64,10 @@ public class CommonUtil {
 		}
 		instituteRequestDto.setAddress(institute.getAddress());
 		instituteRequestDto.setPhoneNumber(institute.getPhoneNumber());
-		instituteRequestDto.setTotalStudent(institute.getInstituteAdditionalInfo().getNumberOfStudent());
+		InstituteAdditionalInfo instituteAdditionalInfo = institute.getInstituteAdditionalInfo();
+		if (!ObjectUtils.isEmpty(instituteAdditionalInfo)) {
+			instituteRequestDto.setTotalStudent(instituteAdditionalInfo.getNumberOfStudent());
+		}
 		instituteRequestDto.setWorldRanking(institute.getWorldRanking());
 		instituteRequestDto.setName(institute.getName());
 		instituteRequestDto.setCampusName(institute.getCampusName());
