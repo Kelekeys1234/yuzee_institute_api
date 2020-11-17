@@ -17,11 +17,10 @@ import com.yuzee.app.dto.InstituteAdditionalInfoDto;
 public interface InstituteAdditionalInfoInterface {
 
 	@PostMapping("/additional/info/{instituteId}")
-	public ResponseEntity<?> addInstituteAdditionalInfo(@RequestHeader("userId") final String userId,@PathVariable final String instituteId ,@RequestBody @Valid InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception;
-		
+	public ResponseEntity<?> addInstituteAdditionalInfo(@RequestHeader("userId") final String userId,
+			@PathVariable final String instituteId,
+			@Valid @RequestBody final InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception;
+
 	@GetMapping("/additional/info/{instituteId}")
-	public ResponseEntity<?> getInstituteAdditionalInfo(@RequestHeader("userId") final String userId,@PathVariable final String instituteId) throws Exception;
-		
-	@GetMapping("/public/additional/info/{instituteId}")
-	public ResponseEntity<?> getInstitutePublicAdditionalInfo (@PathVariable final String instituteId) throws Exception;
+	public ResponseEntity<?> getInstituteAdditionalInfo(@PathVariable final String instituteId) throws Exception;
 }

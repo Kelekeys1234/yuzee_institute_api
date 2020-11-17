@@ -1,9 +1,10 @@
 package com.yuzee.app.dto;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import lombok.Data;
 
@@ -12,33 +13,37 @@ public class InstituteAdditionalInfoDto {
 	
 	@NotNull(message = "student_number is required")
 	@JsonProperty("student_number")
-	private int numberOfStudent;
+	private Integer numberOfStudent;
 	
 	@NotNull(message = "employee_number is required")
 	@JsonProperty("employee_number")
-	private int numberOfEmployee;
+	private Integer numberOfEmployee;
 	
 	@NotNull(message = "teacher_number is required")
 	@JsonProperty("teacher_number")
-	private int numberOfTeacher;
+	private Integer numberOfTeacher;
 	
 	@NotNull(message = "class_number is required")
 	@JsonProperty("class_number")
-	private int numberOfClassRoom;
+	private Integer numberOfClassRoom;
 	
-	@NotEmpty(message = "campus_size is required")
+	@NotNull(message = "campus_size is required")
 	@JsonProperty("campus_size")
-	private String sizeOfCampus;
+	private Integer sizeOfCampus;
 	
 	@NotNull(message = "lecture_hall_number is required")
 	@JsonProperty("lecture_hall_number")
-	private int numberOfLectureHall;
+	private Integer numberOfLectureHall;
 	
 	@NotNull(message = "faculty_number is required")
 	@JsonProperty("faculty_number")
-	private int numberOfFaculty;
+	private Integer numberOfFaculty;
 	
 	@NotNull(message = "employment_rate is required")
 	@JsonProperty("employment_rate")
-	private String employmentRate;
+	private Integer rateOfEmployment;
+
+	@NotBlank(message = "about_info should not be blank")
+	@JsonProperty(value = "about_info", access = Access.WRITE_ONLY)
+	private String aboutInfo;
 }
