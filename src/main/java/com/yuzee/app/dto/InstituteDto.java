@@ -61,7 +61,10 @@ public class InstituteDto {
 	private String tagLine;
 
 	@JsonProperty("stars")
-	private double stars;
+	private Double stars;
+	
+	@JsonProperty("reviews_count")
+	private Long reviewsCount;
 	
 	@JsonProperty("profile_permission")
 	private String profilePermission;

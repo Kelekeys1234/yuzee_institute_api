@@ -63,6 +63,7 @@ import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.NearestCoursesDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
+import com.yuzee.app.dto.ReviewStarDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.dto.UserViewCourseDto;
@@ -829,7 +830,7 @@ public class CourseProcessor {
 		List<StorageDto> storageDTOList = storageHandler.getStorages(
 				courseResponseDtos.stream().map(CourseResponseDto::getInstituteId).collect(Collectors.toList()), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 		
-		Map<String, Double> yuzeeReviewMap = null;
+		Map<String, ReviewStarDto> yuzeeReviewMap = null;
 		try {
 			log.info("Calling review service to fetch user average review for instituteId");
 			yuzeeReviewMap = reviewHandler.getAverageReview("COURSE",
@@ -898,7 +899,7 @@ public class CourseProcessor {
 		return courseResponseFinalResponse;
 	}
 
-	public double calculateAverageRating(final Map<String, Double> yuzeeReviewMap, final Double courseStar,
+	public double calculateAverageRating(final Map<String, ReviewStarDto> yuzeeReviewMap, final Double courseStar,
 			final String instituteId) {
 		log.debug("Inside calculateAverageRating() method");
 		Double courseStars = 0d;
@@ -911,8 +912,8 @@ public class CourseProcessor {
 			count++;
 		}
 		log.info("course Rating = ", courseStar );
-		if (yuzeeReviewMap != null && yuzeeReviewMap.get(instituteId) != null) {
-			yuzeeReview = yuzeeReviewMap.get(instituteId);
+		if (yuzeeReviewMap != null && yuzeeReviewMap.get(instituteId) != null && !ObjectUtils.isEmpty(yuzeeReviewMap.get(instituteId).getReviewStars())) {
+			yuzeeReview = yuzeeReviewMap.get(instituteId).getReviewStars();
 			count++;
 		}
 		log.info("course Yuzee Rating", yuzeeReview);
@@ -1590,7 +1591,7 @@ public class CourseProcessor {
 		log.info("Course fetched from data start copying bean class data to DTO class");
 		CourseRequest courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
 		
-		Map<String, Double> yuzeeReviewMap = null;
+		Map<String, ReviewStarDto> yuzeeReviewMap = null;
 			log.info(
 					"Calling review service to fetch user average review based on instituteID  to calculate average review");
 			yuzeeReviewMap = reviewHandler.getAverageReview("COURSE",

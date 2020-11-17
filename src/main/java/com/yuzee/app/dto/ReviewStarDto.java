@@ -12,4 +12,7 @@ public class ReviewStarDto {
 
 	@JsonProperty("review_stars")
 	private Double reviewStars;
+	
+	@JsonProperty("reviews_count")
+	private Long reviewsCount;
 }

@@ -55,6 +55,7 @@ import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.NearestInstituteDTO;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
+import com.yuzee.app.dto.ReviewStarDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
@@ -353,8 +354,8 @@ public class InstituteProcessor {
 			}
 
 			log.info("Calling elastic service to save instiutes on index");
-			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
-					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+//			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
+//					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ={}", exception.getMessage());
 			throw exception;
@@ -652,9 +653,14 @@ public class InstituteProcessor {
 		}
 
 		log.info("Calling review service to fetch user average review for instituteId");
-		Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE",
+		Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE",
 				Arrays.asList(instituteRequestDto.getId()));
-		instituteRequestDto.setStars(yuzeeReviewMap.get(instituteRequestDto.getId()));
+		
+		ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteRequestDto.getId());
+		if (!ObjectUtils.isEmpty(reviewStarDto)) {
+			instituteRequestDto.setStars(reviewStarDto.getReviewStars());
+			instituteRequestDto.setReviewsCount(reviewStarDto.getReviewsCount());
+		}
 		return instituteRequestDto;
 	}
 
@@ -954,7 +960,7 @@ public class InstituteProcessor {
 			List<String> instituteIds = instituteResponseDtos.stream().map(InstituteResponseDto::getId).collect(Collectors.toList());
 			
 			log.info("Calling review service to fetch user average review for instituteId");
-			Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
+			Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
 			
 			Map<String, String> profilePermissionsMap = userHandler.getUserProfileDataPermission(instituteIds);
 
@@ -964,7 +970,13 @@ public class InstituteProcessor {
 				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
 						.getInstituteTimeByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
-				instituteResponseDto.setStars(yuzeeReviewMap.get(instituteResponseDto.getId()));
+				
+				ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteResponseDto.getId());
+				if (!ObjectUtils.isEmpty(reviewStarDto)) {
+					instituteResponseDto.setStars(reviewStarDto.getReviewStars());
+					instituteResponseDto.setReviewsCount(reviewStarDto.getReviewsCount());
+				}
+				
 				if (!CollectionUtils.isEmpty(profilePermissionsMap)) {
 					instituteResponseDto.setProfilePermission(profilePermissionsMap.get(instituteResponseDto.getId()));
 				}
@@ -1104,10 +1116,14 @@ public class InstituteProcessor {
 					EntitySubTypeEnum.LOGO);
 
 			log.info("Calling review service to fetch user average review for instituteId");
-			Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
+			Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
 
 			instituteResponseDtos.stream().forEach(instituteResponseDto -> {
-				instituteResponseDto.setStars(yuzeeReviewMap.get(instituteResponseDto.getId()));
+				ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteResponseDto.getId());
+				if (!ObjectUtils.isEmpty(reviewStarDto)) {
+					instituteResponseDto.setStars(reviewStarDto.getReviewStars());
+					instituteResponseDto.setReviewsCount(reviewStarDto.getReviewsCount());
+				}
 				Optional<StorageDto> logoStorage = instituteLogos.stream()
 						.filter(e -> e.getEntityId().equals(instituteResponseDto.getId())).findFirst();
 				instituteResponseDto.setLogoUrl(logoStorage.isPresent() ? logoStorage.get().getFileURL() : null);
