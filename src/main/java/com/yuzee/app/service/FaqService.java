@@ -20,7 +20,10 @@ import com.yuzee.app.dto.FaqRequestDto;
 import com.yuzee.app.dto.FaqResponseDto;
 import com.yuzee.app.exception.ValidationException;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 @Transactional(rollbackFor = Throwable.class)
 public class FaqService implements IFaqService {
 
@@ -145,9 +148,14 @@ public class FaqService implements IFaqService {
 	}
 
 	@Override
-	public FaqResponseDto getFaqDetail(String userId ,final String faqId) {
+	public FaqResponseDto getFaqDetail(String userId ,final String faqId) throws ValidationException {
 		//TODO validate user ID passed in request have access to modify resource
+		log.debug("inside service.getFaqDetail()");
 		Faq faq = iFaqDao.getFaqDetail(faqId);
+		if (ObjectUtils.isEmpty(faq)) {
+			log.error("faq not found for id: {}", faqId);
+			throw new ValidationException("faq not found for id: " + faqId);
+		}
 		FaqResponseDto faqResponseDto = new FaqResponseDto();
 		BeanUtils.copyProperties(faq, faqResponseDto);
 		if (faq.getFaqCategory() != null) {

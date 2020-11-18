@@ -19,7 +19,7 @@ public interface IFaqService {
 
 	int getFaqCount(String faqCategoryId, String faqSubCategoryId, String searchKeyword);
 
-	FaqResponseDto getFaqDetail(String userId,String faqId);
+	FaqResponseDto getFaqDetail(String userId,String faqId) throws ValidationException;
 	
 	List<FaqResponseDto> getFaqListBasedOnEntityId (String userId, String entityId,String caller);
 	
