@@ -1052,7 +1052,7 @@ public class InstituteDaoImpl implements InstituteDao {
 	
 	public List<Institute> getInstituteCampuses(String instituteId, String instituteName) throws NotFoundException {
 		log.debug("inside dao.getInstitutCampuses method.");
-		return instituteRepository.findByIdNotAndName(instituteId, instituteName);
+		return instituteRepository.findByIdNotAndNameAndIsDeletedFalse(instituteId, instituteName);
 	}
 
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {

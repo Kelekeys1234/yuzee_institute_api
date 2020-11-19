@@ -27,6 +27,7 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteDomesticRankingHistory;
 import com.yuzee.app.bean.InstituteIntake;
+import com.yuzee.app.bean.InstituteTiming;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CourseDao;
@@ -1113,9 +1114,26 @@ public class InstituteProcessor {
 		log.debug("inside processor.getInstitutCampuses method.");
 		Institute institute = dao.get(instituteId);
 		if (!ObjectUtils.isEmpty(institute)) {
-			List<Institute> institutes = dao.getInstituteCampuses(instituteId,institute.getName());
-			return institutes.stream().map(e->modelMapper.map(e, InstituteCampusDto.class)).collect(Collectors.toList());
-		}else {
+			List<Institute> institutes = dao.getInstituteCampuses(instituteId, institute.getName());
+			
+			Map<String, InstituteTiming> mapInstituteTimings = institutes.stream()
+					.collect(Collectors.toMap(Institute::getId, Institute::getInstituteTiming));
+			
+			List<InstituteCampusDto> instituteCampuses = institutes.stream()
+					.map(e -> modelMapper.map(e, InstituteCampusDto.class)).collect(Collectors.toList());
+			
+			instituteCampuses.stream().forEach(e -> {
+				InstituteTiming instiuteTiming = mapInstituteTimings.get(e.getId());
+				if (!ObjectUtils.isEmpty(instiuteTiming)) {
+					InstituteTimingResponseDto instituteTimingResponseDto = modelMapper.map(instiuteTiming,
+							InstituteTimingResponseDto.class);
+					e.setInstituteTimings(CommonUtil
+							.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
+				}
+
+			});
+			return instituteCampuses;
+		} else {
 			log.error("Institute not found against id: {}", instituteId);
 			throw new NotFoundException("Institute not found against id: " + instituteId);
 		}
