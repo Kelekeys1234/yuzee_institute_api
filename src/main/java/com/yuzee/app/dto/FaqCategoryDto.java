@@ -8,9 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import lombok.Data;
 
 @Data
-public class FaqSubCategoryDto {
-
-	@JsonProperty(value = "faq_sub_category_id", access = Access.READ_ONLY)
+public class FaqCategoryDto {
+	@JsonProperty(value = "faq_category_id", access = Access.READ_ONLY)
 	private String id;
 
 	@JsonProperty("name")

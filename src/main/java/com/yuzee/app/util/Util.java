@@ -1,6 +1,7 @@
 package com.yuzee.app.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -29,5 +30,9 @@ public class Util {
 	    secondCal.setTime(second);
 	    secondCal.add(Calendar.DAY_OF_YEAR, 1 - firstCal.get(Calendar.DAY_OF_YEAR));
 	    return secondCal.get(Calendar.YEAR) - firstCal.get(Calendar.YEAR);
+	}
+	
+	public static String[] getEnumNames(Class<? extends Enum<?>> e) {
+		return Arrays.stream(e.getEnumConstants()).map(Enum::name).toArray(String[]::new);
 	}
 }
