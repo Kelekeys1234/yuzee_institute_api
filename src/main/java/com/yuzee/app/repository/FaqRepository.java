@@ -12,9 +12,9 @@ import com.yuzee.app.bean.Faq;
 public interface FaqRepository extends JpaRepository<Faq, String> {
 
 	@Query("SELECT faq from Faq faq where :entityId = faq.entityId"
-			+ " and (:faqCategoryId is null or :faqCategoryId = faq.faqSubCategory.faqCategory.id)"
-			+ " and (:faqSubCategoryId is null or :faqSubCategoryId = faq.faqSubCategory.id)"
-			+ " and (:searchKeyword is null or (faq.title LIKE %:searchKeyword% or faq.description LIKE %:searchKeyword% "
+			+ " and (:faqCategoryId is null or :faqCategoryId = '' or :faqCategoryId = faq.faqSubCategory.faqCategory.id)"
+			+ " and (:faqSubCategoryId is null or :faqSubCategoryId = '' or :faqSubCategoryId = faq.faqSubCategory.id)"
+			+ " and (:searchKeyword is null or :searchKeyword = '' or (faq.title LIKE %:searchKeyword% or faq.description LIKE %:searchKeyword% "
 			+ " or faq.description LIKE %:searchKeyword% or faq.faqSubCategory.name LIKE %:searchKeyword% "
 			+ " or faq.faqSubCategory.faqCategory.name LIKE %:searchKeyword%))")
 	public Page<Faq> getFaqList(String entityId, String faqCategoryId, String faqSubCategoryId, String searchKeyword,
