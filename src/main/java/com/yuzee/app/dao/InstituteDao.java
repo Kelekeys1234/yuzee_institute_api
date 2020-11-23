@@ -31,7 +31,7 @@ public interface InstituteDao {
 
 	public InstituteResponseDto getInstituteById(String instituteId);
 
-	public List<InstituteResponseDto> getInstituteByListOfCityId(String citisId);
+	public List<InstituteResponseDto> getInstituteByListOfCityId(List<String> citisId);
 
 	public List<Institute> searchInstitute(String sqlQuery);
 
@@ -69,8 +69,6 @@ public interface InstituteDao {
 	public List<Institute> ratingWiseInstituteListByCountry(String countryName);
 
 	public List<String> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
-
-	public List<String> getInstitudeByCountry(List<String> distinctCountryIds);
 
 	public List<String> getRandomInstituteByCountry(List<String> countryIdList);
 

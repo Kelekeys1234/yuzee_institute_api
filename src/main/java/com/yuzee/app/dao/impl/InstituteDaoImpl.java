@@ -82,33 +82,21 @@ public class InstituteDaoImpl implements InstituteDao {
 		String sqlQuery = "select count(distinct inst.id) from institute inst "
 				+ "left join course c on c.institute_id=inst.id where 1=1 ";
 
-		if (null != courseSearchDto.getCountryNames() && !courseSearchDto.getCountryNames().isEmpty()) {
-			sqlQuery += " and inst.country_name in ('"
-					+ courseSearchDto.getCountryNames().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "')";
+		if (!CollectionUtils.isEmpty(courseSearchDto.getCountryNames())) {
+			sqlQuery += " and c.faculty_id in (:countryNames)";
 		}
 
-		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
-			sqlQuery += " and c.level_id in ('"
-					+ courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "')";
+		if (!CollectionUtils.isEmpty(courseSearchDto.getLevelIds())) {
+			sqlQuery += " and c.faculty_id in (:levelIds)";
 		}
 
-		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
-			sqlQuery += " and c.faculty_id in ('"
-					+ courseSearchDto.getFacultyIds().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "')";
+		if (!CollectionUtils.isEmpty(courseSearchDto.getFacultyIds())) {
+			sqlQuery += " and c.faculty_id in (:facultyIds)";
 		}
 
-		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
-			sqlQuery += " and inst.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
-		}
-		if (null != cityId) {
-			sqlQuery += " and inst.city_name ='" + cityId + "'";
-		}
-		if (null != isActive) {
-			sqlQuery += " and inst.is_active =" + isActive;
-		}
+		sqlQuery += " and (:name is null or inst.name like %:name%) ";
+		sqlQuery += " and (:cityName is null or inst.city_name = :cityName )";
+		sqlQuery += " and (:isActive is null or inst.is_active = :isActive )";
 		if (null != updatedOn) {
 			sqlQuery += " and Date(inst.updated_on) ='" + new java.sql.Date(updatedOn.getTime()).toLocalDate() + "'";
 		}
@@ -116,13 +104,27 @@ public class InstituteDaoImpl implements InstituteDao {
 			sqlQuery += " and inst.world_ranking between " + fromWorldRanking + " and " + toWorldRanking;
 		}
 
-		if (null != searchKeyword && !searchKeyword.isEmpty()) {
-			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or inst.country_name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or inst.city_name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or inst.institute_type like '%" + searchKeyword.trim() + "%' )";
+		sqlQuery += " and ( :searchKeyword is null or inst.name like %:searchKeyword%";
+		sqlQuery += " or inst.country_name like %:searchKeyword%";
+		sqlQuery += " or inst.city_name like %:searchKeyword%";
+		sqlQuery += " or inst.institute_type like %:searchKeyword%)";
+
+		Query query1 = session.createSQLQuery(sqlQuery).setParameter("name", courseSearchDto.getSearchKey())
+				.setParameter("cityId", "cityId").setParameter("isActive", isActive)
+				.setParameter("searchKeyword", searchKeyword);
+
+		if (!CollectionUtils.isEmpty(courseSearchDto.getCountryNames())) {
+			query1.setParameter("countryNames", courseSearchDto.getCountryNames());
 		}
-		Query query1 = session.createSQLQuery(sqlQuery);
+
+		if (!CollectionUtils.isEmpty(courseSearchDto.getLevelIds())) {
+			query1.setParameter("levelIds", courseSearchDto.getLevelIds());
+		}
+
+		if (!CollectionUtils.isEmpty(courseSearchDto.getFacultyIds())) {
+			query1.setParameter("facultyIds", courseSearchDto.getFacultyIds());
+		}
+
 		return ((Number) query1.uniqueResult()).intValue();
 	}
 
@@ -141,30 +143,21 @@ public class InstituteDaoImpl implements InstituteDao {
 				+ " from institute inst left join institute_additional_info instAdd  on instAdd.institute_id=inst.id "
 				+ "left join course c  on c.institute_id=inst.id LEFT JOIN course_delivery_modes cai on cai.course_id = c.id where 1=1 ";
 
-		if (null != courseSearchDto.getCountryNames() && !courseSearchDto.getCountryNames().isEmpty()) {
-			sqlQuery += " and inst.country_name in ('"
-					+ courseSearchDto.getCountryNames().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "')";
+		if (!CollectionUtils.isEmpty(courseSearchDto.getCountryNames())) {
+			sqlQuery += " and c.faculty_id in (:countryNames)";
 		}
 
-		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
-			sqlQuery += " and c.level_id in ('"
-					+ courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "')";
+		if (!CollectionUtils.isEmpty(courseSearchDto.getLevelIds())) {
+			sqlQuery += " and c.faculty_id in (:levelIds)";
 		}
 
-		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
-			sqlQuery += " and c.faculty_id in ('"
-					+ courseSearchDto.getFacultyIds().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "')";
+		if (!CollectionUtils.isEmpty(courseSearchDto.getFacultyIds())) {
+			sqlQuery += " and c.faculty_id in (:facultyIds)";
 		}
 
-		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
-			sqlQuery += " and inst.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
-		}
-		if (null != isActive) {
-			sqlQuery += " and inst.is_active =" + isActive;
-		}
+		sqlQuery += " and (:name is null or inst.name like %:name%) ";
+		sqlQuery += " and (:cityName is null or inst.city_name = :cityName )";
+		sqlQuery += " and (:isActive is null or inst.is_active = :isActive )";
 		if (null != updatedOn) {
 			sqlQuery += " and Date(inst.updated_on) ='" + new java.sql.Date(updatedOn.getTime()).toLocalDate() + "'";
 		}
@@ -172,12 +165,11 @@ public class InstituteDaoImpl implements InstituteDao {
 			sqlQuery += " and inst.world_ranking between " + fromWorldRanking + " and " + toWorldRanking;
 		}
 
-		if (null != searchKeyword && !searchKeyword.isEmpty()) {
-			sqlQuery += " and ( inst.name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or inst.country_name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or inst.city_name like '%" + searchKeyword.trim() + "%'";
-			sqlQuery += " or inst.institute_type like '%" + searchKeyword.trim() + "%' )";
-		}
+		sqlQuery += " and ( :searchKeyword is null or inst.name like %:searchKeyword%";
+		sqlQuery += " or inst.country_name like %:searchKeyword%";
+		sqlQuery += " or inst.city_name like %:searchKeyword%";
+		sqlQuery += " or inst.institute_type like %:searchKeyword%)";
+
 		sqlQuery += " group by inst.id ";
 
 		String sortingQuery = "";
@@ -206,6 +198,19 @@ public class InstituteDaoImpl implements InstituteDao {
 
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
+		
+		if (!CollectionUtils.isEmpty(courseSearchDto.getCountryNames())) {
+			query.setParameter("countryNames", courseSearchDto.getCountryNames());
+		}
+
+		if (!CollectionUtils.isEmpty(courseSearchDto.getLevelIds())) {
+			query.setParameter("levelIds", courseSearchDto.getLevelIds());
+		}
+
+		if (!CollectionUtils.isEmpty(courseSearchDto.getFacultyIds())) {
+			query.setParameter("facultyIds", courseSearchDto.getFacultyIds());
+		}
+		
 		List<Object[]> rows = query.list();
 		List<InstituteResponseDto> list = new ArrayList<>();
 		InstituteResponseDto instituteResponseDto = null;
@@ -264,10 +269,9 @@ public class InstituteDaoImpl implements InstituteDao {
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.city_name as cityName,"
 				+ " inst.country_name as countryName,crs.world_ranking,crs.stars,crs.totalCourse from institute inst"
 				+ " CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from course c where"
-				+ " c.institute_id = inst.id group by c.institute_id ) crs where 1=1 and inst.id ='" + instituteId
-				+ "'";
+				+ " c.institute_id = inst.id group by c.institute_id ) crs where 1=1 and inst.id =:instituteId";
 		System.out.println(sqlQuery);
-		Query query = session.createSQLQuery(sqlQuery);
+		Query query = session.createSQLQuery(sqlQuery).setParameter("instituteId", instituteId);
 		List<Object[]> rows = query.list();
 		InstituteResponseDto obj = null;
 		for (Object[] row : rows) {
@@ -284,15 +288,15 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	@Override
-	public List<InstituteResponseDto> getInstituteByListOfCityId(final String citisId) {
+	public List<InstituteResponseDto> getInstituteByListOfCityId(final List<String> citisId) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.institute_type as institudeTypeId,"
 				+ " inst.world_ranking, inst.country_name, inst.city_name, inst.website, inst.about_us_info,"
 				+ " instAdd.student_number, inst.latitude, inst.longitude, inst.email, inst.address, inst.domestic_ranking, inst.tag_line"
-				+ " from institute inst left join institute_additional_info instAdd  on instAdd.institute_id=inst.id  where inst.city_name in ("
-				+ citisId + ")  ORDER BY inst.name";
+				+ " from institute inst left join institute_additional_info instAdd  on instAdd.institute_id=inst.id  where inst.city_name in "
+				+ " :citisId ORDER BY inst.name";
 		System.out.println(sqlQuery);
-		Query query = session.createSQLQuery(sqlQuery);
+		Query query = session.createSQLQuery(sqlQuery).setParameter("citisId", citisId);
 		List<Object[]> rows = query.list();
 		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
 		for (Object[] row : rows) {
@@ -319,7 +323,9 @@ public class InstituteDaoImpl implements InstituteDao {
 			if (!ObjectUtils.isEmpty(row[13])) {
 				instituteResponseDto.setDomesticRanking(Integer.parseInt(row[13].toString()));
 			}
-			instituteResponseDto.setTagLine(row[14].toString());
+			if (!ObjectUtils.isEmpty(row[14])) {
+				instituteResponseDto.setTagLine(row[14].toString());
+			}
 			instituteResponseDto.setLocation(String.valueOf(row[5]) + ", " + String.valueOf(row[4]));
 			instituteResponseDtos.add(instituteResponseDto);
 		}
@@ -381,11 +387,11 @@ public class InstituteDaoImpl implements InstituteDao {
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery);
 		List<Object[]> rows = query.list();
-		List<InstituteGetRequestDto> instituteList = getInstituteData(rows, session);
+		List<InstituteGetRequestDto> instituteList = getInstituteData(rows);
 		return instituteList;
 	}
 
-	private List<InstituteGetRequestDto> getInstituteData(final List<Object[]> rows, final Session session) {
+	private List<InstituteGetRequestDto> getInstituteData(final List<Object[]> rows) {
 		List<InstituteGetRequestDto> instituteList = new ArrayList<>();
 		for (Object[] row : rows) {
 			InstituteGetRequestDto instituteGetRequestDto = new InstituteGetRequestDto();
@@ -538,25 +544,22 @@ public class InstituteDaoImpl implements InstituteDao {
 		String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description,"
 				+ " inst.latitude, inst.longitude, instAdd.student_number, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
 				+ " inst.address, inst.avg_cost_of_living,inst.tag_line FROM institute as inst left join institute_additional_info instAdd on instAdd.institute_id=inst.id "
-				+ " where  inst.deleted_on IS NULL and (inst.name like '%" + searchKey
-				+ "%' or inst.description like '%" + searchKey + "%' or inst.country_name like '%" + searchKey
-				+ "%' or inst.city_name like '%" + searchKey + "%' or inst.institute_type like '%" + searchKey + "%') "
+				+ " where  inst.deleted_on IS NULL and (inst.name like %searchKey% or inst.description like %searchKey% or inst.country_name like %searchKey%"
+				+ " or inst.city_name like %searchKey% or inst.institute_type like %searchKey%) "
 				+ " ORDER BY inst.created_on DESC";
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
-		Query query = session.createSQLQuery(sqlQuery);
+		Query query = session.createSQLQuery(sqlQuery).setParameter("searchKey", searchKey);
 		List<Object[]> rows = query.list();
-		List<InstituteGetRequestDto> instituteList = getInstituteData(rows, session);
-		return instituteList;
+		return getInstituteData(rows);
 	}
 
 	@Override
 	public int findTotalCountForInstituteAutosearch(final String searchKey) {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description, inst.updated_on FROM institute as inst  "
-				+ " where inst.deleted_on IS NULL and (inst.name like '%" + searchKey + "%' or inst.description like '%"
-				+ searchKey + "%' or inst.country_name like '%" + searchKey + "%' or inst.city_name like '%" + searchKey
-				+ "%' or inst.institute_type like '%" + searchKey + "%') " + " ";
-		Query query = session.createSQLQuery(sqlQuery);
+				+ " where inst.deleted_on IS NULL and (inst.name like %:searchKey% or inst.description like %:searchKey% or inst.country_name like %:searchKey% or inst.city_name like %:searchKey% or inst.institute_type like %:searchKey%) "
+				+ " ";
+		Query query = session.createSQLQuery(sqlQuery).setParameter("searchKey", searchKey);
 		List<Object[]> rows = query.list();
 		return rows.size();
 	}
@@ -591,7 +594,8 @@ public class InstituteDaoImpl implements InstituteDao {
 	@Override
 	public void deleteInstituteService(final String id) {
 		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("delete from InstituteService where institute_id ='" + id + "'");
+		Query q = session.createQuery("delete from InstituteService where institute_id =:instituteId")
+				.setParameter("instituteId", id);
 		q.executeUpdate();
 
 	}
@@ -606,7 +610,8 @@ public class InstituteDaoImpl implements InstituteDao {
 	@Override
 	public void deleteInstituteIntakeById(final String id) {
 		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createSQLQuery("DELETE FROM institute_intake WHERE institute_id ='" + id + "'");
+		Query query = session.createSQLQuery("DELETE FROM institute_intake WHERE institute_id =:instituteId")
+				.setParameter("instituteId", id);
 		query.executeUpdate();
 	}
 
@@ -648,15 +653,6 @@ public class InstituteDaoImpl implements InstituteDao {
 				.createNativeQuery("SELECT ID FROM INSTITUTE ORDER BY WORLD_RANKING LIMIT ?,?")
 				.setParameter(1, startIndex).setParameter(2, pageSize).getResultList();
 		return insituteIds;
-	}
-
-	@Override
-	public List<String> getInstitudeByCountry(final List<String> distinctCountryIds) {
-		Session session = sessionFactory.getCurrentSession();
-		String ids = distinctCountryIds.stream().map(String::toString).collect(Collectors.joining(","));
-		List<String> instituteIds = session
-				.createNativeQuery("SELECT ID FROM INSTITUTE WHERE COUNTRY_NAME IN (" + ids + ")").getResultList();
-		return instituteIds;
 	}
 
 	@Override
@@ -804,11 +800,14 @@ public class InstituteDaoImpl implements InstituteDao {
 	@Override
 	public int getDistinctInstituteCountByName(String instituteName) {
 		Session session = sessionFactory.getCurrentSession();
-		StringBuilder sqlQuery = new StringBuilder("select distinct i.name as instituteName from institute i");
+		StringBuilder sqlQuery = new StringBuilder("select distinct i.name as instituteName from institute i ");
 		if (StringUtils.isNotEmpty(instituteName)) {
-			sqlQuery.append(" where name like ('" + "%" + instituteName.trim() + "%')");
+			sqlQuery.append(" where name like %:instituteName%");
 		}
 		Query query = session.createSQLQuery(sqlQuery.toString());
+		if (StringUtils.isNotEmpty(instituteName)) {
+			query.setParameter("instituteName", instituteName);
+		}
 		List<Object[]> rows = query.list();
 		return rows.size();
 	}

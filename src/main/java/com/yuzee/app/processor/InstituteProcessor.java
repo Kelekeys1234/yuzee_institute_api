@@ -178,12 +178,9 @@ public class InstituteProcessor {
 		log.debug("Inside getInstituteByListOfCityId() method");
 		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
 		String[] citiesArray = cityId.split(",");
-		String tempList = "";
-		for (String id : citiesArray) {
-			tempList = tempList + "," + "'" + id + "'";
-		}
+		
 		log.info("Calling DAO layer to fetch institutes based on cityName");
-		List<InstituteResponseDto> instituteResponseDtos = dao.getInstituteByListOfCityId(tempList.substring(1, tempList.length()));
+		List<InstituteResponseDto> instituteResponseDtos = dao.getInstituteByListOfCityId(Arrays.asList(citiesArray));
 		if(!CollectionUtils.isEmpty(instituteResponseDtos)) {
 			log.info("Institutes fetched from DB, hence start iterating to make final response");
 			instituteResponseDtos.stream().forEach(instituteResponseDto -> {
@@ -808,13 +805,6 @@ public class InstituteProcessor {
 	public List<String> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
 		return dao.getInstituteIdsBasedOnGlobalRanking(startIndex, pageSize);
 	}
-
-	
-	public List<String> getInstituteIdsFromCountry(final List<String> distinctCountryIds) {
-		List<String> instituteIds = dao.getInstitudeByCountry(distinctCountryIds);
-		return instituteIds;
-	}
-
 	
 	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final String cityId, final String instituteTypeId,
 			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
