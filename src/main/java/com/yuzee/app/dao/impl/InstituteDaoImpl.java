@@ -83,11 +83,11 @@ public class InstituteDaoImpl implements InstituteDao {
 				+ "left join course c on c.institute_id=inst.id where 1=1 ";
 
 		if (!CollectionUtils.isEmpty(courseSearchDto.getCountryNames())) {
-			sqlQuery += " and c.faculty_id in (:countryNames)";
+			sqlQuery += " and inst.country_name in (:countryNames)";
 		}
 
 		if (!CollectionUtils.isEmpty(courseSearchDto.getLevelIds())) {
-			sqlQuery += " and c.faculty_id in (:levelIds)";
+			sqlQuery += " and c.level_id in (:levelIds)";
 		}
 
 		if (!CollectionUtils.isEmpty(courseSearchDto.getFacultyIds())) {
@@ -144,11 +144,11 @@ public class InstituteDaoImpl implements InstituteDao {
 				+ "left join course c  on c.institute_id=inst.id LEFT JOIN course_delivery_modes cai on cai.course_id = c.id where 1=1 ";
 
 		if (!CollectionUtils.isEmpty(courseSearchDto.getCountryNames())) {
-			sqlQuery += " and c.faculty_id in (:countryNames)";
+			sqlQuery += " and inst.country_name in (:countryNames)";
 		}
 
 		if (!CollectionUtils.isEmpty(courseSearchDto.getLevelIds())) {
-			sqlQuery += " and c.faculty_id in (:levelIds)";
+			sqlQuery += " and c.level_id in (:levelIds)";
 		}
 
 		if (!CollectionUtils.isEmpty(courseSearchDto.getFacultyIds())) {
@@ -198,7 +198,7 @@ public class InstituteDaoImpl implements InstituteDao {
 
 		System.out.println(sqlQuery);
 		Query query = session.createSQLQuery(sqlQuery);
-		
+
 		if (!CollectionUtils.isEmpty(courseSearchDto.getCountryNames())) {
 			query.setParameter("countryNames", courseSearchDto.getCountryNames());
 		}
@@ -210,7 +210,7 @@ public class InstituteDaoImpl implements InstituteDao {
 		if (!CollectionUtils.isEmpty(courseSearchDto.getFacultyIds())) {
 			query.setParameter("facultyIds", courseSearchDto.getFacultyIds());
 		}
-		
+
 		List<Object[]> rows = query.list();
 		List<InstituteResponseDto> list = new ArrayList<>();
 		InstituteResponseDto instituteResponseDto = null;
@@ -453,9 +453,31 @@ public class InstituteDaoImpl implements InstituteDao {
 	public List<Institute> instituteFilter(final int pageNumber, final Integer pageSize,
 			final InstituteFilterDto instituteFilterDto) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = getFilterInstituteSqlQuery(instituteFilterDto);
+		String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type,"
+				+ " inst.description, inst.updated_on, inst.domestic_ranking FROM institute as inst"
+				+ " left join course c  on c.institute_id=inst.id where inst.is_active = 1 and inst.deleted_on IS NULL  ";
+
+		sqlQuery += " and ( :countryName is null or inst.country_name = :countryName )";
+		sqlQuery += " and ( :cityName is null or inst.city_name = :cityName )";
+		sqlQuery += " and ( :instituteId is null or inst.id = :instituteId )";
+		sqlQuery += " and ( :worldRanking is null or inst.world_ranking = :worldRanking )";
+		sqlQuery += " and ( :instituteCategoryTypeId is null or inst.institute_category_type_id = :instituteCategoryTypeId)";
+		if (instituteFilterDto.getDatePosted() != null && !instituteFilterDto.getDatePosted().isEmpty()) {
+			Date postedDate = DateUtil.convertStringDateToDate(instituteFilterDto.getDatePosted());
+			Calendar c = Calendar.getInstance();
+			c.setTime(postedDate);
+			c.add(Calendar.DATE, 1);
+			postedDate = c.getTime();
+			String updatedDate = DateUtil.getStringDateFromDate(postedDate);
+			sqlQuery += " and (inst.created_on >= '" + instituteFilterDto.getDatePosted() + "' and inst.created_on < '"
+					+ updatedDate + "')";
+		}
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
-		Query query = session.createSQLQuery(sqlQuery);
+		Query query = session.createSQLQuery(sqlQuery).setParameter("countryName", instituteFilterDto.getCountryName())
+				.setParameter("cityName", instituteFilterDto.getCityName())
+				.setParameter("instituteId", instituteFilterDto.getInstituteId())
+				.setParameter("worldRanking", instituteFilterDto.getWorldRanking())
+				.setParameter("instituteCategoryTypeId", instituteFilterDto.getInstituteTypeId());
 		List<Object[]> rows = query.list();
 		List<Institute> instituteList = new ArrayList<>();
 		Institute obj = null;
@@ -494,36 +516,15 @@ public class InstituteDaoImpl implements InstituteDao {
 	@Override
 	public int findTotalCountFilterInstitute(final InstituteFilterDto instituteFilterDto) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = getFilterInstituteSqlQuery(instituteFilterDto);
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		return rows.size();
-	}
-
-	private String getFilterInstituteSqlQuery(final InstituteFilterDto instituteFilterDto) {
 		String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type,"
 				+ " inst.description, inst.updated_on, inst.domestic_ranking FROM institute as inst"
 				+ " left join course c  on c.institute_id=inst.id where inst.is_active = 1 and inst.deleted_on IS NULL  ";
 
-		if (instituteFilterDto.getCountryName() != null) {
-			sqlQuery += " and inst.country_name = '" + instituteFilterDto.getCountryName() + "' ";
-		}
-
-		if (instituteFilterDto.getCityName() != null) {
-			sqlQuery += " and inst.city_name = '" + instituteFilterDto.getCityName() + "' ";
-		}
-
-		if (instituteFilterDto.getInstituteId() != null) {
-			sqlQuery += " and inst.id ='" + instituteFilterDto.getInstituteId() + "' ";
-		}
-
-		if (instituteFilterDto.getWorldRanking() != null && instituteFilterDto.getWorldRanking() > 0) {
-			sqlQuery += " and inst.world_ranking = " + instituteFilterDto.getWorldRanking() + " ";
-		}
-
-		if (instituteFilterDto.getInstituteTypeId() != null) {
-			sqlQuery += " and inst.institute_category_type_id = '" + instituteFilterDto.getInstituteTypeId() + "' ";
-		}
+		sqlQuery += " and ( :countryName is null or inst.country_name = :countryName )";
+		sqlQuery += " and ( :cityName is null or inst.city_name = :cityName )";
+		sqlQuery += " and ( :instituteId is null or inst.id = :instituteId )";
+		sqlQuery += " and ( :worldRanking is null or inst.world_ranking = :worldRanking )";
+		sqlQuery += " and ( :instituteCategoryTypeId is null or inst.institute_category_type_id = :instituteCategoryTypeId)";
 		if (instituteFilterDto.getDatePosted() != null && !instituteFilterDto.getDatePosted().isEmpty()) {
 			Date postedDate = DateUtil.convertStringDateToDate(instituteFilterDto.getDatePosted());
 			Calendar c = Calendar.getInstance();
@@ -534,7 +535,13 @@ public class InstituteDaoImpl implements InstituteDao {
 			sqlQuery += " and (inst.created_on >= '" + instituteFilterDto.getDatePosted() + "' and inst.created_on < '"
 					+ updatedDate + "')";
 		}
-		return sqlQuery;
+		Query query = session.createSQLQuery(sqlQuery).setParameter("countryName", instituteFilterDto.getCountryName())
+				.setParameter("cityName", instituteFilterDto.getCityName())
+				.setParameter("instituteId", instituteFilterDto.getInstituteId())
+				.setParameter("worldRanking", instituteFilterDto.getWorldRanking())
+				.setParameter("instituteCategoryTypeId", instituteFilterDto.getInstituteTypeId());
+		List<Object[]> rows = query.list();
+		return rows.size();
 	}
 
 	@Override
@@ -544,8 +551,8 @@ public class InstituteDaoImpl implements InstituteDao {
 		String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description,"
 				+ " inst.latitude, inst.longitude, instAdd.student_number, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
 				+ " inst.address, inst.avg_cost_of_living,inst.tag_line FROM institute as inst left join institute_additional_info instAdd on instAdd.institute_id=inst.id "
-				+ " where  inst.deleted_on IS NULL and (inst.name like %searchKey% or inst.description like %searchKey% or inst.country_name like %searchKey%"
-				+ " or inst.city_name like %searchKey% or inst.institute_type like %searchKey%) "
+				+ " where  inst.deleted_on IS NULL and (inst.name like %:searchKey% or inst.description like %:searchKey% or inst.country_name like %:searchKey%"
+				+ " or inst.city_name like %:searchKey% or inst.institute_type like %:searchKey%) "
 				+ " ORDER BY inst.created_on DESC";
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery).setParameter("searchKey", searchKey);
