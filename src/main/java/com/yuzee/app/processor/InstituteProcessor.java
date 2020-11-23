@@ -64,7 +64,6 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ConnectionHandler;
 import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.handler.IdentityHandler;
 import com.yuzee.app.handler.ReviewHandler;
 import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.repository.InstituteRepository;
@@ -128,9 +127,6 @@ public class InstituteProcessor {
 
 	@Autowired
 	private ReviewHandler reviewHandler;
-	
-	@Autowired
-	private IdentityHandler userHandler;
 	
 	@Autowired
 	private ScholarshipDao scholarshipDao;
@@ -296,13 +292,6 @@ public class InstituteProcessor {
 			instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 			instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
 			instituteElasticDtoList.add(instituteElasticSearchDto);
-			
-			// TODO: need to check user access before updating
-			if (!ObjectUtils.isEmpty(instituteRequest.getProfilePermission())) {
-				log.info("if profile permission is not empty then going to save/update userProfilePermission");
-				userHandler.saveOrUpdateUserProfileDataPermission(userId, EntityTypeEnum.INSTITUTE.name(),
-						institute.getId(), instituteRequest.getProfilePermission());
-			}
 
 			log.info("Calling elastic service to save instiutes on index");
 //			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
@@ -590,11 +579,6 @@ public class InstituteProcessor {
 		if (!ObjectUtils.isEmpty(instituteTimingResponseDto)) {
 			instituteRequestDto.setInstituteTimings(
 					CommonUtil.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
-		}
-
-		Map<String,String> profilePermissionsMap = userHandler.getUserProfileDataPermission(Arrays.asList(id));
-		if (!CollectionUtils.isEmpty(profilePermissionsMap)) {
-			instituteRequestDto.setProfilePermission(profilePermissionsMap.get(id));	
 		}
 		
 		FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
@@ -926,7 +910,6 @@ public class InstituteProcessor {
 			
 			List<StorageDto> imageStorages = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
 					Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
-			Map<String, String> profilePermissionsMap = userHandler.getUserProfileDataPermission(instituteIds);
 
 			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
 			for (InstituteResponseDto instituteResponseDto : instituteResponseDtos) {
@@ -941,9 +924,6 @@ public class InstituteProcessor {
 					instituteResponseDto.setReviewsCount(reviewStarDto.getReviewsCount());
 				}
 				
-				if (!CollectionUtils.isEmpty(profilePermissionsMap)) {
-					instituteResponseDto.setProfilePermission(profilePermissionsMap.get(instituteResponseDto.getId()));
-				}
 				if (!CollectionUtils.isEmpty(imageStorages)) {
 					List<StorageDto> instituteImages = imageStorages.stream()
 							.filter(s -> s.getEntityId().equals(instituteResponseDto.getId()))
