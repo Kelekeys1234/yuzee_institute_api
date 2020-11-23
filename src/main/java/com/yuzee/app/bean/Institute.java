@@ -85,9 +85,6 @@ public class Institute implements Serializable {
 	@Column(name = "website", columnDefinition = "TEXT")
 	private String website;
 
-	@Column(name = "total_student")
-	private Integer totalStudent;
-
 	@Column(name = "latitude")
 	private Double latitude;
 

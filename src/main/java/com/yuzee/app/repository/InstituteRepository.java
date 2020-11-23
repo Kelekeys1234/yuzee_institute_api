@@ -23,7 +23,8 @@ public interface InstituteRepository extends JpaRepository<Institute, String> {
 
 	public List<Institute> findByCityName(String cityName);
 
-	public List<Institute> findByIdNotAndName(String id, String name);
+	@Query("SELECT i from Institute i where i.id != :id and i.name = :name and (i.isDeleted is null or i.isDeleted = false  )")
+	public List<Institute> findByIdNotAndNameAndIsDeletedFalse(String id, String name);
 
 	@Query("SELECT new com.yuzee.app.dto.InstituteFacultyDto(f.id, f.name, count(*) as courseCount) "
 			+ "from Course c "

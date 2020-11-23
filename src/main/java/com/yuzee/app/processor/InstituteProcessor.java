@@ -2,7 +2,6 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,7 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteDomesticRankingHistory;
 import com.yuzee.app.bean.InstituteIntake;
+import com.yuzee.app.bean.InstituteTiming;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CourseDao;
@@ -48,13 +48,13 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
-import com.yuzee.app.dto.InstituteSearchResultDto;
 import com.yuzee.app.dto.InstituteTimingResponseDto;
 import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.NearestInstituteDTO;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
+import com.yuzee.app.dto.ReviewStarDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
@@ -64,7 +64,6 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ConnectionHandler;
 import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.handler.IdentityHandler;
 import com.yuzee.app.handler.ReviewHandler;
 import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.repository.InstituteRepository;
@@ -130,28 +129,14 @@ public class InstituteProcessor {
 	private ReviewHandler reviewHandler;
 	
 	@Autowired
-	private IdentityHandler userHandler;
-	
-	@Autowired
 	private ScholarshipDao scholarshipDao;
 
 	public Institute get(final String id) {
 		return dao.get(id);
 	}
-
-	
-	public List<String> getTopInstituteIdByCountry(final String countryId/* , Long startIndex, Long pageSize */) {
-		return dao.getTopInstituteByCountry(countryId/* , startIndex, pageSize */);
-	}
-
 	
 	public List<String> getRandomInstituteIdByCountry(final List<String> countryIdList/* , Long startIndex, Long pageSize */) {
 		return dao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
-	}
-
-	
-	public List<InstituteSearchResultDto> getInstitueBySearchKey(final String searchKey) {
-		return dao.getInstitueBySearchKey(searchKey);
 	}
 
 	
@@ -166,40 +151,6 @@ public class InstituteProcessor {
 	public InstituteResponseDto getInstituteByID(final String instituteId) {
 		return dao.getInstituteById(instituteId);
 	}
-
-	
-	public List<InstituteResponseDto> getAllInstituteByID(final Collection<String> listInstituteId) throws ValidationException {
-		log.debug("Inside getAllInstituteByID() method");
-		List<InstituteResponseDto> instituteResponseDTOList = new ArrayList<>();
-		log.info("Fetching institute from DB based on passed instituteIds");
-		List<Institute> inistituteList = dao.getAllInstituteByID(listInstituteId);
-		if(!CollectionUtils.isEmpty(inistituteList)) {
-			log.info("Institute fetched from DB based on instituteId list, start iterating list to set value in DTO");
-			inistituteList.stream().forEach(institute -> {
-				InstituteResponseDto instituteResponseDTO = new InstituteResponseDto();
-				log.info("Copying bean class to DTO class");
-				BeanUtils.copyProperties(institute, instituteResponseDTO);
-				if (institute.getCountryName() != null) {
-					instituteResponseDTO.setCountryName(institute.getCountryName());
-				}
-				if (institute.getCityName() != null) {
-					instituteResponseDTO.setCityName(institute.getCityName());
-				}
-				instituteResponseDTO.setWorldRanking(institute.getWorldRanking());
-				instituteResponseDTO.setLocation(institute.getLatitude() + "," + institute.getLongitude());
-				try {
-					log.info("Invoking storage service to get images for instituteId = "+instituteResponseDTO.getId());
-					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDTO.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
-					instituteResponseDTO.setStorageList(storageDTOList);
-				} catch (NotFoundException | InvokeException e) {
-					log.error("Error invoking Storage service having exception = "+e);
-				}
-				instituteResponseDTOList.add(instituteResponseDTO);
-			});
-		}
-		return instituteResponseDTOList;
-	}
-
 	
 	public List<InstituteResponseDto> getInstituteByCityName(final String cityName) {
 		log.debug("Inside getInstitudeByCityId() method");
@@ -223,12 +174,9 @@ public class InstituteProcessor {
 		log.debug("Inside getInstituteByListOfCityId() method");
 		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
 		String[] citiesArray = cityId.split(",");
-		String tempList = "";
-		for (String id : citiesArray) {
-			tempList = tempList + "," + "'" + id + "'";
-		}
+		
 		log.info("Calling DAO layer to fetch institutes based on cityName");
-		List<InstituteResponseDto> instituteResponseDtos = dao.getInstituteByListOfCityId(tempList.substring(1, tempList.length()));
+		List<InstituteResponseDto> instituteResponseDtos = dao.getInstituteByListOfCityId(Arrays.asList(citiesArray));
 		if(!CollectionUtils.isEmpty(instituteResponseDtos)) {
 			log.info("Institutes fetched from DB, hence start iterating to make final response");
 			instituteResponseDtos.stream().forEach(instituteResponseDto -> {
@@ -344,17 +292,10 @@ public class InstituteProcessor {
 			instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 			instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
 			instituteElasticDtoList.add(instituteElasticSearchDto);
-			
-			// TODO: need to check user access before updating
-			if (!ObjectUtils.isEmpty(instituteRequest.getProfilePermission())) {
-				log.info("if profile permission is not empty then going to save/update userProfilePermission");
-				userHandler.saveOrUpdateUserProfileDataPermission(userId, EntityTypeEnum.INSTITUTE.name(),
-						institute.getId(), instituteRequest.getProfilePermission());
-			}
 
 			log.info("Calling elastic service to save instiutes on index");
-			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
-					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+//			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
+//					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ={}", exception.getMessage());
 			throw exception;
@@ -419,7 +360,6 @@ public class InstituteProcessor {
 		institute.setPhoneNumber(instituteRequest.getPhoneNumber());
 		institute.setLatitude(instituteRequest.getLatitude());
 		institute.setLongitude(instituteRequest.getLongitude());
-		institute.setTotalStudent(instituteRequest.getTotalStudent());
 		institute.setCampusName(instituteRequest.getCampusName());
 		institute.setEnrolmentLink(instituteRequest.getEnrolmentLink());
 		institute.setTuitionFeesPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
@@ -597,7 +537,7 @@ public class InstituteProcessor {
 		log.info("fetching institute videos from DB having countryName = "+institute.getCountryName() + " and instituteName = "+institute.getName());
 		dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
 		log.info("Get total course count from DB for instituteId = "+institute.getId());
-		dto.setCourseCount(dao.getCourseCount(institute.getId()));
+		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(institute.getId()));
 		return dto;
 	}
 
@@ -613,7 +553,6 @@ public class InstituteProcessor {
 		return images;
 	}
 
-	
 	public InstituteRequestDto getById(final String id) throws Exception {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);
@@ -641,11 +580,6 @@ public class InstituteProcessor {
 			instituteRequestDto.setInstituteTimings(
 					CommonUtil.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
 		}
-
-		Map<String,String> profilePermissionsMap = userHandler.getUserProfileDataPermission(Arrays.asList(id));
-		if (!CollectionUtils.isEmpty(profilePermissionsMap)) {
-			instituteRequestDto.setProfilePermission(profilePermissionsMap.get(id));	
-		}
 		
 		FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
 		if (!ObjectUtils.isEmpty(followerCountDto)) {
@@ -653,9 +587,33 @@ public class InstituteProcessor {
 		}
 
 		log.info("Calling review service to fetch user average review for instituteId");
-		Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE",
+		Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE",
 				Arrays.asList(instituteRequestDto.getId()));
-		instituteRequestDto.setStars(yuzeeReviewMap.get(instituteRequestDto.getId()));
+		
+		ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteRequestDto.getId());
+		if (!ObjectUtils.isEmpty(reviewStarDto)) {
+			instituteRequestDto.setStars(reviewStarDto.getReviewStars());
+			instituteRequestDto.setReviewsCount(reviewStarDto.getReviewsCount());
+		}
+		
+		List<StorageDto> imageStorages = storageHandler.getStorages(Arrays.asList(instituteRequestDto.getId()), EntityTypeEnum.INSTITUTE,
+				Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
+		
+		if (!CollectionUtils.isEmpty(imageStorages)) {
+			List<StorageDto> instituteImages = imageStorages.stream()
+					.filter(s -> s.getEntityId().equals(instituteRequestDto.getId()))
+					.collect(Collectors.toList());
+			
+			StorageDto logoStorage = instituteImages.stream().filter(e->e.getEntitySubType().equals(EntitySubTypeEnum.LOGO)).findAny().orElse(null);
+			if (!ObjectUtils.isEmpty(logoStorage)) {
+				instituteRequestDto.setLogoUrl(logoStorage.getFileURL());
+			}
+			
+			StorageDto coverStorage = instituteImages.stream().filter(e->e.getEntitySubType().equals(EntitySubTypeEnum.COVER_PHOTO)).findAny().orElse(null);
+			if (!ObjectUtils.isEmpty(coverStorage)) {
+				instituteRequestDto.setCoverPhotoUrl(coverStorage.getFileURL());
+			}
+		}
 		return instituteRequestDto;
 	}
 
@@ -831,13 +789,6 @@ public class InstituteProcessor {
 	public List<String> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
 		return dao.getInstituteIdsBasedOnGlobalRanking(startIndex, pageSize);
 	}
-
-	
-	public List<String> getInstituteIdsFromCountry(final List<String> distinctCountryIds) {
-		List<String> instituteIds = dao.getInstitudeByCountry(distinctCountryIds);
-		return instituteIds;
-	}
-
 	
 	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final String cityId, final String instituteTypeId,
 			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
@@ -955,9 +906,10 @@ public class InstituteProcessor {
 			List<String> instituteIds = instituteResponseDtos.stream().map(InstituteResponseDto::getId).collect(Collectors.toList());
 			
 			log.info("Calling review service to fetch user average review for instituteId");
-			Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
+			Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
 			
-			Map<String, String> profilePermissionsMap = userHandler.getUserProfileDataPermission(instituteIds);
+			List<StorageDto> imageStorages = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
+					Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
 
 			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
 			for (InstituteResponseDto instituteResponseDto : instituteResponseDtos) {
@@ -965,9 +917,27 @@ public class InstituteProcessor {
 				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
 						.getInstituteTimeByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
-				instituteResponseDto.setStars(yuzeeReviewMap.get(instituteResponseDto.getId()));
-				if (!CollectionUtils.isEmpty(profilePermissionsMap)) {
-					instituteResponseDto.setProfilePermission(profilePermissionsMap.get(instituteResponseDto.getId()));
+				
+				ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteResponseDto.getId());
+				if (!ObjectUtils.isEmpty(reviewStarDto)) {
+					instituteResponseDto.setStars(reviewStarDto.getReviewStars());
+					instituteResponseDto.setReviewsCount(reviewStarDto.getReviewsCount());
+				}
+				
+				if (!CollectionUtils.isEmpty(imageStorages)) {
+					List<StorageDto> instituteImages = imageStorages.stream()
+							.filter(s -> s.getEntityId().equals(instituteResponseDto.getId()))
+							.collect(Collectors.toList());
+					
+					StorageDto logoStorage = instituteImages.stream().filter(e->e.getEntitySubType().equals(EntitySubTypeEnum.LOGO)).findAny().orElse(null);
+					if (!ObjectUtils.isEmpty(logoStorage)) {
+						instituteResponseDto.setLogoUrl(logoStorage.getFileURL());
+					}
+					
+					StorageDto coverStorage = instituteImages.stream().filter(e->e.getEntitySubType().equals(EntitySubTypeEnum.COVER_PHOTO)).findAny().orElse(null);
+					if (!ObjectUtils.isEmpty(coverStorage)) {
+						instituteResponseDto.setCoverPhotoUrl(coverStorage.getFileURL());
+					}
 				}
 				instituteResponse.add(instituteResponseDto);
 			}
@@ -1067,9 +1037,26 @@ public class InstituteProcessor {
 		log.debug("inside processor.getInstitutCampuses method.");
 		Institute institute = dao.get(instituteId);
 		if (!ObjectUtils.isEmpty(institute)) {
-			List<Institute> institutes = dao.getInstituteCampuses(instituteId,institute.getName());
-			return institutes.stream().map(e->modelMapper.map(e, InstituteCampusDto.class)).collect(Collectors.toList());
-		}else {
+			List<Institute> institutes = dao.getInstituteCampuses(instituteId, institute.getName());
+			
+			Map<String, InstituteTiming> mapInstituteTimings = institutes.stream()
+					.collect(Collectors.toMap(Institute::getId, Institute::getInstituteTiming));
+			
+			List<InstituteCampusDto> instituteCampuses = institutes.stream()
+					.map(e -> modelMapper.map(e, InstituteCampusDto.class)).collect(Collectors.toList());
+			
+			instituteCampuses.stream().forEach(e -> {
+				InstituteTiming instiuteTiming = mapInstituteTimings.get(e.getId());
+				if (!ObjectUtils.isEmpty(instiuteTiming)) {
+					InstituteTimingResponseDto instituteTimingResponseDto = modelMapper.map(instiuteTiming,
+							InstituteTimingResponseDto.class);
+					e.setInstituteTimings(CommonUtil
+							.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
+				}
+
+			});
+			return instituteCampuses;
+		} else {
 			log.error("Institute not found against id: {}", instituteId);
 			throw new NotFoundException("Institute not found against id: " + instituteId);
 		}
@@ -1105,10 +1092,14 @@ public class InstituteProcessor {
 					EntitySubTypeEnum.LOGO);
 
 			log.info("Calling review service to fetch user average review for instituteId");
-			Map<String, Double> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
+			Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
 
 			instituteResponseDtos.stream().forEach(instituteResponseDto -> {
-				instituteResponseDto.setStars(yuzeeReviewMap.get(instituteResponseDto.getId()));
+				ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteResponseDto.getId());
+				if (!ObjectUtils.isEmpty(reviewStarDto)) {
+					instituteResponseDto.setStars(reviewStarDto.getReviewStars());
+					instituteResponseDto.setReviewsCount(reviewStarDto.getReviewsCount());
+				}
 				Optional<StorageDto> logoStorage = instituteLogos.stream()
 						.filter(e -> e.getEntityId().equals(instituteResponseDto.getId())).findFirst();
 				instituteResponseDto.setLogoUrl(logoStorage.isPresent() ? logoStorage.get().getFileURL() : null);

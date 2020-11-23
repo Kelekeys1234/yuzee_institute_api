@@ -44,13 +44,20 @@ public class StorageHandler {
 
 	public List<StorageDto> getStorages(String entityId, EntityTypeEnum entityType, EntitySubTypeEnum entitySubType)
 			throws InvokeException, NotFoundException {
-		List<String> entityIds = new ArrayList<String>();
+		List<String> entityIds = new ArrayList<>();
 		entityIds.add(entityId);
 		return getStorages(entityIds, entityType, entitySubType);
 	}
 
 	public List<StorageDto> getStorages(List<String> entityIds, EntityTypeEnum entityType,
-			EntitySubTypeEnum entitySubType) throws InvokeException, NotFoundException {
+			EntitySubTypeEnum entitySubType) throws InvokeException, NotFoundException{
+		List<EntitySubTypeEnum> entitySubTypes = new ArrayList<>();
+		entitySubTypes.add(entitySubType);
+		return getStorages(entityIds, entityType, entitySubTypes);
+	}
+	
+	public List<StorageDto> getStorages(List<String> entityIds, EntityTypeEnum entityType,
+			List<EntitySubTypeEnum> entitySubTypes) throws InvokeException, NotFoundException {
 		ResponseEntity<StorageDtoWrapper> getStoragesResponse = null;
 		try {
 			StringBuilder path = new StringBuilder();
@@ -59,9 +66,9 @@ public class StorageHandler {
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(path.toString());
 			entityIds.stream().forEach(e -> uriBuilder.queryParam("entity_id", e));
 			uriBuilder.queryParam("entity_type", entityType.name());
-			uriBuilder.queryParam("entity_sub_type", entitySubType.name());
+			entitySubTypes.stream().forEach(e -> uriBuilder.queryParam("entity_sub_type", e.name()));
 			log.info("Calling storage service to fetch certificates for entity Id {}",
-					entityIds.stream().map(Object::toString).collect(Collectors.joining(",")).toString());
+					entityIds.stream().map(Object::toString).collect(Collectors.joining(",")));
 			getStoragesResponse = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, null,
 					StorageDtoWrapper.class);
 			if (getStoragesResponse.getStatusCode().value() != 200) {

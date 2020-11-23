@@ -1,6 +1,5 @@
 package com.yuzee.app.dao;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
-import com.yuzee.app.dto.InstituteSearchResultDto;
 import com.yuzee.app.exception.NotFoundException;
 
 public interface InstituteDao {
@@ -27,19 +25,13 @@ public interface InstituteDao {
 
 	public Institute get(String id);
 
-	public List<String> getTopInstituteByCountry(String countryId/* , Long startIndex, Long pageSize */);
-
-	public List<InstituteSearchResultDto> getInstitueBySearchKey(String searchKey);
-
-	public List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField, String sortByType, String searchKeyword,
-			Integer startIndex, String cityId, String instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking,
-			Integer toWorldRanking);
+	public List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField,
+			String sortByType, String searchKeyword, Integer startIndex, String cityId, String instituteTypeId,
+			Boolean isActive, Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking);
 
 	public InstituteResponseDto getInstituteById(String instituteId);
 
-	public List<InstituteResponseDto> getInstituteByCityId(String cityId);
-
-	public List<InstituteResponseDto> getInstituteByListOfCityId(String citisId);
+	public List<InstituteResponseDto> getInstituteByListOfCityId(List<String> citisId);
 
 	public List<Institute> searchInstitute(String sqlQuery);
 
@@ -47,9 +39,8 @@ public interface InstituteDao {
 
 	public List<InstituteGetRequestDto> getAll(Integer pageNumber, Integer pageSize);
 
-	public void delete(Institute obj);
-
-	public List<Institute> instituteFilter(int startIndex, Integer maxSizePerPage, InstituteFilterDto instituteFilterDto);
+	public List<Institute> instituteFilter(int startIndex, Integer maxSizePerPage,
+			InstituteFilterDto instituteFilterDto);
 
 	public int findTotalCountFilterInstitute(InstituteFilterDto instituteFilterDto);
 
@@ -72,42 +63,39 @@ public interface InstituteDao {
 	public List<String> getIntakesById(@Valid String id);
 
 	public List<InstituteCategoryType> getAllCategories();
-	
+
 	public List<InstituteCategoryType> addInstituteCategoryTypes(List<InstituteCategoryType> instituteCategoryTypes);
 
 	public List<Institute> ratingWiseInstituteListByCountry(String countryName);
 
-	public List<Institute> getAllInstituteByID(Collection<String> instituteId);
-
 	public List<String> getInstituteIdsBasedOnGlobalRanking(Long startIndex, Long pageSize);
 
-	public List<String> getInstitudeByCountry(List<String> distinctCountryIds);
+	public List<String> getRandomInstituteByCountry(List<String> countryIdList);
 
-	public List<String> getRandomInstituteByCountry(List<String > countryIdList);
-
-	public int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, String cityId, String instituteTypeId, Boolean isActive,
-			Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking);
+	public int getCountOfInstitute(CourseSearchDto courseSearchDto, String searchKeyword, String cityId,
+			String instituteTypeId, Boolean isActive, Date updatedOn, Integer fromWorldRanking, Integer toWorldRanking);
 
 	public Map<String, Integer> getDomesticRanking(List<String> instituteIdList);
 
 	public List<InstituteResponseDto> getNearestInstituteListForAdvanceSearch(AdvanceSearchDto courseSearchDto);
 
-	public List<String> getUserSearchInstituteRecommendation(Integer startIndex, Integer pageSize, String searchKeyword);
-	
-	public List<InstituteResponseDto> getInstitutesByInstituteName(Integer startIndex, Integer pageSize, String institueName);
-	
+	public List<String> getUserSearchInstituteRecommendation(Integer startIndex, Integer pageSize,
+			String searchKeyword);
+
+	public List<InstituteResponseDto> getInstitutesByInstituteName(Integer startIndex, Integer pageSize,
+			String institueName);
+
 	public int getDistinctInstituteCountByName(String skillName);
-	
-	public Optional<Institute> getInstituteByInstituteId (String instituteId);
-	
-	public List<InstituteResponseDto> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitutde, Double longitude, Integer initialRadius);
-	
+
+	public Optional<Institute> getInstituteByInstituteId(String instituteId);
+
+	public List<InstituteResponseDto> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitutde,
+			Double longitude, Integer initialRadius);
+
 	public Integer getTotalCountOfNearestInstitutes(Double latitude, Double longitude, Integer initialRadius);
-	
-	public Integer getCourseCount(final String id);
-	
+
 	public List<Institute> getInstituteCampuses(String instituteId, String instituteName) throws NotFoundException;
-	
+
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException;
 
 	public List<InstituteResponseDto> findByIds(List<String> instituteIds);

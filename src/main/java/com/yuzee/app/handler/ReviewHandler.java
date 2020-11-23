@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReviewHandler {
 
-	private static final String GET_USER_AVERAGE_REVIEW = "/average/entityType/{entityType}";
+	private static final String GET_USER_AVERAGE_REVIEW = "/user/review/average/entityType/{entityType}";
 
 	private static final String INVOKE_EXCEPTION = "Error invoking review service {}";
 
@@ -34,7 +34,7 @@ public class ReviewHandler {
 	private RestTemplate restTemplate;
 
 	// api for calculating user review average
-	public Map<String, Double> getAverageReview(String entityType, List<String> entityIds)
+	public Map<String, ReviewStarDto> getAverageReview(String entityType, List<String> entityIds)
 			throws Exception {
 		ResponseEntity<ReviewStarWrapperDto> userAverageReviewResponseDto = null;
 		try {
@@ -62,12 +62,12 @@ public class ReviewHandler {
 				throw new ReviewInvokeException("Error invoking review service");
 			}
 		}
-		Map<String, Double> map = new HashMap<>();
+		Map<String, ReviewStarDto> map = new HashMap<>();
 
 		List<ReviewStarDto> dtos = userAverageReviewResponseDto.getBody().getData();
 		if (!CollectionUtils.isEmpty(dtos)) {
 			map = dtos.stream()
-					.collect(Collectors.toMap(ReviewStarDto::getEntityId, ReviewStarDto::getReviewStars));
+					.collect(Collectors.toMap(ReviewStarDto::getEntityId, e->e));
 		}
 		return map;
 	}

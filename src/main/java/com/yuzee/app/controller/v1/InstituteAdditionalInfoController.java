@@ -17,27 +17,22 @@ public class InstituteAdditionalInfoController implements InstituteAdditionalInf
 
 	@Autowired
 	private InstituteAdditionalInfoProcessor instituteAdditionalInfoProcessor;
-	
+
 	@Override
 	public ResponseEntity<?> addInstituteAdditionalInfo(String userId, String instituteId,
 			@Valid InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception {
-		instituteAdditionalInfoProcessor.addUpdateInstituteAdditionalInfo(userId, instituteId, instituteAdditionalInfoDto);
+		instituteAdditionalInfoProcessor.addUpdateInstituteAdditionalInfo(userId, instituteId,
+				instituteAdditionalInfoDto);
 		return new GenericResponseHandlers.Builder().setMessage("Institute additional info added/updated successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> getInstituteAdditionalInfo(String userId, String instituteId) throws Exception {
-		InstituteAdditionalInfoDto instituteAdditionalInfoDto =  instituteAdditionalInfoProcessor.getInstituteAdditionalInfo(userId, instituteId, "PRIVATE");
-		return new GenericResponseHandlers.Builder().setData(instituteAdditionalInfoDto).setMessage("Institute additional info fetched successfully")
-				.setStatus(HttpStatus.OK).create();
-	}
-
-	@Override
-	public ResponseEntity<?> getInstitutePublicAdditionalInfo(String instituteId) throws Exception {
-		InstituteAdditionalInfoDto instituteAdditionalInfoDto =  instituteAdditionalInfoProcessor.getInstituteAdditionalInfo(null, instituteId, "PUBLIC");
-		return new GenericResponseHandlers.Builder().setData(instituteAdditionalInfoDto).setMessage("Institute additional info fetched successfully")
-				.setStatus(HttpStatus.OK).create();
+	public ResponseEntity<?> getInstituteAdditionalInfo(String instituteId) throws Exception {
+		InstituteAdditionalInfoDto instituteAdditionalInfoDto = instituteAdditionalInfoProcessor
+				.getInstituteAdditionalInfo(instituteId);
+		return new GenericResponseHandlers.Builder().setData(instituteAdditionalInfoDto)
+				.setMessage("Institute additional info fetched successfully").setStatus(HttpStatus.OK).create();
 	}
 
 }

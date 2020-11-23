@@ -34,6 +34,8 @@ import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.RelatedCareerDto;
 import com.yuzee.app.dto.UserViewCourseDto;
+import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.enumeration.TransactionTypeEnum;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.handler.ViewTransactionHandler;
@@ -198,8 +200,8 @@ public class CareerTestProcessor {
 				careerJobs.getContent().stream().forEach(careerJob -> {
 					CareerJobDto careerJobDto = modelMapper.map(careerJob, CareerJobDto.class);
 					try {
-						UserViewCourseDto viewTransactionDto = viewTransacationHandler.getUserViewedCourseByEntityIdAndTransactionType(userId, "CAREER_JOB",
-								careerJob.getId(), "FAVOURITE");
+						UserViewCourseDto viewTransactionDto = viewTransacationHandler.getUserViewedCourseByEntityIdAndTransactionType(userId, EntityTypeEnum.CAREER_JOB.name(),
+								careerJob.getId(), TransactionTypeEnum.FAVORITE.name());
 						if (!ObjectUtils.isEmpty(viewTransactionDto)) {
 							careerJobDto.setFavouriteJob(true);
 						}

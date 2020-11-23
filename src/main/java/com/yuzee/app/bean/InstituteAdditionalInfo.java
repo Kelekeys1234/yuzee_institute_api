@@ -19,19 +19,13 @@ import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "institute_additional_info",  uniqueConstraints = @UniqueConstraint(columnNames = { "institute_id" } , name = "UK_INSTITUTE_ID"),
 		indexes = { @Index (name = "IDX_INSTITUTE_ID", columnList="institute_id", unique = true)})
 @Data
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
 @EqualsAndHashCode
 public class InstituteAdditionalInfo {
 	
@@ -41,32 +35,29 @@ public class InstituteAdditionalInfo {
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
-	@Column(name = "institute_id", nullable = false,length=36)
-	private String instituteId;
-	
-	@Column(name ="student_number", nullable = false)
-	private int numberOfStudent;
+	@Column(name ="student_number")
+	private Integer numberOfStudent;
 	
 	@Column(name ="employee_number", nullable = false)
-	private int numberOfEmployee;
+	private Integer numberOfEmployee;
 	
 	@Column(name ="teacher_number", nullable = false)
-	private int numberOfTeacher;
+	private Integer numberOfTeacher;
 	
 	@Column(name ="class_number", nullable = false)
-	private int numberOfClassRoom;
+	private Integer numberOfClassRoom;
 	
 	@Column(name ="campus_size", nullable = false)
-	private String sizeOfCampus;
+	private Integer sizeOfCampus;
 	
 	@Column(name ="lecture_hall_number", nullable = false)
-	private int numberOfLectureHall;
+	private Integer numberOfLectureHall;
 	
 	@Column(name ="faculty_number", nullable = false)
-	private int numberOfFaculty;
+	private Integer numberOfFaculty;
 	
 	@Column(name ="employment_rate", nullable = false)
-	private String rateOfEmployment;
+	private Integer rateOfEmployment;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
@@ -83,25 +74,7 @@ public class InstituteAdditionalInfo {
 	private String updatedBy;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn( name = "institute_id", insertable = false, updatable = false )
+	@JoinColumn( name = "institute_id")
 	private Institute institute;
 
-	public InstituteAdditionalInfo(String instituteId, int numberOfStudent, int numberOfEmployee, int numberOfTeacher,
-			int numberOfClassRoom, String sizeOfCampus, int numberOfLectureHall, int numberOfFaculty,
-			String rateOfEmployment, Date createdOn, Date updatedOn, String createdBy, String updatedBy) {
-		super();
-		this.instituteId = instituteId;
-		this.numberOfStudent = numberOfStudent;
-		this.numberOfEmployee = numberOfEmployee;
-		this.numberOfTeacher = numberOfTeacher;
-		this.numberOfClassRoom = numberOfClassRoom;
-		this.sizeOfCampus = sizeOfCampus;
-		this.numberOfLectureHall = numberOfLectureHall;
-		this.numberOfFaculty = numberOfFaculty;
-		this.rateOfEmployment = rateOfEmployment;
-		this.createdOn = createdOn;
-		this.updatedOn = updatedOn;
-		this.createdBy = createdBy;
-		this.updatedBy = updatedBy;
-	}
 }
