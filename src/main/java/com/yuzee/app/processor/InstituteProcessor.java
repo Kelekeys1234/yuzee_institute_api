@@ -2,7 +2,6 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,6 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
-import com.yuzee.app.dto.InstituteSearchResultDto;
 import com.yuzee.app.dto.InstituteTimingResponseDto;
 import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
@@ -140,20 +138,9 @@ public class InstituteProcessor {
 	public Institute get(final String id) {
 		return dao.get(id);
 	}
-
-	
-	public List<String> getTopInstituteIdByCountry(final String countryId/* , Long startIndex, Long pageSize */) {
-		return dao.getTopInstituteByCountry(countryId/* , startIndex, pageSize */);
-	}
-
 	
 	public List<String> getRandomInstituteIdByCountry(final List<String> countryIdList/* , Long startIndex, Long pageSize */) {
 		return dao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
-	}
-
-	
-	public List<InstituteSearchResultDto> getInstitueBySearchKey(final String searchKey) {
-		return dao.getInstitueBySearchKey(searchKey);
 	}
 
 	
@@ -168,40 +155,6 @@ public class InstituteProcessor {
 	public InstituteResponseDto getInstituteByID(final String instituteId) {
 		return dao.getInstituteById(instituteId);
 	}
-
-	
-	public List<InstituteResponseDto> getAllInstituteByID(final Collection<String> listInstituteId) throws ValidationException {
-		log.debug("Inside getAllInstituteByID() method");
-		List<InstituteResponseDto> instituteResponseDTOList = new ArrayList<>();
-		log.info("Fetching institute from DB based on passed instituteIds");
-		List<Institute> inistituteList = dao.getAllInstituteByID(listInstituteId);
-		if(!CollectionUtils.isEmpty(inistituteList)) {
-			log.info("Institute fetched from DB based on instituteId list, start iterating list to set value in DTO");
-			inistituteList.stream().forEach(institute -> {
-				InstituteResponseDto instituteResponseDTO = new InstituteResponseDto();
-				log.info("Copying bean class to DTO class");
-				BeanUtils.copyProperties(institute, instituteResponseDTO);
-				if (institute.getCountryName() != null) {
-					instituteResponseDTO.setCountryName(institute.getCountryName());
-				}
-				if (institute.getCityName() != null) {
-					instituteResponseDTO.setCityName(institute.getCityName());
-				}
-				instituteResponseDTO.setWorldRanking(institute.getWorldRanking());
-				instituteResponseDTO.setLocation(institute.getLatitude() + "," + institute.getLongitude());
-				try {
-					log.info("Invoking storage service to get images for instituteId = "+instituteResponseDTO.getId());
-					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDTO.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
-					instituteResponseDTO.setStorageList(storageDTOList);
-				} catch (NotFoundException | InvokeException e) {
-					log.error("Error invoking Storage service having exception = "+e);
-				}
-				instituteResponseDTOList.add(instituteResponseDTO);
-			});
-		}
-		return instituteResponseDTOList;
-	}
-
 	
 	public List<InstituteResponseDto> getInstituteByCityName(final String cityName) {
 		log.debug("Inside getInstitudeByCityId() method");
@@ -598,7 +551,7 @@ public class InstituteProcessor {
 		log.info("fetching institute videos from DB having countryName = "+institute.getCountryName() + " and instituteName = "+institute.getName());
 		dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
 		log.info("Get total course count from DB for instituteId = "+institute.getId());
-		dto.setCourseCount(dao.getCourseCount(institute.getId()));
+		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(institute.getId()));
 		return dto;
 	}
 
