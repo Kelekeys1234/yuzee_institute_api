@@ -3,141 +3,114 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import javax.validation.ValidationException;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteService;
+import com.yuzee.app.bean.Service;
 import com.yuzee.app.dao.InstituteDao;
-import com.yuzee.app.dao.InstituteServiceDetailsDao;
+import com.yuzee.app.dao.InstituteServiceDao;
 import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.InstituteServiceDto;
+import com.yuzee.app.dto.ServiceDto;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.util.DTOUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Service
+@org.springframework.stereotype.Service
 @Slf4j
 public class InstituteServiceProcessor {
 
 	@Autowired
-	private InstituteServiceDetailsDao instituteServiceDao;
-	
+	private InstituteServiceDao instituteServiceDao;
+
 	@Autowired
 	private InstituteDao instituteDao;
-	
+
 	@Autowired
 	private ServiceDao serviceDao;
-	
-	@Transactional(rollbackOn = Throwable.class)
-	public void addInstituteService (String userId, String instituteId , InstituteServiceDto instituteServiceDto) {
+
+	public void addInstituteService(String userId, String instituteId, InstituteServiceDto instituteServiceDto)
+			throws NotFoundException {
 		List<InstituteService> listOfServiceToBeSaved = new ArrayList<>();
 		log.debug("inside addInstituteService() method");
 		log.info("Getting all exsisting services");
-		//	userAccessUtils.validateUserAccess(userId, instituteId, "service page", "add");
 		Institute institute = instituteDao.get(instituteId);
-		
-		List<InstituteService> listOfExsistingInstituteServices  = instituteServiceDao.getAllInstituteService(instituteId);
-		if (CollectionUtils.isEmpty(listOfExsistingInstituteServices )) {
-			log.info("No institute service present in DB saving all services passed in request into DB");
-			instituteServiceDto.getServices().stream().forEach(serviceDto -> {
-				Optional<com.yuzee.app.bean.Service> existingService = serviceDao.getServiceById(serviceDto.getServiceId());
-				if(existingService.isPresent()) {
-					InstituteService instituteService = new InstituteService(institute, existingService.get(), true, new Date(), new Date(), "API", "API");
-					log.info("Adding service with name into DB {}",serviceDto.getServiceName());
-					listOfServiceToBeSaved.add(instituteService);
+		if (ObjectUtils.isEmpty(institute)) {
+			log.error("invalid institute id: {}", instituteId);
+			throw new ValidationException("Invalid institute id: " + instituteId);
+		}
+
+		Map<String, Service> mapServices = serviceDao.getAllByIds(
+				instituteServiceDto.getServices().stream().map(e -> e.getServiceId()).collect(Collectors.toList()))
+				.stream().collect(Collectors.toMap(Service::getId, e -> e));
+		if (mapServices.size() != instituteServiceDto.getServices().size()) {
+			log.error("one or more service ids are invalid");
+			throw new ValidationException("one or more service ids are invalid");
+		}
+		Set<String> existingServiceIds = instituteServiceDao.getAllInstituteService(instituteId).stream()
+				.map(e -> e.getService().getId()).collect(Collectors.toSet());
+
+		for (ServiceDto serviceDto : instituteServiceDto.getServices()) {
+
+			if (!existingServiceIds.contains(serviceDto.getServiceId())) {
+				log.info("No service present for institute with service Id {} adding it to list",
+						serviceDto.getServiceId());
+
+				Service service = mapServices.get(serviceDto.getServiceId());
+				if (ObjectUtils.isEmpty(service)) {
+					log.error("Illegal service id: {}", serviceDto.getServiceId());
+					throw new NotFoundException("Illegal service id: " + serviceDto.getServiceId());
 				}
-			});
-		} else {
-			log.info("checking all exsisting services to match with service passed in request ");
-			instituteServiceDto.getServices().stream().forEach(serviceDto -> {
-				InstituteService instituteServiceFromDB = listOfExsistingInstituteServices.stream().filter(serviceFromDB -> serviceFromDB.getService().getId().equalsIgnoreCase(serviceDto.getServiceId())).findAny().orElse(null);
-				if (ObjectUtils.isEmpty(instituteServiceFromDB)) {
-					Optional<com.yuzee.app.bean.Service> existingService = serviceDao.getServiceById(serviceDto.getServiceId());
-					if(existingService.isPresent()) {
-						log.info("No service present for service id {}", serviceDto.getServiceId() + " adding it to list");
-						InstituteService instituteService = new InstituteService(institute, existingService.get(), true, new Date(), new Date(), "API", "API");
-						listOfServiceToBeSaved.add(instituteService);	
-					}
-				} else {
-					log.info("service present for service id "+ serviceDto.getServiceId() + " skipping it");
-				}
-			});	
+				InstituteService instituteService = new InstituteService(institute, service, new Date(), new Date(),
+						userId, userId);
+
+				listOfServiceToBeSaved.add(instituteService);
+			} else {
+				log.info("Institute service present for institute service id {} skipping it",
+						serviceDto.getServiceId());
+			}
 		}
 		log.info("Persisting resource list to DB ");
-		instituteServiceDao.saveInstituteServices(listOfServiceToBeSaved);
+		instituteServiceDao.saveAll(listOfServiceToBeSaved);
 	}
-	
-	@Transactional(rollbackOn = Throwable.class)
-	public void deleteInstituteService (String userId, String instituteId , List<String> instituteServiceId ) { 
-		log.debug("inside deleteInstituteService() method");
-//		userAccessUtils.validateUserAccess(userId, instituteId, "service page", "delete");
-		if (!CollectionUtils.isEmpty(instituteServiceId)) {
-			instituteServiceId.stream().forEach(serviceId -> {
-				log.info("deleting services having service Id {} and institute id {}",serviceId,instituteId);
-				instituteServiceDao.deleteServiceByIdAndInstituteId(serviceId, instituteId);
-			});
-		} else {
-			log.warn("no service id passed in request");
-		}
-	}
-	
-	public InstituteServiceDto getServiceByInstituteId(String userId,String instituteId ) {
-		InstituteServiceDto instituteServiceDto = new InstituteServiceDto ();
-		log.debug("inside getServiceByInstituteId() method");
-		//userAccessUtils.validateUserAccess(userId, instituteId, "service page", "get");
-		log.info("Getting all services for institute id {}",instituteId);
 
-				
-		List<InstituteService> listOfExsistingInstituteServices  = instituteServiceDao.getAllInstituteService(instituteId);
+	public void deleteInstituteService(String instituteId, List<String> serviceIds) {
+		log.debug("inside deleteInstituteService() method");
+		instituteServiceDao.deleteByInstituteIdAndServiceByIds(instituteId, serviceIds);
+	}
+
+	public InstituteServiceDto getServiceByInstituteId(String instituteId) {
+		InstituteServiceDto instituteServiceDto = new InstituteServiceDto();
+		log.debug("inside getServiceByInstituteId() method");
+		log.info("Getting all services for institute id {}", instituteId);
+
+		List<InstituteService> listOfExsistingInstituteServices = instituteServiceDao
+				.getAllInstituteService(instituteId);
 		if (!CollectionUtils.isEmpty(listOfExsistingInstituteServices)) {
-			log.info("Service from db not empty for institute id "+instituteId);
+			log.info("Service from db not empty for institute id " + instituteId);
 			instituteServiceDto = DTOUtils.createInstituteServiceResponseDto(listOfExsistingInstituteServices);
 		}
-		return instituteServiceDto;	
-	}
-	
-	public InstituteServiceDto getPublicServiceByInstituteId(String instituteId ) {
-		InstituteServiceDto instituteServiceDto = new InstituteServiceDto ();
-		log.debug("inside getServiceByInstituteId() method");
-		log.info("Getting all services for institute id "+instituteId);
-		List<InstituteService> listOfExsistingInstituteServices  = instituteServiceDao.getAllInstituteService(instituteId);
-		if (!CollectionUtils.isEmpty(listOfExsistingInstituteServices)) {
-			log.info("Service from db not empty for institute id {}",instituteId);
-		}
-		return instituteServiceDto;	
+		return instituteServiceDto;
 	}
 
-    public void save(InstituteService instituteService) {
-    	instituteServiceDao.save(instituteService);
-    }
-
-    public void update(InstituteService instituteService) {
-    	instituteServiceDao.update(instituteService);
-    }
-
-    public InstituteService get(String id) {
-        return instituteServiceDao.get(id);
-    }
-
-    public List<InstituteService> getAll() {
-        return instituteServiceDao.getAll();
-    }
-
-    public List<String> getAllServices(String instituteId) {
-    	List<String> instituteServiceNames = new ArrayList<>();
-    	List<InstituteService> instituteServices = instituteServiceDao.getAllServices(instituteId);
-    	if(!CollectionUtils.isEmpty(instituteServices)) {
-			instituteServices.stream().forEach(instituteService -> instituteServiceNames.add(instituteService.getService().getName()));
+	public List<String> getAllServiceNames(String instituteId) {
+		List<String> instituteServiceNames = new ArrayList<>();
+		List<InstituteService> instituteServices = instituteServiceDao.getAllServices(instituteId);
+		if (!CollectionUtils.isEmpty(instituteServices)) {
+			instituteServices.stream()
+					.forEach(instituteService -> instituteServiceNames.add(instituteService.getService().getName()));
 		}
-        return instituteServiceNames;
-    }
-
+		return instituteServiceNames;
+	}
 
 }

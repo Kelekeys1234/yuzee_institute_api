@@ -204,6 +204,9 @@ public class Institute implements Serializable {
 	private List<InstituteFacility> instituteFacilities = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<InstituteService> instituteServices = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteIntake> instituteIntakes = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)

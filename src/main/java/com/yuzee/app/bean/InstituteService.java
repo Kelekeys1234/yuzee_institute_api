@@ -18,36 +18,29 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Table(name = "institute_service",  uniqueConstraints = @UniqueConstraint(columnNames = { "institute_id", "service_id" } , name = "UK_INSTITUTE_ID_SERVICE_ID"),
-          indexes = { @Index (name = "IDX_SERVICE_INSTITUTE_ID", columnList="institute_id", unique = false)})
+@Table(name = "institute_service", uniqueConstraints = @UniqueConstraint(columnNames = { "institute_id",
+		"service_id" }, name = "UK_INSTITUTE_ID_SERVICE_ID"), indexes = {
+				@Index(name = "IDX_SERVICE_INSTITUTE_ID", columnList = "institute_id", unique = false) })
 @Data
 @NoArgsConstructor
-@Getter
-@Setter
 public class InstituteService {
-
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "institute_id", nullable = false)
 	private Institute institute;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "service_id", nullable = false)
 	private Service service;
-
-	@Column(name = "is_active")
-	private Boolean isActive;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on")
@@ -57,20 +50,13 @@ public class InstituteService {
 	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on", length = 19)
-	private Date deletedOn;
-
 	@Column(name = "created_by", length = 50)
 	private String createdBy;
 
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	public InstituteService(Institute institute,Service service, boolean isActive, Date createdOn, Date updatedOn, String createdBy,
+	public InstituteService(Institute institute, Service service, Date createdOn, Date updatedOn, String createdBy,
 			String updatedBy) {
 		super();
 		this.institute = institute;
@@ -79,11 +65,5 @@ public class InstituteService {
 		this.updatedOn = updatedOn;
 		this.createdBy = createdBy;
 		this.updatedBy = updatedBy;
-	}
-	
-	@Override
-	public String toString() {
-		return "InstituteFacility [id=" + id + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + ", createdBy="
-				+ createdBy + ", updatedBy=" + updatedBy + ", institute=" + institute.getName() + ", service=" + service.getName() + "]";
 	}
 }

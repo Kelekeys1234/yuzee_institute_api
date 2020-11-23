@@ -94,7 +94,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> getAllServicesByInstitute(final String instituteId) throws Exception {
 		log.info("Start process to fetch all service having instituteId = {}",instituteId);
-		List<String> serviceNames = instituteServiceProcessor.getAllServices(instituteId);
+		List<String> serviceNames = instituteServiceProcessor.getAllServiceNames(instituteId);
 		return new GenericResponseHandlers.Builder().setData(serviceNames).setMessage("Services displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}

@@ -34,7 +34,6 @@ import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.InstituteDomesticRankingHistoryDao;
 import com.yuzee.app.dao.InstituteWorldRankingHistoryDao;
 import com.yuzee.app.dao.ScholarshipDao;
-import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseScholarshipAndFacultyCountDto;
@@ -99,7 +98,7 @@ public class InstituteProcessor {
 	private InstituteDomesticRankingHistoryDao instituteDomesticRankingHistoryDAO;
 
 	@Autowired
-	private ServiceDao serviceDetailsDAO;
+	private InstituteServiceProcessor instituteServiceProcessor;
 
 	@Autowired
 	private StorageHandler storageHandler;
@@ -402,10 +401,6 @@ public class InstituteProcessor {
 							+ ", country_name: " + instituteRequest.getCountryName());
 		}
 
-		if (instituteRequest.getOfferService() != null && !instituteRequest.getOfferService().isEmpty()) {
-			log.info("offer service is not null hence going to save institute service in DB");
-			saveInstituteService(institute, instituteRequest.getOfferService());
-		}
 		if (instituteRequest.getAccreditation() != null && !instituteRequest.getAccreditation().isEmpty()) {
 			log.info("accrediation detail is not null hence going to save institute accrediation details in DB");
 			saveAccreditedInstituteDetails(institute, instituteRequest.getAccreditationDetails());
@@ -453,29 +448,6 @@ public class InstituteProcessor {
 				accrediatedDetailDao.addAccrediatedDetail(accreditedInstituteDetail);
 			});
 		}
-	}
-
-	private void saveInstituteService(final Institute institute, final List<String> offerService) {
-		log.debug("Inside saveInstituteService() method");
-		log.info("deleting existing instituteService from DB having instituteId = "+institute.getId());
-		dao.deleteInstituteService(institute.getId());
-		log.info("start iterating new offerServices coming in request for institute");
-		offerService.stream().forEach(serviceId -> {
-			log.info("fetching service from DB having by serviceId coming in request = "+serviceId);
-			Optional<com.yuzee.app.bean.Service> service = serviceDetailsDAO.getServiceById(serviceId);
-			com.yuzee.app.bean.InstituteService instituteServiceDetails = new com.yuzee.app.bean.InstituteService();
-			instituteServiceDetails.setInstitute(institute);
-			if (service.isPresent()) {
-				instituteServiceDetails.setService(service.get());
-			}
-			instituteServiceDetails.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-			instituteServiceDetails.setIsActive(true);
-			instituteServiceDetails.setCreatedBy("AUTO");
-			instituteServiceDetails.setUpdatedBy("AUTO");
-			instituteServiceDetails.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-			log.info("Calling DAO layer to save institute service in DB");
-			dao.saveInstituteserviceDetails(instituteServiceDetails);
-		});
 	}
 
 	private InstituteCategoryType getInstituteCategoryType(final String instituteCategoryTypeId) {
@@ -642,7 +614,7 @@ public class InstituteProcessor {
 	}
 
 	private List<String> getOfferServiceNames(final String id) {
-		return serviceDetailsDAO.getServiceNameByInstituteId(id);
+		return instituteServiceProcessor.getAllServiceNames(id);
 	}
 	
 	

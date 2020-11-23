@@ -10,9 +10,7 @@ import com.yuzee.app.bean.InstituteService;
 @Repository
 public interface InstituteServiceRepository extends JpaRepository<InstituteService, String> {
 
-    public List<InstituteService> findByInstituteId (String instituteId);
-	
-	public void deleteByIdAndInstituteId (String serviceId, String instituteId);
+	public List<InstituteService> findByInstituteId(String instituteId);
 
-	
+	public void deleteByInstituteIdAndServiceIdIn(String instiuteId, List<String> instituteServiceIds);
 }

@@ -16,5 +16,5 @@ public interface ServiceDao {
 
     public Page<Service> getAllServices(Pageable pageable);
 
-	public List<String> getServiceNameByInstituteId(String id);
+	public List<Service> getAllByIds(List<String> id);
 }

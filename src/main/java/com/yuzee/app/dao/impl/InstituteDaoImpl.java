@@ -70,7 +70,11 @@ public class InstituteDaoImpl implements InstituteDao {
 
 	@Override
 	public Institute get(final String instituteId) {
-		return instituteRepository.getOne(instituteId);
+		Optional<Institute> institute = instituteRepository.findById(instituteId);
+		if (institute.isPresent()) {
+			return institute.get();
+		}
+		return null;
 	}
 
 	@Override

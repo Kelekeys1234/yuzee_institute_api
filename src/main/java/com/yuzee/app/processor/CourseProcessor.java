@@ -1625,7 +1625,7 @@ public class CourseProcessor {
 		BeanUtils.copyProperties(instituteObj, instituteResponseDto);
 		if (!ObjectUtils.isEmpty(instituteObj)) {
 			log.info("Institutes fetched from DB now fetching instituteServices from DB based on instituteId");
-			List<String> instituteServices = instituteServiceProcessor.getAllServices(instituteObj.getId());
+			List<String> instituteServices = instituteServiceProcessor.getAllServiceNames(instituteObj.getId());
 			if(!CollectionUtils.isEmpty(instituteServices)) {
 				instituteResponseDto.setInstituteServices(instituteServices);
 			}
