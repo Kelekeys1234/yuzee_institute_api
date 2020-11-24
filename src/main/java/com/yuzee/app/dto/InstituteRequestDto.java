@@ -36,12 +36,6 @@ public class InstituteRequestDto extends InstituteDto {
 	@NotBlank(message = "institute_category_type_id should not be blank")
 	private String instituteCategoryTypeId;
 	
-	@JsonProperty("offer_service")
-	private List<String> offerService;
-	
-	@JsonProperty("offer_service_name")
-	private List<String> offerServiceName;
-	
 	@JsonProperty("accreditation")
 	private List<String> accreditation;
 	

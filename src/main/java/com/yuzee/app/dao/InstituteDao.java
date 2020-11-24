@@ -31,8 +31,6 @@ public interface InstituteDao {
 
 	public InstituteResponseDto getInstituteById(String instituteId);
 
-	public List<InstituteResponseDto> getInstituteByListOfCityId(List<String> citisId);
-
 	public List<Institute> searchInstitute(String sqlQuery);
 
 	public int findTotalCount();

@@ -58,9 +58,6 @@ public interface InstituteInterface {
 	@GetMapping("/city/{cityName}")
 	public ResponseEntity<?> getInstituteByCityName(@Valid @PathVariable final String cityName) throws Exception;
 	
-	@GetMapping("/multiple/city/{cityName}")
-	public ResponseEntity<?> getInstituteByListOfCityName(@Valid @PathVariable final String cityName) throws Exception;
-	
 	@PostMapping()
 	public ResponseEntity<?> save(@Valid @RequestBody final List<InstituteRequestDto> institutes) throws Exception;
 

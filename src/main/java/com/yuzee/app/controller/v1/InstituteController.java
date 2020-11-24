@@ -225,14 +225,6 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> getInstituteByListOfCityName(final String cityName) throws Exception {
-		log.info("Start process to fetch institutes from DB for multiple cityNames = {}", cityName);
-		List<InstituteResponseDto> institutes = instituteProcessor.getInstituteByListOfCityId(cityName);
-		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institutes displayed successfully")
-				.setStatus(HttpStatus.OK).create();
-	}
-
-	@Override
 	public ResponseEntity<?> save(final List<InstituteRequestDto> institutes) throws Exception {
 		log.info("Start process to add new Institues in DB");
 		instituteProcessor.saveInstitute(institutes);

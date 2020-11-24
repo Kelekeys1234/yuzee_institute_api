@@ -292,51 +292,6 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	@Override
-	public List<InstituteResponseDto> getInstituteByListOfCityId(final List<String> citisId) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.institute_type as institudeTypeId,"
-				+ " inst.world_ranking, inst.country_name, inst.city_name, inst.website, inst.about_us_info,"
-				+ " instAdd.student_number, inst.latitude, inst.longitude, inst.email, inst.address, inst.domestic_ranking, inst.tag_line"
-				+ " from institute inst left join institute_additional_info instAdd  on instAdd.institute_id=inst.id  where inst.city_name in "
-				+ " :citisId ORDER BY inst.name";
-		System.out.println(sqlQuery);
-		Query query = session.createSQLQuery(sqlQuery).setParameter("citisId", citisId);
-		List<Object[]> rows = query.list();
-		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
-		for (Object[] row : rows) {
-			InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
-			instituteResponseDto.setId(String.valueOf(row[0]));
-			instituteResponseDto.setName(String.valueOf(row[1]));
-			instituteResponseDto.setInstituteType(String.valueOf(row[2]));
-			instituteResponseDto.setWorldRanking(Integer.parseInt(row[3].toString()));
-			instituteResponseDto.setCountryName(String.valueOf(row[4]));
-			instituteResponseDto.setCityName(String.valueOf(row[5]));
-			instituteResponseDto.setWebsite(String.valueOf(row[6]));
-			instituteResponseDto.setAboutUs(String.valueOf(row[7]));
-			if (!ObjectUtils.isEmpty(row[8])) {
-				instituteResponseDto.setTotalStudent(Integer.parseInt(row[8].toString()));
-			}
-			if (!ObjectUtils.isEmpty(row[9])) {
-				instituteResponseDto.setLatitude(Double.parseDouble(row[9].toString()));
-			}
-			if (!ObjectUtils.isEmpty(row[10])) {
-				instituteResponseDto.setLongitude(Double.parseDouble(row[10].toString()));
-			}
-			instituteResponseDto.setEmail(String.valueOf(row[11]));
-			instituteResponseDto.setAddress(String.valueOf(row[12]));
-			if (!ObjectUtils.isEmpty(row[13])) {
-				instituteResponseDto.setDomesticRanking(Integer.parseInt(row[13].toString()));
-			}
-			if (!ObjectUtils.isEmpty(row[14])) {
-				instituteResponseDto.setTagLine(row[14].toString());
-			}
-			instituteResponseDto.setLocation(String.valueOf(row[5]) + ", " + String.valueOf(row[4]));
-			instituteResponseDtos.add(instituteResponseDto);
-		}
-		return instituteResponseDtos;
-	}
-
-	@Override
 	public List<Institute> searchInstitute(final String sqlQuery) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(sqlQuery);

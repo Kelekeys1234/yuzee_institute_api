@@ -98,9 +98,6 @@ public class InstituteProcessor {
 	private InstituteDomesticRankingHistoryDao instituteDomesticRankingHistoryDAO;
 
 	@Autowired
-	private InstituteServiceProcessor instituteServiceProcessor;
-
-	@Autowired
 	private StorageHandler storageHandler;
 
 	@Autowired
@@ -166,26 +163,6 @@ public class InstituteProcessor {
 			});
 		}
 		return instituteResponseDtos;
-	}
-
-	
-	public List<InstituteResponseDto> getInstituteByListOfCityId(final String cityId) {
-		log.debug("Inside getInstituteByListOfCityId() method");
-		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
-		String[] citiesArray = cityId.split(",");
-		
-		log.info("Calling DAO layer to fetch institutes based on cityName");
-		List<InstituteResponseDto> instituteResponseDtos = dao.getInstituteByListOfCityId(Arrays.asList(citiesArray));
-		if(!CollectionUtils.isEmpty(instituteResponseDtos)) {
-			log.info("Institutes fetched from DB, hence start iterating to make final response");
-			instituteResponseDtos.stream().forEach(instituteResponseDto -> {
-				log.info("fetching instituteTiming from DB for instituteId =" +instituteResponseDto.getId());
-				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(instituteResponseDto.getId());
-				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
-				instituteResponse.add(instituteResponseDto);
-			});
-		}
-		return instituteResponse;
 	}
 
 	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) throws Exception {
@@ -535,9 +512,6 @@ public class InstituteProcessor {
 		}
 		log.info("Converting bean to request DTO class");
 		InstituteRequestDto instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
-		log.info("fetching institute services from DB fro instituteID = {}", id);
-		instituteRequestDto.setOfferService(getOfferServiceNames(id));
-		instituteRequestDto.setOfferServiceName(getOfferServiceNames(id));
 		log.info("fetching accrediation Details from DB fro instituteID = {}", id);
 		instituteRequestDto.setAccreditationDetails(getAccreditationName(id));
 		log.info("fetching institute intakes from DB fro instituteID = {}", id);
@@ -612,11 +586,6 @@ public class InstituteProcessor {
 		}
 		return accrediatedDetailDtos;
 	}
-
-	private List<String> getOfferServiceNames(final String id) {
-		return instituteServiceProcessor.getAllServiceNames(id);
-	}
-	
 	
 	public List<InstituteGetRequestDto> searchInstitute(@Valid final String searchText) {
 		log.debug("Inside searchInstitute() method");
