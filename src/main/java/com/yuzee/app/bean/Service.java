@@ -29,7 +29,7 @@ public class Service implements Serializable {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
 	@Column(name = "name", nullable = false)
@@ -37,9 +37,6 @@ public class Service implements Serializable {
 
 	@Column(name = "description")
 	private String description;
-
-	@Column(name = "is_active")
-	private Boolean isActive;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
@@ -49,16 +46,9 @@ public class Service implements Serializable {
 	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on", length = 19)
-	private Date deletedOn;
-
 	@Column(name = "created_by", length = 50)
 	private String createdBy;
 
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
-
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
 }
