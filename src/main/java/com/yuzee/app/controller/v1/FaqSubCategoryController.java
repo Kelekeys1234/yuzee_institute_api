@@ -52,6 +52,15 @@ public class FaqSubCategoryController implements FaqSubCategoryEndpoint {
 	public ResponseEntity<?> getFaqSubCategoryList(Integer pageNumber, Integer pageSize, String faqCategoryId)
 			throws ValidationException {
 		log.info("inside FaqSubCategoryController.getFaqSubCategoryList");
+		if (pageNumber < 1) {
+			log.error("Page number can not be less than 1");
+			throw new ValidationException("Page number can not be less than 1");
+		}
+
+		if (pageSize < 1) {
+			log.error("Page size can not be less than 1");
+			throw new ValidationException("Page size can not be less than 1");
+		}
 		return new GenericResponseHandlers.Builder()
 				.setData(faqSubCategoryProcessor.getFaqSubCategories(faqCategoryId, pageNumber, pageSize))
 				.setStatus(HttpStatus.OK).setMessage("faq sub categories fetched successfully").create();

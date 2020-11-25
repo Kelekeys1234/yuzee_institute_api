@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -26,7 +27,9 @@ import lombok.NoArgsConstructor;
 				@Index(name = "IDX_SERVICE_INSTITUTE_ID", columnList = "institute_id", unique = false) })
 @Data
 @NoArgsConstructor
-public class InstituteService {
+public class InstituteService implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})

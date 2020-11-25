@@ -1,5 +1,7 @@
 package com.yuzee.app.dto;
 
+import javax.validation.constraints.NotBlank;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ServiceDto {
 
+	@NotBlank(message = "service_id is required") 
 	@JsonProperty("service_id")
 	private String serviceId;
 	
