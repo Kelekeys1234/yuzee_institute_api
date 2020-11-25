@@ -938,10 +938,6 @@ public class InstituteProcessor {
 		return institutePaginationResponseDto;
 	}
 	
-	public List<Institute> getAllInstitutes() {
-		return instituteRepository.findAll();
-	}
-	
 	public NearestInstituteDTO getInstituteByCountryName(String countryName, Integer pageNumber,Integer pageSize) throws NotFoundException {
 		log.debug("Inside getInstituteByCountryName() method");
 		CourseSearchDto courseSearchDto = new CourseSearchDto();

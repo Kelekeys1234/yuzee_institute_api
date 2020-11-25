@@ -13,9 +13,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
-import com.yuzee.app.bean.Service;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseScholarshipAndFacultyCountDto;
 import com.yuzee.app.dto.CourseSearchDto;
@@ -46,7 +44,6 @@ import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.processor.InstituteTimingProcessor;
 import com.yuzee.app.processor.InstituteTypeProcessor;
-import com.yuzee.app.processor.ServiceProcessor;
 import com.yuzee.app.util.CommonUtil;
 import com.yuzee.app.util.PaginationUtil;
 
@@ -61,9 +58,6 @@ public class InstituteController implements InstituteInterface {
 
 	@Autowired
 	private InstituteTypeProcessor instituteTypeProcessor;
-
-	@Autowired
-	private ServiceProcessor serviceDetailsProcessor;
 
 	@Autowired
 	private StorageHandler storageHandler;
@@ -376,211 +370,6 @@ public class InstituteController implements InstituteInterface {
 		return new GenericResponseHandlers.Builder().setData(instituteResponse)
 				.setMessage("Institutes displayed successfully").setStatus(HttpStatus.OK).create();
 	}
-	
-	
-    @Deprecated
-    public ResponseEntity<?> saveService(final String instituteTypeId) throws Exception {
-        List<Service> list = new ArrayList<>();
-        String createdBy = "AUTO";
-        Date createdOn = new Date();
-
-        Service serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Visa Work Benefits");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Visa Work Benefits");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Employment and career development");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Employment and career development");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Counselling – personal and academic");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Counselling – personal and academic");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Study Library Support");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Study Library Support");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Health services");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Health services");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Disability Support");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Disability Support");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Childcare Centre");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Childcare Centre");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Cultural inclusion/anti-racism programs");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Cultural inclusion/anti-racism programs");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Technology Services");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Technology Services");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Accommodation");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Accommodation");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Medical");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Medical");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Legal Services");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Legal Services");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Accounting Services");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Accounting Services");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Bus");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Bus");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Train");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Train");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Airport Pickup");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Airport Pickup");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Swimming pool");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Swimming pool");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Sports Center");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Sports Center");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Sport Teams");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Sport Teams");
-        list.add(serviceObj);
-
-        serviceObj = new Service();
-        serviceObj.setCreatedBy(createdBy);
-        serviceObj.setCreatedOn(createdOn);
-        serviceObj.setDescription("Housing Services");
-        serviceObj.setIsActive(true);
-        serviceObj.setIsDeleted(false);
-        serviceObj.setName("Housing Services");
-        list.add(serviceObj);
-
-        for (Service serviceDetails : list) {
-            try {
-            	serviceDetailsProcessor.save(serviceDetails);
-            } catch (Exception e) {
-                log.error("Exception while adding services in DB having exception = {}", e);
-            }
-        }
-        return new GenericResponseHandlers.Builder().setMessage("Services Added successfully")
-                .setStatus(HttpStatus.OK).create();
-    }
-    
-    @Deprecated
-    public ResponseEntity<?> getAllInstitute() throws Exception {
-        List<Institute> institutes = instituteProcessor.getAllInstitutes();
-        return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
-                .create();
-    }
 
 	@Override
 	public ResponseEntity<?> getInstituteCampuses(String instituteId) throws NotFoundException {
