@@ -102,15 +102,4 @@ public class InstituteServiceProcessor {
 		}
 		return instituteServiceDto;
 	}
-
-	public List<String> getAllServiceNames(String instituteId) {
-		List<String> instituteServiceNames = new ArrayList<>();
-		List<InstituteService> instituteServices = instituteServiceDao.getAllServices(instituteId);
-		if (!CollectionUtils.isEmpty(instituteServices)) {
-			instituteServices.stream()
-					.forEach(instituteService -> instituteServiceNames.add(instituteService.getService().getName()));
-		}
-		return instituteServiceNames;
-	}
-
 }

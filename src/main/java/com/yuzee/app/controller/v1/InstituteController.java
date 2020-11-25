@@ -44,7 +44,6 @@ import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.processor.InstituteProcessor;
-import com.yuzee.app.processor.InstituteServiceProcessor;
 import com.yuzee.app.processor.InstituteTimingProcessor;
 import com.yuzee.app.processor.InstituteTypeProcessor;
 import com.yuzee.app.processor.ServiceProcessor;
@@ -67,9 +66,6 @@ public class InstituteController implements InstituteInterface {
 	private ServiceProcessor serviceDetailsProcessor;
 
 	@Autowired
-	private InstituteServiceProcessor instituteServiceProcessor;
-
-	@Autowired
 	private StorageHandler storageHandler;
 	
 	@Autowired
@@ -88,14 +84,6 @@ public class InstituteController implements InstituteInterface {
 		log.info("Start process to fetch instituteType from DB for countryName = [}",countryName);
 		List<InstituteTypeDto> listOfInstituteTypes = instituteTypeProcessor.getInstituteTypeByCountryName(countryName);
 		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage("Institute types fetched successfully")
-				.setStatus(HttpStatus.OK).create();
-	}
-
-	@Override
-	public ResponseEntity<?> getAllServicesByInstitute(final String instituteId) throws Exception {
-		log.info("Start process to fetch all service having instituteId = {}",instituteId);
-		List<String> serviceNames = instituteServiceProcessor.getAllServiceNames(instituteId);
-		return new GenericResponseHandlers.Builder().setData(serviceNames).setMessage("Services displayed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 	

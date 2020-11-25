@@ -35,9 +35,6 @@ public interface InstituteInterface {
 	@GetMapping("/type")
 	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam String countryName) throws Exception;
 	
-	@GetMapping("/{instituteId}/service")
-	public ResponseEntity<?> getAllServicesByInstitute(@Valid @PathVariable final String instituteId) throws Exception;
-	
 	@PostMapping("/search")
 	public ResponseEntity<?> instituteSearch(@RequestBody final CourseSearchDto request) throws Exception;
 	
