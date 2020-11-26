@@ -81,7 +81,7 @@ public class InstituteEnglishRequirementsProcessor {
 		if (!CollectionUtils.isEmpty(listOfInstituteEnglishRequirements)) {
 			listOfInstituteEnglishRequirements.stream().forEach(instituteEnglishQualification -> {
 				InstituteEnglishRequirementsDto instituteEnglishRequirementsDto = new InstituteEnglishRequirementsDto(instituteEnglishQualification.getId(), instituteEnglishQualification.getExamName(), instituteEnglishQualification.getReadingMarks(), instituteEnglishQualification.getListningMarks(),
-						instituteEnglishQualification.getWritingMarks(), instituteEnglishQualification.getOralMarks(), instituteEnglishQualification.getReadingMarks() + instituteEnglishQualification.getListningMarks() + instituteEnglishQualification.getWritingMarks() + instituteEnglishQualification.getOralMarks());
+						instituteEnglishQualification.getWritingMarks(), instituteEnglishQualification.getOralMarks());
 				listOfInstituteEnglishRequirementsResponseDto.add(instituteEnglishRequirementsDto);
 			});
 		}

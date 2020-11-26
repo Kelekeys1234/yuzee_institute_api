@@ -4,22 +4,32 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
 
 import com.yuzee.app.bean.InstituteEnglishRequirements;
 import com.yuzee.app.dao.InstituteEnglishRequirementsDao;
+import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.repository.InstituteEnglishRequirementsRepository;
 
-@Component
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
 public class InstituteEnglishRequirementsDaoImpl implements InstituteEnglishRequirementsDao {
-	
+
 	@Autowired
 	private InstituteEnglishRequirementsRepository instituteEnglishRequirementsRepository;
 
 	@Override
 	public InstituteEnglishRequirements addUpdateInsituteEnglishRequirements(
-			InstituteEnglishRequirements instituteEnglishRequirements) {
-		return instituteEnglishRequirementsRepository.save(instituteEnglishRequirements);
+			InstituteEnglishRequirements instituteEnglishRequirements) throws ValidationException {
+		try {
+			return instituteEnglishRequirementsRepository.save(instituteEnglishRequirements);
+		} catch (DataIntegrityViolationException ex) {
+			log.error("Exam with the same name already present");
+			throw new ValidationException("Exam with the same name already present");
+		}
 	}
 
 	@Override
