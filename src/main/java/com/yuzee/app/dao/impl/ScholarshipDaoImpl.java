@@ -316,7 +316,7 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 	}
 
 	@Override
-	public List<Scholarship> getScholarshipsByIds(List<String> scholarshipIds) {
-		return scholarshipRepository.findByIdIn(scholarshipIds);
+	public List<Scholarship> getScholarshipByIds(List<String> scholarshipIds) {
+		return scholarshipRepository.findAllById(scholarshipIds);
 	}
 }

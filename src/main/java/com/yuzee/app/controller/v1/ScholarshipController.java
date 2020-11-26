@@ -108,8 +108,8 @@ public class ScholarshipController implements ScholarshipInterface {
 	@Override
 	public ResponseEntity<?> getMultipleScholarshipsById(List<String> scholarshipIds) {
 		log.info("Inside ScholarshipController invoking getMultipleScholarshipsById() method ");
-		return new GenericResponseHandlers.Builder().setMessage("Scholarship count fetched Successfully")
-				.setData(scholarshipProcessor.getScholarshipsByIds(scholarshipIds))
+		return new GenericResponseHandlers.Builder().setMessage("Scholarships fetched Successfully")
+				.setData(scholarshipProcessor.getScholarshipByIds(scholarshipIds))
 				.setStatus(HttpStatus.OK).create();
 	}
 }

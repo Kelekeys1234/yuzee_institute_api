@@ -50,6 +50,6 @@ public interface ScholarshipDao {
 
 	public Long getCountByInstituteId(String instituteId);
 	
-	public List<Scholarship> getScholarshipsByIds(List<String> scholarshipIds);
+	public List<Scholarship> getScholarshipByIds(List<String> scholarshipIds);
 }
 

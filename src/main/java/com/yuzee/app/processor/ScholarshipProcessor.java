@@ -429,9 +429,9 @@ public class ScholarshipProcessor {
 		return scholarshipCountDtos;
 	}
 	
-	public List<ScholarshipDto> getScholarshipsByIds(List<String> scholarshipIds){
+	public List<ScholarshipDto> getScholarshipByIds(List<String> scholarshipIds){
 		log.debug("Inside getScholarshipByIds() in ScholarshipProcessor method");
-		List<Scholarship> scholarships = scholarshipDAO.getScholarshipsByIds(scholarshipIds);
+		List<Scholarship> scholarships = scholarshipDAO.getScholarshipByIds(scholarshipIds);
 		return scholarships.stream().map(DTOUtils::createScholarshipDtoFromModel).collect(Collectors.toList());
 	}
 }
