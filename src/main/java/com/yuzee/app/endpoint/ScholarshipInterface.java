@@ -1,6 +1,7 @@
 package com.yuzee.app.endpoint;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -45,5 +46,8 @@ public interface ScholarshipInterface {
 	
 	@GetMapping("/getScholarshipCountByLevel")
 	public ResponseEntity<?> getScholarshipCountByLevel() throws Exception;
+	
+	@GetMapping("/multiple/id")
+	public ResponseEntity<?> getMultipleScholarshipByIds(@RequestParam(name = "scholarship_ids", required = true) List<String> scholarshipIds);
 	
 }

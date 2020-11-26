@@ -9,5 +9,4 @@ import com.yuzee.app.bean.Scholarship;
 public interface ScholarshipRepository extends JpaRepository<Scholarship, String> {
 
 	public Long countByInstituteId(String instituteId);
-	
 }

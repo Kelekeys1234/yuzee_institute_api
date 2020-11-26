@@ -314,4 +314,9 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 	public Long getCountByInstituteId(String instituteId) {
 		return scholarshipRepository.countByInstituteId(instituteId);
 	}
+
+	@Override
+	public List<Scholarship> getScholarshipByIds(List<String> scholarshipIds) {
+		return scholarshipRepository.findAllById(scholarshipIds);
+	}
 }
