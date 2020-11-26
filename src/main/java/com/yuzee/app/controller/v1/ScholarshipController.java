@@ -106,9 +106,10 @@ public class ScholarshipController implements ScholarshipInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> getMultipleScholarshipsById(List<String> instituteIds) {
+	public ResponseEntity<?> getMultipleScholarshipsById(List<String> scholarshipIds) {
 		log.info("Inside ScholarshipController invoking getMultipleScholarshipsById() method ");
-		
-		return null;
+		return new GenericResponseHandlers.Builder().setMessage("Scholarship count fetched Successfully")
+				.setData(scholarshipProcessor.getScholarshipsByIds(scholarshipIds))
+				.setStatus(HttpStatus.OK).create();
 	}
 }
