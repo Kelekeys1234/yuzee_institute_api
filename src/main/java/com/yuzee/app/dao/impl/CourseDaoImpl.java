@@ -23,7 +23,7 @@ import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -55,7 +55,7 @@ import com.yuzee.app.util.CommonUtil;
 import com.yuzee.app.util.ConvertionUtil;
 import com.yuzee.app.util.PaginationUtil;
 
-@Component
+@Service
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
 public class CourseDaoImpl implements CourseDao {
 
@@ -653,23 +653,6 @@ public class CourseDaoImpl implements CourseDao {
 			}
 			courseObj.setCourseRanking(course.getWorldRanking());
 			dtos.add(courseObj);
-		}
-		return dtos;
-	}
-
-	@Override
-	public List<CourseResponseDto> getCouresesByListOfFacultyId(final String facultyId) {
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session
-				.createSQLQuery("select distinct c.id, c.name as name  from course c where c.faculty_id in (" + facultyId + ") ORDER BY c.name");
-		List<Object[]> rows = query.list();
-		List<CourseResponseDto> dtos = new ArrayList<>();
-		CourseResponseDto obj = null;
-		for (Object[] row : rows) {
-			obj = new CourseResponseDto();
-			obj.setId(row[0].toString());
-			obj.setName(row[1].toString());
-			dtos.add(obj);
 		}
 		return dtos;
 	}
@@ -1456,11 +1439,8 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds, final Integer startIndex, final Integer limit) {
-		String courseIdString = "";
 		if (courseIds == null || courseIds.isEmpty()) {
 			return new ArrayList<>();
-		} else {
-			courseIdString = courseIds.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(","));
 		}
 		Session session = sessionFactory.getCurrentSession();
 		StringBuilder queryString = new StringBuilder("select crs.id, crs.name, crs.world_ranking as courseRanking, \r\n" + "crs.stars,crs.recognition,\r\n"

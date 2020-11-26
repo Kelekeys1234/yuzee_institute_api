@@ -79,9 +79,6 @@ public interface CourseInterface {
 	@GetMapping(value = "/faculty/{facultyId}")
 	public ResponseEntity<?> getCoursesByFacultyId(@Valid @PathVariable final String facultyId) throws Exception;
 
-	@GetMapping(value = "/multiple/faculty/{facultyId}")
-	public ResponseEntity<?> getCouresesByListOfFacultyId(@Valid @PathVariable final String facultyId) throws Exception;
-
 	@PostMapping(value = "/user")
 	public ResponseEntity<?> getUserCourses(@RequestBody final List<String> courseIds,
 			@RequestParam(required = false) final String sortBy, @RequestParam(required = false) final String sortAsscending) 

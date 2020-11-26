@@ -40,8 +40,6 @@ public interface CourseDao {
 	
 	public List<Course> getAllCourseByInstituteIdAndFacultyId (String instituteId,String facultyId);
 
-	public List<CourseResponseDto> getCouresesByListOfFacultyId(String facultyId);
-
 	public int findTotalCount();
 	
 	public List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);

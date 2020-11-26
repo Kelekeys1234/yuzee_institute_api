@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.eureka.registry.Key.EntityType;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseKeywords;
@@ -255,13 +254,6 @@ public class CourseController implements CourseInterface {
 		List<CourseResponseDto> courseResponseDtos = courseProcessor.getCouresesByFacultyId(facultyId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
 				.setMessage("Courses Displayed successfully").setData(courseResponseDtos).create();
-	}
-
-	public ResponseEntity<?> getCouresesByListOfFacultyId(final String facultyId)
-			throws Exception {
-		List<CourseResponseDto> courseResponseDto = courseProcessor.getCouresesByListOfFacultyId(facultyId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Courses Displayed successfully").setData(courseResponseDto).create();
 	}
 
 	public ResponseEntity<?> getUserCourses(final List<String> courseIds,final String sortBy, final String sortAsscending) 

@@ -154,9 +154,6 @@ public class CourseProcessor {
 	private CourseEnglishEligibilityProcessor courseEnglishEligibilityProcessor;
 	
 	@Autowired
-	private InstituteServiceProcessor instituteServiceProcessor;
-	
-	@Autowired
 	private InstituteProcessor instituteProcessor;
 	
 	@Autowired
@@ -296,18 +293,6 @@ public class CourseProcessor {
 			throw new NotFoundException("No Courses found in DB for facultyId = "+facultyId);
 		}
 		return courseResponseDtos;
-	}
-
-	public List<CourseResponseDto> getCouresesByListOfFacultyId(final String facultyId) {
-		log.debug("Inside getCouresesByListOfFacultyId() method");
-		String[] facultyIds = facultyId.split(",");
-		log.info("Seperate facultyIds on the basis of comma");
-		String facultyIdtempList = "";
-		for (String id : facultyIds) {
-			facultyIdtempList = facultyIdtempList + "," + "'" + id + "'";
-		}
-		log.info("Callig DAO layer to fetch courseList by FacultyId");
-		return courseDao.getCouresesByListOfFacultyId(facultyIdtempList.substring(1, facultyIdtempList.length()));
 	}
 
 	public String saveCourse(@Valid final CourseRequest courseDto) throws ValidationException, CommonInvokeException {
