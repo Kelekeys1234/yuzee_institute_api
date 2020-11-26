@@ -49,5 +49,7 @@ public interface ScholarshipDao {
 	public List<ScholarshipEligibleNationality> getScholarshipEligibileNationalityByScholarshipId(String scholarshipId);
 
 	public Long getCountByInstituteId(String instituteId);
+	
+	public List<Scholarship> getScholarshipsByIds(List<String> scholarshipIds);
 }
 

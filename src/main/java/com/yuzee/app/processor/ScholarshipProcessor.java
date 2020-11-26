@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ElasticHandler;
 import com.yuzee.app.handler.StorageHandler;
+import com.yuzee.app.util.DTOUtils;
 import com.yuzee.app.util.IConstant;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -425,5 +427,11 @@ public class ScholarshipProcessor {
 			}
 		});
 		return scholarshipCountDtos;
+	}
+	
+	public List<ScholarshipDto> getScholarshipsByIds(List<String> scholarshipIds){
+		log.debug("Inside getScholarshipByIds() in ScholarshipProcessor method");
+		List<Scholarship> scholarships = scholarshipDAO.getScholarshipsByIds(scholarshipIds);
+		return scholarships.stream().map(DTOUtils::createScholarshipDtoFromModel).collect(Collectors.toList());
 	}
 }

@@ -29,7 +29,10 @@ import com.yuzee.app.processor.LevelProcessor;
 import com.yuzee.app.processor.ScholarshipProcessor;
 import com.yuzee.app.util.PaginationUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController("scholarshipControllerV1")
+@Slf4j
 public class ScholarshipController implements ScholarshipInterface {
 
 	@Autowired
@@ -100,5 +103,12 @@ public class ScholarshipController implements ScholarshipInterface {
 		}
 		return new GenericResponseHandlers.Builder().setMessage("Scholarship count fetched Successfully").setData(scholarshipCountDtos)
 				.setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> getMultipleScholarshipsById(List<String> instituteIds) {
+		log.info("Inside ScholarshipController invoking getMultipleScholarshipsById() method ");
+		
+		return null;
 	}
 }
