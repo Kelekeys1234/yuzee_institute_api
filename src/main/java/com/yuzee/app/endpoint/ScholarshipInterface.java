@@ -48,6 +48,6 @@ public interface ScholarshipInterface {
 	public ResponseEntity<?> getScholarshipCountByLevel() throws Exception;
 	
 	@GetMapping("/multiple/id")
-	public ResponseEntity<?> getMultipleScholarshipsById(@RequestParam(name = "scholarship_ids", required = true) List<String> scholarshipIds);
+	public ResponseEntity<?> getMultipleScholarshipByIds(@RequestParam(name = "scholarship_ids", required = true) List<String> scholarshipIds);
 	
 }
