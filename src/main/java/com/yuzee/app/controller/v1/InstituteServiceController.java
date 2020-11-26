@@ -50,9 +50,9 @@ public class InstituteServiceController implements InstituteServiceInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> getInstituteService(String instituteId) throws Exception {
+	public ResponseEntity<?> getInstituteServices(String instituteId) throws Exception {
 		log.info("getting services for institute Id " + instituteId);
-		InstituteServiceDto instituteServiceDto = instituteServiceProcessor.getServiceByInstituteId(instituteId);
+		InstituteServiceDto instituteServiceDto = instituteServiceProcessor.getServicesByInstituteId(instituteId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(instituteServiceDto)
 				.setMessage("Institute services fetched successfully").create();
 	}

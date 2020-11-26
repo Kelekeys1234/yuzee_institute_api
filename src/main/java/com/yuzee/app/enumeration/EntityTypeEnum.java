@@ -19,5 +19,7 @@ public enum EntityTypeEnum {
 	
 	HELP_SUPPORT,
 	
-	SCHOLARSHIP;
+	SCHOLARSHIP,
+	
+	SERVICE;
 }

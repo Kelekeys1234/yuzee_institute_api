@@ -30,6 +30,6 @@ public interface InstituteServiceInterface {
 			@RequestParam(value = "service_ids", required = true) List<String> instituteServiceId) throws Exception;
 
 	@GetMapping("/institute/service/instituteId/{instituteId}")
-	public ResponseEntity<?> getInstituteService(@PathVariable final String instituteId) throws Exception;
+	public ResponseEntity<?> getInstituteServices(@PathVariable final String instituteId) throws Exception;
 
 }

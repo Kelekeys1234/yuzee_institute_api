@@ -20,8 +20,13 @@ import com.yuzee.app.dao.InstituteServiceDao;
 import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.InstituteServiceDto;
 import com.yuzee.app.dto.ServiceDto;
+import com.yuzee.app.dto.StorageDto;
+import com.yuzee.app.enumeration.EntitySubTypeEnum;
+import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
+import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.util.DTOUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +46,9 @@ public class InstituteServiceProcessor {
 
 	@Autowired
 	private ServiceProcessor serviceProcessor;
+
+	@Autowired
+	private StorageHandler storageHandler;
 
 	public void addInstituteService(String userId, String instituteId, InstituteServiceDto instituteServiceDto)
 			throws NotFoundException, ValidationException {
@@ -106,7 +114,7 @@ public class InstituteServiceProcessor {
 		instituteServiceDao.deleteByInstituteIdAndServiceByIds(instituteId, serviceIds);
 	}
 
-	public InstituteServiceDto getServiceByInstituteId(String instituteId) {
+	public InstituteServiceDto getServicesByInstituteId(String instituteId) throws NotFoundException, InvokeException {
 		InstituteServiceDto instituteServiceDto = new InstituteServiceDto();
 		log.debug("inside getServiceByInstituteId() method");
 		log.info("Getting all services for institute id {}", instituteId);
@@ -116,6 +124,15 @@ public class InstituteServiceProcessor {
 		if (!CollectionUtils.isEmpty(listOfExsistingInstituteServices)) {
 			log.info("Service from db not empty for institute id " + instituteId);
 			instituteServiceDto = DTOUtils.createInstituteServiceResponseDto(listOfExsistingInstituteServices);
+			List<ServiceDto> services = instituteServiceDto.getServices();
+			if (!services.isEmpty()) {
+				List<String> serviceIds = services.stream().map(ServiceDto::getServiceId).collect(Collectors.toList());
+				List<StorageDto> storages = storageHandler.getStorages(serviceIds, EntityTypeEnum.SERVICE,
+						EntitySubTypeEnum.LOGO);
+				Map<String, String> serviceLogoMap = storages.stream()
+						.collect(Collectors.toMap(StorageDto::getEntityId, StorageDto::getFileURL));
+				services.stream().forEach(e -> e.setIcon(serviceLogoMap.get(e.getServiceId())));
+			}
 		}
 		return instituteServiceDto;
 	}
