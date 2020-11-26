@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.InstituteServiceDto;
 import com.yuzee.app.endpoint.InstituteServiceInterface;
+import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.InstituteServiceProcessor;
 
@@ -28,6 +30,11 @@ public class InstituteServiceController implements InstituteServiceInterface {
 	public ResponseEntity<?> addInstituteService(String userId, String instituteId,
 			@RequestBody @Valid InstituteServiceDto instituteServiceDto) throws Exception {
 		log.info("Adding services for institute Id " + instituteId);
+		boolean isInValidData = instituteServiceDto.getServices().stream()
+				.anyMatch(e -> StringUtils.isEmpty(e.getServiceId()) && StringUtils.isEmpty(e.getServiceName()));
+		if (isInValidData) {
+			throw new ValidationException("Atleast one of the service_id or service_name must not be empty");
+		}
 		instituteServiceProcessor.addInstituteService(userId, instituteId, instituteServiceDto);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
 				.setMessage("Institute services added successfully").create();

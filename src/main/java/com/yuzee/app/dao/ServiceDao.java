@@ -7,14 +7,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.yuzee.app.bean.Service;
+import com.yuzee.app.exception.ValidationException;
 
 public interface ServiceDao {
 
-    public void addUpdateServiceDetails(Service service);
+	public List<Service> addUpdateServices(List<Service> service) throws ValidationException;
 
-    public Optional<Service> getServiceById(String id);
+	public Optional<Service> getServiceById(String id);
 
-    public Page<Service> getAllServices(Pageable pageable);
+	public Page<Service> getAllServices(Pageable pageable);
 
 	public List<Service> getAllByIds(List<String> id);
+	
+	public List<Service> findByNameIgnoreCaseIn(List<String> names);
 }

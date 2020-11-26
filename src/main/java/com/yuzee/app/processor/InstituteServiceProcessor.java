@@ -7,9 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.validation.ValidationException;
-
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
@@ -22,6 +21,7 @@ import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.InstituteServiceDto;
 import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.util.DTOUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +39,11 @@ public class InstituteServiceProcessor {
 	@Autowired
 	private ServiceDao serviceDao;
 
+	@Autowired
+	private ServiceProcessor serviceProcessor;
+
 	public void addInstituteService(String userId, String instituteId, InstituteServiceDto instituteServiceDto)
-			throws NotFoundException {
-		List<InstituteService> listOfServiceToBeSaved = new ArrayList<>();
+			throws NotFoundException, ValidationException {
 		log.debug("inside addInstituteService() method");
 		log.info("Getting all exsisting services");
 		Institute institute = instituteDao.get(instituteId);
@@ -50,34 +52,49 @@ public class InstituteServiceProcessor {
 			throw new ValidationException("Invalid institute id: " + instituteId);
 		}
 
-		Map<String, Service> mapServices = serviceDao.getAllByIds(
-				instituteServiceDto.getServices().stream().map(e -> e.getServiceId()).collect(Collectors.toList()))
+		//////////////////// code for adding the new services //////////////////////////
+
+		List<ServiceDto> newServicesTobeAdded = new ArrayList<>(instituteServiceDto.getServices());
+
+		newServicesTobeAdded.removeIf(e -> !StringUtils.isEmpty(e.getServiceId()));
+
+		if (!newServicesTobeAdded.isEmpty()) {
+			newServicesTobeAdded = serviceProcessor.saveAllServices(userId, newServicesTobeAdded);
+			instituteServiceDto.getServices().removeIf(e -> StringUtils.isEmpty(e.getServiceId()));
+			instituteServiceDto.getServices().addAll(newServicesTobeAdded);
+		}
+		/////////////////////////////////////////////////////////////////////////////////////////////////
+
+		Set<String> serviceIds = instituteServiceDto.getServices().stream().map(ServiceDto::getServiceId)
+				.collect(Collectors.toSet());
+
+		Map<String, Service> mapServices = serviceDao.getAllByIds(serviceIds.stream().collect(Collectors.toList()))
 				.stream().collect(Collectors.toMap(Service::getId, e -> e));
-		if (mapServices.size() != instituteServiceDto.getServices().size()) {
+
+		if (mapServices.size() != serviceIds.size()) {
 			log.error("one or more service ids are invalid");
 			throw new ValidationException("one or more service ids are invalid");
 		}
+
 		Set<String> existingServiceIds = instituteServiceDao.getAllInstituteService(instituteId).stream()
 				.map(e -> e.getService().getId()).collect(Collectors.toSet());
 
-		for (ServiceDto serviceDto : instituteServiceDto.getServices()) {
+		List<InstituteService> listOfServiceToBeSaved = new ArrayList<>();
+		for (String serviceId : serviceIds) {
 
-			if (!existingServiceIds.contains(serviceDto.getServiceId())) {
-				log.info("No service present for institute with service Id {} adding it to list",
-						serviceDto.getServiceId());
+			if (!existingServiceIds.contains(serviceId)) {
+				log.info("No service present for institute with service Id {} adding it to list", serviceId);
 
-				Service service = mapServices.get(serviceDto.getServiceId());
+				Service service = mapServices.get(serviceId);
 				if (ObjectUtils.isEmpty(service)) {
-					log.error("Illegal service id: {}", serviceDto.getServiceId());
-					throw new NotFoundException("Illegal service id: " + serviceDto.getServiceId());
+					log.error("Illegal service id: {}", serviceId);
+					throw new NotFoundException("Illegal service id: " + serviceId);
 				}
 				InstituteService instituteService = new InstituteService(institute, service, new Date(), new Date(),
 						userId, userId);
-
 				listOfServiceToBeSaved.add(instituteService);
 			} else {
-				log.info("Institute service present for institute service id {} skipping it",
-						serviceDto.getServiceId());
+				log.info("Institute service already present for institute service id {} skipping it", serviceId);
 			}
 		}
 		log.info("Persisting resource list to DB ");
