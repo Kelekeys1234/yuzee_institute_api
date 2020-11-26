@@ -53,9 +53,9 @@ public class InstituteEnglishRequirementsController implements InstituteEnglishR
 
 	@Override
 	public ResponseEntity<?> deleteInstituteEnglishRequirementsByRequirementsId(String userId,
-			String englishRequirementsId) throws Exception {
+			String englishRequirementsId) {
 		instituteEnglishRequirementsProcessor.deleteInstituteEnglishRequirements(userId, englishRequirementsId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Deleted institute english requirements successfully").create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage("Deleted institute english requirements successfully").create();
 	}
-
 }

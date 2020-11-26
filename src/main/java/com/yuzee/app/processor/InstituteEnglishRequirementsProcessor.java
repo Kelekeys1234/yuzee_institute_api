@@ -88,19 +88,16 @@ public class InstituteEnglishRequirementsProcessor {
 		return listOfInstituteEnglishRequirementsResponseDto;	
 	}
 	
-	public void deleteInstituteEnglishRequirements (String userId,String instituteEnglishRequirementsId) throws Exception {
+	public void deleteInstituteEnglishRequirements(String userId, String instituteEnglishRequirementsId) {
 		log.debug("Inside deleteInstituteEnglishRequirements method()");
 		// TODO validate userId have access for institute Id
-		log.info("Getting institute english requirements having requirement id  "+instituteEnglishRequirementsId);
-		Optional<InstituteEnglishRequirements> optionalInstituteEnglishRequirement = instituteEnglishRequirementsDao.getInsituteEnglishRequirementsById(instituteEnglishRequirementsId);
+		log.info("Getting institute english requirements having requirement id  " + instituteEnglishRequirementsId);
+		Optional<InstituteEnglishRequirements> optionalInstituteEnglishRequirement = instituteEnglishRequirementsDao
+				.getInsituteEnglishRequirementsById(instituteEnglishRequirementsId);
 		if (!optionalInstituteEnglishRequirement.isPresent()) {
-			log.error("No english requirement found for institute having english requirement id "+instituteEnglishRequirementsId);
-			throw new NotFoundException("No english requirement found for institute having english requirement id "+instituteEnglishRequirementsId);
+			log.info("Getting institute id from InstituteEnglishRequirements and validate it with user id");
+			log.info("Deleting institute english requirement by Id " + instituteEnglishRequirementsId);
+			instituteEnglishRequirementsDao.deleteInstituteEnglishRequirementsById(instituteEnglishRequirementsId);
 		}
-		InstituteEnglishRequirements instituteEnglishRequirements = optionalInstituteEnglishRequirement.get();
-		log.info("Getting institute id from InstituteEnglishRequirements and validate it with user id");
-		// TODO validate userId have access for institute Id
-		log.info("Deleting institute english requirement by Id "+instituteEnglishRequirementsId);
-		instituteEnglishRequirementsDao.deleteInstituteEnglishRequirementsById(instituteEnglishRequirementsId);
 	}
 }

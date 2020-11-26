@@ -31,6 +31,6 @@ public interface InstituteEnglishRequirementsInterface {
 	public ResponseEntity<?> getInstitutePublicEnglishRequirementsByInstituteId (@PathVariable final String instituteId) throws Exception;
 	
 	@DeleteMapping("/englishrequirements/{englishRequirementsId}")
-	public ResponseEntity<?> deleteInstituteEnglishRequirementsByRequirementsId (@RequestHeader("userId") final String userId,@PathVariable final String englishRequirementsId) throws Exception;
+	public ResponseEntity<?> deleteInstituteEnglishRequirementsByRequirementsId (@RequestHeader("userId") final String userId,@PathVariable final String englishRequirementsId);
 	
 }
