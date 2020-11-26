@@ -54,6 +54,10 @@ public class InstituteEnglishRequirementsDto {
 		this.listningMarks = listningMarks;
 		this.writingMarks = writingMarks;
 		this.oralMarks = oralMarks;
+		setOverallMarks();
+	}
+
+	private void setOverallMarks() {
 		this.overAllMarks = (this.readingMarks + this.listningMarks + this.writingMarks + this.oralMarks) / 4;
 		Double valueAfterPoint = this.overAllMarks - this.overAllMarks.intValue();
 		if (valueAfterPoint >= 0.725) {

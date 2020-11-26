@@ -33,6 +33,7 @@ public class InstituteServiceController implements InstituteServiceInterface {
 		boolean isInValidData = instituteServiceDto.getServices().stream()
 				.anyMatch(e -> StringUtils.isEmpty(e.getServiceId()) && StringUtils.isEmpty(e.getServiceName()));
 		if (isInValidData) {
+			log.error("Atleast one of the service_id or service_name must not be empty");
 			throw new ValidationException("Atleast one of the service_id or service_name must not be empty");
 		}
 		instituteServiceProcessor.addInstituteService(userId, instituteId, instituteServiceDto);
