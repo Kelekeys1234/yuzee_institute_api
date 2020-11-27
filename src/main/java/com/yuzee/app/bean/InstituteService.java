@@ -45,6 +45,9 @@ public class InstituteService implements Serializable {
 	@JoinColumn(name = "service_id", nullable = false)
 	private Service service;
 
+	@Column(name = "description")
+	private String description;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on")
 	private Date createdOn;
@@ -59,11 +62,12 @@ public class InstituteService implements Serializable {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
-	public InstituteService(Institute institute, Service service, Date createdOn, Date updatedOn, String createdBy,
-			String updatedBy) {
+	public InstituteService(Institute institute, Service service, String description, Date createdOn, Date updatedOn,
+			String createdBy, String updatedBy) {
 		super();
 		this.institute = institute;
 		this.service = service;
+		this.description = description;
 		this.createdOn = createdOn;
 		this.updatedOn = updatedOn;
 		this.createdBy = createdBy;

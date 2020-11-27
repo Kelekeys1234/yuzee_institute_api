@@ -21,5 +21,7 @@ public enum EntityTypeEnum {
 	
 	SCHOLARSHIP,
 	
-	SERVICE;
+	SERVICE,
+	
+	INSTITUTE_SERVICE;
 }

@@ -22,7 +22,7 @@ public interface InstituteServiceInterface {
 
 	@PostMapping("/institute/service/instituteId/{instituteId}")
 	public ResponseEntity<?> addInstituteService(@RequestHeader("userId") final String userId,
-			@PathVariable final String instituteId, @RequestBody @Valid InstituteServiceDto instituteServiceDto)
+			@PathVariable final String instituteId, @Valid @RequestBody List<InstituteServiceDto> instituteServiceDto)
 			throws Exception;
 
 	@DeleteMapping("/institute/service/instituteId/{instituteId}")
