@@ -88,7 +88,7 @@ public class InstituteServiceProcessor {
 		Map<String, Service> mapServicesByName = servicesFromDb.stream()
 				.collect(Collectors.toMap(Service::getName, e -> e));
 
-		if (mapServicesById.size() != serviceIds.size()) {
+		if (serviceIds.size() != servicesFromDb.size()) {
 			log.error("one or more service ids are invalid");
 			throw new ValidationException("one or more service ids are invalid");
 		}
