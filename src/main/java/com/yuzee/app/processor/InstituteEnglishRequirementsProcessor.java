@@ -94,8 +94,7 @@ public class InstituteEnglishRequirementsProcessor {
 		log.info("Getting institute english requirements having requirement id  " + instituteEnglishRequirementsId);
 		Optional<InstituteEnglishRequirements> optionalInstituteEnglishRequirement = instituteEnglishRequirementsDao
 				.getInsituteEnglishRequirementsById(instituteEnglishRequirementsId);
-		if (!optionalInstituteEnglishRequirement.isPresent()) {
-			log.info("Getting institute id from InstituteEnglishRequirements and validate it with user id");
+		if (optionalInstituteEnglishRequirement.isPresent()) {
 			log.info("Deleting institute english requirement by Id " + instituteEnglishRequirementsId);
 			instituteEnglishRequirementsDao.deleteInstituteEnglishRequirementsById(instituteEnglishRequirementsId);
 		}
