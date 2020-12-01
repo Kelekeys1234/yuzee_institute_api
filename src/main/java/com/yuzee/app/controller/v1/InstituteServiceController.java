@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +29,7 @@ public class InstituteServiceController implements InstituteServiceInterface {
 	public ResponseEntity<?> addInstituteService(String userId, String instituteId,
 			List<InstituteServiceDto> instituteServiceDtos) throws Exception {
 		log.info("Adding services for institute Id " + instituteId);
-		if (ObjectUtils.isEmpty(instituteServiceDtos)) {
+		if (CollectionUtils.isEmpty(instituteServiceDtos)) {
 			log.error("InstiuteServiceDto list must not be null or empty");
 			throw new ValidationException("InstiuteServiceDto list must not be null or empty");
 		}
