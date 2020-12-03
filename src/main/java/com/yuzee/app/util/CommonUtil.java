@@ -81,6 +81,8 @@ public class CommonUtil {
 		instituteRequestDto.setDomesticRanking(institute.getDomesticRanking());
 		instituteRequestDto.setTagLine(institute.getTagLine());
 		instituteRequestDto.setPostalCode(institute.getPostalCode());
+		instituteRequestDto.setUpdatedBy(institute.getUpdatedBy());
+		instituteRequestDto.setCreatedBy(institute.getCreatedBy());
 		return instituteRequestDto;
 	}
 

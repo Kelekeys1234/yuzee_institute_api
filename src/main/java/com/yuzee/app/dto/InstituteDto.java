@@ -86,4 +86,10 @@ public class InstituteDto {
 	
 	@JsonProperty("cover_photo_url")
 	private String coverPhotoUrl;
+	
+	@JsonProperty("created_by")
+	private String createdBy;
+	
+	@JsonProperty("updated_by")
+	private String updatedBy;
 }
