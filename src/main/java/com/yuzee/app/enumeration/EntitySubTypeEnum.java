@@ -1,7 +1,8 @@
 package com.yuzee.app.enumeration;
 
 public enum EntitySubTypeEnum {
-	ATTACHEMENT, 
+	ATTACHEMENT,
+	ABOUT_US,
 	ACADEMIC_QUALIFICATION, 
 	ACCREDIATED, 
 	ACHIEVEMENT, 
