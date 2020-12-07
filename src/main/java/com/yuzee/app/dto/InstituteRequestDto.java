@@ -80,4 +80,7 @@ public class InstituteRequestDto extends InstituteDto {
 	
 	@JsonProperty("has_edit_access")
 	private boolean editAccess;
+
+	@JsonProperty("is_followed")
+	private boolean followed;
 }

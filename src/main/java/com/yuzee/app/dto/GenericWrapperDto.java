@@ -3,10 +3,8 @@ package com.yuzee.app.dto;
 import lombok.Data;
 
 @Data
-public class FollowerCountResponseDto {
-	private FollowerCountDto data;
-
+public class GenericWrapperDto<T> {
 	private String message;
-
 	private String status;
+	private T data;
 }

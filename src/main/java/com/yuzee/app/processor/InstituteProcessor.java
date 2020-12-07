@@ -563,6 +563,7 @@ public class InstituteProcessor {
 				instituteRequestDto.setCoverPhotoUrl(coverStorage.getFileURL());
 			}
 		}
+		instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, instituteRequestDto.getId()));
 		return instituteRequestDto;
 	}
 
