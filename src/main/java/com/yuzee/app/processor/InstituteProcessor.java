@@ -502,7 +502,7 @@ public class InstituteProcessor {
 		return images;
 	}
 
-	public InstituteRequestDto getById(final String id) throws Exception {
+	public InstituteRequestDto getById(final String userId, final String id) throws Exception {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);
 		Institute institute = dao.get(id);
@@ -512,6 +512,9 @@ public class InstituteProcessor {
 		}
 		log.info("Converting bean to request DTO class");
 		InstituteRequestDto instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
+		if (userId.equals(institute.getCreatedBy())) {
+			instituteRequestDto.setEditAccess(true);
+		}
 		log.info("fetching accrediation Details from DB fro instituteID = {}", id);
 		instituteRequestDto.setAccreditationDetails(getAccreditationName(id));
 		log.info("fetching institute intakes from DB fro instituteID = {}", id);

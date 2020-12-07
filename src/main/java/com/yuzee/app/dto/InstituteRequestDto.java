@@ -77,4 +77,7 @@ public class InstituteRequestDto extends InstituteDto {
 
 	@JsonProperty("postal_code")
 	private Integer postalCode;
+	
+	@JsonProperty("has_edit_access")
+	private boolean editAccess;
 }

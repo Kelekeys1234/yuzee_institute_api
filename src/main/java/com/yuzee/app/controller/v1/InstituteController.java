@@ -239,10 +239,10 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> get(final String instituteId)
+	public ResponseEntity<?> get(final String userId, final String instituteId)
 			throws Exception {
 		log.info("Start process to fetch Institutes from DB for instituteId = {}", instituteId);
-		InstituteRequestDto instituteRequestDtos = instituteProcessor.getById(instituteId);
+		InstituteRequestDto instituteRequestDtos = instituteProcessor.getById(userId, instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteRequestDtos)
 				.setMessage("Institute details get successfully").setStatus(HttpStatus.OK).create();
 	}

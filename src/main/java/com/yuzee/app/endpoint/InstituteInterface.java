@@ -70,7 +70,7 @@ public interface InstituteInterface {
 				@PathVariable final Integer pageSize) throws Exception;
 	
 	@GetMapping("/{instituteId}")
-	public ResponseEntity<?> get(@PathVariable final String instituteId)
+	public ResponseEntity<?> get(@RequestHeader("userId") final String userId, @PathVariable final String instituteId)
 			throws ValidationException, NotFoundException, InvokeException, Exception;
 
 	@GetMapping("/search/{searchText}")
