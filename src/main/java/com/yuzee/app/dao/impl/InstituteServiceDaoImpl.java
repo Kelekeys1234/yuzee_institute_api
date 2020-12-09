@@ -38,8 +38,8 @@ public class InstituteServiceDaoImpl implements InstituteServiceDao {
 
 	@Transactional
 	@Override
-	public void deleteByInstituteIdAndServiceByIds(String instituteId, List<String> serviceIds) {
-		instituteServiceRepository.deleteByInstituteIdAndServiceIdIn(instituteId, serviceIds);
+	public void delete(String instituteServiceId) {
+		instituteServiceRepository.deleteById(instituteServiceId);
 	}
 
 }

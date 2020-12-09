@@ -1,7 +1,5 @@
 package com.yuzee.app.endpoint;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
@@ -13,9 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.InstituteServiceDto;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public interface InstituteServiceInterface {
@@ -25,9 +24,8 @@ public interface InstituteServiceInterface {
 			@PathVariable final String instituteId, @Valid @RequestBody InstituteServiceDto instituteServiceDto)
 			throws Exception;
 
-	@DeleteMapping("/institute/service/instituteId/{instituteId}")
-	public ResponseEntity<?> deleteInstituteServiceByServiceIds(@PathVariable final String instituteId,
-			@RequestParam(value = "service_ids", required = true) List<String> instituteServiceId);
+	@DeleteMapping("/institute/service/{instituteServiceId}")
+	public ResponseEntity<?> deleteById(@PathVariable final String instituteServiceId) throws NotFoundException, InvokeException;
 
 	@GetMapping("/institute/service/instituteId/{instituteId}")
 	public ResponseEntity<?> getInstituteServices(@PathVariable final String instituteId);

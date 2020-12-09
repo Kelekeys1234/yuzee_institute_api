@@ -13,6 +13,4 @@ public interface InstituteServiceRepository extends JpaRepository<InstituteServi
 	public List<InstituteService> findByInstituteId(String instituteId);
 
 	public InstituteService findByInstituteIdAndServiceId(String instituteId, String serviceId);
-
-	public void deleteByInstituteIdAndServiceIdIn(String instiuteId, List<String> instituteServiceIds);
 }

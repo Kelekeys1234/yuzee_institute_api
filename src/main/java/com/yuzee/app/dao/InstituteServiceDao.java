@@ -14,5 +14,5 @@ public interface InstituteServiceDao {
 
 	public InstituteService save(InstituteService instituteService);
 
-	public void deleteByInstituteIdAndServiceByIds(String instituteId, List<String> serviceIds);
+	public void delete(String instituteServiceId);
 }

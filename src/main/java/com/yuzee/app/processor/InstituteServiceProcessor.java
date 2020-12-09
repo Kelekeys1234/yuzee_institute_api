@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -52,8 +54,8 @@ public class InstituteServiceProcessor {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	public String addInstituteService(String userId, String instituteId, InstituteServiceDto instituteServiceDto)
-			throws NotFoundException, ValidationException {
+	public InstituteServiceDto addInstituteService(String userId, String instituteId,
+			InstituteServiceDto instituteServiceDto) throws ValidationException {
 		log.debug("inside addInstituteService() method");
 		log.info("Getting all exsisting services");
 		Institute institute = instituteDao.get(instituteId);
@@ -78,22 +80,39 @@ public class InstituteServiceProcessor {
 
 		InstituteService existingInstituteService = instituteServiceDao.findByInstituteIdAndServiceId(instituteId,
 				instituteServiceDto.getService().getServiceId());
-		InstituteService instituteService = new InstituteService(institute, service,
-				instituteServiceDto.getDescription(), new Date(), new Date(), userId, userId);
+		InstituteService instituteService = null;
 
 		if (!ObjectUtils.isEmpty(existingInstituteService)) {
 			log.info("Institute Service already present going to update it");
-			instituteService.setId(existingInstituteService.getId());
-			instituteService.setCreatedBy(existingInstituteService.getCreatedBy());
-			instituteService.setCreatedOn(existingInstituteService.getCreatedOn());
+			instituteService = existingInstituteService;
+			instituteService.setUpdatedBy(userId);
+			instituteService.setUpdatedOn(new Date());
 			instituteService.setDescription(instituteServiceDto.getDescription());
+		} else {
+			instituteService = new InstituteService(institute, service, instituteServiceDto.getDescription(),
+					new Date(), new Date(), userId, userId);
 		}
-		return instituteServiceDao.save(instituteService).getId();
+
+		InstituteServiceDto dto = modelMapper.map(instituteServiceDao.save(instituteService),
+				InstituteServiceDto.class);
+		List<StorageDto> serviceLogos = null;
+		try {
+			serviceLogos = storageHandler.getStorages(dto.getService().getServiceId(), EntityTypeEnum.SERVICE,
+					EntitySubTypeEnum.LOGO);
+		} catch (NotFoundException | InvokeException e) {
+			log.error("error invoking storage service");
+		}
+		if (!CollectionUtils.isEmpty(serviceLogos)) {
+			dto.getService().setIcon(serviceLogos.get(0).getFileURL());
+		}
+		return dto;
 	}
 
-	public void deleteInstituteService(String instituteId, List<String> serviceIds) {
+	@Transactional(rollbackOn = Throwable.class)
+	public void deleteInstituteService(String instituteServiceId) throws NotFoundException, InvokeException {
 		log.debug("inside deleteInstituteService() method");
-		instituteServiceDao.deleteByInstituteIdAndServiceByIds(instituteId, serviceIds);
+		instituteServiceDao.delete(instituteServiceId);
+		storageHandler.deleteStorageBasedOnEntityId(instituteServiceId);
 	}
 
 	public List<InstituteServiceDto> getInstituteServices(String instituteId) {

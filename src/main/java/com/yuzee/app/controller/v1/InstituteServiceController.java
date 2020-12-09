@@ -1,7 +1,5 @@
 package com.yuzee.app.controller.v1;
 
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.InstituteServiceDto;
 import com.yuzee.app.endpoint.InstituteServiceInterface;
+import com.yuzee.app.exception.InvokeException;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.InstituteServiceProcessor;
@@ -41,9 +41,9 @@ public class InstituteServiceController implements InstituteServiceInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteInstituteServiceByServiceIds(String instituteId, List<String> serviceIds) {
-		log.info("deleting services for institute Id " + instituteId);
-		instituteServiceProcessor.deleteInstituteService(instituteId, serviceIds);
+	public ResponseEntity<?> deleteById(String instituteServiceId) throws NotFoundException, InvokeException {
+		log.info("deleting instituteService Id: {}" + instituteServiceId);
+		instituteServiceProcessor.deleteInstituteService(instituteServiceId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
 				.setMessage("Institute services deleted successfully").create();
 	}
