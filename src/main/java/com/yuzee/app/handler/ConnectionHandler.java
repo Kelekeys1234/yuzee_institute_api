@@ -1,8 +1,5 @@
 package com.yuzee.app.handler;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -47,7 +44,9 @@ public class ConnectionHandler {
 					new ParameterizedTypeReference<GenericWrapperDto<FollowerCountDto>>() {
 					});
 			if (getFollowersCountResponse.getStatusCode().value() != 200) {
-				throw new InvokeException("Error response recieved from storage service with error code "
+				log.error("Error response recieved from connection service with error code:",
+						getFollowersCountResponse.getStatusCode().value());
+				throw new InvokeException("Error response recieved from connection service with error code:"
 						+ getFollowersCountResponse.getStatusCode().value());
 			}
 
@@ -78,7 +77,9 @@ public class ConnectionHandler {
 					new ParameterizedTypeReference<GenericWrapperDto<ConnectionExistDto>>() {
 					});
 			if (getFollowersCountResponse.getStatusCode().value() != 200) {
-				throw new InvokeException("Error response recieved from storage service with error code "
+				log.error("Error response recieved from connection service with error code ",
+						getFollowersCountResponse.getStatusCode().value());
+				throw new InvokeException("Error response recieved from connection service with error code "
 						+ getFollowersCountResponse.getStatusCode().value());
 			}
 
