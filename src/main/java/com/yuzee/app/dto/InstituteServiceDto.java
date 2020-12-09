@@ -1,9 +1,12 @@
 package com.yuzee.app.dto;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import lombok.Data;
 
@@ -20,4 +23,7 @@ public class InstituteServiceDto {
 
 	@JsonProperty("description")
 	private String description;
+
+	@JsonProperty(value = "media", access = Access.READ_ONLY)
+	private List<StorageDto> media;
 }

@@ -22,14 +22,14 @@ public interface InstituteServiceInterface {
 
 	@PostMapping("/institute/service/instituteId/{instituteId}")
 	public ResponseEntity<?> addInstituteService(@RequestHeader("userId") final String userId,
-			@PathVariable final String instituteId, @Valid @RequestBody List<InstituteServiceDto> instituteServiceDto)
+			@PathVariable final String instituteId, @Valid @RequestBody InstituteServiceDto instituteServiceDto)
 			throws Exception;
 
 	@DeleteMapping("/institute/service/instituteId/{instituteId}")
 	public ResponseEntity<?> deleteInstituteServiceByServiceIds(@PathVariable final String instituteId,
-			@RequestParam(value = "service_ids", required = true) List<String> instituteServiceId) throws Exception;
+			@RequestParam(value = "service_ids", required = true) List<String> instituteServiceId);
 
 	@GetMapping("/institute/service/instituteId/{instituteId}")
-	public ResponseEntity<?> getInstituteServices(@PathVariable final String instituteId) throws Exception;
+	public ResponseEntity<?> getInstituteServices(@PathVariable final String instituteId);
 
 }

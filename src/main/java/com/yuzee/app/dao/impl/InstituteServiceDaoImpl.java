@@ -22,23 +22,18 @@ public class InstituteServiceDaoImpl implements InstituteServiceDao {
 	}
 
 	@Override
-	public List<InstituteService> getAll() {
-		return instituteServiceRepository.findAll();
-	}
-
-	@Override
-	public List<InstituteService> getAllServices(String instituteId) {
-		return instituteServiceRepository.findByInstituteId(instituteId);
-	}
-
-	@Override
 	public List<InstituteService> getAllInstituteService(String instituteId) {
 		return instituteServiceRepository.findByInstituteId(instituteId);
 	}
 
 	@Override
-	public void saveAll(List<InstituteService> listOfInstituteService) {
-		instituteServiceRepository.saveAll(listOfInstituteService);
+	public InstituteService findByInstituteIdAndServiceId(String instituteId, String serviceId) {
+		return instituteServiceRepository.findByInstituteIdAndServiceId(instituteId, serviceId);
+	}
+
+	@Override
+	public InstituteService save(InstituteService instituteService) {
+		return instituteServiceRepository.save(instituteService);
 	}
 
 	@Transactional

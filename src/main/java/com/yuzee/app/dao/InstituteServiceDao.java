@@ -8,14 +8,11 @@ public interface InstituteServiceDao {
 
 	public InstituteService get(String id);
 
-	public List<InstituteService> getAll();
-
-	public List<InstituteService> getAllServices(String instituteId);
-
 	public List<InstituteService> getAllInstituteService(String instituteId);
 
-	public void saveAll(List<InstituteService> listOfInstituteService);
+	public InstituteService findByInstituteIdAndServiceId(String instituteId, String serviceId);
+
+	public InstituteService save(InstituteService instituteService);
 
 	public void deleteByInstituteIdAndServiceByIds(String instituteId, List<String> serviceIds);
-
 }

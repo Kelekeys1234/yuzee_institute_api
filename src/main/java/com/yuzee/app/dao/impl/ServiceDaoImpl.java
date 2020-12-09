@@ -1,6 +1,5 @@
 package com.yuzee.app.dao.impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +22,12 @@ public class ServiceDaoImpl implements ServiceDao {
 	private ServiceRepository serviceRepository;
 
 	@Override
-	public List<Service> addUpdateServices(List<Service> services) throws ValidationException {
+	public Service addUpdateService(Service service) throws ValidationException {
 		try {
-			return serviceRepository.saveAll(services);
+			return serviceRepository.save(service);
 		} catch (DataIntegrityViolationException ex) {
-			log.error("one or more services contains already existing name");
-			throw new ValidationException("one or more services contains already existing name");
+			log.error("Service with same name already exists.");
+			throw new ValidationException("Service with same name already exists.");
 		}
 	}
 
@@ -43,13 +42,8 @@ public class ServiceDaoImpl implements ServiceDao {
 	}
 
 	@Override
-	public List<Service> getAllByIds(List<String> ids) {
-		return serviceRepository.findAllById(ids);
-	}
-
-	@Override
-	public List<Service> findByNameIgnoreCaseIn(List<String> names) {
-		return serviceRepository.findByNameIgnoreCaseIn(names);
+	public Service findByNameIgnoreCase(String name) {
+		return serviceRepository.findByNameIgnoreCase(name);
 	}
 
 }

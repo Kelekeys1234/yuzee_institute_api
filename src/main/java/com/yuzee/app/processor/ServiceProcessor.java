@@ -1,6 +1,5 @@
 package com.yuzee.app.processor;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -40,26 +39,19 @@ public class ServiceProcessor {
 	@Autowired
 	private StorageHandler storageHandler;
 
-	public List<ServiceDto> saveAllServices(String userId, List<ServiceDto> serviceDtos) throws ValidationException {
-		List<String> allNames = serviceDtos.stream().map(ServiceDto::getServiceName).collect(Collectors.toList());
-		List<Service> existingServices = serviceDao.findByNameIgnoreCaseIn(allNames);
-		List<String> existingNames = existingServices.stream().map(Service::getName).collect(Collectors.toList());
-		serviceDtos.removeIf(e -> existingNames.contains(e.getServiceName()));
-		List<Service> services = new ArrayList<>();
-		if (!serviceDtos.isEmpty()) {
-			services = serviceDtos.stream().map(e -> modelMapper.map(e, Service.class)).collect(Collectors.toList());
+	public ServiceDto saveService(String userId, ServiceDto serviceDto) throws ValidationException {
+		Service service = serviceDao.findByNameIgnoreCase(serviceDto.getServiceName());
+		if (ObjectUtils.isEmpty(service)) {
+			service = new Service();
+			service.setName(serviceDto.getServiceName());
+			service.setCreatedBy(userId);
+			service.setCreatedOn(new Date());
 		}
-		services.addAll(existingServices);
-		services.stream().forEach(e -> {
-			if (ObjectUtils.isEmpty(e.getCreatedOn())) {
-				e.setCreatedBy(userId);
-				e.setCreatedOn(new Date());
-			}
-			e.setUpdatedBy(userId);
-			e.setUpdatedOn(new Date());
-		});
-		return serviceDao.addUpdateServices(services).stream().map(e -> modelMapper.map(e, ServiceDto.class))
-				.collect(Collectors.toList());
+		service.setUpdatedBy(userId);
+		service.setUpdatedOn(new Date());
+
+		service = serviceDao.addUpdateService(service);
+		return modelMapper.map(service, ServiceDto.class);
 	}
 
 	public PaginationResponseDto getAllServices(final Integer pageNumber, final Integer pageSize)
