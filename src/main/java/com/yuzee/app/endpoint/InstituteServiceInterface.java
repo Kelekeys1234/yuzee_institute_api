@@ -1,5 +1,7 @@
 package com.yuzee.app.endpoint;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.InstituteServiceDto;
 import com.yuzee.app.exception.InvokeException;
@@ -21,7 +24,7 @@ public interface InstituteServiceInterface {
 
 	@PostMapping("/institute/service/instituteId/{instituteId}")
 	public ResponseEntity<?> addInstituteService(@RequestHeader("userId") final String userId,
-			@PathVariable final String instituteId, @Valid @RequestBody InstituteServiceDto instituteServiceDto)
+			@PathVariable final String instituteId, @Valid @RequestBody List<InstituteServiceDto> instituteServiceDto)
 			throws Exception;
 
 	@DeleteMapping("/institute/service/{instituteServiceId}")

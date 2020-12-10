@@ -1,5 +1,6 @@
 package com.yuzee.app.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -10,11 +11,13 @@ import com.yuzee.app.exception.ValidationException;
 
 public interface ServiceDao {
 
-	public Service addUpdateService(Service service) throws ValidationException;
+	public List<Service> addUpdateServices(List<Service> service) throws ValidationException;
 
 	public Optional<Service> getServiceById(String id);
 
 	public Page<Service> getAllServices(Pageable pageable);
 
-	public Service findByNameIgnoreCase(String name);
+	public List<Service> getAllByIds(List<String> id);
+	
+	public List<Service> findByNameIgnoreCaseIn(List<String> names);
 }

@@ -10,9 +10,8 @@ public interface InstituteServiceDao {
 
 	public List<InstituteService> getAllInstituteService(String instituteId);
 
-	public InstituteService findByInstituteIdAndServiceId(String instituteId, String serviceId);
+	public List<InstituteService> saveAll(List<InstituteService> listOfInstituteService);
 
-	public InstituteService save(InstituteService instituteService);
 
 	public void delete(String instituteServiceId);
 }

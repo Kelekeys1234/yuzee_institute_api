@@ -1,9 +1,12 @@
 package com.yuzee.app.controller.v1;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,17 +29,22 @@ public class InstituteServiceController implements InstituteServiceInterface {
 
 	@Override
 	public ResponseEntity<?> addInstituteService(String userId, String instituteId,
-			InstituteServiceDto instituteServiceDto) throws Exception {
+			List<InstituteServiceDto> instituteServiceDtos) throws Exception {
 		log.info("Adding services for institute Id " + instituteId);
-		if (ObjectUtils.isEmpty(instituteServiceDto.getService())
-				|| StringUtils.isEmpty(instituteServiceDto.getService().getServiceId())
-						&& StringUtils.isEmpty(instituteServiceDto.getService().getServiceName())) {
+		if (CollectionUtils.isEmpty(instituteServiceDtos)) {
+			log.error("InstiuteServiceDto list must not be null or empty");
+			throw new ValidationException("InstiuteServiceDto list must not be null or empty");
+		}
+		boolean isInValidData = instituteServiceDtos.stream()
+				.anyMatch(e -> ObjectUtils.isEmpty(e.getService()) || StringUtils.isEmpty(e.getService().getServiceId())
+						&& StringUtils.isEmpty(e.getService().getServiceName()));
+		if (isInValidData) {
 			log.error("Atleast one of the service_id or service_name must not be empty");
 			throw new ValidationException(
 					"Atleast one of the service.service_id or service.service_name must not be empty");
 		}
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setData(instituteServiceProcessor.addInstituteService(userId, instituteId, instituteServiceDto))
+				.setData(instituteServiceProcessor.addInstituteService(userId, instituteId, instituteServiceDtos))
 				.setMessage("Institute services added successfully").create();
 	}
 
