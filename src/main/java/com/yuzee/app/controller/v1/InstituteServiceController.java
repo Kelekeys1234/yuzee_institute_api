@@ -49,9 +49,9 @@ public class InstituteServiceController implements InstituteServiceInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteById(String instituteServiceId) throws NotFoundException, InvokeException {
+	public ResponseEntity<?> deleteById(final String userId, String instituteServiceId) throws NotFoundException, InvokeException {
 		log.info("deleting instituteService Id: {}" + instituteServiceId);
-		instituteServiceProcessor.deleteInstituteService(instituteServiceId);
+		instituteServiceProcessor.deleteInstituteService(userId, instituteServiceId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
 				.setMessage("Institute services deleted successfully").create();
 	}

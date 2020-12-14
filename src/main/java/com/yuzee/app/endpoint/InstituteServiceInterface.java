@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.InstituteServiceDto;
 import com.yuzee.app.exception.InvokeException;
@@ -28,7 +27,7 @@ public interface InstituteServiceInterface {
 			throws Exception;
 
 	@DeleteMapping("/institute/service/{instituteServiceId}")
-	public ResponseEntity<?> deleteById(@PathVariable final String instituteServiceId) throws NotFoundException, InvokeException;
+	public ResponseEntity<?> deleteById(@RequestHeader("userId") final String userId, @PathVariable final String instituteServiceId) throws NotFoundException, InvokeException;
 
 	@GetMapping("/institute/service/instituteId/{instituteId}")
 	public ResponseEntity<?> getInstituteServices(@PathVariable final String instituteId);

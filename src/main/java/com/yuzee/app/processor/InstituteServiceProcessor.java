@@ -136,8 +136,9 @@ public class InstituteServiceProcessor {
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
-	public void deleteInstituteService(String instituteServiceId) throws NotFoundException, InvokeException {
+	public void deleteInstituteService(String userId, String instituteServiceId) throws NotFoundException, InvokeException {
 		log.debug("inside deleteInstituteService() method");
+		//TODO: need to check if user has the access to delete the instituteService 
 		instituteServiceDao.delete(instituteServiceId);
 		storageHandler.deleteStorageBasedOnEntityId(instituteServiceId);
 	}
