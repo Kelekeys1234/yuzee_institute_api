@@ -26,6 +26,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCareerOutcome;
+import com.yuzee.app.bean.CourseCurriculum;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseIntake;
@@ -36,6 +37,7 @@ import com.yuzee.app.bean.GlobalData;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.dao.CourseCareerOutComeDao;
+import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseDeliveryModesDao;
 import com.yuzee.app.dao.CourseEnglishEligibilityDao;
@@ -152,6 +154,9 @@ public class CourseProcessor {
 	
 	@Autowired
 	private CourseEnglishEligibilityProcessor courseEnglishEligibilityProcessor;
+
+	@Autowired
+	private CourseCurriculumDao courseCurriculumDao;
 	
 	@Autowired
 	private InstituteProcessor instituteProcessor;
@@ -295,119 +300,170 @@ public class CourseProcessor {
 		return courseResponseDtos;
 	}
 
-	public String saveCourse(@Valid final CourseRequest courseDto) throws ValidationException, CommonInvokeException {
-		log.debug("Inside saveCourse() method");
-		Course course = new Course();
-		log.info("Fetching institute details from DB for instituteId = "+courseDto.getInstituteId());
+	public Course prepareCourseModelFromCourseRequest(String courseId, @Valid final CourseRequest courseDto)
+			throws ValidationException, CommonInvokeException {
+		Course course = null;
+		if (StringUtils.isEmpty(courseId)) {
+			course = new Course();
+		} else {
+			course = courseDao.get(courseId);
+			if (ObjectUtils.isEmpty(course)) {
+				log.error("invalid course id: {}", courseId);
+				throw new ValidationException("invalid course id: " + courseId);
+			}
+		}
+		log.info("Fetching institute details from DB for instituteId = " + courseDto.getInstituteId());
 		course.setInstitute(getInstititute(courseDto.getInstituteId()));
 		course.setDescription(courseDto.getDescription());
 		course.setName(courseDto.getName());
 		course.setIsActive(true);
-		log.info("Fetching faculty details from DB for facultyId = "+courseDto.getFacultyId());
+
+		log.info("Fetching faculty details from DB for facultyId = " + courseDto.getFacultyId());
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
-		if (courseDto.getLevelId() != null) {
-			log.info("Fetching level details from DB for levelId = "+courseDto.getLevelId());
+		if (!StringUtils.isEmpty(courseDto.getLevelId())) {
+			log.info("Fetching level details from DB for levelId = " + courseDto.getLevelId());
 			course.setLevel(levelProcessor.getLevel(courseDto.getLevelId()));
 		}
-		if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
+		if (!StringUtils.isEmpty(courseDto.getStars())) {
 			log.info("Course stars is present adding it in course bean class");
 			course.setStars(Integer.valueOf(courseDto.getStars()));
 		}
-		if (courseDto.getWorldRanking() != null && !courseDto.getWorldRanking().isEmpty()) {
+		if (!StringUtils.isEmpty(courseDto.getWorldRanking())) {
 			log.info("World Ranking is present adding it in course bean class");
 			course.setWorldRanking(Integer.valueOf(courseDto.getWorldRanking()));
 		}
-		
+		if (!StringUtils.isEmpty(courseDto.getCurriculumId())) {
+			log.info("curriculum is present adding it in course bean class");
+			Optional<CourseCurriculum> courseCurriculumOptional = courseCurriculumDao.getById(courseDto.getCurriculumId());
+			if (courseCurriculumOptional.isPresent()) {
+				course.setCourseCurriculum(courseCurriculumOptional.get());	
+			}else {
+				log.error("invalid course curriculum id");
+				throw new ValidationException("invalid course curriculum id");
+			}
+		}
+
 		// Adding course details in bean class
 		course.setRemarks(courseDto.getRemarks() != null ? courseDto.getRemarks() : null);
 		course.setWebsite(courseDto.getWebsite() != null ? courseDto.getWebsite() : null);
-		course.setAvailabilty(courseDto.getAvailbility() != null ? courseDto.getAvailbility(): null);
+		course.setPhoneNumber(courseDto.getPhoneNumber() != null ? courseDto.getPhoneNumber() : null);
+		course.setAvailabilty(courseDto.getAvailability() != null ? courseDto.getAvailability() : null);
 		course.setRecognition(courseDto.getRecognition() != null ? courseDto.getRecognition() : null);
 		course.setAbbreviation(courseDto.getAbbreviation() != null ? courseDto.getAbbreviation() : null);
 		course.setCurrencyTime(courseDto.getCurrencyTime() != null ? courseDto.getCurrencyTime() : null);
+		course.setCurrency(courseDto.getCurrency() != null ? courseDto.getCurrency() : null);
 		course.setRecognitionType(courseDto.getRecognitionType() != null ? courseDto.getRecognitionType() : null);
-		
+		course.setIsOffCampusCourse(courseDto.isOffCampusCourse());
+		course.setExaminationBoard(courseDto.getExaminationBoard());
 		// Here we convert price in USD and everywhere we used USD price column only.
 		CurrencyRateDto currencyRate = null;
 		if (courseDto.getCurrency() != null) {
 			course.setCurrency(courseDto.getCurrency());
-			log.info("Currency code is not null, hence fetching currencyRate from DB having currencyCode = "+courseDto.getCurrency());
+			log.info("Currency code is not null, hence fetching currencyRate from DB having currencyCode = "
+					+ courseDto.getCurrency());
 			currencyRate = getCurrencyRate(courseDto.getCurrency());
 			if (currencyRate == null) {
 				log.error("Invalid currency, no USD conversion exists for this currency");
 				throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
 			}
 		}
+		course.setDomesticApplicationFee(courseDto.getDomesticApplicationFee());
+		course.setInternationalApplicationFee(courseDto.getInternationalApplicationFee());
+		course.setDomesticEnrollmentFee(courseDto.getDomesticEnrollmentFee());
+		course.setInternationalEnrollmentFee(courseDto.getInternationalEnrollmentFee());
+		course.setRecDate(courseDto.getRecDate());
+		course.setContent(courseDto.getContent());
+		course.setGlobalGpa(courseDto.getGlobalGpa());
+		course.setEmail(courseDto.getEmail());
+		populateCourseUsdPrices(currencyRate, course, courseDto);
+		course.setEntranceExam(courseDto.getEntranceExam());
+		
 		
 		// Adding auditing fields in bean class object
-		course.setCreatedBy("API");
-		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+		if (StringUtils.isEmpty(courseId)) {
+			course.setCreatedBy("API");
+			course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+		}
+		course.setIsActive(true);
 		course.setUpdatedBy("API");
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		
-		log.info("Calling DAO layer to save course in DB");
-		courseDao.addUpdateCourse(course);
+
+		if (!ObjectUtils.isEmpty(courseId)) {
+			log.info("Delete existing courseIntakes from DB");
+			courseDao.deleteCourseIntake(courseId);
+			
+			log.info("Delete existing courseLanguage from DB");
+			courseDao.deleteCourseLanguage(courseId);
+			
+			log.info("Delete existing courseEnglishEligibility from DB");
+			courseEnglishEligibilityDAO.deleteCourseEnglishEligibilityByCourse(courseId);
+			
+			log.info("Delete existing courseDeliveryModes from DB");
+			courseDeliveryModesDao.deleteCourseDeliveryModesByCourseId(courseId);
+		}
 
 		// Here multiple intakes are possible.
-		List<Date> intakeList = new ArrayList<>();
-		if (courseDto.getIntake() != null) {
-			log.info("Course saved now going to save course intakes in DB");
-			courseDto.getIntake().stream().forEach(intake -> {
+		if (!CollectionUtils.isEmpty(courseDto.getIntake())) {
+			List<CourseIntake> courseIntakes = new ArrayList<>();
+			log.info("Course saved now going to save/update course intakes in DB");
+			for (Date intake : courseDto.getIntake()) {
 				CourseIntake courseIntake = new CourseIntake();
 				courseIntake.setCourse(course);
 				courseIntake.setIntakeDates(intake);
-				intakeList.add(intake);
-				log.info("Calling DAO layer to save courseIntakes");
-				courseDao.saveCourseIntake(courseIntake);
-			});
+				courseIntakes.add(courseIntake);
+			}
+			course.setCourseIntakes(courseIntakes);
 		}
-		
+
 		// Course can have multiple language
-		if (courseDto.getLanguage() != null && !courseDto.getLanguage().isEmpty()) {
-			log.info("Course saved now going to save course languages in DB");
-			courseDto.getLanguage().stream().forEach(language -> {
+		if (!CollectionUtils.isEmpty(courseDto.getLanguage())) {
+			log.info("Course saved now going to save/update course languages in DB");
+			List<CourseLanguage> courseLanguages = new ArrayList<>();
+			for (String language : courseDto.getLanguage()) {
 				CourseLanguage courseLanguage = new CourseLanguage();
 				courseLanguage.setCourse(course);
 				courseLanguage.setLanguage(language);
-				courseLanguage.setCreatedBy("API");
-				courseLanguage.setCreatedOn(new Date());
-				log.info("Calling DAO layer to save courseLanguages");
-				courseDao.saveCourseLanguage(courseLanguage);
-			});
+				courseLanguages.add(courseLanguage);
+			}
+			course.setCourseLanguages(courseLanguages);
 		}
 
 		// There are EnglishEligibility means IELTS & TOFEL score
-		if (courseDto.getEnglishEligibility() != null) {
-			log.info("Course saved now going to save course EnglishEligibility in DB");
-			courseDto.getEnglishEligibility().stream().forEach(courseEnglishEligibilityDto -> {
+		if (!CollectionUtils.isEmpty(courseDto.getEnglishEligibility())) {
+			log.info("Course saved now going to save/update EnglishEligibility in DB");
+			List<CourseEnglishEligibility> courseEnglishEligibilities = new ArrayList<>();
+			for (CourseEnglishEligibilityDto courseEnglishEligibilityDto : courseDto.getEnglishEligibility()) {
 				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
 				BeanUtils.copyProperties(courseEnglishEligibilityDto, courseEnglishEligibility);
 				courseEnglishEligibility.setCourse(course);
 				courseEnglishEligibility.setIsActive(true);
 				courseEnglishEligibility.setCreatedBy("API");
 				courseEnglishEligibility.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-				log.info("Calling DAO layer to save englishEligibilties in DB");
-				courseEnglishEligibilityDAO.save(courseEnglishEligibility);
-			});
+				courseEnglishEligibilities.add(courseEnglishEligibility);
+			}	
 		}
 		
-		// Here we are adding course additional informations like courseFee, duration, studyMode etc
-		List<CourseDeliveryModesElasticDto> courseDeliveryModesElasticDtos = new ArrayList<>();
-		if(!CollectionUtils.isEmpty(courseDto.getCourseDeliveryModes()) && !ObjectUtils.isEmpty(currencyRate)) {
-			log.info("Course saved now going to save course AdditionalInfo in DB");
-			for (CourseDeliveryModesDto courseDeliveryModes : courseDto.getCourseDeliveryModes()) {
+
+		if (!CollectionUtils.isEmpty(courseDto.getCourseDeliveryModes()) && !ObjectUtils.isEmpty(currencyRate)) {
+			log.info("Course saved now going to save/update CourseDeliveryModesElasticDto in DB");
+			List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
+			for (CourseDeliveryModesDto courseDeliveryModesDto : courseDto.getCourseDeliveryModes()) {
 				CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
 				if (courseDto.getCurrency() != null) {
-					if (courseDeliveryModes.getDomesticFee() != null) {
-						log.info("converting domestic fee into usdDomestic fee having conversionRate = "+currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseDeliveryModes.getDomesticFee()) / currencyRate.getConversionRate();
+					if (courseDeliveryModesDto.getDomesticFee() != null) {
+						log.info("converting domestic fee into usdDomestic fee having conversionRate = "
+								+ currencyRate.getConversionRate());
+						Double convertedRate = Double.valueOf(courseDeliveryModesDto.getDomesticFee())
+								/ currencyRate.getConversionRate();
 						if (convertedRate != null) {
 							courseDeliveryMode.setUsdDomesticFee(convertedRate);
 						}
 					}
-					if (courseDeliveryModes.getInternationalFee() != null) {
-						log.info("converting international fee into usdInternational fee having conversionRate = "+currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseDeliveryModes.getInternationalFee()) / currencyRate.getConversionRate();
+					if (courseDeliveryModesDto.getInternationalFee() != null) {
+						log.info("converting international fee into usdInternational fee having conversionRate = "
+								+ currencyRate.getConversionRate());
+						Double convertedRate = Double.valueOf(courseDeliveryModesDto.getInternationalFee())
+								/ currencyRate.getConversionRate();
 						if (convertedRate != null) {
 							courseDeliveryMode.setUsdInternationalFee(convertedRate);
 						}
@@ -417,217 +473,23 @@ public class CourseProcessor {
 				courseDeliveryMode.setCreatedBy("API");
 				courseDeliveryMode.setCreatedOn(new Date());
 				log.info("Adding additional infos like deliveryType, studyMode etc");
-				courseDeliveryMode.setDeliveryType(courseDeliveryModes.getDeliveryType());
-				courseDeliveryMode.setDomesticFee(courseDeliveryModes.getDomesticFee());
-				courseDeliveryMode.setInternationalFee(courseDeliveryModes.getInternationalFee());
-				courseDeliveryMode.setStudyMode(courseDeliveryModes.getStudyMode());
-				courseDeliveryMode.setDuration(courseDeliveryModes.getDuration());
-				courseDeliveryMode.setDurationTime(courseDeliveryModes.getDurationTime());
-				log.info("Calling DAO layer to save courseDeliveryModes in DB");
-				courseDeliveryModesDao.saveCourseDeliveryModes(courseDeliveryMode);
-				
-				// Adding course additionalInfo in elastic DTO to save it on course elastic index
-				CourseDeliveryModesElasticDto courseDeliveryModesElasticDto = new CourseDeliveryModesElasticDto();
-				BeanUtils.copyProperties(courseDeliveryMode, courseDeliveryModesElasticDto);
-				courseDeliveryModesElasticDtos.add(courseDeliveryModesElasticDto);
-			}
-		}
+				courseDeliveryMode.setDeliveryType(courseDeliveryModesDto.getDeliveryType());
+				courseDeliveryMode.setDomesticFee(courseDeliveryModesDto.getDomesticFee());
+				courseDeliveryMode.setInternationalFee(courseDeliveryModesDto.getInternationalFee());
+				courseDeliveryMode.setStudyMode(courseDeliveryModesDto.getStudyMode());
+				courseDeliveryMode.setDuration(courseDeliveryModesDto.getDuration());
+				courseDeliveryMode.setDurationTime(courseDeliveryModesDto.getDurationTime());
 
-		// Here we converted course request to elastic search form few changes in Elastic search object
-		CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
-		log.info("Copying course bean class to courseElastic DTO class through beanUtils");
-		BeanUtils.copyProperties(course, courseElasticSearch);
-		log.info("Adding facultyName, description details in elastic DTO");
-		courseElasticSearch.setFacultyName(course.getFaculty() != null ? course.getFaculty().getName() : null);
-		courseElasticSearch.setFacultyDescription(course.getFaculty() != null ? course.getFaculty().getDescription() : null);
-		log.info("Adding instituteName, latitude, longitude details in elastic DTO");
-		courseElasticSearch.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
-		courseElasticSearch.setLatitute(course.getInstitute() != null ? String.valueOf(course.getInstitute().getLatitude()) : null);
-		courseElasticSearch.setLongitude(course.getInstitute() != null ? String.valueOf(course.getInstitute().getLongitude()) : null);
-		log.info("Adding levelCode, levelName in elastic DTO");
-		courseElasticSearch.setLevelCode(course.getLevel() != null ? course.getLevel().getCode() : null);
-		courseElasticSearch.setLevelName(course.getLevel() != null ? course.getLevel().getName() : null);
-		log.info("Adding intakes in elastic DTO");
-		courseElasticSearch.setIntake(!intakeList.isEmpty() ? intakeList : null);
-		log.info("Adding courseAddtionalInfos in elastic DTO");
-		courseElasticSearch.setCourseDeliveryModes(courseDeliveryModesElasticDtos);
-		log.info("Adding courseLanguages in elastic DTO");
-		courseElasticSearch.setLanguage(courseDto.getLanguage());
-		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
-		courseListElasticDTO.add(courseElasticSearch);
-		log.info("Calling elastic service to add courses on elastic index");
-		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, EntityTypeEnum.COURSE.name().toLowerCase(), courseListElasticDTO,
-				IConstant.ELASTIC_SEARCH);
-		return course.getId();
+				courseDeliveryModes.add(courseDeliveryMode);	
+			}
+			course.setCourseDeliveryModes(courseDeliveryModes);
+		}
+		
+		return course;
 	}
-
-	public String updateCourse(final CourseRequest courseDto, final String id) throws ValidationException, CommonInvokeException {
-		log.debug("Inside updateCourse() method");
-		Course course = new Course();
-		log.info("fetching course from DB having courseId = "+id);
-		course = courseDao.get(id);
-		course.setId(id);
-		log.info("Fetching institute details from DB for instituteId = "+courseDto.getInstituteId());
-		course.setInstitute(getInstititute(courseDto.getInstituteId()));
-		course.setDescription(courseDto.getDescription());
-		course.setName(courseDto.getName());
-		log.info("Fetching faculty details from DB for facultyId = "+courseDto.getFacultyId());
-		course.setFaculty(getFaculty(courseDto.getFacultyId()));
-		if (courseDto.getLevelId() != null) {
-			log.info("Fetching level details from DB for levelId = "+courseDto.getLevelId());
-			course.setLevel(levelProcessor.getLevel(courseDto.getLevelId()));
-		}
-		course.setIsActive(true);
-		if (courseDto.getStars() != null && !courseDto.getStars().isEmpty()) {
-			log.info("Course stars is present adding it in course bean class");
-			course.setStars(Integer.valueOf(courseDto.getStars()));
-		}
-
-		if (courseDto.getWorldRanking() != null && !courseDto.getWorldRanking().isEmpty()) {
-			log.info("World Ranking is present adding it in course bean class");
-			course.setWorldRanking(Integer.valueOf(courseDto.getWorldRanking()));
-		}
-		
-		// Adding course details in bean class
-		course.setRemarks(courseDto.getRemarks() != null ? courseDto.getRemarks() : null);
-		course.setWebsite(courseDto.getWebsite() != null ? courseDto.getWebsite() : null);
-		course.setAvailabilty(courseDto.getAvailbility() != null ? courseDto.getAvailbility(): null);
-		course.setRecognition(courseDto.getRecognition() != null ? courseDto.getRecognition() : null);
-		course.setAbbreviation(courseDto.getAbbreviation() != null ? courseDto.getAbbreviation() : null);
-		course.setCurrencyTime(courseDto.getCurrencyTime() != null ? courseDto.getCurrencyTime() : null);
-		course.setRecognitionType(courseDto.getRecognitionType() != null ? courseDto.getRecognitionType() : null);
-		
-		// Here we convert price in USD and everywhere we used USD price column only.
-		CurrencyRateDto currencyRate = null;
-		if (courseDto.getCurrency() != null) {
-			course.setCurrency(courseDto.getCurrency());
-			log.info("Currency code is not null, hence fetching currencyRate from DB having currencyCode = "+courseDto.getCurrency());
-			currencyRate = getCurrencyRate(courseDto.getCurrency());
-			if (currencyRate == null) {
-				log.error("Invalid currency, no USD conversion exists for this currency");
-				throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
-			}
-		}
-		
-		// Adding auditing fields in bean class object
-		course.setCreatedBy("API");
-		course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-		course.setUpdatedBy("API");
-		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		
-		log.info("Calling DAO layer to update course in DB for courseId = "+id);
-		courseDao.addUpdateCourse(course);
-		log.info("Delete existing courseIntakes from DB");
-		courseDao.deleteCourseIntake(id);
-		log.info("Delete existing courseLanguage from DB");
-		courseDao.deleteCourseLanguage(id);
-		
-		// Here multiple intakes are possible.
-		List<Date> intakeList = new ArrayList<>();
-		if(!CollectionUtils.isEmpty(courseDto.getIntake())) {
-			log.info("Course saved now going to update course intakes in DB");
-			for (Date intake : courseDto.getIntake()) {
-				CourseIntake courseIntake = new CourseIntake();
-				courseIntake.setCourse(course);
-				courseIntake.setIntakeDates(intake);
-				intakeList.add(intake);
-				log.info("Calling DAO layer to update courseIntakes");
-				courseDao.saveCourseIntake(courseIntake);
-			}
-		}
-
-		// Course can have multiple language
-		if (courseDto.getLanguage() != null && !courseDto.getLanguage().isEmpty()) {
-			log.info("Course saved now going to update course languages in DB");
-			for (String language : courseDto.getLanguage()) {
-				CourseLanguage courseLanguage = new CourseLanguage();
-				courseLanguage.setCourse(course);
-				courseLanguage.setLanguage(language);
-				log.info("Calling DAO layer to update courseLanguages");
-				courseDao.saveCourseLanguage(courseLanguage);
-			}
-		}
-
-		// There are EnglishEligibility means IELTS & TOFEL score
-		if (courseDto.getEnglishEligibility() != null) {
-			log.info("Fetching englishEligibilty from DB for courseId = "+id);
-			List<CourseEnglishEligibility> courseEnglishEligibilityList = courseEnglishEligibilityDAO
-					.getAllEnglishEligibilityByCourse(id);
-			log.info("The English Eligibility Size: " + courseEnglishEligibilityList.size());
-			if (!courseEnglishEligibilityList.isEmpty()) {
-				log.info("EnglishEligibilty is present in DB hence making it inactive");
-				courseEnglishEligibilityList.stream().forEach(courseEnglishEligibility -> {
-					if (courseEnglishEligibility.getIsActive()) {
-						courseEnglishEligibility.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
-						courseEnglishEligibility.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-						courseEnglishEligibility.setIsActive(false);
-						log.info("Going to update englishEligibilty from DB and make it inactive");
-						courseEnglishEligibilityDAO.update(courseEnglishEligibility);
-					}
-				});
-			}
-			for (CourseEnglishEligibilityDto courseEnglishEligibilityDto : courseDto.getEnglishEligibility()) {
-				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-				BeanUtils.copyProperties(courseEnglishEligibilityDto, courseEnglishEligibility);
-				courseEnglishEligibility.setCourse(course);
-				courseEnglishEligibility.setIsActive(true);
-				courseEnglishEligibility.setCreatedBy("API");
-				courseEnglishEligibility.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-				log.info("Calling DAO layer to save englishEligibilties in DB");
-				courseEnglishEligibilityDAO.save(courseEnglishEligibility);
-			}
-		}
-
-		// Here we are adding course additional informations like courseFee, duration, studyMode etc
-		List<CourseDeliveryModesElasticDto> courseDeliveryModesElasticDtos = new ArrayList<>();
-		if (!CollectionUtils.isEmpty(courseDto.getCourseDeliveryModes()) && !ObjectUtils.isEmpty(currencyRate)) {
-			log.info("Course saved now going to update course AdditionalInfo in DB and fetching additionalInfo from DB");
-			List<CourseDeliveryModes> courseDeliveryModesInfoListFromDB = courseDeliveryModesDao.getCourseDeliveryModesByCourseId(id);
-			courseDeliveryModesInfoListFromDB.stream().forEach(courseDeliveryModesFromDB -> {
-				log.info("Deleting courseDeliveryModes from DB for infoId = "+courseDeliveryModesFromDB.getId());
-				courseDeliveryModesDao.deleteCourseDeliveryModes(courseDeliveryModesFromDB.getId());
-			});
-			for (CourseDeliveryModesDto courseDeliveryModesDto : courseDto.getCourseDeliveryModes()) {
-				CourseDeliveryModes courseDeliveryModes = new CourseDeliveryModes();
-				if (courseDto.getCurrency() != null) {
-					if (courseDeliveryModesDto.getDomesticFee() != null) {
-						log.info("converting domestic fee into usdDomestic fee having conversionRate = "
-									+ currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseDeliveryModesDto.getDomesticFee()) / currencyRate.getConversionRate();
-						if (convertedRate != null) {
-							courseDeliveryModes.setUsdDomesticFee(convertedRate);
-						}
-					}
-					if (courseDeliveryModesDto.getInternationalFee() != null) {
-						log.info("converting international fee into usdInternational fee having conversionRate = "
-									+ currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseDeliveryModesDto.getInternationalFee()) / currencyRate.getConversionRate();
-						if (convertedRate != null) {
-							courseDeliveryModes.setUsdInternationalFee(convertedRate);
-						}
-					}
-				}
-				courseDeliveryModes.setCourse(course);
-				courseDeliveryModes.setCreatedBy("API");
-				courseDeliveryModes.setCreatedOn(new Date());
-				log.info("Adding additional infos like deliveryType, studyMode etc");
-				courseDeliveryModes.setDeliveryType(courseDeliveryModesDto.getDeliveryType());
-				courseDeliveryModes.setDomesticFee(courseDeliveryModesDto.getDomesticFee());
-				courseDeliveryModes.setInternationalFee(courseDeliveryModesDto.getInternationalFee());
-				courseDeliveryModes.setStudyMode(courseDeliveryModesDto.getStudyMode());
-				courseDeliveryModes.setDuration(courseDeliveryModesDto.getDuration());
-				courseDeliveryModes.setDurationTime(courseDeliveryModesDto.getDurationTime());
-				log.info("Calling DAO layer to save courseDeliveryModesDto in DB");
-				courseDeliveryModesDao.saveCourseDeliveryModes(courseDeliveryModes);
-
-				// Adding course additionalInfo in elastic DTO to save it on course elastic index
-				CourseDeliveryModesElasticDto courseDeliveryModesElasticDto = new CourseDeliveryModesElasticDto();
-				BeanUtils.copyProperties(courseDeliveryModes, courseDeliveryModesElasticDto);
-				courseDeliveryModesElasticDtos.add(courseDeliveryModesElasticDto);
-			}
-		}
-
-		// Here we converted course request to elastic search form few changes in Elastic search object
+	
+	private CourseDTOElasticSearch prepareCourseElaticSearchDtoFromModel(Course course) {
+		// Elastic search object
 		CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
 		log.info("Copying course bean class to courseElastic DTO class through beanUtils");
 		BeanUtils.copyProperties(course, courseElasticSearch);
@@ -644,18 +506,93 @@ public class CourseProcessor {
 		log.info("Adding levelCode, levelName in elastic DTO");
 		courseElasticSearch.setLevelCode(course.getLevel() != null ? course.getLevel().getCode() : null);
 		courseElasticSearch.setLevelName(course.getLevel() != null ? course.getLevel().getName() : null);
-		log.info("Adding intakes in elastic DTO");
-		courseElasticSearch.setIntake(!intakeList.isEmpty() ? intakeList : null);
-		log.info("Adding courseAddtionalInfos in elastic DTO");
+		if (!CollectionUtils.isEmpty(course.getCourseIntakes())) {
+			log.info("Adding intakes in elastic DTO");
+			courseElasticSearch.setIntake(course.getCourseIntakes().stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+		}
+		List<CourseDeliveryModesElasticDto> courseDeliveryModesElasticDtos = null;
+		if (!CollectionUtils.isEmpty(course.getCourseDeliveryModes())) {
+			courseDeliveryModesElasticDtos = new ArrayList<>();
+			log.info("Adding courseAddtionalInfos in elastic DTO");
+			for(CourseDeliveryModes e : course.getCourseDeliveryModes()){
+				CourseDeliveryModesElasticDto courseDeliveryModesElasticDto = new CourseDeliveryModesElasticDto();
+				BeanUtils.copyProperties(e, courseDeliveryModesElasticDto);
+				courseDeliveryModesElasticDtos.add(courseDeliveryModesElasticDto);
+			}
+		}
+		
 		courseElasticSearch.setCourseDeliveryModes(courseDeliveryModesElasticDtos);
-		log.info("Adding courseLanguages in elastic DTO");
-		courseElasticSearch.setLanguage(courseDto.getLanguage());
-		List<CourseDTOElasticSearch> courseListElasticDTO = new ArrayList<>();
-		courseListElasticDTO.add(courseElasticSearch);
-		log.info("Calling elastic service to update courses on elastic index having entityId = "+id);
+
+		if (!CollectionUtils.isEmpty(course.getCourseLanguages())) {
+			log.info("Adding courseLanguages in elastic DTO");
+			courseElasticSearch.setLanguage(course.getCourseLanguages().stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
+		}
+		return courseElasticSearch;
+
+	}
+
+	private void populateCourseUsdPrices(CurrencyRateDto currencyRate, Course course, CourseRequest courseDto) {
+		
+		if (!ObjectUtils.isEmpty(course.getDomesticApplicationFee())) {
+			Double convertedRate = currencyRate.getConversionRate();
+			log.info("converting domestic application Fee on basis of conviersionRate {}", convertedRate);
+			if (convertedRate != null && convertedRate != 0.0) {
+				log.info("converting domesticApplicationFee to usdDomesticApplicationFee");
+				Double usdDomesticApplicationFee = course.getDomesticApplicationFee() / convertedRate;
+				course.setUsdDomesticApplicationFee(usdDomesticApplicationFee);
+			}
+		}
+		if (!ObjectUtils.isEmpty(course.getInternationalApplicationFee())) {
+			Double convertedRate = currencyRate.getConversionRate();
+			log.info("converting international application Fee on basis of conviersionRate {}", convertedRate);
+			if (convertedRate != null) {
+				log.info("converting internationalApplicationFee into usdInternationalApplicationFee");
+				Double usdInternationalApplicationFee = course.getInternationalApplicationFee() / convertedRate;
+				course.setUsdInternationalApplicationFee(usdInternationalApplicationFee);
+				
+			}
+		}	
+		if (!ObjectUtils.isEmpty(course.getDomesticEnrollmentFee())) {
+			Double convertedRate = currencyRate.getConversionRate();
+			log.info("converting domestic enrollment Fee on basis of conviersionRate {}", convertedRate);
+			if (convertedRate != null && convertedRate != 0.0) {
+				log.info("converting domesticEnrollmentFee to usdDomesticEnrollmentFee");
+				Double usdDomesticEnrollmentFee = course.getDomesticEnrollmentFee() / convertedRate;
+				course.setUsdDomesticEnrollmentFee(usdDomesticEnrollmentFee);
+			}
+		}
+		if (!ObjectUtils.isEmpty(course.getInternationalEnrollmentFee())) {
+			Double convertedRate = currencyRate.getConversionRate();
+			log.info("converting international Enrollment Fee on basis of conviersionRate {}", convertedRate);
+			if (convertedRate != null) {
+				log.info("converting internationalEnrollmentFee into usdInternationalEnrollmentFee");
+				Double usdInternationalEnrollmentFee = course.getInternationalEnrollmentFee() / convertedRate;
+				course.setUsdInternationalEnrollmentFee(usdInternationalEnrollmentFee);	
+			}
+		}
+	}
+	
+	public String saveCourse(@Valid final CourseRequest courseDto) throws ValidationException, CommonInvokeException {
+		log.debug("Inside saveCourse() method");
+		Course course = prepareCourseModelFromCourseRequest(null, courseDto);
+		log.info("Calling DAO layer to save/update course in DB");
+		courseDao.addUpdateCourse(course);
+		log.info("Calling elastic service to add courses on elastic index");
+		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
+				EntityTypeEnum.COURSE.name().toLowerCase(),
+				Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
+		return course.getId();
+	}
+
+	public String updateCourse(final CourseRequest courseDto, final String id)
+			throws ValidationException, CommonInvokeException {
+		log.debug("Inside updateCourse() method");
+		Course course = prepareCourseModelFromCourseRequest(id, courseDto);
+		log.info("Calling elastic service to update courses on elastic index having entityId: ", id);
 		elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
-				EntityTypeEnum.COURSE.name().toLowerCase(), courseListElasticDTO, IConstant.ELASTIC_SEARCH);
-		return id;
+				EntityTypeEnum.COURSE.name().toLowerCase(),
+				Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
+		return course.getId();
 	}
 
 	private CurrencyRateDto getCurrencyRate(final String courseCurrency) throws CommonInvokeException {
@@ -665,18 +602,26 @@ public class CourseProcessor {
 		return currencyRate;
 	}
 
-	private Faculty getFaculty(final String facultyId) {
+	private Faculty getFaculty(final String facultyId) throws ValidationException {
 		Faculty faculty = null;
 		if (facultyId != null) {
 			faculty = facultyDAO.get(facultyId);
+			if (ObjectUtils.isEmpty(faculty)) {
+				log.error("invalid faculty id: {}", facultyId);
+				throw new ValidationException("invalid faculty id: " + facultyId);
+			}
 		}
 		return faculty;
 	}
 
-	private Institute getInstititute(final String instituteId) {
+	private Institute getInstititute(final String instituteId) throws ValidationException {
 		Institute institute = null;
 		if (instituteId != null) {
 			institute = instituteDAO.get(instituteId);
+			if (ObjectUtils.isEmpty(institute)) {
+				log.error("invalid institute id: {}", instituteId);
+				throw new ValidationException("invalid institute id: " + instituteId);
+			}
 		}
 		return institute;
 	}

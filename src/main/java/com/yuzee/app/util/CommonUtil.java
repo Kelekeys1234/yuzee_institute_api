@@ -104,7 +104,7 @@ public class CommonUtil {
 		}
 		courseRequest.setCurrency(course.getCurrency());
 		courseRequest.setWebsite(course.getWebsite());
-		courseRequest.setAvailbility(course.getAvailabilty());
+		courseRequest.setAvailability(course.getAvailabilty());
 		if (course.getInstitute() != null) {
 			courseRequest.setInstituteId(course.getInstitute().getId());
 		}

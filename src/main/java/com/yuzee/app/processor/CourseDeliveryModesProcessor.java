@@ -38,6 +38,7 @@ public class CourseDeliveryModesProcessor {
 				CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 				log.info("Copying Bean class values to DTO class using beanUtils");
 				BeanUtils.copyProperties(courseDeliveryMode, courseDeliveryModesDto);
+				courseDeliveryModesDto.setCourseId(courseId);
 				courseDeliveryModesResponse.add(courseDeliveryModesDto);
 			});
 		}

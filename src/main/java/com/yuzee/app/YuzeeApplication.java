@@ -58,6 +58,7 @@ public class YuzeeApplication {
 	@Bean
 	public ModelMapper modelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		return modelMapper;
 	}
 }

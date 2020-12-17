@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -25,6 +26,9 @@ public class CourseRequest {
 	@JsonProperty("faculty_id")
 	@NotBlank(message = "faculty_id should not be blank")
 	private String facultyId;
+
+	@JsonProperty("curriculum_id")
+	private String curriculumId;
 
 	@JsonProperty("name")
 	@NotBlank(message = "name should not be blank")
@@ -90,7 +94,7 @@ public class CourseRequest {
 	private String levelName;
 
 	@JsonProperty("availability")
-	private String availbility;
+	private String availability;
 
 	@JsonProperty("recognition")
 	private String recognition;
@@ -122,9 +126,6 @@ public class CourseRequest {
 	@JsonProperty("city_name")
 	private String cityName;
 
-	@JsonProperty("student_visa")
-	private StudentVisaDto studentVisa;
-	
 	@JsonProperty("storage_list")
 	private List<StorageDto> storageList = new ArrayList<>();
 	
@@ -142,4 +143,46 @@ public class CourseRequest {
 	
 	@JsonProperty("english_eligibility")
 	private List<CourseEnglishEligibilityDto> englishEligibility = new ArrayList<>();
+	
+	@JsonIgnore
+	private boolean isOffCampusCourse;
+
+	@JsonProperty("examination_board")
+	private String examinationBoard;
+	
+	@JsonProperty("domestic_application_fee")
+	private double domesticApplicationFee;
+
+	@JsonProperty("international_application_fee")
+	private double internationalApplicationFee;
+
+	@JsonProperty("domestic_enrollment_fee")
+	private double domesticEnrollmentFee;
+
+	@JsonProperty("international_enrollment_fee")
+	private double internationalEnrollmentFee;
+
+	@JsonProperty("domestic_boarding_fee")
+	private double domesticBoardingFee;
+
+	@JsonProperty("international_boarding_fee")
+	private double internationalBoardingFee;
+
+	@JsonProperty("entrance_exam")
+	private String entranceExam;
+	
+	@JsonProperty("phone_number")
+	private String phoneNumber;
+	
+	@JsonProperty("global_gpa")
+	private Double globalGpa;
+	
+	@JsonProperty("content")
+	private String content;
+	
+	@JsonProperty("email")
+	private String email;
+	
+	@JsonProperty("rec_date")
+	private Date recDate;
 }

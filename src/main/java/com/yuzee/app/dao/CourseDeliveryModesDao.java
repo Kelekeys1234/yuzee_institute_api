@@ -11,4 +11,6 @@ public interface CourseDeliveryModesDao {
 	public void deleteCourseDeliveryModes(String courseDeliveryModeId);
 	
 	public List<CourseDeliveryModes> getCourseDeliveryModesByCourseId(String courseId);
+
+	public void deleteCourseDeliveryModesByCourseId(String courseId);
 }

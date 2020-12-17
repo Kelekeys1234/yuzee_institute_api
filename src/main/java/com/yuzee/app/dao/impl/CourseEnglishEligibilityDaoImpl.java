@@ -43,4 +43,10 @@ public class CourseEnglishEligibilityDaoImpl implements CourseEnglishEligibility
 	public void delete(final String courseID) {
 		courseEnglishEligibilityRepository.findByCourseId(courseID);
 	}
+
+	@Override
+	public void deleteCourseEnglishEligibilityByCourse(String courseId) {
+		courseEnglishEligibilityRepository.deleteByCourseId(courseId);
+		courseEnglishEligibilityRepository.flush();
+	}
 }

@@ -13,5 +13,7 @@ public interface CourseEnglishEligibilityRepository extends JpaRepository<Course
 	public List<CourseEnglishEligibility> findByCourseIdAndIsActive(String courseId, Boolean isActive);
 	
 	public List<CourseEnglishEligibility> findByCourseId(String courseId);
+
+	public void deleteByCourseId(String courseId);
 	
 }

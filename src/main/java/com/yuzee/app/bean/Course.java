@@ -80,6 +80,12 @@ public class Course implements Serializable {
 	@Column(name = "website", columnDefinition = "TEXT")
 	private String website;
 
+	@Column(name = "phone_number")
+	private String phoneNumber;
+
+	@Column(name = "email")
+	private String email;
+	
 	@Column(name = "abbreviation", columnDefinition = "TEXT")
 	private String abbreviation;
 
@@ -162,7 +168,8 @@ public class Course implements Serializable {
 	@Column(name = "entrance_exam")
 	private String entranceExam;
 	
-	
+	@Column(name = "is_off_campus_course")
+	private Boolean isOffCampusCourse = false;	
 	
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
