@@ -1645,18 +1645,31 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public List<CourseResponseDto> getNearestCourseForAdvanceSearch(AdvanceSearchDto courseSearchDto) {
 		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "SELECT DISTINCT crs.id as courseId,crs.name as courseName,crs.world_ranking,crs.stars as stars, inst.id, inst.name as instituteName," + 
+		String sqlQueryForCourse = "SELECT DISTINCT crs.id as courseId,crs.name as courseName,crs.world_ranking,crs.stars as stars, inst.id, inst.name as instituteName," + 
 				" inst.country_name, inst.city_name, crs.currency, inst.latitude, inst.longitude, cai.duration, cai.duration_time," +
 				" cai.study_mode, cai.usd_domestic_fee, cai.usd_international_fee, cai.id as additionalInfoId, cai.delivery_type,"+
 				" 6371 * ACOS(SIN(RADIANS('"+ courseSearchDto.getLatitude() +"')) * SIN(RADIANS(inst.latitude)) + COS(RADIANS('"+ courseSearchDto.getLatitude() +"')) * COS(RADIANS(inst.latitude)) * COS(RADIANS(inst.longitude)-" + 
 				" RADIANS('"+ courseSearchDto.getLongitude() +"'))) AS distance_in_km FROM course crs inner join institute inst on inst.id = crs.institute_id" +
 				" inner join faculty f on f.id = crs.faculty_id LEFT JOIN institute_service iis on iis.institute_id = inst.id" +
-				" LEFT JOIN course_delivery_modes cai on cai.course_id = crs.id where inst.latitude is not null and" +
+				" LEFT JOIN course_delivery_modes cai on cai.course_id = crs.id where crs.is_off_campus false and inst.latitude is not null and" +
 				" inst.longitude is not null and inst.latitude!= " + courseSearchDto.getLatitude() + " and inst.longitude!= " + courseSearchDto.getLongitude();
 		
-		sqlQuery = addCondition(sqlQuery, courseSearchDto);
 		
-	    sqlQuery += " HAVING distance_in_km <= " + courseSearchDto.getInitialRadius();
+		String sqlQueryForOffCampusCourse = "SELECT DISTINCT crs.id as courseId,crs.name as courseName,crs.world_ranking,crs.stars as stars, inst.id, inst.name as instituteName," + 
+				" inst.country_name, inst.city_name, crs.currency, occ.latitude, occ.longitude, cai.duration, cai.duration_time," +
+				" cai.study_mode, cai.usd_domestic_fee, cai.usd_international_fee, cai.id as additionalInfoId, cai.delivery_type,"+
+				" 6371 * ACOS(SIN(RADIANS('"+ courseSearchDto.getLatitude() +"')) * SIN(RADIANS(occ.latitude)) + COS(RADIANS('"+ courseSearchDto.getLatitude() +"')) * COS(RADIANS(occ.latitude)) * COS(RADIANS(occ.longitude)-" + 
+				" RADIANS('"+ courseSearchDto.getLongitude() +"'))) AS distance_in_km " + 
+				" FROM off_campus_course occ LEFT JOIN course crs ON crs.id = occ.course_id inner join institute inst on inst.id = crs.institute_id" +
+				" inner join faculty f on f.id = crs.faculty_id LEFT JOIN institute_service iis on iis.institute_id = inst.id" +
+				" LEFT JOIN course_delivery_modes cai on cai.course_id = crs.id where inst.latitude is not null and" +
+				" inst.longitude is not null and occ.latitude!= " + courseSearchDto.getLatitude() + " and occ.longitude!= " + courseSearchDto.getLongitude();
+		
+		sqlQueryForCourse = addCondition(sqlQueryForCourse, courseSearchDto);
+		sqlQueryForOffCampusCourse = addCondition(sqlQueryForOffCampusCourse, courseSearchDto);
+		
+	    sqlQueryForCourse += " HAVING distance_in_km <= " + courseSearchDto.getInitialRadius();
+	    sqlQueryForOffCampusCourse += " HAVING distance_in_km <= " + courseSearchDto.getInitialRadius();
 		
 		String sortingQuery = "";
 		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
@@ -1665,13 +1678,13 @@ public class CourseDaoImpl implements CourseDao {
 		
 		if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
 			PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
-			sqlQuery += sortingQuery + " LIMIT " + PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage()) + " ,"
+			sqlQueryForCourse += " UNION " + sqlQueryForOffCampusCourse + " LIMIT " + PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage()) + " ,"
 					+ courseSearchDto.getMaxSizePerPage();
 		} else {
-			sqlQuery += sortingQuery;
+			sqlQueryForCourse += " UNION " + sqlQueryForOffCampusCourse ;
 		}
-		System.out.println(sqlQuery);
-		Query query = session.createSQLQuery(sqlQuery);
+		System.out.println(sqlQueryForCourse);
+		Query query = session.createSQLQuery(sqlQueryForCourse);
 		List<Object[]> rows = query.list();
 		List<CourseResponseDto> nearestCourseDTOs = new ArrayList<>();
 		List<CourseDeliveryModesDto> additionalInfoDtos = new ArrayList<>();
@@ -1754,10 +1767,17 @@ public class CourseDaoImpl implements CourseDao {
 		String sqlQuery = "SELECT course.id," + 
 				" 6371 * ACOS(SIN(RADIANS('"+ latitude +"')) * SIN(RADIANS(institute.latitude)) + COS(RADIANS('"+ latitude +"')) * COS(RADIANS(institute.latitude)) *" + 
 				" COS(RADIANS(institute.longitude) - RADIANS('"+ longitude +"'))) AS distance_in_km FROM institute institute inner join course on \r\n" + 
-				" institute.id = course.institute_id where institute.latitude is not null" + 
+				" institute.id = course.institute_id where course.is_off_campus = true institute.latitude is not null" + 
 				" and institute.longitude is not null and institute.latitude!= "+ latitude +" and institute.longitude!= " + longitude +
 				" group by course.id HAVING distance_in_km <= "+initialRadius;
-		Query query = session.createSQLQuery(sqlQuery);
+		String sqlQueryForOffCampus = "SELECT course.id," + 
+				" 6371 * ACOS(SIN(RADIANS('"+ latitude +"')) * SIN(RADIANS(occ.latitude)) + COS(RADIANS('"+ latitude +"')) * COS(RADIANS(occ.latitude)) *" + 
+				" COS(RADIANS(occ.longitude) - RADIANS('"+ longitude +"'))) AS distance_in_km FROM off_campus_course occ left join course on course.id = occ.course_id"
+				+ "inner join institute institute on \r\n" + 
+				" institute.id = course.institute_id where institute.occ is not null" + 
+				" and occ.longitude is not null and occ.latitude!= "+ latitude +" and occ.longitude!= " + longitude +
+				" group by course.id HAVING distance_in_km <= "+initialRadius;
+		Query query = session.createSQLQuery(sqlQuery + " union " + sqlQueryForOffCampus);
 		List<Object[]> rows = query.list();
 		Integer totalCount = rows.size();
 		return totalCount;
