@@ -590,7 +590,6 @@ public class CourseDaoImpl implements CourseDao {
 		Map<String, Object> map = new HashMap<>();
 		for (Object[] row : rows) {
 			courseObj = new CourseDto();
-			courseObj.setId(String.valueOf(row[0]));
 			courseObj.setStars(String.valueOf(row[1]));
 			courseObj.setName(String.valueOf(row[2]));
 			courseObj.setDescription(String.valueOf(row[4]));

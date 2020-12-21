@@ -19,11 +19,13 @@ import org.hibernate.annotations.GenericGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "institute")
 @Table(name = "institute_timing", indexes = {@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false) })
 public class InstituteTiming {
 

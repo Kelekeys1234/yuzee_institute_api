@@ -18,11 +18,13 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
 @Table(name = "institute_intake", uniqueConstraints = @UniqueConstraint(columnNames = { "intake", "institute_id" } , name = "UK_INSTITUTE_ID_INTAKE"),
        indexes = {@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false) })
+@ToString(exclude = "institute")
 public class InstituteIntake {
 
 	@Id

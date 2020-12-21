@@ -23,10 +23,10 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString
 @EqualsAndHashCode
 @Table(name = "institute_domestic_ranking_history", uniqueConstraints = @UniqueConstraint(columnNames = { "domestic_ranking", "institute_id" }, name = "UK_DR_IN"),
 indexes = {@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false)})
+@ToString(exclude = "institute")
 public class InstituteDomesticRankingHistory {
 
 	@Id

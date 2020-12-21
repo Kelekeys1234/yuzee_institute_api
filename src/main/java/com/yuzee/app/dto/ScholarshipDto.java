@@ -1,9 +1,8 @@
 package com.yuzee.app.dto;
 
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,9 +12,7 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class ScholarshipDto implements Serializable {
-
-	private static final long serialVersionUID = 2633639341414502096L;
+public class ScholarshipDTO {
 
 	@JsonProperty("scholarship_id")
 	private String id;
@@ -33,10 +30,6 @@ public class ScholarshipDto implements Serializable {
 	@JsonProperty("country_name")
 	@NotBlank(message = "country_name should not be blank")
 	private String countryName;
-
-	@JsonProperty("level_id")
-	@NotBlank(message = "level_id should not be blank")
-	private String levelId;
 
 	@JsonProperty("number_of_avaliability")
 	private Integer numberOfAvaliability;
@@ -56,48 +49,28 @@ public class ScholarshipDto implements Serializable {
 	@JsonProperty("gender")
 	private String gender;
 
-	@JsonProperty("eligible_nationality")
-	private List<String> eligibleNationality;
-
-	@JsonProperty("headquaters")
-	private String headquaters;
-
-	@JsonProperty("email")
-	private String email;
-
-	@JsonProperty("address")
-	private String address;
+	@JsonProperty("eligible_nationalities")
+	private List<String> eligibleNationalities;
 
 	@JsonProperty("website")
 	private String website;
 
-	@JsonProperty("institute_id")
-	@NotBlank(message = "institute_id should not be blank")
-	private String instituteId;
-	
-	@JsonProperty("institute_name")
-	@NotBlank(message = "institute_name should not be blank")
-	private String instituteName;
-
-	@JsonProperty("course_id")
-	@NotBlank(message = "course_id should not be blank")
-	private String courseId;
-
-	@JsonProperty("application_deadline")
-	private Date applicationDeadline;
-
-	@JsonProperty("intakes")
-	private List<String> intakes;
-
-	@JsonProperty("languages")
-	private List<String> languages;
+	@JsonProperty("benefits")
+	private String benefits;
 
 	@JsonProperty("requirements")
 	private String requirements;
 
-	@JsonProperty("level_name")
-	private String levelName;
+	@JsonProperty("conditions")
+	private String conditions;
 
-	@JsonProperty("level_code")
-	private String levelCode;
+	@JsonProperty("successful_canidates")
+	private String successfulCanidates;
+
+	@Valid
+	@JsonProperty("intakes")
+	private List<ScholarshipIntakeDTO> intakes;
+
+	@JsonProperty("languages")
+	private List<String> languages;
 }

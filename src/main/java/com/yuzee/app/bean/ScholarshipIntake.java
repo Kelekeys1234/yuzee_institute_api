@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -17,29 +19,44 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.yuzee.app.enumeration.StudentCategory;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "scholarship_intake", indexes = {@Index(name = "IDX_SCHOLARSHIP_ID", columnList = "scholarship_id", unique = false)})
-public class ScholarshipIntakes implements Serializable {
-	
+@ToString(exclude = "scholarship")
+@Table(name = "scholarship_intake", indexes = {
+		@Index(name = "IDX_SCHOLARSHIP_ID", columnList = "scholarship_id", unique = false) })
+public class ScholarshipIntake implements Serializable {
+
 	private static final long serialVersionUID = 6549666149894604387L;
+
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
-	
-	@Column(name = "name")
-	private String name;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scholarship_id")
 	private Scholarship scholarship;
-	
+
+	@Column(name = "student_category", length = 20)
+	@Enumerated(EnumType.STRING)
+	private StudentCategory studentCategory;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "intake_date")
+	private Date intakeDate;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deadline")
+	private Date deadline;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on")
 	private Date createdOn;
@@ -48,20 +65,21 @@ public class ScholarshipIntakes implements Serializable {
 	@Column(name = "updated_on")
 	private Date updatedOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on")
-	private Date deletedOn;
-
 	@Column(name = "created_by")
 	private String createdBy;
 
 	@Column(name = "updated_by")
 	private String updatedBy;
-	
-	public ScholarshipIntakes(Scholarship scholarship, String name, String createdBy, Date createdOn) {
-		this.scholarship = scholarship;
-		this.name = name;
-		this.createdBy = createdBy;
-		this.createdOn = createdOn;
+
+	public void setAuditFields(String userId, ScholarshipIntake existingScholarshipIntake) {
+		this.setUpdatedBy(userId);
+		this.setUpdatedOn(new Date());
+		if (existingScholarshipIntake != null) {
+			this.setCreatedBy(existingScholarshipIntake.getCreatedBy());
+			this.setCreatedOn(existingScholarshipIntake.getCreatedOn());
+		} else {
+			this.setCreatedBy(userId);
+			this.setCreatedOn(new Date());
+		}
 	}
 }

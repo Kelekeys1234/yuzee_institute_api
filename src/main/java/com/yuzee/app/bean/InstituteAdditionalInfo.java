@@ -20,6 +20,7 @@ import org.hibernate.annotations.GenericGenerator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "institute_additional_info",  uniqueConstraints = @UniqueConstraint(columnNames = { "institute_id" } , name = "UK_INSTITUTE_ID"),
@@ -27,6 +28,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode
+@ToString(exclude = "institute")
 public class InstituteAdditionalInfo {
 	
 	@Id

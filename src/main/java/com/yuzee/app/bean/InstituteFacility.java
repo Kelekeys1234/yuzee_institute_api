@@ -29,9 +29,7 @@ import lombok.ToString;
           indexes = { @Index (name = "IDX_FACILITY_INSTITUTE_ID", columnList="institute_id", unique = false)})
 @Data
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@ToString(exclude = "institute")
 @EqualsAndHashCode
 public class InstituteFacility {
 

@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -18,24 +19,24 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @Entity
-@ToString
-@EqualsAndHashCode
 @NoArgsConstructor
+@ToString(exclude = "scholarship")
 @Table(name = "scholarship_eligible_nationality", uniqueConstraints = @UniqueConstraint(columnNames = { "country_name",
 		"scholarship_id" }, name = "UK_CN_LE_IN_CN"), indexes = {
 				@Index(name = "IDX_SCHOLARSHIP_ID", columnList = "scholarship_id", unique = false) })
-public class ScholarshipEligibleNationality {
+public class ScholarshipEligibleNationality implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
 	@Column(name = "country_name")
@@ -59,14 +60,15 @@ public class ScholarshipEligibleNationality {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on", length = 19)
-	private Date deletedOn;
-	
-	public ScholarshipEligibleNationality(String countryName, Scholarship scholarship, String createdBy, Date createdOn) {
-		this.countryName = countryName;
-		this.scholarship = scholarship;
-		this.createdBy = createdBy;
-		this.createdOn = createdOn;
+	public void setAuditFields(String userId, ScholarshipEligibleNationality existingScholarshipNationality) {
+		this.setUpdatedBy(userId);
+		this.setUpdatedOn(new Date());
+		if (existingScholarshipNationality != null) {
+			this.setCreatedBy(existingScholarshipNationality.getCreatedBy());
+			this.setCreatedOn(existingScholarshipNationality.getCreatedOn());
+		}else {
+			this.setCreatedBy(userId);
+			this.setCreatedOn(new Date());
+		}
 	}
 }

@@ -1,55 +1,28 @@
 package com.yuzee.app.dao;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.yuzee.app.bean.Scholarship;
-import com.yuzee.app.bean.ScholarshipEligibleNationality;
-import com.yuzee.app.bean.ScholarshipIntakes;
-import com.yuzee.app.bean.ScholarshipLanguage;
-import com.yuzee.app.dto.ScholarshipResponseDTO;
+import com.yuzee.app.dto.ScholarshipLevelCountDto;
 
 public interface ScholarshipDao {
 
 	public Scholarship saveScholarship(Scholarship scholarship);
 
-	public void saveScholarshipIntake(ScholarshipIntakes scholarshipIntakes);
+	public Optional<Scholarship> getScholarshipById(String id);
 
-	public void saveScholarshipLanguage(ScholarshipLanguage scholarshipLanguage);
-
-	public void deleteScholarshipIntakes(String scholarShipId);
-
-	public void deleteScholarshipLanguage(String scholarShipId);
-
-	public Scholarship getScholarshipById(String id);
-
-	public List<ScholarshipIntakes> getIntakeByScholarship(String id);
-
-	public List<ScholarshipLanguage> getLanguageByScholarship(String id);
-
-	public void updateScholarship(Scholarship scholarship);
-
-	public List<ScholarshipResponseDTO> getScholarshipList(Integer startIndex, Integer pageSize, String countryId, String instituteId, String validity,
-			Boolean isActive, Date filterDate, String searchKeyword, String sortByField, String sortByType);
-
-	public int countScholarshipList(String countryId, String instituteId, String validity, Boolean isActive, Date filterDate, String searchKeyword);
-
-	public List<String> getRandomScholarShipsForCountry(List<String> countryIds, Integer limit);
-
-	public List<Scholarship> getAllScholarshipDetailsFromId(List<String> recommendedScholarships);
-
-	public List<String> getRandomScholarships(int i);
+	public Page<Scholarship> getScholarshipList(final String countryName, final String instituteId,
+			final String searchKeyword, Pageable pageable);
 	
-	public Long getScholarshipCountByLevelId(String levelId);
-	
-	public void saveScholarshipEligibileNationality(ScholarshipEligibleNationality scholarshipEligibleNationality);
-	
-	public void deleteScholarshipEligibileNationality(String scholarshipId);
-	
-	public List<ScholarshipEligibleNationality> getScholarshipEligibileNationalityByScholarshipId(String scholarshipId);
+	public List<ScholarshipLevelCountDto> getScholarshipCountGroupByLevel();
+
+	public void deleteScholarship(String scholarshipId);
 
 	public Long getCountByInstituteId(String instituteId);
-	
+
 	public List<Scholarship> getScholarshipByIds(List<String> scholarshipIds);
 }
-

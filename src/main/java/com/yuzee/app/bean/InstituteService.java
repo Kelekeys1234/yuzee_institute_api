@@ -20,6 +20,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "institute_service", uniqueConstraints = @UniqueConstraint(columnNames = { "institute_id",
@@ -27,6 +28,7 @@ import lombok.NoArgsConstructor;
 				@Index(name = "IDX_SERVICE_INSTITUTE_ID", columnList = "institute_id", unique = false) })
 @Data
 @NoArgsConstructor
+@ToString(exclude = "institute")
 public class InstituteService implements Serializable {
 
 	private static final long serialVersionUID = 1L;
