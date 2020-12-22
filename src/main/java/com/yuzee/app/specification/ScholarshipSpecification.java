@@ -39,7 +39,7 @@ public class ScholarshipSpecification {
 				}
 
 				if (!StringUtils.isEmpty(instituteId)) {
-					Join<Scholarship, Institute> instituteJoin = root.join(Scholarship_.INSTITUTE);
+					Join<Scholarship, Institute> instituteJoin = root.join("INSTITUTE");
 					predicates.add(criteriaBuilder.equal(instituteJoin.<String>get("id"), instituteId));
 				}
 
