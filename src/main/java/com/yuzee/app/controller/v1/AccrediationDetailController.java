@@ -11,8 +11,10 @@ import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.endpoint.AccrediatedDetailInterface;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.AccrediatedDetailProcessor;
+import com.yuzee.app.util.ValidationUtil;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -24,8 +26,9 @@ public class AccrediationDetailController implements AccrediatedDetailInterface 
 	private AccrediatedDetailProcessor accrediatedDetailProcessor;
 	
 	@Override
-	public ResponseEntity<?> addAccrediationDetail(AccrediatedDetailDto accrediatedDetailDto) {
+	public ResponseEntity<?> addAccrediationDetail(AccrediatedDetailDto accrediatedDetailDto) throws ValidationException {
 		log.info("start adding accrediation for entityId "+accrediatedDetailDto.getEntityId());
+		ValidationUtil.validatEntityType(accrediatedDetailDto.getEntityType());
 		AccrediatedDetailDto detailDto = accrediatedDetailProcessor.addAccrediatedDetail(accrediatedDetailDto);
 		return new GenericResponseHandlers.Builder().setData(detailDto).setStatus(HttpStatus.OK).setMessage("Accrediation added successfully").create();
 	}
@@ -46,8 +49,9 @@ public class AccrediationDetailController implements AccrediatedDetailInterface 
 	}
 
 	@Override
-	public ResponseEntity<?> updateAccrediationDetail(String id, AccrediatedDetailDto accrediatedDetailDto) throws NotFoundException {
+	public ResponseEntity<?> updateAccrediationDetail(String id, AccrediatedDetailDto accrediatedDetailDto) throws NotFoundException, ValidationException {
 		log.info("start updating accrediation for entityId "+id);
+		ValidationUtil.validatEntityType(accrediatedDetailDto.getEntityType());
 		AccrediatedDetailDto detailDto = accrediatedDetailProcessor.updateAccrediatedDetails(id, accrediatedDetailDto);
 		return new GenericResponseHandlers.Builder().setData(detailDto).setStatus(HttpStatus.OK).setMessage("Accrediation updated successfully").create();
 	}

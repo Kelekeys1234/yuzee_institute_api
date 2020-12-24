@@ -75,7 +75,8 @@ public class AccrediatedDetailProcessor {
 				accrediatedDetailDto.setAccrediatedName(accrediatedDetail.getAccrediatedName());
 				accrediatedDetailDto.setAccrediatedWebsite(accrediatedDetail.getAccrediatedWebsite());
 				try {
-					List<StorageDto> storageDTOList = storageHandler.getStorages(accrediatedDetail.getId(), EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.ACCREDIATED);
+					List<StorageDto> storageDTOList = storageHandler.getStorages(accrediatedDetail.getId(),
+							EntityTypeEnum.valueOf(accrediatedDetail.getEntityType()), EntitySubTypeEnum.ACCREDIATED);
 					accrediatedDetailDto.setStorage(storageDTOList);
 				} catch (Exception e) {
 					log.error("Error invoking storage service for accrediatedId "+accrediatedDetail.getId());
@@ -127,7 +128,7 @@ public class AccrediatedDetailProcessor {
 			log.info("if accrediated details are present then copying values into DTO");
 			BeanUtils.copyProperties(optAccrediatedDetail.get(), accrediatedDetailDto);
 			log.info("going to fetch storage details fro accrediatedId "+optAccrediatedDetail.get().getId());
-			List<StorageDto> storageDTOList = storageHandler.getStorages(optAccrediatedDetail.get().getId(), EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.ACCREDIATED);
+			List<StorageDto> storageDTOList = storageHandler.getStorages(optAccrediatedDetail.get().getId(), EntityTypeEnum.valueOf(optAccrediatedDetail.get().getEntityType()), EntitySubTypeEnum.ACCREDIATED);
 			accrediatedDetailDto.setStorage(storageDTOList);
 		} else {
 			log.error("No accrediation deails found for id "+id);
@@ -159,7 +160,7 @@ public class AccrediatedDetailProcessor {
 				accrediatedDetailDto.setEntityType(accrediatedDetail.getEntityType());
 				try {
 					log.info("going to call storage service for id "+accrediatedDetail.getId());
-					List<StorageDto> storageDTOList = storageHandler.getStorages(accrediatedDetail.getId(), EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.ACCREDIATED);
+					List<StorageDto> storageDTOList = storageHandler.getStorages(accrediatedDetail.getId(), EntityTypeEnum.valueOf(accrediatedDetail.getEntityType()), EntitySubTypeEnum.ACCREDIATED);
 					accrediatedDetailDto.setStorage(storageDTOList);
 				} catch (Exception e) {
 					log.error("Error invoking storage service for accrediatedId "+accrediatedDetail.getId());

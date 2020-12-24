@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -488,5 +489,9 @@ public class CommonUtil {
 			instituteFacilityDto.getFacilities().add(facilityDto);
 		});
 		return instituteFacilityDto;
+	}
+	
+	public static String getEnumNames(Class<? extends Enum<?>> e) {
+		return Arrays.toString(Arrays.stream(e.getEnumConstants()).map(Enum::name).toArray(String[]::new));
 	}
 }

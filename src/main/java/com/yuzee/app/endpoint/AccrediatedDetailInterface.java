@@ -13,13 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.exception.ValidationException;
 
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public interface AccrediatedDetailInterface {
 
 	@PostMapping("/accrediation")
-	public ResponseEntity<?> addAccrediationDetail(@RequestBody AccrediatedDetailDto accrediatedDetailDto);
-	
+	public ResponseEntity<?> addAccrediationDetail(@RequestBody AccrediatedDetailDto accrediatedDetailDto)
+			throws ValidationException;
+
 	@GetMapping("/accrediation/entity/{id}")
 	public ResponseEntity<?> getAccrediationDetailByEntityId(@PathVariable("id") String id) throws NotFoundException;
 	
@@ -27,8 +29,9 @@ public interface AccrediatedDetailInterface {
 	public ResponseEntity<?> deleteAccrediationDetailByEntityId (@PathVariable("id") String id) throws NotFoundException, InvokeException;
 	
 	@PutMapping("/accrediation/{id}")
-	public ResponseEntity<?> updateAccrediationDetail(@PathVariable("id") String id, @RequestBody AccrediatedDetailDto accrediatedDetailDto) throws NotFoundException;
-	
+	public ResponseEntity<?> updateAccrediationDetail(@PathVariable("id") String id,
+			@RequestBody AccrediatedDetailDto accrediatedDetailDto) throws NotFoundException, ValidationException;
+
 	@GetMapping("/accrediation/{id}")
 	public ResponseEntity<?> getAccrediationDetailById(@PathVariable("id") String id) throws NotFoundException, InvokeException;
 	
