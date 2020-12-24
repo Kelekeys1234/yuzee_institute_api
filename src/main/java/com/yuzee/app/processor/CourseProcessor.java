@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -175,6 +176,9 @@ public class CourseProcessor {
 	
 	@Autowired
 	private CourseCareerOutComeDao courseCareerOutComeDao;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Value("${max.radius}")
 	private Integer maxRadius;
@@ -510,15 +514,11 @@ public class CourseProcessor {
 			log.info("Adding intakes in elastic DTO");
 			courseElasticSearch.setIntake(course.getCourseIntakes().stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
 		}
+		
 		List<CourseDeliveryModesElasticDto> courseDeliveryModesElasticDtos = null;
 		if (!CollectionUtils.isEmpty(course.getCourseDeliveryModes())) {
-			courseDeliveryModesElasticDtos = new ArrayList<>();
-			log.info("Adding courseAddtionalInfos in elastic DTO");
-			for(CourseDeliveryModes e : course.getCourseDeliveryModes()){
-				CourseDeliveryModesElasticDto courseDeliveryModesElasticDto = new CourseDeliveryModesElasticDto();
-				BeanUtils.copyProperties(e, courseDeliveryModesElasticDto);
-				courseDeliveryModesElasticDtos.add(courseDeliveryModesElasticDto);
-			}
+			courseDeliveryModesElasticDtos = course.getCourseDeliveryModes().stream()
+					.map(e->modelMapper.map(e,CourseDeliveryModesElasticDto.class)).collect(Collectors.toList());
 		}
 		
 		courseElasticSearch.setCourseDeliveryModes(courseDeliveryModesElasticDtos);
