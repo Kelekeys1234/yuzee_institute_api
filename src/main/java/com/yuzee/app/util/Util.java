@@ -1,10 +1,10 @@
 package com.yuzee.app.util;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,12 +27,8 @@ public class Util {
 	}
 
 	public static int getYearsBetweenDates(Date first, Date second) {
-		Calendar firstCal = GregorianCalendar.getInstance();
-		Calendar secondCal = GregorianCalendar.getInstance();
-		firstCal.setTime(first);
-		secondCal.setTime(second);
-		secondCal.add(Calendar.DAY_OF_YEAR, 1 - firstCal.get(Calendar.DAY_OF_YEAR));
-		return secondCal.get(Calendar.YEAR) - firstCal.get(Calendar.YEAR);
+		return (int) ChronoUnit.YEARS.between(first.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+				second.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 	}
 
 	public static String[] getEnumNames(Class<? extends Enum<?>> e) {

@@ -9,6 +9,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.PaginationResponseDto;
+import com.yuzee.app.dto.ScholarshipIntakeDto;
 import com.yuzee.app.dto.ScholarshipRequestDto;
 import com.yuzee.app.endpoint.ScholarshipInterface;
 import com.yuzee.app.exception.InvokeException;
@@ -31,13 +32,9 @@ public class ScholarshipController implements ScholarshipInterface {
 	public ResponseEntity<?> saveScholarship(final String userId, final ScholarshipRequestDto scholarshipDto)
 			throws Exception {
 		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {
-			scholarshipDto.getIntakes().stream().forEach(e -> {
-				try {
-					ValidationUtil.validateStudentCategory(e.getStudentCategory());
-				} catch (ValidationException ex) {
-					throw new RuntimeException(ex);
-				}
-			});
+			for (ScholarshipIntakeDto intakeDto : scholarshipDto.getIntakes()) {
+				ValidationUtil.validateStudentCategory(intakeDto.getStudentCategory());
+			}
 		}
 
 		return new GenericResponseHandlers.Builder()
@@ -75,12 +72,12 @@ public class ScholarshipController implements ScholarshipInterface {
 		PaginationResponseDto paginationResponseDto = scholarshipProcessor.getScholarshipList(pageNumber, pageSize,
 				countryName, instituteId, searchKeyword);
 		return new GenericResponseHandlers.Builder().setMessage("Scholarship fetched Successfully")
-				.setData(paginationResponseDto).setStatus(HttpStatus.OK).setData(null).create();
+				.setData(paginationResponseDto).setStatus(HttpStatus.OK).setData(paginationResponseDto).create();
 	}
 
 	@Override
-	public ResponseEntity<?> deleteScholarship(final String id) throws Exception {
-		scholarshipProcessor.deleteScholarship(id);
+	public ResponseEntity<?> deleteScholarship(final String userId, final String id) throws Exception {
+		scholarshipProcessor.deleteScholarship(userId, id);
 		return new GenericResponseHandlers.Builder().setMessage("delete Scholarship Successfully")
 				.setStatus(HttpStatus.OK).create();
 	}

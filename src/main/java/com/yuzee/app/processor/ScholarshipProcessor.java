@@ -1,8 +1,6 @@
 package com.yuzee.app.processor;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -31,13 +29,11 @@ import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.ScholarshipElasticDto;
 import com.yuzee.app.dto.ScholarshipIntakeDto;
 import com.yuzee.app.dto.ScholarshipLevelCountDto;
 import com.yuzee.app.dto.ScholarshipRequestDto;
 import com.yuzee.app.dto.ScholarshipResponseDto;
-import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
@@ -47,7 +43,6 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ElasticHandler;
 import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.repository.ScholarshipRepository;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.app.util.PaginationUtil;
 import com.yuzee.app.util.Util;
@@ -292,8 +287,13 @@ public class ScholarshipProcessor {
 				pageSize, ((Long) scholarshipsPage.getTotalElements()).intValue(), scholarshipResponseDTOs);
 	}
 
-	public void deleteScholarship(final String scholarshipId) throws ValidationException {
+	public void deleteScholarship(final String userId, final String scholarshipId) throws ValidationException {
 		log.debug("Inside deleteScholarship() method");
+		Scholarship scholarship = getScholarshipFomDb(scholarshipId);
+		if (!scholarship.getCreatedBy().equals(userId)) {
+			log.error("User has no access to delete scholarship.");
+			throw new ValidationException("User has no access to delete scholarship.");
+		}
 		scholarshipDAO.deleteScholarship(scholarshipId);
 	}
 

@@ -1,11 +1,9 @@
 package com.yuzee.app.endpoint;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,7 +43,8 @@ public interface ScholarshipInterface {
 			@RequestParam(required = false) final String searchKeyword) throws Exception;
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteScholarship(@PathVariable final String id) throws Exception;
+	public ResponseEntity<?> deleteScholarship(@RequestHeader("userId") final String userId,
+			@PathVariable final String id) throws Exception;
 
 	@GetMapping("/getScholarshipCountByLevel")
 	public ResponseEntity<?> getScholarshipCountByLevel() throws Exception;

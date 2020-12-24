@@ -20,7 +20,7 @@ public class ValidationUtil {
 
 		if (!EnumUtils.isValidEnumIgnoreCase(StudentCategory.class, studentCategory)) {
 			String studentCategories = Arrays.toString(Util.getEnumNames(StudentCategory.class));
-			log.info("student_category must be in one of the following: ", studentCategories);
+			log.error("student_category must be in one of the following: ", studentCategories);
 			throw new ValidationException("student_category must be in one of the following: " + studentCategories);
 		}
 	}

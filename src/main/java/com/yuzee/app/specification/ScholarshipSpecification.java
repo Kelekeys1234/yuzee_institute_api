@@ -22,7 +22,7 @@ public class ScholarshipSpecification {
 	private ScholarshipSpecification() {
 	}
 
-	public static Specification<Scholarship> getScholarshipsBasedOnFilters(String countryName, String instituteId,
+	public Specification<Scholarship> getScholarshipsBasedOnFilters(String countryName, String instituteId,
 			String searchKeyword) {
 		return new Specification<Scholarship>() {
 
