@@ -2,8 +2,6 @@ package com.yuzee.app.processor;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -73,14 +71,13 @@ public class ScholarshipProcessor {
 
 	private Scholarship dtoToModel(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String existingScholarshipId) throws ValidationException {
-		final AtomicReference<Scholarship> atomicSchoarship = new AtomicReference<>(new Scholarship());
+		Scholarship scholarship = new Scholarship();
 		if (!StringUtils.isEmpty(existingScholarshipId)) {
-			atomicSchoarship.set(getScholarshipFomDb(existingScholarshipId));
+			scholarship = getScholarshipFomDb(existingScholarshipId);
 		}
-		BeanUtils.copyProperties(scholarshipDto, atomicSchoarship.get());
-		atomicSchoarship.get().setId(existingScholarshipId);
-		atomicSchoarship.get().setAuditFields(userId,
-				StringUtils.isEmpty(existingScholarshipId) ? null : atomicSchoarship.get());
+		BeanUtils.copyProperties(scholarshipDto, scholarship);
+		scholarship.setId(existingScholarshipId);
+		scholarship.setAuditFields(userId, StringUtils.isEmpty(existingScholarshipId) ? null : scholarship);
 		if (scholarshipDto.getLevelId() != null) {
 			log.info("LevelId is not nll, hence fetching level data from DB");
 			Level level = levelDAO.getLevel(scholarshipDto.getLevelId());
@@ -88,7 +85,7 @@ public class ScholarshipProcessor {
 				log.error("Level not found for id: {}", scholarshipDto.getLevelId());
 				throw new ValidationException("Level not found for id: " + scholarshipDto.getLevelId());
 			}
-			atomicSchoarship.get().setLevel(level);
+			scholarship.setLevel(level);
 		}
 
 		if (!ObjectUtils.isEmpty(scholarshipDto.getInstituteId())) {
@@ -98,10 +95,11 @@ public class ScholarshipProcessor {
 				log.error("Institute not found for id: {}", scholarshipDto.getInstituteId());
 				throw new ValidationException("Institute not found for id :" + scholarshipDto.getInstituteId());
 			}
-			atomicSchoarship.get().setInstitute(institute);
+			scholarship.setInstitute(institute);
 		}
 
-		List<ScholarshipIntake> dbIntakes = atomicSchoarship.get().getScholarshipIntakes();
+		final Scholarship finalScholarship = scholarship;
+		List<ScholarshipIntake> dbIntakes = scholarship.getScholarshipIntakes();
 		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {
 			log.info("Scholarship intakes is not null, start iterating data");
 
@@ -113,20 +111,20 @@ public class ScholarshipProcessor {
 								&& e.getIntakeDate().getTime() == intake.getIntakeDate().getTime())
 						.findAny();
 
-				final AtomicReference<String> scholarshipIntakeId = new AtomicReference<>(null);
+				String scholarshipIntakeId = null;
 				ScholarshipIntake scholarshipIntake = new ScholarshipIntake();
 				if (existingIntakeOptional.isPresent()) {
 					scholarshipIntake = existingIntakeOptional.get();
-					scholarshipIntakeId.set(scholarshipIntake.getId());
+					scholarshipIntakeId = scholarshipIntake.getId();
 				}
-				scholarshipIntake.setId(scholarshipIntakeId.get());
+				scholarshipIntake.setId(scholarshipIntakeId);
 				scholarshipIntake.setIntakeDate(intake.getIntakeDate());
 				scholarshipIntake.setDeadline(intake.getDeadline());
 				scholarshipIntake.setStudentCategory(StudentCategory.valueOf(intake.getStudentCategory()));
 				scholarshipIntake.setAuditFields(userId,
-						StringUtils.isEmpty(scholarshipIntakeId.get()) ? null : scholarshipIntake);
-				scholarshipIntake.setScholarship(atomicSchoarship.get());
-				if (StringUtils.isEmpty(scholarshipIntakeId.get())) {
+						StringUtils.isEmpty(scholarshipIntakeId) ? null : scholarshipIntake);
+				scholarshipIntake.setScholarship(finalScholarship);
+				if (StringUtils.isEmpty(scholarshipIntakeId)) {
 					dbIntakes.add(scholarshipIntake);
 				}
 			});
@@ -136,7 +134,7 @@ public class ScholarshipProcessor {
 		// intakes to be removed
 		dbIntakes.removeIf(e -> !ifIntakeExistsInDtoList(scholarshipDto.getIntakes(), e));
 
-		List<ScholarshipLanguage> dbLanguages = atomicSchoarship.get().getScholarshipLanguages();
+		List<ScholarshipLanguage> dbLanguages = scholarship.getScholarshipLanguages();
 
 		if (!CollectionUtils.isEmpty(scholarshipDto.getLanguages())) {
 			log.info("Scholarship languages is not null, start iterating data");
@@ -146,18 +144,18 @@ public class ScholarshipProcessor {
 				Optional<ScholarshipLanguage> existingLanguageOptional = dbLanguages.stream()
 						.filter(e -> e.getName().equalsIgnoreCase(language)).findAny();
 
-				final AtomicReference<String> scholarshipLanguageId = new AtomicReference<>(null);
+				String scholarshipLanguageId = null;
 				ScholarshipLanguage scholarshipLanguage = new ScholarshipLanguage();
 				if (existingLanguageOptional.isPresent()) {
 					scholarshipLanguage = existingLanguageOptional.get();
-					scholarshipLanguageId.set(scholarshipLanguage.getId());
+					scholarshipLanguageId = scholarshipLanguage.getId();
 				}
-				scholarshipLanguage.setId(scholarshipLanguageId.get());
+				scholarshipLanguage.setId(scholarshipLanguageId);
 				scholarshipLanguage.setName(language);
 				scholarshipLanguage.setAuditFields(userId,
-						StringUtils.isEmpty(scholarshipLanguageId.get()) ? null : scholarshipLanguage);
-				scholarshipLanguage.setScholarship(atomicSchoarship.get());
-				if (StringUtils.isEmpty(scholarshipLanguageId.get())) {
+						StringUtils.isEmpty(scholarshipLanguageId) ? null : scholarshipLanguage);
+				scholarshipLanguage.setScholarship(finalScholarship);
+				if (StringUtils.isEmpty(scholarshipLanguageId)) {
 					dbLanguages.add(scholarshipLanguage);
 				}
 
@@ -165,8 +163,7 @@ public class ScholarshipProcessor {
 			dbLanguages.removeIf(e -> !Util.containsIgnoreCase(scholarshipDto.getLanguages(), e.getName()));
 		}
 
-		List<ScholarshipEligibleNationality> dbNationalitites = atomicSchoarship.get()
-				.getScholarshipEligibleNationalities();
+		List<ScholarshipEligibleNationality> dbNationalitites = scholarship.getScholarshipEligibleNationalities();
 
 		if (!CollectionUtils.isEmpty(scholarshipDto.getEligibleNationalities())) {
 			log.info("Scholarship eligible nationalitites is not null, start iterating data");
@@ -176,25 +173,24 @@ public class ScholarshipProcessor {
 				Optional<ScholarshipEligibleNationality> existingNationalityOptional = dbNationalitites.stream()
 						.filter(e -> e.getCountryName().equalsIgnoreCase(countryName)).findAny();
 
-				final AtomicReference<String> eligibleNationalityId = new AtomicReference<>(null);
+				String eligibleNationalityId = null;
 				ScholarshipEligibleNationality eligibleNationality = new ScholarshipEligibleNationality();
 				if (existingNationalityOptional.isPresent()) {
 					eligibleNationality = existingNationalityOptional.get();
-					eligibleNationalityId.set(eligibleNationality.getId());
+					eligibleNationalityId = eligibleNationality.getId();
 				}
 				eligibleNationality.setAuditFields(userId,
-						StringUtils.isEmpty(eligibleNationalityId.get()) ? null : eligibleNationality);
+						StringUtils.isEmpty(eligibleNationalityId) ? null : eligibleNationality);
 				eligibleNationality.setCountryName(countryName);
-				eligibleNationality.setScholarship(atomicSchoarship.get());
-				if (StringUtils.isEmpty(eligibleNationalityId.get())) {
+				eligibleNationality.setScholarship(finalScholarship);
+				if (StringUtils.isEmpty(eligibleNationalityId)) {
 					dbNationalitites.add(eligibleNationality);
 				}
 			});
 			dbNationalitites.removeIf(
 					e -> !Util.containsIgnoreCase(scholarshipDto.getEligibleNationalities(), e.getCountryName()));
 		}
-		return atomicSchoarship.get();
-
+		return scholarship;
 	}
 
 	private ScholarshipElasticDto prepareElasticDtoFromModel(Scholarship scholarship) {
@@ -275,7 +271,7 @@ public class ScholarshipProcessor {
 
 		try {
 			List<StorageDto> storageDTOList = storageHandler.getStorages(
-					scholarshipResponseDTOs.stream().map(e -> e.getId()).collect(Collectors.toList()),
+					scholarshipResponseDTOs.stream().map(ScholarshipResponseDto::getId).collect(Collectors.toList()),
 					EntityTypeEnum.SCHOLARSHIP, EntitySubTypeEnum.MEDIA);
 			scholarshipResponseDTOs.stream().forEach(e -> e.setMedia(storageDTOList.stream()
 					.filter(f -> e.getId().equals(f.getEntityId())).collect(Collectors.toList())));
@@ -320,14 +316,8 @@ public class ScholarshipProcessor {
 	}
 
 	private boolean ifIntakeExistsInDtoList(List<ScholarshipIntakeDto> inakes, ScholarshipIntake intake) {
-		AtomicBoolean result = new AtomicBoolean();
-		inakes.stream().forEach(e -> {
-			if (e.getIntakeDate().getTime() == intake.getIntakeDate().getTime()
-					&& e.getStudentCategory().equalsIgnoreCase(intake.getStudentCategory().name())) {
-				result.set(true);
-			}
-		});
-		return result.get();
+		return inakes.stream().anyMatch(e -> e.getIntakeDate().getTime() == intake.getIntakeDate().getTime()
+				&& e.getStudentCategory().equalsIgnoreCase(intake.getStudentCategory().name()));
 	}
 
 	private Scholarship getScholarshipFomDb(String scholarshipId) throws ValidationException {
