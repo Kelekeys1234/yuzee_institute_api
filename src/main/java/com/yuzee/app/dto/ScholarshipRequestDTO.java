@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ScholarshipRequestDTO extends ScholarshipDTO {
+public class ScholarshipRequestDto extends ScholarshipDto {
 	@JsonProperty("level_id")
 	@NotBlank(message = "level_id should not be blank")
 	private String levelId;

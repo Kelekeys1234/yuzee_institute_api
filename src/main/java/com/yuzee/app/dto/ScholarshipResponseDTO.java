@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ScholarshipResponseDTO extends ScholarshipDTO {
+public class ScholarshipResponseDto extends ScholarshipDto {
 
 	@JsonProperty("media")
 	private List<StorageDto> media;

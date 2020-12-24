@@ -12,7 +12,7 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class ScholarshipDTO {
+public class ScholarshipDto {
 
 	@JsonProperty("scholarship_id")
 	private String id;
@@ -69,7 +69,7 @@ public class ScholarshipDTO {
 
 	@Valid
 	@JsonProperty("intakes")
-	private List<ScholarshipIntakeDTO> intakes;
+	private List<ScholarshipIntakeDto> intakes;
 
 	@JsonProperty("languages")
 	private List<String> languages;

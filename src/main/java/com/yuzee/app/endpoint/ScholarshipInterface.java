@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yuzee.app.dto.ScholarshipRequestDTO;
+import com.yuzee.app.dto.ScholarshipRequestDto;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -27,11 +27,11 @@ public interface ScholarshipInterface {
 
 	@PostMapping()
 	public ResponseEntity<?> saveScholarship(@RequestHeader("userId") final String userId,
-			@RequestBody @Valid final ScholarshipRequestDTO scholarshipDto) throws Exception;
+			@RequestBody @Valid final ScholarshipRequestDto scholarshipDto) throws Exception;
 
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateScholarship(@RequestHeader("userId") final String userId,
-			@RequestBody @Valid final ScholarshipRequestDTO scholarshipDto, @PathVariable final String id)
+			@RequestBody @Valid final ScholarshipRequestDto scholarshipDto, @PathVariable final String id)
 			throws Exception;
 
 	@GetMapping("/{id}")

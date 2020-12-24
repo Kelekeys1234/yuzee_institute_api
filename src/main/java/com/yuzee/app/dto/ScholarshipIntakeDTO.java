@@ -13,7 +13,7 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class ScholarshipIntakeDTO {
+public class ScholarshipIntakeDto {
 
 	@JsonProperty("intake_id")
 	private String id;

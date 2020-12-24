@@ -1,6 +1,5 @@
 package com.yuzee.app.controller.v1;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.ScholarshipRequestDTO;
+import com.yuzee.app.dto.ScholarshipRequestDto;
 import com.yuzee.app.endpoint.ScholarshipInterface;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
@@ -29,7 +28,7 @@ public class ScholarshipController implements ScholarshipInterface {
 	private ScholarshipProcessor scholarshipProcessor;
 
 	@Override
-	public ResponseEntity<?> saveScholarship(final String userId, final ScholarshipRequestDTO scholarshipDto)
+	public ResponseEntity<?> saveScholarship(final String userId, final ScholarshipRequestDto scholarshipDto)
 			throws Exception {
 		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {
 			scholarshipDto.getIntakes().stream().forEach(e -> {
@@ -47,7 +46,7 @@ public class ScholarshipController implements ScholarshipInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> updateScholarship(final String userId, final ScholarshipRequestDTO scholarshipDto,
+	public ResponseEntity<?> updateScholarship(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String id) throws Exception {
 
 		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {

@@ -32,11 +32,11 @@ import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.dto.ScholarshipElasticDTO;
-import com.yuzee.app.dto.ScholarshipIntakeDTO;
+import com.yuzee.app.dto.ScholarshipElasticDto;
+import com.yuzee.app.dto.ScholarshipIntakeDto;
 import com.yuzee.app.dto.ScholarshipLevelCountDto;
-import com.yuzee.app.dto.ScholarshipRequestDTO;
-import com.yuzee.app.dto.ScholarshipResponseDTO;
+import com.yuzee.app.dto.ScholarshipRequestDto;
+import com.yuzee.app.dto.ScholarshipResponseDto;
 import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
@@ -76,7 +76,7 @@ public class ScholarshipProcessor {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	private Scholarship dtoToModel(final String userId, final ScholarshipRequestDTO scholarshipDto,
+	private Scholarship dtoToModel(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String existingScholarshipId) throws ValidationException {
 		final AtomicReference<Scholarship> atomicSchoarship = new AtomicReference<>(new Scholarship());
 		if (!StringUtils.isEmpty(existingScholarshipId)) {
@@ -202,8 +202,8 @@ public class ScholarshipProcessor {
 
 	}
 
-	private ScholarshipElasticDTO prepareElasticDtoFromModel(Scholarship scholarship) {
-		ScholarshipElasticDTO scholarshipElasticDto = new ScholarshipElasticDTO();
+	private ScholarshipElasticDto prepareElasticDtoFromModel(Scholarship scholarship) {
+		ScholarshipElasticDto scholarshipElasticDto = new ScholarshipElasticDto();
 		log.info("Copying data from DTO class to elasticSearch DTO class");
 		BeanUtils.copyProperties(scholarship, scholarshipElasticDto);
 		scholarshipElasticDto
@@ -214,14 +214,14 @@ public class ScholarshipProcessor {
 		scholarshipElasticDto.setLevelCode(scholarship.getLevel() != null ? scholarship.getLevel().getCode() : null);
 		scholarshipElasticDto.setAmount(scholarship.getScholarshipAmount());
 		scholarshipElasticDto.setIntakes(scholarship.getScholarshipIntakes().stream()
-				.map(e -> modelMapper.map(e, ScholarshipIntakeDTO.class)).collect(Collectors.toList()));
+				.map(e -> modelMapper.map(e, ScholarshipIntakeDto.class)).collect(Collectors.toList()));
 		scholarshipElasticDto.setLanguages(scholarship.getScholarshipLanguages().stream()
 				.map(ScholarshipLanguage::getName).collect(Collectors.toList()));
 		return scholarshipElasticDto;
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
-	public String saveScholarship(final String userId, final ScholarshipRequestDTO scholarshipDto)
+	public String saveScholarship(final String userId, final ScholarshipRequestDto scholarshipDto)
 			throws ValidationException {
 
 		log.debug("Inside saveScholarship() method");
@@ -238,10 +238,10 @@ public class ScholarshipProcessor {
 	}
 
 	@Transactional
-	public ScholarshipResponseDTO getScholarshipById(final String id) throws ValidationException {
+	public ScholarshipResponseDto getScholarshipById(final String id) throws ValidationException {
 		log.debug("Inside getScholarshipById() method");
 		Scholarship scholarship = getScholarshipFomDb(id);
-		ScholarshipResponseDTO scholarshipResponseDTO = createScholarshipResponseDtoFromModel(scholarship);
+		ScholarshipResponseDto scholarshipResponseDTO = createScholarshipResponseDtoFromModel(scholarship);
 		try {
 			List<StorageDto> storageDTOList = storageHandler.getStorages(id, EntityTypeEnum.SCHOLARSHIP,
 					EntitySubTypeEnum.MEDIA);
@@ -254,7 +254,7 @@ public class ScholarshipProcessor {
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
-	public void updateScholarship(final String userId, final ScholarshipRequestDTO scholarshipDto,
+	public void updateScholarship(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String scholarshipId) throws ValidationException {
 		log.debug("Inside updateScholarship() method");
 
@@ -275,7 +275,7 @@ public class ScholarshipProcessor {
 		Page<Scholarship> scholarshipsPage = scholarshipDAO.getScholarshipList(countryName, instituteId, searchKeyword,
 				pageable);
 
-		List<ScholarshipResponseDTO> scholarshipResponseDTOs = scholarshipsPage.getContent().stream()
+		List<ScholarshipResponseDto> scholarshipResponseDTOs = scholarshipsPage.getContent().stream()
 				.map(this::createScholarshipResponseDtoFromModel).collect(Collectors.toList());
 
 		try {
@@ -303,14 +303,14 @@ public class ScholarshipProcessor {
 	}
 
 	@Transactional
-	public List<ScholarshipResponseDTO> getScholarshipByIds(List<String> scholarshipIds) {
+	public List<ScholarshipResponseDto> getScholarshipByIds(List<String> scholarshipIds) {
 		log.debug("Inside getScholarshipByIds() in ScholarshipProcessor method");
 		List<Scholarship> scholarships = scholarshipDAO.getScholarshipByIds(scholarshipIds);
 		return scholarships.stream().map(this::createScholarshipResponseDtoFromModel).collect(Collectors.toList());
 	}
 
-	private ScholarshipResponseDTO createScholarshipResponseDtoFromModel(Scholarship scholarship) {
-		ScholarshipResponseDTO responseDto = modelMapper.map(scholarship, ScholarshipResponseDTO.class);
+	private ScholarshipResponseDto createScholarshipResponseDtoFromModel(Scholarship scholarship) {
+		ScholarshipResponseDto responseDto = modelMapper.map(scholarship, ScholarshipResponseDto.class);
 		responseDto.setEligibleNationalities(scholarship.getScholarshipEligibleNationalities().stream()
 				.map(ScholarshipEligibleNationality::getCountryName).collect(Collectors.toList()));
 
@@ -319,7 +319,7 @@ public class ScholarshipProcessor {
 		return responseDto;
 	}
 
-	private boolean ifIntakeExistsInDtoList(List<ScholarshipIntakeDTO> inakes, ScholarshipIntake intake) {
+	private boolean ifIntakeExistsInDtoList(List<ScholarshipIntakeDto> inakes, ScholarshipIntake intake) {
 		AtomicBoolean result = new AtomicBoolean();
 		inakes.stream().forEach(e -> {
 			if (e.getIntakeDate().getTime() == intake.getIntakeDate().getTime()

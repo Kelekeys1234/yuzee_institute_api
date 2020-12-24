@@ -7,7 +7,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class ScholarshipElasticDTO implements Serializable {
+public class ScholarshipElasticDto implements Serializable {
 
 	/**
 	 *
@@ -40,7 +40,7 @@ public class ScholarshipElasticDTO implements Serializable {
 
 	private String eligibleNationality;
 
-	private List<ScholarshipIntakeDTO> intakes;
+	private List<ScholarshipIntakeDto> intakes;
 
 	private List<String> languages;
 

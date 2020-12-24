@@ -17,7 +17,7 @@ import com.yuzee.app.dto.ArticleElasticSearchDto;
 import com.yuzee.app.dto.CourseDTOElasticSearch;
 import com.yuzee.app.dto.ElasticSearchDTO;
 import com.yuzee.app.dto.InstituteElasticSearchDTO;
-import com.yuzee.app.dto.ScholarshipElasticDTO;
+import com.yuzee.app.dto.ScholarshipElasticDto;
 import com.yuzee.app.util.IConstant;
 
 @Service
@@ -169,7 +169,7 @@ public class ElasticHandler {
 				new Object[] {});
 	}
 
-	public void saveScholarshipOnElasticSearch(final String elasticSearchIndex, final String type, final ScholarshipElasticDTO scholarshipDto,
+	public void saveScholarshipOnElasticSearch(final String elasticSearchIndex, final String type, final ScholarshipElasticDto scholarshipDto,
 			final String elasticSearchName) {
 		ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 		elasticSearchDto.setIndex(elasticSearchIndex);
@@ -180,7 +180,7 @@ public class ElasticHandler {
 		restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Object.class);
 	}
 
-	public void updateScholarshipOnElasticSearch(final String elasticSearchIndex, final String type, final ScholarshipElasticDTO scholarshipDto,
+	public void updateScholarshipOnElasticSearch(final String elasticSearchIndex, final String type, final ScholarshipElasticDto scholarshipDto,
 			final String elasticSearchName) {
 		ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 		elasticSearchDto.setIndex(elasticSearchIndex);
@@ -194,7 +194,7 @@ public class ElasticHandler {
 				new Object[] {});
 	}
 
-	public void deleteScholarshipOnElasticSearch(final String elasticSearchIndex, final String type, final ScholarshipElasticDTO scholarshipDto,
+	public void deleteScholarshipOnElasticSearch(final String elasticSearchIndex, final String type, final ScholarshipElasticDto scholarshipDto,
 			final String elasticSearchName) {
 		ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 		elasticSearchDto.setIndex(elasticSearchIndex);
