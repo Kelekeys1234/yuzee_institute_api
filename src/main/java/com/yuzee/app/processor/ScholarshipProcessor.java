@@ -69,7 +69,7 @@ public class ScholarshipProcessor {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	private Scholarship dtoToModel(final String userId, final ScholarshipRequestDto scholarshipDto,
+	private Scholarship prepareModel(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String existingScholarshipId) throws ValidationException {
 		Scholarship scholarship = new Scholarship();
 		if (!StringUtils.isEmpty(existingScholarshipId)) {
@@ -218,7 +218,7 @@ public class ScholarshipProcessor {
 		log.debug("Inside saveScholarship() method");
 
 		log.info("Calling DAO layer to save scholarship in DB");
-		Scholarship scholarship = scholarshipDAO.saveScholarship(dtoToModel(userId, scholarshipDto, null));
+		Scholarship scholarship = scholarshipDAO.saveScholarship(prepareModel(userId, scholarshipDto, null));
 
 		log.info("Calling elastic search service to save data on elastic index");
 		elasticHandler.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
@@ -250,7 +250,7 @@ public class ScholarshipProcessor {
 		log.debug("Inside updateScholarship() method");
 
 		log.info("Calling DAO layer to save scholarship in DB");
-		Scholarship scholarship = scholarshipDAO.saveScholarship(dtoToModel(userId, scholarshipDto, scholarshipId));
+		Scholarship scholarship = scholarshipDAO.saveScholarship(prepareModel(userId, scholarshipDto, scholarshipId));
 
 		log.info("Calling elastic search service to update existing scholarship data in DB");
 		elasticHandler.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
@@ -258,6 +258,7 @@ public class ScholarshipProcessor {
 				IConstant.ELASTIC_SEARCH);
 	}
 
+	@Transactional
 	public PaginationResponseDto getScholarshipList(final Integer pageNumber, final Integer pageSize,
 			final String countryName, final String instituteId, final String searchKeyword) {
 		log.debug("Inside getScholarshipList() method");
@@ -283,7 +284,8 @@ public class ScholarshipProcessor {
 				pageSize, ((Long) scholarshipsPage.getTotalElements()).intValue(), scholarshipResponseDTOs);
 	}
 
-	public void deleteScholarship(final String userId, final String scholarshipId) throws ValidationException {
+	@Transactional(rollbackOn = Throwable.class)
+	public void deleteScholarship(final String userId, final String scholarshipId) throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside deleteScholarship() method");
 		Scholarship scholarship = getScholarshipFomDb(scholarshipId);
 		if (!scholarship.getCreatedBy().equals(userId)) {
@@ -291,6 +293,7 @@ public class ScholarshipProcessor {
 			throw new ValidationException("User has no access to delete scholarship.");
 		}
 		scholarshipDAO.deleteScholarship(scholarshipId);
+		storageHandler.deleteStorageBasedOnEntityId(scholarshipId);
 	}
 
 	public List<ScholarshipLevelCountDto> getScholarshipCountByLevel() {

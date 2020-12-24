@@ -38,9 +38,9 @@ public interface ScholarshipInterface {
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllScholarship(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = false) final String countryName,
-			@RequestParam(required = false) final String instituteId,
-			@RequestParam(required = false) final String searchKeyword) throws Exception;
+			@PathVariable final Integer pageSize, @RequestParam(value = "country_name", required = false) final String countryName,
+			@RequestParam(value = "institute_id", required = false) final String instituteId,
+			@RequestParam(value = "search_keyword",required = false) final String searchKeyword) throws Exception;
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteScholarship(@RequestHeader("userId") final String userId,

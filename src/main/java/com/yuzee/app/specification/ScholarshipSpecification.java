@@ -10,19 +10,17 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.bean.Scholarship_;
 
-@Service
 public class ScholarshipSpecification {
 	private ScholarshipSpecification() {
 	}
 
-	public Specification<Scholarship> getScholarshipsBasedOnFilters(String countryName, String instituteId,
+	public static Specification<Scholarship> getScholarshipsBasedOnFilters(String countryName, String instituteId,
 			String searchKeyword) {
 		return new Specification<Scholarship>() {
 
@@ -39,14 +37,12 @@ public class ScholarshipSpecification {
 				}
 
 				if (!StringUtils.isEmpty(instituteId)) {
-					Join<Scholarship, Institute> instituteJoin = root.join("INSTITUTE");
+					Join<Scholarship, Institute> instituteJoin = root.join("institute");
 					predicates.add(criteriaBuilder.equal(instituteJoin.<String>get("id"), instituteId));
 				}
 
 				if (!StringUtils.isEmpty(searchKeyword)) {
 					predicates.add(criteriaBuilder.like(root.get(Scholarship_.name), "%" + searchKeyword + "%"));
-					predicates.add(
-							criteriaBuilder.or(criteriaBuilder.like(root.get(Scholarship_.name), searchKeyword + "%")));
 				}
 
 				return criteriaBuilder.and(predicates.toArray(new Predicate[] {}));

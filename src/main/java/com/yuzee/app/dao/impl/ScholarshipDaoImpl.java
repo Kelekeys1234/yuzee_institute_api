@@ -22,9 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ScholarshipDaoImpl implements ScholarshipDao {
 
 	@Autowired
-	private ScholarshipSpecification scholarshipSpecification;
-
-	@Autowired
 	private ScholarshipRepository scholarshipRepository;
 
 	@Override
@@ -41,7 +38,7 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 	public Page<Scholarship> getScholarshipList(final String countryName, final String instituteId,
 			final String searchKeyword, Pageable pageable) {
 		return scholarshipRepository.findAll(
-				scholarshipSpecification.getScholarshipsBasedOnFilters(countryName, instituteId, searchKeyword),
+				ScholarshipSpecification.getScholarshipsBasedOnFilters(countryName, instituteId, searchKeyword),
 				pageable);
 	}
 

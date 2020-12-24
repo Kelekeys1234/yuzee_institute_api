@@ -47,13 +47,9 @@ public class ScholarshipController implements ScholarshipInterface {
 			final String id) throws Exception {
 
 		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {
-			scholarshipDto.getIntakes().stream().forEach(e -> {
-				try {
-					ValidationUtil.validateStudentCategory(e.getStudentCategory());
-				} catch (ValidationException ex) {
-					throw new RuntimeException(ex);
-				}
-			});
+			for (ScholarshipIntakeDto intakeDto : scholarshipDto.getIntakes()) {
+				ValidationUtil.validateStudentCategory(intakeDto.getStudentCategory());
+			}
 		}
 		scholarshipProcessor.updateScholarship(userId, scholarshipDto, id);
 		return new GenericResponseHandlers.Builder().setData(id).setMessage("Update Scholarship Successfully")
