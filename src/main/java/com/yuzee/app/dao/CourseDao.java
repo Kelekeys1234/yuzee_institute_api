@@ -23,7 +23,7 @@ import com.yuzee.app.exception.ValidationException;
 
 public interface CourseDao {
 
-	public void addUpdateCourse(Course obj);
+	public void addUpdateCourse(Course obj) throws ValidationException;
 
 	public Course get(String id);
 

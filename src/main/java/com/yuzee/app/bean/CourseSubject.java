@@ -2,8 +2,6 @@ package com.yuzee.app.bean;
 
 import java.io.Serializable;
 
-// Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
-
 import java.util.Date;
 
 import javax.persistence.Column;

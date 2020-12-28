@@ -33,15 +33,16 @@ import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseIntake;
 import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.CourseMinRequirement;
+import com.yuzee.app.bean.CourseSubject;
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.GlobalData;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
+import com.yuzee.app.bean.Semester;
 import com.yuzee.app.dao.CourseCareerOutComeDao;
 import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseMinRequirementDao;
-import com.yuzee.app.dao.CourseSubjectDao;
 import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.IGlobalStudentDataDAO;
 import com.yuzee.app.dao.InstituteDao;
@@ -61,6 +62,7 @@ import com.yuzee.app.dto.CourseMobileDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.CourseSearchDto;
+import com.yuzee.app.dto.CourseSubjectDto;
 import com.yuzee.app.dto.CurrencyRateDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.NearestCoursesDto;
@@ -144,9 +146,6 @@ public class CourseProcessor {
 	@Autowired
 	private CourseRepository courseRepository;
 		
-	@Autowired
-	private CourseSubjectDao courseSubjectDao;
-	
 	@Autowired
 	private CourseDeliveryModesProcessor courseDeliveryModesProcessor;
 	
@@ -401,6 +400,7 @@ public class CourseProcessor {
 		
 		saveUpdateCourseDeliveryModes("API", course, currencyRate, courseDto.getCourseDeliveryModes());
 		
+		saveUpdateCourseSubjects("API", course, courseDto.getCourseSubjects());
 		return course;
 	}
 	
@@ -418,7 +418,6 @@ public class CourseProcessor {
 				if (courseIntake == null) {
 					courseIntake = new CourseIntake();
 				}
-
 				courseIntake.setIntakeDates(intake);
 				courseIntake.setAuditFields(userId, StringUtils.isEmpty(courseIntake.getId()) ? null : courseIntake);
 				courseIntake.setCourse(course);
@@ -559,6 +558,56 @@ public class CourseProcessor {
 
 			} else {
 				dbCourseDeliveryModes.clear();
+			}
+		} catch (RuntimeException e) {
+			log.error(e.getMessage());
+			throw new ValidationException(e.getMessage());
+		}
+	}
+
+	private void saveUpdateCourseSubjects(String loggedInUserId, Course course, List<CourseSubjectDto> courseSubjectDtos)
+			throws ValidationException {
+		try {
+			List<CourseSubject> courseSubjects = course.getCourseSubjects();
+			if (!CollectionUtils.isEmpty(courseSubjectDtos)) {
+
+				log.info("Creating the list to save/update course subjects in DB");
+				Set<String> semesterIds = courseSubjectDtos.stream().map(CourseSubjectDto::getSemesterId)
+						.collect(Collectors.toSet());
+				Map<String, Semester> semestersMap = semesterDao.findByIdIn(new ArrayList<>(semesterIds)).stream()
+						.collect(Collectors.toMap(Semester::getId, e -> e));
+				if (semestersMap.size() != semesterIds.size()) {
+					throw new ValidationException("one or more semester ids are invalid");
+				}
+				
+				Set<String> updateRequestIds = courseSubjectDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
+						.map(CourseSubjectDto::getId).collect(Collectors.toSet());
+				courseSubjects.removeIf(e -> !updateRequestIds.contains(e.getId()));
+
+				Map<String, CourseSubject> existingCourseSubjectsMap = courseSubjects.stream()
+						.collect(Collectors.toMap(CourseSubject::getId, e -> e));
+				courseSubjectDtos.stream().forEach(e -> {
+					CourseSubject courseSubject = new CourseSubject();
+					if (!StringUtils.isEmpty(e.getId())) {
+						courseSubject = existingCourseSubjectsMap.get(e.getId());
+						if (courseSubject == null) {
+							log.error("invalid course subject id : {}", e.getId());
+							throw new RuntimeException("invalid course subject id : " + e.getId());
+						}
+					}
+					BeanUtils.copyProperties(e, courseSubject);
+					courseSubject.setSemester(semestersMap.get(e.getSemesterId()));
+					courseSubject.setCourse(course);
+					if (StringUtils.isEmpty(courseSubject.getId())) {
+						courseSubject.setAuditFields(loggedInUserId, null);
+						courseSubjects.add(courseSubject);
+					} else {
+						courseSubject.setAuditFields(loggedInUserId, courseSubject);
+					}
+				});
+
+			} else {
+				courseSubjects.clear();
 			}
 		} catch (RuntimeException e) {
 			log.error(e.getMessage());

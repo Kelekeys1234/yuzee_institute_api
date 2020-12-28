@@ -23,6 +23,7 @@ import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -55,8 +56,11 @@ import com.yuzee.app.util.CommonUtil;
 import com.yuzee.app.util.ConvertionUtil;
 import com.yuzee.app.util.PaginationUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
+@Slf4j
 public class CourseDaoImpl implements CourseDao {
 
 	@Autowired
@@ -74,8 +78,14 @@ public class CourseDaoImpl implements CourseDao {
 	Function<String,String> addQuotes =  s -> "\'" + s + "\'";
 
 	@Override
-	public void addUpdateCourse(final Course course) {
-		courseRepository.save(course);
+	public void addUpdateCourse(final Course course) throws ValidationException {
+		try {
+			courseRepository.save(course);
+		}
+		catch(DataIntegrityViolationException ex) {
+			log.error(ex.getMessage());
+			throw new ValidationException(ex.getMessage());
+		}
 	}
 
 	@Override
