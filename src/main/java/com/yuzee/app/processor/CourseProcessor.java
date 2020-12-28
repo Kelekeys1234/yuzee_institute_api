@@ -48,6 +48,7 @@ import com.yuzee.app.dao.IGlobalStudentDataDAO;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dao.SemesterDao;
+import com.yuzee.app.dao.TimingDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseCountDto;
@@ -178,6 +179,12 @@ public class CourseProcessor {
 
 	@Autowired
 	private SemesterDao semesterDao;
+
+	@Autowired
+	private TimingProcessor timingProcessor;
+
+	@Autowired
+	private TimingDao timingDao;
 	
 	@Value("${max.radius}")
 	private Integer maxRadius;
@@ -802,34 +809,31 @@ public class CourseProcessor {
 		}
 		return paginationResponseDto;
 	}
-
-	public void deleteCourse(final String courseId) {
+	
+	@Transactional
+	public void deleteCourse(final String loggedInUserId, final String courseId) throws ForbiddenException, NotFoundException {
 		log.debug("Inside deleteCourse() method");
-		try {
-			log.info("Fetching course from DB having courseId = "+ courseId);
-			Course course = courseDao.get(courseId);
-			if (!ObjectUtils.isEmpty(course)) {
-				log.info("Course found hence making course inactive");
-				course.setIsActive(false);
-				course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-				course.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
-				course.setIsDeleted(true);
-				log.info("Calling DAO layer to update existing course and make in in-active");
-				courseDao.addUpdateCourse(course);
 
-				CourseDTOElasticSearch elasticSearchCourseDto = new CourseDTOElasticSearch();
-				elasticSearchCourseDto.setId(courseId);
-				List<CourseDTOElasticSearch> courseDtoESList = new ArrayList<>();
-				courseDtoESList.add(elasticSearchCourseDto);
-				log.info("Calling elastic service to update course having entityId = "+ courseId);
-				elasticHandler.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, 
-						EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoESList, IConstant.ELASTIC_SEARCH);
-			} else {
-				log.error("Course not found for courseId = "+ courseId);
-				throw new NotFoundException("Course not found for courseId = "+ courseId);
+		log.info("Fetching course from DB having courseId = " + courseId);
+		Course course = courseDao.get(courseId);
+		if (!ObjectUtils.isEmpty(course)) {
+			if (!course.getCreatedBy().equals(loggedInUserId)) {
+				log.error("User has no access to delete the course with id: {}", courseId);
+				throw new ForbiddenException("User has no delete to edit the course with id: " + courseId);
 			}
-		} catch (Exception exception) {
-			log.error("Exception while delete existing course from DB having exception = "+ exception);
+			
+			timingDao.deleteByEntityTypeAndEntityId(EntityTypeEnum.COURSE, course.getId());
+			courseDao.deleteCourse(courseId);
+			CourseDTOElasticSearch elasticSearchCourseDto = new CourseDTOElasticSearch();
+			elasticSearchCourseDto.setId(courseId);
+			List<CourseDTOElasticSearch> courseDtoESList = new ArrayList<>();
+			courseDtoESList.add(elasticSearchCourseDto);
+			log.info("Calling elastic service to update course having entityId = " + courseId);
+			elasticHandler.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
+					EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoESList, IConstant.ELASTIC_SEARCH);
+		} else {
+			log.error("Course not found for courseId = " + courseId);
+			throw new NotFoundException("Course not found for courseId = " + courseId);
 		}
 	}
 

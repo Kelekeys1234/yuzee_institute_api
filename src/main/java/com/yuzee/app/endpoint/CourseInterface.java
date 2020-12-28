@@ -45,7 +45,7 @@ public interface CourseInterface {
 			@PathVariable final Integer pageSize) throws Exception;
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@Valid @PathVariable final String id) throws Exception;
+	public ResponseEntity<?> delete(@RequestHeader(required = true) final String userId, @Valid @PathVariable final String id) throws ForbiddenException, NotFoundException;
 
 	@GetMapping("/search/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> searchCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,

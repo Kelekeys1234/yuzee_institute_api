@@ -1899,4 +1899,9 @@ public class CourseDaoImpl implements CourseDao {
 		}
 		return totalCount;
 	}
+
+	@Override
+	public void deleteCourse(String id) {
+		courseRepository.deleteById(id);
+	}
 }

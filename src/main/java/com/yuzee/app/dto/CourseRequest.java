@@ -7,7 +7,6 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -25,6 +24,7 @@ public class CourseRequest {
 	private String instituteId;
 
 	@JsonProperty("faculty_id")
+	@NotBlank(message = "faculty_id should not be blank")
 	private String facultyId;
 
 	@JsonProperty("curriculum_id")
@@ -77,6 +77,7 @@ public class CourseRequest {
 	private String requirements;
 
 	@JsonProperty("currency")
+	@NotBlank(message = "currency should not be blank")
 	private String currency;
 
 	@JsonProperty("currency_time")
@@ -86,6 +87,7 @@ public class CourseRequest {
 	private String facultyName;
 
 	@JsonProperty("level_id")
+	@NotBlank(message = "level_id should not be blank")
 	private String levelId;
 
 	@JsonProperty("level_name")
@@ -187,4 +189,8 @@ public class CourseRequest {
 	@Valid
 	@JsonProperty("course_subjects")
 	private ValidList<CourseSubjectDto> courseSubjects = new ValidList<>();
+
+	@Valid
+	@JsonProperty("course_timings")
+	private ValidList<TimingRequestDto> courseTimings = new ValidList<>();
 }

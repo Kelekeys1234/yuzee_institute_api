@@ -103,4 +103,7 @@ public class CourseResponseDto {
 	
 	@JsonProperty("course_description")
 	private String courseDescription;
+	
+	@JsonProperty("course_timings")
+	private List<TimingRequestDto> courseTimings = new ArrayList<>();
 }

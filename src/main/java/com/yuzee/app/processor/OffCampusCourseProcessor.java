@@ -54,6 +54,9 @@ public class OffCampusCourseProcessor {
 	private StorageHandler storageHandler;
 
 	@Autowired
+	private TimingProcessor timingProcessor;
+
+	@Autowired
 	private ModelMapper modelMapper;
 
 	@Transactional(rollbackOn = Throwable.class)
@@ -74,8 +77,13 @@ public class OffCampusCourseProcessor {
 
 		offCampusCourse.setCreatedOn(new Date());
 		offCampusCourse.setUpdatedOn(new Date());
-
-		return convertOffCampusCourseToOffCampusCourseResponseDto(offCampusCourseDao.saveOrUpdate(offCampusCourse));
+		offCampusCourse = offCampusCourseDao.saveOrUpdate(offCampusCourse);
+		OffCampusCourseResponseDto responseDto = convertOffCampusCourseToOffCampusCourseResponseDto(offCampusCourse);
+		responseDto.getCourseResponseDto()
+				.setCourseTimings(timingProcessor.saveUpdateTimings(userId,
+						offCampusCourseRequestDto.getCourseRequestDto().getCourseTimings(),
+						responseDto.getCourseResponseDto().getId()));
+		return responseDto;
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
@@ -96,8 +104,13 @@ public class OffCampusCourseProcessor {
 		offCampusCourse.setUpdatedBy(userId);
 		offCampusCourse.setUpdatedOn(new Date());
 
-		return convertOffCampusCourseToOffCampusCourseResponseDto(offCampusCourseDao.saveOrUpdate(offCampusCourse));
-
+		offCampusCourse = offCampusCourseDao.saveOrUpdate(offCampusCourse);
+		OffCampusCourseResponseDto responseDto = convertOffCampusCourseToOffCampusCourseResponseDto(offCampusCourse);
+		responseDto.getCourseResponseDto()
+				.setCourseTimings(timingProcessor.saveUpdateTimings(userId,
+						offCampusCourseRequestDto.getCourseRequestDto().getCourseTimings(),
+						responseDto.getCourseResponseDto().getId()));
+		return responseDto;
 	}
 
 	public void deleteOffCampusCourse(String userId, String offCampusCourseId) {
@@ -194,6 +207,9 @@ public class OffCampusCourseProcessor {
 					offCampusCourseResponseDto.getCourseResponseDto().getId(), EntityTypeEnum.COURSE,
 					EntitySubTypeEnum.COVER_PHOTO);
 			offCampusCourseResponseDto.getCourseResponseDto().setStorageList(storageDTOList);
+			offCampusCourseResponseDto.getCourseResponseDto()
+					.setCourseTimings(timingProcessor.getTimingRequestDtoByEntityTypeAndEntityId(EntityTypeEnum.COURSE,
+							offCampusCourseResponseDto.getCourseResponseDto().getId()));
 		} catch (NotFoundException | InvokeException e) {
 			log.error("Error invoking Storage service exception {}", e);
 		}

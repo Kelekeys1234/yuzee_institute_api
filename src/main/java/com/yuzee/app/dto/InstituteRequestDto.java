@@ -46,7 +46,7 @@ public class InstituteRequestDto extends InstituteDto {
 	private List<String> intakes;
 	
 	@JsonProperty("institute_timings")
-	private List<InstituteTimingDto> instituteTimings; 
+	private List<DayTimingDto> instituteTimings; 
 	
 	/**
 	 * There is no use of below fields in Admin panel.

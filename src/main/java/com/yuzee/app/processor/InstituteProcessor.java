@@ -26,7 +26,6 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteDomesticRankingHistory;
 import com.yuzee.app.bean.InstituteIntake;
-import com.yuzee.app.bean.InstituteTiming;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CourseDao;
@@ -47,7 +46,6 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
-import com.yuzee.app.dto.InstituteTimingResponseDto;
 import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.NearestInstituteDTO;
@@ -55,8 +53,11 @@ import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.ReviewStarDto;
 import com.yuzee.app.dto.StorageDto;
+import com.yuzee.app.dto.TimingRequestDto;
+import com.yuzee.app.dto.TimingResponseDto;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.enumeration.TimingType;
 import com.yuzee.app.exception.ConstraintVoilationException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
@@ -113,7 +114,7 @@ public class InstituteProcessor {
 	private InstituteRepository instituteRepository;
 	
 	@Autowired
-	private InstituteTimingProcessor instituteTimingProcessor;
+	private TimingProcessor instituteTimingProcessor;
 	
 	@Autowired
 	private ConnectionHandler connectionHandler;
@@ -278,7 +279,7 @@ public class InstituteProcessor {
 		}
 	}
 
-	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException {
+	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException, NotFoundException {
 		log.debug("Inside saveInstitute() method");
 		Institute institute = null;
 		if (id != null) {
@@ -388,7 +389,13 @@ public class InstituteProcessor {
 		}
 		if(!CollectionUtils.isEmpty(instituteRequest.getInstituteTimings())) {
 			log.info("instituteTimings is not null hence going to save institute timings in DB");
-			instituteTimingProcessor.saveInstituteTiming(instituteRequest.getInstituteTimings(), institute);
+			TimingResponseDto timingResponseDto = instituteTimingProcessor.getTimingResponseDtoByInstituteId(institute.getId());
+			TimingRequestDto timingRequestDto = new TimingRequestDto();
+			timingRequestDto.setId(timingResponseDto != null ? timingResponseDto.getId():null);
+			timingRequestDto.setEntityType(EntityTypeEnum.INSTITUTE.name());
+			timingRequestDto.setTimingType(TimingType.OPEN_HOURS.name());
+			timingRequestDto.setTimings(instituteRequest.getInstituteTimings());
+			instituteTimingProcessor.saveUpdateTimings("API", Arrays.asList(timingRequestDto), institute.getId());
 		}
 		return institute;
 	}
@@ -523,11 +530,11 @@ public class InstituteProcessor {
 			log.info("Adding institute category type in final Response");
 			instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
 		}
-		InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
-				.getInstituteTimeByInstituteId(id);
+		TimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
+				.getTimingResponseDtoByInstituteId(id);
 		if (!ObjectUtils.isEmpty(instituteTimingResponseDto)) {
 			instituteRequestDto.setInstituteTimings(
-					CommonUtil.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
+					CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
 		}
 		
 		FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
@@ -821,7 +828,7 @@ public class InstituteProcessor {
 							EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
 					nearestInstitute.setStorageList(storageDTOList);
 					log.info("fetching instituteTiming from DB for instituteId = " +nearestInstituteDTO.getId());
-					InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(nearestInstituteDTO.getId());
+					TimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getTimingResponseDtoByInstituteId(nearestInstituteDTO.getId());
 					nearestInstitute.setInstituteTiming(instituteTimingResponseDto);
 					nearestInstituteList.add(nearestInstitute);
 				}
@@ -859,8 +866,8 @@ public class InstituteProcessor {
 			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
 			for (InstituteResponseDto instituteResponseDto : instituteResponseDtos) {
 				log.info("fetching instituteTiming from DB for instituteId =" + instituteResponseDto.getId());
-				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
-						.getInstituteTimeByInstituteId(instituteResponseDto.getId());
+				TimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
+						.getTimingResponseDtoByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
 				
 				ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteResponseDto.getId());
@@ -927,7 +934,7 @@ public class InstituteProcessor {
 					log.error("Error while fetching logos from storage service"+e);
 				}
 				log.info("fetching instituteTiming from DB for instituteId =" +nearestInstituteDTO.getId());
-				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(nearestInstituteDTO.getId());
+				TimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getTimingResponseDtoByInstituteId(nearestInstituteDTO.getId());
 				nearestInstitute.setInstituteTiming(instituteTimingResponseDto);
 				nearestInstituteList.add(nearestInstitute);
 			});
@@ -980,20 +987,15 @@ public class InstituteProcessor {
 		if (!ObjectUtils.isEmpty(institute)) {
 			List<Institute> institutes = dao.getInstituteCampuses(instituteId, institute.getName());
 			
-			Map<String, InstituteTiming> mapInstituteTimings = institutes.stream()
-					.collect(Collectors.toMap(Institute::getId, Institute::getInstituteTiming));
 			
 			List<InstituteCampusDto> instituteCampuses = institutes.stream()
 					.map(e -> modelMapper.map(e, InstituteCampusDto.class)).collect(Collectors.toList());
 			
 			instituteCampuses.stream().forEach(e -> {
-				InstituteTiming instiuteTiming = mapInstituteTimings.get(e.getId());
-				if (!ObjectUtils.isEmpty(instiuteTiming)) {
-					InstituteTimingResponseDto instituteTimingResponseDto = modelMapper.map(instiuteTiming,
-							InstituteTimingResponseDto.class);
+				TimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
+						.getTimingResponseDtoByInstituteId(e.getId());
 					e.setInstituteTimings(CommonUtil
-							.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
-				}
+							.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
 
 			});
 			return instituteCampuses;

@@ -35,12 +35,12 @@ import com.yuzee.app.bean.InstituteAdditionalInfo;
 import com.yuzee.app.bean.InstituteFacility;
 import com.yuzee.app.bean.Todo;
 import com.yuzee.app.dto.CourseRequest;
+import com.yuzee.app.dto.DayTimingDto;
 import com.yuzee.app.dto.FacilityDto;
 import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteRequestDto;
-import com.yuzee.app.dto.InstituteTimingDto;
-import com.yuzee.app.dto.InstituteTimingResponseDto;
 import com.yuzee.app.dto.LatLongDto;
+import com.yuzee.app.dto.TimingResponseDto;
 import com.yuzee.app.dto.TodoDto;
 
 public class CommonUtil {
@@ -413,66 +413,66 @@ public class CommonUtil {
 		return distance;
 	}
 	
-	public static List<InstituteTimingDto> convertInstituteTimingResponseDtoToInstituteRequestDto(InstituteTimingResponseDto instituteTimingResponseDto) {
-		List<InstituteTimingDto> instituteTimingDtos = new ArrayList<>();
-		InstituteTimingDto instituteTimingDto = null;
+	public static List<DayTimingDto> convertTimingResponseDtoToDayTimingDto(TimingResponseDto instituteTimingResponseDto) {
+		List<DayTimingDto> dayTimingDtos = new ArrayList<>();
+		DayTimingDto instituteTimingDto = null;
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getMonday()) && !instituteTimingResponseDto.getMonday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Monday");
 			String time[] = instituteTimingResponseDto.getMonday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getTuesday()) && !instituteTimingResponseDto.getTuesday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Tuesday");
 			String time[] = instituteTimingResponseDto.getMonday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getWednesday()) && !instituteTimingResponseDto.getWednesday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Wednesday");
 			String time[] = instituteTimingResponseDto.getWednesday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getThursday()) && !instituteTimingResponseDto.getThursday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Thursday");
 			String time[] = instituteTimingResponseDto.getThursday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getFriday()) && !instituteTimingResponseDto.getFriday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Friday");
 			String time[] = instituteTimingResponseDto.getFriday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getSaturday()) && !instituteTimingResponseDto.getSaturday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Saturday");
 			String time[] = instituteTimingResponseDto.getSaturday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getSunday()) && !instituteTimingResponseDto.getSunday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Sunday");
 			String time[] = instituteTimingResponseDto.getSunday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
-		return instituteTimingDtos;
+		return dayTimingDtos;
 	}
 	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

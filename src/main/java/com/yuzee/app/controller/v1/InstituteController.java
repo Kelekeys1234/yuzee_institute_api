@@ -24,7 +24,7 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
-import com.yuzee.app.dto.InstituteTimingResponseDto;
+import com.yuzee.app.dto.TimingResponseDto;
 import com.yuzee.app.dto.InstituteTypeDto;
 import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
@@ -42,7 +42,7 @@ import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.processor.InstituteProcessor;
-import com.yuzee.app.processor.InstituteTimingProcessor;
+import com.yuzee.app.processor.TimingProcessor;
 import com.yuzee.app.processor.InstituteTypeProcessor;
 import com.yuzee.app.util.CommonUtil;
 import com.yuzee.app.util.PaginationUtil;
@@ -63,7 +63,7 @@ public class InstituteController implements InstituteInterface {
 	private StorageHandler storageHandler;
 	
 	@Autowired
-	private InstituteTimingProcessor instituteTimingProcessor;
+	private TimingProcessor timingProcessor;
 
 	@Override
 	public ResponseEntity<?> saveInstituteType(final InstituteTypeDto instituteTypeDto) throws Exception {
@@ -124,7 +124,7 @@ public class InstituteController implements InstituteInterface {
 					log.error("Error invoking Storage service having exception = {}",e);
 				}
 				log.info("fetching instituteTiming from DB for instituteId ={}", instituteResponseDto.getId());
-				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(instituteResponseDto.getId());
+				TimingResponseDto instituteTimingResponseDto = timingProcessor.getTimingResponseDtoByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
 				if(!ObjectUtils.isEmpty(request.getLatitude()) && !ObjectUtils.isEmpty(request.getLongitude()) && 
 						!ObjectUtils.isEmpty(instituteResponseDto.getLatitude()) && !ObjectUtils.isEmpty(instituteResponseDto.getLongitude())) {
@@ -183,7 +183,7 @@ public class InstituteController implements InstituteInterface {
 					log.error("Error invoking Storage service having exception {}", e);
 				}
 				log.info("fetching instituteTiming from DB for instituteId = {}", instituteResponseDto.getId());
-				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(instituteResponseDto.getId());
+				TimingResponseDto instituteTimingResponseDto = timingProcessor.getTimingResponseDtoByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
 				instituteResponse.add(instituteResponseDto);
 			});

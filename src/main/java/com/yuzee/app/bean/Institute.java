@@ -194,9 +194,6 @@ public class Institute implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "institute")
 	private InstituteAdditionalInfo instituteAdditionalInfo;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "institute")
-	private InstituteTiming instituteTiming;
-	
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteDomesticRankingHistory> instituteDomesticRankingHistories = new ArrayList<>();
 	

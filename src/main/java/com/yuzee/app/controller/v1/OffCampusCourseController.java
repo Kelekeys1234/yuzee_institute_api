@@ -8,12 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.OffCampusCourseRequestDto;
+import com.yuzee.app.dto.TimingRequestDto;
 import com.yuzee.app.endpoint.OffCampusCourseInterface;
 import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.OffCampusCourseProcessor;
+import com.yuzee.app.util.ValidationUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +30,10 @@ public class OffCampusCourseController implements OffCampusCourseInterface {
 	public ResponseEntity<?> save(String userId, @Valid OffCampusCourseRequestDto offCampusCourseRequestDto)
 			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("inside OffCampusCourseController.save");
-
+		for (TimingRequestDto timingRequestDto : offCampusCourseRequestDto.getCourseRequestDto().getCourseTimings()) {
+			ValidationUtil.validatEntityType(timingRequestDto.getEntityType());
+			ValidationUtil.validatTimingType(timingRequestDto.getTimingType());
+		}
 		return new GenericResponseHandlers.Builder().setMessage("Off campus created successfully")
 				.setData(offCampusCourseProcessor.saveOffCampusCourse(userId, offCampusCourseRequestDto))
 				.setStatus(HttpStatus.OK).create();
@@ -39,9 +44,13 @@ public class OffCampusCourseController implements OffCampusCourseInterface {
 			@Valid OffCampusCourseRequestDto offCampusCourseRequestDto)
 			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("inside OffCampusCourseController.update");
-
-		return new GenericResponseHandlers.Builder().setMessage("Off campus created successfully")
-				.setData(offCampusCourseProcessor.updateOffCampusCourse(userId, offCampusCourseId, offCampusCourseRequestDto))
+		for (TimingRequestDto timingRequestDto : offCampusCourseRequestDto.getCourseRequestDto().getCourseTimings()) {
+			ValidationUtil.validatEntityType(timingRequestDto.getEntityType());
+			ValidationUtil.validatTimingType(timingRequestDto.getTimingType());
+		}
+		return new GenericResponseHandlers.Builder()
+				.setMessage("Off campus created successfully").setData(offCampusCourseProcessor
+						.updateOffCampusCourse(userId, offCampusCourseId, offCampusCourseRequestDto))
 				.setStatus(HttpStatus.OK).create();
 	}
 

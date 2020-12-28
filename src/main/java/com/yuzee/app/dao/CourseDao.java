@@ -123,4 +123,6 @@ public interface CourseDao {
 	public List<CourseResponseDto> getRelatedCourseBasedOnCareerTest(List<String> searchKeyword, Integer startIndex, Integer pageSize);
 	
 	public Integer getRelatedCourseBasedOnCareerTestCount(List<String> searchKeyword);
+	
+	public void deleteCourse(String id);
 }

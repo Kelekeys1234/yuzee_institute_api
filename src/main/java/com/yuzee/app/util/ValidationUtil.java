@@ -6,6 +6,7 @@ import org.apache.commons.lang3.EnumUtils;
 
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.StudentCategory;
+import com.yuzee.app.enumeration.TimingType;
 import com.yuzee.app.exception.ValidationException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,15 @@ public class ValidationUtil {
 			log.error("entity_type must be in one of the following {}", CommonUtil.getEnumNames(EntityTypeEnum.class));
 			throw new ValidationException(
 					"entity_type must be in one of the following: " + CommonUtil.getEnumNames(EntityTypeEnum.class));
+
+		}
+	}
+
+	public static void validatTimingType(String timingType) throws ValidationException {
+		if (!EnumUtils.isValidEnum(TimingType.class, timingType)) {
+			log.error("timing_type must be in one of the following {}", CommonUtil.getEnumNames(TimingType.class));
+			throw new ValidationException(
+					"timing_type must be in one of the following: " + CommonUtil.getEnumNames(TimingType.class));
 
 		}
 	}

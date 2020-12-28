@@ -115,9 +115,9 @@ public class CourseController implements CourseInterface {
 				.setMessage("Courses Displayed successfully").create();
 	}
 
-	public ResponseEntity<?> delete(final String id) throws Exception {
+	public ResponseEntity<?> delete(final String userId, final String id) throws ForbiddenException, NotFoundException{
 		log.info("Start process to delete existing course from DB");
-		courseProcessor.deleteCourse(id);
+		courseProcessor.deleteCourse(userId, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Courses Deleted successfully").create();
 	}
 
