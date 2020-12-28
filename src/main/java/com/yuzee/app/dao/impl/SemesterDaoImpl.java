@@ -55,6 +55,11 @@ public class SemesterDaoImpl implements SemesterDao {
 	@Override
 	public void delete(String id) {
 		semesterRepository.deleteById(id);
-		
+
+	}
+
+	@Override
+	public List<Semester> findByIdIn(List<String> ids) {
+		return semesterRepository.findAllById(ids);
 	}
 }

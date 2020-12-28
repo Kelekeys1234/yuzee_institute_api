@@ -191,4 +191,7 @@ public class Course implements Serializable {
 	
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseCareerOutcome> courseCareerOutcomes = new ArrayList<>();
+
+	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseSubject> courseSubjects = new ArrayList<>();
 }

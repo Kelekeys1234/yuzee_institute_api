@@ -20,4 +20,6 @@ public interface SemesterDao {
 	public Page<Semester> getAll(Pageable pageable);
 	
 	public void delete(String id);
+
+	public List<Semester> findByIdIn(List<String> ids);
 }

@@ -41,10 +41,12 @@ import com.yuzee.app.dao.CourseCareerOutComeDao;
 import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseMinRequirementDao;
+import com.yuzee.app.dao.CourseSubjectDao;
 import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.IGlobalStudentDataDAO;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
+import com.yuzee.app.dao.SemesterDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseCountDto;
@@ -141,6 +143,9 @@ public class CourseProcessor {
 	
 	@Autowired
 	private CourseRepository courseRepository;
+		
+	@Autowired
+	private CourseSubjectDao courseSubjectDao;
 	
 	@Autowired
 	private CourseDeliveryModesProcessor courseDeliveryModesProcessor;
@@ -171,6 +176,9 @@ public class CourseProcessor {
 	
 	@Autowired
 	private ModelMapper modelMapper;
+
+	@Autowired
+	private SemesterDao semesterDao;
 	
 	@Value("${max.radius}")
 	private Integer maxRadius;
@@ -410,6 +418,7 @@ public class CourseProcessor {
 				if (courseIntake == null) {
 					courseIntake = new CourseIntake();
 				}
+
 				courseIntake.setIntakeDates(intake);
 				courseIntake.setAuditFields(userId, StringUtils.isEmpty(courseIntake.getId()) ? null : courseIntake);
 				courseIntake.setCourse(course);
@@ -1611,7 +1620,7 @@ public class CourseProcessor {
 		courseRequest.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(id));
 		
 		log.info("Fetching coursePrerequisites for courseId = "+id);
-		courseRequest.setCourseSubjects(coursePrerequisiteProcessor.getCoursePrerequisiteSubjectsByCourseId(id));
+		courseRequest.setPrerequisiteSubjects(coursePrerequisiteProcessor.getCoursePrerequisiteSubjectsByCourseId(id));
 		
 		log.info("Fetching courseEnglish Eligibility from DB based on courseId = "+id);
 		courseRequest.setEnglishEligibility(courseEnglishEligibilityProcessor.getAllEnglishEligibilityByCourse(id));

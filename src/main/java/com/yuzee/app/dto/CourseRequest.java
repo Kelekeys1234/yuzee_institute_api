@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -138,8 +139,8 @@ public class CourseRequest {
 	@JsonProperty("course_delivery_modes")
 	private List<CourseDeliveryModesDto> courseDeliveryModes = new ArrayList<>();
 	
-	@JsonProperty("course_subjects")
-	private List<CoursePrerequisiteSubjectDto> courseSubjects = new ArrayList<>();
+	@JsonProperty("course_prerequisite_subjects")
+	private List<CoursePrerequisiteSubjectDto> prerequisiteSubjects = new ArrayList<>();
 	
 	@JsonProperty("english_eligibility")
 	private List<CourseEnglishEligibilityDto> englishEligibility = new ArrayList<>();
@@ -185,4 +186,8 @@ public class CourseRequest {
 	
 	@JsonProperty("rec_date")
 	private Date recDate;
+	
+	@Valid
+	@JsonProperty("course_subjects")
+	private ValidList<CourseSubjectDto> courseSubjects = new ValidList<>();
 }
