@@ -30,10 +30,12 @@ import com.yuzee.app.exception.ValidationException;
 public interface CourseInterface {
 
 	@PostMapping
-	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course) throws ValidationException, CommonInvokeException;
+	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course)
+			throws ValidationException, CommonInvokeException, NotFoundException;
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final String id) throws ValidationException, CommonInvokeException;
+	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final String id)
+			throws ValidationException, CommonInvokeException, NotFoundException;
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception;

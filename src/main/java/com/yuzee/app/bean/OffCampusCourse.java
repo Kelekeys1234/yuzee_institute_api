@@ -8,8 +8,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,7 +22,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "off_campus_course")
+@Table(name = "off_campus_course", indexes = { @Index(name = "IDX_COURSE", columnList = "course_id", unique = true) })
 public class OffCampusCourse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -69,7 +71,7 @@ public class OffCampusCourse implements Serializable {
 	@Column(name = "updated_by")
 	private String updatedBy;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "course_id")
 	private Course course;
 }

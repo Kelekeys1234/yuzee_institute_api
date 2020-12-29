@@ -23,12 +23,12 @@ public interface OffCampusCourseInterface {
 	@PostMapping
 	public ResponseEntity<?> save(@RequestHeader("userId") final String userId,
 			@Valid @RequestBody final OffCampusCourseRequestDto course)
-			throws ValidationException, CommonInvokeException;
+			throws ValidationException, CommonInvokeException, NotFoundException;
 
 	@PutMapping("/{offCampusCourseId}")
 	public ResponseEntity<?> update(@RequestHeader("userId") final String userId,
 			@PathVariable final String offCampusCourseId, @Valid @RequestBody final OffCampusCourseRequestDto course)
-			throws ValidationException, CommonInvokeException;
+			throws ValidationException, CommonInvokeException, NotFoundException;
 
 	@DeleteMapping("/{offCampusCourseId}")
 	public ResponseEntity<?> delete(@RequestHeader("userId") final String userId,

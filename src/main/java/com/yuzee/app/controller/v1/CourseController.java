@@ -85,14 +85,16 @@ public class CourseController implements CourseInterface {
 	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
 
-	public ResponseEntity<?> save(final CourseRequest course) throws ValidationException, CommonInvokeException {
+	public ResponseEntity<?> save(final CourseRequest course)
+			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.info("Start process to save new course in DB");
 		String courseId = courseProcessor.saveCourse(course);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Created successfully").create();
 	}
 
-	public ResponseEntity<?> update(final CourseRequest course, final String id) throws ValidationException, CommonInvokeException {
+	public ResponseEntity<?> update(final CourseRequest course, final String id)
+			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.info("Start process to update existing course in DB");
 		String courseId = courseProcessor.updateCourse(course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)

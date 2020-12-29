@@ -297,7 +297,8 @@ public class CourseProcessor {
 	}
 
 	public Course prepareCourseModelFromCourseRequest(String courseId, @Valid final CourseRequest courseDto)
-			throws ValidationException, CommonInvokeException {
+			throws ValidationException, CommonInvokeException, NotFoundException {
+		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
 		Course course = null;
 		if (StringUtils.isEmpty(courseId)) {
 			course = new Course();
@@ -305,7 +306,7 @@ public class CourseProcessor {
 			course = courseDao.get(courseId);
 			if (ObjectUtils.isEmpty(course)) {
 				log.error("invalid course id: {}", courseId);
-				throw new ValidationException("invalid course id: " + courseId);
+				throw new NotFoundException("invalid course id: " + courseId);
 			}
 		}
 		log.info("Fetching institute details from DB for instituteId = " + courseDto.getInstituteId());
@@ -335,7 +336,7 @@ public class CourseProcessor {
 				course.setCourseCurriculum(courseCurriculumOptional.get());	
 			}else {
 				log.error("invalid course curriculum id");
-				throw new ValidationException("invalid course curriculum id");
+				throw new NotFoundException("invalid course curriculum id");
 			}
 		}
 
@@ -636,7 +637,8 @@ public class CourseProcessor {
 		}
 	}
 	
-	public String saveCourse(@Valid final CourseRequest courseDto) throws ValidationException, CommonInvokeException {
+	public String saveCourse(@Valid final CourseRequest courseDto)
+			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("Inside saveCourse() method");
 		Course course = prepareCourseModelFromCourseRequest(null, courseDto);
 		log.info("Calling DAO layer to save/update course in DB");
@@ -649,7 +651,7 @@ public class CourseProcessor {
 	}
 
 	public String updateCourse(final CourseRequest courseDto, final String id)
-			throws ValidationException, CommonInvokeException {
+			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("Inside updateCourse() method");
 		Course course = prepareCourseModelFromCourseRequest(id, courseDto);
 		log.info("Calling elastic service to update courses on elastic index having entityId: ", id);
@@ -666,25 +668,25 @@ public class CourseProcessor {
 		return currencyRate;
 	}
 
-	private Faculty getFaculty(final String facultyId) throws ValidationException {
+	private Faculty getFaculty(final String facultyId) throws NotFoundException {
 		Faculty faculty = null;
-		if (facultyId != null) {
+		if (!StringUtils.isEmpty(facultyId)) {
 			faculty = facultyDAO.get(facultyId);
 			if (ObjectUtils.isEmpty(faculty)) {
 				log.error("invalid faculty id: {}", facultyId);
-				throw new ValidationException("invalid faculty id: " + facultyId);
+				throw new NotFoundException("invalid faculty id: " + facultyId);
 			}
 		}
 		return faculty;
 	}
 
-	private Institute getInstititute(final String instituteId) throws ValidationException {
+	private Institute getInstititute(final String instituteId) throws NotFoundException {
 		Institute institute = null;
-		if (instituteId != null) {
+		if (!StringUtils.isEmpty(instituteId)) {
 			institute = instituteDAO.get(instituteId);
 			if (ObjectUtils.isEmpty(institute)) {
 				log.error("invalid institute id: {}", instituteId);
-				throw new ValidationException("invalid institute id: " + instituteId);
+				throw new NotFoundException("invalid institute id: " + instituteId);
 			}
 		}
 		return institute;

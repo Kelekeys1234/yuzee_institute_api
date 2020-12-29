@@ -58,11 +58,10 @@ public class OffCampusCourseProcessor {
 
 	@Transactional(rollbackOn = Throwable.class)
 	public void saveOffCampusCourse(String userId, OffCampusCourseRequestDto offCampusCourseRequestDto)
-			throws ValidationException, CommonInvokeException {
+			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("inside OffCampusCourseProcessor.saveOffCampusCourse");
 
 		offCampusCourseRequestDto.getCourseRequestDto().setOffCampusCourse(true);
-
 		Course course = courseProcessor.prepareCourseModelFromCourseRequest(null,
 				offCampusCourseRequestDto.getCourseRequestDto());
 		OffCampusCourse offCampusCourse = modelMapper.map(offCampusCourseRequestDto, OffCampusCourse.class);
@@ -73,13 +72,14 @@ public class OffCampusCourseProcessor {
 
 		offCampusCourse.setCreatedOn(new Date());
 		offCampusCourse.setUpdatedOn(new Date());
-
+		log.debug("going to save record in db");
 		offCampusCourseDao.saveOrUpdate(offCampusCourse);
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
 	public void updateOffCampusCourse(String userId, String offCampusCourseId,
-			OffCampusCourseRequestDto offCampusCourseRequestDto) throws ValidationException, CommonInvokeException {
+			OffCampusCourseRequestDto offCampusCourseRequestDto)
+			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("inside OffCampusCourseProcessor.updateOffCampusCourse");
 
 		getOffCampusCourseById(offCampusCourseId); // only to check if off campus exists
@@ -182,7 +182,7 @@ public class OffCampusCourseProcessor {
 
 	@Transactional(rollbackOn = Throwable.class)
 	public OffCampusCourseResponseDto getOffCampusCourseResponseDtoById(String offCampusCourseId)
-			throws ValidationException {
+			throws NotFoundException {
 		OffCampusCourseResponseDto offCampusCourseResponseDto = convertOffCampusCourseToOffCampusCourseResponseDto(
 				getOffCampusCourseById(offCampusCourseId));
 		try {
@@ -198,11 +198,11 @@ public class OffCampusCourseProcessor {
 		return offCampusCourseResponseDto;
 	}
 
-	private OffCampusCourse getOffCampusCourseById(String offCampusCourseId) throws ValidationException {
+	private OffCampusCourse getOffCampusCourseById(String offCampusCourseId) throws NotFoundException {
 		Optional<OffCampusCourse> optionalEntity = offCampusCourseDao.getById(offCampusCourseId);
 		if (!optionalEntity.isPresent()) {
 			log.error("OffCampusCourse not exists against id: {}", offCampusCourseId);
-			throw new ValidationException("OffCampusCourse not exists against id: " + offCampusCourseId);
+			throw new NotFoundException("OffCampusCourse not exists against id: " + offCampusCourseId);
 		}
 		return optionalEntity.get();
 	}

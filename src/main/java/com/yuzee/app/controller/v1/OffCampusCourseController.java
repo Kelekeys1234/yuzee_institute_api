@@ -26,7 +26,7 @@ public class OffCampusCourseController implements OffCampusCourseInterface {
 
 	@Override
 	public ResponseEntity<?> save(String userId, @Valid OffCampusCourseRequestDto offCampusCourseRequestDto)
-			throws ValidationException, CommonInvokeException {
+			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("inside OffCampusCourseController.save");
 
 		offCampusCourseProcessor.saveOffCampusCourse(userId, offCampusCourseRequestDto);
@@ -37,7 +37,7 @@ public class OffCampusCourseController implements OffCampusCourseInterface {
 	@Override
 	public ResponseEntity<?> update(String userId, String offCampusCourseId,
 			@Valid OffCampusCourseRequestDto offCampusCourseRequestDto)
-			throws ValidationException, CommonInvokeException {
+			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("inside OffCampusCourseController.update");
 
 		offCampusCourseProcessor.updateOffCampusCourse(userId, offCampusCourseId, offCampusCourseRequestDto);
