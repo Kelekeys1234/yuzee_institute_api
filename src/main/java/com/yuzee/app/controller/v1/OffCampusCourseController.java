@@ -29,8 +29,8 @@ public class OffCampusCourseController implements OffCampusCourseInterface {
 			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("inside OffCampusCourseController.save");
 
-		offCampusCourseProcessor.saveOffCampusCourse(userId, offCampusCourseRequestDto);
 		return new GenericResponseHandlers.Builder().setMessage("Off campus created successfully")
+				.setData(offCampusCourseProcessor.saveOffCampusCourse(userId, offCampusCourseRequestDto))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -40,8 +40,8 @@ public class OffCampusCourseController implements OffCampusCourseInterface {
 			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("inside OffCampusCourseController.update");
 
-		offCampusCourseProcessor.updateOffCampusCourse(userId, offCampusCourseId, offCampusCourseRequestDto);
 		return new GenericResponseHandlers.Builder().setMessage("Off campus created successfully")
+				.setData(offCampusCourseProcessor.updateOffCampusCourse(userId, offCampusCourseId, offCampusCourseRequestDto))
 				.setStatus(HttpStatus.OK).create();
 	}
 

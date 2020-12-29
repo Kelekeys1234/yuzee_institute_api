@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import com.yuzee.app.bean.OffCampusCourse;
 
 public interface OffCampusCourseDao {
-	public void saveOrUpdate(OffCampusCourse offCampusCourse);
+	public OffCampusCourse saveOrUpdate(OffCampusCourse offCampusCourse);
 
 	public Optional<OffCampusCourse> getById(String offCampusCourseId);
 

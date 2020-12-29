@@ -2,7 +2,6 @@ package com.yuzee.app.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -31,7 +29,7 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "course", uniqueConstraints = @UniqueConstraint(columnNames = { "faculty_id", "level_id", "institute_id", "name" }), indexes = { @Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false),
+@Table(name = "course", indexes = { @Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false),
 		@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),
 		@Index(name = "IDX_LEVEL_ID", columnList = "level_id", unique = false),
 		@Index(name = "IDX_COURSE_NAME", columnList = "name", unique = false),
@@ -47,7 +45,7 @@ public class Course implements Serializable {
 	private String id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "faculty_id", nullable = false)
+	@JoinColumn(name = "faculty_id")
 	private Faculty faculty;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -55,7 +53,7 @@ public class Course implements Serializable {
 	private Institute institute;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "level_id", nullable = false)
+	@JoinColumn(name = "level_id")
 	private Level level;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -98,13 +96,13 @@ public class Course implements Serializable {
 	@Column(name = "is_active")
 	private Boolean isActive;
 
-	@Column(name = "availabilty", nullable = false)
+	@Column(name = "availabilty")
 	private String availabilty;
 
-	@Column(name = "currency", nullable = false)
+	@Column(name = "currency")
 	private String currency;
 	
-	@Column(name = "currency_time", nullable = false)
+	@Column(name = "currency_time")
 	private String currencyTime;
 
 	@Column(name = "global_gpa")

@@ -18,8 +18,8 @@ public class OffCampusCourseDaoImpl implements OffCampusCourseDao {
 	private OffCampusCourseRepository offCampusCourseRepository;
 
 	@Override
-	public void saveOrUpdate(OffCampusCourse offCampusCourse) {
-		offCampusCourseRepository.save(offCampusCourse);
+	public OffCampusCourse saveOrUpdate(OffCampusCourse offCampusCourse) {
+		return offCampusCourseRepository.save(offCampusCourse);
 	}
 
 	@Override

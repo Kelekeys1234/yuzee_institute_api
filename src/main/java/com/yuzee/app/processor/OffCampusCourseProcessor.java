@@ -57,11 +57,13 @@ public class OffCampusCourseProcessor {
 	private ModelMapper modelMapper;
 
 	@Transactional(rollbackOn = Throwable.class)
-	public void saveOffCampusCourse(String userId, OffCampusCourseRequestDto offCampusCourseRequestDto)
+	public OffCampusCourseResponseDto saveOffCampusCourse(String userId,
+			OffCampusCourseRequestDto offCampusCourseRequestDto)
 			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("inside OffCampusCourseProcessor.saveOffCampusCourse");
 
 		offCampusCourseRequestDto.getCourseRequestDto().setOffCampusCourse(true);
+
 		Course course = courseProcessor.prepareCourseModelFromCourseRequest(null,
 				offCampusCourseRequestDto.getCourseRequestDto());
 		OffCampusCourse offCampusCourse = modelMapper.map(offCampusCourseRequestDto, OffCampusCourse.class);
@@ -72,12 +74,12 @@ public class OffCampusCourseProcessor {
 
 		offCampusCourse.setCreatedOn(new Date());
 		offCampusCourse.setUpdatedOn(new Date());
-		log.debug("going to save record in db");
-		offCampusCourseDao.saveOrUpdate(offCampusCourse);
+
+		return convertOffCampusCourseToOffCampusCourseResponseDto(offCampusCourseDao.saveOrUpdate(offCampusCourse));
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
-	public void updateOffCampusCourse(String userId, String offCampusCourseId,
+	public OffCampusCourseResponseDto updateOffCampusCourse(String userId, String offCampusCourseId,
 			OffCampusCourseRequestDto offCampusCourseRequestDto)
 			throws ValidationException, CommonInvokeException, NotFoundException {
 		log.debug("inside OffCampusCourseProcessor.updateOffCampusCourse");
@@ -94,7 +96,7 @@ public class OffCampusCourseProcessor {
 		offCampusCourse.setUpdatedBy(userId);
 		offCampusCourse.setUpdatedOn(new Date());
 
-		offCampusCourseDao.saveOrUpdate(offCampusCourse);
+		return convertOffCampusCourseToOffCampusCourseResponseDto(offCampusCourseDao.saveOrUpdate(offCampusCourse));
 
 	}
 
@@ -146,7 +148,7 @@ public class OffCampusCourseProcessor {
 		courseResponse.setId(course.getId());
 		courseResponse.setName(course.getName());
 		courseResponse.setCourseRanking(course.getWorldRanking());
-		courseResponse.setStars(Double.valueOf(course.getStars()));
+		courseResponse.setStars(Double.valueOf(course.getStars() == null ? 0 : course.getStars()));
 		courseResponse.setInstituteId(course.getInstitute().getId());
 		courseResponse.setInstituteName(course.getInstitute().getName());
 		courseResponse.setCurrencyCode(course.getCurrency());
