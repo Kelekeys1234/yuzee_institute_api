@@ -31,7 +31,7 @@ import lombok.ToString;
 		@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false)})
 public class CourseLanguage implements Serializable {
 
-	private static final long serialVersionUID = -1526350494847396850L;
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
@@ -54,13 +54,21 @@ public class CourseLanguage implements Serializable {
 	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on", length = 19)
-	private Date deletedOn;
-
 	@Column(name = "created_by", length = 50)
 	private String createdBy;
 
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
+	
+	public void setAuditFields(String userId, CourseLanguage existingCourseLanguage) {
+		this.setUpdatedBy(userId);
+		this.setUpdatedOn(new Date());
+		if (existingCourseLanguage != null) {
+			this.setCreatedBy(existingCourseLanguage.getCreatedBy());
+			this.setCreatedOn(existingCourseLanguage.getCreatedOn());
+		}else {
+			this.setCreatedBy(userId);
+			this.setCreatedOn(new Date());
+		}
+	}
 }

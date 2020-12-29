@@ -29,9 +29,4 @@ public class CourseDeliveryModesDaoImpl implements CourseDeliveryModesDao {
 	public List<CourseDeliveryModes> getCourseDeliveryModesByCourseId(String courseId) {
 		return courseDeliveryModesRepository.findByCourseId(courseId);
 	}
-
-	@Override
-	public void deleteCourseDeliveryModesByCourseId(String courseId) {
-		courseDeliveryModesRepository.deleteByCourseId(courseId);
-	}
 }

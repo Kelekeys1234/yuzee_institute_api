@@ -80,4 +80,16 @@ public class CourseEnglishEligibility {
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
+	
+	public void setAuditFields(String userId, CourseEnglishEligibility existingCourseEnglishEligibility) {
+		this.setUpdatedBy(userId);
+		this.setUpdatedOn(new Date());
+		if (existingCourseEnglishEligibility != null) {
+			this.setCreatedBy(existingCourseEnglishEligibility.getCreatedBy());
+			this.setCreatedOn(existingCourseEnglishEligibility.getCreatedOn());
+		}else {
+			this.setCreatedBy(userId);
+			this.setCreatedOn(new Date());
+		}
+	}
 }

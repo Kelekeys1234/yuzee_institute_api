@@ -1578,15 +1578,6 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	@Override
-	public void deleteCourseIntake(final String courseId) {
-		Session session = sessionFactory.getCurrentSession();
-		String hql = "delete CourseIntake where course_id = :courseId";
-		Query q = session.createQuery(hql).setParameter("courseId", courseId);
-		q.executeUpdate();
-
-	}
-
-	@Override
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(final String courseId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(CourseIntake.class, "courseIntake");
@@ -1620,15 +1611,6 @@ public class CourseDaoImpl implements CourseDao {
 	public void saveCourseLanguage(final CourseLanguage courseLanguage) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(courseLanguage);
-
-	}
-
-	@Override
-	public void deleteCourseLanguage(final String courseId) {
-		Session session = sessionFactory.getCurrentSession();
-		String hql = "delete CourseLanguage where course_id = :courseId";
-		Query q = session.createQuery(hql).setParameter("courseId", courseId);
-		q.executeUpdate();
 
 	}
 

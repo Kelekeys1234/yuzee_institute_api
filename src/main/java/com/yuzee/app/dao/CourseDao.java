@@ -96,8 +96,6 @@ public interface CourseDao {
 
 	public void saveCourseIntake(CourseIntake courseIntake);
 
-	public void deleteCourseIntake(String courseId);
-
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(String courseId);
 
 	public List<CourseIntake> getCourseIntakeBasedOnCourseIdList(List<String> courseIds);
@@ -105,8 +103,6 @@ public interface CourseDao {
 	public void deleteCourseDeliveryMethod(String courseId);
 
 	public void saveCourseLanguage(CourseLanguage courseLanguage);
-
-	public void deleteCourseLanguage(String courseId);
 
 	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(String courseId);
 

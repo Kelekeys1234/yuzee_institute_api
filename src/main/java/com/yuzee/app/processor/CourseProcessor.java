@@ -40,8 +40,6 @@ import com.yuzee.app.bean.Level;
 import com.yuzee.app.dao.CourseCareerOutComeDao;
 import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dao.CourseDeliveryModesDao;
-import com.yuzee.app.dao.CourseEnglishEligibilityDao;
 import com.yuzee.app.dao.CourseMinRequirementDao;
 import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.IGlobalStudentDataDAO;
@@ -103,9 +101,6 @@ public class CourseProcessor {
 	private CourseDao courseDao;
 
 	@Autowired
-	private CourseEnglishEligibilityDao courseEnglishEligibilityDAO;
-
-	@Autowired
 	private InstituteDao instituteDAO;
 
 	@Autowired
@@ -146,9 +141,6 @@ public class CourseProcessor {
 	
 	@Autowired
 	private CourseRepository courseRepository;
-	
-	@Autowired
-	private CourseDeliveryModesDao courseDeliveryModesDao;
 	
 	@Autowired
 	private CourseDeliveryModesProcessor courseDeliveryModesProcessor;
@@ -392,104 +384,176 @@ public class CourseProcessor {
 		course.setUpdatedBy("API");
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 
-		if (!ObjectUtils.isEmpty(courseId)) {
-			log.info("Delete existing courseIntakes from DB");
-			courseDao.deleteCourseIntake(courseId);
-			
-			log.info("Delete existing courseLanguage from DB");
-			courseDao.deleteCourseLanguage(courseId);
-			
-			log.info("Delete existing courseEnglishEligibility from DB");
-			courseEnglishEligibilityDAO.deleteCourseEnglishEligibilityByCourse(courseId);
-			
-			log.info("Delete existing courseDeliveryModes from DB");
-			courseDeliveryModesDao.deleteCourseDeliveryModesByCourseId(courseId);
-		}
-
-		// Here multiple intakes are possible.
-		if (!CollectionUtils.isEmpty(courseDto.getIntake())) {
-			List<CourseIntake> courseIntakes = new ArrayList<>();
-			log.info("Course saved now going to save/update course intakes in DB");
-			for (Date intake : courseDto.getIntake()) {
-				CourseIntake courseIntake = new CourseIntake();
-				courseIntake.setCourse(course);
-				courseIntake.setIntakeDates(intake);
-				courseIntakes.add(courseIntake);
-			}
-			course.setCourseIntakes(courseIntakes);
-		}
-
-		// Course can have multiple language
-		if (!CollectionUtils.isEmpty(courseDto.getLanguage())) {
-			log.info("Course saved now going to save/update course languages in DB");
-			List<CourseLanguage> courseLanguages = new ArrayList<>();
-			for (String language : courseDto.getLanguage()) {
-				CourseLanguage courseLanguage = new CourseLanguage();
-				courseLanguage.setCourse(course);
-				courseLanguage.setLanguage(language);
-				courseLanguages.add(courseLanguage);
-			}
-			course.setCourseLanguages(courseLanguages);
-		}
-
-		// There are EnglishEligibility means IELTS & TOFEL score
-		if (!CollectionUtils.isEmpty(courseDto.getEnglishEligibility())) {
-			log.info("Course saved now going to save/update EnglishEligibility in DB");
-			List<CourseEnglishEligibility> courseEnglishEligibilities = new ArrayList<>();
-			for (CourseEnglishEligibilityDto courseEnglishEligibilityDto : courseDto.getEnglishEligibility()) {
-				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-				BeanUtils.copyProperties(courseEnglishEligibilityDto, courseEnglishEligibility);
-				courseEnglishEligibility.setCourse(course);
-				courseEnglishEligibility.setIsActive(true);
-				courseEnglishEligibility.setCreatedBy("API");
-				courseEnglishEligibility.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-				courseEnglishEligibilities.add(courseEnglishEligibility);
-			}	
-		}
+		saveUpdateCourseIntakes("API", course, courseDto.getIntake());
 		
+		saveUpdateCourseLanguages("API", course, courseDto.getLanguage());
 
-		if (!CollectionUtils.isEmpty(courseDto.getCourseDeliveryModes()) && !ObjectUtils.isEmpty(currencyRate)) {
-			log.info("Course saved now going to save/update CourseDeliveryModesElasticDto in DB");
-			List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
-			for (CourseDeliveryModesDto courseDeliveryModesDto : courseDto.getCourseDeliveryModes()) {
-				CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
-				if (courseDto.getCurrency() != null) {
-					if (courseDeliveryModesDto.getDomesticFee() != null) {
-						log.info("converting domestic fee into usdDomestic fee having conversionRate = "
-								+ currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseDeliveryModesDto.getDomesticFee())
-								/ currencyRate.getConversionRate();
-						if (convertedRate != null) {
-							courseDeliveryMode.setUsdDomesticFee(convertedRate);
-						}
-					}
-					if (courseDeliveryModesDto.getInternationalFee() != null) {
-						log.info("converting international fee into usdInternational fee having conversionRate = "
-								+ currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseDeliveryModesDto.getInternationalFee())
-								/ currencyRate.getConversionRate();
-						if (convertedRate != null) {
-							courseDeliveryMode.setUsdInternationalFee(convertedRate);
-						}
-					}
-				}
-				courseDeliveryMode.setCourse(course);
-				courseDeliveryMode.setCreatedBy("API");
-				courseDeliveryMode.setCreatedOn(new Date());
-				log.info("Adding additional infos like deliveryType, studyMode etc");
-				courseDeliveryMode.setDeliveryType(courseDeliveryModesDto.getDeliveryType());
-				courseDeliveryMode.setDomesticFee(courseDeliveryModesDto.getDomesticFee());
-				courseDeliveryMode.setInternationalFee(courseDeliveryModesDto.getInternationalFee());
-				courseDeliveryMode.setStudyMode(courseDeliveryModesDto.getStudyMode());
-				courseDeliveryMode.setDuration(courseDeliveryModesDto.getDuration());
-				courseDeliveryMode.setDurationTime(courseDeliveryModesDto.getDurationTime());
-
-				courseDeliveryModes.add(courseDeliveryMode);	
-			}
-			course.setCourseDeliveryModes(courseDeliveryModes);
-		}
+		saveUpdateCourseEnglishEligibilities("API", course, courseDto.getEnglishEligibility());
+		
+		saveUpdateCourseDeliveryModes("API", course, currencyRate, courseDto.getCourseDeliveryModes());
 		
 		return course;
+	}
+	
+	private void saveUpdateCourseIntakes(String userId, Course course, List<Date> courseIntakeDates)
+			throws ValidationException {
+		List<CourseIntake> dbIntakes = course.getCourseIntakes();
+		Map<Date, CourseIntake> dbIntakeByDate = dbIntakes.stream()
+				.collect(Collectors.toMap(CourseIntake::getIntakeDates, e -> e));
+		if (!CollectionUtils.isEmpty(courseIntakeDates)) {
+			log.info("Course intakes is not null, start iterating data");
+
+			courseIntakeDates.stream().forEach(intake -> {
+
+				CourseIntake courseIntake = dbIntakeByDate.get(intake);
+				if (courseIntake == null) {
+					courseIntake = new CourseIntake();
+				}
+				courseIntake.setIntakeDates(intake);
+				courseIntake.setAuditFields(userId, StringUtils.isEmpty(courseIntake.getId()) ? null : courseIntake);
+				courseIntake.setCourse(course);
+				if (StringUtils.isEmpty(courseIntake.getId())) {
+					dbIntakes.add(courseIntake);
+				}
+			});
+		} else if (!CollectionUtils.isEmpty(dbIntakes)) {
+			dbIntakes.clear();
+		}
+		// intakes to be removed
+		dbIntakes.removeIf(e -> courseIntakeDates.stream().noneMatch(r -> e.getIntakeDates().compareTo(r) == 0));
+	}
+
+	private void saveUpdateCourseLanguages(String userId, Course course, List<String> courseLanguages)
+			throws ValidationException {
+		List<CourseLanguage> dbLanguages = course.getCourseLanguages();
+		if (!CollectionUtils.isEmpty(courseLanguages)) {
+			log.info("Course languages is not null, start iterating data");
+
+			courseLanguages.stream().forEach(language -> {
+				Optional<CourseLanguage> optionalCouseLanguage = dbLanguages.stream()
+						.filter(e -> e.getLanguage().equalsIgnoreCase(language)).findAny();
+				CourseLanguage courseLanguage = optionalCouseLanguage.isPresent() ? optionalCouseLanguage.get() : null;
+				if (courseLanguage == null) {
+					courseLanguage = new CourseLanguage();
+				}
+				courseLanguage.setLanguage(language);
+				courseLanguage.setAuditFields(userId,
+						StringUtils.isEmpty(courseLanguage.getId()) ? null : courseLanguage);
+				courseLanguage.setCourse(course);
+				if (StringUtils.isEmpty(courseLanguage.getId())) {
+					dbLanguages.add(courseLanguage);
+				}
+			});
+		} else if (!CollectionUtils.isEmpty(dbLanguages)) {
+			dbLanguages.clear();
+		}
+		// intakes to be removed
+		dbLanguages.removeIf(e -> !courseLanguages.stream().anyMatch(r -> e.getLanguage().equalsIgnoreCase(r)));
+	}
+
+	private void saveUpdateCourseEnglishEligibilities(String loggedInUserId, Course course,
+			List<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos) throws ValidationException {
+		try {
+			List<CourseEnglishEligibility> dbEnglishEligibilities = course.getCourseEnglishEligibilities();
+			if (!CollectionUtils.isEmpty(courseEnglishEligibilityDtos)) {
+
+				log.info("Creating the list to save/update course subjects in DB");
+				dbEnglishEligibilities.removeIf(e -> courseEnglishEligibilityDtos.stream()
+						.noneMatch(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())));
+
+				courseEnglishEligibilityDtos.stream().forEach(e -> {
+					Optional<CourseEnglishEligibility> existingCousrseEnglishEligibilityOp = dbEnglishEligibilities
+							.stream().filter(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())).findAny();
+					CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
+					String existingId = null;
+					if (existingCousrseEnglishEligibilityOp.isPresent()) {
+						courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
+						existingId = courseEnglishEligibility.getId();
+					}
+					BeanUtils.copyProperties(e, courseEnglishEligibility);
+					courseEnglishEligibility.setId(existingId);
+					courseEnglishEligibility.setCourse(course);
+					if (StringUtils.isEmpty(courseEnglishEligibility.getId())) {
+						courseEnglishEligibility.setAuditFields(loggedInUserId, null);
+						dbEnglishEligibilities.add(courseEnglishEligibility);
+					} else {
+						courseEnglishEligibility.setAuditFields(loggedInUserId, courseEnglishEligibility);
+					}
+				});
+
+			} else {
+				dbEnglishEligibilities.clear();
+			}
+		} catch (RuntimeException e) {
+			log.error(e.getMessage());
+			throw new ValidationException(e.getMessage());
+		}
+	}
+
+	private void saveUpdateCourseDeliveryModes(String loggedInUserId, Course course, CurrencyRateDto currencyRate,
+			List<CourseDeliveryModesDto> courseDeliveryModeDtos) throws ValidationException {
+		try {
+			List<CourseDeliveryModes> dbCourseDeliveryModes = course.getCourseDeliveryModes();
+			if (!CollectionUtils.isEmpty(courseDeliveryModeDtos) && !ObjectUtils.isEmpty(currencyRate)) {
+
+				log.info("Creating the list to save/update course subjects in DB");
+				dbCourseDeliveryModes.removeIf(e -> courseDeliveryModeDtos.stream()
+						.noneMatch(t -> e.getStudyMode().equalsIgnoreCase(t.getStudyMode())
+								&& e.getDeliveryType().equalsIgnoreCase(t.getDeliveryType())));
+
+				courseDeliveryModeDtos.stream().forEach(e -> {
+					Optional<CourseDeliveryModes> existingCourseDeliveryModeOp = dbCourseDeliveryModes.stream()
+							.filter(t -> t.getStudyMode().equalsIgnoreCase(e.getStudyMode())
+									&& t.getDeliveryType().equalsIgnoreCase(e.getDeliveryType()))
+							.findAny();
+					CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
+					if (existingCourseDeliveryModeOp.isPresent()) {
+						courseDeliveryMode = existingCourseDeliveryModeOp.get();
+					}
+					if (course.getCurrency() != null) {
+						if (e.getDomesticFee() != null) {
+							log.info("converting domestic fee into usdDomestic fee having conversionRate = "
+									+ currencyRate.getConversionRate());
+							Double convertedRate = Double.valueOf(e.getDomesticFee())
+									/ currencyRate.getConversionRate();
+							if (convertedRate != null) {
+								courseDeliveryMode.setUsdDomesticFee(convertedRate);
+							}
+						}
+						if (e.getInternationalFee() != null) {
+							log.info("converting international fee into usdInternational fee having conversionRate = "
+									+ currencyRate.getConversionRate());
+							Double convertedRate = Double.valueOf(e.getInternationalFee())
+									/ currencyRate.getConversionRate();
+							if (convertedRate != null) {
+								courseDeliveryMode.setUsdInternationalFee(convertedRate);
+							}
+						}
+					}
+					courseDeliveryMode.setCourse(course);
+					log.info("Adding additional infos like deliveryType, studyMode etc");
+					courseDeliveryMode.setDeliveryType(e.getDeliveryType());
+					courseDeliveryMode.setDomesticFee(e.getDomesticFee());
+					courseDeliveryMode.setInternationalFee(e.getInternationalFee());
+					courseDeliveryMode.setStudyMode(e.getStudyMode());
+					courseDeliveryMode.setDuration(e.getDuration());
+					courseDeliveryMode.setDurationTime(e.getDurationTime());
+					courseDeliveryMode.setCourse(course);
+					if (StringUtils.isEmpty(courseDeliveryMode.getId())) {
+						courseDeliveryMode.setAuditFields(loggedInUserId, null);
+						dbCourseDeliveryModes.add(courseDeliveryMode);
+					} else {
+						courseDeliveryMode.setAuditFields(loggedInUserId, courseDeliveryMode);
+					}
+				});
+
+			} else {
+				dbCourseDeliveryModes.clear();
+			}
+		} catch (RuntimeException e) {
+			log.error(e.getMessage());
+			throw new ValidationException(e.getMessage());
+		}
 	}
 	
 	private CourseDTOElasticSearch prepareCourseElaticSearchDtoFromModel(Course course) {

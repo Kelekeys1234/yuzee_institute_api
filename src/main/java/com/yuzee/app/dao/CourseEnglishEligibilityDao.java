@@ -16,6 +16,4 @@ public interface CourseEnglishEligibilityDao {
 
 	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(String courseID);
 
-	public void deleteCourseEnglishEligibilityByCourse(String courseId);
-
 }

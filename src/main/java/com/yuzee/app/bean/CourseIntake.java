@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -24,7 +25,8 @@ import lombok.ToString;
 @Entity
 @ToString
 @EqualsAndHashCode
-@Table(name = "course_intake", indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
+@Table(name = "course_intake", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id",
+"intake_date" }, name = "UK_COURSE_ID_INTAKE_DATE"), indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
 public class CourseIntake {
 	
 	@Id
@@ -48,13 +50,21 @@ public class CourseIntake {
 	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on", length = 19)
-	private Date deletedOn;
-
 	@Column(name = "created_by", length = 50)
 	private String createdBy;
 
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
+	
+	public void setAuditFields(String userId, CourseIntake existingCourseIntake) {
+		this.setUpdatedBy(userId);
+		this.setUpdatedOn(new Date());
+		if (existingCourseIntake != null) {
+			this.setCreatedBy(existingCourseIntake.getCreatedBy());
+			this.setCreatedOn(existingCourseIntake.getCreatedOn());
+		}else {
+			this.setCreatedBy(userId);
+			this.setCreatedOn(new Date());
+		}
+	}
 }
