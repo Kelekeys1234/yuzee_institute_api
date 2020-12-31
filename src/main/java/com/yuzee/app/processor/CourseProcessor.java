@@ -1697,7 +1697,7 @@ public class CourseProcessor {
 		if (course.getOffCampusCourse() != null) {
 			courseRequest.setOffCampusCourse(modelMapper.map(course.getOffCampusCourse(), OffCampusCourseDto.class));
 		}
-		courseRequest.setCourseTimings(new ValidList<>(timingProcessor.getTimingRequestDtoByEntityTypeAndEntityId(EntityTypeEnum.COURSE, course.getId())));
+		courseRequest.setCourseTimings(new ValidList<>(timingProcessor.getTimingRequestDtoByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, Arrays.asList(course.getId()))));
 		
 		courseRequest.setCourseSubjects(new ValidList<>(course.getCourseSubjects().stream().map(e->modelMapper.map(e,CourseSubjectDto.class)).collect(Collectors.toList())));
 		

@@ -10,8 +10,6 @@ import com.yuzee.app.dao.TimingDao;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.repository.TimingRepository;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
 public class TimingDaoImpl implements TimingDao {
 
@@ -24,8 +22,8 @@ public class TimingDaoImpl implements TimingDao {
 	}
 
 	@Override
-	public List<Timing> findByEntityTypeAndEntityId(EntityTypeEnum entityType, String entityId) {
-		return timingRepository.findByEntityTypeAndEntityId(entityType, entityId);
+	public List<Timing> findByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<String> entityIds) {
+		return timingRepository.findByEntityTypeAndEntityIdIn(entityType, entityIds);
 	}
 
 	@Override

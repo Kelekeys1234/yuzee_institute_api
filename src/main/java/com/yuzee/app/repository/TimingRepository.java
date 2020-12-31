@@ -10,7 +10,7 @@ import com.yuzee.app.enumeration.EntityTypeEnum;
 
 @Repository
 public interface TimingRepository extends JpaRepository<Timing, String> {
-	List<Timing> findByEntityTypeAndEntityId(EntityTypeEnum entityType, String entityId);
+	List<Timing> findByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<String> entityId);
 
 	void deleteByEntityTypeAndEntityId(EntityTypeEnum entityType, String entityId);
 }

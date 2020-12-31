@@ -616,7 +616,7 @@ public class CourseDaoImpl implements CourseDao {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select c.id , c.institute_id, i.country_name, i.city_name, c.faculty_id, c.name," +
 				" c.description, c.intake, c.availabilty, c.created_by, c.updated_by, c.campus_location, c.website," +
-				" c.recognition_type, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.remarks FROM course c" +
+				" c.recognition_type, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.remarks, c.level_id FROM course c" +
 				" inner join institute i on c.institute_id = i.id where c.is_active = 1 and c.deleted_on IS NULL ORDER BY c.created_on DESC ";
 		sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
 		Query query = session.createSQLQuery(sqlQuery);
@@ -677,6 +677,9 @@ public class CourseDaoImpl implements CourseDao {
 			}
 			if (row[18] != null) {
 				obj.setRequirements(row[18].toString());
+			}
+			if (row[19] != null) {
+				obj.setLevelId(row[19].toString());
 			}
 			courses.add(obj);
 		}
@@ -1094,7 +1097,7 @@ public class CourseDaoImpl implements CourseDao {
 		Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select c.id , c.institute_id, inst.country_name , inst.city_name, c.faculty_id, c.name,"
 				+ " c.description, c.intake, c.availabilty, c.created_by, c.updated_by, c.campus_location, c.website,"
-				+ " c.recognition_type, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.remarks FROM course c join institute inst"
+				+ " c.recognition_type, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.remarks, c.level_id FROM course c join institute inst"
 				+ " on c.institute_id = inst.id inner join faculty f  on f.id = c.faculty_id "
 				+ " left join institute_service iis  on iis.institute_id = inst.id where c.is_active = 1 and c.deleted_on IS NULL ";
 
@@ -1162,7 +1165,7 @@ public class CourseDaoImpl implements CourseDao {
 		Session session = sessionFactory.getCurrentSession();
         String sqlQuery = "select c.id , c.institute_id, ist.country_name , ist.city_name, c.faculty_id, c.name," +
 				" c.description, c.intake, c.availabilty, c.created_by, c.updated_by, c.campus_location, c.website," +
-				" c.recognition_type, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.remarks  FROM course c inner join" +
+				" c.recognition_type, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.remarks, c.level_id  FROM course c inner join" +
 				" institute ist on c.institute_id = ist.id" +
 				" where c.is_active = 1 and c.deleted_on IS NULL and (c.name like '%" + searchKey + "%' or ist.name like '%" + searchKey +
 				" %') ORDER BY c.created_on DESC ";

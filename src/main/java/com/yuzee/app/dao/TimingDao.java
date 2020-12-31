@@ -9,7 +9,7 @@ public interface TimingDao {
 
 	public List<Timing> saveAll(List<Timing> timings);
 
-	public List<Timing> findByEntityTypeAndEntityId(EntityTypeEnum entityType, String entityId);
+	public List<Timing> findByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<String> entityId);
 
 	public void deleteAll(List<Timing> timings);
 

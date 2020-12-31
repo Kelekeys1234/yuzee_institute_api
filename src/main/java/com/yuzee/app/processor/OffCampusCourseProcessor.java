@@ -2,7 +2,6 @@ package com.yuzee.app.processor;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -24,6 +23,8 @@ import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.OffCampusCourseDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.StorageDto;
+import com.yuzee.app.dto.TimingRequestDto;
+import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.InvokeException;
@@ -46,6 +47,9 @@ public class OffCampusCourseProcessor {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@Autowired
+	private TimingProcessor timingProcessor;
+
 	@Transactional(rollbackOn = Throwable.class)
 	public PaginationResponseDto getOffCampusCoursesByInstituteId(String instituteId, Integer pageNumber,
 			Integer pageSize) throws NotFoundException {
@@ -57,17 +61,22 @@ public class OffCampusCourseProcessor {
 
 		List<CourseResponseDto> courseResponseDtos = offCampusCourses.stream()
 				.map(e -> convertCourseToCourseResponseDto(e.getCourse())).collect(Collectors.toList());
+		List<String> courseIds = courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList());
+		List<TimingRequestDto> allCourseTimings = timingProcessor
+				.getTimingRequestDtoByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, courseIds);
 
-		
 		try {
 			log.info("Calling Storage service to fetch course images");
-			List<StorageDto> storageDTOList = storageHandler.getStorages(
-					courseResponseDtos.stream().map(CourseResponseDto::getId).collect(Collectors.toList()),
-					EntityTypeEnum.COURSE, Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
+			List<StorageDto> storageDTOList = storageHandler.getStorages(courseIds, EntityTypeEnum.COURSE,
+					Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
 			if (!CollectionUtils.isEmpty(storageDTOList)) {
-				Map<String, StorageDto> storagesMap = storageDTOList.stream()
-						.collect(Collectors.toMap(StorageDto::getEntityId, e -> e));
-				courseResponseDtos.stream().forEach(e -> e.setStorageList(Arrays.asList(storagesMap.get(e.getId()))));
+				courseResponseDtos.stream().forEach(e -> {
+					e.setStorageList(storageDTOList.stream().filter(s -> s.getEntityId().equals(e.getId()))
+							.collect(Collectors.toList()));
+					List<TimingRequestDto> courseTimings = allCourseTimings.stream()
+							.filter(t -> t.getEntityId().equals(e.getId())).collect(Collectors.toList());
+					e.setCourseTimings(new ValidList<>(courseTimings));
+				});
 			}
 		} catch (NotFoundException | InvokeException e) {
 			log.error("Error invoking Storage service exception {}", e);
@@ -75,7 +84,7 @@ public class OffCampusCourseProcessor {
 		return PaginationUtil.calculatePaginationAndPrepareResponse(PaginationUtil.getStartIndex(pageNumber, pageSize),
 				pageSize, ((Long) offCampusCoursePage.getTotalElements()).intValue(), courseResponseDtos);
 	}
-	
+
 	public CourseResponseDto convertCourseToCourseResponseDto(Course course) {
 		CourseResponseDto courseResponse = modelMapper.map(course, CourseResponseDto.class);
 		courseResponse.setId(course.getId());

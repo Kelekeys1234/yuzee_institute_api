@@ -41,7 +41,7 @@ import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.OffCampusCourseDto;
-import com.yuzee.app.dto.TimingResponseDto;
+import com.yuzee.app.dto.TimingDto;
 import com.yuzee.app.dto.TodoDto;
 
 public class CommonUtil {
@@ -436,7 +436,7 @@ public class CommonUtil {
 		return distance;
 	}
 	
-	public static List<DayTimingDto> convertTimingResponseDtoToDayTimingDto(TimingResponseDto instituteTimingResponseDto) {
+	public static List<DayTimingDto> convertTimingResponseDtoToDayTimingDto(TimingDto instituteTimingResponseDto) {
 		List<DayTimingDto> dayTimingDtos = new ArrayList<>();
 		DayTimingDto instituteTimingDto = null;
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getMonday()) && !instituteTimingResponseDto.getMonday().equalsIgnoreCase("CLOSED")) {

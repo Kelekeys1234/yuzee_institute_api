@@ -24,7 +24,7 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
-import com.yuzee.app.dto.TimingResponseDto;
+import com.yuzee.app.dto.TimingDto;
 import com.yuzee.app.dto.InstituteTypeDto;
 import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
@@ -124,7 +124,7 @@ public class InstituteController implements InstituteInterface {
 					log.error("Error invoking Storage service having exception = {}",e);
 				}
 				log.info("fetching instituteTiming from DB for instituteId ={}", instituteResponseDto.getId());
-				TimingResponseDto instituteTimingResponseDto = timingProcessor.getTimingResponseDtoByInstituteId(instituteResponseDto.getId());
+				TimingDto instituteTimingResponseDto = timingProcessor.getTimingResponseDtoByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
 				if(!ObjectUtils.isEmpty(request.getLatitude()) && !ObjectUtils.isEmpty(request.getLongitude()) && 
 						!ObjectUtils.isEmpty(instituteResponseDto.getLatitude()) && !ObjectUtils.isEmpty(instituteResponseDto.getLongitude())) {
@@ -183,7 +183,7 @@ public class InstituteController implements InstituteInterface {
 					log.error("Error invoking Storage service having exception {}", e);
 				}
 				log.info("fetching instituteTiming from DB for instituteId = {}", instituteResponseDto.getId());
-				TimingResponseDto instituteTimingResponseDto = timingProcessor.getTimingResponseDtoByInstituteId(instituteResponseDto.getId());
+				TimingDto instituteTimingResponseDto = timingProcessor.getTimingResponseDtoByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
 				instituteResponse.add(instituteResponseDto);
 			});

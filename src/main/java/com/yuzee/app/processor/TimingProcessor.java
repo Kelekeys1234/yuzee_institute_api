@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +20,7 @@ import com.yuzee.app.bean.Timing;
 import com.yuzee.app.dao.TimingDao;
 import com.yuzee.app.dto.DayTimingDto;
 import com.yuzee.app.dto.TimingRequestDto;
-import com.yuzee.app.dto.TimingResponseDto;
+import com.yuzee.app.dto.TimingDto;
 import com.yuzee.app.enumeration.DaysEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.TimingType;
@@ -42,7 +43,8 @@ public class TimingProcessor {
 	public List<TimingRequestDto> saveUpdateTimings(String loggedInUserId, List<TimingRequestDto> timingRequestDtos,
 			String entityId) throws NotFoundException {
 		log.info("inside TimingProcessor.saveUpdateTimings");
-		List<Timing> dbTimings = timingDao.findByEntityTypeAndEntityId(EntityTypeEnum.COURSE, entityId);
+		List<Timing> dbTimings = timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE,
+				Arrays.asList(entityId));
 		Map<String, Timing> dbTimingsMap = dbTimings.stream().collect(Collectors.toMap(Timing::getId, e -> e));
 		if (!CollectionUtils.isEmpty(timingRequestDtos)) {
 			Set<String> idsToBeUpdated = timingRequestDtos.stream().map(TimingRequestDto::getId)
@@ -114,26 +116,27 @@ public class TimingProcessor {
 		return new ArrayList<>();
 	}
 
-	public List<TimingRequestDto> getTimingRequestDtoByEntityTypeAndEntityId(EntityTypeEnum entityType,
-			String entityId) {
+	public List<TimingRequestDto> getTimingRequestDtoByEntityTypeAndEntityIdIn(EntityTypeEnum entityType,
+			List<String> entityIds) {
 		log.info("inside TimingProcessor.getTimingRequestDtoByEntityTypeAndEntityId");
-		List<Timing> timings = timingDao.findByEntityTypeAndEntityId(entityType, entityId);
+		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(entityType, entityIds);
 		return timings.stream().map(e -> convertTimingToTimingRequestDto(e)).collect(Collectors.toList());
 	}
 
 	private TimingRequestDto convertTimingToTimingRequestDto(Timing timing) {
 		TimingRequestDto timingRequestDto = modelMapepr.map(timing, TimingRequestDto.class);
 		timingRequestDto.setTimings(
-				CommonUtil.convertTimingResponseDtoToDayTimingDto(modelMapepr.map(timing, TimingResponseDto.class)));
+				CommonUtil.convertTimingResponseDtoToDayTimingDto(modelMapepr.map(timing, TimingDto.class)));
 		return timingRequestDto;
 	}
 
-	public TimingResponseDto getTimingResponseDtoByInstituteId(String instituteId) {
+	public TimingDto getTimingResponseDtoByInstituteId(String instituteId) {
 		log.debug("Inside getInstituteTimeByInstituteId() method");
 		log.info("fetching isntitute timing from DB for instituteId " + instituteId);
-		List<Timing> timings = timingDao.findByEntityTypeAndEntityId(EntityTypeEnum.INSTITUTE, instituteId);
+		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.INSTITUTE,
+				Arrays.asList(instituteId));
 		Timing timing = CollectionUtils.isEmpty(timings) ? null : timings.get(0);
-		TimingResponseDto instituteTimingResponseDto = new TimingResponseDto();
+		TimingDto instituteTimingResponseDto = new TimingDto();
 		if (!ObjectUtils.isEmpty(timing)) {
 			log.info("Institute timing is not null, hence coping bean to DTO class");
 			BeanUtils.copyProperties(timing, instituteTimingResponseDto);
