@@ -41,6 +41,7 @@ public class TimingProcessor {
 
 	public List<TimingRequestDto> saveUpdateTimings(String loggedInUserId, List<TimingRequestDto> timingRequestDtos,
 			String entityId) throws NotFoundException {
+		log.info("inside TimingProcessor.saveUpdateTimings");
 		List<Timing> dbTimings = timingDao.findByEntityTypeAndEntityId(EntityTypeEnum.COURSE, entityId);
 		Map<String, Timing> dbTimingsMap = dbTimings.stream().collect(Collectors.toMap(Timing::getId, e -> e));
 		if (!CollectionUtils.isEmpty(timingRequestDtos)) {
@@ -60,48 +61,48 @@ public class TimingProcessor {
 						log.error("invalid timing found against");
 						throw new NotFoundException("invalid timing found against");
 					}
-					timing.setAuditFields(loggedInUserId, timing);
-					timing.setEntityId(entityId);
-					timing.setEntityType(EntityTypeEnum.valueOf(courseTimingRequestDto.getEntityType()));
-					timing.setTimingType(TimingType.valueOf(courseTimingRequestDto.getTimingType()));
-					Map<String, DayTimingDto> dayWiseTimingMap = courseTimingRequestDto.getTimings().stream()
-							.collect(Collectors.toMap(DayTimingDto::getDay, e -> e));
-					for (String day : dayWiseTimingMap.keySet()) {
-						DayTimingDto dayTimingDto = dayWiseTimingMap.get(day);
-						if (!ObjectUtils.isEmpty(dayTimingDto)) {
-							if (DaysEnum.MONDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
-								log.info("Adding Monday's opening and closing time");
-								timing.setMonday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
-							}
-							if (DaysEnum.TUESDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
-								log.info("Adding Tuesday's opening and closing time");
-								timing.setTuesday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
-							}
-							if (DaysEnum.WEDNESDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
-								log.info("Adding Wednesday's opening and closing time");
-								timing.setWednesday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
-							}
-							if (DaysEnum.THURSDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
-								log.info("Adding Thursday's opening and closing time");
-								timing.setThursday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
-							}
-							if (DaysEnum.FRIDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
-								log.info("Adding Friday's opening and closing time");
-								timing.setFriday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
-							}
-							if (DaysEnum.SATURDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
-								log.info("Adding Saturday's opening and closing time");
-								timing.setSaturday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
-							}
-							if (DaysEnum.SUNDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
-								log.info("Adding Sunday's opening and closing time");
-								timing.setSunday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
-							}
+				}
+				timing.setAuditFields(loggedInUserId, timing);
+				timing.setEntityId(entityId);
+				timing.setEntityType(EntityTypeEnum.valueOf(courseTimingRequestDto.getEntityType()));
+				timing.setTimingType(TimingType.valueOf(courseTimingRequestDto.getTimingType()));
+				Map<String, DayTimingDto> dayWiseTimingMap = courseTimingRequestDto.getTimings().stream()
+						.collect(Collectors.toMap(DayTimingDto::getDay, e -> e));
+				for (String day : dayWiseTimingMap.keySet()) {
+					DayTimingDto dayTimingDto = dayWiseTimingMap.get(day);
+					if (!ObjectUtils.isEmpty(dayTimingDto)) {
+						if (DaysEnum.MONDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
+							log.info("Adding Monday's opening and closing time");
+							timing.setMonday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
+						}
+						if (DaysEnum.TUESDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
+							log.info("Adding Tuesday's opening and closing time");
+							timing.setTuesday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
+						}
+						if (DaysEnum.WEDNESDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
+							log.info("Adding Wednesday's opening and closing time");
+							timing.setWednesday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
+						}
+						if (DaysEnum.THURSDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
+							log.info("Adding Thursday's opening and closing time");
+							timing.setThursday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
+						}
+						if (DaysEnum.FRIDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
+							log.info("Adding Friday's opening and closing time");
+							timing.setFriday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
+						}
+						if (DaysEnum.SATURDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
+							log.info("Adding Saturday's opening and closing time");
+							timing.setSaturday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
+						}
+						if (DaysEnum.SUNDAY.toString().equalsIgnoreCase(dayTimingDto.getDay())) {
+							log.info("Adding Sunday's opening and closing time");
+							timing.setSunday(dayTimingDto.getOpeningFrom() + "-" + dayTimingDto.getOpeningTo());
 						}
 					}
-					if (StringUtils.isEmpty(timing.getId())) {
-						dbTimings.add(timing);
-					}
+				}
+				if (StringUtils.isEmpty(timing.getId())) {
+					dbTimings.add(timing);
 				}
 			}
 
@@ -115,6 +116,7 @@ public class TimingProcessor {
 
 	public List<TimingRequestDto> getTimingRequestDtoByEntityTypeAndEntityId(EntityTypeEnum entityType,
 			String entityId) {
+		log.info("inside TimingProcessor.getTimingRequestDtoByEntityTypeAndEntityId");
 		List<Timing> timings = timingDao.findByEntityTypeAndEntityId(entityType, entityId);
 		return timings.stream().map(e -> convertTimingToTimingRequestDto(e)).collect(Collectors.toList());
 	}

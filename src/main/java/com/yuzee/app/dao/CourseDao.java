@@ -2,7 +2,6 @@ package com.yuzee.app.dao;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseIntake;
@@ -23,7 +22,7 @@ import com.yuzee.app.exception.ValidationException;
 
 public interface CourseDao {
 
-	public void addUpdateCourse(Course obj) throws ValidationException;
+	public Course addUpdateCourse(Course obj) throws ValidationException;
 
 	public Course get(String id);
 
@@ -31,8 +30,6 @@ public interface CourseDao {
 			boolean uniqueCourseName, List<String> entityIds);
 	
 	public List<CourseResponseDto> getAllCoursesByInstitute(String instituteId, CourseSearchDto filterObj);
-
-	public Map<String, Object> getCourse(String courseid);
 
 	public List<CourseResponseDto> getCouresesByFacultyId(String facultyId);
 	

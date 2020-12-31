@@ -144,9 +144,6 @@ public class CourseRequest {
 	@JsonProperty("english_eligibility")
 	private List<CourseEnglishEligibilityDto> englishEligibility = new ArrayList<>();
 	
-	@JsonIgnore
-	private boolean isOffCampusCourse;
-
 	@JsonProperty("examination_board")
 	private String examinationBoard;
 	
@@ -185,6 +182,12 @@ public class CourseRequest {
 	
 	@JsonProperty("rec_date")
 	private Date recDate;
+	
+	@JsonProperty("has_edit_access")
+	private boolean hasEditAccess;
+
+	@JsonProperty("off_campus_course")
+	private OffCampusCourseDto offCampusCourse;
 	
 	@Valid
 	@JsonProperty("course_subjects")

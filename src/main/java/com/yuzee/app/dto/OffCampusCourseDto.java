@@ -1,5 +1,8 @@
 package com.yuzee.app.dto;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -35,4 +38,18 @@ public class OffCampusCourseDto {
 
 	@JsonProperty("state_name")
 	private String stateName;
+	
+	@JsonProperty("postal_code")
+	private String postalCode;
+	
+	@JsonProperty("eligibility")
+	private String eligibility;
+	
+	@JsonProperty("start_date")
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private Date startDate;
+	
+	@JsonProperty("end_date")
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private Date endDate;
 }

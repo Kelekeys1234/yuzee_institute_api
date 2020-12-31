@@ -26,12 +26,12 @@ public class CoursePrerequisiteSubjectDto {
 	
 	@JsonProperty("subject_type")
 	@NotNull(message = "subject_type should not be null")
-	private String subjectType;
+	private String type;
 	
 	public CoursePrerequisiteSubjectDto(String coursePrerequisiteId, String subjectName, Double subjectGrade, String subjectType) {
 		this.coursePrerequisiteId = coursePrerequisiteId;
 		this.subjectName = subjectName;
 		this.subjectGrade = subjectGrade;
-		this.subjectType = subjectType;
+		this.type = subjectType;
 	}
 }

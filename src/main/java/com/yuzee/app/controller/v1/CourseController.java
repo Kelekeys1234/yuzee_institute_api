@@ -29,6 +29,7 @@ import com.yuzee.app.dto.PaginationDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.StorageDto;
+import com.yuzee.app.dto.TimingRequestDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.dto.UserMyCourseDto;
 import com.yuzee.app.endpoint.CourseInterface;
@@ -37,6 +38,7 @@ import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.TransactionTypeEnum;
 import com.yuzee.app.exception.CommonInvokeException;
+import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -51,6 +53,7 @@ import com.yuzee.app.processor.CourseProcessor;
 import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.service.UserRecommendationService;
 import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.app.util.ValidationUtil;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -85,18 +88,26 @@ public class CourseController implements CourseInterface {
 	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
 
-	public ResponseEntity<?> save(final CourseRequest course)
-			throws ValidationException, CommonInvokeException, NotFoundException {
+	public ResponseEntity<?> save(final String userId, final CourseRequest course)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.info("Start process to save new course in DB");
-		String courseId = courseProcessor.saveCourse(course);
+		for (TimingRequestDto timingRequestDto : course.getCourseTimings()) {
+			ValidationUtil.validatEntityType(timingRequestDto.getEntityType());
+			ValidationUtil.validatTimingType(timingRequestDto.getTimingType());
+		}
+		String courseId = courseProcessor.saveCourse(userId, course);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Created successfully").create();
 	}
 
-	public ResponseEntity<?> update(final CourseRequest course, final String id)
-			throws ValidationException, CommonInvokeException, NotFoundException {
+	public ResponseEntity<?> update(final String userId, final CourseRequest course, final String id)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.info("Start process to update existing course in DB");
-		String courseId = courseProcessor.updateCourse(course, id);
+		for (TimingRequestDto timingRequestDto : course.getCourseTimings()) {
+			ValidationUtil.validatEntityType(timingRequestDto.getEntityType());
+			ValidationUtil.validatTimingType(timingRequestDto.getTimingType());
+		}
+		String courseId = courseProcessor.updateCourse(userId, course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Updated successfully").create();
 	}
@@ -209,9 +220,9 @@ public class CourseController implements CourseInterface {
 
 	public ResponseEntity<Object> get(final String userId, final String id) throws Exception {
 		log.info("Start process to get course from DB based on courseId");
-		Map<String, Object> response = courseProcessor.getCourseById(userId, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Courses Displayed successfully").setData(response).create();
+				.setMessage("Courses Displayed successfully")
+				.setData(courseProcessor.getCourseById(userId, id)).create();
 	}
 
 	public ResponseEntity<?> getAllCourseByInstituteID(final String instituteId, final CourseSearchDto request) throws Exception {

@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,11 +17,15 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
+
+import com.yuzee.app.enumeration.CourseTypeEnum;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -166,8 +172,12 @@ public class Course implements Serializable {
 	@Column(name = "entrance_exam")
 	private String entranceExam;
 	
-	@Column(name = "is_off_campus_course")
-	private Boolean isOffCampusCourse = false;	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "course_type")
+	private CourseTypeEnum courseType = CourseTypeEnum.ON_CAMPUS;	
+	
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
+	private OffCampusCourse offCampusCourse;
 	
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
@@ -192,4 +202,16 @@ public class Course implements Serializable {
 
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseSubject> courseSubjects = new ArrayList<>();
+	
+	public void setAuditFields(String userId, Course course) {
+		this.setUpdatedBy(userId);
+		this.setUpdatedOn(new Date());
+		if (course != null && !StringUtils.isEmpty(course.getId())) {
+			this.setCreatedBy(course.getCreatedBy());
+			this.setCreatedOn(course.getCreatedOn());
+		} else {
+			this.setCreatedBy(userId);
+			this.setCreatedOn(new Date());
+		}
+	}
 }

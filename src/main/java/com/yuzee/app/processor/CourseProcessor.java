@@ -38,6 +38,7 @@ import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.GlobalData;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
+import com.yuzee.app.bean.OffCampusCourse;
 import com.yuzee.app.bean.Semester;
 import com.yuzee.app.dao.CourseCareerOutComeDao;
 import com.yuzee.app.dao.CourseCurriculumDao;
@@ -67,16 +68,20 @@ import com.yuzee.app.dto.CourseSubjectDto;
 import com.yuzee.app.dto.CurrencyRateDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.NearestCoursesDto;
+import com.yuzee.app.dto.OffCampusCourseDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.ReviewStarDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.dto.UserViewCourseDto;
+import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.enumeration.CourseTypeEnum;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.TransactionTypeEnum;
 import com.yuzee.app.exception.CommonInvokeException;
+import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -185,7 +190,7 @@ public class CourseProcessor {
 
 	@Autowired
 	private TimingDao timingDao;
-	
+
 	@Value("${max.radius}")
 	private Integer maxRadius;
 	
@@ -256,7 +261,7 @@ public class CourseProcessor {
 				log.info("Fetching courseIntake from DB having courseIds = "+courseIds);
 				List<CourseIntake> courseIntakes = courseDao.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
 				if (!CollectionUtils.isEmpty(courseIntakes)) {
-					log.info("Filtering courseIntakes data based on courseId");
+					log.info("Filtering courseIntakes data based on courseId.");
 					courseResponseDto.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
 				} else {
 					courseResponseDto.setIntake(new ArrayList<>());
@@ -283,10 +288,6 @@ public class CourseProcessor {
 		return courseDao.getAllCoursesByInstitute(instituteId, courseSearchDto);
 	}
 
-	public Map<String, Object> getCourse(final String courseId) {
-		return courseDao.getCourse(courseId);
-	}
-
 	public List<CourseResponseDto> getCouresesByFacultyId(final String facultyId) throws NotFoundException {
 		log.debug("Inside getCouresesByFacultyId() method");
 		log.info("fetching courses from DB for facultyId = "+facultyId);
@@ -310,8 +311,8 @@ public class CourseProcessor {
 		return courseResponseDtos;
 	}
 
-	public Course prepareCourseModelFromCourseRequest(String courseId, @Valid final CourseRequest courseDto)
-			throws ValidationException, CommonInvokeException, NotFoundException {
+	public Course prepareCourseModelFromCourseRequest(String loggedInUserId, String courseId, @Valid final CourseRequest courseDto)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
 		Course course = null;
 		if (StringUtils.isEmpty(courseId)) {
@@ -321,6 +322,10 @@ public class CourseProcessor {
 			if (ObjectUtils.isEmpty(course)) {
 				log.error("invalid course id: {}", courseId);
 				throw new NotFoundException("invalid course id: " + courseId);
+			}
+			if (!course.getCreatedBy().equals(loggedInUserId)) {
+				log.error("User has no access to edit the course with id: {}", courseId);
+				throw new ForbiddenException("User has no access to edit the course with id: "+ courseId);
 			}
 		}
 		log.info("Fetching institute details from DB for instituteId = " + courseDto.getInstituteId());
@@ -335,10 +340,7 @@ public class CourseProcessor {
 			log.info("Fetching level details from DB for levelId = " + courseDto.getLevelId());
 			course.setLevel(levelProcessor.getLevel(courseDto.getLevelId()));
 		}
-		if (!StringUtils.isEmpty(courseDto.getStars())) {
-			log.info("Course stars is present adding it in course bean class");
-			course.setStars(Integer.valueOf(courseDto.getStars()));
-		}
+		
 		if (!StringUtils.isEmpty(courseDto.getWorldRanking())) {
 			log.info("World Ranking is present adding it in course bean class");
 			course.setWorldRanking(Integer.valueOf(courseDto.getWorldRanking()));
@@ -364,11 +366,15 @@ public class CourseProcessor {
 		course.setCurrencyTime(courseDto.getCurrencyTime() != null ? courseDto.getCurrencyTime() : null);
 		course.setCurrency(courseDto.getCurrency() != null ? courseDto.getCurrency() : null);
 		course.setRecognitionType(courseDto.getRecognitionType() != null ? courseDto.getRecognitionType() : null);
-		course.setIsOffCampusCourse(courseDto.isOffCampusCourse());
 		course.setExaminationBoard(courseDto.getExaminationBoard());
-		// Here we convert price in USD and everywhere we used USD price column only.
+		
+		course.setDomesticApplicationFee(courseDto.getDomesticApplicationFee());
+		course.setInternationalApplicationFee(courseDto.getInternationalApplicationFee());
+		course.setDomesticEnrollmentFee(courseDto.getDomesticEnrollmentFee());
+		course.setInternationalEnrollmentFee(courseDto.getInternationalEnrollmentFee());
 		CurrencyRateDto currencyRate = null;
-		if (courseDto.getCurrency() != null) {
+		if (!StringUtils.isEmpty(courseDto.getCurrency())) {
+			// Here we convert price in USD and everywhere we used USD price column only.
 			course.setCurrency(courseDto.getCurrency());
 			log.info("Currency code is not null, hence fetching currencyRate from DB having currencyCode = "
 					+ courseDto.getCurrency());
@@ -377,39 +383,47 @@ public class CourseProcessor {
 				log.error("Invalid currency, no USD conversion exists for this currency");
 				throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
 			}
+			populateCourseUsdPrices(currencyRate, course);	
 		}
-		course.setDomesticApplicationFee(courseDto.getDomesticApplicationFee());
-		course.setInternationalApplicationFee(courseDto.getInternationalApplicationFee());
-		course.setDomesticEnrollmentFee(courseDto.getDomesticEnrollmentFee());
-		course.setInternationalEnrollmentFee(courseDto.getInternationalEnrollmentFee());
+		
 		course.setRecDate(courseDto.getRecDate());
 		course.setContent(courseDto.getContent());
 		course.setGlobalGpa(courseDto.getGlobalGpa());
 		course.setEmail(courseDto.getEmail());
-		populateCourseUsdPrices(currencyRate, course, courseDto);
 		course.setEntranceExam(courseDto.getEntranceExam());
 		
 		
-		// Adding auditing fields in bean class object
-		if (StringUtils.isEmpty(courseId)) {
-			course.setCreatedBy("API");
-			course.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-		}
+		course.setAuditFields(loggedInUserId, course);
 		course.setIsActive(true);
-		course.setUpdatedBy("API");
-		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+		saveUpdateCourseIntakes(loggedInUserId, course, courseDto.getIntake());
+		
+		saveUpdateCourseLanguages(loggedInUserId, course, courseDto.getLanguage());
 
-		saveUpdateCourseIntakes("API", course, courseDto.getIntake());
+		saveUpdateCourseEnglishEligibilities(loggedInUserId, course, courseDto.getEnglishEligibility());
 		
-		saveUpdateCourseLanguages("API", course, courseDto.getLanguage());
-
-		saveUpdateCourseEnglishEligibilities("API", course, courseDto.getEnglishEligibility());
+		saveUpdateCourseDeliveryModes(loggedInUserId, course, currencyRate, courseDto.getCourseDeliveryModes());
 		
-		saveUpdateCourseDeliveryModes("API", course, currencyRate, courseDto.getCourseDeliveryModes());
+		saveUpdateCourseSubjects(loggedInUserId, course, courseDto.getCourseSubjects());
 		
-		saveUpdateCourseSubjects("API", course, courseDto.getCourseSubjects());
+		saveUpdateOffCampusCourse(loggedInUserId, course, courseDto.getOffCampusCourse());
+		
 		return course;
 	}
+	
+	private void saveUpdateOffCampusCourse(String userId, Course course, OffCampusCourseDto offCampusCourseDto) {
+		if (offCampusCourseDto != null) {
+			OffCampusCourse offCampusCourse = course.getOffCampusCourse();
+			if (offCampusCourse == null) {
+				offCampusCourse = new OffCampusCourse();
+			}
+			course.setCourseType(CourseTypeEnum.OFF_CAMPUS);
+			String existingOffCampusCourseId = offCampusCourse.getId();
+			BeanUtils.copyProperties(offCampusCourseDto, offCampusCourse);
+			offCampusCourse.setId(existingOffCampusCourseId);
+			offCampusCourse.setAuditFields(userId, offCampusCourse);
+			course.setOffCampusCourse(offCampusCourse);
+			offCampusCourse.setCourse(course);
+		}	}
 	
 	private void saveUpdateCourseIntakes(String userId, Course course, List<Date> courseIntakeDates)
 			throws ValidationException {
@@ -530,8 +544,7 @@ public class CourseProcessor {
 						if (e.getDomesticFee() != null) {
 							log.info("converting domestic fee into usdDomestic fee having conversionRate = "
 									+ currencyRate.getConversionRate());
-							Double convertedRate = Double.valueOf(e.getDomesticFee())
-									/ currencyRate.getConversionRate();
+							Double convertedRate = e.getDomesticFee() / currencyRate.getConversionRate();
 							if (convertedRate != null) {
 								courseDeliveryMode.setUsdDomesticFee(convertedRate);
 							}
@@ -539,8 +552,7 @@ public class CourseProcessor {
 						if (e.getInternationalFee() != null) {
 							log.info("converting international fee into usdInternational fee having conversionRate = "
 									+ currencyRate.getConversionRate());
-							Double convertedRate = Double.valueOf(e.getInternationalFee())
-									/ currencyRate.getConversionRate();
+							Double convertedRate = e.getInternationalFee() / currencyRate.getConversionRate();
 							if (convertedRate != null) {
 								courseDeliveryMode.setUsdInternationalFee(convertedRate);
 							}
@@ -661,7 +673,7 @@ public class CourseProcessor {
 
 	}
 
-	private void populateCourseUsdPrices(CurrencyRateDto currencyRate, Course course, CourseRequest courseDto) {
+	private void populateCourseUsdPrices(CurrencyRateDto currencyRate, Course course) {
 		
 		if (!ObjectUtils.isEmpty(course.getDomesticApplicationFee())) {
 			Double convertedRate = currencyRate.getConversionRate();
@@ -702,12 +714,12 @@ public class CourseProcessor {
 		}
 	}
 	
-	public String saveCourse(@Valid final CourseRequest courseDto)
-			throws ValidationException, CommonInvokeException, NotFoundException {
+	public String saveCourse(final String loggedInUserId, @Valid final CourseRequest courseDto)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.debug("Inside saveCourse() method");
-		Course course = prepareCourseModelFromCourseRequest(null, courseDto);
+		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, null, courseDto);
 		log.info("Calling DAO layer to save/update course in DB");
-		courseDao.addUpdateCourse(course);
+		course = courseDao.addUpdateCourse(course);
 		log.info("Calling elastic service to add courses on elastic index");
 		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
 				EntityTypeEnum.COURSE.name().toLowerCase(),
@@ -715,14 +727,15 @@ public class CourseProcessor {
 		return course.getId();
 	}
 
-	public String updateCourse(final CourseRequest courseDto, final String id)
-			throws ValidationException, CommonInvokeException, NotFoundException {
+	public String updateCourse(final String loggedInUserId, final CourseRequest courseDto, final String id)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.debug("Inside updateCourse() method");
-		Course course = prepareCourseModelFromCourseRequest(id, courseDto);
+		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, id, courseDto);
+		course = courseDao.addUpdateCourse(course);
 		log.info("Calling elastic service to update courses on elastic index having entityId: ", id);
-		elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
-				EntityTypeEnum.COURSE.name().toLowerCase(),
-				Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
+//		elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
+//				EntityTypeEnum.COURSE.name().toLowerCase(),
+//				Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
 		return course.getId();
 	}
 
@@ -1646,9 +1659,12 @@ public class CourseProcessor {
 			log.error("Course not found for courseId = "+id);
 			throw new NotFoundException("Course not found for courseId = "+id);
 		}
+		
 		log.info("Course fetched from data start copying bean class data to DTO class");
 		CourseRequest courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
-		
+		if (course.getCreatedBy().equals(userId)) {
+			courseRequest.setHasEditAccess(true);
+		}
 		Map<String, ReviewStarDto> yuzeeReviewMap = null;
 			log.info(
 					"Calling review service to fetch user average review based on instituteID  to calculate average review");
@@ -1662,21 +1678,32 @@ public class CourseProcessor {
 		}
 		
 		log.info("Fetching courseIntake for courseId = "+id);
-		courseRequest.setIntake(getCourseIntakeBasedOnCourseId(id).stream()
+		courseRequest.setIntake(course.getCourseIntakes().stream()
 				.map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
 		
 		log.info("Fetching courseLanguage for courseId = "+id);
-		courseRequest.setLanguage(getCourseLanguageBasedOnCourseId(id).stream()
+		courseRequest.setLanguage(course.getCourseLanguages().stream()
 				.map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 		
 		log.info("Fetching courseDeliveryModes for courseId = "+id);
-		courseRequest.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(id));
+		courseRequest.setCourseDeliveryModes(course.getCourseDeliveryModes().stream().map(e->modelMapper.map(e,CourseDeliveryModesDto.class)).collect(Collectors.toList()));
 		
 		log.info("Fetching coursePrerequisites for courseId = "+id);
 		courseRequest.setPrerequisiteSubjects(coursePrerequisiteProcessor.getCoursePrerequisiteSubjectsByCourseId(id));
 		
 		log.info("Fetching courseEnglish Eligibility from DB based on courseId = "+id);
-		courseRequest.setEnglishEligibility(courseEnglishEligibilityProcessor.getAllEnglishEligibilityByCourse(id));
+		courseRequest.setEnglishEligibility(course.getCourseEnglishEligibilities().stream().map(e->modelMapper.map(e,CourseEnglishEligibilityDto.class)).collect(Collectors.toList()));
+		
+		if (course.getOffCampusCourse() != null) {
+			courseRequest.setOffCampusCourse(modelMapper.map(course.getOffCampusCourse(), OffCampusCourseDto.class));
+		}
+		courseRequest.setCourseTimings(new ValidList<>(timingProcessor.getTimingRequestDtoByEntityTypeAndEntityId(EntityTypeEnum.COURSE, course.getId())));
+		
+		courseRequest.setCourseSubjects(new ValidList<>(course.getCourseSubjects().stream().map(e->modelMapper.map(e,CourseSubjectDto.class)).collect(Collectors.toList())));
+		
+		log.info("Calling Storage Service to fetch institute images");
+		List<StorageDto> storageDTOList = storageHandler.getStorages(Arrays.asList(course.getId()), EntityTypeEnum.COURSE, Arrays.asList(EntitySubTypeEnum.LOGO,EntitySubTypeEnum.COVER_PHOTO));
+		courseRequest.setStorageList(storageDTOList);
 		
 		log.info("Fetching institute data from DB having instututeId = "+courseRequest.getInstituteId());
 		Institute instituteObj = instituteProcessor.get(courseRequest.getInstituteId());
@@ -1691,10 +1718,7 @@ public class CourseProcessor {
 			if(!CollectionUtils.isEmpty(accrediatedInstituteDetailsFromDB)) {
 				instituteResponseDto.setAccrediatedDetail(accrediatedInstituteDetailsFromDB);
 			}
-			log.info("Calling Storage Service to fetch institute images");
-			List<StorageDto> storageDTOList = storageHandler.getStorages(instituteObj.getId(), EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES);
-			courseRequest.setWorldRanking(String.valueOf(instituteObj.getWorldRanking()));
-			courseRequest.setStorageList(storageDTOList);
+			
 		}
 		
 		log.info("Fetching accrediated details for course from DB having courseId = "+course.getId());

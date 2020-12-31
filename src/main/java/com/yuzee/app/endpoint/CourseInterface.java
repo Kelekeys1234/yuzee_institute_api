@@ -22,6 +22,7 @@ import com.yuzee.app.dto.CourseMobileDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.exception.CommonInvokeException;
+import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -30,12 +31,14 @@ import com.yuzee.app.exception.ValidationException;
 public interface CourseInterface {
 
 	@PostMapping
-	public ResponseEntity<?> save(@Valid @RequestBody final CourseRequest course)
-			throws ValidationException, CommonInvokeException, NotFoundException;
+	public ResponseEntity<?> save(@RequestHeader(required = true) final String userId,
+			@Valid @RequestBody final CourseRequest course)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@RequestBody final CourseRequest course, @PathVariable final String id)
-			throws ValidationException, CommonInvokeException, NotFoundException;
+	public ResponseEntity<?> update(@RequestHeader(required = true) final String userId,
+			@RequestBody final CourseRequest course, @PathVariable final String id)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception;

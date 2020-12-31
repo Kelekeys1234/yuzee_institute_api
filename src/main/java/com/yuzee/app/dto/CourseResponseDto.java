@@ -104,6 +104,18 @@ public class CourseResponseDto {
 	@JsonProperty("course_description")
 	private String courseDescription;
 	
+	@JsonProperty("phone_number")
+	private String phoneNumber;
+	
+	@JsonProperty("email")
+	private String email;
+	
+	@JsonProperty("website")
+	private String website;
+	
 	@JsonProperty("course_timings")
 	private List<TimingRequestDto> courseTimings = new ArrayList<>();
+	
+	@JsonProperty("off_campus_course")
+	private OffCampusCourseDto offCampusCourse;
 }

@@ -40,6 +40,7 @@ import com.yuzee.app.dto.FacilityDto;
 import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.LatLongDto;
+import com.yuzee.app.dto.OffCampusCourseDto;
 import com.yuzee.app.dto.TimingResponseDto;
 import com.yuzee.app.dto.TodoDto;
 
@@ -88,9 +89,7 @@ public class CommonUtil {
 	public static CourseRequest convertCourseDtoToCourseRequest(final Course course) {
 		CourseRequest courseRequest = new CourseRequest();
 		courseRequest.setId(course.getId());
-		if (course.getStars() != null) {
-			courseRequest.setStars(String.valueOf(course.getStars()));
-		}
+		
 		if (course.getWorldRanking() != null) {
 			courseRequest.setWorldRanking(String.valueOf(course.getWorldRanking()));
 		}
@@ -112,6 +111,30 @@ public class CommonUtil {
 		if (course.getLevel() != null) {
 			courseRequest.setLevelId(course.getLevel().getId());
 		}
+		
+		
+		courseRequest.setRemarks(course.getRemarks());
+		courseRequest.setWebsite(course.getWebsite());
+		courseRequest.setPhoneNumber(course.getPhoneNumber());
+		courseRequest.setAvailability(course.getAvailabilty());
+		courseRequest.setRecognition(course.getRecognition());
+		courseRequest.setAbbreviation(course.getAbbreviation());
+		courseRequest.setCurrencyTime(course.getCurrencyTime());
+		courseRequest.setCurrency(course.getCurrency());
+		courseRequest.setRecognitionType(course.getRecognitionType());
+		courseRequest.setExaminationBoard(course.getExaminationBoard());
+		
+		courseRequest.setDomesticApplicationFee(course.getDomesticApplicationFee());
+		courseRequest.setInternationalApplicationFee(course.getInternationalApplicationFee());
+		courseRequest.setDomesticEnrollmentFee(course.getDomesticEnrollmentFee());
+		courseRequest.setInternationalEnrollmentFee(course.getInternationalEnrollmentFee());
+		
+		courseRequest.setRecDate(course.getRecDate());
+		courseRequest.setContent(course.getContent());
+		courseRequest.setGlobalGpa(course.getGlobalGpa());
+		courseRequest.setEmail(course.getEmail());
+		courseRequest.setEntranceExam(course.getEntranceExam());
+		
 		return courseRequest;
 	}
 

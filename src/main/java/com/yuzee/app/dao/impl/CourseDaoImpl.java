@@ -5,9 +5,7 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,7 +43,6 @@ import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.CourseSearchFilterDto;
 import com.yuzee.app.dto.CurrencyRateDto;
 import com.yuzee.app.dto.GlobalFilterSearchDto;
-import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.enumeration.CourseSortBy;
 import com.yuzee.app.exception.CommonInvokeException;
@@ -78,9 +75,9 @@ public class CourseDaoImpl implements CourseDao {
 	Function<String,String> addQuotes =  s -> "\'" + s + "\'";
 
 	@Override
-	public void addUpdateCourse(final Course course) throws ValidationException {
+	public Course addUpdateCourse(final Course course) throws ValidationException {
 		try {
-			courseRepository.save(course);
+			return courseRepository.save(course);
 		}
 		catch(DataIntegrityViolationException ex) {
 			log.error(ex.getMessage());
@@ -576,68 +573,6 @@ public class CourseDaoImpl implements CourseDao {
 			list.add(obj);
 		}
 		return obj;
-	}
-
-	@Override
-	public Map<String, Object> getCourse(final String courseId) {
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createSQLQuery(
-				"select crs.id as course_id,crs.stars as course_stars,crs.name as course_name,crs.language as course_language,crs.description as course_description,"
-						+ "crs.duration as course_duration,crs.duration_time as course_duration_time,crs.world_ranking as world_ranking,ins.id as institute_id,"
-						+ "ins.name as institute_name,ins.email as institute_email,ins.phone_number as institute_phone_number,"
-						+ "ins.longitute as longitude,ins.latitute as latitute,ins.total_student as ins_total_student,ins.website as ins_website,"
-						+ "ins.address as ins_address, crs.currency,crs.cost_range,crs.international_fee,crs.domestic_fee,cty.name as city_name,cntry.name as country_name,"
-						+ "fty.name as faulty_name,le.id as level_id,le.name as level_name,cty.id as city_id,cntry.id as country_id,ins.about_us_info as about_us,"
-						+ "ins.closing_hour as closing_hour,ins.opening_hour as opening_hour,cj.available_jobs as available_job,cd.student_visa_link as student_visa_link,crs.remarks,crs.intake from course crs "
-						+ "left join institute ins  on ins.id = crs.institute_id left join country cntry  on cntry.id = inst.country_id left join city cty "
-						+ "on cty.id = inst.city_id left join faculty fty  on fty.id = crs.faculty_id "
-						+ "left join level le  on crs.level_id = le.id left join city_jobs cj on cty.id=cj.city_id "
-						+ "left join country_details cd on cd.country_id=cntry.id where crs.id = " + courseId);
-
-		List<Object[]> rows = query.list();
-		InstituteResponseDto instituteObj = null;
-		CourseDto courseObj = null;
-		Map<String, Object> map = new HashMap<>();
-		for (Object[] row : rows) {
-			courseObj = new CourseDto();
-			courseObj.setStars(String.valueOf(row[1]));
-			courseObj.setName(String.valueOf(row[2]));
-			courseObj.setDescription(String.valueOf(row[4]));
-			courseObj.setWorldRanking(String.valueOf(row[7]));
-			courseObj.setFacultyName(String.valueOf(row[23]));
-			if (row[24] != null) {
-				courseObj.setLevelId(String.valueOf(row[24]));
-			}
-			courseObj.setLevelName(String.valueOf(row[25]));
-			courseObj.setRemarks(String.valueOf(row[33]));
-
-			instituteObj = new InstituteResponseDto();
-			if (row[8] != null) {
-				instituteObj.setId(String.valueOf(row[8]));
-			}
-			instituteObj.setName(String.valueOf(row[9]));
-			if (row[7] != null) {
-				instituteObj.setWorldRanking(Integer.valueOf(String.valueOf(row[7])));
-			}
-			instituteObj.setEmail(String.valueOf(row[10]));
-			instituteObj.setPhoneNumber(String.valueOf(row[11]));
-			instituteObj.setLongitude(Double.valueOf(String.valueOf(row[12])));
-			instituteObj.setLatitude(Double.valueOf(String.valueOf(row[13])));
-			if (row[14] != null) {
-				instituteObj.setTotalStudent(Integer.parseInt(String.valueOf(row[14])));
-			}
-			instituteObj.setWebsite(String.valueOf(row[15]));
-			instituteObj.setAddress(String.valueOf(row[16]));
-			instituteObj.setVisaRequirement(String.valueOf(row[32]));
-			instituteObj.setAboutUs(String.valueOf(row[28]));
-			instituteObj.setLocation(String.valueOf(row[21]) + "," + String.valueOf(row[22]));
-			instituteObj.setCountryName(String.valueOf(row[22]));
-			instituteObj.setCityName(String.valueOf(row[21]));
-			instituteObj.setTotalAvailableJobs(String.valueOf(row[31]));
-			map.put("courseObj", courseObj);
-			map.put("instituteObj", instituteObj);
-		}
-		return map;
 	}
 
 	// This is not recommended 
