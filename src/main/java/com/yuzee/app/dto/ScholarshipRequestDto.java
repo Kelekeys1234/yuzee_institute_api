@@ -18,4 +18,8 @@ public class ScholarshipRequestDto extends ScholarshipDto {
 	@NotBlank(message = "institute_id should not be blank")
 	private String instituteId;
 
+	@JsonProperty("faculty_id")
+	@NotBlank(message = "institute_id should not be blank")
+	private String facultyId;
+
 }

@@ -17,12 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.bean.ScholarshipEligibleNationality;
 import com.yuzee.app.bean.ScholarshipIntake;
 import com.yuzee.app.bean.ScholarshipLanguage;
+import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dao.ScholarshipDao;
@@ -58,6 +60,9 @@ public class ScholarshipProcessor {
 	private LevelDao levelDAO;
 
 	@Autowired
+	private FacultyDao facultyDAO;
+
+	@Autowired
 	private ElasticHandler elasticHandler;
 
 	@Autowired
@@ -86,6 +91,16 @@ public class ScholarshipProcessor {
 				throw new ValidationException("Level not found for id: " + scholarshipDto.getLevelId());
 			}
 			scholarship.setLevel(level);
+		}
+
+		if (scholarshipDto.getFacultyId() != null) {
+			log.info("faculty_id is not null, hence fetching faculty data from DB");
+			Faculty faculty = facultyDAO.get(scholarshipDto.getFacultyId());
+			if (faculty == null) {
+				log.error("Faculty not found for id: {}", scholarshipDto.getLevelId());
+				throw new ValidationException("Faculty not found for id: " + scholarshipDto.getLevelId());
+			}
+			scholarship.setFaculty(faculty);
 		}
 
 		if (!ObjectUtils.isEmpty(scholarshipDto.getInstituteId())) {

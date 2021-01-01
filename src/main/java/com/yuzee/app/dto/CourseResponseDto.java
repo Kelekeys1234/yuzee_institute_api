@@ -35,6 +35,9 @@ public class CourseResponseDto {
 	@NotBlank(message = "institute_id should not be blank")
 	private String instituteId;
 
+	@JsonProperty("level_id")
+	private String levelId;
+
 	@JsonProperty("institute_name")
 	@NotBlank(message = "institute_name should not be blank")
 	private String instituteName;

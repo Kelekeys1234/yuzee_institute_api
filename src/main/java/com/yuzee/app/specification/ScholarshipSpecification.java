@@ -42,7 +42,8 @@ public class ScholarshipSpecification {
 				}
 
 				if (!StringUtils.isEmpty(searchKeyword)) {
-					predicates.add(criteriaBuilder.like(root.get(Scholarship_.name), "%" + searchKeyword + "%"));
+					predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.<String>get(Scholarship_.name)),
+							"%" + searchKeyword.toLowerCase() + "%"));
 				}
 
 				return criteriaBuilder.and(predicates.toArray(new Predicate[] {}));

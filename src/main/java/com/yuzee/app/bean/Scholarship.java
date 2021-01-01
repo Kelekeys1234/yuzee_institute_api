@@ -56,6 +56,10 @@ public class Scholarship implements Serializable {
 	@JoinColumn(name = "level_id", nullable = false)
 	private Level level;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "faculty_id", nullable = false)
+	private Faculty faculty;
+
 	@Column(name = "number_of_avaliability")
 	private Integer numberOfAvaliability;
 
