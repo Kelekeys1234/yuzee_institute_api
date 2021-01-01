@@ -44,9 +44,6 @@ public class OffCampusCourse implements Serializable {
 	@Column(name = "material_fee")
 	private Double materialFee;
 
-	@Column(name = "eligibility", columnDefinition = "TEXT")
-	private String eligibility;
-	
 	@Column(name = "address", columnDefinition = "TEXT")
 	private String address;	
 

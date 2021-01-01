@@ -147,7 +147,7 @@ public class CourseDaoImpl implements CourseDao {
 				+ " crs.currency, cai.duration, cai.duration_time, crs.world_ranking, crs.stars, crs.recognition,"
 				+ " cai.domestic_fee, cai.international_fee, crs.remarks, cai.usd_domestic_fee, cai.usd_international_fee,"
 				+ " crs.updated_on, crs.is_active ,inst.latitude as latitude,inst.longitude as longitute,inst.country_name as countryName,"
-				+ " inst.city_name as cityName, cai.delivery_type, cai.study_mode from course crs inner join institute inst  on crs.institute_id = inst.id "
+				+ " inst.city_name as cityName, cai.delivery_type, cai.study_mode,crs.level_id as levelId, crs.faculty_id as facultyId from course crs inner join institute inst  on crs.institute_id = inst.id "
 				+ " left join course_delivery_modes cai on cai.course_id = crs.id"
 				+ " where 1=1 and crs.is_active=1";
 
@@ -321,6 +321,8 @@ public class CourseDaoImpl implements CourseDao {
 				additionalInfoDto.setInternationalFee(CommonUtil.foundOff2Digit(Double.valueOf(row[14].toString())));
 				additionalInfoDtos.add(additionalInfoDto);
 				courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
+				courseResponseDto.setLevelId(row[23].toString());
+				courseResponseDto.setFacultyId(row[24].toString());
 				list.add(courseResponseDto);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -673,7 +675,7 @@ public class CourseDaoImpl implements CourseDao {
 				obj.setWorldRanking(row[16].toString());
 			}
 			if (row[17] != null) {
-				obj.setStars(row[17].toString());
+				obj.setStars(Double.valueOf(row[17].toString()));
 			}
 			if (row[18] != null) {
 				obj.setRequirements(row[18].toString());

@@ -42,9 +42,6 @@ public class OffCampusCourseDto {
 	@JsonProperty("postal_code")
 	private String postalCode;
 	
-	@JsonProperty("eligibility")
-	private String eligibility;
-	
 	@JsonProperty("start_date")
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date startDate;

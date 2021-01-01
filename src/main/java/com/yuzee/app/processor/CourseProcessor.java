@@ -1667,14 +1667,30 @@ public class CourseProcessor {
 		}
 		Map<String, ReviewStarDto> yuzeeReviewMap = null;
 			log.info(
-					"Calling review service to fetch user average review based on instituteID  to calculate average review");
-			yuzeeReviewMap = reviewHandler.getAverageReview("COURSE",
+					"Calling review service to fetch user average review based on courseID  to calculate average review");
+			yuzeeReviewMap = reviewHandler.getAverageReview(EntityTypeEnum.COURSE.name(),
 					Arrays.asList(courseRequest.getId()));
-
+			
+			courseRequest
+					.setStars(calculateAverageRating(yuzeeReviewMap, courseRequest.getStars(), courseRequest.getId()));
+			
+			ReviewStarDto reviewStarDto = yuzeeReviewMap.get(courseRequest.getId());
+			if (!ObjectUtils.isEmpty(reviewStarDto)) {
+				courseRequest.setReviewsCount(reviewStarDto.getReviewsCount());
+			}
+			
 			if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
 			log.info("Calculating average review based on instituteGoogleReview and userReview and stars");
-			courseRequest.setStars(String.valueOf(calculateAverageRating(yuzeeReviewMap,
-					Double.valueOf(courseRequest.getStars()), courseRequest.getId())));
+			
+			
+		}
+		
+		UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(
+				userId, EntityTypeEnum.COURSE.name(), courseRequest.getId(), TransactionTypeEnum.FAVORITE.name());
+		if (!ObjectUtils.isEmpty(userViewCourseDto)) {
+			courseRequest.setFavoriteCourse(true);
+		} else {
+			courseRequest.setFavoriteCourse(false);
 		}
 		
 		log.info("Fetching courseIntake for courseId = "+id);

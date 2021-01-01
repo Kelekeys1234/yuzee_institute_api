@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString
 public class CourseRequest {
 
-	@JsonProperty("id")
+	@JsonProperty("course_id")
 	private String id;
 
 	@JsonProperty("institute_id")
@@ -65,7 +65,7 @@ public class CourseRequest {
 	private String worldRanking;
 
 	@JsonProperty("stars")
-	private String stars;
+	private Double stars;
 
 	@JsonProperty("cost")
 	private String cost;
@@ -128,7 +128,7 @@ public class CourseRequest {
 
 	@JsonProperty("storage_list")
 	private List<StorageDto> storageList = new ArrayList<>();
-	
+
 	@JsonProperty("user_review_result")
 	private List<UserReviewResultDto> userReviewResult = new ArrayList<>();
 
@@ -137,16 +137,16 @@ public class CourseRequest {
 
 	@JsonProperty("course_delivery_modes")
 	private List<CourseDeliveryModesDto> courseDeliveryModes = new ArrayList<>();
-	
+
 	@JsonProperty("course_prerequisite_subjects")
 	private List<CoursePrerequisiteSubjectDto> prerequisiteSubjects = new ArrayList<>();
-	
+
 	@JsonProperty("english_eligibility")
 	private List<CourseEnglishEligibilityDto> englishEligibility = new ArrayList<>();
-	
+
 	@JsonProperty("examination_board")
 	private String examinationBoard;
-	
+
 	@JsonProperty("domestic_application_fee")
 	private double domesticApplicationFee;
 
@@ -167,28 +167,34 @@ public class CourseRequest {
 
 	@JsonProperty("entrance_exam")
 	private String entranceExam;
-	
+
 	@JsonProperty("phone_number")
 	private String phoneNumber;
-	
+
 	@JsonProperty("global_gpa")
 	private Double globalGpa;
-	
+
 	@JsonProperty("content")
 	private String content;
-	
+
 	@JsonProperty("email")
 	private String email;
-	
+
 	@JsonProperty("rec_date")
 	private Date recDate;
-	
+
 	@JsonProperty("has_edit_access")
-	private boolean hasEditAccess;
+	private Boolean hasEditAccess;
+
+	@JsonProperty("favorite_course")
+	private Boolean favoriteCourse;
+
+	@JsonProperty("reviews_count")
+	private Long reviewsCount;
 
 	@JsonProperty("off_campus_course")
 	private OffCampusCourseDto offCampusCourse;
-	
+
 	@Valid
 	@JsonProperty("course_subjects")
 	private ValidList<CourseSubjectDto> courseSubjects = new ValidList<>();
