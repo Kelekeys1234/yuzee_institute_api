@@ -714,12 +714,14 @@ public class CourseProcessor {
 		}
 	}
 	
+	@Transactional(noRollbackFor = Throwable.class)
 	public String saveCourse(final String loggedInUserId, @Valid final CourseRequest courseDto)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.debug("Inside saveCourse() method");
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, null, courseDto);
 		log.info("Calling DAO layer to save/update course in DB");
 		course = courseDao.addUpdateCourse(course);
+		timingProcessor.saveUpdateTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
 		log.info("Calling elastic service to add courses on elastic index");
 		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
 				EntityTypeEnum.COURSE.name().toLowerCase(),
@@ -727,11 +729,13 @@ public class CourseProcessor {
 		return course.getId();
 	}
 
+	@Transactional(noRollbackFor = Throwable.class)
 	public String updateCourse(final String loggedInUserId, final CourseRequest courseDto, final String id)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.debug("Inside updateCourse() method");
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, id, courseDto);
 		course = courseDao.addUpdateCourse(course);
+		timingProcessor.saveUpdateTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
 		log.info("Calling elastic service to update courses on elastic index having entityId: ", id);
 //		elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
 //				EntityTypeEnum.COURSE.name().toLowerCase(),

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -197,9 +198,11 @@ public class CourseRequest {
 
 	@Valid
 	@JsonProperty("course_subjects")
+	@NotNull(message = "course_subjects must not be null")
 	private ValidList<CourseSubjectDto> courseSubjects = new ValidList<>();
 
 	@Valid
 	@JsonProperty("course_timings")
+	@NotNull(message = "course_timings must not be null")
 	private ValidList<TimingRequestDto> courseTimings = new ValidList<>();
 }

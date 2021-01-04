@@ -450,7 +450,7 @@ public class CommonUtil {
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getTuesday()) && !instituteTimingResponseDto.getTuesday().equalsIgnoreCase("CLOSED")) {
 			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Tuesday");
-			String time[] = instituteTimingResponseDto.getMonday().split("-");
+			String time[] = instituteTimingResponseDto.getTuesday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
 			dayTimingDtos.add(instituteTimingDto);
