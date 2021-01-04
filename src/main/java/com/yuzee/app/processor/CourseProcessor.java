@@ -737,9 +737,9 @@ public class CourseProcessor {
 		course = courseDao.addUpdateCourse(course);
 		timingProcessor.saveUpdateTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
 		log.info("Calling elastic service to update courses on elastic index having entityId: ", id);
-//		elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
-//				EntityTypeEnum.COURSE.name().toLowerCase(),
-//				Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
+		elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
+				EntityTypeEnum.COURSE.name().toLowerCase(),
+				Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
 		return course.getId();
 	}
 
