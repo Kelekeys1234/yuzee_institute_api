@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import com.yuzee.app.bean.Careers;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCareerOutcome;
 import com.yuzee.app.bean.CourseCurriculum;
@@ -40,6 +41,7 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.bean.OffCampusCourse;
 import com.yuzee.app.bean.Semester;
+import com.yuzee.app.dao.CareerDao;
 import com.yuzee.app.dao.CourseCareerOutComeDao;
 import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.dao.CourseDao;
@@ -52,6 +54,7 @@ import com.yuzee.app.dao.SemesterDao;
 import com.yuzee.app.dao.TimingDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
+import com.yuzee.app.dto.CourseCareerOutcomeDto;
 import com.yuzee.app.dto.CourseCountDto;
 import com.yuzee.app.dto.CourseDTOElasticSearch;
 import com.yuzee.app.dto.CourseDeliveryModesDto;
@@ -184,6 +187,9 @@ public class CourseProcessor {
 
 	@Autowired
 	private SemesterDao semesterDao;
+
+	@Autowired
+	private CareerDao careerDao;
 
 	@Autowired
 	private TimingProcessor timingProcessor;
@@ -404,6 +410,8 @@ public class CourseProcessor {
 		saveUpdateCourseDeliveryModes(loggedInUserId, course, currencyRate, courseDto.getCourseDeliveryModes());
 		
 		saveUpdateCourseSubjects(loggedInUserId, course, courseDto.getCourseSubjects());
+
+		saveUpdateCourseCareerOutcomes(loggedInUserId, course, courseDto.getCourseCareerOutcomes());
 		
 		saveUpdateOffCampusCourse(loggedInUserId, course, courseDto.getOffCampusCourse());
 		
@@ -627,6 +635,56 @@ public class CourseProcessor {
 
 			} else {
 				courseSubjects.clear();
+			}
+		} catch (RuntimeException e) {
+			log.error(e.getMessage());
+			throw new ValidationException(e.getMessage());
+		}
+	}
+
+	private void saveUpdateCourseCareerOutcomes(String loggedInUserId, Course course,
+			List<CourseCareerOutcomeDto> courseCareerOutcomeDtos) throws ValidationException {
+		try {
+			List<CourseCareerOutcome> courseCareerOutcomes = course.getCourseCareerOutcomes();
+			if (!CollectionUtils.isEmpty(courseCareerOutcomeDtos)) {
+
+				log.info("Creating the list to save/update course career outcomes in DB");
+				Set<String> careerIds = courseCareerOutcomeDtos.stream().map(CourseCareerOutcomeDto::getCareerId)
+						.collect(Collectors.toSet());
+				Map<String, Careers> careersMap = careerDao.findByIdIn(new ArrayList<>(careerIds)).stream()
+						.collect(Collectors.toMap(Careers::getId, e -> e));
+				if (careersMap.size() != careerIds.size()) {
+					throw new ValidationException("one or more career ids are invalid");
+				}
+
+				Set<String> updateRequestIds = courseCareerOutcomeDtos.stream()
+						.filter(e -> !StringUtils.isEmpty(e.getId())).map(CourseCareerOutcomeDto::getId)
+						.collect(Collectors.toSet());
+				courseCareerOutcomes.removeIf(e -> !updateRequestIds.contains(e.getId()));
+
+				Map<String, CourseCareerOutcome> existingCourseCareerOutcomesMap = courseCareerOutcomes.stream()
+						.collect(Collectors.toMap(CourseCareerOutcome::getId, e -> e));
+				courseCareerOutcomeDtos.stream().forEach(e -> {
+					CourseCareerOutcome courseCareerOutcome = new CourseCareerOutcome();
+					if (!StringUtils.isEmpty(e.getId())) {
+						courseCareerOutcome = existingCourseCareerOutcomesMap.get(e.getId());
+						if (courseCareerOutcome == null) {
+							log.error("invalid course career outcome id : {}", e.getId());
+							throw new RuntimeException("invalid course career outcome id : " + e.getId());
+						}
+					}
+					courseCareerOutcome.setCareer(careersMap.get(e.getCareerId()));
+					courseCareerOutcome.setCourse(course);
+					if (StringUtils.isEmpty(courseCareerOutcome.getId())) {
+						courseCareerOutcome.setAuditFields(loggedInUserId, null);
+						courseCareerOutcomes.add(courseCareerOutcome);
+					} else {
+						courseCareerOutcome.setAuditFields(loggedInUserId, courseCareerOutcome);
+					}
+				});
+
+			} else {
+				courseCareerOutcomes.clear();
 			}
 		} catch (RuntimeException e) {
 			log.error(e.getMessage());

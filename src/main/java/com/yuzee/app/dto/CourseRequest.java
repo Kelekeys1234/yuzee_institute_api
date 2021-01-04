@@ -205,4 +205,9 @@ public class CourseRequest {
 	@JsonProperty("course_timings")
 	@NotNull(message = "course_timings must not be null")
 	private ValidList<TimingRequestDto> courseTimings = new ValidList<>();
+
+	@Valid
+	@JsonProperty("course_career_outcomes")
+	@NotNull(message = "course_career_outcomes must not be null")
+	private ValidList<CourseCareerOutcomeDto> courseCareerOutcomes = new ValidList<>();
 }

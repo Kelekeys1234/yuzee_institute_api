@@ -19,16 +19,10 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @Entity
-@ToString
-@EqualsAndHashCode
-@NoArgsConstructor
-@Table(name = "course_career_outcome", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "career_outcome" }, 
+@Table(name = "course_career_outcome", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "career_id" }, 
 	   	 name = "UK_CO_COURSE_ID"), indexes = {@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false)})
 public class CourseCareerOutcome implements Serializable {
 
@@ -40,8 +34,9 @@ public class CourseCareerOutcome implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
-	@Column(name = "career_outcome", nullable = false)
-	private String careerOutcome;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "career_id")
+	private Careers career;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "course_id", nullable = false)
@@ -60,4 +55,16 @@ public class CourseCareerOutcome implements Serializable {
 
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
+	
+	public void setAuditFields(String userId, CourseCareerOutcome existingCourseCareerOutcome) {
+		this.setUpdatedBy(userId);
+		this.setUpdatedOn(new Date());
+		if (existingCourseCareerOutcome != null) {
+			this.setCreatedBy(existingCourseCareerOutcome.getCreatedBy());
+			this.setCreatedOn(existingCourseCareerOutcome.getCreatedOn());
+		} else {
+			this.setCreatedBy(userId);
+			this.setCreatedOn(new Date());
+		}
+	}
 }
