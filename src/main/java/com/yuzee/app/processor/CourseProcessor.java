@@ -223,7 +223,7 @@ public class CourseProcessor {
 				log.info("Invoking viewTransaction service to fetched view course by user");
 				try {
 					UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(
-							courseSearchDto.getUserId(), EntityTypeEnum.COURSE.name(), courseResponseDto.getId(), TransactionTypeEnum.VIEWED_COURSE.name());
+							courseSearchDto.getUserId(), EntityTypeEnum.COURSE.name(), courseResponseDto.getId(), TransactionTypeEnum.VIEW.name());
 					if(!ObjectUtils.isEmpty(userViewCourseDto)) {
 						log.info("User view course data is coming for courseId = " + courseResponseDto.getId() + " ,hence marking course as viewed");
 						courseResponseDto.setIsViewed(true);
@@ -838,7 +838,7 @@ public class CourseProcessor {
 				}
 				
 				UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
-						EntityTypeEnum.COURSE.name(), courseResponseDto.getId(), TransactionTypeEnum.VIEWED_COURSE.name());
+						EntityTypeEnum.COURSE.name(), courseResponseDto.getId(), TransactionTypeEnum.VIEW.name());
 				if(!ObjectUtils.isEmpty(userViewCourseDto)) {
 					courseResponseDto.setIsViewed(true);
 				} else {
