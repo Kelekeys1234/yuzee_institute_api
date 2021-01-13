@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -87,7 +88,11 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public Course get(final String courseId) {
-		return courseRepository.findById(courseId).get();
+		Optional<Course> optionalCourse = courseRepository.findById(courseId);
+		if (optionalCourse.isPresent()) {
+			return optionalCourse.get();	
+		}
+		return null;
 	}
 
 	@Override
