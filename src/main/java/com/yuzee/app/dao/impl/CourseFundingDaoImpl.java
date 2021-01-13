@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yuzee.app.bean.CourseFunding;
 import com.yuzee.app.dao.CourseFundingDao;
@@ -28,6 +29,17 @@ public class CourseFundingDaoImpl implements CourseFundingDao {
 			log.error("one or more course funding already exists");
 			throw new ValidationException("one or more course funding already exists");
 		}
+	}
+
+	@Override
+	public List<CourseFunding> findByCourseIdFundingNameIdIn(String courseId, List<String> fundingNameIds) {
+		return courseFundingRepository.findByCourseIdAndFundingNameIdIn(courseId, fundingNameIds);
+	}
+
+	@Transactional
+	@Override
+	public void deleteByFundingNameIdIn(List<String> fundingNameIds) {
+		courseFundingRepository.deleteByfundingNameIdIn(fundingNameIds);
 	}
 
 }
