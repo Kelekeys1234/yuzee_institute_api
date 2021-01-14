@@ -23,8 +23,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "course_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "name",
-		"course_id" }, name = "UK_NA"), indexes = {
+@Table(name = "course_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "course_id",
+		"semester_id" }, name = "UK_NA_S"), indexes = {
 				@Index(name = "IDX_COURSE", columnList = "course_id", unique = false) })
 public class CourseSubject implements Serializable {
 
