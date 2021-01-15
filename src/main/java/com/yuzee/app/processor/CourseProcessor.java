@@ -1317,10 +1317,6 @@ public class CourseProcessor {
 	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(final String courseId) {
 		return courseDao.getCourseLanguageBasedOnCourseId(courseId);
 	}
-	
-	public List<CourseCareerOutcome> getCourseCareerOutComeBasedOnCourseId(final String courseId) {
-		return courseCareerOutComeDao.getCourseCareerOutcome(courseId);
-	}
 
 	public List<CourseResponseDto> getCourseNoResultRecommendation(final String userCountry, final String facultyId, final String countryId,
 			final Integer startIndex, final Integer pageSize) throws ValidationException, InvokeException, NotFoundException {
