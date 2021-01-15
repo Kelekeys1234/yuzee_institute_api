@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseDeliveryModesDto;
+import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.endpoint.CourseDeliveryModeInterface;
 import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.ForbiddenException;
@@ -27,7 +28,7 @@ public class CourseDeliveryModeController implements CourseDeliveryModeInterface
 
 	@Override
 	public ResponseEntity<?> saveUpdateCourseDeliveryMode(String userId, String courseId,
-			@Valid List<CourseDeliveryModesDto> courseDeliveryModeDtos)
+			@Valid ValidList<CourseDeliveryModesDto> courseDeliveryModeDtos)
 			throws ValidationException, NotFoundException, InternalServerException, CommonInvokeException {
 		courseDeliveryModeProcessor.saveUpdateCourseDeliveryModes(userId, courseId, courseDeliveryModeDtos);
 		return new GenericResponseHandlers.Builder().setMessage("Course DeliveryMode added/ updated successfully.")

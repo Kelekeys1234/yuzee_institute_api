@@ -46,7 +46,6 @@ import com.yuzee.app.bean.OffCampusCourse;
 import com.yuzee.app.bean.Semester;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CareerDao;
-import com.yuzee.app.dao.CourseCareerOutComeDao;
 import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseMinRequirementDao;
@@ -181,9 +180,6 @@ public class CourseProcessor {
 	
 	@Autowired
 	private CoursePrerequisiteProcessor coursePrerequisiteProcessor;
-	
-	@Autowired
-	private CourseCareerOutComeDao courseCareerOutComeDao;
 	
 	@Autowired
 	private ModelMapper modelMapper;

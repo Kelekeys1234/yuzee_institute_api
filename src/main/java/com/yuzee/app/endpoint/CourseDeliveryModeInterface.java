@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.CourseDeliveryModesDto;
+import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InternalServerException;
@@ -27,7 +28,7 @@ public interface CourseDeliveryModeInterface {
 	@PostMapping("/courseId/{courseId}")
 	public ResponseEntity<?> saveUpdateCourseDeliveryMode(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final List<CourseDeliveryModesDto> courseDeliveryModeDtos)
+			@Valid @RequestBody(required = true) final ValidList<CourseDeliveryModesDto> courseDeliveryModeDtos)
 			throws ValidationException, NotFoundException, InternalServerException, CommonInvokeException;
 
 	@DeleteMapping

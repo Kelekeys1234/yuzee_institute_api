@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseEnglishEligibilityDto;
+import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.endpoint.CourseEnglishEligibilityInterface;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
@@ -25,7 +26,7 @@ public class CourseEnglishEligibilityController implements CourseEnglishEligibil
 
 	@Override
 	public ResponseEntity<?> saveUpdateCourseEnglishEligibility(String userId, String courseId,
-			@Valid List<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos)
+			@Valid ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos)
 			throws ValidationException, NotFoundException {
 		courseEnglishEligibilityProcessor.saveUpdateCourseEnglishEligibilities(userId, courseId,
 				courseEnglishEligibilityDtos);

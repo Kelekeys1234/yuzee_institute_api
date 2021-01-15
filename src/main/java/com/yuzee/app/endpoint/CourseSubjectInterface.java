@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.CourseSubjectDto;
+import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -25,7 +26,7 @@ public interface CourseSubjectInterface {
 	@PostMapping("/courseId/{courseId}")
 	public ResponseEntity<?> saveUpdateCourseSubjects(@RequestHeader(value = "userId", required = true) final String userId,
 			@PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final List<CourseSubjectDto> courseSubjectDtos)
+			@Valid @RequestBody(required = true) final ValidList<CourseSubjectDto> courseSubjectDtos)
 			throws ValidationException, NotFoundException;
 
 	@DeleteMapping

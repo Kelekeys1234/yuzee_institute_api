@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseFundingDto;
+import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.endpoint.CourseFundingInterface;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
@@ -33,7 +34,7 @@ public class CourseFundingController implements CourseFundingInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> saveAll(String userId, String courseId, @Valid List<CourseFundingDto> courseFundingDtos)
+	public ResponseEntity<?> saveAll(String userId, String courseId, @Valid ValidList<CourseFundingDto> courseFundingDtos)
 			throws ValidationException, NotFoundException {
 		courseFundingProcessor.saveCourseFundings(userId, courseId, courseFundingDtos);
 		return new GenericResponseHandlers.Builder().setMessage("Course Fundings added successfully.")

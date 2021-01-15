@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseSubjectDto;
+import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.endpoint.CourseSubjectInterface;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
@@ -25,7 +26,7 @@ public class CourseSubjectController implements CourseSubjectInterface {
 
 	@Override
 	public ResponseEntity<?> saveUpdateCourseSubjects(String userId, String courseId,
-			@Valid List<CourseSubjectDto> courseSubjectDtos) throws ValidationException, NotFoundException {
+			@Valid ValidList<CourseSubjectDto> courseSubjectDtos) throws ValidationException, NotFoundException {
 		courseSubjectProcessor.saveUpdateCourseSubjects(userId, courseId, courseSubjectDtos);
 		return new GenericResponseHandlers.Builder().setMessage("Course Subject added/ updated successfully.")
 				.setStatus(HttpStatus.OK).create();
