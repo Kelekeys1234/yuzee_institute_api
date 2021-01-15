@@ -11,9 +11,7 @@ import com.yuzee.app.bean.CourseEnglishEligibility;
 public interface CourseEnglishEligibilityRepository extends JpaRepository<CourseEnglishEligibility, String> {
 
 	public List<CourseEnglishEligibility> findByCourseIdAndIsActive(String courseId, Boolean isActive);
-	
-	public List<CourseEnglishEligibility> findByCourseId(String courseId);
 
-	public void deleteByCourseId(String courseId);
-	
+	void deleteByIdIn(List<String> ids);
+
 }

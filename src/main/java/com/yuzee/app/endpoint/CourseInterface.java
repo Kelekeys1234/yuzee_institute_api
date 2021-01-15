@@ -171,8 +171,4 @@ public interface CourseInterface {
 	
 	@GetMapping("/count/{instituteId}")
 	public ResponseEntity<?> getCourseCountByInstituteId(@PathVariable String instituteId) throws ValidationException;
-	
-	@Deprecated
-	@GetMapping(value = "/eligibility/update")
-	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception;
 }
