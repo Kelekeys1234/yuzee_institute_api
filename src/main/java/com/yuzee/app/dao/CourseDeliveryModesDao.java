@@ -3,12 +3,15 @@ package com.yuzee.app.dao;
 import java.util.List;
 
 import com.yuzee.app.bean.CourseDeliveryModes;
+import com.yuzee.app.exception.ValidationException;
 
 public interface CourseDeliveryModesDao {
 
-	public void saveCourseDeliveryModes(CourseDeliveryModes courseDeliveryModes);
-	
-	public void deleteCourseDeliveryModes(String courseDeliveryModeId);
-	
+	List<CourseDeliveryModes> saveAll(List<CourseDeliveryModes> courseDeliveryModes) throws ValidationException;
+
 	public List<CourseDeliveryModes> getCourseDeliveryModesByCourseId(String courseId);
+
+	void deleteByIdIn(List<String> ids);
+
+	List<CourseDeliveryModes> findByIdIn(List<String> ids);
 }
