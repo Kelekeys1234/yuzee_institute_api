@@ -19,7 +19,6 @@ import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.StorageHandler;
 
 import lombok.extern.apachecommons.CommonsLog;

@@ -56,7 +56,6 @@ public class TimingProcessor {
 			final String closed = "CLOSED";
 			for (TimingRequestDto courseTimingRequestDto : timingRequestDtos) {
 				Timing timing = new Timing();
-				timing.setAuditFields(loggedInUserId, null);
 				if (!StringUtils.isEmpty(courseTimingRequestDto.getId())) {
 					timing = dbTimingsMap.get(courseTimingRequestDto.getId());
 					if (timing == null) {
@@ -64,7 +63,7 @@ public class TimingProcessor {
 						throw new NotFoundException("invalid timing found against");
 					}
 				}
-				timing.setAuditFields(loggedInUserId, timing);
+				timing.setAuditFields(loggedInUserId);
 				timing.setEntityId(entityId);
 				timing.setEntityType(EntityTypeEnum.valueOf(courseTimingRequestDto.getEntityType()));
 				timing.setTimingType(TimingType.valueOf(courseTimingRequestDto.getTimingType()));

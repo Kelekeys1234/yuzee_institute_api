@@ -85,13 +85,10 @@ public class OffCampusCourse implements Serializable {
 	@JoinColumn(name = "course_id")
 	private Course course;
 
-	public void setAuditFields(String userId, OffCampusCourse offCampusCourse) {
+	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (offCampusCourse != null && !StringUtils.isEmpty(offCampusCourse.getId())) {
-			this.setCreatedBy(offCampusCourse.getCreatedBy());
-			this.setCreatedOn(offCampusCourse.getCreatedOn());
-		} else {
+		if (StringUtils.isEmpty(id)) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
 		}

@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
@@ -56,13 +57,10 @@ public class CourseIntake {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 	
-	public void setAuditFields(String userId, CourseIntake existingCourseIntake) {
+	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (existingCourseIntake != null) {
-			this.setCreatedBy(existingCourseIntake.getCreatedBy());
-			this.setCreatedOn(existingCourseIntake.getCreatedOn());
-		}else {
+		if (StringUtils.isEmpty(id)) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
 		}

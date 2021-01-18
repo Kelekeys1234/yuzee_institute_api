@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
@@ -49,13 +50,10 @@ public class Semester implements Serializable {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
-	public void setAuditFields(String userId, Semester existingSemester) {
+	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (existingSemester != null) {
-			this.setCreatedBy(existingSemester.getCreatedBy());
-			this.setCreatedOn(existingSemester.getCreatedOn());
-		} else {
+		if (StringUtils.isEmpty(id)) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
 		}

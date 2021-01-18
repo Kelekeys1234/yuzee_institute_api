@@ -28,11 +28,6 @@ public class OffCampusCourseDaoImpl implements OffCampusCourseDao {
 	}
 
 	@Override
-	public void deleteById(String offCampusCourseId) {
-		offCampusCourseRepository.deleteById(offCampusCourseId);
-	}
-
-	@Override
 	public Page<OffCampusCourse> getOffCampusCoursesByInstituteId(String instituteId, Pageable pageable) {
 		return offCampusCourseRepository.findByCourseInstituteId(instituteId, pageable);
 	}

@@ -3,10 +3,14 @@ package com.yuzee.app.util;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
+import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.StudentCategory;
 import com.yuzee.app.enumeration.TimingType;
+import com.yuzee.app.exception.RuntimeValidationException;
 import com.yuzee.app.exception.ValidationException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +46,19 @@ public class ValidationUtil {
 			throw new ValidationException(
 					"timing_type must be in one of the following: " + CommonUtil.getEnumNames(TimingType.class));
 
+		}
+	}
+	
+	public static void validateTimingDtoFromCourseRequest(CourseRequest courseRequest) {
+		if (!ObjectUtils.isEmpty(courseRequest) && !CollectionUtils.isEmpty(courseRequest.getCourseTimings())) {
+			courseRequest.getCourseTimings().forEach(e -> {
+				try {
+					ValidationUtil.validatEntityType(e.getEntityType());
+					ValidationUtil.validatTimingType(e.getTimingType());
+				} catch (ValidationException e1) {
+					throw new RuntimeValidationException(e1);
+				}
+			});
 		}
 	}
 }

@@ -12,7 +12,5 @@ public interface OffCampusCourseDao {
 
 	public Optional<OffCampusCourse> getById(String offCampusCourseId);
 
-	public void deleteById(String offCampusCourseId);
-
 	public Page<OffCampusCourse> getOffCampusCoursesByInstituteId(String instituteId, Pageable pageable);
 }

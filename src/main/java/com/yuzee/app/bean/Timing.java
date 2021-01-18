@@ -14,6 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.yuzee.app.enumeration.EntityTypeEnum;
@@ -84,13 +85,10 @@ public class Timing {
 	@Column(name = "updated_by")
 	private String updatedBy;
 	
-	public void setAuditFields(String userId, Timing existingTiming) {
+	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (existingTiming != null) {
-			this.setCreatedBy(existingTiming.getCreatedBy());
-			this.setCreatedOn(existingTiming.getCreatedOn());
-		} else {
+		if (StringUtils.isEmpty(id)) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
 		}

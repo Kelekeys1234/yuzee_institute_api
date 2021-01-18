@@ -36,7 +36,7 @@ public class SemesterProcessor {
 		log.debug("inside SemesterProcessor.saveAllSemesters method");
 		List<Semester> semesters = semesterDtos.stream().map(e -> modelMapper.map(e, Semester.class))
 				.collect(Collectors.toList());
-		semesters.stream().forEach(e -> e.setAuditFields(userId, null));
+		semesters.stream().forEach(e -> e.setAuditFields(userId));
 		return semesterDao.saveAll(semesters).stream().map(e -> modelMapper.map(e, SemesterDto.class))
 				.collect(Collectors.toList());
 	}
@@ -47,7 +47,7 @@ public class SemesterProcessor {
 		Semester semester = getSemester(semesterId);
 		validateAccess(userId, semester);
 		semester.setName(semesterDto.getName());
-		semester.setAuditFields(userId, semester);
+		semester.setAuditFields(userId);
 		return modelMapper.map(semesterDao.save(semester), SemesterDto.class);
 	}
 

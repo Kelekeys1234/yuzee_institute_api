@@ -1,7 +1,6 @@
 package com.yuzee.app.endpoint;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

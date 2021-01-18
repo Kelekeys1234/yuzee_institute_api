@@ -1,7 +1,6 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
@@ -61,13 +61,10 @@ public class CourseSubject implements Serializable {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
-	public void setAuditFields(String userId, CourseSubject existingCourseSubject) {
+	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (existingCourseSubject != null) {
-			this.setCreatedBy(existingCourseSubject.getCreatedBy());
-			this.setCreatedOn(existingCourseSubject.getCreatedOn());
-		} else {
+		if (StringUtils.isEmpty(id)) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
 		}

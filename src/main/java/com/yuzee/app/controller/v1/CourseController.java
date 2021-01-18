@@ -29,7 +29,6 @@ import com.yuzee.app.dto.PaginationDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.dto.TimingRequestDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.dto.UserMyCourseDto;
 import com.yuzee.app.endpoint.CourseInterface;
@@ -91,10 +90,7 @@ public class CourseController implements CourseInterface {
 	public ResponseEntity<?> save(final String userId, final CourseRequest course)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.info("Start process to save new course in DB");
-		for (TimingRequestDto timingRequestDto : course.getCourseTimings()) {
-			ValidationUtil.validatEntityType(timingRequestDto.getEntityType());
-			ValidationUtil.validatTimingType(timingRequestDto.getTimingType());
-		}
+		ValidationUtil.validateTimingDtoFromCourseRequest(course);
 		String courseId = courseProcessor.saveCourse(userId, course);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Created successfully").create();
@@ -103,10 +99,7 @@ public class CourseController implements CourseInterface {
 	public ResponseEntity<?> update(final String userId, final CourseRequest course, final String id)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.info("Start process to update existing course in DB");
-		for (TimingRequestDto timingRequestDto : course.getCourseTimings()) {
-			ValidationUtil.validatEntityType(timingRequestDto.getEntityType());
-			ValidationUtil.validatTimingType(timingRequestDto.getTimingType());
-		}
+		ValidationUtil.validateTimingDtoFromCourseRequest(course);
 		String courseId = courseProcessor.updateCourse(userId, course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Updated successfully").create();

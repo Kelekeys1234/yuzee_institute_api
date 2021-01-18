@@ -82,7 +82,7 @@ public class ScholarshipProcessor {
 		}
 		BeanUtils.copyProperties(scholarshipDto, scholarship);
 		scholarship.setId(existingScholarshipId);
-		scholarship.setAuditFields(userId, StringUtils.isEmpty(existingScholarshipId) ? null : scholarship);
+		scholarship.setAuditFields(userId);
 		if (scholarshipDto.getLevelId() != null) {
 			log.info("LevelId is not nll, hence fetching level data from DB");
 			Level level = levelDAO.getLevel(scholarshipDto.getLevelId());

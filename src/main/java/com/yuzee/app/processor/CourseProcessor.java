@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -87,6 +88,7 @@ import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.exception.RuntimeNotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.CommonHandler;
 import com.yuzee.app.handler.ElasticHandler;
@@ -399,7 +401,7 @@ public class CourseProcessor {
 		course.setEntranceExam(courseDto.getEntranceExam());
 		
 		
-		course.setAuditFields(loggedInUserId, course);
+		course.setAuditFields(loggedInUserId);
 		course.setIsActive(true);
 		saveUpdateCourseIntakes(loggedInUserId, course, courseDto.getIntake());
 		
@@ -419,22 +421,26 @@ public class CourseProcessor {
 	}
 	
 	private void saveUpdateOffCampusCourse(String userId, Course course, OffCampusCourseDto offCampusCourseDto) {
-		if (offCampusCourseDto != null) {
+		log.info("inside courseProcessor.saveUpdateOffCampusCourse");
+		if (!ObjectUtils.isEmpty(offCampusCourseDto)) {
 			OffCampusCourse offCampusCourse = course.getOffCampusCourse();
-			if (offCampusCourse == null) {
+			if (ObjectUtils.isEmpty(offCampusCourse)) {
 				offCampusCourse = new OffCampusCourse();
 			}
 			course.setCourseType(CourseTypeEnum.OFF_CAMPUS);
 			String existingOffCampusCourseId = offCampusCourse.getId();
 			BeanUtils.copyProperties(offCampusCourseDto, offCampusCourse);
 			offCampusCourse.setId(existingOffCampusCourseId);
-			offCampusCourse.setAuditFields(userId, offCampusCourse);
+			offCampusCourse.setAuditFields(userId);
 			course.setOffCampusCourse(offCampusCourse);
+			course.setCode(UUID.randomUUID().toString());
 			offCampusCourse.setCourse(course);
-		}	}
+		}
+	}
 	
 	private void saveUpdateCourseIntakes(String userId, Course course, List<Date> courseIntakeDates)
 			throws ValidationException {
+		log.info("inside courseProcessor.saveUpdateCourseIntakes");
 		List<CourseIntake> dbIntakes = course.getCourseIntakes();
 		Map<Date, CourseIntake> dbIntakeByDate = dbIntakes.stream()
 				.collect(Collectors.toMap(CourseIntake::getIntakeDates, e -> e));
@@ -444,11 +450,11 @@ public class CourseProcessor {
 			courseIntakeDates.stream().forEach(intake -> {
 
 				CourseIntake courseIntake = dbIntakeByDate.get(intake);
-				if (courseIntake == null) {
+				if (ObjectUtils.isEmpty(courseIntake)) {
 					courseIntake = new CourseIntake();
 				}
 				courseIntake.setIntakeDates(intake);
-				courseIntake.setAuditFields(userId, StringUtils.isEmpty(courseIntake.getId()) ? null : courseIntake);
+				courseIntake.setAuditFields(userId);
 				courseIntake.setCourse(course);
 				if (StringUtils.isEmpty(courseIntake.getId())) {
 					dbIntakes.add(courseIntake);
@@ -463,6 +469,7 @@ public class CourseProcessor {
 
 	private void saveUpdateCourseLanguages(String userId, Course course, List<String> courseLanguages)
 			throws ValidationException {
+		log.info("inside courseProcessor.saveUpdateCourseLanguages");
 		List<CourseLanguage> dbLanguages = course.getCourseLanguages();
 		if (!CollectionUtils.isEmpty(courseLanguages)) {
 			log.info("Course languages is not null, start iterating data");
@@ -475,8 +482,7 @@ public class CourseProcessor {
 					courseLanguage = new CourseLanguage();
 				}
 				courseLanguage.setLanguage(language);
-				courseLanguage.setAuditFields(userId,
-						StringUtils.isEmpty(courseLanguage.getId()) ? null : courseLanguage);
+				courseLanguage.setAuditFields(userId);
 				courseLanguage.setCourse(course);
 				if (StringUtils.isEmpty(courseLanguage.getId())) {
 					dbLanguages.add(courseLanguage);
@@ -491,209 +497,186 @@ public class CourseProcessor {
 
 	private void saveUpdateCourseEnglishEligibilities(String loggedInUserId, Course course,
 			List<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos) throws ValidationException {
-		try {
-			List<CourseEnglishEligibility> dbEnglishEligibilities = course.getCourseEnglishEligibilities();
-			if (!CollectionUtils.isEmpty(courseEnglishEligibilityDtos)) {
+		log.info("inside courseProcessor.saveUpdateCourseEnglishEligibilities");
+		List<CourseEnglishEligibility> dbEnglishEligibilities = course.getCourseEnglishEligibilities();
+		if (!CollectionUtils.isEmpty(courseEnglishEligibilityDtos)) {
 
-				log.info("Creating the list to save/update course subjects in DB");
-				dbEnglishEligibilities.removeIf(e -> courseEnglishEligibilityDtos.stream()
-						.noneMatch(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())));
+			log.info("Creating the list to save/update course subjects in DB");
+			dbEnglishEligibilities.removeIf(e -> courseEnglishEligibilityDtos.stream()
+					.noneMatch(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())));
 
-				courseEnglishEligibilityDtos.stream().forEach(e -> {
-					Optional<CourseEnglishEligibility> existingCousrseEnglishEligibilityOp = dbEnglishEligibilities
-							.stream().filter(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())).findAny();
-					CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-					String existingId = null;
-					if (existingCousrseEnglishEligibilityOp.isPresent()) {
-						courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
-						existingId = courseEnglishEligibility.getId();
-					}
-					BeanUtils.copyProperties(e, courseEnglishEligibility);
-					courseEnglishEligibility.setId(existingId);
-					courseEnglishEligibility.setCourse(course);
-					if (StringUtils.isEmpty(courseEnglishEligibility.getId())) {
-						courseEnglishEligibility.setAuditFields(loggedInUserId, null);
-						dbEnglishEligibilities.add(courseEnglishEligibility);
-					} else {
-						courseEnglishEligibility.setAuditFields(loggedInUserId, courseEnglishEligibility);
-					}
-				});
+			courseEnglishEligibilityDtos.stream().forEach(e -> {
+				Optional<CourseEnglishEligibility> existingCousrseEnglishEligibilityOp = dbEnglishEligibilities.stream()
+						.filter(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())).findAny();
+				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
+				String existingId = null;
+				if (existingCousrseEnglishEligibilityOp.isPresent()) {
+					courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
+					existingId = courseEnglishEligibility.getId();
+				}
+				BeanUtils.copyProperties(e, courseEnglishEligibility);
+				courseEnglishEligibility.setId(existingId);
+				courseEnglishEligibility.setCourse(course);
+				if (StringUtils.isEmpty(courseEnglishEligibility.getId())) {
+					dbEnglishEligibilities.add(courseEnglishEligibility);
+				}
+				courseEnglishEligibility.setAuditFields(loggedInUserId);
+			});
 
-			} else {
-				dbEnglishEligibilities.clear();
-			}
-		} catch (RuntimeException e) {
-			log.error(e.getMessage());
-			throw new ValidationException(e.getMessage());
+		} else {
+			dbEnglishEligibilities.clear();
 		}
 	}
 
 	private void saveUpdateCourseDeliveryModes(String loggedInUserId, Course course, CurrencyRateDto currencyRate,
 			List<CourseDeliveryModesDto> courseDeliveryModeDtos) throws ValidationException {
-		try {
-			List<CourseDeliveryModes> dbCourseDeliveryModes = course.getCourseDeliveryModes();
-			if (!CollectionUtils.isEmpty(courseDeliveryModeDtos) && !ObjectUtils.isEmpty(currencyRate)) {
+		log.info("inside courseProcessor.saveUpdateCourseDeliveryModes");
+		List<CourseDeliveryModes> dbCourseDeliveryModes = course.getCourseDeliveryModes();
+		if (!CollectionUtils.isEmpty(courseDeliveryModeDtos) && !ObjectUtils.isEmpty(currencyRate)) {
 
-				log.info("Creating the list to save/update course subjects in DB");
-				dbCourseDeliveryModes.removeIf(e -> courseDeliveryModeDtos.stream()
-						.noneMatch(t -> e.getStudyMode().equalsIgnoreCase(t.getStudyMode())
-								&& e.getDeliveryType().equalsIgnoreCase(t.getDeliveryType())));
+			log.info("Creating the list to save/update course subjects in DB");
+			dbCourseDeliveryModes.removeIf(e -> courseDeliveryModeDtos.stream()
+					.noneMatch(t -> e.getStudyMode().equalsIgnoreCase(t.getStudyMode())
+							&& e.getDeliveryType().equalsIgnoreCase(t.getDeliveryType())));
 
-				courseDeliveryModeDtos.stream().forEach(e -> {
-					Optional<CourseDeliveryModes> existingCourseDeliveryModeOp = dbCourseDeliveryModes.stream()
-							.filter(t -> t.getStudyMode().equalsIgnoreCase(e.getStudyMode())
-									&& t.getDeliveryType().equalsIgnoreCase(e.getDeliveryType()))
-							.findAny();
-					CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
-					if (existingCourseDeliveryModeOp.isPresent()) {
-						courseDeliveryMode = existingCourseDeliveryModeOp.get();
-					}
-					if (course.getCurrency() != null) {
-						if (e.getDomesticFee() != null) {
-							log.info("converting domestic fee into usdDomestic fee having conversionRate = "
-									+ currencyRate.getConversionRate());
-							Double convertedRate = e.getDomesticFee() / currencyRate.getConversionRate();
-							if (convertedRate != null) {
-								courseDeliveryMode.setUsdDomesticFee(convertedRate);
-							}
-						}
-						if (e.getInternationalFee() != null) {
-							log.info("converting international fee into usdInternational fee having conversionRate = "
-									+ currencyRate.getConversionRate());
-							Double convertedRate = e.getInternationalFee() / currencyRate.getConversionRate();
-							if (convertedRate != null) {
-								courseDeliveryMode.setUsdInternationalFee(convertedRate);
-							}
+			courseDeliveryModeDtos.stream().forEach(e -> {
+				Optional<CourseDeliveryModes> existingCourseDeliveryModeOp = dbCourseDeliveryModes.stream()
+						.filter(t -> t.getStudyMode().equalsIgnoreCase(e.getStudyMode())
+								&& t.getDeliveryType().equalsIgnoreCase(e.getDeliveryType()))
+						.findAny();
+				CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
+				if (existingCourseDeliveryModeOp.isPresent()) {
+					courseDeliveryMode = existingCourseDeliveryModeOp.get();
+				}
+				if (course.getCurrency() != null) {
+					if (e.getDomesticFee() != null) {
+						log.info("converting domestic fee into usdDomestic fee having conversionRate = "
+								+ currencyRate.getConversionRate());
+						Double convertedRate = e.getDomesticFee() / currencyRate.getConversionRate();
+						if (convertedRate != null) {
+							courseDeliveryMode.setUsdDomesticFee(convertedRate);
 						}
 					}
-					courseDeliveryMode.setCourse(course);
-					log.info("Adding additional infos like deliveryType, studyMode etc");
-					courseDeliveryMode.setDeliveryType(e.getDeliveryType());
-					courseDeliveryMode.setDomesticFee(e.getDomesticFee());
-					courseDeliveryMode.setInternationalFee(e.getInternationalFee());
-					courseDeliveryMode.setStudyMode(e.getStudyMode());
-					courseDeliveryMode.setDuration(e.getDuration());
-					courseDeliveryMode.setDurationTime(e.getDurationTime());
-					courseDeliveryMode.setCourse(course);
-					if (StringUtils.isEmpty(courseDeliveryMode.getId())) {
-						courseDeliveryMode.setAuditFields(loggedInUserId, null);
-						dbCourseDeliveryModes.add(courseDeliveryMode);
-					} else {
-						courseDeliveryMode.setAuditFields(loggedInUserId, courseDeliveryMode);
+					if (e.getInternationalFee() != null) {
+						log.info("converting international fee into usdInternational fee having conversionRate = "
+								+ currencyRate.getConversionRate());
+						Double convertedRate = e.getInternationalFee() / currencyRate.getConversionRate();
+						if (convertedRate != null) {
+							courseDeliveryMode.setUsdInternationalFee(convertedRate);
+						}
 					}
-				});
+				}
+				courseDeliveryMode.setCourse(course);
+				log.info("Adding additional infos like deliveryType, studyMode etc");
+				courseDeliveryMode.setDeliveryType(e.getDeliveryType());
+				courseDeliveryMode.setDomesticFee(e.getDomesticFee());
+				courseDeliveryMode.setInternationalFee(e.getInternationalFee());
+				courseDeliveryMode.setStudyMode(e.getStudyMode());
+				courseDeliveryMode.setDuration(e.getDuration());
+				courseDeliveryMode.setDurationTime(e.getDurationTime());
+				courseDeliveryMode.setCourse(course);
+				if (StringUtils.isEmpty(courseDeliveryMode.getId())) {
+					dbCourseDeliveryModes.add(courseDeliveryMode);
+				}
+				courseDeliveryMode.setAuditFields(loggedInUserId);
+			});
 
-			} else {
-				dbCourseDeliveryModes.clear();
-			}
-		} catch (RuntimeException e) {
-			log.error(e.getMessage());
-			throw new ValidationException(e.getMessage());
+		} else {
+			dbCourseDeliveryModes.clear();
 		}
 	}
 
-	private void saveUpdateCourseSubjects(String loggedInUserId, Course course, List<CourseSubjectDto> courseSubjectDtos)
-			throws ValidationException {
-		try {
-			List<CourseSubject> courseSubjects = course.getCourseSubjects();
-			if (!CollectionUtils.isEmpty(courseSubjectDtos)) {
+	private void saveUpdateCourseSubjects(String loggedInUserId, Course course,
+			List<CourseSubjectDto> courseSubjectDtos) throws ValidationException {
+		log.info("inside courseProcessor.saveUpdateCourseSubjects");
+		List<CourseSubject> courseSubjects = course.getCourseSubjects();
+		if (!CollectionUtils.isEmpty(courseSubjectDtos)) {
 
-				log.info("Creating the list to save/update course subjects in DB");
-				Set<String> semesterIds = courseSubjectDtos.stream().map(CourseSubjectDto::getSemesterId)
-						.collect(Collectors.toSet());
-				Map<String, Semester> semestersMap = semesterDao.findByIdIn(new ArrayList<>(semesterIds)).stream()
-						.collect(Collectors.toMap(Semester::getId, e -> e));
-				if (semestersMap.size() != semesterIds.size()) {
-					throw new ValidationException("one or more semester ids are invalid");
-				}
-				
-				Set<String> updateRequestIds = courseSubjectDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
-						.map(CourseSubjectDto::getId).collect(Collectors.toSet());
-				courseSubjects.removeIf(e -> !updateRequestIds.contains(e.getId()));
-
-				Map<String, CourseSubject> existingCourseSubjectsMap = courseSubjects.stream()
-						.collect(Collectors.toMap(CourseSubject::getId, e -> e));
-				courseSubjectDtos.stream().forEach(e -> {
-					CourseSubject courseSubject = new CourseSubject();
-					if (!StringUtils.isEmpty(e.getId())) {
-						courseSubject = existingCourseSubjectsMap.get(e.getId());
-						if (courseSubject == null) {
-							log.error("invalid course subject id : {}", e.getId());
-							throw new RuntimeException("invalid course subject id : " + e.getId());
-						}
-					}
-					BeanUtils.copyProperties(e, courseSubject);
-					courseSubject.setSemester(semestersMap.get(e.getSemesterId()));
-					courseSubject.setCourse(course);
-					if (StringUtils.isEmpty(courseSubject.getId())) {
-						courseSubject.setAuditFields(loggedInUserId, null);
-						courseSubjects.add(courseSubject);
-					} else {
-						courseSubject.setAuditFields(loggedInUserId, courseSubject);
-					}
-				});
-
-			} else {
-				courseSubjects.clear();
+			log.info("Creating the list to save/update course subjects in DB");
+			Set<String> semesterIds = courseSubjectDtos.stream().map(CourseSubjectDto::getSemesterId)
+					.collect(Collectors.toSet());
+			Map<String, Semester> semestersMap = semesterDao.findByIdIn(new ArrayList<>(semesterIds)).stream()
+					.collect(Collectors.toMap(Semester::getId, e -> e));
+			if (semestersMap.size() != semesterIds.size()) {
+				log.error("one or more semester ids are invalid");
+				throw new ValidationException("one or more semester ids are invalid");
 			}
-		} catch (RuntimeException e) {
-			log.error(e.getMessage());
-			throw new ValidationException(e.getMessage());
+
+			Set<String> updateRequestIds = courseSubjectDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
+					.map(CourseSubjectDto::getId).collect(Collectors.toSet());
+			courseSubjects.removeIf(e -> !updateRequestIds.contains(e.getId()));
+
+			Map<String, CourseSubject> existingCourseSubjectsMap = courseSubjects.stream()
+					.collect(Collectors.toMap(CourseSubject::getId, e -> e));
+			courseSubjectDtos.stream().forEach(e -> {
+				CourseSubject courseSubject = new CourseSubject();
+				if (!StringUtils.isEmpty(e.getId())) {
+					courseSubject = existingCourseSubjectsMap.get(e.getId());
+					if (courseSubject == null) {
+						log.error("invalid course subject id : {}", e.getId());
+						throw new RuntimeNotFoundException("invalid course subject id : " + e.getId());
+					}
+				}
+				BeanUtils.copyProperties(e, courseSubject);
+				courseSubject.setSemester(semestersMap.get(e.getSemesterId()));
+				courseSubject.setCourse(course);
+				if (StringUtils.isEmpty(courseSubject.getId())) {
+					courseSubjects.add(courseSubject);
+				}
+				courseSubject.setAuditFields(loggedInUserId);
+			});
+
+		} else {
+			courseSubjects.clear();
 		}
 	}
 
 	private void saveUpdateCourseCareerOutcomes(String loggedInUserId, Course course,
 			List<CourseCareerOutcomeDto> courseCareerOutcomeDtos) throws ValidationException {
-		try {
-			List<CourseCareerOutcome> courseCareerOutcomes = course.getCourseCareerOutcomes();
-			if (!CollectionUtils.isEmpty(courseCareerOutcomeDtos)) {
+		log.info("inside courseProcessor.saveUpdateCourseCareerOutcomes");
+		List<CourseCareerOutcome> courseCareerOutcomes = course.getCourseCareerOutcomes();
+		if (!CollectionUtils.isEmpty(courseCareerOutcomeDtos)) {
 
-				log.info("Creating the list to save/update course career outcomes in DB");
-				Set<String> careerIds = courseCareerOutcomeDtos.stream().map(CourseCareerOutcomeDto::getCareerId)
-						.collect(Collectors.toSet());
-				Map<String, Careers> careersMap = careerDao.findByIdIn(new ArrayList<>(careerIds)).stream()
-						.collect(Collectors.toMap(Careers::getId, e -> e));
-				if (careersMap.size() != careerIds.size()) {
-					throw new ValidationException("one or more career ids are invalid");
-				}
-
-				Set<String> updateRequestIds = courseCareerOutcomeDtos.stream()
-						.filter(e -> !StringUtils.isEmpty(e.getId())).map(CourseCareerOutcomeDto::getId)
-						.collect(Collectors.toSet());
-				courseCareerOutcomes.removeIf(e -> !updateRequestIds.contains(e.getId()));
-
-				Map<String, CourseCareerOutcome> existingCourseCareerOutcomesMap = courseCareerOutcomes.stream()
-						.collect(Collectors.toMap(CourseCareerOutcome::getId, e -> e));
-				courseCareerOutcomeDtos.stream().forEach(e -> {
-					CourseCareerOutcome courseCareerOutcome = new CourseCareerOutcome();
-					if (!StringUtils.isEmpty(e.getId())) {
-						courseCareerOutcome = existingCourseCareerOutcomesMap.get(e.getId());
-						if (courseCareerOutcome == null) {
-							log.error("invalid course career outcome id : {}", e.getId());
-							throw new RuntimeException("invalid course career outcome id : " + e.getId());
-						}
-					}
-					courseCareerOutcome.setCareer(careersMap.get(e.getCareerId()));
-					courseCareerOutcome.setCourse(course);
-					if (StringUtils.isEmpty(courseCareerOutcome.getId())) {
-						courseCareerOutcome.setAuditFields(loggedInUserId, null);
-						courseCareerOutcomes.add(courseCareerOutcome);
-					} else {
-						courseCareerOutcome.setAuditFields(loggedInUserId, courseCareerOutcome);
-					}
-				});
-
-			} else {
-				courseCareerOutcomes.clear();
+			log.info("Creating the list to save/update course career outcomes in DB");
+			Set<String> careerIds = courseCareerOutcomeDtos.stream().map(CourseCareerOutcomeDto::getCareerId)
+					.collect(Collectors.toSet());
+			Map<String, Careers> careersMap = careerDao.findByIdIn(new ArrayList<>(careerIds)).stream()
+					.collect(Collectors.toMap(Careers::getId, e -> e));
+			if (careersMap.size() != careerIds.size()) {
+				throw new ValidationException("one or more career ids are invalid");
 			}
-		} catch (RuntimeException e) {
-			log.error(e.getMessage());
-			throw new ValidationException(e.getMessage());
+
+			Set<String> updateRequestIds = courseCareerOutcomeDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
+					.map(CourseCareerOutcomeDto::getId).collect(Collectors.toSet());
+			courseCareerOutcomes.removeIf(e -> !updateRequestIds.contains(e.getId()));
+
+			Map<String, CourseCareerOutcome> existingCourseCareerOutcomesMap = courseCareerOutcomes.stream()
+					.collect(Collectors.toMap(CourseCareerOutcome::getId, e -> e));
+			courseCareerOutcomeDtos.stream().forEach(e -> {
+				CourseCareerOutcome courseCareerOutcome = new CourseCareerOutcome();
+				if (!StringUtils.isEmpty(e.getId())) {
+					courseCareerOutcome = existingCourseCareerOutcomesMap.get(e.getId());
+					if (courseCareerOutcome == null) {
+						log.error("invalid course career outcome id : {}", e.getId());
+						throw new RuntimeNotFoundException("invalid course career outcome id : " + e.getId());
+					}
+				}
+				courseCareerOutcome.setCareer(careersMap.get(e.getCareerId()));
+				courseCareerOutcome.setCourse(course);
+				if (StringUtils.isEmpty(courseCareerOutcome.getId())) {
+					courseCareerOutcomes.add(courseCareerOutcome);
+				}
+				courseCareerOutcome.setAuditFields(loggedInUserId);
+			});
+
+		} else {
+			courseCareerOutcomes.clear();
 		}
 	}
 	
 	private CourseDTOElasticSearch prepareCourseElaticSearchDtoFromModel(Course course) {
 		// Elastic search object
+		log.info("inside courseProcessor.prepareCourseElaticSearchDtoFromModel");
 		CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
 		log.info("Copying course bean class to courseElastic DTO class through beanUtils");
 		BeanUtils.copyProperties(course, courseElasticSearch);
@@ -732,7 +715,7 @@ public class CourseProcessor {
 	}
 
 	private void populateCourseUsdPrices(CurrencyRateDto currencyRate, Course course) {
-		
+		log.info("inside courseProcessor.populateCourseUsdPrices");
 		if (!ObjectUtils.isEmpty(course.getDomesticApplicationFee())) {
 			Double convertedRate = currencyRate.getConversionRate();
 			log.info("converting domestic application Fee on basis of conviersionRate {}", convertedRate);

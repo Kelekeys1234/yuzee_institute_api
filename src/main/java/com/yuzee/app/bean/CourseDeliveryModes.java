@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
@@ -77,13 +78,10 @@ public class CourseDeliveryModes implements Serializable{
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 	
-	public void setAuditFields(String userId, CourseDeliveryModes existingCourseDeliveryModes) {
+	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (existingCourseDeliveryModes != null) {
-			this.setCreatedBy(existingCourseDeliveryModes.getCreatedBy());
-			this.setCreatedOn(existingCourseDeliveryModes.getCreatedOn());
-		}else {
+		if (StringUtils.isEmpty(id)) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
 		}

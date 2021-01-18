@@ -2,7 +2,11 @@ package com.yuzee.app.util;
 
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
+import com.yuzee.app.exception.ValidationException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class PaginationUtil {
 	public static Integer courseResultPageMaxSize = 50;
 
@@ -66,5 +70,17 @@ public class PaginationUtil {
 
 	public static int getStartIndex(final int pageNumber, final int pageSize) {
 		return (pageNumber - 1) * pageSize;
+	}
+
+	public static void validatePaginationParameters(final int pageNumber, final int pageSize) throws ValidationException {
+		if (pageNumber < 1) {
+			log.error("Page number can not be less than 1");
+			throw new ValidationException("Page number can not be less than 1");
+		}
+
+		if (pageSize < 1) {
+			log.error("Page size can not be less than 1");
+			throw new ValidationException("Page size can not be less than 1");
+		}
 	}
 }
