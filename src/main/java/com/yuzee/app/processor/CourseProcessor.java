@@ -198,6 +198,9 @@ public class CourseProcessor {
 
 	@Autowired
 	private AccrediatedDetailDao accrediatedDetailDao;
+
+	@Autowired
+	private CommonProcessor commonProcessor;
 	
 	@Value("${max.radius}")
 	private Integer maxRadius;
@@ -416,6 +419,8 @@ public class CourseProcessor {
 		saveUpdateCourseCareerOutcomes(loggedInUserId, course, courseDto.getCourseCareerOutcomes());
 		
 		saveUpdateOffCampusCourse(loggedInUserId, course, courseDto.getOffCampusCourse());
+		
+		saveUpdateCourseFundings(loggedInUserId, course, courseDto.getCourseFundings());
 		
 		return course;
 	}
@@ -674,6 +679,46 @@ public class CourseProcessor {
 		}
 	}
 	
+	private void saveUpdateCourseFundings(String loggedInUserId, Course course,
+			List<CourseFundingDto> courseFundingDtos) throws NotFoundException {
+		List<CourseFunding> courseFundings = course.getCourseFundings();
+		if (!CollectionUtils.isEmpty(courseFundingDtos)) {
+
+			log.info("Creating the list to save/update course fundings in DB");
+			Set<String> fundingNameIds = courseFundingDtos.stream().map(CourseFundingDto::getFundingNameId)
+					.collect(Collectors.toSet());
+
+			log.info("going to check if funding name ids are valid");
+			commonProcessor.validateFundingNameIds(new ArrayList<>(fundingNameIds));
+
+			log.info("see if some entitity ids are not present then we have to delete them.");
+			Set<String> updateRequestIds = courseFundingDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
+					.map(CourseFundingDto::getId).collect(Collectors.toSet());
+			courseFundings.removeIf(e -> !updateRequestIds.contains(e.getId()));
+
+			Map<String, CourseFunding> existingCourseFundingsMap = courseFundings.stream()
+					.collect(Collectors.toMap(CourseFunding::getId, e -> e));
+			courseFundingDtos.stream().forEach(e -> {
+				CourseFunding courseFunding = new CourseFunding();
+				if (!StringUtils.isEmpty(e.getId())) {
+					courseFunding = existingCourseFundingsMap.get(e.getId());
+					if (courseFunding == null) {
+						log.error("invalid course funding id : {}", e.getId());
+						throw new RuntimeNotFoundException("invalid course funding id : " + e.getId());
+					}
+				}
+				courseFunding.setFundingNameId(e.getFundingNameId());
+				courseFunding.setCourse(course);
+				if (StringUtils.isEmpty(courseFunding.getId())) {
+					courseFundings.add(courseFunding);
+				}
+				courseFunding.setAuditFields(loggedInUserId);
+			});
+
+		} else {
+			courseFundings.clear();
+		}
+	}
 	private CourseDTOElasticSearch prepareCourseElaticSearchDtoFromModel(Course course) {
 		// Elastic search object
 		log.info("inside courseProcessor.prepareCourseElaticSearchDtoFromModel");
@@ -1876,5 +1921,74 @@ public class CourseProcessor {
 			log.error("Course not found for id: {}", courseId);
 			throw new NotFoundException("Course not found for id: " + courseId);
 		}
+	}
+
+	public String saveOrUpdateBasicCourse(String loggedInUserId, CourseRequest courseDto, String courseId) throws CommonInvokeException, ForbiddenException, NotFoundException, ValidationException {
+		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
+		Course course = null;
+		if (StringUtils.isEmpty(courseId)) {
+			course = new Course();
+		} else {
+			course = courseDao.get(courseId);
+			if (ObjectUtils.isEmpty(course)) {
+				log.error("invalid course id: {}", courseId);
+				throw new NotFoundException("invalid course id: " + courseId);
+			}
+			if (!course.getCreatedBy().equals(loggedInUserId)) {
+				log.error("User has no access to edit the course with id: {}", courseId);
+				throw new ForbiddenException("User has no access to edit the course with id: "+ courseId);
+			}
+		}
+		log.info("Fetching institute details from DB for instituteId = " + courseDto.getInstituteId());
+		course.setInstitute(getInstititute(courseDto.getInstituteId()));
+		course.setDescription(courseDto.getDescription());
+		course.setName(courseDto.getName());
+
+		log.info("Fetching faculty details from DB for facultyId = " + courseDto.getFacultyId());
+		course.setFaculty(getFaculty(courseDto.getFacultyId()));
+		
+		if (!StringUtils.isEmpty(courseDto.getLevelId())) {
+			log.info("Fetching level details from DB for levelId = " + courseDto.getLevelId());
+			course.setLevel(levelProcessor.getLevel(courseDto.getLevelId()));
+		}
+		
+		CurrencyRateDto currencyRate = null;
+		if (!StringUtils.isEmpty(courseDto.getCurrency())) {
+			// Here we convert price in USD and everywhere we used USD price column only.
+			course.setCurrency(courseDto.getCurrency());
+			log.info("Currency code is not null, hence fetching currencyRate from DB having currencyCode = "
+					+ courseDto.getCurrency());
+			currencyRate = getCurrencyRate(courseDto.getCurrency());
+			if (currencyRate == null) {
+				log.error("Invalid currency, no USD conversion exists for this currency");
+				throw new ValidationException("Invalid currency, no USD conversion exists for this currency");
+			}
+			populateCourseUsdPrices(currencyRate, course);	
+		}
+		course.setAuditFields(loggedInUserId);
+		course.setIsActive(true);
+		saveUpdateCourseIntakes(loggedInUserId, course, courseDto.getIntake());
+		
+		saveUpdateCourseLanguages(loggedInUserId, course, courseDto.getLanguage());
+
+		saveUpdateCourseDeliveryModes(loggedInUserId, course, currencyRate, courseDto.getCourseDeliveryModes());
+		
+		saveUpdateOffCampusCourse(loggedInUserId, course, courseDto.getOffCampusCourse());
+		
+		saveUpdateCourseFundings(loggedInUserId, course, courseDto.getCourseFundings());
+		
+		course = courseDao.addUpdateCourse(course);
+		if (StringUtils.isEmpty(courseId)) {
+			log.info("Calling elastic service to add courses on elastic index");
+			elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
+					EntityTypeEnum.COURSE.name().toLowerCase(),
+					Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
+		} else {
+			log.info("Calling elastic service to update courses on elastic index");
+			elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
+					EntityTypeEnum.COURSE.name().toLowerCase(),
+					Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
+		}
+		return course.getId();
 	}
 }

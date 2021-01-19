@@ -39,8 +39,6 @@ public class CourseFundingProcessor {
 
 	@Autowired
 	private CommonProcessor commonProcessor;
-	
-	
 
 	public void addFundingToAllInstituteCourses(String userId, String instituteId, String fundingNameId)
 			throws ValidationException, NotFoundException {
@@ -53,7 +51,7 @@ public class CourseFundingProcessor {
 			List<CourseFunding> courseFundings = new ArrayList<>();
 			instituteCourses.stream().forEach(c -> {
 				CourseFunding courseFunding = new CourseFunding();
-				courseFunding.setAuditFields(userId, null);
+				courseFunding.setAuditFields(userId);
 				courseFunding.setCourse(c);
 				courseFunding.setFundingNameId(fundingNameId);
 				courseFundings.add(courseFunding);
@@ -75,7 +73,7 @@ public class CourseFundingProcessor {
 			List<CourseFunding> courseFundings = new ArrayList<>();
 			courseFundingDtos.stream().forEach(e -> {
 				CourseFunding courseFunding = new CourseFunding();
-				courseFunding.setAuditFields(userId, null);
+				courseFunding.setAuditFields(userId);
 				courseFunding.setCourse(course);
 				courseFunding.setFundingNameId(e.getFundingNameId());
 				courseFundings.add(courseFunding);

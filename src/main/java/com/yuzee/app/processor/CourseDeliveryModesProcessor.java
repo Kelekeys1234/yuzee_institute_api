@@ -122,11 +122,7 @@ public class CourseDeliveryModesProcessor {
 				courseDeliveryMode.setDuration(e.getDuration());
 				courseDeliveryMode.setDurationTime(e.getDurationTime());
 				courseDeliveryMode.setCourse(course);
-				if (StringUtils.isEmpty(courseDeliveryMode.getId())) {
-					courseDeliveryMode.setAuditFields(userId, null);
-				} else {
-					courseDeliveryMode.setAuditFields(userId, courseDeliveryMode);
-				}
+				courseDeliveryMode.setAuditFields(userId);
 				courseDeliveryModes.add(courseDeliveryMode);
 			});
 			courseDeliveryModesDao.saveAll(courseDeliveryModes);

@@ -171,4 +171,16 @@ public interface CourseInterface {
 	
 	@GetMapping("/count/{instituteId}")
 	public ResponseEntity<?> getCourseCountByInstituteId(@PathVariable String instituteId) throws ValidationException;
+
+	// api just according to the form requirements
+	@PostMapping("/basic/info")
+	ResponseEntity<?> saveBasicCourse(@RequestHeader(value = "userId", required = true) String userId,
+			@Valid @RequestBody CourseRequest course)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
+
+	// api just according to the form requirements
+	@PutMapping("/basic/info/{id}")
+	ResponseEntity<?> updateBasicCourse(@RequestHeader(value = "userId", required = true) String userId,
+			@Valid @RequestBody CourseRequest course, @PathVariable String id)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
 }

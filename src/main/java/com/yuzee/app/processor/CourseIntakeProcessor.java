@@ -43,7 +43,7 @@ public class CourseIntakeProcessor {
 			List<CourseIntake> courseIntakes = new ArrayList<>();
 			courseIntakeDtos.stream().forEach(e -> {
 				CourseIntake courseIntake = new CourseIntake();
-				courseIntake.setAuditFields(userId, null);
+				courseIntake.setAuditFields(userId);
 				courseIntake.setCourse(course);
 				courseIntakes.add(courseIntake);
 			});

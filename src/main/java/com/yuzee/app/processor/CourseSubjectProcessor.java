@@ -73,7 +73,7 @@ public class CourseSubjectProcessor {
 				BeanUtils.copyProperties(e, courseSubject);
 				courseSubject.setSemester(semestersMap.get(e.getSemesterId()));
 				courseSubject.setCourse(course);
-				courseSubject.setAuditFields(userId, courseSubject);
+				courseSubject.setAuditFields(userId);
 				courseSubjects.add(courseSubject);
 			});
 			courseSubjectDao.saveAll(courseSubjects);

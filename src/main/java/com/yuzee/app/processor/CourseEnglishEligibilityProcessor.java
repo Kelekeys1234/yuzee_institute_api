@@ -80,7 +80,7 @@ public class CourseEnglishEligibilityProcessor {
 				}
 				BeanUtils.copyProperties(e, courseEnglishEligibility);
 				courseEnglishEligibility.setCourse(course);
-				courseEnglishEligibility.setAuditFields(userId, courseEnglishEligibility);
+				courseEnglishEligibility.setAuditFields(userId);
 				courseEnglishEligibilitys.add(courseEnglishEligibility);
 			});
 			courseEnglishEligibilityDAO.saveAll(courseEnglishEligibilitys);

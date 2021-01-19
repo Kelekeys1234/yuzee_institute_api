@@ -88,11 +88,29 @@ public class CourseController implements CourseInterface {
 				.setMessage("Course Created successfully").create();
 	}
 
+	@Override
+	public ResponseEntity<?> saveBasicCourse(final String userId, final CourseRequest course)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
+		log.info("Start process to save new course basic details in DB");
+		String courseId = courseProcessor.saveOrUpdateBasicCourse(userId, course, null);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
+				.setMessage("Course Created successfully").create();
+	}
+
 	public ResponseEntity<?> update(final String userId, final CourseRequest course, final String id)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.info("Start process to update existing course in DB");
 		ValidationUtil.validateTimingDtoFromCourseRequest(course);
 		String courseId = courseProcessor.updateCourse(userId, course, id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
+				.setMessage("Course Updated successfully").create();
+	}
+
+	@Override
+	public ResponseEntity<?> updateBasicCourse(final String userId, final CourseRequest course, final String id)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
+		log.info("Start process to update existing basic course in DB");
+		String courseId = courseProcessor.saveOrUpdateBasicCourse(userId, course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Updated successfully").create();
 	}

@@ -73,7 +73,7 @@ public class CourseCareerOutcomeProcessor {
 				BeanUtils.copyProperties(e, courseCareerOutcome);
 				courseCareerOutcome.setCareer(careersMap.get(e.getCareerId()));
 				courseCareerOutcome.setCourse(course);
-				courseCareerOutcome.setAuditFields(userId, courseCareerOutcome);
+				courseCareerOutcome.setAuditFields(userId);
 				courseCareerOutcomes.add(courseCareerOutcome);
 			});
 			courseCareerOutcomeDao.saveAll(courseCareerOutcomes);
