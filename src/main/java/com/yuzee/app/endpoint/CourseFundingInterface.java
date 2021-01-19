@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.yuzee.app.dto.CourseFundingDto;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
 @RequestMapping("/api/v1/course-funding")
@@ -18,5 +19,5 @@ public interface CourseFundingInterface {
 	@PostMapping("/institute/{instituteId}/add-funding-to-all-courses")
 	public ResponseEntity<?> addFundingToAllInstituteCourses(@RequestHeader("userId") final String userId,
 			@PathVariable final String instituteId, @Valid @RequestBody final CourseFundingDto courseFundingDto)
-			throws ValidationException;
+			throws ValidationException, NotFoundException;
 }

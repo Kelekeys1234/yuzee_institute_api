@@ -198,7 +198,7 @@ public class CourseProcessor {
 
 	@Autowired
 	private TimingDao timingDao;
-
+	
 	@Value("${max.radius}")
 	private Integer maxRadius;
 	

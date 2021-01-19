@@ -40,7 +40,6 @@ import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseScholarshipAndFacultyCountDto;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.FollowerCountDto;
-import com.yuzee.app.dto.FundingResponseDto;
 import com.yuzee.app.dto.InstituteCampusDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
 import com.yuzee.app.dto.InstituteElasticSearchDTO;
@@ -65,10 +64,10 @@ import com.yuzee.app.enumeration.TimingType;
 import com.yuzee.app.exception.ConstraintVoilationException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.exception.RuntimeNotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ConnectionHandler;
 import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.handler.EligibilityHandler;
 import com.yuzee.app.handler.ReviewHandler;
 import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.repository.InstituteRepository;
@@ -134,7 +133,7 @@ public class InstituteProcessor {
 	private ScholarshipDao scholarshipDao;
 
 	@Autowired
-	private EligibilityHandler eligibilityHandler;
+	CommonProcessor commonProcessor;
 
 	public Institute get(final String id) {
 		return dao.get(id);
@@ -420,59 +419,50 @@ public class InstituteProcessor {
 			dao.saveInstituteIntake(instituteIntake);
 		}
 	}
+
 	private void saveUpdateInstituteFundings(String loggedInUserId, Institute institute,
-			List<InstituteFundingDto> instituteFundingDtos) throws ValidationException {
-		try {
-			List<InstituteFunding> instituteFundings = institute.getInstituteFundings();
-			if (!CollectionUtils.isEmpty(instituteFundingDtos)) {
+			List<InstituteFundingDto> instituteFundingDtos) throws ValidationException, NotFoundException {
+		List<InstituteFunding> instituteFundings = institute.getInstituteFundings();
+		if (!CollectionUtils.isEmpty(instituteFundingDtos)) {
 
-				log.info("Creating the list to save/update institute fundings in DB");
-				Set<String> fundingNameIds = instituteFundingDtos.stream().map(InstituteFundingDto::getFundingNameId)
-						.collect(Collectors.toSet());
-				try {
-					Map<String, FundingResponseDto> fundingMap = eligibilityHandler
-							.getFundingByFundingNameId(new ArrayList<>(fundingNameIds));
-					if (fundingMap.size() != fundingNameIds.size()) {
-						throw new ValidationException("one or more funding name ids are invalid");
+			log.info("Creating the list to save/update institute fundings in DB");
+			Set<String> fundingNameIds = instituteFundingDtos.stream().map(InstituteFundingDto::getFundingNameId)
+					.collect(Collectors.toSet());
+
+			log.info("going to check if funding name ids are valid");
+			commonProcessor.validateFundingNameIds(new ArrayList<>(fundingNameIds));
+
+			log.info("see if some entitity ids are not present then we have to delete them.");
+			Set<String> updateRequestIds = instituteFundingDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
+					.map(InstituteFundingDto::getId).collect(Collectors.toSet());
+			instituteFundings.removeIf(e -> !updateRequestIds.contains(e.getId()));
+
+			Map<String, InstituteFunding> existingInstituteFundingsMap = instituteFundings.stream()
+					.collect(Collectors.toMap(InstituteFunding::getId, e -> e));
+			instituteFundingDtos.stream().forEach(e -> {
+				InstituteFunding instituteFunding = new InstituteFunding();
+				if (!StringUtils.isEmpty(e.getId())) {
+					instituteFunding = existingInstituteFundingsMap.get(e.getId());
+					if (instituteFunding == null) {
+						log.error("invalid institute funding id : {}", e.getId());
+						throw new RuntimeNotFoundException("invalid institute funding id : " + e.getId());
 					}
-				} catch (InvokeException e1) {
-					log.error(
-							"error invoking eligibility service so could'nt check if it funding_name_ids really exists");
 				}
+				instituteFunding.setFundingNameId(e.getFundingNameId());
+				instituteFunding.setInstitute(institute);
+				if (StringUtils.isEmpty(instituteFunding.getId())) {
+					instituteFunding.setAuditFields(loggedInUserId, null);
+					instituteFundings.add(instituteFunding);
+				} else {
+					instituteFunding.setAuditFields(loggedInUserId, instituteFunding);
+				}
+			});
 
-				Set<String> updateRequestIds = instituteFundingDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
-						.map(InstituteFundingDto::getId).collect(Collectors.toSet());
-				instituteFundings.removeIf(e -> !updateRequestIds.contains(e.getId()));
-
-				Map<String, InstituteFunding> existingInstituteFundingsMap = instituteFundings.stream()
-						.collect(Collectors.toMap(InstituteFunding::getId, e -> e));
-				instituteFundingDtos.stream().forEach(e -> {
-					InstituteFunding instituteFunding = new InstituteFunding();
-					if (!StringUtils.isEmpty(e.getId())) {
-						instituteFunding = existingInstituteFundingsMap.get(e.getId());
-						if (instituteFunding == null) {
-							log.error("invalid institute funding id : {}", e.getId());
-							throw new RuntimeException("invalid institute funding id : " + e.getId());
-						}
-					}
-					instituteFunding.setFundingNameId(e.getFundingNameId());
-					instituteFunding.setInstitute(institute);
-					if (StringUtils.isEmpty(instituteFunding.getId())) {
-						instituteFunding.setAuditFields(loggedInUserId, null);
-						instituteFundings.add(instituteFunding);
-					} else {
-						instituteFunding.setAuditFields(loggedInUserId, instituteFunding);
-					}
-				});
-
-			} else {
-				instituteFundings.clear();
-			}
-		} catch (RuntimeException e) {
-			log.error(e.getMessage());
-			throw new ValidationException(e.getMessage());
+		} else {
+			instituteFundings.clear();
 		}
 	}
+	
 	private void saveAccreditedInstituteDetails(final Institute institute, final List<AccrediatedDetailDto> accreditation) {
 		log.debug("Inside saveAccreditedInstituteDetails() method");
 		log.info("deleting existing accrediatedDetails from DB for institute having instituteId = "+institute.getId());

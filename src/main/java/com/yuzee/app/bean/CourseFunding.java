@@ -62,10 +62,7 @@ public class CourseFunding {
 	public void setAuditFields(String userId, CourseFunding existingCourseFunding) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (existingCourseFunding != null) {
-			this.setCreatedBy(existingCourseFunding.getCreatedBy());
-			this.setCreatedOn(existingCourseFunding.getCreatedOn());
-		}else {
+		if (existingCourseFunding == null) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
 		}

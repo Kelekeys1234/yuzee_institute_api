@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseFundingDto;
 import com.yuzee.app.endpoint.CourseFundingInterface;
+import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CourseFundingProcessor;
@@ -19,7 +20,7 @@ public class CourseFundingController implements CourseFundingInterface {
 
 	@Override
 	public ResponseEntity<?> addFundingToAllInstituteCourses(String userId, String instituteId,
-			CourseFundingDto courseFundingDto) throws ValidationException {
+			CourseFundingDto courseFundingDto) throws ValidationException, NotFoundException {
 		courseFundingProcessor.addFundingToAllInstituteCourses(userId, instituteId,
 				courseFundingDto.getFundingNameId());
 		return new GenericResponseHandlers.Builder().setMessage("Funding added to all institute courses.")

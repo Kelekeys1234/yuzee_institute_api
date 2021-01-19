@@ -1,15 +1,11 @@
 package com.yuzee.app.handler;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,7 +29,7 @@ public class EligibilityHandler {
 
 	private static final String INVALID_STATUS_CODE_EXCEPTION = "Error response recieved from eligibility service with error code {}";
 
-	public Map<String, FundingResponseDto> getFundingByFundingNameId(List<String> fundingNameIds) throws InvokeException {
+	public List<FundingResponseDto> getFundingByFundingNameId(List<String> fundingNameIds) throws InvokeException {
 		ResponseEntity<FundingWrapperDto> fundingNameAPIResponse = null;
 		try {
 			StringBuilder path = new StringBuilder();
@@ -58,13 +54,7 @@ public class EligibilityHandler {
 				throw new InvokeException("Error invoking review service");
 			}
 		}
-		Map<String, FundingResponseDto> map = new HashMap<>();
-
-		List<FundingResponseDto> dtos = fundingNameAPIResponse.getBody().getData();
-		if (!CollectionUtils.isEmpty(dtos)) {
-			map = dtos.stream().collect(Collectors.toMap(FundingResponseDto::getFundingNameId, e -> e));
-		}
-		return map;
+		return fundingNameAPIResponse.getBody().getData();
 	}
 
 }
