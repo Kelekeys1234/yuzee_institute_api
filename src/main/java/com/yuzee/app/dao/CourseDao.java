@@ -91,11 +91,7 @@ public interface CourseDao {
 
 	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<String> courseIds, Integer startIndex, Integer limit);
 
-	public void saveCourseIntake(CourseIntake courseIntake);
-
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(String courseId);
-
-	public List<CourseIntake> getCourseIntakeBasedOnCourseIdList(List<String> courseIds);
 
 	public void deleteCourseDeliveryMethod(String courseId);
 

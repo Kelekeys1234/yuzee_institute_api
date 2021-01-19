@@ -1527,12 +1527,6 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	@Override
-	public void saveCourseIntake(final CourseIntake courseIntake) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(courseIntake);
-	}
-
-	@Override
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(final String courseId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(CourseIntake.class, "courseIntake");
@@ -1541,19 +1535,6 @@ public class CourseDaoImpl implements CourseDao {
 		return crit.list();
 	}
 
-	@Override
-	public List<CourseIntake> getCourseIntakeBasedOnCourseIdList(final List<String> courseIds) {
-		List<String> courseId=new ArrayList<>();
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(CourseIntake.class, "courseIntake");
-		crit.createAlias("courseIntake.course", "course");
-		for(int i = 0 ; i < courseIds.size(); i++) {
-			courseId.add("'"+courseIds.get(i)+"'");
-		}
-		crit.add(Restrictions.in("course.id", courseId));
-		return crit.list();
-	}
-	
 	@Override
 	public void deleteCourseDeliveryMethod(final String courseId) {
 		Session session = sessionFactory.getCurrentSession();

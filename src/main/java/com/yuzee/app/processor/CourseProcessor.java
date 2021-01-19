@@ -274,7 +274,7 @@ public class CourseProcessor {
 				List<CourseIntake> courseIntakes = courseDao.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
 				if (!CollectionUtils.isEmpty(courseIntakes)) {
 					log.info("Filtering courseIntakes data based on courseId.");
-					courseResponseDto.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+					courseResponseDto.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
 				} else {
 					courseResponseDto.setIntake(new ArrayList<>());
 				}
@@ -311,7 +311,7 @@ public class CourseProcessor {
 				courseResponseDto.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseResponseDto.getId()));
 				log.info("Fetching course intakes from DB having courseId = "+courseResponseDto.getId());
 				courseResponseDto.setIntake(courseDao.getCourseIntakeBasedOnCourseId(courseResponseDto.getId())
-							.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+							.stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
 				log.info("Fetching course languages from DB having courseId = "+courseResponseDto.getId());
 				courseResponseDto.setLanguage(courseDao.getCourseLanguageBasedOnCourseId(courseResponseDto.getId())
 						.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
@@ -447,7 +447,7 @@ public class CourseProcessor {
 		log.info("inside courseProcessor.saveUpdateCourseIntakes");
 		List<CourseIntake> dbIntakes = course.getCourseIntakes();
 		Map<Date, CourseIntake> dbIntakeByDate = dbIntakes.stream()
-				.collect(Collectors.toMap(CourseIntake::getIntakeDates, e -> e));
+				.collect(Collectors.toMap(CourseIntake::getIntakeDate, e -> e));
 		if (!CollectionUtils.isEmpty(courseIntakeDates)) {
 			log.info("Course intakes is not null, start iterating data");
 
@@ -457,7 +457,7 @@ public class CourseProcessor {
 				if (ObjectUtils.isEmpty(courseIntake)) {
 					courseIntake = new CourseIntake();
 				}
-				courseIntake.setIntakeDates(intake);
+				courseIntake.setIntakeDate(intake);
 				courseIntake.setAuditFields(userId);
 				courseIntake.setCourse(course);
 				if (StringUtils.isEmpty(courseIntake.getId())) {
@@ -468,7 +468,7 @@ public class CourseProcessor {
 			dbIntakes.clear();
 		}
 		// intakes to be removed
-		dbIntakes.removeIf(e -> courseIntakeDates.stream().noneMatch(r -> e.getIntakeDates().compareTo(r) == 0));
+		dbIntakes.removeIf(e -> courseIntakeDates.stream().noneMatch(r -> e.getIntakeDate().compareTo(r) == 0));
 	}
 
 	private void saveUpdateCourseLanguages(String userId, Course course, List<String> courseLanguages)
@@ -699,7 +699,7 @@ public class CourseProcessor {
 		courseElasticSearch.setLevelName(course.getLevel() != null ? course.getLevel().getName() : null);
 		if (!CollectionUtils.isEmpty(course.getCourseIntakes())) {
 			log.info("Adding intakes in elastic DTO");
-			courseElasticSearch.setIntake(course.getCourseIntakes().stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+			courseElasticSearch.setIntake(course.getCourseIntakes().stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
 		}
 		
 		List<CourseDeliveryModesElasticDto> courseDeliveryModesElasticDtos = null;
@@ -989,7 +989,7 @@ public class CourseProcessor {
 				List<CourseIntake> courseIntake = courseDao.getCourseIntakeBasedOnCourseId(courseResponseDto.getId());
 				if (courseIntake != null && !courseIntake.isEmpty()) {
 					log.info("Filtering courseIntakes data based on courseId");
-					courseResponseDto.setIntake(courseIntake.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+					courseResponseDto.setIntake(courseIntake.stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
 				} else {
 					courseResponseDto.setIntake(new ArrayList<>());
 				}
@@ -1071,7 +1071,7 @@ public class CourseProcessor {
 					courseRequest.setCourseDeliveryModes(new ValidList<>(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseRequest.getId())));
 					log.info("Fetching course intakes from DB having courseId = "+courseRequest.getId());
 					courseRequest.setIntake(courseDao.getCourseIntakeBasedOnCourseId(courseRequest.getId())
-								.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+								.stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
 					log.info("Fetching course languages from DB having courseId = "+courseRequest.getId());
 					courseRequest.setLanguage(courseDao.getCourseLanguageBasedOnCourseId(courseRequest.getId())
 							.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
@@ -1138,7 +1138,7 @@ public class CourseProcessor {
 					List<CourseIntake> courseIntakes = courseDao.getCourseIntakeBasedOnCourseId(course.getId());
 					if(!CollectionUtils.isEmpty(courseIntakes)) {
 						log.info("courseIntake is fetched from DB, hence adding englishEligibilities in response");
-						course.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+						course.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
 					}
 					resultList.add(course);
 				});
@@ -1597,7 +1597,7 @@ public class CourseProcessor {
 				List<CourseIntake> courseIntakes = courseDao.getCourseIntakeBasedOnCourseId(course.getId());
 				if(!CollectionUtils.isEmpty(courseIntakes)) {
 					log.info("courseIntake is fetched from DB, hence adding englishEligibilities in response");
-					nearestCourse.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+					nearestCourse.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
 				}
 				try {
 					log.info("going to fetch logo from storage service for courseId "+course.getId());
@@ -1670,7 +1670,7 @@ public class CourseProcessor {
 					List<CourseIntake> courseIntakes = courseDao.getCourseIntakeBasedOnCourseId(nearestCourseDTO.getId());
 					if (!CollectionUtils.isEmpty(courseIntakes)) {
 						log.info("Filtering courseIntakes data based on courseId");
-						nearestCourse.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+						nearestCourse.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
 					} else {
 						nearestCourse.setIntake(new ArrayList<>());
 					}
@@ -1746,7 +1746,7 @@ public class CourseProcessor {
 		
 		log.info("Fetching courseIntake for courseId = "+id);
 		courseRequest.setIntake(course.getCourseIntakes().stream()
-				.map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+				.map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
 		
 		log.info("Fetching courseLanguage for courseId = "+id);
 		courseRequest.setLanguage(course.getCourseLanguages().stream()
