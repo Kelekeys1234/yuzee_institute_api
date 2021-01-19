@@ -42,7 +42,7 @@ public class CommonProcessor {
 		return new ArrayList<>();
 	}
 
-	public Map<String, FundingResponseDto> validateFundingNameIds(List<String> fundingNameIds)
+	public Map<String, FundingResponseDto> validateAndGetFundingsByFundingNameIds(List<String> fundingNameIds)
 			throws NotFoundException {
 		log.info("inside getFundingMapByFundingNameIds");
 		Map<String, FundingResponseDto> map = new HashMap<>();

@@ -72,6 +72,7 @@ import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.CourseSubjectDto;
 import com.yuzee.app.dto.CurrencyRateDto;
+import com.yuzee.app.dto.FundingResponseDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.NearestCoursesDto;
 import com.yuzee.app.dto.OffCampusCourseDto;
@@ -689,7 +690,7 @@ public class CourseProcessor {
 					.collect(Collectors.toSet());
 
 			log.info("going to check if funding name ids are valid");
-			commonProcessor.validateFundingNameIds(new ArrayList<>(fundingNameIds));
+			commonProcessor.validateAndGetFundingsByFundingNameIds(new ArrayList<>(fundingNameIds));
 
 			log.info("see if some entitity ids are not present then we have to delete them.");
 			Set<String> updateRequestIds = courseFundingDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
@@ -1808,7 +1809,16 @@ public class CourseProcessor {
 		List<CourseFunding> courseFundings = course.getCourseFundings();
 		courseRequest.setFundingsCount(courseFundings.size());
 		courseRequest.setCourseFundings(new ValidList<>(courseFundings.stream().map(e->modelMapper.map(e, CourseFundingDto.class)).collect(Collectors.toList())));
-		
+		if (!CollectionUtils.isEmpty(courseFundings)) {
+			List<String> fundingNameIds = courseRequest.getCourseFundings().stream().map(CourseFundingDto::getFundingNameId)
+					.collect(Collectors.toList());
+
+			log.info("going to get fundings");
+			Map<String, FundingResponseDto> fundingsMap = commonProcessor.validateAndGetFundingsByFundingNameIds(fundingNameIds);
+			if (!CollectionUtils.isEmpty(fundingsMap)) {
+				courseRequest.getCourseFundings().stream().forEach(e->e.setFunding(fundingsMap.get(e.getFundingNameId())));
+			}
+		}
 		courseRequest.setCourseCareerOutcomes(new ValidList<>(course.getCourseCareerOutcomes().stream()
 				.map(e -> modelMapper.map(e, CourseCareerOutcomeDto.class)).collect(Collectors.toList())));
 

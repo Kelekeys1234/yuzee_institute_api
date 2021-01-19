@@ -45,7 +45,7 @@ public class CourseFundingProcessor {
 		Institute institute = instituteDao.get(instituteId);
 		if (institute != null) {
 
-			commonProcessor.validateFundingNameIds(Arrays.asList(fundingNameId));
+			commonProcessor.validateAndGetFundingsByFundingNameIds(Arrays.asList(fundingNameId));
 
 			List<Course> instituteCourses = courseDao.findByInstituteId(instituteId);
 			List<CourseFunding> courseFundings = new ArrayList<>();
@@ -68,7 +68,7 @@ public class CourseFundingProcessor {
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 			log.info("going to see if funding id is valid");
-			commonProcessor.validateFundingNameIds(
+			commonProcessor.validateAndGetFundingsByFundingNameIds(
 					courseFundingDtos.stream().map(CourseFundingDto::getFundingNameId).collect(Collectors.toList()));
 			List<CourseFunding> courseFundings = new ArrayList<>();
 			courseFundingDtos.stream().forEach(e -> {

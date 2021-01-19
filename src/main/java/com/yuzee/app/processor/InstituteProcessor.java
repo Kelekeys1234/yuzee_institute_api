@@ -432,7 +432,7 @@ public class InstituteProcessor {
 					.collect(Collectors.toSet());
 
 			log.info("going to check if funding name ids are valid");
-			commonProcessor.validateFundingNameIds(new ArrayList<>(fundingNameIds));
+			commonProcessor.validateAndGetFundingsByFundingNameIds(new ArrayList<>(fundingNameIds));
 
 			log.info("see if some entitity ids are not present then we have to delete them.");
 			Set<String> updateRequestIds = instituteFundingDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
