@@ -26,12 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import com.yuzee.app.bean.AccrediatedDetail;
 import com.yuzee.app.bean.Careers;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCareerOutcome;
 import com.yuzee.app.bean.CourseCurriculum;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.bean.CourseEnglishEligibility;
+import com.yuzee.app.bean.CourseFunding;
 import com.yuzee.app.bean.CourseIntake;
 import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.CourseMinRequirement;
@@ -42,6 +44,7 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.bean.OffCampusCourse;
 import com.yuzee.app.bean.Semester;
+import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CareerDao;
 import com.yuzee.app.dao.CourseCareerOutComeDao;
 import com.yuzee.app.dao.CourseCurriculumDao;
@@ -53,7 +56,6 @@ import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dao.SemesterDao;
 import com.yuzee.app.dao.TimingDao;
-import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseCareerOutcomeDto;
 import com.yuzee.app.dto.CourseCountDto;
@@ -63,6 +65,7 @@ import com.yuzee.app.dto.CourseDeliveryModesElasticDto;
 import com.yuzee.app.dto.CourseDto;
 import com.yuzee.app.dto.CourseEnglishEligibilityDto;
 import com.yuzee.app.dto.CourseFilterDto;
+import com.yuzee.app.dto.CourseFundingDto;
 import com.yuzee.app.dto.CourseMinRequirementDto;
 import com.yuzee.app.dto.CourseMobileDto;
 import com.yuzee.app.dto.CourseRequest;
@@ -86,6 +89,7 @@ import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.TransactionTypeEnum;
 import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.ForbiddenException;
+import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.RuntimeNotFoundException;
@@ -173,9 +177,6 @@ public class CourseProcessor {
 	private CommonHandler commonHandler;
 	
 	@Autowired
-	private AccrediatedDetailProcessor accrediatedDetailProcessor;
-	
-	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
 	
 	@Autowired
@@ -198,6 +199,9 @@ public class CourseProcessor {
 
 	@Autowired
 	private TimingDao timingDao;
+
+	@Autowired
+	private AccrediatedDetailDao accrediatedDetailDao;
 	
 	@Value("${max.radius}")
 	private Integer maxRadius;
@@ -839,14 +843,14 @@ public class CourseProcessor {
 					List<CourseDeliveryModesDto> courseDeliveryModesDtos = courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(course.getId());
 					if(!CollectionUtils.isEmpty(courseDeliveryModesDtos)) {
 						log.info("courseDeliveryMode is fetched from DB, hence adding courseDeliveryModesDto in response");
-						course.setCourseDeliveryModes(courseDeliveryModesDtos);
+						course.setCourseDeliveryModes(new ValidList<>(courseDeliveryModesDtos));
 					}
 					
 					log.info("Fetching courseEnglishEligibility from DB having courseId = "+course.getId());
 					List<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos = courseEnglishEligibilityProcessor.getAllEnglishEligibilityByCourse(course.getId());
 					if(!CollectionUtils.isEmpty(courseEnglishEligibilityDtos)) {
 						log.info("courseEnglishEligibility is fetched from DB, hence adding englishEligibilities in response");
-						course.setEnglishEligibility(courseEnglishEligibilityDtos);
+						course.setEnglishEligibility(new ValidList<>(courseEnglishEligibilityDtos));
 					}
 					resultList.add(course);
 				});
@@ -1064,7 +1068,7 @@ public class CourseProcessor {
 						log.error("Error invoking Storage service having exception = "+e);
 					}
 					log.info("Fetching course additional info from DB having courseId = "+courseRequest.getId());
-					courseRequest.setCourseDeliveryModes(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseRequest.getId()));
+					courseRequest.setCourseDeliveryModes(new ValidList<>(courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseRequest.getId())));
 					log.info("Fetching course intakes from DB having courseId = "+courseRequest.getId());
 					courseRequest.setIntake(courseDao.getCourseIntakeBasedOnCourseId(courseRequest.getId())
 								.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
@@ -1113,14 +1117,14 @@ public class CourseProcessor {
 					List<CourseDeliveryModesDto> courseDeliveryModesDtos = courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(course.getId());
 					if(!CollectionUtils.isEmpty(courseDeliveryModesDtos)) {
 						log.info("courseDeliveryModes is fetched from DB, hence adding courseDeliveryModes in response");
-						course.setCourseDeliveryModes(courseDeliveryModesDtos);
+						course.setCourseDeliveryModes(new ValidList<>(courseDeliveryModesDtos));
 					}
 					
 					log.info("Fetching courseEnglishEligibility from DB having courseId = "+course.getId());
 					List<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos = courseEnglishEligibilityProcessor.getAllEnglishEligibilityByCourse(course.getId());
 					if(!CollectionUtils.isEmpty(courseEnglishEligibilityDtos)) {
 						log.info("courseEnglishEligibility is fetched from DB, hence adding englishEligibilities in response");
-						course.setEnglishEligibility(courseEnglishEligibilityDtos);
+						course.setEnglishEligibility(new ValidList<>(courseEnglishEligibilityDtos));
 					}
 					
 					log.info("Fetching courseLanguage from DB having courseId = "+course.getId());
@@ -1709,6 +1713,8 @@ public class CourseProcessor {
 		CourseRequest courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
 		if (course.getCreatedBy().equals(userId)) {
 			courseRequest.setHasEditAccess(true);
+		}else {
+			courseRequest.setHasEditAccess(false);
 		}
 		Map<String, ReviewStarDto> yuzeeReviewMap = null;
 			log.info(
@@ -1747,13 +1753,13 @@ public class CourseProcessor {
 				.map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 		
 		log.info("Fetching courseDeliveryModes for courseId = "+id);
-		courseRequest.setCourseDeliveryModes(course.getCourseDeliveryModes().stream().map(e->modelMapper.map(e,CourseDeliveryModesDto.class)).collect(Collectors.toList()));
+		courseRequest.setCourseDeliveryModes(new ValidList<>(course.getCourseDeliveryModes().stream().map(e->modelMapper.map(e,CourseDeliveryModesDto.class)).collect(Collectors.toList())));
 		
 		log.info("Fetching coursePrerequisites for courseId = "+id);
-		courseRequest.setPrerequisiteSubjects(coursePrerequisiteProcessor.getCoursePrerequisiteSubjectsByCourseId(id));
+		courseRequest.setPrerequisiteSubjects(new ValidList<>(coursePrerequisiteProcessor.getCoursePrerequisiteSubjectsByCourseId(id)));
 		
 		log.info("Fetching courseEnglish Eligibility from DB based on courseId = "+id);
-		courseRequest.setEnglishEligibility(course.getCourseEnglishEligibilities().stream().map(e->modelMapper.map(e,CourseEnglishEligibilityDto.class)).collect(Collectors.toList()));
+		courseRequest.setEnglishEligibility(new ValidList<>(course.getCourseEnglishEligibilities().stream().map(e->modelMapper.map(e,CourseEnglishEligibilityDto.class)).collect(Collectors.toList())));
 		
 		if (course.getOffCampusCourse() != null) {
 			courseRequest.setOffCampusCourse(modelMapper.map(course.getOffCampusCourse(), OffCampusCourseDto.class));
@@ -1762,6 +1768,13 @@ public class CourseProcessor {
 		
 		courseRequest.setCourseSubjects(new ValidList<>(course.getCourseSubjects().stream().map(e->modelMapper.map(e,CourseSubjectDto.class)).collect(Collectors.toList())));
 		
+		List<CourseFunding> courseFundings = course.getCourseFundings();
+		courseRequest.setFundingsCount(courseFundings.size());
+		courseRequest.setCourseFundings(new ValidList<>(courseFundings.stream().map(e->modelMapper.map(e, CourseFundingDto.class)).collect(Collectors.toList())));
+		
+		courseRequest.setCourseCareerOutcomes(new ValidList<>(course.getCourseCareerOutcomes().stream()
+				.map(e -> modelMapper.map(e, CourseCareerOutcomeDto.class)).collect(Collectors.toList())));
+
 		log.info("Calling Storage Service to fetch institute images");
 		List<StorageDto> storageDTOList = storageHandler.getStorages(Arrays.asList(course.getId()), EntityTypeEnum.COURSE, Arrays.asList(EntitySubTypeEnum.LOGO,EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.MEDIA));
 		courseRequest.setStorageList(storageDTOList);
@@ -1774,19 +1787,8 @@ public class CourseProcessor {
 				courseRequest.setLatitude(instituteObj.getLatitude());
 				courseRequest.setLongitude(instituteObj.getLongitude());
 			}
-			log.info("Fetching accrediated details for institute from DB having instituteID = "+instituteObj.getId());
-			List<AccrediatedDetailDto> accrediatedInstituteDetailsFromDB = accrediatedDetailProcessor.getAccrediationDetailByEntityId(instituteObj.getId());
-			if(!CollectionUtils.isEmpty(accrediatedInstituteDetailsFromDB)) {
-				instituteResponseDto.setAccrediatedDetail(accrediatedInstituteDetailsFromDB);
-			}
-			
 		}
 		
-		log.info("Fetching accrediated details for course from DB having courseId = "+course.getId());
-		List<AccrediatedDetailDto> accrediatedCourseDetails = accrediatedDetailProcessor.getAccrediationDetailByEntityId(course.getId());
-		if(!CollectionUtils.isEmpty(accrediatedCourseDetails)) {
-			courseRequest.setAccrediatedDetail(accrediatedCourseDetails);
-		}
 		response.put("courseObj", courseRequest);
 		response.put("instituteObj", instituteResponseDto);
 		return response;
@@ -1855,5 +1857,32 @@ public class CourseProcessor {
 		log.info("Total number of course found for institute id " + instituteId+" is "+courseCount);
 		courseCountDto.setCourseCount(courseCount);
 		return courseCountDto;
+	}
+
+	public List<StorageDto> getCourseGallery(String courseId) throws InternalServerException, NotFoundException {
+		Course course = courseDao.get(courseId);
+		if (ObjectUtils.isEmpty(course)) {
+
+			List<EntitySubTypeEnum> entitySubTypeEnums = Arrays.asList(EntitySubTypeEnum.COVER_PHOTO,
+					EntitySubTypeEnum.LOGO, EntitySubTypeEnum.MEDIA);
+			List<String> entityIds = Arrays.asList(courseId);
+
+			List<String> accredeationIds = accrediatedDetailDao.getAccrediationDetailByEntityId(courseId).stream()
+					.map(AccrediatedDetail::getId).collect(Collectors.toList());
+			if (!CollectionUtils.isEmpty(accredeationIds)) {
+				entitySubTypeEnums.add(EntitySubTypeEnum.ACCREDIATED);
+				entityIds.addAll(accredeationIds);
+			}
+
+			try {
+				return storageHandler.getStorages(entityIds, EntityTypeEnum.COURSE, entitySubTypeEnums);
+			} catch (NotFoundException | InvokeException e) {
+				log.error(e.getMessage());
+				throw new InternalServerException(e.getMessage());
+			}
+		} else {
+			log.error("Course not found for id: {}", courseId);
+			throw new NotFoundException("Course not found for id: " + courseId);
+		}
 	}
 }

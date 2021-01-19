@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -27,6 +28,9 @@ public class CourseRequest {
 	@JsonProperty("faculty_id")
 	@NotBlank(message = "faculty_id should not be blank")
 	private String facultyId;
+	
+	@JsonProperty("faculty")
+	private FacultyDto faculty;
 
 	@JsonProperty("curriculum_id")
 	private String curriculumId;
@@ -38,6 +42,7 @@ public class CourseRequest {
 	@JsonProperty("description")
 	private String description;
 
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@JsonProperty("intake")
 	private List<Date> intake;
 
@@ -84,15 +89,12 @@ public class CourseRequest {
 	@JsonProperty("currency_time")
 	private String currencyTime;
 
-	@JsonProperty("faculty_ame")
-	private String facultyName;
-
 	@JsonProperty("level_id")
 	@NotBlank(message = "level_id should not be blank")
 	private String levelId;
-
-	@JsonProperty("level_name")
-	private String levelName;
+	
+	@JsonProperty("level")
+	private LevelDto level;
 
 	@JsonProperty("availability")
 	private String availability;
@@ -130,20 +132,17 @@ public class CourseRequest {
 	@JsonProperty("storage_list")
 	private List<StorageDto> storageList = new ArrayList<>();
 
-	@JsonProperty("user_review_result")
-	private List<UserReviewResultDto> userReviewResult = new ArrayList<>();
-
-	@JsonProperty("accrediated_detail")
-	private List<AccrediatedDetailDto> accrediatedDetail = new ArrayList<>();
-
+	@Valid
 	@JsonProperty("course_delivery_modes")
-	private List<CourseDeliveryModesDto> courseDeliveryModes = new ArrayList<>();
+	private ValidList<CourseDeliveryModesDto> courseDeliveryModes = new ValidList<>();
 
+	@Valid
 	@JsonProperty("course_prerequisite_subjects")
-	private List<CoursePrerequisiteSubjectDto> prerequisiteSubjects = new ArrayList<>();
+	private ValidList<CoursePrerequisiteSubjectDto> prerequisiteSubjects = new ValidList<>();
 
+	@Valid
 	@JsonProperty("english_eligibility")
-	private List<CourseEnglishEligibilityDto> englishEligibility = new ArrayList<>();
+	private ValidList<CourseEnglishEligibilityDto> englishEligibility = new ValidList<>();
 
 	@JsonProperty("examination_board")
 	private String examinationBoard;

@@ -37,7 +37,7 @@ public interface CourseInterface {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@RequestHeader(required = true) final String userId,
-			@RequestBody final CourseRequest course, @PathVariable final String id)
+			@Valid @RequestBody final CourseRequest course, @PathVariable final String id)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
@@ -175,5 +175,4 @@ public interface CourseInterface {
 	@Deprecated
 	@GetMapping(value = "/eligibility/update")
 	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception;
-
 }

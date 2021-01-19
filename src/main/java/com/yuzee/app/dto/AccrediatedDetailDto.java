@@ -12,7 +12,6 @@ import lombok.Data;
 @Data
 public class AccrediatedDetailDto {
 	
-	@NotBlank(message = "accrediated_id is required")
 	@JsonProperty("accrediated_id")
 	private String id;
 	

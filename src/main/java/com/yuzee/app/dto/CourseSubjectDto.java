@@ -21,7 +21,7 @@ public class CourseSubjectDto {
 	private String semesterId;
 
 	@JsonProperty(value = "semester", access = Access.READ_ONLY)
-	private String semester;
+	private SemesterDto semester;
 
 	@NotEmpty(message = "name must not be empty")
 	@JsonProperty("name")

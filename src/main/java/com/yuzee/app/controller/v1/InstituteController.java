@@ -36,6 +36,7 @@ import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.endpoint.InstituteInterface;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;

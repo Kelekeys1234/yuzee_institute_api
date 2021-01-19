@@ -43,9 +43,6 @@ public class InstituteResponseDto extends InstituteDto {
 	@JsonProperty("currency")
 	private String currency;
 
-	@JsonProperty("accrediated_detail")
-	private List<AccrediatedDetailDto> accrediatedDetail;
-
 	@JsonProperty("institute_timing")
 	private TimingDto instituteTiming;
 	

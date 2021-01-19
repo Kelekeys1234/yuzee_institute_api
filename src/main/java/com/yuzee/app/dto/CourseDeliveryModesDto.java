@@ -1,6 +1,6 @@
 package com.yuzee.app.dto;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +16,7 @@ public class CourseDeliveryModesDto {
 	private String id;
 
 	@JsonProperty("delivery_type")
-	@NotBlank(message = "delivery_type should not be blank")
+	@NotEmpty(message = "delivery_type should not be blank")
 	private String deliveryType;
 
 	@JsonProperty("duration")

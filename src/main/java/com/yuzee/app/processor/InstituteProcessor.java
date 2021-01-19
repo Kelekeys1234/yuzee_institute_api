@@ -28,6 +28,7 @@ import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteDomesticRankingHistory;
 import com.yuzee.app.bean.InstituteFunding;
 import com.yuzee.app.bean.InstituteIntake;
+import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CourseDao;
@@ -62,6 +63,7 @@ import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.TimingType;
 import com.yuzee.app.exception.ConstraintVoilationException;
+import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.RuntimeNotFoundException;
@@ -1098,5 +1100,31 @@ public class InstituteProcessor {
 			});
 		}
 		return instituteResponseDtos;
+	}
+	
+	public List<StorageDto> getInstituteGallery(String instituteId) throws InternalServerException, NotFoundException {
+		Institute institute = dao.get(instituteId);
+		if (ObjectUtils.isEmpty(institute)) {
+			try {
+				List<StorageDto> storages = storageHandler.getStorages(Arrays.asList(instituteId),
+						EntityTypeEnum.INSTITUTE, Arrays.asList(EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.LOGO,
+								EntitySubTypeEnum.MEDIA, EntitySubTypeEnum.ABOUT_US));
+
+				List<String> instituteServiceIds = institute.getInstituteServices().stream()
+						.map(InstituteService::getId).collect(Collectors.toList());
+				if (!CollectionUtils.isEmpty(instituteServiceIds)) {
+					storages.addAll(storageHandler.getStorages(instituteServiceIds, EntityTypeEnum.INSTITUTE_SERVICE,
+							EntitySubTypeEnum.MEDIA));
+				}
+
+				return storages;
+			} catch (NotFoundException | InvokeException e) {
+				log.error(e.getMessage());
+				throw new InternalServerException(e.getMessage());
+			}
+		} else {
+			log.error("Institute not found for id: {}", instituteId);
+			throw new NotFoundException("Institute not found for id: " + instituteId);
+		}
 	}
 }

@@ -22,6 +22,7 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteTypeDto;
 import com.yuzee.app.dto.LatLongDto;
+import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;

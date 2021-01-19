@@ -107,6 +107,7 @@ public class CommonUtil {
 		courseRequest.setAvailability(course.getAvailabilty());
 		if (course.getInstitute() != null) {
 			courseRequest.setInstituteId(course.getInstitute().getId());
+			courseRequest.setInstituteName(course.getInstitute().getName());
 		}
 		if (course.getLevel() != null) {
 			courseRequest.setLevelId(course.getLevel().getId());

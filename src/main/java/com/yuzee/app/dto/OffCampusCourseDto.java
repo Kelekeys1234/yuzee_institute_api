@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 public class OffCampusCourseDto {
 
-	@JsonProperty("id")
+	@JsonProperty("off_campus_course_id")
 	private String id;
 
 	@JsonProperty("latitude")
