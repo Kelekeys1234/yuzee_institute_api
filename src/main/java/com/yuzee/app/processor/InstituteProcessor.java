@@ -403,7 +403,7 @@ public class InstituteProcessor {
 			timingRequestDto.setEntityType(EntityTypeEnum.INSTITUTE.name());
 			timingRequestDto.setTimingType(TimingType.OPEN_HOURS.name());
 			timingRequestDto.setTimings(instituteRequest.getInstituteTimings());
-			instituteTimingProcessor.saveUpdateTimings("API", EntityTypeEnum.INSTITUTE, Arrays.asList(timingRequestDto), institute.getId());
+			instituteTimingProcessor.saveUpdateDeleteTimings("API", EntityTypeEnum.INSTITUTE, Arrays.asList(timingRequestDto), institute.getId());
 		}
 		return institute;
 	}

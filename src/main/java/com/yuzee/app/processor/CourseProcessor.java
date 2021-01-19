@@ -766,7 +766,7 @@ public class CourseProcessor {
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, null, courseDto);
 		log.info("Calling DAO layer to save/update course in DB");
 		course = courseDao.addUpdateCourse(course);
-		timingProcessor.saveUpdateTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
+		timingProcessor.saveUpdateDeleteTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
 		log.info("Calling elastic service to add courses on elastic index");
 		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
 				EntityTypeEnum.COURSE.name().toLowerCase(),
@@ -780,7 +780,7 @@ public class CourseProcessor {
 		log.debug("Inside updateCourse() method");
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, id, courseDto);
 		course = courseDao.addUpdateCourse(course);
-		timingProcessor.saveUpdateTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
+		timingProcessor.saveUpdateDeleteTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
 		log.info("Calling elastic service to update courses on elastic index having entityId: ", id);
 		elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
 				EntityTypeEnum.COURSE.name().toLowerCase(),

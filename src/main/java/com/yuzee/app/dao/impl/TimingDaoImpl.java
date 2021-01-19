@@ -1,6 +1,7 @@
 package com.yuzee.app.dao.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,16 @@ public class TimingDaoImpl implements TimingDao {
 	@Override
 	public void deleteByEntityTypeAndEntityId(EntityTypeEnum entityType, String entityId) {
 		timingRepository.deleteByEntityTypeAndEntityId(entityType, entityId);
+	}
+
+	@Override
+	public Optional<Timing> findById(String id) {
+		return timingRepository.findById(id);
+	}
+
+	@Override
+	public void deleteById(String timingId) {
+		timingRepository.deleteById(timingId);
 	}
 
 }
