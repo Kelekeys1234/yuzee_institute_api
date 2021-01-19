@@ -2,7 +2,9 @@ package com.yuzee.app.dto;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -83,4 +85,9 @@ public class InstituteRequestDto extends InstituteDto {
 
 	@JsonProperty("is_followed")
 	private boolean followed;
+	
+	@Valid
+	@JsonProperty("institute_fundings")
+	@NotNull(message = "institute_fundings must not be null")
+	private ValidList<InstituteFundingDto> instituteFundings = new ValidList<>();
 }

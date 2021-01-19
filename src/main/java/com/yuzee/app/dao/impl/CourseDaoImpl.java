@@ -1844,4 +1844,9 @@ public class CourseDaoImpl implements CourseDao {
 	public void deleteCourse(String id) {
 		courseRepository.deleteById(id);
 	}
+
+	@Override
+	public List<Course> findByInstituteId(String instituteId) {
+		return courseRepository.findByInstituteId(instituteId);
+	}
 }

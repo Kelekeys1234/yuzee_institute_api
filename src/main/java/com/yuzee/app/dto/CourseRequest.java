@@ -193,6 +193,9 @@ public class CourseRequest {
 	@JsonProperty("reviews_count")
 	private Long reviewsCount;
 
+	@JsonProperty("fundings_count")
+	private int fundingsCount;
+
 	@JsonProperty("off_campus_course")
 	private OffCampusCourseDto offCampusCourse;
 
@@ -210,4 +213,9 @@ public class CourseRequest {
 	@JsonProperty("course_career_outcomes")
 	@NotNull(message = "course_career_outcomes must not be null")
 	private ValidList<CourseCareerOutcomeDto> courseCareerOutcomes = new ValidList<>();
+
+	@Valid
+	@JsonProperty("course_fundings")
+	@NotNull(message = "course_fundings must not be null")
+	private ValidList<CourseFundingDto> courseFundings = new ValidList<>();
 }

@@ -122,4 +122,6 @@ public interface CourseDao {
 	public Integer getRelatedCourseBasedOnCareerTestCount(List<String> searchKeyword);
 	
 	public void deleteCourse(String id);
+
+	public List<Course> findByInstituteId(String instituteId);
 }
