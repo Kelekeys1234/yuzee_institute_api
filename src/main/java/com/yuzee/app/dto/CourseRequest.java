@@ -27,7 +27,7 @@ public class CourseRequest {
 	@JsonProperty("faculty_id")
 	@NotBlank(message = "faculty_id should not be blank")
 	private String facultyId;
-	
+
 	@JsonProperty("faculty")
 	private FacultyDto faculty;
 
@@ -41,7 +41,7 @@ public class CourseRequest {
 	@JsonProperty("description")
 	private String description;
 
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@JsonProperty("intake")
 	private List<Date> intake;
 
@@ -91,7 +91,7 @@ public class CourseRequest {
 	@JsonProperty("level_id")
 	@NotBlank(message = "level_id should not be blank")
 	private String levelId;
-	
+
 	@JsonProperty("level")
 	private LevelDto level;
 
@@ -216,7 +216,10 @@ public class CourseRequest {
 	@JsonProperty("course_fundings")
 	@NotNull(message = "course_fundings must not be null")
 	private ValidList<CourseFundingDto> courseFundings = new ValidList<>();
-	
+
+	@JsonProperty("course_payment")
+	private CoursePaymentDto coursePayment;
+
 	@Valid
 	@JsonProperty("institute")
 	private InstituteResponseDto institute;
