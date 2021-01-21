@@ -88,7 +88,7 @@ public class CourseFundingProcessor {
 	public void deleteCourseFundingsByFundingNameIds(String userId, String courseId, List<String> fundingNameIds)
 			throws NotFoundException, ForbiddenException {
 		List<CourseFunding> courseFundings = courseFundingDao.findByCourseIdFundingNameIdIn(courseId, fundingNameIds);
-		if (fundingNameIds.size() != courseFundings.size()) {
+		if (fundingNameIds.size() == courseFundings.size()) {
 			if (courseFundings.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more fundings by userId: {}", userId);
 				throw new ForbiddenException("no access to delete one more fundings by userId: {}" + userId);

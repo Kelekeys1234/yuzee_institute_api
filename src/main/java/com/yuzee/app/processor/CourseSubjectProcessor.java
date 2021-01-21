@@ -57,7 +57,7 @@ public class CourseSubjectProcessor {
 					.map(CourseSubjectDto::getId).collect(Collectors.toSet());
 
 			Map<String, CourseSubject> existingCourseSubjectsMap = courseSubjectDao
-					.findByIdIn(updateRequestIds.stream().collect(Collectors.toList())).stream()
+					.findByCourseIdAndIdIn(courseId, updateRequestIds.stream().collect(Collectors.toList())).stream()
 					.collect(Collectors.toMap(CourseSubject::getId, e -> e));
 
 			List<CourseSubject> courseSubjects = new ArrayList<>();
@@ -83,15 +83,15 @@ public class CourseSubjectProcessor {
 		}
 	}
 
-	public void deleteByCourseSubjectIds(String userId, List<String> intakeIds)
+	public void deleteByCourseSubjectIds(String userId, String courseId, List<String> courseSubjectIds)
 			throws NotFoundException, ForbiddenException {
-		List<CourseSubject> courseSubjects = courseSubjectDao.findByIdIn(intakeIds);
-		if (intakeIds.size() != courseSubjects.size()) {
+		List<CourseSubject> courseSubjects = courseSubjectDao.findByCourseIdAndIdIn(courseId, courseSubjectIds);
+		if (courseSubjectIds.size() != courseSubjects.size()) {
 			if (courseSubjects.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more subjects");
 				throw new ForbiddenException("no access to delete one more subjects");
 			}
-			courseSubjectDao.deleteByIdIn(intakeIds);
+			courseSubjectDao.deleteByIdIn(courseSubjectIds);
 		} else {
 			log.error("one or more invalid course_subject_ids");
 			throw new NotFoundException("one or more invalid course_subject_ids");

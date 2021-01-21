@@ -65,7 +65,7 @@ public class CourseEnglishEligibilityProcessor {
 					.collect(Collectors.toSet());
 
 			Map<String, CourseEnglishEligibility> existingCourseEnglishEligibilitysMap = courseEnglishEligibilityDAO
-					.findByIdIn(updateRequestIds.stream().collect(Collectors.toList())).stream()
+					.findByCourseIdAndIdIn(courseId, updateRequestIds.stream().collect(Collectors.toList())).stream()
 					.collect(Collectors.toMap(CourseEnglishEligibility::getId, e -> e));
 
 			List<CourseEnglishEligibility> courseEnglishEligibilitys = new ArrayList<>();
@@ -90,15 +90,16 @@ public class CourseEnglishEligibilityProcessor {
 		}
 	}
 
-	public void deleteByCourseEnglishEligibilityIds(String userId, List<String> intakeIds)
+	public void deleteByCourseEnglishEligibilityIds(String userId, String courseId, List<String> englishEligibilityIds)
 			throws NotFoundException, ForbiddenException {
-		List<CourseEnglishEligibility> courseEnglishEligibilitys = courseEnglishEligibilityDAO.findByIdIn(intakeIds);
-		if (intakeIds.size() != courseEnglishEligibilitys.size()) {
+		List<CourseEnglishEligibility> courseEnglishEligibilitys = courseEnglishEligibilityDAO
+				.findByCourseIdAndIdIn(courseId, englishEligibilityIds);
+		if (englishEligibilityIds.size() == courseEnglishEligibilitys.size()) {
 			if (courseEnglishEligibilitys.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more english eligbilities");
 				throw new ForbiddenException("no access to delete one more english eligbilities");
 			}
-			courseEnglishEligibilityDAO.deleteByIdIn(intakeIds);
+			courseEnglishEligibilityDAO.deleteByIdIn(englishEligibilityIds);
 		} else {
 			log.error("one or more invalid course_english eligbility_ids");
 			throw new NotFoundException("one or more invalid course_english eligbility_ids");

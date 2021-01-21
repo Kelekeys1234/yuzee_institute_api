@@ -48,7 +48,7 @@ public class CourseDeliveryModesProcessor {
 	public List<CourseDeliveryModesDto> getCourseDeliveryModesByCourseId(String courseId) {
 		log.debug("Inside getCourseDeliveryModesByCourseId() method");
 		List<CourseDeliveryModesDto> courseDeliveryModesResponse = new ArrayList<>();
-		log.info("Fetching copurseAdditionalInfo from DB for courseId = " + courseId);
+		log.info("Fetching courseDeliveryModes from DB for courseId = " + courseId);
 		List<CourseDeliveryModes> courseDeliveryModesFromDB = courseDeliveryModesDao
 				.getCourseDeliveryModesByCourseId(courseId);
 		if (!CollectionUtils.isEmpty(courseDeliveryModesFromDB)) {
@@ -74,7 +74,7 @@ public class CourseDeliveryModesProcessor {
 					.map(CourseDeliveryModesDto::getId).collect(Collectors.toSet());
 
 			Map<String, CourseDeliveryModes> existingCourseDeliveryModesMap = courseDeliveryModesDao
-					.findByIdIn(updateRequestIds.stream().collect(Collectors.toList())).stream()
+					.findByCourseIdAndIdIn(courseId, updateRequestIds.stream().collect(Collectors.toList())).stream()
 					.collect(Collectors.toMap(CourseDeliveryModes::getId, e -> e));
 
 			CurrencyRateDto currencyRate = null;
@@ -132,15 +132,16 @@ public class CourseDeliveryModesProcessor {
 		}
 	}
 
-	public void deleteByCourseDeliveryModeIds(String userId, List<String> intakeIds)
+	public void deleteByCourseDeliveryModeIds(String userId, String courseId, List<String> deliveryModeIds)
 			throws NotFoundException, ForbiddenException {
-		List<CourseDeliveryModes> courseDeliveryModes = courseDeliveryModesDao.findByIdIn(intakeIds);
-		if (intakeIds.size() != courseDeliveryModes.size()) {
+		List<CourseDeliveryModes> courseDeliveryModes = courseDeliveryModesDao.findByCourseIdAndIdIn(courseId,
+				deliveryModeIds);
+		if (deliveryModeIds.size() == courseDeliveryModes.size()) {
 			if (courseDeliveryModes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more course_delivery_modes");
 				throw new ForbiddenException("no access to delete one more course_delivery_modes");
 			}
-			courseDeliveryModesDao.deleteByIdIn(intakeIds);
+			courseDeliveryModesDao.deleteByIdIn(deliveryModeIds);
 		} else {
 			log.error("one or more invalid course_delivery_mode_ids");
 			throw new NotFoundException("one or more invalid course_delivery_mode_ids");

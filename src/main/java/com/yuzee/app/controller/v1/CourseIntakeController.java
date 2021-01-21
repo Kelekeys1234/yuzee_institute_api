@@ -33,9 +33,9 @@ public class CourseIntakeController implements CourseIntakeInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteByCourseIntakeIds(String userId, List<String> intakeIds)
+	public ResponseEntity<?> deleteByCourseIntakeIds(String userId, String courseId, List<String> intakeIds)
 			throws ValidationException, NotFoundException, ForbiddenException {
-		courseIntakeProcessor.deleteByCourseIntakeIds(userId, intakeIds);
+		courseIntakeProcessor.deleteByCourseIntakeIds(userId, courseId, intakeIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course Intakes deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

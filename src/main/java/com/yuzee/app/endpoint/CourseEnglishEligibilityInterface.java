@@ -20,10 +20,10 @@ import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
-@RequestMapping("/api/v1/course/english-eligibility")
+@RequestMapping("/api/v1/course/{courseId}/english-eligibility")
 public interface CourseEnglishEligibilityInterface {
 
-	@PostMapping("/courseId/{courseId}")
+	@PostMapping
 	public ResponseEntity<?> saveUpdateCourseEnglishEligibility(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
 			@Valid @RequestBody(required = true) final ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos)
@@ -31,7 +31,7 @@ public interface CourseEnglishEligibilityInterface {
 
 	@DeleteMapping
 	public ResponseEntity<?> deleteByCourseEnglishEligibilityIds(
-			@RequestHeader(value = "userId", required = true) final String userId,
+			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
 			@RequestParam(value = "course_english_eligibility_ids", required = true) @NotEmpty final List<String> courseEnglishEligibilityIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }

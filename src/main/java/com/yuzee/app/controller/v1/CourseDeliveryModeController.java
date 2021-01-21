@@ -36,9 +36,9 @@ public class CourseDeliveryModeController implements CourseDeliveryModeInterface
 	}
 
 	@Override
-	public ResponseEntity<?> deleteByCourseDeliveryModeIds(String userId, List<String> courseDeliveryModeIds)
-			throws ValidationException, NotFoundException, ForbiddenException {
-		courseDeliveryModeProcessor.deleteByCourseDeliveryModeIds(userId, courseDeliveryModeIds);
+	public ResponseEntity<?> deleteByCourseDeliveryModeIds(String userId, String courseId,
+			List<String> courseDeliveryModeIds) throws ValidationException, NotFoundException, ForbiddenException {
+		courseDeliveryModeProcessor.deleteByCourseDeliveryModeIds(userId, courseId, courseDeliveryModeIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course DeliveryMode deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

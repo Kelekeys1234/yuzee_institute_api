@@ -39,7 +39,7 @@ public class CourseIntakeProcessor {
 			throws NotFoundException, ValidationException {
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
-			
+
 			List<CourseIntake> courseIntakes = new ArrayList<>();
 			courseIntakeDtos.stream().forEach(e -> {
 				CourseIntake courseIntake = new CourseIntake();
@@ -54,9 +54,10 @@ public class CourseIntakeProcessor {
 		}
 	}
 
-	public void deleteByCourseIntakeIds(String userId, List<String> intakeIds) throws NotFoundException, ForbiddenException {
-		List<CourseIntake> courseIntakes = courseIntakeDao.findByIdIn(intakeIds);
-		if (intakeIds.size() != courseIntakes.size()) {
+	public void deleteByCourseIntakeIds(String userId, String courseId, List<String> intakeIds)
+			throws NotFoundException, ForbiddenException {
+		List<CourseIntake> courseIntakes = courseIntakeDao.findByCourseIdAndIdIn(courseId, intakeIds);
+		if (intakeIds.size() == courseIntakes.size()) {
 			if (courseIntakes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more intakes by intake ids: ", Arrays.asList(intakeIds));
 				throw new ForbiddenException(

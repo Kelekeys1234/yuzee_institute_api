@@ -22,10 +22,10 @@ import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
-@RequestMapping("/api/v1/course/delivery-mode")
+@RequestMapping("/api/v1/course/{courseId}/delivery-mode")
 public interface CourseDeliveryModeInterface {
 
-	@PostMapping("/courseId/{courseId}")
+	@PostMapping
 	public ResponseEntity<?> saveUpdateCourseDeliveryMode(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
 			@Valid @RequestBody(required = true) final ValidList<CourseDeliveryModesDto> courseDeliveryModeDtos)
@@ -33,7 +33,7 @@ public interface CourseDeliveryModeInterface {
 
 	@DeleteMapping
 	public ResponseEntity<?> deleteByCourseDeliveryModeIds(
-			@RequestHeader(value = "userId", required = true) final String userId,
+			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
 			@RequestParam(value = "course_delivery_mode_ids", required = true) @NotEmpty final List<String> courseDeliveryModeIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }

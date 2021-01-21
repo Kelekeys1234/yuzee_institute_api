@@ -35,10 +35,11 @@ public class CourseEnglishEligibilityController implements CourseEnglishEligibil
 	}
 
 	@Override
-	public ResponseEntity<?> deleteByCourseEnglishEligibilityIds(String userId,
+	public ResponseEntity<?> deleteByCourseEnglishEligibilityIds(String userId, String courseId,
 			List<String> courseEnglishEligibilityIds)
 			throws ValidationException, NotFoundException, ForbiddenException {
-		courseEnglishEligibilityProcessor.deleteByCourseEnglishEligibilityIds(userId, courseEnglishEligibilityIds);
+		courseEnglishEligibilityProcessor.deleteByCourseEnglishEligibilityIds(userId, courseId,
+				courseEnglishEligibilityIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course EnglishEligibility deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

@@ -57,7 +57,7 @@ public class CourseCareerOutcomeProcessor {
 					.map(CourseCareerOutcomeDto::getId).collect(Collectors.toSet());
 
 			Map<String, CourseCareerOutcome> existingCourseCareerOutcomesMap = courseCareerOutcomeDao
-					.findByIdIn(updateRequestIds.stream().collect(Collectors.toList())).stream()
+					.findByCourseIdAndIdIn(courseId, updateRequestIds.stream().collect(Collectors.toList())).stream()
 					.collect(Collectors.toMap(CourseCareerOutcome::getId, e -> e));
 
 			List<CourseCareerOutcome> courseCareerOutcomes = new ArrayList<>();
@@ -83,15 +83,16 @@ public class CourseCareerOutcomeProcessor {
 		}
 	}
 
-	public void deleteByCourseCareerOutcomeIds(String userId, List<String> intakeIds)
+	public void deleteByCourseCareerOutcomeIds(String userId, String courseId, List<String> careerOutcomeIds)
 			throws NotFoundException, ForbiddenException {
-		List<CourseCareerOutcome> courseCareerOutcomes = courseCareerOutcomeDao.findByIdIn(intakeIds);
-		if (intakeIds.size() != courseCareerOutcomes.size()) {
+		List<CourseCareerOutcome> courseCareerOutcomes = courseCareerOutcomeDao.findByCourseIdAndIdIn(courseId,
+				careerOutcomeIds);
+		if (careerOutcomeIds.size() == courseCareerOutcomes.size()) {
 			if (courseCareerOutcomes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more career outcomes");
 				throw new ForbiddenException("no access to delete one more career outcomes");
 			}
-			courseCareerOutcomeDao.deleteByIdIn(intakeIds);
+			courseCareerOutcomeDao.deleteByIdIn(careerOutcomeIds);
 		} else {
 			log.error("one or more invalid course_career outcome_ids");
 			throw new NotFoundException("one or more invalid course_career outcome_ids");

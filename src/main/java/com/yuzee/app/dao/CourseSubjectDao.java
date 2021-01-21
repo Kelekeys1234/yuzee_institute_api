@@ -8,7 +8,7 @@ import com.yuzee.app.exception.ValidationException;
 public interface CourseSubjectDao {
 	List<CourseSubject> saveAll(List<CourseSubject> courseSubjects) throws ValidationException;
 
-	List<CourseSubject> findByIdIn(List<String> ids);
+	List<CourseSubject> findByCourseIdAndIdIn(String courseId, List<String> ids);
 
 	void deleteByIdIn(List<String> ids);
 }

@@ -42,7 +42,7 @@ public class CourseDeliveryModesDaoImpl implements CourseDeliveryModesDao {
 	}
 
 	@Override
-	public List<CourseDeliveryModes> findByIdIn(List<String> ids) {
-		return courseDeliveryModesRepository.findAllById(ids);
+	public List<CourseDeliveryModes> findByCourseIdAndIdIn(String courseId, List<String> ids) {
+		return courseDeliveryModesRepository.findByCourseIdAndIdIn(courseId, ids);
 	}
 }

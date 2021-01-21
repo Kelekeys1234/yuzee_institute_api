@@ -26,16 +26,17 @@ public class CourseCareerOutcomeController implements CourseCareerOutcomeInterfa
 
 	@Override
 	public ResponseEntity<?> saveUpdateCourseCareerOutcomes(String userId, String courseId,
-			@Valid ValidList<CourseCareerOutcomeDto> courseCareerOutcomeDtos) throws ValidationException, NotFoundException {
+			@Valid ValidList<CourseCareerOutcomeDto> courseCareerOutcomeDtos)
+			throws ValidationException, NotFoundException {
 		courseCareerOutcomeProcessor.saveUpdateCourseCareerOutcomes(userId, courseId, courseCareerOutcomeDtos);
 		return new GenericResponseHandlers.Builder().setMessage("Course CareerOutcomes added/ updated successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> deleteByCourseCareerOutcomeIds(String userId, List<String> courseCareerOutcomeIds)
-			throws ValidationException, NotFoundException, ForbiddenException {
-		courseCareerOutcomeProcessor.deleteByCourseCareerOutcomeIds(userId, courseCareerOutcomeIds);
+	public ResponseEntity<?> deleteByCourseCareerOutcomeIds(String userId, String courseId,
+			List<String> courseCareerOutcomeIds) throws ValidationException, NotFoundException, ForbiddenException {
+		courseCareerOutcomeProcessor.deleteByCourseCareerOutcomeIds(userId, courseId, courseCareerOutcomeIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course CareerOutcome deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

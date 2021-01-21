@@ -9,7 +9,7 @@ public interface CourseCareerOutComeDao {
 
 	List<CourseCareerOutcome> saveAll(List<CourseCareerOutcome> courseCareerOutcomes) throws ValidationException;
 
-	List<CourseCareerOutcome> findByIdIn(List<String> ids);
+	List<CourseCareerOutcome> findByCourseIdAndIdIn(String courseId, List<String> ids);
 
 	void deleteByIdIn(List<String> intakeIds);
 }

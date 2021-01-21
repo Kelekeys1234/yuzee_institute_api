@@ -190,13 +190,13 @@ public class TimingProcessor {
 		return instituteTimingResponseDto;
 	}
 
-	public void deleteTiming(String userId, String timingId) throws NotFoundException, ForbiddenException {
-		Optional<Timing> timingO = timingDao.findById(timingId);
-		if (!timingO.isPresent()) {
+	public void deleteTiming(String userId, EntityTypeEnum entityType, String entityId, String timingId)
+			throws NotFoundException, ForbiddenException {
+		Timing timing = timingDao.findByEntityTypeAndEntityIdAndId(entityType, entityId, timingId);
+		if (ObjectUtils.isEmpty(timing)) {
 			log.error("invalid timing found against id: {}", timingId);
 			throw new NotFoundException("invalid timing found against id: " + timingId);
 		} else {
-			Timing timing = timingO.get();
 			if (!timing.getCreatedBy().equals(userId)) {
 				log.error("user dont have access to delete the timing");
 				throw new ForbiddenException("user dont have access to delete the timing");

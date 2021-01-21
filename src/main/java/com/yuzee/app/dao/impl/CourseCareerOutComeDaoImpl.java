@@ -22,7 +22,8 @@ public class CourseCareerOutComeDaoImpl implements CourseCareerOutComeDao {
 	private CourseCareerOutComeRepository courseCareerOutComeRepository;
 
 	@Override
-	public List<CourseCareerOutcome> saveAll(List<CourseCareerOutcome> courseCareerOutcomes) throws ValidationException {
+	public List<CourseCareerOutcome> saveAll(List<CourseCareerOutcome> courseCareerOutcomes)
+			throws ValidationException {
 		try {
 			return courseCareerOutComeRepository.saveAll(courseCareerOutcomes);
 		} catch (DataIntegrityViolationException e) {
@@ -32,8 +33,8 @@ public class CourseCareerOutComeDaoImpl implements CourseCareerOutComeDao {
 	}
 
 	@Override
-	public List<CourseCareerOutcome> findByIdIn(List<String> ids) {
-		return courseCareerOutComeRepository.findAllById(ids);
+	public List<CourseCareerOutcome> findByCourseIdAndIdIn(String courseId, List<String> ids) {
+		return courseCareerOutComeRepository.findByCourseIdAndIdIn(courseId, ids);
 	}
 
 	@Transactional

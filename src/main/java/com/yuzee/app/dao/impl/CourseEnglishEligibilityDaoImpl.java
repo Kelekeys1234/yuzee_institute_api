@@ -34,8 +34,8 @@ public class CourseEnglishEligibilityDaoImpl implements CourseEnglishEligibility
 	}
 
 	@Override
-	public List<CourseEnglishEligibility> findByIdIn(List<String> ids) {
-		return courseEnglishEligibilityRepository.findAllById(ids);
+	public List<CourseEnglishEligibility> findByCourseIdAndIdIn(String courseId, List<String> ids) {
+		return courseEnglishEligibilityRepository.findByCourseIdAndIdIn(courseId, ids);
 	}
 
 	@Transactional

@@ -19,22 +19,22 @@ import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
-@RequestMapping("/api/v1/course/funding")
+@RequestMapping("/api/v1")
 public interface CourseFundingInterface {
 
-	@PostMapping("/instituteId/{instituteId}/add-funding-to-all-courses")
+	@PostMapping("/course/funding/instituteId/{instituteId}/add-funding-to-all-courses")
 	public ResponseEntity<?> addFundingToAllInstituteCourses(
 			@RequestHeader(value = "userId", required = true) final String userId,
 			@PathVariable final String instituteId, @Valid @RequestBody final CourseFundingDto courseFundingDto)
 			throws ValidationException, NotFoundException;
 
-	@PostMapping("/courseId/{courseId}")
+	@PostMapping("/course/{courseId}/funding")
 	public ResponseEntity<?> saveAll(@RequestHeader(value = "userId", required = true) final String userId,
 			@PathVariable final String courseId,
 			@Valid @RequestBody(required = true) final ValidList<CourseFundingDto> courseFundingDto)
 			throws ValidationException, NotFoundException;
 
-	@DeleteMapping("/courseId/{courseId}")
+	@DeleteMapping("/course/{courseId}/funding")
 	public ResponseEntity<?> deleteByFundingNameIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
 			@RequestParam(value = "funding_name_ids", required = true) final List<String> fundingNameIds)

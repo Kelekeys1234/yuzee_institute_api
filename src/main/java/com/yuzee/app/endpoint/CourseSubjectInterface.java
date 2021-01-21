@@ -20,18 +20,18 @@ import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
-@RequestMapping("/api/v1/course/subject")
+@RequestMapping("/api/v1/course/{courseId}/subject")
 public interface CourseSubjectInterface {
 
-	@PostMapping("/courseId/{courseId}")
-	public ResponseEntity<?> saveUpdateCourseSubjects(@RequestHeader(value = "userId", required = true) final String userId,
-			@PathVariable final String courseId,
+	@PostMapping
+	public ResponseEntity<?> saveUpdateCourseSubjects(
+			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
 			@Valid @RequestBody(required = true) final ValidList<CourseSubjectDto> courseSubjectDtos)
 			throws ValidationException, NotFoundException;
 
 	@DeleteMapping
 	public ResponseEntity<?> deleteByCourseSubjectIds(
-			@RequestHeader(value = "userId", required = true) final String userId,
+			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
 			@RequestParam(value = "course_subject_ids", required = true) @NotEmpty final List<String> courseSubjectIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.TimingRequestDto;
 import com.yuzee.app.endpoint.TimingInterface;
+import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -40,9 +41,10 @@ public class TimingController implements TimingInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteByTimingId(String userId, String timingId)
+	public ResponseEntity<?> deleteByTimingId(String userId, String entityType, String entityId, String timingId)
 			throws ValidationException, NotFoundException, ForbiddenException {
-		timingProcessor.deleteTiming(userId, timingId);
+		ValidationUtil.validatEntityType(entityType);
+		timingProcessor.deleteTiming(userId, EntityTypeEnum.valueOf(entityType), entityId, timingId);
 		return new GenericResponseHandlers.Builder().setMessage("Timing deleted successfuly.").setStatus(HttpStatus.OK)
 				.create();
 	}

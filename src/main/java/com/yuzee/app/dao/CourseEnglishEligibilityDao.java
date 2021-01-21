@@ -14,6 +14,6 @@ public interface CourseEnglishEligibilityDao {
 
 	void deleteByIdIn(List<String> ids);
 
-	List<CourseEnglishEligibility> findByIdIn(List<String> ids);
+	List<CourseEnglishEligibility> findByCourseIdAndIdIn(String courseId, List<String> ids);
 
 }

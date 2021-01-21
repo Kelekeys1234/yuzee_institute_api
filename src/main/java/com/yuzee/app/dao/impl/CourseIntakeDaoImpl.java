@@ -32,8 +32,8 @@ public class CourseIntakeDaoImpl implements CourseIntakeDao {
 	}
 
 	@Override
-	public List<CourseIntake> findByIdIn(List<String> ids) {
-		return courseIntakeRepository.findAllById(ids);
+	public List<CourseIntake> findByCourseIdAndIdIn(String courseId, List<String> ids) {
+		return courseIntakeRepository.findByCourseIdAndIdIn(courseId, ids);
 	}
 
 	@Transactional

@@ -12,5 +12,7 @@ public interface CourseDeliveryModesRepository extends JpaRepository<CourseDeliv
 
 	public List<CourseDeliveryModes> findByCourseId(String courseId);
 
+	List<CourseDeliveryModes> findByCourseIdAndIdIn(String courseId, List<String> ids);
+
 	public void deleteByIdIn(List<String> ids);
 }

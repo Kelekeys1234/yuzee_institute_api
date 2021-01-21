@@ -33,9 +33,9 @@ public class CourseSubjectController implements CourseSubjectInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteByCourseSubjectIds(String userId, List<String> courseSubjectIds)
+	public ResponseEntity<?> deleteByCourseSubjectIds(String userId, String courseId, List<String> courseSubjectIds)
 			throws ValidationException, NotFoundException, ForbiddenException {
-		courseSubjectProcessor.deleteByCourseSubjectIds(userId, courseSubjectIds);
+		courseSubjectProcessor.deleteByCourseSubjectIds(userId, courseId, courseSubjectIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course Subject deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

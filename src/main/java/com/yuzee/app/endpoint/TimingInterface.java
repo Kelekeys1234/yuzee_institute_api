@@ -15,15 +15,16 @@ import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
-@RequestMapping("/api/v1/timing")
+@RequestMapping("/api/v1")
 public interface TimingInterface {
 
-	@PostMapping
+	@PostMapping("/timing")
 	public ResponseEntity<?> saveOrUpdate(@RequestHeader(value = "userId", required = true) final String userId,
 			@Valid @RequestBody(required = true) final TimingRequestDto courseFundingDto)
 			throws ValidationException, NotFoundException;
 
-	@DeleteMapping("/{timingId}")
+	@DeleteMapping("/entityType/{entityType}/entityId/{entityId}/timing/{timingId}")
 	public ResponseEntity<?> deleteByTimingId(@RequestHeader(value = "userId", required = true) final String userId,
+			@PathVariable final String entityType, @PathVariable final String entityId,
 			@PathVariable final String timingId) throws ValidationException, NotFoundException, ForbiddenException;
 }
