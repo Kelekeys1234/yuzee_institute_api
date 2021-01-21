@@ -147,22 +147,22 @@ public class CourseRequest {
 	private String examinationBoard;
 
 	@JsonProperty("domestic_application_fee")
-	private double domesticApplicationFee;
+	private Double domesticApplicationFee;
 
 	@JsonProperty("international_application_fee")
-	private double internationalApplicationFee;
+	private Double internationalApplicationFee;
 
 	@JsonProperty("domestic_enrollment_fee")
-	private double domesticEnrollmentFee;
+	private Double domesticEnrollmentFee;
 
 	@JsonProperty("international_enrollment_fee")
-	private double internationalEnrollmentFee;
+	private Double internationalEnrollmentFee;
 
 	@JsonProperty("domestic_boarding_fee")
-	private double domesticBoardingFee;
+	private Double domesticBoardingFee;
 
 	@JsonProperty("international_boarding_fee")
-	private double internationalBoardingFee;
+	private Double internationalBoardingFee;
 
 	@JsonProperty("entrance_exam")
 	private String entranceExam;
