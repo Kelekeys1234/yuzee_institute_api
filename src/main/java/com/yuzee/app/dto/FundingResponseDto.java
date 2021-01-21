@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FundingResponseDto {
-	
+
 	@JsonProperty("funding_id")
 	private String id;
 
@@ -28,6 +28,12 @@ public class FundingResponseDto {
 
 	@JsonProperty("funding_name_id")
 	private String fundingNameId;
+
+	@JsonProperty("country_name")
+	private String countryName;
+
+	@JsonProperty("state_name")
+	private String stateName;
 
 	@JsonProperty("funding_nationalitys")
 	List<FundingEligibleNationalityDto> listOfFundingNationality = new ArrayList<>();
