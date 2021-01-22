@@ -11,5 +11,5 @@ public interface CourseCareerOutComeDao {
 
 	List<CourseCareerOutcome> findByCourseIdAndIdIn(String courseId, List<String> ids);
 
-	void deleteByIdIn(List<String> intakeIds);
+	void deleteByCourseIdAndIdIn(String courseId, List<String> ids);
 }

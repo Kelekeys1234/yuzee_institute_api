@@ -10,5 +10,5 @@ public interface CourseSubjectDao {
 
 	List<CourseSubject> findByCourseIdAndIdIn(String courseId, List<String> ids);
 
-	void deleteByIdIn(List<String> ids);
+	void deleteByCourseIdAndIdIn(String courseId, List<String> ids);
 }

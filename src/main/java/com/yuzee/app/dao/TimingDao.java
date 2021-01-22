@@ -20,5 +20,5 @@ public interface TimingDao {
 
 	public Timing findByEntityTypeAndEntityIdAndId(EntityTypeEnum entityType, String entityId, String id);
 
-	public void deleteById(String timingId);
+	void deleteByEntityTypeAndEntityIdAndId(EntityTypeEnum entityType, String entityId, String id);
 }

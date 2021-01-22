@@ -40,8 +40,8 @@ public class CourseEnglishEligibilityDaoImpl implements CourseEnglishEligibility
 
 	@Transactional
 	@Override
-	public void deleteByIdIn(List<String> intakeIds) {
-		courseEnglishEligibilityRepository.deleteByIdIn(intakeIds);
+	public void deleteByCourseIdAndIdIn(String courseId, List<String> ids) {
+		courseEnglishEligibilityRepository.deleteByCourseIdAndIdIn(courseId, ids);
 	}
 
 	@Override

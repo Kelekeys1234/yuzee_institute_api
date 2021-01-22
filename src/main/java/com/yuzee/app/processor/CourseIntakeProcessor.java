@@ -63,7 +63,7 @@ public class CourseIntakeProcessor {
 				throw new ForbiddenException(
 						"no access to delete one more intakes by intake ids: {}" + Arrays.asList(intakeIds));
 			}
-			courseIntakeDao.deleteByIdIn(intakeIds);
+			courseIntakeDao.deleteByCourseIdAndIdIn(courseId, intakeIds);
 		} else {
 			log.error("one or more invalid course_intake_ids");
 			throw new NotFoundException("one or more invalid course_intake_ids");

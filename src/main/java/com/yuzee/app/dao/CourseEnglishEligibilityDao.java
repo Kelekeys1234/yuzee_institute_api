@@ -12,7 +12,7 @@ public interface CourseEnglishEligibilityDao {
 
 	List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(String courseID);
 
-	void deleteByIdIn(List<String> ids);
+	void deleteByCourseIdAndIdIn(String courseId, List<String> ids);
 
 	List<CourseEnglishEligibility> findByCourseIdAndIdIn(String courseId, List<String> ids);
 

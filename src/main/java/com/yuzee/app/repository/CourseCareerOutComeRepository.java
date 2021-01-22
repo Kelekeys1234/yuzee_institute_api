@@ -12,5 +12,5 @@ public interface CourseCareerOutComeRepository extends JpaRepository<CourseCaree
 
 	List<CourseCareerOutcome> findByCourseIdAndIdIn(String courseId, List<String> ids);
 
-	void deleteByIdIn(List<String> courseCareerOutcomeIds);
+	public void deleteByCourseIdAndIdIn(String courseId, List<String> ids);
 }

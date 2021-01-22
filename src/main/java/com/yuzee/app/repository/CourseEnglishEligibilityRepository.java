@@ -14,6 +14,6 @@ public interface CourseEnglishEligibilityRepository extends JpaRepository<Course
 
 	List<CourseEnglishEligibility> findByCourseIdAndIdIn(String courseId, List<String> ids);
 
-	void deleteByIdIn(List<String> ids);
+	public void deleteByCourseIdAndIdIn(String courseId, List<String> ids);
 
 }

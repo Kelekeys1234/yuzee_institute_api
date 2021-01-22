@@ -37,8 +37,8 @@ public class CourseDeliveryModesDaoImpl implements CourseDeliveryModesDao {
 	}
 
 	@Override
-	public void deleteByIdIn(List<String> ids) {
-		courseDeliveryModesRepository.deleteByIdIn(ids);
+	public void deleteByCourseIdAndIdIn(String courseId, List<String> ids) {
+		courseDeliveryModesRepository.deleteByCourseIdAndIdIn(courseId, ids);
 	}
 
 	@Override

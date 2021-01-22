@@ -92,7 +92,7 @@ public class CourseCareerOutcomeProcessor {
 				log.error("no access to delete one more career outcomes");
 				throw new ForbiddenException("no access to delete one more career outcomes");
 			}
-			courseCareerOutcomeDao.deleteByIdIn(careerOutcomeIds);
+			courseCareerOutcomeDao.deleteByCourseIdAndIdIn(courseId, careerOutcomeIds);
 		} else {
 			log.error("one or more invalid course_career outcome_ids");
 			throw new NotFoundException("one or more invalid course_career outcome_ids");

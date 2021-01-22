@@ -39,7 +39,7 @@ public class CourseCareerOutComeDaoImpl implements CourseCareerOutComeDao {
 
 	@Transactional
 	@Override
-	public void deleteByIdIn(List<String> courseCareerOutcomeId) {
-		courseCareerOutComeRepository.deleteByIdIn(courseCareerOutcomeId);
+	public void deleteByCourseIdAndIdIn(String courseId, List<String> ids) {
+		courseCareerOutComeRepository.deleteByCourseIdAndIdIn(courseId, ids);
 	}
 }

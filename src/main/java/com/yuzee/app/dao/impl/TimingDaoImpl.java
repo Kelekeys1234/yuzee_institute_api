@@ -43,8 +43,8 @@ public class TimingDaoImpl implements TimingDao {
 	}
 
 	@Override
-	public void deleteById(String timingId) {
-		timingRepository.deleteById(timingId);
+	public void deleteByEntityTypeAndEntityIdAndId(EntityTypeEnum entityType, String entityId, String id) {
+		timingRepository.deleteByEntityTypeAndEntityIdAndId(entityType, entityId, id);
 	}
 
 	@Override

@@ -10,5 +10,5 @@ public interface CourseFundingDao {
 
 	public List<CourseFunding> findByCourseIdFundingNameIdIn(String courseId, List<String> fundingNameIds);
 
-	void deleteByFundingNameIdIn(List<String> fundingNameIds);
+	void deleteByCourseIdAndFundingNameIdIn(String courseId, List<String> fundingNameIds);
 }

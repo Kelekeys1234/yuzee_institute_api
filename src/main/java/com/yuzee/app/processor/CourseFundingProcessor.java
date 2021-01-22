@@ -93,7 +93,7 @@ public class CourseFundingProcessor {
 				log.error("no access to delete one more fundings by userId: {}", userId);
 				throw new ForbiddenException("no access to delete one more fundings by userId: {}" + userId);
 			}
-			courseFundingDao.deleteByFundingNameIdIn(fundingNameIds);
+			courseFundingDao.deleteByCourseIdAndFundingNameIdIn(courseId, fundingNameIds);
 		} else {
 			log.error("one or more invalid course_funding_name_ids");
 			throw new NotFoundException("one or more invalid course_funding_name_ids");

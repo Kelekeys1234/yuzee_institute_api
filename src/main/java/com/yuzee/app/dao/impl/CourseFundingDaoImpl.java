@@ -38,8 +38,8 @@ public class CourseFundingDaoImpl implements CourseFundingDao {
 
 	@Transactional
 	@Override
-	public void deleteByFundingNameIdIn(List<String> fundingNameIds) {
-		courseFundingRepository.deleteByfundingNameIdIn(fundingNameIds);
+	public void deleteByCourseIdAndFundingNameIdIn(String courseId, List<String> fundingNameIds) {
+		courseFundingRepository.deleteByCourseIdAndFundingNameIdIn(courseId, fundingNameIds);
 	}
 
 }

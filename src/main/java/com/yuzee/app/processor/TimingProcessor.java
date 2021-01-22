@@ -201,7 +201,7 @@ public class TimingProcessor {
 				log.error("user dont have access to delete the timing");
 				throw new ForbiddenException("user dont have access to delete the timing");
 			}
-			timingDao.deleteById(timingId);
+			timingDao.deleteByEntityTypeAndEntityIdAndId(entityType, entityId, timingId);
 		}
 
 	}

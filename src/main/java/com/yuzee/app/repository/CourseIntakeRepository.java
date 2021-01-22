@@ -9,5 +9,5 @@ import com.yuzee.app.bean.CourseIntake;
 public interface CourseIntakeRepository extends JpaRepository<CourseIntake, String> {
 	List<CourseIntake> findByCourseIdAndIdIn(String courseId, List<String> ids);
 
-	void deleteByIdIn(List<String> ids);
+	void deleteByCourseIdAndIdIn(String courseId, List<String> ids);
 }

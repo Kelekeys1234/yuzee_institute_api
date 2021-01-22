@@ -141,7 +141,7 @@ public class CourseDeliveryModesProcessor {
 				log.error("no access to delete one more course_delivery_modes");
 				throw new ForbiddenException("no access to delete one more course_delivery_modes");
 			}
-			courseDeliveryModesDao.deleteByIdIn(deliveryModeIds);
+			courseDeliveryModesDao.deleteByCourseIdAndIdIn(courseId, deliveryModeIds);
 		} else {
 			log.error("one or more invalid course_delivery_mode_ids");
 			throw new NotFoundException("one or more invalid course_delivery_mode_ids");

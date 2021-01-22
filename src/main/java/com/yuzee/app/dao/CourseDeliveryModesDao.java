@@ -11,7 +11,7 @@ public interface CourseDeliveryModesDao {
 
 	public List<CourseDeliveryModes> getCourseDeliveryModesByCourseId(String courseId);
 
-	void deleteByIdIn(List<String> ids);
+	void deleteByCourseIdAndIdIn(String courseId, List<String> ids);
 
 	List<CourseDeliveryModes> findByCourseIdAndIdIn(String courseId, List<String> ids);
 }

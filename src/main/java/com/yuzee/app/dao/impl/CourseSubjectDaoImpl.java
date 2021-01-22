@@ -38,7 +38,7 @@ public class CourseSubjectDaoImpl implements CourseSubjectDao {
 
 	@Transactional
 	@Override
-	public void deleteByIdIn(List<String> intakeIds) {
-		courseSubjectRepository.deleteByIdIn(intakeIds);
+	public void deleteByCourseIdAndIdIn(String courseId, List<String> ids) {
+		courseSubjectRepository.deleteByCourseIdAndIdIn(courseId, ids);
 	}
 }

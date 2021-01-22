@@ -99,7 +99,7 @@ public class CourseEnglishEligibilityProcessor {
 				log.error("no access to delete one more english eligbilities");
 				throw new ForbiddenException("no access to delete one more english eligbilities");
 			}
-			courseEnglishEligibilityDAO.deleteByIdIn(englishEligibilityIds);
+			courseEnglishEligibilityDAO.deleteByCourseIdAndIdIn(courseId, englishEligibilityIds);
 		} else {
 			log.error("one or more invalid course_english eligbility_ids");
 			throw new NotFoundException("one or more invalid course_english eligbility_ids");

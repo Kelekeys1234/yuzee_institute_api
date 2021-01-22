@@ -10,5 +10,5 @@ public interface CourseFundingRepository extends JpaRepository<CourseFunding, St
 
 	List<CourseFunding> findByCourseIdAndFundingNameIdIn(String courseId, List<String> fundingNameIds);
 
-	void deleteByfundingNameIdIn(List<String> fundingNameIds);
+	void deleteByCourseIdAndFundingNameIdIn(String courseId, List<String> fundingNameIds);
 }
