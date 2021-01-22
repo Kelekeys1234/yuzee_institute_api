@@ -323,7 +323,7 @@ public class CourseProcessor {
 		return courseResponseDtos;
 	}
 
-	public Course prepareCourseModelFromCourseRequest(String loggedInUserId, String courseId, @Valid final CourseRequest courseDto)
+	public Course prepareCourseModelFromCourseRequest(String loggedInUserId, String instituteId, String courseId, @Valid final CourseRequest courseDto)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
 		Course course = null;
@@ -340,8 +340,8 @@ public class CourseProcessor {
 				throw new ForbiddenException("User has no access to edit the course with id: "+ courseId);
 			}
 		}
-		log.info("Fetching institute details from DB for instituteId = " + courseDto.getInstituteId());
-		course.setInstitute(getInstititute(courseDto.getInstituteId()));
+		log.info("Fetching institute details from DB for instituteId = ", instituteId);
+		course.setInstitute(getInstititute(instituteId));
 		course.setDescription(courseDto.getDescription());
 		course.setName(courseDto.getName());
 		course.setIsActive(true);
@@ -802,10 +802,10 @@ public class CourseProcessor {
 	}
 	
 	@Transactional(noRollbackFor = Throwable.class)
-	public String saveCourse(final String loggedInUserId, @Valid final CourseRequest courseDto)
+	public String saveCourse(final String loggedInUserId, String instituteId, @Valid final CourseRequest courseDto)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.debug("Inside saveCourse() method");
-		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, null, courseDto);
+		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, instituteId, null, courseDto);
 		log.info("Calling DAO layer to save/update course in DB");
 		course = courseDao.addUpdateCourse(course);
 		timingProcessor.saveUpdateDeleteTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
@@ -817,10 +817,10 @@ public class CourseProcessor {
 	}
 
 	@Transactional(noRollbackFor = Throwable.class)
-	public String updateCourse(final String loggedInUserId, final CourseRequest courseDto, final String id)
+	public String updateCourse(final String loggedInUserId, String instituteId, final CourseRequest courseDto, final String id)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.debug("Inside updateCourse() method");
-		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, id, courseDto);
+		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, instituteId, id, courseDto);
 		course = courseDao.addUpdateCourse(course);
 		timingProcessor.saveUpdateDeleteTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
 		log.info("Calling elastic service to update courses on elastic index having entityId: ", id);
@@ -1933,7 +1933,7 @@ public class CourseProcessor {
 		}
 	}
 
-	public String saveOrUpdateBasicCourse(String loggedInUserId, CourseRequest courseDto, String courseId) throws CommonInvokeException, ForbiddenException, NotFoundException, ValidationException {
+	public String saveOrUpdateBasicCourse(String loggedInUserId, String instituteId, CourseRequest courseDto, String courseId) throws CommonInvokeException, ForbiddenException, NotFoundException, ValidationException {
 		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
 		Course course = null;
 		if (StringUtils.isEmpty(courseId)) {
@@ -1949,16 +1949,16 @@ public class CourseProcessor {
 				throw new ForbiddenException("User has no access to edit the course with id: "+ courseId);
 			}
 		}
-		log.info("Fetching institute details from DB for instituteId = " + courseDto.getInstituteId());
-		course.setInstitute(getInstititute(courseDto.getInstituteId()));
+		log.info("Fetching institute details from DB for instituteId = ", courseDto.getInstituteId());
+		course.setInstitute(getInstititute(instituteId));
 		course.setDescription(courseDto.getDescription());
 		course.setName(courseDto.getName());
 
-		log.info("Fetching faculty details from DB for facultyId = " + courseDto.getFacultyId());
+		log.info("Fetching faculty details from DB for facultyId = ", courseDto.getFacultyId());
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
 		
 		if (!StringUtils.isEmpty(courseDto.getLevelId())) {
-			log.info("Fetching level details from DB for levelId = " + courseDto.getLevelId());
+			log.info("Fetching level details from DB for levelId = ", courseDto.getLevelId());
 			course.setLevel(levelProcessor.getLevel(courseDto.getLevelId()));
 		}
 		
@@ -1966,8 +1966,7 @@ public class CourseProcessor {
 		if (!StringUtils.isEmpty(courseDto.getCurrency())) {
 			// Here we convert price in USD and everywhere we used USD price column only.
 			course.setCurrency(courseDto.getCurrency());
-			log.info("Currency code is not null, hence fetching currencyRate from DB having currencyCode = "
-					+ courseDto.getCurrency());
+			log.info("Currency code is not null, hence fetching currencyRate from DB having currencyCode = ", courseDto.getCurrency());
 			currencyRate = getCurrencyRate(courseDto.getCurrency());
 			if (currencyRate == null) {
 				log.error("Invalid currency, no USD conversion exists for this currency");

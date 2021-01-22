@@ -22,7 +22,6 @@ public class CourseRequest {
 	private String id;
 
 	@JsonProperty("institute_id")
-	@NotBlank(message = "institute_id should not be blank")
 	private String instituteId;
 
 	@JsonProperty("faculty_id")
