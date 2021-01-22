@@ -26,6 +26,7 @@ import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.exception.RuntimeNotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.CommonHandler;
 
@@ -67,12 +68,15 @@ public class CourseDeliveryModesProcessor {
 	public void saveUpdateCourseDeliveryModes(String userId, String courseId,
 			@Valid List<CourseDeliveryModesDto> courseDeliveryModeDtos)
 			throws NotFoundException, ValidationException, InternalServerException, CommonInvokeException {
+		log.info("inside CourseDeliveryModesProcessor.saveUpdateCourseDeliveryModes");
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 
+			log.info("getting the ids of entitities to be updated");
 			Set<String> updateRequestIds = courseDeliveryModeDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
 					.map(CourseDeliveryModesDto::getId).collect(Collectors.toSet());
 
+			log.info("verfiy if ids exists against course");
 			Map<String, CourseDeliveryModes> existingCourseDeliveryModesMap = courseDeliveryModesDao
 					.findByCourseIdAndIdIn(courseId, updateRequestIds.stream().collect(Collectors.toList())).stream()
 					.collect(Collectors.toMap(CourseDeliveryModes::getId, e -> e));
@@ -90,12 +94,20 @@ public class CourseDeliveryModesProcessor {
 			}
 			final CurrencyRateDto finalCurrencyRate = currencyRate;
 			List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
+
+			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseDeliveryModeDtos.stream().forEach(e -> {
-				CourseDeliveryModes existingCourseDeliveryMode = existingCourseDeliveryModesMap.get(e.getId());
 				CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
-				if (!ObjectUtils.isEmpty(existingCourseDeliveryMode)) {
-					courseDeliveryMode = existingCourseDeliveryMode;
+				if (!StringUtils.isEmpty(e.getId())) {
+					log.info(
+							"entityId is present so going to see if it is present in db if yes then we have to update it");
+					courseDeliveryMode = existingCourseDeliveryModesMap.get(e.getId());
+					if (ObjectUtils.isEmpty(courseDeliveryMode)) {
+						log.error("invalid course delivery mode id : {}", e.getId());
+						throw new RuntimeNotFoundException("invalid course delivery mode id : " + e.getId());
+					}
 				}
+
 				if (e.getDomesticFee() != null) {
 					log.info("converting domestic fee into usdDomestic fee having conversionRate = ",
 							finalCurrencyRate.getConversionRate());
@@ -134,6 +146,7 @@ public class CourseDeliveryModesProcessor {
 
 	public void deleteByCourseDeliveryModeIds(String userId, String courseId, List<String> deliveryModeIds)
 			throws NotFoundException, ForbiddenException {
+		log.info("inside CourseDeliveryModesProcessor.deleteByCourseDeliveryModeIds");
 		List<CourseDeliveryModes> courseDeliveryModes = courseDeliveryModesDao.findByCourseIdAndIdIn(courseId,
 				deliveryModeIds);
 		if (deliveryModeIds.size() == courseDeliveryModes.size()) {

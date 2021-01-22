@@ -47,23 +47,29 @@ public class CourseCareerOutcomeProcessor {
 
 	public void saveUpdateCourseCareerOutcomes(String userId, String courseId,
 			@Valid List<CourseCareerOutcomeDto> courseCareerOutcomeDtos) throws NotFoundException, ValidationException {
+		log.info("inside CourseCareerOutcomeProcessor.saveUpdateCourseCareerOutcomes");
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 			Set<String> careerIds = courseCareerOutcomeDtos.stream().map(CourseCareerOutcomeDto::getCareerId)
 					.collect(Collectors.toSet());
 			Map<String, Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
 
+			log.info("getting the ids of entitities to be updated");
 			Set<String> updateRequestIds = courseCareerOutcomeDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
 					.map(CourseCareerOutcomeDto::getId).collect(Collectors.toSet());
 
+			log.info("verfiy if ids exists against course");
 			Map<String, CourseCareerOutcome> existingCourseCareerOutcomesMap = courseCareerOutcomeDao
 					.findByCourseIdAndIdIn(courseId, updateRequestIds.stream().collect(Collectors.toList())).stream()
 					.collect(Collectors.toMap(CourseCareerOutcome::getId, e -> e));
 
 			List<CourseCareerOutcome> courseCareerOutcomes = new ArrayList<>();
+			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseCareerOutcomeDtos.stream().forEach(e -> {
 				CourseCareerOutcome courseCareerOutcome = new CourseCareerOutcome();
 				if (!StringUtils.isEmpty(e.getId())) {
+					log.info(
+							"entityId is present so going to see if it is present in db if yes then we have to update it");
 					courseCareerOutcome = existingCourseCareerOutcomesMap.get(e.getId());
 					if (courseCareerOutcome == null) {
 						log.error("invalid course career outcome id : {}", e.getId());
@@ -85,6 +91,7 @@ public class CourseCareerOutcomeProcessor {
 
 	public void deleteByCourseCareerOutcomeIds(String userId, String courseId, List<String> careerOutcomeIds)
 			throws NotFoundException, ForbiddenException {
+		log.info("inside CourseCareerOutcomeProcessor.deleteByCourseCareerOutcomeIds");
 		List<CourseCareerOutcome> courseCareerOutcomes = courseCareerOutcomeDao.findByCourseIdAndIdIn(courseId,
 				careerOutcomeIds);
 		if (careerOutcomeIds.size() == courseCareerOutcomes.size()) {
@@ -100,6 +107,7 @@ public class CourseCareerOutcomeProcessor {
 	}
 
 	private Map<String, Careers> getCareerByIds(List<String> careerIds) throws ValidationException {
+		log.info("inside CourseCareerOutcomeProcessor.getCareerByIds");
 		Map<String, Careers> careersMap = careerDao.findByIdIn(new ArrayList<>(careerIds)).stream()
 				.collect(Collectors.toMap(Careers::getId, e -> e));
 		if (careersMap.size() != careerIds.size()) {

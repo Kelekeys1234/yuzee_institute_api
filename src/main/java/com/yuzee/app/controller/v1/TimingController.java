@@ -30,6 +30,7 @@ public class TimingController implements TimingInterface {
 	@Override
 	public ResponseEntity<?> saveOrUpdate(String userId, @Valid TimingRequestDto timingRequestDto)
 			throws ValidationException, NotFoundException {
+		log.info("inside TimingController.saveOrUpdate");
 		if (StringUtils.isEmpty(timingRequestDto.getEntityId())) {
 			log.error("entity_id must not be null or empty");
 		}
@@ -43,6 +44,7 @@ public class TimingController implements TimingInterface {
 	@Override
 	public ResponseEntity<?> deleteByTimingId(String userId, String entityType, String entityId, String timingId)
 			throws ValidationException, NotFoundException, ForbiddenException {
+		log.info("inside TimingController.deleteByTimingId");
 		ValidationUtil.validatEntityType(entityType);
 		timingProcessor.deleteTiming(userId, EntityTypeEnum.valueOf(entityType), entityId, timingId);
 		return new GenericResponseHandlers.Builder().setMessage("Timing deleted successfuly.").setStatus(HttpStatus.OK)

@@ -18,7 +18,10 @@ import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CourseIntakeProcessor;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@Slf4j
 public class CourseIntakeController implements CourseIntakeInterface {
 
 	@Autowired
@@ -27,6 +30,7 @@ public class CourseIntakeController implements CourseIntakeInterface {
 	@Override
 	public ResponseEntity<?> saveAll(String userId, String courseId, @Valid ValidList<CourseIntakeDto> courseIntakeDtos)
 			throws ValidationException, NotFoundException {
+		log.info("inside CourseIntakeController.saveAll");
 		courseIntakeProcessor.saveCourseIntakes(userId, courseId, courseIntakeDtos);
 		return new GenericResponseHandlers.Builder().setMessage("Course Intakes added successfully.")
 				.setStatus(HttpStatus.OK).create();
@@ -35,6 +39,7 @@ public class CourseIntakeController implements CourseIntakeInterface {
 	@Override
 	public ResponseEntity<?> deleteByCourseIntakeIds(String userId, String courseId, List<String> intakeIds)
 			throws ValidationException, NotFoundException, ForbiddenException {
+		log.info("inside CourseIntakeController.deleteByCourseIntakeIds");
 		courseIntakeProcessor.deleteByCourseIntakeIds(userId, courseId, intakeIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course Intakes deleted successfully.")
 				.setStatus(HttpStatus.OK).create();

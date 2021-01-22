@@ -37,6 +37,7 @@ public class CourseIntakeProcessor {
 
 	public void saveCourseIntakes(String userId, String courseId, @Valid List<CourseIntakeDto> courseIntakeDtos)
 			throws NotFoundException, ValidationException {
+		log.info("inside CourseIntakeProcessor.saveCourseIntakes");
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 
@@ -56,6 +57,7 @@ public class CourseIntakeProcessor {
 
 	public void deleteByCourseIntakeIds(String userId, String courseId, List<String> intakeIds)
 			throws NotFoundException, ForbiddenException {
+		log.info("inside CourseIntakeProcessor.deleteByCourseIntakeIds");
 		List<CourseIntake> courseIntakes = courseIntakeDao.findByCourseIdAndIdIn(courseId, intakeIds);
 		if (intakeIds.size() == courseIntakes.size()) {
 			if (courseIntakes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {

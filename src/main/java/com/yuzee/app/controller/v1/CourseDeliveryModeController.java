@@ -20,7 +20,10 @@ import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CourseDeliveryModesProcessor;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@Slf4j
 public class CourseDeliveryModeController implements CourseDeliveryModeInterface {
 
 	@Autowired
@@ -30,6 +33,7 @@ public class CourseDeliveryModeController implements CourseDeliveryModeInterface
 	public ResponseEntity<?> saveUpdateCourseDeliveryMode(String userId, String courseId,
 			@Valid ValidList<CourseDeliveryModesDto> courseDeliveryModeDtos)
 			throws ValidationException, NotFoundException, InternalServerException, CommonInvokeException {
+		log.info("inside CourseDeliveryModeController.saveUpdateCourseDeliveryMode");
 		courseDeliveryModeProcessor.saveUpdateCourseDeliveryModes(userId, courseId, courseDeliveryModeDtos);
 		return new GenericResponseHandlers.Builder().setMessage("Course DeliveryMode added/ updated successfully.")
 				.setStatus(HttpStatus.OK).create();
@@ -38,6 +42,7 @@ public class CourseDeliveryModeController implements CourseDeliveryModeInterface
 	@Override
 	public ResponseEntity<?> deleteByCourseDeliveryModeIds(String userId, String courseId,
 			List<String> courseDeliveryModeIds) throws ValidationException, NotFoundException, ForbiddenException {
+		log.info("inside CourseDeliveryModeController.deleteByCourseDeliveryModeIds");
 		courseDeliveryModeProcessor.deleteByCourseDeliveryModeIds(userId, courseId, courseDeliveryModeIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course DeliveryMode deleted successfully.")
 				.setStatus(HttpStatus.OK).create();

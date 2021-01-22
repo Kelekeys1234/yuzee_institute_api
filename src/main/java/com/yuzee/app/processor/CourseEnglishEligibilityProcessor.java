@@ -57,21 +57,27 @@ public class CourseEnglishEligibilityProcessor {
 	public void saveUpdateCourseEnglishEligibilities(String userId, String courseId,
 			@Valid List<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos)
 			throws NotFoundException, ValidationException {
+		log.info("inside CourseEnglishEligibilityDao.saveUpdateCourseEnglishEligibilities");
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 
+			log.info("getting the ids of entitities to be updated");
 			Set<String> updateRequestIds = courseEnglishEligibilityDtos.stream()
 					.filter(e -> !StringUtils.isEmpty(e.getId())).map(CourseEnglishEligibilityDto::getId)
 					.collect(Collectors.toSet());
 
+			log.info("verfiy if ids exists against course");
 			Map<String, CourseEnglishEligibility> existingCourseEnglishEligibilitysMap = courseEnglishEligibilityDAO
 					.findByCourseIdAndIdIn(courseId, updateRequestIds.stream().collect(Collectors.toList())).stream()
 					.collect(Collectors.toMap(CourseEnglishEligibility::getId, e -> e));
 
 			List<CourseEnglishEligibility> courseEnglishEligibilitys = new ArrayList<>();
+
+			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseEnglishEligibilityDtos.stream().forEach(e -> {
 				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
 				if (!StringUtils.isEmpty(e.getId())) {
+					log.info("entityId is present so going to see if it is present in db if yes then we have to update it");
 					courseEnglishEligibility = existingCourseEnglishEligibilitysMap.get(e.getId());
 					if (courseEnglishEligibility == null) {
 						log.error("invalid course english eligbility id : {}", e.getId());
@@ -92,6 +98,7 @@ public class CourseEnglishEligibilityProcessor {
 
 	public void deleteByCourseEnglishEligibilityIds(String userId, String courseId, List<String> englishEligibilityIds)
 			throws NotFoundException, ForbiddenException {
+		log.info("inside CourseEnglishEligibilityDao.deleteByCourseEnglishEligibilityIds");
 		List<CourseEnglishEligibility> courseEnglishEligibilitys = courseEnglishEligibilityDAO
 				.findByCourseIdAndIdIn(courseId, englishEligibilityIds);
 		if (englishEligibilityIds.size() == courseEnglishEligibilitys.size()) {

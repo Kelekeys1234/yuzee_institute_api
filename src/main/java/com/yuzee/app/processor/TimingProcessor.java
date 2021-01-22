@@ -101,6 +101,7 @@ public class TimingProcessor {
 	}
 
 	private void setTimingFromDayTimingDtoList(Timing timing, List<DayTimingDto> dayTimingDtos) {
+		log.info("inside TimingProcessor.setTimingFromDayTimingDtoList");
 		dayTimingDtos.stream().forEach(e -> e.setDay(e.getDay().toUpperCase()));
 		Map<String, DayTimingDto> dayWiseTimingMap = dayTimingDtos.stream()
 				.collect(Collectors.toMap(DayTimingDto::getDay, e -> e));
@@ -164,12 +165,13 @@ public class TimingProcessor {
 
 	public List<TimingRequestDto> getTimingRequestDtoByEntityTypeAndEntityIdIn(EntityTypeEnum entityType,
 			List<String> entityIds) {
-		log.info("inside TimingProcessor.getTimingRequestDtoByEntityTypeAndEntityId");
+		log.info("inside TimingProcessor.getTimingRequestDtoByEntityTypeAndEntityIdIn");
 		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(entityType, entityIds);
 		return timings.stream().map(e -> convertTimingToTimingRequestDto(e)).collect(Collectors.toList());
 	}
 
 	private TimingRequestDto convertTimingToTimingRequestDto(Timing timing) {
+		log.info("inside TimingProcessor.saveUpdateCourseSubjects");
 		TimingRequestDto timingRequestDto = modelMapepr.map(timing, TimingRequestDto.class);
 		timingRequestDto.setTimings(
 				CommonUtil.convertTimingResponseDtoToDayTimingDto(modelMapepr.map(timing, TimingDto.class)));
@@ -177,7 +179,7 @@ public class TimingProcessor {
 	}
 
 	public TimingDto getTimingResponseDtoByInstituteId(String instituteId) {
-		log.debug("Inside getInstituteTimeByInstituteId() method");
+		log.debug("Inside getTimingResponseDtoByInstituteId() method");
 		log.info("fetching isntitute timing from DB for instituteId " + instituteId);
 		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.INSTITUTE,
 				Arrays.asList(instituteId));
@@ -192,6 +194,7 @@ public class TimingProcessor {
 
 	public void deleteTiming(String userId, EntityTypeEnum entityType, String entityId, String timingId)
 			throws NotFoundException, ForbiddenException {
+		log.info("inside TimingProcessor.deleteTiming");
 		Timing timing = timingDao.findByEntityTypeAndEntityIdAndId(entityType, entityId, timingId);
 		if (ObjectUtils.isEmpty(timing)) {
 			log.error("invalid timing found against id: {}", timingId);

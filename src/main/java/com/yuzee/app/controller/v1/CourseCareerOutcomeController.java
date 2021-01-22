@@ -18,7 +18,10 @@ import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CourseCareerOutcomeProcessor;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@Slf4j
 public class CourseCareerOutcomeController implements CourseCareerOutcomeInterface {
 
 	@Autowired
@@ -28,6 +31,7 @@ public class CourseCareerOutcomeController implements CourseCareerOutcomeInterfa
 	public ResponseEntity<?> saveUpdateCourseCareerOutcomes(String userId, String courseId,
 			@Valid ValidList<CourseCareerOutcomeDto> courseCareerOutcomeDtos)
 			throws ValidationException, NotFoundException {
+		log.info("inside CourseCareerOutcomeController.saveUpdateCourseCareerOutcomes");
 		courseCareerOutcomeProcessor.saveUpdateCourseCareerOutcomes(userId, courseId, courseCareerOutcomeDtos);
 		return new GenericResponseHandlers.Builder().setMessage("Course CareerOutcomes added/ updated successfully.")
 				.setStatus(HttpStatus.OK).create();
@@ -36,6 +40,7 @@ public class CourseCareerOutcomeController implements CourseCareerOutcomeInterfa
 	@Override
 	public ResponseEntity<?> deleteByCourseCareerOutcomeIds(String userId, String courseId,
 			List<String> courseCareerOutcomeIds) throws ValidationException, NotFoundException, ForbiddenException {
+		log.info("inside CourseCareerOutcomeController.deleteByCourseCareerOutcomeIds");
 		courseCareerOutcomeProcessor.deleteByCourseCareerOutcomeIds(userId, courseId, courseCareerOutcomeIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course CareerOutcome deleted successfully.")
 				.setStatus(HttpStatus.OK).create();

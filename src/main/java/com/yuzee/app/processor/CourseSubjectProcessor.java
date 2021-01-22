@@ -47,23 +47,28 @@ public class CourseSubjectProcessor {
 
 	public void saveUpdateCourseSubjects(String userId, String courseId,
 			@Valid List<CourseSubjectDto> courseSubjectDtos) throws NotFoundException, ValidationException {
+		log.info("inside CourseSubjectProcessor.saveUpdateCourseSubjects");
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 			Set<String> semesterIds = courseSubjectDtos.stream().map(CourseSubjectDto::getSemesterId)
 					.collect(Collectors.toSet());
 			Map<String, Semester> semestersMap = getSemesterByIds(semesterIds.stream().collect(Collectors.toList()));
 
+			log.info("getting the ids of entitities to be updated");
 			Set<String> updateRequestIds = courseSubjectDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
 					.map(CourseSubjectDto::getId).collect(Collectors.toSet());
 
+			log.info("verfiy if ids exists against course");
 			Map<String, CourseSubject> existingCourseSubjectsMap = courseSubjectDao
 					.findByCourseIdAndIdIn(courseId, updateRequestIds.stream().collect(Collectors.toList())).stream()
 					.collect(Collectors.toMap(CourseSubject::getId, e -> e));
 
 			List<CourseSubject> courseSubjects = new ArrayList<>();
+			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseSubjectDtos.stream().forEach(e -> {
 				CourseSubject courseSubject = new CourseSubject();
 				if (!StringUtils.isEmpty(e.getId())) {
+					log.info("entityId is present so going to see if it is present in db if yes then we have to update it");
 					courseSubject = existingCourseSubjectsMap.get(e.getId());
 					if (courseSubject == null) {
 						log.error("invalid course subject id : {}", e.getId());
@@ -85,6 +90,7 @@ public class CourseSubjectProcessor {
 
 	public void deleteByCourseSubjectIds(String userId, String courseId, List<String> courseSubjectIds)
 			throws NotFoundException, ForbiddenException {
+		log.info("inside CourseSubjectProcessor.deleteByCourseSubjectIds");
 		List<CourseSubject> courseSubjects = courseSubjectDao.findByCourseIdAndIdIn(courseId, courseSubjectIds);
 		if (courseSubjectIds.size() != courseSubjects.size()) {
 			if (courseSubjects.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
@@ -99,6 +105,7 @@ public class CourseSubjectProcessor {
 	}
 
 	private Map<String, Semester> getSemesterByIds(List<String> semesterIds) throws ValidationException {
+		log.info("inside CourseSubjectProcessor.getSemesterByIds");
 		Map<String, Semester> semestersMap = semesterDao.findByIdIn(new ArrayList<>(semesterIds)).stream()
 				.collect(Collectors.toMap(Semester::getId, e -> e));
 		if (semestersMap.size() != semesterIds.size()) {

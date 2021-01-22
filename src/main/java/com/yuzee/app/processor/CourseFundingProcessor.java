@@ -42,6 +42,7 @@ public class CourseFundingProcessor {
 
 	public void addFundingToAllInstituteCourses(String userId, String instituteId, String fundingNameId)
 			throws ValidationException, NotFoundException {
+		log.info("inside CourseFundingProcessor.addFundingToAllInstituteCourses");
 		Institute institute = instituteDao.get(instituteId);
 		if (institute != null) {
 
@@ -65,6 +66,7 @@ public class CourseFundingProcessor {
 
 	public void saveCourseFundings(String userId, String courseId, @Valid List<CourseFundingDto> courseFundingDtos)
 			throws NotFoundException, ValidationException {
+		log.info("inside CourseFundingProcessor.saveCourseFundings");
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 			log.info("going to see if funding id is valid");
@@ -87,6 +89,7 @@ public class CourseFundingProcessor {
 
 	public void deleteCourseFundingsByFundingNameIds(String userId, String courseId, List<String> fundingNameIds)
 			throws NotFoundException, ForbiddenException {
+		log.info("inside CourseFundingProcessor.deleteCourseFundingsByFundingNameIds");
 		List<CourseFunding> courseFundings = courseFundingDao.findByCourseIdFundingNameIdIn(courseId, fundingNameIds);
 		if (fundingNameIds.size() == courseFundings.size()) {
 			if (courseFundings.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
