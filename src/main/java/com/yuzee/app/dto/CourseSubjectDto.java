@@ -26,4 +26,7 @@ public class CourseSubjectDto {
 	@NotEmpty(message = "name must not be empty")
 	@JsonProperty("name")
 	private String name;
+	
+	@JsonProperty("description")
+	private String description;
 }

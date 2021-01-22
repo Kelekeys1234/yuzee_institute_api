@@ -216,4 +216,8 @@ public class CourseRequest {
 	@JsonProperty("course_fundings")
 	@NotNull(message = "course_fundings must not be null")
 	private ValidList<CourseFundingDto> courseFundings = new ValidList<>();
+	
+	@Valid
+	@JsonProperty("institute")
+	private InstituteResponseDto institute;
 }

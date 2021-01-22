@@ -39,6 +39,9 @@ public class CourseSubject implements Serializable {
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@Column(name = "description")
+	private String description;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "semester_id", nullable = false)
 	private Semester semester;

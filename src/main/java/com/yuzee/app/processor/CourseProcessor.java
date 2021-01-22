@@ -73,7 +73,6 @@ import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.CourseSubjectDto;
 import com.yuzee.app.dto.CurrencyRateDto;
 import com.yuzee.app.dto.FundingResponseDto;
-import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.NearestCoursesDto;
 import com.yuzee.app.dto.OffCampusCourseDto;
 import com.yuzee.app.dto.PaginationResponseDto;
@@ -169,9 +168,6 @@ public class CourseProcessor {
 
 	@Autowired
 	private CourseCurriculumDao courseCurriculumDao;
-	
-	@Autowired
-	private InstituteProcessor instituteProcessor;
 	
 	@Autowired
 	private CommonHandler commonHandler;
@@ -1270,7 +1266,8 @@ public class CourseProcessor {
 		} else {
 			log.info("Get courses from DB, hence strat iterating data");
 			courses.stream().forEach(course -> {
-				CourseRequest courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
+				CourseRequest courseRequest = new CourseRequest();
+				CommonUtil.copyCourseToCourseRequest(course, courseRequest);
 				coursesRequests.add(courseRequest);
 			});
 		}
@@ -1736,10 +1733,9 @@ public class CourseProcessor {
 		return nearestCoursesPaginationDto;
 	}
 
-	public Map<String, Object> getCourseById(String userId, String id) throws Exception {
+	@Transactional
+	public CourseRequest getCourseById(String userId, String id) throws Exception {
 		log.debug("Inside getCourseById() method");
-		InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
-		Map<String, Object> response = new HashMap<>();
 		log.info("Fetching course from DB having courseId = "+id);
 		Course course = get(id);
 		if (course == null) {
@@ -1748,7 +1744,8 @@ public class CourseProcessor {
 		}
 		
 		log.info("Course fetched from data start copying bean class data to DTO class");
-		CourseRequest courseRequest = CommonUtil.convertCourseDtoToCourseRequest(course);
+		CourseRequest courseRequest = modelMapper.map(course, CourseRequest.class);
+		CommonUtil.copyCourseToCourseRequest(course, courseRequest);
 		if (course.getCreatedBy().equals(userId)) {
 			courseRequest.setHasEditAccess(true);
 		}else {
@@ -1770,8 +1767,6 @@ public class CourseProcessor {
 			
 			if(courseRequest.getStars() != null && courseRequest.getInstituteId() != null) {
 			log.info("Calculating average review based on instituteGoogleReview and userReview and stars");
-			
-			
 		}
 		
 		UserViewCourseDto userViewCourseDto = viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(
@@ -1827,18 +1822,7 @@ public class CourseProcessor {
 		courseRequest.setStorageList(storageDTOList);
 		
 		log.info("Fetching institute data from DB having instututeId = "+courseRequest.getInstituteId());
-		Institute instituteObj = instituteProcessor.get(courseRequest.getInstituteId());
-		BeanUtils.copyProperties(instituteObj, instituteResponseDto);
-		if (!ObjectUtils.isEmpty(instituteObj)) {
-			if (instituteObj.getLatitude() != null && instituteObj.getLongitude() != null) {
-				courseRequest.setLatitude(instituteObj.getLatitude());
-				courseRequest.setLongitude(instituteObj.getLongitude());
-			}
-		}
-		
-		response.put("courseObj", courseRequest);
-		response.put("instituteObj", instituteResponseDto);
-		return response;
+		return courseRequest;
 	}
 	
 	public NearestCoursesDto getCourseByCountryName(String countryName, Integer pageNumber, Integer pageSize) throws NotFoundException {
