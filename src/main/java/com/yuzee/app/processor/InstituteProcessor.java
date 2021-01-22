@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -25,8 +26,9 @@ import com.yuzee.app.bean.AccrediatedDetail;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteDomesticRankingHistory;
+import com.yuzee.app.bean.InstituteFunding;
 import com.yuzee.app.bean.InstituteIntake;
-import com.yuzee.app.bean.InstituteTiming;
+import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CourseDao;
@@ -44,10 +46,10 @@ import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
 import com.yuzee.app.dto.InstituteElasticSearchDTO;
 import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
+import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
-import com.yuzee.app.dto.InstituteTimingResponseDto;
 import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.NearestInstituteDTO;
@@ -55,11 +57,16 @@ import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.ReviewStarDto;
 import com.yuzee.app.dto.StorageDto;
+import com.yuzee.app.dto.TimingDto;
+import com.yuzee.app.dto.TimingRequestDto;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.app.enumeration.TimingType;
 import com.yuzee.app.exception.ConstraintVoilationException;
+import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.exception.RuntimeNotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ConnectionHandler;
 import com.yuzee.app.handler.ElasticHandler;
@@ -113,7 +120,7 @@ public class InstituteProcessor {
 	private InstituteRepository instituteRepository;
 	
 	@Autowired
-	private InstituteTimingProcessor instituteTimingProcessor;
+	private TimingProcessor instituteTimingProcessor;
 	
 	@Autowired
 	private ConnectionHandler connectionHandler;
@@ -126,6 +133,9 @@ public class InstituteProcessor {
 	
 	@Autowired
 	private ScholarshipDao scholarshipDao;
+
+	@Autowired
+	CommonProcessor commonProcessor;
 
 	public Institute get(final String id) {
 		return dao.get(id);
@@ -278,7 +288,7 @@ public class InstituteProcessor {
 		}
 	}
 
-	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException {
+	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException, NotFoundException {
 		log.debug("Inside saveInstitute() method");
 		Institute institute = null;
 		if (id != null) {
@@ -349,9 +359,8 @@ public class InstituteProcessor {
 		institute.setCurriculum(instituteRequest.getCurriculum());
 		institute.setDomesticBoardingFee(instituteRequest.getDomesticBoardingFee());
 		institute.setInternationalBoardingFee(instituteRequest.getInternationalBoardingFee());
-		if (!StringUtils.isEmpty(instituteRequest.getTagLine())) {
-			institute.setTagLine(instituteRequest.getTagLine());	
-		}
+		institute.setTagLine(instituteRequest.getTagLine());	
+		saveUpdateInstituteFundings("API", institute, instituteRequest.getInstituteFundings());
 		try {
 			if (id != null) {
 				log.info("if instituteId is not null then going to update institute for id = {}", id);
@@ -388,7 +397,13 @@ public class InstituteProcessor {
 		}
 		if(!CollectionUtils.isEmpty(instituteRequest.getInstituteTimings())) {
 			log.info("instituteTimings is not null hence going to save institute timings in DB");
-			instituteTimingProcessor.saveInstituteTiming(instituteRequest.getInstituteTimings(), institute);
+			TimingDto timingResponseDto = instituteTimingProcessor.getTimingResponseDtoByInstituteId(institute.getId());
+			TimingRequestDto timingRequestDto = new TimingRequestDto();
+			timingRequestDto.setId(timingResponseDto != null ? timingResponseDto.getId():null);
+			timingRequestDto.setEntityType(EntityTypeEnum.INSTITUTE.name());
+			timingRequestDto.setTimingType(TimingType.OPEN_HOURS.name());
+			timingRequestDto.setTimings(instituteRequest.getInstituteTimings());
+			instituteTimingProcessor.saveUpdateTimings("API", EntityTypeEnum.INSTITUTE, Arrays.asList(timingRequestDto), institute.getId());
 		}
 		return institute;
 	}
@@ -407,6 +422,49 @@ public class InstituteProcessor {
 		}
 	}
 
+	private void saveUpdateInstituteFundings(String loggedInUserId, Institute institute,
+			List<InstituteFundingDto> instituteFundingDtos) throws ValidationException, NotFoundException {
+		List<InstituteFunding> instituteFundings = institute.getInstituteFundings();
+		if (!CollectionUtils.isEmpty(instituteFundingDtos)) {
+
+			log.info("Creating the list to save/update institute fundings in DB");
+			Set<String> fundingNameIds = instituteFundingDtos.stream().map(InstituteFundingDto::getFundingNameId)
+					.collect(Collectors.toSet());
+
+			log.info("going to check if funding name ids are valid");
+			commonProcessor.validateFundingNameIds(new ArrayList<>(fundingNameIds));
+
+			log.info("see if some entitity ids are not present then we have to delete them.");
+			Set<String> updateRequestIds = instituteFundingDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
+					.map(InstituteFundingDto::getId).collect(Collectors.toSet());
+			instituteFundings.removeIf(e -> !updateRequestIds.contains(e.getId()));
+
+			Map<String, InstituteFunding> existingInstituteFundingsMap = instituteFundings.stream()
+					.collect(Collectors.toMap(InstituteFunding::getId, e -> e));
+			instituteFundingDtos.stream().forEach(e -> {
+				InstituteFunding instituteFunding = new InstituteFunding();
+				if (!StringUtils.isEmpty(e.getId())) {
+					instituteFunding = existingInstituteFundingsMap.get(e.getId());
+					if (instituteFunding == null) {
+						log.error("invalid institute funding id : {}", e.getId());
+						throw new RuntimeNotFoundException("invalid institute funding id : " + e.getId());
+					}
+				}
+				instituteFunding.setFundingNameId(e.getFundingNameId());
+				instituteFunding.setInstitute(institute);
+				if (StringUtils.isEmpty(instituteFunding.getId())) {
+					instituteFunding.setAuditFields(loggedInUserId, null);
+					instituteFundings.add(instituteFunding);
+				} else {
+					instituteFunding.setAuditFields(loggedInUserId, instituteFunding);
+				}
+			});
+
+		} else {
+			instituteFundings.clear();
+		}
+	}
+	
 	private void saveAccreditedInstituteDetails(final Institute institute, final List<AccrediatedDetailDto> accreditation) {
 		log.debug("Inside saveAccreditedInstituteDetails() method");
 		log.info("deleting existing accrediatedDetails from DB for institute having instituteId = "+institute.getId());
@@ -523,11 +581,11 @@ public class InstituteProcessor {
 			log.info("Adding institute category type in final Response");
 			instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
 		}
-		InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
-				.getInstituteTimeByInstituteId(id);
+		TimingDto instituteTimingResponseDto = instituteTimingProcessor
+				.getTimingResponseDtoByInstituteId(id);
 		if (!ObjectUtils.isEmpty(instituteTimingResponseDto)) {
 			instituteRequestDto.setInstituteTimings(
-					CommonUtil.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
+					CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
 		}
 		
 		FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
@@ -821,7 +879,7 @@ public class InstituteProcessor {
 							EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
 					nearestInstitute.setStorageList(storageDTOList);
 					log.info("fetching instituteTiming from DB for instituteId = " +nearestInstituteDTO.getId());
-					InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(nearestInstituteDTO.getId());
+					TimingDto instituteTimingResponseDto = instituteTimingProcessor.getTimingResponseDtoByInstituteId(nearestInstituteDTO.getId());
 					nearestInstitute.setInstituteTiming(instituteTimingResponseDto);
 					nearestInstituteList.add(nearestInstitute);
 				}
@@ -859,8 +917,8 @@ public class InstituteProcessor {
 			log.info("Institutes are coming from DB start iterating and fetching instituteTiming from DB");
 			for (InstituteResponseDto instituteResponseDto : instituteResponseDtos) {
 				log.info("fetching instituteTiming from DB for instituteId =" + instituteResponseDto.getId());
-				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor
-						.getInstituteTimeByInstituteId(instituteResponseDto.getId());
+				TimingDto instituteTimingResponseDto = instituteTimingProcessor
+						.getTimingResponseDtoByInstituteId(instituteResponseDto.getId());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
 				
 				ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteResponseDto.getId());
@@ -927,7 +985,7 @@ public class InstituteProcessor {
 					log.error("Error while fetching logos from storage service"+e);
 				}
 				log.info("fetching instituteTiming from DB for instituteId =" +nearestInstituteDTO.getId());
-				InstituteTimingResponseDto instituteTimingResponseDto = instituteTimingProcessor.getInstituteTimeByInstituteId(nearestInstituteDTO.getId());
+				TimingDto instituteTimingResponseDto = instituteTimingProcessor.getTimingResponseDtoByInstituteId(nearestInstituteDTO.getId());
 				nearestInstitute.setInstituteTiming(instituteTimingResponseDto);
 				nearestInstituteList.add(nearestInstitute);
 			});
@@ -980,20 +1038,15 @@ public class InstituteProcessor {
 		if (!ObjectUtils.isEmpty(institute)) {
 			List<Institute> institutes = dao.getInstituteCampuses(instituteId, institute.getName());
 			
-			Map<String, InstituteTiming> mapInstituteTimings = institutes.stream()
-					.collect(Collectors.toMap(Institute::getId, Institute::getInstituteTiming));
 			
 			List<InstituteCampusDto> instituteCampuses = institutes.stream()
 					.map(e -> modelMapper.map(e, InstituteCampusDto.class)).collect(Collectors.toList());
 			
 			instituteCampuses.stream().forEach(e -> {
-				InstituteTiming instiuteTiming = mapInstituteTimings.get(e.getId());
-				if (!ObjectUtils.isEmpty(instiuteTiming)) {
-					InstituteTimingResponseDto instituteTimingResponseDto = modelMapper.map(instiuteTiming,
-							InstituteTimingResponseDto.class);
+				TimingDto instituteTimingResponseDto = instituteTimingProcessor
+						.getTimingResponseDtoByInstituteId(e.getId());
 					e.setInstituteTimings(CommonUtil
-							.convertInstituteTimingResponseDtoToInstituteRequestDto(instituteTimingResponseDto));
-				}
+							.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
 
 			});
 			return instituteCampuses;
@@ -1047,5 +1100,31 @@ public class InstituteProcessor {
 			});
 		}
 		return instituteResponseDtos;
+	}
+	
+	public List<StorageDto> getInstituteGallery(String instituteId) throws InternalServerException, NotFoundException {
+		Institute institute = dao.get(instituteId);
+		if (ObjectUtils.isEmpty(institute)) {
+			try {
+				List<StorageDto> storages = storageHandler.getStorages(Arrays.asList(instituteId),
+						EntityTypeEnum.INSTITUTE, Arrays.asList(EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.LOGO,
+								EntitySubTypeEnum.MEDIA, EntitySubTypeEnum.ABOUT_US));
+
+				List<String> instituteServiceIds = institute.getInstituteServices().stream()
+						.map(InstituteService::getId).collect(Collectors.toList());
+				if (!CollectionUtils.isEmpty(instituteServiceIds)) {
+					storages.addAll(storageHandler.getStorages(instituteServiceIds, EntityTypeEnum.INSTITUTE_SERVICE,
+							EntitySubTypeEnum.MEDIA));
+				}
+
+				return storages;
+			} catch (NotFoundException | InvokeException e) {
+				log.error(e.getMessage());
+				throw new InternalServerException(e.getMessage());
+			}
+		} else {
+			log.error("Institute not found for id: {}", instituteId);
+			throw new NotFoundException("Institute not found for id: " + instituteId);
+		}
 	}
 }

@@ -55,5 +55,5 @@ public class InstituteCampusDto {
 	private String whatsNo;
 	
 	@JsonProperty("institute_timings")
-	private List<InstituteTimingDto> instituteTimings;
+	private List<DayTimingDto> instituteTimings;
 }

@@ -20,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
@@ -55,6 +56,10 @@ public class Scholarship implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "level_id", nullable = false)
 	private Level level;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "faculty_id", nullable = false)
+	private Faculty faculty;
 
 	@Column(name = "number_of_avaliability")
 	private Integer numberOfAvaliability;
@@ -119,13 +124,10 @@ public class Scholarship implements Serializable {
 	@OneToMany(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ScholarshipEligibleNationality> scholarshipEligibleNationalities = new ArrayList<>();
 
-	public void setAuditFields(String userId, Scholarship existingScholarship) {
+	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (existingScholarship != null) {
-			this.setCreatedBy(existingScholarship.getCreatedBy());
-			this.setCreatedOn(existingScholarship.getCreatedOn());
-		}else {
+		if (StringUtils.isEmpty(id)) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
 		}

@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
@@ -80,4 +81,13 @@ public class CourseEnglishEligibility {
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
+	
+	public void setAuditFields(String userId) {
+		this.setUpdatedBy(userId);
+		this.setUpdatedOn(new Date());
+		if (StringUtils.isEmpty(id)) {
+			this.setCreatedBy(userId);
+			this.setCreatedOn(new Date());
+		}
+	}
 }

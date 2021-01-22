@@ -1,6 +1,6 @@
 package com.yuzee.app.dto;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,7 +12,7 @@ public class CourseEnglishEligibilityDto {
 	private String id;
 	
 	@JsonProperty("english_type")
-	@NotBlank(message = "english_type should not be blank")
+	@NotEmpty(message = "english_type should not be blank")
 	private String englishType;
 	
 	@JsonProperty("reading")

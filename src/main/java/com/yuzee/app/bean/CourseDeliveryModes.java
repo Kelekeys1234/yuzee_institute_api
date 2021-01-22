@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
@@ -27,10 +28,7 @@ import lombok.Data;
 				@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
 public class CourseDeliveryModes implements Serializable{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1973870742242432866L;
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
@@ -79,4 +77,13 @@ public class CourseDeliveryModes implements Serializable{
 
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
+	
+	public void setAuditFields(String userId) {
+		this.setUpdatedBy(userId);
+		this.setUpdatedOn(new Date());
+		if (StringUtils.isEmpty(id)) {
+			this.setCreatedBy(userId);
+			this.setCreatedOn(new Date());
+		}
+	}
 }

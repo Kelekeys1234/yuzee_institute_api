@@ -2,7 +2,6 @@ package com.yuzee.app.dao;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseIntake;
@@ -23,7 +22,7 @@ import com.yuzee.app.exception.ValidationException;
 
 public interface CourseDao {
 
-	public void addUpdateCourse(Course obj);
+	public Course addUpdateCourse(Course obj) throws ValidationException;
 
 	public Course get(String id);
 
@@ -31,8 +30,6 @@ public interface CourseDao {
 			boolean uniqueCourseName, List<String> entityIds);
 	
 	public List<CourseResponseDto> getAllCoursesByInstitute(String instituteId, CourseSearchDto filterObj);
-
-	public Map<String, Object> getCourse(String courseid);
 
 	public List<CourseResponseDto> getCouresesByFacultyId(String facultyId);
 	
@@ -96,8 +93,6 @@ public interface CourseDao {
 
 	public void saveCourseIntake(CourseIntake courseIntake);
 
-	public void deleteCourseIntake(String courseId);
-
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(String courseId);
 
 	public List<CourseIntake> getCourseIntakeBasedOnCourseIdList(List<String> courseIds);
@@ -105,8 +100,6 @@ public interface CourseDao {
 	public void deleteCourseDeliveryMethod(String courseId);
 
 	public void saveCourseLanguage(CourseLanguage courseLanguage);
-
-	public void deleteCourseLanguage(String courseId);
 
 	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(String courseId);
 
@@ -127,4 +120,8 @@ public interface CourseDao {
 	public List<CourseResponseDto> getRelatedCourseBasedOnCareerTest(List<String> searchKeyword, Integer startIndex, Integer pageSize);
 	
 	public Integer getRelatedCourseBasedOnCareerTestCount(List<String> searchKeyword);
+	
+	public void deleteCourse(String id);
+
+	public List<Course> findByInstituteId(String instituteId);
 }

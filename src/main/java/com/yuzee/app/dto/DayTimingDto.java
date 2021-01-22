@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class InstituteTimingDto {
+public class DayTimingDto {
 	
 	@JsonProperty("opening_from")
 	private String openingFrom;

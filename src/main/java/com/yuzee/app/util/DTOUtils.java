@@ -7,7 +7,6 @@ import com.yuzee.app.dto.FacilityDto;
 import com.yuzee.app.dto.InstituteFacilityDto;
 
 public class DTOUtils {
-
 	private DTOUtils() {
 	}
 

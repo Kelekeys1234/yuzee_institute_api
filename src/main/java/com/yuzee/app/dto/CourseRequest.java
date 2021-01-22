@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -15,7 +18,7 @@ import lombok.ToString;
 @ToString
 public class CourseRequest {
 
-	@JsonProperty("id")
+	@JsonProperty("course_id")
 	private String id;
 
 	@JsonProperty("institute_id")
@@ -25,6 +28,12 @@ public class CourseRequest {
 	@JsonProperty("faculty_id")
 	@NotBlank(message = "faculty_id should not be blank")
 	private String facultyId;
+	
+	@JsonProperty("faculty")
+	private FacultyDto faculty;
+
+	@JsonProperty("curriculum_id")
+	private String curriculumId;
 
 	@JsonProperty("name")
 	@NotBlank(message = "name should not be blank")
@@ -33,6 +42,7 @@ public class CourseRequest {
 	@JsonProperty("description")
 	private String description;
 
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@JsonProperty("intake")
 	private List<Date> intake;
 
@@ -61,7 +71,7 @@ public class CourseRequest {
 	private String worldRanking;
 
 	@JsonProperty("stars")
-	private String stars;
+	private Double stars;
 
 	@JsonProperty("cost")
 	private String cost;
@@ -79,18 +89,15 @@ public class CourseRequest {
 	@JsonProperty("currency_time")
 	private String currencyTime;
 
-	@JsonProperty("faculty_ame")
-	private String facultyName;
-
 	@JsonProperty("level_id")
 	@NotBlank(message = "level_id should not be blank")
 	private String levelId;
-
-	@JsonProperty("level_name")
-	private String levelName;
+	
+	@JsonProperty("level")
+	private LevelDto level;
 
 	@JsonProperty("availability")
-	private String availbility;
+	private String availability;
 
 	@JsonProperty("recognition")
 	private String recognition;
@@ -122,24 +129,92 @@ public class CourseRequest {
 	@JsonProperty("city_name")
 	private String cityName;
 
-	@JsonProperty("student_visa")
-	private StudentVisaDto studentVisa;
-	
 	@JsonProperty("storage_list")
 	private List<StorageDto> storageList = new ArrayList<>();
-	
-	@JsonProperty("user_review_result")
-	private List<UserReviewResultDto> userReviewResult = new ArrayList<>();
 
-	@JsonProperty("accrediated_detail")
-	private List<AccrediatedDetailDto> accrediatedDetail = new ArrayList<>();
-
+	@Valid
 	@JsonProperty("course_delivery_modes")
-	private List<CourseDeliveryModesDto> courseDeliveryModes = new ArrayList<>();
-	
-	@JsonProperty("course_subjects")
-	private List<CoursePrerequisiteSubjectDto> courseSubjects = new ArrayList<>();
-	
+	private ValidList<CourseDeliveryModesDto> courseDeliveryModes = new ValidList<>();
+
+	@Valid
+	@JsonProperty("course_prerequisite_subjects")
+	private ValidList<CoursePrerequisiteSubjectDto> prerequisiteSubjects = new ValidList<>();
+
+	@Valid
 	@JsonProperty("english_eligibility")
-	private List<CourseEnglishEligibilityDto> englishEligibility = new ArrayList<>();
+	private ValidList<CourseEnglishEligibilityDto> englishEligibility = new ValidList<>();
+
+	@JsonProperty("examination_board")
+	private String examinationBoard;
+
+	@JsonProperty("domestic_application_fee")
+	private double domesticApplicationFee;
+
+	@JsonProperty("international_application_fee")
+	private double internationalApplicationFee;
+
+	@JsonProperty("domestic_enrollment_fee")
+	private double domesticEnrollmentFee;
+
+	@JsonProperty("international_enrollment_fee")
+	private double internationalEnrollmentFee;
+
+	@JsonProperty("domestic_boarding_fee")
+	private double domesticBoardingFee;
+
+	@JsonProperty("international_boarding_fee")
+	private double internationalBoardingFee;
+
+	@JsonProperty("entrance_exam")
+	private String entranceExam;
+
+	@JsonProperty("phone_number")
+	private String phoneNumber;
+
+	@JsonProperty("global_gpa")
+	private Double globalGpa;
+
+	@JsonProperty("content")
+	private String content;
+
+	@JsonProperty("email")
+	private String email;
+
+	@JsonProperty("rec_date")
+	private Date recDate;
+
+	@JsonProperty("has_edit_access")
+	private Boolean hasEditAccess;
+
+	@JsonProperty("favorite_course")
+	private Boolean favoriteCourse;
+
+	@JsonProperty("reviews_count")
+	private Long reviewsCount;
+
+	@JsonProperty("fundings_count")
+	private int fundingsCount;
+
+	@JsonProperty("off_campus_course")
+	private OffCampusCourseDto offCampusCourse;
+
+	@Valid
+	@JsonProperty("course_subjects")
+	@NotNull(message = "course_subjects must not be null")
+	private ValidList<CourseSubjectDto> courseSubjects = new ValidList<>();
+
+	@Valid
+	@JsonProperty("course_timings")
+	@NotNull(message = "course_timings must not be null")
+	private ValidList<TimingRequestDto> courseTimings = new ValidList<>();
+
+	@Valid
+	@JsonProperty("course_career_outcomes")
+	@NotNull(message = "course_career_outcomes must not be null")
+	private ValidList<CourseCareerOutcomeDto> courseCareerOutcomes = new ValidList<>();
+
+	@Valid
+	@JsonProperty("course_fundings")
+	@NotNull(message = "course_fundings must not be null")
+	private ValidList<CourseFundingDto> courseFundings = new ValidList<>();
 }

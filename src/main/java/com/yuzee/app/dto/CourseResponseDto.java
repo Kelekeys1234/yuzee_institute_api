@@ -35,6 +35,9 @@ public class CourseResponseDto {
 	@NotBlank(message = "institute_id should not be blank")
 	private String instituteId;
 
+	@JsonProperty("level_id")
+	private String levelId;
+
 	@JsonProperty("institute_name")
 	@NotBlank(message = "institute_name should not be blank")
 	private String instituteName;
@@ -103,4 +106,19 @@ public class CourseResponseDto {
 	
 	@JsonProperty("course_description")
 	private String courseDescription;
+	
+	@JsonProperty("phone_number")
+	private String phoneNumber;
+	
+	@JsonProperty("email")
+	private String email;
+	
+	@JsonProperty("website")
+	private String website;
+	
+	@JsonProperty("course_timings")
+	private List<TimingRequestDto> courseTimings = new ArrayList<>();
+	
+	@JsonProperty("off_campus_course")
+	private OffCampusCourseDto offCampusCourse;
 }

@@ -17,6 +17,9 @@ public class ScholarshipResponseDto extends ScholarshipDto {
 	@JsonProperty("level")
 	private LevelDto level;
 
+	@JsonProperty("faculty")
+	private FacultyDto faculty;
+
 	@JsonProperty("institute")
 	private InstituteDto institute;
 }
