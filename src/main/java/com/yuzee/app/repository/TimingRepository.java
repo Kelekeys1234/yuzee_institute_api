@@ -13,4 +13,8 @@ public interface TimingRepository extends JpaRepository<Timing, String> {
 	List<Timing> findByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<String> entityId);
 
 	void deleteByEntityTypeAndEntityId(EntityTypeEnum entityType, String entityId);
+
+	Timing findByEntityTypeAndEntityIdAndId(EntityTypeEnum entityType, String entityId, String id);
+	
+	void deleteByEntityTypeAndEntityIdAndId(EntityTypeEnum entityType, String entityId, String id);
 }

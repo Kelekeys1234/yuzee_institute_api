@@ -15,4 +15,7 @@ public class CourseFundingDto {
 	@JsonProperty(value = "funding_name_id")
 	@NotEmpty(message = "funding_name_id must not be null")
 	private String fundingNameId;
+	
+	@JsonProperty(value = "funding")
+	private FundingResponseDto funding;
 }

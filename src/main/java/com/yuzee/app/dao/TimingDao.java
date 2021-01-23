@@ -1,6 +1,7 @@
 package com.yuzee.app.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.yuzee.app.bean.Timing;
 import com.yuzee.app.enumeration.EntityTypeEnum;
@@ -14,4 +15,10 @@ public interface TimingDao {
 	public void deleteAll(List<Timing> timings);
 
 	public void deleteByEntityTypeAndEntityId(EntityTypeEnum entityType, String entityId);
+
+	public Optional<Timing> findById(String id);
+
+	public Timing findByEntityTypeAndEntityIdAndId(EntityTypeEnum entityType, String entityId, String id);
+
+	void deleteByEntityTypeAndEntityIdAndId(EntityTypeEnum entityType, String entityId, String id);
 }

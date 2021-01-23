@@ -1,6 +1,5 @@
 package com.yuzee.app.controller.v1;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.bean.Course;
-import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseKeywords;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseCountDto;
@@ -32,7 +29,6 @@ import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.dto.UserMyCourseDto;
 import com.yuzee.app.endpoint.CourseInterface;
-import com.yuzee.app.enumeration.EnglishType;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.TransactionTypeEnum;
@@ -46,7 +42,6 @@ import com.yuzee.app.handler.IdentityHandler;
 import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.handler.ViewTransactionHandler;
 import com.yuzee.app.message.MessageByLocaleService;
-import com.yuzee.app.processor.CourseEnglishEligibilityProcessor;
 import com.yuzee.app.processor.CourseKeywordProcessor;
 import com.yuzee.app.processor.CourseProcessor;
 import com.yuzee.app.processor.InstituteProcessor;
@@ -70,9 +65,6 @@ public class CourseController implements CourseInterface {
 	private CourseKeywordProcessor courseKeywordProcessor;
 
 	@Autowired
-	private CourseEnglishEligibilityProcessor courseEnglishEligibilityProcessor;
-
-	@Autowired
 	private UserRecommendationService userRecommendationService;
 
 	@Autowired
@@ -87,20 +79,38 @@ public class CourseController implements CourseInterface {
 	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
 
-	public ResponseEntity<?> save(final String userId, final CourseRequest course)
+	public ResponseEntity<?> save(final String userId, String instituteId, final CourseRequest course)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.info("Start process to save new course in DB");
 		ValidationUtil.validateTimingDtoFromCourseRequest(course);
-		String courseId = courseProcessor.saveCourse(userId, course);
+		String courseId = courseProcessor.saveCourse(userId, instituteId, course);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Created successfully").create();
 	}
 
-	public ResponseEntity<?> update(final String userId, final CourseRequest course, final String id)
+	@Override
+	public ResponseEntity<?> saveBasicCourse(final String userId, String instituteId, final CourseRequest course)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
+		log.info("Start process to save new course basic details in DB");
+		String courseId = courseProcessor.saveOrUpdateBasicCourse(userId, instituteId, course, null);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
+				.setMessage("Course Created successfully").create();
+	}
+
+	public ResponseEntity<?> update(final String userId, String instituteId, final CourseRequest course, final String id)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
 		log.info("Start process to update existing course in DB");
 		ValidationUtil.validateTimingDtoFromCourseRequest(course);
-		String courseId = courseProcessor.updateCourse(userId, course, id);
+		String courseId = courseProcessor.updateCourse(userId, instituteId, course, id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
+				.setMessage("Course Updated successfully").create();
+	}
+
+	@Override
+	public ResponseEntity<?> updateBasicCourse(final String userId, String instituteId, final CourseRequest course, final String id)
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
+		log.info("Start process to update existing basic course in DB");
+		String courseId = courseProcessor.saveOrUpdateBasicCourse(userId,instituteId, course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Updated successfully").create();
 	}
@@ -419,54 +429,6 @@ public class CourseController implements CourseInterface {
 				.setMessage("Courses displayed successfully").setStatus(HttpStatus.OK).create();
 	}
 	
-	@Deprecated
-	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception {
-		Map<String, Object> response = new HashMap<>();
-//		List<Course> courseList = courseProcessor.getAll();
-		List<Course> courseList = null;
-		Date now = new Date();
-		CourseEnglishEligibility englishEligibility = null;
-		int size = courseList.size(), i = 1;
-		for (Course course : courseList) {
-			System.out.println("Total:  " + size + ",  Completed:  " + i + ",  CourseID:  " + course.getId());
-			i++;
-			try {
-				englishEligibility = new CourseEnglishEligibility();
-				englishEligibility.setCourse(course);
-				englishEligibility.setEnglishType(EnglishType.IELTS.toString());
-				englishEligibility.setIsActive(true);
-				englishEligibility.setListening(4.0);
-				englishEligibility.setOverall(4.5);
-				englishEligibility.setReading(4.0);
-				englishEligibility.setSpeaking(5.0);
-				englishEligibility.setWriting(5.0);
-				englishEligibility.setIsDeleted(false);
-				englishEligibility.setCreatedBy("AUTO");
-				englishEligibility.setCreatedOn(now);
-				courseEnglishEligibilityProcessor.save(englishEligibility);
-				englishEligibility = new CourseEnglishEligibility();
-				englishEligibility.setCourse(course);
-				englishEligibility.setEnglishType(EnglishType.TOEFL.toString());
-				englishEligibility.setIsActive(true);
-				englishEligibility.setListening(4.0);
-				englishEligibility.setOverall(4.5);
-				englishEligibility.setReading(4.0);
-				englishEligibility.setSpeaking(5.0);
-				englishEligibility.setWriting(5.0);
-				englishEligibility.setIsDeleted(false);
-				englishEligibility.setCreatedBy("AUTO");
-				englishEligibility.setCreatedOn(now);
-				courseEnglishEligibilityProcessor.save(englishEligibility);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("courseList", courseList);
-		return ResponseEntity.accepted().body(response);
-	}
-
 	@Override
 	public ResponseEntity<?> getCourseByIds(List<String> courseIds) {
 		List<CourseDto> courseDtos = courseProcessor.getCourseByMultipleId(courseIds);

@@ -40,7 +40,6 @@ import com.yuzee.app.dto.FacilityDto;
 import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.LatLongDto;
-import com.yuzee.app.dto.OffCampusCourseDto;
 import com.yuzee.app.dto.TimingDto;
 import com.yuzee.app.dto.TodoDto;
 
@@ -86,8 +85,7 @@ public class CommonUtil {
 		return instituteRequestDto;
 	}
 
-	public static CourseRequest convertCourseDtoToCourseRequest(final Course course) {
-		CourseRequest courseRequest = new CourseRequest();
+	public static void copyCourseToCourseRequest(final Course course, CourseRequest courseRequest) {
 		courseRequest.setId(course.getId());
 		
 		if (course.getWorldRanking() != null) {
@@ -108,6 +106,10 @@ public class CommonUtil {
 		if (course.getInstitute() != null) {
 			courseRequest.setInstituteId(course.getInstitute().getId());
 			courseRequest.setInstituteName(course.getInstitute().getName());
+			courseRequest.setLatitude(course.getInstitute().getLatitude());
+			courseRequest.setLongitude(course.getInstitute().getLongitude());
+			courseRequest.setInstituteName(course.getInstitute().getName());
+			courseRequest.getInstitute().setStateName(course.getInstitute().getState());
 		}
 		if (course.getLevel() != null) {
 			courseRequest.setLevelId(course.getLevel().getId());
@@ -135,8 +137,6 @@ public class CommonUtil {
 		courseRequest.setGlobalGpa(course.getGlobalGpa());
 		courseRequest.setEmail(course.getEmail());
 		courseRequest.setEntranceExam(course.getEntranceExam());
-		
-		return courseRequest;
 	}
 
 	public static Map<String, Double> getCurrencyDetails(final String baseCurrency) {

@@ -3,17 +3,17 @@ package com.yuzee.app.dao;
 import java.util.List;
 
 import com.yuzee.app.bean.CourseEnglishEligibility;
+import com.yuzee.app.exception.ValidationException;
 
 public interface CourseEnglishEligibilityDao {
 
-	public void save(CourseEnglishEligibility obj);
+	List<CourseEnglishEligibility> saveAll(List<CourseEnglishEligibility> courseEnglishEligibilities)
+			throws ValidationException;
 
-	public void update(CourseEnglishEligibility obj);
+	List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(String courseID);
 
-	public CourseEnglishEligibility get(String id);
+	void deleteByCourseIdAndIdIn(String courseId, List<String> ids);
 
-	public List<CourseEnglishEligibility> getAll();
-
-	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(String courseID);
+	List<CourseEnglishEligibility> findByCourseIdAndIdIn(String courseId, List<String> ids);
 
 }

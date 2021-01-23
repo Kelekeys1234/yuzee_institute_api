@@ -10,5 +10,7 @@ import com.yuzee.app.bean.CourseCareerOutcome;
 @Repository
 public interface CourseCareerOutComeRepository extends JpaRepository<CourseCareerOutcome, String> {
 
-	public List<CourseCareerOutcome> findByCourseId(String courseId);
+	List<CourseCareerOutcome> findByCourseIdAndIdIn(String courseId, List<String> ids);
+
+	public void deleteByCourseIdAndIdIn(String courseId, List<String> ids);
 }

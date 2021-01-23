@@ -22,7 +22,6 @@ public class CourseRequest {
 	private String id;
 
 	@JsonProperty("institute_id")
-	@NotBlank(message = "institute_id should not be blank")
 	private String instituteId;
 
 	@JsonProperty("faculty_id")
@@ -217,4 +216,8 @@ public class CourseRequest {
 	@JsonProperty("course_fundings")
 	@NotNull(message = "course_fundings must not be null")
 	private ValidList<CourseFundingDto> courseFundings = new ValidList<>();
+	
+	@Valid
+	@JsonProperty("institute")
+	private InstituteResponseDto institute;
 }

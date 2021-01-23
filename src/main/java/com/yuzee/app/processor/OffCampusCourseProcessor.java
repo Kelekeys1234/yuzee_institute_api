@@ -110,7 +110,7 @@ public class OffCampusCourseProcessor {
 		if (!CollectionUtils.isEmpty(courseIntakes)) {
 			log.info("courseIntake is fetched from DB, hence adding englishEligibilities in response");
 			courseResponse
-					.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDates).collect(Collectors.toList()));
+					.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
 		}
 		if (course.getOffCampusCourse() != null) {
 			courseResponse.setOffCampusCourse(modelMapper.map(course.getOffCampusCourse(), OffCampusCourseDto.class));

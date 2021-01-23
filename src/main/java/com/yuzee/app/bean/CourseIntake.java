@@ -37,7 +37,7 @@ public class CourseIntake {
 	private String id;
 	
 	@Column(name = "intake_date", nullable = false)
-	private Date intakeDates;
+	private Date intakeDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "course_id", nullable = false)
