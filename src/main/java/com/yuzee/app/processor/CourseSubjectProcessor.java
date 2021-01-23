@@ -97,7 +97,7 @@ public class CourseSubjectProcessor {
 				log.error("no access to delete one more subjects");
 				throw new ForbiddenException("no access to delete one more subjects");
 			}
-			courseSubjectDao.deleteByIdIn(courseSubjectIds);
+			courseSubjectDao.deleteByCourseIdAndIdIn(courseId, courseSubjectIds);
 		} else {
 			log.error("one or more invalid course_subject_ids");
 			throw new NotFoundException("one or more invalid course_subject_ids");
