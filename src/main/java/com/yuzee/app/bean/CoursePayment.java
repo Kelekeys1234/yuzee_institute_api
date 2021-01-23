@@ -11,13 +11,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -26,7 +26,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "course_payment", indexes = { @Index(name = "IDX_COURSE", columnList = "course_id", unique = true) })
+@Table(name = "course_payment", uniqueConstraints = @UniqueConstraint(name = "UK_COURSE", columnNames = {
+		"course_id" }))
 public class CoursePayment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
