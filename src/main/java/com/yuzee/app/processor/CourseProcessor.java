@@ -36,7 +36,6 @@ import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseFunding;
 import com.yuzee.app.bean.CourseIntake;
 import com.yuzee.app.bean.CourseLanguage;
-import com.yuzee.app.bean.CourseMinRequirement;
 import com.yuzee.app.bean.CourseSubject;
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.GlobalData;
@@ -48,7 +47,6 @@ import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CareerDao;
 import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dao.CourseMinRequirementDao;
 import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.IGlobalStudentDataDAO;
 import com.yuzee.app.dao.InstituteDao;
@@ -65,7 +63,6 @@ import com.yuzee.app.dto.CourseDto;
 import com.yuzee.app.dto.CourseEnglishEligibilityDto;
 import com.yuzee.app.dto.CourseFilterDto;
 import com.yuzee.app.dto.CourseFundingDto;
-import com.yuzee.app.dto.CourseMinRequirementDto;
 import com.yuzee.app.dto.CourseMobileDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseResponseDto;
@@ -123,9 +120,6 @@ public class CourseProcessor {
 
 	@Autowired
 	private FacultyDao facultyDAO;
-
-	@Autowired
-	private CourseMinRequirementDao courseMinRequirementDao;
 
 	@Autowired
 	private StorageHandler storageHandler;
@@ -1200,59 +1194,6 @@ public class CourseProcessor {
 
 	public List<Course> facultyWiseCourseForInstitute(final List<Faculty> facultyList, final Institute institute) {
 		return courseDao.facultyWiseCourseForTopInstitute(facultyList, institute);
-	}
-
-	public void saveCourseMinrequirement(final CourseMinRequirementDto courseMinRequirementDto) {
-		convertDtoToCourseMinRequirement(courseMinRequirementDto);
-	}
-
-	public void convertDtoToCourseMinRequirement(final CourseMinRequirementDto courseMinRequirementDto) {
-		log.debug("Inside convertDtoToCourseMinRequirement() method");
-		Integer i = 0;
-		List<String> subjectGrade = new ArrayList<>();
-		for (String subject : courseMinRequirementDto.getSubject()) {
-			System.out.println(subject);
-			CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
-			courseMinRequirement.setCountryName(courseMinRequirementDto.getCountry());
-			courseMinRequirement.setSystem(courseMinRequirementDto.getSystem());
-			courseMinRequirement.setSubject(courseMinRequirementDto.getSubject().get(i));
-			courseMinRequirement.setGrade(courseMinRequirementDto.getGrade().get(i));
-			subjectGrade.add(courseMinRequirementDto.getGrade().get(i));
-			courseMinRequirement.setCourse(courseDao.get(courseMinRequirementDto.getCourse()));
-			log.info("Calling DAO layer to save course minimun requirements");
-			courseMinRequirementDao.save(courseMinRequirement);
-			i++;
-		}
-	}
-
-	public List<CourseMinRequirementDto> getCourseMinRequirement(final String course) {
-		return convertCourseMinRequirementToDto(courseMinRequirementDao.getCourseMinRequirementByCourseId(course));
-	}
-
-	public List<CourseMinRequirementDto> convertCourseMinRequirementToDto(final List<CourseMinRequirement> courseMinRequirement) {
-		log.debug("Inside convertCourseMinRequirementToDto() method");
-		List<CourseMinRequirementDto> resultList = new ArrayList<>();
-		log.info("Collecting countryNames and start iterating based on countryName");
-		Set<String> countryIds = courseMinRequirement.stream().map(c -> c.getCountryName()).collect(Collectors.toSet());
-		countryIds.stream().forEach(countryId -> {
-			List<String> subject = new ArrayList<>();
-			List<String> grade = new ArrayList<>();
-			log.info("Filtering courseMinimum requirements based on countryName");
-			List<CourseMinRequirement> filterList = courseMinRequirement.stream().filter(x -> x.getCountryName().equals(countryId))
-					.collect(Collectors.toList());
-			CourseMinRequirementDto courseMinRequirementDto = new CourseMinRequirementDto();
-			for (CourseMinRequirement courseMinRequirements : filterList) {
-				subject.add(courseMinRequirements.getSubject());
-				grade.add(courseMinRequirements.getGrade());
-				courseMinRequirementDto.setCountry(courseMinRequirements.getCountryName());
-				courseMinRequirementDto.setSystem(courseMinRequirements.getSystem());
-				courseMinRequirementDto.setCourse(courseMinRequirements.getCourse().getId());
-			}
-			courseMinRequirementDto.setSubject(subject);
-			courseMinRequirementDto.setGrade(grade);
-			resultList.add(courseMinRequirementDto);
-		});
-		return resultList;
 	}
 
 	public List<CourseRequest> autoSearchByCharacter(final String searchKey) throws NotFoundException {

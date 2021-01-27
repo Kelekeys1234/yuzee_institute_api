@@ -15,7 +15,6 @@ import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseCountDto;
 import com.yuzee.app.dto.CourseDto;
 import com.yuzee.app.dto.CourseFilterDto;
-import com.yuzee.app.dto.CourseMinRequirementDto;
 import com.yuzee.app.dto.CourseMobileDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseResponseDto;
@@ -295,20 +294,6 @@ public class CourseController implements CourseInterface {
 		PaginationResponseDto paginationResponseDto = courseProcessor.courseFilter(courseFilter);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
 				.setMessage("Course Displayed Successfully").create();
-	}
-
-	public ResponseEntity<?> saveCourseMinRequirement(final List<CourseMinRequirementDto> courseMinRequirementDtoList) throws Exception {
-		for (CourseMinRequirementDto courseMinRequirementDto2 : courseMinRequirementDtoList) {
-			courseProcessor.saveCourseMinrequirement(courseMinRequirementDto2);
-		}
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Created Course Minimum Requirement").create();
-	}
-
-	public ResponseEntity<?> getCourseMinRequirement(final String courseId) throws Exception {
-		List<CourseMinRequirementDto> courseMinRequirementDto = courseProcessor.getCourseMinRequirement(courseId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Get Course Minimum Requirement").setData(courseMinRequirementDto).create();
 	}
 
 	public ResponseEntity<?> autoSearchByCharacter(final String searchKey) throws Exception {

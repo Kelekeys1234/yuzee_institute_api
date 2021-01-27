@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseFilterDto;
-import com.yuzee.app.dto.CourseMinRequirementDto;
 import com.yuzee.app.dto.CourseMobileDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseSearchDto;
@@ -106,13 +105,6 @@ public interface CourseInterface {
 	public ResponseEntity<?> courseFilter(@RequestHeader(required = true) final String userId,
 			@RequestHeader(required = false) final String language, @RequestBody final CourseFilterDto courseFilter)
 			throws Exception;
-
-	@PostMapping(value = "/course/minimumRequirement")
-	public ResponseEntity<?> saveCourseMinRequirement(
-			@Valid @RequestBody final List<CourseMinRequirementDto> courseMinRequirementDtoList) throws Exception;
-
-	@GetMapping(value = "/course/minimumRequirement/{courseId}")
-	public ResponseEntity<?> getCourseMinRequirement(@PathVariable final String courseId) throws Exception;
 
 	@GetMapping(value = "/course/autoSearch/{searchKey}")
 	public ResponseEntity<?> autoSearchByCharacter(@PathVariable final String searchKey) throws Exception;
