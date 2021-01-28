@@ -25,6 +25,9 @@ public class CourseMinRequirementDto {
 	@JsonProperty("education_system_id")
 	@NotEmpty(message = "educationSystemId must not be empty")
 	private String educationSystemId;
+	
+	@JsonProperty("education_system")
+	private EducationSystemDto educationSystem;
 
 	@JsonProperty("grade_point")
 	@NotNull(message = "grade_point must not be null")
