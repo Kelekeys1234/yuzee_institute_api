@@ -14,8 +14,8 @@ public class ScholarshipResponseDto extends ScholarshipDto {
 	@JsonProperty("media")
 	private List<StorageDto> media;
 
-	@JsonProperty("level")
-	private LevelDto level;
+	@JsonProperty("levels")
+	private List<LevelDto> levels;
 
 	@JsonProperty("faculty")
 	private FacultyDto faculty;

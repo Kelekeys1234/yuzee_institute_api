@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -57,7 +58,7 @@ public class ScholarshipProcessor {
 	private ScholarshipDao scholarshipDAO;
 
 	@Autowired
-	private LevelDao levelDAO;
+	private LevelDao levelDao;
 
 	@Autowired
 	private FacultyDao facultyDAO;
@@ -83,22 +84,21 @@ public class ScholarshipProcessor {
 		BeanUtils.copyProperties(scholarshipDto, scholarship);
 		scholarship.setId(existingScholarshipId);
 		scholarship.setAuditFields(userId);
-		if (scholarshipDto.getLevelId() != null) {
-			log.info("LevelId is not nll, hence fetching level data from DB");
-			Level level = levelDAO.getLevel(scholarshipDto.getLevelId());
-			if (level == null) {
-				log.error("Level not found for id: {}", scholarshipDto.getLevelId());
-				throw new ValidationException("Level not found for id: " + scholarshipDto.getLevelId());
-			}
-			scholarship.setLevel(level);
+
+		Set<Level> dbLevels = scholarship.getLevels();
+		dbLevels.clear();
+		if (!CollectionUtils.isEmpty(scholarshipDto.getLevelIds())) {
+			log.info("Scholarship levels is not empty, start iterating data");
+			List<Level> levels = levelDao.findByIdIn(scholarshipDto.getLevelIds());
+			dbLevels.addAll(levels);
 		}
 
 		if (scholarshipDto.getFacultyId() != null) {
 			log.info("faculty_id is not null, hence fetching faculty data from DB");
 			Faculty faculty = facultyDAO.get(scholarshipDto.getFacultyId());
 			if (faculty == null) {
-				log.error("Faculty not found for id: {}", scholarshipDto.getLevelId());
-				throw new ValidationException("Faculty not found for id: " + scholarshipDto.getLevelId());
+				log.error("Faculty not found for id: {}", scholarshipDto.getFacultyId());
+				throw new ValidationException("Faculty not found for id: " + scholarshipDto.getFacultyId());
 			}
 			scholarship.setFaculty(faculty);
 		}
@@ -213,12 +213,7 @@ public class ScholarshipProcessor {
 		log.info("Copying data from DTO class to elasticSearch DTO class");
 		BeanUtils.copyProperties(scholarship, scholarshipElasticDto);
 		scholarshipElasticDto
-				.setCountryName(scholarship.getCountryName() != null ? scholarship.getCountryName() : null);
-		scholarshipElasticDto
 				.setInstituteName(scholarship.getInstitute() != null ? scholarship.getInstitute().getName() : null);
-		scholarshipElasticDto.setLevelName(scholarship.getLevel() != null ? scholarship.getLevel().getName() : null);
-		scholarshipElasticDto.setLevelCode(scholarship.getLevel() != null ? scholarship.getLevel().getCode() : null);
-		scholarshipElasticDto.setAmount(scholarship.getScholarshipAmount());
 		scholarshipElasticDto.setIntakes(scholarship.getScholarshipIntakes().stream()
 				.map(e -> modelMapper.map(e, ScholarshipIntakeDto.class)).collect(Collectors.toList()));
 		scholarshipElasticDto.setLanguages(scholarship.getScholarshipLanguages().stream()
@@ -300,7 +295,8 @@ public class ScholarshipProcessor {
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
-	public void deleteScholarship(final String userId, final String scholarshipId) throws ValidationException, NotFoundException, InvokeException {
+	public void deleteScholarship(final String userId, final String scholarshipId)
+			throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside deleteScholarship() method");
 		Scholarship scholarship = getScholarshipFomDb(scholarshipId);
 		if (!scholarship.getCreatedBy().equals(userId)) {

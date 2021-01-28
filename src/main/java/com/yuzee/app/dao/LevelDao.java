@@ -22,4 +22,6 @@ public interface LevelDao {
     public List<LevelDto> getCountryLevel(String countryId);
     
 	public List<String> getAllLevelNamesByInstituteId(final String instituteId);
+
+	public List<Level> findByIdIn(List<String> ids);
 }

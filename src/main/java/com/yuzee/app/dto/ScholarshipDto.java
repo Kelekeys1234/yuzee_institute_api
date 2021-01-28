@@ -37,8 +37,11 @@ public class ScholarshipDto {
 	@JsonProperty("currency")
 	private String currency;
 
-	@JsonProperty("scholarship_amount")
-	private Double scholarshipAmount;
+	@JsonProperty("amount")
+	private Double amount;
+
+	@JsonProperty("is_percentage_amount")
+	private Boolean isPercentageAmount;
 
 	@JsonProperty("validity")
 	private String validity;

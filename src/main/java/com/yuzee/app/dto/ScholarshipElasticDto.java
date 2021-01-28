@@ -22,9 +22,9 @@ public class ScholarshipElasticDto implements Serializable {
 
 	private String instituteName;
 
-	private String levelName;
-
 	private Double amount;
+	
+	private Boolean isPercentageAmount;
 
 	private String description;
 
@@ -34,13 +34,13 @@ public class ScholarshipElasticDto implements Serializable {
 
 	private Date applicationDeadline;
 
-	private String levelCode;
-
 	private String currency;
 
 	private String eligibleNationality;
 
 	private List<ScholarshipIntakeDto> intakes;
+
+	private List<LevelDto> levels;
 
 	private List<String> languages;
 
