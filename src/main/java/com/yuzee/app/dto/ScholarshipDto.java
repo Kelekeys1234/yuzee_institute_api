@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -26,10 +27,6 @@ public class ScholarshipDto {
 
 	@JsonProperty("scholarship_award")
 	private String scholarshipAward;
-
-	@JsonProperty("country_name")
-	@NotBlank(message = "country_name should not be blank")
-	private String countryName;
 
 	@JsonProperty("number_of_avaliability")
 	private Integer numberOfAvaliability;
@@ -76,4 +73,8 @@ public class ScholarshipDto {
 
 	@JsonProperty("languages")
 	private List<String> languages;
+
+	@JsonProperty("country_names")
+	@NotNull(message = "country_names should not be null")
+	private List<String> countryNames;
 }

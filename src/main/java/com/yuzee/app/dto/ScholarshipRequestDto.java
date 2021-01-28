@@ -3,7 +3,7 @@ package com.yuzee.app.dto;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ScholarshipRequestDto extends ScholarshipDto {
 	@JsonProperty("level_ids")
-	@NotEmpty(message = "level_ids should not be empty")
+	@NotNull(message = "level_ids should not be null")
 	private List<String> levelIds;
 
 	@JsonProperty("institute_id")

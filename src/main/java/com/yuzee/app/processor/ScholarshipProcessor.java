@@ -22,6 +22,7 @@ import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.bean.Scholarship;
+import com.yuzee.app.bean.ScholarshipCountry;
 import com.yuzee.app.bean.ScholarshipEligibleNationality;
 import com.yuzee.app.bean.ScholarshipIntake;
 import com.yuzee.app.bean.ScholarshipLanguage;
@@ -178,6 +179,34 @@ public class ScholarshipProcessor {
 			dbLanguages.removeIf(e -> !Util.containsIgnoreCase(scholarshipDto.getLanguages(), e.getName()));
 		}
 
+		List<ScholarshipCountry> dbCountries = scholarship.getScholarshipCountries();
+
+		if (!CollectionUtils.isEmpty(scholarshipDto.getCountryNames())) {
+			log.info("Scholarship country_names is not empty, start iterating data");
+
+			scholarshipDto.getCountryNames().stream().forEach(countryName -> {
+
+				Optional<ScholarshipCountry> existingCountryOptional = dbCountries.stream()
+						.filter(e -> e.getCountryName().equalsIgnoreCase(countryName)).findAny();
+
+				String scholarshipCountryId = null;
+				ScholarshipCountry scholarshipCountry = new ScholarshipCountry();
+				if (existingCountryOptional.isPresent()) {
+					scholarshipCountry = existingCountryOptional.get();
+					scholarshipCountryId = scholarshipCountry.getId();
+				}
+				scholarshipCountry.setId(scholarshipCountryId);
+				scholarshipCountry.setCountryName(countryName);
+				scholarshipCountry.setAuditFields(userId);
+				scholarshipCountry.setScholarship(finalScholarship);
+				if (StringUtils.isEmpty(scholarshipCountryId)) {
+					dbCountries.add(scholarshipCountry);
+				}
+
+			});
+			dbCountries.removeIf(e -> !Util.containsIgnoreCase(scholarshipDto.getCountryNames(), e.getCountryName()));
+		}
+		
 		List<ScholarshipEligibleNationality> dbNationalitites = scholarship.getScholarshipEligibleNationalities();
 
 		if (!CollectionUtils.isEmpty(scholarshipDto.getEligibleNationalities())) {
@@ -324,6 +353,9 @@ public class ScholarshipProcessor {
 		responseDto.setEligibleNationalities(scholarship.getScholarshipEligibleNationalities().stream()
 				.map(ScholarshipEligibleNationality::getCountryName).collect(Collectors.toList()));
 
+		responseDto.setCountryNames(scholarship.getScholarshipCountries().stream().map(ScholarshipCountry::getCountryName)
+				.collect(Collectors.toList()));
+		
 		responseDto.setLanguages(scholarship.getScholarshipLanguages().stream().map(ScholarshipLanguage::getName)
 				.collect(Collectors.toList()));
 		return responseDto;

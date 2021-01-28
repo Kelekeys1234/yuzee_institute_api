@@ -33,10 +33,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "scholarship", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "country_name",
-		"institute_id", "faculty_id" }, name = "UK_CN_LE_IN_CN_FI"), indexes = {
+@Table(name = "scholarship", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "institute_id",
+		"faculty_id" }, name = "UK_CN_LE_IN_CN_FI"), indexes = {
 				@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),
-				@Index(name = "IDX_COUNTRY_NAME", columnList = "country_name", unique = false) })
+				@Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false) })
 public class Scholarship implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -52,9 +52,6 @@ public class Scholarship implements Serializable {
 
 	@Column(name = "scholarship_award")
 	private String scholarshipAward;
-
-	@Column(name = "country_name", nullable = false)
-	private String countryName;
 
 	@ManyToMany
 	@JoinTable(name = "scholarship_level", joinColumns = @JoinColumn(name = "level_id"), inverseJoinColumns = @JoinColumn(name = "scholarship_id"))
@@ -126,6 +123,9 @@ public class Scholarship implements Serializable {
 
 	@OneToMany(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ScholarshipLanguage> scholarshipLanguages = new ArrayList<>();
+
+	@OneToMany(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ScholarshipCountry> scholarshipCountries = new ArrayList<>();
 
 	@OneToMany(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ScholarshipEligibleNationality> scholarshipEligibleNationalities = new ArrayList<>();
