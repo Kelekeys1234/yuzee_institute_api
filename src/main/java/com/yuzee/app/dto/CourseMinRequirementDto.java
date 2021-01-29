@@ -23,7 +23,7 @@ public class CourseMinRequirementDto {
 	private String stateName;
 
 	@JsonProperty("education_system_id")
-	@NotEmpty(message = "educationSystemId must not be empty")
+	@NotEmpty(message = "education_system_id must not be empty")
 	private String educationSystemId;
 	
 	@JsonProperty("education_system")

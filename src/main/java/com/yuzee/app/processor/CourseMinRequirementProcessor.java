@@ -54,7 +54,7 @@ public class CourseMinRequirementProcessor {
 	public CourseMinRequirementDto saveCourseMinRequirement(String userId, String courseId,
 			@Valid CourseMinRequirementDto courseMinRequirementDto)
 			throws ForbiddenException, NotFoundException, ValidationException {
-		log.info("inside CourseMinRequirementProcessor.saveCourseMinRequirement");
+		log.info("inside CourseMinRequirementProcessor.saveCourseMinRequirement for courseId : {}", courseId);
 		Course course = validateAndGetCourse(courseId);
 		if (!course.getCreatedBy().equals(userId)) {
 			log.error("no access to create course min requirement");
@@ -72,7 +72,9 @@ public class CourseMinRequirementProcessor {
 			e.setAuditFields(userId);
 		});
 		courseMinRequirement.setAuditFields(userId);
+		log.info("going to save record in db");
 		courseMinRequirement = courseMinRequirementDao.save(courseMinRequirement);
+		log.info("record saved");
 		return modelMapper.map(courseMinRequirement, CourseMinRequirementDto.class);
 	}
 
@@ -80,7 +82,7 @@ public class CourseMinRequirementProcessor {
 	public CourseMinRequirementDto updateCourseMinRequirement(String userId, String courseId,
 			@Valid CourseMinRequirementDto courseMinRequirementDto, String courseMinRequirementId)
 			throws ForbiddenException, NotFoundException, ValidationException {
-		log.info("inside CourseMinRequirementProcessor.updateCourseMinRequirement");
+		log.info("inside CourseMinRequirementProcessor.updateCourseMinRequirement for upading min requirement ");
 
 		Course course = validateAndGetCourse(courseId);
 		if (!course.getCreatedBy().equals(userId)) {
@@ -94,6 +96,7 @@ public class CourseMinRequirementProcessor {
 			log.error("invalid course min requirement id: {}", courseMinRequirementId);
 			throw new NotFoundException("invalid course min requirement id: " + courseMinRequirementId);
 		} else {
+			log.info("starting process to prepare model");
 			courseMinRequirement.setCountryName(courseMinRequirementDto.getCountryName());
 			courseMinRequirement.setStateName(courseMinRequirementDto.getStateName());
 			courseMinRequirement.setGradePoint(courseMinRequirementDto.getGradePoint());

@@ -25,12 +25,12 @@ public interface CourseContactPersonInterface {
 	@PostMapping
 	public ResponseEntity<?> saveAll(@RequestHeader(value = "userId", required = true) final String userId,
 			@PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final ValidList<CourseContactPersonDto> courseFundingDto)
+			@Valid @RequestBody(required = true) final ValidList<CourseContactPersonDto> courseContactPersonDtos)
 			throws ValidationException, NotFoundException;
 
 	@DeleteMapping
 	public ResponseEntity<?> deleteByCourseAndUserIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@RequestParam(value = "user_ids", required = true) final List<String> fundingNameIds)
+			@RequestParam(value = "user_ids", required = true) final List<String> userIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }

@@ -24,13 +24,13 @@ public interface CourseMinRequirementInterface {
 	@PostMapping
 	public ResponseEntity<Object> saveCourseMinRequirement(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final CourseMinRequirementDto coursePaymentDto)
+			@Valid @RequestBody(required = true) final CourseMinRequirementDto courseMinRequirementDto)
 			throws ValidationException, NotFoundException, ForbiddenException;
 
 	@PutMapping("/{courseMinRequirementId}")
 	public ResponseEntity<Object> updateCourseMinRequirement(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final CourseMinRequirementDto coursePaymentDto,
+			@Valid @RequestBody(required = true) final CourseMinRequirementDto courseMinRequirementDto,
 			@PathVariable final String courseMinRequirementId)
 			throws ValidationException, NotFoundException, ForbiddenException;
 

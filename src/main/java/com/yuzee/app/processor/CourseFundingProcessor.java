@@ -80,6 +80,7 @@ public class CourseFundingProcessor {
 				courseFunding.setFundingNameId(e.getFundingNameId());
 				courseFundings.add(courseFunding);
 			});
+			log.info("going to save record in db");
 			courseFundingDao.saveAll(courseFundings);
 		} else {
 			log.error("invalid course id: {}", courseId);

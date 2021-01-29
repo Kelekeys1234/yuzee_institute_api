@@ -137,6 +137,7 @@ public class CourseDeliveryModesProcessor {
 				courseDeliveryMode.setAuditFields(userId);
 				courseDeliveryModes.add(courseDeliveryMode);
 			});
+			log.info("going to save record in db");
 			courseDeliveryModesDao.saveAll(courseDeliveryModes);
 		} else {
 			log.error("invalid course id: {}", courseId);

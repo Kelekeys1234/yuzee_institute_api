@@ -48,6 +48,7 @@ public class CourseIntakeProcessor {
 				courseIntake.setCourse(course);
 				courseIntakes.add(courseIntake);
 			});
+			log.info("going to save record in db");
 			courseIntakeDao.saveAll(courseIntakes);
 		} else {
 			log.error("invalid course id: {}", courseId);

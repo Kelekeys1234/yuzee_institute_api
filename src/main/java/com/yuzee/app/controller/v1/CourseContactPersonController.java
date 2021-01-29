@@ -33,7 +33,7 @@ public class CourseContactPersonController implements CourseContactPersonInterfa
 			throws ValidationException, NotFoundException {
 		log.info("inside CourseContactPersonController.saveAll");
 		courseContactPersonProcessor.saveCourseContactPersons(userId, courseId, courseContactPersonDtos);
-		return new GenericResponseHandlers.Builder().setMessage("Course Fundings added successfully.")
+		return new GenericResponseHandlers.Builder().setMessage("Course Contact Persons added successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -42,7 +42,7 @@ public class CourseContactPersonController implements CourseContactPersonInterfa
 			throws ValidationException, NotFoundException, ForbiddenException {
 		log.info("inside CourseContactPersonController.deleteByUserIds");
 		courseContactPersonProcessor.deleteCourseContactPersonsByUserIds(userId, courseId, userIds);
-		return new GenericResponseHandlers.Builder().setMessage("Course Fundings deleted successfully.")
+		return new GenericResponseHandlers.Builder().setMessage("Course Contact Persons deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}
 }

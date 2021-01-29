@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.yuzee.app.bean.CourseContactPerson;
 import com.yuzee.app.dao.CourseContactPersonDao;
@@ -37,7 +36,6 @@ public class CourseContactPersonDaoImpl implements CourseContactPersonDao {
 		return courseContactPersonRepository.findByCourseIdAndUserIdIn(courseId, userIds);
 	}
 
-	@Transactional
 	@Override
 	public void deleteByCourseIdAndUserIdIn(String courseId, List<String> userIds) {
 		courseContactPersonRepository.deleteByCourseIdAndUserIdIn(courseId, userIds);

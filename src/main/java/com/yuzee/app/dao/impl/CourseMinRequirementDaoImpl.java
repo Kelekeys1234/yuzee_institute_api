@@ -19,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CourseMinRequirementDaoImpl implements CourseMinRequirementDao {
 
+	private final static String ALREADY_EXISTS = "Course Minumum requirements with same country name, state name and education system id already exists  OR Course Minumum requirement subjects with same name already exists.";
+
 	@Autowired
 	private CourseMinimumRequirementsRepository courseMinRequirementRepository;
 
@@ -27,10 +29,8 @@ public class CourseMinRequirementDaoImpl implements CourseMinRequirementDao {
 		try {
 			return courseMinRequirementRepository.save(courseMinRequirement);
 		} catch (DataIntegrityViolationException ex) {
-			String message = "Course Minumum requirements with same country name, state name and education system id already exists "
-					+ " OR Course Minumum requirement subjects with same name already exists.";
-			log.error(message);
-			throw new ValidationException(message);
+			log.error(ALREADY_EXISTS);
+			throw new ValidationException(ALREADY_EXISTS);
 		}
 	}
 
@@ -46,7 +46,6 @@ public class CourseMinRequirementDaoImpl implements CourseMinRequirementDao {
 		} catch (EntityNotFoundException ex) {
 			log.error("data not exists against courseId: {} and id: {}", courseId, id);
 		}
-
 	}
 
 	@Override
