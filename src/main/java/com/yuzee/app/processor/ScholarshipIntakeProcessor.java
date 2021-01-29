@@ -73,17 +73,17 @@ public class ScholarshipIntakeProcessor {
 		scholarshipIntakeDao.saveAll(scholarshipIntakes);
 	}
 
-	public void deleteByScholarshipIntakeIds(String userId, String courseId, List<String> englishEligibilityIds)
+	public void deleteByScholarshipIntakeIds(String userId, String courseId, List<String> scholarshipIntakeIds)
 			throws NotFoundException, ForbiddenException {
 		log.info("inside ScholarshipIntakeDao.deleteByScholarshipIntakeIds");
 		List<ScholarshipIntake> scholarshipIntakes = scholarshipIntakeDao.findByScholarshipIdAndIdIn(courseId,
-				englishEligibilityIds);
-		if (englishEligibilityIds.size() == scholarshipIntakes.size()) {
+				scholarshipIntakeIds);
+		if (scholarshipIntakeIds.size() == scholarshipIntakes.size()) {
 			if (scholarshipIntakes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more scholarship intakes");
 				throw new ForbiddenException("no access to delete one more scholarship intakes");
 			}
-			scholarshipIntakeDao.deleteByScholarshipIdAndIdIn(courseId, englishEligibilityIds);
+			scholarshipIntakeDao.deleteByScholarshipIdAndIdIn(courseId, scholarshipIntakeIds);
 		} else {
 			log.error("one or more invalid scholarship_intakes_ids");
 			throw new NotFoundException("one or more invalid scholarship_intakes_ids");

@@ -76,10 +76,10 @@ public class Scholarship implements Serializable {
 	@Column(name = "validity", nullable = false)
 	private String validity;
 
-	@Column(name = "how_to_apply", nullable = false)
+	@Column(name = "how_to_apply")
 	private String howToApply;
 
-	@Column(name = "gender", nullable = false)
+	@Column(name = "gender")
 	private String gender;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -96,7 +96,7 @@ public class Scholarship implements Serializable {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
-	@Column(name = "website", nullable = false)
+	@Column(name = "website")
 	private String website;
 
 	@ManyToOne(fetch = FetchType.LAZY)
