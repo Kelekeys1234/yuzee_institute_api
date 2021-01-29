@@ -1,5 +1,6 @@
 package com.yuzee.app.processor;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -237,8 +238,8 @@ public class ScholarshipProcessor {
 		Scholarship scholarship = getScholarshipFomDb(id);
 		ScholarshipResponseDto scholarshipResponseDTO = createScholarshipResponseDtoFromModel(scholarship);
 		try {
-			List<StorageDto> storageDTOList = storageHandler.getStorages(id, EntityTypeEnum.SCHOLARSHIP,
-					EntitySubTypeEnum.MEDIA);
+			List<StorageDto> storageDTOList = storageHandler.getStorages(Arrays.asList(id), EntityTypeEnum.SCHOLARSHIP,
+					Arrays.asList(EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.LOGO, EntitySubTypeEnum.MEDIA));
 			scholarshipResponseDTO.setMedia(storageDTOList);
 		} catch (NotFoundException | InvokeException e) {
 			log.error(e.getMessage());
@@ -307,7 +308,8 @@ public class ScholarshipProcessor {
 		try {
 			List<StorageDto> storageDTOList = storageHandler.getStorages(
 					scholarshipResponseDTOs.stream().map(ScholarshipResponseDto::getId).collect(Collectors.toList()),
-					EntityTypeEnum.SCHOLARSHIP, EntitySubTypeEnum.MEDIA);
+					EntityTypeEnum.SCHOLARSHIP,
+					Arrays.asList(EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.LOGO, EntitySubTypeEnum.MEDIA));
 			scholarshipResponseDTOs.stream().forEach(e -> e.setMedia(storageDTOList.stream()
 					.filter(f -> e.getId().equals(f.getEntityId())).collect(Collectors.toList())));
 		} catch (NotFoundException | InvokeException e) {
