@@ -206,7 +206,7 @@ public class ScholarshipProcessor {
 			});
 			dbCountries.removeIf(e -> !Util.containsIgnoreCase(scholarshipDto.getCountryNames(), e.getCountryName()));
 		}
-		
+
 		List<ScholarshipEligibleNationality> dbNationalitites = scholarship.getScholarshipEligibleNationalities();
 
 		if (!CollectionUtils.isEmpty(scholarshipDto.getEligibleNationalities())) {
@@ -297,6 +297,37 @@ public class ScholarshipProcessor {
 				IConstant.ELASTIC_SEARCH);
 	}
 
+	@Transactional(rollbackOn = Throwable.class)
+	public String saveOrUpdateBasicScholarship(final String userId, final ScholarshipRequestDto scholarshipDto,
+			final String scholarshipId) throws ValidationException {
+		log.debug("Inside saveOrUpdateBasicScholarship() method");
+		Scholarship scholarship = null;
+		if (!StringUtils.isEmpty(scholarshipId)) {
+			scholarship = getScholarshipFomDb(scholarshipId);
+		} else {
+			scholarship = new Scholarship();
+		}
+
+		BeanUtils.copyProperties(scholarshipDto, scholarship);
+		scholarship.setAuditFields(userId);
+
+		log.info("Calling DAO layer to save/update scholarship in DB");
+		scholarship = scholarshipDAO.saveScholarship(scholarship);
+
+		if (StringUtils.isEmpty(scholarshipId)) {
+			log.info("Calling elastic search service to save data on elastic index");
+			elasticHandler.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
+					EntityTypeEnum.SCHOLARSHIP.name().toLowerCase(), prepareElasticDtoFromModel(scholarship),
+					IConstant.ELASTIC_SEARCH);
+		} else {
+			log.info("Calling elastic search service to update data on elastic index");
+			elasticHandler.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
+					EntityTypeEnum.SCHOLARSHIP.name().toLowerCase(), prepareElasticDtoFromModel(scholarship),
+					IConstant.ELASTIC_SEARCH);
+		}
+		return scholarship.getId();
+	}
+
 	@Transactional
 	public PaginationResponseDto getScholarshipList(final Integer pageNumber, final Integer pageSize,
 			final String countryName, final String instituteId, final String searchKeyword) {
@@ -353,9 +384,9 @@ public class ScholarshipProcessor {
 		responseDto.setEligibleNationalities(scholarship.getScholarshipEligibleNationalities().stream()
 				.map(ScholarshipEligibleNationality::getCountryName).collect(Collectors.toList()));
 
-		responseDto.setCountryNames(scholarship.getScholarshipCountries().stream().map(ScholarshipCountry::getCountryName)
-				.collect(Collectors.toList()));
-		
+		responseDto.setCountryNames(scholarship.getScholarshipCountries().stream()
+				.map(ScholarshipCountry::getCountryName).collect(Collectors.toList()));
+
 		responseDto.setLanguages(scholarship.getScholarshipLanguages().stream().map(ScholarshipLanguage::getName)
 				.collect(Collectors.toList()));
 		return responseDto;

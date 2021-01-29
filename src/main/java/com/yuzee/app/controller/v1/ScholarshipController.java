@@ -43,6 +43,20 @@ public class ScholarshipController implements ScholarshipInterface {
 	}
 
 	@Override
+	public ResponseEntity<?> saveBasicScholarship(final String userId, final ScholarshipRequestDto scholarshipDto)
+			throws Exception {
+		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {
+			for (ScholarshipIntakeDto intakeDto : scholarshipDto.getIntakes()) {
+				ValidationUtil.validateStudentCategory(intakeDto.getStudentCategory());
+			}
+		}
+		
+		return new GenericResponseHandlers.Builder()
+				.setData(scholarshipProcessor.saveOrUpdateBasicScholarship(userId, scholarshipDto, null))
+				.setMessage("Scholarship save successfully").setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
 	public ResponseEntity<?> updateScholarship(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String id) throws Exception {
 
@@ -53,6 +67,20 @@ public class ScholarshipController implements ScholarshipInterface {
 		}
 		scholarshipProcessor.updateScholarship(userId, scholarshipDto, id);
 		return new GenericResponseHandlers.Builder().setData(id).setMessage("Update Scholarship Successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> updateBasicScholarship(final String userId, final ScholarshipRequestDto scholarshipDto,
+			final String id) throws Exception {
+		
+		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {
+			for (ScholarshipIntakeDto intakeDto : scholarshipDto.getIntakes()) {
+				ValidationUtil.validateStudentCategory(intakeDto.getStudentCategory());
+			}
+		}
+		scholarshipProcessor.saveOrUpdateBasicScholarship(userId, scholarshipDto, id);
+		return new GenericResponseHandlers.Builder().setData(id).setMessage("Update Scholarship Successful")
 				.setStatus(HttpStatus.OK).create();
 	}
 

@@ -32,6 +32,15 @@ public interface ScholarshipInterface {
 			@RequestBody @Valid final ScholarshipRequestDto scholarshipDto, @PathVariable final String id)
 			throws Exception;
 
+	@PostMapping("/basic/info")
+	public ResponseEntity<?> saveBasicScholarship(@RequestHeader("userId") final String userId,
+			@RequestBody @Valid final ScholarshipRequestDto scholarshipDto) throws Exception;
+	
+	@PutMapping("/basic/info/{id}")
+	public ResponseEntity<?> updateBasicScholarship(@RequestHeader("userId") final String userId,
+			@RequestBody @Valid final ScholarshipRequestDto scholarshipDto, @PathVariable final String id)
+					throws Exception;
+
 	@GetMapping("/{id}")
 	public ResponseEntity<?> get(@PathVariable final String id)
 			throws ValidationException, NotFoundException, InvokeException;
