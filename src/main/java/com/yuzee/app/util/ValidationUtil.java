@@ -1,14 +1,11 @@
 package com.yuzee.app.util;
 
-import java.util.Arrays;
-
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.enumeration.StudentCategory;
 import com.yuzee.app.enumeration.TimingType;
 import com.yuzee.app.exception.RuntimeValidationException;
 import com.yuzee.app.exception.ValidationException;
@@ -20,15 +17,6 @@ public class ValidationUtil {
 
 	private ValidationUtil() {
 
-	}
-
-	public static void validateStudentCategory(String studentCategory) throws ValidationException {
-
-		if (!EnumUtils.isValidEnumIgnoreCase(StudentCategory.class, studentCategory)) {
-			String studentCategories = Arrays.toString(Util.getEnumNames(StudentCategory.class));
-			log.error("student_category must be in one of the following: ", studentCategories);
-			throw new ValidationException("student_category must be in one of the following: " + studentCategories);
-		}
 	}
 
 	public static void validatEntityType(String entityType) throws ValidationException {

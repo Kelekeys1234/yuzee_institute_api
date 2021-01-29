@@ -2,7 +2,6 @@ package com.yuzee.app.dto;
 
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -66,10 +65,6 @@ public class ScholarshipDto {
 
 	@JsonProperty("successful_canidates")
 	private String successfulCanidates;
-
-	@Valid
-	@JsonProperty("intakes")
-	private List<ScholarshipIntakeDto> intakes;
 
 	@JsonProperty("languages")
 	private List<String> languages;

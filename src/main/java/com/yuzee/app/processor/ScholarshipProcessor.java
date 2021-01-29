@@ -24,7 +24,6 @@ import com.yuzee.app.bean.Level;
 import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.bean.ScholarshipCountry;
 import com.yuzee.app.bean.ScholarshipEligibleNationality;
-import com.yuzee.app.bean.ScholarshipIntake;
 import com.yuzee.app.bean.ScholarshipLanguage;
 import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.InstituteDao;
@@ -39,7 +38,6 @@ import com.yuzee.app.dto.ScholarshipResponseDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.enumeration.StudentCategory;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -115,40 +113,6 @@ public class ScholarshipProcessor {
 		}
 
 		final Scholarship finalScholarship = scholarship;
-		List<ScholarshipIntake> dbIntakes = scholarship.getScholarshipIntakes();
-		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {
-			log.info("Scholarship intakes is not null, start iterating data");
-
-			scholarshipDto.getIntakes().stream().forEach(intake -> {
-
-				// intakes to be updated
-				Optional<ScholarshipIntake> existingIntakeOptional = dbIntakes.stream()
-						.filter(e -> e.getStudentCategory().name().equals(intake.getStudentCategory())
-								&& e.getIntakeDate().getTime() == intake.getIntakeDate().getTime())
-						.findAny();
-
-				String scholarshipIntakeId = null;
-				ScholarshipIntake scholarshipIntake = new ScholarshipIntake();
-				if (existingIntakeOptional.isPresent()) {
-					scholarshipIntake = existingIntakeOptional.get();
-					scholarshipIntakeId = scholarshipIntake.getId();
-				}
-				scholarshipIntake.setId(scholarshipIntakeId);
-				scholarshipIntake.setIntakeDate(intake.getIntakeDate());
-				scholarshipIntake.setDeadline(intake.getDeadline());
-				scholarshipIntake.setStudentCategory(StudentCategory.valueOf(intake.getStudentCategory()));
-				scholarshipIntake.setAuditFields(userId,
-						StringUtils.isEmpty(scholarshipIntakeId) ? null : scholarshipIntake);
-				scholarshipIntake.setScholarship(finalScholarship);
-				if (StringUtils.isEmpty(scholarshipIntakeId)) {
-					dbIntakes.add(scholarshipIntake);
-				}
-			});
-		} else if (!CollectionUtils.isEmpty(dbIntakes)) {
-			dbIntakes.clear();
-		}
-		// intakes to be removed
-		dbIntakes.removeIf(e -> !ifIntakeExistsInDtoList(scholarshipDto.getIntakes(), e));
 
 		List<ScholarshipLanguage> dbLanguages = scholarship.getScholarshipLanguages();
 
@@ -390,11 +354,6 @@ public class ScholarshipProcessor {
 		responseDto.setLanguages(scholarship.getScholarshipLanguages().stream().map(ScholarshipLanguage::getName)
 				.collect(Collectors.toList()));
 		return responseDto;
-	}
-
-	private boolean ifIntakeExistsInDtoList(List<ScholarshipIntakeDto> inakes, ScholarshipIntake intake) {
-		return inakes.stream().anyMatch(e -> e.getIntakeDate().getTime() == intake.getIntakeDate().getTime()
-				&& e.getStudentCategory().equalsIgnoreCase(intake.getStudentCategory().name()));
 	}
 
 	private Scholarship getScholarshipFomDb(String scholarshipId) throws ValidationException {
