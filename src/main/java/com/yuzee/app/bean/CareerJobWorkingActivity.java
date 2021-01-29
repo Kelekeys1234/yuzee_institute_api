@@ -38,7 +38,7 @@ public class CareerJobWorkingActivity implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
-	@Column(name = "work_activities", nullable = false)
+	@Column(name = "work_activities", nullable = false, columnDefinition = "text")
 	private String workActivities;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
