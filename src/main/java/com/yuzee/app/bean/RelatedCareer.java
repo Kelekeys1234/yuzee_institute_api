@@ -40,7 +40,7 @@ public class RelatedCareer implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
-	@Column(name = "related_career", nullable = false)
+	@Column(name = "related_career", nullable = false, columnDefinition = "text")
 	private String relatedCareer;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
