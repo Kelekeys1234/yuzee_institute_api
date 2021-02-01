@@ -233,10 +233,15 @@ public class ScholarshipProcessor {
 	}
 
 	@Transactional
-	public ScholarshipResponseDto getScholarshipById(final String id) throws ValidationException {
+	public ScholarshipResponseDto getScholarshipById(String userId, String id) throws ValidationException {
 		log.debug("Inside getScholarshipById() method");
 		Scholarship scholarship = getScholarshipFomDb(id);
 		ScholarshipResponseDto scholarshipResponseDTO = createScholarshipResponseDtoFromModel(scholarship);
+		if (scholarship.getCreatedBy().equals(userId)) {
+			scholarshipResponseDTO.setHasEditAccess(true);
+		} else {
+			scholarshipResponseDTO.setHasEditAccess(false);
+		}
 		try {
 			List<StorageDto> storageDTOList = storageHandler.getStorages(Arrays.asList(id), EntityTypeEnum.SCHOLARSHIP,
 					Arrays.asList(EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.LOGO, EntitySubTypeEnum.MEDIA));

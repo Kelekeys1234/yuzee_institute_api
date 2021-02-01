@@ -35,21 +35,22 @@ public interface ScholarshipInterface {
 	@PostMapping("/basic/info")
 	public ResponseEntity<?> saveBasicScholarship(@RequestHeader("userId") final String userId,
 			@RequestBody @Valid final ScholarshipRequestDto scholarshipDto) throws Exception;
-	
+
 	@PutMapping("/basic/info/{id}")
 	public ResponseEntity<?> updateBasicScholarship(@RequestHeader("userId") final String userId,
 			@RequestBody @Valid final ScholarshipRequestDto scholarshipDto, @PathVariable final String id)
-					throws Exception;
+			throws Exception;
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> get(@PathVariable final String id)
+	public ResponseEntity<?> get(@RequestHeader("userId") final String userId, @PathVariable final String id)
 			throws ValidationException, NotFoundException, InvokeException;
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllScholarship(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(value = "country_name", required = false) final String countryName,
+			@PathVariable final Integer pageSize,
+			@RequestParam(value = "country_name", required = false) final String countryName,
 			@RequestParam(value = "institute_id", required = false) final String instituteId,
-			@RequestParam(value = "search_keyword",required = false) final String searchKeyword) throws Exception;
+			@RequestParam(value = "search_keyword", required = false) final String searchKeyword) throws Exception;
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteScholarship(@RequestHeader("userId") final String userId,

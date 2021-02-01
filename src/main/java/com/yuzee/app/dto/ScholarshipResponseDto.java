@@ -23,6 +23,9 @@ public class ScholarshipResponseDto extends ScholarshipDto {
 	@JsonProperty("institute")
 	private InstituteDto institute;
 
+	@JsonProperty("has_edit_access")
+	private Boolean hasEditAccess;
+
 	@JsonProperty("intakes")
 	private List<ScholarshipIntakeDto> intakes;
 }

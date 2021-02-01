@@ -60,9 +60,10 @@ public class ScholarshipController implements ScholarshipInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> get(final String id) throws ValidationException, NotFoundException, InvokeException {
+	public ResponseEntity<?> get(final String userId, final String id)
+			throws ValidationException, NotFoundException, InvokeException {
 		return new GenericResponseHandlers.Builder().setMessage("Get Scholarship Successfully")
-				.setData(scholarshipProcessor.getScholarshipById(id)).setStatus(HttpStatus.OK).create();
+				.setData(scholarshipProcessor.getScholarshipById(userId, id)).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
