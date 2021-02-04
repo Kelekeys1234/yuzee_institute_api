@@ -33,7 +33,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude="institute")
 @EqualsAndHashCode
 public class InstituteEnglishRequirements implements Serializable {
 

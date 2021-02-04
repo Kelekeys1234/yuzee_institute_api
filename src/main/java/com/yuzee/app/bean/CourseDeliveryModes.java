@@ -20,9 +20,11 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
+@ToString(exclude = "course")
 @Table(name = "course_delivery_modes", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "study_mode",
 		"delivery_type" }, name = "UK_COURSE_ID_STUDY_MODE_DELIVERY_TYPE"), indexes = {
 				@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
