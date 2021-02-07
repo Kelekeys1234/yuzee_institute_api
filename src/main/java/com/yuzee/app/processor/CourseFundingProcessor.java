@@ -19,6 +19,7 @@ import com.yuzee.app.dao.CourseFundingDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.CourseFundingDto;
 import com.yuzee.app.exception.ForbiddenException;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
@@ -41,7 +42,7 @@ public class CourseFundingProcessor {
 	private CommonProcessor commonProcessor;
 
 	public void addFundingToAllInstituteCourses(String userId, String instituteId, String fundingNameId)
-			throws ValidationException, NotFoundException {
+			throws ValidationException, NotFoundException, InvokeException {
 		log.info("inside CourseFundingProcessor.addFundingToAllInstituteCourses");
 		Institute institute = instituteDao.get(instituteId);
 		if (institute != null) {
@@ -65,7 +66,7 @@ public class CourseFundingProcessor {
 	}
 
 	public void saveCourseFundings(String userId, String courseId, @Valid List<CourseFundingDto> courseFundingDtos)
-			throws NotFoundException, ValidationException {
+			throws NotFoundException, ValidationException, InvokeException {
 		log.info("inside CourseFundingProcessor.saveCourseFundings");
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
