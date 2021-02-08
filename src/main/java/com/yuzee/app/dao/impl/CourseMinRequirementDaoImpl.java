@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.CourseMinRequirement;
 import com.yuzee.app.dao.CourseMinRequirementDao;
@@ -15,7 +15,7 @@ import com.yuzee.app.repository.CourseMinimumRequirementsRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Repository
+@Component
 @Slf4j
 public class CourseMinRequirementDaoImpl implements CourseMinRequirementDao {
 

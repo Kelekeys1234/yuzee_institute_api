@@ -2,7 +2,7 @@ package com.yuzee.app.dao.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.CoursePayment;
 import com.yuzee.app.dao.CoursePaymentDao;
@@ -11,7 +11,7 @@ import com.yuzee.app.repository.CoursePaymentRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Service
+@Component
 @Slf4j
 public class CoursePaymentDaoImpl implements CoursePaymentDao {
 

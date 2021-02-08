@@ -3,13 +3,13 @@ package com.yuzee.app.dao.impl;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.CourseCurriculum;
 import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.repository.CourseCurriculumRepository;
 
-@Service
+@Component
 public class CourseCurriculumDaoImpl implements CourseCurriculumDao {
 
 	@Autowired
