@@ -82,6 +82,7 @@ public class CourseCareerOutcomeProcessor {
 				courseCareerOutcome.setAuditFields(userId);
 				courseCareerOutcomes.add(courseCareerOutcome);
 			});
+			log.info("going to save record in db");
 			courseCareerOutcomeDao.saveAll(courseCareerOutcomes);
 		} else {
 			log.error("invalid course id: {}", courseId);

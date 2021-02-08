@@ -14,12 +14,18 @@ public class ScholarshipResponseDto extends ScholarshipDto {
 	@JsonProperty("media")
 	private List<StorageDto> media;
 
-	@JsonProperty("level")
-	private LevelDto level;
+	@JsonProperty("levels")
+	private List<LevelDto> levels;
 
 	@JsonProperty("faculty")
 	private FacultyDto faculty;
 
 	@JsonProperty("institute")
 	private InstituteDto institute;
+
+	@JsonProperty("has_edit_access")
+	private Boolean hasEditAccess;
+
+	@JsonProperty("intakes")
+	private List<ScholarshipIntakeDto> intakes;
 }

@@ -185,6 +185,9 @@ public class Course implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
 	private OffCampusCourse offCampusCourse;
 
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
+	private CoursePayment coursePayment;
+
 	@OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
 

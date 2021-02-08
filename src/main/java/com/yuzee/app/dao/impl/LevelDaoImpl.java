@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dto.LevelDto;
+import com.yuzee.app.repository.LevelRepository;
 
 @Component
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
@@ -20,6 +21,9 @@ public class LevelDaoImpl implements LevelDao {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private LevelRepository levelRepository;
 
     @Override
     public void addUpdateLevel(Level level) {
@@ -125,6 +129,11 @@ public class LevelDaoImpl implements LevelDao {
         }
         return list;
     }
+
+	@Override
+	public List<Level> findByIdIn(List<String> ids) {
+		return levelRepository.findAllById(ids);
+	}
 
 
 }

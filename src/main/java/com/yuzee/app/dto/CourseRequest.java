@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.app.bean.CourseContactPerson;
 
 import lombok.Data;
 import lombok.ToString;
@@ -27,7 +28,7 @@ public class CourseRequest {
 	@JsonProperty("faculty_id")
 	@NotBlank(message = "faculty_id should not be blank")
 	private String facultyId;
-	
+
 	@JsonProperty("faculty")
 	private FacultyDto faculty;
 
@@ -41,7 +42,7 @@ public class CourseRequest {
 	@JsonProperty("description")
 	private String description;
 
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@JsonProperty("intake")
 	private List<Date> intake;
 
@@ -91,7 +92,7 @@ public class CourseRequest {
 	@JsonProperty("level_id")
 	@NotBlank(message = "level_id should not be blank")
 	private String levelId;
-	
+
 	@JsonProperty("level")
 	private LevelDto level;
 
@@ -147,22 +148,22 @@ public class CourseRequest {
 	private String examinationBoard;
 
 	@JsonProperty("domestic_application_fee")
-	private double domesticApplicationFee;
+	private Double domesticApplicationFee;
 
 	@JsonProperty("international_application_fee")
-	private double internationalApplicationFee;
+	private Double internationalApplicationFee;
 
 	@JsonProperty("domestic_enrollment_fee")
-	private double domesticEnrollmentFee;
+	private Double domesticEnrollmentFee;
 
 	@JsonProperty("international_enrollment_fee")
-	private double internationalEnrollmentFee;
+	private Double internationalEnrollmentFee;
 
 	@JsonProperty("domestic_boarding_fee")
-	private double domesticBoardingFee;
+	private Double domesticBoardingFee;
 
 	@JsonProperty("international_boarding_fee")
-	private double internationalBoardingFee;
+	private Double internationalBoardingFee;
 
 	@JsonProperty("entrance_exam")
 	private String entranceExam;
@@ -216,8 +217,16 @@ public class CourseRequest {
 	@JsonProperty("course_fundings")
 	@NotNull(message = "course_fundings must not be null")
 	private ValidList<CourseFundingDto> courseFundings = new ValidList<>();
-	
+
+	@JsonProperty("course_payment")
+	private CoursePaymentDto coursePayment;
+
 	@Valid
 	@JsonProperty("institute")
 	private InstituteResponseDto institute;
+
+	@Valid
+	@JsonProperty("course_contact_persons")
+	@NotNull(message = "course_contact_persons must not be null")
+	private ValidList<CourseContactPerson> courseContactPersons = new ValidList<>();
 }

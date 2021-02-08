@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,11 +20,12 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
+import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -56,7 +58,7 @@ import com.yuzee.app.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Service
+@Component
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
 @Slf4j
 public class CourseDaoImpl implements CourseDao {
@@ -731,36 +733,52 @@ public class CourseDaoImpl implements CourseDao {
 			sqlQuery = sqlQuery + " ORDER BY c.created_on DESC";
 		}
 		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
+		query.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
+		List<Map<String, Object>> aliasToValueMapList = query.list();
 		List<CourseDto> courses = new ArrayList<>();
-		List<CourseDeliveryModesDto> additionalInfoDtos = new ArrayList<>(); 
-		for (Object[] row : rows) {
-			CourseDeliveryModesDto additionalInfoDto = new CourseDeliveryModesDto();
-			CourseDto courseDto = new CourseDto();
-			courseDto.setId(row[0].toString());
-			courseDto.setName(row[1].toString());
-			if(row[2] != null) {
-				courseDto.setWorldRanking(row[2].toString());
-			}
-            if(row[3] != null) {
-            	courseDto.setStars(row[3].toString());
-            }
-            courseDto.setDescription(row[4].toString());
-            courseDto.setRemarks(row[5].toString());
-            courseDto.setInstituteName(row[6].toString());
-            
-            additionalInfoDto.setDomesticFee(Double.parseDouble(row[7].toString()));
-            additionalInfoDto.setInternationalFee(Double.parseDouble(row[8].toString()));
-            additionalInfoDto.setUsdDomesticFee(Double.parseDouble(row[9].toString()));
-            additionalInfoDto.setUsdInternationalFee(Double.parseDouble(row[10].toString()));
-            additionalInfoDto.setDeliveryType(row[11].toString());
-            additionalInfoDto.setStudyMode(row[12].toString());
-            additionalInfoDto.setDuration(Double.valueOf(row[13].toString()));
-            additionalInfoDto.setDurationTime(row[14].toString());
-            additionalInfoDto.setCourseId(row[0].toString());
-            additionalInfoDtos.add(additionalInfoDto);
-            courseDto.setCourseDeliveryModes(additionalInfoDtos);
-			courses.add(courseDto);
+		List<CourseDeliveryModesDto> additionalInfoDtos = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(aliasToValueMapList)) {
+			aliasToValueMapList.stream().forEach(e -> {
+				Map<String, Object> row = e;
+
+				CourseDeliveryModesDto additionalInfoDto = new CourseDeliveryModesDto();
+				CourseDto courseDto = new CourseDto();
+				courseDto.setId(String.valueOf(row.get("id")));
+				courseDto.setName(String.valueOf(row.get("name")));
+				courseDto.setWorldRanking(String.valueOf(row.get("world_ranking")));
+				courseDto.setStars(String.valueOf(row.get("stars")));
+				courseDto.setDescription(String.valueOf(row.get("description")));
+				courseDto.setRemarks(String.valueOf(row.get("remarks")));
+				courseDto.setInstituteName(String.valueOf(row.get("instituteName")));
+
+				String domesticFee = String.valueOf(row.get("domestic_fee"));
+				additionalInfoDto
+						.setDomesticFee(StringUtils.isEmpty(domesticFee) ? Double.parseDouble(domesticFee) : null);
+
+				String internationalFee = String.valueOf(row.get("international_fee"));
+				additionalInfoDto.setInternationalFee(
+						StringUtils.isEmpty(internationalFee) ? Double.parseDouble(internationalFee) : null);
+
+				String usdDomesticFee = String.valueOf(row.get("usd_domestic_fee"));
+				additionalInfoDto.setUsdDomesticFee(
+						StringUtils.isEmpty(usdDomesticFee) ? Double.parseDouble(usdDomesticFee) : null);
+
+				String usdInternationalFee = String.valueOf(row.get("usd_international_fee"));
+				additionalInfoDto.setUsdInternationalFee(
+						StringUtils.isEmpty(usdInternationalFee) ? Double.parseDouble(usdInternationalFee) : 0);
+
+				additionalInfoDto.setDeliveryType(String.valueOf(row.get("delivery_type")));
+				additionalInfoDto.setStudyMode(String.valueOf(row.get("study_mode")));
+
+				String duration = String.valueOf(row.get("duration"));
+				additionalInfoDto.setDuration(StringUtils.isEmpty(duration) ? Double.parseDouble(duration) : null);
+
+				additionalInfoDto.setDurationTime(String.valueOf(row.get("duration_time")));
+				additionalInfoDto.setCourseId(String.valueOf(row.get("id")));
+				additionalInfoDtos.add(additionalInfoDto);
+				courseDto.setCourseDeliveryModes(additionalInfoDtos);
+				courses.add(courseDto);
+			});
 		}
 		return courses;
 	}

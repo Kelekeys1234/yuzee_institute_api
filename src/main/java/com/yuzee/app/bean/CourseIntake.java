@@ -24,7 +24,7 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString
+@ToString(exclude = "course")
 @EqualsAndHashCode
 @Table(name = "course_intake", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id",
 "intake_date" }, name = "UK_COURSE_ID_INTAKE_DATE"), indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})

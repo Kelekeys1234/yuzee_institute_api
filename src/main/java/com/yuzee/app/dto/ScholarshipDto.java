@@ -2,8 +2,8 @@ package com.yuzee.app.dto;
 
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -27,18 +27,17 @@ public class ScholarshipDto {
 	@JsonProperty("scholarship_award")
 	private String scholarshipAward;
 
-	@JsonProperty("country_name")
-	@NotBlank(message = "country_name should not be blank")
-	private String countryName;
-
 	@JsonProperty("number_of_avaliability")
 	private Integer numberOfAvaliability;
 
 	@JsonProperty("currency")
 	private String currency;
 
-	@JsonProperty("scholarship_amount")
-	private Double scholarshipAmount;
+	@JsonProperty("amount")
+	private Double amount;
+
+	@JsonProperty("is_percentage_amount")
+	private Boolean isPercentageAmount;
 
 	@JsonProperty("validity")
 	private String validity;
@@ -67,10 +66,10 @@ public class ScholarshipDto {
 	@JsonProperty("successful_canidates")
 	private String successfulCanidates;
 
-	@Valid
-	@JsonProperty("intakes")
-	private List<ScholarshipIntakeDto> intakes;
-
 	@JsonProperty("languages")
 	private List<String> languages;
+
+	@JsonProperty("country_names")
+	@NotNull(message = "country_names should not be null")
+	private List<String> countryNames;
 }
