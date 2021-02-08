@@ -33,6 +33,10 @@ public interface CareerTestInterface {
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getCareerJobs(@RequestHeader("userId") String userId, @RequestParam List<String> jobIds,
 			@PathVariable Integer pageNumber, @PathVariable Integer pageSize);
+	
+	@GetMapping("/findbyname/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getCareerJobsByName(@RequestHeader("userId") String userId, @RequestParam String name,
+			@PathVariable Integer pageNumber, @PathVariable Integer pageSize);
 
 	@GetMapping("/related/career/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getRelatedCareers(@RequestParam List<String> careerIds, @PathVariable Integer pageNumber,
