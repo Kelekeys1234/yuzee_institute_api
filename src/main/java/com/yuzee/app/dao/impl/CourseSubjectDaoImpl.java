@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yuzee.app.bean.CourseSubject;
@@ -14,7 +14,7 @@ import com.yuzee.app.repository.CourseSubjectRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Repository
+@Component
 @Slf4j
 public class CourseSubjectDaoImpl implements CourseSubjectDao {
 

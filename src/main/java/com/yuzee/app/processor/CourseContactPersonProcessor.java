@@ -18,6 +18,7 @@ import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.CourseContactPersonDto;
 import com.yuzee.app.exception.ForbiddenException;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 
@@ -40,7 +41,7 @@ public class CourseContactPersonProcessor {
 	private CommonProcessor commonProcessor;
 
 	public void saveCourseContactPersons(String userId, String courseId,
-			@Valid List<CourseContactPersonDto> courseContactPersonDtos) throws NotFoundException, ValidationException {
+			@Valid List<CourseContactPersonDto> courseContactPersonDtos) throws NotFoundException, ValidationException, InvokeException {
 		log.info("inside CourseContactPersonProcessor.saveCourseContactPersons for courseId: {}", courseId);
 		Course course = validateAndGetCourseById(courseId);
 		log.info("going to see if user ids are valid");

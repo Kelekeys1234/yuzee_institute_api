@@ -25,7 +25,7 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -58,7 +58,7 @@ import com.yuzee.app.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Service
+@Component
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
 @Slf4j
 public class CourseDaoImpl implements CourseDao {
