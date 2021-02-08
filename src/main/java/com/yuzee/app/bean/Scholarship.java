@@ -3,7 +3,9 @@ package com.yuzee.app.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -29,11 +33,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "scholarship", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "country_name", "level_id",
-		"institute_id", "faculty_id" }, name = "UK_CN_LE_IN_CN_FI"), indexes = {
-				@Index(name = "IDX_LEVEL_ID", columnList = "level_id", unique = false),
+@Table(name = "scholarship", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "institute_id",
+		"faculty_id" }, name = "UK_CN_LE_IN_CN_FI"), indexes = {
 				@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),
-				@Index(name = "IDX_COUNTRY_NAME", columnList = "country_name", unique = false) })
+				@Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false) })
 public class Scholarship implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -50,12 +53,9 @@ public class Scholarship implements Serializable {
 	@Column(name = "scholarship_award")
 	private String scholarshipAward;
 
-	@Column(name = "country_name", nullable = false)
-	private String countryName;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "level_id", nullable = false)
-	private Level level;
+	@ManyToMany
+	@JoinTable(name = "scholarship_level", joinColumns = @JoinColumn(name = "level_id"), inverseJoinColumns = @JoinColumn(name = "scholarship_id"))
+	private Set<Level> levels = new HashSet<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "faculty_id", nullable = false)
@@ -64,19 +64,22 @@ public class Scholarship implements Serializable {
 	@Column(name = "number_of_avaliability")
 	private Integer numberOfAvaliability;
 
-	@Column(name = "currency", nullable = false)
+	@Column(name = "currency")
 	private String currency;
 
-	@Column(name = "scholarship_amount", nullable = false)
-	private Double scholarshipAmount;
+	@Column(name = "amount")
+	private Double amount;
+
+	@Column(name = "is_percentage_amount", nullable = false)
+	private Boolean isPercentageAmount = false;
 
 	@Column(name = "validity", nullable = false)
 	private String validity;
 
-	@Column(name = "how_to_apply", nullable = false)
+	@Column(name = "how_to_apply")
 	private String howToApply;
 
-	@Column(name = "gender", nullable = false)
+	@Column(name = "gender")
 	private String gender;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -93,7 +96,7 @@ public class Scholarship implements Serializable {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
-	@Column(name = "website", nullable = false)
+	@Column(name = "website")
 	private String website;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -120,6 +123,9 @@ public class Scholarship implements Serializable {
 
 	@OneToMany(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ScholarshipLanguage> scholarshipLanguages = new ArrayList<>();
+
+	@OneToMany(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ScholarshipCountry> scholarshipCountries = new ArrayList<>();
 
 	@OneToMany(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ScholarshipEligibleNationality> scholarshipEligibleNationalities = new ArrayList<>();

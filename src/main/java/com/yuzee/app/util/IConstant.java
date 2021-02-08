@@ -92,6 +92,9 @@ public class IConstant {
 	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP = "yuzee_dev_scholarship";
 
 	public static final String ELASTIC_SEARCH_URL = ELASTIC_SEARCH + "/";
+	
+	public static final String USER = "USER-SERVICE/users";
+	public static final String USER_CONNECTION_URL = "http://" + USER + "/api/v1";
 
 	public static final String ELASTIC_SEARCH_COURSE_TYPE = "course";
 	public static final String ELASTIC_SEARCH_ARTICLE_TYPE = "article";

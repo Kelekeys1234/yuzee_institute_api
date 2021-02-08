@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.app.bean.CourseContactPerson;
 
 import lombok.Data;
 import lombok.ToString;
@@ -223,4 +224,9 @@ public class CourseRequest {
 	@Valid
 	@JsonProperty("institute")
 	private InstituteResponseDto institute;
+
+	@Valid
+	@JsonProperty("course_contact_persons")
+	@NotNull(message = "course_contact_persons must not be null")
+	private ValidList<CourseContactPerson> courseContactPersons = new ValidList<>();
 }

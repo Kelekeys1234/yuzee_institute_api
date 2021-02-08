@@ -10,6 +10,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.bean.Subject;
@@ -37,6 +38,7 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 		session.update(hobbiesObj);
 	}
 
+	@Transactional
 	@Override
 	public EducationSystem get(final String id) {
 		Session session = sessionFactory.getCurrentSession();

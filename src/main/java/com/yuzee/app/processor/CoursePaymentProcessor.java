@@ -77,6 +77,7 @@ public class CoursePaymentProcessor {
 			coursePayment.setDescription(coursePaymentDto.getDescription());
 			coursePayment.setCourse(course);
 			coursePayment.setAuditFields(userId);
+			log.info("going to save record in db");
 			coursePaymentDao.save(coursePayment);
 		}
 	}

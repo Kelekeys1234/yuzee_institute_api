@@ -20,9 +20,11 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
+@ToString(exclude = "course")
 @Table(name = "course_career_outcome", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "career_id" }, 
 	   	 name = "UK_CO_COURSE_ID"), indexes = {@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false)})
 public class CourseCareerOutcome implements Serializable {

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseFilterDto;
-import com.yuzee.app.dto.CourseMinRequirementDto;
 import com.yuzee.app.dto.CourseMobileDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseSearchDto;
@@ -33,13 +32,13 @@ public interface CourseInterface {
 	@PostMapping("/institute/{instituteId}/course")
 	public ResponseEntity<?> save(@RequestHeader(required = true) final String userId, @PathVariable String instituteId,
 			@Valid @RequestBody final CourseRequest course)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException;
 
 	@PutMapping("/institute/{instituteId}/course/{id}")
 	public ResponseEntity<?> update(@RequestHeader(required = true) final String userId,
 			@PathVariable String instituteId, @Valid @RequestBody final CourseRequest course,
 			@PathVariable final String id)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException;
 
 	@GetMapping("/course/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize)
@@ -106,13 +105,6 @@ public interface CourseInterface {
 	public ResponseEntity<?> courseFilter(@RequestHeader(required = true) final String userId,
 			@RequestHeader(required = false) final String language, @RequestBody final CourseFilterDto courseFilter)
 			throws Exception;
-
-	@PostMapping(value = "/course/minimumRequirement")
-	public ResponseEntity<?> saveCourseMinRequirement(
-			@Valid @RequestBody final List<CourseMinRequirementDto> courseMinRequirementDtoList) throws Exception;
-
-	@GetMapping(value = "/course/minimumRequirement/{courseId}")
-	public ResponseEntity<?> getCourseMinRequirement(@PathVariable final String courseId) throws Exception;
 
 	@GetMapping(value = "/course/autoSearch/{searchKey}")
 	public ResponseEntity<?> autoSearchByCharacter(@PathVariable final String searchKey) throws Exception;
@@ -194,11 +186,11 @@ public interface CourseInterface {
 	@PostMapping("/institute/{instituteId}/course/basic/info")
 	ResponseEntity<?> saveBasicCourse(@RequestHeader(value = "userId", required = true) String userId,
 			@PathVariable String instituteId, @Valid @RequestBody CourseRequest course)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException;
 
 	// api just according to the form requirements
 	@PutMapping("/institute/{instituteId}/course/basic/info/{id}")
 	ResponseEntity<?> updateBasicCourse(@RequestHeader(value = "userId", required = true) String userId,
 			@PathVariable String instituteId, @Valid @RequestBody CourseRequest course, @PathVariable String id)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException;
 }

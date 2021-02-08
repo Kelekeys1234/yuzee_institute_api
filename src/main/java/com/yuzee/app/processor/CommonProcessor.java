@@ -12,11 +12,13 @@ import org.springframework.util.CollectionUtils;
 
 import com.yuzee.app.dto.FundingResponseDto;
 import com.yuzee.app.dto.StorageDto;
+import com.yuzee.app.dto.UserInitialInfoDto;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.handler.EligibilityHandler;
+import com.yuzee.app.handler.UserHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +34,9 @@ public class CommonProcessor {
 	@Autowired
 	private EligibilityHandler eligibilityHandler;
 
+	@Autowired
+	private UserHandler userHandler;
+
 	public List<StorageDto> getEntityGallery(String entityType, String entityId)
 			throws NotFoundException, InternalServerException {
 		if (EntityTypeEnum.COURSE.name().equals(entityType)) {
@@ -43,21 +48,34 @@ public class CommonProcessor {
 	}
 
 	public Map<String, FundingResponseDto> validateAndGetFundingsByFundingNameIds(List<String> fundingNameIds)
-			throws NotFoundException {
+			throws NotFoundException, InvokeException {
 		log.info("inside getFundingMapByFundingNameIds");
 		Map<String, FundingResponseDto> map = new HashMap<>();
 		if (!CollectionUtils.isEmpty(fundingNameIds)) {
-			try {
-				List<FundingResponseDto> dtos = eligibilityHandler.getFundingByFundingNameId(fundingNameIds);
-				if (!CollectionUtils.isEmpty(dtos)) {
-					map = dtos.stream().collect(Collectors.toMap(FundingResponseDto::getFundingNameId, e -> e));
-				}
-				if (map.size() != fundingNameIds.size()) {
-					log.error("funding_name_id not found");
-					throw new NotFoundException("funding_name_id not found");
-				}
-			} catch (InvokeException e1) {
-				log.error("error invoking eligibility service so could'nt check if it funding_name_ids really exists");
+			List<FundingResponseDto> dtos = eligibilityHandler.getFundingByFundingNameId(fundingNameIds);
+			if (!CollectionUtils.isEmpty(dtos)) {
+				map = dtos.stream().collect(Collectors.toMap(FundingResponseDto::getFundingNameId, e -> e));
+			}
+			if (map.size() != fundingNameIds.size()) {
+				log.error("one or more funding_name_ids not found");
+				throw new NotFoundException("one or more funding_name_ids not found");
+			}
+		}
+		return map;
+	}
+
+	public Map<String, UserInitialInfoDto> validateAndGetUsersByUserIds(List<String> userIds)
+			throws NotFoundException, InvokeException {
+		log.info("inside getFundingMapByFundingNameIds");
+		Map<String, UserInitialInfoDto> map = new HashMap<>();
+		if (!CollectionUtils.isEmpty(userIds)) {
+			List<UserInitialInfoDto> dtos = userHandler.getUserByIds(userIds);
+			if (!CollectionUtils.isEmpty(dtos)) {
+				map = dtos.stream().collect(Collectors.toMap(UserInitialInfoDto::getUserId, e -> e));
+			}
+			if (map.size() != userIds.size()) {
+				log.error("one or more user_ids not found");
+				throw new NotFoundException("one or more user_ids not found");
 			}
 		}
 		return map;

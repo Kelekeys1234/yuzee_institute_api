@@ -81,6 +81,7 @@ public class CourseSubjectProcessor {
 				courseSubject.setAuditFields(userId);
 				courseSubjects.add(courseSubject);
 			});
+			log.info("going to save record in db");
 			courseSubjectDao.saveAll(courseSubjects);
 		} else {
 			log.error("invalid course id: {}", courseId);

@@ -89,6 +89,7 @@ public class CourseEnglishEligibilityProcessor {
 				courseEnglishEligibility.setAuditFields(userId);
 				courseEnglishEligibilitys.add(courseEnglishEligibility);
 			});
+			log.info("going to save record in db");
 			courseEnglishEligibilityDAO.saveAll(courseEnglishEligibilitys);
 		} else {
 			log.error("invalid course id: {}", courseId);
