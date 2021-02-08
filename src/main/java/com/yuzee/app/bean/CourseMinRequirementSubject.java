@@ -26,7 +26,7 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString
+@ToString(exclude = "courseMinRequirement")
 @EqualsAndHashCode
 @NoArgsConstructor
 @Table(name = "course_min_requirement_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "name",

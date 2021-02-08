@@ -29,7 +29,7 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString
+@ToString(exclude = "course")
 @EqualsAndHashCode
 @Table(name = "course_min_requirement", uniqueConstraints = @UniqueConstraint(columnNames = { "country_name",
 		"state_name", "education_system_id", "course_id" }, name = "UK_CN_SN_ESI_C"), indexes = {
