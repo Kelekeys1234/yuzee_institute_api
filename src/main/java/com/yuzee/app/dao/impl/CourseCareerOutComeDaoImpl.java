@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yuzee.app.bean.CourseCareerOutcome;
@@ -14,7 +14,7 @@ import com.yuzee.app.repository.CourseCareerOutComeRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Service
+@Component
 @Slf4j
 public class CourseCareerOutComeDaoImpl implements CourseCareerOutComeDao {
 
