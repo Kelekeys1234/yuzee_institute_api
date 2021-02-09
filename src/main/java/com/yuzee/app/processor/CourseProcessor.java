@@ -314,7 +314,7 @@ public class CourseProcessor {
 	}
 
 	public Course prepareCourseModelFromCourseRequest(String loggedInUserId, String instituteId, String courseId, @Valid final CourseRequest courseDto)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
 		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
 		Course course = null;
 		if (StringUtils.isEmpty(courseId)) {
@@ -671,7 +671,7 @@ public class CourseProcessor {
 	}
 	
 	private void saveUpdateCourseFundings(String loggedInUserId, Course course,
-			List<CourseFundingDto> courseFundingDtos) throws NotFoundException {
+			List<CourseFundingDto> courseFundingDtos) throws NotFoundException, InvokeException {
 		List<CourseFunding> courseFundings = course.getCourseFundings();
 		if (!CollectionUtils.isEmpty(courseFundingDtos)) {
 
@@ -793,7 +793,7 @@ public class CourseProcessor {
 	
 	@Transactional(noRollbackFor = Throwable.class)
 	public String saveCourse(final String loggedInUserId, String instituteId, @Valid final CourseRequest courseDto)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
 		log.debug("Inside saveCourse() method");
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, instituteId, null, courseDto);
 		log.info("Calling DAO layer to save/update course in DB");
@@ -808,7 +808,7 @@ public class CourseProcessor {
 
 	@Transactional(noRollbackFor = Throwable.class)
 	public String updateCourse(final String loggedInUserId, String instituteId, final CourseRequest courseDto, final String id)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException {
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
 		log.debug("Inside updateCourse() method");
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, instituteId, id, courseDto);
 		course = courseDao.addUpdateCourse(course);
@@ -1858,7 +1858,7 @@ public class CourseProcessor {
 		}
 	}
 
-	public String saveOrUpdateBasicCourse(String loggedInUserId, String instituteId, CourseRequest courseDto, String courseId) throws CommonInvokeException, ForbiddenException, NotFoundException, ValidationException {
+	public String saveOrUpdateBasicCourse(String loggedInUserId, String instituteId, CourseRequest courseDto, String courseId) throws CommonInvokeException, ForbiddenException, NotFoundException, ValidationException, InvokeException {
 		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
 		Course course = null;
 		if (StringUtils.isEmpty(courseId)) {

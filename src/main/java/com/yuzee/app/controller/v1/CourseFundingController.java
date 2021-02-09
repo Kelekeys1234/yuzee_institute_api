@@ -13,6 +13,7 @@ import com.yuzee.app.dto.CourseFundingDto;
 import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.endpoint.CourseFundingInterface;
 import com.yuzee.app.exception.ForbiddenException;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
@@ -29,7 +30,7 @@ public class CourseFundingController implements CourseFundingInterface {
 
 	@Override
 	public ResponseEntity<?> addFundingToAllInstituteCourses(String userId, String instituteId,
-			CourseFundingDto courseFundingDto) throws ValidationException, NotFoundException {
+			CourseFundingDto courseFundingDto) throws ValidationException, NotFoundException, InvokeException {
 		log.info("inside CourseFundingController.addFundingToAllInstituteCourses");
 		courseFundingProcessor.addFundingToAllInstituteCourses(userId, instituteId,
 				courseFundingDto.getFundingNameId());
@@ -39,7 +40,7 @@ public class CourseFundingController implements CourseFundingInterface {
 
 	@Override
 	public ResponseEntity<?> saveAll(String userId, String courseId, @Valid ValidList<CourseFundingDto> courseFundingDtos)
-			throws ValidationException, NotFoundException {
+			throws ValidationException, NotFoundException, InvokeException {
 		log.info("inside CourseFundingController.saveAll");
 		courseFundingProcessor.saveCourseFundings(userId, courseId, courseFundingDtos);
 		return new GenericResponseHandlers.Builder().setMessage("Course Fundings added successfully.")

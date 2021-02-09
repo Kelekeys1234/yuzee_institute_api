@@ -288,7 +288,7 @@ public class InstituteProcessor {
 		}
 	}
 
-	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException, NotFoundException {
+	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside saveInstitute() method");
 		Institute institute = null;
 		if (id != null) {
@@ -423,7 +423,7 @@ public class InstituteProcessor {
 	}
 
 	private void saveUpdateInstituteFundings(String loggedInUserId, Institute institute,
-			List<InstituteFundingDto> instituteFundingDtos) throws ValidationException, NotFoundException {
+			List<InstituteFundingDto> instituteFundingDtos) throws ValidationException, NotFoundException, InvokeException {
 		List<InstituteFunding> instituteFundings = institute.getInstituteFundings();
 		if (!CollectionUtils.isEmpty(instituteFundingDtos)) {
 

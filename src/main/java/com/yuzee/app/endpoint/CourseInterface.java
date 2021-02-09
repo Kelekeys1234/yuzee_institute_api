@@ -32,13 +32,13 @@ public interface CourseInterface {
 	@PostMapping("/institute/{instituteId}/course")
 	public ResponseEntity<?> save(@RequestHeader(required = true) final String userId, @PathVariable String instituteId,
 			@Valid @RequestBody final CourseRequest course)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException;
 
 	@PutMapping("/institute/{instituteId}/course/{id}")
 	public ResponseEntity<?> update(@RequestHeader(required = true) final String userId,
 			@PathVariable String instituteId, @Valid @RequestBody final CourseRequest course,
 			@PathVariable final String id)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException;
 
 	@GetMapping("/course/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize)
@@ -186,11 +186,11 @@ public interface CourseInterface {
 	@PostMapping("/institute/{instituteId}/course/basic/info")
 	ResponseEntity<?> saveBasicCourse(@RequestHeader(value = "userId", required = true) String userId,
 			@PathVariable String instituteId, @Valid @RequestBody CourseRequest course)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException;
 
 	// api just according to the form requirements
 	@PutMapping("/institute/{instituteId}/course/basic/info/{id}")
 	ResponseEntity<?> updateBasicCourse(@RequestHeader(value = "userId", required = true) String userId,
 			@PathVariable String instituteId, @Valid @RequestBody CourseRequest course, @PathVariable String id)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException;
+			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException;
 }

@@ -48,41 +48,34 @@ public class CommonProcessor {
 	}
 
 	public Map<String, FundingResponseDto> validateAndGetFundingsByFundingNameIds(List<String> fundingNameIds)
-			throws NotFoundException {
+			throws NotFoundException, InvokeException {
 		log.info("inside getFundingMapByFundingNameIds");
 		Map<String, FundingResponseDto> map = new HashMap<>();
 		if (!CollectionUtils.isEmpty(fundingNameIds)) {
-			try {
-				List<FundingResponseDto> dtos = eligibilityHandler.getFundingByFundingNameId(fundingNameIds);
-				if (!CollectionUtils.isEmpty(dtos)) {
-					map = dtos.stream().collect(Collectors.toMap(FundingResponseDto::getFundingNameId, e -> e));
-				}
-				if (map.size() != fundingNameIds.size()) {
-					log.error("one or more funding_name_ids not found");
-					throw new NotFoundException("one or more funding_name_ids not found");
-				}
-			} catch (InvokeException e1) {
-				log.error("error invoking eligibility service so could'nt check if it funding_name_ids are valid");
+			List<FundingResponseDto> dtos = eligibilityHandler.getFundingByFundingNameId(fundingNameIds);
+			if (!CollectionUtils.isEmpty(dtos)) {
+				map = dtos.stream().collect(Collectors.toMap(FundingResponseDto::getFundingNameId, e -> e));
+			}
+			if (map.size() != fundingNameIds.size()) {
+				log.error("one or more funding_name_ids not found");
+				throw new NotFoundException("one or more funding_name_ids not found");
 			}
 		}
 		return map;
 	}
 
-	public Map<String, UserInitialInfoDto> validateAndGetUsersByUserIds(List<String> userIds) throws NotFoundException {
+	public Map<String, UserInitialInfoDto> validateAndGetUsersByUserIds(List<String> userIds)
+			throws NotFoundException, InvokeException {
 		log.info("inside getFundingMapByFundingNameIds");
 		Map<String, UserInitialInfoDto> map = new HashMap<>();
 		if (!CollectionUtils.isEmpty(userIds)) {
-			try {
-				List<UserInitialInfoDto> dtos = userHandler.getUserByIds(userIds);
-				if (!CollectionUtils.isEmpty(dtos)) {
-					map = dtos.stream().collect(Collectors.toMap(UserInitialInfoDto::getUserId, e -> e));
-				}
-				if (map.size() != userIds.size()) {
-					log.error("one or more user_ids not found");
-					throw new NotFoundException("one or more user_ids not found");
-				}
-			} catch (InvokeException e1) {
-				log.error("error invoking user service so could'nt check if it user_ids are valid");
+			List<UserInitialInfoDto> dtos = userHandler.getUserByIds(userIds);
+			if (!CollectionUtils.isEmpty(dtos)) {
+				map = dtos.stream().collect(Collectors.toMap(UserInitialInfoDto::getUserId, e -> e));
+			}
+			if (map.size() != userIds.size()) {
+				log.error("one or more user_ids not found");
+				throw new NotFoundException("one or more user_ids not found");
 			}
 		}
 		return map;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.CourseContactPerson;
 import com.yuzee.app.dao.CourseContactPersonDao;
@@ -13,7 +13,7 @@ import com.yuzee.app.repository.CourseContactPersonRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Repository
+@Component
 @Slf4j
 public class CourseContactPersonDaoImpl implements CourseContactPersonDao {
 

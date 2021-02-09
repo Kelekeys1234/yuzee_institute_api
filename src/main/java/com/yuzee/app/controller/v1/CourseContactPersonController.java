@@ -13,6 +13,7 @@ import com.yuzee.app.dto.CourseContactPersonDto;
 import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.endpoint.CourseContactPersonInterface;
 import com.yuzee.app.exception.ForbiddenException;
+import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
@@ -30,7 +31,7 @@ public class CourseContactPersonController implements CourseContactPersonInterfa
 	
 	@Override
 	public ResponseEntity<?> saveAll(String userId, String courseId, @Valid ValidList<CourseContactPersonDto> courseContactPersonDtos)
-			throws ValidationException, NotFoundException {
+			throws ValidationException, NotFoundException, InvokeException {
 		log.info("inside CourseContactPersonController.saveAll");
 		courseContactPersonProcessor.saveCourseContactPersons(userId, courseId, courseContactPersonDtos);
 		return new GenericResponseHandlers.Builder().setMessage("Course Contact Persons added successfully.")
