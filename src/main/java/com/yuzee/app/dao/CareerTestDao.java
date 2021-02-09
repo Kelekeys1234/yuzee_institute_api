@@ -29,6 +29,8 @@ public interface CareerTestDao {
 		
 	public Page<CareerJob> getCareerJob(List<String> jobIds, Pageable pageable);
 	
+	public Page<CareerJob> getCareerJobByName(String name, Pageable pageable);
+	
 	public Page<RelatedCareer> getRelatedCareers(List<String> carrerIds, Pageable pageable);
 	
 	public List<CareerJobCourseSearchKeyword> getCareerJobCourseSearchKeyword(List<String> jobIds);

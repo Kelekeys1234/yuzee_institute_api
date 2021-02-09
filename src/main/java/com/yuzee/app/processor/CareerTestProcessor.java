@@ -30,6 +30,7 @@ import com.yuzee.app.dto.CareerJobSubjectDto;
 import com.yuzee.app.dto.CareerJobTypeDto;
 import com.yuzee.app.dto.CareerJobWorkingStyleDto;
 import com.yuzee.app.dto.CourseResponseDto;
+import com.yuzee.app.dto.JobDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.RelatedCareerDto;
@@ -59,7 +60,7 @@ public class CareerTestProcessor {
 	
 	@Autowired
 	private ModelMapper modelMapper;
-
+	
 	public PaginationResponseDto getCareerJobSkills(String levelId, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getCareerJobSkills() method");
 		List<CareerJobSkillDto> careerJobSkillDtos = new ArrayList<>();
@@ -184,6 +185,29 @@ public class CareerTestProcessor {
 		return paginationResponseDto;
 	}
 
+	public PaginationResponseDto getCareerJobsByName(String userId, String name, Integer pageNumber, Integer pageSize) {
+		log.debug("Inside getCareerJobs() method");
+		List<JobDto> jobDtos = new ArrayList<>();
+		Integer totalCount = 0;
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+		
+		Page<CareerJob> careerJobs = careerTestDao.getCareerJobByName(name, pageable);
+		log.info("Extracting total Count of jobs from DB");
+		totalCount = ((Long) careerJobs.getTotalElements()).intValue();
+		if (!CollectionUtils.isEmpty(careerJobs.getContent())) {
+			log.info("Career Jobs fetched from DB, start iterating data");
+			careerJobs.getContent().stream().forEach(careerJob -> {
+				jobDtos.add(new JobDto(careerJob.getId(), careerJob.getJob(), careerJob.getJobDescription()));
+			});
+		}
+		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
+		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
+		return new PaginationResponseDto(jobDtos, totalCount,
+				paginationUtilDto.getPageNumber(), paginationUtilDto.isHasPreviousPage(),
+				paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
+	}
+	
 	public PaginationResponseDto getCareerJobs(String userId, List<String> jobIds, Integer pageNumber, Integer pageSize) {
 		log.debug("Inside getCareerJobs() method");
 		List<CareerJobDto> careerJobDtos = new ArrayList<>();
@@ -200,13 +224,13 @@ public class CareerTestProcessor {
 				careerJobs.getContent().stream().forEach(careerJob -> {
 					CareerJobDto careerJobDto = modelMapper.map(careerJob, CareerJobDto.class);
 					try {
-						UserViewCourseDto viewTransactionDto = viewTransacationHandler.getUserViewedCourseByEntityIdAndTransactionType(userId, EntityTypeEnum.CAREER_JOB.name(),
+						UserViewCourseDto viewTransactionDto = viewTransacationHandler.getUserViewedCourseByEntityIdAndTransactionType(userId, EntityTypeEnum.JOBS.name(),
 								careerJob.getId(), TransactionTypeEnum.FAVORITE.name());
 						if (!ObjectUtils.isEmpty(viewTransactionDto)) {
 							careerJobDto.setFavouriteJob(true);
 						}
 					} catch (InvokeException e1) {
-						log.error("Error invoking view transaction service");
+						log.error("Error invoking view transaction service",e1);
 					}
 					careerJobDtos.add(careerJobDto);
 				});

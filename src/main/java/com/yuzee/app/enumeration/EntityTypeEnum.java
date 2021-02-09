@@ -7,7 +7,7 @@ package com.yuzee.app.enumeration;
 public enum EntityTypeEnum {
 	ARTICLE,
 	
-	CAREER_JOB,
+	JOBS,
 
 	COURSE,
 	

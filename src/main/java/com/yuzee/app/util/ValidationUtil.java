@@ -49,4 +49,16 @@ public class ValidationUtil {
 			});
 		}
 	}
+	
+	public static void validatePageNoAndPageSize(int pageNumber, int pageSize) throws ValidationException {
+		if (pageNumber < 1) {
+			log.error("Page number can not be less than 1");
+			throw new ValidationException("Page number can not be less than 1");
+		}
+		if (pageSize < 1) {
+	        log.error("Page size can not be less than 1");
+	        throw new ValidationException("Page size can not be less than 1");
+	    }
+	}
+
 }
