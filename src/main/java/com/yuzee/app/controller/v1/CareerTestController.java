@@ -11,8 +11,10 @@ import com.yuzee.app.dto.CareerJobDto;
 import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.endpoint.CareerTestInterface;
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CareerTestProcessor;
+import com.yuzee.app.util.ValidationUtil;
 
 @RestController("careerTestControllerV1")
 public class CareerTestController implements CareerTestInterface {
@@ -82,7 +84,8 @@ public class CareerTestController implements CareerTestInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> getCareerJobsByName(String userId, String name, Integer pageNumber, Integer pageSize) {
+	public ResponseEntity<?> getCareerJobsByName(String userId, String name, Integer pageNumber, Integer pageSize) throws ValidationException {
+		ValidationUtil.validatePageNoAndPageSize(pageNumber, pageSize);
 		PaginationResponseDto careerJobs = careerTestProcessor.getCareerJobsByName(userId, name, pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder().setData(careerJobs).setStatus(HttpStatus.OK)
 				.setMessage("Career Jobs Fetched successfully").create();

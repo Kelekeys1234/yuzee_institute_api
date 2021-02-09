@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.exception.ValidationException;
 
 @RequestMapping("/api/v1/career/job")
 public interface CareerTestInterface {
@@ -34,9 +35,9 @@ public interface CareerTestInterface {
 	public ResponseEntity<?> getCareerJobs(@RequestHeader("userId") String userId, @RequestParam List<String> jobIds,
 			@PathVariable Integer pageNumber, @PathVariable Integer pageSize);
 	
-	@GetMapping("/findbyname/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	@GetMapping("/autosuggest/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getCareerJobsByName(@RequestHeader("userId") String userId, @RequestParam String name,
-			@PathVariable Integer pageNumber, @PathVariable Integer pageSize);
+			@PathVariable Integer pageNumber, @PathVariable Integer pageSize) throws ValidationException;
 
 	@GetMapping("/related/career/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getRelatedCareers(@RequestParam List<String> careerIds, @PathVariable Integer pageNumber,
