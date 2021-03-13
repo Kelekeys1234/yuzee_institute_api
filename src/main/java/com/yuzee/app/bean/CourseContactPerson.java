@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -19,7 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -30,8 +30,9 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @ToString(exclude = "course")
-@EqualsAndHashCode
-public class CourseContactPerson {
+public class CourseContactPerson implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "GUID", strategy = "org.hibernate.id.GUIDGenerator")

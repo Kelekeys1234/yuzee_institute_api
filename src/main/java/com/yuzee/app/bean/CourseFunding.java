@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -31,7 +32,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(exclude = "course")
 @EqualsAndHashCode
-public class CourseFunding {
+public class CourseFunding implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5639931588147850985L;
 
 	@Id
 	@GenericGenerator(name = "GUID", strategy = "org.hibernate.id.GUIDGenerator")
@@ -59,7 +65,7 @@ public class CourseFunding {
 
 	@Column(name = "funding_name_id", nullable = false)
 	private String fundingNameId;
-	
+
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());

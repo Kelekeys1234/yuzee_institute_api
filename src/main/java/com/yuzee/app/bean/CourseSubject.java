@@ -26,7 +26,7 @@ import lombok.ToString;
 @Entity
 @ToString(exclude = "course")
 @Table(name = "course_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "course_id",
-		"semester_id" }, name = "UK_NA_S"), indexes = {
+		"semester" }, name = "UK_NA_S"), indexes = {
 				@Index(name = "IDX_COURSE", columnList = "course_id", unique = false) })
 public class CourseSubject implements Serializable {
 
@@ -44,9 +44,8 @@ public class CourseSubject implements Serializable {
 	@Column(name = "description")
 	private String description;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "semester_id", nullable = false)
-	private Semester semester;
+	@Column(name = "semester", nullable = false)
+	private String semester;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "course_id", nullable = false)

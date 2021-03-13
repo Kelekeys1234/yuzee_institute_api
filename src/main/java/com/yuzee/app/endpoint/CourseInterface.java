@@ -50,7 +50,9 @@ public interface CourseInterface {
 
 	@DeleteMapping("/course/{id}")
 	public ResponseEntity<?> delete(@RequestHeader(required = true) final String userId,
-			@Valid @PathVariable final String id) throws ForbiddenException, NotFoundException;
+			@Valid @PathVariable final String id,
+			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
+			throws ForbiddenException, NotFoundException;
 
 	@GetMapping("/course/search/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> searchCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,

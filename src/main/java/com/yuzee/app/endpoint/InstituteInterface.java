@@ -122,9 +122,10 @@ public interface InstituteInterface {
 	@GetMapping(value = "/institute/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
 	public ResponseEntity<?> getInstituteByCountryName(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
 			@PathVariable String countryName) throws NotFoundException;
-	
+
 	@GetMapping("/campus/instituteId/{instituteId}")
-	public ResponseEntity<?> getInstituteCampuses(@PathVariable final String instituteId) throws NotFoundException;
+	public ResponseEntity<?> getInstituteCampuses(@RequestHeader("userId") final String userId,
+			@PathVariable final String instituteId) throws NotFoundException;
 
 	@GetMapping("/faculty/instituteId/{instituteId}")
 	public ResponseEntity<?> getInstituteFaculties(@PathVariable final String instituteId) throws NotFoundException;

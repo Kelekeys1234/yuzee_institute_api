@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -26,14 +27,17 @@ import lombok.ToString;
 @Entity
 @ToString(exclude = "course")
 @EqualsAndHashCode
-@Table(name = "course_english_eligibility", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "english_type" }, 
-name = "UK_COURSE_ID_ENGLISH_TYPE"), indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
-public class CourseEnglishEligibility {
+@Table(name = "course_english_eligibility", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id",
+		"english_type" }, name = "UK_COURSE_ID_ENGLISH_TYPE"), indexes = {
+				@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
+public class CourseEnglishEligibility implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -81,7 +85,7 @@ public class CourseEnglishEligibility {
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
-	
+
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());

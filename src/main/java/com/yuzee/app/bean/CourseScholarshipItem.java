@@ -1,15 +1,16 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
-
-// Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
-
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,13 +20,17 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
-@Table(name = "semester", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }, name = "UC_NA"))
-public class Semester implements Serializable {
+@ToString(exclude = "courseScholarship")
+@Table(name = "course_scholarship_item", uniqueConstraints = @UniqueConstraint(columnNames = { "scholarship_id",
+		"course_scholarship_id" }, name = "UK_N_P_ID"), indexes = {
+				@Index(name = "IDX_P_ID", columnList = "course_scholarship_id", unique = false) })
+public class CourseScholarshipItem implements Serializable {
 
-	private static final long serialVersionUID = 4519552942642063759L;
+	private static final long serialVersionUID = 8492390790670110780L;
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
@@ -33,21 +38,26 @@ public class Semester implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
-	@Column(name = "name", nullable = false)
-	private String name;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "course_scholarship_id", nullable = false)
+	private CourseScholarship courseScholarship;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "scholarship_id", nullable = false)
+	private Scholarship scholarship;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
+	@Column(name = "created_on")
 	private Date createdOn;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
+	@Column(name = "updated_on")
 	private Date updatedOn;
 
-	@Column(name = "created_by", length = 50)
+	@Column(name = "created_by")
 	private String createdBy;
 
-	@Column(name = "updated_by", length = 50)
+	@Column(name = "updated_by")
 	private String updatedBy;
 
 	public void setAuditFields(String userId) {

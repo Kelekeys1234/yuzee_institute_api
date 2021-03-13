@@ -1,30 +1,32 @@
 package com.yuzee.app.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
-import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @Data
-@ToString
-@EqualsAndHashCode
-public class CourseDTOElasticSearch implements Serializable {
-
-	private static final long serialVersionUID = 3521506877760833299L;
+public class CourseDTOElasticSearch {
 
 	@JsonProperty("id")
 	private String id;
 
 	@JsonProperty("name")
-	@NotBlank(message = "name should not be blank")
 	private String name;
+
+	@JsonProperty("faculty")
+	private FacultyDto faculty;
+
+	@JsonProperty("institute")
+	private InstituteElasticSearchDTO institute;
+
+	@JsonProperty("level")
+	private LevelDto level;
+
+	@JsonProperty("course_curriculum")
+	private CourseCurriculumDto courseCurriculum;
 
 	@JsonProperty("world_ranking")
 	private Integer worldRanking;
@@ -41,6 +43,12 @@ public class CourseDTOElasticSearch implements Serializable {
 	@JsonProperty("website")
 	private String website;
 
+	@JsonProperty("phone_number")
+	private String phoneNumber;
+
+	@JsonProperty("email")
+	private String email;
+
 	@JsonProperty("abbreviation")
 	private String abbreviation;
 
@@ -50,69 +58,93 @@ public class CourseDTOElasticSearch implements Serializable {
 	@JsonProperty("description")
 	private String description;
 
-	@JsonProperty("faculty_name")
-	@NotBlank(message = "faculty_name should not be blank")
-	private String facultyName;
-
-	@JsonProperty("institute_name")
-	@NotBlank(message = "institute_name should not be blank")
-	private String instituteName;
-
-	@JsonProperty("country_name")
-	@NotBlank(message = "country_name should not be blank")
-	private String countryName;
-
-	@JsonProperty("city_name")
-	@NotBlank(message = "city_name should not be blank")
-	private String cityName;
-
-	@JsonProperty("level_code")
-	private String levelCode;
-
-	@JsonProperty("level_name")
-	@NotBlank(message = "level_name should not be blank")
-	private String levelName;
-
 	@JsonProperty("availabilty")
 	private String availabilty;
 
 	@JsonProperty("currency")
-	@NotBlank(message = "currency should not be blank")
 	private String currency;
 
 	@JsonProperty("currency_time")
 	private String currencyTime;
 
+	@JsonProperty("global_gpa")
+	private Double globalGpa;
+
+	@JsonProperty("rec_date")
+	private Date recDate;
+
 	@JsonProperty("content")
 	private String content;
 
-	@JsonProperty("faculty_description")
-	private String facultyDescription;
+	@JsonProperty("examination_board")
+	private String examinationBoard;
 
-	@JsonProperty("institute_image_url")
-	private List<String> instituteImageUrl;
+	@JsonProperty("domestic_application_fee")
+	private Double domesticApplicationFee;
 
-	@JsonProperty("institute_logo_url")
-	private String instituteLogoUrl;
+	@JsonProperty("international_application_fee")
+	private Double internationalApplicationFee;
 
-	@JsonProperty("latitute")
-	private String latitute;
+	@JsonProperty("domestic_enrollment_fee")
+	private Double domesticEnrollmentFee;
 
-	@JsonProperty("longitude")
-	private String longitude;
+	@JsonProperty("international_enrollment_fee")
+	private Double internationalEnrollmentFee;
 
-	@JsonProperty("opening_hour_from")
-	private String openingHourFrom;
+	@JsonProperty("usd_domestic_application_fee")
+	private Double usdDomesticApplicationFee;
 
-	@JsonProperty("opening_hour_to")
-	private String openingHourTo;
+	@JsonProperty("usd_international_application_fee")
+	private Double usdInternationalApplicationFee;
 
-	@JsonProperty("intake")
-	private List<Date> intake;
+	@JsonProperty("usd_domestic_enrollment_fee")
+	private Double usdDomesticEnrollmentFee;
 
-	@JsonProperty("language")
-	private List<String> language;
+	@JsonProperty("usd_international_enrollment_fee")
+	private Double usdInternationalEnrollmentFee;
+
+	@JsonProperty("entrance_exam")
+	private String entranceExam;
+
+	@JsonProperty("code")
+	private String code;
+
+	@JsonProperty("course_type")
+	private String courseType;
+
+	@JsonProperty("off_campus_course")
+	private OffCampusCourseDto offCampusCourse;
+
+	@JsonProperty("course_payment")
+	private CoursePaymentDto coursePayment;
 
 	@JsonProperty("course_delivery_modes")
-	private List<CourseDeliveryModesElasticDto> courseDeliveryModes;
+	private List<CourseDeliveryModesDto> courseDeliveryModes;
+
+	@JsonProperty("course_english_eligibilities")
+	private List<CourseEnglishEligibilityDto> courseEnglishEligibilities;
+
+	@JsonProperty("course_intakes")
+	private List<CourseIntakeDto> courseIntakes;
+
+	@JsonProperty("course_languages")
+	private List<String> languages;
+
+	@JsonProperty("course_min_requirements")
+	private List<CourseMinRequirementDto> courseMinRequirements;
+
+	@JsonProperty("course_prerequisites")
+	private List<CoursePreresquisiteDto> coursePrerequisites;
+
+	@JsonProperty("course_career_outcomes")
+	private List<CourseCareerOutcomeDto> courseCareerOutcomes;
+
+	@JsonProperty("course_subjects")
+	private List<CourseSubjectDto> courseSubjects;
+
+	@JsonProperty("course_fundings")
+	private List<CourseFundingDto> courseFundings;
+	
+	@JsonProperty("course_scholarships")
+	private List<CourseScholarshipElasticDto> courseScholarships;
 }

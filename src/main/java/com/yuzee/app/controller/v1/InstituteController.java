@@ -373,8 +373,8 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> getInstituteCampuses(String instituteId) throws NotFoundException {
-		List<InstituteCampusDto> instituteCampuses = instituteProcessor.getInstituteCampuses(instituteId);
+	public ResponseEntity<?> getInstituteCampuses(String userId, String instituteId) throws NotFoundException {
+		List<InstituteCampusDto> instituteCampuses = instituteProcessor.getInstituteCampuses(userId, instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteCampuses)
 				.setMessage("Institute campuses displayed successfully").setStatus(HttpStatus.OK).create();
 	}

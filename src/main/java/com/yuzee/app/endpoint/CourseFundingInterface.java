@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.CourseFundingDto;
-import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.dto.CourseFundingRequestWrapper;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
@@ -32,12 +32,13 @@ public interface CourseFundingInterface {
 	@PostMapping("/course/{courseId}/funding")
 	public ResponseEntity<?> saveAll(@RequestHeader(value = "userId", required = true) final String userId,
 			@PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final ValidList<CourseFundingDto> courseFundingDto)
-			throws ValidationException, NotFoundException, InvokeException;
+			@Valid @RequestBody(required = true) final CourseFundingRequestWrapper request)
+			throws ValidationException, NotFoundException, InvokeException ;
 
 	@DeleteMapping("/course/{courseId}/funding")
 	public ResponseEntity<?> deleteByFundingNameIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@RequestParam(value = "funding_name_ids", required = true) final List<String> fundingNameIds)
+			@RequestParam(value = "funding_name_ids", required = true) final List<String> fundingNameIds,
+			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }

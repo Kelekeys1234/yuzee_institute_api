@@ -197,13 +197,13 @@ public class InstituteProcessor {
 				instituteElasticSearchDto
 						.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
 				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-				instituteElasticSearchDto.setInstituteTypeName(
+				instituteElasticSearchDto.setInstituteType(
 						institute.getInstituteType() != null ? institute.getInstituteType() : null);
 				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 				instituteElasticDtoList.add(instituteElasticSearchDto);
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
-			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
+			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX,
 					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while saving institutes having exception ", exception.getMessage());
@@ -274,7 +274,7 @@ public class InstituteProcessor {
 					.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
 			instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
 			instituteElasticSearchDto
-					.setInstituteTypeName(institute.getInstituteType() != null ? institute.getInstituteType() : null);
+					.setInstituteType(institute.getInstituteType() != null ? institute.getInstituteType() : null);
 			instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
 			instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
 			instituteElasticDtoList.add(instituteElasticSearchDto);
@@ -1032,21 +1032,26 @@ public class InstituteProcessor {
 		return institutePaginationResponseDto;
 	}
 
-	public List<InstituteCampusDto> getInstituteCampuses(String instituteId) throws NotFoundException {
+	public List<InstituteCampusDto> getInstituteCampuses(String userId, String instituteId) throws NotFoundException {
 		log.debug("inside processor.getInstitutCampuses method.");
 		Institute institute = dao.get(instituteId);
 		if (!ObjectUtils.isEmpty(institute)) {
 			List<Institute> institutes = dao.getInstituteCampuses(instituteId, institute.getName());
-			
-			
-			List<InstituteCampusDto> instituteCampuses = institutes.stream()
-					.map(e -> modelMapper.map(e, InstituteCampusDto.class)).collect(Collectors.toList());
-			
+
+			List<InstituteCampusDto> instituteCampuses = institutes.stream().map(e -> {
+				InstituteCampusDto campusDto = modelMapper.map(e, InstituteCampusDto.class);
+				if (e.getCreatedBy().equals(userId)) {
+					campusDto.setHasEditAccess(true);
+				} else {
+					campusDto.setHasEditAccess(false);
+				}
+				return campusDto;
+			}).collect(Collectors.toList());
+
 			instituteCampuses.stream().forEach(e -> {
 				TimingDto instituteTimingResponseDto = instituteTimingProcessor
 						.getTimingResponseDtoByInstituteId(e.getId());
-					e.setInstituteTimings(CommonUtil
-							.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
+				e.setInstituteTimings(CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
 
 			});
 			return instituteCampuses;
@@ -1104,7 +1109,7 @@ public class InstituteProcessor {
 	
 	public List<StorageDto> getInstituteGallery(String instituteId) throws InternalServerException, NotFoundException {
 		Institute institute = dao.get(instituteId);
-		if (ObjectUtils.isEmpty(institute)) {
+		if (!ObjectUtils.isEmpty(institute)) {
 			try {
 				List<StorageDto> storages = storageHandler.getStorages(Arrays.asList(instituteId),
 						EntityTypeEnum.INSTITUTE, Arrays.asList(EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.LOGO,
@@ -1126,5 +1131,17 @@ public class InstituteProcessor {
 			log.error("Institute not found for id: {}", instituteId);
 			throw new NotFoundException("Institute not found for id: " + instituteId);
 		}
+	}
+	
+	public List<Institute> validateAndGetInstituteByIds(List<String> instituteIds) throws NotFoundException {
+		log.info("inside validateAndGetInstituteByIds");
+
+		List<Institute> institutes = dao.findAllById(instituteIds);
+		if (institutes.size() != instituteIds.size()) {
+			log.error("one or more institute_ids not found");
+			throw new NotFoundException("one or more institute_ids not found");
+		}
+
+		return institutes;
 	}
 }

@@ -1,22 +1,21 @@
 package com.yuzee.app.dto;
 
-import javax.validation.constraints.NotEmpty;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
-@AllArgsConstructor
+@ToString
 @NoArgsConstructor
-public class SemesterDto {
+@AllArgsConstructor
+public class CourseCurriculumDto {
 
-	@JsonProperty("semester_id")
+	@JsonProperty("course_curriculum_id")
 	private String id;
-	
-	@NotEmpty(message = "name must not be empty")
+
 	@JsonProperty("name")
 	private String name;
 }

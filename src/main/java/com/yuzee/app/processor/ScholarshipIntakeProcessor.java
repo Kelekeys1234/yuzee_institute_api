@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +24,9 @@ import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.RuntimeNotFoundException;
 import com.yuzee.app.exception.ValidationException;
+import com.yuzee.app.handler.ElasticHandler;
+import com.yuzee.app.util.DTOUtils;
+import com.yuzee.app.util.Util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +43,10 @@ public class ScholarshipIntakeProcessor {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@Autowired
+	private ElasticHandler elasticHandler;
+	
+	@Transactional
 	public void saveUpdateScholarshipIntakes(String userId, String scholarshipId,
 			@Valid List<ScholarshipIntakeDto> scholarshipIntakeDtos) throws NotFoundException, ValidationException {
 		log.info("inside ScholarshipIntakeDao.saveUpdateScholarshipIntakes");
@@ -52,7 +60,7 @@ public class ScholarshipIntakeProcessor {
 				.findByScholarshipIdAndIdIn(scholarshipId, updateRequestIds.stream().collect(Collectors.toList()))
 				.stream().collect(Collectors.toMap(ScholarshipIntake::getId, e -> e));
 
-		List<ScholarshipIntake> scholarshipIntakes = new ArrayList<>();
+		List<ScholarshipIntake> scholarshipIntakes = scholarship.getScholarshipIntakes();
 
 		log.info("loop the requested list to collect the entitities to be saved/updated");
 		scholarshipIntakeDtos.stream().forEach(e -> {
@@ -71,11 +79,18 @@ public class ScholarshipIntakeProcessor {
 			scholarshipIntakes.add(scholarshipIntake);
 		});
 		scholarshipIntakeDao.saveAll(scholarshipIntakes);
+		scholarship.setScholarshipIntakes(scholarshipIntakes);
+		log.info("Calling elastic search service to save data on elastic index");
+		elasticHandler
+				.saveUpdateScholarship(DTOUtils.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 	}
 
+	@Transactional
 	public void deleteByScholarshipIntakeIds(String userId, String courseId, List<String> scholarshipIntakeIds)
 			throws NotFoundException, ForbiddenException {
 		log.info("inside ScholarshipIntakeDao.deleteByScholarshipIntakeIds");
+		Scholarship scholarship = validateAndGetScholarship(courseId);
+		
 		List<ScholarshipIntake> scholarshipIntakes = scholarshipIntakeDao.findByScholarshipIdAndIdIn(courseId,
 				scholarshipIntakeIds);
 		if (scholarshipIntakeIds.size() == scholarshipIntakes.size()) {
@@ -83,7 +98,11 @@ public class ScholarshipIntakeProcessor {
 				log.error("no access to delete one more scholarship intakes");
 				throw new ForbiddenException("no access to delete one more scholarship intakes");
 			}
+			scholarship.getScholarshipIntakes().removeIf(e->Util.contains(scholarshipIntakeIds, e.getId()));
 			scholarshipIntakeDao.deleteByScholarshipIdAndIdIn(courseId, scholarshipIntakeIds);
+			log.info("Calling elastic search service to save data on elastic index");
+			elasticHandler
+					.saveUpdateScholarship(DTOUtils.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 		} else {
 			log.error("one or more invalid scholarship_intakes_ids");
 			throw new NotFoundException("one or more invalid scholarship_intakes_ids");

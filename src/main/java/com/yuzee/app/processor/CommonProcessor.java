@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.yuzee.app.bean.Course;
+import com.yuzee.app.dto.CourseDTOElasticSearch;
 import com.yuzee.app.dto.FundingResponseDto;
 import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UserInitialInfoDto;
@@ -17,8 +19,10 @@ import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.app.handler.ElasticHandler;
 import com.yuzee.app.handler.EligibilityHandler;
 import com.yuzee.app.handler.UserHandler;
+import com.yuzee.app.util.DTOUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +40,9 @@ public class CommonProcessor {
 
 	@Autowired
 	private UserHandler userHandler;
+
+	@Autowired
+	private ElasticHandler elasticHandler;
 
 	public List<StorageDto> getEntityGallery(String entityType, String entityId)
 			throws NotFoundException, InternalServerException {
@@ -79,5 +86,14 @@ public class CommonProcessor {
 			}
 		}
 		return map;
+	}
+
+	public void saveElasticCourses(List<Course> courses) {
+		log.info("Calling elastic service to save/update courses on elastic index ");
+		if (!CollectionUtils.isEmpty(courses)) {
+			List<CourseDTOElasticSearch> courseElasticDtos = courses.stream()
+					.map(e -> DTOUtils.convertToCourseDTOElasticSearchEntity(e)).collect(Collectors.toList());
+			elasticHandler.saveUpdateData(courseElasticDtos);
+		}
 	}
 }

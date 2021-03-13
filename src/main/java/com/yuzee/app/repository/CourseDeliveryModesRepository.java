@@ -11,8 +11,4 @@ import com.yuzee.app.bean.CourseDeliveryModes;
 public interface CourseDeliveryModesRepository extends JpaRepository<CourseDeliveryModes, String> {
 
 	public List<CourseDeliveryModes> findByCourseId(String courseId);
-
-	List<CourseDeliveryModes> findByCourseIdAndIdIn(String courseId, List<String> ids);
-
-	public void deleteByCourseIdAndIdIn(String courseId, List<String> ids);
 }

@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yuzee.app.dto.CourseIntakeDto;
-import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.dto.CourseIntakeRequestWrapper;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -26,12 +25,13 @@ public interface CourseIntakeInterface {
 	@PostMapping
 	public ResponseEntity<?> saveAll(@RequestHeader(value = "userId", required = true) final String userId,
 			@PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final ValidList<CourseIntakeDto> courseIntakeDtos)
+			@Valid @RequestBody(required = true) final CourseIntakeRequestWrapper request)
 			throws ValidationException, NotFoundException;
 
 	@DeleteMapping
 	public ResponseEntity<?> deleteByCourseIntakeIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@RequestParam(value = "course_intake_ids", required = true) @NotEmpty final List<String> intakeIds)
+			@RequestParam(value = "course_intake_ids", required = true) @NotEmpty final List<String> intakeIds,
+			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }

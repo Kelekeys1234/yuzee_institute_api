@@ -2,23 +2,28 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
+import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseIntake;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dao.CourseIntakeDao;
-import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.CourseIntakeDto;
+import com.yuzee.app.dto.CourseIntakeRequestWrapper;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
+import com.yuzee.app.util.Util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,49 +32,111 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseIntakeProcessor {
 
 	@Autowired
-	CourseIntakeDao courseIntakeDao;
+	private CourseDao courseDao;
 
 	@Autowired
-	InstituteDao instituteDao;
-
+	private CourseProcessor courseProcessor;
+	
 	@Autowired
-	CourseDao courseDao;
-
-	public void saveCourseIntakes(String userId, String courseId, @Valid List<CourseIntakeDto> courseIntakeDtos)
+	private ModelMapper modelMapper;
+	
+	@Autowired
+	private CommonProcessor commonProcessor;
+	
+	@Transactional
+	public void saveCourseIntakes(String userId, String courseId, CourseIntakeRequestWrapper request)
 			throws NotFoundException, ValidationException {
 		log.info("inside CourseIntakeProcessor.saveCourseIntakes");
+		List<CourseIntakeDto> courseIntakeDtos = request.getCourseIntakeDtos();
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 
-			List<CourseIntake> courseIntakes = new ArrayList<>();
+			List<CourseIntake> courseIntakes = course.getCourseIntakes();
 			courseIntakeDtos.stream().forEach(e -> {
 				CourseIntake courseIntake = new CourseIntake();
 				courseIntake.setAuditFields(userId);
 				courseIntake.setCourse(course);
-				courseIntakes.add(courseIntake);
+				if (StringUtils.isEmpty(e.getId())) {
+					courseIntakes.add(courseIntake);
+				}
 			});
-			log.info("going to save record in db");
-			courseIntakeDao.saveAll(courseIntakes);
+			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+			coursesToBeSavedOrUpdated.add(course);
+			if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
+				List<CourseIntakeDto> dtosToReplicate = courseIntakes.stream()
+						.map(e -> modelMapper.map(e, CourseIntakeDto.class)).collect(Collectors.toList());
+				coursesToBeSavedOrUpdated
+						.addAll(replicateCourseIntakes(userId, request.getLinkedCourseIds(), dtosToReplicate));
+			}
+			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
 		}
 	}
 
-	public void deleteByCourseIntakeIds(String userId, String courseId, List<String> intakeIds)
-			throws NotFoundException, ForbiddenException {
+	@Transactional
+	public void deleteByCourseIntakeIds(String userId, String courseId, List<String> intakeIds, List<String> linkedCourseIds)
+			throws NotFoundException, ForbiddenException, ValidationException {
 		log.info("inside CourseIntakeProcessor.deleteByCourseIntakeIds");
-		List<CourseIntake> courseIntakes = courseIntakeDao.findByCourseIdAndIdIn(courseId, intakeIds);
-		if (intakeIds.size() == courseIntakes.size()) {
+		Course course = courseProcessor.validateAndGetCourseById(courseId);
+		List<CourseIntake> courseIntakes = course.getCourseIntakes();
+		if (courseIntakes.stream().map(CourseIntake::getId).collect(Collectors.toSet())
+				.containsAll(intakeIds)) {
 			if (courseIntakes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more intakes by intake ids: ", Arrays.asList(intakeIds));
 				throw new ForbiddenException(
 						"no access to delete one more intakes by intake ids: {}" + Arrays.asList(intakeIds));
 			}
-			courseIntakeDao.deleteByCourseIdAndIdIn(courseId, intakeIds);
+			courseIntakes.removeIf(e -> Util.contains(intakeIds, e.getId()));
+			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+			coursesToBeSavedOrUpdated.add(course);
+			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
+				List<CourseIntakeDto> dtosToReplicate = courseIntakes.stream()
+						.map(e -> modelMapper.map(e, CourseIntakeDto.class)).collect(Collectors.toList());
+				coursesToBeSavedOrUpdated.addAll(replicateCourseIntakes(userId, linkedCourseIds, dtosToReplicate));
+			}
+			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid course_intake_ids");
 			throw new NotFoundException("one or more invalid course_intake_ids");
 		}
+	}
+	
+	private List<Course> replicateCourseIntakes(String userId, List<String> courseIds,
+			List<CourseIntakeDto> courseIntakeDtos) throws ValidationException, NotFoundException {
+		log.info("inside courseProcessor.replicateCourseIntakes");
+		List<Date> intakeDates = courseIntakeDtos.stream().map(CourseIntakeDto::getIntakeDate)
+				.collect(Collectors.toList());
+		if (!CollectionUtils.isEmpty(courseIds)) {
+			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
+			courses.stream().forEach(course -> {
+				List<CourseIntake> courseIntakes = course.getCourseIntakes();
+				if (CollectionUtils.isEmpty(courseIntakeDtos)) {
+					courseIntakes.clear();
+				} else {
+					courseIntakes.removeIf(e -> !Util.contains(intakeDates, e.getIntakeDate()));
+					courseIntakeDtos.stream().forEach(dto -> {
+						Optional<CourseIntake> existingIntakeOp = courseIntakes.stream().filter(
+								e -> e.getIntakeDate().toInstant().compareTo(dto.getIntakeDate().toInstant()) == 0)
+								.findAny();
+						CourseIntake courseIntake = null;
+						if (existingIntakeOp.isPresent()) {
+							courseIntake = existingIntakeOp.get();
+						} else {
+							courseIntake = new CourseIntake();
+							courseIntake.setCourse(course);
+							courseIntake.setIntakeDate(dto.getIntakeDate());
+							courseIntakes.add(courseIntake);
+						}
+						courseIntake.setAuditFields(userId);
+					});
+				}
+			});
+			return courses;
+		}
+		return new ArrayList<>();
 	}
 }

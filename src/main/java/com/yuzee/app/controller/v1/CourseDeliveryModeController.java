@@ -9,11 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.dto.CourseDeliveryModesDto;
-import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.dto.CourseDeliveryModeRequestWrapper;
 import com.yuzee.app.endpoint.CourseDeliveryModeInterface;
 import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -31,19 +29,21 @@ public class CourseDeliveryModeController implements CourseDeliveryModeInterface
 
 	@Override
 	public ResponseEntity<?> saveUpdateCourseDeliveryMode(String userId, String courseId,
-			@Valid ValidList<CourseDeliveryModesDto> courseDeliveryModeDtos)
+			@Valid CourseDeliveryModeRequestWrapper request)
 			throws ValidationException, NotFoundException, InternalServerException, CommonInvokeException {
 		log.info("inside CourseDeliveryModeController.saveUpdateCourseDeliveryMode");
-		courseDeliveryModeProcessor.saveUpdateCourseDeliveryModes(userId, courseId, courseDeliveryModeDtos);
+		courseDeliveryModeProcessor.saveUpdateCourseDeliveryModes(userId, courseId, request);
 		return new GenericResponseHandlers.Builder().setMessage("Course DeliveryMode added/ updated successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> deleteByCourseDeliveryModeIds(String userId, String courseId,
-			List<String> courseDeliveryModeIds) throws ValidationException, NotFoundException, ForbiddenException {
+			List<String> courseDeliveryModeIds, List<String> linkedCourseIds)
+			throws ValidationException, NotFoundException {
 		log.info("inside CourseDeliveryModeController.deleteByCourseDeliveryModeIds");
-		courseDeliveryModeProcessor.deleteByCourseDeliveryModeIds(userId, courseId, courseDeliveryModeIds);
+		courseDeliveryModeProcessor.deleteByCourseDeliveryModeIds(userId, courseId, courseDeliveryModeIds,
+				linkedCourseIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course DeliveryMode deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

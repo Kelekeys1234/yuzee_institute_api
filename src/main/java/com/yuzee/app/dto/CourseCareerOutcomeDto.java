@@ -3,7 +3,6 @@ package com.yuzee.app.dto;
 import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import lombok.Data;
 
@@ -13,10 +12,10 @@ public class CourseCareerOutcomeDto {
 	@JsonProperty("course_career_outcome_id")
 	private String id;
 
-	@JsonProperty(value = "career_id", access = Access.WRITE_ONLY)
+	@JsonProperty(value = "career_id")
 	@NotEmpty(message = "career_id must not be null")
 	private String careerId;
 
-	@JsonProperty(value = "career", access = Access.READ_ONLY)
+	@JsonProperty(value = "career")
 	private CareerDto career;
 }

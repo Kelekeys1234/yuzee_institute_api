@@ -45,6 +45,7 @@ public class AccrediatedDetailProcessor {
 			accrediatedDetail.setAccrediatedWebsite(accrediatedDetailDto.getAccrediatedWebsite());
 			accrediatedDetail.setEntityId(accrediatedDetailDto.getEntityId());
 			accrediatedDetail.setEntityType(accrediatedDetailDto.getEntityType());
+			accrediatedDetail.setDescription(accrediatedDetailDto.getDescription());
 			accrediatedDetail.setCreatedBy("API");
 			accrediatedDetail.setCreatedOn(new Date());
 			log.info("going to save accrediated details in DB for entityId " + accrediatedDetailDto.getEntityId());
@@ -73,6 +74,7 @@ public class AccrediatedDetailProcessor {
 				accrediatedDetailDto.setEntityType(accrediatedDetail.getEntityType());
 				accrediatedDetailDto.setAccrediatedName(accrediatedDetail.getAccrediatedName());
 				accrediatedDetailDto.setAccrediatedWebsite(accrediatedDetail.getAccrediatedWebsite());
+				accrediatedDetailDto.setDescription(accrediatedDetail.getDescription());
 				try {
 					List<StorageDto> storageDTOList = storageHandler.getStorages(accrediatedDetail.getId(),
 							EntityTypeEnum.valueOf(accrediatedDetail.getEntityType()), EntitySubTypeEnum.ACCREDIATED);
@@ -106,6 +108,7 @@ public class AccrediatedDetailProcessor {
 			optAccrediatedDetail.get().setAccrediatedWebsite(accrediatedDetailDto.getAccrediatedWebsite());
 			optAccrediatedDetail.get().setEntityType(accrediatedDetailDto.getEntityType());
 			optAccrediatedDetail.get().setEntityId(accrediatedDetailDto.getEntityId());
+			optAccrediatedDetail.get().setDescription(accrediatedDetailDto.getDescription());
 			optAccrediatedDetail.get().setUpdateddBy("API");
 			optAccrediatedDetail.get().setUpdatedOn(new Date());
 			log.info("Save accrediation details in DB for id "+id);
@@ -157,6 +160,7 @@ public class AccrediatedDetailProcessor {
 				accrediatedDetailDto.setAccrediatedWebsite(accrediatedDetail.getAccrediatedWebsite());
 				accrediatedDetailDto.setEntityId(accrediatedDetail.getEntityId());
 				accrediatedDetailDto.setEntityType(accrediatedDetail.getEntityType());
+				accrediatedDetailDto.setDescription(accrediatedDetail.getDescription());
 				try {
 					log.info("going to call storage service for id "+accrediatedDetail.getId());
 					List<StorageDto> storageDTOList = storageHandler.getStorages(accrediatedDetail.getId(), EntityTypeEnum.valueOf(accrediatedDetail.getEntityType()), EntitySubTypeEnum.ACCREDIATED);

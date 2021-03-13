@@ -3,12 +3,13 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseDeliveryModesDao;
+import com.yuzee.app.dto.CourseDeliveryModeRequestWrapper;
 import com.yuzee.app.dto.CourseDeliveryModesDto;
 import com.yuzee.app.dto.CurrencyRateDto;
 import com.yuzee.app.exception.CommonInvokeException;
@@ -29,6 +31,7 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.RuntimeNotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.CommonHandler;
+import com.yuzee.app.util.Util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,13 +41,22 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseDeliveryModesProcessor {
 
 	@Autowired
-	private CourseDeliveryModesDao courseDeliveryModesDao;
-
-	@Autowired
 	private CourseDao courseDao;
 
 	@Autowired
+	private CourseProcessor courseProcessor;
+
+	@Autowired
 	private CommonHandler commonHandler;
+
+	@Autowired
+	private ModelMapper modelMapper;
+
+	@Autowired
+	private CourseDeliveryModesDao courseDeliveryModesDao;
+
+	@Autowired
+	private CommonProcessor commonProcessor;
 
 	public List<CourseDeliveryModesDto> getCourseDeliveryModesByCourseId(String courseId) {
 		log.debug("Inside getCourseDeliveryModesByCourseId() method");
@@ -65,20 +77,17 @@ public class CourseDeliveryModesProcessor {
 		return courseDeliveryModesResponse;
 	}
 
+	@Transactional
 	public void saveUpdateCourseDeliveryModes(String userId, String courseId,
-			@Valid List<CourseDeliveryModesDto> courseDeliveryModeDtos)
+			@Valid CourseDeliveryModeRequestWrapper request)
 			throws NotFoundException, ValidationException, InternalServerException, CommonInvokeException {
 		log.info("inside CourseDeliveryModesProcessor.saveUpdateCourseDeliveryModes");
+		List<CourseDeliveryModesDto> courseDeliveryModeDtos = request.getCourseDelieveryModeDtos();
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 
-			log.info("getting the ids of entitities to be updated");
-			Set<String> updateRequestIds = courseDeliveryModeDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
-					.map(CourseDeliveryModesDto::getId).collect(Collectors.toSet());
-
-			log.info("verfiy if ids exists against course");
-			Map<String, CourseDeliveryModes> existingCourseDeliveryModesMap = courseDeliveryModesDao
-					.findByCourseIdAndIdIn(courseId, updateRequestIds.stream().collect(Collectors.toList())).stream()
+			log.info("preparing map of exsiting course delivery modes");
+			Map<String, CourseDeliveryModes> existingCourseDeliveryModesMap = course.getCourseDeliveryModes().stream()
 					.collect(Collectors.toMap(CourseDeliveryModes::getId, e -> e));
 
 			CurrencyRateDto currencyRate = null;
@@ -93,7 +102,7 @@ public class CourseDeliveryModesProcessor {
 				}
 			}
 			final CurrencyRateDto finalCurrencyRate = currencyRate;
-			List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
+			List<CourseDeliveryModes> courseDeliveryModes = course.getCourseDeliveryModes();
 
 			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseDeliveryModeDtos.stream().forEach(e -> {
@@ -135,30 +144,101 @@ public class CourseDeliveryModesProcessor {
 				courseDeliveryMode.setDurationTime(e.getDurationTime());
 				courseDeliveryMode.setCourse(course);
 				courseDeliveryMode.setAuditFields(userId);
-				courseDeliveryModes.add(courseDeliveryMode);
+				if (StringUtils.isEmpty(e.getId())) {
+					courseDeliveryModes.add(courseDeliveryMode);
+				}
 			});
-			log.info("going to save record in db");
-			courseDeliveryModesDao.saveAll(courseDeliveryModes);
+			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+			coursesToBeSavedOrUpdated.add(course);
+			if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
+				List<CourseDeliveryModesDto> dtosToReplicate = courseDeliveryModes.stream()
+						.map(e -> modelMapper.map(e, CourseDeliveryModesDto.class)).collect(Collectors.toList());
+				coursesToBeSavedOrUpdated
+						.addAll(replicateCourseDeliveryModes(userId, request.getLinkedCourseIds(), dtosToReplicate));
+			}
+			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
 		}
 	}
 
-	public void deleteByCourseDeliveryModeIds(String userId, String courseId, List<String> deliveryModeIds)
-			throws NotFoundException, ForbiddenException {
+	@Transactional
+	public void deleteByCourseDeliveryModeIds(String userId, String courseId, List<String> deliveryModeIds,
+			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
 		log.info("inside CourseDeliveryModesProcessor.deleteByCourseDeliveryModeIds");
-		List<CourseDeliveryModes> courseDeliveryModes = courseDeliveryModesDao.findByCourseIdAndIdIn(courseId,
-				deliveryModeIds);
-		if (deliveryModeIds.size() == courseDeliveryModes.size()) {
+		Course course = courseProcessor.validateAndGetCourseById(courseId);
+		List<CourseDeliveryModes> courseDeliveryModes = course.getCourseDeliveryModes();
+		if (courseDeliveryModes.stream().map(CourseDeliveryModes::getId).collect(Collectors.toSet())
+				.containsAll(deliveryModeIds)) {
 			if (courseDeliveryModes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more course_delivery_modes");
 				throw new ForbiddenException("no access to delete one more course_delivery_modes");
 			}
-			courseDeliveryModesDao.deleteByCourseIdAndIdIn(courseId, deliveryModeIds);
+			courseDeliveryModes.removeIf(e -> Util.contains(deliveryModeIds, e.getId()));
+			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+			coursesToBeSavedOrUpdated.add(course);
+			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
+				List<CourseDeliveryModesDto> dtosToReplicate = courseDeliveryModes.stream()
+						.map(e -> modelMapper.map(e, CourseDeliveryModesDto.class)).collect(Collectors.toList());
+				coursesToBeSavedOrUpdated
+						.addAll(replicateCourseDeliveryModes(userId, linkedCourseIds, dtosToReplicate));
+			}
+			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid course_delivery_mode_ids");
 			throw new NotFoundException("one or more invalid course_delivery_mode_ids");
 		}
+	}
+
+	private List<Course> replicateCourseDeliveryModes(String userId, List<String> courseIds,
+			List<CourseDeliveryModesDto> courseDeliveryModeDtos) throws ValidationException, NotFoundException {
+		log.info("inside courseProcessor.replicateCourseDeliveryModes");
+		if (!CollectionUtils.isEmpty(courseIds)) {
+			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
+			courses.stream().forEach(course -> {
+				List<CourseDeliveryModes> courseDeliveryModes = course.getCourseDeliveryModes();
+				if (CollectionUtils.isEmpty(courseDeliveryModeDtos)) {
+					courseDeliveryModes.clear();
+				} else {
+					courseDeliveryModes.removeIf(e -> !contains(courseDeliveryModeDtos, e));
+					courseDeliveryModeDtos.stream().forEach(dto -> {
+						Optional<CourseDeliveryModes> existingCourseDeliveryModeOp = courseDeliveryModes.stream()
+								.filter(e -> e.getDeliveryType().equalsIgnoreCase(dto.getDeliveryType())
+										&& e.getStudyMode().equalsIgnoreCase(dto.getStudyMode()))
+								.findAny();
+						CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
+						if (existingCourseDeliveryModeOp.isPresent()) {
+							courseDeliveryMode = existingCourseDeliveryModeOp.get();
+						}
+						courseDeliveryMode.setCourse(course);
+						log.info("Adding additional infos like deliveryType, studyMode etc");
+
+						courseDeliveryMode.setDeliveryType(dto.getDeliveryType());
+						courseDeliveryMode.setDomesticFee(dto.getDomesticFee());
+						courseDeliveryMode.setUsdDomesticFee(dto.getUsdDomesticFee());
+						courseDeliveryMode.setInternationalFee(dto.getInternationalFee());
+						courseDeliveryMode.setUsdInternationalFee(dto.getUsdInternationalFee());
+						courseDeliveryMode.setStudyMode(dto.getStudyMode());
+						courseDeliveryMode.setDuration(dto.getDuration());
+						courseDeliveryMode.setDurationTime(dto.getDurationTime());
+						courseDeliveryMode.setCourse(course);
+						if (StringUtils.isEmpty(courseDeliveryMode.getId())) {
+							courseDeliveryModes.add(courseDeliveryMode);
+						}
+						courseDeliveryMode.setAuditFields(userId);
+					});
+				}
+			});
+			return courses;
+		}
+		return new ArrayList<>();
+	}
+
+	public static boolean contains(List<CourseDeliveryModesDto> lst, CourseDeliveryModes target) {
+		return lst.stream().anyMatch(e -> e.getDeliveryType().equalsIgnoreCase(target.getDeliveryType())
+				&& e.getStudyMode().equalsIgnoreCase(target.getStudyMode()));
 	}
 }

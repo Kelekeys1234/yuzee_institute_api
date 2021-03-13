@@ -3,29 +3,31 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Careers;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCareerOutcome;
 import com.yuzee.app.dao.CareerDao;
-import com.yuzee.app.dao.CourseCareerOutComeDao;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.CourseCareerOutcomeDto;
+import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.RuntimeNotFoundException;
 import com.yuzee.app.exception.ValidationException;
+import com.yuzee.app.util.Util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,36 +36,37 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseCareerOutcomeProcessor {
 
 	@Autowired
-	CourseCareerOutComeDao courseCareerOutcomeDao;
+	private ModelMapper modelMapper;
 
 	@Autowired
-	InstituteDao instituteDao;
+	private CourseDao courseDao;
 
 	@Autowired
-	CourseDao courseDao;
+	private CourseProcessor courseProcessor;
+
+	@Autowired
+	private CommonProcessor commonProcessor;
 
 	@Autowired
 	private CareerDao careerDao;
 
+	@Transactional
 	public void saveUpdateCourseCareerOutcomes(String userId, String courseId,
-			@Valid List<CourseCareerOutcomeDto> courseCareerOutcomeDtos) throws NotFoundException, ValidationException {
+			CourseCareerOutcomeRequestWrapper request) throws NotFoundException, ValidationException {
 		log.info("inside CourseCareerOutcomeProcessor.saveUpdateCourseCareerOutcomes");
+		List<CourseCareerOutcomeDto> courseCareerOutcomeDtos = request.getCourseCareerOutcomeDtos();
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 			Set<String> careerIds = courseCareerOutcomeDtos.stream().map(CourseCareerOutcomeDto::getCareerId)
 					.collect(Collectors.toSet());
 			Map<String, Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
 
-			log.info("getting the ids of entitities to be updated");
-			Set<String> updateRequestIds = courseCareerOutcomeDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
-					.map(CourseCareerOutcomeDto::getId).collect(Collectors.toSet());
+			List<CourseCareerOutcome> courseCareerOutcomes = course.getCourseCareerOutcomes();
 
-			log.info("verfiy if ids exists against course");
-			Map<String, CourseCareerOutcome> existingCourseCareerOutcomesMap = courseCareerOutcomeDao
-					.findByCourseIdAndIdIn(courseId, updateRequestIds.stream().collect(Collectors.toList())).stream()
+			log.info("preparing map of exsiting course career outcomes");
+			Map<String, CourseCareerOutcome> existingCourseCareerOutcomesMap = courseCareerOutcomes.stream()
 					.collect(Collectors.toMap(CourseCareerOutcome::getId, e -> e));
 
-			List<CourseCareerOutcome> courseCareerOutcomes = new ArrayList<>();
 			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseCareerOutcomeDtos.stream().forEach(e -> {
 				CourseCareerOutcome courseCareerOutcome = new CourseCareerOutcome();
@@ -75,32 +78,53 @@ public class CourseCareerOutcomeProcessor {
 						log.error("invalid course career outcome id : {}", e.getId());
 						throw new RuntimeNotFoundException("invalid course career outcome id : " + e.getId());
 					}
+				}else {
+					courseCareerOutcomes.add(courseCareerOutcome);
 				}
 				BeanUtils.copyProperties(e, courseCareerOutcome);
 				courseCareerOutcome.setCareer(careersMap.get(e.getCareerId()));
 				courseCareerOutcome.setCourse(course);
 				courseCareerOutcome.setAuditFields(userId);
-				courseCareerOutcomes.add(courseCareerOutcome);
 			});
-			log.info("going to save record in db");
-			courseCareerOutcomeDao.saveAll(courseCareerOutcomes);
+			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+			coursesToBeSavedOrUpdated.add(course);
+			if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
+				List<CourseCareerOutcomeDto> dtosToReplicate = courseCareerOutcomes.stream()
+						.map(e -> modelMapper.map(e, CourseCareerOutcomeDto.class)).collect(Collectors.toList());
+				coursesToBeSavedOrUpdated
+						.addAll(replicateCourseCareerOutcomes(userId, request.getLinkedCourseIds(), dtosToReplicate));
+			}
+			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
 		}
 	}
 
-	public void deleteByCourseCareerOutcomeIds(String userId, String courseId, List<String> careerOutcomeIds)
-			throws NotFoundException, ForbiddenException {
+	@Transactional
+	public void deleteByCourseCareerOutcomeIds(String userId, String courseId, List<String> careerOutcomeIds,
+			List<String> linkedCourseIds) throws NotFoundException, ForbiddenException, ValidationException {
 		log.info("inside CourseCareerOutcomeProcessor.deleteByCourseCareerOutcomeIds");
-		List<CourseCareerOutcome> courseCareerOutcomes = courseCareerOutcomeDao.findByCourseIdAndIdIn(courseId,
-				careerOutcomeIds);
-		if (careerOutcomeIds.size() == courseCareerOutcomes.size()) {
+		Course course = courseProcessor.validateAndGetCourseById(courseId);
+		List<CourseCareerOutcome> courseCareerOutcomes = course.getCourseCareerOutcomes();
+		if (courseCareerOutcomes.stream().map(CourseCareerOutcome::getId).collect(Collectors.toSet())
+				.containsAll(careerOutcomeIds)) {
 			if (courseCareerOutcomes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more career outcomes");
 				throw new ForbiddenException("no access to delete one more career outcomes");
 			}
-			courseCareerOutcomeDao.deleteByCourseIdAndIdIn(courseId, careerOutcomeIds);
+			courseCareerOutcomes.removeIf(e -> Util.contains(careerOutcomeIds, e.getId()));
+			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+			coursesToBeSavedOrUpdated.add(course);
+			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
+				List<CourseCareerOutcomeDto> dtosToReplicate = courseCareerOutcomes.stream()
+						.map(e -> modelMapper.map(e, CourseCareerOutcomeDto.class)).collect(Collectors.toList());
+				coursesToBeSavedOrUpdated
+						.addAll(replicateCourseCareerOutcomes(userId, linkedCourseIds, dtosToReplicate));
+			}
+			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid course_career outcome_ids");
 			throw new NotFoundException("one or more invalid course_career outcome_ids");
@@ -117,5 +141,43 @@ public class CourseCareerOutcomeProcessor {
 		} else {
 			return careersMap;
 		}
+	}
+
+	private List<Course> replicateCourseCareerOutcomes(String userId, List<String> courseIds,
+			List<CourseCareerOutcomeDto> courseCareerOutcomeDtos) throws ValidationException, NotFoundException {
+		log.info("inside courseProcessor.replicateCourseCareerOutcomes");
+		Set<String> careerIds = courseCareerOutcomeDtos.stream().map(CourseCareerOutcomeDto::getCareerId)
+				.collect(Collectors.toSet());
+		Map<String, Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
+		if (!CollectionUtils.isEmpty(courseIds)) {
+			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
+			courses.stream().forEach(course -> {
+
+				List<CourseCareerOutcome> courseCareerOutcomes = course.getCourseCareerOutcomes();
+				if (CollectionUtils.isEmpty(courseCareerOutcomeDtos)) {
+					courseCareerOutcomes.clear();
+				} else {
+					courseCareerOutcomes
+							.removeIf(e -> !Util.containsIgnoreCase(careerIds.stream().collect(Collectors.toList()),
+									e.getCareer().getId()));
+					courseCareerOutcomeDtos.stream().forEach(dto -> {
+						Optional<CourseCareerOutcome> existingScholarshipOp = courseCareerOutcomes.stream()
+								.filter(e -> e.getCareer().getId().equals(dto.getCareerId())).findAny();
+						CourseCareerOutcome courseCareerOutcome = null;
+						if (existingScholarshipOp.isPresent()) {
+							courseCareerOutcome = existingScholarshipOp.get();
+						} else {
+							courseCareerOutcome = new CourseCareerOutcome();
+							courseCareerOutcome.setCourse(course);
+							courseCareerOutcomes.add(courseCareerOutcome);
+						}
+						courseCareerOutcome.setAuditFields(userId);
+						courseCareerOutcome.setCareer(careersMap.get(dto.getCareerId()));
+					});
+				}
+			});
+			return courses;
+		}
+		return new ArrayList<>();
 	}
 }

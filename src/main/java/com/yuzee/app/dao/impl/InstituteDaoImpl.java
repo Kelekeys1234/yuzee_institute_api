@@ -998,4 +998,9 @@ public class InstituteDaoImpl implements InstituteDao {
 	public List<InstituteResponseDto> findByIds(List<String> instituteIds) {
 		return instituteRepository.findByIdIn(instituteIds);
 	}
+
+	@Override
+	public List<Institute> findAllById(List<String> instituteIds) {
+		return instituteRepository.findAllById(instituteIds);
+	}
 }

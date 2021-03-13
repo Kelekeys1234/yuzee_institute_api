@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yuzee.app.dto.CourseContactPersonDto;
-import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.dto.CourseContactPersonRequestWrapper;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
@@ -26,12 +25,13 @@ public interface CourseContactPersonInterface {
 	@PostMapping
 	public ResponseEntity<?> saveAll(@RequestHeader(value = "userId", required = true) final String userId,
 			@PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final ValidList<CourseContactPersonDto> courseContactPersonDtos)
+			@Valid @RequestBody(required = true) final CourseContactPersonRequestWrapper request)
 			throws ValidationException, NotFoundException, InvokeException;
 
 	@DeleteMapping
 	public ResponseEntity<?> deleteByCourseAndUserIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@RequestParam(value = "user_ids", required = true) final List<String> userIds)
+			@RequestParam(value = "user_ids", required = true) final List<String> userIds,
+			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }

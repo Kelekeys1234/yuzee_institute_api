@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -28,9 +29,10 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString(exclude = "institute")
-public class InstituteAdditionalInfo {
+public class InstituteAdditionalInfo implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GenericGenerator(name = "GUID" , strategy = "org.hibernate.id.GUIDGenerator")
 	@GeneratedValue(generator = "GUID")
@@ -75,6 +77,7 @@ public class InstituteAdditionalInfo {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
+	@ToString.Exclude
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn( name = "institute_id")
 	private Institute institute;

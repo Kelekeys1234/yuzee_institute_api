@@ -59,6 +59,7 @@ public class YuzeeApplication {
 	public ModelMapper modelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		modelMapper.getConfiguration().setDeepCopyEnabled(true);
 		return modelMapper;
 	}
 }

@@ -9,8 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.dto.CourseCareerOutcomeDto;
-import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
 import com.yuzee.app.endpoint.CourseCareerOutcomeInterface;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
@@ -29,19 +28,20 @@ public class CourseCareerOutcomeController implements CourseCareerOutcomeInterfa
 
 	@Override
 	public ResponseEntity<?> saveUpdateCourseCareerOutcomes(String userId, String courseId,
-			@Valid ValidList<CourseCareerOutcomeDto> courseCareerOutcomeDtos)
-			throws ValidationException, NotFoundException {
+			@Valid CourseCareerOutcomeRequestWrapper request) throws ValidationException, NotFoundException {
 		log.info("inside CourseCareerOutcomeController.saveUpdateCourseCareerOutcomes");
-		courseCareerOutcomeProcessor.saveUpdateCourseCareerOutcomes(userId, courseId, courseCareerOutcomeDtos);
+		courseCareerOutcomeProcessor.saveUpdateCourseCareerOutcomes(userId, courseId, request);
 		return new GenericResponseHandlers.Builder().setMessage("Course CareerOutcomes added/ updated successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> deleteByCourseCareerOutcomeIds(String userId, String courseId,
-			List<String> courseCareerOutcomeIds) throws ValidationException, NotFoundException, ForbiddenException {
+			List<String> courseCareerOutcomeIds, List<String> linkedCourseIds)
+			throws ValidationException, NotFoundException, ForbiddenException {
 		log.info("inside CourseCareerOutcomeController.deleteByCourseCareerOutcomeIds");
-		courseCareerOutcomeProcessor.deleteByCourseCareerOutcomeIds(userId, courseId, courseCareerOutcomeIds);
+		courseCareerOutcomeProcessor.deleteByCourseCareerOutcomeIds(userId, courseId, courseCareerOutcomeIds,
+				linkedCourseIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course CareerOutcome deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

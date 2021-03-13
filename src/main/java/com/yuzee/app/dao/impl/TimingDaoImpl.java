@@ -52,4 +52,9 @@ public class TimingDaoImpl implements TimingDao {
 		return timingRepository.findByEntityTypeAndEntityIdAndId(entityType, entityId, id);
 	}
 
+	@Override
+	public void deleteByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<String> entityIds) {
+		timingRepository.deleteByEntityTypeAndEntityIdIn(entityType, entityIds);
+	}
+
 }

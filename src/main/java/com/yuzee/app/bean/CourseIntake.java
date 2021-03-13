@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -28,8 +29,10 @@ import lombok.ToString;
 @EqualsAndHashCode
 @Table(name = "course_intake", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id",
 "intake_date" }, name = "UK_COURSE_ID_INTAKE_DATE"), indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
-public class CourseIntake {
+public class CourseIntake implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")

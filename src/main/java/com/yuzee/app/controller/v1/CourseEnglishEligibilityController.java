@@ -9,10 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.dto.CourseEnglishEligibilityDto;
-import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.dto.CourseEnglishEligibilityRequestWrapper;
 import com.yuzee.app.endpoint.CourseEnglishEligibilityInterface;
-import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.GenericResponseHandlers;
@@ -29,22 +27,20 @@ public class CourseEnglishEligibilityController implements CourseEnglishEligibil
 
 	@Override
 	public ResponseEntity<?> saveUpdateCourseEnglishEligibility(String userId, String courseId,
-			@Valid ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos)
-			throws ValidationException, NotFoundException {
+			@Valid CourseEnglishEligibilityRequestWrapper request) throws ValidationException, NotFoundException {
 		log.info("inside CourseEnglishEligibilityController.saveUpdateCourseEnglishEligibility");
-		courseEnglishEligibilityProcessor.saveUpdateCourseEnglishEligibilities(userId, courseId,
-				courseEnglishEligibilityDtos);
+		courseEnglishEligibilityProcessor.saveUpdateCourseEnglishEligibilities(userId, courseId, request);
 		return new GenericResponseHandlers.Builder()
 				.setMessage("Course EnglishEligibility added/ updated successfully.").setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> deleteByCourseEnglishEligibilityIds(String userId, String courseId,
-			List<String> courseEnglishEligibilityIds)
-			throws ValidationException, NotFoundException, ForbiddenException {
+			List<String> courseEnglishEligibilityIds, List<String> linkedCourseIds)
+			throws ValidationException, NotFoundException {
 		log.info("inside CourseEnglishEligibilityController.deleteByCourseEnglishEligibilityIds");
 		courseEnglishEligibilityProcessor.deleteByCourseEnglishEligibilityIds(userId, courseId,
-				courseEnglishEligibilityIds);
+				courseEnglishEligibilityIds, linkedCourseIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course EnglishEligibility deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

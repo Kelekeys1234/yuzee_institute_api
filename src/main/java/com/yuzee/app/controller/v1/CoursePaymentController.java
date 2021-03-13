@@ -1,5 +1,7 @@
 package com.yuzee.app.controller.v1;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,7 @@ public class CoursePaymentController implements CoursePaymentInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteCoursePayment(String userId, String courseId)
+	public ResponseEntity<?> deleteCoursePayment(String userId, String courseId, List<String> linkedCourseIds)
 			throws InternalServerException, NotFoundException, ForbiddenException {
 		log.info("inside CoursePaymentController.deleteCoursePayment method");
 		coursePaymentProcessor.deleteCoursePayment(userId, courseId);

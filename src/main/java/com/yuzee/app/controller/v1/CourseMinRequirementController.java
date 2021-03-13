@@ -1,5 +1,7 @@
 package com.yuzee.app.controller.v1;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +61,10 @@ public class CourseMinRequirementController implements CourseMinRequirementInter
 
 	@Override
 	public ResponseEntity<Object> deleteCourseMinRequirement(String userId, String courseId,
-			String courseMinRequirementId) throws InternalServerException, NotFoundException, ForbiddenException {
+			String courseMinRequirementId, List<String> linkedCourseIds)
+			throws InternalServerException, NotFoundException, ForbiddenException, ValidationException {
 		log.info("inside CourseMinRequirementController.deleteCourseMinRequirement");
-		courseMinRequirementProcessor.deleteCourseMinRequirement(userId, courseId, courseMinRequirementId);
+		courseMinRequirementProcessor.deleteCourseMinRequirement(userId, courseId, courseMinRequirementId, linkedCourseIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course Minimum Requirement deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

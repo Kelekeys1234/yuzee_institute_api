@@ -1,23 +1,23 @@
 package com.yuzee.app.handler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.yuzee.app.dto.ArticleElasticSearchDto;
 import com.yuzee.app.dto.CourseDTOElasticSearch;
+import com.yuzee.app.dto.ElasticSearchBulkWrapperDto;
 import com.yuzee.app.dto.ElasticSearchDTO;
 import com.yuzee.app.dto.InstituteElasticSearchDTO;
 import com.yuzee.app.dto.ScholarshipElasticDto;
+import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.util.IConstant;
 
 @Service
@@ -68,53 +68,6 @@ public class ElasticHandler {
 		}
 	}
 
-	/**
-	 * Save Courses on Elastic search using API.
-	 *
-	 * @param elasticSearchIndex
-	 * @param type
-	 * @param courseList
-	 * @param elasticSearchName
-	 */
-	public void saveCourseOnElasticSearch(final String elasticSearchIndex, final String type, final List<CourseDTOElasticSearch> courseList,
-			final String elasticSearchName) {
-		for (CourseDTOElasticSearch courseElasticSearch : courseList) {
-			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-			elasticSearchDto.setIndex(elasticSearchIndex);
-			elasticSearchDto.setType(type);
-			elasticSearchDto.setEntityId(String.valueOf(courseElasticSearch.getId()));
-			elasticSearchDto.setObject(courseElasticSearch);
-			restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Map.class);
-		}
-	}
-
-	public Map<String, List<String>> updateCourseOnElasticSearch(final String elasticSearchIndex, final String type,
-			final List<CourseDTOElasticSearch> courseList, final String elasticSearchName) {
-		Map<String, List<String>> elasticSearchCourseUpdateStatusMap = new HashMap<>();
-		elasticSearchCourseUpdateStatusMap.put("failed", new ArrayList<String>());
-		elasticSearchCourseUpdateStatusMap.put("successful", new ArrayList<String>());
-		for (CourseDTOElasticSearch courseElasticSearch : courseList) {
-			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-			elasticSearchDto.setIndex(elasticSearchIndex);
-			elasticSearchDto.setType(type);
-			elasticSearchDto.setEntityId(String.valueOf(courseElasticSearch.getId()));
-			elasticSearchDto.setObject(courseElasticSearch);
-			System.out.println(elasticSearchDto);
-			HttpHeaders headers = new HttpHeaders();
-			HttpEntity<ElasticSearchDTO> httpEntity = new HttpEntity<>(elasticSearchDto, headers);
-			ResponseEntity<Map> result = restTemplate.exchange("http://" + IConstant.ELASTIC_SEARCH_URL, HttpMethod.PUT, httpEntity, Map.class,
-					new Object[] {});
-			Map<String, Object> responseMap = result.getBody();
-			Integer status = (Integer) responseMap.get("status");
-			if (status != 200) {
-				elasticSearchCourseUpdateStatusMap.get("failed").add(courseElasticSearch.getId());
-			} else {
-				elasticSearchCourseUpdateStatusMap.get("successful").add(courseElasticSearch.getId());
-			}
-		}
-		return elasticSearchCourseUpdateStatusMap;
-	}
-
 	public void deleteCourseOnElasticSearch(final String elasticSearchIndex, final String type, final List<CourseDTOElasticSearch> courseList,
 			final String elasticSearchName) {
 		for (CourseDTOElasticSearch courseElasticSearch : courseList) {
@@ -128,6 +81,25 @@ public class ElasticHandler {
 			restTemplate.exchange("http://" + IConstant.ELASTIC_SEARCH_URL, HttpMethod.DELETE, httpEntity, Map.class,
 					new Object[] {});
 		}
+	}
+	
+	public void saveUpdateData(List<CourseDTOElasticSearch> courseList) {
+		List<ElasticSearchDTO> entities = courseList.stream().map(e -> {
+			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+			elasticSearchDto.setIndex(IConstant.ELASTIC_SEARCH_INDEX);
+			elasticSearchDto.setType(EntityTypeEnum.COURSE.name());
+			elasticSearchDto.setEntityId(String.valueOf(e.getId()));
+			elasticSearchDto.setObject(e);
+			return elasticSearchDto;
+
+		}).collect(Collectors.toList());
+		saveDataOnElasticSearchInBulk(new ElasticSearchBulkWrapperDto(entities));
+	}
+
+	public void saveDataOnElasticSearchInBulk(ElasticSearchBulkWrapperDto elasticSearchBulkWrapperDto) {
+		StringBuilder path = new StringBuilder();
+		path.append("http://" + IConstant.ELASTIC_SEARCH_BULK);
+		restTemplate.postForEntity(path.toString(), elasticSearchBulkWrapperDto, Object.class);
 	}
 
 	public void saveArticleOnElasticSearch(final String elasticSearchIndex, final String type, final ArticleElasticSearchDto articleDto,
@@ -169,29 +141,14 @@ public class ElasticHandler {
 				new Object[] {});
 	}
 
-	public void saveScholarshipOnElasticSearch(final String elasticSearchIndex, final String type, final ScholarshipElasticDto scholarshipDto,
-			final String elasticSearchName) {
+	public void saveUpdateScholarship(final ScholarshipElasticDto scholarshipDto) {
 		ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-		elasticSearchDto.setIndex(elasticSearchIndex);
-		elasticSearchDto.setType(type);
+		elasticSearchDto.setIndex(IConstant.ELASTIC_SEARCH_INDEX);
+		elasticSearchDto.setType(EntityTypeEnum.SCHOLARSHIP.name());
 		elasticSearchDto.setEntityId(String.valueOf(scholarshipDto.getId()));
 		elasticSearchDto.setObject(scholarshipDto);
 		System.out.println(elasticSearchDto);
 		restTemplate.postForEntity("http://" + IConstant.ELASTIC_SEARCH_URL, elasticSearchDto, Object.class);
-	}
-
-	public void updateScholarshipOnElasticSearch(final String elasticSearchIndex, final String type, final ScholarshipElasticDto scholarshipDto,
-			final String elasticSearchName) {
-		ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
-		elasticSearchDto.setIndex(elasticSearchIndex);
-		elasticSearchDto.setType(type);
-		elasticSearchDto.setEntityId(String.valueOf(scholarshipDto.getId()));
-		elasticSearchDto.setObject(scholarshipDto);
-		System.out.println(elasticSearchDto);
-		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<ElasticSearchDTO> httpEntity = new HttpEntity<>(elasticSearchDto, headers);
-		restTemplate.exchange("http://" + IConstant.ELASTIC_SEARCH_URL, HttpMethod.PUT, httpEntity, Object.class,
-				new Object[] {});
 	}
 
 	public void deleteScholarshipOnElasticSearch(final String elasticSearchIndex, final String type, final ScholarshipElasticDto scholarshipDto,

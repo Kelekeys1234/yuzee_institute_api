@@ -42,7 +42,11 @@ import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.TimingDto;
 import com.yuzee.app.dto.TodoDto;
+import com.yuzee.app.exception.ForbiddenException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class CommonUtil {
 
 	public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(final Institute institute) {
@@ -517,5 +521,13 @@ public class CommonUtil {
 	
 	public static String getEnumNames(Class<? extends Enum<?>> e) {
 		return Arrays.toString(Arrays.stream(e.getEnumConstants()).map(Enum::name).toArray(String[]::new));
+	}
+	
+	public static void validateEditAccess(String userId, Course course) throws ForbiddenException {
+		log.info("Inside CommonUtil.validateEditAccess");
+		if (!course.getCreatedBy().equals(userId)) {
+			log.info("user has no access to edit the course details");
+			throw new ForbiddenException("user has no access to edit the course details");
+		}
 	}
 }

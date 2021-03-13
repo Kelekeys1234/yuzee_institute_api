@@ -1,5 +1,6 @@
 package com.yuzee.app.processor;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,8 @@ import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
+import com.yuzee.app.handler.ElasticHandler;
+import com.yuzee.app.util.DTOUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +39,9 @@ public class CoursePaymentProcessor {
 	@Autowired
 	private CourseDao courseDao;
 
+	@Autowired
+	private ElasticHandler elasticHandler;
+	
 	@Transactional
 	public void saveUpdateCoursePayment(String userId, String courseId, @Valid CoursePaymentDto coursePaymentDto)
 			throws ForbiddenException, NotFoundException, ValidationException {
@@ -79,6 +85,8 @@ public class CoursePaymentProcessor {
 			coursePayment.setAuditFields(userId);
 			log.info("going to save record in db");
 			coursePaymentDao.save(coursePayment);
+			log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
+			elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
 		}
 	}
 
@@ -95,6 +103,8 @@ public class CoursePaymentProcessor {
 			course.setCoursePayment(null);
 			try {
 				courseDao.addUpdateCourse(course);
+				log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
+				elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
 			} catch (ValidationException e) {
 				log.error(e.getMessage());
 				throw new InternalServerException("error deleting course payment");

@@ -33,4 +33,7 @@ public class AccrediatedDetailDto {
 	@NotNull(message = "entityType is required")
 	@JsonProperty("entity_type")
 	private String entityType;
+	
+	@JsonProperty("description")
+	private String description;
 }

@@ -29,13 +29,9 @@ import org.hibernate.annotations.GenericGenerator;
 import com.yuzee.app.enumeration.CourseTypeEnum;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @Data
 @Entity
-@ToString
-@EqualsAndHashCode
 @Table(name = "course", uniqueConstraints = @UniqueConstraint(name = "UK_F_L_I_N_C", columnNames = { "faculty_id",
 		"level_id", "institute_id", "name", "code" }), indexes = {
 				@Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false),
@@ -214,6 +210,12 @@ public class Course implements Serializable {
 
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseFunding> courseFundings = new ArrayList<>();
+
+	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseContactPerson> courseContactPersons = new ArrayList<>();
+	
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
+	private CourseScholarship courseScholarship;
 	
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);

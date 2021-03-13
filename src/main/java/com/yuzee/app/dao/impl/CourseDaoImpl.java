@@ -45,7 +45,10 @@ import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.CourseSearchFilterDto;
 import com.yuzee.app.dto.CurrencyRateDto;
+import com.yuzee.app.dto.FacultyDto;
 import com.yuzee.app.dto.GlobalFilterSearchDto;
+import com.yuzee.app.dto.InstituteElasticSearchDTO;
+import com.yuzee.app.dto.LevelDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.enumeration.CourseSortBy;
 import com.yuzee.app.exception.CommonInvokeException;
@@ -86,6 +89,11 @@ public class CourseDaoImpl implements CourseDao {
 			log.error(ex.getMessage());
 			throw new ValidationException(ex.getMessage());
 		}
+	}
+
+	@Override
+	public List<Course> saveAll(final List<Course> courses) throws ValidationException {
+			return courseRepository.saveAll(courses);
 	}
 
 	@Override
@@ -1406,9 +1414,9 @@ public class CourseDaoImpl implements CourseDao {
 				+ "crs.is_active, crs.created_on, crs.updated_on,\r\n" + "crs.deleted_on, crs.created_by, crs.updated_by, crs.is_deleted,\r\n"
 				+ "crs.availbilty, crs.part_full, crs.study_mode, crs.international_fee,\r\n"
 				+ "crs.domestic_fee, crs.currency, crs.currency_time, crs.usd_international_fee,\r\n"
-				+ "crs.usd_domestic_fee, crs.cost_range, crs.content, \r\n" + "inst.name as institute_name, fac.name as faculty_name,\r\n"
-				+ "fac.description as faculty_description, cntry.name as country_name,\r\n"
-				+ "ct.name as city_name, lev.code as level_code, lev.name as level_name, crs.recognition_type,"
+				+ "crs.usd_domestic_fee, crs.cost_range, crs.content, \r\n" + "inst.id as institute_id, inst.name as institute_name, fac.id as faculty_id,\r\n"
+				+ "fac.name as faculty_name,\r\n" + "fac.description as faculty_description, cntry.name as country_name,\r\n"
+				+ "ct.name as city_name, lev.id as level_id, lev.code as level_code, lev.name as level_name, crs.recognition_type,"
 				+ "crs.duration_time from course crs \r\n" + "inner join institute inst on crs.institute_id = inst.id\r\n"
 				+ "inner join faculty fac on crs.faculty_id = fac.id\r\n" + "inner join country cntry on inst.country_id = cntry.id\r\n"
 				+ "inner join city ct on crs.city_id = ct.id\r\n" + "inner join level lev on crs.level_id = lev.id\r\n" + "where crs.updated_on >= ? \r\n"
@@ -1444,17 +1452,28 @@ public class CourseDaoImpl implements CourseDao {
 			courseDtoElasticSearch.setCurrencyTime(String.valueOf(objects[25]));
 
 			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
-
-			courseDtoElasticSearch.setInstituteName(String.valueOf(objects[30]));
-			courseDtoElasticSearch.setFacultyName(String.valueOf(objects[31]));
-			courseDtoElasticSearch.setFacultyDescription(String.valueOf(objects[32]));
-			courseDtoElasticSearch.setCountryName(String.valueOf(objects[33]));
-			courseDtoElasticSearch.setCityName(String.valueOf(objects[34]));
-
-			courseDtoElasticSearch.setLevelCode(String.valueOf(objects[35]));
-			courseDtoElasticSearch.setLevelName(String.valueOf(objects[36]));
 			
-			courseDtoElasticSearch.setRecognitionType(String.valueOf(objects[37]));
+			InstituteElasticSearchDTO institute = new InstituteElasticSearchDTO();
+			institute.setId(String.valueOf(objects[30]));
+			institute.setName(String.valueOf(objects[31]));
+			courseDtoElasticSearch.setInstitute(institute);
+			
+			FacultyDto facultyDto = new FacultyDto();
+			facultyDto.setId(String.valueOf(objects[32]));
+			facultyDto.setName(String.valueOf(objects[33]));
+			facultyDto.setDescription(String.valueOf(objects[34]));
+			courseDtoElasticSearch.setFaculty(facultyDto);
+			
+		//	courseDtoElasticSearch.setCountryName(String.valueOf(objects[35]));
+		//	courseDtoElasticSearch.setCityName(String.valueOf(objects[36]));
+
+			LevelDto levelDto = new LevelDto();
+			levelDto.setId(String.valueOf(objects[37]));
+			levelDto.setCode(String.valueOf(objects[38]));
+			levelDto.setName(String.valueOf(objects[39]));
+			courseDtoElasticSearch.setLevel(levelDto);
+			
+			courseDtoElasticSearch.setRecognitionType(String.valueOf(objects[40]));
 			courseElasticSearchList.add(courseDtoElasticSearch);
 		}
 		return courseElasticSearchList;
@@ -1481,9 +1500,9 @@ public class CourseDaoImpl implements CourseDao {
 				+ "crs.is_active, crs.created_on, crs.updated_on,\r\n" + "crs.deleted_on, crs.created_by, crs.updated_by, crs.is_deleted,\r\n"
 				+ "crs.availbilty, crs.part_full, crs.study_mode, crs.international_fee,\r\n"
 				+ "crs.domestic_fee, crs.currency, crs.currency_time, crs.usd_international_fee,\r\n"
-				+ "crs.usd_domestic_fee, crs.cost_range, crs.content, \r\n" + "inst.name as institute_name, fac.name as faculty_name,\r\n"
+				+ "crs.usd_domestic_fee, crs.cost_range, crs.content, \r\n" + "inst.id as institute_id, inst.name as institute_name, fac.id as faculty_id, fac.name as faculty_name,\r\n"
 				+ "fac.description as faculty_description, cntry.name as country_name,\r\n"
-				+ "ct.name as city_name, lev.code as level_code, lev.name as level_name, crs.recognition_type,"
+				+ "ct.name as city_name, lev.id as level_id, lev.code as level_code, lev.name as level_name, crs.recognition_type,"
 				+ "crs.duration_time from course crs \r\n" + "inner join institute inst on crs.institute_id = inst.id\r\n"
 				+ "inner join faculty fac on crs.faculty_id = fac.id\r\n" + "inner join country cntry on inst.country_id = cntry.id\r\n"
 				+ "inner join city ct on crs.city_id = ct.id\r\n" + "inner join level lev on crs.level_id = lev.id\r\n" + "where crs.id in (");
@@ -1530,15 +1549,27 @@ public class CourseDaoImpl implements CourseDao {
 
 			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
 
-			courseDtoElasticSearch.setInstituteName(String.valueOf(objects[30]));
-			courseDtoElasticSearch.setFacultyName(String.valueOf(objects[31]));
-			courseDtoElasticSearch.setFacultyDescription(String.valueOf(objects[32]));
-			courseDtoElasticSearch.setCountryName(String.valueOf(objects[33]));
-			courseDtoElasticSearch.setCityName(String.valueOf(objects[34]));
+			InstituteElasticSearchDTO institute = new InstituteElasticSearchDTO();
+			institute.setId(String.valueOf(objects[30]));
+			institute.setName(String.valueOf(objects[31]));
+			courseDtoElasticSearch.setInstitute(institute);
+			
+			FacultyDto facultyDto = new FacultyDto();
+			facultyDto.setId(String.valueOf(objects[32]));
+			facultyDto.setName(String.valueOf(objects[33]));
+			facultyDto.setDescription(String.valueOf(objects[34]));
+			courseDtoElasticSearch.setFaculty(facultyDto);
+			
+//			courseDtoElasticSearch.setCountryName(String.valueOf(objects[35]));
+//			courseDtoElasticSearch.setCityName(String.valueOf(objects[36]));
 
-			courseDtoElasticSearch.setLevelCode(String.valueOf(objects[35]));
-			courseDtoElasticSearch.setLevelName(String.valueOf(objects[36]));
-			courseDtoElasticSearch.setRecognitionType(String.valueOf(objects[37]));
+			LevelDto levelDto = new LevelDto();
+			levelDto.setId(String.valueOf(objects[37]));
+			levelDto.setCode(String.valueOf(objects[38]));
+			levelDto.setName(String.valueOf(objects[39]));
+			courseDtoElasticSearch.setLevel(levelDto);
+			
+			courseDtoElasticSearch.setRecognitionType(String.valueOf(objects[40]));
 			courseElasticSearchList.add(courseDtoElasticSearch);
 		}
 		return courseElasticSearchList;
@@ -1848,9 +1879,25 @@ public class CourseDaoImpl implements CourseDao {
 	public void deleteCourse(String id) {
 		courseRepository.deleteById(id);
 	}
-
+	
 	@Override
 	public List<Course> findByInstituteId(String instituteId) {
 		return courseRepository.findByInstituteId(instituteId);
+	}
+
+	@Override
+	public List<Course> findAllById(List<String> ids) {
+		return courseRepository.findAllById(ids);
+	}
+	
+
+	@Override
+	public void deleteAll(List<Course> courses) {
+		courseRepository.deleteAll(courses);
+	}
+
+	@Override
+	public List<Course> findAll() {
+		return courseRepository.findAll();
 	}
 }

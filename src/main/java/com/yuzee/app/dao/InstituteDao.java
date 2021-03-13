@@ -97,4 +97,6 @@ public interface InstituteDao {
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException;
 
 	public List<InstituteResponseDto> findByIds(List<String> instituteIds);
+
+	public List<Institute> findAllById(List<String> instituteIds);
 }

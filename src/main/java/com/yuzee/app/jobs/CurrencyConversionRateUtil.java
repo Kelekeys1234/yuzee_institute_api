@@ -161,8 +161,8 @@ public class CurrencyConversionRateUtil {
 //				courseDtoElasticSearch.setLevelName(course.getLevel()!=null?course.getLevel().getName():null);
 //				courseDtoElasticSearchList.add(courseDtoElasticSearch);
 //			}
-			Map<String, List<String>> courseUpdateStatus = elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
-			failedRecordsInElasticSearch.addAll(courseUpdateStatus.get("failed"));
+//			Map<String, List<String>> courseUpdateStatus = elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+//			failedRecordsInElasticSearch.addAll(courseUpdateStatus.get("failed"));
 		}
 	}
 	
@@ -174,7 +174,7 @@ public class CurrencyConversionRateUtil {
 		for (int i = 0; i < totalCourseToBeRetried; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
 			List<String> courseIds = failedRecordsInElasticSearch.subList(i, i+IConstant.COURSES_PER_SCHEDULER_LOOP < totalCourseToBeRetried ? i+IConstant.COURSES_PER_SCHEDULER_LOOP: totalCourseToBeRetried);
 			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseProcessor.getCoursesToBeRetriedForElasticSearch(courseIds, i, IConstant.COURSES_PER_SCHEDULER_LOOP);
-			elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+			elasticHandler.saveUpdateData(courseDtoElasticSearchList);
 		}
 		
 		failedRecordsInElasticSearch.clear();

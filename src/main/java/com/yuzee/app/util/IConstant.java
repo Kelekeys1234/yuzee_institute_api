@@ -84,14 +84,10 @@ public class IConstant {
 	public static final String APPILICATION_URL = "http://" + APPLICATION;
 
 	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";
-	public static final String ELASTIC_SEARCH_INDEX_COURSE = "yuzee_dev_course";
-
-	public static final String ELASTIC_SEARCH_INDEX_ARTICLE = "yuzee_dev_article";
-	public static final String ELASTIC_SEARCH_INDEX_INSTITUTE = "yuzee_dev_institute";
-
-	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP = "yuzee_dev_scholarship";
+	public static final String ELASTIC_SEARCH_INDEX = "yuzee_dev";
 
 	public static final String ELASTIC_SEARCH_URL = ELASTIC_SEARCH + "/";
+	public static final String ELASTIC_SEARCH_BULK = "ELASTIC-SEARCH/elasticSearch/bulk";
 	
 	public static final String USER = "USER-SERVICE/users";
 	public static final String USER_CONNECTION_URL = "http://" + USER + "/api/v1";

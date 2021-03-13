@@ -7,9 +7,13 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @Data
+@Getter
+@Setter
 @ToString
 public class InstituteElasticSearchDTO {
 
@@ -25,8 +29,8 @@ public class InstituteElasticSearchDTO {
 	@NotBlank(message = "city_name should not be blank")
 	private String cityName;
 
-	@JsonProperty("institute_type_name")
-	private String instituteTypeName;
+	@JsonProperty("institute_type")
+	private String instituteType;
 
 	@JsonProperty("name")
 	@NotBlank(message = "name should not be blank")

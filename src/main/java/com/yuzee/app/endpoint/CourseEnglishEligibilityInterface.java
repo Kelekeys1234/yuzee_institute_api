@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yuzee.app.dto.CourseEnglishEligibilityDto;
-import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.dto.CourseEnglishEligibilityRequestWrapper;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
@@ -26,12 +25,13 @@ public interface CourseEnglishEligibilityInterface {
 	@PostMapping
 	public ResponseEntity<?> saveUpdateCourseEnglishEligibility(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos)
+			@Valid @RequestBody(required = true) final CourseEnglishEligibilityRequestWrapper request)
 			throws ValidationException, NotFoundException;
 
 	@DeleteMapping
 	public ResponseEntity<?> deleteByCourseEnglishEligibilityIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@RequestParam(value = "course_english_eligibility_ids", required = true) @NotEmpty final List<String> courseEnglishEligibilityIds)
+			@RequestParam(value = "course_english_eligibility_ids", required = true) @NotEmpty final List<String> courseEnglishEligibilityIds,
+			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }

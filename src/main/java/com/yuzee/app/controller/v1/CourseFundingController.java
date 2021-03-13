@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseFundingDto;
-import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.dto.CourseFundingRequestWrapper;
 import com.yuzee.app.endpoint.CourseFundingInterface;
 import com.yuzee.app.exception.ForbiddenException;
 import com.yuzee.app.exception.InvokeException;
@@ -39,19 +39,19 @@ public class CourseFundingController implements CourseFundingInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> saveAll(String userId, String courseId, @Valid ValidList<CourseFundingDto> courseFundingDtos)
+	public ResponseEntity<?> saveAll(String userId, String courseId, @Valid CourseFundingRequestWrapper request)
 			throws ValidationException, NotFoundException, InvokeException {
 		log.info("inside CourseFundingController.saveAll");
-		courseFundingProcessor.saveCourseFundings(userId, courseId, courseFundingDtos);
+		courseFundingProcessor.saveCourseFundings(userId, courseId, request);
 		return new GenericResponseHandlers.Builder().setMessage("Course Fundings added successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> deleteByFundingNameIds(String userId, String courseId, List<String> fundingNameIds)
-			throws ValidationException, NotFoundException, ForbiddenException {
+	public ResponseEntity<?> deleteByFundingNameIds(String userId, String courseId, List<String> fundingNameIds,
+			List<String> linkedCourseIds) throws ValidationException, NotFoundException, ForbiddenException {
 		log.info("inside CourseFundingController.deleteByFundingNameIds");
-		courseFundingProcessor.deleteCourseFundingsByFundingNameIds(userId, courseId, fundingNameIds);
+		courseFundingProcessor.deleteCourseFundingsByFundingNameIds(userId, courseId, fundingNameIds, linkedCourseIds);
 		return new GenericResponseHandlers.Builder().setMessage("Course Fundings deleted successfully.")
 				.setStatus(HttpStatus.OK).create();
 	}

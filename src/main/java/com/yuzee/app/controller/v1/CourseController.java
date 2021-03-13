@@ -82,7 +82,7 @@ public class CourseController implements CourseInterface {
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
 		log.info("Start process to save new course in DB");
 		ValidationUtil.validateTimingDtoFromCourseRequest(course);
-		String courseId = courseProcessor.saveCourse(userId, instituteId, course);
+		String courseId = courseProcessor.saveOrUpdateCourse(userId, instituteId, course, null);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Created successfully").create();
 	}
@@ -100,7 +100,7 @@ public class CourseController implements CourseInterface {
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
 		log.info("Start process to update existing course in DB");
 		ValidationUtil.validateTimingDtoFromCourseRequest(course);
-		String courseId = courseProcessor.updateCourse(userId, instituteId, course, id);
+		String courseId = courseProcessor.saveOrUpdateCourse(userId, instituteId, course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Updated successfully").create();
 	}
@@ -128,10 +128,12 @@ public class CourseController implements CourseInterface {
 				.setMessage("Courses Displayed successfully").create();
 	}
 
-	public ResponseEntity<?> delete(final String userId, final String id) throws ForbiddenException, NotFoundException{
+	public ResponseEntity<?> delete(final String userId, final String id, final List<String> linkedCourseIds)
+			throws ForbiddenException, NotFoundException {
 		log.info("Start process to delete existing course from DB");
-		courseProcessor.deleteCourse(userId, id);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Courses Deleted successfully").create();
+		courseProcessor.deleteCourse(userId, id, linkedCourseIds);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Courses Deleted successfully")
+				.create();
 	}
 
 	public ResponseEntity<?> searchCourse(final Integer pageNumber, final Integer pageSize, final List<String> countryIds, final String instituteId, 

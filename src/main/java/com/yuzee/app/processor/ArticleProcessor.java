@@ -290,10 +290,10 @@ public class ArticleProcessor {
 		articleElasticSearchDTO.setCourse(article.getCourse() != null ? article.getCourse().getName() : null);
 		articleElasticSearchDTO.setPostDate(CommonUtil.getDateWithoutTime(articleDto.getPostDate()));
 		if (updateCase) {
-			elasticHandler.updateArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
+			elasticHandler.updateArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
 					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
 		} else {
-			elasticHandler.saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_ARTICLE, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
+			elasticHandler.saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
 					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
 		}
 		return articleDto;

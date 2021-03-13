@@ -42,7 +42,6 @@ import com.yuzee.app.bean.GlobalData;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.bean.OffCampusCourse;
-import com.yuzee.app.bean.Semester;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CareerDao;
 import com.yuzee.app.dao.CourseCurriculumDao;
@@ -51,14 +50,13 @@ import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.IGlobalStudentDataDAO;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
-import com.yuzee.app.dao.SemesterDao;
 import com.yuzee.app.dao.TimingDao;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseCareerOutcomeDto;
+import com.yuzee.app.dto.CourseContactPersonDto;
 import com.yuzee.app.dto.CourseCountDto;
 import com.yuzee.app.dto.CourseDTOElasticSearch;
 import com.yuzee.app.dto.CourseDeliveryModesDto;
-import com.yuzee.app.dto.CourseDeliveryModesElasticDto;
 import com.yuzee.app.dto.CourseDto;
 import com.yuzee.app.dto.CourseEnglishEligibilityDto;
 import com.yuzee.app.dto.CourseFilterDto;
@@ -76,7 +74,9 @@ import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.dto.ReviewStarDto;
 import com.yuzee.app.dto.StorageDto;
+import com.yuzee.app.dto.UnLinkInsituteDto;
 import com.yuzee.app.dto.UserDto;
+import com.yuzee.app.dto.UserInitialInfoDto;
 import com.yuzee.app.dto.UserViewCourseDto;
 import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.enumeration.CourseTypeEnum;
@@ -101,6 +101,7 @@ import com.yuzee.app.service.IGlobalStudentData;
 import com.yuzee.app.service.ITop10CourseService;
 import com.yuzee.app.service.UserRecommendationService;
 import com.yuzee.app.util.CommonUtil;
+import com.yuzee.app.util.DTOUtils;
 import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.app.util.PaginationUtil;
@@ -176,9 +177,6 @@ public class CourseProcessor {
 	private ModelMapper modelMapper;
 
 	@Autowired
-	private SemesterDao semesterDao;
-
-	@Autowired
 	private CareerDao careerDao;
 
 	@Autowired
@@ -192,6 +190,9 @@ public class CourseProcessor {
 
 	@Autowired
 	private CommonProcessor commonProcessor;
+
+	@Autowired
+	private CourseInstituteProcessor courseInstituteProcessor;
 	
 	@Value("${max.radius}")
 	private Integer maxRadius;
@@ -546,17 +547,15 @@ public class CourseProcessor {
 				}
 				if (course.getCurrency() != null) {
 					if (e.getDomesticFee() != null) {
-						log.info("converting domestic fee into usdDomestic fee having conversionRate = "
-								+ currencyRate.getConversionRate());
+						log.info("converting domestic fee into usdDomestic fee having conversionRate {}",currencyRate.getConversionRate());
 						Double convertedRate = e.getDomesticFee() / currencyRate.getConversionRate();
 						if (convertedRate != null) {
 							courseDeliveryMode.setUsdDomesticFee(convertedRate);
 						}
 					}
-					if (e.getInternationalFee() != null) {
-						log.info("converting international fee into usdInternational fee having conversionRate = "
-								+ currencyRate.getConversionRate());
-						Double convertedRate = e.getInternationalFee() / currencyRate.getConversionRate();
+					if (courseDeliveryMode.getInternationalFee() != null) {
+						log.info("converting international fee into usdInternational fee having conversionRate {}",currencyRate.getConversionRate());
+						Double convertedRate = Double.valueOf(courseDeliveryMode.getInternationalFee()) / currencyRate.getConversionRate();
 						if (convertedRate != null) {
 							courseDeliveryMode.setUsdInternationalFee(convertedRate);
 						}
@@ -564,6 +563,7 @@ public class CourseProcessor {
 				}
 				courseDeliveryMode.setCourse(course);
 				log.info("Adding additional infos like deliveryType, studyMode etc");
+
 				courseDeliveryMode.setDeliveryType(e.getDeliveryType());
 				courseDeliveryMode.setDomesticFee(e.getDomesticFee());
 				courseDeliveryMode.setInternationalFee(e.getInternationalFee());
@@ -589,15 +589,7 @@ public class CourseProcessor {
 		if (!CollectionUtils.isEmpty(courseSubjectDtos)) {
 
 			log.info("Creating the list to save/update course subjects in DB");
-			Set<String> semesterIds = courseSubjectDtos.stream().map(CourseSubjectDto::getSemesterId)
-					.collect(Collectors.toSet());
-			Map<String, Semester> semestersMap = semesterDao.findByIdIn(new ArrayList<>(semesterIds)).stream()
-					.collect(Collectors.toMap(Semester::getId, e -> e));
-			if (semestersMap.size() != semesterIds.size()) {
-				log.error("one or more semester ids are invalid");
-				throw new ValidationException("one or more semester ids are invalid");
-			}
-
+			
 			Set<String> updateRequestIds = courseSubjectDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
 					.map(CourseSubjectDto::getId).collect(Collectors.toSet());
 			courseSubjects.removeIf(e -> !updateRequestIds.contains(e.getId()));
@@ -614,7 +606,6 @@ public class CourseProcessor {
 					}
 				}
 				BeanUtils.copyProperties(e, courseSubject);
-				courseSubject.setSemester(semestersMap.get(e.getSemesterId()));
 				courseSubject.setCourse(course);
 				if (StringUtils.isEmpty(courseSubject.getId())) {
 					courseSubjects.add(courseSubject);
@@ -710,45 +701,6 @@ public class CourseProcessor {
 			courseFundings.clear();
 		}
 	}
-	private CourseDTOElasticSearch prepareCourseElaticSearchDtoFromModel(Course course) {
-		// Elastic search object
-		log.info("inside courseProcessor.prepareCourseElaticSearchDtoFromModel");
-		CourseDTOElasticSearch courseElasticSearch = new CourseDTOElasticSearch();
-		log.info("Copying course bean class to courseElastic DTO class through beanUtils");
-		BeanUtils.copyProperties(course, courseElasticSearch);
-		log.info("Adding facultyName, description details in elastic DTO");
-		courseElasticSearch.setFacultyName(course.getFaculty() != null ? course.getFaculty().getName() : null);
-		courseElasticSearch
-				.setFacultyDescription(course.getFaculty() != null ? course.getFaculty().getDescription() : null);
-		log.info("Adding instituteName, latitude, longitude details in elastic DTO");
-		courseElasticSearch.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
-		courseElasticSearch.setLatitute(
-				course.getInstitute() != null ? String.valueOf(course.getInstitute().getLatitude()) : null);
-		courseElasticSearch.setLongitude(
-				course.getInstitute() != null ? String.valueOf(course.getInstitute().getLongitude()) : null);
-		log.info("Adding levelCode, levelName in elastic DTO");
-		courseElasticSearch.setLevelCode(course.getLevel() != null ? course.getLevel().getCode() : null);
-		courseElasticSearch.setLevelName(course.getLevel() != null ? course.getLevel().getName() : null);
-		if (!CollectionUtils.isEmpty(course.getCourseIntakes())) {
-			log.info("Adding intakes in elastic DTO");
-			courseElasticSearch.setIntake(course.getCourseIntakes().stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
-		}
-		
-		List<CourseDeliveryModesElasticDto> courseDeliveryModesElasticDtos = null;
-		if (!CollectionUtils.isEmpty(course.getCourseDeliveryModes())) {
-			courseDeliveryModesElasticDtos = course.getCourseDeliveryModes().stream()
-					.map(e->modelMapper.map(e,CourseDeliveryModesElasticDto.class)).collect(Collectors.toList());
-		}
-		
-		courseElasticSearch.setCourseDeliveryModes(courseDeliveryModesElasticDtos);
-
-		if (!CollectionUtils.isEmpty(course.getCourseLanguages())) {
-			log.info("Adding courseLanguages in elastic DTO");
-			courseElasticSearch.setLanguage(course.getCourseLanguages().stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
-		}
-		return courseElasticSearch;
-
-	}
 
 	private void populateCourseUsdPrices(CurrencyRateDto currencyRate, Course course) {
 		log.info("inside courseProcessor.populateCourseUsdPrices");
@@ -790,40 +742,23 @@ public class CourseProcessor {
 			}
 		}
 	}
-	
-	@Transactional(noRollbackFor = Throwable.class)
-	public String saveCourse(final String loggedInUserId, String instituteId, @Valid final CourseRequest courseDto)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
-		log.debug("Inside saveCourse() method");
-		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, instituteId, null, courseDto);
-		log.info("Calling DAO layer to save/update course in DB");
-		course = courseDao.addUpdateCourse(course);
-		timingProcessor.saveUpdateDeleteTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
-		log.info("Calling elastic service to add courses on elastic index");
-		elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
-				EntityTypeEnum.COURSE.name().toLowerCase(),
-				Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
-		return course.getId();
-	}
 
 	@Transactional(noRollbackFor = Throwable.class)
-	public String updateCourse(final String loggedInUserId, String instituteId, final CourseRequest courseDto, final String id)
+	public String saveOrUpdateCourse(final String loggedInUserId, String instituteId, final CourseRequest courseDto, final String id)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
-		log.debug("Inside updateCourse() method");
+		log.debug("Inside saveUpdateCourse() method");
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, instituteId, id, courseDto);
 		course = courseDao.addUpdateCourse(course);
 		timingProcessor.saveUpdateDeleteTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
-		log.info("Calling elastic service to update courses on elastic index having entityId: ", id);
-		elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
-				EntityTypeEnum.COURSE.name().toLowerCase(),
-				Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
+		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
+		elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
 		return course.getId();
 	}
 
 	private CurrencyRateDto getCurrencyRate(final String courseCurrency) throws CommonInvokeException {
 		log.debug("Inside getCurrencyRate() method");
 		log.info("Calling DAO layer to getCurrencyRate from DB having currencyCode = "+courseCurrency);
-		CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseCurrency);
+    	CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseCurrency);
 		return currencyRate;
 	}
 
@@ -905,7 +840,7 @@ public class CourseProcessor {
 	}
 	
 	@Transactional
-	public void deleteCourse(final String loggedInUserId, final String courseId) throws ForbiddenException, NotFoundException {
+	public void deleteCourse( String loggedInUserId, String courseId, List<String> linkedCourseIds) throws ForbiddenException, NotFoundException {
 		log.debug("Inside deleteCourse() method");
 
 		log.info("Fetching course from DB having courseId = " + courseId);
@@ -915,15 +850,25 @@ public class CourseProcessor {
 				log.error("User has no access to delete the course with id: {}", courseId);
 				throw new ForbiddenException("User has no delete to edit the course with id: " + courseId);
 			}
-			
-			timingDao.deleteByEntityTypeAndEntityId(EntityTypeEnum.COURSE, course.getId());
+			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
+				log.info("going to unlink and delete the linked courses");
+				List<UnLinkInsituteDto> unLinkRequest = linkedCourseIds.stream()
+						.map(e -> new UnLinkInsituteDto(e, true)).collect(Collectors.toList());
+				courseInstituteProcessor.unLinkInstitutes(loggedInUserId, courseId, unLinkRequest);
+			}else {
+				linkedCourseIds = new ArrayList<>();
+			}
+			linkedCourseIds.add(courseId);
+			timingDao.deleteByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, linkedCourseIds);
+			log.info("going to remove all links of the course");
+			courseInstituteProcessor.removeAllLinksWithInstitutes(course);
 			courseDao.deleteCourse(courseId);
 			CourseDTOElasticSearch elasticSearchCourseDto = new CourseDTOElasticSearch();
 			elasticSearchCourseDto.setId(courseId);
 			List<CourseDTOElasticSearch> courseDtoESList = new ArrayList<>();
 			courseDtoESList.add(elasticSearchCourseDto);
 			log.info("Calling elastic service to update course having entityId = " + courseId);
-			elasticHandler.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
+			elasticHandler.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX,
 					EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoESList, IConstant.ELASTIC_SEARCH);
 		} else {
 			log.error("Course not found for courseId = " + courseId);
@@ -1755,6 +1700,16 @@ public class CourseProcessor {
 				courseRequest.getCourseFundings().stream().forEach(e->e.setFunding(fundingsMap.get(e.getFundingNameId())));
 			}
 		}
+
+		List<CourseContactPersonDto> courseContactPersons = courseRequest.getCourseContactPersons();
+		if (!CollectionUtils.isEmpty(courseContactPersons)) {
+			Map<String, UserInitialInfoDto> users = commonProcessor.validateAndGetUsersByUserIds(
+					courseContactPersons.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
+			courseContactPersons.stream().forEach(e->{
+				e.setUser(users.get(e.getUserId()));
+			});
+		}
+		
 		courseRequest.setCourseCareerOutcomes(new ValidList<>(course.getCourseCareerOutcomes().stream()
 				.map(e -> modelMapper.map(e, CourseCareerOutcomeDto.class)).collect(Collectors.toList())));
 
@@ -1833,7 +1788,7 @@ public class CourseProcessor {
 
 	public List<StorageDto> getCourseGallery(String courseId) throws InternalServerException, NotFoundException {
 		Course course = courseDao.get(courseId);
-		if (ObjectUtils.isEmpty(course)) {
+		if (!ObjectUtils.isEmpty(course)) {
 
 			List<EntitySubTypeEnum> entitySubTypeEnums = Arrays.asList(EntitySubTypeEnum.COVER_PHOTO,
 					EntitySubTypeEnum.LOGO, EntitySubTypeEnum.MEDIA);
@@ -1847,7 +1802,14 @@ public class CourseProcessor {
 			}
 
 			try {
-				return storageHandler.getStorages(entityIds, EntityTypeEnum.COURSE, entitySubTypeEnums);
+				List<StorageDto> storages = storageHandler.getStorages(entityIds, EntityTypeEnum.COURSE,
+						entitySubTypeEnums);
+				List<StorageDto> instituteMediaStorages = storageHandler.getStorages(course.getInstitute().getId(),
+						EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.MEDIA);
+				if (!CollectionUtils.isEmpty(instituteMediaStorages)) {
+					storages.addAll(instituteMediaStorages);
+				}
+				return storages;
 			} catch (NotFoundException | InvokeException e) {
 				log.error(e.getMessage());
 				throw new InternalServerException(e.getMessage());
@@ -1912,17 +1874,33 @@ public class CourseProcessor {
 		saveUpdateCourseFundings(loggedInUserId, course, courseDto.getCourseFundings());
 		
 		course = courseDao.addUpdateCourse(course);
-		if (StringUtils.isEmpty(courseId)) {
-			log.info("Calling elastic service to add courses on elastic index");
-			elasticHandler.saveCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
-					EntityTypeEnum.COURSE.name().toLowerCase(),
-					Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
-		} else {
-			log.info("Calling elastic service to update courses on elastic index");
-			elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE,
-					EntityTypeEnum.COURSE.name().toLowerCase(),
-					Arrays.asList(prepareCourseElaticSearchDtoFromModel(course)), IConstant.ELASTIC_SEARCH);
-		}
+		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
+		elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
 		return course.getId();
+	}
+	
+	@Transactional
+	public Course validateAndGetCourseById(String courseId) throws NotFoundException {
+		log.info("inside get course by id");
+		log.debug("going to call db for getting course for id: {}", courseId);
+		Course course = courseDao.get(courseId);
+		if (ObjectUtils.isEmpty(course)) {
+			log.error("invalid course id: {}", courseId);
+			throw new NotFoundException("invalid course id: " + courseId);
+		} else {
+			return course;
+		}
+	}
+	
+	@Transactional
+	public List<Course> validateAndGetCourseByIds(List<String> courseIds) throws NotFoundException {
+		log.info("inside validateAndGetInstituteByIds");
+
+		List<Course> courses = courseDao.findAllById(courseIds);
+		if (courses.size() != courseIds.size()) {
+			log.error("one or more course_ids not found");
+			throw new NotFoundException("one or more course_ids not found");
+		}
+		return courses;
 	}
 }

@@ -2,8 +2,6 @@ package com.yuzee.app.dto;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -48,11 +46,14 @@ public class InstituteCampusDto {
 	@JsonProperty("state_name")
 	private String state;
 	
-	@Column(name = "postal_code")
+	@JsonProperty("postal_code")
 	private Integer postalCode;
 	
-	@Column(name = "whatsapp_no")
+	@JsonProperty("whatsapp_no")
 	private String whatsNo;
+	
+	@JsonProperty("has_edit_access")
+	private Boolean hasEditAccess;
 	
 	@JsonProperty("institute_timings")
 	private List<DayTimingDto> instituteTimings;

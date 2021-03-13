@@ -31,8 +31,6 @@ import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.ScholarshipElasticDto;
-import com.yuzee.app.dto.ScholarshipIntakeDto;
 import com.yuzee.app.dto.ScholarshipLevelCountDto;
 import com.yuzee.app.dto.ScholarshipRequestDto;
 import com.yuzee.app.dto.ScholarshipResponseDto;
@@ -44,7 +42,7 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ElasticHandler;
 import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.util.IConstant;
+import com.yuzee.app.util.DTOUtils;
 import com.yuzee.app.util.PaginationUtil;
 import com.yuzee.app.util.Util;
 
@@ -202,19 +200,6 @@ public class ScholarshipProcessor {
 		return scholarship;
 	}
 
-	private ScholarshipElasticDto prepareElasticDtoFromModel(Scholarship scholarship) {
-		ScholarshipElasticDto scholarshipElasticDto = new ScholarshipElasticDto();
-		log.info("Copying data from DTO class to elasticSearch DTO class");
-		BeanUtils.copyProperties(scholarship, scholarshipElasticDto);
-		scholarshipElasticDto
-				.setInstituteName(scholarship.getInstitute() != null ? scholarship.getInstitute().getName() : null);
-		scholarshipElasticDto.setIntakes(scholarship.getScholarshipIntakes().stream()
-				.map(e -> modelMapper.map(e, ScholarshipIntakeDto.class)).collect(Collectors.toList()));
-		scholarshipElasticDto.setLanguages(scholarship.getScholarshipLanguages().stream()
-				.map(ScholarshipLanguage::getName).collect(Collectors.toList()));
-		return scholarshipElasticDto;
-	}
-
 	@Transactional(rollbackOn = Throwable.class)
 	public String saveScholarship(final String userId, final ScholarshipRequestDto scholarshipDto)
 			throws ValidationException {
@@ -225,9 +210,8 @@ public class ScholarshipProcessor {
 		Scholarship scholarship = scholarshipDAO.saveScholarship(prepareModel(userId, scholarshipDto, null));
 
 		log.info("Calling elastic search service to save data on elastic index");
-		elasticHandler.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
-				EntityTypeEnum.SCHOLARSHIP.name().toLowerCase(), prepareElasticDtoFromModel(scholarship),
-				IConstant.ELASTIC_SEARCH);
+		elasticHandler
+				.saveUpdateScholarship(DTOUtils.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 
 		return scholarship.getId();
 	}
@@ -262,9 +246,8 @@ public class ScholarshipProcessor {
 		Scholarship scholarship = scholarshipDAO.saveScholarship(prepareModel(userId, scholarshipDto, scholarshipId));
 
 		log.info("Calling elastic search service to update existing scholarship data in DB");
-		elasticHandler.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
-				EntityTypeEnum.SCHOLARSHIP.name().toLowerCase(), prepareElasticDtoFromModel(scholarship),
-				IConstant.ELASTIC_SEARCH);
+		elasticHandler
+				.saveUpdateScholarship(DTOUtils.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
@@ -284,17 +267,9 @@ public class ScholarshipProcessor {
 		log.info("Calling DAO layer to save/update scholarship in DB");
 		scholarship = scholarshipDAO.saveScholarship(scholarship);
 
-		if (StringUtils.isEmpty(scholarshipId)) {
-			log.info("Calling elastic search service to save data on elastic index");
-			elasticHandler.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
-					EntityTypeEnum.SCHOLARSHIP.name().toLowerCase(), prepareElasticDtoFromModel(scholarship),
-					IConstant.ELASTIC_SEARCH);
-		} else {
-			log.info("Calling elastic search service to update data on elastic index");
-			elasticHandler.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
-					EntityTypeEnum.SCHOLARSHIP.name().toLowerCase(), prepareElasticDtoFromModel(scholarship),
-					IConstant.ELASTIC_SEARCH);
-		}
+		log.info("Calling elastic search service to update existing scholarship data in DB");
+		elasticHandler
+				.saveUpdateScholarship(DTOUtils.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 		return scholarship.getId();
 	}
 

@@ -15,4 +15,7 @@ public class CourseContactPersonDto {
 	@JsonProperty(value = "user_id")
 	@NotEmpty(message = "user_id must not be empty")
 	private String userId;
+	
+	@JsonProperty(value = "user")
+	private UserInitialInfoDto user; 
 }

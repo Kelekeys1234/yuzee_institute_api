@@ -24,6 +24,8 @@ public interface CourseDao {
 
 	public Course addUpdateCourse(Course obj) throws ValidationException;
 
+	public List<Course> saveAll(List<Course> courses) throws ValidationException;
+
 	public Course get(String id);
 
 	public List<CourseResponseDto> getAllCoursesByFilter(CourseSearchDto filterObj, String searchKeyword, List<String> courseIds, Integer startIndex,
@@ -120,4 +122,10 @@ public interface CourseDao {
 	public void deleteCourse(String id);
 
 	public List<Course> findByInstituteId(String instituteId);
+
+	public List<Course> findAllById(List<String> ids);
+
+	void deleteAll(List<Course> courses);
+
+	public List<Course> findAll();
 }

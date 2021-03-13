@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -24,8 +25,9 @@ import lombok.ToString;
 @Entity
 @Table(name = "institute_intake", uniqueConstraints = @UniqueConstraint(columnNames = { "intake", "institute_id" } , name = "UK_INSTITUTE_ID_INTAKE"),
        indexes = {@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false) })
-@ToString(exclude = "institute")
-public class InstituteIntake {
+public class InstituteIntake implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
@@ -36,6 +38,7 @@ public class InstituteIntake {
 	@Column(name = "intake")
 	private String intake;
 
+	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "institute_id", nullable = false)
 	private Institute institute;
