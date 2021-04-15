@@ -25,7 +25,6 @@ import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.util.DTOUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,6 +40,9 @@ public class CoursePaymentProcessor {
 
 	@Autowired
 	private ElasticHandler elasticHandler;
+	
+	@Autowired
+	private ConversionProcessor conversionProcessor;
 	
 	@Transactional
 	public void saveUpdateCoursePayment(String userId, String courseId, @Valid CoursePaymentDto coursePaymentDto)
@@ -86,7 +88,7 @@ public class CoursePaymentProcessor {
 			log.info("going to save record in db");
 			coursePaymentDao.save(coursePayment);
 			log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
-			elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
+			elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
 		}
 	}
 
@@ -104,7 +106,7 @@ public class CoursePaymentProcessor {
 			try {
 				courseDao.addUpdateCourse(course);
 				log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
-				elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
+				elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
 			} catch (ValidationException e) {
 				log.error(e.getMessage());
 				throw new InternalServerException("error deleting course payment");

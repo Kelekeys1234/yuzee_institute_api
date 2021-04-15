@@ -20,7 +20,7 @@ public class CourseDTOElasticSearch {
 	private FacultyDto faculty;
 
 	@JsonProperty("institute")
-	private InstituteElasticSearchDTO institute;
+	private InstituteElasticSearchDto institute;
 
 	@JsonProperty("level")
 	private LevelDto level;
@@ -147,4 +147,7 @@ public class CourseDTOElasticSearch {
 	
 	@JsonProperty("course_scholarships")
 	private List<CourseScholarshipElasticDto> courseScholarships;
+	
+	@JsonProperty("course_timings")
+	private List<TimingDto> courseTimings;
 }

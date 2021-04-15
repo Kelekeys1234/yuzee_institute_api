@@ -15,7 +15,9 @@ import com.yuzee.app.dto.ArticleElasticSearchDto;
 import com.yuzee.app.dto.CourseDTOElasticSearch;
 import com.yuzee.app.dto.ElasticSearchBulkWrapperDto;
 import com.yuzee.app.dto.ElasticSearchDTO;
-import com.yuzee.app.dto.InstituteElasticSearchDTO;
+import com.yuzee.app.dto.FacultyDto;
+import com.yuzee.app.dto.InstituteElasticSearchDto;
+import com.yuzee.app.dto.LevelDto;
 import com.yuzee.app.dto.ScholarshipElasticDto;
 import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.util.IConstant;
@@ -26,9 +28,9 @@ public class ElasticHandler {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	public void saveInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDTO> instituteList,
+	public void saveInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDto> instituteList,
 			final String elasticSearchName) {
-		for (InstituteElasticSearchDTO insitute : instituteList) {
+		for (InstituteElasticSearchDto insitute : instituteList) {
 			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 			elasticSearchDto.setIndex(elasticSearchIndex);
 			elasticSearchDto.setType(type);
@@ -38,9 +40,9 @@ public class ElasticHandler {
 		}
 	}
 
-	public void updateInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDTO> instituteList,
+	public void updateInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDto> instituteList,
 			final String elasticSearchName) {
-		for (InstituteElasticSearchDTO insitute : instituteList) {
+		for (InstituteElasticSearchDto insitute : instituteList) {
 			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 			elasticSearchDto.setIndex(elasticSearchIndex);
 			elasticSearchDto.setType(type);
@@ -53,9 +55,9 @@ public class ElasticHandler {
 		}
 	}
 
-	public void deleteInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDTO> instituteList,
+	public void deleteInsituteOnElasticSearch(final String elasticSearchIndex, final String type, final List<InstituteElasticSearchDto> instituteList,
 			final String elasticSearchName) {
-		for (InstituteElasticSearchDTO insitute : instituteList) {
+		for (InstituteElasticSearchDto insitute : instituteList) {
 			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
 			elasticSearchDto.setIndex(elasticSearchIndex);
 			elasticSearchDto.setType(type);
@@ -92,6 +94,45 @@ public class ElasticHandler {
 			elasticSearchDto.setObject(e);
 			return elasticSearchDto;
 
+		}).collect(Collectors.toList());
+		saveDataOnElasticSearchInBulk(new ElasticSearchBulkWrapperDto(entities));
+	}
+
+	public void saveUpdateInstitutes(List<InstituteElasticSearchDto> institutes) {
+		List<ElasticSearchDTO> entities = institutes.stream().map(e -> {
+			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+			elasticSearchDto.setIndex(IConstant.ELASTIC_SEARCH_INDEX);
+			elasticSearchDto.setType(EntityTypeEnum.INSTITUTE.name());
+			elasticSearchDto.setEntityId(String.valueOf(e.getId()));
+			elasticSearchDto.setObject(e);
+			return elasticSearchDto;
+			
+		}).collect(Collectors.toList());
+		saveDataOnElasticSearchInBulk(new ElasticSearchBulkWrapperDto(entities));
+	}
+	
+	public void saveUpdateLevels(List<LevelDto> level) {
+		List<ElasticSearchDTO> entities = level.stream().map(e -> {
+			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+			elasticSearchDto.setIndex(IConstant.ELASTIC_SEARCH_INDEX);
+			elasticSearchDto.setType(EntityTypeEnum.LEVEL.name());
+			elasticSearchDto.setEntityId(String.valueOf(e.getId()));
+			elasticSearchDto.setObject(e);
+			return elasticSearchDto;
+			
+		}).collect(Collectors.toList());
+		saveDataOnElasticSearchInBulk(new ElasticSearchBulkWrapperDto(entities));
+	}
+
+	public void saveUpdateFaculties(List<FacultyDto> faculties) {
+		List<ElasticSearchDTO> entities = faculties.stream().map(e -> {
+			ElasticSearchDTO elasticSearchDto = new ElasticSearchDTO();
+			elasticSearchDto.setIndex(IConstant.ELASTIC_SEARCH_INDEX);
+			elasticSearchDto.setType(EntityTypeEnum.FACULTY.name());
+			elasticSearchDto.setEntityId(String.valueOf(e.getId()));
+			elasticSearchDto.setObject(e);
+			return elasticSearchDto;
+			
 		}).collect(Collectors.toList());
 		saveDataOnElasticSearchInBulk(new ElasticSearchBulkWrapperDto(entities));
 	}

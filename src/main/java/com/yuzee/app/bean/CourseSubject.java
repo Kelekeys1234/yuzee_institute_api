@@ -44,7 +44,7 @@ public class CourseSubject implements Serializable {
 	@Column(name = "description")
 	private String description;
 	
-	@Column(name = "semester", nullable = false)
+	@Column(name = "semester",nullable = false)
 	private String semester;
 
 	@ManyToOne(fetch = FetchType.LAZY)

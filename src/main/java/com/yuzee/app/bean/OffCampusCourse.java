@@ -18,11 +18,13 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
 @Entity
 @ToString(exclude = "course")
+@EqualsAndHashCode(exclude = "course")
 @Table(name = "off_campus_course", indexes = { @Index(name = "IDX_COURSE", columnList = "course_id", unique = true) })
 public class OffCampusCourse implements Serializable {
 

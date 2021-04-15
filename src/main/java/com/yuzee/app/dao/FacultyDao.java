@@ -1,6 +1,9 @@
 package com.yuzee.app.dao;
 
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.cache.annotation.Cacheable;
 
 import com.yuzee.app.bean.Faculty;
 
@@ -16,4 +19,9 @@ public interface FacultyDao {
 
 	public Faculty getFacultyByFacultyName(String facultyName);
 
+	@Cacheable(value = "cacheFacultyMap", unless = "#result == null")
+	Map<String, String> getFacultyNameIdMap();
+	
+	@Cacheable(value = "cacheFaculty", key = "#id", unless = "#result == null", condition="#id!=null")
+	Faculty getFaculty(final String id);
 }

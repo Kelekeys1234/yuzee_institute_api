@@ -125,4 +125,7 @@ public class IConstant {
 			"Personal Experiences and Inspirations", "Work and Internships", "Financial", "Self-Help", "News");
 
 	public static final Integer ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION = 2;
+	public static final String DEFAULT_CAMPUS = "campus 1";
+	public static final String FILE_PATH = "/home/ec2-user/RemainingScholarshipFile/";
+	public static final String FOLDER_NAME = "remainingScholarship/";
 }

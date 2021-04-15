@@ -17,6 +17,8 @@ public interface ServiceDao {
 
 	public Page<Service> getAllServices(Pageable pageable);
 
+	public List<Service> getAll();
+
 	public List<Service> getAllByIds(List<String> id);
 	
 	public List<Service> findByNameIgnoreCaseIn(List<String> names);

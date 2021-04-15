@@ -1,7 +1,5 @@
 package com.yuzee.app.bean;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
 
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1

@@ -60,4 +60,15 @@ public class CoursePrerequisite implements Serializable{
 
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
+
+	public CoursePrerequisite(String prerequisite, Course course, Date createdOn, Date updatedOn, String createdBy,
+			String updatedBy) {
+		super();
+		this.prerequisite = prerequisite;
+		this.course = course;
+		this.createdOn = createdOn;
+		this.updatedOn = updatedOn;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+	}
 }

@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class TimingDto {
 	
-	@JsonProperty("institute_timing_id")
+	@JsonProperty("timing_id")
 	private String id;
 
 	@JsonProperty("monday")
@@ -30,4 +30,13 @@ public class TimingDto {
 
 	@JsonProperty("sunday")
 	private String sunday;
+
+	@JsonProperty("timing_type")
+	private String timingType;
+
+	@JsonProperty("entity_type")
+	private String entityType;
+
+	@JsonProperty("entity_id")
+	private String entityId;
 }

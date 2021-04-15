@@ -7,7 +7,7 @@ import com.yuzee.app.bean.GlobalData;
 public interface IGlobalStudentDataDAO {
 
 	void save(final GlobalData globalDataDato);
-	
+
 	void deleteAll();
 	
 	List<GlobalData> getCountryWiseStudentList(String countryName);
@@ -17,4 +17,8 @@ public interface IGlobalStudentDataDAO {
 	List<String> getDistinctMigratedCountryForStudentCountry(String countryName);
 	
 	List<String> getDistinctMigratedCountryForStudentCountryOrderByNumberOfStudents(String countryName);
+	
+	List<GlobalData> findAll();
+
+	void saveAll(List<GlobalData> list);
 }

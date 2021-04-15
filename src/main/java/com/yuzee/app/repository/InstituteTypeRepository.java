@@ -11,4 +11,6 @@ import com.yuzee.app.bean.InstituteType;
 public interface InstituteTypeRepository extends JpaRepository<InstituteType, String>{
 
 	public List<InstituteType> findByCountryName(String countryName);
+
+	public InstituteType findByNameAndCountryName(String name, String countryName);
 }

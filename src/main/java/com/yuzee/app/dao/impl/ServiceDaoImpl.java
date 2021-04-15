@@ -43,6 +43,11 @@ public class ServiceDaoImpl implements ServiceDao {
 	}
 
 	@Override
+	public List<Service> getAll() {
+		return serviceRepository.findAll();
+	}
+
+	@Override
 	public List<Service> getAllByIds(List<String> ids) {
 		return serviceRepository.findAllById(ids);
 	}

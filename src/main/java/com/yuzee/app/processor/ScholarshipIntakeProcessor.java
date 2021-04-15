@@ -25,7 +25,6 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.RuntimeNotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.util.DTOUtils;
 import com.yuzee.app.util.Util;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +44,9 @@ public class ScholarshipIntakeProcessor {
 
 	@Autowired
 	private ElasticHandler elasticHandler;
+	
+	@Autowired
+	private ConversionProcessor conversionProcessor;
 	
 	@Transactional
 	public void saveUpdateScholarshipIntakes(String userId, String scholarshipId,
@@ -82,7 +84,7 @@ public class ScholarshipIntakeProcessor {
 		scholarship.setScholarshipIntakes(scholarshipIntakes);
 		log.info("Calling elastic search service to save data on elastic index");
 		elasticHandler
-				.saveUpdateScholarship(DTOUtils.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 	}
 
 	@Transactional
@@ -102,7 +104,7 @@ public class ScholarshipIntakeProcessor {
 			scholarshipIntakeDao.deleteByScholarshipIdAndIdIn(courseId, scholarshipIntakeIds);
 			log.info("Calling elastic search service to save data on elastic index");
 			elasticHandler
-					.saveUpdateScholarship(DTOUtils.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+					.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 		} else {
 			log.error("one or more invalid scholarship_intakes_ids");
 			throw new NotFoundException("one or more invalid scholarship_intakes_ids");

@@ -1,5 +1,6 @@
 package com.yuzee.app.dao.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,11 @@ public class CourseCurriculumDaoImpl implements CourseCurriculumDao {
 	@Override
 	public Optional<CourseCurriculum> getById(String id) {
 		return courseCurriculumRespository.findById(id);
+	}
+
+	@Override
+	public List<CourseCurriculum> getAll() {
+		return courseCurriculumRespository.findAll();
 	}
 
 }

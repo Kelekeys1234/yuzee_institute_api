@@ -54,4 +54,14 @@ public class InstituteTypeDaoImpl implements InstituteTypeDao {
 		return instituteTypeRepository.findByCountryName(countryName);
 	}
 
+	@Override
+	public InstituteType getInstituteTypeByNameAndCountry(String name, String countryName) {
+		return instituteTypeRepository.findByNameAndCountryName(name, countryName);
+	}
+
+	@Override
+	public List<InstituteType> findAll() {
+		return instituteTypeRepository.findAll();
+	}
+
 }

@@ -23,5 +23,11 @@ public enum EntityTypeEnum {
 	
 	SERVICE,
 	
-	INSTITUTE_SERVICE;
+	INSTITUTE_SERVICE,
+	
+	YOUTUBE_VIDEO, 
+	
+	LEVEL, 
+	
+	FACULTY;
 }

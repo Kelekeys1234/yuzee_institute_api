@@ -1,5 +1,8 @@
 package com.yuzee.app.processor;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -7,13 +10,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -21,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.bean.AccrediatedDetail;
 import com.yuzee.app.bean.Institute;
@@ -43,7 +56,7 @@ import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.FollowerCountDto;
 import com.yuzee.app.dto.InstituteCampusDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
-import com.yuzee.app.dto.InstituteElasticSearchDTO;
+import com.yuzee.app.dto.InstituteElasticSearchDto;
 import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteFundingDto;
@@ -137,6 +150,20 @@ public class InstituteProcessor {
 	@Autowired
 	CommonProcessor commonProcessor;
 
+	@Autowired
+	private ConversionProcessor conversionProcessor;
+	
+	@Autowired
+	@Qualifier("importInstituteJob")
+    private Job job;
+	
+	@Autowired
+	private JobLauncher jobLauncher;
+	
+	@Autowired
+	@Qualifier("exportInstituteToElastic")
+	private Job exportInstituteToElastic;
+
 	public Institute get(final String id) {
 		return dao.get(id);
 	}
@@ -178,12 +205,11 @@ public class InstituteProcessor {
 	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) throws Exception {
 		log.debug("Inside save() method");
 		try {
-			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
+			List<InstituteElasticSearchDto> instituteElasticDtoList = new ArrayList<>();
 			log.info("start iterating data coming in request");
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				log.info("Going to save institute in DB");
 				Institute institute = saveInstitute(instituteRequest, null);
-				InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
 				if (instituteRequest.getDomesticRanking() != null) {
 					log.info("if domesticRanking is not null then going to record domesticRankingHistory");
 					saveDomesticRankingHistory(institute, null);
@@ -193,14 +219,8 @@ public class InstituteProcessor {
 					saveWorldRankingHistory(institute, null);
 				}
 				log.info("Copying institute data from instituteBean to elasticSearchDTO");
-				BeanUtils.copyProperties(institute, instituteElasticSearchDto);
-				instituteElasticSearchDto
-						.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
-				instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-				instituteElasticSearchDto.setInstituteType(
-						institute.getInstituteType() != null ? institute.getInstituteType() : null);
-				instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
-				instituteElasticDtoList.add(instituteElasticSearchDto);
+
+				instituteElasticDtoList.add(conversionProcessor.convertToInstituteElasticDTOEntity(institute));
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
 			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX,
@@ -249,11 +269,10 @@ public class InstituteProcessor {
 	public void updateInstitute(final String userId, final String instituteId, final InstituteRequestDto instituteRequest) throws Exception {
 		log.debug("Inside updateInstitute() method");
 		try {
-			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
+			List<InstituteElasticSearchDto> instituteElasticDtoList = new ArrayList<>();
 			log.info("fetching institute from DB having instituteId: {}", instituteId);
 			Institute oldInstitute = dao.get(instituteId);
 			Institute newInstitute = new Institute();
-			InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
 			log.info("Copying bean class to DTO class");
 			BeanUtils.copyProperties(instituteRequest, newInstitute);
 			if (!StringUtils.isEmpty(instituteRequest.getDomesticRanking())
@@ -269,15 +288,7 @@ public class InstituteProcessor {
 			log.info("Start updating institute for instituteId: {}", instituteId);
 			Institute institute = saveInstitute(instituteRequest, instituteId);
 			log.info("Copying DTO class to elasticSearch DTO");
-			BeanUtils.copyProperties(instituteRequest, instituteElasticSearchDto);
-			instituteElasticSearchDto
-					.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
-			instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-			instituteElasticSearchDto
-					.setInstituteType(institute.getInstituteType() != null ? institute.getInstituteType() : null);
-			instituteElasticSearchDto.setIntakes(instituteRequest.getIntakes());
-			instituteElasticSearchDto.setTagLine(instituteRequest.getTagLine());
-			instituteElasticDtoList.add(instituteElasticSearchDto);
+			instituteElasticDtoList.add(conversionProcessor.convertToInstituteElasticDTOEntity(institute));
 
 			log.info("Calling elastic service to save instiutes on index");
 //			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
@@ -369,8 +380,8 @@ public class InstituteProcessor {
 				log.info(
 						"updation is done now adding data in elasticSearch DTO to add it on elastic indices for entityId = {}"
 								, id);
-				InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
-				List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
+				InstituteElasticSearchDto instituteElasticDto = new InstituteElasticSearchDto();
+				List<InstituteElasticSearchDto> instituteElasticDTOList = new ArrayList<>();
 				BeanUtils.copyProperties(institute, instituteElasticDto);
 				instituteElasticDTOList.add(instituteElasticDto);
 			} else {
@@ -1143,5 +1154,24 @@ public class InstituteProcessor {
 		}
 
 		return institutes;
+	}
+	
+	public void importInstitute(final MultipartFile multipartFile)
+			throws com.yuzee.app.exception.IOException, IOException, ParseException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		log.debug("Inside importInstitute() method");
+		
+		File f = File.createTempFile("Institutes", ".csv");
+		multipartFile.transferTo(f);
+		
+		JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+		jobParametersBuilder.addString("csv-file", f.getAbsolutePath());
+		jobParametersBuilder.addString("execution-id", "InstituteUploader-"+UUID.randomUUID().toString());
+		jobLauncher.run(job, jobParametersBuilder.toJobParameters());
+	}
+	
+	public void exportInstituteToElastic() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		log.debug("Inside exportInstituteToElastic() method");
+		jobLauncher.run(exportInstituteToElastic, new JobParametersBuilder()
+                .addLong("time",System.currentTimeMillis()).toJobParameters());
 	}
 }

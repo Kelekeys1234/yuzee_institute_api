@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -1003,4 +1004,31 @@ public class InstituteDaoImpl implements InstituteDao {
 	public List<Institute> findAllById(List<String> instituteIds) {
 		return instituteRepository.findAllById(instituteIds);
 	}
+	
+	@Override
+	public Map<String, String> getAllInstituteMap() {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery("select id, `name`, city_name , country_name from institute");
+		List instituteList = query.getResultList();
+		Iterator it = instituteList.iterator();
+		Map<String, String> instituteListMap = new HashMap<>();
+
+		while (it.hasNext()) {
+			Object[] obj = (Object[]) it.next();
+			instituteListMap.put(String.valueOf(obj[1]) + "~" + String.valueOf(obj[2]) + "~" + String.valueOf(obj[3]),
+					obj[0].toString());
+		}
+
+		return instituteListMap;
+	}
+
+	@Override
+	public Institute getInstitute(String instituteId) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Institute.class, "institute");
+		criteria.add(Restrictions.eq("institute.id", instituteId));
+		return (Institute) criteria.uniqueResult();
+	}
+	
+	
 }

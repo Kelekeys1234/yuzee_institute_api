@@ -74,4 +74,20 @@ public class Level implements Serializable {
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
+	
+
+	public Level(String name, String code, String description, Boolean isActive, Date createdOn, Date updatedOn,
+			Date deletedOn, String createdBy, String updatedBy, Boolean isDeleted) {
+		super();
+		this.name = name;
+		this.code = code;
+		this.description = description;
+		this.isActive = isActive;
+		this.createdOn = createdOn;
+		this.updatedOn = updatedOn;
+		this.deletedOn = deletedOn;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.isDeleted = isDeleted;
+	}
 }

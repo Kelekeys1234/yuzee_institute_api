@@ -17,7 +17,7 @@ public class ScholarshipElasticDto extends ScholarshipDto {
 	private FacultyDto faculty;
 
 	@JsonProperty("institute")
-	private InstituteElasticSearchDTO institute;
+	private InstituteElasticSearchDto institute;
 
 	@JsonProperty("intakes")
 	private List<ScholarshipIntakeDto> scholarshipIntakes;

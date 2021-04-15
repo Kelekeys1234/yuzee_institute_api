@@ -1,0 +1,61 @@
+package com.yuzee.app.jobs;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.batch.core.ItemWriteListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import com.yuzee.app.bean.Faculty;
+import com.yuzee.app.dto.FacultyDto;
+import com.yuzee.app.handler.ElasticHandler;
+import com.yuzee.app.processor.LogFileProcessor;
+import com.yuzee.app.util.ExceptionUtil;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class FacultyItemWriteListner implements ItemWriteListener<Faculty> {
+
+	@Autowired
+	private LogFileProcessor logFileProcessor;
+
+	@Value("#{jobParameters['execution-id']}")
+	private String executionId;
+
+	@Autowired
+	private ModelMapper modelMapper;
+
+	@Autowired
+	private ElasticHandler elasticHander;
+
+	@Override
+	public void afterWrite(List<? extends Faculty> items) {
+		log.debug("After writing faculty item to db {} ", items.size());
+		elasticHander.saveUpdateFaculties(
+				items.stream().map(e -> modelMapper.map(e, FacultyDto.class)).collect(Collectors.toList()));
+	}
+
+	@Override
+	public void beforeWrite(List<? extends Faculty> items) {
+		log.debug("Before writting faculty item to db {}", items.size());
+	}
+
+	@Override
+	public void onWriteError(Exception exception, List<? extends Faculty> items) {
+		List<String> errors = new ArrayList<>();
+		items.stream().forEach(item -> errors.add(
+				String.format("%s,%s", item.getName(), ExceptionUtil.findCauseUsingPlainJava(exception).getMessage())));
+		try {
+			logFileProcessor.appendToLogFile(executionId, errors);
+		} catch (IOException e) {
+			log.error("Exception from onWriteError Event Listener");
+		}
+
+	}
+
+}

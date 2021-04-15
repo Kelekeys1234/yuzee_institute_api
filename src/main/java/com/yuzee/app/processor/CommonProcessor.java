@@ -22,7 +22,6 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.handler.ElasticHandler;
 import com.yuzee.app.handler.EligibilityHandler;
 import com.yuzee.app.handler.UserHandler;
-import com.yuzee.app.util.DTOUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,6 +43,9 @@ public class CommonProcessor {
 	@Autowired
 	private ElasticHandler elasticHandler;
 
+	@Autowired
+	private ConversionProcessor conversionProcessor;
+	
 	public List<StorageDto> getEntityGallery(String entityType, String entityId)
 			throws NotFoundException, InternalServerException {
 		if (EntityTypeEnum.COURSE.name().equals(entityType)) {
@@ -92,7 +94,7 @@ public class CommonProcessor {
 		log.info("Calling elastic service to save/update courses on elastic index ");
 		if (!CollectionUtils.isEmpty(courses)) {
 			List<CourseDTOElasticSearch> courseElasticDtos = courses.stream()
-					.map(e -> DTOUtils.convertToCourseDTOElasticSearchEntity(e)).collect(Collectors.toList());
+					.map(e -> conversionProcessor.convertToCourseDTOElasticSearchEntity(e)).collect(Collectors.toList());
 			elasticHandler.saveUpdateData(courseElasticDtos);
 		}
 	}

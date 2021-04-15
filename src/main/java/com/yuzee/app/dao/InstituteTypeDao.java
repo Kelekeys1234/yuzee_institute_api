@@ -16,4 +16,8 @@ public interface InstituteTypeDao {
     public List<InstituteTypeDto> getAll();
     
     public List<InstituteType> getByCountryName(String countryName);
+    
+    public InstituteType getInstituteTypeByNameAndCountry(String name, String countryName);
+
+    public List<InstituteType> findAll();
 }

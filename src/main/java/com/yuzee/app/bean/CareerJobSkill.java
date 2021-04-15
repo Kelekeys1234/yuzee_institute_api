@@ -25,7 +25,7 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString
+@ToString(exclude = "careerJobs")
 @NoArgsConstructor
 @EqualsAndHashCode
 @Table(name = "job_skill", uniqueConstraints = @UniqueConstraint(columnNames = { "job_id", "skill" }, 

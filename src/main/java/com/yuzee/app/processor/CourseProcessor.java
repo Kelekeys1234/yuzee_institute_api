@@ -1,5 +1,8 @@
 package com.yuzee.app.processor;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -16,16 +19,29 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 import com.yuzee.app.bean.AccrediatedDetail;
 import com.yuzee.app.bean.Careers;
 import com.yuzee.app.bean.Course;
@@ -35,6 +51,7 @@ import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseFunding;
 import com.yuzee.app.bean.CourseIntake;
+import com.yuzee.app.bean.CourseKeywords;
 import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.CourseSubject;
 import com.yuzee.app.bean.Faculty;
@@ -46,6 +63,7 @@ import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CareerDao;
 import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.dao.CourseDao;
+import com.yuzee.app.dao.CourseKeywordDao;
 import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.IGlobalStudentDataDAO;
 import com.yuzee.app.dao.InstituteDao;
@@ -85,10 +103,12 @@ import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.TransactionTypeEnum;
 import com.yuzee.app.exception.CommonInvokeException;
 import com.yuzee.app.exception.ForbiddenException;
+import com.yuzee.app.exception.IOException;
 import com.yuzee.app.exception.InternalServerException;
 import com.yuzee.app.exception.InvokeException;
 import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.RuntimeNotFoundException;
+import com.yuzee.app.exception.UploaderException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.CommonHandler;
 import com.yuzee.app.handler.ElasticHandler;
@@ -101,7 +121,6 @@ import com.yuzee.app.service.IGlobalStudentData;
 import com.yuzee.app.service.ITop10CourseService;
 import com.yuzee.app.service.UserRecommendationService;
 import com.yuzee.app.util.CommonUtil;
-import com.yuzee.app.util.DTOUtils;
 import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.app.util.PaginationUtil;
@@ -110,7 +129,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@Transactional
 public class CourseProcessor {
 
 	@Autowired
@@ -190,17 +208,36 @@ public class CourseProcessor {
 
 	@Autowired
 	private CommonProcessor commonProcessor;
+	
+	@Autowired
+	private ConversionProcessor conversionProcessor;
 
 	@Autowired
 	private CourseInstituteProcessor courseInstituteProcessor;
 	
+	@Autowired
+	private CourseKeywordDao courseKeywordDao;
+	
+	@Autowired
+	private JobLauncher jobLauncher;
+
+	@Autowired
+	@Qualifier("importCourseJob")
+	private Job job;
+	
 	@Value("${max.radius}")
 	private Integer maxRadius;
+	
+
+	@Autowired
+	@Qualifier("exportCourseToElastic")
+	private Job exportCourseToElastic;
 	
 	public Course get(final String id) {
 		return courseDao.get(id);
 	}
 
+	@Transactional
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
 			final String searchKeyword, List<String> entityIds) throws ValidationException, InvokeException, NotFoundException {
 		log.debug("Inside getAllCoursesByFilter() method");
@@ -210,6 +247,7 @@ public class CourseProcessor {
 		return getExtraInfoOfCourseFilter(courseSearchDto, courseResponseDtos);
 	}
 
+	@Transactional
 	private List<CourseResponseDto> getExtraInfoOfCourseFilter(final CourseSearchDto courseSearchDto, 
 				final List<CourseResponseDto> courseResponseDtos) throws ValidationException, InvokeException, NotFoundException {
 		log.debug("Inside getExtraInfoOfCourseFilter() method");
@@ -283,14 +321,17 @@ public class CourseProcessor {
 		return courseResponseFinalResponse;
 	}
 
+	@Transactional
 	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword, List<String> entityIds) {
 		return courseDao.getCountforNormalCourse(courseSearchDto, searchKeyword, entityIds);
 	}
 
+	@Transactional
 	public List<CourseResponseDto> getAllCoursesByInstitute(final String instituteId, final CourseSearchDto courseSearchDto) {
 		return courseDao.getAllCoursesByInstitute(instituteId, courseSearchDto);
 	}
 
+	@Transactional
 	public List<CourseResponseDto> getCouresesByFacultyId(final String facultyId) throws NotFoundException {
 		log.debug("Inside getCouresesByFacultyId() method");
 		log.info("fetching courses from DB for facultyId = "+facultyId);
@@ -314,6 +355,7 @@ public class CourseProcessor {
 		return courseResponseDtos;
 	}
 
+	@Transactional
 	public Course prepareCourseModelFromCourseRequest(String loggedInUserId, String instituteId, String courseId, @Valid final CourseRequest courseDto)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
 		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
@@ -751,7 +793,7 @@ public class CourseProcessor {
 		course = courseDao.addUpdateCourse(course);
 		timingProcessor.saveUpdateDeleteTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
-		elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
+		elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
 		return course.getId();
 	}
 
@@ -786,6 +828,7 @@ public class CourseProcessor {
 		return institute;
 	}
 
+	@Transactional
 	public PaginationResponseDto getAllCourse(final Integer pageNumber, final Integer pageSize) {
 		log.debug("Inside getAllCourse() method");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -876,6 +919,7 @@ public class CourseProcessor {
 		}
 	}
 
+	@Transactional
 	public List<CourseDto> getUserCourse(final List<String> courseIds, final String sortBy, final String sortAsscending) throws ValidationException, CommonInvokeException {
 		log.debug("Inside getUserCourse() method");
 		log.info("Extracting courses from DB based on pagination and courseIds");
@@ -901,10 +945,12 @@ public class CourseProcessor {
 		return courses;
 	}
 
+	@Transactional
 	public Course getCourseData(final String courseId) {
 		return courseDao.getCourseData(courseId);
 	}
 
+	@Transactional
 	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto, List<String> entityIds) 
 			throws ValidationException, CommonInvokeException, InvokeException, NotFoundException {
 		log.debug("Inside advanceSearch() method");
@@ -996,6 +1042,7 @@ public class CourseProcessor {
 		return courseResponseFinalResponse;
 	}
 
+	@Transactional
 	public double calculateAverageRating(final Map<String, ReviewStarDto> yuzeeReviewMap, final Double courseStar,
 			final String instituteId) {
 		log.debug("Inside calculateAverageRating() method");
@@ -1023,6 +1070,7 @@ public class CourseProcessor {
 		}
 	}
 
+	@Transactional
 	public PaginationResponseDto courseFilter(final CourseFilterDto courseFilter) {
 		log.debug("Inside courseFilter() method");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -1070,6 +1118,7 @@ public class CourseProcessor {
 		return paginationResponseDto;
 	}
 
+	@Transactional
 	public PaginationResponseDto autoSearch(final Integer pageNumber, final Integer pageSize, final String searchKey) {
 		log.debug("Inside autoSearch() method");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -1137,10 +1186,12 @@ public class CourseProcessor {
 		return paginationResponseDto;
 	}
 
+	@Transactional
 	public List<Course> facultyWiseCourseForInstitute(final List<Faculty> facultyList, final Institute institute) {
 		return courseDao.facultyWiseCourseForTopInstitute(facultyList, institute);
 	}
 
+	@Transactional
 	public List<CourseRequest> autoSearchByCharacter(final String searchKey) throws NotFoundException {
 		log.debug("Inside autoSearchByCharacter() method");
 		List<CourseRequest> coursesRequests = new ArrayList<>();
@@ -1160,14 +1211,17 @@ public class CourseProcessor {
 		return coursesRequests;
 	}
 
+	@Transactional
 	public long checkIfCoursesPresentForCountry(final String country) {
 		return courseDao.getCourseCountForCountry(country);
 	}
 	
+	@Transactional
 	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
 		return courseDao.getAllCoursesUsingId(listOfRecommendedCourseIds);
 	}
 
+	@Transactional
 	public Set<Course> getRelatedCoursesBasedOnPastSearch(final List<String> courseList) throws ValidationException {
 		log.debug("Inside getRelatedCoursesBasedOnPastSearch() method");
 		Set<Course> relatedCourses = new HashSet<>();
@@ -1182,10 +1236,12 @@ public class CourseProcessor {
 		return relatedCourses;
 	}
 
+	@Transactional
 	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final String country) {
 		return courseDao.getCountOfDistinctInstitutesOfferingCoursesForCountry(userDto, country);
 	}
 
+	@Transactional
 	public List<String> getCountryForTopSearchedCourses(final List<String> topSearchedCourseIds) throws ValidationException {
 		if (topSearchedCourseIds == null || topSearchedCourseIds.isEmpty()) {
 			throw new ValidationException(messageByLocaleService.getMessage("no.course.id.specified", new Object[] {}));
@@ -1193,10 +1249,12 @@ public class CourseProcessor {
 		return courseDao.getDistinctCountryBasedOnCourses(topSearchedCourseIds);
 	}
 
+	@Transactional
 	public List<String> courseIdsForCountry(final String country) {
 		return courseDao.getCourseIdsForCountry(country);
 	}
 
+	@Transactional
 	public List<String> courseIdsForMigratedCountries(final String country) {
 		List<GlobalData> countryWiseStudentCountListForUserCountry = iGlobalStudentDataService.getCountryWiseStudentList(country);
 		List<String> otherCountryIds = new ArrayList<>();
@@ -1214,35 +1272,43 @@ public class CourseProcessor {
 		return new ArrayList<>();
 	}
 
+	@Transactional
 	public void updateCourseForCurrency(final CurrencyRateDto currencyRate) {
 		courseDao.updateCourseForCurrency(currencyRate);
 	}
 
+	@Transactional
 	public int getCountOfAdvanceSearch(final AdvanceSearchDto courseSearchDto, List<String> entityIds) 
 			throws ValidationException, NotFoundException {
 		return courseDao.getCountOfAdvanceSearch(entityIds, courseSearchDto);
 	}
 
+	@Transactional
 	public List<CourseDTOElasticSearch> getUpdatedCourses(final Date date, final Integer startIndex, final Integer limit) {
 		return courseDao.getUpdatedCourses(date, startIndex, limit);
 	}
 
+	@Transactional
 	public Integer getCountOfTotalUpdatedCourses(final Date utCdatetimeAsOnlyDate) {
 		return courseDao.getCountOfTotalUpdatedCourses(utCdatetimeAsOnlyDate);
 	}
 
+	@Transactional
 	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds, final Integer startIndex, final Integer limit) {
 		return courseDao.getCoursesToBeRetriedForElasticSearch(courseIds, startIndex, limit);
 	}
 
+	@Transactional
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(final String courseId) {
 		return courseDao.getCourseIntakeBasedOnCourseId(courseId);
 	}
 
+	@Transactional
 	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(final String courseId) {
 		return courseDao.getCourseLanguageBasedOnCourseId(courseId);
 	}
 
+	@Transactional
 	public List<CourseResponseDto> getCourseNoResultRecommendation(final String userCountry, final String facultyId, final String countryId,
 			final Integer startIndex, final Integer pageSize) throws ValidationException, InvokeException, NotFoundException {
 		/**
@@ -1275,7 +1341,8 @@ public class CourseProcessor {
 		return getExtraInfoOfCourseFilter(courseSearchDto, courseResponseDtos);
 
 	}
-
+	
+	@Transactional
 	public List<String> getCourseKeywordRecommendation(final String facultyId, final String countryId, final String levelId,
 			final Integer startIndex, final Integer pageSize) {
 		List<String> courseKeywordRecommended = new ArrayList<>();
@@ -1307,14 +1374,17 @@ public class CourseProcessor {
 		return courseKeywordRecommended;
 	}
 
+	@Transactional
 	public int getDistinctCourseCount(String courseName) {
 		return courseDao.getDistinctCourseCountbyName(courseName);
 	}
 
+	@Transactional
 	public List<CourseResponseDto> getDistinctCourseList(Integer startIndex, Integer pageSize,String courseName) {
 		return courseDao.getDistinctCourseListByName(startIndex, pageSize, courseName);
 	}
 
+	@Transactional
 	public Map<String, Integer> getCourseCountByLevel() {
 		log.debug("Inside getCourseCountByLevel() method");
 		Map<String, Integer> courseLevelCount = new HashMap<>();
@@ -1336,6 +1406,7 @@ public class CourseProcessor {
 		return courseLevelCount;
 	}
 
+	@Transactional
 	public void addMobileCourse(String userId, String instituteId, CourseMobileDto courseMobileDto) throws Exception {
 		log.debug("Inside addMobileCourse() method");
 		log.info("Validate user id "+userId+ " have appropriate access for institute id "+instituteId);
@@ -1375,6 +1446,7 @@ public class CourseProcessor {
 		courseDao.addUpdateCourse(course);
 	}
 
+	@Transactional
 	public void updateMobileCourse(String userId, String courseId, CourseMobileDto courseMobileDto) throws Exception {
 		log.debug("Inside updateMobileCourse() method");
 		log.info("Getting course by course id "+courseId);
@@ -1410,6 +1482,7 @@ public class CourseProcessor {
 		courseDao.addUpdateCourse(course);
 	} 
 	
+	@Transactional
 	public List<CourseMobileDto> getAllMobileCourseByInstituteIdAndFacultyIdAndStatus(String userId, String instituteId, String facultyId, boolean status) throws Exception {
 		List<CourseMobileDto> listOfCourseMobileDto = new ArrayList<CourseMobileDto>();
 		log.debug("Inside getAllMobileCourseByInstituteIdAndFacultyId() method");
@@ -1433,6 +1506,7 @@ public class CourseProcessor {
 		return listOfCourseMobileDto;
 	}
 	
+	@Transactional
 	public List<CourseMobileDto> getPublicMobileCourseByInstituteIdAndFacultyId(String instituteId, String facultyId) throws Exception {
 		List<CourseMobileDto> listOfCourseMobileDto = new ArrayList<CourseMobileDto>();
 		log.debug("Inside getPublicMobileCourseByInstituteIdAndFacultyId() method");
@@ -1455,6 +1529,7 @@ public class CourseProcessor {
 		return listOfCourseMobileDto;
 	}
 	
+	@Transactional
 	public void changeCourseStatus (String userId , String courseId, boolean status) throws Exception {
 		log.debug("Inside updateMobileCourse() method");
 		log.info("Getting course by course id "+courseId);
@@ -1472,6 +1547,7 @@ public class CourseProcessor {
 		courseDao.addUpdateCourse(course);
 	}
 	
+	@Transactional
 	public NearestCoursesDto getCourseByInstituteId(Integer pageNumber, Integer pageSize, String instituteId) throws NotFoundException {
 		log.debug("Inside getCourseByInstituteId() method");
 		List<CourseResponseDto> nearestCourseList = new ArrayList<>();
@@ -1542,6 +1618,7 @@ public class CourseProcessor {
 		return nearestCoursesPaginationDto;
 	}
 	
+	@Transactional
 	public NearestCoursesDto getNearestCourses(AdvanceSearchDto courseSearchDto)
 			throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside getNearestCourses() method");
@@ -1721,6 +1798,7 @@ public class CourseProcessor {
 		return courseRequest;
 	}
 	
+	@Transactional
 	public NearestCoursesDto getCourseByCountryName(String countryName, Integer pageNumber, Integer pageSize) throws NotFoundException {
 		log.debug("Inside getCourseByCountryName() method");
 		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
@@ -1754,6 +1832,7 @@ public class CourseProcessor {
 		return nearestCoursesPaginationDto;
 	}
 	
+	@Transactional
 	public List<CourseDto> getCourseByMultipleId(List<String> courseIds) {
 		log.debug("Inside getCourseByMultipleId() method");
 		List<CourseDto> courseDtos = new ArrayList<>();
@@ -1776,6 +1855,7 @@ public class CourseProcessor {
 		return courseDtos;
 	}
 	
+	@Transactional
 	public CourseCountDto getCourseCountByInstitute(String instituteId) {
 		CourseCountDto courseCountDto = new CourseCountDto();
 		log.debug("Inside getCourseCountByInstitute method () ");
@@ -1786,6 +1866,7 @@ public class CourseProcessor {
 		return courseCountDto;
 	}
 
+	@Transactional
 	public List<StorageDto> getCourseGallery(String courseId) throws InternalServerException, NotFoundException {
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
@@ -1820,6 +1901,7 @@ public class CourseProcessor {
 		}
 	}
 
+	@Transactional
 	public String saveOrUpdateBasicCourse(String loggedInUserId, String instituteId, CourseRequest courseDto, String courseId) throws CommonInvokeException, ForbiddenException, NotFoundException, ValidationException, InvokeException {
 		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
 		Course course = null;
@@ -1875,7 +1957,7 @@ public class CourseProcessor {
 		
 		course = courseDao.addUpdateCourse(course);
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
-		elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
+		elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
 		return course.getId();
 	}
 	
@@ -1902,5 +1984,106 @@ public class CourseProcessor {
 			throw new NotFoundException("one or more course_ids not found");
 		}
 		return courses;
+	}
+	
+	@CacheEvict(cacheNames = {"cacheLevelMap","cacheFacultyMap", "cacheCourseCurriculumList", "cacheInstituteMap"}, allEntries = true)
+	public void uploadCourseData(final MultipartFile multipartFile) throws IOException, UploaderException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		log.debug("Inside importCourse() method");
+		try {
+			log.info("Launching job to upload course");
+			log.debug("Inside importCourse() method");
+			
+			File file = File.createTempFile("Courses", "csv");
+			multipartFile.transferTo(file);
+			
+			JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+			jobParametersBuilder.addString("csv-file", file.getAbsolutePath());
+			jobParametersBuilder.addString("execution-id", UUID.randomUUID().toString());
+			jobLauncher.run(job, jobParametersBuilder.toJobParameters());
+
+		} catch (java.io.IOException e) {
+			log.error("Exception in Importing Course exception {} ", e);
+			throw new IOException(e.getMessage());
+		}
+	}
+	
+	@Transactional
+	public void importCourseKeyword(final MultipartFile multipartFile) {
+		log.debug("Inside importCourseKeyword() method");
+		try {
+			InputStream inputStream = multipartFile.getInputStream();
+			CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
+			log.info("Start reading data from inputStream using CSV reader");
+			Map<String, String> columnMapping = new HashMap<>();
+			log.info("Start mapping columns to bean variables");
+			columnMapping.put("keyword", "keyword");
+			columnMapping.put("k_desc", "KDesc");
+
+			HeaderColumnNameTranslateMappingStrategy<CourseKeywords> beanStrategy = new HeaderColumnNameTranslateMappingStrategy<>();
+			beanStrategy.setType(CourseKeywords.class);
+			beanStrategy.setColumnMapping(columnMapping);
+			CsvToBean<CourseKeywords> csvToBean = new CsvToBean<>();
+			log.info("Start parsing CSV to bean");
+			List<CourseKeywords> courseKeywords = csvToBean.parse(beanStrategy, reader);
+			log.info("Going to check in existing courseKeyword is present in DB or not");
+			List<CourseKeywords> notExistingCourseKeywordList = checkIfAlreadyExistsCourseKeyword(courseKeywords,
+					courseKeywordDao.getAll());
+			if (notExistingCourseKeywordList != null && notExistingCourseKeywordList.size() > 0) {
+				log.info("if existing country is not null or empty then start saving cousreKeyword data in DB");
+				courseKeywordDao.saveAll(notExistingCourseKeywordList);
+			}			log.info("Closing input stream");
+			inputStream.close();
+			log.info("Closing CSV reader");
+			reader.close();
+		} catch (Exception exception) {
+			log.error("Exception in upload course keyword exception {} ", exception);
+		}
+	}
+	
+	@Transactional
+	private List<CourseKeywords> checkIfAlreadyExistsCourseKeyword(final List<CourseKeywords> courseKeywords,
+			final List<CourseKeywords> existingCourseKeywords) {
+		log.debug("Inside checkIfAlreadyExistsCourseKeyword() method");
+		List<CourseKeywords> pendingListToSave = new ArrayList<>();
+		Map<String, CourseKeywords> map = new HashMap<>();
+		Map<String, CourseKeywords> countryMap = new HashMap<>();
+		List<String> existingCountryList = new ArrayList<>();
+		for (CourseKeywords dbCourseKeyword : existingCourseKeywords) {
+			if (dbCourseKeyword.getKeyword() != null) {
+				log.info("if keyword in not null");
+				countryMap.put(dbCourseKeyword.getKeyword(), dbCourseKeyword);
+				existingCountryList.add(dbCourseKeyword.getKeyword());
+			}
+		}
+
+		for (CourseKeywords csvCourseKeyword : courseKeywords) {
+			if (!checkExistingCountry(existingCountryList, csvCourseKeyword.getKeyword())) {
+				map.put(csvCourseKeyword.getKeyword(), csvCourseKeyword);
+			}
+		}
+		for (CourseKeywords jobSites : map.values()) {
+			pendingListToSave.add(jobSites);
+		}
+		return pendingListToSave;
+	}
+	
+	private boolean checkExistingCountry(final List<String> existingCountryList, final String name) {
+		log.debug("Inside checkExistingCountry() method");
+		boolean status = false;
+		log.info("Start iterating for existingCountryList having name : {}",name);
+		for (String str : existingCountryList) {
+			if (str.trim().equalsIgnoreCase(name)) {
+				status = true;
+				break;
+			}
+		}
+		return status;
+	}
+	
+	public void exportCourseToElastic() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		log.debug("Inside exportCourseToElastic() method");
+		jobLauncher.run(exportCourseToElastic, new JobParametersBuilder()
+                .addLong("time",System.currentTimeMillis()).toJobParameters());
+
 	}
 }

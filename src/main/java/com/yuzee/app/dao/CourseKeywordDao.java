@@ -6,6 +6,8 @@ public interface CourseKeywordDao {
 
     public void save(CourseKeywords obj);
 
+    public void saveAll(List<CourseKeywords> list);
+
     public void update(CourseKeywords obj);
 
     public List<CourseKeywords> getAll();

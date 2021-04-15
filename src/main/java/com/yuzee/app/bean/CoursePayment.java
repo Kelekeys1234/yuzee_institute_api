@@ -23,9 +23,13 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @Entity
+@ToString(exclude = "course")
+@EqualsAndHashCode(exclude = "course")
 @Table(name = "course_payment", uniqueConstraints = @UniqueConstraint(name = "UK_COURSE", columnNames = {
 		"course_id" }))
 public class CoursePayment implements Serializable {

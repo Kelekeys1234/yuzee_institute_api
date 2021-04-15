@@ -21,10 +21,12 @@ import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @Entity
+@NoArgsConstructor
 @ToString(exclude = "course")
 @EqualsAndHashCode
 @Table(name = "course_english_eligibility", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id",
@@ -85,6 +87,25 @@ public class CourseEnglishEligibility implements Serializable {
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
+
+	public CourseEnglishEligibility(String englishType, Double reading, Double writing, Double speaking,
+			Double listening, Double overall, Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn,
+			String createdBy, String updatedBy, Boolean isDeleted) {
+		super();
+		this.englishType = englishType;
+		this.reading = reading;
+		this.writing = writing;
+		this.speaking = speaking;
+		this.listening = listening;
+		this.overall = overall;
+		this.isActive = isActive;
+		this.createdOn = createdOn;
+		this.updatedOn = updatedOn;
+		this.deletedOn = deletedOn;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.isDeleted = isDeleted;
+	}
 
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);

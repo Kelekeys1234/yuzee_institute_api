@@ -42,7 +42,6 @@ import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.handler.ElasticHandler;
 import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.util.DTOUtils;
 import com.yuzee.app.util.PaginationUtil;
 import com.yuzee.app.util.Util;
 
@@ -72,6 +71,9 @@ public class ScholarshipProcessor {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private ConversionProcessor conversionProcessor;
 
 	private Scholarship prepareModel(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String existingScholarshipId) throws ValidationException {
@@ -211,7 +213,7 @@ public class ScholarshipProcessor {
 
 		log.info("Calling elastic search service to save data on elastic index");
 		elasticHandler
-				.saveUpdateScholarship(DTOUtils.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 
 		return scholarship.getId();
 	}
@@ -247,7 +249,7 @@ public class ScholarshipProcessor {
 
 		log.info("Calling elastic search service to update existing scholarship data in DB");
 		elasticHandler
-				.saveUpdateScholarship(DTOUtils.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
@@ -269,7 +271,7 @@ public class ScholarshipProcessor {
 
 		log.info("Calling elastic search service to update existing scholarship data in DB");
 		elasticHandler
-				.saveUpdateScholarship(DTOUtils.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 		return scholarship.getId();
 	}
 

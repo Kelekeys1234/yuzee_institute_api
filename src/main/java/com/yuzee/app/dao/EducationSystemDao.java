@@ -25,4 +25,5 @@ public interface EducationSystemDao {
 	public List<Subject> getSubjectByEducationSystem(final String educationSystemId);
 
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName);
+
 }

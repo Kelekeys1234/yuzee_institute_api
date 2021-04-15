@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.cache.annotation.Cacheable;
+
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteIntake;
@@ -99,4 +101,10 @@ public interface InstituteDao {
 	public List<InstituteResponseDto> findByIds(List<String> instituteIds);
 
 	public List<Institute> findAllById(List<String> instituteIds);
+	
+	@Cacheable(value = "cacheInstituteMap", unless = "#result == null")
+	public Map<String, String> getAllInstituteMap();
+
+	@Cacheable(value = "cacheInstitute", key = "#instituteId", unless = "#result == null", condition="#instituteId!=null")
+	public Institute getInstitute(String instituteId);
 }

@@ -28,7 +28,7 @@ import lombok.ToString;
 		indexes = { @Index (name = "IDX_INSTITUTE_ID", columnList="institute_id", unique = true)})
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "institute")
 public class InstituteAdditionalInfo implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

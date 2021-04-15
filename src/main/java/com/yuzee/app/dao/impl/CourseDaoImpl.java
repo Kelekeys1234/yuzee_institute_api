@@ -47,7 +47,7 @@ import com.yuzee.app.dto.CourseSearchFilterDto;
 import com.yuzee.app.dto.CurrencyRateDto;
 import com.yuzee.app.dto.FacultyDto;
 import com.yuzee.app.dto.GlobalFilterSearchDto;
-import com.yuzee.app.dto.InstituteElasticSearchDTO;
+import com.yuzee.app.dto.InstituteElasticSearchDto;
 import com.yuzee.app.dto.LevelDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.enumeration.CourseSortBy;
@@ -1453,7 +1453,7 @@ public class CourseDaoImpl implements CourseDao {
 
 			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
 			
-			InstituteElasticSearchDTO institute = new InstituteElasticSearchDTO();
+			InstituteElasticSearchDto institute = new InstituteElasticSearchDto();
 			institute.setId(String.valueOf(objects[30]));
 			institute.setName(String.valueOf(objects[31]));
 			courseDtoElasticSearch.setInstitute(institute);
@@ -1549,7 +1549,7 @@ public class CourseDaoImpl implements CourseDao {
 
 			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
 
-			InstituteElasticSearchDTO institute = new InstituteElasticSearchDTO();
+			InstituteElasticSearchDto institute = new InstituteElasticSearchDto();
 			institute.setId(String.valueOf(objects[30]));
 			institute.setName(String.valueOf(objects[31]));
 			courseDtoElasticSearch.setInstitute(institute);
