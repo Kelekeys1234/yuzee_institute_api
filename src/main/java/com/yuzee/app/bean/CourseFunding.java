@@ -31,7 +31,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @ToString(exclude = "course")
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CourseFunding implements Serializable {
 
 	/**
@@ -63,6 +63,7 @@ public class CourseFunding implements Serializable {
 	@JoinColumn(name = "course_id", nullable = false)
 	private Course course;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "funding_name_id", nullable = false)
 	private String fundingNameId;
 

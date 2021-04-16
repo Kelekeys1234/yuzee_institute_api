@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,7 +71,15 @@ public class CourseFundingProcessor {
 				courseFunding.setFundingNameId(fundingNameId);
 				courseFundings.add(courseFunding);
 			});
-			courseFundingDao.saveAll(courseFundings);
+			List<CourseFunding> saved = courseFundingDao.saveAll(courseFundings);
+			
+			log.info("Send notifications to all course");
+			List<Course> courseToBeNotified = new ArrayList<>();
+			Map<String, List<CourseFunding>> courseWiseFundings = saved.stream().collect(Collectors.groupingBy(funding ->  funding.getCourse().getId()));
+			courseWiseFundings.keySet().stream().forEach(courseId -> {
+					courseToBeNotified.add(courseDao.get(courseId));
+			});
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
 		} else {
 			log.error("invalid institute id: {}", instituteId);
 			throw new NotFoundException("invalid institute id: " + instituteId);
@@ -97,6 +106,7 @@ public class CourseFundingProcessor {
 					courseFundings.add(courseFunding);
 				}
 			});
+
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
@@ -106,6 +116,10 @@ public class CourseFundingProcessor {
 						.addAll(replicateCourseFundings(userId, request.getLinkedCourseIds(), dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			
+			log.info("Send notification for course content updates");
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
@@ -125,6 +139,7 @@ public class CourseFundingProcessor {
 				log.error("no access to delete one more fundings by userId: {}", userId);
 				throw new ForbiddenException("no access to delete one more fundings by userId: {}" + userId);
 			}
+
 			courseFundings.removeIf(e -> Util.contains(fundingNameIds, e.getFundingNameId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
@@ -134,6 +149,9 @@ public class CourseFundingProcessor {
 				coursesToBeSavedOrUpdated.addAll(replicateCourseFundings(userId, linkedCourseIds, dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid course_funding_name_ids");

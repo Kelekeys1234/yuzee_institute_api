@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -55,7 +56,7 @@ public class CourseMinRequirementProcessor {
 
 	@Autowired
 	private ModelMapper modelMapper;
-
+	
 	@Autowired
 	private CommonProcessor commonProcessor;
 
@@ -69,7 +70,7 @@ public class CourseMinRequirementProcessor {
 			log.error("no access to create course min requirement");
 			throw new ForbiddenException("no access to create course min requirement");
 		}
-
+		
 		CourseMinRequirement courseMinRequirement = modelMapper.map(courseMinRequirementDto,
 				CourseMinRequirement.class);
 		courseMinRequirement
@@ -82,6 +83,7 @@ public class CourseMinRequirementProcessor {
 		});
 		courseMinRequirement.setAuditFields(userId);
 		log.info("going to save record in db");
+		
 		course.getCourseMinRequirements().add(courseMinRequirement);
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
@@ -92,6 +94,10 @@ public class CourseMinRequirementProcessor {
 					courseMinRequirementDto.getLinkedCourseIds(), dtosToReplicate));
 		}
 		List<Course> savedCourses = courseDao.saveAll(coursesToBeSavedOrUpdated);
+		
+		log.info("Send notification for course content updates");
+		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+		
 		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		return modelMapper.map(savedCourses.get(0).getCourseMinRequirements()
 				.get(savedCourses.get(0).getCourseMinRequirements().size() - 1), CourseMinRequirementDto.class);
@@ -116,6 +122,15 @@ public class CourseMinRequirementProcessor {
 		} else {
 			log.info("starting process to prepare model");
 			CourseMinRequirement courseMinRequirement = course.getCourseMinRequirements().get(0);
+			
+			CourseMinRequirement courseMinRequirementBeforeUpdate = new CourseMinRequirement();
+			BeanUtils.copyProperties(courseMinRequirement, courseMinRequirementBeforeUpdate);
+			List<CourseMinRequirementSubject> subjectsBeforeUpdate = courseMinRequirement.getCourseMinRequirementSubjects().stream().map(subject -> {
+				CourseMinRequirementSubject clone = new CourseMinRequirementSubject();
+				BeanUtils.copyProperties(subject, clone);
+				return clone;
+			}).collect(Collectors.toList());
+
 			courseMinRequirement.setCountryName(courseMinRequirementDto.getCountryName());
 			courseMinRequirement.setStateName(courseMinRequirementDto.getStateName());
 			courseMinRequirement.setGradePoint(courseMinRequirementDto.getGradePoint());
@@ -168,6 +183,13 @@ public class CourseMinRequirementProcessor {
 						courseMinRequirementDto.getLinkedCourseIds(), dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			
+			if(!(courseMinRequirementBeforeUpdate.equals(courseMinRequirement)
+					&& subjectsBeforeUpdate.equals(courseMinRequirement.getCourseMinRequirementSubjects()))) {
+				log.info("Send notification for course content updates");
+				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			}
+			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 			return modelMapper.map(courseMinRequirement, CourseMinRequirementDto.class);
 		}
@@ -196,6 +218,7 @@ public class CourseMinRequirementProcessor {
 			log.error("no access to delete course min requirement");
 			throw new ForbiddenException("no access to delete course min requirement");
 		}
+
 		List<CourseMinRequirement> courseMinRequirements = course.getCourseMinRequirements();
 		courseMinRequirements.removeIf(e -> e.getId().equalsIgnoreCase(courseMinRequirementId));
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
@@ -206,6 +229,8 @@ public class CourseMinRequirementProcessor {
 			coursesToBeSavedOrUpdated.addAll(replicateCourseMinRequirements(userId, linkedCourseIds, dtosToReplicate));
 		}
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
+		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+
 		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	}
 

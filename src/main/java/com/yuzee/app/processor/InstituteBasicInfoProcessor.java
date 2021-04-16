@@ -94,6 +94,7 @@ public class InstituteBasicInfoProcessor {
 			instituteBasicInfoDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId() );
 			instituteBasicInfoDto.setInstituteCategoryTypeName(institute.getInstituteCategoryType().getName());
 		}
+		instituteBasicInfoDto.setCreatedBy(institute.getCreatedBy());
 		return instituteBasicInfoDto;
 	}
 }

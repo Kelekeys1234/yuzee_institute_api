@@ -48,7 +48,7 @@ public class CourseDeliveryModesProcessor {
 
 	@Autowired
 	private CommonHandler commonHandler;
-
+	
 	@Autowired
 	private ModelMapper modelMapper;
 
@@ -85,6 +85,12 @@ public class CourseDeliveryModesProcessor {
 		List<CourseDeliveryModesDto> courseDeliveryModeDtos = request.getCourseDelieveryModeDtos();
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
+			List<CourseDeliveryModes> courseDeliveryModesBeforeUpdate = course.getCourseDeliveryModes().stream().map(deliveryMode -> {
+				CourseDeliveryModes clone = new CourseDeliveryModes();
+				BeanUtils.copyProperties(deliveryMode, clone);
+				return clone;
+			}).collect(Collectors.toList());
+			
 
 			log.info("preparing map of exsiting course delivery modes");
 			Map<String, CourseDeliveryModes> existingCourseDeliveryModesMap = course.getCourseDeliveryModes().stream()
@@ -156,14 +162,22 @@ public class CourseDeliveryModesProcessor {
 				coursesToBeSavedOrUpdated
 						.addAll(replicateCourseDeliveryModes(userId, request.getLinkedCourseIds(), dtosToReplicate));
 			}
+			
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			
+			if(!courseDeliveryModesBeforeUpdate.equals(courseDeliveryModes)) {
+				log.info("Notify course information changed");
+				final String notificationType = commonProcessor.checkIfPriceChanged(courseDeliveryModesBeforeUpdate, courseDeliveryModes) ? "COURSE_PRICE_CHANGED" : "COURSE_CONTENT_UPDATED";
+				commonProcessor.notifyCourseUpdates(notificationType, coursesToBeSavedOrUpdated);
+			}
+			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
 		}
 	}
-
+	
 	@Transactional
 	public void deleteByCourseDeliveryModeIds(String userId, String courseId, List<String> deliveryModeIds,
 			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
@@ -185,7 +199,12 @@ public class CourseDeliveryModesProcessor {
 				coursesToBeSavedOrUpdated
 						.addAll(replicateCourseDeliveryModes(userId, linkedCourseIds, dtosToReplicate));
 			}
+			
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			
+			log.info("Notify course information changed");
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid course_delivery_mode_ids");

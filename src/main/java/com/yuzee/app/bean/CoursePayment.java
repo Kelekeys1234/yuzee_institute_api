@@ -28,8 +28,8 @@ import lombok.ToString;
 
 @Data
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(exclude = "course")
-@EqualsAndHashCode(exclude = "course")
 @Table(name = "course_payment", uniqueConstraints = @UniqueConstraint(name = "UK_COURSE", columnNames = {
 		"course_id" }))
 public class CoursePayment implements Serializable {
@@ -42,9 +42,11 @@ public class CoursePayment implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 
+	@EqualsAndHashCode.Include
 	@OneToMany(mappedBy = "coursePayment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CoursePaymentItem> paymentItems = new ArrayList<>();
 

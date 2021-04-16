@@ -22,12 +22,15 @@ import com.yuzee.app.enumeration.TimingType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Include;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "timing", uniqueConstraints = @UniqueConstraint(name = "UK_ET_TT_EI", columnNames = { "entity_type",
 		"timing_type", "entity_id" }), indexes = {
 				@Index(name = "IDX_ENTITY_ID", columnList = "entity_type, entity_id", unique = false) })
@@ -39,34 +42,44 @@ public class Timing {
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "monday")
 	private String monday = "CLOSED";
 
+	@EqualsAndHashCode.Include
 	@Column(name = "tuesday")
 	private String tuesday = "CLOSED";
 
+	@EqualsAndHashCode.Include
 	@Column(name = "wednesday")
 	private String wednesday = "CLOSED";
 
+	@EqualsAndHashCode.Include
 	@Column(name = "thursday")
 	private String thursday = "CLOSED";
 
+	@EqualsAndHashCode.Include
 	@Column(name = "friday")
 	private String friday = "CLOSED";
 
+	@EqualsAndHashCode.Include
 	@Column(name = "saturday")
 	private String saturday = "CLOSED";
 
+	@EqualsAndHashCode.Include
 	@Column(name = "sunday")
 	private String sunday = "CLOSED";
 
+	@EqualsAndHashCode.Include
 	@Column(name = "entity_id")
 	private String entityId;
 
+	@EqualsAndHashCode.Include
 	@Enumerated(EnumType.STRING)
 	@Column(name = "timing_type")
 	private TimingType timingType;
 
+	@EqualsAndHashCode.Include
 	@Enumerated(EnumType.STRING)
 	@Column(name = "entity_type")
 	private EntityTypeEnum entityType;

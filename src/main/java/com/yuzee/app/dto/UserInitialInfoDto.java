@@ -19,6 +19,9 @@ public class UserInitialInfoDto {
 	@JsonProperty("image_path")
 	private String imagePath;
 	
-	@JsonProperty("designation")
+	@JsonProperty("desigantion")
 	private String designation;
+	
+	@JsonProperty("email")
+	private String email;
 }

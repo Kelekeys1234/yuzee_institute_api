@@ -28,7 +28,7 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @ToString(exclude = "course")
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "course_english_eligibility", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id",
 		"english_type" }, name = "UK_COURSE_ID_ENGLISH_TYPE"), indexes = {
 				@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
@@ -46,24 +46,31 @@ public class CourseEnglishEligibility implements Serializable {
 	@JoinColumn(name = "course_id", nullable = false)
 	private Course course;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "english_type", nullable = false)
 	private String englishType;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "reading", precision = 10)
 	private Double reading;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "writing", precision = 10)
 	private Double writing;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "speaking", precision = 10)
 	private Double speaking;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "listening", precision = 10)
 	private Double listening;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "overall", precision = 10)
 	private Double overall;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "is_active")
 	private Boolean isActive;
 

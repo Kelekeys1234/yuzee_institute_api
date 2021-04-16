@@ -40,12 +40,13 @@ public class CourseMinRequirementDaoImpl implements CourseMinRequirementDao {
 	}
 
 	@Override
-	public void deleteByCourseIdAndId(String courseId, String id) {
+	public long deleteByCourseIdAndId(String courseId, String id) {
 		try {
-			courseMinRequirementRepository.deleteByCourseIdAndId(courseId, id);
+			return courseMinRequirementRepository.deleteByCourseIdAndId(courseId, id);
 		} catch (EntityNotFoundException ex) {
 			log.error("data not exists against courseId: {} and id: {}", courseId, id);
 		}
+		return 0;
 	}
 
 	@Override

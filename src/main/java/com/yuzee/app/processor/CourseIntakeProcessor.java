@@ -37,7 +37,6 @@ public class CourseIntakeProcessor {
 	@Autowired
 	private CourseProcessor courseProcessor;
 	
-	@Autowired
 	private ModelMapper modelMapper;
 	
 	@Autowired
@@ -60,6 +59,7 @@ public class CourseIntakeProcessor {
 					courseIntakes.add(courseIntake);
 				}
 			});
+			
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
@@ -69,6 +69,10 @@ public class CourseIntakeProcessor {
 						.addAll(replicateCourseIntakes(userId, request.getLinkedCourseIds(), dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			
+			log.info("Send notification for course content updates");
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
@@ -89,6 +93,7 @@ public class CourseIntakeProcessor {
 				throw new ForbiddenException(
 						"no access to delete one more intakes by intake ids: {}" + Arrays.asList(intakeIds));
 			}
+
 			courseIntakes.removeIf(e -> Util.contains(intakeIds, e.getId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
@@ -97,7 +102,11 @@ public class CourseIntakeProcessor {
 						.map(e -> modelMapper.map(e, CourseIntakeDto.class)).collect(Collectors.toList());
 				coursesToBeSavedOrUpdated.addAll(replicateCourseIntakes(userId, linkedCourseIds, dtosToReplicate));
 			}
+			
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid course_intake_ids");

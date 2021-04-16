@@ -30,7 +30,7 @@ import lombok.ToString;
 @Data
 @Entity
 @ToString(exclude = "course")
-@EqualsAndHashCode(exclude = "course")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "course_min_requirement", uniqueConstraints = @UniqueConstraint(columnNames = { "country_name",
 		"state_name", "education_system_id", "course_id" }, name = "UK_CN_SN_ESI_C"), indexes = {
 				@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
@@ -44,12 +44,15 @@ public class CourseMinRequirement implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "country_name", nullable = false)
 	private String countryName;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "state_name", nullable = false)
 	private String stateName;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "grade_point", nullable = false)
 	private Double gradePoint;
 
@@ -75,6 +78,7 @@ public class CourseMinRequirement implements Serializable {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
+	@EqualsAndHashCode.Include
 	@OneToMany(mappedBy = "courseMinRequirement", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseMinRequirementSubject> courseMinRequirementSubjects = new ArrayList<>();
 

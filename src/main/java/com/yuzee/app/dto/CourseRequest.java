@@ -77,10 +77,7 @@ public class CourseRequest {
 
 	@JsonProperty("total_count")
 	private String totalCount;
-
-	@JsonProperty("requirements")
-	private String requirements;
-
+	
 	@JsonProperty("currency")
 	@NotBlank(message = "currency should not be blank")
 	private String currency;

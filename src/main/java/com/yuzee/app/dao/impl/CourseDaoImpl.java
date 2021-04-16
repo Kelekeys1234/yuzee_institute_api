@@ -693,7 +693,7 @@ public class CourseDaoImpl implements CourseDao {
 				obj.setStars(Double.valueOf(row[17].toString()));
 			}
 			if (row[18] != null) {
-				obj.setRequirements(row[18].toString());
+				obj.setRemarks(row[18].toString());
 			}
 			if (row[19] != null) {
 				obj.setLevelId(row[19].toString());

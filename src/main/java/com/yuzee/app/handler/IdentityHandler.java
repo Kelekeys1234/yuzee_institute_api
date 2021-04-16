@@ -76,7 +76,7 @@ public class IdentityHandler {
 		pushNotification.setPayload(payloadDto);
 		pushNotification.setUserId(userDeviceInfoDto.getUserId());
 		pushNotification.setNotificationType(notificationType);
-		ResponseEntity<Map> result = restTemplate.postForEntity(IConstant.NOTIFICATION_CONNECTION_URL, pushNotification, Map.class);
+		ResponseEntity<Map> result = restTemplate.postForEntity(IConstant.NOTIFICATION_CONNECTION_URL+ "/push", pushNotification, Map.class);
 		System.out.println(result.getStatusCode());
 	}
 

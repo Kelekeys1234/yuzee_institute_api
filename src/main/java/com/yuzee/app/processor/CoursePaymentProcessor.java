@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -42,6 +43,9 @@ public class CoursePaymentProcessor {
 	private ElasticHandler elasticHandler;
 	
 	@Autowired
+	private CommonProcessor commonProcessor;
+	
+	@Autowired
 	private ConversionProcessor conversionProcessor;
 	
 	@Transactional
@@ -57,12 +61,20 @@ public class CoursePaymentProcessor {
 			if (ObjectUtils.isEmpty(coursePayment)) {
 				coursePayment = new CoursePayment();
 			}
+			
 			List<CoursePaymentItemDto> paymentItemDtos = coursePaymentDto.getPaymentItems();
 			List<CoursePaymentItem> dbCoursePaymentItems = coursePayment.getPaymentItems();
 
+			CoursePayment coursePaymentBeforeUpdate = new CoursePayment();
+			BeanUtils.copyProperties(coursePayment, coursePaymentBeforeUpdate);
+			List<CoursePaymentItem> coursePaymentItemsBeforeUpdate = dbCoursePaymentItems.stream().map(item -> {
+				CoursePaymentItem clone = new CoursePaymentItem();
+				BeanUtils.copyProperties(item, clone);
+				return clone;
+			}).collect(Collectors.toList());
+			
 			log.info("remove the payment items not present in request");
-			dbCoursePaymentItems
-					.removeIf(e -> paymentItemDtos.stream().noneMatch(t -> e.getName().equalsIgnoreCase(t.getName())));
+			dbCoursePaymentItems.removeIf(e -> paymentItemDtos.stream().noneMatch(t -> e.getName().equalsIgnoreCase(t.getName())));
 			final CoursePayment finalCoursePayment = coursePayment;
 			paymentItemDtos.stream().forEach(e -> {
 				Optional<CoursePaymentItem> existingCoursePaymentItemOp = dbCoursePaymentItems.stream()
@@ -87,6 +99,12 @@ public class CoursePaymentProcessor {
 			coursePayment.setAuditFields(userId);
 			log.info("going to save record in db");
 			coursePaymentDao.save(coursePayment);
+			
+			if(! (coursePaymentBeforeUpdate.equals(coursePayment) &&
+					coursePaymentItemsBeforeUpdate.equals(coursePayment.getPaymentItems()))) {
+				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", Arrays.asList(course));
+			}
+			
 			log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
 			elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
 		}
@@ -105,6 +123,10 @@ public class CoursePaymentProcessor {
 			course.setCoursePayment(null);
 			try {
 				courseDao.addUpdateCourse(course);
+				
+				log.info("Send notification for course content updates");
+				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", Arrays.asList(course));
+				
 				log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
 				elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
 			} catch (ValidationException e) {

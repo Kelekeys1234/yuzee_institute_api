@@ -26,7 +26,7 @@ import lombok.ToString;
 @Data
 @Entity
 @ToString(exclude = "course")
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "course_intake", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id",
 "intake_date" }, name = "UK_COURSE_ID_INTAKE_DATE"), indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
 public class CourseIntake implements Serializable {
@@ -39,6 +39,7 @@ public class CourseIntake implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
+	@EqualsAndHashCode.Include
 	@Column(name = "intake_date", nullable = false)
 	private Date intakeDate;
 	

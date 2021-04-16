@@ -27,7 +27,7 @@ import lombok.ToString;
 @Data
 @Entity
 @ToString(exclude = "courseMinRequirement")
-@EqualsAndHashCode(exclude = "courseMinRequirement")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @Table(name = "course_min_requirement_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "name",
 		"course_min_requirement_id" }, name = "UK_NA_CN_CN"), indexes = {
@@ -46,9 +46,11 @@ public class CourseMinRequirementSubject implements Serializable {
 	@JoinColumn(name = "course_min_requirement_id", nullable = false)
 	private CourseMinRequirement courseMinRequirement;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "grade", nullable = false)
 	private String grade;
 

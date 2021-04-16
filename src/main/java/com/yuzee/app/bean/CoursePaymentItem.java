@@ -26,7 +26,7 @@ import lombok.ToString;
 @Data
 @Entity
 @ToString(exclude = "coursePayment")
-@EqualsAndHashCode(exclude = "coursePayment")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "course_payment_item", uniqueConstraints = @UniqueConstraint(columnNames = { "name",
 		"course_payment_id" }, name = "UK_N_P_ID"), indexes = {
 				@Index(name = "IDX_P_ID", columnList = "course_payment_id", unique = false) })
@@ -40,9 +40,11 @@ public class CoursePaymentItem implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "name")
 	private String name;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "amount")
 	private Double amount;
 

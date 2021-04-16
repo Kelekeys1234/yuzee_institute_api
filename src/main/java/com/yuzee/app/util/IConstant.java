@@ -72,7 +72,7 @@ public class IConstant {
 	public static final String USER_ACHIVEMENT_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/user/achivement/user";
 	public static final String USER_DEVICE_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/user/device/basic";
 
-	public static final String NOTIFICATION_CONNECTION_URL = "http://" + NOTIFICATION + "/push";
+	public static final String NOTIFICATION_CONNECTION_URL = "http://" + NOTIFICATION;
 	public static final String COMMON_CONNECTION_URL = "http://" + COMMON;
 	public static final String REVIEW_CONNECTION_URL = "http://" + REVIEW;
 	public static final String ELIGIBILITY_CONNECTION_URL = "http://" + ELIGIBILITY;

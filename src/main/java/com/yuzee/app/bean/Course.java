@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -26,12 +27,18 @@ import javax.persistence.UniqueConstraint;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
+import com.yuzee.app.entitylistener.CourseUpdateListener;
 import com.yuzee.app.enumeration.CourseTypeEnum;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @Entity
+@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EntityListeners(CourseUpdateListener.class)
 @Table(name = "course", uniqueConstraints = @UniqueConstraint(name = "UK_F_L_I_N_C", columnNames = { "faculty_id",
 		"level_id", "institute_id", "name", "code" }), indexes = {
 				@Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false),
@@ -65,51 +72,67 @@ public class Course implements Serializable {
 	@JoinColumn(name = "curriculum_id")
 	private CourseCurriculum courseCurriculum;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "world_ranking")
 	private Integer worldRanking;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "stars")
 	private Integer stars;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "recognition")
 	private String recognition;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "recognition_type")
 	private String recognitionType;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "website", columnDefinition = "TEXT")
 	private String website;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "phone_number")
 	private String phoneNumber;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "email")
 	private String email;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "abbreviation", columnDefinition = "TEXT")
 	private String abbreviation;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "remarks", columnDefinition = "TEXT")
 	private String remarks;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "is_active")
 	private Boolean isActive;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "availabilty", nullable = false)
 	private String availabilty;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "currency", nullable = false)
 	private String currency;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "currency_time", nullable = false)
 	private String currencyTime;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "global_gpa")
 	private Double globalGpa;
 
@@ -138,42 +161,54 @@ public class Course implements Serializable {
 	@Column(name = "deleted_on", length = 19)
 	private Date deletedOn;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "content", columnDefinition = "TEXT")
 	private String content;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "examination_board")
 	private String examinationBoard;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "domestic_application_fee")
 	private Double domesticApplicationFee;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "international_application_fee")
 	private Double internationalApplicationFee;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "domestic_enrollment_fee")
 	private Double domesticEnrollmentFee;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "international_enrollment_fee")
 	private Double internationalEnrollmentFee;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "usd_domestic_application_fee")
 	private Double usdDomesticApplicationFee;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "usd_international_application_fee")
 	private Double usdInternationalApplicationFee;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "usd_domestic_enrollment_fee")
 	private Double usdDomesticEnrollmentFee;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "usd_international_enrollment_fee")
 	private Double usdInternationalEnrollmentFee;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "entrance_exam")
 	private String entranceExam;
 
 	@Column(name = "code")
 	private String code = "NORMAL COURSE";
 
+	@EqualsAndHashCode.Include
 	@Enumerated(EnumType.STRING)
 	@Column(name = "course_type")
 	private CourseTypeEnum courseType = CourseTypeEnum.ON_CAMPUS;

@@ -48,11 +48,7 @@ public class EligibilityHandler {
 			}
 		} catch (Exception e) {
 			log.error(INVOKE_EXCEPTION, e.getMessage());
-			if (e instanceof InvokeException) {
-				throw e;
-			} else {
-				throw new InvokeException("Error invoking review service");
-			}
+			throw new InvokeException("Error invoking eligibility service");
 		}
 		return fundingNameAPIResponse.getBody().getData();
 	}

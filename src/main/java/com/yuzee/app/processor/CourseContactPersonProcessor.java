@@ -33,12 +33,11 @@ public class CourseContactPersonProcessor {
 	private CourseDao courseDao;
 
 	@Autowired
-	private CommonProcessor commonProcessor;
-
-	@Autowired
 	private CourseProcessor courseProcessor;
 
 	@Autowired
+	private CommonProcessor commonProcessor;
+	
 	private ModelMapper modelMapper;
 
 	@Transactional
@@ -48,6 +47,7 @@ public class CourseContactPersonProcessor {
 		List<CourseContactPersonDto> courseContactPersonDtos = request.getCourseContactPersonDtos();
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		log.info("going to see if user ids are valid");
+		
 		commonProcessor.validateAndGetUsersByUserIds(
 				courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
 		log.debug("going to process the request");
@@ -60,6 +60,7 @@ public class CourseContactPersonProcessor {
 			courseContactPersons.add(courseContactPerson);
 		});
 		log.debug("going to save the list in db");
+		
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
 		if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
@@ -69,13 +70,20 @@ public class CourseContactPersonProcessor {
 					.addAll(replicateCourseContactPersons(userId, request.getLinkedCourseIds(), dtosToReplicate));
 		}
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
+		
+		if(!CollectionUtils.isEmpty(coursesToBeSavedOrUpdated)) {
+			log.info("Notify course information changed");
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+		}
+
 		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	}
 
 	@Transactional
 	public void deleteCourseContactPersonsByUserIds(String userId, String courseId, List<String> userIds,
-			List<String> linkedCourseIds) throws NotFoundException, ForbiddenException, ValidationException {
+			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
 		log.info("inside CourseContactPersonProcessor.deleteCourseContactPersonsByUserIds");
+
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		List<CourseContactPerson> courseContactPersons = course.getCourseContactPersons();
 		if (courseContactPersons.stream().map(CourseContactPerson::getUserId).collect(Collectors.toSet())
@@ -95,6 +103,7 @@ public class CourseContactPersonProcessor {
 						.addAll(replicateCourseContactPersons(userId, linkedCourseIds, dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid user_ids not found in course contact persons");

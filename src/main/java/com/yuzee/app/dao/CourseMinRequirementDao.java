@@ -14,5 +14,5 @@ public interface CourseMinRequirementDao {
 
 	CourseMinRequirement findByCourseIdAndId(String courseId, String id);
 
-	void deleteByCourseIdAndId(String courseId, String id);
+	long deleteByCourseIdAndId(String courseId, String id);
 }

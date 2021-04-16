@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.Timing;
+import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.TimingDao;
 import com.yuzee.app.dto.DayTimingDto;
 import com.yuzee.app.dto.TimingDto;
@@ -41,6 +43,12 @@ public class TimingProcessor {
 
 	@Autowired
 	private ModelMapper modelMapepr;
+	
+	@Autowired
+	private CommonProcessor commonProcessor;
+	
+	@Autowired
+	private CourseDao courseDao;
 
 	public List<TimingRequestDto> saveUpdateDeleteTimings(String loggedInUserId, EntityTypeEnum entityType,
 			List<TimingRequestDto> timingRequestDtos, String entityId) throws NotFoundException {
@@ -81,7 +89,7 @@ public class TimingProcessor {
 	public TimingRequestDto saveUpdateTiming(String loggedInUserId, TimingRequestDto timingRequestDto)
 			throws NotFoundException {
 		log.info("inside TimingProcessor.saveUpdateTimings");
-
+		Timing timingBeforeUpdate=null;
 		Timing timing = modelMapepr.map(timingRequestDto, Timing.class);
 		if (!StringUtils.isEmpty(timingRequestDto.getId())) {
 			Optional<Timing> timingO = timingDao.findById(timingRequestDto.getId());
@@ -90,12 +98,20 @@ public class TimingProcessor {
 				throw new NotFoundException("invalid timing found against id: " + timingRequestDto.getId());
 			}
 			timing = timingO.get();
-
+			timingBeforeUpdate = new Timing();
+			BeanUtils.copyProperties(timing, timingBeforeUpdate);
 		}
 		timing.setAuditFields(loggedInUserId);
 		setTimingFromDayTimingDtoList(timing, timingRequestDto.getTimings());
 
 		List<Timing> dbTimings = timingDao.saveAll(Arrays.asList(timing));
+
+		if(!ObjectUtils.isEmpty(timingBeforeUpdate) && !timingBeforeUpdate.equals(timing)
+				&& timing.getEntityType().equals(EntityTypeEnum.COURSE)) {
+			log.info("Send course update notification");
+			Course course = courseDao.get(timing.getEntityId());
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", Arrays.asList(course));
+		}
 		return convertTimingToTimingRequestDto(dbTimings.get(0));
 
 	}

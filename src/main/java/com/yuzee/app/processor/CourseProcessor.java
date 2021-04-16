@@ -97,6 +97,7 @@ import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.dto.UserInitialInfoDto;
 import com.yuzee.app.dto.UserViewCourseDto;
 import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.entitylistener.CourseUpdateListener;
 import com.yuzee.app.enumeration.CourseTypeEnum;
 import com.yuzee.app.enumeration.EntitySubTypeEnum;
 import com.yuzee.app.enumeration.EntityTypeEnum;
@@ -364,6 +365,9 @@ public class CourseProcessor {
 			course = new Course();
 		} else {
 			course = courseDao.get(courseId);
+			Course copyCourse = new Course();
+			BeanUtils.copyProperties(course, copyCourse);
+			CourseUpdateListener.putCourseInTransaction(course.getId(), copyCourse);
 			if (ObjectUtils.isEmpty(course)) {
 				log.error("invalid course id: {}", courseId);
 				throw new NotFoundException("invalid course id: " + courseId);
@@ -456,8 +460,9 @@ public class CourseProcessor {
 		
 		saveUpdateCourseFundings(loggedInUserId, course, courseDto.getCourseFundings());
 		
-		return course;
+		return course;			
 	}
+	
 	
 	private void saveUpdateOffCampusCourse(String userId, Course course, OffCampusCourseDto offCampusCourseDto) {
 		log.info("inside courseProcessor.saveUpdateOffCampusCourse");
@@ -784,7 +789,7 @@ public class CourseProcessor {
 			}
 		}
 	}
-
+	
 	@Transactional(noRollbackFor = Throwable.class)
 	public String saveOrUpdateCourse(final String loggedInUserId, String instituteId, final CourseRequest courseDto, final String id)
 			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
@@ -796,7 +801,7 @@ public class CourseProcessor {
 		elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
 		return course.getId();
 	}
-
+	
 	private CurrencyRateDto getCurrencyRate(final String courseCurrency) throws CommonInvokeException {
 		log.debug("Inside getCurrencyRate() method");
 		log.info("Calling DAO layer to getCurrencyRate from DB having currencyCode = "+courseCurrency);
@@ -1909,6 +1914,31 @@ public class CourseProcessor {
 			course = new Course();
 		} else {
 			course = courseDao.get(courseId);
+			Course copyCourse = new Course();
+			List<CourseIntake> courseIntakes = new ArrayList<>(course.getCourseIntakes());
+			List<CourseLanguage> courseLanguages = new ArrayList<>(course.getCourseLanguages());
+			List<CourseDeliveryModes> courseDeliveryModes = course.getCourseDeliveryModes().stream().map(courseDeliveryMode -> {
+				CourseDeliveryModes clone = new CourseDeliveryModes();
+				BeanUtils.copyProperties(courseDeliveryMode, clone);
+				return clone;
+			}).collect(Collectors.toList());
+			OffCampusCourse copyOffCampusCourse = new OffCampusCourse();
+			List<CourseFunding> courseFunding = course.getCourseFundings().stream().map(funding -> {
+				CourseFunding clone = new CourseFunding();
+				BeanUtils.copyProperties(funding, clone);
+				return clone;
+			}).collect(Collectors.toList());
+			
+			BeanUtils.copyProperties(course.getOffCampusCourse(), copyOffCampusCourse);
+			BeanUtils.copyProperties(course, copyCourse);
+			copyCourse.setCourseIntakes(courseIntakes);
+			copyCourse.setCourseLanguages(courseLanguages);
+			copyCourse.setCourseDeliveryModes(courseDeliveryModes);
+			copyCourse.setOffCampusCourse(copyOffCampusCourse);
+			copyCourse.setCourseFundings(courseFunding);
+			
+			CourseUpdateListener.putCourseInTransaction(courseId, copyCourse);
+			
 			if (ObjectUtils.isEmpty(course)) {
 				log.error("invalid course id: {}", courseId);
 				throw new NotFoundException("invalid course id: " + courseId);

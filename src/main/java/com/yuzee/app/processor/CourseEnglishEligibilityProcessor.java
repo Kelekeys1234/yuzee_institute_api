@@ -41,7 +41,6 @@ public class CourseEnglishEligibilityProcessor {
 	@Autowired
 	private CourseEnglishEligibilityDao courseEnglishEligibilityDAO;
 
-	@Autowired
 	private ModelMapper modelMapper;
 
 	@Autowired
@@ -74,6 +73,12 @@ public class CourseEnglishEligibilityProcessor {
 		List<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos = request.getCourseEnglishEligibilityDtos();
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
+			List<CourseEnglishEligibility> courseEnglishEligibilityBeforeUpdate = course.getCourseEnglishEligibilities().stream().map(eligibility -> {
+				CourseEnglishEligibility clone = new CourseEnglishEligibility();
+				BeanUtils.copyProperties(eligibility, clone);
+				return clone;
+			}).collect(Collectors.toList());
+			
 
 			log.info("preparing map of exsiting course english eligibilities");
 			Map<String, CourseEnglishEligibility> existingCourseEnglishEligibilitysMap = course
@@ -101,6 +106,7 @@ public class CourseEnglishEligibilityProcessor {
 					courseEnglishEligibilities.add(courseEnglishEligibility);
 				}
 			});
+
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
@@ -110,6 +116,11 @@ public class CourseEnglishEligibilityProcessor {
 						replicateCourseEnglishEligibilities(userId, request.getLinkedCourseIds(), dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			
+			if(!courseEnglishEligibilityBeforeUpdate.equals(courseEnglishEligibilities)) {
+				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			}
+
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
@@ -139,6 +150,9 @@ public class CourseEnglishEligibilityProcessor {
 						.addAll(replicateCourseEnglishEligibilities(userId, linkedCourseIds, dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid course_english eligbility_ids");

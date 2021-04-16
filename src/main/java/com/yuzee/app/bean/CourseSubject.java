@@ -20,11 +20,13 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
 @Entity
 @ToString(exclude = "course")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "course_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "course_id",
 		"semester" }, name = "UK_NA_S"), indexes = {
 				@Index(name = "IDX_COURSE", columnList = "course_id", unique = false) })
@@ -38,9 +40,11 @@ public class CourseSubject implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@EqualsAndHashCode.Include
 	@Column(name = "description")
 	private String description;
 	

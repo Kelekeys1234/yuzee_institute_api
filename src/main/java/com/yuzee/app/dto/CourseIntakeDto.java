@@ -3,6 +3,7 @@ package com.yuzee.app.dto;
 import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,6 +18,6 @@ public class CourseIntakeDto {
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@JsonProperty(value = "intake_date")
-	@NotEmpty(message = "intake_date must not be null")
+	@NotNull(message = "intake_date must not be null")
 	private Date intakeDate;
 }

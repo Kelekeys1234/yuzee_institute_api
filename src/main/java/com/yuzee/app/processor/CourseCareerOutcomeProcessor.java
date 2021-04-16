@@ -49,7 +49,7 @@ public class CourseCareerOutcomeProcessor {
 
 	@Autowired
 	private CareerDao careerDao;
-
+	
 	@Transactional
 	public void saveUpdateCourseCareerOutcomes(String userId, String courseId,
 			CourseCareerOutcomeRequestWrapper request) throws NotFoundException, ValidationException {
@@ -57,6 +57,12 @@ public class CourseCareerOutcomeProcessor {
 		List<CourseCareerOutcomeDto> courseCareerOutcomeDtos = request.getCourseCareerOutcomeDtos();
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
+			List<CourseCareerOutcome> careerOutcomeBeforeUpdate = course.getCourseCareerOutcomes().stream().map(outcome -> {
+				CourseCareerOutcome clone = new CourseCareerOutcome();
+				BeanUtils.copyProperties(outcome, clone);
+				return clone;
+			}).collect(Collectors.toList());
+			
 			Set<String> careerIds = courseCareerOutcomeDtos.stream().map(CourseCareerOutcomeDto::getCareerId)
 					.collect(Collectors.toSet());
 			Map<String, Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
@@ -86,6 +92,7 @@ public class CourseCareerOutcomeProcessor {
 				courseCareerOutcome.setCourse(course);
 				courseCareerOutcome.setAuditFields(userId);
 			});
+
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
@@ -94,7 +101,15 @@ public class CourseCareerOutcomeProcessor {
 				coursesToBeSavedOrUpdated
 						.addAll(replicateCourseCareerOutcomes(userId, request.getLinkedCourseIds(), dtosToReplicate));
 			}
+			
+			log.info("going to save record in db");
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+
+			if(!careerOutcomeBeforeUpdate.equals(courseCareerOutcomes)) {
+				log.info("Notify course information changed");
+				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			}
+			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
@@ -104,7 +119,7 @@ public class CourseCareerOutcomeProcessor {
 
 	@Transactional
 	public void deleteByCourseCareerOutcomeIds(String userId, String courseId, List<String> careerOutcomeIds,
-			List<String> linkedCourseIds) throws NotFoundException, ForbiddenException, ValidationException {
+			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
 		log.info("inside CourseCareerOutcomeProcessor.deleteByCourseCareerOutcomeIds");
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		List<CourseCareerOutcome> courseCareerOutcomes = course.getCourseCareerOutcomes();
@@ -124,6 +139,9 @@ public class CourseCareerOutcomeProcessor {
 						.addAll(replicateCourseCareerOutcomes(userId, linkedCourseIds, dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
+			
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid course_career outcome_ids");
