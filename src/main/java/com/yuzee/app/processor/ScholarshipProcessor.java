@@ -30,20 +30,20 @@ import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dao.ScholarshipDao;
-import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.dto.ScholarshipLevelCountDto;
-import com.yuzee.app.dto.ScholarshipRequestDto;
-import com.yuzee.app.dto.ScholarshipResponseDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.util.PaginationUtil;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.institute.ScholarshipRequestDto;
+import com.yuzee.common.lib.dto.institute.ScholarshipResponseDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -141,7 +141,7 @@ public class ScholarshipProcessor {
 				}
 
 			});
-			dbLanguages.removeIf(e -> !Util.containsIgnoreCase(scholarshipDto.getLanguages(), e.getName()));
+			dbLanguages.removeIf(e -> !Utils.containsIgnoreCase(scholarshipDto.getLanguages(), e.getName()));
 		}
 
 		List<ScholarshipCountry> dbCountries = scholarship.getScholarshipCountries();
@@ -169,7 +169,7 @@ public class ScholarshipProcessor {
 				}
 
 			});
-			dbCountries.removeIf(e -> !Util.containsIgnoreCase(scholarshipDto.getCountryNames(), e.getCountryName()));
+			dbCountries.removeIf(e -> !Utils.containsIgnoreCase(scholarshipDto.getCountryNames(), e.getCountryName()));
 		}
 
 		List<ScholarshipEligibleNationality> dbNationalitites = scholarship.getScholarshipEligibleNationalities();
@@ -197,7 +197,7 @@ public class ScholarshipProcessor {
 				}
 			});
 			dbNationalitites.removeIf(
-					e -> !Util.containsIgnoreCase(scholarshipDto.getEligibleNationalities(), e.getCountryName()));
+					e -> !Utils.containsIgnoreCase(scholarshipDto.getEligibleNationalities(), e.getCountryName()));
 		}
 		return scholarship;
 	}

@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.uploader.ServiceCsvDto;
-import com.yuzee.app.util.DateUtil;
+import com.yuzee.common.lib.util.DateUtil;
 
 public class ServiceItemProcessor implements ItemProcessor<ServiceCsvDto, Service> {
 

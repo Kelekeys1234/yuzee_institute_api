@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.CourseInstitute;
 import com.yuzee.app.dao.CourseInstituteDao;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.CourseInstituteRepository;
 
 import lombok.extern.slf4j.Slf4j;

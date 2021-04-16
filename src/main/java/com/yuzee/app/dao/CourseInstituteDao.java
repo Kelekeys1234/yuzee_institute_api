@@ -3,7 +3,7 @@ package com.yuzee.app.dao;
 import java.util.List;
 
 import com.yuzee.app.bean.CourseInstitute;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface CourseInstituteDao {
 	List<CourseInstitute> saveAll(List<CourseInstitute> courseInstitutes) throws ValidationException;

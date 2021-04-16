@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.endpoint.UploadInterface;
-import com.yuzee.app.exception.IOException;
-import com.yuzee.app.exception.UploaderException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CourseProcessor;
 import com.yuzee.app.processor.EducationSystemProcessor;
 import com.yuzee.app.processor.FacultyProcessor;
@@ -26,6 +23,8 @@ import com.yuzee.app.processor.LevelProcessor;
 import com.yuzee.app.processor.ScholarshipProcessor;
 import com.yuzee.app.processor.ServiceProcessor;
 import com.yuzee.app.processor.SubjectProcessor;
+import com.yuzee.common.lib.exception.IOException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,8 +63,8 @@ public class UploadController implements UploadInterface {
 	private LevelProcessor levelProcessor;
 
 	@Override
-	public ResponseEntity<?> uploadInstituteType(final MultipartFile multipartFile)
-			throws IOException, JobExecutionAlreadyRunningException, JobRestartException,
+	public ResponseEntity<Object> uploadInstituteType(final MultipartFile multipartFile)
+			throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException, java.io.IOException, ParseException {
 		log.info("Started process to Upload Activity");
 		instituteTypeProcessor.importInstituteType(multipartFile);
@@ -74,7 +73,7 @@ public class UploadController implements UploadInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> uploadServices(final MultipartFile multipartFile)
+	public ResponseEntity<Object> uploadServices(final MultipartFile multipartFile)
 			throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException,
 			JobParametersInvalidException, java.io.IOException {
 		log.info("Started process to Upload Service");
@@ -84,9 +83,9 @@ public class UploadController implements UploadInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> uploadCourse(final MultipartFile multipartFile)
-			throws IOException, UploaderException, JobExecutionAlreadyRunningException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+	public ResponseEntity<Object> uploadCourse(final MultipartFile multipartFile)
+			throws JobExecutionAlreadyRunningException, JobRestartException,
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException, IOException {
 		log.info("Started process to Upload Course");
 		courseProcessor.uploadCourseData(multipartFile);
 		return new GenericResponseHandlers.Builder().setMessage("Courses Uploaded Successfully")
@@ -94,7 +93,7 @@ public class UploadController implements UploadInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> uploadCourseKeyword(final MultipartFile multipartFile) {
+	public ResponseEntity<Object> uploadCourseKeyword(final MultipartFile multipartFile) {
 		log.info("Started process to Upload CourseKeyword");
 		courseProcessor.importCourseKeyword(multipartFile);
 		return new GenericResponseHandlers.Builder().setMessage("CourseKeywords Uploaded Successfully")
@@ -102,7 +101,7 @@ public class UploadController implements UploadInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> uploadInstitute(final MultipartFile multipartFile) throws IOException, UploaderException,
+	public ResponseEntity<Object> uploadInstitute(final MultipartFile multipartFile) throws 
 			ParseException, JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException, java.io.IOException {
 		log.info("Started process to Upload Institute");
@@ -112,7 +111,7 @@ public class UploadController implements UploadInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> uploadScholarship(final MultipartFile multipartFile)
+	public ResponseEntity<Object> uploadScholarship(final MultipartFile multipartFile)
 			throws java.io.IOException, ParseException {
 		log.info("Started process to Upload Scholarship");
 //		scholarshipProcessor.importScholarship(multipartFile);
@@ -121,7 +120,7 @@ public class UploadController implements UploadInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> uploadGrade(final MultipartFile multipartFile) {
+	public ResponseEntity<Object> uploadGrade(final MultipartFile multipartFile) {
 		log.info("Started process to Upload Grade");
 //		instituteProcessor.importEducationSystem(multipartFile);
 //		instituteProcessor.uploadGrade(multipartFile);
@@ -131,7 +130,7 @@ public class UploadController implements UploadInterface {
 
 	@Override
 	public ResponseEntity<Object> uploadSubject(final MultipartFile multipartFile)
-			throws IOException, UploaderException, ParseException, java.io.IOException {
+			throws ParseException, java.io.IOException {
 		log.info("Started process to Upload Subject");
 		subjectProcessor.importSubject(multipartFile);
 		return new GenericResponseHandlers.Builder().setMessage("Subjects Uploaded Successfully")

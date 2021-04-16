@@ -32,12 +32,12 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.Institute;
-import com.yuzee.app.dto.InstituteElasticSearchDto;
 import com.yuzee.app.dto.uploader.InstituteCsvDto;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.handler.ElasticHandler;
 import com.yuzee.app.processor.LogFileProcessor;
 import com.yuzee.app.util.ExceptionUtil;
+import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.handler.ElasticHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -122,9 +122,9 @@ public class InstituteUploadBatchConfig {
 
 			@Override
 			public void afterWrite(List<? extends Institute> institutesList) {
-				List<InstituteElasticSearchDto> instituteElasticSearchDTOList = new ArrayList<>();
+				List<InstituteElasticSearchDTO> instituteElasticSearchDTOList = new ArrayList<>();
 				for (Institute instituteObj : institutesList) {
-					InstituteElasticSearchDto instituteElasticSearchDto = new InstituteElasticSearchDto();
+					InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
 					try {
 						BeanUtils.copyProperties(instituteObj, instituteElasticSearchDto);
 					} catch (IllegalAccessException | InvocationTargetException e) {

@@ -9,15 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.dto.CourseFundingDto;
 import com.yuzee.app.dto.CourseFundingRequestWrapper;
 import com.yuzee.app.endpoint.CourseFundingInterface;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.CourseFundingProcessor;
+import com.yuzee.common.lib.dto.institute.CourseFundingDto;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,7 +1,7 @@
 package com.yuzee.app.dao;
 
 import com.yuzee.app.bean.CoursePayment;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface CoursePaymentDao {
 

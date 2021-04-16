@@ -3,7 +3,7 @@ package com.yuzee.app.dao;
 import java.util.List;
 
 import com.yuzee.app.bean.ScholarshipIntake;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface ScholarshipIntakeDao {
 

@@ -13,14 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.GlobalFilterSearchDto;
-import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.service.IGlobalSearchFilterService;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 @RestController("globalSearchFilterControllerV1")
 @RequestMapping("/api/v1/globalSearch")
@@ -31,7 +30,7 @@ public class GlobalSearchFilterController {
 	
 	@PostMapping(value = "/filter")
 	public ResponseEntity<?> filterEntityBasedOnParameters(@RequestBody GlobalFilterSearchDto globalFilterSearchDto) 
-			throws ValidationException, CommonInvokeException, NotFoundException, InvokeException{
+			throws ValidationException, NotFoundException, InvokeException{
 		Map<String,Object> responseEntityMap = globalSearchFilterService.filterByEntity(globalFilterSearchDto);
 		if(globalFilterSearchDto == null || globalFilterSearchDto.getIds() == null || globalFilterSearchDto.getIds().isEmpty()) {
 			throw new ValidationException("No Courses specified to Filter");

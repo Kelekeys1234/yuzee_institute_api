@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.constant.InstituteJoinStatus;
 import com.yuzee.app.dto.InstituteJoinRequestDto;
 import com.yuzee.app.endpoint.InstituteJoinRequestInterface;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.InstituteJoinRequestProcessor;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 import lombok.extern.apachecommons.CommonsLog;
 

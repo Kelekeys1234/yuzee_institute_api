@@ -1,6 +1,5 @@
 package com.yuzee.app.controller.v1;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -11,17 +10,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.dto.ScholarshipIntakeDto;
 import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.endpoint.ScholarshipIntakeInterface;
 import com.yuzee.app.enumeration.StudentCategory;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.RuntimeValidationException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.ScholarshipIntakeProcessor;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.institute.ScholarshipIntakeDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.RuntimeValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,7 +39,7 @@ public class ScholarshipIntakeController implements ScholarshipIntakeInterface {
 
 		scholarshipIntakeDtos.stream().forEach(e -> {
 			if (!EnumUtils.isValidEnumIgnoreCase(StudentCategory.class, e.getStudentCategory())) {
-				String studentCategories = Arrays.toString(Util.getEnumNames(StudentCategory.class));
+				String studentCategories = Utils.getEnumNamesAsString(StudentCategory.class);
 				log.error("student_category must be in one of the following: ", studentCategories);
 				throw new RuntimeValidationException(
 						"student_category must be in one of the following: " + studentCategories);

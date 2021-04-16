@@ -24,10 +24,10 @@ import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
-import com.yuzee.app.dto.CurrencyRateDto;
 import com.yuzee.app.dto.uploader.CourseCsvDto;
-import com.yuzee.app.handler.CommonHandler;
-import com.yuzee.app.util.DateUtil;
+import com.yuzee.common.lib.dto.common.CurrencyRateDto;
+import com.yuzee.common.lib.handler.CommonHandler;
+import com.yuzee.common.lib.util.DateUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

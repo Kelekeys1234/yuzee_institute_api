@@ -28,14 +28,14 @@ import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseMinRequirementDao;
 import com.yuzee.app.dao.EducationSystemDao;
-import com.yuzee.app.dto.CourseMinRequirementDto;
-import com.yuzee.app.dto.CourseMinRequirementSubjectDto;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.RuntimeNotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.institute.CourseMinRequirementDto;
+import com.yuzee.common.lib.dto.institute.CourseMinRequirementSubjectDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.RuntimeNotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

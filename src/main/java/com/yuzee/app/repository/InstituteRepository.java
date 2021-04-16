@@ -39,4 +39,8 @@ public interface InstituteRepository extends JpaRepository<Institute, String> {
 			+ "(select count(c.id) from Course c where c.institute.id = i.id ), i.email, i.address, i.domesticRanking, "
 			+ "i.tagLine) from Institute i  where i.id in :instituteIds")
 	public List<InstituteResponseDto> findByIdIn(List<String> instituteIds);
+
+	public List<Institute> findByReadableIdIn(List<String> readableIds);
+
+	public Institute findByReadableId(String readableId);
 }

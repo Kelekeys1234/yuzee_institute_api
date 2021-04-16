@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.common.lib.dto.institute.CareerDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

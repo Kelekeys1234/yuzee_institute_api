@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.BaseException;
+import com.yuzee.common.lib.exception.BaseRuntimeException;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 @ControllerAdvice(basePackages = "com.yuzee.app")
 public class ErrorHandlingController {

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.InstituteContactInfoDto;
-import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 import lombok.extern.apachecommons.CommonsLog;
 

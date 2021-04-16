@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseSubjectRequestWrapper;
 import com.yuzee.app.endpoint.CourseSubjectInterface;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.CourseSubjectProcessor;
 
 import lombok.extern.slf4j.Slf4j;

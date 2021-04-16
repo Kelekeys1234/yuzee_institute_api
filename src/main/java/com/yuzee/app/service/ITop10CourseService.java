@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.yuzee.app.bean.Top10Course;
 import com.yuzee.app.dto.CourseResponseDto;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 public interface ITop10CourseService {
 

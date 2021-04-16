@@ -1,0 +1,65 @@
+{
+	"resources": {
+		"data": [
+			{
+				"name": "institute-service",
+				"uris": [
+					"/institute/*"
+				],
+				"scopes": [
+					"GET",
+					"POST",
+					"PUT",
+					"DELETE"
+				]
+			},
+			{
+				"name": "institute-service-faculty-onboarding",
+				"uris": [
+					"/institute/api/v1/faculty/*"
+				],
+				"scopes": [
+					"GET",
+					"POST",
+					"PUT",
+					"DELETE"
+				]
+			}
+		]
+	},
+	"permissions": {
+		"data": [
+			{
+				"name": "institute-service-readwrite-permission",
+				"scopes": [
+					"GET",
+					"POST",
+					"PUT",
+					"DELETE"
+				],
+				"resources": [
+					"institute-service"
+				],
+				"policies": [
+					"student-role-policy",
+					"admin-role-policy",
+					"agent-role-policy",
+					"institute-role-policy",
+					"yuzeeapp-role-policy"
+				]
+			},
+			{
+				"name": "institute-service-faculty-onboarding-readonly-permission",
+				"scopes": [
+					"GET"
+				],
+				"resources": [
+					"institute-service-faculty-onboarding"
+				],
+				"policies": [
+					"onboarding-role-policy"
+				]
+			}
+		]
+	}
+}

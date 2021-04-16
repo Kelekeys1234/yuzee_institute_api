@@ -10,13 +10,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.dto.ContentTemplateDataDto;
-import com.yuzee.app.dto.EmailAddressDto;
-import com.yuzee.app.dto.NotificationMetaDataDto;
-import com.yuzee.app.dto.NotificationTemplateDataDto;
-import com.yuzee.app.dto.ViewTransactionDto;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.handler.NotificationHandler;
+import com.yuzee.common.lib.dto.notification.ContentTemplateDataDto;
+import com.yuzee.common.lib.dto.notification.EmailAddressDto;
+import com.yuzee.common.lib.dto.notification.NotificationMetaDataDto;
+import com.yuzee.common.lib.dto.notification.NotificationTemplateDataDto;
+import com.yuzee.common.lib.dto.transaction.ViewTransactionDto;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.handler.NotificationHandler;
 
 import lombok.extern.slf4j.Slf4j;
 

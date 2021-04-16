@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Faq;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface FaqDao {
 

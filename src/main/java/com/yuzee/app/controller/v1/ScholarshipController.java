@@ -7,14 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.ScholarshipRequestDto;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.app.endpoint.ScholarshipInterface;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.ScholarshipProcessor;
+import com.yuzee.common.lib.dto.institute.ScholarshipRequestDto;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 import lombok.extern.slf4j.Slf4j;
 

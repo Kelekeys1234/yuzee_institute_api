@@ -22,16 +22,15 @@ import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseDeliveryModesDao;
 import com.yuzee.app.dto.CourseDeliveryModeRequestWrapper;
-import com.yuzee.app.dto.CourseDeliveryModesDto;
-import com.yuzee.app.dto.CurrencyRateDto;
-import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.InternalServerException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.RuntimeNotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.CommonHandler;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.common.CurrencyRateDto;
+import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.InternalServerException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.RuntimeNotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.CommonHandler;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,7 +79,7 @@ public class CourseDeliveryModesProcessor {
 	@Transactional
 	public void saveUpdateCourseDeliveryModes(String userId, String courseId,
 			@Valid CourseDeliveryModeRequestWrapper request)
-			throws NotFoundException, ValidationException, InternalServerException, CommonInvokeException {
+			throws NotFoundException, ValidationException, InternalServerException {
 		log.info("inside CourseDeliveryModesProcessor.saveUpdateCourseDeliveryModes");
 		List<CourseDeliveryModesDto> courseDeliveryModeDtos = request.getCourseDelieveryModeDtos();
 		Course course = courseDao.get(courseId);
@@ -190,7 +189,7 @@ public class CourseDeliveryModesProcessor {
 				log.error("no access to delete one more course_delivery_modes");
 				throw new ForbiddenException("no access to delete one more course_delivery_modes");
 			}
-			courseDeliveryModes.removeIf(e -> Util.contains(deliveryModeIds, e.getId()));
+			courseDeliveryModes.removeIf(e -> Utils.contains(deliveryModeIds, e.getId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(linkedCourseIds)) {

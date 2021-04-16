@@ -19,8 +19,8 @@ import com.yuzee.app.dto.HelpAnswerDto;
 import com.yuzee.app.dto.HelpCategoryDto;
 import com.yuzee.app.dto.HelpDto;
 import com.yuzee.app.dto.HelpSubCategoryDto;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 @RequestMapping("/api/v1/help")
 public interface HelpInterface {

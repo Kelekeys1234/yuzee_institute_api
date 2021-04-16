@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.dao.LevelDao;
-import com.yuzee.app.dto.LevelDto;
+import com.yuzee.common.lib.dto.institute.LevelDto;
 
 import lombok.extern.apachecommons.CommonsLog;
 

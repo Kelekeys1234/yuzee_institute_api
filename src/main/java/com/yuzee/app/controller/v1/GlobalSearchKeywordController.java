@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.service.IGlobalSearchKeywordService;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 
 @RestController("globalSearchKeywordControllerV1")

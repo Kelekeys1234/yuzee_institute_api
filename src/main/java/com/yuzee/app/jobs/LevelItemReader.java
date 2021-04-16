@@ -16,9 +16,9 @@ import org.springframework.batch.item.UnexpectedInputException;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
-import com.yuzee.app.dto.LevelDto;
-import com.yuzee.app.exception.IOException;
-import com.yuzee.app.exception.UploaderException;
+import com.yuzee.common.lib.dto.institute.LevelDto;
+import com.yuzee.common.lib.exception.IOException;
+import com.yuzee.common.lib.exception.UploaderException;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.CourseDeliveryModeRequestWrapper;
-import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.exception.InternalServerException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.InternalServerException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 @RequestMapping("/api/v1/course/{courseId}/delivery-mode")
 public interface CourseDeliveryModeInterface {
@@ -27,7 +26,7 @@ public interface CourseDeliveryModeInterface {
 	public ResponseEntity<?> saveUpdateCourseDeliveryMode(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
 			@Valid @RequestBody(required = true) final CourseDeliveryModeRequestWrapper request)
-			throws ValidationException, NotFoundException, InternalServerException, CommonInvokeException;
+			throws ValidationException, NotFoundException, InternalServerException;
 
 	@DeleteMapping
 	public ResponseEntity<?> deleteByCourseDeliveryModeIds(

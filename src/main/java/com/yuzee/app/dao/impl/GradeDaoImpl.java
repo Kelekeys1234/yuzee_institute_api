@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.GradeDetails;
 import com.yuzee.app.dao.GradeDao;
-import com.yuzee.app.dto.GradeDto;
 import com.yuzee.app.repository.GradeDetailRepository;
 
 @Component

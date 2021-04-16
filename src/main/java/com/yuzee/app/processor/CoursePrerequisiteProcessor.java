@@ -10,7 +10,7 @@ import org.springframework.util.CollectionUtils;
 import com.yuzee.app.bean.CoursePrerequisite;
 import com.yuzee.app.bean.CoursePrerequisiteSubjects;
 import com.yuzee.app.dao.CoursePrerequisiteDao;
-import com.yuzee.app.dto.CoursePrerequisiteSubjectDto;
+import com.yuzee.common.lib.dto.institute.CoursePrerequisiteSubjectDto;
 
 import lombok.extern.apachecommons.CommonsLog;
 

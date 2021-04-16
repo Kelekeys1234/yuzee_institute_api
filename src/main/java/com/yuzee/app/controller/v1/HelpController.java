@@ -9,19 +9,18 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.yuzee.app.bean.Help;
 import com.yuzee.app.dto.HelpAnswerDto;
 import com.yuzee.app.dto.HelpCategoryDto;
 import com.yuzee.app.dto.HelpDto;
 import com.yuzee.app.dto.HelpSubCategoryDto;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.PaginationUtilDto;
 import com.yuzee.app.endpoint.HelpInterface;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.HelpProcessor;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 @RestController("helpControllerV1")
 public class HelpController implements HelpInterface {
@@ -95,15 +94,15 @@ public class HelpController implements HelpInterface {
 	@Override
 	public ResponseEntity<?> getSubCategoryByCategory(final String categoryId, final Integer pageNumber,
 			final Integer pageSize) throws Exception {
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<HelpSubCategoryDto> subCategoryDtos = helpProcessor.getSubCategoryByCategory(categoryId, startIndex, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<HelpSubCategoryDto> subCategoryDtos = helpProcessor.getSubCategoryByCategory(categoryId, startIndex.intValue(), pageSize);
 		int totalCount = helpProcessor.getSubCategoryCount(categoryId);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
-		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 		paginationResponseDto.setResponse(subCategoryDtos);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
@@ -133,15 +132,15 @@ public class HelpController implements HelpInterface {
 
 	@Override
 	public ResponseEntity<?> getCategory(final Integer pageNumber, final Integer pageSize) throws Exception {
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<HelpCategoryDto> helpCategoryDtos = helpProcessor.getCategory(startIndex, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<HelpCategoryDto> helpCategoryDtos = helpProcessor.getCategory(startIndex.intValue(), pageSize);
 		int totalCount = helpProcessor.getCategoryCount();
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
-		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 		paginationResponseDto.setResponse(helpCategoryDtos);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
@@ -174,7 +173,7 @@ public class HelpController implements HelpInterface {
 	@Override
 	public ResponseEntity<?> getUserHelpList(final String userId, final Integer pageNumber,
 			final Integer pageSize, final boolean isArchive) throws Exception {
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<HelpDto> helps = helpProcessor.getUserHelpList(userId, startIndex, pageSize, isArchive);
 		int totalCount = helpProcessor.getUserHelpCount(userId, isArchive);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
@@ -182,7 +181,7 @@ public class HelpController implements HelpInterface {
 		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
-		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 		paginationResponseDto.setResponse(helps);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)

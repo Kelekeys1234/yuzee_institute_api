@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.yuzee.app.bean.Timing;
 import com.yuzee.app.dao.TimingDao;
-import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.repository.TimingRepository;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 
 @Service
 public class TimingDaoImpl implements TimingDao {

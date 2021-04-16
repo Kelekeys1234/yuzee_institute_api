@@ -22,8 +22,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 import com.yuzee.app.dto.uploader.FacultyCSVDto;
-import com.yuzee.app.exception.IOException;
-import com.yuzee.app.exception.UploaderException;
+import com.yuzee.common.lib.exception.IOException;
+import com.yuzee.common.lib.exception.UploaderException;
 
 import lombok.extern.slf4j.Slf4j;
 

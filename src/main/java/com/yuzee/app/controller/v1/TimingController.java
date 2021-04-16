@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.TimingRequestDto;
 import com.yuzee.app.endpoint.TimingInterface;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.TimingProcessor;
-import com.yuzee.app.util.ValidationUtil;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.ValidationUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +35,7 @@ public class TimingController implements TimingInterface {
 			log.error("entity_id must not be null or empty");
 		}
 		ValidationUtil.validatEntityType(timingRequestDto.getEntityType());
-		ValidationUtil.validatTimingType(timingRequestDto.getTimingType());
+		com.yuzee.app.util.ValidationUtil.validatTimingType(timingRequestDto.getTimingType());
 		timingProcessor.saveUpdateTiming(userId, timingRequestDto);
 		return new GenericResponseHandlers.Builder().setMessage("Timing saved/updated successfuly.")
 				.setStatus(HttpStatus.OK).create();

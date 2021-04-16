@@ -12,7 +12,7 @@ pipelines:
            caches:
              - maven
            script: # Modify the commands below to build your repository.
-             - mvn -B verify # -B batch mode makes Maven less verbose
+             - mvn -P snapshot -B -s settings.xml verify # -B batch mode makes Maven less verbose
              - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip target/yuzee-institute.jar
              - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip appspec.yml
              - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip scripts/*

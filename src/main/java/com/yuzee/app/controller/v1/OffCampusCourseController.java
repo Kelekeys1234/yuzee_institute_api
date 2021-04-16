@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.endpoint.OffCampusCourseInterface;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.OffCampusCourseProcessor;
 
 import lombok.extern.slf4j.Slf4j;

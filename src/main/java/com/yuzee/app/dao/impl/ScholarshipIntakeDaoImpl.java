@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.yuzee.app.bean.ScholarshipIntake;
 import com.yuzee.app.dao.ScholarshipIntakeDao;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.ScholarshipIntakeRepository;
 
 import lombok.extern.slf4j.Slf4j;

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.yuzee.app.dto.GradeDto;
+import com.yuzee.common.lib.dto.institute.GradeDto;
 
 @RequestMapping("/api/v1/grade")
 public interface GradeInterface {

@@ -20,8 +20,8 @@ import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.dao.LevelDao;
-import com.yuzee.app.dto.LevelDto;
 import com.yuzee.app.repository.LevelRepository;
+import com.yuzee.common.lib.dto.institute.LevelDto;
 
 @Component
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })

@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.yuzee.app.bean.Careers;
 import com.yuzee.app.dao.CareerDao;
-import com.yuzee.app.dto.CareerDto;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.dto.institute.CareerDto;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,16 +35,15 @@ public class CareerProcessor {
 		log.info("Inside CareerProcessor.findCareerByName() method searching name: {}, pageNumber:{}, pageSize:{}",
 				name, pageNumber, pageSize);
 		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-		Integer totalCount = 0;
 		log.info("going to db to fetch careeres");
 		Page<Careers> careerPage = careerDao.findByNameContainingIgnoreCase(name, pageable);
-		totalCount = ((Long) careerPage.getTotalElements()).intValue();
+		Long totalCount = careerPage.getTotalElements();
 		log.debug("returned from db getting {} records.", careerPage.getNumberOfElements());
 		List<CareerDto> careerDtos = careerPage.getContent().stream().map(e -> modelMapper.map(e, CareerDto.class))
 				.collect(Collectors.toList());
 
 		log.info("Calculating pagination based on startIndex, pageSize and pageNumber");
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		return new PaginationResponseDto(careerDtos, totalCount, paginationUtilDto.getPageNumber(),
 				paginationUtilDto.isHasPreviousPage(), paginationUtilDto.isHasNextPage(),

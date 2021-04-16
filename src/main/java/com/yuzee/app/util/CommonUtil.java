@@ -5,22 +5,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -54,9 +45,10 @@ import com.yuzee.app.dto.FacilityDto;
 import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.LatLongDto;
-import com.yuzee.app.dto.TimingDto;
 import com.yuzee.app.dto.TodoDto;
-import com.yuzee.app.exception.ForbiddenException;
+import com.yuzee.common.lib.dto.institute.TimingDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.util.DateUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -100,6 +92,7 @@ public class CommonUtil {
 		instituteRequestDto.setDomesticRanking(institute.getDomesticRanking());
 		instituteRequestDto.setTagLine(institute.getTagLine());
 		instituteRequestDto.setPostalCode(institute.getPostalCode());
+		instituteRequestDto.setReadableId(institute.getReadableId());
 		return instituteRequestDto;
 	}
 
@@ -218,31 +211,6 @@ public class CommonUtil {
 			todoDto.setDueDate(DateUtil.convertDateToString(todo.getDueDate()));
 		}
 		return todoDto;
-	}
-
-	public static Double foundOff2Digit(final Double convertedRate) {
-		System.out.println("double : " + convertedRate);
-		BigDecimal bd = new BigDecimal(convertedRate).setScale(2, RoundingMode.HALF_UP);
-		Double roundedDigit = bd.doubleValue();
-		System.out.println("rounded digit : " + roundedDigit);
-		return roundedDigit;
-	}
-
-	public static Date getDateWithoutTime(final Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		return cal.getTime();
-	}
-
-	public static Date getTomorrowDate(final Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.add(Calendar.DATE, 1);
-		return cal.getTime();
 	}
 
 	public static final Map<String, String> currencyNameMap = new HashMap<>();
@@ -517,10 +485,7 @@ public class CommonUtil {
 		return dayTimingDtos;
 	}
 	
-	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-	    Set<Object> seen = ConcurrentHashMap.newKeySet();
-	    return t -> seen.add(keyExtractor.apply(t));
-	}
+	
 	
 	public static InstituteFacilityDto createInstituteFacilityResponseDto(
 			List<InstituteFacility> listOfInstituteFacility) {
@@ -531,10 +496,6 @@ public class CommonUtil {
 			instituteFacilityDto.getFacilities().add(facilityDto);
 		});
 		return instituteFacilityDto;
-	}
-	
-	public static String getEnumNames(Class<? extends Enum<?>> e) {
-		return Arrays.toString(Arrays.stream(e.getEnumConstants()).map(Enum::name).toArray(String[]::new));
 	}
 	
 	public static void validateEditAccess(String userId, Course course) throws ForbiddenException {

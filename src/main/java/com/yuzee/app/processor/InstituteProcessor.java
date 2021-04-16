@@ -53,10 +53,8 @@ import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseScholarshipAndFacultyCountDto;
 import com.yuzee.app.dto.CourseSearchDto;
-import com.yuzee.app.dto.FollowerCountDto;
 import com.yuzee.app.dto.InstituteCampusDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
-import com.yuzee.app.dto.InstituteElasticSearchDto;
 import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteFundingDto;
@@ -66,31 +64,34 @@ import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.NearestInstituteDTO;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.dto.ReviewStarDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.dto.TimingDto;
 import com.yuzee.app.dto.TimingRequestDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.TimingType;
-import com.yuzee.app.exception.ConstraintVoilationException;
-import com.yuzee.app.exception.InternalServerException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.RuntimeNotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.ConnectionHandler;
-import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.handler.ReviewHandler;
-import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.app.util.CDNServerUtil;
 import com.yuzee.app.util.CommonUtil;
-import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.IConstant;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.dto.connection.FollowerCountDto;
+import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
+import com.yuzee.common.lib.dto.institute.TimingDto;
+import com.yuzee.common.lib.dto.review.ReviewStarDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.ConstraintVoilationException;
+import com.yuzee.common.lib.exception.InternalServerException;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.RuntimeNotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.ConnectionHandler;
+import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.ReviewHandler;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.util.DateUtil;
+import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -201,11 +202,27 @@ public class InstituteProcessor {
 		}
 		return instituteResponseDtos;
 	}
+	
+	private InstituteElasticSearchDTO populateElasticDto(Institute institute) {
+		InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
+		BeanUtils.copyProperties(institute, instituteElasticSearchDto);
+		instituteElasticSearchDto
+				.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
+		instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
+		instituteElasticSearchDto.setInstituteType(
+				institute.getInstituteType() != null ? institute.getInstituteType() : null);
+		List<InstituteIntake> intakes = institute.getInstituteIntakes();
+		if(!CollectionUtils.isEmpty(intakes)) {
+			instituteElasticSearchDto.setIntakes(institute.getInstituteIntakes().stream().map(InstituteIntake::getIntake).collect(Collectors.toList()));			
+		}
+		instituteElasticSearchDto.setReadableId(institute.getReadableId());
+		return instituteElasticSearchDto;
+	}
 
 	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) throws Exception {
 		log.debug("Inside save() method");
 		try {
-			List<InstituteElasticSearchDto> instituteElasticDtoList = new ArrayList<>();
+			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("start iterating data coming in request");
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				log.info("Going to save institute in DB");
@@ -219,12 +236,13 @@ public class InstituteProcessor {
 					saveWorldRankingHistory(institute, null);
 				}
 				log.info("Copying institute data from instituteBean to elasticSearchDTO");
+				InstituteElasticSearchDTO instituteElasticSearchDto = populateElasticDto(institute);
 
 				instituteElasticDtoList.add(conversionProcessor.convertToInstituteElasticDTOEntity(institute));
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
-			elasticHandler.saveInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX,
-					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+			elasticHandler.saveInsituteOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
+					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while saving institutes having exception ", exception.getMessage());
 			throw exception;
@@ -269,7 +287,7 @@ public class InstituteProcessor {
 	public void updateInstitute(final String userId, final String instituteId, final InstituteRequestDto instituteRequest) throws Exception {
 		log.debug("Inside updateInstitute() method");
 		try {
-			List<InstituteElasticSearchDto> instituteElasticDtoList = new ArrayList<>();
+			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("fetching institute from DB having instituteId: {}", instituteId);
 			Institute oldInstitute = dao.get(instituteId);
 			Institute newInstitute = new Institute();
@@ -288,11 +306,14 @@ public class InstituteProcessor {
 			log.info("Start updating institute for instituteId: {}", instituteId);
 			Institute institute = saveInstitute(instituteRequest, instituteId);
 			log.info("Copying DTO class to elasticSearch DTO");
+			
+			InstituteElasticSearchDTO instituteElasticSearchDto = populateElasticDto(institute);
+
 			instituteElasticDtoList.add(conversionProcessor.convertToInstituteElasticDTOEntity(institute));
 
 			log.info("Calling elastic service to save instiutes on index");
-//			elasticHandler.updateInsituteOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_INSTITUTE,
-//					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, IConstant.ELASTIC_SEARCH);
+			elasticHandler.saveInsituteOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
+					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ={}", exception.getMessage());
 			throw exception;
@@ -310,6 +331,7 @@ public class InstituteProcessor {
 			institute = new Institute();
 			institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 			institute.setCreatedBy("API");
+			institute.setIsActive(true);
 		}
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setUpdatedBy("API");
@@ -319,6 +341,11 @@ public class InstituteProcessor {
 			log.error("InstituteName is required");
 			throw new ValidationException("InstituteName is required");
 		}
+		
+		if (StringUtils.isEmpty(id)) {
+			setReadableIdForInsitute(institute);
+		}
+		
 		institute.setDescription(instituteRequest.getDescription());
 		if (!StringUtils.isEmpty(instituteRequest.getCountryName())) {
 			institute.setCountryName(instituteRequest.getCountryName());
@@ -340,7 +367,6 @@ public class InstituteProcessor {
 			throw new ValidationException("InstituteType is required like University, School, College etc");
 		}
 
-		institute.setIsActive(true);
 		institute.setDomesticRanking(instituteRequest.getDomesticRanking());
 		institute.setWorldRanking(instituteRequest.getWorldRanking());
 		institute.setPostalCode(instituteRequest.getPostalCode());
@@ -380,8 +406,8 @@ public class InstituteProcessor {
 				log.info(
 						"updation is done now adding data in elasticSearch DTO to add it on elastic indices for entityId = {}"
 								, id);
-				InstituteElasticSearchDto instituteElasticDto = new InstituteElasticSearchDto();
-				List<InstituteElasticSearchDto> instituteElasticDTOList = new ArrayList<>();
+				InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
+				List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
 				BeanUtils.copyProperties(institute, instituteElasticDto);
 				instituteElasticDTOList.add(instituteElasticDto);
 			} else {
@@ -507,17 +533,17 @@ public class InstituteProcessor {
 		try {
 			log.info("Fetching total count of institutes from DB");
 			int totalCount = dao.findTotalCount();
-			int startIndex;
+			Long startIndex;
 			log.info("Calculating startIndex based of pageNumber nad pageSize");
 			if (pageNumber > 1) {
-				startIndex = (pageNumber - 1) * pageSize + 1;
+				startIndex = (Long.valueOf(pageNumber - 1)) * pageSize + 1;
 			} else {
-				startIndex = pageNumber;
+				startIndex = Long.valueOf(pageNumber);
 			}
 			log.info("Calculating pagination based on startIndex, pageSize and totalCount");
 			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 			log.info("Fetching all institutes from DB based on pagination");
-			List<InstituteGetRequestDto> institutes = dao.getAll(startIndex, pageSize);
+			List<InstituteGetRequestDto> institutes = dao.getAll(startIndex.intValue(), pageSize);
 			List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
 			if(!CollectionUtils.isEmpty(institutes)) {
 				log.info("Institues are not null from DB so start iterating data");
@@ -534,7 +560,7 @@ public class InstituteProcessor {
 			paginationResponseDto.setResponse(instituteGetRequestDtos);
 			paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 			paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-			paginationResponseDto.setTotalCount(totalCount);
+			paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 			paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 			paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 		} catch (Exception exception) {
@@ -571,10 +597,15 @@ public class InstituteProcessor {
 		return images;
 	}
 
-	public InstituteRequestDto getById(final String userId, final String id) throws Exception {
+	public InstituteRequestDto getById(final String userId, final String id, final boolean isReadableId) throws Exception {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);
-		Institute institute = dao.get(id);
+		Institute institute = null;
+		if (isReadableId) {
+			institute = dao.findByReadableId(id);
+		}else {
+			institute = dao.get(id);
+		}
 		if (institute == null) {
 			log.error("No institute found in DB for instituteId = {}", id);
 			throw new ValidationException("Institute not found for id" + id);
@@ -712,10 +743,10 @@ public class InstituteProcessor {
 			List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
 			log.info("fetching total count of institutes from DB");
 			int totalCount = dao.findTotalCountFilterInstitute(instituteFilterDto);
-			int startIndex = (instituteFilterDto.getPageNumber() - 1) * instituteFilterDto.getMaxSizePerPage();
+			Long startIndex = (Long.valueOf(instituteFilterDto.getPageNumber() - 1)) * instituteFilterDto.getMaxSizePerPage();
 			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, instituteFilterDto.getMaxSizePerPage(), totalCount);
 			log.info("fetching insitutes from DB based on passed filters and startIndex and pageNumber");
-			List<Institute> institutes = dao.instituteFilter(startIndex, instituteFilterDto.getMaxSizePerPage(), instituteFilterDto);
+			List<Institute> institutes = dao.instituteFilter(startIndex.intValue(), instituteFilterDto.getMaxSizePerPage(), instituteFilterDto);
 			if(!CollectionUtils.isEmpty(institutes)) {
 				log.info("if institutes are not coming nul from DB thewn start iterating to find institute details");
 				institutes.stream().forEach(institute -> {
@@ -725,7 +756,7 @@ public class InstituteProcessor {
 				paginationInstituteResponseDto.setResponse(instituteGetRequestDtos);
 				paginationInstituteResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 				paginationInstituteResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-				paginationInstituteResponseDto.setTotalCount(totalCount);
+				paginationInstituteResponseDto.setTotalCount(Long.valueOf(totalCount));
 				paginationInstituteResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 				paginationInstituteResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 			} else {
@@ -745,12 +776,12 @@ public class InstituteProcessor {
 		try {
 			log.info("fetching total count from DB for searchKey = "+ searchKey);
 			int totalCount = dao.findTotalCountForInstituteAutosearch(searchKey);
-			int startIndex = (pageNumber - 1) * pageSize;
+			Long startIndex = (Long.valueOf(pageNumber - 1)) * pageSize;
 			log.info("Calculating pagination havinbg startIndex "+ startIndex + " and totalCount "+ totalCount);
 			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 			log.info("Fetching institutes from DB based on pageSize and having searchKey = "+ searchKey);
 			List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
-			List<InstituteGetRequestDto> institutes = dao.autoSearch(startIndex, pageSize, searchKey);
+			List<InstituteGetRequestDto> institutes = dao.autoSearch(startIndex.intValue(), pageSize, searchKey);
 			institutes.stream().forEach(institute -> {
 				log.info("Start iterating institutes and set values in DTO for instituteId = " + institute.getId());
 				InstituteGetRequestDto instituteGetRequestDto = new InstituteGetRequestDto();
@@ -763,7 +794,7 @@ public class InstituteProcessor {
 				paginationInstituteResponseDto.setResponse(instituteGetRequestDtos);
 				paginationInstituteResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 				paginationInstituteResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-				paginationInstituteResponseDto.setTotalCount(totalCount);
+				paginationInstituteResponseDto.setTotalCount(Long.valueOf(totalCount));
 				paginationInstituteResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 				paginationInstituteResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 			});
@@ -896,7 +927,7 @@ public class InstituteProcessor {
 				}
 			}
 		}
-		Integer startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+		Long startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
 		
@@ -904,7 +935,7 @@ public class InstituteProcessor {
 		if(initialRadius != maxRadius) {
 			hasNextPage = true;
 		}
-		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO(nearestInstituteList, totalCount, paginationUtilDto.getPageNumber(),
+		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO(nearestInstituteList, Long.valueOf(totalCount), paginationUtilDto.getPageNumber(),
 				paginationUtilDto.isHasPreviousPage(), hasNextPage, paginationUtilDto.getTotalPages());
 		return institutePaginationResponseDto;
 	}
@@ -1006,7 +1037,7 @@ public class InstituteProcessor {
 		}
 		log.info("Calculating pagination based on pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
-		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO(nearestInstituteList, totalCount, paginationUtilDto.getPageNumber(),
+		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO(nearestInstituteList, Long.valueOf(totalCount), paginationUtilDto.getPageNumber(),
 				paginationUtilDto.isHasPreviousPage(), paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return institutePaginationResponseDto;
 	}
@@ -1038,7 +1069,7 @@ public class InstituteProcessor {
 		}
 		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(pageNumber, pageSize, totalCount);
-		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO(nearestInstituteDTOs, totalCount, paginationUtilDto.getPageNumber(),
+		NearestInstituteDTO institutePaginationResponseDto = new NearestInstituteDTO(nearestInstituteDTOs, Long.valueOf(totalCount), paginationUtilDto.getPageNumber(),
 				paginationUtilDto.isHasPreviousPage(), paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return institutePaginationResponseDto;
 	}
@@ -1156,8 +1187,49 @@ public class InstituteProcessor {
 		return institutes;
 	}
 	
+	public void changeInstituteStatus(String userId, String instituteId, boolean status) {
+		log.info("Inside InstituteProcessor.changeInstituteStatus method");
+		
+		Institute existingInstitute = dao.get(instituteId);
+		if(ObjectUtils.isEmpty(existingInstitute)) {
+			log.error("Institute with id {} not exists",instituteId);
+			throw new NotFoundException(String.format("Institute with id %s not exists",instituteId));
+		}
+		
+		log.info("Update institute {} status {}",instituteId,status);
+		existingInstitute.setIsActive(status);
+		dao.addUpdateInstitute(existingInstitute);
+		
+		log.info("Update institute to elastic search");
+		
+		InstituteElasticSearchDTO instituteElasticSearchDto = populateElasticDto(existingInstitute);
+
+		log.info("Calling elastic service to save instiutes on index");
+		elasticHandler.saveInsituteOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
+				EntityTypeEnum.INSTITUTE.name().toLowerCase(), Arrays.asList(instituteElasticSearchDto), com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH);
+
+	}
+	
+	private void setReadableIdForInsitute(Institute institute) {
+		log.info("going to generate code for institute");
+		boolean reGenerateCode = false;
+		do {
+			reGenerateCode = false;
+			String onlyName = Utils.convertToLowerCaseAndRemoveSpace(institute.getName());
+			String readableId = Utils.generateReadableId(onlyName);
+			List<Institute> sameCodeInsts = dao.findByReadableIdIn(Arrays.asList(onlyName, readableId));
+			if (ObjectUtils.isEmpty(sameCodeInsts)) {
+				institute.setReadableId(onlyName);
+			} else if (sameCodeInsts.size() == 1) {
+				institute.setReadableId(readableId);
+			} else {
+				reGenerateCode = true;
+			}
+		} while (reGenerateCode);
+	}
+	
 	public void importInstitute(final MultipartFile multipartFile)
-			throws com.yuzee.app.exception.IOException, IOException, ParseException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+			throws IOException, ParseException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		log.debug("Inside importInstitute() method");
 		
 		File f = File.createTempFile("Institutes", ".csv");

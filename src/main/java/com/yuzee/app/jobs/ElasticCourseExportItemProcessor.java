@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.dto.CourseDTOElasticSearch;
 import com.yuzee.app.processor.ConversionProcessor;
+import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
 
 import lombok.extern.slf4j.Slf4j;
 

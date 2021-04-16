@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.endpoint.CareerInterface;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CareerProcessor;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 import lombok.extern.slf4j.Slf4j;
 

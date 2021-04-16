@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.CourseScholarship;
 import com.yuzee.app.dao.CourseScholarshipDao;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.CourseScholarshipRepository;
 
 import lombok.extern.slf4j.Slf4j;

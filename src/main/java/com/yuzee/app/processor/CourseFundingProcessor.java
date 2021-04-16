@@ -22,13 +22,13 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseFundingDao;
 import com.yuzee.app.dao.InstituteDao;
-import com.yuzee.app.dto.CourseFundingDto;
 import com.yuzee.app.dto.CourseFundingRequestWrapper;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.institute.CourseFundingDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -140,7 +140,7 @@ public class CourseFundingProcessor {
 				throw new ForbiddenException("no access to delete one more fundings by userId: {}" + userId);
 			}
 
-			courseFundings.removeIf(e -> Util.contains(fundingNameIds, e.getFundingNameId()));
+			courseFundings.removeIf(e -> Utils.contains(fundingNameIds, e.getFundingNameId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
@@ -173,7 +173,7 @@ public class CourseFundingProcessor {
 					courseFundings.clear();
 				} else {
 					courseFundings.removeIf(
-							e -> !Util.containsIgnoreCase(fundingNameIds.stream().collect(Collectors.toList()),
+							e -> !Utils.containsIgnoreCase(fundingNameIds.stream().collect(Collectors.toList()),
 									e.getFundingNameId()));
 					courseFundingDtos.stream().forEach(dto -> {
 						Optional<CourseFunding> existingCourseFundingOp = courseFundings.stream()

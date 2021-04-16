@@ -19,15 +19,14 @@ import com.yuzee.app.dao.InstituteAssociationDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.InstituteAssociationDto;
 import com.yuzee.app.dto.InstituteAssociationResponseDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.dto.UserInstituteAccessInternalResponseDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InternalServerException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.handler.IdentityHandler;
-import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.handler.UserInstituteAccessRoleHandler;
+import com.yuzee.common.lib.dto.identity.UserInstituteAccessInternalResponseDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InternalServerException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.handler.UserInstituteAccessRoleHandler;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -46,9 +45,6 @@ public class InstituteAssociationProcessor {
 	
 	@Autowired
 	private StorageHandler storageHandler;
-	
-	@Autowired
-	private IdentityHandler identityHandler;
 	
 	@Value("${rejection.count}")
 	public Integer rejectionCount;

@@ -28,7 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.yuzee.app.entitylistener.CourseUpdateListener;
-import com.yuzee.app.enumeration.CourseTypeEnum;
+import com.yuzee.common.lib.enumeration.CourseTypeEnum;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

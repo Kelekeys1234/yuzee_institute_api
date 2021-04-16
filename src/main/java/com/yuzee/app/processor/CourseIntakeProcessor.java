@@ -18,12 +18,12 @@ import org.springframework.util.ObjectUtils;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseIntake;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dto.CourseIntakeDto;
 import com.yuzee.app.dto.CourseIntakeRequestWrapper;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.institute.CourseIntakeDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -94,7 +94,7 @@ public class CourseIntakeProcessor {
 						"no access to delete one more intakes by intake ids: {}" + Arrays.asList(intakeIds));
 			}
 
-			courseIntakes.removeIf(e -> Util.contains(intakeIds, e.getId()));
+			courseIntakes.removeIf(e -> Utils.contains(intakeIds, e.getId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
@@ -126,7 +126,7 @@ public class CourseIntakeProcessor {
 				if (CollectionUtils.isEmpty(courseIntakeDtos)) {
 					courseIntakes.clear();
 				} else {
-					courseIntakes.removeIf(e -> !Util.contains(intakeDates, e.getIntakeDate()));
+					courseIntakes.removeIf(e -> !Utils.contains(intakeDates, e.getIntakeDate()));
 					courseIntakeDtos.stream().forEach(dto -> {
 						Optional<CourseIntake> existingIntakeOp = courseIntakes.stream().filter(
 								e -> e.getIntakeDate().toInstant().compareTo(dto.getIntakeDate().toInstant()) == 0)

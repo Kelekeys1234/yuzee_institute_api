@@ -15,13 +15,13 @@ import org.springframework.util.CollectionUtils;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseContactPerson;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dto.CourseContactPersonDto;
 import com.yuzee.app.dto.CourseContactPersonRequestWrapper;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,6 +49,7 @@ public class CourseContactPersonProcessor {
 		log.info("going to see if user ids are valid");
 		
 		commonProcessor.validateAndGetUsersByUserIds(
+				userId,
 				courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
 		log.debug("going to process the request");
 		List<CourseContactPerson> courseContactPersons = course.getCourseContactPersons();
@@ -93,7 +94,7 @@ public class CourseContactPersonProcessor {
 				throw new ForbiddenException(
 						"no access to delete one more course contact person by userId: {}" + userId);
 			}
-			courseContactPersons.removeIf(e -> Util.contains(userIds, e.getId()));
+			courseContactPersons.removeIf(e -> Utils.contains(userIds, e.getId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
@@ -123,7 +124,7 @@ public class CourseContactPersonProcessor {
 				if (CollectionUtils.isEmpty(courseContactPersonDtos)) {
 					courseContactPersons.clear();
 				} else {
-					courseContactPersons.removeIf(e -> !Util
+					courseContactPersons.removeIf(e -> !Utils
 							.containsIgnoreCase(userIds.stream().collect(Collectors.toList()), e.getUserId()));
 					courseContactPersonDtos.stream().forEach(dto -> {
 						Optional<CourseContactPerson> existingContactPersonOp = courseContactPersons.stream()

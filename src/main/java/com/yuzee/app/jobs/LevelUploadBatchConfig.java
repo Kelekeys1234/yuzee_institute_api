@@ -26,8 +26,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 
 import com.yuzee.app.bean.Level;
-import com.yuzee.app.dto.LevelDto;
-import com.yuzee.app.exception.UploaderException;
+import com.yuzee.common.lib.dto.institute.LevelDto;
+import com.yuzee.common.lib.exception.UploaderException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +41,7 @@ public class LevelUploadBatchConfig {
 	@Bean("levelItemReader")
 	@StepScope
 	public LevelItemReader reader(@Value("#{jobParameters['csv-file']}") String fileName)
-			throws IOException, com.yuzee.app.exception.IOException, UploaderException {
+			throws IOException, UploaderException, com.yuzee.common.lib.exception.IOException {
 		return new LevelItemReader(fileName);
 	}
 

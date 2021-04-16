@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseEnglishEligibilityRequestWrapper;
 import com.yuzee.app.endpoint.CourseEnglishEligibilityInterface;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.CourseEnglishEligibilityProcessor;
 
 import lombok.extern.slf4j.Slf4j;

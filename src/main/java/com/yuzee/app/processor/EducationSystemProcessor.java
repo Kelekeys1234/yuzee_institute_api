@@ -17,11 +17,11 @@ import com.yuzee.app.bean.GradeDetails;
 import com.yuzee.app.bean.Subject;
 import com.yuzee.app.dao.EducationSystemDao;
 import com.yuzee.app.dao.GradeDao;
-import com.yuzee.app.dto.EducationSystemDto;
-import com.yuzee.app.dto.GradeDto;
-import com.yuzee.app.dto.SubjectDto;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.dto.institute.EducationSystemDto;
+import com.yuzee.common.lib.dto.institute.GradeDto;
+import com.yuzee.common.lib.dto.institute.SubjectDto;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 import lombok.extern.apachecommons.CommonsLog;
 

@@ -20,17 +20,17 @@ import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.OffCampusCourse;
 import com.yuzee.app.dao.OffCampusCourseDao;
 import com.yuzee.app.dto.CourseResponseDto;
-import com.yuzee.app.dto.OffCampusCourseDto;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.TimingRequestDto;
 import com.yuzee.app.dto.ValidList;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.institute.OffCampusCourseDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

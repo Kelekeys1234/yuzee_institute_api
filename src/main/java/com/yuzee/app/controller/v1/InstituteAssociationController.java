@@ -16,9 +16,9 @@ import com.yuzee.app.constant.InstituteAssociationType;
 import com.yuzee.app.dto.InstituteAssociationDto;
 import com.yuzee.app.dto.InstituteAssociationResponseDto;
 import com.yuzee.app.endpoint.InstituteAssociationInterface;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.InstituteAssociationProcessor;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 import lombok.extern.apachecommons.CommonsLog;
 

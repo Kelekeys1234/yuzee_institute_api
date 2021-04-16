@@ -19,13 +19,13 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseSubject;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.InstituteDao;
-import com.yuzee.app.dto.CourseSubjectDto;
 import com.yuzee.app.dto.CourseSubjectRequestWrapper;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.RuntimeNotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.institute.CourseSubjectDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.RuntimeNotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -108,7 +108,7 @@ public class CourseSubjectProcessor {
 				log.error("no access to delete one more subjects");
 				throw new ForbiddenException("no access to delete one more subjects");
 			}
-			courseSubjects.removeIf(e -> Util.contains(courseSubjectIds, e.getId()));
+			courseSubjects.removeIf(e -> Utils.contains(courseSubjectIds, e.getId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(linkedCourseIds)) {

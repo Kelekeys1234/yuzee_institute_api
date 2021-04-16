@@ -31,8 +31,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "institute", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "country_name", "city_name", "campus_name" }, 
-	 name = "UK_NA_CN_CN"), indexes = {@Index(name = "IDX_INSTITUTE_NAME", columnList = "name", unique = false) })
+@Table(name = "institute", uniqueConstraints = {
+		@UniqueConstraint(columnNames = { "name", "country_name", "city_name", "campus_name" }, name = "UK_NA_CN_CN"),
+		@UniqueConstraint(columnNames = { "readable_id" }, name = "inst_readable_id") }, indexes = {
+				@Index(name = "IDX_INSTITUTE_NAME", columnList = "name", unique = false) })
 public class Institute implements Serializable {
 
 	private static final long serialVersionUID = 8492390790670110780L;
@@ -43,12 +45,15 @@ public class Institute implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 
+	@Column(name = "readable_id")
+	private String readableId;
+	
 	@Column(name = "institute_type")
 	private String instituteType;
 
 	@Column(name = "name")
 	private String name;
-
+	
 	@Column(name = "is_active")
 	private Boolean isActive;
 

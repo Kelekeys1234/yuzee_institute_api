@@ -12,10 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.endpoint.ElasticExportInterface;
-import com.yuzee.app.exception.ElasticSearchInvokeException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CourseProcessor;
 import com.yuzee.app.processor.InstituteProcessor;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 @RestController("elasticExportControllerV1")
 public class ElasticExportController implements ElasticExportInterface {
@@ -29,7 +29,7 @@ public class ElasticExportController implements ElasticExportInterface {
 	private CourseProcessor courseProcessor;
 	
 	@Override
-	public ResponseEntity<Object> exportInstitutes() throws ElasticSearchInvokeException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+	public ResponseEntity<Object> exportInstitutes() throws InvokeException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		LOGGER.debug("exportInstitutes() start");
 		LOGGER.info("Going to save institutes on elasticSearch");
 		instituteProcessor.exportInstituteToElastic();

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,14 +23,17 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteTypeDto;
 import com.yuzee.app.dto.LatLongDto;
-import com.yuzee.app.exception.InternalServerException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 @RequestMapping(path = "/api/v1")
 public interface InstituteInterface {
 
+	@PutMapping("/institute/status/{instituteId}")
+	public ResponseEntity<Object> changeStatus(@RequestHeader("userId") final String userId,
+			@PathVariable("instituteId") final String instituteId, @RequestParam(name = "status", required = true) final boolean status);
+	
 	@PostMapping("/instituteType")
 	public ResponseEntity<?> saveInstituteType(@Valid @RequestBody final InstituteTypeDto instituteTypeDto) throws Exception;
 	
@@ -71,7 +75,8 @@ public interface InstituteInterface {
 				@PathVariable final Integer pageSize) throws Exception;
 	
 	@GetMapping("/{instituteId}")
-	public ResponseEntity<?> get(@RequestHeader("userId") final String userId, @PathVariable final String instituteId)
+	public ResponseEntity<?> get(@RequestHeader("userId") final String userId, @PathVariable final String instituteId,
+			@RequestParam(name = "is_readable_id", required = false) boolean isReadableId)
 			throws ValidationException, NotFoundException, InvokeException, Exception;
 
 	@GetMapping("/search/{searchText}")

@@ -27,9 +27,9 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCurriculum;
-import com.yuzee.app.dto.CourseCurriculumDto;
 import com.yuzee.app.dto.uploader.CourseCsvDto;
-import com.yuzee.app.exception.UploaderException;
+import com.yuzee.common.lib.dto.institute.CourseCurriculumDto;
+import com.yuzee.common.lib.exception.UploaderException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,7 +43,7 @@ public class CourseUploadBatchConfig {
 
     @Bean("courseItemReader")
     @StepScope
-    public CourseItemReader reader(@Value("#{jobParameters['csv-file']}") String fileName) throws IOException, com.yuzee.app.exception.IOException, UploaderException {
+    public CourseItemReader reader(@Value("#{jobParameters['csv-file']}") String fileName) throws IOException, UploaderException, com.yuzee.common.lib.exception.IOException {
         return new CourseItemReader(fileName);
     }
 
@@ -54,7 +54,7 @@ public class CourseUploadBatchConfig {
     
     @Bean("curriculumItemReader")
     @StepScope
-    public ItemReader<CourseCurriculumDto> curriculumReader(@Value("#{jobParameters['csv-file']}") String fileName) throws com.yuzee.app.exception.IOException, UploaderException, IOException {
+    public ItemReader<CourseCurriculumDto> curriculumReader(@Value("#{jobParameters['csv-file']}") String fileName) throws UploaderException, IOException, com.yuzee.common.lib.exception.IOException {
     	return new CurriculumItemReader(fileName);
     }
     

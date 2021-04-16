@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.dto.CourseDTOElasticSearch;
-import com.yuzee.app.exception.ElasticSearchInvokeException;
+import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.exception.InvokeException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,7 +62,7 @@ public class ElasticCourseExportBatchConfig {
 		
 		log.info("inside ElasticCourseExportBatchConfig.exportCourseToElasticStep");
 		return stepBuilderFactory.get("exportCourseToElasticStep").<Course, CourseDTOElasticSearch>chunk(50).reader(courseJpaItemReader)
-				.faultTolerant().skipPolicy(skipPolicy).noRollback(ElasticSearchInvokeException.class)
+				.faultTolerant().skipPolicy(skipPolicy).noRollback(InvokeException.class)
 				.processor(elasticCourseExportItemProcessor).writer(elasticCourseExportItemWriter).build();
 	}
 

@@ -142,13 +142,13 @@ public class ArticleDAO implements IArticleDAO {
 	}
 
 	@Override
-	public List<String> getAuthors(final int startIndex, final Integer pageSize, final String searchString) {
+	public List<String> getAuthors(final Long startIndex, final Integer pageSize, final String searchString) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(Articles.class, "article");
 		if ((searchString != null) && !searchString.isEmpty() && !"".equalsIgnoreCase(searchString.trim())) {
 			criteria.add(Restrictions.ilike("article.author", searchString, MatchMode.ANYWHERE));
 		}
-		criteria.setFirstResult(startIndex);
+		criteria.setFirstResult(startIndex.intValue());
 		criteria.setMaxResults(pageSize);
 		criteria.add(Restrictions.isNotNull("article.author"));
 		ProjectionList projectionList = Projections.projectionList();

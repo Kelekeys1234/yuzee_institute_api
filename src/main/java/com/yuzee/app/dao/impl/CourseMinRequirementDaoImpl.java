@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.CourseMinRequirement;
 import com.yuzee.app.dao.CourseMinRequirementDao;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.CourseMinimumRequirementsRepository;
 
 import lombok.extern.slf4j.Slf4j;

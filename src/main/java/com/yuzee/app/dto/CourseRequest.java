@@ -10,6 +10,18 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
+import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
+import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
+import com.yuzee.common.lib.dto.institute.CourseEnglishEligibilityDto;
+import com.yuzee.common.lib.dto.institute.CourseFundingDto;
+import com.yuzee.common.lib.dto.institute.CoursePaymentDto;
+import com.yuzee.common.lib.dto.institute.CoursePrerequisiteSubjectDto;
+import com.yuzee.common.lib.dto.institute.CourseSubjectDto;
+import com.yuzee.common.lib.dto.institute.FacultyDto;
+import com.yuzee.common.lib.dto.institute.LevelDto;
+import com.yuzee.common.lib.dto.institute.OffCampusCourseDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
 
 import lombok.Data;
 import lombok.ToString;

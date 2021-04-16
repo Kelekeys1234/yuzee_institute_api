@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.dao.ServiceDao;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.ServiceRepository;
 
 import lombok.extern.slf4j.Slf4j;

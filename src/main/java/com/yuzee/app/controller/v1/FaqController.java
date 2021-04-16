@@ -1,7 +1,5 @@
 package com.yuzee.app.controller.v1;
 
-import java.util.Arrays;
-
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.EnumUtils;
@@ -16,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.constant.FaqEntityType;
 import com.yuzee.app.dto.FaqRequestDto;
 import com.yuzee.app.dto.FaqResponseDto;
-import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.endpoint.FaqEndpoint;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.FaqProcessor;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -90,9 +88,9 @@ public class FaqController implements FaqEndpoint {
 	private void validateFaqEntityType(String entityType) throws ValidationException {
 		if (!EnumUtils.isValidEnum(FaqEntityType.class, entityType)) {
 			log.error("entityType must be in one of the following {}",
-					Arrays.toString(Util.getEnumNames(FaqEntityType.class)));
+					Utils.getEnumNamesAsString(FaqEntityType.class));
 			throw new ValidationException("entityType must be in one of the following: "
-					+ Arrays.toString(Util.getEnumNames(FaqEntityType.class)));
+					+ Utils.getEnumNamesAsString(FaqEntityType.class));
 		}
 	}
 }

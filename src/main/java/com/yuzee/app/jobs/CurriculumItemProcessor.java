@@ -3,8 +3,8 @@ package com.yuzee.app.jobs;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.yuzee.app.bean.CourseCurriculum;
-import com.yuzee.app.dto.CourseCurriculumDto;
-import com.yuzee.app.util.DateUtil;
+import com.yuzee.common.lib.dto.institute.CourseCurriculumDto;
+import com.yuzee.common.lib.util.DateUtil;
 
 public class CurriculumItemProcessor implements ItemProcessor<CourseCurriculumDto, CourseCurriculum> {
 

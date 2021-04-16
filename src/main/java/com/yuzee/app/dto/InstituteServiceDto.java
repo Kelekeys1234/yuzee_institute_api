@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-
+import com.yuzee.common.lib.dto.storage.StorageDto;
 import lombok.Data;
 
 @Data

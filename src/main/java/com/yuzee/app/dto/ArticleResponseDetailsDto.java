@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.yuzee.common.lib.dto.storage.StorageDto;
+
 public class ArticleResponseDetailsDto implements Serializable {
 
 	/**

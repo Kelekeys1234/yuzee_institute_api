@@ -27,7 +27,7 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.dto.uploader.FacultyCSVDto;
-import com.yuzee.app.exception.UploaderException;
+import com.yuzee.common.lib.exception.UploaderException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,7 +42,7 @@ public class FacultyUploadBatchConfig {
 	@Bean("facultyItemReader")
 	@StepScope
 	public FacultyItemReader reader(@Value("#{jobParameters['csv-file']}") String fileName)
-			throws IOException, com.yuzee.app.exception.IOException, UploaderException {
+			throws IOException, com.yuzee.common.lib.exception.IOException, UploaderException {
 		return new FacultyItemReader(fileName);
 	}
 

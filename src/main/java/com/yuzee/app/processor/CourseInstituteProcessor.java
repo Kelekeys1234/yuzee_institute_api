@@ -30,11 +30,11 @@ import com.yuzee.app.dao.TimingDao;
 import com.yuzee.app.dto.CourseLinkedInstituteDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.UnLinkInsituteDto;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.RuntimeValidationException;
-import com.yuzee.app.exception.ValidationException;
 import com.yuzee.app.util.CommonUtil;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.RuntimeValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 import lombok.extern.slf4j.Slf4j;
 

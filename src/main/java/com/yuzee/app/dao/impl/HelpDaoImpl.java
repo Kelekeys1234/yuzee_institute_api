@@ -21,7 +21,7 @@ import com.yuzee.app.bean.HelpAnswer;
 import com.yuzee.app.bean.HelpCategory;
 import com.yuzee.app.bean.HelpSubCategory;
 import com.yuzee.app.dao.HelpDao;
-import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 @Repository
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })

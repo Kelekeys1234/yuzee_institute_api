@@ -15,11 +15,11 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteAdditionalInfo;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.InstituteAdditionalInfoDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.handler.StorageHandler;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.StorageHandler;
 
 import lombok.extern.slf4j.Slf4j;
 

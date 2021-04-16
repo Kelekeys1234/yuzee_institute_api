@@ -21,13 +21,13 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseEnglishEligibilityDao;
-import com.yuzee.app.dto.CourseEnglishEligibilityDto;
 import com.yuzee.app.dto.CourseEnglishEligibilityRequestWrapper;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.RuntimeNotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.institute.CourseEnglishEligibilityDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.RuntimeNotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -140,7 +140,7 @@ public class CourseEnglishEligibilityProcessor {
 				log.error("no access to delete one more english eligbilities");
 				throw new ForbiddenException("no access to delete one more english eligbilities");
 			}
-			courseEnglishEligibilities.removeIf(e -> Util.contains(englishEligibilityIds, e.getId()));
+			courseEnglishEligibilities.removeIf(e -> Utils.contains(englishEligibilityIds, e.getId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(linkedCourseIds)) {

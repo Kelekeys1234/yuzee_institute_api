@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.yuzee.app.bean.Level;
-import com.yuzee.app.dto.LevelDto;
+import com.yuzee.common.lib.dto.institute.LevelDto;
 
 public interface LevelDao {
 

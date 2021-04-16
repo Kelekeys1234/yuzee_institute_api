@@ -22,14 +22,14 @@ import com.yuzee.app.bean.Timing;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.TimingDao;
 import com.yuzee.app.dto.DayTimingDto;
-import com.yuzee.app.dto.TimingDto;
 import com.yuzee.app.dto.TimingRequestDto;
 import com.yuzee.app.enumeration.DaysEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.TimingType;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.util.CommonUtil;
+import com.yuzee.common.lib.dto.institute.TimingDto;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 

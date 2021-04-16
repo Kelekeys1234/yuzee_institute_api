@@ -57,40 +57,7 @@ public class IConstant {
 	public static final String INSTITUTE_TYPE = "Institution";
 	public static final String CITY_TYPE = "City";
 	public static final String COURSE_TYPE = "Course";
-	public static final String DEFAULT_BASE_CURRENCY = "USD";
-
-	public static final String STORAGE = "STORAGE-SERVICE/storage";
-	public static final String IDENTITY = "AUTH-SERVICE/identity";
-	public static final String NOTIFICATION = "NOTIFICATION-SERVICE/notification/api/v1";
-	public static final String COMMON = "COMMON-API/common/api/v1";
-	public static final String REVIEW = "REVIEW-SERVICE/review/api/v1";
-	public static final String ELIGIBILITY = "ELIGIBILITY-SERVICE/eligibility/api/v1";
-
-	public static final String STORAGE_CONNECTION_URL = "http://" + STORAGE + "/api/v1/storage";
-	public static final String IDENTITY_CONNECTION_URL = "http://" + IDENTITY + "/api/v1";
-	public static final String USER_DETAIL_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/users/basic";
-	public static final String USER_ACHIVEMENT_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/user/achivement/user";
-	public static final String USER_DEVICE_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/user/device/basic";
-
-	public static final String NOTIFICATION_CONNECTION_URL = "http://" + NOTIFICATION;
-	public static final String COMMON_CONNECTION_URL = "http://" + COMMON;
-	public static final String REVIEW_CONNECTION_URL = "http://" + REVIEW;
-	public static final String ELIGIBILITY_CONNECTION_URL = "http://" + ELIGIBILITY;
-	
-	public static final String VIEW_TRANSACTION = "VIEW-TRANSACTION/transaction/api/v1";
-	public static final String VIEW_TRANSACTION_URL = "http://" + VIEW_TRANSACTION;
-	
-	public static final String APPLICATION = "APPLICATION-SERVICE/application/api/v1";
-	public static final String APPILICATION_URL = "http://" + APPLICATION;
-
-	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";
-	public static final String ELASTIC_SEARCH_INDEX = "yuzee_dev";
-
-	public static final String ELASTIC_SEARCH_URL = ELASTIC_SEARCH + "/";
-	public static final String ELASTIC_SEARCH_BULK = "ELASTIC-SEARCH/elasticSearch/bulk";
-	
-	public static final String USER = "USER-SERVICE/users";
-	public static final String USER_CONNECTION_URL = "http://" + USER + "/api/v1";
+	public static final String DEFAULT_BASE_CURRENCY = "USD";	
 
 	public static final String ELASTIC_SEARCH_COURSE_TYPE = "course";
 	public static final String ELASTIC_SEARCH_ARTICLE_TYPE = "article";

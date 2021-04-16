@@ -8,14 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.yuzee.app.exception.ElasticSearchInvokeException;
+import com.yuzee.common.lib.exception.InvokeException;
 
 @RequestMapping("/api/v1/elastic/export")
 public interface ElasticExportInterface {
 
 	@PostMapping("/institute")
-	public ResponseEntity<Object> exportInstitutes() throws ElasticSearchInvokeException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException;
+	public ResponseEntity<Object> exportInstitutes() throws InvokeException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException;
 
 	@PostMapping("/course")
-	public ResponseEntity<Object> exportCourses() throws ElasticSearchInvokeException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException;
+	public ResponseEntity<Object> exportCourses() throws InvokeException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException;
 }

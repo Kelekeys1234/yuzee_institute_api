@@ -31,13 +31,13 @@ import com.yuzee.app.bean.ErrorReportCategory;
 import com.yuzee.app.dto.ErrorReportCategoryDto;
 import com.yuzee.app.dto.ErrorReportDto;
 import com.yuzee.app.dto.ErrorReportResponseDto;
-import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.service.IErrorReportService;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 @RestController("errorReportControllerV1")
 @RequestMapping("/api/v1/error/report")
@@ -93,8 +93,8 @@ public class ErrorReportController {
 			@RequestParam(required = false) final String errorReportStatus, @RequestParam(required = false) final Boolean isFavourite,
 			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
 			@RequestParam(required = false) final String searchKeyword) throws ValidationException, NotFoundException, InvokeException {
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<ErrorReportResponseDto> errorReports = errorReportService.getAllErrorReport(null, startIndex, pageSize, errorReportCategoryId, errorReportStatus,
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<ErrorReportResponseDto> errorReports = errorReportService.getAllErrorReport(null, startIndex.intValue(), pageSize, errorReportCategoryId, errorReportStatus,
 				updatedOn, isFavourite, null, sortByField, sortByType, searchKeyword);
 		int totalCount = errorReportService.getErrorReportCount(null, errorReportCategoryId, errorReportStatus, updatedOn, isFavourite, null, searchKeyword);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
@@ -114,8 +114,8 @@ public class ErrorReportController {
 	public ResponseEntity<?> getErrorReportForUser(@RequestHeader(value = "userId") final String userId, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(required = false) final Boolean isFavourite,
 			@RequestParam(required = false) final boolean isArchive) throws Exception {
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<ErrorReportResponseDto> errorReportList = errorReportService.getAllErrorReport(userId, startIndex, pageSize, null, null, null, isFavourite,
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<ErrorReportResponseDto> errorReportList = errorReportService.getAllErrorReport(userId, startIndex.intValue(), pageSize, null, null, null, isFavourite,
 				isArchive, null, null, null);
 		int totalCount = errorReportService.getErrorReportCount(userId, null, null, null, isFavourite, isArchive, null);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);

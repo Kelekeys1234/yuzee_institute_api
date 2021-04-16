@@ -14,16 +14,16 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.Top10Course;
 import com.yuzee.app.dao.ITop10CourseDAO;
 import com.yuzee.app.dto.CourseResponseDto;
-import com.yuzee.app.dto.FacultyDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.StorageHandler;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.FacultyProcessor;
 import com.yuzee.app.util.IConstant;
+import com.yuzee.common.lib.dto.institute.FacultyDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.StorageHandler;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)

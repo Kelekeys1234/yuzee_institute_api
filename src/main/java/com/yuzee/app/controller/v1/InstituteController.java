@@ -24,29 +24,28 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
-import com.yuzee.app.dto.TimingDto;
 import com.yuzee.app.dto.InstituteTypeDto;
 import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.NearestInstituteDTO;
 import com.yuzee.app.dto.PaginationDto;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.endpoint.InstituteInterface;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InternalServerException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
-import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.processor.InstituteProcessor;
-import com.yuzee.app.processor.TimingProcessor;
 import com.yuzee.app.processor.InstituteTypeProcessor;
+import com.yuzee.app.processor.TimingProcessor;
 import com.yuzee.app.util.CommonUtil;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.dto.institute.TimingDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -110,9 +109,9 @@ public class InstituteController implements InstituteInterface {
 			final String searchKeyword, final String cityId, final String instituteTypeId, final Boolean isActive, final Date updatedOn,
 			final Integer fromWorldRanking, final Integer toWorldRanking) throws ValidationException {
 		log.debug("Inside getInstitutesBySearchFilters() method");
-		int startIndex = PaginationUtil.getStartIndex(request.getPageNumber(), request.getMaxSizePerPage());
+		Long startIndex = PaginationUtil.getStartIndex(request.getPageNumber(), request.getMaxSizePerPage());
 		log.info("Calling DAO layer to search institutes based on passed filters");
-		List<InstituteResponseDto> instituteList = instituteProcessor.getAllInstitutesByFilter(request, sortByField, sortByType, searchKeyword, startIndex,
+		List<InstituteResponseDto> instituteList = instituteProcessor.getAllInstitutesByFilter(request, sortByField, sortByType, searchKeyword, startIndex.intValue(),
 				cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
 		if(!CollectionUtils.isEmpty(instituteList)) {
 			log.info("Institutes fetched from DB, now iterating data to call Storage service");
@@ -144,7 +143,7 @@ public class InstituteController implements InstituteInterface {
 		log.info("Adding values in paginationResponse DTO and returning final response");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(instituteList);
-		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
@@ -159,18 +158,15 @@ public class InstituteController implements InstituteInterface {
 		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
 		Boolean showMore = false;
 		Integer maxCount = 0, totalCount = 0;
-		int startIndex = PaginationUtil.getStartIndex(request.getPageNumber(), request.getMaxSizePerPage());
-		if (request.getPageNumber() > PaginationUtil.courseResultPageMaxSize) {
-			log.error("Maximum course limit per is " + PaginationUtil.courseResultPageMaxSize);
-			throw new ValidationException("Maximum course limit per is " + PaginationUtil.courseResultPageMaxSize);
-		}
+		Long startIndex = PaginationUtil.getStartIndex(request.getPageNumber(), request.getMaxSizePerPage());
+		PaginationUtil.validateMaxResultSize(request.getPageNumber());
 		if (null == request.getUserId()) {
 			log.error("UserId is required");
 			throw new ValidationException("UserId is required");
 		}
 		log.info("Calling DAO layer to get all institutes based on filters");
 		List<InstituteResponseDto> instituteResponseDtoList = instituteProcessor.getAllInstitutesByFilter(request, null, null, null,
-				startIndex, null, null, null, null, null, null);
+				startIndex.intValue(), null, null, null, null, null, null);
 		if(!CollectionUtils.isEmpty(instituteResponseDtoList)) {
 			log.info("Filtered institutes coming from DB, hence start iterating");
 			totalCount = instituteResponseDtoList.get(0).getTotalCount();
@@ -240,10 +236,10 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> get(final String userId, final String instituteId)
+	public ResponseEntity<?> get(final String userId, final String instituteId, final boolean isReadableId)
 			throws Exception {
 		log.info("Start process to fetch Institutes from DB for instituteId = {}", instituteId);
-		InstituteRequestDto instituteRequestDtos = instituteProcessor.getById(userId, instituteId);
+		InstituteRequestDto instituteRequestDtos = instituteProcessor.getById(userId, instituteId, isReadableId);
 		return new GenericResponseHandlers.Builder().setData(instituteRequestDtos)
 				.setMessage("Institute details get successfully").setStatus(HttpStatus.OK).create();
 	}
@@ -336,18 +332,18 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> getDistinctInstututes(final Integer pageNumber, final Integer pageSize, final String name) throws Exception {
 		log.debug("Inside getDistinctInstututes() method");
-		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		log.info("Getting total count of institute having instituteName = {}", name);
 		int totalCount = instituteProcessor.getDistinctInstituteCount(name);
 		log.info("Fetching distinct institutes from DB based on pagination for instituteName = {}", name);
-		List<InstituteResponseDto> instituteList = instituteProcessor.getDistinctInstituteList(startIndex, pageSize, name);
+		List<InstituteResponseDto> instituteList = instituteProcessor.getDistinctInstituteList(startIndex.intValue(), pageSize, name);
 		log.info("Calculating pagination based on pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(instituteList);
 		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institute Displayed Successfully.")
@@ -358,8 +354,8 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getBoundedInstituteList(final Integer pageNumber, final Integer pageSize, 
 			List<LatLongDto> latLongDto) throws ValidationException {
 		log.info("Start process to fetch bounded Institute list based on passed latitude and longitude");
-		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		NearestInstituteDTO nearestInstituteList = instituteProcessor.getInstitutesUnderBoundRegion(startIndex, pageSize, latLongDto);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		NearestInstituteDTO nearestInstituteList = instituteProcessor.getInstitutesUnderBoundRegion(startIndex.intValue(), pageSize, latLongDto);
 		return new GenericResponseHandlers.Builder().setData(nearestInstituteList)
 				.setMessage("Institute Displayed Successfully").setStatus(HttpStatus.OK).create();
 	}
@@ -403,6 +399,14 @@ public class InstituteController implements InstituteInterface {
 		}
 		List<InstituteResponseDto> instituteList = instituteProcessor.getInstitutesByIdList(instituteIds);
 		return new GenericResponseHandlers.Builder().setData(instituteList).setMessage("Institute Displayed Successfully.")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<Object> changeStatus(String userId, String instituteId, boolean status) {
+		log.info("Inside InstituteController.changeStatus method");
+		instituteProcessor.changeInstituteStatus(userId, instituteId, status);
+		return new GenericResponseHandlers.Builder().setMessage("Institute Status changed successfully")
 				.setStatus(HttpStatus.OK).create();
 	}	
 }

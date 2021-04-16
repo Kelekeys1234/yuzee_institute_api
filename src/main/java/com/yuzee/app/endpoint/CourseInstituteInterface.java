@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.yuzee.app.dto.InstituteIdsRequestWrapperDto;
 import com.yuzee.app.dto.UnLinkInsituteDto;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 @RequestMapping("/api/v1/course/{courseId}/institute")
 public interface CourseInstituteInterface {

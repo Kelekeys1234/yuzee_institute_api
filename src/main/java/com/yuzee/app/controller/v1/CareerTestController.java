@@ -8,13 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CareerJobDto;
-import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.endpoint.CareerTestInterface;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CareerTestProcessor;
-import com.yuzee.app.util.ValidationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 @RestController("careerTestControllerV1")
 public class CareerTestController implements CareerTestInterface {
@@ -85,7 +85,7 @@ public class CareerTestController implements CareerTestInterface {
 
 	@Override
 	public ResponseEntity<?> getCareerJobsByName(String userId, String name, Integer pageNumber, Integer pageSize) throws ValidationException {
-		ValidationUtil.validatePageNoAndPageSize(pageNumber, pageSize);
+		PaginationUtil.validatePageNoAndPageSize(pageNumber, pageSize);
 		PaginationResponseDto careerJobs = careerTestProcessor.getCareerJobsByName(userId, name, pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder().setData(careerJobs).setStatus(HttpStatus.OK)
 				.setMessage("Career Jobs Fetched successfully").create();

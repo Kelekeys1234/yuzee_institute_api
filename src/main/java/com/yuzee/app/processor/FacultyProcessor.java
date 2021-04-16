@@ -24,8 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.dao.FacultyDao;
-import com.yuzee.app.dto.FacultyDto;
 import com.yuzee.app.util.CDNServerUtil;
+import com.yuzee.common.lib.dto.institute.FacultyDto;
 
 import lombok.extern.apachecommons.CommonsLog;
 

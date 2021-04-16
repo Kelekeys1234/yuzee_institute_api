@@ -36,28 +36,26 @@ import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dto.AdvanceSearchDto;
-import com.yuzee.app.dto.CourseDTOElasticSearch;
-import com.yuzee.app.dto.CourseDeliveryModesDto;
 import com.yuzee.app.dto.CourseDto;
 import com.yuzee.app.dto.CourseFilterDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.CourseSearchFilterDto;
-import com.yuzee.app.dto.CurrencyRateDto;
-import com.yuzee.app.dto.FacultyDto;
 import com.yuzee.app.dto.GlobalFilterSearchDto;
-import com.yuzee.app.dto.InstituteElasticSearchDto;
-import com.yuzee.app.dto.LevelDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.enumeration.CourseSortBy;
-import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.CommonHandler;
 import com.yuzee.app.repository.CourseRepository;
-import com.yuzee.app.util.CommonUtil;
-import com.yuzee.app.util.ConvertionUtil;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.common.CurrencyRateDto;
+import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
+import com.yuzee.common.lib.dto.institute.FacultyDto;
+import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
+import com.yuzee.common.lib.dto.institute.LevelDto;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.CommonHandler;
+import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -265,10 +263,10 @@ public class CourseDaoImpl implements CourseDao {
 				}
 				newCurrencyCode = String.valueOf(row[4]);
 				if (localFeesD != null) {
-					localFees = ConvertionUtil.roundOffToUpper(localFeesD);
+					localFees = Math.round(localFeesD);
 				}
 				if (intlFeesD != null) {
-					intlFees = ConvertionUtil.roundOffToUpper(intlFeesD);
+					intlFees = Math.round(intlFeesD);
 				}
 				courseResponseDto = new CourseResponseDto();
 				if (showIntlCost) {
@@ -301,7 +299,7 @@ public class CourseDaoImpl implements CourseDao {
 						Double amt = Double.valueOf(row[13].toString());
 						Double convertedRate = amt * currencyRate.getConversionRate();
 						if (convertedRate != null) {
-							additionalInfoDto.setUsdDomesticFee(CommonUtil.foundOff2Digit(convertedRate));
+							additionalInfoDto.setUsdDomesticFee(Utils.limitTo2Decimals(convertedRate));
 						}
 					}
 					if (row[14] != null) {
@@ -309,15 +307,15 @@ public class CourseDaoImpl implements CourseDao {
 						Double amt = Double.valueOf(row[14].toString());
 						Double convertedRate = amt * currencyRate.getConversionRate();
 						if (convertedRate != null) {
-							additionalInfoDto.setUsdInternationalFee(CommonUtil.foundOff2Digit(convertedRate));
+							additionalInfoDto.setUsdInternationalFee(Utils.limitTo2Decimals(convertedRate));
 						}
 					}
 				} else {
 					if (row[13] != null) {
-						additionalInfoDto.setUsdDomesticFee(CommonUtil.foundOff2Digit(Double.valueOf(row[13].toString())));
+						additionalInfoDto.setUsdDomesticFee(Utils.limitTo2Decimals(Double.valueOf(row[13].toString())));
 					}
 					if (row[14] != null) {
-						additionalInfoDto.setUsdInternationalFee(CommonUtil.foundOff2Digit(Double.valueOf(row[14].toString())));
+						additionalInfoDto.setUsdInternationalFee(Utils.limitTo2Decimals(Double.valueOf(row[14].toString())));
 					}
 				}
 				if (row[5] != null) {
@@ -332,8 +330,8 @@ public class CourseDaoImpl implements CourseDao {
 				additionalInfoDto.setDeliveryType(row[21].toString());
 				additionalInfoDto.setStudyMode(row[22].toString());
 				additionalInfoDto.setCourseId(String.valueOf(row[0]));
-				additionalInfoDto.setDomesticFee(CommonUtil.foundOff2Digit(Double.valueOf(row[13].toString())));
-				additionalInfoDto.setInternationalFee(CommonUtil.foundOff2Digit(Double.valueOf(row[14].toString())));
+				additionalInfoDto.setDomesticFee(Utils.limitTo2Decimals(Double.valueOf(row[13].toString())));
+				additionalInfoDto.setInternationalFee(Utils.limitTo2Decimals(Double.valueOf(row[14].toString())));
 				additionalInfoDtos.add(additionalInfoDto);
 				courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 				courseResponseDto.setLevelId(row[23].toString());
@@ -722,7 +720,7 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public List<CourseDto> getUserCourse(final List<String> courseIds,final String sortBy, final boolean sortType) 
-			throws ValidationException, CommonInvokeException {
+			throws ValidationException {
 		Session session = sessionFactory.getCurrentSession();
 		String sqlQuery = "select c.id ,c.name, c.world_ranking, c.stars, c.description, "
 				+ " c.remarks, i.name as instituteName, cai.domestic_fee, cai.international_fee, cai.usd_domestic_fee, cai.usd_international_fee,"
@@ -852,7 +850,7 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	@Override
-	public List<CourseResponseDto> advanceSearch(List<String> entityIds, final Object... values) throws CommonInvokeException {
+	public List<CourseResponseDto> advanceSearch(List<String> entityIds, final Object... values) {
 		AdvanceSearchDto courseSearchDto = (AdvanceSearchDto) values[0];
 		GlobalFilterSearchDto globalSearchFilterDto = null;
 
@@ -918,7 +916,7 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	private CourseResponseDto getCourseData(final Object[] row, final AdvanceSearchDto courseSearchDto, final boolean showIntlCost, 
-			List<CourseDeliveryModesDto> additionalInfoDtos) throws CommonInvokeException {
+			List<CourseDeliveryModesDto> additionalInfoDtos) {
 		CourseResponseDto courseResponseDto = null;
 		CourseDeliveryModesDto additionalInfoDto = new CourseDeliveryModesDto();
 		courseResponseDto = new CourseResponseDto();
@@ -1453,7 +1451,7 @@ public class CourseDaoImpl implements CourseDao {
 
 			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
 			
-			InstituteElasticSearchDto institute = new InstituteElasticSearchDto();
+			InstituteElasticSearchDTO institute = new InstituteElasticSearchDTO();
 			institute.setId(String.valueOf(objects[30]));
 			institute.setName(String.valueOf(objects[31]));
 			courseDtoElasticSearch.setInstitute(institute);
@@ -1549,7 +1547,7 @@ public class CourseDaoImpl implements CourseDao {
 
 			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
 
-			InstituteElasticSearchDto institute = new InstituteElasticSearchDto();
+			InstituteElasticSearchDTO institute = new InstituteElasticSearchDTO();
 			institute.setId(String.valueOf(objects[30]));
 			institute.setName(String.valueOf(objects[31]));
 			courseDtoElasticSearch.setInstitute(institute);

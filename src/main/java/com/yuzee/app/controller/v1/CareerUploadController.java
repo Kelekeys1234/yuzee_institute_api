@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.endpoint.CareerUploadInterface;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CareerUploadProcessor;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 @RestController
 public class CareerUploadController implements CareerUploadInterface {

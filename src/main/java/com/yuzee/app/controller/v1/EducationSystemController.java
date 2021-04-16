@@ -7,11 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.dto.EducationSystemDto;
-import com.yuzee.app.dto.GradeDto;
 import com.yuzee.app.endpoint.EducationSystemInterface;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.EducationSystemProcessor;
+import com.yuzee.common.lib.dto.institute.EducationSystemDto;
+import com.yuzee.common.lib.dto.institute.GradeDto;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 @RestController("educationSystemControllerV1")
 public class EducationSystemController implements EducationSystemInterface {

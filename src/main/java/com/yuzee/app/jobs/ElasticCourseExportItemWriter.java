@@ -7,8 +7,8 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 
-import com.yuzee.app.dto.CourseDTOElasticSearch;
-import com.yuzee.app.handler.ElasticHandler;
+import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.handler.ElasticHandler;
 
 import lombok.extern.slf4j.Slf4j;
 

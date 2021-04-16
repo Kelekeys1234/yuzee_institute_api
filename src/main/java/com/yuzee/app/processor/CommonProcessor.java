@@ -13,19 +13,19 @@ import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseDeliveryModes;
-import com.yuzee.app.dto.CourseDTOElasticSearch;
-import com.yuzee.app.dto.FundingResponseDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.dto.UserInitialInfoDto;
-import com.yuzee.app.dto.ViewTransactionDto;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InternalServerException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.handler.EligibilityHandler;
-import com.yuzee.app.handler.UserHandler;
-import com.yuzee.app.handler.ViewTransactionHandler;
+import com.yuzee.common.lib.dto.eligibility.FundingResponseDto;
+import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.dto.transaction.ViewTransactionDto;
+import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InternalServerException;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.EligibilityHandler;
+import com.yuzee.common.lib.handler.UserHandler;
+import com.yuzee.common.lib.handler.ViewTransactionHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -104,7 +104,7 @@ public class CommonProcessor {
 		return map;
 	}
 
-	public Map<String, UserInitialInfoDto> validateAndGetUsersByUserIds(List<String> userIds)
+	public Map<String, UserInitialInfoDto> validateAndGetUsersByUserIds(String loginUserID, List<String> userIds)
 			throws NotFoundException, InvokeException {
 		log.info("inside getFundingMapByFundingNameIds");
 		Map<String, UserInitialInfoDto> map = new HashMap<>();

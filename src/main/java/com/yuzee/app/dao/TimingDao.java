@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.yuzee.app.bean.Timing;
-import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 
 public interface TimingDao {
 

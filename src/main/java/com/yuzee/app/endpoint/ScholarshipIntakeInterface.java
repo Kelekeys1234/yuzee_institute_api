@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yuzee.app.dto.ScholarshipIntakeDto;
 import com.yuzee.app.dto.ValidList;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.dto.institute.ScholarshipIntakeDto;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 @RequestMapping("/api/v1/scholarship/{scholarshipId}/intake")
 public interface ScholarshipIntakeInterface {

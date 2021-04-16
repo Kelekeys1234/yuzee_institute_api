@@ -19,8 +19,8 @@ import com.yuzee.app.dao.InstituteFacilityDao;
 import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.FacilityDto;
 import com.yuzee.app.dto.InstituteFacilityDto;
-import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.util.CommonUtil;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 

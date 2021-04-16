@@ -24,12 +24,12 @@ import com.yuzee.app.bean.ScholarshipCountry;
 import com.yuzee.app.bean.ScholarshipEligibleNationality;
 import com.yuzee.app.bean.ScholarshipLanguage;
 import com.yuzee.app.dao.TimingDao;
-import com.yuzee.app.dto.CourseDTOElasticSearch;
-import com.yuzee.app.dto.InstituteElasticSearchDto;
-import com.yuzee.app.dto.InstituteEnglishRequirementsElasticDto;
-import com.yuzee.app.dto.ScholarshipElasticDto;
-import com.yuzee.app.dto.TimingDto;
-import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
+import com.yuzee.common.lib.dto.institute.InstituteEnglishRequirementsElasticDto;
+import com.yuzee.common.lib.dto.institute.ScholarshipElasticDto;
+import com.yuzee.common.lib.dto.institute.TimingDto;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,28 +72,28 @@ public class ConversionProcessor {
 						.collect(Collectors.toList());
 
 		Converter<InstituteCategoryType, String> instituteTypeConverter = ctx -> ctx.getSource() == null ? null
-				: ctx.getSource().getName().toString();
+				: ctx.getSource().getName();
 
-		modelMapper.typeMap(Institute.class, InstituteElasticSearchDto.class)
+		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
 				.addMappings(mapper -> mapper.using(instituteEnglishRequirementElasticDtoConverter).map(
 						Institute::getInstituteEnglishRequirements,
-						InstituteElasticSearchDto::setInstituteEnglishRequirements));
+						InstituteElasticSearchDTO::setInstituteEnglishRequirements));
 
-		modelMapper.typeMap(Institute.class, InstituteElasticSearchDto.class)
+		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
 				.addMappings(mapper -> mapper.using(instituteFacilityConverter).map(Institute::getInstituteFacilities,
-						InstituteElasticSearchDto::setInstituteFacilities));
+						InstituteElasticSearchDTO::setInstituteFacilities));
 
-		modelMapper.typeMap(Institute.class, InstituteElasticSearchDto.class)
+		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
 				.addMappings(mapper -> mapper.using(instituteServiceConverter).map(Institute::getInstituteServices,
-						InstituteElasticSearchDto::setInstituteServices));
+						InstituteElasticSearchDTO::setInstituteServices));
 
-		modelMapper.typeMap(Institute.class, InstituteElasticSearchDto.class)
+		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
 				.addMappings(mapper -> mapper.using(instituteIntakeConverter).map(Institute::getInstituteIntakes,
-						InstituteElasticSearchDto::setInstituteIntakes));
+						InstituteElasticSearchDTO::setInstituteIntakes));
 
-		modelMapper.typeMap(Institute.class, InstituteElasticSearchDto.class)
+		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
 				.addMappings(mapper -> mapper.using(instituteTypeConverter).map(Institute::getInstituteCategoryType,
-						InstituteElasticSearchDto::setInstituteCategory));
+						InstituteElasticSearchDTO::setInstituteCategory));
 	}
 
 	public CourseDTOElasticSearch convertToCourseDTOElasticSearchEntity(Course course) {
@@ -103,15 +103,16 @@ public class ConversionProcessor {
 		courseElasticDto.setLanguages(
 				course.getCourseLanguages().stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 		courseElasticDto.setCourseType(course.getCourseType().name());
-		courseElasticDto.setCourseTimings(
-				timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, Arrays.asList(course.getId())).stream()
-						.map(e -> modelMapper.map(e, TimingDto.class)).collect(Collectors.toList()));
+
+		
+		courseElasticDto.setCourseTimings(timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, Arrays.asList(course.getId())).stream()
+				.map(e -> modelMapper.map(e, TimingDto.class)).collect(Collectors.toList()));
 		return courseElasticDto;
 	}
 
-	public InstituteElasticSearchDto convertToInstituteElasticDTOEntity(Institute institute) {
+	public InstituteElasticSearchDTO convertToInstituteElasticDTOEntity(Institute institute) {
 		log.info("inside DTOUtils.convertToInstituteElasticDTOEntity");
-		return modelMapper.map(institute, InstituteElasticSearchDto.class);
+		return modelMapper.map(institute, InstituteElasticSearchDTO.class);
 	}
 
 	public ScholarshipElasticDto convertScholarshipToScholarshipDTOElasticSearchEntity(Scholarship scholarship) {

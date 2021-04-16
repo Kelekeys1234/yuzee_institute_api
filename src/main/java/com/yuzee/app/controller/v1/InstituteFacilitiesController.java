@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.endpoint.InstituteFacilitiesInterface;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.InstituteFacilityProcessor;
 import lombok.extern.slf4j.Slf4j;
 

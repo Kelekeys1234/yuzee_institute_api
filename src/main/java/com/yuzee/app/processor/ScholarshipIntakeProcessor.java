@@ -1,6 +1,5 @@
 package com.yuzee.app.processor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,13 +18,13 @@ import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.bean.ScholarshipIntake;
 import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dao.ScholarshipIntakeDao;
-import com.yuzee.app.dto.ScholarshipIntakeDto;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.RuntimeNotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.institute.ScholarshipIntakeDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.RuntimeNotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -100,7 +99,7 @@ public class ScholarshipIntakeProcessor {
 				log.error("no access to delete one more scholarship intakes");
 				throw new ForbiddenException("no access to delete one more scholarship intakes");
 			}
-			scholarship.getScholarshipIntakes().removeIf(e->Util.contains(scholarshipIntakeIds, e.getId()));
+			scholarship.getScholarshipIntakes().removeIf(e->Utils.contains(scholarshipIntakeIds, e.getId()));
 			scholarshipIntakeDao.deleteByScholarshipIdAndIdIn(courseId, scholarshipIntakeIds);
 			log.info("Calling elastic search service to save data on elastic index");
 			elasticHandler

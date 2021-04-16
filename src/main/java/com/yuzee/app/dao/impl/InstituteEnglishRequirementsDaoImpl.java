@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.yuzee.app.bean.InstituteEnglishRequirements;
 import com.yuzee.app.dao.InstituteEnglishRequirementsDao;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.InstituteEnglishRequirementsRepository;
 
 import lombok.extern.slf4j.Slf4j;

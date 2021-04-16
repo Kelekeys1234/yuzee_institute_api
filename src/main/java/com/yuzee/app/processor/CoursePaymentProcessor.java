@@ -19,13 +19,13 @@ import com.yuzee.app.bean.CoursePayment;
 import com.yuzee.app.bean.CoursePaymentItem;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CoursePaymentDao;
-import com.yuzee.app.dto.CoursePaymentDto;
-import com.yuzee.app.dto.CoursePaymentItemDto;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.InternalServerException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.ElasticHandler;
+import com.yuzee.common.lib.dto.institute.CoursePaymentDto;
+import com.yuzee.common.lib.dto.institute.CoursePaymentItemDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.InternalServerException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.ElasticHandler;
 
 import lombok.extern.slf4j.Slf4j;
 

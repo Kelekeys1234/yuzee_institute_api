@@ -16,7 +16,7 @@ import com.yuzee.app.dao.ITodoDao;
 import com.yuzee.app.dto.TodoDto;
 import com.yuzee.app.dto.TodoFolder;
 import com.yuzee.app.util.CommonUtil;
-import com.yuzee.app.util.DateUtil;
+import com.yuzee.common.lib.util.DateUtil;
 
 @Service
 public class TodoService implements ITodoService {

@@ -13,7 +13,7 @@ import com.yuzee.app.bean.SubCategory;
 import com.yuzee.app.dao.ICategoryDAO;
 import com.yuzee.app.dao.ISubCategoryDAO;
 import com.yuzee.app.dto.SubCategoryDto;
-import com.yuzee.app.util.DateUtil;
+import com.yuzee.common.lib.util.DateUtil;
 import com.yuzee.app.util.IConstant;
 
 @Service

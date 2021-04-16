@@ -21,13 +21,13 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCareerOutcome;
 import com.yuzee.app.dao.CareerDao;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dto.CourseCareerOutcomeDto;
 import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.RuntimeNotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.RuntimeNotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -129,7 +129,7 @@ public class CourseCareerOutcomeProcessor {
 				log.error("no access to delete one more career outcomes");
 				throw new ForbiddenException("no access to delete one more career outcomes");
 			}
-			courseCareerOutcomes.removeIf(e -> Util.contains(careerOutcomeIds, e.getId()));
+			courseCareerOutcomes.removeIf(e -> Utils.contains(careerOutcomeIds, e.getId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
@@ -176,7 +176,7 @@ public class CourseCareerOutcomeProcessor {
 					courseCareerOutcomes.clear();
 				} else {
 					courseCareerOutcomes
-							.removeIf(e -> !Util.containsIgnoreCase(careerIds.stream().collect(Collectors.toList()),
+							.removeIf(e -> !Utils.containsIgnoreCase(careerIds.stream().collect(Collectors.toList()),
 									e.getCareer().getId()));
 					courseCareerOutcomeDtos.stream().forEach(dto -> {
 						Optional<CourseCareerOutcome> existingScholarshipOp = courseCareerOutcomes.stream()

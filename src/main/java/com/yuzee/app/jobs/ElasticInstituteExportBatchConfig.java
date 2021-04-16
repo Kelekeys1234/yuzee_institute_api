@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.yuzee.app.bean.Institute;
-import com.yuzee.app.dto.InstituteElasticSearchDto;
-import com.yuzee.app.exception.ElasticSearchInvokeException;
+import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
+import com.yuzee.common.lib.exception.InvokeException;
 
 @Configuration
 @EnableBatchProcessing
@@ -53,8 +53,8 @@ public class ElasticInstituteExportBatchConfig {
 	public Step exportInstituteToElasticStep(StepBuilderFactory stepBuilderFactory,@Qualifier("instituteJpaItemReader") ItemReader<Institute> instituteJpaItemReader,
 			@Qualifier("elasticInstituteExportItemWriter")  ElasticInstituteExportItemWriter elasticInstituteExportItemWriter, ElasticInstituteExportItemProcessor elasticInstituteExportItemProcessor,
 			 SkipAnyFailureSkipPolicy skipPolicy) {
-		return stepBuilderFactory.get("exportInstituteToElastic").<Institute, InstituteElasticSearchDto>chunk(1).reader(instituteJpaItemReader)
-				.faultTolerant().skipPolicy(skipPolicy).noRollback(ElasticSearchInvokeException.class)
+		return stepBuilderFactory.get("exportInstituteToElastic").<Institute, InstituteElasticSearchDTO>chunk(1).reader(instituteJpaItemReader)
+				.faultTolerant().skipPolicy(skipPolicy).noRollback(InvokeException.class)
 				.processor(elasticInstituteExportItemProcessor).writer(elasticInstituteExportItemWriter).build();
 	}
 

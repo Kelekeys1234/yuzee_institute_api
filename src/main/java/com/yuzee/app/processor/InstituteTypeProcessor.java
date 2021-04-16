@@ -69,7 +69,7 @@ public class InstituteTypeProcessor {
 
 	public List<InstituteTypeDto> getInstituteTypeByCountryName(String countryName) {
 		log.debug("Inside getInstituteTypeByCountryName() method");
-		List<InstituteTypeDto> listOfInstituteDto = new ArrayList<InstituteTypeDto>();
+		List<InstituteTypeDto> listOfInstituteDto = new ArrayList<>();
 		log.info("Fetching InstituteType from DB having countryName = " + countryName);
 		List<InstituteType> listOfInstituteType = iInstituteTypeDAO.getByCountryName(countryName);
 		if (!CollectionUtils.isEmpty(listOfInstituteType)) {
@@ -88,8 +88,7 @@ public class InstituteTypeProcessor {
 		return listOfInstituteDto;
 	}
 
-	public void importInstituteType(final MultipartFile multipartFile) throws com.yuzee.app.exception.IOException,
-			IOException, ParseException, JobExecutionAlreadyRunningException, JobRestartException,
+	public void importInstituteType(final MultipartFile multipartFile) throws IOException, ParseException, JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		log.debug("Inside importInstitute() method");
 		log.info("Calling methiod to save instituteData");

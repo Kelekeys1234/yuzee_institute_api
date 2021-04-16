@@ -34,24 +34,23 @@ import com.yuzee.app.dao.ISubCategoryDAO;
 import com.yuzee.app.dao.impl.InstituteDaoImpl;
 import com.yuzee.app.dto.ArticleCityDto;
 import com.yuzee.app.dto.ArticleCountryDto;
-import com.yuzee.app.dto.ArticleElasticSearchDto;
 import com.yuzee.app.dto.ArticleFolderDto;
 import com.yuzee.app.dto.ArticleFolderMapDto;
 import com.yuzee.app.dto.ArticleResponseDetailsDto;
 import com.yuzee.app.dto.ArticleUserDemographicDto;
 import com.yuzee.app.dto.ArticlesDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.message.MessageByLocaleService;
-import com.yuzee.app.util.CommonUtil;
-import com.yuzee.app.util.DateUtil;
-import com.yuzee.app.util.IConstant;
+import com.yuzee.common.lib.constants.IConstant;
+import com.yuzee.common.lib.dto.institute.ArticleElasticSearchDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.util.DateUtil;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -288,12 +287,12 @@ public class ArticleProcessor {
 		articleElasticSearchDTO.setFaculty(article.getFaculty() != null ? article.getFaculty().getName() : null);
 		articleElasticSearchDTO.setInstitute(article.getInstitute() != null ? article.getInstitute().getName() : null);
 		articleElasticSearchDTO.setCourse(article.getCourse() != null ? article.getCourse().getName() : null);
-		articleElasticSearchDTO.setPostDate(CommonUtil.getDateWithoutTime(articleDto.getPostDate()));
+		articleElasticSearchDTO.setPostDate(DateUtil.removeTimeFromDate(articleDto.getPostDate()));
 		if (updateCase) {
-			elasticHandler.updateArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
+			elasticHandler.updateArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, com.yuzee.app.util.IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
 					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
 		} else {
-			elasticHandler.saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
+			elasticHandler.saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, com.yuzee.app.util.IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
 					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
 		}
 		return articleDto;
@@ -476,7 +475,7 @@ public class ArticleProcessor {
 	}
 
 	
-	public List<String> getAuthors(final int startIndex, final Integer pageSize, final String searchString) {
+	public List<String> getAuthors(final Long startIndex, final Integer pageSize, final String searchString) {
 		return articleDAO.getAuthors(startIndex, pageSize, searchString);
 	}
 

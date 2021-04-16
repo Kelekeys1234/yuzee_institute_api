@@ -70,61 +70,63 @@ import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dao.TimingDao;
 import com.yuzee.app.dto.AdvanceSearchDto;
-import com.yuzee.app.dto.CourseCareerOutcomeDto;
-import com.yuzee.app.dto.CourseContactPersonDto;
 import com.yuzee.app.dto.CourseCountDto;
-import com.yuzee.app.dto.CourseDTOElasticSearch;
-import com.yuzee.app.dto.CourseDeliveryModesDto;
 import com.yuzee.app.dto.CourseDto;
-import com.yuzee.app.dto.CourseEnglishEligibilityDto;
 import com.yuzee.app.dto.CourseFilterDto;
-import com.yuzee.app.dto.CourseFundingDto;
 import com.yuzee.app.dto.CourseMobileDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.CourseSearchDto;
-import com.yuzee.app.dto.CourseSubjectDto;
-import com.yuzee.app.dto.CurrencyRateDto;
-import com.yuzee.app.dto.FundingResponseDto;
 import com.yuzee.app.dto.NearestCoursesDto;
-import com.yuzee.app.dto.OffCampusCourseDto;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.dto.ReviewStarDto;
-import com.yuzee.app.dto.StorageDto;
 import com.yuzee.app.dto.UnLinkInsituteDto;
 import com.yuzee.app.dto.UserDto;
-import com.yuzee.app.dto.UserInitialInfoDto;
-import com.yuzee.app.dto.UserViewCourseDto;
 import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.entitylistener.CourseUpdateListener;
-import com.yuzee.app.enumeration.CourseTypeEnum;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.enumeration.TransactionTypeEnum;
-import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.IOException;
-import com.yuzee.app.exception.InternalServerException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.RuntimeNotFoundException;
-import com.yuzee.app.exception.UploaderException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.CommonHandler;
-import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.handler.ReviewHandler;
-import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.handler.ViewTransactionHandler;
 import com.yuzee.app.message.MessageByLocaleService;
 import com.yuzee.app.repository.CourseRepository;
 import com.yuzee.app.service.IGlobalStudentData;
 import com.yuzee.app.service.ITop10CourseService;
 import com.yuzee.app.service.UserRecommendationService;
 import com.yuzee.app.util.CommonUtil;
-import com.yuzee.app.util.DateUtil;
+
+import com.yuzee.app.util.DTOUtils;
+
 import com.yuzee.app.util.IConstant;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.dto.common.CurrencyRateDto;
+import com.yuzee.common.lib.dto.eligibility.FundingResponseDto;
+import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
+import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
+import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
+import com.yuzee.common.lib.dto.institute.CourseEnglishEligibilityDto;
+import com.yuzee.common.lib.dto.institute.CourseFundingDto;
+import com.yuzee.common.lib.dto.institute.CourseSubjectDto;
+import com.yuzee.common.lib.dto.institute.OffCampusCourseDto;
+import com.yuzee.common.lib.dto.review.ReviewStarDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.dto.transaction.UserViewCourseDto;
+import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
+import com.yuzee.common.lib.enumeration.CourseTypeEnum;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.enumeration.TransactionTypeEnum;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.IOException;
+import com.yuzee.common.lib.exception.InternalServerException;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.RuntimeNotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.CommonHandler;
+import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.ReviewHandler;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.handler.ViewTransactionHandler;
+import com.yuzee.common.lib.util.DateUtil;
+import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -257,7 +259,7 @@ public class CourseProcessor {
 			return new ArrayList<>();
 		}
 		log.info("Filering course response if courseId is coming duplicate in response");
-		List<CourseResponseDto> courseResponseFinalResponse = courseResponseDtos.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId))
+		List<CourseResponseDto> courseResponseFinalResponse = courseResponseDtos.stream().filter(Utils.distinctByKey(CourseResponseDto::getId))
 				.collect(Collectors.toList());
 	
 		log.info("Collecting CourseIds by stream API and calling store it in list");
@@ -358,7 +360,7 @@ public class CourseProcessor {
 
 	@Transactional
 	public Course prepareCourseModelFromCourseRequest(String loggedInUserId, String instituteId, String courseId, @Valid final CourseRequest courseDto)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
+			throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
 		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
 		Course course = null;
 		if (StringUtils.isEmpty(courseId)) {
@@ -792,7 +794,7 @@ public class CourseProcessor {
 	
 	@Transactional(noRollbackFor = Throwable.class)
 	public String saveOrUpdateCourse(final String loggedInUserId, String instituteId, final CourseRequest courseDto, final String id)
-			throws ValidationException, CommonInvokeException, NotFoundException, ForbiddenException, InvokeException {
+			throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
 		log.debug("Inside saveUpdateCourse() method");
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, instituteId, id, courseDto);
 		course = courseDao.addUpdateCourse(course);
@@ -802,7 +804,7 @@ public class CourseProcessor {
 		return course.getId();
 	}
 	
-	private CurrencyRateDto getCurrencyRate(final String courseCurrency) throws CommonInvokeException {
+	private CurrencyRateDto getCurrencyRate(final String courseCurrency) {
 		log.debug("Inside getCurrencyRate() method");
 		log.info("Calling DAO layer to getCurrencyRate from DB having currencyCode = "+courseCurrency);
     	CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseCurrency);
@@ -840,9 +842,9 @@ public class CourseProcessor {
 		try {
 			log.info("Getting total count for course to calculate pagination");
 			int totalCount = courseDao.findTotalCount();
-			int startIndex = (pageNumber - 1) * pageSize;
+			Long startIndex = (Long.valueOf(pageNumber - 1)) * pageSize;
 			log.info("Calling DAO layer to fetch courses from DB with limit = " + startIndex + ", " + pageSize);
-			List<CourseRequest> courses = courseDao.getAll(startIndex, pageSize);
+			List<CourseRequest> courses = courseDao.getAll(startIndex.intValue(), pageSize);
 			if(!CollectionUtils.isEmpty(courses)) {
 				log.info("Courses fetched from DB hence start iterating courses");
 				List<CourseRequest> resultList = new ArrayList<>();
@@ -872,7 +874,7 @@ public class CourseProcessor {
 				log.info("Calculating pagination based on startIndex, pageSize, totalCount");
 				PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 				paginationResponseDto.setResponse(resultList);
-				paginationResponseDto.setTotalCount(totalCount);
+				paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 				paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 				paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 				paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
@@ -916,8 +918,8 @@ public class CourseProcessor {
 			List<CourseDTOElasticSearch> courseDtoESList = new ArrayList<>();
 			courseDtoESList.add(elasticSearchCourseDto);
 			log.info("Calling elastic service to update course having entityId = " + courseId);
-			elasticHandler.deleteCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX,
-					EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoESList, IConstant.ELASTIC_SEARCH);
+			elasticHandler.deleteCourseOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
+					EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoESList, com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH);
 		} else {
 			log.error("Course not found for courseId = " + courseId);
 			throw new NotFoundException("Course not found for courseId = " + courseId);
@@ -925,7 +927,7 @@ public class CourseProcessor {
 	}
 
 	@Transactional
-	public List<CourseDto> getUserCourse(final List<String> courseIds, final String sortBy, final String sortAsscending) throws ValidationException, CommonInvokeException {
+	public List<CourseDto> getUserCourse(final List<String> courseIds, final String sortBy, final String sortAsscending) throws ValidationException, InvokeException {
 		log.debug("Inside getUserCourse() method");
 		log.info("Extracting courses from DB based on pagination and courseIds");
 		List<CourseDto> courses = new ArrayList<>();
@@ -936,7 +938,7 @@ public class CourseProcessor {
 		}
 		
 		log.info("Filering course response if courseId is coming duplicate in response");
-		courses = courses.stream().filter(CommonUtil.distinctByKey(CourseDto::getId)).collect(Collectors.toList());
+		courses = courses.stream().filter(Utils.distinctByKey(CourseDto::getId)).collect(Collectors.toList());
 		
 		if(!CollectionUtils.isEmpty(courses)) {
 			log.info("Courses fetched from DB hence strat iterating data");
@@ -957,7 +959,7 @@ public class CourseProcessor {
 
 	@Transactional
 	public List<CourseResponseDto> advanceSearch(final AdvanceSearchDto courseSearchDto, List<String> entityIds) 
-			throws ValidationException, CommonInvokeException, InvokeException, NotFoundException {
+			throws ValidationException, InvokeException, NotFoundException {
 		log.debug("Inside advanceSearch() method");
 		
 		log.info("Calling DAO layer to fetch courses from DB based on passed filters");
@@ -968,7 +970,7 @@ public class CourseProcessor {
 		}
 		
 		log.info("Filtering distinct courses based on courseId and collect in list");
-		List<CourseResponseDto> courseResponseFinalResponse = courseResponseDtos.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId))
+		List<CourseResponseDto> courseResponseFinalResponse = courseResponseDtos.stream().filter(Utils.distinctByKey(CourseResponseDto::getId))
 				.collect(Collectors.toList());
 		
 		//log.info("Filtering distinct courseIds");
@@ -1082,9 +1084,9 @@ public class CourseProcessor {
 		try {
 			log.info("fetched total count of courses based on passed filters");
 			int totalCount = courseDao.findTotalCountCourseFilter(courseFilter);
-			int startIndex = (courseFilter.getPageNumber() - 1) * courseFilter.getMaxSizePerPage();
+			Long startIndex = (Long.valueOf(courseFilter.getPageNumber() - 1)) * courseFilter.getMaxSizePerPage();
 			log.info("Fetching course data from DB based on filters and pagination");
-			List<CourseRequest> courses = courseDao.courseFilter(startIndex, courseFilter.getMaxSizePerPage(), courseFilter);
+			List<CourseRequest> courses = courseDao.courseFilter(startIndex.intValue(), courseFilter.getMaxSizePerPage(), courseFilter);
 
 			List<CourseRequest> resultList = new ArrayList<>();
 			if(!CollectionUtils.isEmpty(courses)) {
@@ -1111,7 +1113,7 @@ public class CourseProcessor {
 				log.info("Calculating pagination based on startIndex, pageSize and totalCount");
 				PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseFilter.getMaxSizePerPage(), totalCount);
 				paginationResponseDto.setResponse(resultList);
-				paginationResponseDto.setTotalCount(totalCount);
+				paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 				paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 				paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 				paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
@@ -1131,9 +1133,9 @@ public class CourseProcessor {
 			List<CourseRequest> resultList = new ArrayList<>();
 			log.info("Fetching total count of courses from DB for searchKey = "+searchKey);
 			Long totalCount = courseDao.autoSearchTotalCount(searchKey);
-			int startIndex = (pageNumber - 1) * pageSize;
+			Long startIndex = (Long.valueOf(pageNumber - 1)) * pageSize;
 			log.info("Fetching courses from DB based on pagination and having searchKeyword = "+searchKey);
-			List<CourseRequest> courses = courseDao.autoSearch(startIndex, pageSize, searchKey);
+			List<CourseRequest> courses = courseDao.autoSearch(startIndex.intValue(), pageSize, searchKey);
 			if(!CollectionUtils.isEmpty(courses)) {
 				log.info("Courses fetched from DB, hence start iterating data");
 				courses.stream().forEach(course -> {
@@ -1176,7 +1178,7 @@ public class CourseProcessor {
 				
 				PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount.intValue());
 				paginationResponseDto.setResponse(resultList);
-				paginationResponseDto.setTotalCount(totalCount.intValue());
+				paginationResponseDto.setTotalCount(totalCount);
 				paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 				paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 				paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
@@ -1550,6 +1552,8 @@ public class CourseProcessor {
 		log.info("Changing course having Id "+courseId+ " from status "+course.getIsActive()+ " to "+status );
 		course.setIsActive(status);
 		courseDao.addUpdateCourse(course);
+		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
+		elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
 	}
 	
 	@Transactional
@@ -1615,10 +1619,10 @@ public class CourseProcessor {
 			log.error("No course found for instituteId "+instituteId);
 			throw new NotFoundException("No course found for instituteId "+instituteId);
 		}
-		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount.intValue());
-		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto(nearestCourseList, totalCount.intValue(), paginationUtilDto.getPageNumber(), 
+		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto(nearestCourseList, totalCount, paginationUtilDto.getPageNumber(), 
 				paginationUtilDto.isHasPreviousPage(), paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return nearestCoursesPaginationDto;
 	}
@@ -1651,7 +1655,7 @@ public class CourseProcessor {
 				log.info("start iterating data which is coming from DB");
 				
 				log.info("Filering course response if ID is coming duplicate in response");
-				List<CourseResponseDto> courseResponseFinalResponse = nearestCourseDTOs.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId))
+				List<CourseResponseDto> courseResponseFinalResponse = nearestCourseDTOs.stream().filter(Utils.distinctByKey(CourseResponseDto::getId))
 						.collect(Collectors.toList());
 				log.info("Collecting CourseIds by stream API and calling store it in list");
 				
@@ -1689,14 +1693,14 @@ public class CourseProcessor {
 				}
 			}
 		}
-		Integer startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+		Long startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
 		Boolean hasNextPage = false;
 		if(initialRadius != maxRadius) {
 			hasNextPage = true;
 		} 
-		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto(courseResponseDtoList, totalCount.intValue(), paginationUtilDto.getPageNumber(), 
+		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto(courseResponseDtoList, Long.valueOf(totalCount), paginationUtilDto.getPageNumber(), 
 				paginationUtilDto.isHasPreviousPage(), hasNextPage, paginationUtilDto.getTotalPages());
 		return nearestCoursesPaginationDto;
 	}
@@ -1786,6 +1790,7 @@ public class CourseProcessor {
 		List<CourseContactPersonDto> courseContactPersons = courseRequest.getCourseContactPersons();
 		if (!CollectionUtils.isEmpty(courseContactPersons)) {
 			Map<String, UserInitialInfoDto> users = commonProcessor.validateAndGetUsersByUserIds(
+					userId,
 					courseContactPersons.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
 			courseContactPersons.stream().forEach(e->{
 				e.setUser(users.get(e.getUserId()));
@@ -1806,7 +1811,7 @@ public class CourseProcessor {
 	@Transactional
 	public NearestCoursesDto getCourseByCountryName(String countryName, Integer pageNumber, Integer pageSize) throws NotFoundException {
 		log.debug("Inside getCourseByCountryName() method");
-		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> nearestCourseResponse = new ArrayList<>();
 		log.info("fetching courses from DB for countryName "+ countryName);
 		List<CourseResponseDto> nearestCourseDTOs = courseDao.getCourseByCountryName(pageNumber, pageSize, countryName);
@@ -1832,7 +1837,7 @@ public class CourseProcessor {
 		}
 		log.info("calculating pagination on the basis of pageNumber, pageSize and totalCount");
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount.intValue());
-		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto(nearestCourseResponse, totalCount.intValue(), paginationUtilDto.getPageNumber(), 
+		NearestCoursesDto nearestCoursesPaginationDto = new NearestCoursesDto(nearestCourseResponse, Long.valueOf(totalCount), paginationUtilDto.getPageNumber(), 
 				paginationUtilDto.isHasPreviousPage(), paginationUtilDto.isHasNextPage(), paginationUtilDto.getTotalPages());
 		return nearestCoursesPaginationDto;
 	}
@@ -1907,11 +1912,12 @@ public class CourseProcessor {
 	}
 
 	@Transactional
-	public String saveOrUpdateBasicCourse(String loggedInUserId, String instituteId, CourseRequest courseDto, String courseId) throws CommonInvokeException, ForbiddenException, NotFoundException, ValidationException, InvokeException {
+	public String saveOrUpdateBasicCourse(String loggedInUserId, String instituteId, CourseRequest courseDto, String courseId) throws ForbiddenException, NotFoundException, ValidationException, InvokeException {
 		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
 		Course course = null;
 		if (StringUtils.isEmpty(courseId)) {
 			course = new Course();
+			course.setIsActive(true);
 		} else {
 			course = courseDao.get(courseId);
 			Course copyCourse = new Course();
@@ -1974,7 +1980,6 @@ public class CourseProcessor {
 			populateCourseUsdPrices(currencyRate, course);	
 		}
 		course.setAuditFields(loggedInUserId);
-		course.setIsActive(true);
 		saveUpdateCourseIntakes(loggedInUserId, course, courseDto.getIntake());
 		
 		saveUpdateCourseLanguages(loggedInUserId, course, courseDto.getLanguage());
@@ -2017,7 +2022,7 @@ public class CourseProcessor {
 	}
 	
 	@CacheEvict(cacheNames = {"cacheLevelMap","cacheFacultyMap", "cacheCourseCurriculumList", "cacheInstituteMap"}, allEntries = true)
-	public void uploadCourseData(final MultipartFile multipartFile) throws IOException, UploaderException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+	public void uploadCourseData(final MultipartFile multipartFile) throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, IOException {
 		log.debug("Inside importCourse() method");
 		try {
 			log.info("Launching job to upload course");

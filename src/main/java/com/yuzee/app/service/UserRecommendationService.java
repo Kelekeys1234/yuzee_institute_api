@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.dto.CourseResponseDto;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface UserRecommendationService {
 

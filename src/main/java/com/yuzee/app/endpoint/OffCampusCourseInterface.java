@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 @RequestMapping(path = "/api/v1/off-campus-course")
 public interface OffCampusCourseInterface {

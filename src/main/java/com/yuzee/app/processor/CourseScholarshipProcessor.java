@@ -22,13 +22,13 @@ import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.CourseScholarshipDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.ScholarshipDao;
-import com.yuzee.app.dto.CourseScholarshipDto;
-import com.yuzee.app.dto.ScholarshipResponseDto;
-import com.yuzee.app.exception.ForbiddenException;
-import com.yuzee.app.exception.InternalServerException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.institute.CourseScholarshipDto;
+import com.yuzee.common.lib.dto.institute.ScholarshipResponseDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.InternalServerException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -73,7 +73,7 @@ public class CourseScholarshipProcessor {
 
 			log.info("remove the payment items not present in request");
 			dbCourseScholarshipItems.removeIf(
-					e -> !Util.contains(courseScholarshipDto.getScholarshipIds(), e.getScholarship().getId()));
+					e -> !Utils.contains(courseScholarshipDto.getScholarshipIds(), e.getScholarship().getId()));
 			final CourseScholarship finalCourseScholarship = courseScholarship;
 			courseScholarshipDto.getScholarshipIds().stream().forEach(e -> {
 				Optional<CourseScholarshipItem> existingCourseScholarshipItemOp = dbCourseScholarshipItems.stream()

@@ -86,4 +86,7 @@ public class InstituteDto {
 	
 	@JsonProperty("cover_photo_url")
 	private String coverPhotoUrl;
+	
+	@JsonProperty("readable_id")
+	private String readableId;
 }

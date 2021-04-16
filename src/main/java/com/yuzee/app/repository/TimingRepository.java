@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.Timing;
-import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 
 @Repository
 public interface TimingRepository extends JpaRepository<Timing, String> {

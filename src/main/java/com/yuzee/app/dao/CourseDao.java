@@ -9,16 +9,15 @@ import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dto.AdvanceSearchDto;
-import com.yuzee.app.dto.CourseDTOElasticSearch;
 import com.yuzee.app.dto.CourseDto;
 import com.yuzee.app.dto.CourseFilterDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.CourseSearchDto;
-import com.yuzee.app.dto.CurrencyRateDto;
 import com.yuzee.app.dto.UserDto;
-import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.dto.common.CurrencyRateDto;
+import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface CourseDao {
 
@@ -43,14 +42,13 @@ public interface CourseDao {
 	
 	public List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
 
-	public List<CourseDto> getUserCourse(List<String> courseIds, String sortBy, boolean sortType) throws ValidationException, 
-			CommonInvokeException;
+	public List<CourseDto> getUserCourse(List<String> courseIds, String sortBy, boolean sortType) throws ValidationException;
 
 	public int findTotalCountByUserId(String userId);
 
 	public Course getCourseData(String id);
 
-	public List<CourseResponseDto> advanceSearch(List<String> entityIds,Object... values) throws CommonInvokeException;
+	public List<CourseResponseDto> advanceSearch(List<String> entityIds,Object... values);
 
 	public List<CourseRequest> courseFilter(int pageNumber, Integer pageSize, CourseFilterDto courseFilter);
 
