@@ -126,4 +126,8 @@ public interface CourseDao {
 	void deleteAll(List<Course> courses);
 
 	public List<Course> findAll();
+
+	public List<Course> findByReadableIdIn(List<String> readableIds);
+
+	public Course findByReadableId(String readableId);
 }

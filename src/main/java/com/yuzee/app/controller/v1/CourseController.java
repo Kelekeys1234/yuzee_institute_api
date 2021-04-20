@@ -220,11 +220,11 @@ public class CourseController implements CourseInterface {
 				setMessage("Courses Displayed successfully").setData(paginationResponseDto).create();
 	}
 
-	public ResponseEntity<Object> get(final String userId, final String id) throws Exception {
+	public ResponseEntity<Object> get(final String userId, final String id, final boolean isReadableId) throws Exception {
 		log.info("Start process to get course from DB based on courseId");
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
 				.setMessage("Courses Displayed successfully")
-				.setData(courseProcessor.getCourseById(userId, id)).create();
+				.setData(courseProcessor.getCourseById(userId, id, isReadableId)).create();
 	}
 
 	public ResponseEntity<?> getAllCourseByInstituteID(final String instituteId, final CourseSearchDto request) throws Exception {

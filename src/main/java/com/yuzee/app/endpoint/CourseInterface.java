@@ -83,7 +83,8 @@ public interface CourseInterface {
 
 	@GetMapping("/course/{id}")
 	public ResponseEntity<Object> get(@RequestHeader(required = false) final String userId,
-			@Valid @PathVariable final String id) throws Exception;
+			@Valid @PathVariable final String id,
+			@RequestParam(name = "is_readable_id", required = false) boolean isReadableId) throws Exception;
 
 	@PutMapping(value = "/course/institute/{instituteId}")
 	public ResponseEntity<?> getAllCourseByInstituteID(@Valid @PathVariable final String instituteId,

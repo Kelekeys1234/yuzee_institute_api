@@ -235,10 +235,6 @@ public class CourseProcessor {
 	@Autowired
 	@Qualifier("exportCourseToElastic")
 	private Job exportCourseToElastic;
-	
-	public Course get(final String id) {
-		return courseDao.get(id);
-	}
 
 	@Transactional
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
@@ -365,6 +361,8 @@ public class CourseProcessor {
 		Course course = null;
 		if (StringUtils.isEmpty(courseId)) {
 			course = new Course();
+			course.setName(courseDto.getName());
+			setReadableIdForCourse(course);
 		} else {
 			course = courseDao.get(courseId);
 			Course copyCourse = new Course();
@@ -1706,10 +1704,15 @@ public class CourseProcessor {
 	}
 
 	@Transactional
-	public CourseRequest getCourseById(String userId, String id) throws Exception {
+	public CourseRequest getCourseById(String userId, String id, boolean isReadableId) throws Exception {
 		log.debug("Inside getCourseById() method");
 		log.info("Fetching course from DB having courseId = "+id);
-		Course course = get(id);
+		Course course = null;
+		if (isReadableId) {
+			course = courseDao.findByReadableId(id);
+		}else {
+			course = courseDao.get(id);
+		}
 		if (course == null) {
 			log.error("Course not found for courseId = "+id);
 			throw new NotFoundException("Course not found for courseId = "+id);
@@ -1918,6 +1921,8 @@ public class CourseProcessor {
 		if (StringUtils.isEmpty(courseId)) {
 			course = new Course();
 			course.setIsActive(true);
+			course.setName(courseDto.getName());
+			setReadableIdForCourse(course);
 		} else {
 			course = courseDao.get(courseId);
 			Course copyCourse = new Course();
@@ -1958,7 +1963,7 @@ public class CourseProcessor {
 		course.setInstitute(getInstititute(instituteId));
 		course.setDescription(courseDto.getDescription());
 		course.setName(courseDto.getName());
-
+		
 		log.info("Fetching faculty details from DB for facultyId = ", courseDto.getFacultyId());
 		course.setFaculty(getFaculty(courseDto.getFacultyId()));
 		
@@ -2120,5 +2125,23 @@ public class CourseProcessor {
 		jobLauncher.run(exportCourseToElastic, new JobParametersBuilder()
                 .addLong("time",System.currentTimeMillis()).toJobParameters());
 
+	}
+	
+	private void setReadableIdForCourse(Course course) {
+		log.info("going to generate code for course");
+		boolean reGenerateCode = false;
+		do {
+			reGenerateCode = false;
+			String onlyName = Utils.convertToLowerCaseAndRemoveSpace(course.getName());
+			String readableId = Utils.generateReadableId(onlyName);
+			List<Course> sameCodeInsts = courseDao.findByReadableIdIn(Arrays.asList(onlyName, readableId));
+			if (ObjectUtils.isEmpty(sameCodeInsts)) {
+				course.setReadableId(onlyName);
+			} else if (sameCodeInsts.size() == 1) {
+				course.setReadableId(readableId);
+			} else {
+				reGenerateCode = true;
+			}
+		} while (reGenerateCode);
 	}
 }

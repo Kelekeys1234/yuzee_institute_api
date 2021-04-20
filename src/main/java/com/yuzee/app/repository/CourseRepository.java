@@ -28,4 +28,8 @@ public interface CourseRepository extends JpaRepository<Course, String>{
 	public long getTotalCountOfCourseByCountryName (String countryName);
 	
 	public List<Course> findByIsActiveAndDeletedOnAndNameContaining(Pageable pageable, Boolean isActive, Date deletedOn, String searchKey);
+
+	public List<Course> findByReadableIdIn(List<String> readableIds);
+
+	public Course findByReadableId(String readableId);
 }

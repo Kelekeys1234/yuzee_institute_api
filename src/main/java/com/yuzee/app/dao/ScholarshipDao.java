@@ -25,4 +25,8 @@ public interface ScholarshipDao {
 	public Long getCountByInstituteId(String instituteId);
 
 	public List<Scholarship> getScholarshipByIds(List<String> scholarshipIds);
+	
+	public List<Scholarship> findByReadableIdIn(List<String> readableIds);
+
+	public Scholarship findByReadableId(String readableId);
 }

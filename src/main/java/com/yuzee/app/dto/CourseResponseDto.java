@@ -124,4 +124,7 @@ public class CourseResponseDto {
 	
 	@JsonProperty("off_campus_course")
 	private OffCampusCourseDto offCampusCourse;
+	
+	@JsonProperty("readable_id")
+	private String readableId;
 }

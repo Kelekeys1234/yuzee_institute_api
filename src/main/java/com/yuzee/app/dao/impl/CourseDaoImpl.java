@@ -160,7 +160,7 @@ public class CourseDaoImpl implements CourseDao {
 				+ " crs.currency, cai.duration, cai.duration_time, crs.world_ranking, crs.stars, crs.recognition,"
 				+ " cai.domestic_fee, cai.international_fee, crs.remarks, cai.usd_domestic_fee, cai.usd_international_fee,"
 				+ " crs.updated_on, crs.is_active ,inst.latitude as latitude,inst.longitude as longitute,inst.country_name as countryName,"
-				+ " inst.city_name as cityName, cai.delivery_type, cai.study_mode,crs.level_id as levelId, crs.faculty_id as facultyId from course crs inner join institute inst  on crs.institute_id = inst.id "
+				+ " inst.city_name as cityName, cai.delivery_type, cai.study_mode,crs.level_id as levelId, crs.faculty_id as facultyId, crs.readable_id as readableId from course crs inner join institute inst  on crs.institute_id = inst.id "
 				+ " left join course_delivery_modes cai on cai.course_id = crs.id"
 				+ " where 1=1 and crs.is_active=1";
 
@@ -336,6 +336,7 @@ public class CourseDaoImpl implements CourseDao {
 				courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 				courseResponseDto.setLevelId(row[23].toString());
 				courseResponseDto.setFacultyId(row[24].toString());
+				courseResponseDto.setReadableId(String.valueOf(row[25]));
 				list.add(courseResponseDto);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1640,7 +1641,8 @@ public class CourseDaoImpl implements CourseDao {
 				.add(Projections.groupProperty("name").as("name"))
 				.add(Projections.property("id").as("id"))
 				.add(Projections.property("worldRanking").as("courseRanking"))
-				.add(Projections.property("currency").as("currencyCode")))
+				.add(Projections.property("currency").as("currencyCode"))
+				.add(Projections.property("readableId").as("readableId")))
 				.setResultTransformer(Transformers.aliasToBean(CourseResponseDto.class));
 		if (StringUtils.isNotEmpty(courseName)) {
 			criteria.add(Restrictions.like("name", courseName,MatchMode.ANYWHERE));
@@ -1897,5 +1899,15 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public List<Course> findAll() {
 		return courseRepository.findAll();
+	}
+
+	@Override
+	public List<Course> findByReadableIdIn(List<String> readableIds) {
+		return courseRepository.findByReadableIdIn(readableIds);
+	}
+
+	@Override
+	public Course findByReadableId(String readableId) {
+		return courseRepository.findByReadableId(readableId);
 	}
 }

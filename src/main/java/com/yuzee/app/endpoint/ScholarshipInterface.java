@@ -42,7 +42,8 @@ public interface ScholarshipInterface {
 			throws Exception;
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> get(@RequestHeader("userId") final String userId, @PathVariable final String id)
+	public ResponseEntity<?> get(@RequestHeader("userId") final String userId, @PathVariable final String id,
+			@RequestParam(name = "is_readable_id", required = false) boolean isReadableId)
 			throws ValidationException, NotFoundException, InvokeException;
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")

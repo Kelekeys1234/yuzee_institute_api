@@ -47,6 +47,9 @@ public class Scholarship implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
+	@Column(name = "readable_id", nullable = false, updatable = false, unique = true)
+	private String readableId;
+	
 	@Column(name = "description")
 	private String description;
 

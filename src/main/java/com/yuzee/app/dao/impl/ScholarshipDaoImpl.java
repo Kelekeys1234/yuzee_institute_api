@@ -65,4 +65,14 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 	public List<Scholarship> getScholarshipByIds(List<String> scholarshipIds) {
 		return scholarshipRepository.findAllById(scholarshipIds);
 	}
+	
+	@Override
+	public List<Scholarship> findByReadableIdIn(List<String> readableIds) {
+		return scholarshipRepository.findByReadableIdIn(readableIds);
+	}
+
+	@Override
+	public Scholarship findByReadableId(String readableId) {
+		return scholarshipRepository.findByReadableId(readableId);
+	}
 }

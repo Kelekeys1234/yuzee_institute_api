@@ -56,6 +56,9 @@ public class Course implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
+	@Column(name = "readable_id", nullable = false, updatable = false, unique = true)
+	private String readableId;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "faculty_id", nullable = false)
 	private Faculty faculty;

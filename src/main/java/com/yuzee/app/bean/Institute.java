@@ -31,9 +31,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "institute", uniqueConstraints = {
-		@UniqueConstraint(columnNames = { "name", "country_name", "city_name", "campus_name" }, name = "UK_NA_CN_CN"),
-		@UniqueConstraint(columnNames = { "readable_id" }, name = "inst_readable_id") }, indexes = {
+@Table(name = "institute", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "country_name", "city_name",
+		"campus_name" }, name = "UK_NA_CN_CN"), indexes = {
 				@Index(name = "IDX_INSTITUTE_NAME", columnList = "name", unique = false) })
 public class Institute implements Serializable {
 
@@ -45,7 +44,7 @@ public class Institute implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 
-	@Column(name = "readable_id")
+	@Column(name = "readable_id", nullable = false, updatable = false, unique = true)
 	private String readableId;
 	
 	@Column(name = "institute_type")

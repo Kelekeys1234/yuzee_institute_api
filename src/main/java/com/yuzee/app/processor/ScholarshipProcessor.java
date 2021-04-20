@@ -82,6 +82,9 @@ public class ScholarshipProcessor {
 			scholarship = getScholarshipFomDb(existingScholarshipId);
 		}
 		BeanUtils.copyProperties(scholarshipDto, scholarship);
+		if (StringUtils.isEmpty(existingScholarshipId)) {
+			setReadableIdForScholarship(scholarship);
+		}
 		scholarship.setId(existingScholarshipId);
 		scholarship.setAuditFields(userId);
 
@@ -219,9 +222,14 @@ public class ScholarshipProcessor {
 	}
 
 	@Transactional
-	public ScholarshipResponseDto getScholarshipById(String userId, String id) throws ValidationException {
+	public ScholarshipResponseDto getScholarshipById(String userId, String id, boolean isReadableId) throws ValidationException {
 		log.debug("Inside getScholarshipById() method");
-		Scholarship scholarship = getScholarshipFomDb(id);
+		Scholarship scholarship = null;
+		if (isReadableId) {
+			scholarship = scholarshipDAO.findByReadableId(id);
+		}else {
+			scholarship = getScholarshipFomDb(id);
+		}
 		ScholarshipResponseDto scholarshipResponseDTO = createScholarshipResponseDtoFromModel(scholarship);
 		if (scholarship.getCreatedBy().equals(userId)) {
 			scholarshipResponseDTO.setHasEditAccess(true);
@@ -264,6 +272,9 @@ public class ScholarshipProcessor {
 		}
 
 		BeanUtils.copyProperties(scholarshipDto, scholarship);
+		if (StringUtils.isEmpty(scholarshipId)) {
+			setReadableIdForScholarship(scholarship);
+		}
 		scholarship.setAuditFields(userId);
 
 		log.info("Calling DAO layer to save/update scholarship in DB");
@@ -348,5 +359,23 @@ public class ScholarshipProcessor {
 			log.error("Scholarship not found for id: {}", scholarshipId);
 			throw new ValidationException("Scholarship not found for id: " + scholarshipId);
 		}
+	}
+	
+	private void setReadableIdForScholarship(Scholarship scholarship) {
+		log.info("going to generate code for scholarship");
+		boolean reGenerateCode = false;
+		do {
+			reGenerateCode = false;
+			String onlyName = Utils.convertToLowerCaseAndRemoveSpace(scholarship.getName());
+			String readableId = Utils.generateReadableId(onlyName);
+			List<Scholarship> sameCodeEntities = scholarshipDAO.findByReadableIdIn(Arrays.asList(onlyName, readableId));
+			if (ObjectUtils.isEmpty(sameCodeEntities)) {
+				scholarship.setReadableId(onlyName);
+			} else if (sameCodeEntities.size() == 1) {
+				scholarship.setReadableId(readableId);
+			} else {
+				reGenerateCode = true;
+			}
+		} while (reGenerateCode);
 	}
 }
