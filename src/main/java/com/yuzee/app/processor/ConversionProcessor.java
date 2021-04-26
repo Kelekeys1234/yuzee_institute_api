@@ -90,10 +90,6 @@ public class ConversionProcessor {
 		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
 				.addMappings(mapper -> mapper.using(instituteIntakeConverter).map(Institute::getInstituteIntakes,
 						InstituteElasticSearchDTO::setInstituteIntakes));
-
-		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
-				.addMappings(mapper -> mapper.using(instituteTypeConverter).map(Institute::getInstituteCategoryType,
-						InstituteElasticSearchDTO::setInstituteCategory));
 	}
 
 	public CourseDTOElasticSearch convertToCourseDTOElasticSearchEntity(Course course) {

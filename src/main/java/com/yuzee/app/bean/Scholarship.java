@@ -121,6 +121,9 @@ public class Scholarship implements Serializable {
 	@Column(name = "successful_canidates", columnDefinition = "text")
 	private String successfulCanidates;
 
+	@Column(name = "is_active", nullable = false)
+	private Boolean isActive = false;
+	
 	@OneToMany(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ScholarshipIntake> scholarshipIntakes = new ArrayList<>();
 

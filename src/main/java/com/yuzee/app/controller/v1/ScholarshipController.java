@@ -94,4 +94,12 @@ public class ScholarshipController implements ScholarshipInterface {
 		return new GenericResponseHandlers.Builder().setMessage("Scholarships fetched Successfully")
 				.setData(scholarshipProcessor.getScholarshipByIds(scholarshipIds)).setStatus(HttpStatus.OK).create();
 	}
+
+	@Override
+	public ResponseEntity<Object> changeStatus(String userId, String instituteId, boolean status) {
+		log.info("Inside ScholarshipController.changeStatus method");
+		scholarshipProcessor.changeScholarshipStatus(userId, instituteId, status);
+		return new GenericResponseHandlers.Builder().setMessage("Scholarship Status changed successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
 }

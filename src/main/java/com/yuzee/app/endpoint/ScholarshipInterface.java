@@ -63,5 +63,10 @@ public interface ScholarshipInterface {
 	@GetMapping("/multiple/id")
 	public ResponseEntity<?> getMultipleScholarshipByIds(
 			@RequestParam(name = "scholarship_ids", required = true) List<String> scholarshipIds);
+	
+	@PutMapping("/status/{scholarshipId}")
+	public ResponseEntity<Object> changeStatus(@RequestHeader("userId") final String userId,
+			@PathVariable("scholarshipId") final String instituteId,
+			@RequestParam(name = "status", required = true) final boolean status);
 
 }

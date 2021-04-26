@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -84,6 +85,7 @@ public class ScholarshipProcessor {
 		BeanUtils.copyProperties(scholarshipDto, scholarship);
 		if (StringUtils.isEmpty(existingScholarshipId)) {
 			setReadableIdForScholarship(scholarship);
+			scholarship.setIsActive(true);
 		}
 		scholarship.setId(existingScholarshipId);
 		scholarship.setAuditFields(userId);
@@ -350,7 +352,30 @@ public class ScholarshipProcessor {
 				.collect(Collectors.toList()));
 		return responseDto;
 	}
+	
+	@Transactional
+	public void changeScholarshipStatus(String userId, String scholarshipId, boolean status) {
+		log.info("Inside ScholarhipProcessor.changeScholarshipStatus method");
 
+		Scholarship existingScholarship = getScholarshipFomDb(scholarshipId);
+
+		boolean existingStatus = false;
+		if (!ObjectUtils.isEmpty(existingScholarship.getIsActive())) {
+			existingStatus = existingScholarship.getIsActive().booleanValue();
+		}
+		log.info("Update scholarship {} status {}", scholarshipId, status);
+		if (ObjectUtils.isEmpty(existingScholarship.getIsActive()) || status != existingStatus) {
+			existingScholarship.setIsActive(status);
+			existingScholarship.setUpdatedBy(userId);
+			existingScholarship.setUpdatedOn(new Date());
+			scholarshipDAO.saveScholarship(existingScholarship);
+
+			log.info("Calling elastic search service to save data on elastic index");
+			elasticHandler.saveUpdateScholarship(
+					conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(existingScholarship));
+		}
+	}
+	
 	private Scholarship getScholarshipFomDb(String scholarshipId) throws ValidationException {
 		Optional<Scholarship> scholarshipOptional = scholarshipDAO.getScholarshipById(scholarshipId);
 		if (scholarshipOptional.isPresent()) {
