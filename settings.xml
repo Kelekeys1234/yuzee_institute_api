@@ -144,19 +144,28 @@ under the License.
    | server for that repository.
    |-->
   <mirrors>
-    <!-- mirror
-     | Specifies a repository mirror site to use instead of a given repository. The repository that
-     | this mirror serves has an ID that matches the mirrorOf element of this mirror. IDs are used
-     | for inheritance and direct lookup purposes, and must be unique across the set of mirrors.
-     |
     <mirror>
-      <id>mirrorId</id>
-      <mirrorOf>repositoryId</mirrorOf>
-      <name>Human Readable Name for this Mirror.</name>
-      <url>http://my.repository.com/repo/path</url>
+      <id>maven-central-http-unblocker</id>
+      <mirrorOf>central</mirrorOf>
+      <name>Maven Central</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
     </mirror>
-     -->
-  </mirrors>
+    <mirror>
+		<id>release-http-unblocker</id>
+        <mirrorOf>nexus-release-repo</mirrorOf>
+        <name></name>
+        <url>http://3.0.199.179:8081/repository/maven-release/</url>
+        <blocked>false</blocked>
+    </mirror>
+    <mirror>
+        <id>snapshot-http-unblocker</id>
+        <mirrorOf>nexus-snapshot-repo</mirrorOf>
+        <name></name>
+        <url>http://3.0.199.179:8081/repository/maven-snapshots/</url>
+        <blocked>false</blocked>
+    </mirror>
+</mirrors>
+
 
   <!-- profiles
    | This is a list of profiles which can be activated in a variety of ways, and which can modify

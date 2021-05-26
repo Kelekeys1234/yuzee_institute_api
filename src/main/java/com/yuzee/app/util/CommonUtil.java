@@ -505,36 +505,4 @@ public class CommonUtil {
 			throw new ForbiddenException("user has no access to edit the course details");
 		}
 	}
-	
-	public static void writeAndDeleteFile(String accessKey, String bucketName, String s3Region, String secretKey,List<File> files) {
-		log.info("In writeAndDeleteFile method Start in CommonUtil");
-    	String s3Path = IConstant.FOLDER_NAME;
-		
-		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-		AmazonS3 client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials))
-				.withClientConfiguration(new ClientConfiguration().withMaxConnections(3000)
-				.withConnectionTimeout(120 * 1000).withMaxErrorRetry(15))
-				.withRegion(s3Region).build();
-
-		if (!ObjectUtils.isEmpty(client)) {
-			ObjectMetadata metadata = new ObjectMetadata();
-			metadata.setContentLength(0);
-			InputStream emptyContent = new ByteArrayInputStream(new byte[0]);
-			PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, s3Path, emptyContent, metadata);
-			client.putObject(putObjectRequest);
-			List<String> results = new ArrayList<String>();
-
-			if (!CollectionUtils.isNullOrEmpty(files)) {
-				for (File file : files) {
-					if (true) {
-						results.add(file.getName());
-						client.putObject(new PutObjectRequest(bucketName, s3Path + file.getName(),
-								new File(file.getPath())).withCannedAcl(CannedAccessControlList.PublicRead));
-						S3Object s3object = client.getObject(new GetObjectRequest(bucketName, s3Path + file.getName()));
-						log.info("In writeAndDeleteFile method End in CommonUtil");
-					}
-				}
-			}
-		}
-	}
 }

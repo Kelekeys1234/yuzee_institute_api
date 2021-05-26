@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.yuzee.app.confirguration.AmazonS3Configuration;
-import com.yuzee.app.util.CommonUtil;
 import com.yuzee.common.lib.handler.NotificationHandler;
+import com.yuzee.common.lib.util.AWSUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,7 +63,7 @@ public class EmailProcessor {
 	
 	public int sendEmailWithAttachment(String subject, String user, List<File> listOfFiles) {
 		log.info("Start writing and deleting file on S3 bucket having bucketName : {}",amazonS3Configuration.getBucketName());
-		CommonUtil.writeAndDeleteFile(amazonS3Configuration.getAccessKey(), amazonS3Configuration.getBucketName(),
+		AWSUtil.writeAndDeleteFile(amazonS3Configuration.getAccessKey(), amazonS3Configuration.getBucketName(),
 				amazonS3Configuration.getS3Region(), amazonS3Configuration.getSecretKey(), listOfFiles);
 
 		return notificationHandler.sendEmailNotificationWithAttachment(emailAddress, subject, user, listOfFiles);

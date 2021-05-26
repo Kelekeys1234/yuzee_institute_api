@@ -770,11 +770,11 @@ public class InstituteDaoImpl implements InstituteDao {
 		Session session = sessionFactory.getCurrentSession();
 		StringBuilder sqlQuery = new StringBuilder("select distinct i.name as instituteName from institute i ");
 		if (StringUtils.isNotEmpty(instituteName)) {
-			sqlQuery.append(" where name like %:instituteName%");
+			sqlQuery.append(" where name like :instituteName");
 		}
 		Query query = session.createSQLQuery(sqlQuery.toString());
 		if (StringUtils.isNotEmpty(instituteName)) {
-			query.setParameter("instituteName", instituteName);
+			query.setParameter("instituteName", "%" + instituteName + "%");
 		}
 		List<Object[]> rows = query.list();
 		return rows.size();

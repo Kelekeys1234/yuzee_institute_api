@@ -290,10 +290,10 @@ public class ArticleProcessor {
 		articleElasticSearchDTO.setPostDate(DateUtil.removeTimeFromDate(articleDto.getPostDate()));
 		if (updateCase) {
 			elasticHandler.updateArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, com.yuzee.app.util.IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
-					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
+					articleElasticSearchDTO);
 		} else {
 			elasticHandler.saveArticleOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX, com.yuzee.app.util.IConstant.ELASTIC_SEARCH_ARTICLE_TYPE,
-					articleElasticSearchDTO, IConstant.ELASTIC_SEARCH);
+					articleElasticSearchDTO);
 		}
 		return articleDto;
 	}

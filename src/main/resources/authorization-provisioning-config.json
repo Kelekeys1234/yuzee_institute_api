@@ -57,6 +57,11 @@
 					"institute-service-faculty-onboarding"
 				],
 				"policies": [
+					"student-role-policy",
+					"admin-role-policy",
+					"agent-role-policy",
+					"institute-role-policy",
+					"yuzeeapp-role-policy",
 					"onboarding-role-policy"
 				]
 			}

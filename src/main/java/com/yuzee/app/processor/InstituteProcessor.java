@@ -69,7 +69,6 @@ import com.yuzee.app.enumeration.TimingType;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.app.util.CDNServerUtil;
 import com.yuzee.app.util.CommonUtil;
-import com.yuzee.app.util.IConstant;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.PaginationUtilDto;
 import com.yuzee.common.lib.dto.connection.FollowerCountDto;
@@ -97,7 +96,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 public class InstituteProcessor {
 
 	@Value("${s3.url}")
@@ -165,15 +163,19 @@ public class InstituteProcessor {
 	@Qualifier("exportInstituteToElastic")
 	private Job exportInstituteToElastic;
 
+
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public Institute get(final String id) {
 		return dao.get(id);
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<String> getRandomInstituteIdByCountry(final List<String> countryIdList/* , Long startIndex, Long pageSize */) {
 		return dao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto filterObj, final String sortByField, final String sortByType,
 			final String searchKeyword, final Integer startIndex, final String cityId, final String instituteTypeId, final Boolean isActive,
 			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
@@ -182,10 +184,12 @@ public class InstituteProcessor {
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public InstituteResponseDto getInstituteByID(final String instituteId) {
 		return dao.getInstituteById(instituteId);
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteResponseDto> getInstituteByCityName(final String cityName) {
 		log.debug("Inside getInstitudeByCityId() method");
 		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
@@ -203,6 +207,7 @@ public class InstituteProcessor {
 		return instituteResponseDtos;
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private InstituteElasticSearchDTO populateElasticDto(Institute institute) {
 		InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
 		BeanUtils.copyProperties(institute, instituteElasticSearchDto);
@@ -219,6 +224,7 @@ public class InstituteProcessor {
 		return instituteElasticSearchDto;
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) throws Exception {
 		log.debug("Inside save() method");
 		try {
@@ -242,13 +248,14 @@ public class InstituteProcessor {
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
 			elasticHandler.saveInsituteOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
-					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH);
+					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList);
 		} catch (Exception exception) {
 			log.error("Exception while saving institutes having exception ", exception.getMessage());
 			throw exception;
 		}
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private void saveWorldRankingHistory(final Institute institute, final Institute oldInstitute) {
 		log.debug("Inside saveWorldRankingHistory() method");
 		InstituteWorldRankingHistory worldRanking = new InstituteWorldRankingHistory();
@@ -267,6 +274,7 @@ public class InstituteProcessor {
 
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private void saveDomesticRankingHistory(final Institute institute, final Institute oldInstitute) {
 		log.debug("Inside saveDomesticRankingHistory() method");
 		InstituteDomesticRankingHistory domesticRanking = new InstituteDomesticRankingHistory();
@@ -284,6 +292,7 @@ public class InstituteProcessor {
 		instituteDomesticRankingHistoryDAO.save(domesticRanking);
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public void updateInstitute(final String userId, final String instituteId, final InstituteRequestDto instituteRequest) throws Exception {
 		log.debug("Inside updateInstitute() method");
 		try {
@@ -313,13 +322,14 @@ public class InstituteProcessor {
 
 			log.info("Calling elastic service to save instiutes on index");
 			elasticHandler.saveInsituteOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
-					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList, com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH);
+					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ={}", exception.getMessage());
 			throw exception;
 		}
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside saveInstitute() method");
 		Institute institute = null;
@@ -445,6 +455,7 @@ public class InstituteProcessor {
 		return institute;
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private void saveIntakesInstituteDetails(final Institute institute, final List<String> intakes) {
 		log.debug("Inside saveIntakesInstituteDetails() method");
 		log.info("deleting existing instituteIntakes from DB for institute having instituteId = "+institute.getId());
@@ -459,6 +470,7 @@ public class InstituteProcessor {
 		}
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private void saveUpdateInstituteFundings(String loggedInUserId, Institute institute,
 			List<InstituteFundingDto> instituteFundingDtos) throws ValidationException, NotFoundException, InvokeException {
 		List<InstituteFunding> instituteFundings = institute.getInstituteFundings();
@@ -502,6 +514,7 @@ public class InstituteProcessor {
 		}
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private void saveAccreditedInstituteDetails(final Institute institute, final List<AccrediatedDetailDto> accreditation) {
 		log.debug("Inside saveAccreditedInstituteDetails() method");
 		log.info("deleting existing accrediatedDetails from DB for institute having instituteId = "+institute.getId());
@@ -522,11 +535,13 @@ public class InstituteProcessor {
 		}
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private InstituteCategoryType getInstituteCategoryType(final String instituteCategoryTypeId) {
 		return dao.getInstituteCategoryType(instituteCategoryTypeId);
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public PaginationResponseDto getAllInstitute(final Integer pageNumber, final Integer pageSize) {
 		log.debug("Inside getAllInstitute() method");
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
@@ -569,6 +584,7 @@ public class InstituteProcessor {
 		return paginationResponseDto;
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private InstituteGetRequestDto convertInstituteToInstituteGetRequestDto(final Institute institute) {
 		log.debug("Inside getInstitute() method");
 		InstituteGetRequestDto dto = new InstituteGetRequestDto();
@@ -585,6 +601,7 @@ public class InstituteProcessor {
 		return dto;
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private List<String> getInstituteYoutube(final String countryName, final String instituteName) {
 		log.debug("Inside getInstituteYoutube() method");
 		List<String> images = new ArrayList<>();
@@ -597,6 +614,7 @@ public class InstituteProcessor {
 		return images;
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public InstituteRequestDto getById(final String userId, final String id, final boolean isReadableId) throws Exception {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);
@@ -667,10 +685,12 @@ public class InstituteProcessor {
 		return instituteRequestDto;
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private List<String> getIntakes(@Valid final String id) {
 		return dao.getIntakesById(id); 
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private List<AccrediatedDetailDto> getAccreditationName(@Valid final String id) {
 		log.debug("Inside getAccreditationName() method");
 		List<AccrediatedDetailDto> accrediatedDetailDtos = new ArrayList<>();
@@ -691,6 +711,7 @@ public class InstituteProcessor {
 		return accrediatedDetailDtos;
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteGetRequestDto> searchInstitute(@Valid final String searchText) {
 		log.debug("Inside searchInstitute() method");
 		List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
@@ -736,6 +757,7 @@ public class InstituteProcessor {
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public PaginationResponseDto instituteFilter(final InstituteFilterDto instituteFilterDto) {
 		log.debug("Inside instituteFilter() method");
 		PaginationResponseDto paginationInstituteResponseDto = new PaginationResponseDto();
@@ -770,6 +792,7 @@ public class InstituteProcessor {
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public PaginationResponseDto autoSearch(final Integer pageNumber, final Integer pageSize, final String searchKey) {
 		log.debug("Inside autoSearch() method");
 		PaginationResponseDto paginationInstituteResponseDto = new PaginationResponseDto();
@@ -804,10 +827,12 @@ public class InstituteProcessor {
 		return paginationInstituteResponseDto;
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteCategoryType> getAllCategories() {
 		return dao.getAllCategories();
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public void deleteInstitute(final String id) throws ValidationException {
 		log.debug("Inside deleteInstitute() method");
 		log.info("Fetching institute from DB for id = "+id);
@@ -826,25 +851,30 @@ public class InstituteProcessor {
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<Institute> ratingWiseInstituteListByCountry(final String countryName) {
 		return dao.ratingWiseInstituteListByCountry(countryName);
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<String> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
 		return dao.getInstituteIdsBasedOnGlobalRanking(startIndex, pageSize);
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final String cityId, final String instituteTypeId,
 			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
 		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public Integer getTotalCourseCountForInstitute(final String instituteId) {
 		return courseDao.getTotalCourseCountForInstitute(instituteId);
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteDomesticRankingHistoryDto> getHistoryOfDomesticRanking(final String instituteId) {
 		log.debug("Inside getHistoryOfDomesticRanking() method");
 		List<InstituteDomesticRankingHistoryDto> domesticRankingHistoryObj = new ArrayList<>();
@@ -864,6 +894,7 @@ public class InstituteProcessor {
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteWorldRankingHistoryDto> getHistoryOfWorldRanking(final String instituteId) {
 		log.debug("Inside getHistoryOfWorldRanking() method");
 		List<InstituteWorldRankingHistoryDto> instituteWorldRankingHistoryResponse = new ArrayList<>();
@@ -883,12 +914,14 @@ public class InstituteProcessor {
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public Map<String, Integer> getDomesticRanking(final List<String> courseIdList) {
 		Map<String, Integer> courseDomesticRanking = dao.getDomesticRanking(courseIdList);
 		return courseDomesticRanking;
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public NearestInstituteDTO getNearestInstituteList(AdvanceSearchDto courseSearchDto)
 			throws Exception {
 	    log.debug("Inside getNearestInstituteList() method");
@@ -941,6 +974,7 @@ public class InstituteProcessor {
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteResponseDto> getDistinctInstituteList(Integer startIndex, Integer pageSize, String instituteName) throws Exception {
 		log.debug("Inside getDistinctInstituteList() method");
 		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
@@ -991,10 +1025,12 @@ public class InstituteProcessor {
 	}
 
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public int getDistinctInstituteCount(String instituteName) {
 		return dao.getDistinctInstituteCountByName(instituteName);
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public NearestInstituteDTO getInstitutesUnderBoundRegion(Integer pageNumber, Integer pageSize, List<LatLongDto> latLongDtos) throws ValidationException {
 		log.debug("Inside getInstitutesUnderBoundRegion() method");
 		List<InstituteResponseDto> nearestInstituteList = new ArrayList<>();
@@ -1042,6 +1078,7 @@ public class InstituteProcessor {
 		return institutePaginationResponseDto;
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public NearestInstituteDTO getInstituteByCountryName(String countryName, Integer pageNumber,Integer pageSize) throws NotFoundException {
 		log.debug("Inside getInstituteByCountryName() method");
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
@@ -1074,6 +1111,7 @@ public class InstituteProcessor {
 		return institutePaginationResponseDto;
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteCampusDto> getInstituteCampuses(String userId, String instituteId) throws NotFoundException {
 		log.debug("inside processor.getInstitutCampuses method.");
 		Institute institute = dao.get(instituteId);
@@ -1103,6 +1141,7 @@ public class InstituteProcessor {
 		}
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {
 		log.debug("inside processor.getInstituteFaculties method.");
 		if (!ObjectUtils.isEmpty(dao.get(instituteId))) {
@@ -1113,6 +1152,7 @@ public class InstituteProcessor {
 		}
 	}
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public CourseScholarshipAndFacultyCountDto getInstituteCourseScholarshipAndFacultyCount(String instituteId)
 			throws NotFoundException {
 		CourseScholarshipAndFacultyCountDto dto = new CourseScholarshipAndFacultyCountDto();
@@ -1123,6 +1163,7 @@ public class InstituteProcessor {
 	}
 
 
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteResponseDto> getInstitutesByIdList(List<String> instituteIds) throws Exception {
 		log.info("inside InstituteProcessor.getInstitutesByIdList");
 		List<InstituteResponseDto> instituteResponseDtos = dao.findByIds(instituteIds);
@@ -1149,6 +1190,7 @@ public class InstituteProcessor {
 		return instituteResponseDtos;
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<StorageDto> getInstituteGallery(String instituteId) throws InternalServerException, NotFoundException {
 		Institute institute = dao.get(instituteId);
 		if (!ObjectUtils.isEmpty(institute)) {
@@ -1175,6 +1217,7 @@ public class InstituteProcessor {
 		}
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<Institute> validateAndGetInstituteByIds(List<String> instituteIds) throws NotFoundException {
 		log.info("inside validateAndGetInstituteByIds");
 
@@ -1187,6 +1230,7 @@ public class InstituteProcessor {
 		return institutes;
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public void changeInstituteStatus(String userId, String instituteId, boolean status) {
 		log.info("Inside InstituteProcessor.changeInstituteStatus method");
 		
@@ -1206,10 +1250,11 @@ public class InstituteProcessor {
 
 		log.info("Calling elastic service to save instiutes on index");
 		elasticHandler.saveInsituteOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
-				EntityTypeEnum.INSTITUTE.name().toLowerCase(), Arrays.asList(instituteElasticSearchDto), com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH);
+				EntityTypeEnum.INSTITUTE.name().toLowerCase(), Arrays.asList(instituteElasticSearchDto));
 
 	}
 	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private void setReadableIdForInsitute(Institute institute) {
 		log.info("going to generate code for institute");
 		boolean reGenerateCode = false;

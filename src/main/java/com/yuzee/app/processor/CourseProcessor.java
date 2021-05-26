@@ -600,9 +600,9 @@ public class CourseProcessor {
 							courseDeliveryMode.setUsdDomesticFee(convertedRate);
 						}
 					}
-					if (courseDeliveryMode.getInternationalFee() != null) {
+					if (e.getInternationalFee() != null) {
 						log.info("converting international fee into usdInternational fee having conversionRate {}",currencyRate.getConversionRate());
-						Double convertedRate = Double.valueOf(courseDeliveryMode.getInternationalFee()) / currencyRate.getConversionRate();
+						Double convertedRate = Double.valueOf(e.getInternationalFee()) / currencyRate.getConversionRate();
 						if (convertedRate != null) {
 							courseDeliveryMode.setUsdInternationalFee(convertedRate);
 						}
@@ -917,7 +917,7 @@ public class CourseProcessor {
 			courseDtoESList.add(elasticSearchCourseDto);
 			log.info("Calling elastic service to update course having entityId = " + courseId);
 			elasticHandler.deleteCourseOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
-					EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoESList, com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH);
+					EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoESList);
 		} else {
 			log.error("Course not found for courseId = " + courseId);
 			throw new NotFoundException("Course not found for courseId = " + courseId);

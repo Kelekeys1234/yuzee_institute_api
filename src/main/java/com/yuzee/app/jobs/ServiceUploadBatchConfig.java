@@ -31,7 +31,7 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.dto.uploader.ServiceCsvDto;
 import com.yuzee.app.processor.LogFileProcessor;
-import com.yuzee.app.util.ExceptionUtil;
+import com.yuzee.common.lib.util.ExceptionUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
