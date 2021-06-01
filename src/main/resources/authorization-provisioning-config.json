@@ -24,6 +24,15 @@
 					"PUT",
 					"DELETE"
 				]
+			},
+			{
+				"name": "institute-service-uploader",
+				"uris": [
+					"/institute/api/v1/upload/*"
+				],
+				"scopes": [
+					"POST"
+				]
 			}
 		]
 	},
@@ -55,6 +64,23 @@
 				],
 				"resources": [
 					"institute-service-faculty-onboarding"
+				],
+				"policies": [
+					"student-role-policy",
+					"admin-role-policy",
+					"agent-role-policy",
+					"institute-role-policy",
+					"yuzeeapp-role-policy",
+					"onboarding-role-policy"
+				]
+			},
+			{
+				"name": "institute-service-upload-permission",
+				"scopes": [
+					"POST"
+				],
+				"resources": [
+					"institute-service-uploader"
 				],
 				"policies": [
 					"student-role-policy",

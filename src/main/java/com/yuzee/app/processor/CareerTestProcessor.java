@@ -61,20 +61,20 @@ public class CareerTestProcessor {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public PaginationResponseDto getCareerJobSkills(String levelId, Integer pageNumber, Integer pageSize) {
+	public PaginationResponseDto getCareerJobSkills(Integer pageNumber, Integer pageSize, String levelId, String jobId ) {
 		log.debug("Inside getCareerJobSkills() method");
 		List<CareerJobSkillDto> careerJobSkillDtos = new ArrayList<>();
 		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
 		log.info("Extracting career job skills from DB for levelId ", levelId);
 		
-		Page<CareerJobSkill> careerJobSkillsFromDB = careerTestDao.getCareerJobSkills(levelId, pageable);
+		Page<CareerJobSkill> careerJobSkillsFromDB = careerTestDao.getCareerJobSkills(levelId, jobId, pageable);
 		Long totalCount = 0L;
 		if (!CollectionUtils.isEmpty(careerJobSkillsFromDB.getContent())) {
 			totalCount = careerJobSkillsFromDB.getTotalElements();
 			log.info("Career JobSkills fetched from DB, start iterating data to make final response");
 			careerJobSkillsFromDB.getContent().stream().forEach(careerJobSkill -> {
 				CareerJobSkillDto careerJobSkillDto = new CareerJobSkillDto(careerJobSkill.getId(),
-						careerJobSkill.getSkill(), careerJobSkill.getCareerJobs().getId());
+						careerJobSkill.getSkill(), careerJobSkill.getDescription(), careerJobSkill.getCareerJobs().getId());
 				careerJobSkillDtos.add(careerJobSkillDto);
 			});
 		}

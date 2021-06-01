@@ -198,14 +198,24 @@ public class CareerUploadProcessor {
 	
 	private void saveCareerJobSkills(CareerJob careerJobs, String skillName) {
 		log.debug("Inside saveCareerJobSkills() data");
-		if(!skillName.equalsIgnoreCase("-")) {
-			log.info("Extracting existing job skills for jobId {} and skillName {}",
-					careerJobs.getId(), skillName);
-			if(ObjectUtils.isEmpty(careerJobDao.getJobSkill(careerJobs.getId(), skillName))) {
+		
+		if (!skillName.equalsIgnoreCase("-")) {
+			log.info("Extracting existing job skills for jobId {} and skillName {}", careerJobs.getId(), skillName);
+			String name = "";
+			String description = "";
+			int indexOfNameSeperator =  skillName.indexOf("-");
+			if (indexOfNameSeperator>0) {
+				if (skillName.length()>indexOfNameSeperator) {
+					name = skillName.substring(0, indexOfNameSeperator).strip();
+					description = skillName.substring(indexOfNameSeperator+1).strip();			
+				}
+			}
+			if (ObjectUtils.isEmpty(careerJobDao.getJobSkill(careerJobs.getId(), name))) {
 				log.info("Job Skill is not present in DB for passed jobId and skillName, adding new Job Skill in DB");
 				CareerJobSkill careerJobSkill = new CareerJobSkill();
 				careerJobSkill.setCareerJobs(careerJobs);
-				careerJobSkill.setSkill(skillName);
+				careerJobSkill.setSkill(name);
+				careerJobSkill.setDescription(description);
 				careerJobSkill.setCreatedOn(new Date());
 				careerJobSkill.setCreatedBy("API");
 				log.info("Calling DAO layer to add new Job Skills in DB");

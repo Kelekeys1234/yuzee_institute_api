@@ -15,9 +15,10 @@ import com.yuzee.common.lib.exception.NotFoundException;
 @RequestMapping("/api/v1/career/job")
 public interface CareerTestInterface {
 
-	@GetMapping("/skill/{levelId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getCareerJobSkills(@PathVariable String levelId, @PathVariable Integer pageNumber,
-			@PathVariable Integer pageSize);
+	@GetMapping("/skill/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getCareerJobSkills(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
+			@RequestParam(value = "level_id", required = false) String levelId,
+			@RequestParam(value = "job_id", required = false) String jobId);
 
 	@GetMapping("/working/style/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getCareerJobWorkingStyles(@RequestParam List<String> jobIds,

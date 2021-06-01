@@ -50,8 +50,8 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	private CareerJobCourseSearchKeywordRepository careerJobCourseSearchKeywordRepository;
 
 	@Override
-	public Page<CareerJobSkill> getCareerJobSkills(String levelId, Pageable pageable) {
-		return careerJobSkillRepository.findByLevelId(levelId, pageable);
+	public Page<CareerJobSkill> getCareerJobSkills(String levelId, String jobId, Pageable pageable) {
+		return careerJobSkillRepository.findByLevelIdAndJobId(levelId, jobId, pageable);
 	}
 
 	@Override

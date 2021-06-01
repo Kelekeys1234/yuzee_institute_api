@@ -21,6 +21,10 @@ public class CareerJobSkillDto {
 	@NotBlank(message = "skill should not be blank")
 	private String skill;
 	
+	
+	@JsonProperty("description")
+	private String description;
+	
 	@JsonProperty("job_id")
 	@NotBlank(message = "job_id should not be blank")
 	private String jobId;
