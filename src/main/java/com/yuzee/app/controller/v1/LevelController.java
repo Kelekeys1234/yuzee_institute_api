@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.bean.Level;
-import com.yuzee.app.dto.LevelDto;
 import com.yuzee.app.endpoint.LevelInterface;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.LevelProcessor;
+import com.yuzee.common.lib.dto.institute.LevelDto;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 @RestController("levelControllerV1")
 public class LevelController implements LevelInterface {

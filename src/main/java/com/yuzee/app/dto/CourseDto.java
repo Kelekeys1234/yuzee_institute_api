@@ -3,6 +3,7 @@ package com.yuzee.app.dto;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

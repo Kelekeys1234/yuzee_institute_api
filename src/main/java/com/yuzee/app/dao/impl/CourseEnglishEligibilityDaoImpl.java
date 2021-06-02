@@ -16,31 +16,7 @@ public class CourseEnglishEligibilityDaoImpl implements CourseEnglishEligibility
 	private CourseEnglishEligibilityRepository courseEnglishEligibilityRepository;
 
 	@Override
-	public void save(final CourseEnglishEligibility courseEnglishEligibility) {
-		courseEnglishEligibilityRepository.save(courseEnglishEligibility);
-	}
-
-	@Override
-	public void update(final CourseEnglishEligibility courseEnglishEligibility) {
-		courseEnglishEligibilityRepository.save(courseEnglishEligibility);
-	}
-
-	@Override
-	public CourseEnglishEligibility get(final String id) {
-		return courseEnglishEligibilityRepository.findById(id).get();
-	}
-
-	@Override
-	public List<CourseEnglishEligibility> getAll() {
-		return courseEnglishEligibilityRepository.findAll();
-	}
-
-	@Override
 	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(final String courseID) {
-		return courseEnglishEligibilityRepository.findByCourseIdAndIsActive(courseID, true);
-	}
-
-	public void delete(final String courseID) {
-		courseEnglishEligibilityRepository.findByCourseId(courseID);
+		return courseEnglishEligibilityRepository.findByCourseId(courseID);
 	}
 }

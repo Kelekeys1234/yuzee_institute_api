@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.cache.annotation.Cacheable;
+
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteIntake;
@@ -17,7 +19,7 @@ import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
-import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 public interface InstituteDao {
 
@@ -97,4 +99,16 @@ public interface InstituteDao {
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException;
 
 	public List<InstituteResponseDto> findByIds(List<String> instituteIds);
+
+	public List<Institute> findAllById(List<String> instituteIds);
+
+	public List<Institute> findByReadableIdIn(List<String> readableIds);
+
+	public Institute findByReadableId(String readableId);
+	
+	@Cacheable(value = "cacheInstituteMap", unless = "#result == null")
+	public Map<String, String> getAllInstituteMap();
+
+	@Cacheable(value = "cacheInstitute", key = "#instituteId", unless = "#result == null", condition="#instituteId!=null")
+	public Institute getInstitute(String instituteId);
 }

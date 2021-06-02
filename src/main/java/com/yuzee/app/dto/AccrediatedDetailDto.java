@@ -6,13 +6,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.common.lib.dto.storage.StorageDto;
 
 import lombok.Data;
 
 @Data
 public class AccrediatedDetailDto {
 	
-	@NotBlank(message = "accrediated_id is required")
 	@JsonProperty("accrediated_id")
 	private String id;
 	
@@ -34,4 +34,7 @@ public class AccrediatedDetailDto {
 	@NotNull(message = "entityType is required")
 	@JsonProperty("entity_type")
 	private String entityType;
+	
+	@JsonProperty("description")
+	private String description;
 }

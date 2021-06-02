@@ -5,19 +5,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.ScholarshipIntakeDto;
-import com.yuzee.app.dto.ScholarshipRequestDto;
 import com.yuzee.app.endpoint.ScholarshipInterface;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.ScholarshipProcessor;
-import com.yuzee.app.util.ValidationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.institute.ScholarshipRequestDto;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,14 +28,16 @@ public class ScholarshipController implements ScholarshipInterface {
 	@Override
 	public ResponseEntity<?> saveScholarship(final String userId, final ScholarshipRequestDto scholarshipDto)
 			throws Exception {
-		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {
-			for (ScholarshipIntakeDto intakeDto : scholarshipDto.getIntakes()) {
-				ValidationUtil.validateStudentCategory(intakeDto.getStudentCategory());
-			}
-		}
-
 		return new GenericResponseHandlers.Builder()
 				.setData(scholarshipProcessor.saveScholarship(userId, scholarshipDto))
+				.setMessage("Scholarship save successfully").setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> saveBasicScholarship(final String userId, final ScholarshipRequestDto scholarshipDto)
+			throws Exception {
+		return new GenericResponseHandlers.Builder()
+				.setData(scholarshipProcessor.saveOrUpdateBasicScholarship(userId, scholarshipDto, null))
 				.setMessage("Scholarship save successfully").setStatus(HttpStatus.OK).create();
 	}
 
@@ -46,20 +45,25 @@ public class ScholarshipController implements ScholarshipInterface {
 	public ResponseEntity<?> updateScholarship(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String id) throws Exception {
 
-		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {
-			for (ScholarshipIntakeDto intakeDto : scholarshipDto.getIntakes()) {
-				ValidationUtil.validateStudentCategory(intakeDto.getStudentCategory());
-			}
-		}
 		scholarshipProcessor.updateScholarship(userId, scholarshipDto, id);
 		return new GenericResponseHandlers.Builder().setData(id).setMessage("Update Scholarship Successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> get(final String id) throws ValidationException, NotFoundException, InvokeException {
+	public ResponseEntity<?> updateBasicScholarship(final String userId, final ScholarshipRequestDto scholarshipDto,
+			final String id) throws Exception {
+
+		scholarshipProcessor.saveOrUpdateBasicScholarship(userId, scholarshipDto, id);
+		return new GenericResponseHandlers.Builder().setData(id).setMessage("Update Scholarship Successful")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> get(final String userId, final String id, final boolean isReadableId)
+			throws ValidationException, NotFoundException, InvokeException {
 		return new GenericResponseHandlers.Builder().setMessage("Get Scholarship Successfully")
-				.setData(scholarshipProcessor.getScholarshipById(id)).setStatus(HttpStatus.OK).create();
+				.setData(scholarshipProcessor.getScholarshipById(userId, id, isReadableId)).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
@@ -89,5 +93,13 @@ public class ScholarshipController implements ScholarshipInterface {
 		log.info("Inside ScholarshipController invoking getMultipleScholarshipsById() method ");
 		return new GenericResponseHandlers.Builder().setMessage("Scholarships fetched Successfully")
 				.setData(scholarshipProcessor.getScholarshipByIds(scholarshipIds)).setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<Object> changeStatus(String userId, String instituteId, boolean status) {
+		log.info("Inside ScholarshipController.changeStatus method");
+		scholarshipProcessor.changeScholarshipStatus(userId, instituteId, status);
+		return new GenericResponseHandlers.Builder().setMessage("Scholarship Status changed successfully")
+				.setStatus(HttpStatus.OK).create();
 	}
 }

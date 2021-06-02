@@ -57,39 +57,7 @@ public class IConstant {
 	public static final String INSTITUTE_TYPE = "Institution";
 	public static final String CITY_TYPE = "City";
 	public static final String COURSE_TYPE = "Course";
-	public static final String DEFAULT_BASE_CURRENCY = "USD";
-
-	public static final String STORAGE = "STORAGE-SERVICE/storage";
-	public static final String IDENTITY = "AUTH-SERVICE/identity";
-	public static final String NOTIFICATION = "NOTIFICATION-SERVICE/notification/api/v1";
-	public static final String COMMON = "COMMON-API/common/api/v1";
-	public static final String REVIEW = "REVIEW-SERVICE/review/api/v1";
-
-	public static final String STORAGE_CONNECTION_URL = "http://" + STORAGE + "/api/v1/storage";
-	public static final String IDENTITY_CONNECTION_URL = "http://" + IDENTITY + "/api/v1";
-	public static final String USER_DETAIL_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/users/basic";
-	public static final String USER_ACHIVEMENT_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/user/achivement/user";
-	public static final String USER_DEVICE_CONNECTION_URL = IDENTITY_CONNECTION_URL + "/user/device/basic";
-
-	public static final String NOTIFICATION_CONNECTION_URL = "http://" + NOTIFICATION + "/push";
-	public static final String COMMON_CONNECTION_URL = "http://" + COMMON;
-	public static final String REVIEW_CONNECTION_URL = "http://" + REVIEW;
-	
-	public static final String VIEW_TRANSACTION = "VIEW-TRANSACTION/transaction/api/v1";
-	public static final String VIEW_TRANSACTION_URL = "http://" + VIEW_TRANSACTION;
-	
-	public static final String APPLICATION = "APPLICATION-SERVICE/application/api/v1";
-	public static final String APPILICATION_URL = "http://" + APPLICATION;
-
-	public static final String ELASTIC_SEARCH = "ELASTIC-SEARCH/elasticSearch";
-	public static final String ELASTIC_SEARCH_INDEX_COURSE = "yuzee_dev_course";
-
-	public static final String ELASTIC_SEARCH_INDEX_ARTICLE = "yuzee_dev_article";
-	public static final String ELASTIC_SEARCH_INDEX_INSTITUTE = "yuzee_dev_institute";
-
-	public static final String ELASTIC_SEARCH_INDEX_SCHOLARSHIP = "yuzee_dev_scholarship";
-
-	public static final String ELASTIC_SEARCH_URL = ELASTIC_SEARCH + "/";
+	public static final String DEFAULT_BASE_CURRENCY = "USD";	
 
 	public static final String ELASTIC_SEARCH_COURSE_TYPE = "course";
 	public static final String ELASTIC_SEARCH_ARTICLE_TYPE = "article";
@@ -124,4 +92,7 @@ public class IConstant {
 			"Personal Experiences and Inspirations", "Work and Internships", "Financial", "Self-Help", "News");
 
 	public static final Integer ARTICLES_PER_CATEGORY_FOR_RECOMMENDATION = 2;
+	public static final String DEFAULT_CAMPUS = "campus 1";
+	public static final String FILE_PATH = "/home/ec2-user/RemainingScholarshipFile/";
+	public static final String FOLDER_NAME = "remainingScholarship/";
 }

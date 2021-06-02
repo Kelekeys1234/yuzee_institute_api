@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.yuzee.app.dto.EducationSystemDto;
+import com.yuzee.common.lib.dto.institute.EducationSystemDto;
 
 @RequestMapping("/api/v1/educationSystem")
 public interface EducationSystemInterface {

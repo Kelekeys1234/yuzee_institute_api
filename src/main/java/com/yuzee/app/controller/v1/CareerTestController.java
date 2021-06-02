@@ -8,11 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CareerJobDto;
-import com.yuzee.app.dto.PaginationResponseDto;
 import com.yuzee.app.endpoint.CareerTestInterface;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.CareerTestProcessor;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 @RestController("careerTestControllerV1")
 public class CareerTestController implements CareerTestInterface {
@@ -21,9 +23,9 @@ public class CareerTestController implements CareerTestInterface {
 	private CareerTestProcessor careerTestProcessor;
 
 	@Override
-	public ResponseEntity<?> getCareerJobSkills(String levelId, Integer pageNumber, Integer pageSize) {
-		PaginationResponseDto careerJobSkillDtos = careerTestProcessor.getCareerJobSkills(levelId, pageNumber,
-				pageSize);
+	public ResponseEntity<?> getCareerJobSkills(Integer pageNumber, Integer pageSize, String levelId, String jobId) {
+		PaginationResponseDto careerJobSkillDtos = careerTestProcessor.getCareerJobSkills(pageNumber,
+				pageSize, levelId, jobId);
 		return new GenericResponseHandlers.Builder().setData(careerJobSkillDtos).setStatus(HttpStatus.OK)
 				.setMessage("Career Job Skills Fetched successfully").create();
 	}
@@ -79,5 +81,13 @@ public class CareerTestController implements CareerTestInterface {
 		CareerJobDto careerJobDto = careerTestProcessor.getCareerJobById(jobId);
 		return new GenericResponseHandlers.Builder().setData(careerJobDto).setStatus(HttpStatus.OK)
 				.setMessage("Career Job fetched successfully").create();
+	}
+
+	@Override
+	public ResponseEntity<?> getCareerJobsByName(String userId, String name, Integer pageNumber, Integer pageSize) throws ValidationException {
+		PaginationUtil.validatePageNoAndPageSize(pageNumber, pageSize);
+		PaginationResponseDto careerJobs = careerTestProcessor.getCareerJobsByName(userId, name, pageNumber, pageSize);
+		return new GenericResponseHandlers.Builder().setData(careerJobs).setStatus(HttpStatus.OK)
+				.setMessage("Career Jobs Fetched successfully").create();
 	}
 }

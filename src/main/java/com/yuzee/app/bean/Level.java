@@ -74,4 +74,5 @@ public class Level implements Serializable {
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
+
 }

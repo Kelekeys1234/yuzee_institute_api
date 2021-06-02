@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Scholarship;
-import com.yuzee.app.bean.Scholarship_;
+import com.yuzee.app.bean.ScholarshipCountry;
 
 public class ScholarshipSpecification {
 	private ScholarshipSpecification() {
@@ -33,7 +33,8 @@ public class ScholarshipSpecification {
 				List<Predicate> predicates = new ArrayList<>();
 
 				if (!StringUtils.isEmpty(countryName)) {
-					predicates.add(criteriaBuilder.equal(root.get(Scholarship_.countryName), countryName));
+					Join<Scholarship, ScholarshipCountry> instituteJoin = root.join("scholarshipCountries");
+					predicates.add(criteriaBuilder.equal(instituteJoin.<String>get("countryName"), instituteId));
 				}
 
 				if (!StringUtils.isEmpty(instituteId)) {
@@ -42,7 +43,8 @@ public class ScholarshipSpecification {
 				}
 
 				if (!StringUtils.isEmpty(searchKeyword)) {
-					predicates.add(criteriaBuilder.like(root.get(Scholarship_.name), "%" + searchKeyword + "%"));
+					predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.<String>get("name")),
+							"%" + searchKeyword.toLowerCase() + "%"));
 				}
 
 				return criteriaBuilder.and(predicates.toArray(new Predicate[] {}));

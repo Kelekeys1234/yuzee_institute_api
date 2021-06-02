@@ -7,6 +7,9 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
+import com.yuzee.common.lib.dto.institute.OffCampusCourseDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
 
 import lombok.Data;
 import lombok.ToString;
@@ -34,6 +37,9 @@ public class CourseResponseDto {
 	@JsonProperty("institute_id")
 	@NotBlank(message = "institute_id should not be blank")
 	private String instituteId;
+
+	@JsonProperty("level_id")
+	private String levelId;
 
 	@JsonProperty("institute_name")
 	@NotBlank(message = "institute_name should not be blank")
@@ -103,4 +109,22 @@ public class CourseResponseDto {
 	
 	@JsonProperty("course_description")
 	private String courseDescription;
+	
+	@JsonProperty("phone_number")
+	private String phoneNumber;
+	
+	@JsonProperty("email")
+	private String email;
+	
+	@JsonProperty("website")
+	private String website;
+	
+	@JsonProperty("course_timings")
+	private List<TimingRequestDto> courseTimings = new ArrayList<>();
+	
+	@JsonProperty("off_campus_course")
+	private OffCampusCourseDto offCampusCourse;
+	
+	@JsonProperty("readable_id")
+	private String readableId;
 }

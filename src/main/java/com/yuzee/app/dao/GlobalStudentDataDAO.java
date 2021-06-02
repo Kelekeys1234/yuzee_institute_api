@@ -13,12 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.GlobalData;
+import com.yuzee.app.repository.GlobalDataRepository;
 
 @Repository
 public class GlobalStudentDataDAO implements IGlobalStudentDataDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private GlobalDataRepository globalDataRepository;
 
 	@Override
 	public void save(final GlobalData globalDataDato) {
@@ -69,5 +73,15 @@ public class GlobalStudentDataDAO implements IGlobalStudentDataDAO {
 		crit.addOrder(Order.desc("totalNumberOfStudent"));
 		crit.setProjection(Projections.property("destinationCountry"));
 		return crit.list() != null ? crit.list() : new ArrayList<>();
+	}
+
+	@Override
+	public List<GlobalData> findAll() {
+		return globalDataRepository.findAll();
+	}
+	
+	@Override
+	public void saveAll(List<GlobalData> list) {
+		globalDataRepository.saveAll(list);
 	}
 }

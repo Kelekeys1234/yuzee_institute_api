@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.service.UserRecommendationService;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 @RestController("userRecommendationControllerV1")
 @RequestMapping("/api/v1/user")

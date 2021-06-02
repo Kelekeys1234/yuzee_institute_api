@@ -29,7 +29,7 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString
+@ToString(exclude = "careers")
 @NoArgsConstructor
 @EqualsAndHashCode
 @Table(name = "jobs", uniqueConstraints = @UniqueConstraint(columnNames = { "job", "career_id" }, 
@@ -47,8 +47,11 @@ public class CareerJob implements Serializable {
 	@Column(name = "job", nullable = false)
 	private String job;
 	
-	@Column(name = "job_description", nullable = false)
+	@Column(name = "job_description", nullable = false, columnDefinition = "text")
 	private String jobDescription;
+
+	@Column(name = "responsibility", columnDefinition = "text")
+	private String responsibility;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "career_id")
@@ -92,9 +95,10 @@ public class CareerJob implements Serializable {
 	@OneToMany(mappedBy = "careerJobs" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CareerJobWorkingStyle> careerJobWorkingStyles = new ArrayList<>();
 	
-	public CareerJob(String job, String jobDescription, Careers careers, Integer courseLevel, Date createdOn, String createdBy) {
-		this.job = job;
+	public CareerJob(String jobs, String jobDescription, String responsibility, Careers careers, Integer courseLevel, Date createdOn, String createdBy) {
+		this.job = jobs;
 		this.jobDescription = jobDescription;
+		this.responsibility = responsibility;
 		this.careers = careers;
 		this.courseLevel = courseLevel;
 		this.createdOn = createdOn;

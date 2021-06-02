@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.app.dto.FaqRequestDto;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 @RequestMapping("/api/v1/faq")
 public interface FaqEndpoint {

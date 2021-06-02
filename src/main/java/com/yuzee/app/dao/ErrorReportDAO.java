@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
 import com.yuzee.app.bean.AuditErrorReport;
 import com.yuzee.app.bean.ErrorReport;
 import com.yuzee.app.bean.ErrorReportCategory;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.util.CommonUtil;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.util.DateUtil;
 
 @Repository
 @SuppressWarnings({ "deprecation", "unchecked" })
@@ -68,8 +68,8 @@ public class ErrorReportDAO implements IErrorReportDAO {
 			crit.add(Restrictions.eq("errorReport.isArchive", isArchive));
 		}
 		if (updatedOn != null) {
-			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
-			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
+			Date fromDate = DateUtil.removeTimeFromDate(updatedOn);
+			Date toDate = DateUtil.removeTimeFromDate(updatedOn);
 			crit.add(Restrictions.ge("errorReport.updatedOn", fromDate));
 			crit.add(Restrictions.le("errorReport.updatedOn", toDate));
 		}
@@ -166,8 +166,8 @@ public class ErrorReportDAO implements IErrorReportDAO {
 					.add(Restrictions.ilike("errorReport.phoneName", searchKeyword, MatchMode.ANYWHERE)));
 		}
 		if (updatedOn != null) {
-			Date fromDate = CommonUtil.getDateWithoutTime(updatedOn);
-			Date toDate = CommonUtil.getTomorrowDate(updatedOn);
+			Date fromDate = DateUtil.removeTimeFromDate(updatedOn);
+			Date toDate = DateUtil.removeTimeFromDate(updatedOn);
 			crit.add(Restrictions.ge("errorReport.updatedOn", fromDate));
 			crit.add(Restrictions.le("errorReport.updatedOn", toDate));
 		}

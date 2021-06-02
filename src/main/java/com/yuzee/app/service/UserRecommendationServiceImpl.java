@@ -1,4 +1,4 @@
-package com.yuzee.app.service;
+	package com.yuzee.app.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +12,14 @@ import org.springframework.util.ObjectUtils;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.dao.UserRecommendationDao;
 import com.yuzee.app.dto.CourseResponseDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.StorageHandler;
 import com.yuzee.app.processor.CourseDeliveryModesProcessor;
 import com.yuzee.app.processor.CourseProcessor;
-import com.yuzee.app.util.CommonUtil;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -363,7 +363,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		List<Course> courseList = userRecommendationDao.getCheapestCourse(facultyId, countryId, levelId, cityId, null, startIndex, pageSize);
 
 		log.info("Filtering distinct courses based on courseId and collect in list");
-		List<Course> courseFilteredList = courseList.stream().filter(CommonUtil.distinctByKey(Course::getId))
+		List<Course> courseFilteredList = courseList.stream().filter(Utils.distinctByKey(Course::getId))
 				.collect(Collectors.toList());
 		
 		/**

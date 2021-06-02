@@ -6,7 +6,7 @@ import java.util.List;
 import com.yuzee.app.bean.AuditErrorReport;
 import com.yuzee.app.bean.ErrorReport;
 import com.yuzee.app.bean.ErrorReportCategory;
-import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 public interface IErrorReportDAO {
 

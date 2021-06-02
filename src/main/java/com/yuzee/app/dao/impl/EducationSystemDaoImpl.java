@@ -10,13 +10,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.bean.Subject;
 import com.yuzee.app.dao.EducationSystemDao;
-import com.yuzee.app.dto.EducationSystemDto;
-import com.yuzee.app.dto.GradeDto;
-import com.yuzee.app.dto.SubjectDto;
+import com.yuzee.common.lib.dto.institute.EducationSystemDto;
+import com.yuzee.common.lib.dto.institute.GradeDto;
+import com.yuzee.common.lib.dto.institute.SubjectDto;
 
 @Component
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
@@ -37,6 +38,7 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 		session.update(hobbiesObj);
 	}
 
+	@Transactional
 	@Override
 	public EducationSystem get(final String id) {
 		Session session = sessionFactory.getCurrentSession();

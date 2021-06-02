@@ -1,27 +1,33 @@
 package com.yuzee.app.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.util.CollectionUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
@@ -34,14 +40,19 @@ import com.yuzee.app.bean.InstituteAdditionalInfo;
 import com.yuzee.app.bean.InstituteFacility;
 import com.yuzee.app.bean.Todo;
 import com.yuzee.app.dto.CourseRequest;
+import com.yuzee.app.dto.DayTimingDto;
 import com.yuzee.app.dto.FacilityDto;
 import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteRequestDto;
-import com.yuzee.app.dto.InstituteTimingDto;
-import com.yuzee.app.dto.InstituteTimingResponseDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.TodoDto;
+import com.yuzee.common.lib.dto.institute.TimingDto;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.util.DateUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class CommonUtil {
 
 	public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(final Institute institute) {
@@ -81,15 +92,13 @@ public class CommonUtil {
 		instituteRequestDto.setDomesticRanking(institute.getDomesticRanking());
 		instituteRequestDto.setTagLine(institute.getTagLine());
 		instituteRequestDto.setPostalCode(institute.getPostalCode());
+		instituteRequestDto.setReadableId(institute.getReadableId());
 		return instituteRequestDto;
 	}
 
-	public static CourseRequest convertCourseDtoToCourseRequest(final Course course) {
-		CourseRequest courseRequest = new CourseRequest();
+	public static void copyCourseToCourseRequest(final Course course, CourseRequest courseRequest) {
 		courseRequest.setId(course.getId());
-		if (course.getStars() != null) {
-			courseRequest.setStars(String.valueOf(course.getStars()));
-		}
+		
 		if (course.getWorldRanking() != null) {
 			courseRequest.setWorldRanking(String.valueOf(course.getWorldRanking()));
 		}
@@ -104,14 +113,41 @@ public class CommonUtil {
 		}
 		courseRequest.setCurrency(course.getCurrency());
 		courseRequest.setWebsite(course.getWebsite());
-		courseRequest.setAvailbility(course.getAvailabilty());
+		courseRequest.setAvailability(course.getAvailabilty());
 		if (course.getInstitute() != null) {
 			courseRequest.setInstituteId(course.getInstitute().getId());
+			courseRequest.setInstituteName(course.getInstitute().getName());
+			courseRequest.setLatitude(course.getInstitute().getLatitude());
+			courseRequest.setLongitude(course.getInstitute().getLongitude());
+			courseRequest.setInstituteName(course.getInstitute().getName());
+			courseRequest.getInstitute().setStateName(course.getInstitute().getState());
 		}
 		if (course.getLevel() != null) {
 			courseRequest.setLevelId(course.getLevel().getId());
 		}
-		return courseRequest;
+		
+		
+		courseRequest.setRemarks(course.getRemarks());
+		courseRequest.setWebsite(course.getWebsite());
+		courseRequest.setPhoneNumber(course.getPhoneNumber());
+		courseRequest.setAvailability(course.getAvailabilty());
+		courseRequest.setRecognition(course.getRecognition());
+		courseRequest.setAbbreviation(course.getAbbreviation());
+		courseRequest.setCurrencyTime(course.getCurrencyTime());
+		courseRequest.setCurrency(course.getCurrency());
+		courseRequest.setRecognitionType(course.getRecognitionType());
+		courseRequest.setExaminationBoard(course.getExaminationBoard());
+		
+		courseRequest.setDomesticApplicationFee(course.getDomesticApplicationFee());
+		courseRequest.setInternationalApplicationFee(course.getInternationalApplicationFee());
+		courseRequest.setDomesticEnrollmentFee(course.getDomesticEnrollmentFee());
+		courseRequest.setInternationalEnrollmentFee(course.getInternationalEnrollmentFee());
+		
+		courseRequest.setRecDate(course.getRecDate());
+		courseRequest.setContent(course.getContent());
+		courseRequest.setGlobalGpa(course.getGlobalGpa());
+		courseRequest.setEmail(course.getEmail());
+		courseRequest.setEntranceExam(course.getEntranceExam());
 	}
 
 	public static Map<String, Double> getCurrencyDetails(final String baseCurrency) {
@@ -175,31 +211,6 @@ public class CommonUtil {
 			todoDto.setDueDate(DateUtil.convertDateToString(todo.getDueDate()));
 		}
 		return todoDto;
-	}
-
-	public static Double foundOff2Digit(final Double convertedRate) {
-		System.out.println("double : " + convertedRate);
-		BigDecimal bd = new BigDecimal(convertedRate).setScale(2, RoundingMode.HALF_UP);
-		Double roundedDigit = bd.doubleValue();
-		System.out.println("rounded digit : " + roundedDigit);
-		return roundedDigit;
-	}
-
-	public static Date getDateWithoutTime(final Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		return cal.getTime();
-	}
-
-	public static Date getTomorrowDate(final Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.add(Calendar.DATE, 1);
-		return cal.getTime();
 	}
 
 	public static final Map<String, String> currencyNameMap = new HashMap<>();
@@ -412,72 +423,69 @@ public class CommonUtil {
 		return distance;
 	}
 	
-	public static List<InstituteTimingDto> convertInstituteTimingResponseDtoToInstituteRequestDto(InstituteTimingResponseDto instituteTimingResponseDto) {
-		List<InstituteTimingDto> instituteTimingDtos = new ArrayList<>();
-		InstituteTimingDto instituteTimingDto = null;
+	public static List<DayTimingDto> convertTimingResponseDtoToDayTimingDto(TimingDto instituteTimingResponseDto) {
+		List<DayTimingDto> dayTimingDtos = new ArrayList<>();
+		DayTimingDto instituteTimingDto = null;
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getMonday()) && !instituteTimingResponseDto.getMonday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Monday");
 			String time[] = instituteTimingResponseDto.getMonday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getTuesday()) && !instituteTimingResponseDto.getTuesday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Tuesday");
-			String time[] = instituteTimingResponseDto.getMonday().split("-");
+			String time[] = instituteTimingResponseDto.getTuesday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getWednesday()) && !instituteTimingResponseDto.getWednesday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Wednesday");
 			String time[] = instituteTimingResponseDto.getWednesday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getThursday()) && !instituteTimingResponseDto.getThursday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Thursday");
 			String time[] = instituteTimingResponseDto.getThursday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getFriday()) && !instituteTimingResponseDto.getFriday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Friday");
 			String time[] = instituteTimingResponseDto.getFriday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getSaturday()) && !instituteTimingResponseDto.getSaturday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Saturday");
 			String time[] = instituteTimingResponseDto.getSaturday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
 		if(!StringUtils.isEmpty(instituteTimingResponseDto.getSunday()) && !instituteTimingResponseDto.getSunday().equalsIgnoreCase("CLOSED")) {
-			instituteTimingDto = new InstituteTimingDto();
+			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Sunday");
 			String time[] = instituteTimingResponseDto.getSunday().split("-");
 			instituteTimingDto.setOpeningFrom(time[0]);
 			instituteTimingDto.setOpeningTo(time[1]);
-			instituteTimingDtos.add(instituteTimingDto);
+			dayTimingDtos.add(instituteTimingDto);
 		}
-		return instituteTimingDtos;
+		return dayTimingDtos;
 	}
 	
-	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-	    Set<Object> seen = ConcurrentHashMap.newKeySet();
-	    return t -> seen.add(keyExtractor.apply(t));
-	}
+	
 	
 	public static InstituteFacilityDto createInstituteFacilityResponseDto(
 			List<InstituteFacility> listOfInstituteFacility) {
@@ -488,5 +496,13 @@ public class CommonUtil {
 			instituteFacilityDto.getFacilities().add(facilityDto);
 		});
 		return instituteFacilityDto;
+	}
+	
+	public static void validateEditAccess(String userId, Course course) throws ForbiddenException {
+		log.info("Inside CommonUtil.validateEditAccess");
+		if (!course.getCreatedBy().equals(userId)) {
+			log.info("user has no access to edit the course details");
+			throw new ForbiddenException("user has no access to edit the course details");
+		}
 	}
 }

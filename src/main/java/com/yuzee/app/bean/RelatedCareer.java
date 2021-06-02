@@ -25,7 +25,7 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString
+@ToString(exclude = "careers")
 @EqualsAndHashCode
 @NoArgsConstructor
 @Table(name = "related_career", uniqueConstraints = @UniqueConstraint(columnNames = { "related_career", "career_id" }, 
@@ -40,7 +40,7 @@ public class RelatedCareer implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
-	@Column(name = "related_career", nullable = false)
+	@Column(name = "related_career", nullable = false, columnDefinition = "text")
 	private String relatedCareer;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

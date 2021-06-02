@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.InstituteAdditionalInfoDto;
 import com.yuzee.app.endpoint.InstituteAdditionalInfoInterface;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.InstituteAdditionalInfoProcessor;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 @RestController
 public class InstituteAdditionalInfoController implements InstituteAdditionalInfoInterface {

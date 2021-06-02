@@ -13,4 +13,6 @@ import com.yuzee.app.bean.CareerJob;
 public interface CareerJobRepository extends JpaRepository<CareerJob, String> {
 
 	public Page<CareerJob> findByIdIn(List<String> jobIds, Pageable pageable);
+	
+	public Page<CareerJob> findByJobContainingIgnoreCase(String name, Pageable pageable);
 }

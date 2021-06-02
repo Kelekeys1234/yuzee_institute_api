@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.yuzee.app.enumeration.StudentCategory;
@@ -71,13 +72,10 @@ public class ScholarshipIntake implements Serializable {
 	@Column(name = "updated_by")
 	private String updatedBy;
 
-	public void setAuditFields(String userId, ScholarshipIntake existingScholarshipIntake) {
+	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (existingScholarshipIntake != null) {
-			this.setCreatedBy(existingScholarshipIntake.getCreatedBy());
-			this.setCreatedOn(existingScholarshipIntake.getCreatedOn());
-		} else {
+		if (StringUtils.isEmpty(id)) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
 		}

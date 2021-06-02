@@ -33,13 +33,13 @@ import com.yuzee.app.dto.ArticleFolderDto;
 import com.yuzee.app.dto.ArticleFolderMapDto;
 import com.yuzee.app.dto.ArticleResponseDetailsDto;
 import com.yuzee.app.dto.ArticlesDto;
-import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.ArticleProcessor;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 @RestController("articleControllerV1")
 @RequestMapping("/api/v1/article")
@@ -63,10 +63,10 @@ public class ArticleController {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			filterDate = df.parse(date);
 		}
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<ArticleResponseDetailsDto> articleList = articleProcessor.getArticleList(startIndex, pageSize, sortByField,
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<ArticleResponseDetailsDto> articleList = articleProcessor.getArticleList(startIndex.intValue(), pageSize, sortByField,
 				sortByType, searchKeyword, categoryId, tags, status, filterDate);
-		Integer totalCount = articleProcessor.getTotalSearchCount(startIndex, pageSize, sortByField,
+		Integer totalCount = articleProcessor.getTotalSearchCount(startIndex.intValue(), pageSize, sortByField,
 				sortByType, searchKeyword, categoryId, tags, status, filterDate);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		Map<String, Object> responseMap = new HashMap<>(10);
@@ -92,11 +92,11 @@ public class ArticleController {
 		if(articleFilterDTO.getPageSize() == 0) {
 			throw new ValidationException("Page Size Cannot Be 0");
 		}
-		int startIndex = PaginationUtil.getStartIndex(articleFilterDTO.getPageNumber(), articleFilterDTO.getPageSize());
-		List<ArticleResponseDetailsDto> articleList = articleProcessor.getArticleList(startIndex, articleFilterDTO.getPageSize(), 
+		Long startIndex = PaginationUtil.getStartIndex(articleFilterDTO.getPageNumber(), articleFilterDTO.getPageSize());
+		List<ArticleResponseDetailsDto> articleList = articleProcessor.getArticleList(startIndex.intValue(), articleFilterDTO.getPageSize(), 
 				articleFilterDTO.getSortByField(), articleFilterDTO.getSortByType(), articleFilterDTO.getSearchKeyword(), articleFilterDTO.getCategoryId(), 
 				articleFilterDTO.getTags(), articleFilterDTO.getStatus(), null);
-		Integer totalCount = articleProcessor.getTotalSearchCount(startIndex, articleFilterDTO.getPageSize(), 
+		Integer totalCount = articleProcessor.getTotalSearchCount(startIndex.intValue(), articleFilterDTO.getPageSize(), 
 				articleFilterDTO.getSortByField(), articleFilterDTO.getSortByType(), articleFilterDTO.getSearchKeyword(), articleFilterDTO.getCategoryId(), 
 				articleFilterDTO.getTags(), articleFilterDTO.getStatus(), null);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, articleFilterDTO.getPageSize(), totalCount);
@@ -203,8 +203,8 @@ public class ArticleController {
 	@GetMapping(value = "/folder/{folderId}/all/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getArticleByFolderId(@PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize,@PathVariable final String folderId) throws ValidationException {
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
-		List<ArticleResponseDetailsDto> articleList  = articleProcessor.getArticleByFolderId(startIndex, pageSize,folderId);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		List<ArticleResponseDetailsDto> articleList  = articleProcessor.getArticleByFolderId(startIndex.intValue(), pageSize,folderId);
 		return new GenericResponseHandlers.Builder().setData(articleList).setMessage("get Articles Successfully").setStatus(HttpStatus.OK).create();
 
 	}
@@ -218,7 +218,7 @@ public class ArticleController {
 		if(pageNumber == null || pageNumber <= 0) {
 			throw new ValidationException("Please Specify Proper Page Number");
 		}
-		int startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		int totalCount = articleProcessor.getTotalAuthorCount(searchString);
 		List<String> authorList  = articleProcessor.getAuthors(startIndex, pageSize,searchString);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);

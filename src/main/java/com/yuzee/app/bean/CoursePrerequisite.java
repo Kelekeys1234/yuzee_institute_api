@@ -25,8 +25,8 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString
-@EqualsAndHashCode
+@ToString(exclude = "course")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @Table(name = "course_prerequisite", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "prerequisite" }, 
 	   	 name = "UK_NA_CN_CN"), indexes = {@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
@@ -40,6 +40,7 @@ public class CoursePrerequisite implements Serializable{
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
+	@EqualsAndHashCode.Include
 	@Column(name = "prerequisite", nullable = false)
 	private String prerequisite;
 	
@@ -60,4 +61,15 @@ public class CoursePrerequisite implements Serializable{
 
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
+
+	public CoursePrerequisite(String prerequisite, Course course, Date createdOn, Date updatedOn, String createdBy,
+			String updatedBy) {
+		super();
+		this.prerequisite = prerequisite;
+		this.course = course;
+		this.createdOn = createdOn;
+		this.updatedOn = updatedOn;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+	}
 }

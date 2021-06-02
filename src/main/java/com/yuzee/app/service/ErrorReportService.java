@@ -22,16 +22,16 @@ import com.yuzee.app.dao.IErrorReportDAO;
 import com.yuzee.app.dto.ErrorReportCategoryDto;
 import com.yuzee.app.dto.ErrorReportDto;
 import com.yuzee.app.dto.ErrorReportResponseDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.dto.UserDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.IdentityHandler;
-import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.util.DateUtil;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.util.DateUtil;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.handler.UserHandler;
 
 @Service
 @Transactional
@@ -41,7 +41,7 @@ public class ErrorReportService implements IErrorReportService {
 	private IErrorReportDAO errorReportDAO;
 
 	@Autowired
-	private IdentityHandler identityHandler;
+	private UserHandler userHandler;
 
 	@Autowired
 	private StorageHandler storageHandler;
@@ -111,11 +111,11 @@ public class ErrorReportService implements IErrorReportService {
 		BeanUtils.copyProperties(errorReport, errorReportResponseDto);
 		errorReportResponseDto.setErrorReportCategoryName(errorReport.getErrorReportCategory().getName());
 		errorReportResponseDto.setErrorReportCategoryId(errorReport.getErrorReportCategory().getId());
-		UserDto userDto = identityHandler.getUserById(errorReport.getUserId());
+		UserInitialInfoDto userDto = userHandler.getUserById(errorReport.getUserId());
 		errorReportResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
 		errorReportResponseDto.setUserEmail(userDto.getEmail());
 		if (errorReport.getAssigneeUserId() != null) {
-			UserDto assignUserDto = identityHandler.getUserById(errorReport.getAssigneeUserId());
+			UserInitialInfoDto assignUserDto = userHandler.getUserById(errorReport.getAssigneeUserId());
 			errorReportResponseDto.setAssigneeUserName(assignUserDto.getFirstName() + " " + assignUserDto.getLastName());
 		}
 		return errorReportResponseDto;
@@ -133,11 +133,11 @@ public class ErrorReportService implements IErrorReportService {
 			BeanUtils.copyProperties(errorReport, errorReportResponseDto);
 			errorReportResponseDto.setErrorReportCategoryName(errorReport.getErrorReportCategory().getName());
 			errorReportResponseDto.setErrorReportCategoryId(errorReport.getErrorReportCategory().getId());
-			UserDto userDto = identityHandler.getUserById(errorReport.getUserId());
+			UserInitialInfoDto userDto = userHandler.getUserById(errorReport.getUserId());
 			errorReportResponseDto.setUserName(userDto.getFirstName() + " " + userDto.getLastName());
 			errorReportResponseDto.setUserEmail(userDto.getEmail());
 			if (errorReport.getAssigneeUserId() != null) {
-				UserDto assignUserDto = identityHandler.getUserById(errorReport.getAssigneeUserId());
+				UserInitialInfoDto assignUserDto = userHandler.getUserById(errorReport.getAssigneeUserId());
 				errorReportResponseDto.setAssigneeUserName(assignUserDto.getFirstName() + " " + assignUserDto.getLastName());
 				List<StorageDto> storageDTOList = storageHandler.getStorages(errorReport.getAssigneeUserId(), EntityTypeEnum.USER,EntitySubTypeEnum.PROFILE);
 				if (storageDTOList != null && !storageDTOList.isEmpty()) {

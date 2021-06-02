@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,11 +43,11 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.enumeration.CourseSortBy;
-import com.yuzee.app.exception.NotFoundException;
 import com.yuzee.app.repository.InstituteRepository;
-import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.IConstant;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.util.DateUtil;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -753,6 +754,7 @@ public class InstituteDaoImpl implements InstituteDao {
 				.add(Projections.property("phoneNumber").as("phoneNumber"))
 				.add(Projections.property("email").as("email")).add(Projections.property("address").as("address"))
 				.add(Projections.property("domesticRanking").as("domesticRanking"))
+				.add(Projections.property("readableId").as("readableId"))
 				.add(Projections.property("tagLine").as("tagLine")))
 				.setResultTransformer(Transformers.aliasToBean(InstituteResponseDto.class));
 		if (StringUtils.isNotEmpty(instituteName)) {
@@ -768,11 +770,11 @@ public class InstituteDaoImpl implements InstituteDao {
 		Session session = sessionFactory.getCurrentSession();
 		StringBuilder sqlQuery = new StringBuilder("select distinct i.name as instituteName from institute i ");
 		if (StringUtils.isNotEmpty(instituteName)) {
-			sqlQuery.append(" where name like %:instituteName%");
+			sqlQuery.append(" where name like :instituteName");
 		}
 		Query query = session.createSQLQuery(sqlQuery.toString());
 		if (StringUtils.isNotEmpty(instituteName)) {
-			query.setParameter("instituteName", instituteName);
+			query.setParameter("instituteName", "%" + instituteName + "%");
 		}
 		List<Object[]> rows = query.list();
 		return rows.size();
@@ -998,4 +1000,46 @@ public class InstituteDaoImpl implements InstituteDao {
 	public List<InstituteResponseDto> findByIds(List<String> instituteIds) {
 		return instituteRepository.findByIdIn(instituteIds);
 	}
+
+	@Override
+	public List<Institute> findAllById(List<String> instituteIds) {
+		return instituteRepository.findAllById(instituteIds);
+	}
+
+
+	@Override
+	public List<Institute> findByReadableIdIn(List<String> readableIds) {
+		return instituteRepository.findByReadableIdIn(readableIds);
+	}
+
+	@Override
+	public Institute findByReadableId(String readableId) {
+		return instituteRepository.findByReadableId(readableId);
+	}
+	
+	@Override
+	public Map<String, String> getAllInstituteMap() {
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery("select id, `name`, city_name , country_name from institute");
+		List instituteList = query.getResultList();
+		Iterator it = instituteList.iterator();
+		Map<String, String> instituteListMap = new HashMap<>();
+
+		while (it.hasNext()) {
+			Object[] obj = (Object[]) it.next();
+			instituteListMap.put(String.valueOf(obj[1]) + "~" + String.valueOf(obj[2]) + "~" + String.valueOf(obj[3]),
+					obj[0].toString());
+		}
+
+		return instituteListMap;
+	}
+
+	@Override
+	public Institute getInstitute(String instituteId) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Institute.class, "institute");
+		criteria.add(Restrictions.eq("institute.id", instituteId));
+		return (Institute) criteria.uniqueResult();
+	}
+	
 }

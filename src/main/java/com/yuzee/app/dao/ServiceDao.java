@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.yuzee.app.bean.Service;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface ServiceDao {
 
@@ -16,6 +16,8 @@ public interface ServiceDao {
 	public Optional<Service> getServiceById(String id);
 
 	public Page<Service> getAllServices(Pageable pageable);
+
+	public List<Service> getAll();
 
 	public List<Service> getAllByIds(List<String> id);
 	

@@ -1,5 +1,6 @@
 package com.yuzee.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -19,9 +20,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -29,9 +28,10 @@ import lombok.ToString;
           indexes = { @Index (name = "IDX_FACILITY_INSTITUTE_ID", columnList="institute_id", unique = false)})
 @Data
 @NoArgsConstructor
-@ToString(exclude = "institute")
 @EqualsAndHashCode
-public class InstituteFacility {
+public class InstituteFacility implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "GUID" , strategy = "org.hibernate.id.GUIDGenerator")
@@ -53,6 +53,7 @@ public class InstituteFacility {
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 	
+	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "institute_id", nullable = false)
 	private Institute institute;

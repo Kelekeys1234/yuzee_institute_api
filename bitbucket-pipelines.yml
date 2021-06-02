@@ -9,10 +9,19 @@ pipelines:
   custom:
     manual-build:
        - step:
+           name: Compile
+           image: maven:3.8.1
            caches:
              - maven
-           script: # Modify the commands below to build your repository.
-             - mvn -B verify # -B batch mode makes Maven less verbose
+           script:
+             - mvn -P snapshot -B -s settings.xml verify
+           artifacts:
+             - target/yuzee-institute.jar
+             - appspec.yml
+             - scripts/*
+       - step:
+           name: Create Zip File
+           script:
              - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip target/yuzee-institute.jar
              - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip appspec.yml
              - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip scripts/*

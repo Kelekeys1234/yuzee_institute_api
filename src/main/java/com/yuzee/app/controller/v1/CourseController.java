@@ -1,6 +1,5 @@
 package com.yuzee.app.controller.v1;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,14 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.bean.Course;
-import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseKeywords;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseCountDto;
 import com.yuzee.app.dto.CourseDto;
 import com.yuzee.app.dto.CourseFilterDto;
-import com.yuzee.app.dto.CourseMinRequirementDto;
 import com.yuzee.app.dto.CourseMobileDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseResponseDto;
@@ -26,31 +22,29 @@ import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.NearestCoursesDto;
 import com.yuzee.app.dto.PaginationDto;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.dto.UserDto;
-import com.yuzee.app.dto.UserMyCourseDto;
 import com.yuzee.app.endpoint.CourseInterface;
-import com.yuzee.app.enumeration.EnglishType;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.enumeration.TransactionTypeEnum;
-import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
-import com.yuzee.app.handler.IdentityHandler;
-import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.handler.ViewTransactionHandler;
 import com.yuzee.app.message.MessageByLocaleService;
-import com.yuzee.app.processor.CourseEnglishEligibilityProcessor;
 import com.yuzee.app.processor.CourseKeywordProcessor;
 import com.yuzee.app.processor.CourseProcessor;
 import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.service.UserRecommendationService;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.dto.transaction.UserMyCourseDto;
+import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.enumeration.TransactionTypeEnum;
+import com.yuzee.common.lib.exception.ForbiddenException;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.handler.UserHandler;
+import com.yuzee.common.lib.handler.ViewTransactionHandler;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -68,9 +62,6 @@ public class CourseController implements CourseInterface {
 	private CourseKeywordProcessor courseKeywordProcessor;
 
 	@Autowired
-	private CourseEnglishEligibilityProcessor courseEnglishEligibilityProcessor;
-
-	@Autowired
 	private UserRecommendationService userRecommendationService;
 
 	@Autowired
@@ -80,21 +71,43 @@ public class CourseController implements CourseInterface {
 	private MessageByLocaleService messageByLocalService;
 
 	@Autowired
-	private IdentityHandler identityHandler;
+	private UserHandler userHandler;
 	
 	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
 
-	public ResponseEntity<?> save(final CourseRequest course) throws ValidationException, CommonInvokeException {
+	public ResponseEntity<?> save(final String userId, String instituteId, final CourseRequest course)
+			throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
 		log.info("Start process to save new course in DB");
-		String courseId = courseProcessor.saveCourse(course);
+		com.yuzee.app.util.ValidationUtil.validateTimingDtoFromCourseRequest(course);
+		String courseId = courseProcessor.saveOrUpdateCourse(userId, instituteId, course, null);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Created successfully").create();
 	}
 
-	public ResponseEntity<?> update(final CourseRequest course, final String id) throws ValidationException, CommonInvokeException {
+	@Override
+	public ResponseEntity<?> saveBasicCourse(final String userId, String instituteId, final CourseRequest course)
+			throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
+		log.info("Start process to save new course basic details in DB");
+		String courseId = courseProcessor.saveOrUpdateBasicCourse(userId, instituteId, course, null);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
+				.setMessage("Course Created successfully").create();
+	}
+
+	public ResponseEntity<?> update(final String userId, String instituteId, final CourseRequest course, final String id)
+			throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
 		log.info("Start process to update existing course in DB");
-		String courseId = courseProcessor.updateCourse(course, id);
+		com.yuzee.app.util.ValidationUtil.validateTimingDtoFromCourseRequest(course);
+		String courseId = courseProcessor.saveOrUpdateCourse(userId, instituteId, course, id);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
+				.setMessage("Course Updated successfully").create();
+	}
+
+	@Override
+	public ResponseEntity<?> updateBasicCourse(final String userId, String instituteId, final CourseRequest course, final String id)
+			throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
+		log.info("Start process to update existing basic course in DB");
+		String courseId = courseProcessor.saveOrUpdateBasicCourse(userId,instituteId, course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage("Course Updated successfully").create();
 	}
@@ -113,10 +126,12 @@ public class CourseController implements CourseInterface {
 				.setMessage("Courses Displayed successfully").create();
 	}
 
-	public ResponseEntity<?> delete(final String id) throws Exception {
+	public ResponseEntity<?> delete(final String userId, final String id, final List<String> linkedCourseIds)
+			throws ForbiddenException, NotFoundException {
 		log.info("Start process to delete existing course from DB");
-		courseProcessor.deleteCourse(id);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Courses Deleted successfully").create();
+		courseProcessor.deleteCourse(userId, id, linkedCourseIds);
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Courses Deleted successfully")
+				.create();
 	}
 
 	public ResponseEntity<?> searchCourse(final Integer pageNumber, final Integer pageSize, final List<String> countryIds, final String instituteId, 
@@ -155,14 +170,14 @@ public class CourseController implements CourseInterface {
 
 	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto, final String searchKeyword)
 			throws ValidationException, InvokeException, NotFoundException {
-		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+		Long startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		
 		log.info("Calling view transaction service to fetch user my course data");
 		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
-				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.SAVED_COURSE.name());
+				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name());
 		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
 		
-		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByFilter(courseSearchDto, startIndex, courseSearchDto.getMaxSizePerPage(), 
+		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByFilter(courseSearchDto, startIndex.intValue(), courseSearchDto.getMaxSizePerPage(), 
 					searchKeyword, entityIds);
 		int totalCount = courseProcessor.getCountforNormalCourse(courseSearchDto, searchKeyword, entityIds);
 		
@@ -170,7 +185,7 @@ public class CourseController implements CourseInterface {
 		
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(courseList);
-		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
@@ -181,12 +196,12 @@ public class CourseController implements CourseInterface {
 
 	public ResponseEntity<?> advanceSearch(final String userId, final String language, final AdvanceSearchDto courseSearchDto) throws Exception {
 		log.info("Start process to advance search courses from DB");
-		int startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),courseSearchDto.getMaxSizePerPage());
+		Long startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
 		
 		log.info("Calling view transaction service to fetch user my course data");
 		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
-				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.SAVED_COURSE.name());
+				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name());
 		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
 		
 		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto, entityIds);
@@ -195,7 +210,7 @@ public class CourseController implements CourseInterface {
 		
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(courseList);
-		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
@@ -205,11 +220,11 @@ public class CourseController implements CourseInterface {
 				setMessage("Courses Displayed successfully").setData(paginationResponseDto).create();
 	}
 
-	public ResponseEntity<Object> get(final String userId, final String id) throws Exception {
+	public ResponseEntity<Object> get(final String userId, final String id, final boolean isReadableId) throws Exception {
 		log.info("Start process to get course from DB based on courseId");
-		Map<String, Object> response = courseProcessor.getCourseById(userId, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Courses Displayed successfully").setData(response).create();
+				.setMessage("Courses Displayed successfully")
+				.setData(courseProcessor.getCourseById(userId, id, isReadableId)).create();
 	}
 
 	public ResponseEntity<?> getAllCourseByInstituteID(final String instituteId, final CourseSearchDto request) throws Exception {
@@ -257,7 +272,7 @@ public class CourseController implements CourseInterface {
 	}
 
 	public ResponseEntity<?> getUserCourses(final List<String> courseIds,final String sortBy, final String sortAsscending) 
-			throws ValidationException, CommonInvokeException {
+			throws ValidationException {
 		log.info("Start process to get user course from DB based on pagination and userID");
 		List<CourseDto> courses = courseProcessor.getUserCourse(courseIds, sortBy, sortAsscending);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courses)
@@ -266,7 +281,7 @@ public class CourseController implements CourseInterface {
 
 	public ResponseEntity<?> courseFilter(final String userId, String language, final CourseFilterDto courseFilter) throws Exception {
 		//Get userCountry Based on userId
-		UserDto userDto = identityHandler.getUserById(userId);
+		UserInitialInfoDto userDto = userHandler.getUserById(userId);
 		if (userDto == null) {
 			throw new NotFoundException(
 					messageByLocalService.getMessage("user.not.found", new Object[] { userId }, language));
@@ -281,20 +296,6 @@ public class CourseController implements CourseInterface {
 				.setMessage("Course Displayed Successfully").create();
 	}
 
-	public ResponseEntity<?> saveCourseMinRequirement(final List<CourseMinRequirementDto> courseMinRequirementDtoList) throws Exception {
-		for (CourseMinRequirementDto courseMinRequirementDto2 : courseMinRequirementDtoList) {
-			courseProcessor.saveCourseMinrequirement(courseMinRequirementDto2);
-		}
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Created Course Minimum Requirement").create();
-	}
-
-	public ResponseEntity<?> getCourseMinRequirement(final String courseId) throws Exception {
-		List<CourseMinRequirementDto> courseMinRequirementDto = courseProcessor.getCourseMinRequirement(courseId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Get Course Minimum Requirement").setData(courseMinRequirementDto).create();
-	}
-
 	public ResponseEntity<?> autoSearchByCharacter(final String searchKey) throws Exception {
 		List<CourseRequest> courses = courseProcessor.autoSearchByCharacter(searchKey);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
@@ -304,9 +305,9 @@ public class CourseController implements CourseInterface {
 	// This API is used when in normal or global search if data is not available based on filter.
 	public ResponseEntity<Object> getCourseNoResultRecommendation(final Integer pageNumber, final Integer pageSize, final String facultyId,
 			final String countryId, final String userCountry) throws ValidationException, InvokeException, NotFoundException {
-		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> courseResponseDtos = courseProcessor.getCourseNoResultRecommendation(userCountry,
-				facultyId, countryId, startIndex, pageSize);
+				facultyId, countryId, startIndex.intValue(), pageSize);
 		return new GenericResponseHandlers.Builder().setData(courseResponseDtos)
 				.setMessage("Get course list displayed successfully").setStatus(HttpStatus.OK).create();
 	}
@@ -314,9 +315,9 @@ public class CourseController implements CourseInterface {
 	// This API is used for course Info page for related course keyword recommendation.
 	public ResponseEntity<Object> getCourseKeywordRecommendation(final Integer pageNumber, final Integer pageSize, final String facultyId,
 			final String countryId, final String levelId) throws ValidationException {
-		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<String> courseResponseDtos = courseProcessor.getCourseKeywordRecommendation(facultyId, countryId, levelId,
-				startIndex, pageSize);
+				startIndex.intValue(), pageSize);
 		return new GenericResponseHandlers.Builder().setData(courseResponseDtos)
 				.setMessage("Get course keyword recommendation list displayed successfully").setStatus(HttpStatus.OK)
 				.create();
@@ -325,9 +326,9 @@ public class CourseController implements CourseInterface {
 	// This API is used for course Info page for related course keyword recommendation.
 	public ResponseEntity<Object> getCheapestCourse(final Integer pageNumber, final Integer pageSize,final String facultyId,
 			final String countryId, final String levelId, final String cityId) throws ValidationException {
-		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> courseResponseDtos = userRecommendationService.getCheapestCourse(facultyId, countryId,
-				levelId, cityId, startIndex, pageSize);
+				levelId, cityId, startIndex.intValue(), pageSize);
 		return new GenericResponseHandlers.Builder().setData(courseResponseDtos)
 				.setMessage("Get cheapest course recommendation list displayed successfully").setStatus(HttpStatus.OK)
 				.create();
@@ -340,13 +341,13 @@ public class CourseController implements CourseInterface {
 	}
 	
 	public ResponseEntity<?> getDistinctCourses(final Integer pageNumber, final Integer pageSize, final String name) {
-		Integer startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
+		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		int totalCount = courseProcessor.getDistinctCourseCount(name);
-		List<CourseResponseDto> courseList = courseProcessor.getDistinctCourseList(startIndex, pageSize,name);
+		List<CourseResponseDto> courseList = courseProcessor.getDistinctCourseList(startIndex.intValue(), pageSize,name);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(courseList);
-		paginationResponseDto.setTotalCount(totalCount);
+		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
@@ -413,54 +414,6 @@ public class CourseController implements CourseInterface {
 				.setMessage("Courses displayed successfully").setStatus(HttpStatus.OK).create();
 	}
 	
-	@Deprecated
-	public ResponseEntity<?> updateGradeAndEnglishEligibility() throws Exception {
-		Map<String, Object> response = new HashMap<>();
-//		List<Course> courseList = courseProcessor.getAll();
-		List<Course> courseList = null;
-		Date now = new Date();
-		CourseEnglishEligibility englishEligibility = null;
-		int size = courseList.size(), i = 1;
-		for (Course course : courseList) {
-			System.out.println("Total:  " + size + ",  Completed:  " + i + ",  CourseID:  " + course.getId());
-			i++;
-			try {
-				englishEligibility = new CourseEnglishEligibility();
-				englishEligibility.setCourse(course);
-				englishEligibility.setEnglishType(EnglishType.IELTS.toString());
-				englishEligibility.setIsActive(true);
-				englishEligibility.setListening(4.0);
-				englishEligibility.setOverall(4.5);
-				englishEligibility.setReading(4.0);
-				englishEligibility.setSpeaking(5.0);
-				englishEligibility.setWriting(5.0);
-				englishEligibility.setIsDeleted(false);
-				englishEligibility.setCreatedBy("AUTO");
-				englishEligibility.setCreatedOn(now);
-				courseEnglishEligibilityProcessor.save(englishEligibility);
-				englishEligibility = new CourseEnglishEligibility();
-				englishEligibility.setCourse(course);
-				englishEligibility.setEnglishType(EnglishType.TOEFL.toString());
-				englishEligibility.setIsActive(true);
-				englishEligibility.setListening(4.0);
-				englishEligibility.setOverall(4.5);
-				englishEligibility.setReading(4.0);
-				englishEligibility.setSpeaking(5.0);
-				englishEligibility.setWriting(5.0);
-				englishEligibility.setIsDeleted(false);
-				englishEligibility.setCreatedBy("AUTO");
-				englishEligibility.setCreatedOn(now);
-				courseEnglishEligibilityProcessor.save(englishEligibility);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		response.put("status", 1);
-		response.put("message", "Success.!");
-		response.put("courseList", courseList);
-		return ResponseEntity.accepted().body(response);
-	}
-
 	@Override
 	public ResponseEntity<?> getCourseByIds(List<String> courseIds) {
 		List<CourseDto> courseDtos = courseProcessor.getCourseByMultipleId(courseIds);

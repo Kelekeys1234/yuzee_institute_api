@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.InstituteBasicInfoDto;
 import com.yuzee.app.endpoint.InstituteBasicInfoInterface;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.InstituteBasicInfoProcessor;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 import lombok.extern.apachecommons.CommonsLog;
 

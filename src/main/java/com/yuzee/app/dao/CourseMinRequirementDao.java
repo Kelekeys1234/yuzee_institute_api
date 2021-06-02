@@ -1,12 +1,18 @@
 package com.yuzee.app.dao;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.yuzee.app.bean.CourseMinRequirement;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface CourseMinRequirementDao {
 
-	public void save(final CourseMinRequirement obj);
+	CourseMinRequirement save(final CourseMinRequirement courseMinRequirement) throws ValidationException;
 
-	public List<CourseMinRequirement> getCourseMinRequirementByCourseId(final String id);
+	Page<CourseMinRequirement> findByCourseId(final String courseId, Pageable pageable);
+
+	CourseMinRequirement findByCourseIdAndId(String courseId, String id);
+
+	long deleteByCourseIdAndId(String courseId, String id);
 }

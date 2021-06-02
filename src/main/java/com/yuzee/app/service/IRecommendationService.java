@@ -8,9 +8,9 @@ import com.yuzee.app.dto.ArticleResposeDto;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.MyHistoryDto;
-import com.yuzee.app.dto.ScholarshipDto;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.dto.institute.ScholarshipDto;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 public interface IRecommendationService {
 

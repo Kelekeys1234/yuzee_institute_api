@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseResponseDto;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.service.ITop10CourseService;
 
 @RestController("top10CourseControllerV1")

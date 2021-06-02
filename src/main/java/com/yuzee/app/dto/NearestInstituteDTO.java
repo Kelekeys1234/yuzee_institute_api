@@ -15,10 +15,10 @@ public class NearestInstituteDTO  {
 	private List<InstituteResponseDto> nearestInstitutes;
 	
 	@JsonProperty("total_count")
-	private Integer totalCount;
+	private Long totalCount;
 	
 	@JsonProperty("page_number")
-	private Integer pageNumber;
+	private Long pageNumber;
 	
 	@JsonProperty("has_previous_page")
 	private Boolean hasPreviousPage;
@@ -27,10 +27,10 @@ public class NearestInstituteDTO  {
 	private Boolean hasNextPage;
 	
 	@JsonProperty("total_pages")
-	private Integer totalPages;
+	private Long totalPages;
 	
-	public NearestInstituteDTO(List<InstituteResponseDto> nearestInstitutes, Integer totalCount, Integer pageNumber, Boolean hasPreviousPage,
-			Boolean hasNextPage, Integer totalPages) {
+	public NearestInstituteDTO(List<InstituteResponseDto> nearestInstitutes, Long totalCount, Long pageNumber, Boolean hasPreviousPage,
+			Boolean hasNextPage, Long totalPages) {
 		this.nearestInstitutes = nearestInstitutes;
 		this.totalCount = totalCount;
 		this.pageNumber = pageNumber;

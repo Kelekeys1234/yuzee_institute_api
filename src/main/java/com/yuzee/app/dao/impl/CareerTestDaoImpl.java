@@ -3,14 +3,10 @@ package com.yuzee.app.dao.impl;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.yuzee.app.bean.CareerJob;
 import com.yuzee.app.bean.CareerJobCourseSearchKeyword;
@@ -30,11 +26,7 @@ import com.yuzee.app.repository.CareerJobWorkingStyleRepository;
 import com.yuzee.app.repository.RelatedCareerRepository;
 
 @Component
-@Transactional
 public class CareerTestDaoImpl implements CareerTestDao {
-
-	@PersistenceContext
-	private EntityManager entityManager;
 
 	@Autowired
 	private CareerJobWorkingStyleRepository careerJobWorkingStyleRepository;
@@ -58,8 +50,8 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	private CareerJobCourseSearchKeywordRepository careerJobCourseSearchKeywordRepository;
 
 	@Override
-	public Page<CareerJobSkill> getCareerJobSkills(String levelId, Pageable pageable) {
-		return careerJobSkillRepository.findByLevelId(levelId, pageable);
+	public Page<CareerJobSkill> getCareerJobSkills(String levelId, String jobId, Pageable pageable) {
+		return careerJobSkillRepository.findByLevelIdAndJobId(levelId, jobId, pageable);
 	}
 
 	@Override
@@ -100,5 +92,10 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	@Override
 	public Optional<CareerJob> getCareerJob(String careerJobId) {
 		return careerJobRepository.findById(careerJobId);
+	}
+
+	@Override
+	public Page<CareerJob> getCareerJobByName(String name, Pageable pageable) {
+		return careerJobRepository.findByJobContainingIgnoreCase(name, pageable);
 	}
 }

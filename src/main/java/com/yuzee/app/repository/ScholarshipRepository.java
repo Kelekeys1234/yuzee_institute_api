@@ -17,6 +17,10 @@ public interface ScholarshipRepository
 	public Long countByInstituteId(String instituteId);
 
 	@Query("SELECT new com.yuzee.app.dto.ScholarshipLevelCountDto(l.id, l.code, l.name, COUNT(s.id)) "
-			+ "from Scholarship s join s.level l group by s.level.id")
+			+ "from Scholarship s join s.levels l group by l.id")
 	public List<ScholarshipLevelCountDto> getScholarshipCountGroupByLevel();
+	
+	public List<Scholarship> findByReadableIdIn(List<String> readableIds);
+
+	public Scholarship findByReadableId(String readableId);
 }

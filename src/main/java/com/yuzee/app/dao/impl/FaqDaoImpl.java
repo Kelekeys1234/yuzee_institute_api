@@ -9,9 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Faq;
 import com.yuzee.app.dao.FaqDao;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.FaqRepository;
 
 import lombok.extern.slf4j.Slf4j;

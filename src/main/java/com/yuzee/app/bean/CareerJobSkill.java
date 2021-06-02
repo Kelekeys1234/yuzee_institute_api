@@ -25,7 +25,7 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString
+@ToString(exclude = "careerJobs")
 @NoArgsConstructor
 @EqualsAndHashCode
 @Table(name = "job_skill", uniqueConstraints = @UniqueConstraint(columnNames = { "job_id", "skill" }, 
@@ -42,6 +42,9 @@ public class CareerJobSkill implements Serializable {
 	
 	@Column(name = "skill", nullable = false)
 	private String skill;
+
+	@Column(name = "description")
+	private String description;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "job_id")

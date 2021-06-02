@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.constant.RecommendRequestStatus;
 import com.yuzee.app.dto.InstituteRecommendPageRequestDto;
 import com.yuzee.app.endpoint.InstituteRecommedPageRequestInterface;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.InstituteRecommendPageRequestProcessor;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 import lombok.extern.apachecommons.CommonsLog;
 

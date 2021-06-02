@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.CourseSearchFilterDto;
 import com.yuzee.app.dto.InstituteResponseDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.StorageHandler;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.InstituteProcessor;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.StorageHandler;
 
 @RestController("searchPageControllerV1")
 @RequestMapping("/api/v1/search")

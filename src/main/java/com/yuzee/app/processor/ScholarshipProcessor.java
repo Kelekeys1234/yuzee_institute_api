@@ -1,7 +1,10 @@
 package com.yuzee.app.processor;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -17,33 +20,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.bean.Scholarship;
+import com.yuzee.app.bean.ScholarshipCountry;
 import com.yuzee.app.bean.ScholarshipEligibleNationality;
-import com.yuzee.app.bean.ScholarshipIntake;
 import com.yuzee.app.bean.ScholarshipLanguage;
+import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.dao.ScholarshipDao;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.ScholarshipElasticDto;
-import com.yuzee.app.dto.ScholarshipIntakeDto;
 import com.yuzee.app.dto.ScholarshipLevelCountDto;
-import com.yuzee.app.dto.ScholarshipRequestDto;
-import com.yuzee.app.dto.ScholarshipResponseDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.enumeration.StudentCategory;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.ElasticHandler;
-import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.util.IConstant;
-import com.yuzee.app.util.PaginationUtil;
-import com.yuzee.app.util.Util;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.institute.ScholarshipRequestDto;
+import com.yuzee.common.lib.dto.institute.ScholarshipResponseDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,7 +56,10 @@ public class ScholarshipProcessor {
 	private ScholarshipDao scholarshipDAO;
 
 	@Autowired
-	private LevelDao levelDAO;
+	private LevelDao levelDao;
+
+	@Autowired
+	private FacultyDao facultyDAO;
 
 	@Autowired
 	private ElasticHandler elasticHandler;
@@ -68,6 +72,9 @@ public class ScholarshipProcessor {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private ConversionProcessor conversionProcessor;
 
 	private Scholarship prepareModel(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String existingScholarshipId) throws ValidationException {
@@ -76,16 +83,29 @@ public class ScholarshipProcessor {
 			scholarship = getScholarshipFomDb(existingScholarshipId);
 		}
 		BeanUtils.copyProperties(scholarshipDto, scholarship);
+		if (StringUtils.isEmpty(existingScholarshipId)) {
+			setReadableIdForScholarship(scholarship);
+			scholarship.setIsActive(true);
+		}
 		scholarship.setId(existingScholarshipId);
-		scholarship.setAuditFields(userId, StringUtils.isEmpty(existingScholarshipId) ? null : scholarship);
-		if (scholarshipDto.getLevelId() != null) {
-			log.info("LevelId is not nll, hence fetching level data from DB");
-			Level level = levelDAO.getLevel(scholarshipDto.getLevelId());
-			if (level == null) {
-				log.error("Level not found for id: {}", scholarshipDto.getLevelId());
-				throw new ValidationException("Level not found for id: " + scholarshipDto.getLevelId());
+		scholarship.setAuditFields(userId);
+
+		Set<Level> dbLevels = scholarship.getLevels();
+		dbLevels.clear();
+		if (!CollectionUtils.isEmpty(scholarshipDto.getLevelIds())) {
+			log.info("Scholarship levels is not empty, start iterating data");
+			List<Level> levels = levelDao.findByIdIn(scholarshipDto.getLevelIds());
+			dbLevels.addAll(levels);
+		}
+
+		if (scholarshipDto.getFacultyId() != null) {
+			log.info("faculty_id is not null, hence fetching faculty data from DB");
+			Faculty faculty = facultyDAO.get(scholarshipDto.getFacultyId());
+			if (faculty == null) {
+				log.error("Faculty not found for id: {}", scholarshipDto.getFacultyId());
+				throw new ValidationException("Faculty not found for id: " + scholarshipDto.getFacultyId());
 			}
-			scholarship.setLevel(level);
+			scholarship.setFaculty(faculty);
 		}
 
 		if (!ObjectUtils.isEmpty(scholarshipDto.getInstituteId())) {
@@ -99,40 +119,6 @@ public class ScholarshipProcessor {
 		}
 
 		final Scholarship finalScholarship = scholarship;
-		List<ScholarshipIntake> dbIntakes = scholarship.getScholarshipIntakes();
-		if (!CollectionUtils.isEmpty(scholarshipDto.getIntakes())) {
-			log.info("Scholarship intakes is not null, start iterating data");
-
-			scholarshipDto.getIntakes().stream().forEach(intake -> {
-
-				// intakes to be updated
-				Optional<ScholarshipIntake> existingIntakeOptional = dbIntakes.stream()
-						.filter(e -> e.getStudentCategory().name().equals(intake.getStudentCategory())
-								&& e.getIntakeDate().getTime() == intake.getIntakeDate().getTime())
-						.findAny();
-
-				String scholarshipIntakeId = null;
-				ScholarshipIntake scholarshipIntake = new ScholarshipIntake();
-				if (existingIntakeOptional.isPresent()) {
-					scholarshipIntake = existingIntakeOptional.get();
-					scholarshipIntakeId = scholarshipIntake.getId();
-				}
-				scholarshipIntake.setId(scholarshipIntakeId);
-				scholarshipIntake.setIntakeDate(intake.getIntakeDate());
-				scholarshipIntake.setDeadline(intake.getDeadline());
-				scholarshipIntake.setStudentCategory(StudentCategory.valueOf(intake.getStudentCategory()));
-				scholarshipIntake.setAuditFields(userId,
-						StringUtils.isEmpty(scholarshipIntakeId) ? null : scholarshipIntake);
-				scholarshipIntake.setScholarship(finalScholarship);
-				if (StringUtils.isEmpty(scholarshipIntakeId)) {
-					dbIntakes.add(scholarshipIntake);
-				}
-			});
-		} else if (!CollectionUtils.isEmpty(dbIntakes)) {
-			dbIntakes.clear();
-		}
-		// intakes to be removed
-		dbIntakes.removeIf(e -> !ifIntakeExistsInDtoList(scholarshipDto.getIntakes(), e));
 
 		List<ScholarshipLanguage> dbLanguages = scholarship.getScholarshipLanguages();
 
@@ -160,7 +146,35 @@ public class ScholarshipProcessor {
 				}
 
 			});
-			dbLanguages.removeIf(e -> !Util.containsIgnoreCase(scholarshipDto.getLanguages(), e.getName()));
+			dbLanguages.removeIf(e -> !Utils.containsIgnoreCase(scholarshipDto.getLanguages(), e.getName()));
+		}
+
+		List<ScholarshipCountry> dbCountries = scholarship.getScholarshipCountries();
+
+		if (!CollectionUtils.isEmpty(scholarshipDto.getCountryNames())) {
+			log.info("Scholarship country_names is not empty, start iterating data");
+
+			scholarshipDto.getCountryNames().stream().forEach(countryName -> {
+
+				Optional<ScholarshipCountry> existingCountryOptional = dbCountries.stream()
+						.filter(e -> e.getCountryName().equalsIgnoreCase(countryName)).findAny();
+
+				String scholarshipCountryId = null;
+				ScholarshipCountry scholarshipCountry = new ScholarshipCountry();
+				if (existingCountryOptional.isPresent()) {
+					scholarshipCountry = existingCountryOptional.get();
+					scholarshipCountryId = scholarshipCountry.getId();
+				}
+				scholarshipCountry.setId(scholarshipCountryId);
+				scholarshipCountry.setCountryName(countryName);
+				scholarshipCountry.setAuditFields(userId);
+				scholarshipCountry.setScholarship(finalScholarship);
+				if (StringUtils.isEmpty(scholarshipCountryId)) {
+					dbCountries.add(scholarshipCountry);
+				}
+
+			});
+			dbCountries.removeIf(e -> !Utils.containsIgnoreCase(scholarshipDto.getCountryNames(), e.getCountryName()));
 		}
 
 		List<ScholarshipEligibleNationality> dbNationalitites = scholarship.getScholarshipEligibleNationalities();
@@ -188,27 +202,9 @@ public class ScholarshipProcessor {
 				}
 			});
 			dbNationalitites.removeIf(
-					e -> !Util.containsIgnoreCase(scholarshipDto.getEligibleNationalities(), e.getCountryName()));
+					e -> !Utils.containsIgnoreCase(scholarshipDto.getEligibleNationalities(), e.getCountryName()));
 		}
 		return scholarship;
-	}
-
-	private ScholarshipElasticDto prepareElasticDtoFromModel(Scholarship scholarship) {
-		ScholarshipElasticDto scholarshipElasticDto = new ScholarshipElasticDto();
-		log.info("Copying data from DTO class to elasticSearch DTO class");
-		BeanUtils.copyProperties(scholarship, scholarshipElasticDto);
-		scholarshipElasticDto
-				.setCountryName(scholarship.getCountryName() != null ? scholarship.getCountryName() : null);
-		scholarshipElasticDto
-				.setInstituteName(scholarship.getInstitute() != null ? scholarship.getInstitute().getName() : null);
-		scholarshipElasticDto.setLevelName(scholarship.getLevel() != null ? scholarship.getLevel().getName() : null);
-		scholarshipElasticDto.setLevelCode(scholarship.getLevel() != null ? scholarship.getLevel().getCode() : null);
-		scholarshipElasticDto.setAmount(scholarship.getScholarshipAmount());
-		scholarshipElasticDto.setIntakes(scholarship.getScholarshipIntakes().stream()
-				.map(e -> modelMapper.map(e, ScholarshipIntakeDto.class)).collect(Collectors.toList()));
-		scholarshipElasticDto.setLanguages(scholarship.getScholarshipLanguages().stream()
-				.map(ScholarshipLanguage::getName).collect(Collectors.toList()));
-		return scholarshipElasticDto;
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
@@ -221,21 +217,30 @@ public class ScholarshipProcessor {
 		Scholarship scholarship = scholarshipDAO.saveScholarship(prepareModel(userId, scholarshipDto, null));
 
 		log.info("Calling elastic search service to save data on elastic index");
-		elasticHandler.saveScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
-				EntityTypeEnum.SCHOLARSHIP.name().toLowerCase(), prepareElasticDtoFromModel(scholarship),
-				IConstant.ELASTIC_SEARCH);
+		elasticHandler
+				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
 
 		return scholarship.getId();
 	}
 
 	@Transactional
-	public ScholarshipResponseDto getScholarshipById(final String id) throws ValidationException {
+	public ScholarshipResponseDto getScholarshipById(String userId, String id, boolean isReadableId) throws ValidationException {
 		log.debug("Inside getScholarshipById() method");
-		Scholarship scholarship = getScholarshipFomDb(id);
+		Scholarship scholarship = null;
+		if (isReadableId) {
+			scholarship = scholarshipDAO.findByReadableId(id);
+		}else {
+			scholarship = getScholarshipFomDb(id);
+		}
 		ScholarshipResponseDto scholarshipResponseDTO = createScholarshipResponseDtoFromModel(scholarship);
+		if (scholarship.getCreatedBy().equals(userId)) {
+			scholarshipResponseDTO.setHasEditAccess(true);
+		} else {
+			scholarshipResponseDTO.setHasEditAccess(false);
+		}
 		try {
-			List<StorageDto> storageDTOList = storageHandler.getStorages(id, EntityTypeEnum.SCHOLARSHIP,
-					EntitySubTypeEnum.MEDIA);
+			List<StorageDto> storageDTOList = storageHandler.getStorages(Arrays.asList(id), EntityTypeEnum.SCHOLARSHIP,
+					Arrays.asList(EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.LOGO, EntitySubTypeEnum.MEDIA));
 			scholarshipResponseDTO.setMedia(storageDTOList);
 		} catch (NotFoundException | InvokeException e) {
 			log.error(e.getMessage());
@@ -253,9 +258,34 @@ public class ScholarshipProcessor {
 		Scholarship scholarship = scholarshipDAO.saveScholarship(prepareModel(userId, scholarshipDto, scholarshipId));
 
 		log.info("Calling elastic search service to update existing scholarship data in DB");
-		elasticHandler.updateScholarshipOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_SCHOLARSHIP,
-				EntityTypeEnum.SCHOLARSHIP.name().toLowerCase(), prepareElasticDtoFromModel(scholarship),
-				IConstant.ELASTIC_SEARCH);
+		elasticHandler
+				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+	}
+
+	@Transactional(rollbackOn = Throwable.class)
+	public String saveOrUpdateBasicScholarship(final String userId, final ScholarshipRequestDto scholarshipDto,
+			final String scholarshipId) throws ValidationException {
+		log.debug("Inside saveOrUpdateBasicScholarship() method");
+		Scholarship scholarship = null;
+		if (!StringUtils.isEmpty(scholarshipId)) {
+			scholarship = getScholarshipFomDb(scholarshipId);
+		} else {
+			scholarship = new Scholarship();
+		}
+
+		BeanUtils.copyProperties(scholarshipDto, scholarship);
+		if (StringUtils.isEmpty(scholarshipId)) {
+			setReadableIdForScholarship(scholarship);
+		}
+		scholarship.setAuditFields(userId);
+
+		log.info("Calling DAO layer to save/update scholarship in DB");
+		scholarship = scholarshipDAO.saveScholarship(scholarship);
+
+		log.info("Calling elastic search service to update existing scholarship data in DB");
+		elasticHandler
+				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+		return scholarship.getId();
 	}
 
 	@Transactional
@@ -273,7 +303,8 @@ public class ScholarshipProcessor {
 		try {
 			List<StorageDto> storageDTOList = storageHandler.getStorages(
 					scholarshipResponseDTOs.stream().map(ScholarshipResponseDto::getId).collect(Collectors.toList()),
-					EntityTypeEnum.SCHOLARSHIP, EntitySubTypeEnum.MEDIA);
+					EntityTypeEnum.SCHOLARSHIP,
+					Arrays.asList(EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.LOGO, EntitySubTypeEnum.MEDIA));
 			scholarshipResponseDTOs.stream().forEach(e -> e.setMedia(storageDTOList.stream()
 					.filter(f -> e.getId().equals(f.getEntityId())).collect(Collectors.toList())));
 		} catch (NotFoundException | InvokeException e) {
@@ -285,7 +316,8 @@ public class ScholarshipProcessor {
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
-	public void deleteScholarship(final String userId, final String scholarshipId) throws ValidationException, NotFoundException, InvokeException {
+	public void deleteScholarship(final String userId, final String scholarshipId)
+			throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside deleteScholarship() method");
 		Scholarship scholarship = getScholarshipFomDb(scholarshipId);
 		if (!scholarship.getCreatedBy().equals(userId)) {
@@ -313,16 +345,37 @@ public class ScholarshipProcessor {
 		responseDto.setEligibleNationalities(scholarship.getScholarshipEligibleNationalities().stream()
 				.map(ScholarshipEligibleNationality::getCountryName).collect(Collectors.toList()));
 
+		responseDto.setCountryNames(scholarship.getScholarshipCountries().stream()
+				.map(ScholarshipCountry::getCountryName).collect(Collectors.toList()));
+
 		responseDto.setLanguages(scholarship.getScholarshipLanguages().stream().map(ScholarshipLanguage::getName)
 				.collect(Collectors.toList()));
 		return responseDto;
 	}
+	
+	@Transactional
+	public void changeScholarshipStatus(String userId, String scholarshipId, boolean status) {
+		log.info("Inside ScholarhipProcessor.changeScholarshipStatus method");
 
-	private boolean ifIntakeExistsInDtoList(List<ScholarshipIntakeDto> inakes, ScholarshipIntake intake) {
-		return inakes.stream().anyMatch(e -> e.getIntakeDate().getTime() == intake.getIntakeDate().getTime()
-				&& e.getStudentCategory().equalsIgnoreCase(intake.getStudentCategory().name()));
+		Scholarship existingScholarship = getScholarshipFomDb(scholarshipId);
+
+		boolean existingStatus = false;
+		if (!ObjectUtils.isEmpty(existingScholarship.getIsActive())) {
+			existingStatus = existingScholarship.getIsActive().booleanValue();
+		}
+		log.info("Update scholarship {} status {}", scholarshipId, status);
+		if (ObjectUtils.isEmpty(existingScholarship.getIsActive()) || status != existingStatus) {
+			existingScholarship.setIsActive(status);
+			existingScholarship.setUpdatedBy(userId);
+			existingScholarship.setUpdatedOn(new Date());
+			scholarshipDAO.saveScholarship(existingScholarship);
+
+			log.info("Calling elastic search service to save data on elastic index");
+			elasticHandler.saveUpdateScholarship(
+					conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(existingScholarship));
+		}
 	}
-
+	
 	private Scholarship getScholarshipFomDb(String scholarshipId) throws ValidationException {
 		Optional<Scholarship> scholarshipOptional = scholarshipDAO.getScholarshipById(scholarshipId);
 		if (scholarshipOptional.isPresent()) {
@@ -331,5 +384,23 @@ public class ScholarshipProcessor {
 			log.error("Scholarship not found for id: {}", scholarshipId);
 			throw new ValidationException("Scholarship not found for id: " + scholarshipId);
 		}
+	}
+	
+	private void setReadableIdForScholarship(Scholarship scholarship) {
+		log.info("going to generate code for scholarship");
+		boolean reGenerateCode = false;
+		do {
+			reGenerateCode = false;
+			String onlyName = Utils.convertToLowerCaseAndRemoveSpace(scholarship.getName());
+			String readableId = Utils.generateReadableId(onlyName);
+			List<Scholarship> sameCodeEntities = scholarshipDAO.findByReadableIdIn(Arrays.asList(onlyName, readableId));
+			if (ObjectUtils.isEmpty(sameCodeEntities)) {
+				scholarship.setReadableId(onlyName);
+			} else if (sameCodeEntities.size() == 1) {
+				scholarship.setReadableId(readableId);
+			} else {
+				reGenerateCode = true;
+			}
+		} while (reGenerateCode);
 	}
 }

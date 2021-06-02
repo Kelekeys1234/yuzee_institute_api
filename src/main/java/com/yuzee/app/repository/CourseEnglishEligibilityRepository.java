@@ -10,8 +10,5 @@ import com.yuzee.app.bean.CourseEnglishEligibility;
 @Repository
 public interface CourseEnglishEligibilityRepository extends JpaRepository<CourseEnglishEligibility, String> {
 
-	public List<CourseEnglishEligibility> findByCourseIdAndIsActive(String courseId, Boolean isActive);
-	
 	public List<CourseEnglishEligibility> findByCourseId(String courseId);
-	
 }

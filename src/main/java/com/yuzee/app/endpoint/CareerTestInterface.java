@@ -9,14 +9,16 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yuzee.app.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 @RequestMapping("/api/v1/career/job")
 public interface CareerTestInterface {
 
-	@GetMapping("/skill/{levelId}/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getCareerJobSkills(@PathVariable String levelId, @PathVariable Integer pageNumber,
-			@PathVariable Integer pageSize);
+	@GetMapping("/skill/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getCareerJobSkills(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
+			@RequestParam(value = "level_id", required = false) String levelId,
+			@RequestParam(value = "job_id", required = false) String jobId);
 
 	@GetMapping("/working/style/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getCareerJobWorkingStyles(@RequestParam List<String> jobIds,
@@ -33,6 +35,10 @@ public interface CareerTestInterface {
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getCareerJobs(@RequestHeader("userId") String userId, @RequestParam List<String> jobIds,
 			@PathVariable Integer pageNumber, @PathVariable Integer pageSize);
+	
+	@GetMapping("/autosuggest/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getCareerJobsByName(@RequestHeader("userId") String userId, @RequestParam String name,
+			@PathVariable Integer pageNumber, @PathVariable Integer pageSize) throws ValidationException;
 
 	@GetMapping("/related/career/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getRelatedCareers(@RequestParam List<String> careerIds, @PathVariable Integer pageNumber,

@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Util {
 
@@ -35,13 +34,15 @@ public class Util {
 		return Arrays.stream(e.getEnumConstants()).map(Enum::name).toArray(String[]::new);
 	}
 
-	public static boolean containsIgnoreCase(List<String> lst, String searchKey) {
-		AtomicBoolean result = new AtomicBoolean();
-		lst.stream().forEach(e -> {
-			if (searchKey.equalsIgnoreCase(e)) {
-				result.set(true);
-			}
-		});
-		return result.get();
+	public static boolean containsIgnoreCase(List<String> list, String searchKey) {
+		return list.stream().anyMatch(e -> e.equalsIgnoreCase(searchKey));
+	}
+
+	public static boolean contains(List<String> list, String searchKey) {
+		return list.stream().anyMatch(e -> e.equals(searchKey));
+	}
+
+	public static boolean contains(List<Date> list, Date searchDate) {
+		return list.stream().anyMatch(e -> e.toInstant().compareTo(searchDate.toInstant()) == 0);
 	}
 }

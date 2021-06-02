@@ -14,11 +14,11 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.InstituteBasicInfoDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.handler.StorageHandler;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.StorageHandler;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -94,6 +94,7 @@ public class InstituteBasicInfoProcessor {
 			instituteBasicInfoDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId() );
 			instituteBasicInfoDto.setInstituteCategoryTypeName(institute.getInstituteCategoryType().getName());
 		}
+		instituteBasicInfoDto.setCreatedBy(institute.getCreatedBy());
 		return instituteBasicInfoDto;
 	}
 }

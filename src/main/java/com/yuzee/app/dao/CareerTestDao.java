@@ -17,7 +17,7 @@ import com.yuzee.app.dto.JobIdProjection;
 
 public interface CareerTestDao {
 
-	public Page<CareerJobSkill> getCareerJobSkills(String levelId, Pageable pageable);
+	public Page<CareerJobSkill> getCareerJobSkills(String levelId, String jobId, Pageable pageable);
 	
 	public Page<CareerJobWorkingStyle> getCareerJobWorkingStyle(List<String> jobIds, Pageable pageable);
 	
@@ -28,6 +28,8 @@ public interface CareerTestDao {
 	public List<JobIdProjection> getCareerJobIdsByJobTypeId(String jobTypeId);
 		
 	public Page<CareerJob> getCareerJob(List<String> jobIds, Pageable pageable);
+	
+	public Page<CareerJob> getCareerJobByName(String name, Pageable pageable);
 	
 	public Page<RelatedCareer> getRelatedCareers(List<String> carrerIds, Pageable pageable);
 	

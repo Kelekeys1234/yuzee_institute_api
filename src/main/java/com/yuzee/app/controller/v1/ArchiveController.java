@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.constant.ArchiveEntityType;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.HelpProcessor;
 import com.yuzee.app.service.IErrorReportService;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 @RestController("archiveControllerV1")
 @RequestMapping("/api/v1/archive")

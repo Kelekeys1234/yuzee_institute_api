@@ -13,14 +13,13 @@ import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.GlobalFilterSearchDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.StorageHandler;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.StorageHandler;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -33,7 +32,7 @@ public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 	private StorageHandler storageHandler;
 
 	@Override
-	public Map<String, Object> filterByEntity(GlobalFilterSearchDto globalSearchFilterDto) throws ValidationException, CommonInvokeException, NotFoundException, InvokeException {
+	public Map<String, Object> filterByEntity(GlobalFilterSearchDto globalSearchFilterDto) throws ValidationException, NotFoundException, InvokeException {
 		if (EntityTypeEnum.COURSE.equals(globalSearchFilterDto.getEntityType())) {
 			AdvanceSearchDto advanceSearchDto = new AdvanceSearchDto();
 			BeanUtils.copyProperties(globalSearchFilterDto, advanceSearchDto);
@@ -44,7 +43,7 @@ public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 	}
 
 	private Map<String, Object> filterCoursesByParameters(GlobalFilterSearchDto globalSearchFilterDto, AdvanceSearchDto advacneSearchDto)
-			throws ValidationException, CommonInvokeException, NotFoundException, InvokeException {
+			throws ValidationException, NotFoundException, InvokeException {
 
 		List<CourseResponseDto> courseList = icourseDaso.advanceSearch(null, advacneSearchDto, globalSearchFilterDto);
 		for (CourseResponseDto courseResponseDto : courseList) {

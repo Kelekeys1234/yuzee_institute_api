@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.yuzee.app.bean.InstituteEnglishRequirements;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface InstituteEnglishRequirementsDao {
 

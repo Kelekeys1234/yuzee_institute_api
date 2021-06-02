@@ -21,6 +21,11 @@ public class CourseKeywordDaoImpl implements CourseKeywordDao {
     }
 
     @Override
+    public void saveAll(List<CourseKeywords> courseKeywords) {
+    	courseKeywordRepository.saveAll(courseKeywords);
+    }
+
+    @Override
     public void update(CourseKeywords courseKeywords) {
     	courseKeywordRepository.save(courseKeywords);
     }

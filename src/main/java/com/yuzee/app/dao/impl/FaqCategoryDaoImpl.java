@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.FaqCategory;
 import com.yuzee.app.dao.FaqCategoryDao;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.FaqCategoryRepository;
 
 import lombok.extern.slf4j.Slf4j;

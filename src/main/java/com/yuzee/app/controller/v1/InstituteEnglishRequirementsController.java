@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.InstituteEnglishRequirementsDto;
 import com.yuzee.app.endpoint.InstituteEnglishRequirementsInterface;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.InstituteEnglishRequirementsProcessor;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 import lombok.extern.apachecommons.CommonsLog;
 

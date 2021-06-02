@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.yuzee.app.dto.FaqCategoryDto;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 @RequestMapping("/api/v1/faq/category")
 public interface FaqCategoryEndpoint {

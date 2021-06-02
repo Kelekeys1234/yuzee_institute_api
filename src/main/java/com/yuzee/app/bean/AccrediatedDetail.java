@@ -37,6 +37,9 @@ public class AccrediatedDetail {
 
 	@Column(name = "entity_type")
 	private String entityType;
+	
+	@Column(name = "description")
+	private String description;
 
 	@Column(name = "created_by")
 	private String createdBy;

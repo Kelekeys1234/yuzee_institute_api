@@ -1,18 +1,27 @@
 package com.yuzee.app.dao.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import javax.transaction.Transactional;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.dao.LevelDao;
-import com.yuzee.app.dto.LevelDto;
+import com.yuzee.app.repository.LevelRepository;
+import com.yuzee.common.lib.dto.institute.LevelDto;
 
 @Component
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
@@ -20,6 +29,9 @@ public class LevelDaoImpl implements LevelDao {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private LevelRepository levelRepository;
 
     @Override
     public void addUpdateLevel(Level level) {
@@ -126,5 +138,41 @@ public class LevelDaoImpl implements LevelDao {
         return list;
     }
 
+	@Override
+	public List<Level> findByIdIn(List<String> ids) {
+		return levelRepository.findAllById(ids);
+	}
 
+	@Override
+	public Level getLevelByLevelCode(String levelCode) {
+		Session session = sessionFactory.getCurrentSession();
+		Level level = null;
+		Criteria criteria = session.createCriteria(Level.class);
+		criteria.add(Restrictions.eq("code", levelCode));
+		List<Level> levels = criteria.list();
+		if (levels != null && !levels.isEmpty()) {
+			level = levels.get(0);
+		}
+		return level;
+	}
+	
+	@Override
+	@Transactional
+	public Map<String, String> getAllLevelMap() {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Level.class, "level");
+		ProjectionList projList = Projections.projectionList();
+		projList.add(Projections.property("level.id"));
+		projList.add(Projections.property("level.code"));
+		criteria.setProjection(projList);
+		List<Level> instituteList = criteria.list();
+		Iterator it = instituteList.iterator();
+		Map<String, String> levelMap = new HashMap<>();
+
+		while (it.hasNext()) {
+			Object[] obj = (Object[]) it.next();
+			levelMap.put(String.valueOf(obj[1]), obj[0].toString());
+		}
+		return levelMap;
+	}
 }

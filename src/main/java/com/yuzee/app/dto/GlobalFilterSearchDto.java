@@ -3,7 +3,7 @@ package com.yuzee.app.dto;
 import java.io.Serializable;
 import java.util.List;
 
-import com.yuzee.app.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 
 import lombok.Data;
 

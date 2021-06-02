@@ -18,6 +18,8 @@ public interface CourseRepository extends JpaRepository<Course, String>{
 	public List<Course> findByInstituteIdAndFacultyId (String instituteId , String facultyId);
 	
 	public List<Course> findByInstituteId(Pageable pageable, String instituteId);
+
+	public List<Course> findByInstituteId(String instituteId);
 	
 	@Query("SELECT COUNT(*) from Course c where c.institute.id = :instituteId")
 	public long getTotalCountOfCourseByInstituteId (String instituteId);
@@ -26,4 +28,8 @@ public interface CourseRepository extends JpaRepository<Course, String>{
 	public long getTotalCountOfCourseByCountryName (String countryName);
 	
 	public List<Course> findByIsActiveAndDeletedOnAndNameContaining(Pageable pageable, Boolean isActive, Date deletedOn, String searchKey);
+
+	public List<Course> findByReadableIdIn(List<String> readableIds);
+
+	public Course findByReadableId(String readableId);
 }

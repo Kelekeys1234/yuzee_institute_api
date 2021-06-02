@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.bean.Subject;
-import com.yuzee.app.dto.EducationSystemDto;
+import com.yuzee.common.lib.dto.institute.EducationSystemDto;
 
 public interface EducationSystemDao {
 
@@ -25,4 +25,5 @@ public interface EducationSystemDao {
 	public List<Subject> getSubjectByEducationSystem(final String educationSystemId);
 
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName);
+
 }

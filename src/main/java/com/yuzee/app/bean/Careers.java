@@ -25,7 +25,7 @@ import lombok.ToString;
 @Data
 @Entity
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "career_list", uniqueConstraints = @UniqueConstraint(columnNames = { "career" }, name = "UK_CAREER_NAME"))
 public class Careers implements Serializable {
 	
@@ -37,6 +37,7 @@ public class Careers implements Serializable {
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
+	@EqualsAndHashCode.Include
 	@Column(name = "career", nullable = false)
 	private String career;
 	

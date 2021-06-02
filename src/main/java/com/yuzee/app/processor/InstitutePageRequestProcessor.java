@@ -16,8 +16,8 @@ import com.yuzee.app.bean.InstitutePageRequest;
 import com.yuzee.app.constant.PageRequestStatus;
 import com.yuzee.app.dao.InstitutePageRequestDao;
 import com.yuzee.app.dto.InstitutePageRequestDto;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 import lombok.extern.apachecommons.CommonsLog;
 

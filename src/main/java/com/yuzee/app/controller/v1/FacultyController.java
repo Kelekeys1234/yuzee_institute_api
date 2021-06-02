@@ -7,10 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.dto.FacultyDto;
 import com.yuzee.app.endpoint.FacultyEndpoint;
-import com.yuzee.app.handler.GenericResponseHandlers;
 import com.yuzee.app.processor.FacultyProcessor;
+import com.yuzee.common.lib.dto.institute.FacultyDto;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
 
 @RestController("facultyControllerV1")
 public class FacultyController implements FacultyEndpoint {

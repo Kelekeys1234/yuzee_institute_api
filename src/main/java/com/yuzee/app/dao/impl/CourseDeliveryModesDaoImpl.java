@@ -16,16 +16,6 @@ public class CourseDeliveryModesDaoImpl implements CourseDeliveryModesDao {
 	private CourseDeliveryModesRepository courseDeliveryModesRepository;
 
 	@Override
-	public void saveCourseDeliveryModes(CourseDeliveryModes courseDeliveryModes) {
-		courseDeliveryModesRepository.save(courseDeliveryModes);
-	}
-
-	@Override
-	public void deleteCourseDeliveryModes(String courseDeliveryModeId) {
-		courseDeliveryModesRepository.deleteById(courseDeliveryModeId);
-	}
-
-	@Override
 	public List<CourseDeliveryModes> getCourseDeliveryModesByCourseId(String courseId) {
 		return courseDeliveryModesRepository.findByCourseId(courseId);
 	}

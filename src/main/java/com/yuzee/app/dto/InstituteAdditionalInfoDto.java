@@ -1,7 +1,7 @@
 package com.yuzee.app.dto;
 
 import java.util.List;
-
+import com.yuzee.common.lib.dto.storage.StorageDto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 

@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 import com.yuzee.app.bean.FaqCategory;
 import com.yuzee.app.dao.FaqCategoryDao;
 import com.yuzee.app.dto.FaqCategoryDto;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

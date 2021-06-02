@@ -18,14 +18,14 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@ToString
-@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "faculty", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }, name = "UK_NA"), 
 	indexes = {@Index(name = "IDX_FACULTY_NAME", columnList = "name", unique = true) })
 public class Faculty implements Serializable {
@@ -68,4 +68,17 @@ public class Faculty implements Serializable {
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
+	public Faculty(String name, String description, Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn,
+			String createdBy, String updatedBy, Boolean isDeleted) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.isActive = isActive;
+		this.createdOn = createdOn;
+		this.updatedOn = updatedOn;
+		this.deletedOn = deletedOn;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.isDeleted = isDeleted;
+	}
 }

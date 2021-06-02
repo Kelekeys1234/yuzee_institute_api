@@ -15,11 +15,11 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteAdditionalInfo;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.InstituteAdditionalInfoDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.handler.StorageHandler;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.StorageHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,22 +55,22 @@ public class InstituteAdditionalInfoProcessor {
 			institute.setUpdatedOn(new Date());
 		}
 		InstituteAdditionalInfo instituteAdditionalInfoFromDB = institute.getInstituteAdditionalInfo();
+		InstituteAdditionalInfo instituteAdditionalInfo = modelMapper.map(instituteAdditionalInfoDto,
+				InstituteAdditionalInfo.class);
 		if (ObjectUtils.isEmpty(instituteAdditionalInfoFromDB)) {
 			log.info("Institute dont have any additional info adding new one");
-			InstituteAdditionalInfo instituteAdditionalInfo = modelMapper.map(instituteAdditionalInfoDto,
-					InstituteAdditionalInfo.class);
 			instituteAdditionalInfo.setCreatedBy(userId);
 			instituteAdditionalInfo.setCreatedOn(new Date());
-			instituteAdditionalInfo.setUpdatedBy(userId);
-			instituteAdditionalInfo.setUpdatedOn(new Date());
-			instituteAdditionalInfo.setInstitute(institute);
-			institute.setInstituteAdditionalInfo(instituteAdditionalInfo);
 		} else {
 			log.info("Institute have additional info updating exsisting one");
-			instituteAdditionalInfoFromDB = modelMapper.map(instituteAdditionalInfoDto, InstituteAdditionalInfo.class);
-			instituteAdditionalInfoFromDB.setUpdatedBy("API");
-			instituteAdditionalInfoFromDB.setUpdatedOn(new Date());
+			instituteAdditionalInfo.setId(instituteAdditionalInfoFromDB.getId());
+			instituteAdditionalInfo.setCreatedBy(instituteAdditionalInfoFromDB.getCreatedBy());
+			instituteAdditionalInfo.setCreatedOn(instituteAdditionalInfoFromDB.getCreatedOn());
 		}
+		instituteAdditionalInfo.setUpdatedBy(userId);
+		instituteAdditionalInfo.setUpdatedOn(new Date());
+		instituteAdditionalInfo.setInstitute(institute);
+		institute.setInstituteAdditionalInfo(instituteAdditionalInfo);
 		log.info("Persisting institute into Db with updated institute addition info");
 		iInstituteDAO.addUpdateInstitute(institute);
 	}

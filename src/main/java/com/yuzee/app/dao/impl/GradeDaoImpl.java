@@ -12,12 +12,16 @@ import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.GradeDetails;
 import com.yuzee.app.dao.GradeDao;
+import com.yuzee.app.repository.GradeDetailRepository;
 
 @Component
 public class GradeDaoImpl implements GradeDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private GradeDetailRepository gradeDetailRepository;
 	
 	@Override
 	public String getGradeDetails(String countryId, String educationSystemId, String grade) {
@@ -49,6 +53,11 @@ public class GradeDaoImpl implements GradeDao {
 		crit.add(Restrictions.eq("countryName", countryId));
 		crit.add(Restrictions.eq("educationSystemId", systemId));
 		return crit.list();
+	}
+
+	@Override
+	public void saveGrade(List<GradeDetails> grades) {
+		gradeDetailRepository.saveAll(grades);
 	}
 
 }

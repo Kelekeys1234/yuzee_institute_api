@@ -24,20 +24,20 @@ import com.yuzee.app.dto.HelpAnswerDto;
 import com.yuzee.app.dto.HelpCategoryDto;
 import com.yuzee.app.dto.HelpDto;
 import com.yuzee.app.dto.HelpSubCategoryDto;
-import com.yuzee.app.dto.PaginationResponseDto;
-import com.yuzee.app.dto.PaginationUtilDto;
-import com.yuzee.app.dto.StorageDto;
-import com.yuzee.app.dto.UserDto;
-import com.yuzee.app.enumeration.EntitySubTypeEnum;
-import com.yuzee.app.enumeration.EntityTypeEnum;
 import com.yuzee.app.enumeration.HelpEnum;
-import com.yuzee.app.exception.InvokeException;
-import com.yuzee.app.exception.NotFoundException;
-import com.yuzee.app.exception.ValidationException;
-import com.yuzee.app.handler.IdentityHandler;
-import com.yuzee.app.handler.StorageHandler;
-import com.yuzee.app.util.DateUtil;
-import com.yuzee.app.util.PaginationUtil;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
+import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
+import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.handler.UserHandler;
+import com.yuzee.common.lib.util.DateUtil;
+import com.yuzee.common.lib.util.PaginationUtil;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -108,7 +108,7 @@ public class HelpProcessor {
 	private HelpDao helpDAO;
 
 	@Autowired
-	private IdentityHandler identityHandler;
+	private UserHandler userHandler;
 
 	@Autowired
 	private StorageHandler storageHandler;
@@ -170,7 +170,7 @@ public class HelpProcessor {
 		if (help.getUserId() != null) {
 			try {
 				log.info("Calling Identity Service to fetch userInfo for userId "+help.getUserId());
-				UserDto userDto = identityHandler.getUserById(help.getUserId());
+				UserInitialInfoDto userDto = userHandler.getUserById(help.getUserId());
 				if (userDto != null) {
 					if (userDto.getFirstName() != null) {
 						helpDto.setCreatedUser(userDto.getFirstName());
@@ -202,11 +202,11 @@ public class HelpProcessor {
 		try {
 			log.info("Extracting total count of helps data from DB");
 			int totalCount = helpDAO.findTotalHelpRecord(null, null);
-			int startIndex = (pageNumber - 1) * pageSize;
+			Long startIndex = (Long.valueOf(pageNumber - 1)) * pageSize;
 			log.info("Calculating Pagination on based on startIndex, pageSize and totalCount");
 			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 			log.info("Extracting all helps data from DB based on pagination");
-			List<Help> helps = helpDAO.getAll(startIndex, pageSize, null, null);
+			List<Help> helps = helpDAO.getAll(startIndex.intValue(), pageSize, null, null);
 			List<HelpDto> helpDto = new ArrayList<>();
 			if(!CollectionUtils.isEmpty(helps)) {
 				helps.stream().forEach(help -> {
@@ -218,7 +218,7 @@ public class HelpProcessor {
 			paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 			paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 			paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
-			paginationResponseDto.setTotalCount(totalCount);
+			paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 			paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 			paginationResponseDto.setResponse(helpDto);
 		} catch (Exception exception) {
@@ -509,9 +509,9 @@ public class HelpProcessor {
 		return helpDtos;
 	}
 
-	public List<HelpDto> getUserHelpList(final String userId, final int startIndex, final Integer pageSize, final Boolean isArchive) {
+	public List<HelpDto> getUserHelpList(final String userId, final Long startIndex, final Integer pageSize, final Boolean isArchive) {
 		List<HelpDto> helpDto = new ArrayList<>();
-		List<Help> helpFromDB = helpDAO.getAll(startIndex, pageSize, userId, isArchive);
+		List<Help> helpFromDB = helpDAO.getAll(startIndex.intValue(), pageSize, userId, isArchive);
 		if(!CollectionUtils.isEmpty(helpFromDB)) {
 			helpFromDB.stream().forEach(help -> {
 				helpDto.add(convertYuzeeHelpToDto(help));

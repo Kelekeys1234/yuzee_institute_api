@@ -21,16 +21,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.yuzee.app.dto.CourseDTOElasticSearch;
-import com.yuzee.app.dto.CurrencyRateDto;
-import com.yuzee.app.enumeration.EntityTypeEnum;
-import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.handler.CommonHandler;
-import com.yuzee.app.handler.ElasticHandler;
 import com.yuzee.app.processor.CourseProcessor;
 import com.yuzee.app.util.CommonUtil;
-import com.yuzee.app.util.DateUtil;
 import com.yuzee.app.util.IConstant;
+import com.yuzee.common.lib.dto.common.CurrencyRateDto;
+import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.handler.CommonHandler;
+import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.util.DateUtil;
 
 @Component
 public class CurrencyConversionRateUtil {
@@ -54,7 +52,7 @@ public class CurrencyConversionRateUtil {
 
 	// @Scheduled(fixedRate = 86400000, initialDelay = 10000)
 	@Scheduled(cron = "0 30 0 * * ?")
-	public void curencySchedulerMethod() throws CommonInvokeException {
+	public void curencySchedulerMethod() {
 		log.info("CurrencyConversionRateUtil -- Start: The time is now {}", dateFormat.format(new Date()));
 		System.out.println("CurrencyConversionRateUtil -- Start: The time is now {}" + dateFormat.format(new Date()));
         run();
@@ -69,7 +67,7 @@ public class CurrencyConversionRateUtil {
 		System.out.println("Update COurses In Elastic Search End -- End: The time is now {}" + dateFormat.format(new Date()));
 	}
 
-	public void run() throws CommonInvokeException {
+	public void run() {
 		System.out.println("CurrencyConversionRateUtil: Job Started: " + new Date());
 		try {
 			RestTemplate restTemplate = new RestTemplate();
@@ -136,7 +134,7 @@ public class CurrencyConversionRateUtil {
 		}
 	}
 
-	public void updateCourses() throws CommonInvokeException {
+	public void updateCourses() {
 		List<CurrencyRateDto> currencyRateList = commonHandler.getChangedCurrencyRate(true);
 		for (CurrencyRateDto currencyRate : currencyRateList) {
 			courseProcessor.updateCourseForCurrency(currencyRate);
@@ -161,8 +159,8 @@ public class CurrencyConversionRateUtil {
 //				courseDtoElasticSearch.setLevelName(course.getLevel()!=null?course.getLevel().getName():null);
 //				courseDtoElasticSearchList.add(courseDtoElasticSearch);
 //			}
-			Map<String, List<String>> courseUpdateStatus = elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
-			failedRecordsInElasticSearch.addAll(courseUpdateStatus.get("failed"));
+//			Map<String, List<String>> courseUpdateStatus = elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+//			failedRecordsInElasticSearch.addAll(courseUpdateStatus.get("failed"));
 		}
 	}
 	
@@ -174,7 +172,7 @@ public class CurrencyConversionRateUtil {
 		for (int i = 0; i < totalCourseToBeRetried; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
 			List<String> courseIds = failedRecordsInElasticSearch.subList(i, i+IConstant.COURSES_PER_SCHEDULER_LOOP < totalCourseToBeRetried ? i+IConstant.COURSES_PER_SCHEDULER_LOOP: totalCourseToBeRetried);
 			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseProcessor.getCoursesToBeRetriedForElasticSearch(courseIds, i, IConstant.COURSES_PER_SCHEDULER_LOOP);
-			elasticHandler.updateCourseOnElasticSearch(IConstant.ELASTIC_SEARCH_INDEX_COURSE, EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoElasticSearchList, IConstant.ELASTIC_SEARCH);
+			elasticHandler.saveUpdateData(courseDtoElasticSearchList);
 		}
 		
 		failedRecordsInElasticSearch.clear();

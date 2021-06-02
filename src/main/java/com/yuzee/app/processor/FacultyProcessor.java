@@ -1,19 +1,31 @@
 package com.yuzee.app.processor;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.dao.FacultyDao;
-import com.yuzee.app.dto.FacultyDto;
 import com.yuzee.app.util.CDNServerUtil;
+import com.yuzee.common.lib.dto.institute.FacultyDto;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -24,6 +36,13 @@ public class FacultyProcessor {
 
 	@Autowired
 	private FacultyDao facultyDAO;
+
+	@Autowired
+	private JobLauncher jobLauncher;
+	
+	@Autowired
+	@Qualifier("importFacultyJob")
+	private Job job;
 
 	public void saveFaculty(final FacultyDto facultyDto) {
 		log.debug("Inside saveFaculty() method");
@@ -90,4 +109,18 @@ public class FacultyProcessor {
 	public List<Faculty> getFacultyListByName(final List<String> facultyNames) {
 		return facultyDAO.getFacultyListByFacultyNames(facultyNames);
 	}
+	
+    public void importFaculty(final MultipartFile multipartFile) throws IOException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+    	log.debug("Inside importFaculty() method");
+    	log.info("Calling methiod to save faculty data");
+		
+		File f = File.createTempFile("faculty", ".csv");
+		multipartFile.transferTo(f);
+		
+		JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+		jobParametersBuilder.addString("csv-file", f.getAbsolutePath());
+		jobParametersBuilder.addString("execution-id", UUID.randomUUID().toString());
+		jobLauncher.run(job, jobParametersBuilder.toJobParameters());
+	}
+    
 }

@@ -2,7 +2,6 @@ package com.yuzee.app.dao;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseIntake;
@@ -10,20 +9,21 @@ import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dto.AdvanceSearchDto;
-import com.yuzee.app.dto.CourseDTOElasticSearch;
 import com.yuzee.app.dto.CourseDto;
 import com.yuzee.app.dto.CourseFilterDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.CourseSearchDto;
-import com.yuzee.app.dto.CurrencyRateDto;
 import com.yuzee.app.dto.UserDto;
-import com.yuzee.app.exception.CommonInvokeException;
-import com.yuzee.app.exception.ValidationException;
+import com.yuzee.common.lib.dto.common.CurrencyRateDto;
+import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface CourseDao {
 
-	public void addUpdateCourse(Course obj);
+	public Course addUpdateCourse(Course obj) throws ValidationException;
+
+	public List<Course> saveAll(List<Course> courses) throws ValidationException;
 
 	public Course get(String id);
 
@@ -31,8 +31,6 @@ public interface CourseDao {
 			boolean uniqueCourseName, List<String> entityIds);
 	
 	public List<CourseResponseDto> getAllCoursesByInstitute(String instituteId, CourseSearchDto filterObj);
-
-	public Map<String, Object> getCourse(String courseid);
 
 	public List<CourseResponseDto> getCouresesByFacultyId(String facultyId);
 	
@@ -44,14 +42,13 @@ public interface CourseDao {
 	
 	public List<CourseRequest> getAll(Integer pageNumber, Integer pageSize);
 
-	public List<CourseDto> getUserCourse(List<String> courseIds, String sortBy, boolean sortType) throws ValidationException, 
-			CommonInvokeException;
+	public List<CourseDto> getUserCourse(List<String> courseIds, String sortBy, boolean sortType) throws ValidationException;
 
 	public int findTotalCountByUserId(String userId);
 
 	public Course getCourseData(String id);
 
-	public List<CourseResponseDto> advanceSearch(List<String> entityIds,Object... values) throws CommonInvokeException;
+	public List<CourseResponseDto> advanceSearch(List<String> entityIds,Object... values);
 
 	public List<CourseRequest> courseFilter(int pageNumber, Integer pageSize, CourseFilterDto courseFilter);
 
@@ -94,19 +91,11 @@ public interface CourseDao {
 
 	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<String> courseIds, Integer startIndex, Integer limit);
 
-	public void saveCourseIntake(CourseIntake courseIntake);
-
-	public void deleteCourseIntake(String courseId);
-
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(String courseId);
-
-	public List<CourseIntake> getCourseIntakeBasedOnCourseIdList(List<String> courseIds);
 
 	public void deleteCourseDeliveryMethod(String courseId);
 
 	public void saveCourseLanguage(CourseLanguage courseLanguage);
-
-	public void deleteCourseLanguage(String courseId);
 
 	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(String courseId);
 
@@ -127,4 +116,18 @@ public interface CourseDao {
 	public List<CourseResponseDto> getRelatedCourseBasedOnCareerTest(List<String> searchKeyword, Integer startIndex, Integer pageSize);
 	
 	public Integer getRelatedCourseBasedOnCareerTestCount(List<String> searchKeyword);
+	
+	public void deleteCourse(String id);
+
+	public List<Course> findByInstituteId(String instituteId);
+
+	public List<Course> findAllById(List<String> ids);
+
+	void deleteAll(List<Course> courses);
+
+	public List<Course> findAll();
+
+	public List<Course> findByReadableIdIn(List<String> readableIds);
+
+	public Course findByReadableId(String readableId);
 }
