@@ -98,4 +98,9 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	public Page<CareerJob> getCareerJobByName(String name, Pageable pageable) {
 		return careerJobRepository.findByJobContainingIgnoreCase(name, pageable);
 	}
+	
+	@Override
+	public Page<CareerJobSkill> getJobSkills(List<String> jobNames, Pageable pageable) {
+		return careerJobSkillRepository.findByCareerJobs_JobIn(jobNames, pageable);
+	}
 }

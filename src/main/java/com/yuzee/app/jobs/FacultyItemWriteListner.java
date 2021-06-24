@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.yuzee.app.bean.Faculty;
-import com.yuzee.app.processor.LogFileProcessor;
 import com.yuzee.common.lib.dto.institute.FacultyDto;
 import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.processor.LogFileProcessor;
 import com.yuzee.common.lib.util.ExceptionUtil;
 
 import lombok.extern.slf4j.Slf4j;

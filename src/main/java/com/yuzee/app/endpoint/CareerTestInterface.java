@@ -16,26 +16,27 @@ import com.yuzee.common.lib.exception.NotFoundException;
 public interface CareerTestInterface {
 
 	@GetMapping("/skill/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getCareerJobSkills(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
+	public ResponseEntity<?> getCareerJobSkills(@RequestHeader("userId") String userId,
+			@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
 			@RequestParam(value = "level_id", required = false) String levelId,
 			@RequestParam(value = "job_id", required = false) String jobId);
 
 	@GetMapping("/working/style/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getCareerJobWorkingStyles(@RequestParam List<String> jobIds,
-			@PathVariable Integer pageNumber, @PathVariable Integer pageSize);
+	public ResponseEntity<?> getCareerJobWorkingStyles(@RequestHeader("userId") String userId,
+			@RequestParam List<String> jobIds, @PathVariable Integer pageNumber, @PathVariable Integer pageSize);
 
 	@GetMapping("/subject/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getCareerJobSubjects(@RequestParam List<String> jobIds, @PathVariable Integer pageNumber,
-			@PathVariable Integer pageSize);
+	public ResponseEntity<?> getCareerJobSubjects(@RequestHeader("userId") String userId,
+			@RequestParam List<String> jobIds, @PathVariable Integer pageNumber, @PathVariable Integer pageSize);
 
 	@GetMapping("/type/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getCareerJobTypes(@RequestParam List<String> jobIds, @PathVariable Integer pageNumber,
-			@PathVariable Integer pageSize);
+	public ResponseEntity<?> getCareerJobTypes(@RequestHeader("userId") String userId,
+			@RequestParam List<String> jobIds, @PathVariable Integer pageNumber, @PathVariable Integer pageSize);
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getCareerJobs(@RequestHeader("userId") String userId, @RequestParam List<String> jobIds,
 			@PathVariable Integer pageNumber, @PathVariable Integer pageSize);
-	
+
 	@GetMapping("/autosuggest/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getCareerJobsByName(@RequestHeader("userId") String userId, @RequestParam String name,
 			@PathVariable Integer pageNumber, @PathVariable Integer pageSize) throws ValidationException;

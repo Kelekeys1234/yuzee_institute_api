@@ -28,6 +28,7 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.dto.uploader.FacultyCSVDto;
 import com.yuzee.common.lib.exception.UploaderException;
+import com.yuzee.common.lib.job.SkipAnyFailureSkipPolicy;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -7,7 +7,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.yuzee.app.processor.LogFileProcessor;
+import com.yuzee.common.lib.processor.LogFileProcessor;
 
 import lombok.extern.slf4j.Slf4j;
 

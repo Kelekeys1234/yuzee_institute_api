@@ -18,4 +18,6 @@ public interface CareerJobSkillRepository extends JpaRepository<CareerJobSkill, 
 	public Page<CareerJobSkill> findByLevelIdAndJobId(String levelId, String jobId, Pageable pageable);
 
 	public Page<CareerJobSkill> findByCareerJobsIdIn(List<String> jobIds, Pageable pageable);
+	
+	public Page<CareerJobSkill> findByCareerJobs_JobIn(List<String> jobNames, Pageable pageable);
 }

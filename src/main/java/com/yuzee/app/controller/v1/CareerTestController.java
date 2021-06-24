@@ -23,32 +23,32 @@ public class CareerTestController implements CareerTestInterface {
 	private CareerTestProcessor careerTestProcessor;
 
 	@Override
-	public ResponseEntity<?> getCareerJobSkills(Integer pageNumber, Integer pageSize, String levelId, String jobId) {
-		PaginationResponseDto careerJobSkillDtos = careerTestProcessor.getCareerJobSkills(pageNumber,
+	public ResponseEntity<?> getCareerJobSkills(String userId, Integer pageNumber, Integer pageSize, String levelId, String jobId) {
+		PaginationResponseDto careerJobSkillDtos = careerTestProcessor.getCareerJobSkills(userId, pageNumber,
 				pageSize, levelId, jobId);
 		return new GenericResponseHandlers.Builder().setData(careerJobSkillDtos).setStatus(HttpStatus.OK)
 				.setMessage("Career Job Skills Fetched successfully").create();
 	}
 
 	@Override
-	public ResponseEntity<?> getCareerJobWorkingStyles(List<String> jobIds, Integer pageNumber, Integer pageSize) {
-		PaginationResponseDto careerJobWorkingStyles = careerTestProcessor.getCareerJobWorkingStyles(jobIds, pageNumber,
+	public ResponseEntity<?> getCareerJobWorkingStyles(String userId, List<String> jobIds, Integer pageNumber, Integer pageSize) {
+		PaginationResponseDto careerJobWorkingStyles = careerTestProcessor.getCareerJobWorkingStyles(userId, jobIds, pageNumber,
 				pageSize);
 		return new GenericResponseHandlers.Builder().setData(careerJobWorkingStyles).setStatus(HttpStatus.OK)
 				.setMessage("Career Job WorkingStyles Fetched successfully").create();
 	}
 
 	@Override
-	public ResponseEntity<?> getCareerJobSubjects(List<String> jobIds, Integer pageNumber, Integer pageSize) {
-		PaginationResponseDto careerJobSubjects = careerTestProcessor.getCareerJobSubjects(jobIds, pageNumber,
+	public ResponseEntity<?> getCareerJobSubjects(String userId, List<String> jobIds, Integer pageNumber, Integer pageSize) {
+		PaginationResponseDto careerJobSubjects = careerTestProcessor.getCareerJobSubjects(userId, jobIds, pageNumber,
 				pageSize);
 		return new GenericResponseHandlers.Builder().setData(careerJobSubjects).setStatus(HttpStatus.OK)
 				.setMessage("Career Job Subjects Fetched successfully").create();
 	}
 
 	@Override
-	public ResponseEntity<?> getCareerJobTypes(List<String> jobIds, Integer pageNumber, Integer pageSize) {
-		PaginationResponseDto careerJobTypes = careerTestProcessor.getCareerJobTypes(jobIds, pageNumber, pageSize);
+	public ResponseEntity<?> getCareerJobTypes(String userId, List<String> jobIds, Integer pageNumber, Integer pageSize) {
+		PaginationResponseDto careerJobTypes = careerTestProcessor.getCareerJobTypes(userId, jobIds, pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder().setData(careerJobTypes).setStatus(HttpStatus.OK)
 				.setMessage("Career Job Types Fetched successfully").create();
 	}

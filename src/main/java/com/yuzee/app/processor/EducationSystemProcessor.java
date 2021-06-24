@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,19 +15,22 @@ import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.bean.GradeDetails;
+import com.yuzee.app.bean.Level;
 import com.yuzee.app.bean.Subject;
 import com.yuzee.app.dao.EducationSystemDao;
 import com.yuzee.app.dao.GradeDao;
-import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.app.dao.LevelDao;
 import com.yuzee.common.lib.dto.institute.EducationSystemDto;
 import com.yuzee.common.lib.dto.institute.GradeDto;
+import com.yuzee.common.lib.dto.institute.LevelDto;
 import com.yuzee.common.lib.dto.institute.SubjectDto;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-@CommonsLog
+@Slf4j
 @Transactional
 public class EducationSystemProcessor {
 
@@ -34,8 +38,15 @@ public class EducationSystemProcessor {
 	private EducationSystemDao educationSystemDAO;
 
 	@Autowired
+	private LevelDao levelDao;
+	
+	@Autowired
 	private GradeDao gradeDao;
 
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@Transactional
 	public List<EducationSystemDto> getEducationSystemsByCountryName(final String countryName) {
 		log.debug("Inside getEducationSystemsByCountryId() method");
 		List<EducationSystemDto> educationSystemDtos = new ArrayList<>();
@@ -57,7 +68,8 @@ public class EducationSystemProcessor {
 				log.info("Adding values in esducation system DTO");
 				EducationSystemDto educationSystemDto = new EducationSystemDto(educationSystem.getId(),
 						educationSystem.getCountryName(), educationSystem.getName(), educationSystem.getCode(),
-						educationSystem.getDescription(), educationSystem.getStateName(), subjectDtos, null);
+						educationSystem.getDescription(), educationSystem.getStateName(), subjectDtos, null, null,
+						modelMapper.map(educationSystem.getLevel(), LevelDto.class));
 				educationSystemDtos.add(educationSystemDto);
 
 			});
@@ -67,6 +79,11 @@ public class EducationSystemProcessor {
 
 	public void saveEducationSystems(final EducationSystemDto educationSystem) throws ValidationException, NotFoundException {
 		log.debug("Inside saveEducationSystems() method");
+		Level level = levelDao.getLevel(educationSystem.getLevelId());
+		if (ObjectUtils.isEmpty(level)) {
+			log.info("level not found against level_id: {}", educationSystem.getLevelId());
+			throw new NotFoundException("level not found against level_id: " + educationSystem.getLevelId());
+		}
 		if (!ObjectUtils.isEmpty(educationSystem) && !StringUtils.isEmpty(educationSystem.getId())) {
 			log.info("Education system Id found in request, hence Fetching education system from"
 					+ "	DB based on educationSystemId = " + educationSystem.getId());
@@ -79,7 +96,9 @@ public class EducationSystemProcessor {
 					educationSystemFromDB.setName(educationSystem.getName());
 					educationSystemFromDB.setDescription(educationSystem.getDescription());
 					educationSystemFromDB.setCode(educationSystem.getCode());
+					educationSystemFromDB.setLevel(level);
 					educationSystemFromDB.setCountryName(educationSystem.getCountryName());
+					educationSystemDAO.save(educationSystemFromDB);
 				} else {
 					log.error("CountryName is required in request");
 					throw new ValidationException("CountryName is required in request");
@@ -101,6 +120,7 @@ public class EducationSystemProcessor {
 				system.setDescription(educationSystem.getDescription());
 				system.setIsActive(true);
 				system.setName(educationSystem.getName());
+				system.setLevel(level);
 				educationSystemDAO.save(system);
 			} else {
 				log.error("CountryName is required in request");

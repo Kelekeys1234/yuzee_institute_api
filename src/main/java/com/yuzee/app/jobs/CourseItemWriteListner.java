@@ -11,7 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.processor.CommonProcessor;
-import com.yuzee.app.processor.LogFileProcessor;
+import com.yuzee.common.lib.processor.LogFileProcessor;
 import com.yuzee.common.lib.util.ExceptionUtil;
 
 import lombok.extern.slf4j.Slf4j;

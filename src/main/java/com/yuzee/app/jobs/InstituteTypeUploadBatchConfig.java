@@ -31,7 +31,8 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteType;
 import com.yuzee.app.dto.InstituteTypeDto;
-import com.yuzee.app.processor.LogFileProcessor;
+import com.yuzee.common.lib.job.SkipAnyFailureSkipPolicy;
+import com.yuzee.common.lib.processor.LogFileProcessor;
 import com.yuzee.common.lib.util.ExceptionUtil;
 
 import lombok.extern.slf4j.Slf4j;

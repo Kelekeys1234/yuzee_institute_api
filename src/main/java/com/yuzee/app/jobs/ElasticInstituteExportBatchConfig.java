@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
 import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.job.SkipAnyFailureSkipPolicy;
 
 @Configuration
 @EnableBatchProcessing

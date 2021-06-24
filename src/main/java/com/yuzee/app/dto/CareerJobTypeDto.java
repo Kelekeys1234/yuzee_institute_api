@@ -19,4 +19,7 @@ public class CareerJobTypeDto {
 	
 	@JsonProperty("job_ids")
 	private List<String> jobIds;
+
+	@JsonProperty("last_selected")
+	private boolean lastSelected;
 }

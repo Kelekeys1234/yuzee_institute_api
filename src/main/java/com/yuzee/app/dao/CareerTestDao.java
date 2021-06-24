@@ -19,6 +19,7 @@ public interface CareerTestDao {
 
 	public Page<CareerJobSkill> getCareerJobSkills(String levelId, String jobId, Pageable pageable);
 	
+	
 	public Page<CareerJobWorkingStyle> getCareerJobWorkingStyle(List<String> jobIds, Pageable pageable);
 	
 	public Page<CareerJobSubject> getCareerJobSubject(List<String> jobIds, Pageable pageable);
@@ -36,4 +37,6 @@ public interface CareerTestDao {
 	public List<CareerJobCourseSearchKeyword> getCareerJobCourseSearchKeyword(List<String> jobIds);
 	
 	public Optional<CareerJob> getCareerJob(String careerJobId); 
+	
+	public Page<CareerJobSkill> getJobSkills(List<String> jobNames, Pageable pageable);
 }

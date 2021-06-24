@@ -33,10 +33,11 @@ import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dto.uploader.InstituteCsvDto;
-import com.yuzee.app.processor.LogFileProcessor;
 import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.job.SkipAnyFailureSkipPolicy;
+import com.yuzee.common.lib.processor.LogFileProcessor;
 import com.yuzee.common.lib.util.ExceptionUtil;
 
 import lombok.extern.slf4j.Slf4j;

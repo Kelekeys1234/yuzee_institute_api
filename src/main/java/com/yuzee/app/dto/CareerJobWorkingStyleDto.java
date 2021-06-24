@@ -24,4 +24,7 @@ public class CareerJobWorkingStyleDto {
 	@JsonProperty("job_id")
 	@NotBlank(message = "job_id should not be blank")
 	private String jobId;
+	
+	@JsonProperty("last_selected")
+	private boolean lastSelected;
 }

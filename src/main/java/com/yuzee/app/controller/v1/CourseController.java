@@ -173,7 +173,7 @@ public class CourseController implements CourseInterface {
 		Long startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 		
 		log.info("Calling view transaction service to fetch user my course data");
-		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
+		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(courseSearchDto.getUserId(), 
 				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name());
 		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
 		
@@ -200,7 +200,7 @@ public class CourseController implements CourseInterface {
 		courseSearchDto.setUserId(userId);
 		
 		log.info("Calling view transaction service to fetch user my course data");
-		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityIdAndTransactionType(courseSearchDto.getUserId(), 
+		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(courseSearchDto.getUserId(), 
 				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name());
 		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
 		

@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import com.yuzee.app.bean.Course;
 import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
 import com.yuzee.common.lib.exception.InvokeException;
+import com.yuzee.common.lib.job.SkipAnyFailureSkipPolicy;
 
 import lombok.extern.slf4j.Slf4j;
 
