@@ -14,9 +14,9 @@ import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.bean.ScholarshipCountry;
 import com.yuzee.app.bean.ScholarshipEligibleNationality;
 import com.yuzee.app.bean.ScholarshipLanguage;
-import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
-import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
-import com.yuzee.common.lib.dto.institute.ScholarshipElasticDto;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
+import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
+import com.yuzee.common.lib.dto.institute.ScholarshipSyncDto;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,16 +25,16 @@ public class DTOUtils {
 	private DTOUtils() {
 	}
 
-	public static InstituteElasticSearchDTO convertToInstituteElasticSearchDTOEntity(Institute institute) {
+	public static InstituteSyncDTO convertToInstituteElasticSearchDTOEntity(Institute institute) {
 		log.info("inside DTOUtils.convertToInstituteElasticSearchDTOEntity");
 		ModelMapper modelMapper = new ModelMapper();
-		InstituteElasticSearchDTO instituteElaticDto = modelMapper.map(institute, InstituteElasticSearchDTO.class);
+		InstituteSyncDTO instituteElaticDto = modelMapper.map(institute, InstituteSyncDTO.class);
 		instituteElaticDto.setIntakes(
 				institute.getInstituteIntakes().stream().map(InstituteIntake::getIntake).collect(Collectors.toList()));
 		return instituteElaticDto;
 	}
 
-	public static CourseDTOElasticSearch convertToCourseDTOElasticSearchEntity(Course course) {
+	public static CourseSyncDTO convertToCourseDTOElasticSearchEntity(Course course) {
 		log.info("inside DTOUtils.convertToCourseDTOElasticSearchEntity");
 		ModelMapper modelMapper = new ModelMapper();
 
@@ -42,21 +42,21 @@ public class DTOUtils {
 				: ctx.getSource().stream().map(courseLanguage -> courseLanguage.getLanguage())
 						.collect(Collectors.toList());
 
-		modelMapper.typeMap(Course.class, CourseDTOElasticSearch.class).addMappings(mapper -> mapper
-				.using(courseLanguageConverter).map(Course::getCourseLanguages, CourseDTOElasticSearch::setLanguages));
+		modelMapper.typeMap(Course.class, CourseSyncDTO.class).addMappings(mapper -> mapper
+				.using(courseLanguageConverter).map(Course::getCourseLanguages, CourseSyncDTO::setLanguages));
 
-		CourseDTOElasticSearch courseElasticDto = modelMapper.map(course, CourseDTOElasticSearch.class);
+		CourseSyncDTO courseElasticDto = modelMapper.map(course, CourseSyncDTO.class);
 
 		courseElasticDto.setInstitute(convertToInstituteElasticSearchDTOEntity(course.getInstitute()));
 		return courseElasticDto;
 
 	}
 
-	public static ScholarshipElasticDto convertScholarshipToScholarshipDTOElasticSearchEntity(Scholarship scholarship) {
+	public static ScholarshipSyncDto convertScholarshipToScholarshipDTOElasticSearchEntity(Scholarship scholarship) {
 		log.info("inside DTOUtils.convertToCourseDTOElasticSearchEntity");
 		ModelMapper modelMapper = new ModelMapper();
 
-		ScholarshipElasticDto scholarshipElasticDto = modelMapper.map(scholarship, ScholarshipElasticDto.class);
+		ScholarshipSyncDto scholarshipElasticDto = modelMapper.map(scholarship, ScholarshipSyncDto.class);
 		scholarshipElasticDto.setLanguages(scholarship.getScholarshipLanguages().stream()
 				.map(ScholarshipLanguage::getName).collect(Collectors.toList()));
 		scholarshipElasticDto.setEligibleNationalities(scholarship.getScholarshipEligibleNationalities().stream()

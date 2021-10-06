@@ -51,8 +51,8 @@ public class Course implements Serializable {
 	private static final long serialVersionUID = 8492390790670110780L;
 
 	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
+	@GenericGenerator(name = "CustomUUIDGenerator", strategy = "com.yuzee.app.util.CustomUUIDGenerator", parameters = {})
+	@GeneratedValue(generator = "CustomUUIDGenerator")
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
@@ -68,7 +68,7 @@ public class Course implements Serializable {
 	private Institute institute;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "level_id", nullable = false)
+	@JoinColumn(name = "level_id")
 	private Level level;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -124,7 +124,7 @@ public class Course implements Serializable {
 	private Boolean isActive;
 
 	@EqualsAndHashCode.Include
-	@Column(name = "availabilty", nullable = false)
+	@Column(name = "availabilty")
 	private String availabilty;
 
 	@EqualsAndHashCode.Include
@@ -132,7 +132,7 @@ public class Course implements Serializable {
 	private String currency;
 
 	@EqualsAndHashCode.Include
-	@Column(name = "currency_time", nullable = false)
+	@Column(name = "currency_time")
 	private String currencyTime;
 
 	@EqualsAndHashCode.Include
@@ -210,6 +210,15 @@ public class Course implements Serializable {
 
 	@Column(name = "code")
 	private String code = "NORMAL COURSE";
+	
+	@EqualsAndHashCode.Include
+	@Column(name = "international_student_procedure_id")
+	private String internationalStudentProcedureId;
+	
+	@EqualsAndHashCode.Include
+	@Column(name = "domestic_student_procedure_id")
+	private String domesticStudentProcedureId;
+
 
 	@EqualsAndHashCode.Include
 	@Enumerated(EnumType.STRING)

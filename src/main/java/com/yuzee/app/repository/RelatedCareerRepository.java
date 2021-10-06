@@ -11,5 +11,5 @@ import com.yuzee.app.bean.RelatedCareer;
 
 @Repository
 public interface RelatedCareerRepository extends JpaRepository<RelatedCareer, String> {
-	Page<RelatedCareer> findByCareersIdIn(List<String> careerIds, Pageable pageable);
+	Page<RelatedCareer> findByCareersIdInOrderByRelatedCareer(List<String> careerIds, Pageable pageable);
 }

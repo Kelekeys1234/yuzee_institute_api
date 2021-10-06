@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -439,6 +440,20 @@ public class CourseController implements CourseInterface {
 	public ResponseEntity<?> getCourseCountByInstituteId(String instituteId) throws ValidationException {
 		CourseCountDto courseCountDto  = courseProcessor.getCourseCountByInstitute(instituteId);
 		return new GenericResponseHandlers.Builder().setData(courseCountDto).setMessage("Course count fetched successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> updateProcedureIdInCourse(List<String> courseIds,String studentType, String procedureId) {
+		courseProcessor.updateProcedureIdInCourse(courseIds, studentType, procedureId);
+		return new GenericResponseHandlers.Builder().setMessage("Procedure Id updated successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+	
+	@Override
+	public ResponseEntity<?> updateProcedureIdInCourseByInstituteId(String instituteId,String studentType, String procedureId) {
+		courseProcessor.updateProcedureIdInCourseByInstituteId(instituteId, studentType, procedureId);
+		return new GenericResponseHandlers.Builder().setMessage("Procedure Id updated successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
 }

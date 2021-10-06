@@ -25,7 +25,7 @@ import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.InternalServerException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
-import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,7 +40,7 @@ public class CoursePaymentProcessor {
 	private CourseDao courseDao;
 
 	@Autowired
-	private ElasticHandler elasticHandler;
+	private PublishSystemEventHandler publishSystemEventHandler;
 	
 	@Autowired
 	private CommonProcessor commonProcessor;
@@ -106,7 +106,7 @@ public class CoursePaymentProcessor {
 			}
 			
 			log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
-			elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
+			publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 		}
 	}
 
@@ -128,7 +128,7 @@ public class CoursePaymentProcessor {
 				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", Arrays.asList(course));
 				
 				log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
-				elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
+				publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 			} catch (ValidationException e) {
 				log.error(e.getMessage());
 				throw new InternalServerException("error deleting course payment");

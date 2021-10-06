@@ -10,5 +10,5 @@ import com.yuzee.app.bean.CareerJobCourseSearchKeyword;
 @Repository
 public interface CareerJobCourseSearchKeywordRepository extends JpaRepository<CareerJobCourseSearchKeyword, String> {
 
-	public List<CareerJobCourseSearchKeyword> findByCareerJobsIdIn(List<String> jobIds);
+	public List<CareerJobCourseSearchKeyword> findByCareerJobsIdInOrderByCourseSearchKeyword(List<String> jobIds);
 }

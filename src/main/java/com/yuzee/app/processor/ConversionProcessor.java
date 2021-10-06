@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.hibernate.collection.spi.PersistentCollection;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseLanguage;
@@ -20,15 +22,13 @@ import com.yuzee.app.bean.InstituteFacility;
 import com.yuzee.app.bean.InstituteIntake;
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.Scholarship;
-import com.yuzee.app.bean.ScholarshipCountry;
-import com.yuzee.app.bean.ScholarshipEligibleNationality;
-import com.yuzee.app.bean.ScholarshipLanguage;
 import com.yuzee.app.dao.TimingDao;
-import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
-import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
+import com.yuzee.common.lib.dto.institute.CoursePaymentDto;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.institute.InstituteEnglishRequirementsElasticDto;
-import com.yuzee.common.lib.dto.institute.ScholarshipElasticDto;
+import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.dto.institute.TimingDto;
+import com.yuzee.common.lib.dto.scholarship.ScholarshipSyncDto;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +45,9 @@ public class ConversionProcessor {
 
 	@PostConstruct
 	private void postConstrut() {
+		
+		modelMapper.getConfiguration().setPropertyCondition(context -> !(context.getSource() instanceof PersistentCollection));
+		
 		Converter<List<InstituteEnglishRequirements>, List<InstituteEnglishRequirementsElasticDto>> instituteEnglishRequirementElasticDtoConverter = ctx -> ctx
 				.getSource() == null
 						? null
@@ -73,53 +76,58 @@ public class ConversionProcessor {
 
 		Converter<InstituteCategoryType, String> instituteTypeConverter = ctx -> ctx.getSource() == null ? null
 				: ctx.getSource().getName();
+		
+		
 
-		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
+		modelMapper.typeMap(Institute.class, InstituteSyncDTO.class)
 				.addMappings(mapper -> mapper.using(instituteEnglishRequirementElasticDtoConverter).map(
 						Institute::getInstituteEnglishRequirements,
-						InstituteElasticSearchDTO::setInstituteEnglishRequirements));
+						InstituteSyncDTO::setInstituteEnglishRequirements));
 
-		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
+		modelMapper.typeMap(Institute.class, InstituteSyncDTO.class)
 				.addMappings(mapper -> mapper.using(instituteFacilityConverter).map(Institute::getInstituteFacilities,
-						InstituteElasticSearchDTO::setInstituteFacilities));
+						InstituteSyncDTO::setInstituteFacilities));
 
-		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
+		modelMapper.typeMap(Institute.class, InstituteSyncDTO.class)
 				.addMappings(mapper -> mapper.using(instituteServiceConverter).map(Institute::getInstituteServices,
-						InstituteElasticSearchDTO::setInstituteServices));
+						InstituteSyncDTO::setInstituteServices));
 
-		modelMapper.typeMap(Institute.class, InstituteElasticSearchDTO.class)
+		modelMapper.typeMap(Institute.class, InstituteSyncDTO.class)
 				.addMappings(mapper -> mapper.using(instituteIntakeConverter).map(Institute::getInstituteIntakes,
-						InstituteElasticSearchDTO::setInstituteIntakes));
+						InstituteSyncDTO::setInstituteIntakes));
 	}
 
-	public CourseDTOElasticSearch convertToCourseDTOElasticSearchEntity(Course course) {
-		log.info("inside DTOUtils.convertToCourseDTOElasticSearchEntity");
-		CourseDTOElasticSearch courseElasticDto = modelMapper.map(course, CourseDTOElasticSearch.class);
+	public CourseSyncDTO convertToCourseSyncDTOSyncDataEntity(Course course) {
+		log.info("inside DTOUtils.convertToCourseSyncDTOSyncDataEntity ");
+		CourseSyncDTO syncCourse = modelMapper.map(course, CourseSyncDTO.class);
 
-		courseElasticDto.setLanguages(
+		syncCourse.setLanguages(
 				course.getCourseLanguages().stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
-		courseElasticDto.setCourseType(course.getCourseType().name());
-
+		syncCourse.setCourseType(course.getCourseType().name());
 		
-		courseElasticDto.setCourseTimings(timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, Arrays.asList(course.getId())).stream()
+		if(ObjectUtils.isEmpty(course.getCoursePayment())) {
+			syncCourse.setCoursePayment(new CoursePaymentDto());
+		}
+		
+		syncCourse.setCourseTimings(timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, Arrays.asList(course.getId())).stream()
 				.map(e -> modelMapper.map(e, TimingDto.class)).collect(Collectors.toList()));
-		return courseElasticDto;
+		return syncCourse;
 	}
 
-	public InstituteElasticSearchDTO convertToInstituteElasticDTOEntity(Institute institute) {
-		log.info("inside DTOUtils.convertToInstituteElasticDTOEntity");
-		return modelMapper.map(institute, InstituteElasticSearchDTO.class);
+	public InstituteSyncDTO convertToInstituteInstituteSyncDTOSynDataEntity(Institute institute) {
+		log.info("inside DTOUtils.convertToInstituteInstituteSyncDTOSynDataEntity");
+		return modelMapper.map(institute, InstituteSyncDTO.class);
 	}
 
-	public ScholarshipElasticDto convertScholarshipToScholarshipDTOElasticSearchEntity(Scholarship scholarship) {
-		log.info("inside DTOUtils.convertToCourseDTOElasticSearchEntity");
-		ScholarshipElasticDto scholarshipElasticDto = modelMapper.map(scholarship, ScholarshipElasticDto.class);
-		scholarshipElasticDto.setLanguages(scholarship.getScholarshipLanguages().stream()
-				.map(ScholarshipLanguage::getName).collect(Collectors.toList()));
-		scholarshipElasticDto.setEligibleNationalities(scholarship.getScholarshipEligibleNationalities().stream()
-				.map(ScholarshipEligibleNationality::getCountryName).collect(Collectors.toList()));
-		scholarshipElasticDto.setCountryNames(scholarship.getScholarshipCountries().stream()
-				.map(ScholarshipCountry::getCountryName).collect(Collectors.toList()));
+	public ScholarshipSyncDto convertToScholarshipSyncDtoSyncDataEntity(Scholarship scholarship) {
+		log.info("inside DTOUtils.convertToScholarshipSyncDtoSyncDataEntity");
+		ScholarshipSyncDto scholarshipElasticDto = modelMapper.map(scholarship, ScholarshipSyncDto.class);
+//		scholarshipElasticDto.setLanguages(scholarship.getScholarshipLanguages().stream()
+//				.map(ScholarshipLanguage::getName).collect(Collectors.toList()));
+//		scholarshipElasticDto.setEligibleNationalities(scholarship.getScholarshipEligibleNationalities().stream()
+//				.map(ScholarshipEligibleNationality::getCountryName).collect(Collectors.toList()));
+//		scholarshipElasticDto.setCountryNames(scholarship.getScholarshipCountries().stream()
+//				.map(ScholarshipCountry::getCountryName).collect(Collectors.toList()));
 		return scholarshipElasticDto;
 	}
 

@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -14,7 +17,7 @@ import org.springframework.util.ObjectUtils;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.common.lib.dto.eligibility.FundingResponseDto;
-import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 import com.yuzee.common.lib.dto.transaction.ViewTransactionDto;
 import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
@@ -22,8 +25,8 @@ import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.InternalServerException;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
-import com.yuzee.common.lib.handler.ElasticHandler;
 import com.yuzee.common.lib.handler.EligibilityHandler;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.handler.UserHandler;
 import com.yuzee.common.lib.handler.ViewTransactionHandler;
 
@@ -32,10 +35,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class CommonProcessor {
+	
 	@Autowired
+	@Lazy
 	private InstituteProcessor instituteProcessor;
 
 	@Autowired
+	@Lazy
 	private CourseProcessor courseProcessor;
 
 	@Autowired
@@ -45,7 +51,7 @@ public class CommonProcessor {
 	private UserHandler userHandler;
 
 	@Autowired
-	private ElasticHandler elasticHandler;
+	private PublishSystemEventHandler publishSystemEventHandler;
 	
 	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
@@ -121,12 +127,13 @@ public class CommonProcessor {
 		return map;
 	}
 
+	@Transactional
 	public void saveElasticCourses(List<Course> courses) {
 		log.info("Calling elastic service to save/update courses on elastic index ");
 		if (!CollectionUtils.isEmpty(courses)) {
-			List<CourseDTOElasticSearch> courseElasticDtos = courses.stream()
-					.map(e -> conversionProcessor.convertToCourseDTOElasticSearchEntity(e)).collect(Collectors.toList());
-			elasticHandler.saveUpdateData(courseElasticDtos);
+			List<CourseSyncDTO> courseElasticDtos = courses.stream()
+					.map(e -> conversionProcessor.convertToCourseSyncDTOSyncDataEntity(e)).collect(Collectors.toList());
+			publishSystemEventHandler.syncCourses(courseElasticDtos);
 		}
 	}
 }

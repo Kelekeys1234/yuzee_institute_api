@@ -21,6 +21,7 @@ import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.CoursePrerequisite;
 import com.yuzee.app.dao.CourseCurriculumDao;
+import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.FacultyDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.LevelDao;
@@ -28,6 +29,7 @@ import com.yuzee.app.dto.uploader.CourseCsvDto;
 import com.yuzee.common.lib.dto.common.CurrencyRateDto;
 import com.yuzee.common.lib.handler.CommonHandler;
 import com.yuzee.common.lib.util.DateUtil;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,6 +47,9 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 	
 	@Autowired
 	private CourseCurriculumDao courseCurriculumDao;
+	
+	@Autowired
+	private CourseDao courseDao;
 	
 	@Autowired
 	private CommonHandler commonHandler;
@@ -98,7 +103,8 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		course.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		course.setContent(getContent(courseDto));
 		course.setGlobalGpa(courseDto.getGlobalGpa());
-		
+		setReadableIdForCourse(course);
+
 		log.info("Adding englist eligibility into course");
 		if (courseDto.getIeltsOverall() != null) {
 			log.info("Associating IELTS score with course");
@@ -380,4 +386,23 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 			}
 		}
 	}
+	
+	private void setReadableIdForCourse(Course course) {
+		log.info("going to generate code for course");
+		boolean reGenerateCode = false;
+		do {
+			reGenerateCode = false;
+			String onlyName = Utils.convertToLowerCaseAndRemoveSpace(course.getName());
+			String readableId = Utils.generateReadableId(onlyName);
+			List<Course> sameCodeInsts = courseDao.findByReadableIdIn(Arrays.asList(onlyName, readableId));
+			if (ObjectUtils.isEmpty(sameCodeInsts)) {
+				course.setReadableId(onlyName);
+			} else if (sameCodeInsts.size() == 1) {
+				course.setReadableId(readableId);
+			} else {
+				reGenerateCode = true;
+			}
+		} while (reGenerateCode);
+	}
+
 }

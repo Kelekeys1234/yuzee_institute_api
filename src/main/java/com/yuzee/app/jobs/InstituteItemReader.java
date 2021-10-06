@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.batch.item.ItemReader;
+import org.springframework.util.ObjectUtils;
 
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
@@ -156,7 +157,9 @@ public class InstituteItemReader implements ItemReader<InstituteCsvDto> {
 	@Override
 	public InstituteCsvDto read() {
 		InstituteCsvDto nextInstitute = null;
-		 
+		if(ObjectUtils.isEmpty(this.instituteList)) {
+			 return nextInstitute;
+		}
         if (nextInstituteIndex < this.instituteList.size()) {
         	nextInstitute = this.instituteList.get(nextInstituteIndex);
         	nextInstituteIndex++;

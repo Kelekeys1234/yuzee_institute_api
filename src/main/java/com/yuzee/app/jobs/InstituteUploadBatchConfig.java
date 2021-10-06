@@ -2,15 +2,15 @@ package com.yuzee.app.jobs;
 
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManagerFactory;
 import javax.validation.ConstraintViolationException;
 
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -23,6 +23,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,10 +33,11 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.Institute;
+import com.yuzee.app.bean.InstituteIntake;
 import com.yuzee.app.dto.uploader.InstituteCsvDto;
-import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
+import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
-import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.job.SkipAnyFailureSkipPolicy;
 import com.yuzee.common.lib.processor.LogFileProcessor;
 import com.yuzee.common.lib.util.ExceptionUtil;
@@ -114,7 +116,7 @@ public class InstituteUploadBatchConfig {
     	return new ItemWriteListener<Institute>() {
     		
     		@Autowired
-    		private ElasticHandler elasticHandler;
+    		private PublishSystemEventHandler publishSystemEventHandler;
     		
 			@Override
 			public void beforeWrite(List<? extends Institute> items) {
@@ -123,24 +125,23 @@ public class InstituteUploadBatchConfig {
 
 			@Override
 			public void afterWrite(List<? extends Institute> institutesList) {
-				List<InstituteElasticSearchDTO> instituteElasticSearchDTOList = new ArrayList<>();
+				List<InstituteSyncDTO> instituteElasticSearchDTOList = new ArrayList<>();
 				for (Institute instituteObj : institutesList) {
-					InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
-					try {
-						BeanUtils.copyProperties(instituteObj, instituteElasticSearchDto);
-					} catch (IllegalAccessException | InvocationTargetException e) {
-						log.error("Exception while copying intituteObj to elasticSearchDto",e);
-					}
+					InstituteSyncDTO instituteElasticSearchDto = new InstituteSyncDTO();
+					BeanUtils.copyProperties(instituteObj,instituteElasticSearchDto);
 					instituteElasticSearchDto.setId(instituteObj.getId());
 					instituteElasticSearchDto.setCountryName(instituteObj.getCountryName());
 					instituteElasticSearchDto.setCityName(instituteObj.getCityName());
+					if(!CollectionUtils.isEmpty(instituteObj.getInstituteIntakes())) {
+						instituteElasticSearchDto.setInstituteIntakes(instituteObj.getInstituteIntakes().stream().map(InstituteIntake::getIntake).collect(Collectors.toList()));
+					}
 					if(!StringUtils.isEmpty(instituteObj.getInstituteType())) {
 						instituteElasticSearchDto.setInstituteType(instituteObj.getInstituteType());
 					}
 					instituteElasticSearchDTOList.add(instituteElasticSearchDto);
 				}
 				log.info("Calling elastic search service having entityType  :{}",EntityTypeEnum.INSTITUTE);
-				elasticHandler.saveUpdateInstitutes(instituteElasticSearchDTOList);
+				publishSystemEventHandler.syncInstitutes(instituteElasticSearchDTOList);
 			}
 
 			@Override

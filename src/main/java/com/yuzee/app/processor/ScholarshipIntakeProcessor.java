@@ -1,5 +1,6 @@
 package com.yuzee.app.processor;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeNotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
-import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class ScholarshipIntakeProcessor {
 	private ModelMapper modelMapper;
 
 	@Autowired
-	private ElasticHandler elasticHandler;
+	private PublishSystemEventHandler publishSystemEventHandler;
 	
 	@Autowired
 	private ConversionProcessor conversionProcessor;
@@ -82,8 +83,8 @@ public class ScholarshipIntakeProcessor {
 		scholarshipIntakeDao.saveAll(scholarshipIntakes);
 		scholarship.setScholarshipIntakes(scholarshipIntakes);
 		log.info("Calling elastic search service to save data on elastic index");
-		elasticHandler
-				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+		publishSystemEventHandler
+			.syncScholarships(Arrays.asList(conversionProcessor.convertToScholarshipSyncDtoSyncDataEntity(scholarship)));
 	}
 
 	@Transactional
@@ -102,8 +103,8 @@ public class ScholarshipIntakeProcessor {
 			scholarship.getScholarshipIntakes().removeIf(e->Utils.contains(scholarshipIntakeIds, e.getId()));
 			scholarshipIntakeDao.deleteByScholarshipIdAndIdIn(courseId, scholarshipIntakeIds);
 			log.info("Calling elastic search service to save data on elastic index");
-			elasticHandler
-					.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+			publishSystemEventHandler
+					.syncScholarships(Arrays.asList(conversionProcessor.convertToScholarshipSyncDtoSyncDataEntity(scholarship)));
 		} else {
 			log.error("one or more invalid scholarship_intakes_ids");
 			throw new NotFoundException("one or more invalid scholarship_intakes_ids");

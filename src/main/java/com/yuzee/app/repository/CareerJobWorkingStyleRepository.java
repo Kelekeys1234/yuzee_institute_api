@@ -12,5 +12,5 @@ import com.yuzee.app.bean.CareerJobWorkingStyle;
 @Repository
 public interface CareerJobWorkingStyleRepository extends JpaRepository<CareerJobWorkingStyle, String> {
 
-	public Page<CareerJobWorkingStyle> findByCareerJobsIdIn(List<String> jobIds, Pageable pageable);
+	public Page<CareerJobWorkingStyle> findByCareerJobsIdInOrderByWorkStyle(List<String> jobIds, Pageable pageable);
 }

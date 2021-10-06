@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,12 +35,14 @@ public class CareerTestResultController implements CareerTestResultInterface {
 					+ Arrays.toString(Utils.getEnumNames(CareerTestEntityType.class)));
 		}
 		careerTestResultProcessor.saveOrUpdateResult(userId, entityType, entityIds);
-		return new GenericResponseHandlers.Builder().setMessage("Careers fetched successfully").create();
+		return new GenericResponseHandlers.Builder().setMessage("Careers fetched successfully").setStatus(HttpStatus.OK).create();
+
 	}
 
 	@Override
 	public ResponseEntity<?> isTestCompleted(String userId) {
 		return new GenericResponseHandlers.Builder().setMessage("data fetched successfully")
-				.setData(careerTestResultProcessor.isTestCompleted(userId)).create();
+				.setData(careerTestResultProcessor.isTestCompleted(userId)).setStatus(HttpStatus.OK).create();
+
 	}
 }

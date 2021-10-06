@@ -1,6 +1,8 @@
 package com.yuzee.app.processor;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -12,12 +14,15 @@ import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
+import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.InstituteDao;
-import com.yuzee.app.dto.InstituteBasicInfoDto;
+import com.yuzee.common.lib.dto.institute.InstituteBasicInfoDto;
+import com.yuzee.common.lib.dto.review.ReviewStarDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.handler.ReviewHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -28,6 +33,12 @@ public class InstituteBasicInfoProcessor {
 
 	@Autowired
 	private InstituteDao iInstituteDAO;
+	
+	@Autowired
+	private CourseDao courseDAO;
+	
+	@Autowired
+	private ReviewHandler reviewHandler;
 	
 	@Autowired
 	private StorageHandler storageHandler;
@@ -59,7 +70,7 @@ public class InstituteBasicInfoProcessor {
 	}
 	
 	@Transactional
-	public InstituteBasicInfoDto getInstituteBasicInfo (String userId , String instituteId, String caller, boolean includeInstituteLogo) throws Exception {
+	public InstituteBasicInfoDto getInstituteBasicInfo (String userId , String instituteId, String caller, boolean includeInstituteLogo, boolean includeDetail) throws Exception {
 		InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto();
 		List<StorageDto> listOfStorageDto = null;
 		log.debug("Inside getInstituteBasicInfo() method");
@@ -85,16 +96,32 @@ public class InstituteBasicInfoProcessor {
 		if (!CollectionUtils.isEmpty(listOfStorageDto)) {
 			log.info("Setting logo URL for institute id "+instituteId);
 			instituteBasicInfoDto.setInstituteLogoPath(listOfStorageDto.get(0).getFileURL());
-		} 
+		}
 		instituteBasicInfoDto.setDescription(institute.getDescription());
 		instituteBasicInfoDto.setNameOfUniversity(institute.getName());
 		instituteBasicInfoDto.setCountryName(institute.getCountryName());
 		instituteBasicInfoDto.setCityName(institute.getCityName());
+		instituteBasicInfoDto.setStateName(institute.getState());
+		instituteBasicInfoDto.setAddress(institute.getAddress());
 		if (!ObjectUtils.isEmpty(institute.getInstituteCategoryType())) {
 			instituteBasicInfoDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId() );
 			instituteBasicInfoDto.setInstituteCategoryTypeName(institute.getInstituteCategoryType().getName());
 		}
 		instituteBasicInfoDto.setCreatedBy(institute.getCreatedBy());
+		instituteBasicInfoDto.setWorldRanking(institute.getWorldRanking());
+		instituteBasicInfoDto.setDomesticRanking(institute.getDomesticRanking());
+		if (includeDetail) {
+			instituteBasicInfoDto.setTotalCourses(courseDAO.getTotalCourseCountForInstitute(institute.getId()));
+			log.info("Calling review service to fetch user average review for instituteId");
+			Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview(EntityTypeEnum.INSTITUTE.name(),
+					Arrays.asList(instituteId));
+			
+			ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteId);
+			if (!ObjectUtils.isEmpty(reviewStarDto)) {
+				instituteBasicInfoDto.setStars(reviewStarDto.getReviewStars());
+				instituteBasicInfoDto.setReviewsCount(reviewStarDto.getReviewsCount());
+			}
+		}
 		return instituteBasicInfoDto;
 	}
 }

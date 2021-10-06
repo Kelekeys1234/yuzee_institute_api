@@ -4,13 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.dto.ArticleResposeDto;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.MyHistoryDto;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.dto.institute.ScholarshipDto;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
 
 public interface IRecommendationService {
 
@@ -29,7 +28,5 @@ public interface IRecommendationService {
 
 	List<ScholarshipDto> getRecommendedScholarships(String userId, String language) throws ValidationException, NotFoundException;
 
-	List<ArticleResposeDto> getRecommendedArticles(String userId) throws ValidationException;
-	
 	List<MyHistoryDto> getRecommendedMyHistory(String userId);
 }

@@ -51,4 +51,10 @@ public class CourseDto {
 	
 	@JsonProperty("course_delivery_modes")
 	private List<CourseDeliveryModesDto> courseDeliveryModes;
+	
+	@JsonProperty("international_student_procedure_id")
+	private String internationalStudentProcedureId;
+	
+	@JsonProperty("domestic_student_procedure_id")
+	private String domesticStudentProcedureId;
 }

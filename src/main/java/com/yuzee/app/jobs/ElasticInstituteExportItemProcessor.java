@@ -5,16 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.processor.ConversionProcessor;
-import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
+import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 
-public class ElasticInstituteExportItemProcessor implements ItemProcessor<Institute, InstituteElasticSearchDTO> {
+public class ElasticInstituteExportItemProcessor implements ItemProcessor<Institute, InstituteSyncDTO> {
 
 	@Autowired
 	private ConversionProcessor conversionProcessor;
 
 	@Override
-	public InstituteElasticSearchDTO process(Institute institute) throws Exception {
-		return conversionProcessor.convertToInstituteElasticDTOEntity(institute);
+	public InstituteSyncDTO process(Institute institute) throws Exception {
+		return conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute);
 	}
 
 }

@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "faculty", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }, name = "UK_NA"), 
 	indexes = {@Index(name = "IDX_FACULTY_NAME", columnList = "name", unique = true) })
 public class Faculty implements Serializable {
@@ -33,8 +32,8 @@ public class Faculty implements Serializable {
 	private static final long serialVersionUID = -5502957778916515394L;
 
 	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
+	@GenericGenerator(name = "CustomUUIDGenerator", strategy = "com.yuzee.app.util.CustomUUIDGenerator", parameters = {})
+	@GeneratedValue(generator = "CustomUUIDGenerator")
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 
@@ -68,9 +67,10 @@ public class Faculty implements Serializable {
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
-	public Faculty(String name, String description, Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn,
+	public Faculty(String id,String name, String description, Boolean isActive, Date createdOn, Date updatedOn, Date deletedOn,
 			String createdBy, String updatedBy, Boolean isDeleted) {
 		super();
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.isActive = isActive;

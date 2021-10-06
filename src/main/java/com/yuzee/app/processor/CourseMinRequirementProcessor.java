@@ -115,7 +115,7 @@ public class CourseMinRequirementProcessor {
 			throw new ForbiddenException("no access to update course min requirement");
 		}
 
-		if (course.getCourseMinRequirements().stream().map(CourseMinRequirement::getId).collect(Collectors.toSet())
+		if (!course.getCourseMinRequirements().stream().map(CourseMinRequirement::getId).collect(Collectors.toSet())
 				.contains(courseMinRequirementId)) {
 			log.error("invalid course min requirement id: {}", courseMinRequirementId);
 			throw new NotFoundException("invalid course min requirement id: " + courseMinRequirementId);

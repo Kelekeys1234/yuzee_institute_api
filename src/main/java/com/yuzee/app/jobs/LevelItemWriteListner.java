@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.yuzee.app.bean.Level;
 import com.yuzee.common.lib.dto.institute.LevelDto;
-import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.processor.LogFileProcessor;
 import com.yuzee.common.lib.util.ExceptionUtil;
 
@@ -31,12 +31,12 @@ public class LevelItemWriteListner implements ItemWriteListener<Level> {
 	private ModelMapper modelMapper;
 
 	@Autowired
-	private ElasticHandler elasticHander;
+	private PublishSystemEventHandler publishSystemEventHandler;
 
 	@Override
 	public void afterWrite(List<? extends Level> items) {
 		log.debug("After writing level item to db {} ",items.size());	
-		elasticHander.saveUpdateLevels(
+		publishSystemEventHandler.syncLevels(
 				items.stream().map(e -> modelMapper.map(e, LevelDto.class)).collect(Collectors.toList()));
 	}
 

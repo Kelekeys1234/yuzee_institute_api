@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yuzee.app.dto.InstituteBasicInfoDto;
+import com.yuzee.common.lib.dto.institute.InstituteBasicInfoDto;
 
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public interface InstituteBasicInfoInterface {
@@ -24,6 +24,7 @@ public interface InstituteBasicInfoInterface {
 	public ResponseEntity<?> getInstituteBasicInfo (@RequestHeader("userId") final String userId,@PathVariable final String instituteId) throws Exception;
 	
 	@GetMapping("/public/basic/info/{instituteId}")
-	public ResponseEntity<?> getInstitutePublicBasicInfo (@PathVariable final String instituteId, @RequestParam(name = "includeInstituteLogo", defaultValue = "true") boolean includeInstituteLogo ) throws Exception; 
+	public ResponseEntity<?> getInstitutePublicBasicInfo (@PathVariable final String instituteId, @RequestParam(name = "includeInstituteLogo", defaultValue = "true") boolean includeInstituteLogo,
+			@RequestParam(name = "includeDetail", required = false) boolean includeDetal) throws Exception; 
 
 }

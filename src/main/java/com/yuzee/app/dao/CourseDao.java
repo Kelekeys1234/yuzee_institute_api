@@ -16,7 +16,7 @@ import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.common.lib.dto.common.CurrencyRateDto;
-import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.exception.ValidationException;
 
 public interface CourseDao {
@@ -85,11 +85,11 @@ public interface CourseDao {
 
 	public Integer getTotalCourseCountForInstitute(String instituteId);
 
-	public List<CourseDTOElasticSearch> getUpdatedCourses(Date date, Integer startIndex, Integer limit);
+	public List<CourseSyncDTO> getUpdatedCourses(Date date, Integer startIndex, Integer limit);
 
 	public Integer getCountOfTotalUpdatedCourses(Date utCdatetimeAsOnlyDate);
 
-	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(List<String> courseIds, Integer startIndex, Integer limit);
+	public List<CourseSyncDTO> getCoursesToBeRetriedForElasticSearch(List<String> courseIds, Integer startIndex, Integer limit);
 
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(String courseId);
 

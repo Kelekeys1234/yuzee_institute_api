@@ -14,6 +14,7 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -31,10 +32,13 @@ import com.yuzee.app.dto.CourseLinkedInstituteDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.UnLinkInsituteDto;
 import com.yuzee.app.util.CommonUtil;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeValidationException;
 import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,11 +47,16 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseInstituteProcessor {
 	@Autowired
 	CourseDao courseDao;
+	
+	@Autowired
+	ReadableIdProcessor readableIdProcessor;
 
 	@Autowired
+	@Lazy
 	CourseProcessor courseProcessor;
 
 	@Autowired
+	@Lazy
 	InstituteProcessor instituteProcessor;
 
 	@Autowired
@@ -58,6 +67,12 @@ public class CourseInstituteProcessor {
 
 	@Autowired
 	private TimingDao timingDao;
+	
+	@Autowired
+	PublishSystemEventHandler publishSystemEventHandler;
+	
+	@Autowired
+	ConversionProcessor conversionProcessor;
 
 	@Transactional
 	public void createLinks(String userId, String courseId, List<String> instituteIds)
@@ -65,7 +80,7 @@ public class CourseInstituteProcessor {
 		log.info("Inside CourseInstituteProcessor.createLinks");
 		log.info("user: {} is going to create the copy course: {} for the instituteIds: {}", userId, courseId,
 				instituteIds);
-
+		List<CourseSyncDTO> syncCourses = new ArrayList<CourseSyncDTO>();
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		List<Institute> institutes = instituteProcessor.validateAndGetInstituteByIds(instituteIds);
 		Set<String> linkedInstituteIds = getLinkedInstituteCourses(courseId).keySet();
@@ -95,6 +110,7 @@ public class CourseInstituteProcessor {
 					s.setCoursePayment(finalCoursePayment);
 				});
 			}
+			
 			copiedCourse.setInstitute(e);
 			copiedCourse.setAuditFields(userId);
 			final Course finalCopiedCourse = copiedCourse;
@@ -148,7 +164,9 @@ public class CourseInstituteProcessor {
 				});
 			}
 			try {
+				readableIdProcessor.setReadableIdForCourse(copiedCourse);
 				copiedCourse = courseDao.addUpdateCourse(copiedCourse);
+				syncCourses.add(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(copiedCourse));
 			} catch (ValidationException e1) {
 				log.error(
 						"one of the institute is already managing same kind of institute. So cant link at the moment.");
@@ -170,7 +188,7 @@ public class CourseInstituteProcessor {
 			courseInstitutes.add(courseInstitute);
 		});
 		courseInstituteDao.saveAll(courseInstitutes);
-
+		publishSystemEventHandler.syncCourses(syncCourses);
 	}
 
 	@Transactional(readOnly = true)

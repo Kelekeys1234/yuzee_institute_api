@@ -14,5 +14,5 @@ public interface CareerJobRepository extends JpaRepository<CareerJob, String> {
 
 	public Page<CareerJob> findByIdIn(List<String> jobIds, Pageable pageable);
 	
-	public Page<CareerJob> findByJobContainingIgnoreCase(String name, Pageable pageable);
+	public Page<CareerJob> findByJobContainingIgnoreCaseOrderByJob(String name, Pageable pageable);
 }

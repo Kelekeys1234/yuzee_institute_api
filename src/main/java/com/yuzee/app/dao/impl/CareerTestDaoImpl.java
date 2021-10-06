@@ -56,17 +56,17 @@ public class CareerTestDaoImpl implements CareerTestDao {
 
 	@Override
 	public Page<CareerJobWorkingStyle> getCareerJobWorkingStyle(List<String> jobIds, Pageable pageable) {
-		return careerJobWorkingStyleRepository.findByCareerJobsIdIn(jobIds, pageable);
+		return careerJobWorkingStyleRepository.findByCareerJobsIdInOrderByWorkStyle(jobIds, pageable);
 	}
 
 	@Override
 	public Page<CareerJobSubject> getCareerJobSubject(List<String> jobIds, Pageable pageable) {
-		return careerJobSubjectRepository.findByCareerJobsIdIn(jobIds, pageable);
+		return careerJobSubjectRepository.findByCareerJobsIdInOrderBySubject(jobIds, pageable);
 	}
 
 	@Override
 	public Page<CareerJobType> getCareerJobType(List<String> jobIds, Pageable pageable) {
-		return careerJobTypeRepository.findByCareerJobsIdIn(jobIds, pageable);
+		return careerJobTypeRepository.findByCareerJobsIdInOrderByJobType(jobIds, pageable);
 	}
 	
 	@Override
@@ -81,12 +81,12 @@ public class CareerTestDaoImpl implements CareerTestDao {
 
 	@Override
 	public Page<RelatedCareer> getRelatedCareers(List<String> carrerIds, Pageable pageable) {
-		return relatedCareerRepository.findByCareersIdIn(carrerIds, pageable);
+		return relatedCareerRepository.findByCareersIdInOrderByRelatedCareer(carrerIds, pageable);
 	}
 
 	@Override
 	public List<CareerJobCourseSearchKeyword> getCareerJobCourseSearchKeyword(List<String> jobIds) {
-		return careerJobCourseSearchKeywordRepository.findByCareerJobsIdIn(jobIds);
+		return careerJobCourseSearchKeywordRepository.findByCareerJobsIdInOrderByCourseSearchKeyword(jobIds);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class CareerTestDaoImpl implements CareerTestDao {
 
 	@Override
 	public Page<CareerJob> getCareerJobByName(String name, Pageable pageable) {
-		return careerJobRepository.findByJobContainingIgnoreCase(name, pageable);
+		return careerJobRepository.findByJobContainingIgnoreCaseOrderByJob(name, pageable);
 	}
 	
 	@Override

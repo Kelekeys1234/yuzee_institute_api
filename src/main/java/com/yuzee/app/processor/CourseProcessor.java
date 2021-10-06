@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -88,17 +89,14 @@ import com.yuzee.app.service.IGlobalStudentData;
 import com.yuzee.app.service.ITop10CourseService;
 import com.yuzee.app.service.UserRecommendationService;
 import com.yuzee.app.util.CommonUtil;
-
 import com.yuzee.app.util.DTOUtils;
-
-import com.yuzee.app.util.IConstant;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.PaginationUtilDto;
 import com.yuzee.common.lib.dto.common.CurrencyRateDto;
 import com.yuzee.common.lib.dto.eligibility.FundingResponseDto;
 import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
 import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
-import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
 import com.yuzee.common.lib.dto.institute.CourseEnglishEligibilityDto;
 import com.yuzee.common.lib.dto.institute.CourseFundingDto;
@@ -111,6 +109,7 @@ import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
 import com.yuzee.common.lib.enumeration.CourseTypeEnum;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.enumeration.StudentTypeEnum;
 import com.yuzee.common.lib.enumeration.TransactionTypeEnum;
 import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.IOException;
@@ -120,7 +119,7 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeNotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.CommonHandler;
-import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.handler.ReviewHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.handler.ViewTransactionHandler;
@@ -159,7 +158,7 @@ public class CourseProcessor {
 	private UserRecommendationService userRecommedationService;
 
 	@Autowired
-	private ElasticHandler elasticHandler;
+	private PublishSystemEventHandler publishSystemEventHandler;
 
 	@Autowired
 	private IGlobalStudentDataDAO iGlobalStudentDataDAO;
@@ -235,6 +234,9 @@ public class CourseProcessor {
 	@Autowired
 	@Qualifier("exportCourseToElastic")
 	private Job exportCourseToElastic;
+	
+	@Autowired
+	ReadableIdProcessor readableIdProcessor;
 
 	@Transactional
 	public List<CourseResponseDto> getAllCoursesByFilter(final CourseSearchDto courseSearchDto, final Integer startIndex, final Integer pageSize,
@@ -362,7 +364,7 @@ public class CourseProcessor {
 		if (StringUtils.isEmpty(courseId)) {
 			course = new Course();
 			course.setName(courseDto.getName());
-			setReadableIdForCourse(course);
+			readableIdProcessor.setReadableIdForCourse(course);
 		} else {
 			course = courseDao.get(courseId);
 			Course copyCourse = new Course();
@@ -798,7 +800,7 @@ public class CourseProcessor {
 		course = courseDao.addUpdateCourse(course);
 		timingProcessor.saveUpdateDeleteTimings(loggedInUserId, EntityTypeEnum.COURSE, courseDto.getCourseTimings(), course.getId());
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
-		elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
+		publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 		return course.getId();
 	}
 	
@@ -911,13 +913,7 @@ public class CourseProcessor {
 			log.info("going to remove all links of the course");
 			courseInstituteProcessor.removeAllLinksWithInstitutes(course);
 			courseDao.deleteCourse(courseId);
-			CourseDTOElasticSearch elasticSearchCourseDto = new CourseDTOElasticSearch();
-			elasticSearchCourseDto.setId(courseId);
-			List<CourseDTOElasticSearch> courseDtoESList = new ArrayList<>();
-			courseDtoESList.add(elasticSearchCourseDto);
 			log.info("Calling elastic service to update course having entityId = " + courseId);
-			elasticHandler.deleteCourseOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
-					EntityTypeEnum.COURSE.name().toLowerCase(), courseDtoESList);
 		} else {
 			log.error("Course not found for courseId = " + courseId);
 			throw new NotFoundException("Course not found for courseId = " + courseId);
@@ -1289,7 +1285,7 @@ public class CourseProcessor {
 	}
 
 	@Transactional
-	public List<CourseDTOElasticSearch> getUpdatedCourses(final Date date, final Integer startIndex, final Integer limit) {
+	public List<CourseSyncDTO> getUpdatedCourses(final Date date, final Integer startIndex, final Integer limit) {
 		return courseDao.getUpdatedCourses(date, startIndex, limit);
 	}
 
@@ -1299,7 +1295,7 @@ public class CourseProcessor {
 	}
 
 	@Transactional
-	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds, final Integer startIndex, final Integer limit) {
+	public List<CourseSyncDTO> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds, final Integer startIndex, final Integer limit) {
 		return courseDao.getCoursesToBeRetriedForElasticSearch(courseIds, startIndex, limit);
 	}
 
@@ -1551,7 +1547,7 @@ public class CourseProcessor {
 		course.setIsActive(status);
 		courseDao.addUpdateCourse(course);
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
-		elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
+		publishSystemEventHandler.syncCourses(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
 	}
 	
 	@Transactional
@@ -1854,14 +1850,15 @@ public class CourseProcessor {
 		if(!CollectionUtils.isEmpty(courseDetails)) {
 			log.info("Courses fetched from DB, start iterating data to make final response");
 			courseDetails.stream().forEach(courseDetail -> {
-				CourseDto courseResponse = new CourseDto(courseDetail.getId(), courseDetail.getLevel().getId(), 
+				CourseDto courseResponse = new CourseDto(courseDetail.getId(),(courseDetail.getLevel() != null) ? courseDetail.getLevel().getId() : null, 
 						courseDetail.getName(), 
 						((courseDetail.getWorldRanking() != null) ? courseDetail.getWorldRanking().toString() : null),
 						((courseDetail.getStars() != null) ? courseDetail.getStars().toString() : null),
-						courseDetail.getFaculty().getName(), courseDetail.getLevel().getName(), null,
+						courseDetail.getFaculty().getName(), (courseDetail.getLevel() != null) ? courseDetail.getLevel().getName() : null, null,
 						courseDetail.getDescription(), courseDetail.getRemarks(),
 						courseDetail.getInstitute().getName(),
-						courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseDetail.getId()));
+						courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(courseDetail.getId()),
+						courseDetail.getInternationalStudentProcedureId(),courseDetail.getDomesticStudentProcedureId());
 				courseDtos.add(courseResponse);
 			});
 		}
@@ -1922,9 +1919,13 @@ public class CourseProcessor {
 			course = new Course();
 			course.setIsActive(true);
 			course.setName(courseDto.getName());
-			setReadableIdForCourse(course);
+			readableIdProcessor.setReadableIdForCourse(course);
 		} else {
 			course = courseDao.get(courseId);
+			if(ObjectUtils.isEmpty(course)) {
+				log.error("Course with courseid {} not found",courseId);
+				throw new NotFoundException(String.format("Course with courseid %s not found", courseId));
+			}
 			Course copyCourse = new Course();
 			List<CourseIntake> courseIntakes = new ArrayList<>(course.getCourseIntakes());
 			List<CourseLanguage> courseLanguages = new ArrayList<>(course.getCourseLanguages());
@@ -1940,7 +1941,10 @@ public class CourseProcessor {
 				return clone;
 			}).collect(Collectors.toList());
 			
-			BeanUtils.copyProperties(course.getOffCampusCourse(), copyOffCampusCourse);
+			if(!ObjectUtils.isEmpty(course.getOffCampusCourse())) {
+				BeanUtils.copyProperties(course.getOffCampusCourse(), copyOffCampusCourse);				
+			}
+			
 			BeanUtils.copyProperties(course, copyCourse);
 			copyCourse.setCourseIntakes(courseIntakes);
 			copyCourse.setCourseLanguages(courseLanguages);
@@ -1997,7 +2001,7 @@ public class CourseProcessor {
 		
 		course = courseDao.addUpdateCourse(course);
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
-		elasticHandler.saveUpdateData(Arrays.asList(conversionProcessor.convertToCourseDTOElasticSearchEntity(course)));
+		publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 		return course.getId();
 	}
 	
@@ -2026,6 +2030,7 @@ public class CourseProcessor {
 		return courses;
 	}
 	
+	@Async
 	@CacheEvict(cacheNames = {"cacheLevelMap","cacheFacultyMap", "cacheCourseCurriculumList", "cacheInstituteMap"}, allEntries = true)
 	public void uploadCourseData(final MultipartFile multipartFile) throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, IOException {
 		log.debug("Inside importCourse() method");
@@ -2123,25 +2128,47 @@ public class CourseProcessor {
 	public void exportCourseToElastic() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		log.debug("Inside exportCourseToElastic() method");
 		jobLauncher.run(exportCourseToElastic, new JobParametersBuilder()
-                .addLong("time",System.currentTimeMillis()).toJobParameters());
+                .addLong("time",System.currentTimeMillis(), true).toJobParameters());
 
 	}
 	
-	private void setReadableIdForCourse(Course course) {
-		log.info("going to generate code for course");
-		boolean reGenerateCode = false;
-		do {
-			reGenerateCode = false;
-			String onlyName = Utils.convertToLowerCaseAndRemoveSpace(course.getName());
-			String readableId = Utils.generateReadableId(onlyName);
-			List<Course> sameCodeInsts = courseDao.findByReadableIdIn(Arrays.asList(onlyName, readableId));
-			if (ObjectUtils.isEmpty(sameCodeInsts)) {
-				course.setReadableId(onlyName);
-			} else if (sameCodeInsts.size() == 1) {
-				course.setReadableId(readableId);
-			} else {
-				reGenerateCode = true;
-			}
-		} while (reGenerateCode);
+	public void updateProcedureIdInCourse(List<String> courseIds,String studentType, String procedureId) {
+		log.info("Processor CourseProcessor method updateProcedureIdInCourse courseIds : {}, studentType : {},procedureId : {}", courseIds, studentType, procedureId);
+		List<Course> courses = new ArrayList<Course>();
+		if(!org.apache.commons.collections.CollectionUtils.isEmpty(courseIds) && studentType.equals(StudentTypeEnum.INTERNATIONAL.name())){
+			courseIds.stream().forEach(courseId -> {
+				Course course = courseDao.get(courseId);
+				course.setInternationalStudentProcedureId(procedureId);
+				courses.add(course);
+			});
+		}
+		if(!org.apache.commons.collections.CollectionUtils.isEmpty(courseIds) && studentType.equals(StudentTypeEnum.DOMESTIC.name())){
+			courseIds.stream().forEach(courseId -> {
+				Course course = courseDao.get(courseId);
+				course.setDomesticStudentProcedureId(procedureId);
+				courses.add(course);
+			});
+		}
+		courseDao.saveAll(courses);
 	}
+
+	public void updateProcedureIdInCourseByInstituteId(String instituteId, String studentType, String procedureId) {
+		log.info("Processor CourseProcessor method updateProcedureIdInCourseByInstituteId instituteId : {}, studentType : {},procedureId : {}", instituteId, studentType, procedureId);
+		if(studentType.equals(StudentTypeEnum.INTERNATIONAL.name())){
+			List<Course> courses = courseDao.findByInstituteId(instituteId);
+			courses.stream().forEach(course -> {
+				course.setInternationalStudentProcedureId(procedureId);
+			});
+			courseDao.saveAll(courses);
+		}
+		if(studentType.equals(StudentTypeEnum.DOMESTIC.name())){
+			List<Course> courses = courseDao.findByInstituteId(instituteId);
+			courses.stream().forEach(course -> {
+				course.setDomesticStudentProcedureId(procedureId);
+			});
+			courseDao.saveAll(courses);
+		}
+	}
+	
+	
 }

@@ -47,10 +47,10 @@ import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.enumeration.CourseSortBy;
 import com.yuzee.app.repository.CourseRepository;
 import com.yuzee.common.lib.dto.common.CurrencyRateDto;
-import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
 import com.yuzee.common.lib.dto.institute.FacultyDto;
-import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
+import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.dto.institute.LevelDto;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.CommonHandler;
@@ -1406,7 +1406,7 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	@Override
-	public List<CourseDTOElasticSearch> getUpdatedCourses(final Date updatedOn, final Integer startIndex, final Integer limit) {
+	public List<CourseSyncDTO> getUpdatedCourses(final Date updatedOn, final Integer startIndex, final Integer limit) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createNativeQuery("select crs.id, crs.name, crs.world_ranking as courseRanking, \r\n" + "crs.stars,crs.recognition,\r\n"
 				+ "crs.duration, \r\n" + "crs.website, crs.language, crs.abbreviation,\r\n" + "crs.rec_date ,crs.remarks, crs.description,\r\n"
@@ -1423,9 +1423,9 @@ public class CourseDaoImpl implements CourseDao {
 		query.setParameter(1, updatedOn).setParameter(2, startIndex).setParameter(3, limit);
 
 		List<Object[]> rows = query.list();
-		List<CourseDTOElasticSearch> courseElasticSearchList = new ArrayList<>();
+		List<CourseSyncDTO> courseElasticSearchList = new ArrayList<>();
 		for (Object[] objects : rows) {
-			CourseDTOElasticSearch courseDtoElasticSearch = new CourseDTOElasticSearch();
+			CourseSyncDTO courseDtoElasticSearch = new CourseSyncDTO();
 			courseDtoElasticSearch.setId(String.valueOf(objects[0]));
 			courseDtoElasticSearch.setName(String.valueOf(objects[1]));
 			if (String.valueOf(objects[2]) != null && !String.valueOf(objects[2]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
@@ -1452,7 +1452,7 @@ public class CourseDaoImpl implements CourseDao {
 
 			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
 			
-			InstituteElasticSearchDTO institute = new InstituteElasticSearchDTO();
+			InstituteSyncDTO institute = new InstituteSyncDTO();
 			institute.setId(String.valueOf(objects[30]));
 			institute.setName(String.valueOf(objects[31]));
 			courseDtoElasticSearch.setInstitute(institute);
@@ -1489,7 +1489,7 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	@Override
-	public List<CourseDTOElasticSearch> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds, final Integer startIndex, final Integer limit) {
+	public List<CourseSyncDTO> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds, final Integer startIndex, final Integer limit) {
 		if (courseIds == null || courseIds.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -1519,9 +1519,9 @@ public class CourseDaoImpl implements CourseDao {
 		}
 
 		List<Object[]> rows = query.list();
-		List<CourseDTOElasticSearch> courseElasticSearchList = new ArrayList<>();
+		List<CourseSyncDTO> courseElasticSearchList = new ArrayList<>();
 		for (Object[] objects : rows) {
-			CourseDTOElasticSearch courseDtoElasticSearch = new CourseDTOElasticSearch();
+			CourseSyncDTO courseDtoElasticSearch = new CourseSyncDTO();
 			courseDtoElasticSearch.setId(String.valueOf(objects[0]));
 			courseDtoElasticSearch.setName(String.valueOf(objects[1]));
 			if (String.valueOf(objects[2]) != null && !String.valueOf(objects[2]).isEmpty() && !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
@@ -1548,7 +1548,7 @@ public class CourseDaoImpl implements CourseDao {
 
 			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
 
-			InstituteElasticSearchDTO institute = new InstituteElasticSearchDTO();
+			InstituteSyncDTO institute = new InstituteSyncDTO();
 			institute.setId(String.valueOf(objects[30]));
 			institute.setName(String.valueOf(objects[31]));
 			courseDtoElasticSearch.setInstitute(institute);

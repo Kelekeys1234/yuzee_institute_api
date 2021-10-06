@@ -97,7 +97,7 @@ public interface CourseInterface {
 	@GetMapping(value = "/course/faculty/{facultyId}")
 	public ResponseEntity<?> getCoursesByFacultyId(@Valid @PathVariable final String facultyId) throws Exception;
 
-	@PostMapping(value = "/course/user")
+	@GetMapping(value = "/course/user")
 	public ResponseEntity<?> getUserCourses(@RequestBody final List<String> courseIds,
 			@RequestParam(required = false) final String sortBy,
 			@RequestParam(required = false) final String sortAsscending)
@@ -168,7 +168,7 @@ public interface CourseInterface {
 	@PostMapping(value = "/course/nearest", produces = "application/json")
 	public ResponseEntity<?> getNearestCourseList(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception;
 
-	@GetMapping(value = "/course/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
+	@PostMapping(value = "/course/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
 	public ResponseEntity<?> getCourseByCountryName(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
 			@PathVariable String countryName) throws NotFoundException;
 
@@ -195,4 +195,16 @@ public interface CourseInterface {
 	ResponseEntity<?> updateBasicCourse(@RequestHeader(value = "userId", required = true) String userId,
 			@PathVariable String instituteId, @Valid @RequestBody CourseRequest course, @PathVariable String id)
 			throws ValidationException, NotFoundException, ForbiddenException, InvokeException;
+	
+	@PutMapping("/course/procedure_id")
+	public ResponseEntity<?> updateProcedureIdInCourse(
+			@RequestParam(name = "course_ids",required = true) List<String> courseIds, 
+			@RequestParam(name = "student_type",required = true) String studentType, 
+			@RequestParam(name = "procedure_id",required = true) String procedureId);
+	
+	@PutMapping("/course/procedure_id/institute_id")
+	public ResponseEntity<?> updateProcedureIdInCourseByInstituteId(
+			@RequestParam(name = "institute_id",required = true) String instituteId, 
+			@RequestParam(name = "student_type",required = true) String studentType,
+			@RequestParam(name = "procedure_id",required = true) String procedureId);
 }

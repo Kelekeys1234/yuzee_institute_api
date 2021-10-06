@@ -37,8 +37,8 @@ public class Level implements Serializable {
 	private static final long serialVersionUID = 9149617652748065109L;
 
 	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
+	@GenericGenerator(name = "CustomUUIDGenerator", strategy = "com.yuzee.app.util.CustomUUIDGenerator", parameters = {})
+	@GeneratedValue(generator = "CustomUUIDGenerator")
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 

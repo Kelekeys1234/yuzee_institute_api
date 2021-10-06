@@ -97,7 +97,7 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select es.id,es.country_name,es.name,es.code,es.description,es.state_name from education_system es where es.country_name='"+countryName+"'and es.state_name='"+stateName+"'");
+				"select es.id,es.country_name,es.name,es.code,es.description,es.state_name from education_system es where es.country_name='"+countryName+"'and( es.state_name='"+stateName+"' OR es.state_name = 'All' )");
 		List<Object[]> rows = query.list();
 		List<EducationSystemDto> list = new ArrayList<>();
 		List<SubjectDto> subjects = new ArrayList<>();

@@ -14,10 +14,9 @@ import com.yuzee.app.bean.CareerJobSkill;
 public interface CareerJobSkillRepository extends JpaRepository<CareerJobSkill, String> {
 
 	@Query("SELECT distinct JS from CareerJobSkill JS LEFT JOIN CareerJobLevel JL on JL.careerJobs.id = JS.careerJobs.id "
-			+ "where (null = :levelId or JL.level.id = :levelId) and (null = :jobId or JS.careerJobs.id = :jobId) ")
+			+ "where (null = :levelId or JL.level.id = :levelId) and (null = :jobId or JS.careerJobs.id = :jobId) order by JS.skill ")
 	public Page<CareerJobSkill> findByLevelIdAndJobId(String levelId, String jobId, Pageable pageable);
 
-	public Page<CareerJobSkill> findByCareerJobsIdIn(List<String> jobIds, Pageable pageable);
 	
 	public Page<CareerJobSkill> findByCareerJobs_JobIn(List<String> jobNames, Pageable pageable);
 }

@@ -40,28 +40,28 @@ public class InstituteAdditionalInfo implements Serializable {
 	private String id;
 	
 	@Column(name ="student_number")
-	private Integer numberOfStudent;
+	private Integer numberOfStudent=0;
 	
 	@Column(name ="employee_number", nullable = false)
-	private Integer numberOfEmployee;
+	private Integer numberOfEmployee=0;
 	
 	@Column(name ="teacher_number", nullable = false)
-	private Integer numberOfTeacher;
+	private Integer numberOfTeacher=0;
 	
 	@Column(name ="class_number", nullable = false)
-	private Integer numberOfClassRoom;
+	private Integer numberOfClassRoom=0;
 	
 	@Column(name ="campus_size", nullable = false)
-	private Integer sizeOfCampus;
+	private Integer sizeOfCampus=0;
 	
 	@Column(name ="lecture_hall_number", nullable = false)
-	private Integer numberOfLectureHall;
+	private Integer numberOfLectureHall=0;
 	
 	@Column(name ="faculty_number", nullable = false)
-	private Integer numberOfFaculty;
+	private Integer numberOfFaculty=0;
 	
 	@Column(name ="employment_rate", nullable = false)
-	private Integer rateOfEmployment;
+	private Integer rateOfEmployment=0;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)

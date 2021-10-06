@@ -25,9 +25,9 @@ import com.yuzee.app.processor.CourseProcessor;
 import com.yuzee.app.util.CommonUtil;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.common.lib.dto.common.CurrencyRateDto;
-import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.handler.CommonHandler;
-import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.util.DateUtil;
 
 @Component
@@ -43,7 +43,7 @@ public class CurrencyConversionRateUtil {
 	private CourseProcessor courseProcessor;
 	
 	@Autowired
-	private ElasticHandler elasticHandler;
+	private PublishSystemEventHandler publishSystemEventHandler;
 	
 	@Autowired
 	private CommonHandler commonHandler;
@@ -146,7 +146,7 @@ public class CurrencyConversionRateUtil {
 		System.out.println("Total COurses to be updated --- "+totalUpdatedCourses);
 		
 		for (int i = 0; i < totalUpdatedCourses; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
-			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseProcessor.getUpdatedCourses(DateUtil.getUTCdatetimeAsOnlyDate(), i, IConstant.COURSES_PER_SCHEDULER_LOOP);
+			List<CourseSyncDTO> courseDtoElasticSearchList =  courseProcessor.getUpdatedCourses(DateUtil.getUTCdatetimeAsOnlyDate(), i, IConstant.COURSES_PER_SCHEDULER_LOOP);
 			// List<CourseDTOElasticSearch> courseDtoElasticSearchList = new ArrayList<>();
 //			for (Course course : courseList) {
 //				CourseDTOElasticSearch courseDtoElasticSearch = new CourseDTOElasticSearch();
@@ -171,8 +171,8 @@ public class CurrencyConversionRateUtil {
 		
 		for (int i = 0; i < totalCourseToBeRetried; i=i+IConstant.COURSES_PER_SCHEDULER_LOOP) {
 			List<String> courseIds = failedRecordsInElasticSearch.subList(i, i+IConstant.COURSES_PER_SCHEDULER_LOOP < totalCourseToBeRetried ? i+IConstant.COURSES_PER_SCHEDULER_LOOP: totalCourseToBeRetried);
-			List<CourseDTOElasticSearch> courseDtoElasticSearchList =  courseProcessor.getCoursesToBeRetriedForElasticSearch(courseIds, i, IConstant.COURSES_PER_SCHEDULER_LOOP);
-			elasticHandler.saveUpdateData(courseDtoElasticSearchList);
+			List<CourseSyncDTO> courseDtoElasticSearchList =  courseProcessor.getCoursesToBeRetriedForElasticSearch(courseIds, i, IConstant.COURSES_PER_SCHEDULER_LOOP);
+			publishSystemEventHandler.syncCourses(courseDtoElasticSearchList);
 		}
 		
 		failedRecordsInElasticSearch.clear();

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.common.lib.dto.institute.FacultyDto;
-import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.processor.LogFileProcessor;
 import com.yuzee.common.lib.util.ExceptionUtil;
 
@@ -31,12 +31,12 @@ public class FacultyItemWriteListner implements ItemWriteListener<Faculty> {
 	private ModelMapper modelMapper;
 
 	@Autowired
-	private ElasticHandler elasticHander;
+	private PublishSystemEventHandler publishSystemEventHandler;
 
 	@Override
 	public void afterWrite(List<? extends Faculty> items) {
 		log.debug("After writing faculty item to db {} ", items.size());
-		elasticHander.saveUpdateFaculties(
+		publishSystemEventHandler.syncFaculties(
 				items.stream().map(e -> modelMapper.map(e, FacultyDto.class)).collect(Collectors.toList()));
 	}
 

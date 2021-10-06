@@ -6,23 +6,23 @@ import org.springframework.util.StopWatch;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.processor.ConversionProcessor;
-import com.yuzee.common.lib.dto.institute.CourseDTOElasticSearch;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ElasticCourseExportItemProcessor implements ItemProcessor<Course, CourseDTOElasticSearch> {
+public class ElasticCourseExportItemProcessor implements ItemProcessor<Course, CourseSyncDTO> {
 
 	@Autowired
 	private ConversionProcessor conversionProcessor;
 
 	@Override
-	public CourseDTOElasticSearch process(Course course) throws Exception {
+	public CourseSyncDTO process(Course course) throws Exception {
 		log.info("inside ElasticCourseExportBatchConfig.exportCourseToElasticStep");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start("DTOUtills.convertToCourseDTOElasticSearchEntity");
 		try {
-			return conversionProcessor.convertToCourseDTOElasticSearchEntity(course);
+			return conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course);
 		} finally {
 			stopWatch.stop();
 			log.info("DTOUtills.convertToCourseDTOElasticSearchEntity process completed in ::: {}",

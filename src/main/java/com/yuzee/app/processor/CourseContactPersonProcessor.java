@@ -38,6 +38,7 @@ public class CourseContactPersonProcessor {
 	@Autowired
 	private CommonProcessor commonProcessor;
 	
+	@Autowired
 	private ModelMapper modelMapper;
 
 	@Transactional
@@ -94,7 +95,7 @@ public class CourseContactPersonProcessor {
 				throw new ForbiddenException(
 						"no access to delete one more course contact person by userId: {}" + userId);
 			}
-			courseContactPersons.removeIf(e -> Utils.contains(userIds, e.getId()));
+			courseContactPersons.removeIf(e -> Utils.contains(userIds, e.getUserId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(linkedCourseIds)) {

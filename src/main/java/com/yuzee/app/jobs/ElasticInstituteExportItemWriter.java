@@ -6,19 +6,19 @@ import java.util.List;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
-import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 
-public class ElasticInstituteExportItemWriter implements ItemWriter<InstituteElasticSearchDTO> {
+public class ElasticInstituteExportItemWriter implements ItemWriter<InstituteSyncDTO> {
 	
 	@Autowired
-	private ElasticHandler elasticHandler;
+	private PublishSystemEventHandler publishSystemEventHandler;
 
 	@Override
-	public void write(List<? extends InstituteElasticSearchDTO> items) throws Exception {
-		List<InstituteElasticSearchDTO> instituteElasticDtos = new ArrayList<>();
+	public void write(List<? extends InstituteSyncDTO> items) throws Exception {
+		List<InstituteSyncDTO> instituteElasticDtos = new ArrayList<>();
 		instituteElasticDtos.addAll(items);
-		elasticHandler.saveUpdateInstitutes(instituteElasticDtos);
+		publishSystemEventHandler.syncInstitutes(instituteElasticDtos);
 	}
 
 	

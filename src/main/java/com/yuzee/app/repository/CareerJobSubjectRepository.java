@@ -12,5 +12,5 @@ import com.yuzee.app.bean.CareerJobSubject;
 @Repository
 public interface CareerJobSubjectRepository extends JpaRepository<CareerJobSubject, String> {
 
-	public Page<CareerJobSubject> findByCareerJobsIdIn(List<String> jobIds, Pageable pageable);
+	public Page<CareerJobSubject> findByCareerJobsIdInOrderBySubject(List<String> jobIds, Pageable pageable);
 }

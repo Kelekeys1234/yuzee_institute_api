@@ -39,8 +39,8 @@ public class Institute implements Serializable {
 	private static final long serialVersionUID = 8492390790670110780L;
 
 	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
+	@GenericGenerator(name = "CustomUUIDGenerator", strategy = "com.yuzee.app.util.CustomUUIDGenerator", parameters = {})
+	@GeneratedValue(generator = "CustomUUIDGenerator")
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 

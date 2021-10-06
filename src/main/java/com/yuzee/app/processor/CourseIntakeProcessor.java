@@ -37,6 +37,7 @@ public class CourseIntakeProcessor {
 	@Autowired
 	private CourseProcessor courseProcessor;
 	
+	@Autowired
 	private ModelMapper modelMapper;
 	
 	@Autowired

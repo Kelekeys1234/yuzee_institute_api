@@ -14,7 +14,7 @@ import com.yuzee.app.dto.JobIdProjection;
 @Repository
 public interface CareerJobTypeRepository extends JpaRepository<CareerJobType, String> {
 	
-	public Page<CareerJobType> findByCareerJobsIdIn(List<String> jobId, Pageable pageable);
+	public Page<CareerJobType> findByCareerJobsIdInOrderByJobType(List<String> jobId, Pageable pageable);
 
 	@Query("select j.id as jobId from CareerJobType jt join jt.careerJobs j where jt.id = :id")
 	public List<JobIdProjection> findJobIdsById(String id);

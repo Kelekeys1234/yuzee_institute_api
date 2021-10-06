@@ -41,7 +41,7 @@ import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
-import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.util.PaginationUtil;
 import com.yuzee.common.lib.util.Utils;
@@ -62,7 +62,7 @@ public class ScholarshipProcessor {
 	private FacultyDao facultyDAO;
 
 	@Autowired
-	private ElasticHandler elasticHandler;
+	private PublishSystemEventHandler publishSystemEventHandler;
 
 	@Autowired
 	private StorageHandler storageHandler;
@@ -75,6 +75,9 @@ public class ScholarshipProcessor {
 	
 	@Autowired
 	private ConversionProcessor conversionProcessor;
+	
+	@Autowired
+	ReadableIdProcessor readableIdProcessor;
 
 	private Scholarship prepareModel(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String existingScholarshipId) throws ValidationException {
@@ -84,7 +87,7 @@ public class ScholarshipProcessor {
 		}
 		BeanUtils.copyProperties(scholarshipDto, scholarship);
 		if (StringUtils.isEmpty(existingScholarshipId)) {
-			setReadableIdForScholarship(scholarship);
+			readableIdProcessor.setReadableIdForScholarship(scholarship);
 			scholarship.setIsActive(true);
 		}
 		scholarship.setId(existingScholarshipId);
@@ -217,8 +220,8 @@ public class ScholarshipProcessor {
 		Scholarship scholarship = scholarshipDAO.saveScholarship(prepareModel(userId, scholarshipDto, null));
 
 		log.info("Calling elastic search service to save data on elastic index");
-		elasticHandler
-				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+		publishSystemEventHandler
+				.syncScholarships(Arrays.asList(conversionProcessor.convertToScholarshipSyncDtoSyncDataEntity(scholarship)));
 
 		return scholarship.getId();
 	}
@@ -258,8 +261,8 @@ public class ScholarshipProcessor {
 		Scholarship scholarship = scholarshipDAO.saveScholarship(prepareModel(userId, scholarshipDto, scholarshipId));
 
 		log.info("Calling elastic search service to update existing scholarship data in DB");
-		elasticHandler
-				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+		publishSystemEventHandler
+				.syncScholarships(Arrays.asList(conversionProcessor.convertToScholarshipSyncDtoSyncDataEntity(scholarship)));
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
@@ -275,7 +278,7 @@ public class ScholarshipProcessor {
 
 		BeanUtils.copyProperties(scholarshipDto, scholarship);
 		if (StringUtils.isEmpty(scholarshipId)) {
-			setReadableIdForScholarship(scholarship);
+			readableIdProcessor.setReadableIdForScholarship(scholarship);
 		}
 		scholarship.setAuditFields(userId);
 
@@ -283,8 +286,8 @@ public class ScholarshipProcessor {
 		scholarship = scholarshipDAO.saveScholarship(scholarship);
 
 		log.info("Calling elastic search service to update existing scholarship data in DB");
-		elasticHandler
-				.saveUpdateScholarship(conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(scholarship));
+		publishSystemEventHandler
+				.syncScholarships(Arrays.asList(conversionProcessor.convertToScholarshipSyncDtoSyncDataEntity(scholarship)));
 		return scholarship.getId();
 	}
 
@@ -371,8 +374,8 @@ public class ScholarshipProcessor {
 			scholarshipDAO.saveScholarship(existingScholarship);
 
 			log.info("Calling elastic search service to save data on elastic index");
-			elasticHandler.saveUpdateScholarship(
-					conversionProcessor.convertScholarshipToScholarshipDTOElasticSearchEntity(existingScholarship));
+			publishSystemEventHandler.syncScholarships(Arrays.asList(
+					conversionProcessor.convertToScholarshipSyncDtoSyncDataEntity(existingScholarship)));
 		}
 	}
 	
@@ -386,21 +389,4 @@ public class ScholarshipProcessor {
 		}
 	}
 	
-	private void setReadableIdForScholarship(Scholarship scholarship) {
-		log.info("going to generate code for scholarship");
-		boolean reGenerateCode = false;
-		do {
-			reGenerateCode = false;
-			String onlyName = Utils.convertToLowerCaseAndRemoveSpace(scholarship.getName());
-			String readableId = Utils.generateReadableId(onlyName);
-			List<Scholarship> sameCodeEntities = scholarshipDAO.findByReadableIdIn(Arrays.asList(onlyName, readableId));
-			if (ObjectUtils.isEmpty(sameCodeEntities)) {
-				scholarship.setReadableId(onlyName);
-			} else if (sameCodeEntities.size() == 1) {
-				scholarship.setReadableId(readableId);
-			} else {
-				reGenerateCode = true;
-			}
-		} while (reGenerateCode);
-	}
 }

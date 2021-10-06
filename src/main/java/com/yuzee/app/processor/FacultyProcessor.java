@@ -31,7 +31,7 @@ import lombok.extern.apachecommons.CommonsLog;
 
 @Service
 @CommonsLog
-@Transactional
+
 public class FacultyProcessor {
 
 	@Autowired
@@ -43,7 +43,8 @@ public class FacultyProcessor {
 	@Autowired
 	@Qualifier("importFacultyJob")
 	private Job job;
-
+	
+	@Transactional
 	public void saveFaculty(final FacultyDto facultyDto) {
 		log.debug("Inside saveFaculty() method");
 		Faculty faculty = new Faculty();
@@ -56,6 +57,7 @@ public class FacultyProcessor {
 		facultyDAO.saveOrUpdateFaculty(faculty);
 	}
 
+	@Transactional
 	public FacultyDto getFacultyById(final String id) {
 		log.debug("Inside getFacultyById() method");
 		FacultyDto facultyDto = new FacultyDto();
@@ -70,6 +72,7 @@ public class FacultyProcessor {
 		return facultyDto;
 	}
 
+	@Transactional
 	public List<FacultyDto> getAllFaculties() {
 		log.debug("Inside getAllFaculties() method");
 		List<FacultyDto> facultyDtos = new ArrayList<>();
@@ -88,6 +91,7 @@ public class FacultyProcessor {
 		return facultyDtos;
 	}
 	
+	@Transactional
 	public FacultyDto getFacultyByFacultyName(String facultyName) {
 		log.debug("Inside getFacultyByFacultyName() method");
 		FacultyDto facultyDto = new FacultyDto();
@@ -106,6 +110,7 @@ public class FacultyProcessor {
 		return facultyDto;
 	}
 
+	@Transactional
 	public List<Faculty> getFacultyListByName(final List<String> facultyNames) {
 		return facultyDAO.getFacultyListByFacultyNames(facultyNames);
 	}

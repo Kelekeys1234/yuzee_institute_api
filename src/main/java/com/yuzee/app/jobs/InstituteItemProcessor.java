@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Institute;
@@ -31,8 +32,10 @@ import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.uploader.InstituteCsvDto;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.exception.ConstraintVoilationException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.util.DateUtil;
+import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,6 +75,7 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 			institute.setCityName(instituteDto.getCityName());
 			institute.setCountryName(StringUtils.trim(instituteDto.getCountryName()));
 			institute.setName(instituteDto.getName());
+			setReadableIdForInsitute(institute);
 			institute.setWorldRanking(instituteDto.getWorldRanking());
 			institute.setAccreditation(instituteDto.getAccreditation());
 			institute.setAddress(instituteDto.getAddress());
@@ -170,6 +174,25 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 			}
 		}
 		return instituteServiceList;
+	}
+	
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
+	private void setReadableIdForInsitute(Institute institute) {
+		log.info("going to generate code for institute");
+		boolean reGenerateCode = false;
+		do {
+			reGenerateCode = false;
+			String onlyName = Utils.convertToLowerCaseAndRemoveSpace(institute.getName());
+			String readableId = Utils.generateReadableId(onlyName);
+			List<Institute> sameCodeInsts = instituteDao.findByReadableIdIn(Arrays.asList(onlyName, readableId));
+			if (ObjectUtils.isEmpty(sameCodeInsts)) {
+				institute.setReadableId(onlyName);
+			} else if (sameCodeInsts.size() == 1) {
+				institute.setReadableId(readableId);
+			} else {
+				reGenerateCode = true;
+			}
+		} while (reGenerateCode);
 	}
 	
 	private List<InstituteFacility> getInstituteFacility(final Institute institute, final InstituteCsvDto instituteDto) {

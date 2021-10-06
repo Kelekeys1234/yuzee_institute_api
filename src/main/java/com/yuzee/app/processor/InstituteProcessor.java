@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -72,7 +73,7 @@ import com.yuzee.app.util.CommonUtil;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.PaginationUtilDto;
 import com.yuzee.common.lib.dto.connection.FollowerCountDto;
-import com.yuzee.common.lib.dto.institute.InstituteElasticSearchDTO;
+import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.dto.review.ReviewStarDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
@@ -85,7 +86,7 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeNotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.ConnectionHandler;
-import com.yuzee.common.lib.handler.ElasticHandler;
+import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.handler.ReviewHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.util.DateUtil;
@@ -123,7 +124,7 @@ public class InstituteProcessor {
 	private CourseDao courseDao;
 
 	@Autowired
-	private ElasticHandler elasticHandler;
+	private PublishSystemEventHandler publishSystemEventHandler;
 
 	@Autowired
 	private AccrediatedDetailDao accrediatedDetailDao;
@@ -162,6 +163,9 @@ public class InstituteProcessor {
 	@Autowired
 	@Qualifier("exportInstituteToElastic")
 	private Job exportInstituteToElastic;
+	
+	@Autowired
+	ReadableIdProcessor readableIdProcessor;
 
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
@@ -208,8 +212,8 @@ public class InstituteProcessor {
 	}
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
-	private InstituteElasticSearchDTO populateElasticDto(Institute institute) {
-		InstituteElasticSearchDTO instituteElasticSearchDto = new InstituteElasticSearchDTO();
+	private InstituteSyncDTO populateElasticDto(Institute institute) {
+		InstituteSyncDTO instituteElasticSearchDto = new InstituteSyncDTO();
 		BeanUtils.copyProperties(institute, instituteElasticSearchDto);
 		instituteElasticSearchDto
 				.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
@@ -228,7 +232,7 @@ public class InstituteProcessor {
 	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) throws Exception {
 		log.debug("Inside save() method");
 		try {
-			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
+			List<InstituteSyncDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("start iterating data coming in request");
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				log.info("Going to save institute in DB");
@@ -242,13 +246,12 @@ public class InstituteProcessor {
 					saveWorldRankingHistory(institute, null);
 				}
 				log.info("Copying institute data from instituteBean to elasticSearchDTO");
-				InstituteElasticSearchDTO instituteElasticSearchDto = populateElasticDto(institute);
+				InstituteSyncDTO instituteElasticSearchDto = populateElasticDto(institute);
 
-				instituteElasticDtoList.add(conversionProcessor.convertToInstituteElasticDTOEntity(institute));
+				instituteElasticDtoList.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
-			elasticHandler.saveInsituteOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
-					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList);
+			publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
 		} catch (Exception exception) {
 			log.error("Exception while saving institutes having exception ", exception.getMessage());
 			throw exception;
@@ -296,7 +299,7 @@ public class InstituteProcessor {
 	public void updateInstitute(final String userId, final String instituteId, final InstituteRequestDto instituteRequest) throws Exception {
 		log.debug("Inside updateInstitute() method");
 		try {
-			List<InstituteElasticSearchDTO> instituteElasticDtoList = new ArrayList<>();
+			List<InstituteSyncDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("fetching institute from DB having instituteId: {}", instituteId);
 			Institute oldInstitute = dao.get(instituteId);
 			Institute newInstitute = new Institute();
@@ -316,13 +319,12 @@ public class InstituteProcessor {
 			Institute institute = saveInstitute(instituteRequest, instituteId);
 			log.info("Copying DTO class to elasticSearch DTO");
 			
-			InstituteElasticSearchDTO instituteElasticSearchDto = populateElasticDto(institute);
+			InstituteSyncDTO instituteElasticSearchDto = populateElasticDto(institute);
 
-			instituteElasticDtoList.add(conversionProcessor.convertToInstituteElasticDTOEntity(institute));
+			instituteElasticDtoList.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 
 			log.info("Calling elastic service to save instiutes on index");
-			elasticHandler.saveInsituteOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
-					EntityTypeEnum.INSTITUTE.name().toLowerCase(), instituteElasticDtoList);
+			publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ={}", exception.getMessage());
 			throw exception;
@@ -353,7 +355,7 @@ public class InstituteProcessor {
 		}
 		
 		if (StringUtils.isEmpty(id)) {
-			setReadableIdForInsitute(institute);
+			readableIdProcessor.setReadableIdForInsitute(institute);
 		}
 		
 		institute.setDescription(instituteRequest.getDescription());
@@ -416,8 +418,8 @@ public class InstituteProcessor {
 				log.info(
 						"updation is done now adding data in elasticSearch DTO to add it on elastic indices for entityId = {}"
 								, id);
-				InstituteElasticSearchDTO instituteElasticDto = new InstituteElasticSearchDTO();
-				List<InstituteElasticSearchDTO> instituteElasticDTOList = new ArrayList<>();
+				InstituteSyncDTO instituteElasticDto = new InstituteSyncDTO();
+				List<InstituteSyncDTO> instituteElasticDTOList = new ArrayList<>();
 				BeanUtils.copyProperties(institute, instituteElasticDto);
 				instituteElasticDTOList.add(instituteElasticDto);
 			} else {
@@ -1246,33 +1248,15 @@ public class InstituteProcessor {
 		
 		log.info("Update institute to elastic search");
 		
-		InstituteElasticSearchDTO instituteElasticSearchDto = populateElasticDto(existingInstitute);
+		InstituteSyncDTO instituteElasticSearchDto = populateElasticDto(existingInstitute);
 
 		log.info("Calling elastic service to save instiutes on index");
-		elasticHandler.saveInsituteOnElasticSearch(com.yuzee.common.lib.constants.IConstant.ELASTIC_SEARCH_INDEX,
-				EntityTypeEnum.INSTITUTE.name().toLowerCase(), Arrays.asList(instituteElasticSearchDto));
+		publishSystemEventHandler.syncInstitutes(Arrays.asList(instituteElasticSearchDto));
 
 	}
 	
-	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
-	private void setReadableIdForInsitute(Institute institute) {
-		log.info("going to generate code for institute");
-		boolean reGenerateCode = false;
-		do {
-			reGenerateCode = false;
-			String onlyName = Utils.convertToLowerCaseAndRemoveSpace(institute.getName());
-			String readableId = Utils.generateReadableId(onlyName);
-			List<Institute> sameCodeInsts = dao.findByReadableIdIn(Arrays.asList(onlyName, readableId));
-			if (ObjectUtils.isEmpty(sameCodeInsts)) {
-				institute.setReadableId(onlyName);
-			} else if (sameCodeInsts.size() == 1) {
-				institute.setReadableId(readableId);
-			} else {
-				reGenerateCode = true;
-			}
-		} while (reGenerateCode);
-	}
 	
+	@Async
 	public void importInstitute(final MultipartFile multipartFile)
 			throws IOException, ParseException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		log.debug("Inside importInstitute() method");
@@ -1286,9 +1270,10 @@ public class InstituteProcessor {
 		jobLauncher.run(job, jobParametersBuilder.toJobParameters());
 	}
 	
+	@Async
 	public void exportInstituteToElastic() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		log.debug("Inside exportInstituteToElastic() method");
 		jobLauncher.run(exportInstituteToElastic, new JobParametersBuilder()
-                .addLong("time",System.currentTimeMillis()).toJobParameters());
+                .addLong("time",System.currentTimeMillis(),true).toJobParameters());
 	}
 }
