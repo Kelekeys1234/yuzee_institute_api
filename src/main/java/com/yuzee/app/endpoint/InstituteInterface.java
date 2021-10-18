@@ -40,6 +40,9 @@ public interface InstituteInterface {
 	@GetMapping("/type")
 	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam String countryName) throws Exception;
 	
+	@GetMapping("/institute/type")
+	public ResponseEntity<?> getInstituteType() throws Exception;
+	
 	@PostMapping("/search")
 	public ResponseEntity<?> instituteSearch(@RequestBody final CourseSearchDto request) throws Exception;
 	
@@ -140,4 +143,7 @@ public interface InstituteInterface {
 
 	@GetMapping("/institute/multiple/id")
 	public ResponseEntity<?> getInstitutesByIdList(@RequestParam(name = "institute_ids", required = true) List<String> instituteIds) throws ValidationException, NotFoundException, InvokeException, Exception;
+
+	@GetMapping("/institute/{readableId}/exists")
+	public ResponseEntity<?> instituteExistsByReadableId(@PathVariable final String readableId) throws ValidationException, NotFoundException, InvokeException, Exception;
 }

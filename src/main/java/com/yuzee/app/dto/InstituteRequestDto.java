@@ -3,10 +3,10 @@ package com.yuzee.app.dto;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,7 +35,6 @@ public class InstituteRequestDto extends InstituteDto {
 	private String scholarshipFinancingAssistance;
 	
 	@JsonProperty("institute_category_type_id")
-	@NotBlank(message = "institute_category_type_id should not be blank")
 	private String instituteCategoryTypeId;
 	
 	@JsonProperty("accreditation")
@@ -90,4 +89,9 @@ public class InstituteRequestDto extends InstituteDto {
 	@JsonProperty("institute_fundings")
 	@NotNull(message = "institute_fundings must not be null")
 	private ValidList<InstituteFundingDto> instituteFundings = new ValidList<>();
+	
+	@Valid
+	@JsonProperty("provider_codes")
+	@NotNull(message = "provider_codes must not be null")
+	private ValidList<ProviderCodeDto> instituteProviderCodes = new ValidList<>();
 }

@@ -32,6 +32,7 @@ import com.yuzee.app.dto.PaginationDto;
 import com.yuzee.app.endpoint.InstituteInterface;
 import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.processor.InstituteTypeProcessor;
+import com.yuzee.app.processor.ReadableIdProcessor;
 import com.yuzee.app.processor.TimingProcessor;
 import com.yuzee.app.util.CommonUtil;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
@@ -40,6 +41,7 @@ import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.enumeration.InstituteType;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
@@ -64,6 +66,9 @@ public class InstituteController implements InstituteInterface {
 	
 	@Autowired
 	private TimingProcessor timingProcessor;
+	
+	@Autowired
+	private ReadableIdProcessor readableIdProcessor;
 
 	@Override
 	public ResponseEntity<?> saveInstituteType(final InstituteTypeDto instituteTypeDto) throws Exception {
@@ -77,6 +82,14 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getInstituteTypeByCountry(String countryName) throws Exception {
 		log.info("Start process to fetch instituteType from DB for countryName = [}",countryName);
 		List<InstituteTypeDto> listOfInstituteTypes = instituteTypeProcessor.getInstituteTypeByCountryName(countryName);
+		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage("Institute types fetched successfully")
+				.setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> getInstituteType() throws Exception {
+		log.info("Start process to fetch instituteType");
+		List<InstituteType> listOfInstituteTypes = instituteTypeProcessor.getInstituteTypes();
 		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage("Institute types fetched successfully")
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -206,8 +219,8 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> save(final List<InstituteRequestDto> institutes) throws Exception {
 		log.info("Start process to add new Institues in DB");
-		instituteProcessor.saveInstitute(institutes);
 		return new GenericResponseHandlers.Builder().setMessage("Institutes added successfully")
+				.setData(instituteProcessor.saveInstitute(institutes))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -408,5 +421,14 @@ public class InstituteController implements InstituteInterface {
 		instituteProcessor.changeInstituteStatus(userId, instituteId, status);
 		return new GenericResponseHandlers.Builder().setMessage("Institute Status changed successfully")
 				.setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> instituteExistsByReadableId(String readableId)
+			throws ValidationException, NotFoundException, InvokeException, Exception {
+		log.info("Inside InstituteController.instituteExistsByReadableId method");
+		return new GenericResponseHandlers.Builder()
+				.setData(readableIdProcessor.checkIfInstituteReadableIdExists(readableId))
+				.setMessage("Institute exists information fetched successfully").setStatus(HttpStatus.OK).create();
 	}	
 }

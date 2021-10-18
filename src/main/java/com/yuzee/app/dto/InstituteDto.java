@@ -19,11 +19,9 @@ public class InstituteDto {
 	private String name;
 	
 	@JsonProperty("city_name")
-	@NotBlank(message = "city_name should not be blank")
 	private String cityName;
 	
 	@JsonProperty("country_name")
-	@NotBlank(message = "country_name should not be blank")
 	private String countryName;
 	
 	@JsonProperty("world_ranking")
@@ -88,5 +86,6 @@ public class InstituteDto {
 	private String coverPhotoUrl;
 	
 	@JsonProperty("readable_id")
+	@NotBlank(message = "readable_id should not be blank")
 	private String readableId;
 }

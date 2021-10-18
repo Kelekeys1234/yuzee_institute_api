@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -18,6 +20,7 @@ import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -42,7 +45,13 @@ public class InstituteTypeProcessor {
 	Job job;
 
 	@Autowired
-	JobLauncher jobLauncher;
+	JobLauncher jobLauncher;	
+	
+	@Value("${s3.url}")
+	private String s3BaseUrl;
+	
+	@Value("${s3.institute-type.image.location}")
+	private String instituteTypeImageLocation;
 
 	public void addUpdateInstituteType(InstituteTypeDto instituteTypeDto) {
 		log.debug("Inside getInstituteTypeByCountryName() method");
@@ -100,6 +109,20 @@ public class InstituteTypeProcessor {
 		jobParametersBuilder.addString("csv-file", f.getAbsolutePath());
 		jobParametersBuilder.addString("execution-id", "InstituteTypeUploader-" + UUID.randomUUID().toString());
 		jobLauncher.run(job, jobParametersBuilder.toJobParameters());
+	}
+
+	public List<com.yuzee.common.lib.enumeration.InstituteType> getInstituteTypes() {
+		return Arrays.asList(com.yuzee.common.lib.enumeration.InstituteType.values()).stream().map(e -> {
+			if (!e.isInitialized()) {
+				e.setIcon(createInstituteTypeImageURL(e.getIcon()));
+				e.setInitialized(true);
+			}
+			return e;
+		}).collect(Collectors.toList());
+	}
+	
+	private String createInstituteTypeImageURL(String name) {
+		return new StringBuffer().append(s3BaseUrl).append(instituteTypeImageLocation).append(name).toString();
 	}
 
 }

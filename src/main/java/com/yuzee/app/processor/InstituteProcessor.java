@@ -42,6 +42,7 @@ import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteDomesticRankingHistory;
 import com.yuzee.app.bean.InstituteFunding;
 import com.yuzee.app.bean.InstituteIntake;
+import com.yuzee.app.bean.InstituteProviderCode;
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
 import com.yuzee.app.dao.AccrediatedDetailDao;
@@ -66,6 +67,7 @@ import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.NearestInstituteDTO;
 import com.yuzee.app.dto.TimingRequestDto;
+import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.enumeration.TimingType;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.app.util.CDNServerUtil;
@@ -74,6 +76,7 @@ import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.PaginationUtilDto;
 import com.yuzee.common.lib.dto.connection.FollowerCountDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
+import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.dto.review.ReviewStarDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
@@ -229,7 +232,7 @@ public class InstituteProcessor {
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
-	public void saveInstitute(final List<InstituteRequestDto> instituteRequests) throws Exception {
+	public List<InstituteRequestDto> saveInstitute(final List<InstituteRequestDto> instituteRequests) throws Exception {
 		log.debug("Inside save() method");
 		try {
 			List<InstituteSyncDTO> instituteElasticDtoList = new ArrayList<>();
@@ -246,8 +249,7 @@ public class InstituteProcessor {
 					saveWorldRankingHistory(institute, null);
 				}
 				log.info("Copying institute data from instituteBean to elasticSearchDTO");
-				InstituteSyncDTO instituteElasticSearchDto = populateElasticDto(institute);
-
+				instituteRequest.setId(institute.getId());
 				instituteElasticDtoList.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
@@ -256,6 +258,7 @@ public class InstituteProcessor {
 			log.error("Exception while saving institutes having exception ", exception.getMessage());
 			throw exception;
 		}
+		return instituteRequests;
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
@@ -354,8 +357,13 @@ public class InstituteProcessor {
 			throw new ValidationException("InstituteName is required");
 		}
 		
-		if (StringUtils.isEmpty(id)) {
-			readableIdProcessor.setReadableIdForInsitute(institute);
+		Institute insituteWithSameId = dao.findByReadableId(instituteRequest.getReadableId());
+		if (ObjectUtils.isEmpty(insituteWithSameId) || (!ObjectUtils.isEmpty(insituteWithSameId)
+				&& institute.getId().equals(insituteWithSameId.getId()))) {
+			institute.setReadableId(instituteRequest.getReadableId());
+		}else {
+			log.info("Institute with same readable_id already exists.");
+			throw new ValidationException("Institute with same readable_id already exists.");
 		}
 		
 		institute.setDescription(instituteRequest.getDescription());
@@ -410,6 +418,7 @@ public class InstituteProcessor {
 		institute.setInternationalBoardingFee(instituteRequest.getInternationalBoardingFee());
 		institute.setTagLine(instituteRequest.getTagLine());	
 		saveUpdateInstituteFundings("API", institute, instituteRequest.getInstituteFundings());
+		saveUpdateInstituteProviderCodes("API", institute, instituteRequest.getInstituteProviderCodes());
 		try {
 			if (id != null) {
 				log.info("if instituteId is not null then going to update institute for id = {}", id);
@@ -513,6 +522,41 @@ public class InstituteProcessor {
 
 		} else {
 			instituteFundings.clear();
+		}
+	}
+	
+	@Transactional
+	private void saveUpdateInstituteProviderCodes(String loggedInUserId, Institute institute,
+			List<ProviderCodeDto> providesCodeDtos) throws ValidationException, NotFoundException, InvokeException {
+		List<InstituteProviderCode> instituteProviderCodes = institute.getInstituteProviderCodes();
+		if (!CollectionUtils.isEmpty(providesCodeDtos)) {
+
+			log.info("see if some names are not present then we have to delete them.");
+			Set<String> updateRequestNames = providesCodeDtos.stream().filter(e -> !StringUtils.hasText(e.getName()))
+					.map(ProviderCodeDto::getId).collect(Collectors.toSet());
+			instituteProviderCodes.removeIf(e -> !updateRequestNames.contains(e.getName()));
+
+			Map<String, InstituteProviderCode> existingProviderCodes = instituteProviderCodes.stream()
+					.collect(Collectors.toMap(InstituteProviderCode::getName, e -> e));
+			providesCodeDtos.stream().forEach(e -> {
+				InstituteProviderCode providerCode = existingProviderCodes.get(e.getName());
+				if (ObjectUtils.isEmpty(providerCode)) {
+					providerCode = new InstituteProviderCode();
+					providerCode.setCreatedBy(loggedInUserId);
+					providerCode.setCreatedOn(new Date());
+				}
+				providerCode.setUpdatedBy(loggedInUserId);
+				providerCode.setUpdatedOn(new Date());
+				providerCode.setName(e.getName());
+				providerCode.setValue(e.getValue());
+				providerCode.setInstitute(institute);
+				if (!StringUtils.hasText(providerCode.getId())) {
+					instituteProviderCodes.add(providerCode);
+				}
+			});
+
+		} else {
+			instituteProviderCodes.clear();
 		}
 	}
 	
@@ -684,6 +728,7 @@ public class InstituteProcessor {
 			}
 		}
 		instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, instituteRequestDto.getId()));
+		instituteRequestDto.setInstituteProviderCodes(new ValidList<>(institute.getInstituteProviderCodes().stream().map(e->modelMapper.map(e, ProviderCodeDto.class)).toList()));
 		return instituteRequestDto;
 	}
 

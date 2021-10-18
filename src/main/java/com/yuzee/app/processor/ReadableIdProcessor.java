@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
@@ -14,6 +15,7 @@ import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.ScholarshipDao;
+import com.yuzee.common.lib.dto.ReadableIdExistsDto;
 import com.yuzee.common.lib.exception.ConstraintVoilationException;
 import com.yuzee.common.lib.util.Utils;
 
@@ -85,5 +87,15 @@ public class ReadableIdProcessor {
 				reGenerateCode = true;
 			}
 		} while (reGenerateCode);
+	}
+
+	public ReadableIdExistsDto checkIfInstituteReadableIdExists(String readableId) {
+		List<Institute> sameCodeInsts = instiuteDao.findByReadableIdIn(Arrays.asList(readableId));
+		ReadableIdExistsDto dto = new ReadableIdExistsDto();
+		dto.setAlreadyExists(false);
+		if (!CollectionUtils.isEmpty(sameCodeInsts)) {
+			dto.setAlreadyExists(true);
+		}
+		return dto;
 	}
 }
