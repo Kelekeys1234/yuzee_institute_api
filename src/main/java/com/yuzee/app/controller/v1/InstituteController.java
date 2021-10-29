@@ -217,10 +217,10 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> save(final List<InstituteRequestDto> institutes) throws Exception {
+	public ResponseEntity<?> save(String userId, final List<InstituteRequestDto> institutes) throws Exception {
 		log.info("Start process to add new Institues in DB");
 		return new GenericResponseHandlers.Builder().setMessage("Institutes added successfully")
-				.setData(instituteProcessor.saveInstitute(institutes))
+				.setData(instituteProcessor.saveInstitute(userId, institutes))
 				.setStatus(HttpStatus.OK).create();
 	}
 

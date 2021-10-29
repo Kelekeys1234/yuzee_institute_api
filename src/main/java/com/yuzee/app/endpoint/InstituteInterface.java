@@ -64,7 +64,7 @@ public interface InstituteInterface {
 	public ResponseEntity<?> getInstituteByCityName(@Valid @PathVariable final String cityName) throws Exception;
 	
 	@PostMapping()
-	public ResponseEntity<?> save(@Valid @RequestBody final List<InstituteRequestDto> institutes) throws Exception;
+	public ResponseEntity<?> save(@RequestHeader("userId") final String userId, @Valid @RequestBody final List<InstituteRequestDto> institutes) throws Exception;
 
 	@PutMapping("/{instituteId}")
 	public ResponseEntity<?> update(@RequestHeader("userId") final String userId, @PathVariable final String instituteId,

@@ -232,14 +232,14 @@ public class InstituteProcessor {
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
-	public List<InstituteRequestDto> saveInstitute(final List<InstituteRequestDto> instituteRequests) throws Exception {
+	public List<InstituteRequestDto> saveInstitute(String userId, final List<InstituteRequestDto> instituteRequests) throws Exception {
 		log.debug("Inside save() method");
 		try {
 			List<InstituteSyncDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("start iterating data coming in request");
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				log.info("Going to save institute in DB");
-				Institute institute = saveInstitute(instituteRequest, null);
+				Institute institute = saveInstitute(userId, instituteRequest, null);
 				if (instituteRequest.getDomesticRanking() != null) {
 					log.info("if domesticRanking is not null then going to record domesticRankingHistory");
 					saveDomesticRankingHistory(institute, null);
@@ -319,7 +319,7 @@ public class InstituteProcessor {
 				saveWorldRankingHistory(newInstitute, oldInstitute);
 			}
 			log.info("Start updating institute for instituteId: {}", instituteId);
-			Institute institute = saveInstitute(instituteRequest, instituteId);
+			Institute institute = saveInstitute(userId, instituteRequest, instituteId);
 			log.info("Copying DTO class to elasticSearch DTO");
 			
 			InstituteSyncDTO instituteElasticSearchDto = populateElasticDto(institute);
@@ -335,7 +335,7 @@ public class InstituteProcessor {
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
-	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException, NotFoundException, InvokeException {
+	private Institute saveInstitute(String userId, @Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside saveInstitute() method");
 		Institute institute = null;
 		if (id != null) {
@@ -345,11 +345,11 @@ public class InstituteProcessor {
 			log.info("instituteId is null, creating object and setting values in it");
 			institute = new Institute();
 			institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-			institute.setCreatedBy("API");
+			institute.setCreatedBy(userId);
 			institute.setIsActive(true);
 		}
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		institute.setUpdatedBy("API");
+		institute.setUpdatedBy(userId);
 		if (!StringUtils.isEmpty(instituteRequest.getName())) {
 			institute.setName(instituteRequest.getName());
 		} else {
