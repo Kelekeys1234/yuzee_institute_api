@@ -29,6 +29,7 @@ import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.NearestInstituteDTO;
 import com.yuzee.app.dto.PaginationDto;
+import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.endpoint.InstituteInterface;
 import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.processor.InstituteTypeProcessor;
@@ -48,6 +49,8 @@ import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.common.lib.util.ValidationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,12 +72,15 @@ public class InstituteController implements InstituteInterface {
 	
 	@Autowired
 	private ReadableIdProcessor readableIdProcessor;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	@Override
 	public ResponseEntity<?> saveInstituteType(final InstituteTypeDto instituteTypeDto) throws Exception {
 		log.info("Start process to save new institute types in DB");
 		instituteTypeProcessor.addUpdateInstituteType(instituteTypeDto);
-		return new GenericResponseHandlers.Builder().setMessage("InstituteType Added successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute.type.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 	
@@ -82,7 +88,7 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getInstituteTypeByCountry(String countryName) throws Exception {
 		log.info("Start process to fetch instituteType from DB for countryName = [}",countryName);
 		List<InstituteTypeDto> listOfInstituteTypes = instituteTypeProcessor.getInstituteTypeByCountryName(countryName);
-		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage("Institute types fetched successfully")
+		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage(messageTranslator.toLocale("institute.type.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -90,7 +96,7 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getInstituteType() throws Exception {
 		log.info("Start process to fetch instituteType");
 		List<InstituteType> listOfInstituteTypes = instituteTypeProcessor.getInstituteTypes();
-		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage("Institute types fetched successfully")
+		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage(messageTranslator.toLocale("institute.type.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 	
@@ -161,7 +167,7 @@ public class InstituteController implements InstituteInterface {
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
-		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institutes displayed successfully")
+		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage(messageTranslator.toLocale("institute.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -204,7 +210,7 @@ public class InstituteController implements InstituteInterface {
 		}
 		log.info("Adding values in PaginationDTO class and return in final response");
 		PaginationDto paginationDto = new PaginationDto(totalCount, showMore,instituteResponse);
-		return new GenericResponseHandlers.Builder().setData(paginationDto).setMessage("Recommended Institutes displayed successfully")
+		return new GenericResponseHandlers.Builder().setData(paginationDto).setMessage(messageTranslator.toLocale("institute.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -212,23 +218,25 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getInstituteByCityName(final String cityName) throws Exception {
 		log.info("Start process to fetch institutes from DB for cityName = {}", cityName);
 		List<InstituteResponseDto> institutes = instituteProcessor.getInstituteByCityName(cityName);
-		return new GenericResponseHandlers.Builder().setData(institutes).setMessage("Institutes displayed successfully")
+		return new GenericResponseHandlers.Builder().setData(institutes).setMessage(messageTranslator.toLocale("institute.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> save(String userId, final List<InstituteRequestDto> institutes) throws Exception {
+	public ResponseEntity<?> save(final ValidList<InstituteRequestDto> institutes) throws Exception {
 		log.info("Start process to add new Institues in DB");
-		return new GenericResponseHandlers.Builder().setMessage("Institutes added successfully")
-				.setData(instituteProcessor.saveInstitute(userId, institutes))
+		institutes.stream().forEach(e->validateInstituteRequest(e));
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute.created"))
+				.setData(instituteProcessor.saveInstitute(institutes))
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> update(final String userId, final String instituteId, final InstituteRequestDto institute) throws Exception {
 		log.info("Start process to update existing Institue having instituteId = {}",instituteId);
+		validateInstituteRequest(institute);
 		instituteProcessor.updateInstitute(userId, instituteId, institute);
-		return new GenericResponseHandlers.Builder().setMessage("Institutes updated successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute.updated"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -236,7 +244,7 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getAllInstitute(final Integer pageNumber, final Integer pageSize) throws Exception {
 		log.info("Start process to fetch all Institutes from DB based on pagination");
 		PaginationResponseDto paginationResponseDto = instituteProcessor.getAllInstitute(pageNumber, pageSize);
-		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
+		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage(messageTranslator.toLocale("institute.list.retrieved")).setStatus(HttpStatus.OK)
 				.create();
 	}
 
@@ -244,7 +252,7 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getAllInstitute(final String searchKey, final Integer pageNumber, final Integer pageSize) throws Exception {
 		log.info("Start process to fetch all Institutes from DB based on pagination and searchKeyword");
 		PaginationResponseDto paginationResponseDto = instituteProcessor.autoSearch(pageNumber, pageSize, searchKey);
-		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
+		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage(messageTranslator.toLocale("institute.list.retrieved")).setStatus(HttpStatus.OK)
 				.create();
 	}
 
@@ -254,14 +262,14 @@ public class InstituteController implements InstituteInterface {
 		log.info("Start process to fetch Institutes from DB for instituteId = {}", instituteId);
 		InstituteRequestDto instituteRequestDtos = instituteProcessor.getById(userId, instituteId, isReadableId);
 		return new GenericResponseHandlers.Builder().setData(instituteRequestDtos)
-				.setMessage("Institute details get successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("institute.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> searchInstitute(final String searchText) throws Exception {
 		log.info("Start process to search Institutes from DB for searchKeyword = {}", searchText);
 		List<InstituteGetRequestDto> instituteGetRequestDtos = instituteProcessor.searchInstitute(searchText);
-		return new GenericResponseHandlers.Builder().setData(instituteGetRequestDtos).setMessage("Institute displayed successfully").setStatus(HttpStatus.OK)
+		return new GenericResponseHandlers.Builder().setData(instituteGetRequestDtos).setMessage(messageTranslator.toLocale("institute.list.retrieved")).setStatus(HttpStatus.OK)
 				.create();
 	}
 
@@ -270,7 +278,7 @@ public class InstituteController implements InstituteInterface {
 		log.info("Start process to fetch institutes from DB based on passed filters");
 		PaginationResponseDto instituteResponseDto = instituteProcessor.instituteFilter(instituteFilterDto);
 		return new GenericResponseHandlers.Builder().setData(instituteResponseDto)
-				.setMessage("Institute displayed successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("institute.list.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 	
 	@Override
@@ -278,7 +286,7 @@ public class InstituteController implements InstituteInterface {
 		log.info("Start process to fetch all InstituteCategories from DB");
 		List<InstituteCategoryType> categoryTypes = instituteProcessor.getAllCategories();
 		return new GenericResponseHandlers.Builder().setData(categoryTypes)
-				.setMessage("Institute Category Type fetched successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("institute.category-type.list.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
@@ -286,35 +294,35 @@ public class InstituteController implements InstituteInterface {
 		log.info("Start process to fetch all InstituteTypes from DB");
 		List<InstituteTypeDto> instituteTypes = instituteTypeProcessor.getAllInstituteType();
 		return new GenericResponseHandlers.Builder().setData(instituteTypes)
-				.setMessage("InstituteTypes fetched successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("institute.type.list.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> delete(final String instituteId) throws ValidationException {
 		log.info("Start process to inactive existing Institute for instituteId = {}",instituteId);
 		instituteProcessor.deleteInstitute(instituteId);
-		return new GenericResponseHandlers.Builder().setMessage("Institute deleted successfully").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute.deleted")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getInstituteImage(final String instituteId) throws Exception {
 		log.info("Start process to fetch all InstituteImages for instituteId = {}", instituteId);
 		List<StorageDto> storageDTOList = storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
-		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage("Get Image List successfully").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(storageDTOList).setMessage(messageTranslator.toLocale("institute.image.list.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getTotalCourseForInstitute(final String instituteId) throws ValidationException {
 		log.info("Start process to get total count of courses for institute having instituteId = {}", instituteId);
 		Integer courseCount = instituteProcessor.getTotalCourseCountForInstitute(instituteId);
-		return new GenericResponseHandlers.Builder().setData(courseCount).setMessage("Course Count returned successfully").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(courseCount).setMessage(messageTranslator.toLocale("institute.course.count.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getHistoryOfDomesticRanking(final String instituteId) throws ValidationException {
 		log.info("Start process to get history of domesticRanking for institute having instituteId = {}", instituteId);
 		List<InstituteDomesticRankingHistoryDto> instituteDomesticRankingHistory = instituteProcessor.getHistoryOfDomesticRanking(instituteId);
-		return new GenericResponseHandlers.Builder().setData(instituteDomesticRankingHistory).setMessage("Get institute domestic ranking successfully")
+		return new GenericResponseHandlers.Builder().setData(instituteDomesticRankingHistory).setMessage(messageTranslator.toLocale("institute.domestic-ranking.history.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 	
@@ -322,7 +330,7 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getHistoryOfWorldRanking(final String instituteId) throws ValidationException {
 		log.info("Start process to get history of worldRanking for institute having instituteId = {}", instituteId);
 		List<InstituteWorldRankingHistoryDto> instituteWorldRankingHistory = instituteProcessor.getHistoryOfWorldRanking(instituteId);
-		return new GenericResponseHandlers.Builder().setData(instituteWorldRankingHistory).setMessage("Get institute world ranking successfully")
+		return new GenericResponseHandlers.Builder().setData(instituteWorldRankingHistory).setMessage(messageTranslator.toLocale("institute.world-ranking.history.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -330,7 +338,7 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getDomesticRanking(final List<String> courseIds) throws ValidationException {
 		log.info("Start process to get domesticRanking for courses");
 		Map<String, Integer> instituteIdDomesticRanking = instituteProcessor.getDomesticRanking(courseIds);
-		return new GenericResponseHandlers.Builder().setData(instituteIdDomesticRanking).setMessage("Domestic Ranking Displayed Successfully")
+		return new GenericResponseHandlers.Builder().setData(instituteIdDomesticRanking).setMessage(messageTranslator.toLocale("domestic-ranking.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -338,7 +346,7 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<?> getNearestInstituteList(final AdvanceSearchDto courseSearchDto) throws Exception {
 		log.info("Start process to fetch nearest Institutes from DB based on filters");
 		NearestInstituteDTO nearestInstituteDTOs = instituteProcessor.getNearestInstituteList(courseSearchDto);
-		return new GenericResponseHandlers.Builder().setData(nearestInstituteDTOs).setMessage("Institute Displayed Successfully")
+		return new GenericResponseHandlers.Builder().setData(nearestInstituteDTOs).setMessage(messageTranslator.toLocale("institute.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 	
@@ -359,7 +367,7 @@ public class InstituteController implements InstituteInterface {
 		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
-		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage("Institute Displayed Successfully.")
+		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage(messageTranslator.toLocale("institute.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 	
@@ -370,7 +378,7 @@ public class InstituteController implements InstituteInterface {
 		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		NearestInstituteDTO nearestInstituteList = instituteProcessor.getInstitutesUnderBoundRegion(startIndex.intValue(), pageSize, latLongDto);
 		return new GenericResponseHandlers.Builder().setData(nearestInstituteList)
-				.setMessage("Institute Displayed Successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("institute.list.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 	
 	@GetMapping(value = "/institute/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
@@ -378,21 +386,21 @@ public class InstituteController implements InstituteInterface {
 			String countryName) throws NotFoundException {
 		NearestInstituteDTO instituteResponse = instituteProcessor.getInstituteByCountryName(countryName, pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder().setData(instituteResponse)
-				.setMessage("Institutes displayed successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("institute.list.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getInstituteCampuses(String userId, String instituteId) throws NotFoundException {
 		List<InstituteCampusDto> instituteCampuses = instituteProcessor.getInstituteCampuses(userId, instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteCampuses)
-				.setMessage("Institute campuses displayed successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("institute.campus.list.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 	
 	@Override
 	public ResponseEntity<?> getInstituteFaculties(String instituteId) throws NotFoundException {
 		List<InstituteFacultyDto> instituteFaculties = instituteProcessor.getInstituteFaculties(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteFaculties)
-				.setMessage("Institute faculties displayed successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("institute.faculty.list.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
@@ -400,7 +408,7 @@ public class InstituteController implements InstituteInterface {
 		CourseScholarshipAndFacultyCountDto data = instituteProcessor
 				.getInstituteCourseScholarshipAndFacultyCount(instituteId);
 		return new GenericResponseHandlers.Builder().setData(data)
-				.setMessage("Institute Course,Scholarship and faculty count displayed successfully")
+				.setMessage(messageTranslator.toLocale("institute.course-scholarship-faculty.count.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -411,7 +419,7 @@ public class InstituteController implements InstituteInterface {
 			throw new ValidationException("institute_ids must not be empty");
 		}
 		List<InstituteResponseDto> instituteList = instituteProcessor.getInstitutesByIdList(instituteIds);
-		return new GenericResponseHandlers.Builder().setData(instituteList).setMessage("Institute Displayed Successfully.")
+		return new GenericResponseHandlers.Builder().setData(instituteList).setMessage(messageTranslator.toLocale("institute.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -419,7 +427,7 @@ public class InstituteController implements InstituteInterface {
 	public ResponseEntity<Object> changeStatus(String userId, String instituteId, boolean status) {
 		log.info("Inside InstituteController.changeStatus method");
 		instituteProcessor.changeInstituteStatus(userId, instituteId, status);
-		return new GenericResponseHandlers.Builder().setMessage("Institute Status changed successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute.status.updated"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -429,6 +437,26 @@ public class InstituteController implements InstituteInterface {
 		log.info("Inside InstituteController.instituteExistsByReadableId method");
 		return new GenericResponseHandlers.Builder()
 				.setData(readableIdProcessor.checkIfInstituteReadableIdExists(readableId))
-				.setMessage("Institute exists information fetched successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("institute.retrieved")).setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> getInstituteVerificationStatus(String instituteId) {
+		log.info("Inside InstituteController.getInstituteVerificationStatus method");
+		return new GenericResponseHandlers.Builder()
+				.setData(instituteProcessor.getInstituteVerificationStatus(instituteId))
+				.setMessage(messageTranslator.toLocale("institute.verification.info.retrieved")).setStatus(HttpStatus.OK).create();
 	}	
+	
+	@Override
+	public ResponseEntity<?> getMultipleInstituteVerificationStatus(List<String> instituteIds) {
+		log.info("Inside InstituteController.getMultipleInstituteVerificationStatus method");
+		return new GenericResponseHandlers.Builder()
+				.setData(instituteProcessor.getMultipleInstituteVerificationStatus(instituteIds))
+				.setMessage(messageTranslator.toLocale("institute.verification.info.retrieved")).setStatus(HttpStatus.OK).create();
+	}
+	
+	private void validateInstituteRequest(InstituteRequestDto instituteRequest) {
+		ValidationUtil.validateInstituteType(instituteRequest.getInstituteType());
+	}
 }

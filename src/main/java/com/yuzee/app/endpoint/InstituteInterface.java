@@ -23,6 +23,7 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteTypeDto;
 import com.yuzee.app.dto.LatLongDto;
+import com.yuzee.app.dto.ValidList;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
@@ -64,7 +65,7 @@ public interface InstituteInterface {
 	public ResponseEntity<?> getInstituteByCityName(@Valid @PathVariable final String cityName) throws Exception;
 	
 	@PostMapping()
-	public ResponseEntity<?> save(@RequestHeader("userId") final String userId, @Valid @RequestBody final List<InstituteRequestDto> institutes) throws Exception;
+	public ResponseEntity<?> save(@Valid @RequestBody final ValidList<InstituteRequestDto> institutes) throws Exception;
 
 	@PutMapping("/{instituteId}")
 	public ResponseEntity<?> update(@RequestHeader("userId") final String userId, @PathVariable final String instituteId,
@@ -146,4 +147,11 @@ public interface InstituteInterface {
 
 	@GetMapping("/institute/{readableId}/exists")
 	public ResponseEntity<?> instituteExistsByReadableId(@PathVariable final String readableId) throws ValidationException, NotFoundException, InvokeException, Exception;
+	
+	@GetMapping("/institute/{instituteId}/verify")
+	public ResponseEntity<?> getInstituteVerificationStatus(@PathVariable final String instituteId);
+
+	@GetMapping("/institute/verification-status")
+	public ResponseEntity<?> getMultipleInstituteVerificationStatus(
+			@RequestParam(name = "institute_ids", required = true) List<String> instituteIds);
 }

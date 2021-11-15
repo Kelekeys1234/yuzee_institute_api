@@ -66,7 +66,7 @@ public class GradeDetailProcessor {
 				log.info("Adding values in esducation system DTO");
 				EducationSystemDto educationSystemDto = new EducationSystemDto(educationSystem.getId(),
 						educationSystem.getCountryName(), educationSystem.getName(), educationSystem.getCode(),
-						educationSystem.getDescription(), educationSystem.getStateName(), subjectDtos, null,null,null );
+						educationSystem.getDescription(), educationSystem.getStateName(), subjectDtos, null,null,null,null );
 				educationSystemDtos.add(educationSystemDto);
 
 			});

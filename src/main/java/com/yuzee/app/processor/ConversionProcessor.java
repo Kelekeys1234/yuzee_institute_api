@@ -20,6 +20,7 @@ import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteEnglishRequirements;
 import com.yuzee.app.bean.InstituteFacility;
 import com.yuzee.app.bean.InstituteIntake;
+import com.yuzee.app.bean.InstituteProviderCode;
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.dao.TimingDao;
@@ -27,6 +28,7 @@ import com.yuzee.common.lib.dto.institute.CoursePaymentDto;
 import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.institute.InstituteEnglishRequirementsElasticDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
+import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.dto.scholarship.ScholarshipSyncDto;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
@@ -77,7 +79,6 @@ public class ConversionProcessor {
 		Converter<InstituteCategoryType, String> instituteTypeConverter = ctx -> ctx.getSource() == null ? null
 				: ctx.getSource().getName();
 		
-		
 
 		modelMapper.typeMap(Institute.class, InstituteSyncDTO.class)
 				.addMappings(mapper -> mapper.using(instituteEnglishRequirementElasticDtoConverter).map(
@@ -116,7 +117,12 @@ public class ConversionProcessor {
 
 	public InstituteSyncDTO convertToInstituteInstituteSyncDTOSynDataEntity(Institute institute) {
 		log.info("inside DTOUtils.convertToInstituteInstituteSyncDTOSynDataEntity");
-		return modelMapper.map(institute, InstituteSyncDTO.class);
+		InstituteSyncDTO dto = modelMapper.map(institute, InstituteSyncDTO.class);
+		dto.setInstituteProviderCodes(institute.getInstituteProviderCodes().stream()
+				.map(instituteProviderCode -> new ProviderCodeDto(instituteProviderCode.getId(),
+						instituteProviderCode.getName(), instituteProviderCode.getValue()))
+				.collect(Collectors.toList()));
+		return dto;
 	}
 
 	public ScholarshipSyncDto convertToScholarshipSyncDtoSyncDataEntity(Scholarship scholarship) {

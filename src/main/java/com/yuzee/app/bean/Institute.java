@@ -192,6 +192,9 @@ public class Institute implements Serializable {
 	@Column(name = "tag_line")
 	private String tagLine;
 	
+	@Column(name = "show_suggestion")
+	private Boolean showSuggestion;
+	
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteEnglishRequirements> instituteEnglishRequirements = new ArrayList<>();
 	

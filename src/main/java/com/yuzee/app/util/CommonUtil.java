@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -33,6 +34,7 @@ import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.TodoDto;
 import com.yuzee.common.lib.dto.institute.TimingDto;
+import com.yuzee.common.lib.enumeration.InstituteType;
 import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.util.DateUtil;
 
@@ -50,6 +52,7 @@ public class CommonUtil {
 		instituteRequestDto.setDescription(institute.getDescription());
 		instituteRequestDto.setId(institute.getId());
 		instituteRequestDto.setWebsite(institute.getWebsite());
+		instituteRequestDto.setShowSuggestion(institute.getShowSuggestion());
 		if (institute.getInstituteType() != null) {
 			instituteRequestDto.setInstituteType(institute.getInstituteType());
 		}
@@ -79,6 +82,9 @@ public class CommonUtil {
 		instituteRequestDto.setTagLine(institute.getTagLine());
 		instituteRequestDto.setPostalCode(institute.getPostalCode());
 		instituteRequestDto.setReadableId(institute.getReadableId());
+		if (StringUtils.hasText(institute.getInstituteType()) && EnumUtils.isValidEnum(InstituteType.class, institute.getInstituteType())) {
+			instituteRequestDto.setInstituteTypeObj(InstituteType.valueOf(institute.getInstituteType()));
+		}
 		return instituteRequestDto;
 	}
 

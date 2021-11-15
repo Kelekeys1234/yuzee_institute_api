@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.dao.InstituteServiceDao;
 import com.yuzee.app.repository.InstituteServiceRepository;
+import com.yuzee.common.lib.dto.CountDto;
 
 @Service
 public class InstituteServiceDaoImpl implements InstituteServiceDao {
@@ -37,4 +38,8 @@ public class InstituteServiceDaoImpl implements InstituteServiceDao {
 		instituteServiceRepository.deleteById(instituteServiceId);
 	}
 
+	@Override
+	public List<CountDto> countByInstituteIds(List<String> instituteIds) {
+		return instituteServiceRepository.countByInstituteIdsIn(instituteIds);
+	}
 }

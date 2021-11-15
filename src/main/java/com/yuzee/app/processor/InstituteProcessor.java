@@ -45,10 +45,13 @@ import com.yuzee.app.bean.InstituteIntake;
 import com.yuzee.app.bean.InstituteProviderCode;
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
+import com.yuzee.app.constant.FaqEntityType;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CourseDao;
+import com.yuzee.app.dao.FaqDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.InstituteDomesticRankingHistoryDao;
+import com.yuzee.app.dao.InstituteServiceDao;
 import com.yuzee.app.dao.InstituteWorldRankingHistoryDao;
 import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
@@ -63,6 +66,7 @@ import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
+import com.yuzee.app.dto.InstituteVerficationDto;
 import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.NearestInstituteDTO;
@@ -74,6 +78,7 @@ import com.yuzee.app.util.CDNServerUtil;
 import com.yuzee.app.util.CommonUtil;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.PaginationUtilDto;
+import com.yuzee.common.lib.dto.application.EnableApplicationDto;
 import com.yuzee.common.lib.dto.connection.FollowerCountDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
@@ -88,13 +93,13 @@ import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeNotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.ApplicationHandler;
 import com.yuzee.common.lib.handler.ConnectionHandler;
 import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.handler.ReviewHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.util.DateUtil;
 import com.yuzee.common.lib.util.PaginationUtil;
-import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -168,7 +173,13 @@ public class InstituteProcessor {
 	private Job exportInstituteToElastic;
 	
 	@Autowired
-	ReadableIdProcessor readableIdProcessor;
+	private ApplicationHandler applicationHandler;
+
+	@Autowired
+	private InstituteServiceDao instituteServiceDao;
+
+	@Autowired
+	private FaqDao faqDao;
 
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
@@ -232,14 +243,14 @@ public class InstituteProcessor {
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
-	public List<InstituteRequestDto> saveInstitute(String userId, final List<InstituteRequestDto> instituteRequests) throws Exception {
+	public List<InstituteRequestDto> saveInstitute(final List<InstituteRequestDto> instituteRequests) throws Exception {
 		log.debug("Inside save() method");
 		try {
 			List<InstituteSyncDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("start iterating data coming in request");
 			for (InstituteRequestDto instituteRequest : instituteRequests) {
 				log.info("Going to save institute in DB");
-				Institute institute = saveInstitute(userId, instituteRequest, null);
+				Institute institute = saveInstitute(instituteRequest, null);
 				if (instituteRequest.getDomesticRanking() != null) {
 					log.info("if domesticRanking is not null then going to record domesticRankingHistory");
 					saveDomesticRankingHistory(institute, null);
@@ -319,7 +330,7 @@ public class InstituteProcessor {
 				saveWorldRankingHistory(newInstitute, oldInstitute);
 			}
 			log.info("Start updating institute for instituteId: {}", instituteId);
-			Institute institute = saveInstitute(userId, instituteRequest, instituteId);
+			Institute institute = saveInstitute(instituteRequest, instituteId);
 			log.info("Copying DTO class to elasticSearch DTO");
 			
 			InstituteSyncDTO instituteElasticSearchDto = populateElasticDto(institute);
@@ -335,7 +346,7 @@ public class InstituteProcessor {
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
-	private Institute saveInstitute(String userId, @Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException, NotFoundException, InvokeException {
+	private Institute saveInstitute(@Valid final InstituteRequestDto instituteRequest, final String id) throws ValidationException, NotFoundException, InvokeException {
 		log.debug("Inside saveInstitute() method");
 		Institute institute = null;
 		if (id != null) {
@@ -345,11 +356,11 @@ public class InstituteProcessor {
 			log.info("instituteId is null, creating object and setting values in it");
 			institute = new Institute();
 			institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-			institute.setCreatedBy(userId);
+			institute.setCreatedBy("API");
 			institute.setIsActive(true);
 		}
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		institute.setUpdatedBy(userId);
+		institute.setUpdatedBy("API");
 		if (!StringUtils.isEmpty(instituteRequest.getName())) {
 			institute.setName(instituteRequest.getName());
 		} else {
@@ -358,10 +369,12 @@ public class InstituteProcessor {
 		}
 		
 		Institute insituteWithSameId = dao.findByReadableId(instituteRequest.getReadableId());
-		if (ObjectUtils.isEmpty(insituteWithSameId) || (!ObjectUtils.isEmpty(insituteWithSameId)
-				&& institute.getId().equals(insituteWithSameId.getId()))) {
+		if (ObjectUtils.isEmpty(insituteWithSameId)
+				|| (ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId()))
+				|| (!ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId())
+						&& institute.getId().equals(insituteWithSameId.getId()))) {
 			institute.setReadableId(instituteRequest.getReadableId());
-		}else {
+		} else {
 			log.info("Institute with same readable_id already exists.");
 			throw new ValidationException("Institute with same readable_id already exists.");
 		}
@@ -420,21 +433,7 @@ public class InstituteProcessor {
 		saveUpdateInstituteFundings("API", institute, instituteRequest.getInstituteFundings());
 		saveUpdateInstituteProviderCodes("API", institute, instituteRequest.getInstituteProviderCodes());
 		try {
-			if (id != null) {
-				log.info("if instituteId is not null then going to update institute for id = {}", id);
-				dao.addUpdateInstitute(institute);
-				// Adding data in Elastic DTO to save it on elasticSearch index
-				log.info(
-						"updation is done now adding data in elasticSearch DTO to add it on elastic indices for entityId = {}"
-								, id);
-				InstituteSyncDTO instituteElasticDto = new InstituteSyncDTO();
-				List<InstituteSyncDTO> instituteElasticDTOList = new ArrayList<>();
-				BeanUtils.copyProperties(institute, instituteElasticDto);
-				instituteElasticDTOList.add(instituteElasticDto);
-			} else {
-				log.info("institute is not present in DB hence adding new institute in DB");
-				dao.addUpdateInstitute(institute);
-			}
+			institute = dao.addUpdateInstitute(institute);
 		} catch (DataIntegrityViolationException exception) {
 			log.error("Institute already exists having \nname: {},\ncampus_name: {},\ncity_Name: {},\ncountry_name: {}",
 					instituteRequest.getName(), instituteRequest.getCampusName(), instituteRequest.getCityName(),
@@ -1320,5 +1319,76 @@ public class InstituteProcessor {
 		log.debug("Inside exportInstituteToElastic() method");
 		jobLauncher.run(exportInstituteToElastic, new JobParametersBuilder()
                 .addLong("time",System.currentTimeMillis(),true).toJobParameters());
+	}
+
+	public InstituteVerficationDto getInstituteVerificationStatus(String instituteId) {
+		return getMultipleInstituteVerificationStatus(Arrays.asList(instituteId)).get(0);
+	}
+
+	@Transactional
+	public List<InstituteVerficationDto> getMultipleInstituteVerificationStatus(List<String> instituteIds) {
+		List<Institute> institutes = dao.findAllById(instituteIds);
+		if (CollectionUtils.isEmpty(institutes) || institutes.size() != instituteIds.size()) {
+			log.error("one or more institute ids are invalid");
+			throw new ValidationException("one or more institute ids are invalid");
+		}
+		Map<String, ReviewStarDto> reviewsMap = null;
+
+		Map<String, Long> instituteServiceCountMap = instituteServiceDao.countByInstituteIds(instituteIds).stream()
+				.collect(Collectors.toMap(e -> e.getId(), e -> e.getCount()));
+
+		Map<String, Long> instituteFaqCountMap = faqDao
+				.countByEntityTypeAndEntityIdIn(FaqEntityType.INSTITUTE, instituteIds).stream()
+				.collect(Collectors.toMap(e -> e.getId(), e -> e.getCount()));
+
+		Map<String, List<StorageDto>> storagesMap = storageHandler
+				.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
+						Arrays.asList(EntitySubTypeEnum.VIDEO, EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.LOGO,
+								EntitySubTypeEnum.MEDIA, EntitySubTypeEnum.ABOUT_US))
+				.stream().collect(Collectors.groupingBy(StorageDto::getEntityId));
+
+		Map<String, List<EnableApplicationDto>> enableApplicationsMap = applicationHandler
+				.getEnableApplications(EntityTypeEnum.INSTITUTE.name(), instituteIds);
+		
+		List<InstituteVerficationDto> verificationDtos = institutes.stream().map(institute -> {
+			InstituteVerficationDto verificationDto = new InstituteVerficationDto();
+			String instituteId = institute.getId();
+			verificationDto.setInstituteId(instituteId);
+
+			if (!ObjectUtils.isEmpty(institute.getInstituteAdditionalInfo())) {
+				verificationDto.setAboutUs(true);
+			}
+
+			verificationDto.setCourses(courseDao.getCourseCountByInstituteId(instituteId) > 0);
+
+			ReviewStarDto reviewDto = reviewsMap.get(instituteId);
+			if (!ObjectUtils.isEmpty(reviewDto)) {
+				verificationDto.setReviews(
+						!ObjectUtils.isEmpty(reviewDto.getReviewsCount()) && reviewDto.getReviewsCount() >= 5);
+			}
+
+			Long servicesCount = instituteServiceCountMap.get(instituteId);
+			verificationDto.setServices(!ObjectUtils.isEmpty(servicesCount) && servicesCount >= 3);
+
+			Long faqCount = instituteFaqCountMap.get(instituteId);
+			verificationDto.setFaq(!ObjectUtils.isEmpty(faqCount) && faqCount >= 5);
+
+			List<StorageDto> storages = storagesMap.get(instituteId);
+			if (!CollectionUtils.isEmpty(storages)) {
+				if (storages.stream().filter(e->"video".equals(e.getMimeType())).count()>0) {
+					verificationDto.setGallery(true);
+				} else {
+					verificationDto.setGallery(storages.stream().filter(e->"image".equals(e.getMimeType())).count()>5);
+				}
+			}
+
+			List<EnableApplicationDto> enableApplicationDtos = enableApplicationsMap.get(instituteId);
+			if (!CollectionUtils.isEmpty(enableApplicationDtos)) {
+				verificationDto.setGallery(enableApplicationDtos.stream().anyMatch(e->e.isEnable()));
+			}
+
+			return verificationDto;
+		}).toList();
+		return verificationDtos;
 	}
 }

@@ -1,6 +1,9 @@
 package com.yuzee.app.dao.impl;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,11 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Faq;
+import com.yuzee.app.constant.FaqEntityType;
 import com.yuzee.app.dao.FaqDao;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.FaqRepository;
+import com.yuzee.common.lib.dto.CountDto;
+import com.yuzee.common.lib.exception.ValidationException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,5 +57,10 @@ public class FaqDaoImpl implements FaqDao {
 		} catch (EmptyResultDataAccessException ex) {
 			log.error(ex.getMessage());
 		}
+	}
+
+	@Override
+	public List<CountDto> countByEntityTypeAndEntityIdIn(FaqEntityType entityType, List<String> entityIds) {
+		return faqRepository.countByEntityTypeAndEntityIdIn(entityType, entityIds);
 	}
 }

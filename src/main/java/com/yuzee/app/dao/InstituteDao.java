@@ -23,7 +23,7 @@ import com.yuzee.common.lib.exception.NotFoundException;
 
 public interface InstituteDao {
 
-	public void addUpdateInstitute(Institute obj);
+	public Institute addUpdateInstitute(Institute obj);
 
 	public Institute get(String id);
 

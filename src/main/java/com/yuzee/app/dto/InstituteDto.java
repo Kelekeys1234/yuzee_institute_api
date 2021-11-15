@@ -3,6 +3,7 @@ package com.yuzee.app.dto;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.common.lib.enumeration.InstituteType;
 
 import lombok.Data;
 import lombok.ToString;
@@ -88,4 +89,10 @@ public class InstituteDto {
 	@JsonProperty("readable_id")
 	@NotBlank(message = "readable_id should not be blank")
 	private String readableId;
+	
+	@JsonProperty("institute_type_obj")
+	private InstituteType instituteTypeObj;
+	
+	@JsonProperty("show_suggestion")
+	private Boolean showSuggestion;
 }

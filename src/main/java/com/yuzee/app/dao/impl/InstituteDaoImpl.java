@@ -65,8 +65,8 @@ public class InstituteDaoImpl implements InstituteDao {
 	Function<String, String> addQuotes = s -> "\"" + s + "\"";
 
 	@Override
-	public void addUpdateInstitute(final Institute institute) {
-		instituteRepository.saveAndFlush(institute);
+	public Institute addUpdateInstitute(final Institute institute) {
+		return instituteRepository.saveAndFlush(institute);
 	}
 
 	@Override
