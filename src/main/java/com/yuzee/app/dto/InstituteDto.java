@@ -1,8 +1,11 @@
 package com.yuzee.app.dto;
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.enumeration.InstituteType;
 
 import lombok.Data;
@@ -95,4 +98,10 @@ public class InstituteDto {
 	
 	@JsonProperty("show_suggestion")
 	private Boolean showSuggestion;
+	
+	@JsonProperty("intakes")
+	private List<String> intakes;	
+	
+	@JsonProperty("provider_codes")
+	private List<ProviderCodeDto> providerCodes;	
 }

@@ -10,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.bean.GradeDetails;
 import com.yuzee.app.dao.GradeDao;
 import com.yuzee.app.repository.GradeDetailRepository;
@@ -56,8 +57,14 @@ public class GradeDaoImpl implements GradeDao {
 	}
 
 	@Override
-	public void saveGrade(List<GradeDetails> grades) {
+	public void saveAll(List<GradeDetails> grades) {
 		gradeDetailRepository.saveAll(grades);
 	}
 
+	@Override
+	public GradeDetails findByCountryNameAndStateNameAndGradeAndEducationSystem(String countryName,
+			String stateName, String grade, EducationSystem educationSystem) {
+		return gradeDetailRepository.findByCountryNameAndStateNameAndGradeAndEducationSystem(countryName,
+				stateName, grade, educationSystem);
+	}
 }

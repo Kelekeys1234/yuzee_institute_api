@@ -3,10 +3,13 @@ package com.yuzee.app.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -82,6 +85,9 @@ public class CourseMinRequirement implements Serializable {
 	@OneToMany(mappedBy = "courseMinRequirement", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseMinRequirementSubject> courseMinRequirementSubjects = new ArrayList<>();
 
+	@ElementCollection(fetch = FetchType.EAGER)
+	private Set<String> studyLanguages = new HashSet<>();
+	
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());

@@ -11,7 +11,9 @@ import com.yuzee.app.endpoint.EducationSystemInterface;
 import com.yuzee.app.processor.EducationSystemProcessor;
 import com.yuzee.common.lib.dto.institute.EducationSystemDto;
 import com.yuzee.common.lib.dto.institute.GradeDto;
+import com.yuzee.common.lib.enumeration.ResultType;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.Utils;
 
 @RestController("educationSystemControllerV1")
 public class EducationSystemController implements EducationSystemInterface {
@@ -45,5 +47,10 @@ public class EducationSystemController implements EducationSystemInterface {
 		List<EducationSystemDto> educationSystems = educationSystemProcessor.getEducationSystemByCountryNameAndStateName(countryName, stateName);
 		return new GenericResponseHandlers.Builder().setData(educationSystems)
 				.setMessage("Education System fetched Successfully").setStatus(HttpStatus.OK).create();
+	}
+
+	@Override
+	public ResponseEntity<?> getResultTypes() throws Exception {
+		return new GenericResponseHandlers.Builder().setData(Utils.getEnumNames(ResultType.class)).setStatus(HttpStatus.OK).create();
 	}
 }

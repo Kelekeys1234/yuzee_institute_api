@@ -122,6 +122,7 @@ public class InstituteBasicInfoProcessor {
 				instituteBasicInfoDto.setReviewsCount(reviewStarDto.getReviewsCount());
 			}
 		}
+		instituteBasicInfoDto.setVerified(institute.isVerified());
 		return instituteBasicInfoDto;
 	}
 }

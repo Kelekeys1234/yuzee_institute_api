@@ -1041,5 +1041,11 @@ public class InstituteDaoImpl implements InstituteDao {
 		criteria.add(Restrictions.eq("institute.id", instituteId));
 		return (Institute) criteria.uniqueResult();
 	}
+
+	@Override
+	public List<Institute> saveAll(List<Institute> institutesFromDb) {
+		log.info("Class InstituteDaoImple method saveAll institutesFromDb : {}", institutesFromDb);
+		return instituteRepository.saveAll(institutesFromDb);
+	}
 	
 }

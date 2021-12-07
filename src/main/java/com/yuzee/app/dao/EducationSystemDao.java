@@ -9,6 +9,8 @@ import com.yuzee.common.lib.dto.institute.EducationSystemDto;
 public interface EducationSystemDao {
 
 	public void save(final EducationSystem hobbiesObj);
+	
+	public void saveAll(List<EducationSystem> educationSystems);
 
 	public void update(final EducationSystem hobbiesObj);
 
@@ -26,4 +28,5 @@ public interface EducationSystemDao {
 
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName);
 
+	public EducationSystem findByNameAndCountryNameAndStateName(String name,String countryName,String stateName);
 }

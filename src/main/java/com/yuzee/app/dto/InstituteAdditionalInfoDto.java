@@ -51,5 +51,8 @@ public class InstituteAdditionalInfoDto {
 
 	@JsonProperty(value = "media", access = Access.READ_ONLY)
 	private List<StorageDto> media;
+	
+	@JsonProperty("verified")
+	private boolean verified;
 
 }

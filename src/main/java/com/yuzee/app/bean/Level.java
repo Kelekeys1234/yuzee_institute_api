@@ -30,8 +30,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "level", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "code" }, name = "UK_NA_CO"),
-       indexes = {@Index(name = "IDX_NAME", columnList = "name", unique = false)})
+@Table(name = "level", uniqueConstraints = @UniqueConstraint(columnNames = { "name",
+		"code", "sequence_no" }, name = "UK_NA_CO_SN"), indexes = { @Index(name = "IDX_NAME", columnList = "name", unique = false) })
 public class Level implements Serializable {
 
 	private static final long serialVersionUID = 9149617652748065109L;
@@ -39,7 +39,7 @@ public class Level implements Serializable {
 	@Id
 	@GenericGenerator(name = "CustomUUIDGenerator", strategy = "com.yuzee.app.util.CustomUUIDGenerator", parameters = {})
 	@GeneratedValue(generator = "CustomUUIDGenerator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
 	@Column(name = "name", nullable = false)
@@ -50,6 +50,9 @@ public class Level implements Serializable {
 
 	@Column(name = "description")
 	private String description;
+
+	@Column(name = "sequence_no", nullable = false)
+	private Integer sequenceNo;
 
 	@Column(name = "is_active")
 	private Boolean isActive;

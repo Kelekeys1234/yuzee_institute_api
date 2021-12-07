@@ -70,5 +70,8 @@ public class InstituteGetRequestDto {
 	
 	@JsonProperty("tag_line")
 	private String tagLine;
+	
+	@JsonProperty("verified")
+	private boolean verified;
 
 }

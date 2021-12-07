@@ -43,7 +43,7 @@ public class CourseUpdateListener {
 			
 			log.info("Course updated {}", !courseBeforeUpdate.equals(course));
 			if(!(courseBeforeUpdate.equals(course)
-					&& courseBeforeUpdate.getCourseIntakes().equals(course.getCourseIntakes())
+					&& courseBeforeUpdate.getCourseIntake().equals(course.getCourseIntake())
 					&& courseBeforeUpdate.getCourseLanguages().equals(course.getCourseLanguages())
 					&& courseBeforeUpdate.getCourseDeliveryModes().equals(course.getCourseDeliveryModes())
 					&& compareOffCampusCourse(courseBeforeUpdate.getOffCampusCourse(), course.getOffCampusCourse())

@@ -26,4 +26,7 @@ public interface EducationSystemInterface {
 	@GetMapping("/{countryName}/{stateName}")
 	public ResponseEntity<?> getEducationSystemByCountryNameAndStateName(@PathVariable String countryName,
 			@PathVariable String stateName) throws Exception;
+	
+	@GetMapping("/result-type")
+	public ResponseEntity<?> getResultTypes() throws Exception;
 }

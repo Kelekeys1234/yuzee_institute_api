@@ -9,6 +9,8 @@ import com.yuzee.app.bean.Subject;
 
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject, String> {
-	public Page<Subject> findBySubjectNameContainingIgnoreCaseAndEducationSystemId(String name, String educationSutemId,
+	Page<Subject> findByNameContainingIgnoreCaseAndEducationSystemId(String name, String educationSutemId,
 			Pageable pageable);
+
+	Subject findByNameAndEducationSystemId(String name, String educationSystemId);
 }

@@ -94,4 +94,7 @@ public class InstituteRequestDto extends InstituteDto {
 	@JsonProperty("provider_codes")
 	@NotNull(message = "provider_codes must not be null")
 	private ValidList<ProviderCodeDto> instituteProviderCodes = new ValidList<>();
+	
+	@JsonProperty("verified")
+	private boolean verified;
 }

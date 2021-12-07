@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.bean.CourseIntake;
 import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.OffCampusCourse;
 import com.yuzee.app.dao.OffCampusCourseDao;
@@ -106,12 +105,6 @@ public class OffCampusCourseProcessor {
 					courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 		}
 
-		List<CourseIntake> courseIntakes = course.getCourseIntakes();
-		if (!CollectionUtils.isEmpty(courseIntakes)) {
-			log.info("courseIntake is fetched from DB, hence adding englishEligibilities in response");
-			courseResponse
-					.setIntake(courseIntakes.stream().map(CourseIntake::getIntakeDate).collect(Collectors.toList()));
-		}
 		if (course.getOffCampusCourse() != null) {
 			courseResponse.setOffCampusCourse(modelMapper.map(course.getOffCampusCourse(), OffCampusCourseDto.class));
 		}

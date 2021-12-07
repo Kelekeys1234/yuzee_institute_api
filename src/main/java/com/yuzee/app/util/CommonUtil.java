@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.yuzee.app.bean.Course;
+import com.yuzee.app.bean.CourseIntake;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteAdditionalInfo;
 import com.yuzee.app.bean.InstituteFacility;
@@ -35,6 +36,7 @@ import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.TodoDto;
 import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.enumeration.InstituteType;
+import com.yuzee.common.lib.enumeration.IntakeType;
 import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.util.DateUtil;
 
@@ -113,9 +115,17 @@ public class CommonUtil {
 			courseRequest.setLongitude(course.getInstitute().getLongitude());
 			courseRequest.setInstituteName(course.getInstitute().getName());
 			courseRequest.getInstitute().setStateName(course.getInstitute().getState());
+			CourseIntake courseIntake = course.getCourseIntake();
+			if (!ObjectUtils.isEmpty(courseIntake)) {
+				courseRequest.getInstitute()
+						.setIntakes(course.getInstitute().getInstituteIntakes().stream().map(e -> e.getIntake()).toList());
+			}
 		}
 		if (course.getLevel() != null) {
 			courseRequest.setLevelId(course.getLevel().getId());
+		}
+		if (course.getCourseIntake() != null) {
+			courseRequest.getIntake().setDates(course.getCourseIntake().getDates());
 		}
 		
 		

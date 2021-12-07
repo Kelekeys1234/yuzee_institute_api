@@ -221,4 +221,8 @@ public class Institute implements Serializable {
 
 	@OneToMany(mappedBy = "institute" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InstituteProviderCode> instituteProviderCodes = new ArrayList<>();
+	
+	@Column(name = "verified", nullable = false, columnDefinition = "TINYINT", length = 1)
+	private boolean verified;
+		
 }

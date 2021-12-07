@@ -82,6 +82,7 @@ public class CourseMinRequirementProcessor {
 			e.setAuditFields(userId);
 		});
 		courseMinRequirement.setAuditFields(userId);
+		courseMinRequirement.setStudyLanguages(courseMinRequirementDto.getStudyLanguages());
 		log.info("going to save record in db");
 		
 		course.getCourseMinRequirements().add(courseMinRequirement);
@@ -89,7 +90,7 @@ public class CourseMinRequirementProcessor {
 		coursesToBeSavedOrUpdated.add(course);
 		if (!CollectionUtils.isEmpty(courseMinRequirementDto.getLinkedCourseIds())) {
 			List<CourseMinRequirementDto> dtosToReplicate = course.getCourseMinRequirements().stream()
-					.map(e -> modelMapper.map(e, CourseMinRequirementDto.class)).collect(Collectors.toList());
+					.map(e -> dtoToModel(e)).collect(Collectors.toList());
 			coursesToBeSavedOrUpdated.addAll(replicateCourseMinRequirements(userId,
 					courseMinRequirementDto.getLinkedCourseIds(), dtosToReplicate));
 		}
@@ -99,8 +100,8 @@ public class CourseMinRequirementProcessor {
 		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 		
 		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
-		return modelMapper.map(savedCourses.get(0).getCourseMinRequirements()
-				.get(savedCourses.get(0).getCourseMinRequirements().size() - 1), CourseMinRequirementDto.class);
+		return dtoToModel(savedCourses.get(0).getCourseMinRequirements()
+				.get(savedCourses.get(0).getCourseMinRequirements().size() - 1));
 	}
 
 	@Transactional
@@ -136,6 +137,7 @@ public class CourseMinRequirementProcessor {
 			courseMinRequirement.setGradePoint(courseMinRequirementDto.getGradePoint());
 			courseMinRequirement
 					.setEducationSystem(validateAndGetEducationSystem(courseMinRequirementDto.getEducationSystemId()));
+			courseMinRequirement.setStudyLanguages(courseMinRequirementDto.getStudyLanguages());
 			CourseMinRequirement finalCourseMinRequirement = courseMinRequirement;
 			List<CourseMinRequirementSubject> dbCourseMinRequirementSubjects = courseMinRequirement
 					.getCourseMinRequirementSubjects();
@@ -178,7 +180,7 @@ public class CourseMinRequirementProcessor {
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(courseMinRequirementDto.getLinkedCourseIds())) {
 				List<CourseMinRequirementDto> dtosToReplicate = course.getCourseMinRequirements().stream()
-						.map(e -> modelMapper.map(e, CourseMinRequirementDto.class)).collect(Collectors.toList());
+						.map(e -> dtoToModel(e)).collect(Collectors.toList());
 				coursesToBeSavedOrUpdated.addAll(replicateCourseMinRequirements(userId,
 						courseMinRequirementDto.getLinkedCourseIds(), dtosToReplicate));
 			}
@@ -191,7 +193,7 @@ public class CourseMinRequirementProcessor {
 			}
 			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
-			return modelMapper.map(courseMinRequirement, CourseMinRequirementDto.class);
+			return dtoToModel(courseMinRequirement);
 		}
 	}
 
@@ -203,7 +205,7 @@ public class CourseMinRequirementProcessor {
 		Page<CourseMinRequirement> courseMinRequirementPage = courseMinRequirementDao.findByCourseId(courseId,
 				pageable);
 		List<CourseMinRequirementDto> courseMinRequirementDtos = courseMinRequirementPage.getContent().stream()
-				.map(e -> modelMapper.map(e, CourseMinRequirementDto.class)).collect(Collectors.toList());
+				.map(e -> dtoToModel(e)).collect(Collectors.toList());
 		return PaginationUtil.calculatePaginationAndPrepareResponse(PaginationUtil.getStartIndex(pageNumber, pageSize),
 				pageSize, ((Long) courseMinRequirementPage.getTotalElements()).intValue(), courseMinRequirementDtos);
 
@@ -225,7 +227,7 @@ public class CourseMinRequirementProcessor {
 		coursesToBeSavedOrUpdated.add(course);
 		if (!CollectionUtils.isEmpty(linkedCourseIds)) {
 			List<CourseMinRequirementDto> dtosToReplicate = courseMinRequirements.stream()
-					.map(e -> modelMapper.map(e, CourseMinRequirementDto.class)).collect(Collectors.toList());
+					.map(e -> dtoToModel(e)).collect(Collectors.toList());
 			coursesToBeSavedOrUpdated.addAll(replicateCourseMinRequirements(userId, linkedCourseIds, dtosToReplicate));
 		}
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
@@ -291,6 +293,8 @@ public class CourseMinRequirementProcessor {
 						} else {
 							courseMinRequirement.getCourseMinRequirementSubjects().clear();
 						}
+
+						courseMinRequirement.setStudyLanguages(dto.getStudyLanguages());
 						courseMinRequirement.setAuditFields(userId);
 					});
 				}
@@ -305,5 +309,11 @@ public class CourseMinRequirementProcessor {
 				.anyMatch(e -> e.getCountryName().equalsIgnoreCase(target.getCountryName())
 						&& e.getStateName().equalsIgnoreCase(target.getStateName())
 						&& e.getEducationSystem().getId().equals(target.getEducationSystem().getId()));
+	}
+	
+	private CourseMinRequirementDto dtoToModel(CourseMinRequirement source) {
+		CourseMinRequirementDto courseMinRequirement = modelMapper.map(source, CourseMinRequirementDto.class);
+		courseMinRequirement.setStudyLanguages(source.getStudyLanguages());
+		return courseMinRequirement;
 	}
 }

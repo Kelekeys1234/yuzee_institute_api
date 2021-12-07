@@ -2,22 +2,29 @@ package com.yuzee.app.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
+
+import com.yuzee.common.lib.enumeration.IntakeType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,26 +34,32 @@ import lombok.ToString;
 @Entity
 @ToString(exclude = "course")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "course_intake", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id",
-"intake_date" }, name = "UK_COURSE_ID_INTAKE_DATE"), indexes = { @Index (name = "IDX_COURSE_ID", columnList="course_id", unique = false)})
+@Table(name = "course_intake", uniqueConstraints = @UniqueConstraint(columnNames = {
+		"course_id" }, name = "UK_COURSE_ID"))
 public class CourseIntake implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
-	
+
 	@EqualsAndHashCode.Include
-	@Column(name = "intake_date", nullable = false)
-	private Date intakeDate;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "course_id", nullable = false)
+	@Enumerated(EnumType.STRING)
+	@Column(name = "type", nullable = false)
+	private IntakeType type;
+
+	@Cascade(CascadeType.ALL)
+	@EqualsAndHashCode.Include
+	@ElementCollection(fetch = FetchType.EAGER)
+	private List<Date> dates;
+
+	@OneToOne
+	@JoinColumn(name = "course_id")
 	private Course course;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
 	private Date createdOn;
@@ -60,7 +73,7 @@ public class CourseIntake implements Serializable {
 
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
-	
+
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());

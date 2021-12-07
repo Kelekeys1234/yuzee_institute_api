@@ -207,6 +207,10 @@ public class Course implements Serializable {
 	@EqualsAndHashCode.Include
 	@Column(name = "entrance_exam")
 	private String entranceExam;
+	
+	@EqualsAndHashCode.Include
+	@Column(name = "audience")
+	private String audience;
 
 	@Column(name = "code")
 	private String code = "NORMAL COURSE";
@@ -237,9 +241,9 @@ public class Course implements Serializable {
 	@OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseEnglishEligibility> courseEnglishEligibilities = new ArrayList<>();
 
-	@OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<CourseIntake> courseIntakes = new ArrayList<>();
-
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
+	private CourseIntake courseIntake;
+	
 	@OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseLanguage> courseLanguages = new ArrayList<>();
 
@@ -263,6 +267,23 @@ public class Course implements Serializable {
 	
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
 	private CourseScholarship courseScholarship;
+	
+	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseProviderCode> courseProviderCodes = new ArrayList<>();
+	
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
+	private CourseVaccineRequirement courseVaccineRequirement;
+	
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
+	private CourseWorkExperienceRequirement courseWorkExperienceRequirement;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
+	private CourseWorkPlacementRequirement courseWorkPlacementRequirement;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
+	private CourseResearchProposalRequirement courseResearchProposalRequirement;
+
 	
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);

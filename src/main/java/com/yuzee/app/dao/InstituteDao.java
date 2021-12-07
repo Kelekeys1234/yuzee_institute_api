@@ -111,4 +111,6 @@ public interface InstituteDao {
 
 	@Cacheable(value = "cacheInstitute", key = "#instituteId", unless = "#result == null", condition="#instituteId!=null")
 	public Institute getInstitute(String instituteId);
+
+	public List<Institute> saveAll(List<Institute> institutesFromDb);
 }

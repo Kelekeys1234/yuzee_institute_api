@@ -4,8 +4,11 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,11 +34,15 @@ public class Subject implements java.io.Serializable {
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 
-	@Column(name = "subject_name", nullable = false)
-	private String subjectName;
+	@Column(name = "code", nullable = false)
+	private String code;
 
-	@Column(name = "education_system_id", nullable = false, length = 36)
-	private String educationSystemId;
+	@Column(name = "name", nullable = false)
+	private String name;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "education_system_id", nullable = false)
+	private EducationSystem educationSystem;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)

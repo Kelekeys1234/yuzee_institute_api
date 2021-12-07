@@ -8,19 +8,20 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
 import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
 import com.yuzee.common.lib.dto.institute.CourseEnglishEligibilityDto;
 import com.yuzee.common.lib.dto.institute.CourseFundingDto;
+import com.yuzee.common.lib.dto.institute.CourseIntakeDto;
 import com.yuzee.common.lib.dto.institute.CoursePaymentDto;
-import com.yuzee.common.lib.dto.institute.CoursePrerequisiteSubjectDto;
+import com.yuzee.common.lib.dto.institute.CoursePreRequisiteDto;
 import com.yuzee.common.lib.dto.institute.CourseSubjectDto;
 import com.yuzee.common.lib.dto.institute.FacultyDto;
 import com.yuzee.common.lib.dto.institute.LevelDto;
 import com.yuzee.common.lib.dto.institute.OffCampusCourseDto;
+import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 
 import lombok.Data;
@@ -52,10 +53,6 @@ public class CourseRequest {
 
 	@JsonProperty("description")
 	private String description;
-
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	@JsonProperty("intake")
-	private List<Date> intake;
 
 	@JsonProperty("language")
 	private List<String> language;
@@ -145,8 +142,8 @@ public class CourseRequest {
 	private ValidList<CourseDeliveryModesDto> courseDeliveryModes = new ValidList<>();
 
 	@Valid
-	@JsonProperty("course_prerequisite_subjects")
-	private ValidList<CoursePrerequisiteSubjectDto> prerequisiteSubjects = new ValidList<>();
+	@JsonProperty("course_prerequisites")
+	private List<CoursePreRequisiteDto> prerequisites;
 
 	@Valid
 	@JsonProperty("english_eligibility")
@@ -199,6 +196,9 @@ public class CourseRequest {
 
 	@JsonProperty("reviews_count")
 	private Long reviewsCount;
+	
+	@JsonProperty("audience")
+	private String audience;
 
 	@JsonProperty("fundings_count")
 	private int fundingsCount;
@@ -237,4 +237,11 @@ public class CourseRequest {
 	@JsonProperty("course_contact_persons")
 	@NotNull(message = "course_contact_persons must not be null")
 	private ValidList<CourseContactPersonDto> courseContactPersons = new ValidList<>();
+	
+	@Valid
+	@JsonProperty("provider_codes")
+	private ValidList<ProviderCodeDto> providerCodes = new ValidList<>();
+	
+	@JsonProperty("intake")
+	private CourseIntakeDto intake;
 }

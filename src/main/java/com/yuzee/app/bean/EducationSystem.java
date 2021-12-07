@@ -8,6 +8,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,6 +22,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.yuzee.common.lib.enumeration.GradeType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,6 +59,10 @@ public class EducationSystem implements Serializable {
 	@Column(name = "description")
 	private String description;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "grade_type", nullable = false)
+	private GradeType gradeType;
+	
 	@Column(name = "is_active")
 	private Boolean isActive;
 

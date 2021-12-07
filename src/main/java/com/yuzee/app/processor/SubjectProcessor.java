@@ -3,6 +3,8 @@ package com.yuzee.app.processor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
@@ -26,6 +29,7 @@ import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.bean.Subject;
 import com.yuzee.app.dao.EducationSystemDao;
 import com.yuzee.app.dao.SubjectDao;
+import com.yuzee.app.dto.uploader.SubjectCsvDto;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.institute.SubjectDto;
 import com.yuzee.common.lib.exception.InvokeException;
@@ -55,25 +59,51 @@ public class SubjectProcessor {
 			Map<String, String> columnMapping = new HashMap<>();
 			LOGGER.info("Start mapping columns to bean variables");
 
-			columnMapping.put("Subject Name", "subjectName");
+			columnMapping.put("Country", "countryName");
+			columnMapping.put("State", "stateName");
+			columnMapping.put("Education System", "educationSystemName");
+			columnMapping.put("Subject Code", "code");
+			columnMapping.put("Subject Name", "name");
 
-			HeaderColumnNameTranslateMappingStrategy<Subject> beanStrategy = new HeaderColumnNameTranslateMappingStrategy<>();
-			beanStrategy.setType(Subject.class);
+			HeaderColumnNameTranslateMappingStrategy<SubjectCsvDto> beanStrategy = new HeaderColumnNameTranslateMappingStrategy<>();
+			beanStrategy.setType(SubjectCsvDto.class);
 			beanStrategy.setColumnMapping(columnMapping);
-			CsvToBean<Subject> csvToBean = new CsvToBean<>();
+			CsvToBean<SubjectCsvDto> csvToBean = new CsvToBean<>();
 			LOGGER.info("Start parsing CSV to bean");
-			List<Subject> subjectList = csvToBean.parse(beanStrategy, reader);
+			List<SubjectCsvDto> subjectDtoList = csvToBean.parse(beanStrategy, reader);
 
 			LOGGER.info("Going to getAll educationSystem in DB");
 			List<EducationSystem> educationSystems = educationSystemDao.getAll();
 			if (educationSystems != null) {
 				LOGGER.info("Going to save subjects in DB");
-				subjectDao.saveSubjects(subjectList, educationSystems);
+				subjectDao.saveAll(dtoToModel(subjectDtoList));
 			}
 		} catch (IOException e) {
 			LOGGER.error("Exception in uploading subjects", e);
 			e.printStackTrace();
 		}
+	}
+
+	private List<Subject> dtoToModel(List<SubjectCsvDto> subjectDtoList) {
+		List<Subject> subjects = new ArrayList<>();
+		subjectDtoList.stream().forEach(dto->{
+			EducationSystem educationSystem = educationSystemDao.findByNameAndCountryNameAndStateName(dto.getEducationSystemName(), dto.getCountryName(), dto.getStateName());
+			if (!ObjectUtils.isEmpty(educationSystem)) {
+				Subject subject = subjectDao.findByNameAndEducationSystemId(dto.getName(), educationSystem.getId());
+				if (ObjectUtils.isEmpty(subject)) {
+					subject = new Subject();
+					subject.setCreatedBy("API");
+					subject.setCreatedOn(new Date());
+				}
+				subject.setUpdatedBy("API");
+				subject.setUpdatedOn(new Date());
+				subject.setCode(dto.getCode());
+				subject.setName(dto.getName());
+				subject.setEducationSystem(educationSystem);
+				subjects.add(subject);
+			}
+		});
+		return subjects;
 	}
 
 	public PaginationResponseDto<List<SubjectDto>> getAllSubjects(final Integer pageNumber, final Integer pageSize,

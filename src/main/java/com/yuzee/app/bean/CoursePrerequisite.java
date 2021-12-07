@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
@@ -28,7 +29,7 @@ import lombok.ToString;
 @ToString(exclude = "course")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-@Table(name = "course_prerequisite", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "prerequisite" }, 
+@Table(name = "course_prerequisite", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "description" }, 
 	   	 name = "UK_NA_CN_CN"), indexes = {@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
 public class CoursePrerequisite implements Serializable{
 	
@@ -41,8 +42,8 @@ public class CoursePrerequisite implements Serializable{
 	private String id;
 	
 	@EqualsAndHashCode.Include
-	@Column(name = "prerequisite", nullable = false)
-	private String prerequisite;
+	@Column(name = "description", nullable = false)
+	private String description;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "course_id", nullable = false)
@@ -62,14 +63,23 @@ public class CoursePrerequisite implements Serializable{
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
-	public CoursePrerequisite(String prerequisite, Course course, Date createdOn, Date updatedOn, String createdBy,
+	public CoursePrerequisite(String description, Course course, Date createdOn, Date updatedOn, String createdBy,
 			String updatedBy) {
 		super();
-		this.prerequisite = prerequisite;
+		this.description = description;
 		this.course = course;
 		this.createdOn = createdOn;
 		this.updatedOn = updatedOn;
 		this.createdBy = createdBy;
 		this.updatedBy = updatedBy;
+	}
+	
+	public void setAuditFields(String userId) {
+		this.setUpdatedBy(userId);
+		this.setUpdatedOn(new Date());
+		if (StringUtils.isEmpty(id)) {
+			this.setCreatedBy(userId);
+			this.setCreatedOn(new Date());
+		}
 	}
 }

@@ -99,6 +99,7 @@ public class InstituteAdditionalInfoProcessor {
 				} catch (NotFoundException | InvokeException e) {
 					log.error(e.getMessage());
 				}
+				instituteAdditionalInfoDto.setVerified(institute.isVerified());
 				return instituteAdditionalInfoDto;
 			} else {
 				return new InstituteAdditionalInfoDto();

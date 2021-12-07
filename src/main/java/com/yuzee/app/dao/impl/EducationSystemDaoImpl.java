@@ -15,9 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.bean.Subject;
 import com.yuzee.app.dao.EducationSystemDao;
+import com.yuzee.app.repository.EducationSystemRepository;
 import com.yuzee.common.lib.dto.institute.EducationSystemDto;
 import com.yuzee.common.lib.dto.institute.GradeDto;
 import com.yuzee.common.lib.dto.institute.SubjectDto;
+import com.yuzee.common.lib.enumeration.GradeType;
 
 @Component
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
@@ -26,12 +28,19 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	@Autowired
+	private EducationSystemRepository educationSystemRepository;
+
 	@Override
 	public void save(final EducationSystem hobbiesObj) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(hobbiesObj);
 	}
 
+	public void saveAll(List<EducationSystem> educationSystems) {
+		educationSystemRepository.saveAll(educationSystems);
+	}
+	
 	@Override
 	public void update(final EducationSystem hobbiesObj) {
 		Session session = sessionFactory.getCurrentSession();
@@ -97,7 +106,7 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select es.id,es.country_name,es.name,es.code,es.description,es.state_name from education_system es where es.country_name='"+countryName+"'and( es.state_name='"+stateName+"' OR es.state_name = 'All' )");
+				"select es.id,es.country_name,es.name,es.code,es.description,es.state_name,es.grade_type from education_system es where es.country_name='"+countryName+"'and( es.state_name='"+stateName+"' OR es.state_name = 'All' )");
 		List<Object[]> rows = query.list();
 		List<EducationSystemDto> list = new ArrayList<>();
 		List<SubjectDto> subjects = new ArrayList<>();
@@ -110,6 +119,7 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 			obj.setCode(row[3].toString());
 			obj.setDescription(row[4].toString());
 			obj.setStateName(row[5].toString());
+			obj.setGradeType(GradeType.valueOf(row[6].toString()));
 			
 			Query subjectQuery = session.createSQLQuery("select id,subject_name from subject where education_system_id ='"+row[0].toString()+"'");
 			List<Object[]> subjectRows = subjectQuery.list();
@@ -139,6 +149,11 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 			list.add(obj);
 		}
 		return list;
+	}
+
+	@Override
+	public EducationSystem findByNameAndCountryNameAndStateName(String name, String countryName, String stateName) {
+		return educationSystemRepository.findByNameAndCountryNameAndStateName(name, countryName, stateName);
 	}
 
 }

@@ -459,4 +459,17 @@ public class InstituteController implements InstituteInterface {
 	private void validateInstituteRequest(InstituteRequestDto instituteRequest) {
 		ValidationUtil.validateInstituteType(instituteRequest.getInstituteType());
 	}
+
+	@Override
+	public ResponseEntity<Object> verifyInstitutes(String userId, List<String> verifiedInstituteIds, boolean verified) {
+		log.info("Class InstituteController method verifyInstitutes userId : {}, verifiedInstitutes : {}, verified : {}",
+				userId, verifiedInstituteIds, verified);
+		
+		instituteProcessor.verifyInstitutes(userId, verifiedInstituteIds, verified);
+		return new GenericResponseHandlers.Builder()
+				.setStatus(HttpStatus.OK)
+				.setMessage("Institutes verified successfully.")
+				.create();
+				
+	}
 }

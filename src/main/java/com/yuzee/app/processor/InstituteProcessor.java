@@ -98,6 +98,7 @@ import com.yuzee.common.lib.handler.ConnectionHandler;
 import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.handler.ReviewHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.handler.UserHandler;
 import com.yuzee.common.lib.util.DateUtil;
 import com.yuzee.common.lib.util.PaginationUtil;
 
@@ -117,7 +118,7 @@ public class InstituteProcessor {
 	private Integer maxRadius;
 	
 	@Autowired
-	private InstituteDao dao;
+	private InstituteDao instituteDao;
 
 	@Autowired
 	private InstituteWorldRankingHistoryDao institudeWorldRankingHistoryDAO;
@@ -180,16 +181,18 @@ public class InstituteProcessor {
 
 	@Autowired
 	private FaqDao faqDao;
-
+	
+	@Autowired
+	private UserHandler userHandler;
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public Institute get(final String id) {
-		return dao.get(id);
+		return instituteDao.get(id);
 	}
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<String> getRandomInstituteIdByCountry(final List<String> countryIdList/* , Long startIndex, Long pageSize */) {
-		return dao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
+		return instituteDao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
 	}
 
 	
@@ -197,14 +200,14 @@ public class InstituteProcessor {
 	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto filterObj, final String sortByField, final String sortByType,
 			final String searchKeyword, final Integer startIndex, final String cityId, final String instituteTypeId, final Boolean isActive,
 			final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
-		return dao.getAllInstitutesByFilter(filterObj, sortByField, sortByType, searchKeyword, startIndex, cityId, instituteTypeId, isActive, updatedOn,
+		return instituteDao.getAllInstitutesByFilter(filterObj, sortByField, sortByType, searchKeyword, startIndex, cityId, instituteTypeId, isActive, updatedOn,
 				fromWorldRanking, toWorldRanking);
 	}
 
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public InstituteResponseDto getInstituteByID(final String instituteId) {
-		return dao.getInstituteById(instituteId);
+		return instituteDao.getInstituteById(instituteId);
 	}
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
@@ -315,7 +318,7 @@ public class InstituteProcessor {
 		try {
 			List<InstituteSyncDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("fetching institute from DB having instituteId: {}", instituteId);
-			Institute oldInstitute = dao.get(instituteId);
+			Institute oldInstitute = instituteDao.get(instituteId);
 			Institute newInstitute = new Institute();
 			log.info("Copying bean class to DTO class");
 			BeanUtils.copyProperties(instituteRequest, newInstitute);
@@ -351,7 +354,7 @@ public class InstituteProcessor {
 		Institute institute = null;
 		if (id != null) {
 			log.info("if instituteId in not null, then getInstitute from DB for id = "+id);
-			institute = dao.get(id);
+			institute = instituteDao.get(id);
 		} else {
 			log.info("instituteId is null, creating object and setting values in it");
 			institute = new Institute();
@@ -368,7 +371,7 @@ public class InstituteProcessor {
 			throw new ValidationException("InstituteName is required");
 		}
 		
-		Institute insituteWithSameId = dao.findByReadableId(instituteRequest.getReadableId());
+		Institute insituteWithSameId = instituteDao.findByReadableId(instituteRequest.getReadableId());
 		if (ObjectUtils.isEmpty(insituteWithSameId)
 				|| (ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId()))
 				|| (!ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId())
@@ -433,7 +436,7 @@ public class InstituteProcessor {
 		saveUpdateInstituteFundings("API", institute, instituteRequest.getInstituteFundings());
 		saveUpdateInstituteProviderCodes("API", institute, instituteRequest.getInstituteProviderCodes());
 		try {
-			institute = dao.addUpdateInstitute(institute);
+			institute = instituteDao.addUpdateInstitute(institute);
 		} catch (DataIntegrityViolationException exception) {
 			log.error("Institute already exists having \nname: {},\ncampus_name: {},\ncity_Name: {},\ncountry_name: {}",
 					instituteRequest.getName(), instituteRequest.getCampusName(), instituteRequest.getCityName(),
@@ -469,14 +472,14 @@ public class InstituteProcessor {
 	private void saveIntakesInstituteDetails(final Institute institute, final List<String> intakes) {
 		log.debug("Inside saveIntakesInstituteDetails() method");
 		log.info("deleting existing instituteIntakes from DB for institute having instituteId = "+institute.getId());
-		dao.deleteInstituteIntakeById(institute.getId());
+		instituteDao.deleteInstituteIntakeById(institute.getId());
 		for (String intakeId : intakes) {
 			log.info("Start iterating new intakes which are coming in request");
 			InstituteIntake instituteIntake = new InstituteIntake();
 			instituteIntake.setInstitute(institute);
 			instituteIntake.setIntake(intakeId);
 			log.info("Calling DAO layer to save new intakes in DB for institute having instituteId ="+institute.getId());
-			dao.saveInstituteIntake(instituteIntake);
+			instituteDao.saveInstituteIntake(instituteIntake);
 		}
 	}
 
@@ -582,7 +585,7 @@ public class InstituteProcessor {
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private InstituteCategoryType getInstituteCategoryType(final String instituteCategoryTypeId) {
-		return dao.getInstituteCategoryType(instituteCategoryTypeId);
+		return instituteDao.getInstituteCategoryType(instituteCategoryTypeId);
 	}
 
 	
@@ -592,7 +595,7 @@ public class InstituteProcessor {
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		try {
 			log.info("Fetching total count of institutes from DB");
-			int totalCount = dao.findTotalCount();
+			int totalCount = instituteDao.findTotalCount();
 			Long startIndex;
 			log.info("Calculating startIndex based of pageNumber nad pageSize");
 			if (pageNumber > 1) {
@@ -603,7 +606,7 @@ public class InstituteProcessor {
 			log.info("Calculating pagination based on startIndex, pageSize and totalCount");
 			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 			log.info("Fetching all institutes from DB based on pagination");
-			List<InstituteGetRequestDto> institutes = dao.getAll(startIndex.intValue(), pageSize);
+			List<InstituteGetRequestDto> institutes = instituteDao.getAll(startIndex.intValue(), pageSize);
 			List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
 			if(!CollectionUtils.isEmpty(institutes)) {
 				log.info("Institues are not null from DB so start iterating data");
@@ -613,6 +616,7 @@ public class InstituteProcessor {
 					log.info("copying bean class to DTO and fetching institute videos based on countryName and instituteName");
 					BeanUtils.copyProperties(institute, instituteGetRequestDto);
 					instituteGetRequestDto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
+					instituteGetRequestDto.setVerified(institute.isVerified());		
 					instituteGetRequestDtos.add(instituteGetRequestDto);
 				});
 			}
@@ -643,6 +647,7 @@ public class InstituteProcessor {
 		dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
 		log.info("Get total course count from DB for instituteId = "+institute.getId());
 		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(institute.getId()));
+		dto.setVerified(institute.isVerified());		
 		return dto;
 	}
 
@@ -665,9 +670,9 @@ public class InstituteProcessor {
 		log.info("Fetching institute from DB for instituteId = {}", id);
 		Institute institute = null;
 		if (isReadableId) {
-			institute = dao.findByReadableId(id);
+			institute = instituteDao.findByReadableId(id);
 		}else {
-			institute = dao.get(id);
+			institute = instituteDao.get(id);
 		}
 		if (institute == null) {
 			log.error("No institute found in DB for instituteId = {}", id);
@@ -728,12 +733,13 @@ public class InstituteProcessor {
 		}
 		instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, instituteRequestDto.getId()));
 		instituteRequestDto.setInstituteProviderCodes(new ValidList<>(institute.getInstituteProviderCodes().stream().map(e->modelMapper.map(e, ProviderCodeDto.class)).toList()));
+		instituteRequestDto.setVerified(institute.isVerified());	
 		return instituteRequestDto;
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private List<String> getIntakes(@Valid final String id) {
-		return dao.getIntakesById(id); 
+		return instituteDao.getIntakesById(id); 
 	}
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
@@ -789,7 +795,7 @@ public class InstituteProcessor {
 				
 			}
 			log.info("Calling DAO layer to search institute based on searchText");
-			List<Institute> institutes = dao.searchInstitute(sqlQuery);
+			List<Institute> institutes = instituteDao.searchInstitute(sqlQuery);
 			if(!CollectionUtils.isEmpty(institutes)) {
 				log.info("institutes coming in response, hence start iterating institutes ande getting institutes details");
 				institutes.stream().forEach(institute -> {
@@ -799,6 +805,7 @@ public class InstituteProcessor {
 		} catch (Exception exception) {
 			log.error("Exception while searching Institutes having exception ="+exception);
 		}
+		
 		return instituteGetRequestDtos;
 	}
 
@@ -810,11 +817,11 @@ public class InstituteProcessor {
 		try {
 			List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
 			log.info("fetching total count of institutes from DB");
-			int totalCount = dao.findTotalCountFilterInstitute(instituteFilterDto);
+			int totalCount = instituteDao.findTotalCountFilterInstitute(instituteFilterDto);
 			Long startIndex = (Long.valueOf(instituteFilterDto.getPageNumber() - 1)) * instituteFilterDto.getMaxSizePerPage();
 			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, instituteFilterDto.getMaxSizePerPage(), totalCount);
 			log.info("fetching insitutes from DB based on passed filters and startIndex and pageNumber");
-			List<Institute> institutes = dao.instituteFilter(startIndex.intValue(), instituteFilterDto.getMaxSizePerPage(), instituteFilterDto);
+			List<Institute> institutes = instituteDao.instituteFilter(startIndex.intValue(), instituteFilterDto.getMaxSizePerPage(), instituteFilterDto);
 			if(!CollectionUtils.isEmpty(institutes)) {
 				log.info("if institutes are not coming nul from DB thewn start iterating to find institute details");
 				institutes.stream().forEach(institute -> {
@@ -844,13 +851,13 @@ public class InstituteProcessor {
 		PaginationResponseDto paginationInstituteResponseDto = new PaginationResponseDto();
 		try {
 			log.info("fetching total count from DB for searchKey = "+ searchKey);
-			int totalCount = dao.findTotalCountForInstituteAutosearch(searchKey);
+			int totalCount = instituteDao.findTotalCountForInstituteAutosearch(searchKey);
 			Long startIndex = (Long.valueOf(pageNumber - 1)) * pageSize;
 			log.info("Calculating pagination havinbg startIndex "+ startIndex + " and totalCount "+ totalCount);
 			PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 			log.info("Fetching institutes from DB based on pageSize and having searchKey = "+ searchKey);
 			List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
-			List<InstituteGetRequestDto> institutes = dao.autoSearch(startIndex.intValue(), pageSize, searchKey);
+			List<InstituteGetRequestDto> institutes = instituteDao.autoSearch(startIndex.intValue(), pageSize, searchKey);
 			institutes.stream().forEach(institute -> {
 				log.info("Start iterating institutes and set values in DTO for instituteId = " + institute.getId());
 				InstituteGetRequestDto instituteGetRequestDto = new InstituteGetRequestDto();
@@ -875,21 +882,21 @@ public class InstituteProcessor {
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteCategoryType> getAllCategories() {
-		return dao.getAllCategories();
+		return instituteDao.getAllCategories();
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public void deleteInstitute(final String id) throws ValidationException {
 		log.debug("Inside deleteInstitute() method");
 		log.info("Fetching institute from DB for id = "+id);
-		Institute institute = dao.get(id);
+		Institute institute = instituteDao.get(id);
 		if (institute != null) {
 			log.info("Institute found making institute inActive");
 			institute.setIsActive(false);
 			institute.setIsDeleted(true);
 			institute.setDeletedOn(DateUtil.getUTCdatetimeAsDate());
 			log.info("Calling DAO layer to update institute status from active to inactive");
-			dao.addUpdateInstitute(institute);
+			instituteDao.addUpdateInstitute(institute);
 		} else {
 			log.error("Institute not found for id" + id);
 			throw new ValidationException("Institute not found for id" + id);
@@ -899,19 +906,19 @@ public class InstituteProcessor {
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<Institute> ratingWiseInstituteListByCountry(final String countryName) {
-		return dao.ratingWiseInstituteListByCountry(countryName);
+		return instituteDao.ratingWiseInstituteListByCountry(countryName);
 	}
 
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<String> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
-		return dao.getInstituteIdsBasedOnGlobalRanking(startIndex, pageSize);
+		return instituteDao.getInstituteIdsBasedOnGlobalRanking(startIndex, pageSize);
 	}
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public int getCountOfInstitute(final CourseSearchDto courseSearchDto, final String searchKeyword, final String cityId, final String instituteTypeId,
 			final Boolean isActive, final Date updatedOn, final Integer fromWorldRanking, final Integer toWorldRanking) {
-		return dao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
+		return instituteDao.getCountOfInstitute(courseSearchDto, searchKeyword, cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
@@ -962,7 +969,7 @@ public class InstituteProcessor {
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public Map<String, Integer> getDomesticRanking(final List<String> courseIdList) {
-		Map<String, Integer> courseDomesticRanking = dao.getDomesticRanking(courseIdList);
+		Map<String, Integer> courseDomesticRanking = instituteDao.getDomesticRanking(courseIdList);
 		return courseDomesticRanking;
 	}
 
@@ -977,8 +984,8 @@ public class InstituteProcessor {
 		List<InstituteResponseDto> nearestInstituteList = new ArrayList<>();
 		log.info("start getting nearest institutes from DB for latitude " + courseSearchDto.getLatitude()
 					+ " and longitude " + courseSearchDto.getLongitude() + " and initial radius is " + initialRadius);
-		List<InstituteResponseDto> nearestInstituteDTOs = dao.getNearestInstituteListForAdvanceSearch(courseSearchDto);
-		totalCount = dao.getTotalCountOfNearestInstitutes(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
+		List<InstituteResponseDto> nearestInstituteDTOs = instituteDao.getNearestInstituteListForAdvanceSearch(courseSearchDto);
+		totalCount = instituteDao.getTotalCountOfNearestInstitutes(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
 		while (runMethodAgain) {
 			if (initialRadius != maxRadius && CollectionUtils.isEmpty(nearestInstituteDTOs)) {
 				log.info("institute is null for initial old radius "+initialRadius + "hence increase initial radius by "+increaseRadius);
@@ -986,8 +993,8 @@ public class InstituteProcessor {
 				initialRadius = initialRadius + increaseRadius;
 				log.info("institute is null for initial old radius so fetching institutes for new radius "+initialRadius);
 				courseSearchDto.setInitialRadius(initialRadius);
-				nearestInstituteDTOs = dao.getNearestInstituteListForAdvanceSearch(courseSearchDto);
-				totalCount = dao.getTotalCountOfNearestInstitutes(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
+				nearestInstituteDTOs = instituteDao.getNearestInstituteListForAdvanceSearch(courseSearchDto);
+				totalCount = instituteDao.getTotalCountOfNearestInstitutes(courseSearchDto.getLatitude(),courseSearchDto.getLongitude(), initialRadius);
 			} else {
 				log.info("institutes found for new radius "+initialRadius + " hence start iterating data");
 				runMethodAgain = false;
@@ -1025,7 +1032,7 @@ public class InstituteProcessor {
 		log.debug("Inside getDistinctInstituteList() method");
 		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
 		log.info("Calling DAO layer to getDistinct institutes from DB based on pagination");
-		List<InstituteResponseDto> instituteResponseDtos = dao.getInstitutesByInstituteName(startIndex, pageSize, instituteName);
+		List<InstituteResponseDto> instituteResponseDtos = instituteDao.getInstitutesByInstituteName(startIndex, pageSize, instituteName);
 		if(!CollectionUtils.isEmpty(instituteResponseDtos)) {
 			
 			List<String> instituteIds = instituteResponseDtos.stream().map(InstituteResponseDto::getId).collect(Collectors.toList());
@@ -1073,7 +1080,7 @@ public class InstituteProcessor {
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public int getDistinctInstituteCount(String instituteName) {
-		return dao.getDistinctInstituteCountByName(instituteName);
+		return instituteDao.getDistinctInstituteCountByName(instituteName);
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
@@ -1089,10 +1096,10 @@ public class InstituteProcessor {
 		        * Math.cos(latLongDtos.get(0).getLongitude() - latLongDtos.get(1).getLongitude())));
 		log.info("fetching nearest institutes having latitude "+ centerLatAndLong.getLatitude() +"and longitude "+ centerLatAndLong.getLongitude() +
 					" and radius is "+ radius);
-		List<InstituteResponseDto> nearestInstituteDTOs = dao.getNearestInstituteList(pageNumber, pageSize, centerLatAndLong.getLatitude(),
+		List<InstituteResponseDto> nearestInstituteDTOs = instituteDao.getNearestInstituteList(pageNumber, pageSize, centerLatAndLong.getLatitude(),
 				centerLatAndLong.getLongitude(), radius);
 		log.info("Fetching total count of institute based on latitude and longitude from DB");
-		Integer totalCount = dao.getTotalCountOfNearestInstitutes(centerLatAndLong.getLatitude(),centerLatAndLong.getLongitude(), radius);
+		Integer totalCount = instituteDao.getTotalCountOfNearestInstitutes(centerLatAndLong.getLatitude(),centerLatAndLong.getLongitude(), radius);
 		if(!CollectionUtils.isEmpty(nearestInstituteDTOs)) {
 			log.info("institutes found, start iterating data into list");
 			nearestInstituteDTOs.stream().forEach(nearestInstituteDTO -> {
@@ -1131,7 +1138,7 @@ public class InstituteProcessor {
 		courseSearchDto.setMaxSizePerPage(pageSize);
 		log.info("fetching institutes from DB for countryName "+ countryName);
 		List<InstituteResponseDto> nearestInstituteDTOs = new ArrayList<>();
-		List<InstituteResponseDto> institutesFromDB = dao.getAllInstitutesByFilter(courseSearchDto, "countryName", 
+		List<InstituteResponseDto> institutesFromDB = instituteDao.getAllInstitutesByFilter(courseSearchDto, "countryName", 
 					null, countryName, pageNumber, null, null, null, null, null, null);
 		Integer totalCount = instituteRepository.getTotalCountOfInstituteByCountryName(countryName);
 		if(!CollectionUtils.isEmpty(institutesFromDB)) {
@@ -1160,9 +1167,9 @@ public class InstituteProcessor {
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteCampusDto> getInstituteCampuses(String userId, String instituteId) throws NotFoundException {
 		log.debug("inside processor.getInstitutCampuses method.");
-		Institute institute = dao.get(instituteId);
+		Institute institute = instituteDao.get(instituteId);
 		if (!ObjectUtils.isEmpty(institute)) {
-			List<Institute> institutes = dao.getInstituteCampuses(instituteId, institute.getName());
+			List<Institute> institutes = instituteDao.getInstituteCampuses(instituteId, institute.getName());
 
 			List<InstituteCampusDto> instituteCampuses = institutes.stream().map(e -> {
 				InstituteCampusDto campusDto = modelMapper.map(e, InstituteCampusDto.class);
@@ -1190,8 +1197,8 @@ public class InstituteProcessor {
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {
 		log.debug("inside processor.getInstituteFaculties method.");
-		if (!ObjectUtils.isEmpty(dao.get(instituteId))) {
-			return dao.getInstituteFaculties(instituteId);
+		if (!ObjectUtils.isEmpty(instituteDao.get(instituteId))) {
+			return instituteDao.getInstituteFaculties(instituteId);
 		}else {
 			log.error("Institute not found against id: {}", instituteId);
 			throw new NotFoundException("Institute not found against id: " + instituteId);
@@ -1203,7 +1210,7 @@ public class InstituteProcessor {
 			throws NotFoundException {
 		CourseScholarshipAndFacultyCountDto dto = new CourseScholarshipAndFacultyCountDto();
 		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(instituteId));
-		dto.setFacultyCount(dao.getInstituteFaculties(instituteId).size());
+		dto.setFacultyCount(instituteDao.getInstituteFaculties(instituteId).size());
 		dto.setScholarshipCount(scholarshipDao.getCountByInstituteId(instituteId));
 		return dto;
 	}
@@ -1212,7 +1219,7 @@ public class InstituteProcessor {
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteResponseDto> getInstitutesByIdList(List<String> instituteIds) throws Exception {
 		log.info("inside InstituteProcessor.getInstitutesByIdList");
-		List<InstituteResponseDto> instituteResponseDtos = dao.findByIds(instituteIds);
+		List<InstituteResponseDto> instituteResponseDtos = instituteDao.findByIds(instituteIds);
 		if (!CollectionUtils.isEmpty(instituteResponseDtos)) {
 
 			instituteIds = instituteResponseDtos.stream().map(InstituteResponseDto::getId).collect(Collectors.toList());
@@ -1238,7 +1245,7 @@ public class InstituteProcessor {
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<StorageDto> getInstituteGallery(String instituteId) throws InternalServerException, NotFoundException {
-		Institute institute = dao.get(instituteId);
+		Institute institute = instituteDao.get(instituteId);
 		if (!ObjectUtils.isEmpty(institute)) {
 			try {
 				List<StorageDto> storages = storageHandler.getStorages(Arrays.asList(instituteId),
@@ -1267,7 +1274,7 @@ public class InstituteProcessor {
 	public List<Institute> validateAndGetInstituteByIds(List<String> instituteIds) throws NotFoundException {
 		log.info("inside validateAndGetInstituteByIds");
 
-		List<Institute> institutes = dao.findAllById(instituteIds);
+		List<Institute> institutes = instituteDao.findAllById(instituteIds);
 		if (institutes.size() != instituteIds.size()) {
 			log.error("one or more institute_ids not found");
 			throw new NotFoundException("one or more institute_ids not found");
@@ -1280,7 +1287,7 @@ public class InstituteProcessor {
 	public void changeInstituteStatus(String userId, String instituteId, boolean status) {
 		log.info("Inside InstituteProcessor.changeInstituteStatus method");
 		
-		Institute existingInstitute = dao.get(instituteId);
+		Institute existingInstitute = instituteDao.get(instituteId);
 		if(ObjectUtils.isEmpty(existingInstitute)) {
 			log.error("Institute with id {} not exists",instituteId);
 			throw new NotFoundException(String.format("Institute with id %s not exists",instituteId));
@@ -1288,7 +1295,7 @@ public class InstituteProcessor {
 		
 		log.info("Update institute {} status {}",instituteId,status);
 		existingInstitute.setIsActive(status);
-		dao.addUpdateInstitute(existingInstitute);
+		instituteDao.addUpdateInstitute(existingInstitute);
 		
 		log.info("Update institute to elastic search");
 		
@@ -1327,13 +1334,13 @@ public class InstituteProcessor {
 
 	@Transactional
 	public List<InstituteVerficationDto> getMultipleInstituteVerificationStatus(List<String> instituteIds) {
-		List<Institute> institutes = dao.findAllById(instituteIds);
+		List<Institute> institutes = instituteDao.findAllById(instituteIds);
 		if (CollectionUtils.isEmpty(institutes) || institutes.size() != instituteIds.size()) {
 			log.error("one or more institute ids are invalid");
 			throw new ValidationException("one or more institute ids are invalid");
 		}
-		Map<String, ReviewStarDto> reviewsMap = null;
-
+		Map<String, ReviewStarDto> reviewsMap = reviewHandler.getAverageReview(EntityTypeEnum.INSTITUTE.name(),
+				instituteIds);
 		Map<String, Long> instituteServiceCountMap = instituteServiceDao.countByInstituteIds(instituteIds).stream()
 				.collect(Collectors.toMap(e -> e.getId(), e -> e.getCount()));
 
@@ -1381,14 +1388,48 @@ public class InstituteProcessor {
 					verificationDto.setGallery(storages.stream().filter(e->"image".equals(e.getMimeType())).count()>5);
 				}
 			}
+			try {
+				Map<String, List<EnableApplicationDto>> enableApplicationsMap = applicationHandler
+						.getEnableApplications(EntityTypeEnum.INSTITUTE.name(), instituteIds);
 
-			List<EnableApplicationDto> enableApplicationDtos = enableApplicationsMap.get(instituteId);
-			if (!CollectionUtils.isEmpty(enableApplicationDtos)) {
-				verificationDto.setGallery(enableApplicationDtos.stream().anyMatch(e->e.isEnable()));
+				List<EnableApplicationDto> enableApplicationDtos = enableApplicationsMap.get(instituteId);
+				if (!CollectionUtils.isEmpty(enableApplicationDtos)) {
+					verificationDto.setApplicationProcedure(enableApplicationDtos.stream().anyMatch(e -> e.isEnable()));
+				}
+			} catch (Exception ex) {
+				log.debug("appplication service is down");
 			}
 
 			return verificationDto;
 		}).toList();
 		return verificationDtos;
+	}
+
+	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
+	public void verifyInstitutes(String userId, List<String> verifiedInstituteIds, boolean verified) {
+		log.info("Class InstituteProcessor method verifyInstitutes userId : {}, verifiedInstituteIds : {}, verified : {}",
+				userId, verifiedInstituteIds, verified);
+		
+		if(ObjectUtils.isEmpty(userHandler.getUserById(userId))){
+			log.error("User with user_id : {} not found", userId);
+			throw new RuntimeNotFoundException("Invalid login user_id : " + userId);
+		}
+
+		List<InstituteSyncDTO> institutesSync = new ArrayList<InstituteSyncDTO>();
+		List<Institute> institutesFromDb = instituteDao.findAllById(verifiedInstituteIds);
+
+		if(!CollectionUtils.isEmpty(institutesFromDb)) {
+			institutesFromDb.stream().forEach(institute -> {
+				
+				institute.setUpdatedBy(userId);
+				institute.setUpdatedOn(new Date());
+				institute.setVerified(verified);
+				
+				institutesSync.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
+			});
+			
+			instituteDao.saveAll(institutesFromDb);
+			publishSystemEventHandler.syncInstitutes(institutesSync);
+		}
 	}
 }

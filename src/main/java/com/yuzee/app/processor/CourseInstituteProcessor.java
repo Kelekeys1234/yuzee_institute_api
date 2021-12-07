@@ -38,7 +38,6 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeValidationException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.PublishSystemEventHandler;
-import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -122,10 +121,10 @@ public class CourseInstituteProcessor {
 				d.setId(null);
 				d.setCourse(finalCopiedCourse);
 			});
-			copiedCourse.getCourseIntakes().stream().forEach(d -> {
-				d.setId(null);
-				d.setCourse(finalCopiedCourse);
-			});
+			if (!ObjectUtils.isEmpty(copiedCourse.getCourseIntake())) {
+				copiedCourse.getCourseIntake().setId(null);
+				copiedCourse.getCourseIntake().setCourse(copiedCourse);
+			}
 			copiedCourse.getCourseLanguages().stream().forEach(d -> {
 				d.setId(null);
 				d.setCourse(finalCopiedCourse);

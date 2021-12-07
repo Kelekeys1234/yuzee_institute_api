@@ -48,9 +48,7 @@ public class LevelDaoImpl implements LevelDao {
 
     @Override
     public List<Level> getAll() {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Level.class);
-        return crit.list();
+        return levelRepository.findAllByOrderBySequenceNoAsc();
     }
 
     @Override

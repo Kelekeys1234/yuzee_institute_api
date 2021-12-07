@@ -47,7 +47,7 @@ public class LevelProcessor {
 	
 	@Transactional
     public void addUpdateLevel(LevelDto levelDto) {
-    	Level level = new Level(null, levelDto.getName(), levelDto.getCode(), null, true, new Date(), null, null, "API", null, null);
+    	Level level = new Level(null, levelDto.getName(), levelDto.getCode(), null,levelDto.getSequenceNo(), true, new Date(), null, null, "API", null, null);
     	levelDao.addUpdateLevel(level);
     }
 
@@ -65,7 +65,7 @@ public class LevelProcessor {
     	if(!CollectionUtils.isEmpty(levelsFromDB)) {
     		log.info("Levels fetched from DB, start iterating data to make response");
     		levelsFromDB.stream().forEach(level -> {
-    			LevelDto levelDto = new LevelDto(level.getId(), level.getName(), level.getCode(), level.getDescription());
+    			LevelDto levelDto = new LevelDto(level.getId(), level.getName(), level.getCode(), level.getDescription(), level.getSequenceNo());
     			levelDtos.add(levelDto);
     		});
     	}
@@ -125,5 +125,10 @@ public class LevelProcessor {
 		jobParametersBuilder.addString("csv-file", f.getAbsolutePath());
 		jobParametersBuilder.addString("execution-id", UUID.randomUUID().toString());
 		jobLauncher.run(job, jobParametersBuilder.toJobParameters());
+	}
+
+	public LevelDto getLevelById(String levelId) {
+		Level level = getLevel(levelId);
+		return new LevelDto(level.getId(), level.getName(), level.getCode(), level.getDescription(), level.getSequenceNo());
 	}
 }

@@ -46,4 +46,10 @@ public class LevelController implements LevelInterface {
     public ResponseEntity<?> getCountryLevel(String countryId) throws Exception {
         return ResponseEntity.accepted().body(levelProcessor.getCountryLevel(countryId));
     }
+
+	@Override
+	public ResponseEntity<?> getById(String levelId) throws Exception {
+        return new GenericResponseHandlers.Builder().setData(levelProcessor.getLevelById(levelId))
+				.setMessage("Level fetched successfully").setStatus(HttpStatus.OK).create();
+	}
 }

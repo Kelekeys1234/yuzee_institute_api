@@ -1,9 +1,15 @@
 package com.yuzee.app.processor;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.bean.GradeDetails;
 import com.yuzee.app.bean.Level;
@@ -24,6 +34,7 @@ import com.yuzee.common.lib.dto.institute.EducationSystemDto;
 import com.yuzee.common.lib.dto.institute.GradeDto;
 import com.yuzee.common.lib.dto.institute.LevelDto;
 import com.yuzee.common.lib.dto.institute.SubjectDto;
+import com.yuzee.common.lib.enumeration.GradeType;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 
@@ -61,14 +72,14 @@ public class EducationSystemProcessor {
 				if(!CollectionUtils.isEmpty(subjects)) {
 					log.info("Subjects fetched from DB start iterating data");
 					subjects.stream().forEach(subject -> {
-						SubjectDto subjectDto = new SubjectDto(subject.getId(), subject.getSubjectName());
+						SubjectDto subjectDto = new SubjectDto(subject.getId(), subject.getName());
 						subjectDtos.add(subjectDto);
 					});
 				}
 				log.info("Adding values in esducation system DTO");
 				EducationSystemDto educationSystemDto = new EducationSystemDto(educationSystem.getId(),
 						educationSystem.getCountryName(), educationSystem.getName(), educationSystem.getCode(),
-						educationSystem.getDescription(), educationSystem.getStateName(), subjectDtos, null, null,null,
+						educationSystem.getDescription(), educationSystem.getStateName(), subjectDtos, null, null, null, null,null,
 						modelMapper.map(educationSystem.getLevel(), LevelDto.class));
 				educationSystemDtos.add(educationSystemDto);
 
@@ -162,7 +173,7 @@ public class EducationSystemProcessor {
 		 if(!CollectionUtils.isEmpty(grades)) {
 			 log.info("Grade details fetched from DB, start iterating data to make final response");
 			 grades.stream().forEach(grade -> {
-				 GradeDto gradeDto = new GradeDto(grade.getId(), grade.getCountryName(), grade.getEducationSystemId(), null ,
+				 GradeDto gradeDto = new GradeDto(grade.getId(), grade.getCountryName(), systemId, null ,
 						 grade.getGrade(), grade.getGpaGrade());
 				 gradeDtos.add(gradeDto);
 			 });
@@ -172,5 +183,62 @@ public class EducationSystemProcessor {
 	
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName) {
 		return educationSystemDAO.getEducationSystemByCountryNameAndStateName(countryName, stateName);
+	}
+	
+	public void importEducationSystem(final MultipartFile multipartFile) {
+		try {
+			InputStream inputStream = multipartFile.getInputStream();
+			log.info("Start reading data from inputStream using CSV reader");
+			CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
+			Map<String, String> columnMapping = new HashMap<>();
+			log.info("Start mapping columns to bean variables");
+			columnMapping.put("country", "countryName");
+			columnMapping.put("education_system", "name");
+			columnMapping.put("state", "stateName");
+			columnMapping.put("Grades_Display", "gradeTypeCode");
+			columnMapping.put("Student_TYPE", "levelCode");
+			
+			HeaderColumnNameTranslateMappingStrategy<EducationSystemDto> beanStrategy = new HeaderColumnNameTranslateMappingStrategy<>();
+			beanStrategy.setType(EducationSystemDto.class);
+			beanStrategy.setColumnMapping(columnMapping);
+			CsvToBean<EducationSystemDto> csvToBean = new CsvToBean<>();
+			log.info("Start parsing CSV to bean");
+			List<EducationSystemDto> educationSystemList = csvToBean.parse(beanStrategy, reader);
+			if (educationSystemList != null && educationSystemList.size() > 0) {
+				log.info("if educationSystemList is not null or empty then start adding educationSystem in DB");
+				saveEducationSystems(educationSystemList);
+			}
+			log.info("Closing CSV reader");
+			reader.close();
+			log.info("Closing input stream");
+			inputStream.close();
+		} catch (IOException e) {
+			log.error("Exception in importEducationSystem {}",e);
+			throw new ValidationException("Exception in importEducationSystem {}" + e.getMessage());
+		}
+	}
+	
+	private void saveEducationSystems(List<EducationSystemDto> educationSystemDtos) {
+		List<EducationSystem> educationSystems = educationSystemDtos.stream().map(dto -> {
+			Level level = levelDao.getLevelByLevelCode(dto.getLevelCode());
+			EducationSystem system = educationSystemDAO.findByNameAndCountryNameAndStateName(dto.getName(), dto.getCountryName(), dto.getStateName());
+			if (ObjectUtils.isEmpty(system)) {
+				system = new EducationSystem();
+				system.setCreatedBy("API");
+				system.setCreatedOn(new Date());
+			}
+			system.setCode(dto.getName()); // its intentional to store code and description similiar to name
+			system.setGradeType(GradeType.valueOf(dto.getGradeTypeCode()));
+			system.setStateName(dto.getStateName());
+			system.setCountryName(dto.getCountryName());
+			system.setUpdatedBy("API");
+			system.setUpdatedOn(new Date());
+			system.setDescription(dto.getName());
+			system.setIsActive(true);
+			system.setName(dto.getName());
+			system.setLevel(level);
+			return system;
+		}).collect(Collectors.toList());
+		educationSystemDAO.saveAll(educationSystems);
 	}
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.ws.rs.HeaderParam;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -154,4 +155,9 @@ public interface InstituteInterface {
 	@GetMapping("/institute/verification-status")
 	public ResponseEntity<?> getMultipleInstituteVerificationStatus(
 			@RequestParam(name = "institute_ids", required = true) List<String> instituteIds);
+	
+	@PutMapping(path = "/admin/institute/verify_institutes/{verified}")
+	public ResponseEntity<Object> verifyInstitutes(@RequestHeader("userId") String userId, 
+			@RequestParam("verified_institute_ids") List<String> verifiedInstituteIds, @PathVariable("verified") final boolean verified);
+
 }

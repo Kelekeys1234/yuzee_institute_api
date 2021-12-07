@@ -47,6 +47,7 @@ public class LevelItemReader implements ItemReader<LevelDto> {
 			columnMapping.put("Level_code", "code");
 			columnMapping.put("Level_name", "name");
 			columnMapping.put("Level_description", "description");
+			columnMapping.put("Sequence_no", "sequenceNo");
 					
 			HeaderColumnNameTranslateMappingStrategy<LevelDto> beanStrategy = new HeaderColumnNameTranslateMappingStrategy<>();
 			beanStrategy.setType(LevelDto.class);

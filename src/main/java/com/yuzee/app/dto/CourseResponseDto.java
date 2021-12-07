@@ -83,10 +83,7 @@ public class CourseResponseDto {
 
 	@JsonProperty("updated_on")
 	private Date updatedOn;
-
-	@JsonProperty("intake")
-	private List<Date> intake = new ArrayList<>();
-
+	
 	@JsonProperty("faculty_name")
 	@NotBlank(message = "faculty_name should not be blank")
 	private String facultyName;

@@ -17,6 +17,7 @@ import com.yuzee.app.processor.CourseProcessor;
 import com.yuzee.app.processor.EducationSystemProcessor;
 import com.yuzee.app.processor.FacultyProcessor;
 import com.yuzee.app.processor.GlobalStudentProcessor;
+import com.yuzee.app.processor.GradeDetailProcessor;
 import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.processor.InstituteTypeProcessor;
 import com.yuzee.app.processor.LevelProcessor;
@@ -58,6 +59,9 @@ public class UploadController implements UploadInterface {
 
 	@Autowired
 	private EducationSystemProcessor educationSystemProcessor;
+	
+	@Autowired
+	private GradeDetailProcessor gradeDetailProcessor;
 	
 	@Autowired
 	private LevelProcessor levelProcessor;
@@ -122,8 +126,8 @@ public class UploadController implements UploadInterface {
 	@Override
 	public ResponseEntity<Object> uploadGrade(final MultipartFile multipartFile) {
 		log.info("Started process to Upload Grade");
-//		instituteProcessor.importEducationSystem(multipartFile);
-//		instituteProcessor.uploadGrade(multipartFile);
+		educationSystemProcessor.importEducationSystem(multipartFile);
+		gradeDetailProcessor.uploadGrade(multipartFile);
 		return new GenericResponseHandlers.Builder().setMessage("Grades Uploaded Successfully").setStatus(HttpStatus.OK)
 				.create();
 	}

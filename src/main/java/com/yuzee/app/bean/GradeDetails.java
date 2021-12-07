@@ -4,9 +4,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,13 +40,14 @@ public class GradeDetails implements java.io.Serializable {
 	@Column(name = "country_name", nullable = false)
 	private String countryName;
 
-	@Column(name = "education_system_id", nullable = false, length=36)
-	private String educationSystemId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "education_system_id")
+	private EducationSystem educationSystem;
 
 	@Column(name = "grade", nullable = false)
 	private String grade;
 
-	@Column(name = "gpa_grade", nullable = false)
+	@Column(name = "gpa_grade")
 	private String gpaGrade;
 
 	@Column(name = "state_name", nullable = false)

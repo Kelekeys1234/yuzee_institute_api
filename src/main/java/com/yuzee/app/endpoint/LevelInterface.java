@@ -26,4 +26,6 @@ public interface LevelInterface {
 	@GetMapping
     public ResponseEntity<?> getAll() throws Exception;
 	
+	@GetMapping("/{levelId}")
+    public ResponseEntity<?> getById(@PathVariable String levelId) throws Exception;
 }
