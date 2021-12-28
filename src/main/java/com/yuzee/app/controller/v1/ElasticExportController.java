@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.endpoint.ElasticExportInterface;
 import com.yuzee.app.processor.CourseProcessor;
+import com.yuzee.app.processor.FacultyProcessor;
 import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 @RestController("elasticExportControllerV1")
 public class ElasticExportController implements ElasticExportInterface {
@@ -28,12 +30,18 @@ public class ElasticExportController implements ElasticExportInterface {
 	@Autowired
 	private CourseProcessor courseProcessor;
 	
+	@Autowired
+	private FacultyProcessor facultyProcessor;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Override
 	public ResponseEntity<Object> exportInstitutes() throws InvokeException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		LOGGER.debug("exportInstitutes() start");
 		LOGGER.info("Going to save institutes on elasticSearch");
 		instituteProcessor.exportInstituteToElastic();
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Insitutes Added successfully").create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(messageTranslator.toLocale("institute.export.success")).create();
 	}
 
 	@Override
@@ -41,6 +49,14 @@ public class ElasticExportController implements ElasticExportInterface {
 		LOGGER.debug("exportCourses() start");
 		LOGGER.info("Going to save courses on elasticSearch");
 		courseProcessor.exportCourseToElastic();
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage("Courses Added successfully").create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(messageTranslator.toLocale("course.export.success")).create();
+	}
+
+	@Override
+	public ResponseEntity<Object> exportFaculties() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		LOGGER.debug("exportCourses() start");
+		LOGGER.info("Going to save faculties on elasticSearch");
+		facultyProcessor.exportFacultyToElastic();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(messageTranslator.toLocale("faculty.export.success")).create();
 	}
 }

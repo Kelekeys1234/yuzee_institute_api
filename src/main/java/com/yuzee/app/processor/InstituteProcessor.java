@@ -185,6 +185,12 @@ public class InstituteProcessor {
 	@Autowired
 	private UserHandler userHandler;
 
+	@Autowired
+	private FaqDao faqDao;
+	
+	@Autowired
+	private UserHandler userHandler;
+
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public Institute get(final String id) {
 		return instituteDao.get(id);
@@ -1394,6 +1400,7 @@ public class InstituteProcessor {
 
 				List<EnableApplicationDto> enableApplicationDtos = enableApplicationsMap.get(instituteId);
 				if (!CollectionUtils.isEmpty(enableApplicationDtos)) {
+					verificationDto.setGallery(enableApplicationDtos.stream().anyMatch(e -> e.isEnable()));
 					verificationDto.setApplicationProcedure(enableApplicationDtos.stream().anyMatch(e -> e.isEnable()));
 				}
 			} catch (Exception ex) {

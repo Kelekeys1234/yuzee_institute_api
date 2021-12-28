@@ -14,8 +14,14 @@ import com.yuzee.common.lib.exception.InvokeException;
 public interface ElasticExportInterface {
 
 	@PostMapping("/institute")
-	public ResponseEntity<Object> exportInstitutes() throws InvokeException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException;
+	public ResponseEntity<Object> exportInstitutes() throws InvokeException, JobExecutionAlreadyRunningException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException;
 
 	@PostMapping("/course")
-	public ResponseEntity<Object> exportCourses() throws InvokeException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException;
+	public ResponseEntity<Object> exportCourses() throws InvokeException, JobExecutionAlreadyRunningException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException;
+
+	@PostMapping("/faculty")
+	public ResponseEntity<Object> exportFaculties() throws InvokeException, JobExecutionAlreadyRunningException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException;
 }

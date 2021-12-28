@@ -44,6 +44,10 @@ public class FacultyProcessor {
 	@Qualifier("importFacultyJob")
 	private Job job;
 	
+	@Autowired
+	@Qualifier("exportFacultyToElastic")
+	private Job exportFacultyJob;
+	
 	@Transactional
 	public void saveFaculty(final FacultyDto facultyDto) {
 		log.debug("Inside saveFaculty() method");
@@ -128,4 +132,10 @@ public class FacultyProcessor {
 		jobLauncher.run(job, jobParametersBuilder.toJobParameters());
 	}
     
+    public void exportFacultyToElastic() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		log.debug("Inside exportFacultyToElastic() method");
+		jobLauncher.run(exportFacultyJob, new JobParametersBuilder()
+                .addLong("time",System.currentTimeMillis(), true).toJobParameters());
+
+	}
 }
