@@ -82,7 +82,7 @@ public class CourseMinRequirement implements Serializable {
 	private String updatedBy;
 
 	@EqualsAndHashCode.Include
-	@OneToMany(mappedBy = "courseMinRequirement", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "courseMinRequirement", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseMinRequirementSubject> courseMinRequirementSubjects = new ArrayList<>();
 
 	@ElementCollection(fetch = FetchType.EAGER)

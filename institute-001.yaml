@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: institute-service
+  namespace: yuzee-dev
+  labels:
+    app: institute-service
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: institute-service
+  template:
+    metadata:
+      labels:
+        app: institute-service
+    spec:
+      initContainers:
+        - name: sleepy
+          image: alpine
+          command: ['sleep', '155']
+      containers:
+        - name: institute-service
+          image:  607951638574.dkr.ecr.ap-southeast-1.amazonaws.com/institute:{{BITBUCKET_BUILD_NUMBER}}
+          env:
+            - name: "SPRING_MAIN_CLOUD-PLATFORM"
+              value: "NONE"
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: institute
+                  key: db_username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: institute
+                  key: db_password
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: institute
+                  key: db_url
+            - name: DROPBOX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: institute
+                  key: dropbox_token
+            - name: GOOGLE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: institute
+                  key: google_api_key
+            - name: AWS_ID
+              valueFrom:
+                secretKeyRef:
+                  name: institute
+                  key: aws_id
+            - name: AWS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: institute
+                  key: aws_secret
+            
+          ports:
+          - containerPort: 8905
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: reg-institute
+      nodeSelector:
+        elastic1: pod
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: institute-service
+  namespace: yuzee-dev
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8905
+      targetPort: 8905
+      protocol: TCP
+  selector:
+    app: institute-service

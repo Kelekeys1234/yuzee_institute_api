@@ -478,4 +478,5 @@ public class CourseController implements CourseInterface {
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course.discarded.success"))
 				.setStatus(HttpStatus.OK).create();
 	}
+
 }

@@ -1,5 +1,6 @@
 package com.yuzee.app.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.GeneratedValue;
@@ -106,4 +107,7 @@ public class InstituteDto {
 	
 	@JsonProperty("provider_codes")
 	private List<ProviderCodeDto> providerCodes;	
+	
+	@JsonProperty("created_on")
+	private Date createdOn;
 }

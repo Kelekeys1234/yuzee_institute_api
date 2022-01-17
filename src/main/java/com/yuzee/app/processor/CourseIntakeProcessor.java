@@ -93,5 +93,4 @@ public class CourseIntakeProcessor {
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		}
 	}
-
 }

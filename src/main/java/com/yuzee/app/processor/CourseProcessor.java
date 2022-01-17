@@ -600,10 +600,12 @@ public class CourseProcessor {
 				if (existingCourseDeliveryModeOp.isPresent()) {
 					courseDeliveryMode = existingCourseDeliveryModeOp.get();
 				}
+
 				courseDeliveryMode.setCourse(course);
 				log.info("Adding additional infos like deliveryType, studyMode etc");
 
 				courseDeliveryMode.setDeliveryType(e.getDeliveryType());
+
 				courseDeliveryMode.setAccessibility(e.getAccessibility());
 				courseDeliveryMode.setIsGovernmentEligible(e.getIsGovernmentEligible());
 				courseDeliveryMode.setStudyMode(e.getStudyMode());
@@ -1586,6 +1588,9 @@ public class CourseProcessor {
 	public CourseRequest getCourseById(String userId, String id, boolean isReadableId) throws Exception {
 		log.debug("Inside getCourseById() method");
 		log.info("Fetching course from DB having courseId = "+id);
+		if (courseDao.documentExistsById(id) && !courseDao.existsById(id)) {
+			return courseDao.findDocumentById(id).get();
+		}
 		Course course = null;
 		if (isReadableId) {
 			course = courseDao.findByReadableId(id);
@@ -1954,6 +1959,12 @@ public class CourseProcessor {
 		course = courseDao.addUpdateCourse(course);
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
 		publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
+		try {
+			courseDao.saveDocument(getCourseById(loggedInUserId, course.getId(), false));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return course.getId();
 	}
 	

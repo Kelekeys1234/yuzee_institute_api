@@ -299,6 +299,7 @@ public class CourseDaoImpl implements CourseDao {
 				courseResponseDto.setStars(Double.valueOf(String.valueOf(row[8])));
 				if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
 					courseResponseDto.setCurrencyCode(courseSearchDto.getCurrencyCode());
+
 				}
 				if (row[5] != null) {
 					courseResponseDto.setCurrencyCode(row[5].toString());
@@ -312,6 +313,7 @@ public class CourseDaoImpl implements CourseDao {
 				additionalInfoDto.setDeliveryType(row[21].toString());
 				additionalInfoDto.setStudyMode(row[22].toString());
 				additionalInfoDto.setCourseId(String.valueOf(row[0]));
+
 				additionalInfoDtos.add(additionalInfoDto);
 				courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 				courseResponseDto.setLevelId(row[23].toString());
@@ -912,6 +914,7 @@ public class CourseDaoImpl implements CourseDao {
 		additionalInfoDto.setDeliveryType(String.valueOf(row[19]));
 		additionalInfoDto.setStudyMode(String.valueOf(row[20]));
 		additionalInfoDto.setCourseId(String.valueOf(row[0]));
+
 		additionalInfoDtos.add(additionalInfoDto);
 		courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 		return courseResponseDto;

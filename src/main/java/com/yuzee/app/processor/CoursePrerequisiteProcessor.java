@@ -89,6 +89,7 @@ public class CoursePrerequisiteProcessor {
 			coursesToBeSavedOrUpdated.add(course);
 			coursesToBeSavedOrUpdated = courseDao.saveAll(coursesToBeSavedOrUpdated);
 			return coursesToBeSavedOrUpdated.get(0).getCoursePrerequisites().stream().map(e->modelMapper.map(e,CoursePreRequisiteDto.class)).toList();
+
 		} else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
@@ -120,7 +121,6 @@ public class CoursePrerequisiteProcessor {
 		}
 	}
 
-	
 	public static boolean contains(List<CourseDeliveryModesDto> lst, CourseDeliveryModes target) {
 		return lst.stream().anyMatch(e -> e.getDeliveryType().equalsIgnoreCase(target.getDeliveryType())
 				&& e.getStudyMode().equalsIgnoreCase(target.getStudyMode()));

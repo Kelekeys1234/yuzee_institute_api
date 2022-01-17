@@ -1,5 +1,6 @@
 package com.yuzee.app.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -51,7 +52,7 @@ public class InstituteResponseDto extends InstituteDto {
 	public InstituteResponseDto(String id, String name, Integer worldRanking, String cityName, String countryName,
 			String stateName, String website, String aboutUs,
 			Double latitude, Double longitude, String phoneNumber, String whatsNo, Long totalCourses, String email, String address,
-			Integer domesticRanking, String tagLine) {
+			Integer domesticRanking, String tagLine, Date createdOn) {
 		super.setId(id);
 		super.setName(name);
 		super.setWorldRanking(worldRanking);
@@ -69,6 +70,7 @@ public class InstituteResponseDto extends InstituteDto {
 		super.setAddress(address);
 		super.setDomesticRanking(domesticRanking);
 		super.setTagLine(tagLine);
+		super.setCreatedOn(createdOn);
 	}
 
 }
