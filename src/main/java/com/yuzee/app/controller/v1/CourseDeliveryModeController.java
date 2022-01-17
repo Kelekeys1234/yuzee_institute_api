@@ -16,6 +16,7 @@ import com.yuzee.common.lib.exception.InternalServerException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,14 +26,15 @@ public class CourseDeliveryModeController implements CourseDeliveryModeInterface
 
 	@Autowired
 	private CourseDeliveryModesProcessor courseDeliveryModeProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> saveUpdateCourseDeliveryMode(String userId, String courseId,
 			@Valid CourseDeliveryModeRequestWrapper request)
 			throws ValidationException, NotFoundException, InternalServerException {
 		log.info("inside CourseDeliveryModeController.saveUpdateCourseDeliveryMode");
 		courseDeliveryModeProcessor.saveUpdateCourseDeliveryModes(userId, courseId, request);
-		return new GenericResponseHandlers.Builder().setMessage("Course DeliveryMode added/ updated successfully.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_delivery.mode.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -43,7 +45,7 @@ public class CourseDeliveryModeController implements CourseDeliveryModeInterface
 		log.info("inside CourseDeliveryModeController.deleteByCourseDeliveryModeIds");
 		courseDeliveryModeProcessor.deleteByCourseDeliveryModeIds(userId, courseId, courseDeliveryModeIds,
 				linkedCourseIds);
-		return new GenericResponseHandlers.Builder().setMessage("Course DeliveryMode deleted successfully.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_delivery.mode.deleted"))
 				.setStatus(HttpStatus.OK).create();
 	}
 }

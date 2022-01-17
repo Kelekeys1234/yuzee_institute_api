@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "timing", uniqueConstraints = @UniqueConstraint(name = "UK_ET_TT_EI", columnNames = { "entity_type",
+@Table(name = "timing", uniqueConstraints = @UniqueConstraint(name = "UK_TIMING_ET_TT_EI", columnNames = { "entity_type",
 		"timing_type", "entity_id" }), indexes = {
 				@Index(name = "IDX_ENTITY_ID", columnList = "entity_type, entity_id", unique = false) })
 public class Timing {

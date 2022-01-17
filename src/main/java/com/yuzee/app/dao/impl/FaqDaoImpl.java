@@ -1,9 +1,8 @@
 package com.yuzee.app.dao.impl;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,6 +17,7 @@ import com.yuzee.app.dao.FaqDao;
 import com.yuzee.app.repository.FaqRepository;
 import com.yuzee.common.lib.dto.CountDto;
 import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 public class FaqDaoImpl implements FaqDao {
 
 	@Autowired
+	private MessageTranslator messageTranslator;
+	
+	@Autowired
 	private FaqRepository faqRepository;
 
 	@Override
@@ -33,9 +36,9 @@ public class FaqDaoImpl implements FaqDao {
 		try {
 			faqRepository.save(faq);
 		} catch (DataIntegrityViolationException ex) {
-			log.error("faq category already present with title, entity_id, entity_type, faq_sub_category_id");
+			log.error(messageTranslator.toLocale("faq-daolmpl.already.category_exist",Locale.US));
 			throw new ValidationException(
-					"faq category already present with title, entity_id, entity_type, faq_sub_category_id");
+					messageTranslator.toLocale("faq-daolmpl.already.category_exist"));
 		}
 	}
 

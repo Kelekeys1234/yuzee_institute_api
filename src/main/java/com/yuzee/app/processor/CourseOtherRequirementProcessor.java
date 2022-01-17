@@ -2,7 +2,6 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -26,7 +25,6 @@ import com.yuzee.app.dto.CourseVaccineRequirementDto;
 import com.yuzee.app.dto.CourseWorkExperienceRequirementDto;
 import com.yuzee.app.dto.CourseWorkPlacementRequirementDto;
 import com.yuzee.common.lib.exception.NotFoundException;
-import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,9 +47,6 @@ public class CourseOtherRequirementProcessor {
 	@Autowired
 	private CourseWorkPlacementRequirementDao workPlacementDao;
 
-	@Autowired
-	private MessageTranslator messageTranslator;
-	
 	@Transactional
 	public void saveOrUpdateOtherRequirements(String userId, String courseId,
 			@Valid CourseOtherRequirementDto courseOtherRequirementDto) {
@@ -130,7 +125,12 @@ public class CourseOtherRequirementProcessor {
 
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
-			
+//			if (!CollectionUtils.isEmpty(courseIntakeDto.getLinkedCourseIds())) {
+//				List<CourseIntakeDto> dtosToReplicate = courseIntakes.stream()
+//						.map(e -> modelMapper.map(e, CourseIntakeDto.class)).collect(Collectors.toList());
+//				coursesToBeSavedOrUpdated
+//						.addAll(replicateCourseIntakes(userId, coursePaymentDto.getLinkedCourseIds(), dtosToReplicate));
+//			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
 
 			log.info("Send notification for course content updates");
@@ -138,8 +138,8 @@ public class CourseOtherRequirementProcessor {
 
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error(messageTranslator.toLocale("course.id.invalid", courseId, Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("course.id.invalid", courseId));
+			log.error("invalid course id: {}", courseId);
+			throw new NotFoundException("invalid course id: " + courseId);
 		}
 	}
 
@@ -189,9 +189,44 @@ public class CourseOtherRequirementProcessor {
 				otherRequirementDto.setResearchProposal(dto);
 			}
 		} else {
-			log.error(messageTranslator.toLocale("course.id.invalid", courseId, Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("course.id.invalid", courseId));
+			log.error("invalid course id: {}", courseId);
+			throw new NotFoundException("invalid course id: " + courseId);
 		}
 		return otherRequirementDto;
 	}
+
+//	private List<Course> replicateCourseIntakes(String userId, List<String> courseIds,
+//			List<CourseIntakeDto> courseIntakeDtos) throws ValidationException, NotFoundException {
+//		log.info("inside courseProcessor.replicateCourseIntakes");
+//		List<Date> intakeDates = courseIntakeDtos.stream().map(CourseIntakeDto::getIntakeDate)
+//				.collect(Collectors.toList());
+//		if (!CollectionUtils.isEmpty(courseIds)) {
+//			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
+//			courses.stream().forEach(course -> {
+//				List<CourseIntake> courseIntakes = course.getCourseIntakes();
+//				if (CollectionUtils.isEmpty(courseIntakeDtos)) {
+//					courseIntakes.clear();
+//				} else {
+//					courseIntakes.removeIf(e -> !Utils.contains(intakeDates, e.getIntakeDate()));
+//					courseIntakeDtos.stream().forEach(dto -> {
+//						Optional<CourseIntake> existingIntakeOp = courseIntakes.stream().filter(
+//								e -> e.getIntakeDate().toInstant().compareTo(dto.getIntakeDate().toInstant()) == 0)
+//								.findAny();
+//						CourseIntake courseIntake = null;
+//						if (existingIntakeOp.isPresent()) {
+//							courseIntake = existingIntakeOp.get();
+//						} else {
+//							courseIntake = new CourseIntake();
+//							courseIntake.setCourse(course);
+//							courseIntake.setIntakeDate(dto.getIntakeDate());
+//							courseIntakes.add(courseIntake);
+//						}
+//						courseIntake.setAuditFields(userId);
+//					});
+//				}
+//			});
+//			return courses;
+//		}
+//		return new ArrayList<>();
+//	}
 }

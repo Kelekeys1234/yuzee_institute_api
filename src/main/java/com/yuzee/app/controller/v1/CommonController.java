@@ -12,18 +12,20 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.common.lib.util.ValidationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 @RestController
 public class CommonController implements CommonEndPoint {
 
 	@Autowired
 	CommonProcessor commonProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> getEntityGallery(String entityType, String entityId)
 			throws InternalServerException, NotFoundException, ValidationException {
 		ValidationUtil.validatEntityType(entityType);
 		return new GenericResponseHandlers.Builder().setData(commonProcessor.getEntityGallery(entityType, entityId))
-				.setMessage("Course gallery media fetched successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("common_course.gallery.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -38,6 +39,7 @@ import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.handler.UserHandler;
 import com.yuzee.common.lib.util.DateUtil;
 import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -113,6 +115,9 @@ public class HelpProcessor {
 	@Autowired
 	private StorageHandler storageHandler;
 
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	public void saveHelp(@Valid final HelpDto helpDto, final String userId) {
 		log.debug("Inside saveHelp() method");
 		try {
@@ -151,8 +156,8 @@ public class HelpProcessor {
 		log.info("Extracting Yuzee Help data from DB for id = "+id);
 		helpDto = convertYuzeeHelpToDto(helpDAO.get(id));
 		if (ObjectUtils.isArray(helpDto)) {
-			log.error("Yuzee Help not found in DB for id " + id);
-			throw new NotFoundException("Yuzee Help not found in DB for id " + id);
+			log.error(messageTranslator.toLocale("help.id.notfound",id,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("help.id.notfound",id));
 		}
 		return helpDto;
 	}
@@ -405,8 +410,8 @@ public class HelpProcessor {
 				}
 			});
 		} else {
-			log.error("Yuzee Help Answer not found in DB for id " + helpId);
-			throw new NotFoundException("Yuzee Help Answer not found in DB for id " + helpId);
+			log.error(messageTranslator.toLocale("help.id.notfound",helpId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("help.id.notfound",helpId));
 		}
 		return helpAnswerDtos;
 	}
@@ -455,8 +460,8 @@ public class HelpProcessor {
 			log.info("Calling DAO layer to update existing help data in DB");
 			helpDAO.update(help);
 		} else {
-			log.error("Yuzee Help not found in DB for id " + id);
-			throw new NotFoundException("Yuzee Help not found in DB for id " + id);
+			log.error(messageTranslator.toLocale("help.id.notfound",id,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("help.id.notfound",id));
 		}
 	}
 
@@ -473,8 +478,8 @@ public class HelpProcessor {
 			log.info("Calling DAO layer to update existing help data in DB");
 			helpDAO.update(help);
 		} else {
-			log.error("Yuzee Help not found in DB for id " + id);
-			throw new NotFoundException("Yuzee Help not found in DB for id " + id);
+			log.error(messageTranslator.toLocale("help.id.notfound",id,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("help.id.notfound",id));
 		}
 	}
 
@@ -549,7 +554,7 @@ public class HelpProcessor {
 		List<String> searchKeywords = new LinkedList<>(Arrays.asList(searchString.split(" ")));
 		searchKeywords.removeAll(stopWordsForRelatedQuestions);
 		if ((searchKeywords == null) || searchKeywords.isEmpty()) {
-			throw new ValidationException("Please Search using proper keywords");
+			throw new ValidationException(messageTranslator.toLocale("help.keyword.proper"));
 		}
 		return helpDAO.getRelatedSearchQuestions(searchKeywords);
 	}

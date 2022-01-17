@@ -10,18 +10,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.constant.ArchiveEntityType;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.HelpProcessor;
 import com.yuzee.app.service.IErrorReportService;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 @RestController("archiveControllerV1")
 @RequestMapping("/api/v1/archive")
 public class ArchiveController {
 
-//	@Autowired
-//	private IEnrollmentService iEnrollmentService;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Autowired
 	private HelpProcessor helpProcessor;
 
@@ -39,7 +40,7 @@ public class ArchiveController {
 		} else if (entityType.equals(ArchiveEntityType.HELP_SUPPORT.name())) {
 			helpProcessor.archiveHelpSupport(entityId, isArchive);
 		}
-		return new GenericResponseHandlers.Builder().setMessage("Archive successfully").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("archive.added")).setStatus(HttpStatus.OK).create();
 
 	}
 

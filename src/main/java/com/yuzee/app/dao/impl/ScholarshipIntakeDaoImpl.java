@@ -1,6 +1,7 @@
 package com.yuzee.app.dao.impl;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,15 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.yuzee.app.bean.ScholarshipIntake;
 import com.yuzee.app.dao.ScholarshipIntakeDao;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.ScholarshipIntakeRepository;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class ScholarshipIntakeDaoImpl implements ScholarshipIntakeDao {
-
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Autowired
 	private ScholarshipIntakeRepository scholarshipIntakeRepository;
 
@@ -26,11 +31,13 @@ public class ScholarshipIntakeDaoImpl implements ScholarshipIntakeDao {
 		try {
 			return scholarshipIntakeRepository.saveAll(courseSubjects);
 		} catch (DataIntegrityViolationException e) {
-			log.error("one or more course english eligibiliy already exists with same english_type");
+			log.error(messageTranslator.toLocale("scolarship-intake.already.exist.type",Locale.US));
 			throw new ValidationException(
-					"one or more course english eligibiliy already exists with same english_type");
+					messageTranslator.toLocale("scolarship-intake.already.exist.type"));
 		}
 	}
+
+	
 
 	@Override
 	public List<ScholarshipIntake> findByScholarshipIdAndIdIn(String courseId, List<String> ids) {

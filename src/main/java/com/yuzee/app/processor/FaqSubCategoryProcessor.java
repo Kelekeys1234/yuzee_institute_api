@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import com.yuzee.app.dto.FaqSubCategoryResponseDto;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,6 +40,9 @@ public class FaqSubCategoryProcessor {
 
 	@Autowired
 	ModelMapper modelMapper;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	public void addFaqSubCategory(final String userId, final FaqSubCategoryRequestDto faqSubCategoryRequestDto)
 			throws ValidationException {
@@ -106,8 +111,8 @@ public class FaqSubCategoryProcessor {
 	private FaqCategory getFaqCategoryById(String faqCategoryId) throws ValidationException {
 		Optional<FaqCategory> faqCategoryOptional = faqCategoryDao.getById(faqCategoryId);
 		if (!faqCategoryOptional.isPresent()) {
-			log.error("Faq Category not found for id: {}", faqCategoryId);
-			throw new ValidationException("Faq Category not found for id: " + faqCategoryId);
+			log.error(messageTranslator.toLocale("faq.id.notfound",faqCategoryId,Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("faq.id.notfound",faqCategoryId));
 		}
 		return faqCategoryOptional.get();
 	}
@@ -115,8 +120,8 @@ public class FaqSubCategoryProcessor {
 	private FaqSubCategory getFaqSubCategoryById(String faqSubCategoryId) throws ValidationException {
 		Optional<FaqSubCategory> faqSubCategoryOptional = faqSubCategoryDao.getById(faqSubCategoryId);
 		if (!faqSubCategoryOptional.isPresent()) {
-			log.error("Faq Sub Category not found for id: {}", faqSubCategoryId);
-			throw new ValidationException("Faq Sub Category not found for id: " + faqSubCategoryId);
+			log.error(messageTranslator.toLocale("faq.sub.category.id.notfound",faqSubCategoryId,Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("faq.sub.category.id.notfound",faqSubCategoryId));
 		}
 		return faqSubCategoryOptional.get();
 	}

@@ -14,11 +14,11 @@ import lombok.Data;
 @Data
 public class CourseEnglishEligibilityRequestWrapper {
 	@Valid
-	@NotEmpty(message = "course_englist_eligibilities must not be empty")
+	@NotEmpty(message = "{course_englist_eligibilities.is_required}")
 	@JsonProperty("course_englist_eligibilities")
 	ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos;
 
-	@NotNull(message = "linked_course_ids must not be null")
+	@NotNull(message = "{linked_course_ids.is_required}")
 	@JsonProperty("linked_course_ids")
 	List<String> linkedCourseIds;
 }

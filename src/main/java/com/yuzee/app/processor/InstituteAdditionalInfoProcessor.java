@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -20,6 +21,7 @@ import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +38,9 @@ public class InstituteAdditionalInfoProcessor {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Transactional(rollbackOn = Throwable.class)
 	public void addUpdateInstituteAdditionalInfo(String userId, String instituteId,
 			InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws NotFoundException {
@@ -44,8 +49,8 @@ public class InstituteAdditionalInfoProcessor {
 		log.info("Getting institute having institute id: {}", instituteId);
 		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
 		if (!instituteFromFb.isPresent()) {
-			log.error("No institute found for institute having id: {}", instituteId);
-			throw new NotFoundException("No institute found for institute having id: " + instituteId);
+			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
 		}
 		Institute institute = instituteFromFb.get();
 		log.info("Getting institute additional info for institute id: {}", instituteId);
@@ -81,8 +86,8 @@ public class InstituteAdditionalInfoProcessor {
 		log.info("Getting institute having institute id: {}", instituteId);
 		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
 		if (!instituteFromFb.isPresent()) {
-			log.error("No institute found for institute having id: {}", instituteId);
-			throw new NotFoundException("No institute found for institute having id " + instituteId);
+			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
 		} else {
 			Institute institute = instituteFromFb.get();
 			log.info("Getting Institute Additional Info for institute id: {}", instituteId);

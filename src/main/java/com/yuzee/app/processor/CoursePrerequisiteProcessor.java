@@ -2,7 +2,6 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -29,7 +28,6 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeNotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.util.Utils;
-import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,17 +39,11 @@ public class CoursePrerequisiteProcessor {
 	private CourseProcessor courseProcessor;
 	
 	@Autowired
-	private CommonProcessor commonProcessor;
-	
-	@Autowired
 	private CourseDao courseDao;
 	
 	@Autowired
 	private ModelMapper modelMapper;
-
-	@Autowired
-	private MessageTranslator messageTranslator;
-
+	
 	@Transactional
 	public List<CoursePreRequisiteDto> saveUpdatePreRequisites(String userId, String courseId,
 			@Valid CoursePreRequisiteRequestWrapper request)
@@ -81,8 +73,8 @@ public class CoursePrerequisiteProcessor {
 							"entityId is present so going to see if it is present in db if yes then we have to update it");
 					coursePrerequisite = existingCoursePrerequisiteMap.get(e.getId());
 					if (ObjectUtils.isEmpty(coursePrerequisite)) {
-						log.error(messageTranslator.toLocale("pre-requisite.id.invalid", e.getId(), Locale.US));
-						throw new RuntimeNotFoundException(messageTranslator.toLocale("pre-requisite.id.invalid", e.getId(), Locale.US));
+						log.error("invalid course Prerequisite id : {}", e.getId());
+						throw new RuntimeNotFoundException("invalid course Prerequisite id : " + e.getId());
 					}
 				}
 
@@ -95,47 +87,40 @@ public class CoursePrerequisiteProcessor {
 			});
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
-			
 			coursesToBeSavedOrUpdated = courseDao.saveAll(coursesToBeSavedOrUpdated);
-			log.info("Send notification for course content updates");
-			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 			return coursesToBeSavedOrUpdated.get(0).getCoursePrerequisites().stream().map(e->modelMapper.map(e,CoursePreRequisiteDto.class)).toList();
-			
 		} else {
-			log.error(messageTranslator.toLocale("course.id.invalid", courseId));
-			throw new NotFoundException(messageTranslator.toLocale("course.id.invalid", courseId));
+			log.error("invalid course id: {}", courseId);
+			throw new NotFoundException("invalid course id: " + courseId);
 		}
 	}
 	
 	@Transactional
-	public void deleteByPreRequisiteIds(String userId, String courseId, List<String> preRequisiteIds,
+	public void deleteByPreRequisiteIds(String userId, String courseId, List<String> deliveryModeIds,
 			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
 		log.info("inside CoursePrerequisiteProcessor.deleteByPreRequisiteIds");
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		List<CoursePrerequisite> coursePrerequisite = course.getCoursePrerequisites();
 		if (coursePrerequisite.stream().map(CoursePrerequisite::getId).collect(Collectors.toSet())
-				.containsAll(preRequisiteIds)) {
+				.containsAll(deliveryModeIds)) {
 			if (coursePrerequisite.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
 				log.error("no access to delete one more course_delivery_modes");
 				throw new ForbiddenException("no access to delete one more course_delivery_modes");
 			}
-			coursePrerequisite.removeIf(e -> Utils.contains(preRequisiteIds, e.getId()));
+			coursePrerequisite.removeIf(e -> Utils.contains(deliveryModeIds, e.getId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
+			
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
 			
 			log.info("Notify course information changed");
-			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-			
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error(messageTranslator.toLocale("pre-requisite.ids.invalid",Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("pre-requisite.ids.invalid"));
+			log.error("one or more invalid course_delivery_mode_ids");
+			throw new NotFoundException("one or more invalid course_delivery_mode_ids");
 		}
 	}
 
+	
 	public static boolean contains(List<CourseDeliveryModesDto> lst, CourseDeliveryModes target) {
 		return lst.stream().anyMatch(e -> e.getDeliveryType().equalsIgnoreCase(target.getDeliveryType())
 				&& e.getStudyMode().equalsIgnoreCase(target.getStudyMode()));

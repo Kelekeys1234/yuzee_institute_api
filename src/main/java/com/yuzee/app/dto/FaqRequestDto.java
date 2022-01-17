@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class FaqRequestDto extends FaqDto {
 
-	@NotBlank(message = "faq_sub_category_id is required")
+	@NotBlank(message = "{faq_sub_category_id.is_required}")
 	@JsonProperty("faq_sub_category_id")
 	private String faqSubCategoryId;
 }

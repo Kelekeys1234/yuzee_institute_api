@@ -29,7 +29,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Table(name = "job_skill", uniqueConstraints = @UniqueConstraint(columnNames = { "job_id", "skill" }, 
-name = "UK_SKILL_JOB_ID"), indexes = {@Index(name = "IDX_JOB_ID", columnList = "job_id", unique = false)})
+name = "UK_JOB_SKILL_JOB_ID"), indexes = {@Index(name = "IDX_JOB_ID", columnList = "job_id", unique = false)})
 public class CareerJobSkill implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

@@ -12,15 +12,15 @@ import lombok.Data;
 public class CareerJobSubjectDto {
 
 	@JsonProperty("job_subject_id")
-	@NotBlank(message = "job_subject_id should not be blank")
+	@NotBlank(message = "{job_subject_id.is_required}")
 	private String id;
 	
 	@JsonProperty("subject")
-	@NotBlank(message = "subject should not be blank")
+	@NotBlank(message = "{subject.is_required}")
 	private String subject;
 	
 	@JsonProperty("job_id")
-	@NotBlank(message = "job_id should not be blank")
+	@NotBlank(message = "{job_id.is_required}")
 	private String jobId;
 	
 	@JsonProperty("last_selected")

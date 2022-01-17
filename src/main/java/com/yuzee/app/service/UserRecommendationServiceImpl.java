@@ -21,9 +21,9 @@ import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
-
 @Service
 @Transactional(rollbackFor = Throwable.class)
 @CommonsLog
@@ -42,11 +42,14 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	@Autowired
 	private CourseDeliveryModesProcessor courseDeliveryModesProcessor;
 
+	@Autowired
+	private MessageTranslator messageTranslator;
+
 	@Override
 	public List<Course> getRecommendCourse(final String courseId, final String userId) throws ValidationException {
 		Course existingCourse = courseProcessor.getCourseData(courseId);
 		if (existingCourse == null) {
-			throw new ValidationException("Course not found for Id : " + courseId);
+			throw new ValidationException(messageTranslator.toLocale("recommendation.not_found.course", courseId));
 		}
 		String facultyId = null;
 		String instituteId = null;
@@ -158,7 +161,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	public List<Course> getRelatedCourse(final String courseId) throws ValidationException {
 		Course existingCourse = courseProcessor.getCourseData(courseId);
 		if (existingCourse == null) {
-			throw new ValidationException("Course not found for Id : " + courseId);
+			throw new ValidationException(messageTranslator.toLocale("recommendation.not_found.course", courseId));
 		}
 		String facultyId = null;
 		String instituteId = null;

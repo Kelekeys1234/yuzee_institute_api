@@ -31,7 +31,7 @@ import lombok.ToString;
 @Entity
 @ToString(exclude = "course")
 @EqualsAndHashCode(exclude = "course")
-@Table(name = "course_scholarship", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id" }, name = "UK_CO_COURSE_ID"), indexes = {
+@Table(name = "course_scholarship", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id" }, name = "UK_COURSE_SCHOLARSHIP_COURSE_ID"), indexes = {
 				@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
 public class CourseScholarship implements Serializable {
 

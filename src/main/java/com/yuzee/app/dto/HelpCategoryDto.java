@@ -13,7 +13,7 @@ public class HelpCategoryDto {
     private String id;
 	
 	@JsonProperty("name")
-	@NotBlank(message = "name should not be blank")
+	@NotBlank(message = "{name.is_required}")
     private String name;
 
 }

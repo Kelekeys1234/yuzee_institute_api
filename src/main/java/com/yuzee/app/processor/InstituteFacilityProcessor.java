@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -21,6 +22,7 @@ import com.yuzee.app.dto.FacilityDto;
 import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.util.CommonUtil;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +38,9 @@ public class InstituteFacilityProcessor {
 
 	@Autowired
 	private ServiceDao serviceDao;
-	
+
+	@Autowired
+	private MessageTranslator messageTranslator;
 	/*
 	 * @Autowired private UserAccessUtils userAccessUtils;
 	 */
@@ -49,8 +53,8 @@ public class InstituteFacilityProcessor {
 
 		Optional<Institute> institute = instituteDao.getInstituteByInstituteId(instituteId);
 		if (!institute.isPresent()) {
-			log.error("Illegal institute id: ", instituteId);
-			throw new NotFoundException("Illegal institute id: " + instituteId);
+			log.error(messageTranslator.toLocale("institute.id.illegal",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute.id.illegal",instituteId));
 		}
 
 		log.info("checking all exsisting facility to match with facility passed in request ");
@@ -68,8 +72,8 @@ public class InstituteFacilityProcessor {
 
 				Optional<com.yuzee.app.bean.Service> service = serviceDao.getServiceById(facilityDto.getFacilityId());
 				if (!service.isPresent()) {
-					log.error("Illegal facility id: ", facilityDto.getFacilityId());
-					throw new NotFoundException("Illegal facility id: " + facilityDto.getFacilityId());
+					log.error(messageTranslator.toLocale("institute.facility.id.illegal",facilityDto.getFacilityId(),Locale.US));
+					throw new NotFoundException(messageTranslator.toLocale("institute.facility.id.illegal",facilityDto.getFacilityId()));
 				}
 				InstituteFacility instituteFacility = new InstituteFacility(institute.get(), service.get(), new Date(),
 						new Date(), "API", "API");

@@ -30,7 +30,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @Table(name = "course_min_requirement_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "name",
-		"course_min_requirement_id" }, name = "UK_NA_CN_CN"), indexes = {
+		"course_min_requirement_id" }, name = "UK_COURSE_NA_CN_CN"), indexes = {
 				@Index(name = "IDX_CMRS", columnList = "course_min_requirement_id", unique = false) })
 public class CourseMinRequirementSubject implements Serializable {
 

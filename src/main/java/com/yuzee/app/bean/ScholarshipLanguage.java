@@ -27,7 +27,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(exclude = "scholarship")
 @Table(name = "scholarship_language", uniqueConstraints = @UniqueConstraint(columnNames = { "scholarship_id",
-		"name" }, name = "UK_SCHOLARSHIP_ID_NAME"), indexes = {
+		"name" }, name = "UK_SCHOLARSHIP_LANGUAGE_SI_NAME"), indexes = {
 				@Index(name = "IDX_SCHOLARSHIP_ID", columnList = "scholarship_id", unique = false) })
 public class ScholarshipLanguage implements Serializable {
 

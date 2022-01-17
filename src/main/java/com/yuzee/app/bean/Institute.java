@@ -31,8 +31,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "institute", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "country_name", "city_name",
-		"campus_name" }, name = "UK_NA_CN_CN"), indexes = {
+@Table(name = "institute", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "country_name", "city_name" }, name = "UK_INSTITUTE_NA_CN_CN"), indexes = {
 				@Index(name = "IDX_INSTITUTE_NAME", columnList = "name", unique = false) })
 public class Institute implements Serializable {
 
@@ -128,9 +127,6 @@ public class Institute implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "institute_category_type_id")
 	private InstituteCategoryType instituteCategoryType;
-
-	@Column(name = "campus_name")
-	private String campusName;
 
 	@Column(name = "scholarship_financing_assistance", columnDefinition = "TEXT")
 	private String scholarshipFinancingAssistance;

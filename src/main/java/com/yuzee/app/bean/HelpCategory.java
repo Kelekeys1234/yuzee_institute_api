@@ -19,7 +19,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "help_category", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }, 
-	   name = "UK_NAME"))
+	   name = "UK_HELP_CATEGORY_NAME"))
 public class HelpCategory implements Serializable {
 
     private static final long serialVersionUID = 6922844940897956622L;

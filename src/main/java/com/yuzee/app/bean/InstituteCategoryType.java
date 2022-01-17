@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,8 +18,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "institute_category_type", uniqueConstraints = @UniqueConstraint(columnNames = { "name" },name = "UK_NA"), 
-indexes = {@Index(name = "IDX_CATEGORY_TYPE", columnList = "name", unique = true)})
+@Table(name = "institute_category_type", uniqueConstraints = @UniqueConstraint(columnNames = { "name" },name = "UK_ICT_NAME"))
 public class InstituteCategoryType implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -17,7 +17,7 @@ public class InstituteServiceDto {
 	@JsonProperty("institute_service_id")
 	private String id;
 
-	@NotNull(message = "service must not be null")
+	@NotNull(message = "{service.is_required}")
 	@JsonProperty("service")
 	private ServiceDto service;
 

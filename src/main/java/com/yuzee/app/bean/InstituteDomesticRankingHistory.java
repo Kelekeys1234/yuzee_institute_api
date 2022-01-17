@@ -25,7 +25,7 @@ import lombok.ToString;
 @Data
 @Entity
 @EqualsAndHashCode
-@Table(name = "institute_domestic_ranking_history", uniqueConstraints = @UniqueConstraint(columnNames = { "domestic_ranking", "institute_id" }, name = "UK_DR_IN"),
+@Table(name = "institute_domestic_ranking_history", uniqueConstraints = @UniqueConstraint(columnNames = { "domestic_ranking", "institute_id" }, name = "UK_INSTITUTE_DOMESTIC_RANKING_DR_IN"),
 indexes = {@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false)})
 public class InstituteDomesticRankingHistory implements Serializable {
 	

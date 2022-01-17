@@ -13,15 +13,15 @@ public class HelpDto {
 	private String id;
 	
 	@JsonProperty("title")
-	@NotBlank(message = "title should not be blank")
+	@NotBlank(message = "{title.is_required}")
 	private String title;
 	
 	@JsonProperty("category_id")
-	@NotBlank(message = "category_id should not be blank")
+	@NotBlank(message = "{category_id.is_required}")
 	private String categoryId;
 	
 	@JsonProperty("subCategory_id")
-	@NotBlank(message = "subCategory_id should not be blank")
+	@NotBlank(message = "{subCategory_id.is_required}")
 	private String subCategoryId;
 	
 	@JsonProperty("description")

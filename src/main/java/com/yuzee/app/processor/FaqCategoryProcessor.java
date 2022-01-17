@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ import com.yuzee.app.dto.FaqCategoryDto;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,6 +32,9 @@ public class FaqCategoryProcessor {
 
 	@Autowired
 	ModelMapper modelMapper;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	public void addFaqCategory(final String userId, final FaqCategoryDto faqCategoryDto) throws ValidationException {
 		log.info("inside FaqCategoryProcessor.addFaqCategory");
@@ -76,8 +81,8 @@ public class FaqCategoryProcessor {
 	private FaqCategory getFaqCategoryById(String faqCategoryId) throws ValidationException {
 		Optional<FaqCategory> faqCategoryOptional = faqCategoryDao.getById(faqCategoryId);
 		if (!faqCategoryOptional.isPresent()) {
-			log.error("Faq Category not found for id: {}", faqCategoryId);
-			throw new ValidationException("Faq Category not found for id: " + faqCategoryId);
+			log.error(messageTranslator.toLocale("faq_category.id.notfound", faqCategoryId,Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("faq_category.id.notfound", faqCategoryId));
 		}
 		return faqCategoryOptional.get();
 	}

@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -43,7 +44,7 @@ public class CourseUpdateListener {
 			
 			log.info("Course updated {}", !courseBeforeUpdate.equals(course));
 			if(!(courseBeforeUpdate.equals(course)
-					&& courseBeforeUpdate.getCourseIntake().equals(course.getCourseIntake())
+					&& !ObjectUtils.isEmpty(courseBeforeUpdate.getCourseIntake()) && courseBeforeUpdate.getCourseIntake().equals(course.getCourseIntake())
 					&& courseBeforeUpdate.getCourseLanguages().equals(course.getCourseLanguages())
 					&& courseBeforeUpdate.getCourseDeliveryModes().equals(course.getCourseDeliveryModes())
 					&& compareOffCampusCourse(courseBeforeUpdate.getOffCampusCourse(), course.getOffCampusCourse())
@@ -54,7 +55,7 @@ public class CourseUpdateListener {
 					log.info("Notify course information changed");
 					notificationType = commonProcessor.checkIfPriceChanged(courseBeforeUpdate.getCourseDeliveryModes(), course.getCourseDeliveryModes()) ? "COURSE_PRICE_CHANGED" : "COURSE_CONTENT_UPDATED";
 				} else if(!compareOffCampusCourse(courseBeforeUpdate.getOffCampusCourse(), course.getOffCampusCourse())){
-					if(!(courseBeforeUpdate.getOffCampusCourse().getAddress().equals(course.getOffCampusCourse().getAddress())
+					if(!( StringUtils.hasText(courseBeforeUpdate.getOffCampusCourse().getAddress()) && courseBeforeUpdate.getOffCampusCourse().getAddress().equals(course.getOffCampusCourse().getAddress())
 							&& courseBeforeUpdate.getOffCampusCourse().getCityName().equals(course.getOffCampusCourse().getCityName())
 							&& courseBeforeUpdate.getOffCampusCourse().getCountryName().equals(course.getOffCampusCourse().getCountryName())
 							&& courseBeforeUpdate.getOffCampusCourse().getStateName().equals(course.getOffCampusCourse().getStateName())

@@ -14,23 +14,23 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yuzee.app.dto.CourseSubjectRequestWrapper;
+import com.yuzee.app.dto.CourseSemesterRequestWrapper;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.exception.NotFoundException;
 
-@RequestMapping("/api/v1/course/{courseId}/subject")
+@RequestMapping("/api/v1/course/{courseId}/semester")
 public interface CourseSubjectInterface {
 
 	@PostMapping
-	public ResponseEntity<?> saveUpdateCourseSubjects(
+	public ResponseEntity<?> saveUpdateCourseSemesters(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final CourseSubjectRequestWrapper request)
+			@Valid @RequestBody(required = true) final CourseSemesterRequestWrapper request)
 			throws ValidationException, NotFoundException;
 
 	@DeleteMapping
-	public ResponseEntity<?> deleteByCourseSubjectIds(
+	public ResponseEntity<?> deleteByCourseSemesterIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@RequestParam(value = "course_subject_ids", required = true) @NotEmpty final List<String> courseSubjectIds,
+			@RequestParam(value = "course_semester_ids", required = true) @NotEmpty final List<String> courseSubjectIds,
 			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException;
 }

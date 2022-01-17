@@ -1,6 +1,7 @@
 package com.yuzee.app.controller.v1;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -16,9 +17,11 @@ import com.yuzee.app.constant.InstituteAssociationType;
 import com.yuzee.app.dto.InstituteAssociationDto;
 import com.yuzee.app.dto.InstituteAssociationResponseDto;
 import com.yuzee.app.endpoint.InstituteAssociationInterface;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.InstituteAssociationProcessor;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -28,25 +31,24 @@ public class InstituteAssociationController implements InstituteAssociationInter
 
 	@Autowired
 	private InstituteAssociationProcessor instituteAssociationProcessor;
-	
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> addInstituteAssociation(String userId,
 		@RequestBody @Valid InstituteAssociationDto instituteAssociationDto) throws Exception {
 		boolean isAssociationValid = EnumUtils.isValidEnum(InstituteAssociationType.class, instituteAssociationDto.getAssociationType());
 		if (!isAssociationValid) {
-			log.error("association type value is invalid in request passed " + instituteAssociationDto.getAssociationType()
-					+ " expected CAMPUS,PARTNER");
-			throw new ValidationException("association type value is invalid in request passed " + instituteAssociationDto.getAssociationType()
-					+ " expected CAMPUS,PARTNER");
+			log.error(messageTranslator.toLocale("institute-association.type.invalid",Utils.getEnumNamesAsString(InstituteAssociationType.class),Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-association.type.invalid",Utils.getEnumNamesAsString(InstituteAssociationType.class)));
 		}
 		
 		if (instituteAssociationDto.getSourceInstituteId().equalsIgnoreCase(instituteAssociationDto.getDestinationInstituteId())) {
-			log.error("Soure and destinatioon id should not be same");
-	        throw new ValidationException("Soure and destinatioon id should not be same");
+			log.error(messageTranslator.toLocale("institute-association.same_source_destination_institute_id",Locale.US));
+	        throw new ValidationException(messageTranslator.toLocale("institute-association.source_id"));
 		}
 		
 		instituteAssociationProcessor.addInstituteAssociation(userId, instituteAssociationDto);
-		return new GenericResponseHandlers.Builder().setMessage("Institute association info added successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_association.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 	
@@ -55,22 +57,18 @@ public class InstituteAssociationController implements InstituteAssociationInter
 			String associationType, String status) throws Exception {
 		boolean isStatusValid = EnumUtils.isValidEnum(InstituteAssociationStatus.class, status);
 		if (!isStatusValid) {
-			log.error("status value is invalid in request passed " + status
-					+ " expected PENDING,REJECTED,REVOKED,ACTIVE");
-			throw new ValidationException("status value is invalid in request passed " + status
-					+ " expected PENDING,REJECTED,REVOKED,ACTIVE");
+			log.error(messageTranslator.toLocale("institute-association.status.invalid",Utils.getEnumNamesAsString(InstituteAssociationStatus.class),Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-association.status.invalid",Utils.getEnumNamesAsString(InstituteAssociationStatus.class)));
 		}
 		
 		boolean isAssociationValid = EnumUtils.isValidEnum(InstituteAssociationType.class, associationType);
 		if (!isAssociationValid) {
-			log.error("association type value is invalid in request passed " + associationType
-					+ " expected CAMPUS,PARTNER");
-			throw new ValidationException("association type value is invalid in request passed " + associationType
-					+ " expected CAMPUS,PARTNER");
+			log.error(messageTranslator.toLocale("institute-association.type.invalid",Utils.getEnumNamesAsString(InstituteAssociationType.class),Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-association.type.invalid",Utils.getEnumNamesAsString(InstituteAssociationType.class)));
 		}
 		
 		List<InstituteAssociationResponseDto> listOfInstituteAssociation = instituteAssociationProcessor.getInstituteAssociationByAssociationType(userId,instituteId, associationType, status,"PRIVATE");
-		return new GenericResponseHandlers.Builder().setData(listOfInstituteAssociation).setMessage("Institute association info fetched successfully")
+		return new GenericResponseHandlers.Builder().setData(listOfInstituteAssociation).setMessage(messageTranslator.toLocale("institute_association.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -79,13 +77,11 @@ public class InstituteAssociationController implements InstituteAssociationInter
 			throws Exception {
 		boolean isAssociationValid = EnumUtils.isValidEnum(InstituteAssociationType.class, associationType);
 		if (!isAssociationValid) {
-			log.error("association type value is invalid in request passed " + associationType
-					+ " expected CAMPUS,PARTNER");
-			throw new ValidationException("association type value is invalid in request passed " + associationType
-					+ " expected CAMPUS,PARTNER");
+			log.error(messageTranslator.toLocale("institute-association.type.invalid",Utils.getEnumNamesAsString(InstituteAssociationType.class),Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-association.type.invalid",Utils.getEnumNamesAsString(InstituteAssociationType.class)));
 		}
 		List<InstituteAssociationResponseDto> listOfInstituteAssociation = instituteAssociationProcessor.getInstituteAssociationByAssociationType(null,instituteId, associationType, "ACTIVE", "PUBLIC");
-		return new GenericResponseHandlers.Builder().setData(listOfInstituteAssociation).setMessage("Institute association info fetched successfully")
+		return new GenericResponseHandlers.Builder().setData(listOfInstituteAssociation).setMessage(messageTranslator.toLocale("institute_association.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -94,13 +90,11 @@ public class InstituteAssociationController implements InstituteAssociationInter
 			String instituteAssociationId, String status) throws Exception {
 		boolean isStatusValid = EnumUtils.isValidEnum(InstituteAssociationStatus.class, status);
 		if (!isStatusValid) {
-			log.error("status value is invalid in request passed " + status
-					+ " expected PENDING,REJECTED,REVOKED,ACTIVE");
-			throw new ValidationException("status value is invalid in request passed " + status
-					+ " expected PENDING,REJECTED,REVOKED,ACTIVE");
+			log.error(messageTranslator.toLocale("institute-association.status.invalid",Utils.getEnumNamesAsString(InstituteAssociationStatus.class),Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-association.status.invalid",Utils.getEnumNamesAsString(InstituteAssociationStatus.class)));
 		}
 		instituteAssociationProcessor.updateInstituteAssociation(instituteAssociationId, instituteId, userId, status);
-		return new GenericResponseHandlers.Builder().setMessage("Institute association updated successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_association.updated"))
 				.setStatus(HttpStatus.OK).create();
 	}
 }

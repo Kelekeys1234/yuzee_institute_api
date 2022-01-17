@@ -10,15 +10,15 @@ import lombok.Data;
 public class GradeCSVDto {
     
 	@JsonProperty("country_name")
-	@NotBlank(message = "country_name should not be blank")
+	@NotBlank(message = "{country_name should not be blank")
     private String country;
 	
 	@JsonProperty("education_system")
-	@NotBlank(message = "education_system should not be blank")
+	@NotBlank(message = "{education_system should not be blank")
     private String educationSystem;
 	
 	@JsonProperty("state_name")
-	@NotBlank(message = "state_name should not be blank")
+	@NotBlank(message = "{state_name should not be blank")
     private String stateName;
     
 	@JsonProperty("grade_1")

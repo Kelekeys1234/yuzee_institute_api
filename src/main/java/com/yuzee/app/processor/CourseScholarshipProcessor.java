@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import com.yuzee.common.lib.exception.InternalServerException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +55,9 @@ public class CourseScholarshipProcessor {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	@Transactional
 	public void saveUpdateCourseScholarships(String userId, String courseId,
@@ -61,8 +66,8 @@ public class CourseScholarshipProcessor {
 		log.info("inside CourseScholarshipProcessor.saveUpdateCourseScholarship");
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		if (!course.getCreatedBy().equals(userId)) {
-			log.error("no access to add course scholarship");
-			throw new ForbiddenException("no access to add course scholarship");
+			log.error(messageTranslator.toLocale("course_scholarship.add.no.access",Locale.US));
+			throw new ForbiddenException(messageTranslator.toLocale("course_scholarship.add.no.access"));
 		} else {
 			CourseScholarship courseScholarship = course.getCourseScholarship();
 			if (ObjectUtils.isEmpty(courseScholarship)) {
@@ -102,8 +107,8 @@ public class CourseScholarshipProcessor {
 			throws ForbiddenException, NotFoundException, InternalServerException {
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		if (!course.getCreatedBy().equals(userId)) {
-			log.error("no access to delete course payment");
-			throw new ForbiddenException("no access to delete course payment");
+			log.error(messageTranslator.toLocale("course_scholarship.delete.no.access",Locale.US));
+			throw new ForbiddenException(messageTranslator.toLocale("course_scholarship.delete.no.access"));
 		}
 		CourseScholarship courseScholarship = course.getCourseScholarship();
 		if (!ObjectUtils.isEmpty(courseScholarship)) {
@@ -113,12 +118,12 @@ public class CourseScholarshipProcessor {
 				log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
 //				elasticHandler.saveUpdateData(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
 			} catch (ValidationException e) {
-				log.error(e.getMessage());
-				throw new InternalServerException("error deleting course payment");
+				log.error(messageTranslator.toLocale("course_scholarship.delete.error",Locale.US));
+				throw new InternalServerException(messageTranslator.toLocale("course_scholarship.delete.error"));
 			}
 		} else {
-			log.error("Course Scholarship not found against course");
-			throw new NotFoundException("Course Scholarship not found against course");
+			log.error(messageTranslator.toLocale("course_scholarship.notfound",Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_scholarship.notfound"));
 		}
 	}
 
@@ -127,8 +132,8 @@ public class CourseScholarshipProcessor {
 		Map<String, Scholarship> scholarshipsMap = scholarshipDao.getScholarshipByIds(new ArrayList<>(scholarshipIds))
 				.stream().collect(Collectors.toMap(Scholarship::getId, e -> e));
 		if (scholarshipsMap.size() != scholarshipIds.size()) {
-			log.error("one or more scholarship ids are invalid");
-			throw new ValidationException("one or more scholarship ids are invalid");
+			log.error(messageTranslator.toLocale("course_scholarship.ids.invalid",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("course_scholarship.ids.invalid"));
 		} else {
 			return scholarshipsMap;
 		}
@@ -146,8 +151,8 @@ public class CourseScholarshipProcessor {
 					.collect(Collectors.toList()));
 			return dto;
 		} else {
-			log.error("course scholarships not found agaist the course id: {}", courseId);
-			throw new NotFoundException("course scholarships not found agaist the course id: " + courseId);
+			log.error(messageTranslator.toLocale("course_scholarship.course.id.notfound",courseId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_scholarship.course.id.notfound",courseId));
 		}
 	}
 }

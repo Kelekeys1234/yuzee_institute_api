@@ -17,23 +17,23 @@ public class InstituteEnglishRequirementsDto {
 	@JsonProperty("institute_english_requirements_id")
 	public String instituteEnglishRequirementsId;
 
-	@NotBlank(message = "exam_name is required")
+	@NotBlank(message = "{exam_name.is_required}")
 	@JsonProperty("exam_name")
 	private String examName;
 
-	@NotNull(message = "reading_marks is required")
+	@NotNull(message = "{reading_marks.is_required}")
 	@JsonProperty("reading_marks")
 	private Double readingMarks;
 
-	@NotNull(message = "listning_marks is required")
+	@NotNull(message = "{listning_marks.is_required}")
 	@JsonProperty("listning_marks")
 	private Double listningMarks;
 
-	@NotNull(message = "writing_marks is required")
+	@NotNull(message = "{writing_marks.is_required}")
 	@JsonProperty("writing_marks")
 	private Double writingMarks;
 
-	@NotNull(message = "oral_marks is required")
+	@NotNull(message = "{oral_marks.is_required}")
 	@JsonProperty("oral_marks")
 	private Double oralMarks;
 
@@ -42,11 +42,11 @@ public class InstituteEnglishRequirementsDto {
 	private Double overAllMarks;
 
 	public InstituteEnglishRequirementsDto(String instituteEnglishRequirementsId,
-			@NotBlank(message = "exam_name is required") String examName,
-			@NotNull(message = "reading_marks is required") Double readingMarks,
-			@NotNull(message = "listning_marks is required") Double listningMarks,
-			@NotNull(message = "writing_marks is required") Double writingMarks,
-			@NotNull(message = "oral_marks is required") Double oralMarks) {
+			@NotBlank(message = "{exam_name.is_required}") String examName,
+			@NotNull(message = "{reading_marks.is_required}") Double readingMarks,
+			@NotNull(message = "{listning_marks.is_required}") Double listningMarks,
+			@NotNull(message = "{writing_marks.is_required}") Double writingMarks,
+			@NotNull(message = "{oral_marks.is_required}") Double oralMarks) {
 		super();
 		this.instituteEnglishRequirementsId = instituteEnglishRequirementsId;
 		this.examName = examName;

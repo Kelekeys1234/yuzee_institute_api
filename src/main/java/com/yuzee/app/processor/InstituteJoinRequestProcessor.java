@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -16,12 +17,13 @@ import com.yuzee.app.bean.InstituteJoinRequest;
 import com.yuzee.app.constant.InstituteJoinStatus;
 import com.yuzee.app.dao.InstituteJoinRequestDao;
 import com.yuzee.app.dto.InstituteJoinRequestDto;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -35,6 +37,9 @@ public class InstituteJoinRequestProcessor {
 	@Autowired
 	private StorageHandler storageHandler;
 
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	public InstituteJoinRequestDto instituteJoinRequest (String userId, InstituteJoinRequestDto instituteJoinRequestDto) throws Exception {
 		log.debug("inside instituteJoinRequest() method");
 		log.info("getting institute page request for institute name "+instituteJoinRequestDto.getInstituteName()+ " and user id "+userId);
@@ -88,13 +93,13 @@ public class InstituteJoinRequestProcessor {
 		log.info("Updating institute join request for id "+instituteJoinRequestId+ " to status "+status );
 		Optional<InstituteJoinRequest> instituteJoinRequestFromDb = instituteJoinRequestDao.getInstituteJoinRequestById(instituteJoinRequestId);
 		if (!instituteJoinRequestFromDb.isPresent()) {
-			log.error("No institute join request found for id "+instituteJoinRequestId);
-			throw new NotFoundException("No institute join request found for id "+instituteJoinRequestId);
+			log.error(messageTranslator.toLocale("join_request.id.notfound",instituteJoinRequestId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("join_request.id.notfound",instituteJoinRequestId));
 		}
 		InstituteJoinRequest instituteJoinRequest = instituteJoinRequestFromDb.get();
 		if (!instituteJoinRequest.getInstituteJoinStatus().equals(InstituteJoinStatus.PENDING)) {
-			log.error("Can only change status from Pending to granted or rejected");
-			throw new ValidationException("Can only change status from Pending to granted or rejected");
+			log.error(messageTranslator.toLocale("join_request.status.not.changed",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("join_request.status.not.changed"));
 		}
 		
 		instituteJoinRequest.setInstituteJoinStatus(InstituteJoinStatus.valueOf(status));

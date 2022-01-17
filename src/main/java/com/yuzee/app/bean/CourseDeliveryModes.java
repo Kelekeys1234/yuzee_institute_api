@@ -1,8 +1,11 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,7 +32,7 @@ import lombok.ToString;
 @ToString(exclude = "course")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "course_delivery_modes", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "study_mode",
-		"delivery_type" }, name = "UK_COURSE_ID_STUDY_MODE_DELIVERY_TYPE"), indexes = {
+		"delivery_type", "is_government_eligible", "accessibility", "duration", "duration_time" }, name = "UK_CDM_CI_SM_DT_GE_AC_DU_DT"), indexes = {
 				@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
 public class CourseDeliveryModes implements Serializable{
 
@@ -57,24 +61,14 @@ public class CourseDeliveryModes implements Serializable{
 	private String durationTime;
 
 	@EqualsAndHashCode.Include
-	@Column(name = "domestic_fee", nullable = false)
-	private Double domesticFee;
-
-	@EqualsAndHashCode.Include
-	@Column(name = "international_fee")
-	private Double internationalFee;
-
-	@EqualsAndHashCode.Include
-	@Column(name = "usd_domestic_fee")
-	private Double usdDomesticFee;
-
-	@EqualsAndHashCode.Include
-	@Column(name = "usd_international_fee")
-	private Double usdInternationalFee;
-
-	@EqualsAndHashCode.Include
 	@Column(name = "study_mode", nullable = false)
 	private String studyMode;
+
+	@Column(name = "is_government_eligible", nullable = false)
+	private Boolean isGovernmentEligible;
+
+	@Column(name = "accessibility", nullable = false)
+	private String accessibility;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)
@@ -89,7 +83,15 @@ public class CourseDeliveryModes implements Serializable{
 
 	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
-	
+
+	@EqualsAndHashCode.Include
+	@OneToMany(mappedBy = "courseDeliveryMode", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseFees> fees = new ArrayList<>();
+
+	@EqualsAndHashCode.Include
+	@OneToMany(mappedBy = "courseDeliveryMode", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CourseDeliveryModeFunding> fundings = new ArrayList<>();
+
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());

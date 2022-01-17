@@ -20,11 +20,14 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 @RestController("globalSearchFilterControllerV1")
 @RequestMapping("/api/v1/globalSearch")
 public class GlobalSearchFilterController {
 
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Autowired
 	private IGlobalSearchFilterService globalSearchFilterService;
 	
@@ -33,7 +36,7 @@ public class GlobalSearchFilterController {
 			throws ValidationException, NotFoundException, InvokeException{
 		Map<String,Object> responseEntityMap = globalSearchFilterService.filterByEntity(globalFilterSearchDto);
 		if(globalFilterSearchDto == null || globalFilterSearchDto.getIds() == null || globalFilterSearchDto.getIds().isEmpty()) {
-			throw new ValidationException("No Courses specified to Filter");
+			throw new ValidationException(messageTranslator.toLocale("global-search.course_fitered"));
 		}
 		List<?> responseList = (List<?>)responseEntityMap.get("entity");
 		Integer count = (Integer)responseEntityMap.get("count");
@@ -48,6 +51,6 @@ public class GlobalSearchFilterController {
 		responseMap.put("hasNextPage", paginationUtilDto.isHasNextPage());
 		responseMap.put("totalPages", paginationUtilDto.getTotalPages());
 		
-		return new GenericResponseHandlers.Builder().setData(responseMap).setMessage("List Display Successfully").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(responseMap).setMessage(messageTranslator.toLocale("global_search_filter.list.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 }

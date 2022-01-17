@@ -2,7 +2,11 @@ package com.yuzee.app.dto;
 
 import java.util.List;
 
+import javax.persistence.GeneratedValue;
 import javax.validation.constraints.NotBlank;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.Id;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
@@ -15,11 +19,12 @@ import lombok.ToString;
 @ToString
 public class InstituteDto {
 	
+	@Id
 	@JsonProperty("institute_id")
 	private String id;
 	
 	@JsonProperty("name")
-	@NotBlank(message = "name should not be blank")
+	@NotBlank(message = "{name.is_required}")
 	private String name;
 	
 	@JsonProperty("city_name")
@@ -32,7 +37,7 @@ public class InstituteDto {
 	private Integer worldRanking;
 	
 	@JsonProperty("institute_type")
-	@NotBlank(message = "institute_type should not be blank")
+	@NotBlank(message = "{institute_type.is_required}")
 	private String instituteType;
 	
 	@JsonProperty("website")
@@ -74,9 +79,6 @@ public class InstituteDto {
 	@JsonProperty("total_courses")
 	private Integer totalCourses;
 	
-	@JsonProperty("campus_name")
-	private String campusName;
-	
 	@JsonProperty("state_name")
 	private String stateName;
 	
@@ -90,7 +92,7 @@ public class InstituteDto {
 	private String coverPhotoUrl;
 	
 	@JsonProperty("readable_id")
-	@NotBlank(message = "readable_id should not be blank")
+	@NotBlank(message = "{readable_id.is_required}")
 	private String readableId;
 	
 	@JsonProperty("institute_type_obj")

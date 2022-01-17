@@ -22,16 +22,17 @@ import com.yuzee.app.dao.IErrorReportDAO;
 import com.yuzee.app.dto.ErrorReportCategoryDto;
 import com.yuzee.app.dto.ErrorReportDto;
 import com.yuzee.app.dto.ErrorReportResponseDto;
-import com.yuzee.common.lib.exception.ValidationException;
-import com.yuzee.common.lib.util.DateUtil;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.handler.UserHandler;
+import com.yuzee.common.lib.util.DateUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 @Service
 @Transactional
@@ -39,7 +40,10 @@ public class ErrorReportService implements IErrorReportService {
 
 	@Autowired
 	private IErrorReportDAO errorReportDAO;
-
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Autowired
 	private UserHandler userHandler;
 
@@ -65,7 +69,7 @@ public class ErrorReportService implements IErrorReportService {
 		if (errorReportDto.getErrorReportCategoryId() != null) {
 			errorReport.setErrorReportCategory(errorReportDAO.getErrorCategory(errorReportDto.getErrorReportCategoryId()));
 		} else {
-			throw new ValidationException("Error category is required.");
+			throw new ValidationException(messageTranslator.toLocale("report.required.category"));
 		}
 		errorReport.setStatus("PENDING");
 		errorReport.setCreatedBy("API");
@@ -81,7 +85,7 @@ public class ErrorReportService implements IErrorReportService {
 	@Override
 	public void update(final ErrorReportDto errorReportDto, final String id) throws ValidationException {
 		if (null == errorReportDto.getStatus()) {
-			throw new ValidationException("Status is required.");
+			throw new ValidationException(messageTranslator.toLocale("report.required.status"));
 		}
 		ErrorReport errorReport = errorReportDAO.getErrorReportById(id);
 		String caseNumber = errorReport.getCaseNumber();
@@ -89,7 +93,7 @@ public class ErrorReportService implements IErrorReportService {
 		if (errorReportDto.getErrorReportCategoryId() != null) {
 			errorReport.setErrorReportCategory(errorReportDAO.getErrorCategory(errorReportDto.getErrorReportCategoryId()));
 		} else {
-			throw new ValidationException("Error category is required.");
+			throw new ValidationException(messageTranslator.toLocale("report.required.category"));
 		}
 		errorReport.setId(id);
 		errorReport.setUpdatedBy("API");
@@ -209,7 +213,7 @@ public class ErrorReportService implements IErrorReportService {
 	public void archiveErrorReport(final String errorReportId, final boolean isArchive) throws ValidationException {
 		ErrorReport errorReport = errorReportDAO.getErrorReportById(errorReportId);
 		if (errorReport == null) {
-			throw new ValidationException("Error Report not found for id :" + errorReportId);
+			throw new ValidationException(messageTranslator.toLocale("report.not_found.id", errorReportId));
 		}
 		errorReport.setIsArchive(isArchive);
 		errorReport.setUpdatedBy("API");

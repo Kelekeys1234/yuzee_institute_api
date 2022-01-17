@@ -30,7 +30,7 @@ import lombok.ToString;
 @Entity
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(exclude = "course")
-@Table(name = "course_payment", uniqueConstraints = @UniqueConstraint(name = "UK_COURSE", columnNames = {
+@Table(name = "course_payment", uniqueConstraints = @UniqueConstraint(name = "UK_COURSE_PAYMENT", columnNames = {
 		"course_id" }))
 public class CoursePayment implements Serializable {
 

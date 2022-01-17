@@ -1,6 +1,7 @@
 package com.yuzee.app.controller.v1;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -21,6 +22,7 @@ import com.yuzee.common.lib.exception.RuntimeValidationException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +32,8 @@ public class ScholarshipIntakeController implements ScholarshipIntakeInterface {
 
 	@Autowired
 	private ScholarshipIntakeProcessor scholarshipIntakeProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> saveUpdateScholarshipIntake(String userId, String scholarshipId,
 			@Valid ValidList<ScholarshipIntakeDto> scholarshipIntakeDtos)
@@ -40,13 +43,13 @@ public class ScholarshipIntakeController implements ScholarshipIntakeInterface {
 		scholarshipIntakeDtos.stream().forEach(e -> {
 			if (!EnumUtils.isValidEnumIgnoreCase(StudentCategory.class, e.getStudentCategory())) {
 				String studentCategories = Utils.getEnumNamesAsString(StudentCategory.class);
-				log.error("student_category must be in one of the following: ", studentCategories);
+				log.error(messageTranslator.toLocale("scolarship-intake.category", studentCategories,Locale.US));
 				throw new RuntimeValidationException(
-						"student_category must be in one of the following: " + studentCategories);
+						messageTranslator.toLocale("scolarship-intake.category", studentCategories));
 			}
 		});
 		scholarshipIntakeProcessor.saveUpdateScholarshipIntakes(userId, scholarshipId, scholarshipIntakeDtos);
-		return new GenericResponseHandlers.Builder().setMessage("Scholarship Intakes added/ updated successfully.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("scholarship_intake.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -55,7 +58,7 @@ public class ScholarshipIntakeController implements ScholarshipIntakeInterface {
 			List<String> scholarshipIntakeIds) throws ValidationException, NotFoundException, ForbiddenException {
 		log.info("inside ScholarshipIntakeController.deleteByScholarshipIntakeIds");
 		scholarshipIntakeProcessor.deleteByScholarshipIntakeIds(userId, scholarshipId, scholarshipIntakeIds);
-		return new GenericResponseHandlers.Builder().setMessage("Scholarship Intakes deleted successfully.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("scholarship_intake.deleted"))
 				.setStatus(HttpStatus.OK).create();
 	}
 }

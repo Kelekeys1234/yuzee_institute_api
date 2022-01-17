@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.service.UserRecommendationService;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 @RestController("userRecommendationControllerV1")
 @RequestMapping("/api/v1/user")
@@ -21,17 +22,18 @@ public class UserRecommendationController {
 
 	@Autowired
 	private UserRecommendationService userRecommendationService;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@GetMapping(value = "/recommend/course/{courseId}")
 	public ResponseEntity<?> getUserRecommendCourse(@PathVariable final String courseId, @RequestParam final String userId) throws Exception {
 		List<Course> recommendCourses = userRecommendationService.getRecommendCourse(courseId, userId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage("Get recommend course successfully")
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage(messageTranslator.toLocale("user_recommendation.list.retrieved"))
 				.create();
 	}
 
 	@GetMapping(value = "/related/course/{courseId}")
 	public ResponseEntity<?> getRelatedCourse(@PathVariable final String courseId) throws Exception {
 		List<Course> recommendCourses = userRecommendationService.getRelatedCourse(courseId);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage("Get related course successfully").create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(recommendCourses).setMessage(messageTranslator.toLocale("user_recommendation.related.list.retrieved")).create();
 	}
 }

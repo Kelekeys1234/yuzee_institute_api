@@ -25,12 +25,12 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString(exclude = "course")
+@ToString(exclude = "courseSemester")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "course_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "course_id",
-		"semester" }, name = "UK_NA_S"), indexes = {
-				@Index(name = "IDX_COURSE", columnList = "course_id", unique = false) })
-public class CourseSubject implements Serializable {
+@Table(name = "semeter_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "name",
+		"course_semester_id" }, name = "UK_COURSE_SEMESTER_NA"), indexes = {
+				@Index(name = "IDX_COURSE", columnList = "course_semester_id", unique = false) })
+public class SemesterSubject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,13 +47,10 @@ public class CourseSubject implements Serializable {
 	@EqualsAndHashCode.Include
 	@Column(name = "description")
 	private String description;
-	
-	@Column(name = "semester",nullable = false)
-	private String semester;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "course_id", nullable = false)
-	private Course course;
+	@JoinColumn(name = "course_semester_id", nullable = false)
+	private CourseSemester courseSemester;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)

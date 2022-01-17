@@ -17,6 +17,7 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.common.lib.util.ValidationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,14 +27,15 @@ public class CourseIntakeController implements CourseIntakeInterface {
 
 	@Autowired
 	private CourseIntakeProcessor courseIntakeProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> saveAll(String userId, String courseId, @Valid CourseIntakeDto courseIntakeDto)
 			throws ValidationException, NotFoundException {
 		log.info("inside CourseIntakeController.saveAll");
 		ValidationUtil.validateIntakeType(courseIntakeDto.getType());
 		courseIntakeProcessor.saveCourseIntake(userId, courseId, courseIntakeDto);
-		return new GenericResponseHandlers.Builder().setMessage("Course Intake added successfully.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_intake.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -42,7 +44,7 @@ public class CourseIntakeController implements CourseIntakeInterface {
 			throws ValidationException, NotFoundException, ForbiddenException {
 		log.info("inside CourseIntakeController.deleteCourseIntake");
 		courseIntakeProcessor.deleteCourseIntake(userId, courseId, linkedCourseIds);
-		return new GenericResponseHandlers.Builder().setMessage("Course Intake deleted successfully.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_intake.deleted"))
 				.setStatus(HttpStatus.OK).create();
 	}
 }

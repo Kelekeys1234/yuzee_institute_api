@@ -17,6 +17,7 @@ import com.yuzee.common.lib.exception.InternalServerException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,14 +27,15 @@ public class CoursePaymentController implements CoursePaymentInterface {
 
 	@Autowired
 	private CoursePaymentProcessor coursePaymentProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> saveUpdateCoursePayment(String userId, String courseId,
 			@Valid CoursePaymentDto coursePaymentDto)
 			throws ValidationException, NotFoundException, ForbiddenException {
 		log.info("inside CoursePaymentController.saveUpdateCoursePayment method");
 		coursePaymentProcessor.saveUpdateCoursePayment(userId, courseId, coursePaymentDto);
-		return new GenericResponseHandlers.Builder().setMessage("Course Payment saved/ updated successfully.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_payment.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -42,7 +44,7 @@ public class CoursePaymentController implements CoursePaymentInterface {
 			throws InternalServerException, NotFoundException, ForbiddenException {
 		log.info("inside CoursePaymentController.deleteCoursePayment method");
 		coursePaymentProcessor.deleteCoursePayment(userId, courseId);
-		return new GenericResponseHandlers.Builder().setMessage("Course Payment deleted successfully.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_payment.deleted"))
 				.setStatus(HttpStatus.OK).create();
 	}
 }

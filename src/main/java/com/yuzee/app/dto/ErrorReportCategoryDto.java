@@ -11,9 +11,9 @@ public class ErrorReportCategoryDto implements Serializable {
 	 */
 	private static final long serialVersionUID = -6986644293873778488L;
 
-	@NotNull(message = "Error Report Category name is required.")
+	@NotNull(message = "{name.is_required}")
 	private String name;
-	@NotNull(message = "Error Category type is required.")
+	@NotNull(message = "{errorCategoryType.is_required}")
 	private String errorCategoryType;
 
 	public String getName() {

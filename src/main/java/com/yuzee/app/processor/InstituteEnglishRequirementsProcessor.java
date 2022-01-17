@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -15,6 +16,7 @@ import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.InstituteEnglishRequirementsDao;
 import com.yuzee.app.dto.InstituteEnglishRequirementsDto;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -28,14 +30,17 @@ public class InstituteEnglishRequirementsProcessor {
 	@Autowired
 	private InstituteEnglishRequirementsDao instituteEnglishRequirementsDao;
 
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	public void addInstituteEnglishRequirements(String userId, String instituteId, InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception {
 		log.debug("Inside InstituteEnglishRequirementsDao method()");
 		// TODO validate userId have access for institute Id
 		log.info("Getting institute having institute id "+instituteId);
 		Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(instituteId);
 		if (!sourceInstituteFromDB.isPresent()) {
-			log.error("No institute found for institute having id "+instituteId);
-			throw new NotFoundException("No institute found for institute having id "+instituteId);
+			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
 		}
 		
 		log.info("Adding institute english requirements with name "+instituteEnglishRequirementsDto.getExamName());
@@ -52,8 +57,8 @@ public class InstituteEnglishRequirementsProcessor {
 		log.info("Getting institute english requirements having requirement id  "+instituteEnglishRequirementsId);
 		Optional<InstituteEnglishRequirements> optionalInstituteEnglishRequirement = instituteEnglishRequirementsDao.getInsituteEnglishRequirementsById(instituteEnglishRequirementsId);
 		if (!optionalInstituteEnglishRequirement.isPresent()) {
-			log.error("No english requirement found for institute having english requirement id "+instituteEnglishRequirementsId);
-			throw new NotFoundException("No english requirement found for institute having english requirement id "+instituteEnglishRequirementsId);
+			log.error(messageTranslator.toLocale("english_requirement.id.notfound",instituteEnglishRequirementsId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("english_requirement.id.notfound",instituteEnglishRequirementsId));
 		}
 		InstituteEnglishRequirements instituteEnglishRequirements = optionalInstituteEnglishRequirement.get();
 		log.info("Getting institute id from InstituteEnglishRequirements and validate it with user id");

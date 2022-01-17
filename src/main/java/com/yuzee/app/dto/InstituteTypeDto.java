@@ -13,7 +13,7 @@ public class  InstituteTypeDto {
 	private String instituteTypeId;
 	
 	@JsonProperty("institute_type_name")
-	@NotBlank(message = "institute_type_name should not be blank")
+	@NotBlank(message = "{institute_type_name.is_required}")
 	private String instituteTypeName;
 	
 	@JsonProperty("type")

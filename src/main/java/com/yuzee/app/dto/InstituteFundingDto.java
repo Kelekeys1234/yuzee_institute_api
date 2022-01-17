@@ -13,6 +13,6 @@ public class InstituteFundingDto {
 	private String id;
 
 	@JsonProperty(value = "funding_name_id")
-	@NotEmpty(message = "funding_name_id must not be null")
+	@NotEmpty(message = "{funding_name_id.is_required}")
 	private String fundingNameId;
 }

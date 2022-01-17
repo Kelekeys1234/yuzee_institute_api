@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -20,6 +21,7 @@ import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -29,6 +31,9 @@ public class AccrediatedDetailProcessor {
 
 	@Autowired
 	private AccrediatedDetailDao accrediatedDetailDao;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 	
 	@Autowired
 	private StorageHandler storageHandler;
@@ -115,8 +120,8 @@ public class AccrediatedDetailProcessor {
 			AccrediatedDetail saveAccrediatedDetail = accrediatedDetailDao.addAccrediatedDetail(optAccrediatedDetail.get());
 			BeanUtils.copyProperties(saveAccrediatedDetail, detailDto);
 		} else {
-			log.error("Accrediation not found for id "+id);
-			throw new NotFoundException("Accrediation is not found for given id "+id);
+			log.error(messageTranslator.toLocale("accrediated_detail.id.notfound",id,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("accrediated_detail.id.notfound",id));
 		}
 		return detailDto;
 	}
@@ -133,8 +138,8 @@ public class AccrediatedDetailProcessor {
 			List<StorageDto> storageDTOList = storageHandler.getStorages(optAccrediatedDetail.get().getId(), EntityTypeEnum.valueOf(optAccrediatedDetail.get().getEntityType()), EntitySubTypeEnum.ACCREDIATED);
 			accrediatedDetailDto.setStorage(storageDTOList);
 		} else {
-			log.error("No accrediation deails found for id "+id);
-			throw new NotFoundException("No accrediation deails found for id "+id);
+			log.error(messageTranslator.toLocale("accrediated_detail.id.notfound",id,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("accrediated_detail.id.notfound",id));
 		}
 		return accrediatedDetailDto;
 	}

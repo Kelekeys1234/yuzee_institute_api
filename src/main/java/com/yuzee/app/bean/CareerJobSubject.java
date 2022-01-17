@@ -27,7 +27,7 @@ import lombok.ToString;
 @ToString(exclude = "careerJobs")
 @EqualsAndHashCode
 @Table(name = "job_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "job_id", "subject" }, 
-name = "UK_SUBJECT_JOB_ID"), indexes = {@Index(name = "IDX_JOB_ID", columnList = "job_id", unique = false)})
+name = "UK_JOB_SUBJECT_JOB_ID"), indexes = {@Index(name = "IDX_JOB_ID", columnList = "job_id", unique = false)})
 public class CareerJobSubject implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

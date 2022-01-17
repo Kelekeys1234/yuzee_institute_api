@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -58,7 +59,6 @@ import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseScholarshipAndFacultyCountDto;
 import com.yuzee.app.dto.CourseSearchDto;
-import com.yuzee.app.dto.InstituteCampusDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
 import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
@@ -101,6 +101,7 @@ import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.handler.UserHandler;
 import com.yuzee.common.lib.util.DateUtil;
 import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -129,6 +130,9 @@ public class InstituteProcessor {
 	@Autowired
 	private StorageHandler storageHandler;
 
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Autowired
 	private CourseDao courseDao;
 
@@ -178,12 +182,6 @@ public class InstituteProcessor {
 
 	@Autowired
 	private InstituteServiceDao instituteServiceDao;
-
-	@Autowired
-	private FaqDao faqDao;
-	
-	@Autowired
-	private UserHandler userHandler;
 
 	@Autowired
 	private FaqDao faqDao;
@@ -270,6 +268,7 @@ public class InstituteProcessor {
 				}
 				log.info("Copying institute data from instituteBean to elasticSearchDTO");
 				instituteRequest.setId(institute.getId());
+				instituteRequest.setEditAccess(true);
 				instituteElasticDtoList.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
@@ -373,8 +372,8 @@ public class InstituteProcessor {
 		if (!StringUtils.isEmpty(instituteRequest.getName())) {
 			institute.setName(instituteRequest.getName());
 		} else {
-			log.error("InstituteName is required");
-			throw new ValidationException("InstituteName is required");
+			log.error(messageTranslator.toLocale("institute-processor.required.name",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-processor.required.name"));
 		}
 		
 		Institute insituteWithSameId = instituteDao.findByReadableId(instituteRequest.getReadableId());
@@ -392,21 +391,21 @@ public class InstituteProcessor {
 		if (!StringUtils.isEmpty(instituteRequest.getCountryName())) {
 			institute.setCountryName(instituteRequest.getCountryName());
 		} else {
-			log.error("CountryName is required");
-			throw new ValidationException("countryName is required");
+			log.error(messageTranslator.toLocale("institute-processor.required.country_name",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-processor.required.country_name"));
 		}
 		if (!StringUtils.isEmpty(instituteRequest.getCityName())) {
 			institute.setCityName(instituteRequest.getCityName());
 		} else {
-			log.error("CityName is required");
-			throw new ValidationException("cityName is required");
+			log.error(messageTranslator.toLocale("institute-processor.required.city_name",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-processor.required.city_name"));
 		}
 
 		if (!StringUtils.isEmpty(instituteRequest.getInstituteType())) {
 			 institute.setInstituteType(instituteRequest.getInstituteType());
 		} else {
-			log.error("InstituteType is required like University, School, College etc");
-			throw new ValidationException("InstituteType is required like University, School, College etc");
+			log.error(messageTranslator.toLocale("institute-processor.required.type",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-processor.required.type"));
 		}
 
 		institute.setDomesticRanking(instituteRequest.getDomesticRanking());
@@ -416,8 +415,8 @@ public class InstituteProcessor {
 		if (!StringUtils.isEmpty(instituteRequest.getInstituteCategoryTypeId())) {
 			institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getInstituteCategoryTypeId()));
 		} else {
-			log.error("instituteCategoryTypeId is required");
-			throw new ValidationException("instituteCategoryTypeId is required");
+			log.error(messageTranslator.toLocale("institute-processor.required.category_type_id",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-processor.required.category_type_id"));
 		}
 		institute.setState(instituteRequest.getStateName());
 		institute.setAddress(instituteRequest.getAddress());
@@ -425,7 +424,6 @@ public class InstituteProcessor {
 		institute.setPhoneNumber(instituteRequest.getPhoneNumber());
 		institute.setLatitude(instituteRequest.getLatitude());
 		institute.setLongitude(instituteRequest.getLongitude());
-		institute.setCampusName(instituteRequest.getCampusName());
 		institute.setEnrolmentLink(instituteRequest.getEnrolmentLink());
 		institute.setTuitionFeesPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
 		institute.setScholarshipFinancingAssistance(instituteRequest.getScholarshipFinancingAssistance());
@@ -444,12 +442,12 @@ public class InstituteProcessor {
 		try {
 			institute = instituteDao.addUpdateInstitute(institute);
 		} catch (DataIntegrityViolationException exception) {
-			log.error("Institute already exists having \nname: {},\ncampus_name: {},\ncity_Name: {},\ncountry_name: {}",
-					instituteRequest.getName(), instituteRequest.getCampusName(), instituteRequest.getCityName(),
+			log.error("Institute already exists having \nname: {},\ncity_Name: {},\ncountry_name: {}",
+					instituteRequest.getName(), instituteRequest.getCityName(),
 					instituteRequest.getCountryName());
 			throw new ConstraintVoilationException(
-					"Institute already exists having name: " + instituteRequest.getName() + ", campus_name: "
-							+ instituteRequest.getCampusName() + ", city_Name: " + instituteRequest.getCityName()
+					"Institute already exists having name: " + instituteRequest.getName() + ", city_Name: " 
+			+ instituteRequest.getCityName()
 							+ ", country_name: " + instituteRequest.getCountryName());
 		}
 
@@ -500,7 +498,7 @@ public class InstituteProcessor {
 					.collect(Collectors.toSet());
 
 			log.info("going to check if funding name ids are valid");
-			commonProcessor.validateAndGetFundingsByFundingNameIds(new ArrayList<>(fundingNameIds));
+			commonProcessor.getFundingsByFundingNameIds(new ArrayList<>(fundingNameIds), true);
 
 			log.info("see if some entitity ids are not present then we have to delete them.");
 			Set<String> updateRequestIds = instituteFundingDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
@@ -514,8 +512,8 @@ public class InstituteProcessor {
 				if (!StringUtils.isEmpty(e.getId())) {
 					instituteFunding = existingInstituteFundingsMap.get(e.getId());
 					if (instituteFunding == null) {
-						log.error("invalid institute funding id : {}", e.getId());
-						throw new RuntimeNotFoundException("invalid institute funding id : " + e.getId());
+						log.error(messageTranslator.toLocale("institute-processor.invalid.funding_id", e.getId(),Locale.US));
+						throw new RuntimeNotFoundException( messageTranslator.toLocale("institute-processor.invalid.funding_id", e.getId()));
 					}
 				}
 				instituteFunding.setFundingNameId(e.getFundingNameId());
@@ -681,8 +679,8 @@ public class InstituteProcessor {
 			institute = instituteDao.get(id);
 		}
 		if (institute == null) {
-			log.error("No institute found in DB for instituteId = {}", id);
-			throw new ValidationException("Institute not found for id" + id);
+			log.error(messageTranslator.toLocale("institute-processor.not_found.id", id,Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-processor.not_found.id", id));
 		}
 		log.info("Converting bean to request DTO class");
 		InstituteRequestDto instituteRequestDto = CommonUtil.convertInstituteBeanToInstituteRequestDto(institute);
@@ -841,8 +839,8 @@ public class InstituteProcessor {
 				paginationInstituteResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 				paginationInstituteResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 			} else {
-				log.error("No institutes found in DB");
-				throw new NotFoundException("No Institute found in DB");
+				log.error(messageTranslator.toLocale("institute-processor.not_found",Locale.US));
+				throw new NotFoundException(messageTranslator.toLocale("institute-processor.not_found"));
 			}
 		} catch (Exception exception) {
 			log.error("Exception while filtering institues based on passed filters, having exception = "+exception);
@@ -904,8 +902,8 @@ public class InstituteProcessor {
 			log.info("Calling DAO layer to update institute status from active to inactive");
 			instituteDao.addUpdateInstitute(institute);
 		} else {
-			log.error("Institute not found for id" + id);
-			throw new ValidationException("Institute not found for id" + id);
+			log.error(messageTranslator.toLocale("institute-processor.not_found.id", id,Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-processor.not_found.id", id));
 		}
 	}
 
@@ -1171,43 +1169,13 @@ public class InstituteProcessor {
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
-	public List<InstituteCampusDto> getInstituteCampuses(String userId, String instituteId) throws NotFoundException {
-		log.debug("inside processor.getInstitutCampuses method.");
-		Institute institute = instituteDao.get(instituteId);
-		if (!ObjectUtils.isEmpty(institute)) {
-			List<Institute> institutes = instituteDao.getInstituteCampuses(instituteId, institute.getName());
-
-			List<InstituteCampusDto> instituteCampuses = institutes.stream().map(e -> {
-				InstituteCampusDto campusDto = modelMapper.map(e, InstituteCampusDto.class);
-				if (e.getCreatedBy().equals(userId)) {
-					campusDto.setHasEditAccess(true);
-				} else {
-					campusDto.setHasEditAccess(false);
-				}
-				return campusDto;
-			}).collect(Collectors.toList());
-
-			instituteCampuses.stream().forEach(e -> {
-				TimingDto instituteTimingResponseDto = instituteTimingProcessor
-						.getTimingResponseDtoByInstituteId(e.getId());
-				e.setInstituteTimings(CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
-
-			});
-			return instituteCampuses;
-		} else {
-			log.error("Institute not found against id: {}", instituteId);
-			throw new NotFoundException("Institute not found against id: " + instituteId);
-		}
-	}
-
-	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {
 		log.debug("inside processor.getInstituteFaculties method.");
 		if (!ObjectUtils.isEmpty(instituteDao.get(instituteId))) {
 			return instituteDao.getInstituteFaculties(instituteId);
 		}else {
-			log.error("Institute not found against id: {}", instituteId);
-			throw new NotFoundException("Institute not found against id: " + instituteId);
+			log.error(messageTranslator.toLocale("institute-processor.not_found.aganist_id", instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute-processor.not_found.aganist_id", instituteId));
 		}
 	}
 
@@ -1271,8 +1239,8 @@ public class InstituteProcessor {
 				throw new InternalServerException(e.getMessage());
 			}
 		} else {
-			log.error("Institute not found for id: {}", instituteId);
-			throw new NotFoundException("Institute not found for id: " + instituteId);
+			log.error(messageTranslator.toLocale("institute-processor.not_found.id", instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute-processor.not_found.id", instituteId));
 		}
 	}
 	
@@ -1282,8 +1250,8 @@ public class InstituteProcessor {
 
 		List<Institute> institutes = instituteDao.findAllById(instituteIds);
 		if (institutes.size() != instituteIds.size()) {
-			log.error("one or more institute_ids not found");
-			throw new NotFoundException("one or more institute_ids not found");
+			log.error(messageTranslator.toLocale("institute-processor.not_found.id", instituteIds.toArray(),Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute-processor.not_found.id", instituteIds.toArray()));
 		}
 
 		return institutes;
@@ -1295,8 +1263,8 @@ public class InstituteProcessor {
 		
 		Institute existingInstitute = instituteDao.get(instituteId);
 		if(ObjectUtils.isEmpty(existingInstitute)) {
-			log.error("Institute with id {} not exists",instituteId);
-			throw new NotFoundException(String.format("Institute with id %s not exists",instituteId));
+			log.error(messageTranslator.toLocale("institute-processor.not_exist.institute", instituteId,Locale.US));
+			throw new NotFoundException(String.format(messageTranslator.toLocale("institute-processor.not_exist.institute", instituteId)));
 		}
 		
 		log.info("Update institute {} status {}",instituteId,status);
@@ -1395,12 +1363,14 @@ public class InstituteProcessor {
 				}
 			}
 			try {
-				Map<String, List<EnableApplicationDto>> enableApplicationsMap = applicationHandler
+				var wrapperObject = new Object() {
+				Map<String, List<EnableApplicationDto>> enableApplicationsMap = null;
+				};
+				wrapperObject.enableApplicationsMap = applicationHandler
 						.getEnableApplications(EntityTypeEnum.INSTITUTE.name(), instituteIds);
 
-				List<EnableApplicationDto> enableApplicationDtos = enableApplicationsMap.get(instituteId);
+				List<EnableApplicationDto> enableApplicationDtos = wrapperObject.enableApplicationsMap.get(instituteId);
 				if (!CollectionUtils.isEmpty(enableApplicationDtos)) {
-					verificationDto.setGallery(enableApplicationDtos.stream().anyMatch(e -> e.isEnable()));
 					verificationDto.setApplicationProcedure(enableApplicationDtos.stream().anyMatch(e -> e.isEnable()));
 				}
 			} catch (Exception ex) {

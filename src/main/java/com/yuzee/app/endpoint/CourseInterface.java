@@ -100,8 +100,7 @@ public interface CourseInterface {
 	@GetMapping(value = "/course/user")
 	public ResponseEntity<?> getUserCourses(@RequestBody final List<String> courseIds,
 			@RequestParam(required = false) final String sortBy,
-			@RequestParam(required = false) final String sortAsscending)
-			throws ValidationException;
+			@RequestParam(required = false) final String sortAsscending) throws ValidationException;
 
 	@PostMapping(value = "/course/filter")
 	public ResponseEntity<?> courseFilter(@RequestHeader(required = true) final String userId,
@@ -195,16 +194,27 @@ public interface CourseInterface {
 	ResponseEntity<?> updateBasicCourse(@RequestHeader(value = "userId", required = true) String userId,
 			@PathVariable String instituteId, @Valid @RequestBody CourseRequest course, @PathVariable String id)
 			throws ValidationException, NotFoundException, ForbiddenException, InvokeException;
-	
+
 	@PutMapping("/course/procedure_id")
 	public ResponseEntity<?> updateProcedureIdInCourse(
-			@RequestParam(name = "course_ids",required = true) List<String> courseIds, 
-			@RequestParam(name = "student_type",required = true) String studentType, 
-			@RequestParam(name = "procedure_id",required = true) String procedureId);
-	
+			@RequestParam(name = "course_ids", required = true) List<String> courseIds,
+			@RequestParam(name = "student_type", required = true) String studentType,
+			@RequestParam(name = "procedure_id", required = true) String procedureId);
+
 	@PutMapping("/course/procedure_id/institute_id")
 	public ResponseEntity<?> updateProcedureIdInCourseByInstituteId(
-			@RequestParam(name = "institute_id",required = true) String instituteId, 
-			@RequestParam(name = "student_type",required = true) String studentType,
-			@RequestParam(name = "procedure_id",required = true) String procedureId);
+			@RequestParam(name = "institute_id", required = true) String instituteId,
+			@RequestParam(name = "student_type", required = true) String studentType,
+			@RequestParam(name = "procedure_id", required = true) String procedureId);
+
+	@PostMapping(value = "/course/draft/publish/{courseId}")
+	public ResponseEntity<?> publishDraftCourse(@RequestHeader(value = "userId", required = true) String userId, @PathVariable final String courseId);
+
+	@GetMapping(value = "/course/draft/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	public ResponseEntity<?> getDraftCourses(@RequestHeader(value = "userId", required = true) String userId,
+			@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
+			@RequestParam(name = "name", required = true) String name, @RequestParam(name = "institute_id", required = true) String instituteId);
+
+	@DeleteMapping(value = "/course/draft/{courseId}")
+	public ResponseEntity<?> discardDraftCourse(@RequestHeader(value = "userId", required = true) String userId, @PathVariable final String courseId);
 }

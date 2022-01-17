@@ -17,15 +17,15 @@ import lombok.NoArgsConstructor;
 public class CareerJobDto {
 
 	@JsonProperty("job_id")
-	@NotBlank(message = "job_id should not be blank")
+	@NotBlank(message = "{job_id.is_required}")
 	private String id;
 	
 	@JsonProperty("job_name")
-	@NotBlank(message = "job_name should not be blank")
+	@NotBlank(message = "{job_name.is_required}")
 	private String job;
 	
 	@JsonProperty("job_description")
-	@NotBlank(message = "job_description should not be blank")
+	@NotBlank(message = "{job_description.is_required}")
 	private String jobDescription;
 	
 	@JsonProperty("career")

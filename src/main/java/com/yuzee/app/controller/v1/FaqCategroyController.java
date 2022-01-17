@@ -1,5 +1,7 @@
 package com.yuzee.app.controller.v1;
 
+import java.util.Locale;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.FaqCategoryDto;
 import com.yuzee.app.endpoint.FaqCategoryEndpoint;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.FaqCategoryProcessor;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,13 +24,14 @@ public class FaqCategroyController implements FaqCategoryEndpoint {
 
 	@Autowired
 	private FaqCategoryProcessor faqCategoryProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> addFaqCategory(String userId, FaqCategoryDto faqCategory) throws ValidationException {
 		log.info("inside FaqCategroyController.addFaqCategory");
 		faqCategoryProcessor.addFaqCategory(userId, faqCategory);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Created faq category successfully").create();
+				.setMessage(messageTranslator.toLocale("faq_categroy.added")).create();
 	}
 
 	@Override
@@ -36,7 +40,7 @@ public class FaqCategroyController implements FaqCategoryEndpoint {
 		log.info("inside FaqCategroyController.updateFaqCategory");
 		faqCategoryProcessor.updateFaqCategory(userId, faqCategoryId, faqCategory);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Updated faq category successfully").create();
+				.setMessage(messageTranslator.toLocale("faq_categroy.updated")).create();
 	}
 
 	@Override
@@ -44,30 +48,30 @@ public class FaqCategroyController implements FaqCategoryEndpoint {
 		log.info("inside FaqCategroyController.deleteFaqCategory");
 		faqCategoryProcessor.deleteFaqCategory(faqCategoryId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Deleted faq category successfully").create();
+				.setMessage(messageTranslator.toLocale("faq_categroy.deleted")).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getFaqCategoryList(Integer pageNumber, Integer pageSize) throws ValidationException {
 		log.info("inside FaqCategroyController.getFaqCategoryList");
 		if (pageNumber < 1) {
-			log.error("Page number can not be less than 1");
-			throw new ValidationException("Page number can not be less than 1");
+			log.error(messageTranslator.toLocale("faq-category.not_zero.page_number"),Locale.US);
+			throw new ValidationException(messageTranslator.toLocale("faq-category.not_zero.page_number"));
 		}
 
 		if (pageSize < 1) {
-			log.error("Page size can not be less than 1");
-			throw new ValidationException("Page size can not be less than 1");
+			log.error(messageTranslator.toLocale("faq-catagory.not_zero.page_size",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("faq-catagory.not_zero.page_size"));
 		}
 		return new GenericResponseHandlers.Builder()
 				.setData(faqCategoryProcessor.getFaqCategories(pageNumber, pageSize)).setStatus(HttpStatus.OK)
-				.setMessage("faq categories fetched successfully").create();
+				.setMessage(messageTranslator.toLocale("faq_categroy.retrieved")).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getFaqCategoryDetail(String faqCategoryId) throws ValidationException {
 		log.info("inside FaqCategroyController.getFaqCategoryDetail");
 		return new GenericResponseHandlers.Builder().setData(faqCategoryProcessor.getFaqCategory(faqCategoryId))
-				.setStatus(HttpStatus.OK).setMessage("faq category fetched successfully").create();
+				.setStatus(HttpStatus.OK).setMessage(messageTranslator.toLocale("faq_categroy.retrieved")).create();
 	}
 }

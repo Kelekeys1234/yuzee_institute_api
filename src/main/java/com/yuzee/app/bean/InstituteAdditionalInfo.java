@@ -24,8 +24,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "institute_additional_info",  uniqueConstraints = @UniqueConstraint(columnNames = { "institute_id" } , name = "UK_INSTITUTE_ID"),
-		indexes = { @Index (name = "IDX_INSTITUTE_ID", columnList="institute_id", unique = true)})
+@Table(name = "institute_additional_info", uniqueConstraints = @UniqueConstraint(columnNames = {
+		"institute_id" }, name = "UK_INSTITUTE_ADDITIONAL_INFO_II"), indexes = {
+				@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = true) })
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = "institute")

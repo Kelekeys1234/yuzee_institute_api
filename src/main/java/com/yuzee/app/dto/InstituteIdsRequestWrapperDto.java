@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class InstituteIdsRequestWrapperDto {
 
-	@NotEmpty(message = "institute_ids must not be empty.")
+	@NotEmpty(message = "{institute_ids.is_required}")
 	@JsonProperty("institute_ids")
 	List<String> instituteIds;
 }

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -38,6 +39,7 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeValidationException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.PublishSystemEventHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,6 +74,9 @@ public class CourseInstituteProcessor {
 	
 	@Autowired
 	ConversionProcessor conversionProcessor;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	@Transactional
 	public void createLinks(String userId, String courseId, List<String> instituteIds)
@@ -84,12 +89,12 @@ public class CourseInstituteProcessor {
 		List<Institute> institutes = instituteProcessor.validateAndGetInstituteByIds(instituteIds);
 		Set<String> linkedInstituteIds = getLinkedInstituteCourses(courseId).keySet();
 		if (instituteIds.stream().anyMatch(e -> e.equals(course.getInstitute().getId()))) {
-			log.error("one or more instituteIds are of same course institute");
-			throw new ValidationException("one or more instituteIds are of same course institute");
+			log.error(messageTranslator.toLocale("course_institute.same.ids",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("course_institute.same.ids"));
 		}
 		if (!Collections.disjoint(linkedInstituteIds, instituteIds)) {
-			log.error("one or more institutes are already linked with courseId: {}", courseId);
-			throw new ValidationException("one or more institutes are already linked with courseId: " + courseId);
+			log.error(messageTranslator.toLocale("course_institute.already.linked", courseId,Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("course_institute.already.linked", courseId));
 		}
 		List<CourseInstitute> courseInstitutes = new ArrayList<>();
 		// TODO: check the access of institutes against userId
@@ -145,7 +150,7 @@ public class CourseInstituteProcessor {
 				d.setId(null);
 				d.setCourse(finalCopiedCourse);
 			});
-			copiedCourse.getCourseSubjects().stream().forEach(d -> {
+			copiedCourse.getCourseSemesters().stream().forEach(d -> {
 				d.setId(null);
 				d.setCourse(finalCopiedCourse);
 			});
@@ -168,9 +173,9 @@ public class CourseInstituteProcessor {
 				syncCourses.add(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(copiedCourse));
 			} catch (ValidationException e1) {
 				log.error(
-						"one of the institute is already managing same kind of institute. So cant link at the moment.");
+						messageTranslator.toLocale("course_institute.managing.same",Locale.US));
 				throw new RuntimeValidationException(
-						"one of the institute is already managing same kind of institute. So cant link at the moment.");
+						messageTranslator.toLocale("course_institute.managing.same"));
 			}
 
 			CourseInstitute courseInstitute = new CourseInstitute();

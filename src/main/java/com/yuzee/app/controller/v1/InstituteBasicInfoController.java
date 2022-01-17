@@ -12,6 +12,7 @@ import com.yuzee.app.endpoint.InstituteBasicInfoInterface;
 import com.yuzee.app.processor.InstituteBasicInfoProcessor;
 import com.yuzee.common.lib.dto.institute.InstituteBasicInfoDto;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -21,20 +22,21 @@ public class InstituteBasicInfoController implements InstituteBasicInfoInterface
 	
 	@Autowired
 	private InstituteBasicInfoProcessor instituteBasicInfoProcessor;
-	
+	@Autowired
+	private MessageTranslator messageTranslator;
 	
 	@Override
 	public ResponseEntity<?> addUpdateInstituteBasicInfo(String userId, String instituteId,
 		@RequestBody @Valid InstituteBasicInfoDto instituteBasicInfoDto) throws Exception {
 		instituteBasicInfoProcessor.addUpdateInstituteBasicInfo(userId, instituteId, instituteBasicInfoDto);
-		return new GenericResponseHandlers.Builder().setMessage("Institute basic info added/updated successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_basic_info.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getInstituteBasicInfo(String userId, String instituteId) throws Exception {
 		InstituteBasicInfoDto instituteBasicInfoDto = instituteBasicInfoProcessor.getInstituteBasicInfo(userId, instituteId, "PRIVATE", true, false);
-		return new GenericResponseHandlers.Builder().setData(instituteBasicInfoDto).setMessage("Institute basic info fetched successfully")
+		return new GenericResponseHandlers.Builder().setData(instituteBasicInfoDto).setMessage(messageTranslator.toLocale("institute_basic_info.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -42,7 +44,7 @@ public class InstituteBasicInfoController implements InstituteBasicInfoInterface
 	@Override
 	public ResponseEntity<?> getInstitutePublicBasicInfo(String instituteId, boolean includeInstituteLogo, boolean includeDetail) throws Exception {
 		InstituteBasicInfoDto instituteBasicInfoDto = instituteBasicInfoProcessor.getInstituteBasicInfo(null, instituteId, "PUBLIC",includeInstituteLogo,includeDetail);
-		return new GenericResponseHandlers.Builder().setData(instituteBasicInfoDto).setMessage("Institute basic info fetched successfully")
+		return new GenericResponseHandlers.Builder().setData(instituteBasicInfoDto).setMessage(messageTranslator.toLocale("institute_basic_info.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 

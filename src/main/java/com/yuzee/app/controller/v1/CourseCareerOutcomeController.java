@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
 import com.yuzee.app.endpoint.CourseCareerOutcomeInterface;
+import com.yuzee.app.processor.CourseCareerOutcomeProcessor;
 import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.NotFoundException;
-import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.common.lib.exception.ValidationException;
-import com.yuzee.app.processor.CourseCareerOutcomeProcessor;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,13 +26,14 @@ public class CourseCareerOutcomeController implements CourseCareerOutcomeInterfa
 
 	@Autowired
 	private CourseCareerOutcomeProcessor courseCareerOutcomeProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> saveUpdateCourseCareerOutcomes(String userId, String courseId,
 			@Valid CourseCareerOutcomeRequestWrapper request) throws ValidationException, NotFoundException {
 		log.info("inside CourseCareerOutcomeController.saveUpdateCourseCareerOutcomes");
 		courseCareerOutcomeProcessor.saveUpdateCourseCareerOutcomes(userId, courseId, request);
-		return new GenericResponseHandlers.Builder().setMessage("Course CareerOutcomes added/ updated successfully.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("career_outcome.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -42,7 +44,7 @@ public class CourseCareerOutcomeController implements CourseCareerOutcomeInterfa
 		log.info("inside CourseCareerOutcomeController.deleteByCourseCareerOutcomeIds");
 		courseCareerOutcomeProcessor.deleteByCourseCareerOutcomeIds(userId, courseId, courseCareerOutcomeIds,
 				linkedCourseIds);
-		return new GenericResponseHandlers.Builder().setMessage("Course CareerOutcome deleted successfully.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("career_outcome.deleted"))
 				.setStatus(HttpStatus.OK).create();
 	}
 }

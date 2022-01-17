@@ -1,6 +1,7 @@
 package com.yuzee.app.controller.v1;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.constant.InstituteJoinStatus;
 import com.yuzee.app.dto.InstituteJoinRequestDto;
 import com.yuzee.app.endpoint.InstituteJoinRequestInterface;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.InstituteJoinRequestProcessor;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -26,11 +29,14 @@ public class InstituteJoinRequestController implements InstituteJoinRequestInter
 	@Autowired
 	private InstituteJoinRequestProcessor instituteJoinRequestProcessor;
 	
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Override
 	public ResponseEntity<?> requestJoinInstitute(String userId,
 			@Valid InstituteJoinRequestDto instituteJoinRequestDto) throws Exception {
 		InstituteJoinRequestDto instituteJoinRequestDtoResponse = instituteJoinRequestProcessor.instituteJoinRequest(userId, instituteJoinRequestDto);
-		return new GenericResponseHandlers.Builder().setData(instituteJoinRequestDtoResponse).setMessage("Institute join request successfully")
+		return new GenericResponseHandlers.Builder().setData(instituteJoinRequestDtoResponse).setMessage(messageTranslator.toLocale("institute_join_request.requested"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -38,13 +44,11 @@ public class InstituteJoinRequestController implements InstituteJoinRequestInter
 	public ResponseEntity<?> getRequestsOfInstituteJoinRequest(String status) throws Exception {
 		boolean isStatusValid = EnumUtils.isValidEnum(InstituteJoinStatus.class, status);
 		if (!isStatusValid) {
-			log.error("status value is invalid in request passed " + status
-					+ " expected PENDING,REJECTED,GRANTED");
-			throw new ValidationException("status value is invalid in request passed " + status
-					+ " expected  PENDING,REJECTED,GRANTED");
+			log.error(messageTranslator.toLocale("join-request.status.invalid" , Utils.getEnumNamesAsString(InstituteJoinStatus.class),Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("join-request.status.invalid" , Utils.getEnumNamesAsString(InstituteJoinStatus.class)));
 		}
 		List<InstituteJoinRequestDto> listOfInstituteJoinRequestDto = instituteJoinRequestProcessor.getInstituteJoinRequestByStatus(status);
-		return new GenericResponseHandlers.Builder().setData(listOfInstituteJoinRequestDto).setMessage("Institute join request list fetched successfully")
+		return new GenericResponseHandlers.Builder().setData(listOfInstituteJoinRequestDto).setMessage(messageTranslator.toLocale("institute_join_request.request.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -53,13 +57,11 @@ public class InstituteJoinRequestController implements InstituteJoinRequestInter
 			throws Exception {
 		boolean isStatusValid = EnumUtils.isValidEnum(InstituteJoinStatus.class, status);
 		if (!isStatusValid) {
-			log.error("status value is invalid in request passed " + status
-					+ " expected PENDING,REJECTED,GRANTED");
-			throw new ValidationException("status value is invalid in request passed " + status
-					+ " expected  PENDING,REJECTED,GRANTED");
+			log.error(messageTranslator.toLocale("join-request.status.invalid" , Utils.getEnumNamesAsString(InstituteJoinStatus.class),Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("join-request.status.invalid" , Utils.getEnumNamesAsString(InstituteJoinStatus.class)));
 		}
 		instituteJoinRequestProcessor.updateInstituteJoinRequestStatus(instituteJoinRequestId, status);
-		return new GenericResponseHandlers.Builder().setMessage("Institute join request updated successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_join_request.updated"))
 				.setStatus(HttpStatus.OK).create();
 	}
 

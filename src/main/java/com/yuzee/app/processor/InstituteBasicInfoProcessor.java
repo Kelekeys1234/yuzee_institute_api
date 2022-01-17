@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.handler.ReviewHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -42,6 +44,9 @@ public class InstituteBasicInfoProcessor {
 	
 	@Autowired
 	private StorageHandler storageHandler;
+
+	@Autowired
+	private MessageTranslator messageTranslator;
 	
 	@Transactional(rollbackOn = Throwable.class)
 	public void addUpdateInstituteBasicInfo(String userId, String instituteId, InstituteBasicInfoDto instituteBasicInfoDto ) throws Exception {
@@ -50,8 +55,8 @@ public class InstituteBasicInfoProcessor {
 		log.info("Getting institute having institute id "+instituteId);
 		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
 		if (!instituteFromFb.isPresent()) {
-			log.error("No institute found for institute having id "+instituteId);
-			throw new NotFoundException("No institute found for institute having id "+instituteId);
+			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
 		}
 		Institute institute = instituteFromFb.get();
 		log.info("adding updating institute basic info for institute id "+instituteId+ " by user id "+userId);
@@ -61,8 +66,8 @@ public class InstituteBasicInfoProcessor {
 		InstituteCategoryType instituteCategoryType = iInstituteDAO.getInstituteCategoryType(instituteBasicInfoDto.getInstituteCategoryTypeId());
 		
 		if (ObjectUtils.isEmpty(instituteCategoryType)) {
-			log.error("No institute category found for institute category id "+instituteBasicInfoDto.getInstituteCategoryTypeId());
-			throw new NotFoundException("No institute category found for institute category id "+instituteBasicInfoDto.getInstituteCategoryTypeId());
+			log.error(messageTranslator.toLocale("institute_info.category.id.notfound",instituteBasicInfoDto.getInstituteCategoryTypeId(),Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.category.id.notfound",instituteBasicInfoDto.getInstituteCategoryTypeId()));
 		}
 		institute.setInstituteCategoryType(instituteCategoryType);
 		log.info("persisting institute having id "+instituteId+ " with updated basic info");
@@ -80,8 +85,8 @@ public class InstituteBasicInfoProcessor {
 		log.info("Getting institute having institute id "+instituteId);
 		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
 		if (!instituteFromFb.isPresent()) {
-			log.error("No institute found for institute having id "+instituteId);
-			throw new NotFoundException("No institute found for institute having id "+instituteId);
+			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
 		}
 		Institute institute = instituteFromFb.get();
 		log.info("Getting institute logo for institute id "+instituteId);

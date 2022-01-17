@@ -9,12 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yuzee.app.dto.CourseSubjectRequestWrapper;
+import com.yuzee.app.dto.CourseSemesterRequestWrapper;
 import com.yuzee.app.endpoint.CourseSubjectInterface;
+import com.yuzee.app.processor.CourseSemesterProcessor;
 import com.yuzee.common.lib.exception.NotFoundException;
-import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.common.lib.exception.ValidationException;
-import com.yuzee.app.processor.CourseSubjectProcessor;
+import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,23 +24,25 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseSubjectController implements CourseSubjectInterface {
 
 	@Autowired
-	private CourseSubjectProcessor courseSubjectProcessor;
+	private CourseSemesterProcessor courseSubjectProcessor;
 
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
-	public ResponseEntity<?> saveUpdateCourseSubjects(String userId, String courseId,
-			@Valid CourseSubjectRequestWrapper request) throws ValidationException, NotFoundException {
-		log.info("inside CourseSubjectController.saveUpdateCourseSubjects");
-		courseSubjectProcessor.saveUpdateCourseSubjects(userId, courseId, request);
-		return new GenericResponseHandlers.Builder().setMessage("Course Subject added/ updated successfully.")
+	public ResponseEntity<?> saveUpdateCourseSemesters(String userId, String courseId,
+			@Valid CourseSemesterRequestWrapper request) throws ValidationException, NotFoundException {
+		log.info("inside CourseSubjectController.saveUpdateCourseSemesters");
+		courseSubjectProcessor.saveUpdateCourseSemesters(userId, courseId, request);
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_subject.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> deleteByCourseSubjectIds(String userId, String courseId, List<String> courseSubjectIds,
+	public ResponseEntity<?> deleteByCourseSemesterIds(String userId, String courseId, List<String> courseSubjectIds,
 			List<String> linkedCourseIds) throws ValidationException, NotFoundException {
-		log.info("inside CourseSubjectController.deleteByCourseSubjectIds");
-		courseSubjectProcessor.deleteByCourseSubjectIds(userId, courseId, courseSubjectIds, linkedCourseIds);
-		return new GenericResponseHandlers.Builder().setMessage("Course Subject deleted successfully.")
+		log.info("inside CourseSubjectController.deleteByCourseSemesterIds");
+		courseSubjectProcessor.deleteByCourseSemesterIds(userId, courseId, courseSubjectIds, linkedCourseIds);
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_subject.deleted"))
 				.setStatus(HttpStatus.OK).create();
 	}
 }

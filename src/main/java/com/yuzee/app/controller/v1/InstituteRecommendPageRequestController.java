@@ -1,6 +1,7 @@
 package com.yuzee.app.controller.v1;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.constant.RecommendRequestStatus;
 import com.yuzee.app.dto.InstituteRecommendPageRequestDto;
 import com.yuzee.app.endpoint.InstituteRecommedPageRequestInterface;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.InstituteRecommendPageRequestProcessor;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -26,11 +29,13 @@ public class InstituteRecommendPageRequestController implements InstituteRecomme
 	@Autowired
 	private InstituteRecommendPageRequestProcessor instituteRecommendPageRequestProcessor;
 	
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> recommendInstitutePage(String userId,
 			@Valid InstituteRecommendPageRequestDto instituteRecommendPageRequestDto) throws Exception {
 		instituteRecommendPageRequestProcessor.recommendInstiutePageRequest(userId, instituteRecommendPageRequestDto);
-		return new GenericResponseHandlers.Builder().setMessage("recommendation institute request successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_recommend.requested"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -38,13 +43,11 @@ public class InstituteRecommendPageRequestController implements InstituteRecomme
 	public ResponseEntity<?> getRecommendationOfInstitutePage(String status) throws Exception {
 		boolean isStatusValid = EnumUtils.isValidEnum(RecommendRequestStatus.class, status);
 		if (!isStatusValid) {
-			log.error("status value is invalid in request passed " + status
-					+ " expected PENDING,PROCESSED");
-			throw new ValidationException("status value is invalid in request passed " + status
-					+ " expected PENDING,PROCESSED");
+			log.error(messageTranslator.toLocale("recommend-page_request.status.invalid", Utils.getEnumNamesAsString(RecommendRequestStatus.class) ,Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("recommend-page_request.status.invalid", Utils.getEnumNamesAsString(RecommendRequestStatus.class)));
 		}
 		List<InstituteRecommendPageRequestDto> listOfRecommendRequestDto = instituteRecommendPageRequestProcessor.getInstituteRecommendRequestByStatus(status);
-		return new GenericResponseHandlers.Builder().setData(listOfRecommendRequestDto).setMessage("Institute recommend request list fetched successfully")
+		return new GenericResponseHandlers.Builder().setData(listOfRecommendRequestDto).setMessage(messageTranslator.toLocale("institute_recommend.request.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -53,17 +56,15 @@ public class InstituteRecommendPageRequestController implements InstituteRecomme
 			throws Exception {
 		boolean isStatusValid = EnumUtils.isValidEnum(RecommendRequestStatus.class, status);
 		if (!isStatusValid) {
-			log.error("status value is invalid in request passed " + status
-					+ " expected PENDING,PROCESSED");
-			throw new ValidationException("status value is invalid in request passed " + status
-					+ " expected PENDING,PROCESSED");
+			log.error(messageTranslator.toLocale("recommend-page_request.status.invalid", Utils.getEnumNamesAsString(RecommendRequestStatus.class) ,Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("recommend-page_request.status.invalid", Utils.getEnumNamesAsString(RecommendRequestStatus.class)));
 		}
 		if (status.equalsIgnoreCase(RecommendRequestStatus.PENDING.toString())) {
-			log.error("Can only change status from Pending to Processed");
-			throw new ValidationException("Can only change status from Pending to Processed");
+			log.error(messageTranslator.toLocale("recommend-page_request.status.changed",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("recommend-page_request.status.changed"));
 		}
 		instituteRecommendPageRequestProcessor.updateInstituteRecommedRequestStatus(instituteRecommendationRequestId, status);
-		return new GenericResponseHandlers.Builder().setMessage("recommendation institute request updated successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_recommend.updated"))
 				.setStatus(HttpStatus.OK).create();
 	}
 

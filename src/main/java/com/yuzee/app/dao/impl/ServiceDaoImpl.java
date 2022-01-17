@@ -1,6 +1,7 @@
 package com.yuzee.app.dao.impl;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,9 @@ import org.springframework.data.domain.Pageable;
 
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.dao.ServiceDao;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.ServiceRepository;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,14 +23,17 @@ public class ServiceDaoImpl implements ServiceDao {
 
 	@Autowired
 	private ServiceRepository serviceRepository;
-
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Override
 	public List<Service> addUpdateServices(List<Service> services) throws ValidationException {
 		try {
 			return serviceRepository.saveAll(services);
 		} catch (DataIntegrityViolationException ex) {
-			log.error("one or more services contains already existing name");
-			throw new ValidationException("one or more services contains already existing name");
+			log.error(messageTranslator.toLocale("services.already.exist",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("services.already.exist"));
 		}
 	}
 

@@ -14,6 +14,6 @@ public class FaqSubCategoryDto {
 	private String id;
 
 	@JsonProperty("name")
-	@NotBlank(message = "name is required")
+	@NotBlank(message = "{name.is_required}")
 	private String name;
 }

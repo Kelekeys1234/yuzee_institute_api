@@ -2,6 +2,10 @@ package com.yuzee.app.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseIntake;
@@ -130,4 +134,16 @@ public interface CourseDao {
 	public List<Course> findByReadableIdIn(List<String> readableIds);
 
 	public Course findByReadableId(String readableId);
+	
+	public CourseRequest saveDocument(CourseRequest courseRequest);
+
+	public Page<CourseRequest> filterDocuments(String name, String instituteId, Pageable pageable);
+
+	public Optional<CourseRequest> findDocumentById(String id);
+
+	public void deleteDocumentById(String id);
+	
+	public boolean existsById(String id);
+
+	public boolean documentExistsById(String id);
 }

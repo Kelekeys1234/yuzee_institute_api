@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -24,13 +25,14 @@ import com.yuzee.app.dao.InstituteServiceDao;
 import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.InstituteServiceDto;
 import com.yuzee.app.dto.ServiceDto;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,14 +58,18 @@ public class InstituteServiceProcessor {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@Autowired
+	private MessageTranslator messageTranslator;
+
+
 	public List<InstituteServiceDto> addInstituteService(String userId, String instituteId, List<InstituteServiceDto> instituteServiceDtos)
 			throws NotFoundException, ValidationException {
 		log.debug("inside addInstituteService() method");
 		log.info("Getting all exsisting services");
 		Institute institute = instituteDao.get(instituteId);
 		if (ObjectUtils.isEmpty(institute)) {
-			log.error("invalid institute id: {}", instituteId);
-			throw new ValidationException("Invalid institute id: " + instituteId);
+			log.error(messageTranslator.toLocale("institute-services.invalid.id",instituteId,Locale.US));
+			throw new ValidationException( messageTranslator.toLocale("institute-services.invalid.id",instituteId));
 		}
 
 		List<ServiceDto> serviceDtos = instituteServiceDtos.stream().map(e -> e.getService())
@@ -90,8 +96,8 @@ public class InstituteServiceProcessor {
 				.collect(Collectors.toMap(Service::getName, e -> e));
 
 		if (serviceIds.size() != servicesFromDb.size()) {
-			log.error("one or more service ids are invalid");
-			throw new ValidationException("one or more service ids are invalid");
+			log.error(messageTranslator.toLocale("institute-service.invalid",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-service.invalid"));
 		}
 
 		List<InstituteService> existingInstituteServices = instituteServiceDao.getAllInstituteService(instituteId);
@@ -110,8 +116,8 @@ public class InstituteServiceProcessor {
 
 				Service service = mapServicesById.get(serviceId);
 				if (ObjectUtils.isEmpty(service)) {
-					log.error("Illegal service id: {}", serviceId);
-					throw new NotFoundException("Illegal service id: " + serviceId);
+					log.error(messageTranslator.toLocale("institute-service.illegal.id" + serviceId,Locale.US));
+					throw new NotFoundException(messageTranslator.toLocale("institute-service.illegal.id", serviceId));
 				}
 				InstituteService instituteService = new InstituteService(institute, service,
 						instituteServiceDto.getDescription(), new Date(), new Date(), userId, userId);

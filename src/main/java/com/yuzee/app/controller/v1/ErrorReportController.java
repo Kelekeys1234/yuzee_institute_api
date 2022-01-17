@@ -38,6 +38,7 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 @RestController("errorReportControllerV1")
 @RequestMapping("/api/v1/error/report")
@@ -45,7 +46,8 @@ public class ErrorReportController {
 
 	@Autowired
 	private IErrorReportService errorReportService;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@PostMapping("/category")
 	public ResponseEntity<?> save(@Valid @RequestBody final ErrorReportCategoryDto errorReportCategoryDto, final BindingResult bindingResult)
 			throws ValidationException {
@@ -54,13 +56,13 @@ public class ErrorReportController {
 			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
 		}
 		errorReportService.saveErrorReportCategory(errorReportCategoryDto);
-		return new GenericResponseHandlers.Builder().setMessage("Create Error Report Category Successfully.").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("error_report.category.added")).setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping("/category/{errorCategoryType}")
 	public ResponseEntity<?> getAllErrorCategory(@PathVariable final String errorCategoryType) throws Exception {
 		List<ErrorReportCategory> errorReportCategories = errorReportService.getAllErrorCategory(errorCategoryType);
-		return new GenericResponseHandlers.Builder().setMessage("Get Error Report Category List Successfully").setData(errorReportCategories)
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("error_report.category.list.retrieved")).setData(errorReportCategories)
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -71,19 +73,19 @@ public class ErrorReportController {
 			throw new ValidationException(fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(",")));
 		}
 		errorReportService.save(errorReport);
-		return new GenericResponseHandlers.Builder().setMessage("Create Error Report Successfully.").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("error_report.added")).setStatus(HttpStatus.OK).create();
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@Valid @RequestBody final ErrorReportDto errorReport, @PathVariable final String id) throws ValidationException {
 		errorReportService.update(errorReport, id);
-		return new GenericResponseHandlers.Builder().setMessage("Update Error Report Successfully.").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("error_report.updated")).setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getErrorReportById(@PathVariable final String id) throws ValidationException {
 		ErrorReportResponseDto errorReport = errorReportService.getErrorReportById(id);
-		return new GenericResponseHandlers.Builder().setMessage("Get Error Report Successfully.").setData(errorReport).setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("error_report.retrieved")).setData(errorReport).setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
@@ -140,7 +142,7 @@ public class ErrorReportController {
 	@DeleteMapping("/{errorReportId}")
 	public ResponseEntity<?> deleteErrorReport(@PathVariable final String errorReportId) throws Exception {
 		errorReportService.deleteByErrorReportId(errorReportId);
-		return new GenericResponseHandlers.Builder().setMessage("Error report deleted successfuly").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("error_report.deleted")).setStatus(HttpStatus.OK).create();
 	}
 
 	@PutMapping(value = "/{errorReportId}/isFavourite/{isFavourite}")
@@ -148,13 +150,13 @@ public class ErrorReportController {
 			@PathVariable(value = "errorReportId") final String errorReportId, @PathVariable(value = "isFavourite") final boolean isFavourite)
 			throws NotFoundException {
 		errorReportService.setIsFavouriteFlag(errorReportId, isFavourite);
-		return new GenericResponseHandlers.Builder().setMessage("Updated successfuly").setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("error_report.updated")).setStatus(HttpStatus.OK).create();
 	}
 
 	@GetMapping("/audit/{id}")
 	public ResponseEntity<?> getErrorReportHistoryById(@PathVariable(name = "id") final String errorReportId) throws ValidationException {
 		List<AuditErrorReport> errorReport = errorReportService.getAuditListByErrorReport(errorReportId);
-		return new GenericResponseHandlers.Builder().setMessage("Get Error Report Audit list Successfully.").setData(errorReport).setStatus(HttpStatus.OK)
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("error_report.audit.list")).setData(errorReport).setStatus(HttpStatus.OK)
 				.create();
 	}
 }

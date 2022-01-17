@@ -1,5 +1,6 @@
 package com.yuzee.app.dao.impl;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.FaqCategory;
 import com.yuzee.app.dao.FaqCategoryDao;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.FaqCategoryRepository;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +24,10 @@ public class FaqCategoryDaoImpl implements FaqCategoryDao {
 
 	@Autowired
 	private FaqCategoryRepository faqCategoryRepository;
-
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Override
 	public Optional<FaqCategory> getById(String faqCategoryId) {
 		return faqCategoryRepository.findById(faqCategoryId);
@@ -33,8 +38,8 @@ public class FaqCategoryDaoImpl implements FaqCategoryDao {
 		try {
 			faqCategoryRepository.save(faqCategory);
 		} catch (DataIntegrityViolationException ex) {
-			log.error("faq category already present with name: {}", faqCategory.getName());
-			throw new ValidationException("faq category already present with name: " + faqCategory.getName());
+			log.error(messageTranslator.toLocale("faq.already.category", faqCategory.getName(),Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("faq.already.category", faqCategory.getName()));
 		}
 	}
 

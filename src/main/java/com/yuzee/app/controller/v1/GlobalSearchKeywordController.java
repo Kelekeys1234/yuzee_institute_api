@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.service.IGlobalSearchKeywordService;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 
 @RestController("globalSearchKeywordControllerV1")
@@ -22,18 +23,19 @@ public class GlobalSearchKeywordController {
 
 	@Autowired
 	private IGlobalSearchKeywordService iGlobalSearchKeywordService;
-	
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@PutMapping("/add/{searchKeyWord}")
 	public ResponseEntity<?> addKeyword(@RequestHeader("userId") String userId, @PathVariable(name="searchKeyWord") String searchKeyword){
 		if(searchKeyword != null) {
 			iGlobalSearchKeywordService.addGlobalSearhcKeyForUser(searchKeyword, userId);
 		}	
-		return new GenericResponseHandlers.Builder().setMessage("Keyword added successfully").setStatus(HttpStatus.OK).setData(null).create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("global_search_keyword.added")).setStatus(HttpStatus.OK).setData(null).create();
 	}
 	
 	@GetMapping("/getTopSearched")
 	public ResponseEntity<?> getOtherUsersTopSearchedKeywords(@RequestHeader("userId") String userId){
 		List<String> globalKeywordList = iGlobalSearchKeywordService.getOtherUsersTopSearchedKeywords(userId);
-		return new GenericResponseHandlers.Builder().setMessage("Keyword list displayed successfully").setStatus(HttpStatus.OK).setData(globalKeywordList).create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("global_search_keyword.list.displayed")).setStatus(HttpStatus.OK).setData(globalKeywordList).create();
 	}
 }

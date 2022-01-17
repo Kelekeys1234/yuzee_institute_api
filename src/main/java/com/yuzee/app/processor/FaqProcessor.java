@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import com.yuzee.app.dto.FaqResponseDto;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,6 +40,9 @@ public class FaqProcessor {
 
 	@Autowired
 	ModelMapper modelMapper;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	public void addFaq(String userId, final FaqRequestDto faqRequestDto) throws ValidationException {
 		log.debug("inside FaqProcessor.addFaq");
@@ -111,8 +116,8 @@ public class FaqProcessor {
 	private Faq getFaqById(String faqId) throws ValidationException {
 		Optional<Faq> faqOptional = faqDao.getById(faqId);
 		if (!faqOptional.isPresent()) {
-			log.error("Faq not found for id: {}", faqId);
-			throw new ValidationException("Faq not found for id: " + faqId);
+			log.error(messageTranslator.toLocale("faq.id.notfound",faqId,Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("faq.id.notfound",faqId));
 		}
 		return faqOptional.get();
 	}
@@ -120,8 +125,8 @@ public class FaqProcessor {
 	private FaqSubCategory getFaqSubCategoryById(String faqSubCategoryId) throws ValidationException {
 		Optional<FaqSubCategory> faqSubCategoryOptional = faqSubCategoryDao.getById(faqSubCategoryId);
 		if (!faqSubCategoryOptional.isPresent()) {
-			log.error("Faq Sub Category not found for id: {}", faqSubCategoryId);
-			throw new ValidationException("Faq Sub Category not found for id: " + faqSubCategoryId);
+			log.error(messageTranslator.toLocale("faq.sub.category.id.notfound",faqSubCategoryId,Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("faq.sub.category.id.notfound",faqSubCategoryId));
 		}
 		return faqSubCategoryOptional.get();
 	}

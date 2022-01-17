@@ -25,7 +25,7 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "institute_funding", uniqueConstraints = @UniqueConstraint(columnNames = { "institute_id",
-		"funding_name_id" }, name = "UK_INSTITUTE_ID_FUNDING_ID"), indexes = {
+		"funding_name_id" }, name = "UK_IFUNDING_INSTITUTE_ID_FUNDING_ID"), indexes = {
 				@Index(name = "IDX_FUNDING_INSTITUTE_ID", columnList = "institute_id", unique = false) })
 @Data
 @NoArgsConstructor

@@ -12,6 +12,7 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +22,8 @@ public class SubjectController implements SubjectInterface {
 
 	@Autowired
 	private SubjectProcessor subjectProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> getAllSubjects(final Integer pageNumber, final Integer pageSize, String name,
 			String educationSystemId) throws ValidationException, NotFoundException, InvokeException {
@@ -29,6 +31,6 @@ public class SubjectController implements SubjectInterface {
 		PaginationUtil.validatePageNoAndPageSize(pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder()
 				.setData(subjectProcessor.getAllSubjects(pageNumber, pageSize, name, educationSystemId))
-				.setMessage("Subjects fetched successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("subjects.list.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 }

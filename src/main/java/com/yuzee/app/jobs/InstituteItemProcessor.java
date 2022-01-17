@@ -85,7 +85,6 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 			institute.setAboutInfo(instituteDto.getAboutInfo());
 			institute.setTuitionFeesPaymentPlan(instituteDto.getTuitionFeesPaymentPlan());
 			institute.setEnrolmentLink(instituteDto.getEnrolmentLink());
-			institute.setCampusName(ObjectUtils.isEmpty(instituteDto.getCampusName())? IConstant.DEFAULT_CAMPUS: instituteDto.getCampusName()); // Add campus 1 as default campus is no campus selected.
 			institute.setCourseStart(instituteDto.getCourseStart());
 			institute.setWhatsNo(instituteDto.getWhatsNo());
 			institute.setScholarshipFinancingAssistance(instituteDto.getScholarshipFinancingAssistance());

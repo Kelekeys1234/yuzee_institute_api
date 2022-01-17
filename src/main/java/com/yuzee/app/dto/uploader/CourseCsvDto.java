@@ -20,7 +20,7 @@ public class CourseCsvDto implements Serializable {
 	private String id;
 
 	@JsonProperty("course_name")
-	@NotEmpty(message = "course_name is required")
+	@NotEmpty(message = "{course_name is required")
 	private String name;
 
 	@JsonProperty("world_ranking")
@@ -75,23 +75,23 @@ public class CourseCsvDto implements Serializable {
 	private Boolean isDeleted;
 
 	@JsonProperty("faculty_name")
-	@NotEmpty(message = "faculty_name is required")
+	@NotEmpty(message = "{faculty_name is required")
 	private String facultyName;
 
 	@JsonProperty("institute_name")
-	@NotEmpty(message = "institute_name is required")
+	@NotEmpty(message = "{institute_name is required")
 	private String instituteName;
 
 	@JsonProperty("country_name")
-	@NotEmpty(message = "country_name is required")
+	@NotEmpty(message = "{country_name is required")
 	private String countryName;
 
 	@JsonProperty("city_name")
-	@NotEmpty(message = "city_name is required")
+	@NotEmpty(message = "{city_name is required")
 	private String cityName;
 
 	@JsonProperty("level_code")
-	@NotEmpty(message = "level_code is required")
+	@NotEmpty(message = "{level_code is required")
 	private String levelCode;
 
 	@JsonProperty("availabilty")

@@ -23,7 +23,7 @@ import lombok.ToString;
 
 @Data
 @Entity
-@Table(name = "institute_intake", uniqueConstraints = @UniqueConstraint(columnNames = { "intake", "institute_id" } , name = "UK_INSTITUTE_ID_INTAKE"),
+@Table(name = "institute_intake", uniqueConstraints = @UniqueConstraint(columnNames = { "intake", "institute_id" } , name = "UK_IINTAKE_INSTITUTE_ID_INTAKE"),
        indexes = {@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false) })
 public class InstituteIntake implements Serializable {
 	

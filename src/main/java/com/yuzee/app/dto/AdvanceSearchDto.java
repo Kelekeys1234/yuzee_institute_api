@@ -51,15 +51,15 @@ public class AdvanceSearchDto {
 	private String sortBy;
 
 	@JsonProperty("max_size_per_page")
-	@NotNull(message = "max_size_per_page should not be blank")
+	@NotNull(message = "{max_size_per_page.is_required}")
 	private Integer maxSizePerPage;
 
 	@JsonProperty("page_number")
-	@NotNull(message = "page_number should not be blank")
+	@NotNull(message = "{page_number.is_required}")
 	private Integer pageNumber;
 
 	@JsonProperty("currency_code")
-	@NotBlank(message = "currency_code should not be blank")
+	@NotBlank(message = "{currency_code.is_required}")
 	private String currencyCode;
 
 	@JsonProperty("user_id")

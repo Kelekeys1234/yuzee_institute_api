@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.util.PaginationUtil;
 import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,10 +76,13 @@ public class ScholarshipProcessor {
 	private ModelMapper modelMapper;
 	
 	@Autowired
-	private ConversionProcessor conversionProcessor;
+	private MessageTranslator messageTranslator;
 	
 	@Autowired
 	ReadableIdProcessor readableIdProcessor;
+	
+	@Autowired
+	private ConversionProcessor conversionProcessor;
 
 	private Scholarship prepareModel(final String userId, final ScholarshipRequestDto scholarshipDto,
 			final String existingScholarshipId) throws ValidationException {
@@ -105,8 +110,8 @@ public class ScholarshipProcessor {
 			log.info("faculty_id is not null, hence fetching faculty data from DB");
 			Faculty faculty = facultyDAO.get(scholarshipDto.getFacultyId());
 			if (faculty == null) {
-				log.error("Faculty not found for id: {}", scholarshipDto.getFacultyId());
-				throw new ValidationException("Faculty not found for id: " + scholarshipDto.getFacultyId());
+				log.error(messageTranslator.toLocale("scolarship-processor.not_found.faculty_id", scholarshipDto.getFacultyId(),Locale.US));
+				throw new ValidationException(messageTranslator.toLocale("scolarship-processor.not_found.faculty_id", scholarshipDto.getFacultyId()));
 			}
 			scholarship.setFaculty(faculty);
 		}
@@ -115,8 +120,8 @@ public class ScholarshipProcessor {
 			log.info("CourseId is not null hence fetching course data from DB");
 			Institute institute = instituteDao.get(scholarshipDto.getInstituteId());
 			if (ObjectUtils.isEmpty(institute)) {
-				log.error("Institute not found for id: {}", scholarshipDto.getInstituteId());
-				throw new ValidationException("Institute not found for id :" + scholarshipDto.getInstituteId());
+				log.error(messageTranslator.toLocale("scolarship-processor.not_found.institute_id", scholarshipDto.getInstituteId(), Locale.US));
+				throw new ValidationException(messageTranslator.toLocale("scolarship-processor.not_found.institute_id", scholarshipDto.getInstituteId()));
 			}
 			scholarship.setInstitute(institute);
 		}
@@ -324,8 +329,8 @@ public class ScholarshipProcessor {
 		log.debug("Inside deleteScholarship() method");
 		Scholarship scholarship = getScholarshipFomDb(scholarshipId);
 		if (!scholarship.getCreatedBy().equals(userId)) {
-			log.error("User has no access to delete scholarship.");
-			throw new ValidationException("User has no access to delete scholarship.");
+			log.error(messageTranslator.toLocale("scolarship-processor.no_access.deleted",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("scolarship-processor.no_access.deleted"));
 		}
 		scholarshipDAO.deleteScholarship(scholarshipId);
 		storageHandler.deleteStorageBasedOnEntityId(scholarshipId);
@@ -384,8 +389,8 @@ public class ScholarshipProcessor {
 		if (scholarshipOptional.isPresent()) {
 			return scholarshipOptional.get();
 		} else {
-			log.error("Scholarship not found for id: {}", scholarshipId);
-			throw new ValidationException("Scholarship not found for id: " + scholarshipId);
+			log.error(messageTranslator.toLocale("scolarship-processor.not_found.id"), scholarshipId);
+			throw new ValidationException( messageTranslator.toLocale("scolarship-processor.not_found.id", scholarshipId));
 		}
 	}
 	

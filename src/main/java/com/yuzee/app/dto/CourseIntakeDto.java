@@ -18,6 +18,6 @@ public class CourseIntakeDto {
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@JsonProperty(value = "intake_date")
-	@NotNull(message = "intake_date must not be null")
+	@NotNull(message = "{intake_date.is_required}")
 	private Date intakeDate;
 }

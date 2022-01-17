@@ -24,7 +24,7 @@ import lombok.Data;
 
 @Entity
 @Table(name = "faq", uniqueConstraints = @UniqueConstraint(columnNames = { "title", "entity_id", "entity_type",
-		"faq_sub_category_id" }, name = "UK_FAQ"), indexes = {
+		"faq_sub_category_id" }, name = "UK_FAQ_T_EI_ET_SC"), indexes = {
 				@Index(name = "IDX_FAQ_ENTITY_ID", columnList = "entity_id", unique = false),
 				@Index(name = "IDX_FAQ_SUB_CATEGORY_ID", columnList = "faq_sub_category_id", unique = false) })
 @Data

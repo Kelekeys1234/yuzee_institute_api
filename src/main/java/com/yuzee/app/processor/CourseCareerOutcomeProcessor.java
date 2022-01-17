@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +29,7 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeNotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,6 +52,9 @@ public class CourseCareerOutcomeProcessor {
 	@Autowired
 	private CareerDao careerDao;
 	
+	@Autowired
+	private MessageTranslator messageTranslator;
+
 	@Transactional
 	public void saveUpdateCourseCareerOutcomes(String userId, String courseId,
 			CourseCareerOutcomeRequestWrapper request) throws NotFoundException, ValidationException {
@@ -81,8 +86,8 @@ public class CourseCareerOutcomeProcessor {
 							"entityId is present so going to see if it is present in db if yes then we have to update it");
 					courseCareerOutcome = existingCourseCareerOutcomesMap.get(e.getId());
 					if (courseCareerOutcome == null) {
-						log.error("invalid course career outcome id : {}", e.getId());
-						throw new RuntimeNotFoundException("invalid course career outcome id : " + e.getId());
+						log.error(messageTranslator.toLocale("course_outcome.id.invalid" , e.getId(),Locale.US));
+						throw new RuntimeNotFoundException(messageTranslator.toLocale("course_outcome.id.invalid" , e.getId()));
 					}
 				}else {
 					courseCareerOutcomes.add(courseCareerOutcome);
@@ -112,8 +117,8 @@ public class CourseCareerOutcomeProcessor {
 			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error("invalid course id: {}", courseId);
-			throw new NotFoundException("invalid course id: " + courseId);
+			log.error(messageTranslator.toLocale("course_id.invalid", courseId, Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_id.invalid", courseId));
 		}
 	}
 
@@ -126,8 +131,8 @@ public class CourseCareerOutcomeProcessor {
 		if (courseCareerOutcomes.stream().map(CourseCareerOutcome::getId).collect(Collectors.toSet())
 				.containsAll(careerOutcomeIds)) {
 			if (courseCareerOutcomes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error("no access to delete one more career outcomes");
-				throw new ForbiddenException("no access to delete one more career outcomes");
+				log.error(messageTranslator.toLocale("career_outcomes.no.access",Locale.US));
+				throw new ForbiddenException(messageTranslator.toLocale("career_outcomes.no.access"));
 			}
 			courseCareerOutcomes.removeIf(e -> Utils.contains(careerOutcomeIds, e.getId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
@@ -144,8 +149,8 @@ public class CourseCareerOutcomeProcessor {
 			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error("one or more invalid course_career outcome_ids");
-			throw new NotFoundException("one or more invalid course_career outcome_ids");
+			log.error(messageTranslator.toLocale("course_career.outcome.id.invalid",Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_career.outcome.id.invalid"));
 		}
 	}
 
@@ -154,8 +159,8 @@ public class CourseCareerOutcomeProcessor {
 		Map<String, Careers> careersMap = careerDao.findByIdIn(new ArrayList<>(careerIds)).stream()
 				.collect(Collectors.toMap(Careers::getId, e -> e));
 		if (careersMap.size() != careerIds.size()) {
-			log.error("one or more career ids are invalid");
-			throw new ValidationException("one or more career ids are invalid");
+			log.error(messageTranslator.toLocale("course_career.career.id.invalid",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("course_career.career.id.invalid"));
 		} else {
 			return careersMap;
 		}

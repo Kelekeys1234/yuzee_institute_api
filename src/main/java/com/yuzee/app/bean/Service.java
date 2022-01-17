@@ -21,7 +21,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "service", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }, name = "UK_NA"))
+@Table(name = "service", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }, name = "UK_SERVICE_NA"))
 public class Service implements Serializable {
 
 	private static final long serialVersionUID = 4519552942642063759L;

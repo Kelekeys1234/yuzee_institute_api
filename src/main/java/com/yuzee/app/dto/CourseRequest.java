@@ -8,16 +8,20 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.common.lib.dto.application.ProcedureDto;
 import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
 import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
 import com.yuzee.common.lib.dto.institute.CourseEnglishEligibilityDto;
 import com.yuzee.common.lib.dto.institute.CourseFundingDto;
 import com.yuzee.common.lib.dto.institute.CourseIntakeDto;
+import com.yuzee.common.lib.dto.institute.CourseMinRequirementDto;
 import com.yuzee.common.lib.dto.institute.CoursePaymentDto;
 import com.yuzee.common.lib.dto.institute.CoursePreRequisiteDto;
-import com.yuzee.common.lib.dto.institute.CourseSubjectDto;
+import com.yuzee.common.lib.dto.institute.CourseSemesterDto;
 import com.yuzee.common.lib.dto.institute.FacultyDto;
 import com.yuzee.common.lib.dto.institute.LevelDto;
 import com.yuzee.common.lib.dto.institute.OffCampusCourseDto;
@@ -29,6 +33,7 @@ import lombok.ToString;
 
 @Data
 @ToString
+@Document("course")
 public class CourseRequest {
 
 	@JsonProperty("course_id")
@@ -38,7 +43,7 @@ public class CourseRequest {
 	private String instituteId;
 
 	@JsonProperty("faculty_id")
-	@NotBlank(message = "faculty_id should not be blank")
+	@NotBlank(message = "{faculty_id.is_required}")
 	private String facultyId;
 
 	@JsonProperty("faculty")
@@ -48,7 +53,7 @@ public class CourseRequest {
 	private String curriculumId;
 
 	@JsonProperty("name")
-	@NotBlank(message = "name should not be blank")
+	@NotBlank(message = "{name.is_required}")
 	private String name;
 
 	@JsonProperty("description")
@@ -88,14 +93,13 @@ public class CourseRequest {
 	private String totalCount;
 	
 	@JsonProperty("currency")
-	@NotBlank(message = "currency should not be blank")
 	private String currency;
 
 	@JsonProperty("currency_time")
 	private String currencyTime;
 
 	@JsonProperty("level_id")
-	@NotBlank(message = "level_id should not be blank")
+	@NotBlank(message = "{level_id.is_required}")
 	private String levelId;
 
 	@JsonProperty("level")
@@ -207,23 +211,21 @@ public class CourseRequest {
 	private OffCampusCourseDto offCampusCourse;
 
 	@Valid
-	@JsonProperty("course_subjects")
-	@NotNull(message = "course_subjects must not be null")
-	private ValidList<CourseSubjectDto> courseSubjects = new ValidList<>();
+	@JsonProperty("course_semesters")
+	@NotNull(message = "{course_semesters.is_required}")
+	private ValidList<CourseSemesterDto> courseSemesters = new ValidList<>();
 
 	@Valid
 	@JsonProperty("course_timings")
-	@NotNull(message = "course_timings must not be null")
+	@NotNull(message = "{course_timings.is_required}")
 	private ValidList<TimingRequestDto> courseTimings = new ValidList<>();
 
 	@Valid
 	@JsonProperty("course_career_outcomes")
-	@NotNull(message = "course_career_outcomes must not be null")
 	private ValidList<CourseCareerOutcomeDto> courseCareerOutcomes = new ValidList<>();
 
 	@Valid
 	@JsonProperty("course_fundings")
-	@NotNull(message = "course_fundings must not be null")
 	private ValidList<CourseFundingDto> courseFundings = new ValidList<>();
 
 	@JsonProperty("course_payment")
@@ -235,13 +237,30 @@ public class CourseRequest {
 
 	@Valid
 	@JsonProperty("course_contact_persons")
-	@NotNull(message = "course_contact_persons must not be null")
+	@NotNull(message = "{course_contact_persons.is_required}")
 	private ValidList<CourseContactPersonDto> courseContactPersons = new ValidList<>();
 	
 	@Valid
 	@JsonProperty("provider_codes")
 	private ValidList<ProviderCodeDto> providerCodes = new ValidList<>();
 	
-	@JsonProperty("intake")
+	@JsonProperty("course_intake")
 	private CourseIntakeDto intake;
+	
+	@JsonProperty("international_student_procedure")
+	private ProcedureDto internationalStudentProcedure;
+	
+	@JsonProperty("domestic_student_procedure")
+	private ProcedureDto domesticStudentProcedure;
+	
+	@JsonProperty("international_student_procedure_id")
+	private String internationalStudentProcedureId;
+	
+	@JsonProperty("domestic_student_procedure_id")
+	private String domesticStudentProcedureId;
+	
+	@Valid 
+	@NotNull(message = "{course_min_requirements.is_required}")
+	@JsonProperty("course_min_requirements")
+	ValidList<CourseMinRequirementDto> courseMinRequirementDtos;
 }

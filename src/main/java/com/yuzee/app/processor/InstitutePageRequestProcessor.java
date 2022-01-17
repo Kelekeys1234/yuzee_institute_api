@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -16,8 +17,9 @@ import com.yuzee.app.bean.InstitutePageRequest;
 import com.yuzee.app.constant.PageRequestStatus;
 import com.yuzee.app.dao.InstitutePageRequestDao;
 import com.yuzee.app.dto.InstitutePageRequestDto;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -27,6 +29,9 @@ public class InstitutePageRequestProcessor {
 	
 	@Autowired
 	private InstitutePageRequestDao institutePageRequestDao;
+
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	public InstitutePageRequestDto requestInstiutePageRequest (String userId, String instituteId , InstitutePageRequestDto institutePageRequestDto) throws Exception {
 		log.debug("inside requestInstiutePageRequest() method");
@@ -78,13 +83,13 @@ public class InstitutePageRequestProcessor {
 		log.info("Updating institute page request for id "+institutePageRequestId+ " to status "+status );
 		Optional<InstitutePageRequest> institutePageRequestFromDb = institutePageRequestDao.getInstitutePageRequestById(institutePageRequestId);
 		if (!institutePageRequestFromDb.isPresent()) {
-			log.error("No institute page request found for id "+institutePageRequestId);
-			throw new NotFoundException("No institute page request found for id "+institutePageRequestId);
+			log.error(messageTranslator.toLocale("page_request.id.notfound",institutePageRequestId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("page_request.id.notfound",institutePageRequestId));
 		}
 		InstitutePageRequest institutePageRequest = institutePageRequestFromDb.get();
 		if (!institutePageRequest.getPageRequestStatus().equals(PageRequestStatus.PENDING)) {
-			log.error("Can only change status from Pending to granted or revoked");
-			throw new ValidationException("Can only change status from Pending to granted or revoked");
+			log.error(messageTranslator.toLocale("join_request.status.not.changed",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("join_request.status.not.changed"));
 		}
 		institutePageRequest.setPageRequestStatus(PageRequestStatus.valueOf(status));
 		institutePageRequest.setUpdatedBy("API");

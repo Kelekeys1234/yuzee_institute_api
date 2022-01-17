@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.endpoint.CareerInterface;
 import com.yuzee.app.processor.CareerProcessor;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
 @RestController("careerControllerV1")
 @Slf4j
 public class CareerController implements CareerInterface {
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Autowired
 	private CareerProcessor careerProcessor;
 
@@ -25,6 +27,6 @@ public class CareerController implements CareerInterface {
 		log.info("inside CareerController.findByName");
 		return new GenericResponseHandlers.Builder()
 				.setData(careerProcessor.findCareerByName(name, pageNumber, pageSize)).setStatus(HttpStatus.OK)
-				.setMessage("Careers fetched successfully").create();
+				.setMessage(messageTranslator.toLocale("careers.retrieved")).create();
 	}
 }

@@ -148,7 +148,7 @@ public class InstituteUploadBatchConfig {
 			public void onWriteError(Exception exception, List<? extends Institute> items) {
 				List<String> errors = new ArrayList<>();
 				items.stream().forEach(item -> 
-					errors.add(String.format("%s,%s,%s,%s,%s",item.getName(),item.getCityName(),item.getCountryName(),item.getCampusName(), ExceptionUtil.findCauseUsingPlainJava(exception).getMessage()))
+					errors.add(String.format("%s,%s,%s,%s,%s",item.getName(),item.getCityName(),item.getCountryName(), ExceptionUtil.findCauseUsingPlainJava(exception).getMessage()))
 				);
 				try {
 					logFileProcessor.appendToLogFile(executionId, errors);

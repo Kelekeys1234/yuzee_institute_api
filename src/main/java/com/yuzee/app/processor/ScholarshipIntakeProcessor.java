@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -26,12 +27,16 @@ import com.yuzee.common.lib.exception.RuntimeNotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class ScholarshipIntakeProcessor {
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 
 	@Autowired
 	ScholarshipDao scholarshipDao;
@@ -71,8 +76,8 @@ public class ScholarshipIntakeProcessor {
 				log.info("entityId is present so going to see if it is present in db if yes then we have to update it");
 				scholarshipIntake = existingScholarshipIntakesMap.get(e.getId());
 				if (scholarshipIntake == null) {
-					log.error("invalid scholarship intake id : {}", e.getId());
-					throw new RuntimeNotFoundException("invalid scholarship intake id : " + e.getId());
+					log.error(messageTranslator.toLocale("scolarship-intake.invalid.id", e.getId(),Locale.US));
+					throw new RuntimeNotFoundException(messageTranslator.toLocale("scolarship-intake.invalid.id")+ e.getId());
 				}
 			}
 			scholarshipIntake = modelMapper.map(e, ScholarshipIntake.class);
@@ -97,8 +102,8 @@ public class ScholarshipIntakeProcessor {
 				scholarshipIntakeIds);
 		if (scholarshipIntakeIds.size() == scholarshipIntakes.size()) {
 			if (scholarshipIntakes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error("no access to delete one more scholarship intakes");
-				throw new ForbiddenException("no access to delete one more scholarship intakes");
+				log.error(messageTranslator.toLocale("scolarship-intake.no_acces.deleted",Locale.US));
+				throw new ForbiddenException(messageTranslator.toLocale("scolarship-intake.no_acces.deleted"));
 			}
 			scholarship.getScholarshipIntakes().removeIf(e->Utils.contains(scholarshipIntakeIds, e.getId()));
 			scholarshipIntakeDao.deleteByScholarshipIdAndIdIn(courseId, scholarshipIntakeIds);
@@ -106,8 +111,8 @@ public class ScholarshipIntakeProcessor {
 			publishSystemEventHandler
 					.syncScholarships(Arrays.asList(conversionProcessor.convertToScholarshipSyncDtoSyncDataEntity(scholarship)));
 		} else {
-			log.error("one or more invalid scholarship_intakes_ids");
-			throw new NotFoundException("one or more invalid scholarship_intakes_ids");
+			log.error(messageTranslator.toLocale("scolarship-intake.invalid.scolarship_intakes_id",Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("scolarship-intake.invalid.scolarship_intakes_id"));
 		}
 	}
 
@@ -116,8 +121,8 @@ public class ScholarshipIntakeProcessor {
 		if (scholarshipOp.isPresent()) {
 			return scholarshipOp.get();
 		} else {
-			log.error("invalid scholarship id: {}", scholarshipId);
-			throw new NotFoundException("invalid scholarship id: " + scholarshipId);
+			log.error(messageTranslator.toLocale("scolarship-intake.invalid.id", scholarshipId,Locale.US));
+			throw new NotFoundException( messageTranslator.toLocale("scolarship-intake.invalid.id", scholarshipId));
 		}
 	}
 }

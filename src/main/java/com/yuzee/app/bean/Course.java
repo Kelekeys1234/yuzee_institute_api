@@ -39,7 +39,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(CourseUpdateListener.class)
-@Table(name = "course", uniqueConstraints = @UniqueConstraint(name = "UK_F_L_I_N_C", columnNames = { "faculty_id",
+@Table(name = "course", uniqueConstraints = @UniqueConstraint(name = "UK_COURSE_F_L_I_N_C", columnNames = { "faculty_id",
 		"level_id", "institute_id", "name", "code" }), indexes = {
 				@Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false),
 				@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),
@@ -257,7 +257,7 @@ public class Course implements Serializable {
 	private List<CourseCareerOutcome> courseCareerOutcomes = new ArrayList<>();
 
 	@OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<CourseSubject> courseSubjects = new ArrayList<>();
+	private List<CourseSemester> courseSemesters = new ArrayList<>();
 
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseFunding> courseFundings = new ArrayList<>();

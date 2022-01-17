@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -30,6 +31,7 @@ import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,6 +48,9 @@ public class TimingProcessor {
 	
 	@Autowired
 	private CommonProcessor commonProcessor;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 	
 	@Autowired
 	private CourseDao courseDao;
@@ -67,8 +72,8 @@ public class TimingProcessor {
 				if (!StringUtils.isEmpty(timingRequestDto.getId())) {
 					timing = dbTimingsMap.get(timingRequestDto.getId());
 					if (timing == null) {
-						log.error("invalid timing found against");
-						throw new NotFoundException("invalid timing found against");
+						log.error(messageTranslator.toLocale("timing-processor.invalid",Locale.US));
+						throw new NotFoundException(messageTranslator.toLocale("timing-processor.invalid"));
 					}
 				}
 				timing.setAuditFields(loggedInUserId);
@@ -94,8 +99,8 @@ public class TimingProcessor {
 		if (!StringUtils.isEmpty(timingRequestDto.getId())) {
 			Optional<Timing> timingO = timingDao.findById(timingRequestDto.getId());
 			if (!timingO.isPresent()) {
-				log.error("invalid timing found against id: {}", timingRequestDto.getId());
-				throw new NotFoundException("invalid timing found against id: " + timingRequestDto.getId());
+				log.error(messageTranslator.toLocale("timing-processor.invalid", timingRequestDto.getId(),Locale.US));
+				throw new NotFoundException(messageTranslator.toLocale("timing-processor.invalid", timingRequestDto.getId()));
 			}
 			timing = timingO.get();
 			timingBeforeUpdate = new Timing();
@@ -213,8 +218,8 @@ public class TimingProcessor {
 		log.info("inside TimingProcessor.deleteTiming");
 		Timing timing = timingDao.findByEntityTypeAndEntityIdAndId(entityType, entityId, timingId);
 		if (ObjectUtils.isEmpty(timing)) {
-			log.error("invalid timing found against id: {}", timingId);
-			throw new NotFoundException("invalid timing found against id: " + timingId);
+			log.error(messageTranslator.toLocale("timing-processor.invalid", timingId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("timing-processor.invalid", timingId));
 		} else {
 			if (!timing.getCreatedBy().equals(userId)) {
 				log.error("user dont have access to delete the timing");

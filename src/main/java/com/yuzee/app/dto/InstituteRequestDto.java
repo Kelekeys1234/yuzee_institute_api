@@ -43,9 +43,6 @@ public class InstituteRequestDto extends InstituteDto {
 	@JsonProperty("accreditation_details")
 	private List<AccrediatedDetailDto> accreditationDetails;
 	
-	@JsonProperty("intakes")
-	private List<String> intakes;
-	
 	@JsonProperty("institute_timings")
 	private List<DayTimingDto> instituteTimings; 
 	
@@ -87,12 +84,12 @@ public class InstituteRequestDto extends InstituteDto {
 	
 	@Valid
 	@JsonProperty("institute_fundings")
-	@NotNull(message = "institute_fundings must not be null")
+	@NotNull(message = "{institute_fundings.is_required}")
 	private ValidList<InstituteFundingDto> instituteFundings = new ValidList<>();
 	
 	@Valid
 	@JsonProperty("provider_codes")
-	@NotNull(message = "provider_codes must not be null")
+	@NotNull(message = "{provider_codes.is_required}")
 	private ValidList<ProviderCodeDto> instituteProviderCodes = new ValidList<>();
 	
 	@JsonProperty("verified")

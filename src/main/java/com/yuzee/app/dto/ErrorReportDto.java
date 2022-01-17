@@ -10,11 +10,11 @@ public class ErrorReportDto implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 8602286882307240534L;
-	@NotNull(message = "User Id is required.")
+	@NotNull(message = "{userId.is_required}")
 	private String userId;
-	@NotNull(message = "Error Report Category Id is required.")
+	@NotNull(message = "{errorReportCategoryId.is_required}")
 	private String errorReportCategoryId;
-	@NotNull(message = "Description is required.")
+	@NotNull(message = "{description.is_required}")
 	private String description;
 
 	private String caseNumber;

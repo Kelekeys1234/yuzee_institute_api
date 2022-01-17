@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +42,9 @@ public class CourseContactPersonProcessor {
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	@Transactional
 	public void saveCourseContactPersons(String userId, String courseId, CourseContactPersonRequestWrapper request)
@@ -91,9 +96,9 @@ public class CourseContactPersonProcessor {
 		if (courseContactPersons.stream().map(CourseContactPerson::getUserId).collect(Collectors.toSet())
 				.containsAll(userIds)) {
 			if (courseContactPersons.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error("no access to delete one more contact persons by userId: {}", userId);
-				throw new ForbiddenException(
-						"no access to delete one more course contact person by userId: {}" + userId);
+				log.error(messageTranslator.toLocale("course_contact_person.delete.no.access" , userId,Locale.US));
+				throw new ForbiddenException(messageTranslator.toLocale(
+						"course_contact_person.delete.no.access" , userId));
 			}
 			courseContactPersons.removeIf(e -> Utils.contains(userIds, e.getUserId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
@@ -108,8 +113,8 @@ public class CourseContactPersonProcessor {
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error("one or more invalid user_ids not found in course contact persons");
-			throw new NotFoundException("one or more invalid user_ids not found in course contact persons");
+			log.error(messageTranslator.toLocale("course_contact_person.user.id.invalid",Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_contact_person.user.id.invalid"));
 		}
 	}
 

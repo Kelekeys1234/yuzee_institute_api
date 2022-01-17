@@ -20,10 +20,14 @@ import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteEnglishRequirements;
 import com.yuzee.app.bean.InstituteFacility;
 import com.yuzee.app.bean.InstituteIntake;
-import com.yuzee.app.bean.InstituteProviderCode;
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.dao.TimingDao;
+import com.yuzee.common.lib.dto.ValidList;
+import com.yuzee.common.lib.dto.institute.CourseDeliveryModeFundingDto;
+import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
+import com.yuzee.common.lib.dto.institute.CourseFeesDto;
+import com.yuzee.common.lib.dto.institute.CourseIntakeDto;
 import com.yuzee.common.lib.dto.institute.CoursePaymentDto;
 import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.institute.InstituteEnglishRequirementsElasticDto;
@@ -32,6 +36,7 @@ import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.dto.scholarship.ScholarshipSyncDto;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
+import com.yuzee.common.lib.model.elastic.ProviderCode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,6 +49,9 @@ public class ConversionProcessor {
 
 	@Autowired
 	private TimingDao timingDao;
+
+	@Autowired
+	private CourseMinRequirementProcessor minRequirementProcessor;
 
 	@PostConstruct
 	private void postConstrut() {
@@ -78,7 +86,6 @@ public class ConversionProcessor {
 
 		Converter<InstituteCategoryType, String> instituteTypeConverter = ctx -> ctx.getSource() == null ? null
 				: ctx.getSource().getName();
-		
 
 		modelMapper.typeMap(Institute.class, InstituteSyncDTO.class)
 				.addMappings(mapper -> mapper.using(instituteEnglishRequirementElasticDtoConverter).map(
@@ -109,7 +116,26 @@ public class ConversionProcessor {
 		if(ObjectUtils.isEmpty(course.getCoursePayment())) {
 			syncCourse.setCoursePayment(new CoursePaymentDto());
 		}
+		if(ObjectUtils.isEmpty(course.getCourseIntake())) {
+			syncCourse.setCourseIntake(new CourseIntakeDto());
+		}else {
+			syncCourse.setCourseIntake(new CourseIntakeDto(course.getCourseIntake().getType().name(),course.getCourseIntake().getDates()));
+		}
 		
+		syncCourse.setCourseDeliveryModes(course.getCourseDeliveryModes().stream()
+				.map(delMode -> new CourseDeliveryModesDto(delMode.getId(), delMode.getDeliveryType(),
+						delMode.getDuration(), delMode.getDurationTime(), delMode.getStudyMode(),
+						delMode.getCourse().getId(), delMode.getAccessibility(), delMode.getIsGovernmentEligible(),
+						new ValidList<>(delMode.getFundings().stream()
+								.map(funding -> new CourseDeliveryModeFundingDto(funding.getId(),
+										funding.getFundingNameId(), funding.getName(), funding.getCurrency(),
+										funding.getAmount()))
+								.collect(Collectors.toList())),
+						new ValidList<>(delMode.getFees().stream().map(fees -> new CourseFeesDto(fees.getId(),
+								fees.getName(), fees.getCurrency(), fees.getAmount())).collect(Collectors.toList()))))
+				.toList());
+		syncCourse.setProviderCodes(course.getCourseProviderCodes().stream().map(e->new ProviderCode(e.getId(), e.getName(), e.getValue())).toList());
+		syncCourse.setCourseMinRequirements(course.getCourseMinRequirements().stream().map(e->minRequirementProcessor.modelToDto(e)).toList());
 		syncCourse.setCourseTimings(timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, Arrays.asList(course.getId())).stream()
 				.map(e -> modelMapper.map(e, TimingDto.class)).collect(Collectors.toList()));
 		return syncCourse;

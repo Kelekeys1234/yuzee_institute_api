@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.PaginationUtilDto;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.util.PaginationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,6 +59,9 @@ public class CareerTestProcessor {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	public PaginationResponseDto<List<CareerJobSkillDto>> getCareerJobSkills(String userId, Integer pageNumber,
 			Integer pageSize, String levelId, String jobId) {
@@ -244,8 +249,8 @@ public class CareerTestProcessor {
 	public CareerJobDto getCareerJobById(String jobId) throws NotFoundException {
 		Optional<CareerJob> careerJob = careerTestDao.getCareerJob(jobId);
 		if (!careerJob.isPresent()) {
-			log.debug("Career Job not found with id", jobId);
-			throw new NotFoundException("Career Job not found with id" + jobId);
+			log.debug(messageTranslator.toLocale("career_test.job.notfound" , jobId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("career_test.job.notfound" , jobId));
 		}
 		return modelMapper.map(careerJob.get(), CareerJobDto.class);
 	}

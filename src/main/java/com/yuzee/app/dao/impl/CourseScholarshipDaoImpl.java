@@ -1,13 +1,16 @@
 package com.yuzee.app.dao.impl;
 
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.CourseScholarship;
 import com.yuzee.app.dao.CourseScholarshipDao;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.repository.CourseScholarshipRepository;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,6 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseScholarshipDaoImpl implements CourseScholarshipDao {
 
 	@Autowired
+	private MessageTranslator messageTranslator;
+	
+	@Autowired
 	private CourseScholarshipRepository courseScholarshipRepository;
 
 	@Override
@@ -23,8 +29,8 @@ public class CourseScholarshipDaoImpl implements CourseScholarshipDao {
 		try {
 			return courseScholarshipRepository.save(courseScholarship);
 		} catch (DataIntegrityViolationException e) {
-			log.error("one or more course scholarships already exists with same scholarship_id");
-			throw new ValidationException("one or more course scholarships already exists with same scholarship_id");
+			log.error(messageTranslator.toLocale("course-scolarship.already.scolarship_id.exist",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("course-scolarship.already.scolarship_id.exist"));
 		}
 	}
 

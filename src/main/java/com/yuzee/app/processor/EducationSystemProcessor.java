@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,7 @@ import com.yuzee.common.lib.dto.institute.SubjectDto;
 import com.yuzee.common.lib.enumeration.GradeType;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,6 +59,9 @@ public class EducationSystemProcessor {
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
+	private MessageTranslator messageTranslator;
+
 	@Transactional
 	public List<EducationSystemDto> getEducationSystemsByCountryName(final String countryName) {
 		log.debug("Inside getEducationSystemsByCountryId() method");
@@ -92,8 +97,8 @@ public class EducationSystemProcessor {
 		log.debug("Inside saveEducationSystems() method");
 		Level level = levelDao.getLevel(educationSystem.getLevelId());
 		if (ObjectUtils.isEmpty(level)) {
-			log.info("level not found against level_id: {}", educationSystem.getLevelId());
-			throw new NotFoundException("level not found against level_id: " + educationSystem.getLevelId());
+			log.info(messageTranslator.toLocale("system.level.id.notfound",educationSystem.getLevelId(),Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("system.level.id.notfound",educationSystem.getLevelId()));
 		}
 		if (!ObjectUtils.isEmpty(educationSystem) && !StringUtils.isEmpty(educationSystem.getId())) {
 			log.info("Education system Id found in request, hence Fetching education system from"
@@ -111,13 +116,13 @@ public class EducationSystemProcessor {
 					educationSystemFromDB.setCountryName(educationSystem.getCountryName());
 					educationSystemDAO.save(educationSystemFromDB);
 				} else {
-					log.error("CountryName is required in request");
-					throw new ValidationException("CountryName is required in request");
+					log.error(messageTranslator.toLocale("system.country.name.required",Locale.US));
+					throw new ValidationException(messageTranslator.toLocale("system.country.name.required"));
 				}
 			} else {
-				log.error("Education System not found for educationSystemId = " + educationSystem.getId());
+				log.error(messageTranslator.toLocale("system.id.notfound",educationSystem.getId(),Locale.US));
 				throw new NotFoundException(
-						"Education System not found for educationSystemId = " + educationSystem.getId());
+						messageTranslator.toLocale("system.id.notfound",educationSystem.getId()));
 			}
 		} else {
 			log.info("Education system Id not found in request, hencce going to save new education system in DB");
@@ -134,8 +139,8 @@ public class EducationSystemProcessor {
 				system.setLevel(level);
 				educationSystemDAO.save(system);
 			} else {
-				log.error("CountryName is required in request");
-				throw new ValidationException("CountryName is required in request");
+				log.error(messageTranslator.toLocale("system.country.name.required",Locale.US));
+				throw new ValidationException(messageTranslator.toLocale("system.country.name.required"));
 			}
 		}
 	}
@@ -214,7 +219,6 @@ public class EducationSystemProcessor {
 			inputStream.close();
 		} catch (IOException e) {
 			log.error("Exception in importEducationSystem {}",e);
-			throw new ValidationException("Exception in importEducationSystem {}" + e.getMessage());
 		}
 	}
 	

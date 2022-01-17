@@ -22,6 +22,7 @@ import com.yuzee.app.bean.HelpCategory;
 import com.yuzee.app.bean.HelpSubCategory;
 import com.yuzee.app.dao.HelpDao;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.local.config.MessageTranslator;
 
 @Repository
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
@@ -30,12 +31,15 @@ public class HelpDaoImpl implements HelpDao {
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Override
 	public void save(final Help help) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(help);
 	}
-
+	
 	@Override
 	public HelpCategory getHelpCategory(final String id) {
 		Session session = sessionFactory.getCurrentSession();
@@ -234,7 +238,7 @@ public class HelpDaoImpl implements HelpDao {
 		String sqlQuery = "update help set is_favourite = ? where id = ?";
 		int updateCount = session.createNativeQuery(sqlQuery).setParameter(1, isFavourite).setParameter(2, id).executeUpdate();
 		if (updateCount == 0) {
-			throw new NotFoundException("No Help Found with Id : " + id);
+			throw new NotFoundException(messageTranslator.toLocale("help.not_found.id") + id);
 		}
 
 	}

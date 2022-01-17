@@ -15,6 +15,7 @@ import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,13 +25,14 @@ public class ScholarshipController implements ScholarshipInterface {
 
 	@Autowired
 	private ScholarshipProcessor scholarshipProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> saveScholarship(final String userId, final ScholarshipRequestDto scholarshipDto)
 			throws Exception {
 		return new GenericResponseHandlers.Builder()
 				.setData(scholarshipProcessor.saveScholarship(userId, scholarshipDto))
-				.setMessage("Scholarship save successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("scholarship.added")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
@@ -38,7 +40,7 @@ public class ScholarshipController implements ScholarshipInterface {
 			throws Exception {
 		return new GenericResponseHandlers.Builder()
 				.setData(scholarshipProcessor.saveOrUpdateBasicScholarship(userId, scholarshipDto, null))
-				.setMessage("Scholarship save successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("scholarship.added")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class ScholarshipController implements ScholarshipInterface {
 			final String id) throws Exception {
 
 		scholarshipProcessor.updateScholarship(userId, scholarshipDto, id);
-		return new GenericResponseHandlers.Builder().setData(id).setMessage("Update Scholarship Successfully")
+		return new GenericResponseHandlers.Builder().setData(id).setMessage(messageTranslator.toLocale("scholarship.updated"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -55,14 +57,14 @@ public class ScholarshipController implements ScholarshipInterface {
 			final String id) throws Exception {
 
 		scholarshipProcessor.saveOrUpdateBasicScholarship(userId, scholarshipDto, id);
-		return new GenericResponseHandlers.Builder().setData(id).setMessage("Update Scholarship Successful")
+		return new GenericResponseHandlers.Builder().setData(id).setMessage(messageTranslator.toLocale("scholarship.updated"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> get(final String userId, final String id, final boolean isReadableId)
 			throws ValidationException, NotFoundException, InvokeException {
-		return new GenericResponseHandlers.Builder().setMessage("Get Scholarship Successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("scholarship.retrieved"))
 				.setData(scholarshipProcessor.getScholarshipById(userId, id, isReadableId)).setStatus(HttpStatus.OK).create();
 	}
 
@@ -71,27 +73,27 @@ public class ScholarshipController implements ScholarshipInterface {
 			final String countryName, final String instituteId, final String searchKeyword) throws Exception {
 		PaginationResponseDto paginationResponseDto = scholarshipProcessor.getScholarshipList(pageNumber, pageSize,
 				countryName, instituteId, searchKeyword);
-		return new GenericResponseHandlers.Builder().setMessage("Scholarship fetched Successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("scholarship.retrieved"))
 				.setData(paginationResponseDto).setStatus(HttpStatus.OK).setData(paginationResponseDto).create();
 	}
 
 	@Override
 	public ResponseEntity<?> deleteScholarship(final String userId, final String id) throws Exception {
 		scholarshipProcessor.deleteScholarship(userId, id);
-		return new GenericResponseHandlers.Builder().setMessage("delete Scholarship Successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("scholarship.deleted"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getScholarshipCountByLevel() throws Exception {
-		return new GenericResponseHandlers.Builder().setMessage("Scholarship count fetched Successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("scholarship.count.retrieved"))
 				.setData(scholarshipProcessor.getScholarshipCountByLevel()).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getMultipleScholarshipByIds(List<String> scholarshipIds) {
 		log.info("Inside ScholarshipController invoking getMultipleScholarshipsById() method ");
-		return new GenericResponseHandlers.Builder().setMessage("Scholarships fetched Successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("scholarship.retrieved"))
 				.setData(scholarshipProcessor.getScholarshipByIds(scholarshipIds)).setStatus(HttpStatus.OK).create();
 	}
 
@@ -99,7 +101,7 @@ public class ScholarshipController implements ScholarshipInterface {
 	public ResponseEntity<Object> changeStatus(String userId, String instituteId, boolean status) {
 		log.info("Inside ScholarshipController.changeStatus method");
 		scholarshipProcessor.changeScholarshipStatus(userId, instituteId, status);
-		return new GenericResponseHandlers.Builder().setMessage("Scholarship Status changed successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("scholarship.status.updated"))
 				.setStatus(HttpStatus.OK).create();
 	}
 }

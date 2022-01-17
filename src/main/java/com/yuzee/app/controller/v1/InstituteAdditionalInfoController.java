@@ -11,19 +11,21 @@ import com.yuzee.app.dto.InstituteAdditionalInfoDto;
 import com.yuzee.app.endpoint.InstituteAdditionalInfoInterface;
 import com.yuzee.app.processor.InstituteAdditionalInfoProcessor;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 @RestController
 public class InstituteAdditionalInfoController implements InstituteAdditionalInfoInterface {
 
 	@Autowired
 	private InstituteAdditionalInfoProcessor instituteAdditionalInfoProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> addInstituteAdditionalInfo(String userId, String instituteId,
 			@Valid InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception {
 		instituteAdditionalInfoProcessor.addUpdateInstituteAdditionalInfo(userId, instituteId,
 				instituteAdditionalInfoDto);
-		return new GenericResponseHandlers.Builder().setMessage("Institute additional info added/updated successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_info.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -32,7 +34,7 @@ public class InstituteAdditionalInfoController implements InstituteAdditionalInf
 		InstituteAdditionalInfoDto instituteAdditionalInfoDto = instituteAdditionalInfoProcessor
 				.getInstituteAdditionalInfo(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteAdditionalInfoDto)
-				.setMessage("Institute additional info fetched successfully").setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("institute_info.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 
 }

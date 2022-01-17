@@ -25,6 +25,8 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -46,16 +48,16 @@ import com.yuzee.app.dto.GlobalFilterSearchDto;
 import com.yuzee.app.dto.UserDto;
 import com.yuzee.app.enumeration.CourseSortBy;
 import com.yuzee.app.repository.CourseRepository;
+import com.yuzee.app.repository.document.CourseDocumentRepository;
 import com.yuzee.common.lib.dto.common.CurrencyRateDto;
-import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.institute.FacultyDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.dto.institute.LevelDto;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.CommonHandler;
 import com.yuzee.common.lib.util.PaginationUtil;
-import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,6 +68,9 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Autowired
 	private CourseRepository courseRepository;
+	
+	@Autowired
+	private CourseDocumentRepository courseDocumentRepository;
 	
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -294,29 +299,6 @@ public class CourseDaoImpl implements CourseDao {
 				courseResponseDto.setStars(Double.valueOf(String.valueOf(row[8])));
 				if (courseSearchDto.getCurrencyCode() != null && !courseSearchDto.getCurrencyCode().isEmpty()) {
 					courseResponseDto.setCurrencyCode(courseSearchDto.getCurrencyCode());
-					if (row[13] != null) {
-						CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
-						Double amt = Double.valueOf(row[13].toString());
-						Double convertedRate = amt * currencyRate.getConversionRate();
-						if (convertedRate != null) {
-							additionalInfoDto.setUsdDomesticFee(Utils.limitTo2Decimals(convertedRate));
-						}
-					}
-					if (row[14] != null) {
-						CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseSearchDto.getCurrencyCode());
-						Double amt = Double.valueOf(row[14].toString());
-						Double convertedRate = amt * currencyRate.getConversionRate();
-						if (convertedRate != null) {
-							additionalInfoDto.setUsdInternationalFee(Utils.limitTo2Decimals(convertedRate));
-						}
-					}
-				} else {
-					if (row[13] != null) {
-						additionalInfoDto.setUsdDomesticFee(Utils.limitTo2Decimals(Double.valueOf(row[13].toString())));
-					}
-					if (row[14] != null) {
-						additionalInfoDto.setUsdInternationalFee(Utils.limitTo2Decimals(Double.valueOf(row[14].toString())));
-					}
 				}
 				if (row[5] != null) {
 					courseResponseDto.setCurrencyCode(row[5].toString());
@@ -330,8 +312,6 @@ public class CourseDaoImpl implements CourseDao {
 				additionalInfoDto.setDeliveryType(row[21].toString());
 				additionalInfoDto.setStudyMode(row[22].toString());
 				additionalInfoDto.setCourseId(String.valueOf(row[0]));
-				additionalInfoDto.setDomesticFee(Utils.limitTo2Decimals(Double.valueOf(row[13].toString())));
-				additionalInfoDto.setInternationalFee(Utils.limitTo2Decimals(Double.valueOf(row[14].toString())));
 				additionalInfoDtos.add(additionalInfoDto);
 				courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 				courseResponseDto.setLevelId(row[23].toString());
@@ -758,22 +738,6 @@ public class CourseDaoImpl implements CourseDao {
 				courseDto.setRemarks(String.valueOf(row.get("remarks")));
 				courseDto.setInstituteName(String.valueOf(row.get("instituteName")));
 
-				String domesticFee = String.valueOf(row.get("domestic_fee"));
-				additionalInfoDto
-						.setDomesticFee(StringUtils.isEmpty(domesticFee) ? Double.parseDouble(domesticFee) : null);
-
-				String internationalFee = String.valueOf(row.get("international_fee"));
-				additionalInfoDto.setInternationalFee(
-						StringUtils.isEmpty(internationalFee) ? Double.parseDouble(internationalFee) : null);
-
-				String usdDomesticFee = String.valueOf(row.get("usd_domestic_fee"));
-				additionalInfoDto.setUsdDomesticFee(
-						StringUtils.isEmpty(usdDomesticFee) ? Double.parseDouble(usdDomesticFee) : null);
-
-				String usdInternationalFee = String.valueOf(row.get("usd_international_fee"));
-				additionalInfoDto.setUsdInternationalFee(
-						StringUtils.isEmpty(usdInternationalFee) ? Double.parseDouble(usdInternationalFee) : 0);
-
 				additionalInfoDto.setDeliveryType(String.valueOf(row.get("delivery_type")));
 				additionalInfoDto.setStudyMode(String.valueOf(row.get("study_mode")));
 
@@ -948,10 +912,6 @@ public class CourseDaoImpl implements CourseDao {
 		additionalInfoDto.setDeliveryType(String.valueOf(row[19]));
 		additionalInfoDto.setStudyMode(String.valueOf(row[20]));
 		additionalInfoDto.setCourseId(String.valueOf(row[0]));
-		additionalInfoDto.setDomesticFee(Double.valueOf(String.valueOf(row[12])));
-		additionalInfoDto.setInternationalFee(Double.valueOf(String.valueOf(row[13])));
-		additionalInfoDto.setUsdDomesticFee(Double.valueOf(String.valueOf(row[15])));
-		additionalInfoDto.setUsdInternationalFee(Double.valueOf(String.valueOf(row[16])));
 		additionalInfoDtos.add(additionalInfoDto);
 		courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
 		return courseResponseDto;
@@ -1744,12 +1704,12 @@ public class CourseDaoImpl implements CourseDao {
 				if(row[12] != null) {
 					additionalInfoDto.setDurationTime(String.valueOf(row[12]));
 				}
-				if(row[14] != null) {
-					additionalInfoDto.setUsdDomesticFee(Double.parseDouble(String.valueOf(row[14])));
-				}
-				if(row[15] != null) {
-					additionalInfoDto.setUsdInternationalFee(Double.parseDouble(String.valueOf(row[15])));
-				}
+//				if(row[14] != null) {
+//					additionalInfoDto.setUsdDomesticFee(Double.parseDouble(String.valueOf(row[14])));
+//				}
+//				if(row[15] != null) {
+//					additionalInfoDto.setUsdInternationalFee(Double.parseDouble(String.valueOf(row[15])));
+//				}
 				additionalInfoDto.setCourseId(String.valueOf(row[0]));
 				additionalInfoDtos.add(additionalInfoDto);
 			}
@@ -1909,5 +1869,35 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public Course findByReadableId(String readableId) {
 		return courseRepository.findByReadableId(readableId);
+	}
+
+	@Override
+	public CourseRequest saveDocument(CourseRequest courseRequest) {
+		return courseDocumentRepository.save(courseRequest);
+	}
+
+	@Override
+	public Page<CourseRequest> filterDocuments(String name, String instituteId, Pageable pageable) {
+		return courseDocumentRepository.findByNameContainingIgnoreCaseAndInstituteId(name, instituteId, pageable);
+	}
+	
+	@Override
+	public Optional<CourseRequest> findDocumentById(String id) {
+		return courseDocumentRepository.findById(id);
+	}
+
+	@Override
+	public void deleteDocumentById(String id) {
+		courseDocumentRepository.deleteById(id);
+	}
+
+	@Override
+	public boolean existsById(String id) {
+		return courseRepository.existsById(id);
+	}
+
+	@Override
+	public boolean documentExistsById(String id) {
+		return courseDocumentRepository.existsById(id);
 	}
 }

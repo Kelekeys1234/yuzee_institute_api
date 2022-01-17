@@ -22,7 +22,7 @@ public class CourseResponseDto {
 	private String id;
 
 	@JsonProperty("name")
-	@NotBlank(message = "name should not be blank")
+	@NotBlank(message = "{name.is_required}")
 	private String name;
 
 	@JsonProperty("course_ranking")
@@ -35,14 +35,14 @@ public class CourseResponseDto {
 	private List<String> language = new ArrayList<>();
 
 	@JsonProperty("institute_id")
-	@NotBlank(message = "institute_id should not be blank")
+	@NotBlank(message = "{institute_id.is_required}")
 	private String instituteId;
 
 	@JsonProperty("level_id")
 	private String levelId;
 
 	@JsonProperty("institute_name")
-	@NotBlank(message = "institute_name should not be blank")
+	@NotBlank(message = "{institute_name.is_required}")
 	private String instituteName;
 
 	@JsonProperty("location")
@@ -55,18 +55,18 @@ public class CourseResponseDto {
 	private String requirements;
 
 	@JsonProperty("country_name")
-	@NotBlank(message = "countryName should not be blank")
+	@NotBlank(message = "{countryName.is_required}")
 	private String countryName;
 
 	@JsonProperty("city_name")
-	@NotBlank(message = "cityName should not be blank")
+	@NotBlank(message = "{cityName.is_required}")
 	private String cityName;
 
 	@JsonProperty("is_favourite")
 	private Boolean isFavourite;
 
 	@JsonProperty("currency_code")
-	@NotBlank(message = "currency_code should not be blank")
+	@NotBlank(message = "{currency_code.is_required}")
 	private String currencyCode;
 
 	@JsonProperty("storage_list")
@@ -85,11 +85,11 @@ public class CourseResponseDto {
 	private Date updatedOn;
 	
 	@JsonProperty("faculty_name")
-	@NotBlank(message = "faculty_name should not be blank")
+	@NotBlank(message = "{faculty_name.is_required}")
 	private String facultyName;
 
 	@JsonProperty("faculty_id")
-	@NotBlank(message = "faculty_id should not be blank")
+	@NotBlank(message = "{faculty_id.is_required}")
 	private String facultyId;
 
 	@JsonProperty("distance")

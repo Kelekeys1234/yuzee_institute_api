@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -29,6 +30,7 @@ import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,6 +54,9 @@ public class CourseFundingProcessor {
 
 	@Autowired
 	private CommonProcessor commonProcessor;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	@Transactional
 	public void addFundingToAllInstituteCourses(String userId, String instituteId, String fundingNameId)
@@ -60,7 +65,7 @@ public class CourseFundingProcessor {
 		Institute institute = instituteDao.get(instituteId);
 		if (institute != null) {
 
-			commonProcessor.validateAndGetFundingsByFundingNameIds(Arrays.asList(fundingNameId));
+			commonProcessor.getFundingsByFundingNameIds(Arrays.asList(fundingNameId), true);
 
 			List<Course> instituteCourses = courseDao.findByInstituteId(instituteId);
 			List<CourseFunding> courseFundings = new ArrayList<>();
@@ -81,8 +86,8 @@ public class CourseFundingProcessor {
 			});
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
 		} else {
-			log.error("invalid institute id: {}", instituteId);
-			throw new NotFoundException("invalid institute id: " + instituteId);
+			log.error(messageTranslator.toLocale("course_funding.institute.id.invalid",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_funding.institute.id.invalid",instituteId));
 		}
 	}
 
@@ -94,8 +99,8 @@ public class CourseFundingProcessor {
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 			log.info("going to see if funding id is valid");
-			commonProcessor.validateAndGetFundingsByFundingNameIds(
-					courseFundingDtos.stream().map(CourseFundingDto::getFundingNameId).collect(Collectors.toList()));
+			commonProcessor.getFundingsByFundingNameIds(
+					courseFundingDtos.stream().map(CourseFundingDto::getFundingNameId).collect(Collectors.toList()), true);
 			List<CourseFunding> courseFundings = course.getCourseFundings();
 			courseFundingDtos.stream().forEach(e -> {
 				CourseFunding courseFunding = new CourseFunding();
@@ -122,8 +127,8 @@ public class CourseFundingProcessor {
 			
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error("invalid course id: {}", courseId);
-			throw new NotFoundException("invalid course id: " + courseId);
+			log.error(messageTranslator.toLocale("course_funding.course.id.invalid",courseId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_funding.course.id.invalid",courseId));
 		}
 	}
 
@@ -136,8 +141,8 @@ public class CourseFundingProcessor {
 		if (courseFundings.stream().map(CourseFunding::getFundingNameId).collect(Collectors.toSet())
 				.containsAll(fundingNameIds)) {
 			if (courseFundings.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error("no access to delete one more fundings by userId: {}", userId);
-				throw new ForbiddenException("no access to delete one more fundings by userId: {}" + userId);
+				log.error(messageTranslator.toLocale("course_funding.delete.no.access",userId,Locale.US));
+				throw new ForbiddenException(messageTranslator.toLocale("course_funding.delete.no.access",userId));
 			}
 
 			courseFundings.removeIf(e -> Utils.contains(fundingNameIds, e.getFundingNameId()));
@@ -154,8 +159,8 @@ public class CourseFundingProcessor {
 
 			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error("one or more invalid course_funding_name_ids");
-			throw new NotFoundException("one or more invalid course_funding_name_ids");
+			log.error(messageTranslator.toLocale("course_funding.ids.invalid",Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_funding.ids.invalid"));
 		}
 	}
 

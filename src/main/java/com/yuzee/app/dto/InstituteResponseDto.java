@@ -49,7 +49,7 @@ public class InstituteResponseDto extends InstituteDto {
 	private TimingDto instituteTiming;
 	
 	public InstituteResponseDto(String id, String name, Integer worldRanking, String cityName, String countryName,
-			String stateName, String campusName, String website, String aboutUs,
+			String stateName, String website, String aboutUs,
 			Double latitude, Double longitude, String phoneNumber, String whatsNo, Long totalCourses, String email, String address,
 			Integer domesticRanking, String tagLine) {
 		super.setId(id);
@@ -58,7 +58,6 @@ public class InstituteResponseDto extends InstituteDto {
 		super.setCityName(cityName);
 		super.setCountryName(countryName);
 		super.setStateName(stateName);
-		super.setCampusName(campusName);
 		super.setWebsite(website);
 		this.aboutUs = aboutUs;
 		super.setTotalCourses(totalCourses.intValue());

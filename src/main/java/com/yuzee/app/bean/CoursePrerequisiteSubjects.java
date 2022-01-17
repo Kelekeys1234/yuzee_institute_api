@@ -29,7 +29,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Table(name = "course_prerequisite_subjects", uniqueConstraints = @UniqueConstraint(columnNames = { "course_prerequisite_id", "subject_name" }, 
-	   	 name = "UK_NA_CN_CN"), indexes = {@Index(name = "IDX_COURSE_PREREQUISITE_ID", columnList = "course_prerequisite_id", unique = false)})
+	   	 name = "UK_COURSE_PREREQUISITE_SUBJECT_NA_CN_CN"), indexes = {@Index(name = "IDX_COURSE_PREREQUISITE_ID", columnList = "course_prerequisite_id", unique = false)})
 public class CoursePrerequisiteSubjects implements Serializable {
 
 	private static final long serialVersionUID = 8492390790670110780L;

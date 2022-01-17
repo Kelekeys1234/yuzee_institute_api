@@ -28,7 +28,7 @@ import lombok.ToString;
 @ToString(exclude = "coursePayment")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "course_payment_item", uniqueConstraints = @UniqueConstraint(columnNames = { "name",
-		"course_payment_id" }, name = "UK_N_P_ID"), indexes = {
+		"course_payment_id" }, name = "UK_COURSE_PAYMENT_N_P_ID"), indexes = {
 				@Index(name = "IDX_P_ID", columnList = "course_payment_id", unique = false) })
 public class CoursePaymentItem implements Serializable {
 

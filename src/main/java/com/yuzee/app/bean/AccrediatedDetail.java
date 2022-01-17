@@ -16,7 +16,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "accredited_detail",  uniqueConstraints = @UniqueConstraint(columnNames = { "entity_id" , "accrediated_name", "entity_type" } , name = "UK_ENTITY_ID_NAME_TYPE"),
+@Table(name = "accredited_detail",  uniqueConstraints = @UniqueConstraint(columnNames = { "entity_id" , "accrediated_name", "entity_type" } , name = "UK_Accredited_Detail_NAME_EI_ET"),
 indexes = { @Index (name = "IDX_ENTITY_ID", columnList="entity_id", unique = false)})
 public class AccrediatedDetail {
 

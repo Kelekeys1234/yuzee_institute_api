@@ -26,7 +26,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "institute_join_request",  uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "institute_name" } , name = "UK_JR_INSTITUTE_NAME_USER_ID"),
+@Table(name = "institute_join_request",  uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "institute_name" } , name = "UK_IJOIN_REQUEST_INSTITUTE_NAME_USER_ID"),
           indexes = { @Index (name = "IDX_JR_INSTITUTE_NAME_USER_ID", columnList="institute_name,user_id", unique = true),
         		  @Index (name = "IDX_JR_STATUS", columnList="status", unique = false)})
 @Data

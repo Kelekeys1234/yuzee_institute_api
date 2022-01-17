@@ -1,6 +1,7 @@
 package com.yuzee.app.controller.v1;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yuzee.app.constant.PageRequestStatus;
 import com.yuzee.app.dto.InstitutePageRequestDto;
 import com.yuzee.app.endpoint.InstitutePageRequestInterface;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.InstitutePageRequestProcessor;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -26,6 +29,9 @@ public class InstitutePageRequestController implements InstitutePageRequestInter
 
 	@Autowired
 	private InstitutePageRequestProcessor institutePageRequestProcessor;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 	
 	@Override
 	public ResponseEntity<?> requestInstitutePageAccess(String userId, String instituteId,
@@ -40,10 +46,8 @@ public class InstitutePageRequestController implements InstitutePageRequestInter
 
 		boolean isStatusValid = EnumUtils.isValidEnum(PageRequestStatus.class, status);
 		if (!isStatusValid) {
-			log.error("status value is invalid in request passed " + status
-					+ " expected PENDING,REJECTED,REVOKED,ACTIVE");
-			throw new ValidationException("status value is invalid in request passed " + status
-					+ " expected PENDING,REJECTED,REVOKED,ACTIVE");
+			log.error(messageTranslator.toLocale("page-request.status.invalid" , Utils.getEnumNamesAsString(PageRequestStatus.class),Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("page-request.status.invalid" , Utils.getEnumNamesAsString(PageRequestStatus.class)));
 		}
 		List<InstitutePageRequestDto> listOfInstitutePageRequestDto = institutePageRequestProcessor.getInstitutePageRequestByInstituteIdAndStatus(instituteId, status);
 		return new GenericResponseHandlers.Builder().setData(listOfInstitutePageRequestDto).setMessage("Institute page request list fetched successfully")
@@ -55,10 +59,8 @@ public class InstitutePageRequestController implements InstitutePageRequestInter
 			throws Exception {
 		boolean isStatusValid = EnumUtils.isValidEnum(PageRequestStatus.class, status);
 		if (!isStatusValid) {
-			log.error("status value is invalid in request passed " + status
-					+ " expected PENDING,REJECTED,REVOKED,ACTIVE");
-			throw new ValidationException("status value is invalid in request passed " + status
-					+ " expected PENDING,REJECTED,REVOKED,ACTIVE");
+			log.error(messageTranslator.toLocale("page-request.status.invalid" , Utils.getEnumNamesAsString(PageRequestStatus.class),Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("page-request.status.invalid" , Utils.getEnumNamesAsString(PageRequestStatus.class)));
 		}
 		institutePageRequestProcessor.updateInstitutePageRequestStatus(institutePageRequestId, status);
 		return new GenericResponseHandlers.Builder().setMessage("Institute page request updated successfully")

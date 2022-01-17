@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,12 +22,17 @@ import com.yuzee.common.lib.exception.BaseRuntimeException;
 import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
+
+import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice(basePackages = "com.yuzee.app")
+@Slf4j
 public class ErrorHandlingController {
-
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	/**
 	 * Central exception handler and generate common custom response
 	 *
@@ -41,6 +48,19 @@ public class ErrorHandlingController {
 		if (exception instanceof ParseException) {
 			status = ((BaseException) exception).getStatus();
 			message = exception.getMessage();
+		}else if (exception instanceof DataIntegrityViolationException) {
+			status = HttpStatus.BAD_REQUEST;
+			message = exception.getMessage();
+			DataIntegrityViolationException ex = (DataIntegrityViolationException)exception;
+			if (ex.getCause() instanceof ConstraintViolationException) {
+				String constraintName = ((ConstraintViolationException) ex.getCause()).getConstraintName();
+				if (!ObjectUtils.isEmpty(constraintName)) {
+					String msg =  messageTranslator.toLocale(constraintName);
+					if (!ObjectUtils.isEmpty(msg)) {
+						message = msg;	
+					}
+				}
+			}
 		} else if (exception instanceof ForbiddenException) {
 			status = ((ForbiddenException) exception).getStatus();
 			message = exception.getMessage();
@@ -63,8 +83,8 @@ public class ErrorHandlingController {
 			message = exception.getMessage();
 		}
 		StringBuffer requestedURL = request.getRequestURL();
-		logger.info("Requested URL:{}", requestedURL);
-		logger.error("exception : {}", exception);
+		log.info("Requested URL:{}", requestedURL);
+		log.error("exception : {}", exception);
 		return new GenericResponseHandlers.Builder().setStatus(status).setMessage(message).create();
 	}
 

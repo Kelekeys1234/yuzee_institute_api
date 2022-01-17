@@ -17,38 +17,38 @@ public class CourseMobileDto {
 	@JsonProperty("course_id")
 	private String courseId;
 
-	@NotBlank(message = "course_name should not be blank")
+	@NotBlank(message = "{course_name.is_required}")
 	@JsonProperty("course_name")
 	private String courseName;
 	
-	@NotBlank(message = "course_description should not be blank")
+	@NotBlank(message = "{course_description.is_required}")
 	@JsonProperty("course_description")
 	private String courseDescription;
 	
-	@NotBlank(message = "faculty_id should not be blank")
+	@NotBlank(message = "{faculty_id.is_required}")
 	@JsonProperty("faculty_id")
 	private String facultyId;
 	
 	@JsonProperty("faculty_name")
 	private String facultyName;
 	
-	@NotNull(message = "gpa_required should not be blank")
+	@NotNull(message = "{gpa_required.is_required}")
 	@JsonProperty("gpa_required")
 	private Double gpaRequired;
 	
-	@NotNull(message = "usd_domestic_fee should not be blank")
+	@NotNull(message = "{usd_domestic_fee.is_required}")
 	@JsonProperty("usd_domestic_fee")
 	private Double usdDomesticFee;
 	
-	@NotNull(message = "usd_international_fee should not be blank")
+	@NotNull(message = "{usd_international_fee.is_required}")
 	@JsonProperty("usd_international_fee")
 	private Double usdInternationalFee;
 	
-	@NotNull(message = "duration should not be blank")
+	@NotNull(message = "{duration.is_required}")
 	@JsonProperty("duration")
 	private Double duration;
 	
-	@NotBlank(message = "duration_unit should not be blank")
+	@NotBlank(message = "{duration_unit.is_required}")
 	@JsonProperty("duration_unit")
 	private String durationUnit;
 }

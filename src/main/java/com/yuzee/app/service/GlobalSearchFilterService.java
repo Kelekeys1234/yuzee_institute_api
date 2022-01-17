@@ -20,11 +20,15 @@ import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
 public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Autowired
 	private CourseDao icourseDaso;
 
@@ -38,7 +42,7 @@ public class GlobalSearchFilterService implements IGlobalSearchFilterService {
 			BeanUtils.copyProperties(globalSearchFilterDto, advanceSearchDto);
 			return filterCoursesByParameters(globalSearchFilterDto, advanceSearchDto);
 		} else {
-			throw new ValidationException("Illegal Entity Type");
+			throw new ValidationException(messageTranslator.toLocale("global-search.invalid.entity_type"));
 		}
 	}
 

@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ import com.yuzee.common.lib.exception.InternalServerException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.PublishSystemEventHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,14 +50,17 @@ public class CoursePaymentProcessor {
 	@Autowired
 	private ConversionProcessor conversionProcessor;
 	
+	@Autowired
+	private MessageTranslator messageTranslator;
+
 	@Transactional
 	public void saveUpdateCoursePayment(String userId, String courseId, @Valid CoursePaymentDto coursePaymentDto)
 			throws ForbiddenException, NotFoundException, ValidationException {
 		log.info("inside CoursePaymentProcessor.saveUpdateCoursePayment");
 		Course course = getCourseById(courseId);
 		if (!course.getCreatedBy().equals(userId)) {
-			log.error("no access to add course payment");
-			throw new ForbiddenException("no access to add course payment");
+			log.error(messageTranslator.toLocale("course_payment.add.no.access",Locale.US));
+			throw new ForbiddenException(messageTranslator.toLocale("course_payment.add.no.access"));
 		} else {
 			CoursePayment coursePayment = course.getCoursePayment();
 			if (ObjectUtils.isEmpty(coursePayment)) {
@@ -115,8 +120,8 @@ public class CoursePaymentProcessor {
 			throws ForbiddenException, NotFoundException, InternalServerException {
 		Course course = getCourseById(courseId);
 		if (!course.getCreatedBy().equals(userId)) {
-			log.error("no access to delete course payment");
-			throw new ForbiddenException("no access to delete course payment");
+			log.error(messageTranslator.toLocale("course_payment.delete.no.access",Locale.US));
+			throw new ForbiddenException(messageTranslator.toLocale("course_payment.delete.no.access"));
 		}
 		CoursePayment coursePayment = course.getCoursePayment();
 		if (!ObjectUtils.isEmpty(coursePayment)) {
@@ -130,20 +135,20 @@ public class CoursePaymentProcessor {
 				log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
 				publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 			} catch (ValidationException e) {
-				log.error(e.getMessage());
-				throw new InternalServerException("error deleting course payment");
+				log.error(messageTranslator.toLocale("course_payment.delete.error",Locale.US));
+				throw new InternalServerException(messageTranslator.toLocale("course_payment.delete.error"));
 			}
 		} else {
-			log.error("Course Payment not found against course");
-			throw new NotFoundException("Course Payment not found against course");
+			log.error(messageTranslator.toLocale("course_payment.notfound",Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_payment.notfound"));
 		}
 	}
 
 	private Course getCourseById(String courseId) throws NotFoundException {
 		Course course = courseDao.get(courseId);
 		if (ObjectUtils.isEmpty(course)) {
-			log.error("invalid course id: {}", courseId);
-			throw new NotFoundException("invalid course id: " + courseId);
+			log.error(messageTranslator.toLocale("course_payment.course.id.invalid",courseId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_payment.course.id.invalid",courseId));
 		}
 		return course;
 	}

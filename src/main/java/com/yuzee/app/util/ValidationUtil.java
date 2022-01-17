@@ -1,6 +1,11 @@
 package com.yuzee.app.util;
 
+import java.util.Locale;
+
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -9,8 +14,10 @@ import com.yuzee.app.enumeration.TimingType;
 import com.yuzee.common.lib.exception.RuntimeValidationException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.util.Utils;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
+
 
 @Slf4j
 public class ValidationUtil {
@@ -19,11 +26,21 @@ public class ValidationUtil {
 
 	}
 
+	private static MessageTranslator staticMessageTranslator;
+
+	@Autowired
+	private MessageTranslator messageTranslator;
+
+	@PostConstruct
+	private void init() {
+		staticMessageTranslator = messageTranslator;
+	}
+
 	public static void validatTimingType(String timingType) throws ValidationException {
 		if (!EnumUtils.isValidEnum(TimingType.class, timingType)) {
-			log.error("timing_type must be in one of the following {}", Utils.getEnumNamesAsString(TimingType.class));
+			log.error(staticMessageTranslator.toLocale("validation.type", Utils.getEnumNamesAsString(TimingType.class),Locale.US));
 			throw new ValidationException(
-					"timing_type must be in one of the following: " + Utils.getEnumNamesAsString(TimingType.class));
+					staticMessageTranslator.toLocale("validation.type", Utils.getEnumNamesAsString(TimingType.class)));
 
 		}
 	}

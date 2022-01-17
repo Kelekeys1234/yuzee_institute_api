@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class UnLinkInsituteDto {
 
 	@JsonProperty("course_id")
-	@NotEmpty(message = "course_id should not be empty")
+	@NotEmpty(message = "{course_id.is_required}")
 	private String courseId;
 
 	@JsonProperty("delete_course")

@@ -34,7 +34,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @Table(name = "education_system", uniqueConstraints = @UniqueConstraint(columnNames = { "country_name", "name",
-		"state_name", "level_id" }, name = "UK_CN_NA_SN"), indexes = {
+		"state_name", "level_id" }, name = "UK_EDUCATION_SYSTEM_CN_NA_SN"), indexes = {
 				@Index(name = "IDX_COUNTRY_NAME", columnList = "country_name", unique = false),
 				@Index(name = "IDX_STATE_NAME", columnList = "state_name", unique = false) })
 public class EducationSystem implements Serializable {

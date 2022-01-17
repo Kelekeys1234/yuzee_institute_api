@@ -27,7 +27,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @Table(name = "help_answer", uniqueConstraints = @UniqueConstraint(columnNames = { "help_id", "user_id", "answer" }, 
-	   name = "UK_HID_UID_ANSWER"), indexes = {@Index(name = "IDX_HELP_ID", columnList = "help_id", unique = false),
+	   name = "UK_HELP_ANSWER_HID_UID_ANSWER"), indexes = {@Index(name = "IDX_HELP_ID", columnList = "help_id", unique = false),
 			   @Index(name = "IDX_USER_ID", columnList = "user_id", unique = false)})
 public class HelpAnswer implements Serializable {
 

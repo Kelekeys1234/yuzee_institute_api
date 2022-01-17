@@ -9,9 +9,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -22,7 +27,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.bean.CourseIntake;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteAdditionalInfo;
 import com.yuzee.app.bean.InstituteFacility;
@@ -34,17 +38,31 @@ import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.TodoDto;
+import com.yuzee.app.dto.ValidList;
+import com.yuzee.common.lib.dto.institute.CourseDeliveryModeFundingDto;
+import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
+import com.yuzee.common.lib.dto.institute.CourseFeesDto;
 import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.enumeration.InstituteType;
-import com.yuzee.common.lib.enumeration.IntakeType;
 import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.util.DateUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CommonUtil {
 
+	private static MessageTranslator staticMessageTranslator;
+
+	@Autowired
+	private MessageTranslator messageTranslator;
+
+	@PostConstruct
+	private void init() {
+		staticMessageTranslator = messageTranslator;
+	}
+	
 	public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(final Institute institute) {
 		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
 		instituteRequestDto.setAvgCostOfLiving(institute.getAvgCostOfLiving());
@@ -72,7 +90,6 @@ public class CommonUtil {
 		}
 		instituteRequestDto.setWorldRanking(institute.getWorldRanking());
 		instituteRequestDto.setName(institute.getName());
-		instituteRequestDto.setCampusName(institute.getCampusName());
 		instituteRequestDto.setEmail(institute.getEmail());
 		instituteRequestDto.setEnrolmentLink(institute.getEnrolmentLink());
 		instituteRequestDto.setScholarshipFinancingAssistance(institute.getScholarshipFinancingAssistance());
@@ -115,11 +132,8 @@ public class CommonUtil {
 			courseRequest.setLongitude(course.getInstitute().getLongitude());
 			courseRequest.setInstituteName(course.getInstitute().getName());
 			courseRequest.getInstitute().setStateName(course.getInstitute().getState());
-			CourseIntake courseIntake = course.getCourseIntake();
-			if (!ObjectUtils.isEmpty(courseIntake)) {
-				courseRequest.getInstitute()
+			courseRequest.getInstitute()
 						.setIntakes(course.getInstitute().getInstituteIntakes().stream().map(e -> e.getIntake()).toList());
-			}
 		}
 		if (course.getLevel() != null) {
 			courseRequest.setLevelId(course.getLevel().getId());
@@ -503,8 +517,8 @@ public class CommonUtil {
 	public static void validateEditAccess(String userId, Course course) throws ForbiddenException {
 		log.info("Inside CommonUtil.validateEditAccess");
 		if (!course.getCreatedBy().equals(userId)) {
-			log.info("user has no access to edit the course details");
-			throw new ForbiddenException("user has no access to edit the course details");
+			log.info(staticMessageTranslator.toLocale("common.no_acces.edit",Locale.US));
+			throw new ForbiddenException(staticMessageTranslator.toLocale("common.no_acces.edit"));
 		}
 	}
 }

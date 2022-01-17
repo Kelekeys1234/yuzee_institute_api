@@ -7,12 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -25,7 +25,9 @@ import lombok.ToString;
 @Entity
 @ToString(exclude = "course")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "off_campus_course", indexes = { @Index(name = "IDX_COURSE", columnList = "course_id", unique = true) })
+@Table(name = "off_campus_course", uniqueConstraints = {
+		@UniqueConstraint(columnNames = { "title" }, name = "UK_OFF_CAMPUS_TITLE"),
+		@UniqueConstraint(columnNames = { "course_id" }, name = "UK_COURSE") })
 public class OffCampusCourse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -35,6 +37,10 @@ public class OffCampusCourse implements Serializable {
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
+
+	@EqualsAndHashCode.Include
+	@Column(name = "title")
+	private String title;
 
 	@EqualsAndHashCode.Include
 	@Column(name = "latitude")
@@ -54,7 +60,7 @@ public class OffCampusCourse implements Serializable {
 
 	@EqualsAndHashCode.Include
 	@Column(name = "address", columnDefinition = "TEXT")
-	private String address;	
+	private String address;
 
 	@EqualsAndHashCode.Include
 	@Column(name = "country_name", length = 50)
@@ -71,7 +77,15 @@ public class OffCampusCourse implements Serializable {
 	@EqualsAndHashCode.Include
 	@Column(name = "postal_code")
 	private String postalCode;
-	
+
+	@EqualsAndHashCode.Include
+	@Column(name = "location_help_required")
+	private Boolean locationHelpRequired;
+
+	@EqualsAndHashCode.Include
+	@Column(name = "skip_location")
+	private Boolean skipLocation;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on")
 	private Date createdOn;
@@ -93,7 +107,10 @@ public class OffCampusCourse implements Serializable {
 
 	@Column(name = "updated_by")
 	private String updatedBy;
-
+	
+	@Column(name = "reference_course_id")
+	private String reference_course_id;
+	
 	@OneToOne
 	@JoinColumn(name = "course_id")
 	private Course course;

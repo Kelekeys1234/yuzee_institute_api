@@ -15,18 +15,18 @@ public class InstituteGetRequestDto {
 	private String id;
 	
 	@JsonProperty("country_name")
-	@NotBlank(message = "country_name should not be blank")
+	@NotBlank(message = "{country_name.is_required}")
     private String countryName;
 	
 	@JsonProperty("city_name")
-	@NotBlank(message = "city_name should not be blank")
+	@NotBlank(message = "{city_name.is_required}")
     private String cityName;
 	
 	@JsonProperty("institute_type")
     private String instituteType;
 	
 	@JsonProperty("name")
-	@NotBlank(message = "name should not be blank")
+	@NotBlank(message = "{name.is_required}")
     private String name;
 	
 	@JsonProperty("institute_youtubes")

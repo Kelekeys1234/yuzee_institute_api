@@ -16,7 +16,7 @@ public class InstituteCsvDto {
 	private String instituteType;
 
 	@JsonProperty("institute_name")
-	@NotEmpty(message = "institute_name is required")
+	@NotEmpty(message = "{institute_name is required")
 	private String name;
 
 	@JsonProperty("world_ranking")
@@ -50,11 +50,11 @@ public class InstituteCsvDto {
 	private String description;
 
 	@JsonProperty("country_name")
-	@NotEmpty(message = "country_name is required")
+	@NotEmpty(message = "{country_name is required")
 	private String countryName;
 
 	@JsonProperty("city_name")
-	@NotEmpty(message = "city_name is required")
+	@NotEmpty(message = "{city_name is required")
 	private String cityName;
 
 	@JsonProperty("avg_cost_of_living")
@@ -81,9 +81,6 @@ public class InstituteCsvDto {
 	@JsonProperty("whats_no")
 	private String whatsNo;
 
-	@JsonProperty("campus_name")
-	private String campusName;
-
 	@JsonProperty("scholarship_financing_assistance")
 	private String scholarshipFinancingAssistance;
 
@@ -100,7 +97,7 @@ public class InstituteCsvDto {
 	private String boarding;
 
 	@JsonProperty("state")
-	@NotEmpty(message = "state is required")
+	@NotEmpty(message = "{state is required")
 	private String state;
 
 	@JsonProperty("postal_code")

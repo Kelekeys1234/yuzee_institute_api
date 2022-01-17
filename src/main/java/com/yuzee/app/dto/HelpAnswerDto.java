@@ -10,15 +10,15 @@ import lombok.Data;
 public class HelpAnswerDto {
 
 	@JsonProperty("user_id")
-	@NotBlank(message = "user_id should not be blank")
+	@NotBlank(message = "{user_id.is_required}")
     private String userId;
 	
 	@JsonProperty("help_id")
-	@NotBlank(message = "help_id should not be blank")	
+	@NotBlank(message = "{help_id.is_required}")	
     private String helpId;
 	
 	@JsonProperty("answer")
-	@NotBlank(message = "answer should not be blank")
+	@NotBlank(message = "{answer.is_required}")
     private String answer;
 	
 	@JsonProperty("file_url")

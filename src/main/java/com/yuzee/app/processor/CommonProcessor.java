@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ import com.yuzee.common.lib.handler.EligibilityHandler;
 import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.handler.UserHandler;
 import com.yuzee.common.lib.handler.ViewTransactionHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,6 +51,9 @@ public class CommonProcessor {
 
 	@Autowired
 	private UserHandler userHandler;
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	@Autowired
 	private PublishSystemEventHandler publishSystemEventHandler;
@@ -78,9 +83,10 @@ public class CommonProcessor {
 	
 	public boolean checkIfPriceChanged(List<CourseDeliveryModes> beforeUpdate, List<CourseDeliveryModes> afterUpdate) {
 		Map<String, CourseDeliveryModes> afterUpdateMap = afterUpdate.stream().collect(Collectors.toMap(CourseDeliveryModes::getId, e -> e));
-		return beforeUpdate.stream().anyMatch(e -> afterUpdateMap.containsKey(e.getId()) && 
-				!(e.getDomesticFee().equals(afterUpdateMap.get(e.getId()).getDomesticFee()) 
-						&& e.getInternationalFee().equals(afterUpdateMap.get(e.getId()).getInternationalFee())));
+//		return beforeUpdate.stream().anyMatch(e -> afterUpdateMap.containsKey(e.getId()) && 
+//				!(e.getDomesticFee().equals(afterUpdateMap.get(e.getId()).getDomesticFee()) 
+//						&& e.getInternationalFee().equals(afterUpdateMap.get(e.getId()).getInternationalFee())));
+		return false;
 	}
 	
 	public List<StorageDto> getEntityGallery(String entityType, String entityId)
@@ -93,7 +99,7 @@ public class CommonProcessor {
 		return new ArrayList<>();
 	}
 
-	public Map<String, FundingResponseDto> validateAndGetFundingsByFundingNameIds(List<String> fundingNameIds)
+	public Map<String, FundingResponseDto> getFundingsByFundingNameIds(List<String> fundingNameIds, Boolean validateIds)
 			throws NotFoundException, InvokeException {
 		log.info("inside getFundingMapByFundingNameIds");
 		Map<String, FundingResponseDto> map = new HashMap<>();
@@ -102,9 +108,9 @@ public class CommonProcessor {
 			if (!CollectionUtils.isEmpty(dtos)) {
 				map = dtos.stream().collect(Collectors.toMap(FundingResponseDto::getFundingNameId, e -> e));
 			}
-			if (map.size() != fundingNameIds.size()) {
-				log.error("one or more funding_name_ids not found");
-				throw new NotFoundException("one or more funding_name_ids not found");
+			if (validateIds && map.size() != fundingNameIds.size()) {
+				log.error(messageTranslator.toLocale("common.name.notfound",Locale.US));
+				throw new NotFoundException(messageTranslator.toLocale("common.name.notfound"));
 			}
 		}
 		return map;
@@ -120,8 +126,8 @@ public class CommonProcessor {
 				map = dtos.stream().collect(Collectors.toMap(UserInitialInfoDto::getUserId, e -> e));
 			}
 			if (map.size() != userIds.size()) {
-				log.error("one or more user_ids not found");
-				throw new NotFoundException("one or more user_ids not found");
+				log.error(messageTranslator.toLocale("common.user.notfound",Locale.US));
+				throw new NotFoundException(messageTranslator.toLocale("common.user.notfound"));
 			}
 		}
 		return map;

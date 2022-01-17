@@ -16,23 +16,23 @@ public class MyHistoryDto {
 	private String id;
 	
 	@JsonProperty("course_name")
-	@NotBlank(message = "course_name should not be blank")
+	@NotBlank(message = "{course_name.is_required}")
 	private String name;
 	
 	@JsonProperty("institute_id")
-	@NotBlank(message = "institute_id should not be blank")
+	@NotBlank(message = "{institute_id.is_required}")
 	private String instituteId;
 	
 	@JsonProperty("institute_name")
-	@NotBlank(message = "institute_name should not be blank")
+	@NotBlank(message = "{institute_name.is_required}")
 	private String instituteName;
 	
 	@JsonProperty("city_name")
-	@NotBlank(message = "city_name should not be blank")
+	@NotBlank(message = "{city_name.is_required}")
 	private String cityName;
 	
 	@JsonProperty("country_name")
-	@NotBlank(message = "country_name should not be blank")
+	@NotBlank(message = "{country_name.is_required}")
 	private String countryName;
 	
 	@JsonProperty("stars")

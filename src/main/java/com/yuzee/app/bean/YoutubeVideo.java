@@ -17,7 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 import lombok.Data;
 
 @Entity
-@Table(name = "youtube_video", uniqueConstraints = @UniqueConstraint(columnNames = {"video_id"} , name = "UK_VI"),
+@Table(name = "youtube_video", uniqueConstraints = @UniqueConstraint(columnNames = {"video_id"} , name = "UK_YOUTUBE_VIDEO_VI"),
 indexes = { @Index (name = "IDX_TYPE", columnList="type", unique = false)})
 @Data
 public class YoutubeVideo {

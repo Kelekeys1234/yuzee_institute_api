@@ -14,11 +14,11 @@ import lombok.Data;
 @Data
 public class CourseFundingRequestWrapper {
 	@Valid
-	@NotEmpty(message = "course_fundings must not be empty")
+	@NotEmpty(message = "{course_fundings.is_required}")
 	@JsonProperty("course_fundings")
 	ValidList<CourseFundingDto> courseFundingDtos;
 
-	@NotNull(message = "linked_course_ids must not be null")
+	@NotNull(message = "{linked_course_ids.is_required}")
 	@JsonProperty("linked_course_ids")
 	List<String> linkedCourseIds;
 }

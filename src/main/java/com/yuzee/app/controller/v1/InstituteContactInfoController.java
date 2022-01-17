@@ -12,6 +12,7 @@ import com.yuzee.app.dto.InstituteContactInfoDto;
 import com.yuzee.app.endpoint.InstituteContactInfoInterface;
 import com.yuzee.app.processor.InstituteContactInfoProcessor;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -22,18 +23,21 @@ public class InstituteContactInfoController implements InstituteContactInfoInter
 	@Autowired
 	private InstituteContactInfoProcessor instituteContactInfoProcessor;
 	
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Override
 	public ResponseEntity<?> addUpdateInstituteContactInfo(String userId, String instituteId,
 		@RequestBody @Valid InstituteContactInfoDto instituteContactInfoDto) throws Exception {
 		instituteContactInfoProcessor.addUpdateInstituteContactInfo(userId, instituteId, instituteContactInfoDto);
-		return new GenericResponseHandlers.Builder().setMessage("Institute contact info added/updated successfully")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_contact_info.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getInstituteContactInfo(String userId, String instituteId) throws Exception {
 		InstituteContactInfoDto instituteContactInfoDto =instituteContactInfoProcessor.getInstituteContactInfo(userId, instituteId, "PRIVATE");
-		return new GenericResponseHandlers.Builder().setData(instituteContactInfoDto).setMessage("Institute contact info added/updated successfully")
+		return new GenericResponseHandlers.Builder().setData(instituteContactInfoDto).setMessage(messageTranslator.toLocale("institute_contact_info.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -41,7 +45,7 @@ public class InstituteContactInfoController implements InstituteContactInfoInter
 	@Override
 	public ResponseEntity<?> getInstitutePublicContactInfo(String instituteId) throws Exception {
 		InstituteContactInfoDto instituteContactInfoDto =instituteContactInfoProcessor.getInstituteContactInfo(null, instituteId, "PUBLIC");
-		return new GenericResponseHandlers.Builder().setData(instituteContactInfoDto).setMessage("Institute contact info added/updated successfully")
+		return new GenericResponseHandlers.Builder().setData(instituteContactInfoDto).setMessage(messageTranslator.toLocale("institute_contact_info.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 

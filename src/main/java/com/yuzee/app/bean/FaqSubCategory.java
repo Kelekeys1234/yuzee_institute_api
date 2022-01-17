@@ -24,7 +24,7 @@ import lombok.Data;
 
 @Entity
 @Table(name = "faq_sub_category", uniqueConstraints = @UniqueConstraint(columnNames = { "name",
-		"faq_category_id" }, name = "UK_FAQ_SUB_CAT"), indexes = {
+		"faq_category_id" }, name = "UK_SUB_FAQ_CAT_NAME"), indexes = {
 				@Index(name = "IDX_SUB_CAT_CAT_ID", columnList = "faq_category_id", unique = false) })
 @Data
 public class FaqSubCategory implements Serializable {

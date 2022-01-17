@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -27,6 +28,7 @@ import com.yuzee.common.lib.exception.InternalServerException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.handler.UserInstituteAccessRoleHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -51,6 +53,9 @@ public class InstituteAssociationProcessor {
 	
 	@Value("${association.message}")
 	public String associationMessage;
+
+	@Autowired
+	private MessageTranslator messageTranslator;
 	
 	public void addInstituteAssociation (String userId , InstituteAssociationDto instituteAssociationDto) throws Exception {
 		log.debug("Inside addInstituteAssociation() method ");
@@ -58,21 +63,21 @@ public class InstituteAssociationProcessor {
 		log.info("Getting source institute having institute id "+instituteAssociationDto.getSourceInstituteId());
 		Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(instituteAssociationDto.getSourceInstituteId());
 		if (!sourceInstituteFromDB.isPresent()) {
-			log.error("No institute found for institute having id "+instituteAssociationDto.getSourceInstituteId());
-			throw new NotFoundException("No institute found for institute having id "+instituteAssociationDto.getSourceInstituteId());
+			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getSourceInstituteId(),Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getSourceInstituteId()));
 		}
 		log.info("Getting destination institute having institute id "+instituteAssociationDto.getSourceInstituteId());
 		Optional<Institute> destinationInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(instituteAssociationDto.getDestinationInstituteId());
 		if (!destinationInstituteFromDB.isPresent()) {
-			log.error("No institute found for institute having id "+instituteAssociationDto.getSourceInstituteId());
-			throw new NotFoundException("No institute found for institute having id "+instituteAssociationDto.getDestinationInstituteId());
+			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getDestinationInstituteId(),Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getDestinationInstituteId()));
 		}
 		log.info("Getting user access for institute id "+instituteAssociationDto.getDestinationInstituteId());
 		List<UserInstituteAccessInternalResponseDto> listOfUserInstituteAccessInternalResponseDto = userInstituteAccessRoleHandler.getUserInstituteAccessInternal(instituteAssociationDto.getDestinationInstituteId(), "ACTIVE");
 		
 		if (CollectionUtils.isEmpty(listOfUserInstituteAccessInternalResponseDto) || !listOfUserInstituteAccessInternalResponseDto.stream().anyMatch(x -> x.getRole().equalsIgnoreCase("super admin") || x.getRole().equalsIgnoreCase("admin")) ) {
-			log.error("There is no admin or super admin associated with institute id "+instituteAssociationDto.getDestinationInstituteId()  );
-			throw new InternalServerException("There is no admin or super admin associated with institute id "+instituteAssociationDto.getDestinationInstituteId());
+			log.error(messageTranslator.toLocale("institute_association.no.admin",instituteAssociationDto.getDestinationInstituteId(),Locale.US));
+			throw new InternalServerException(messageTranslator.toLocale("institute_association.no.admin",instituteAssociationDto.getDestinationInstituteId()));
 		}
 		
 		log.info("Getting association between institute id"+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " association type "+instituteAssociationDto.getAssociationType());
@@ -120,8 +125,8 @@ public class InstituteAssociationProcessor {
 					}	
 				});
 			} else {
-				log.error("Cannot add any new request as rejection/revoke counter is greated than "+rejectionCount);
-				throw new InternalServerException("Cannot add any new request as rejection/revoke counter is greated than "+rejectionCount);
+				log.error(messageTranslator.toLocale("institute_association.request.count.greater",rejectionCount+"",Locale.US));
+				throw new InternalServerException(messageTranslator.toLocale("institute_association.request.count.greater",rejectionCount+""));
 			}
 		} else if (instituteAssociationFromDb.getInstituteAssociationStatus().equals(InstituteAssociationStatus.valueOf("REVOKED"))) {
 			log.warn("association has been revoked between institute id"+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " for association type "+instituteAssociationDto.getAssociationType()+ " creating new association");
@@ -145,8 +150,8 @@ public class InstituteAssociationProcessor {
 					}	
 				});
 			} else {
-				log.error("Cannot add any new request as rejection/revoke counter is greated than "+rejectionCount);
-				throw new InternalServerException("Cannot add any new request as rejection/revoke counter is greated than "+rejectionCount);
+				log.error(messageTranslator.toLocale("institute_association.request.count.greater",rejectionCount+"",Locale.US));
+				throw new InternalServerException(messageTranslator.toLocale("institute_association.request.count.greater",rejectionCount+""));
 			}
 		}			
 	}
@@ -206,15 +211,15 @@ public class InstituteAssociationProcessor {
 		//TODO check userId have access to institute id
 		Optional<InstituteAssociation> optionalInstituteAssociation = instituteAssociationDao.getInstituteAssociationById(instituteAssociationId);
 		if (!optionalInstituteAssociation.isPresent()) {
-			log.error("No associationn found for institute association id "+instituteAssociationId);
-			throw new NotFoundException("No associationn found for institute association id "+instituteAssociationId);
+			log.error(messageTranslator.toLocale("institute_association.id.notfound",Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_association.id.notfound"));
 		}
 		
 		InstituteAssociation instituteAssociation  = optionalInstituteAssociation.get();
 	
 		if (!instituteAssociation.getSourceInstituteId().equalsIgnoreCase(instituteId) && !instituteAssociation.getDestinationInstituteId().equalsIgnoreCase(instituteId)) {
-			log.error("Institute id pass in request does not match with institute ids save in db");
-			throw new InternalServerException("Institute id pass in request does not match with institute ids save in db");
+			log.error(messageTranslator.toLocale("institute_association.id.notmatch",instituteId,Locale.US));
+			throw new InternalServerException(messageTranslator.toLocale("institute_association.id.notmatch",instituteId));
 		}
 		
 		log.info("changing status of institute association with id "+instituteAssociationId+ " from status "+instituteAssociation.getInstituteAssociationStatus().toString()+ " to "+status);

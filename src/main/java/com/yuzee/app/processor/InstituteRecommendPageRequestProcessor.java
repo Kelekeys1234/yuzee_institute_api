@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -16,17 +17,20 @@ import com.yuzee.app.bean.InstituteRecommendRequest;
 import com.yuzee.app.constant.RecommendRequestStatus;
 import com.yuzee.app.dao.InstituteRecommendationRequestDao;
 import com.yuzee.app.dto.InstituteRecommendPageRequestDto;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
-
 @Service
 @CommonsLog
 public class InstituteRecommendPageRequestProcessor {
 
 	@Autowired
 	private InstituteRecommendationRequestDao instituteRecommendationRequestDao;
+
+	@Autowired
+	private MessageTranslator messageTranslator;
 
 	public void recommendInstiutePageRequest (String userId, InstituteRecommendPageRequestDto instituteRecommendPageRequestDto) throws Exception {
 		log.debug("inside recommendInstiutePageRequest() method");
@@ -67,8 +71,8 @@ public class InstituteRecommendPageRequestProcessor {
 		log.info("Updating institute recommend request for id "+instituteRecommendRequestId+ " to status "+status );
 		Optional<InstituteRecommendRequest> instituteRecommendRequestFromDb = instituteRecommendationRequestDao.getInstituteRecommendationById(instituteRecommendRequestId);
 		if (!instituteRecommendRequestFromDb.isPresent()) {
-			log.error("No institute recommend request found for id "+instituteRecommendRequestId);
-			throw new NotFoundException("No institute recommend request found for id "+instituteRecommendRequestId);
+			log.error(messageTranslator.toLocale("institute-recommend.id.not_found",instituteRecommendRequestId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute-recommend.id.not_found" ,instituteRecommendRequestId));
 		}
 		InstituteRecommendRequest instituteRecommendRequest = instituteRecommendRequestFromDb.get();
 		instituteRecommendRequest.setRecommendRequestStatus(RecommendRequestStatus.PROCESSED);

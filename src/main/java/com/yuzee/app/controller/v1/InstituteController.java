@@ -3,6 +3,7 @@ package com.yuzee.app.controller.v1;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseScholarshipAndFacultyCountDto;
 import com.yuzee.app.dto.CourseSearchDto;
-import com.yuzee.app.dto.InstituteCampusDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
 import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteFilterDto;
@@ -180,8 +180,11 @@ public class InstituteController implements InstituteInterface {
 		Long startIndex = PaginationUtil.getStartIndex(request.getPageNumber(), request.getMaxSizePerPage());
 		PaginationUtil.validateMaxResultSize(request.getPageNumber());
 		if (null == request.getUserId()) {
-			log.error("UserId is required");
-			throw new ValidationException("UserId is required");
+			log.error(messageTranslator.toLocale("institute.user_id.required",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute.user_id.required")
+
+
+);
 		}
 		log.info("Calling DAO layer to get all institutes based on filters");
 		List<InstituteResponseDto> instituteResponseDtoList = instituteProcessor.getAllInstitutesByFilter(request, null, null, null,
@@ -390,13 +393,6 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> getInstituteCampuses(String userId, String instituteId) throws NotFoundException {
-		List<InstituteCampusDto> instituteCampuses = instituteProcessor.getInstituteCampuses(userId, instituteId);
-		return new GenericResponseHandlers.Builder().setData(instituteCampuses)
-				.setMessage(messageTranslator.toLocale("institute.campus.list.retrieved")).setStatus(HttpStatus.OK).create();
-	}
-	
-	@Override
 	public ResponseEntity<?> getInstituteFaculties(String instituteId) throws NotFoundException {
 		List<InstituteFacultyDto> instituteFaculties = instituteProcessor.getInstituteFaculties(instituteId);
 		return new GenericResponseHandlers.Builder().setData(instituteFaculties)
@@ -415,8 +411,10 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> getInstitutesByIdList(List<String> instituteIds) throws NotFoundException, InvokeException, Exception {
 		if (ObjectUtils.isEmpty(instituteIds)) {
-			log.error("institute_ids must not be empty");
-			throw new ValidationException("institute_ids must not be empty");
+			log.error(messageTranslator.toLocale("institute.null.id"),Locale.US);
+			throw new ValidationException(messageTranslator.toLocale("institute.null.id"));
+			
+			
 		}
 		List<InstituteResponseDto> instituteList = instituteProcessor.getInstitutesByIdList(instituteIds);
 		return new GenericResponseHandlers.Builder().setData(instituteList).setMessage(messageTranslator.toLocale("institute.list.retrieved"))

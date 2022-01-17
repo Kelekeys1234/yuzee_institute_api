@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Table(name = "career_test_result", uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "entity_type",
-		"entity_id" }, name = "UK_UID_EID_ET"))
+		"entity_id" }, name = "UK_CTR_UID_EID_ET"))
 public class CareerTestResult implements Serializable {
 
 	private static final long serialVersionUID = 1L;

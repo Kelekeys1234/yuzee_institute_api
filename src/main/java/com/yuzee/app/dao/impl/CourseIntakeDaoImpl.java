@@ -1,7 +1,5 @@
 package com.yuzee.app.dao.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +15,7 @@ public class CourseIntakeDaoImpl implements CourseIntakeDao {
 
 	@Transactional
 	@Override
-	public void deleteByCourseIdIn(List<String> courseIds) {
-		courseIntakeRepository.deleteByCourseIdIn(courseIds);
+	public void deleteById(String id) {
+		courseIntakeRepository.deleteById(id);
 	}
 }

@@ -17,6 +17,7 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
 import com.yuzee.common.lib.util.ValidationUtil;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +27,8 @@ public class TimingController implements TimingInterface {
 
 	@Autowired
 	private TimingProcessor timingProcessor;
-
+	@Autowired
+	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> saveOrUpdate(String userId, @Valid TimingRequestDto timingRequestDto)
 			throws ValidationException, NotFoundException {
@@ -37,7 +39,7 @@ public class TimingController implements TimingInterface {
 		ValidationUtil.validatEntityType(timingRequestDto.getEntityType());
 		com.yuzee.app.util.ValidationUtil.validatTimingType(timingRequestDto.getTimingType());
 		timingProcessor.saveUpdateTiming(userId, timingRequestDto);
-		return new GenericResponseHandlers.Builder().setMessage("Timing saved/updated successfuly.")
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("timing.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
@@ -47,7 +49,7 @@ public class TimingController implements TimingInterface {
 		log.info("inside TimingController.deleteByTimingId");
 		ValidationUtil.validatEntityType(entityType);
 		timingProcessor.deleteTiming(userId, EntityTypeEnum.valueOf(entityType), entityId, timingId);
-		return new GenericResponseHandlers.Builder().setMessage("Timing deleted successfuly.").setStatus(HttpStatus.OK)
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("timing.deleted")).setStatus(HttpStatus.OK)
 				.create();
 	}
 }

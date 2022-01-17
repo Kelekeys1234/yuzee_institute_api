@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.endpoint.InstituteFacilitiesInterface;
+import com.yuzee.app.processor.InstituteFacilityProcessor;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
-import com.yuzee.app.processor.InstituteFacilityProcessor;
+import com.yuzee.local.config.MessageTranslator;
+
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -23,7 +25,10 @@ public class InstituteFacilitiesController implements InstituteFacilitiesInterfa
 
 	@Autowired
 	private InstituteFacilityProcessor instituteFacilityProcessor;
-
+	
+	@Autowired
+	private MessageTranslator messageTranslator;
+	
 	@Override
 	public ResponseEntity<?> addInstituteFacilities(String instituteId,
 			@RequestBody @Valid InstituteFacilityDto instituteFacilityDto) throws NotFoundException {
@@ -31,7 +36,7 @@ public class InstituteFacilitiesController implements InstituteFacilitiesInterfa
 
 		instituteFacilityProcessor.addInstituteFacility(instituteId, instituteFacilityDto);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Institute facilities added successfully").create();
+				.setMessage(messageTranslator.toLocale("institute_facilities.added")).create();
 	}
 
 	@Override
@@ -39,7 +44,7 @@ public class InstituteFacilitiesController implements InstituteFacilitiesInterfa
 		log.info("deleting facilities for institute Id {}", instituteId);
 		instituteFacilityProcessor.deleteInstituteFacilities(instituteId, institutefacilitiesId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
-				.setMessage("Institute facilities deleted successfully").create();
+				.setMessage(messageTranslator.toLocale("institute_facilities.deleted")).create();
 	}
 
 	@Override
@@ -47,7 +52,7 @@ public class InstituteFacilitiesController implements InstituteFacilitiesInterfa
 		log.info("getting facilities for institute Id {}", instituteId);
 		InstituteFacilityDto instituteFacilityDto = instituteFacilityProcessor.getFacilitiesByInstituteId(instituteId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(instituteFacilityDto)
-				.setMessage("Institute facilities fetched successfully").create();
+				.setMessage(messageTranslator.toLocale("institute_facilities.list.retrieved")).create();
 	}
 
 	@Override
@@ -56,6 +61,6 @@ public class InstituteFacilitiesController implements InstituteFacilitiesInterfa
 		InstituteFacilityDto instituteFacilityDto = instituteFacilityProcessor
 				.getPublicServiceByInstituteId(instituteId);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(instituteFacilityDto)
-				.setMessage("Institute public facilities fetched successfully").create();
+				.setMessage(messageTranslator.toLocale("institute_facilities.public.list.retrieved")).create();
 	}
 }

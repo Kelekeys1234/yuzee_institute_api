@@ -250,8 +250,8 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 				CourseDeliveryModes courseDeliveryModeWithFullTime = new CourseDeliveryModes();
 				courseDeliveryModeWithFullTime.setDeliveryType(deliveryMode);
 				courseDeliveryModeWithFullTime.setStudyMode("Full Time");
-				courseDeliveryModeWithFullTime.setDomesticFee(courseDto.getDomesticFee());
-				courseDeliveryModeWithFullTime.setInternationalFee(courseDto.getInternationalFee());
+//				courseDeliveryModeWithFullTime.setDomesticFee(courseDto.getDomesticFee());
+//				courseDeliveryModeWithFullTime.setInternationalFee(courseDto.getInternationalFee());
 				courseDeliveryModeWithFullTime.setDuration(courseDto.getDuration());
 				courseDeliveryModeWithFullTime.setDurationTime(courseDto.getDurationTime());
 				courseDeliveryModeWithFullTime.setCreatedBy("API");
@@ -264,8 +264,8 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 				CourseDeliveryModes courseDeliveryModeWithPartTime = new CourseDeliveryModes();
 				courseDeliveryModeWithPartTime.setDeliveryType(deliveryMode);
 				courseDeliveryModeWithPartTime.setStudyMode("Part Time");
-				courseDeliveryModeWithPartTime.setDomesticFee(courseDto.getDomesticFee());
-				courseDeliveryModeWithPartTime.setInternationalFee(courseDto.getInternationalFee());
+//				courseDeliveryModeWithPartTime.setDomesticFee(courseDto.getDomesticFee());
+//				courseDeliveryModeWithPartTime.setInternationalFee(courseDto.getInternationalFee());
 				courseDeliveryModeWithPartTime.setDuration(courseDto.getDuration());
 				courseDeliveryModeWithPartTime.setDurationTime(courseDto.getDurationTime());
 				courseDeliveryModeWithPartTime.setCreatedBy("API");
@@ -295,24 +295,24 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 //				}
 //			}
 
-			if (!ObjectUtils.isEmpty(courseDeliveryMode.getDomesticFee())) {
-				Double convertedRate = currencyRate.getConversionRate();
-				log.info("converting domestic Fee on basis of conviersionRate {}", convertedRate);
-				if (convertedRate != null && convertedRate != 0.0) {
-					log.info("converting domesticFee into usdDomesticFee");
-					Double usdDomesticFee = courseDeliveryMode.getDomesticFee() / convertedRate;
-					courseDeliveryMode.setUsdDomesticFee(usdDomesticFee);
-				}
-			}
-			if (!ObjectUtils.isEmpty(courseDeliveryMode.getInternationalFee())) {
-				Double convertedRate = currencyRate.getConversionRate();
-				log.info("converting international Fee on basis of conviersionRate {}", convertedRate);
-				if (convertedRate != null) {
-					log.info("converting internationalFee into usdInternationalFee");
-					Double usdInternationalFee = courseDeliveryMode.getInternationalFee() / convertedRate;
-					courseDeliveryMode.setUsdInternationalFee(usdInternationalFee);
-				}
-			}
+//			if (!ObjectUtils.isEmpty(courseDeliveryMode.getDomesticFee())) {
+//				Double convertedRate = currencyRate.getConversionRate();
+//				log.info("converting domestic Fee on basis of conviersionRate {}", convertedRate);
+//				if (convertedRate != null && convertedRate != 0.0) {
+//					log.info("converting domesticFee into usdDomesticFee");
+//					Double usdDomesticFee = courseDeliveryMode.getDomesticFee() / convertedRate;
+//					courseDeliveryMode.setUsdDomesticFee(usdDomesticFee);
+//				}
+//			}
+//			if (!ObjectUtils.isEmpty(courseDeliveryMode.getInternationalFee())) {
+//				Double convertedRate = currencyRate.getConversionRate();
+//				log.info("converting international Fee on basis of conviersionRate {}", convertedRate);
+//				if (convertedRate != null) {
+//					log.info("converting internationalFee into usdInternationalFee");
+//					Double usdInternationalFee = courseDeliveryMode.getInternationalFee() / convertedRate;
+//					courseDeliveryMode.setUsdInternationalFee(usdInternationalFee);
+//				}
+//			}
 		});
 	}
 	
