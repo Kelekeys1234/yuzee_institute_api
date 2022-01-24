@@ -63,7 +63,7 @@ public class CourseOtherRequirementProcessor {
 				vaccine.setAuditFields(userId);
 				vaccine.setCourse(course);
 				vaccine.setDescription(courseOtherRequirementDto.getVaccine().getDescription());
-				vaccine.setDetails(courseOtherRequirementDto.getVaccine().getDetails());
+				vaccine.setVaccinationIds(courseOtherRequirementDto.getVaccine().getVaccinationIds());
 				course.setCourseVaccineRequirement(vaccine);
 			} else {
 				if (!ObjectUtils.isEmpty(vaccine)) {
@@ -155,7 +155,7 @@ public class CourseOtherRequirementProcessor {
 				CourseVaccineRequirementDto dto = new CourseVaccineRequirementDto();
 				dto.setId(model.getId());
 				dto.setDescription(model.getDescription());
-				dto.setDetails(model.getDetails());
+				dto.setVaccinationIds(model.getVaccinationIds());
 				otherRequirementDto.setVaccine(dto);
 			}
 

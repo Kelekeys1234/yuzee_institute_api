@@ -53,7 +53,7 @@ public class CourseVaccineRequirement implements Serializable {
 	@EqualsAndHashCode.Include
 	@Cascade(CascadeType.ALL)
 	@ElementCollection(fetch = FetchType.EAGER)
-	private List<String> details;
+	private List<String> vaccinationIds;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)

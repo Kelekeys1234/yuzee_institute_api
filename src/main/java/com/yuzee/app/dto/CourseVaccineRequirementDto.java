@@ -20,7 +20,7 @@ public class CourseVaccineRequirementDto {
 	private String description;
 
 	@NotNull
-	@JsonProperty("details")
-	private List<String> details;
+	@JsonProperty("vaccination_ids")
+	private List<String> vaccinationIds;
 
 }
