@@ -7,60 +7,8 @@ image: atlassian/default-image:2
 
 pipelines:
   custom:
-    manual-build:
-       - step:
-           name: Compile
-           image: maven:3.8.1
-           caches:
-             - maven
-           script:
-             - mvn -P snapshot -B -s settings.xml verify
-           artifacts:
-             - target/yuzee-institute.jar
-             - appspec.yml
-             - scripts/*
-       - step:
-           name: Create Zip File
-           script:
-             - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip target/yuzee-institute.jar
-             - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip appspec.yml
-             - zip -r yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip scripts/*
-           artifacts:
-             - yuzee-test-institute-app-*.zip
-       - step:
-           name: Upload to S3
-           services:
-             - docker
-           script:
-             # Test upload
-             - pipe: atlassian/aws-code-deploy:0.2.10
-               variables:
-                 AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-                 AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-                 AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-                 COMMAND: 'upload'
-                 APPLICATION_NAME: ${APPLICATION_NAME}
-                 ZIP_FILE: 'yuzee-test-institute-app-$BITBUCKET_BUILD_NUMBER.zip'
-       - step:
-           name: Deploy with CodeDeploy
-           deployment: production
-           services:
-           - docker
-           script:
-           # Test upload
-           - pipe: atlassian/aws-code-deploy:0.2.10
-             variables:
-               AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-               AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-               AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-               COMMAND: 'deploy'
-               APPLICATION_NAME: ${APPLICATION_NAME}
-               DEPLOYMENT_GROUP: ${DEPLOYMENT_GROUP}
-               IGNORE_APPLICATION_STOP_FAILURES: 'true'
-               FILE_EXISTS_BEHAVIOR: 'OVERWRITE'
-               WAIT: 'true'
 
-    manual-build-kube:
+    manual-build-maven-dependency:
     - step:
            name: Compile
            image: maven:3.8.1
@@ -85,6 +33,16 @@ pipelines:
                   PORT: 587
                   SUBJECT: 'institute-service dependency check report'
                   ATTACHMENTS: 'target/dependency-check-report.html'
+    manual-build-kube:
+    - step:
+           name: Compile
+           image: maven:3.8.1
+           caches:
+             - maven
+           script: # Modify the commands below to build your repository.
+             - mvn -P snapshot -B -s settings.xml verify -DskipTests # -B batch mode makes Maven less verbose
+           artifacts:
+             - target/yuzee-institute.jar    
     - step:
         name: Containerizing Application
         image: atlassian/pipelines-awscli

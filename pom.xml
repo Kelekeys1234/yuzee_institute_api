@@ -146,7 +146,7 @@
 		<dependency>
 			<groupId>com.yuzee.common</groupId>
 			<artifactId>yuzee-backend-common-lib</artifactId>
-			<version>0.0.21-SNAPSHOT</version>
+			<version>0.0.22-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -193,6 +193,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
  		</dependency>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-actuator</artifactId>
+	    </dependency>
 	</dependencies>
 	
 	<dependencyManagement>

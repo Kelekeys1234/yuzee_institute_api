@@ -18,5 +18,7 @@ public interface CareerJobSkillRepository extends JpaRepository<CareerJobSkill, 
 	public Page<CareerJobSkill> findByLevelIdAndJobId(String levelId, String jobId, Pageable pageable);
 
 	
+	@Query("SELECT distinct JS from CareerJobSkill JS "
+			+ "where (null = :jobNames or JS.careerJobs.job in :jobNames) ")
 	public Page<CareerJobSkill> findByCareerJobs_JobIn(List<String> jobNames, Pageable pageable);
 }

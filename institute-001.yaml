@@ -64,6 +64,24 @@ spec:
             
           ports:
           - containerPort: 8905
+          livenessProbe:
+            httpGet:
+              path: /institute/actuator/health/liveness
+              port: 8905
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 15
+            failureThreshold: 2
+
+          readinessProbe:
+            httpGet:
+              path: /institute/actuator/health/readiness
+              port: 8905
+            initialDelaySeconds: 120
+            timeoutSeconds: 3
+            periodSeconds: 15
+            failureThreshold: 3
+            
           imagePullPolicy: Always
       imagePullSecrets:
         - name: reg-institute
