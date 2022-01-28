@@ -2,12 +2,19 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
@@ -24,7 +31,12 @@ import com.yuzee.app.dto.CourseResearchProposalRequirementDto;
 import com.yuzee.app.dto.CourseVaccineRequirementDto;
 import com.yuzee.app.dto.CourseWorkExperienceRequirementDto;
 import com.yuzee.app.dto.CourseWorkPlacementRequirementDto;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.common.VaccinationDto;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
+import com.yuzee.common.lib.handler.CommonHandler;
+import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,7 +58,13 @@ public class CourseOtherRequirementProcessor {
 	
 	@Autowired
 	private CourseWorkPlacementRequirementDao workPlacementDao;
-
+	
+	@Autowired
+	private CommonHandler commonHandler;
+	
+	@Autowired
+	MessageTranslator messageTranslator;
+	
 	@Transactional
 	public void saveOrUpdateOtherRequirements(String userId, String courseId,
 			@Valid CourseOtherRequirementDto courseOtherRequirementDto) {
@@ -63,7 +81,20 @@ public class CourseOtherRequirementProcessor {
 				vaccine.setAuditFields(userId);
 				vaccine.setCourse(course);
 				vaccine.setDescription(courseOtherRequirementDto.getVaccine().getDescription());
-				vaccine.setVaccinationIds(courseOtherRequirementDto.getVaccine().getVaccinationIds());
+				if(!CollectionUtils.isEmpty(courseOtherRequirementDto.getVaccine().getVaccination())) {
+					Set<String>  vaccinationIds = courseOtherRequirementDto.getVaccine().getVaccination().stream().map(vaccination -> {
+						return vaccination.get_id().toString();
+					}).collect(Collectors.toSet());
+					PaginationResponseDto<List<VaccinationDto>> vaccinationPaggination = commonHandler.getVaccinationByFilters(1, vaccinationIds.size(), vaccinationIds);
+					if(CollectionUtils.isEmpty(vaccinationPaggination.getResponse()) || 
+							vaccinationPaggination.getResponse().size() != vaccinationIds.size()) {
+						log.error(messageTranslator.toLocale("vaccination.ids.invalid", Locale.US));
+						throw new ValidationException(messageTranslator.toLocale("vaccination.ids.invalid"));
+					}
+					vaccine.setVaccinationIds(vaccinationIds);
+				}else if(!CollectionUtils.isEmpty(vaccine.getVaccinationIds())) {
+					vaccine.getVaccinationIds().clear();
+				}
 				course.setCourseVaccineRequirement(vaccine);
 			} else {
 				if (!ObjectUtils.isEmpty(vaccine)) {
@@ -155,7 +186,29 @@ public class CourseOtherRequirementProcessor {
 				CourseVaccineRequirementDto dto = new CourseVaccineRequirementDto();
 				dto.setId(model.getId());
 				dto.setDescription(model.getDescription());
-				dto.setVaccinationIds(model.getVaccinationIds());
+				if(!CollectionUtils.isEmpty(model.getVaccinationIds())) {
+					var wrapperObject = new Object() {
+						Map<UUID, String> mapOfVaccinationIdwithName =  null;
+					};
+					PaginationResponseDto<List<VaccinationDto>> vaccinationPaggination = commonHandler.getVaccinationByFilters(1, model.getVaccinationIds().size(), model.getVaccinationIds());
+
+					if (!CollectionUtils.isEmpty(vaccinationPaggination.getResponse())) {
+						wrapperObject.mapOfVaccinationIdwithName = vaccinationPaggination.getResponse().stream()
+								.collect(Collectors.toMap(VaccinationDto::get_id, VaccinationDto::getName));
+					}
+
+					dto.setVaccination(model.getVaccinationIds().stream().map(vaccine -> {
+						VaccinationDto vaccinationDto = new VaccinationDto();
+						vaccinationDto.set_id(UUID.fromString(vaccine));
+						if(!MapUtils.isEmpty(wrapperObject.mapOfVaccinationIdwithName) 
+								&& wrapperObject.mapOfVaccinationIdwithName.containsKey(UUID.fromString(vaccine))) {
+							vaccinationDto.setName(wrapperObject.mapOfVaccinationIdwithName.get(UUID.fromString(vaccine)));
+						}
+
+						return vaccinationDto;
+					}).collect(Collectors.toSet()));
+				}
+				
 				otherRequirementDto.setVaccine(dto);
 			}
 

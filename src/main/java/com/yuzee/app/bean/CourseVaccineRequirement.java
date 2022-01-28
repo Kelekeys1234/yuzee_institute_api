@@ -2,7 +2,7 @@ package com.yuzee.app.bean;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -53,7 +53,7 @@ public class CourseVaccineRequirement implements Serializable {
 	@EqualsAndHashCode.Include
 	@Cascade(CascadeType.ALL)
 	@ElementCollection(fetch = FetchType.EAGER)
-	private List<String> vaccinationIds;
+	private Set<String> vaccinationIds;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)

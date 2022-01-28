@@ -1,11 +1,12 @@
 package com.yuzee.app.dto;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.common.lib.dto.common.VaccinationDto;
 
 import lombok.Data;
 
@@ -20,7 +21,7 @@ public class CourseVaccineRequirementDto {
 	private String description;
 
 	@NotNull
-	@JsonProperty("vaccination_ids")
-	private List<String> vaccinationIds;
+	@JsonProperty("vaccination")
+	private Set<VaccinationDto> vaccination;
 
 }
