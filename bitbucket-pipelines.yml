@@ -8,32 +8,18 @@ image: atlassian/default-image:2
 pipelines:
   custom:
 
-    manual-build-maven-dependency:
+    sonarqube:
     - step:
            name: Compile
            image: maven:3.8.1
            caches:
              - maven
            script: # Modify the commands below to build your repository.
-             - mvn -f pom-dc.xml -P snapshot -B -s settings.xml verify -DskipTests # -B batch mode makes Maven less verbose
-           artifacts:
-             - target/yuzee-institute.jar
-             - target/dependency-check-report.html
-             
-    - step: # Sending the dependency check report to email
-            name: Email check report 
-            script:
-              - pipe: atlassian/email-notify:0.5.0
-                variables:
-                  USERNAME: 'maven.yuzee@gmail.com'
-                  PASSWORD: $email_pass
-                  FROM: 'maven.yuzee@gmail.com'
-                  TO: 'distributikngroup@yuzee.com'
-                  HOST: 'smtp.gmail.com'
-                  PORT: 587
-                  SUBJECT: 'institute-service dependency check report'
-                  ATTACHMENTS: 'target/dependency-check-report.html'
-    manual-build-kube:
+             - mvn -f pom-dc.xml -P snapshot -B -s settings.xml verify -DskipTests dependency-check:check # -B batch mode makes Maven less verbose
+             - mvn -f pom-dc.xml sonar:sonar -Dsonar.projectKey=yuzee-institute -Dsonar.host.url=http://sonar.freshfutures.com -Dsonar.login=ef636d71ef4b9cb68ea5b8227f2519feb9ff7e80
+
+
+    Deployment to kubernetes:
     - step:
            name: Compile
            image: maven:3.8.1
@@ -71,7 +57,7 @@ pipelines:
           - cat institute-001.yaml | sed "s/{{BITBUCKET_BUILD_NUMBER}}/$BITBUCKET_BUILD_NUMBER/g" | kubectl  --kubeconfig=kubeconfig.yml apply -f -
           
           
-    manual-build-rollback-deployment:
+    Rollback-deployment:
     - step:
         name: Rollback Deploment
         image: atlassian/pipelines-kubectl

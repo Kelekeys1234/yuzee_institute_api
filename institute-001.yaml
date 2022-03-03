@@ -17,12 +17,18 @@ spec:
         app: institute-service
     spec:
       initContainers:
-        - name: sleepy
-          image: alpine
-          command: ['sleep', '155']
+      - name: sleepy
+        image: alpine
+        command: ['sleep', '230']
       containers:
         - name: institute-service
           image:  607951638574.dkr.ecr.ap-southeast-1.amazonaws.com/institute:{{BITBUCKET_BUILD_NUMBER}}
+          resources:
+            limits:
+              cpu: "450m"
+            requests:
+              memory: "600Mi"
+              cpu: "200m"
           env:
             - name: "SPRING_MAIN_CLOUD-PLATFORM"
               value: "NONE"
@@ -68,7 +74,7 @@ spec:
             httpGet:
               path: /institute/actuator/health/liveness
               port: 8905
-            initialDelaySeconds: 120
+            initialDelaySeconds: 300
             timeoutSeconds: 2
             periodSeconds: 15
             failureThreshold: 2
@@ -77,7 +83,7 @@ spec:
             httpGet:
               path: /institute/actuator/health/readiness
               port: 8905
-            initialDelaySeconds: 120
+            initialDelaySeconds: 300
             timeoutSeconds: 3
             periodSeconds: 15
             failureThreshold: 3
