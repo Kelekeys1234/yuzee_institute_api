@@ -1,18 +1,12 @@
 package com.yuzee.app.dao;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import javax.validation.Valid;
 
+import com.yuzee.app.bean.*;
 import org.springframework.cache.annotation.Cacheable;
 
-import com.yuzee.app.bean.Institute;
-import com.yuzee.app.bean.InstituteCategoryType;
-import com.yuzee.app.bean.InstituteIntake;
-import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.InstituteFacultyDto;
@@ -26,7 +20,7 @@ public interface InstituteDao {
 
 	public Institute addUpdateInstitute(Institute obj);
 
-	public Institute get(String id);
+	public Institute get(UUID id);
 
 	public List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField,
 			String sortByType, String searchKeyword, Integer startIndex, String cityId, String instituteTypeId,
@@ -114,4 +108,8 @@ public interface InstituteDao {
 	public Institute getInstitute(String instituteId);
 
 	public List<Institute> saveAll(List<Institute> institutesFromDb);
+
+	List<Institute> getByInstituteName(String instituteName);
+
+	List<InstituteFacility> getInstituteFaculties(String instituteId);
 }

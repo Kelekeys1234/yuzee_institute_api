@@ -1,6 +1,7 @@
 package com.yuzee.app.dto;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 
@@ -12,7 +13,7 @@ import lombok.Data;
 public class InstituteGetRequestDto {
     
 	@JsonProperty("institute_id")
-	private String id;
+	private UUID id;
 	
 	@JsonProperty("country_name")
 	@NotBlank(message = "{country_name.is_required}")

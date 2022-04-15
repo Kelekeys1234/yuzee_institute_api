@@ -121,12 +121,6 @@ public class InstituteProcessor {
 	private InstituteDao instituteDao;
 
 	@Autowired
-	private InstituteWorldRankingHistoryDao institudeWorldRankingHistoryDAO;
-
-	@Autowired
-	private InstituteDomesticRankingHistoryDao instituteDomesticRankingHistoryDAO;
-
-	@Autowired
 	private StorageHandler storageHandler;
 
 	@Autowired
@@ -189,7 +183,7 @@ public class InstituteProcessor {
 	private UserHandler userHandler;
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
-	public Institute get(final String id) {
+	public Institute get(final UUID id) {
 		return instituteDao.get(id);
 	}
 	
@@ -283,31 +277,33 @@ public class InstituteProcessor {
 	private void saveWorldRankingHistory(final Institute institute, final Institute oldInstitute) {
 		log.debug("Inside saveWorldRankingHistory() method");
 		InstituteWorldRankingHistory worldRanking = new InstituteWorldRankingHistory();
-		worldRanking.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-		worldRanking.setCreatedBy(institute.getCreatedBy());
 		worldRanking.setWorldRanking(institute.getWorldRanking());
-		if (oldInstitute != null) {
+		Institute existingInstitute = instituteRepository.getbyId(oldInstitute.getId());
+		if (existingInstitute != null) {
 			log.info("Saving worldRanking for already existing institute having instituteId = "+ oldInstitute.getId());
-			worldRanking.setInstitute(oldInstitute);
+//			worldRanking.setInstitute(oldInstitute);
+			existingInstitute.setWorldRanking(institute.getWorldRanking());
+			instituteRepository.save(existingInstitute);
 		} else {
 			log.info("Saving worldRanking for new institute having instituteId = "+ institute.getId());
-			worldRanking.setInstitute(institute);
+//			worldRanking.setInstitute(institute);
+			instituteRepository.save(institute);
 		}
-		log.info("Calling DAO layer to save world ranking history in DB");
-		institudeWorldRankingHistoryDAO.save(worldRanking);
-
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	private void saveDomesticRankingHistory(final Institute institute, final Institute oldInstitute) {
 		log.debug("Inside saveDomesticRankingHistory() method");
 		InstituteDomesticRankingHistory domesticRanking = new InstituteDomesticRankingHistory();
-		domesticRanking.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-		domesticRanking.setCreatedBy(institute.getCreatedBy());
 		domesticRanking.setDomesticRanking(institute.getDomesticRanking());
-
-		log.info("Calling DAO layer to save domestic ranking history in DB");
-		instituteDomesticRankingHistoryDAO.save(domesticRanking);
+		Institute existingInstitute = instituteRepository.getbyId(oldInstitute.getId());
+		List<InstituteDomesticRankingHistory> setOfDomesticRankingHistory = existingInstitute.getInstituteDomesticRankingHistories();
+		if(!ObjectUtils.isEmpty(existingInstitute) && CollectionUtils.isEmpty(setOfDomesticRankingHistory)){
+			existingInstitute.setInstituteDomesticRankingHistories(setOfDomesticRankingHistory);
+			instituteRepository.save(existingInstitute);
+		} else {
+			instituteRepository.save(institute);
+		}
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
@@ -316,7 +312,7 @@ public class InstituteProcessor {
 		try {
 			List<InstituteSyncDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("fetching institute from DB having instituteId: {}", instituteId);
-			Institute oldInstitute = instituteDao.get(instituteId);
+			Institute oldInstitute = instituteDao.get(UUID.fromString(instituteId));
 			Institute newInstitute = new Institute();
 			log.info("Copying bean class to DTO class");
 			BeanUtils.copyProperties(instituteRequest, newInstitute);
@@ -352,7 +348,7 @@ public class InstituteProcessor {
 		Institute institute = null;
 		if (id != null) {
 			log.info("if instituteId in not null, then getInstitute from DB for id = "+id);
-			institute = instituteDao.get(id);
+			institute = instituteDao.get(UUID.fromString(id));
 		} else {
 			log.info("instituteId is null, creating object and setting values in it");
 			institute = new Institute();
@@ -371,8 +367,8 @@ public class InstituteProcessor {
 		
 		Institute insituteWithSameId = instituteDao.findByReadableId(instituteRequest.getReadableId());
 		if (ObjectUtils.isEmpty(insituteWithSameId)
-				|| (ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId()))
-				|| (!ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId())
+				|| (ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString()))
+				|| (!ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString())
 						&& institute.getId().equals(insituteWithSameId.getId()))) {
 			institute.setReadableId(instituteRequest.getReadableId());
 		} else {
@@ -400,6 +396,7 @@ public class InstituteProcessor {
 			log.error(messageTranslator.toLocale("institute-processor.required.type",Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("institute-processor.required.type"));
 		}
+		/* Todo  below Institute fields doesnt have @NotNull annotation. it can throw NullPointerException */
 
 		institute.setDomesticRanking(instituteRequest.getDomesticRanking());
 		institute.setWorldRanking(instituteRequest.getWorldRanking());
@@ -460,7 +457,7 @@ public class InstituteProcessor {
 			timingRequestDto.setEntityType(EntityTypeEnum.INSTITUTE.name());
 			timingRequestDto.setTimingType(TimingType.OPEN_HOURS.name());
 			timingRequestDto.setTimings(instituteRequest.getInstituteTimings());
-			instituteTimingProcessor.saveUpdateDeleteTimings("API", EntityTypeEnum.INSTITUTE, Arrays.asList(timingRequestDto), institute.getId());
+			instituteTimingProcessor.saveUpdateDeleteTimings("API", EntityTypeEnum.INSTITUTE, Arrays.asList(timingRequestDto), institute.getId().toString());
 		}
 		return institute;
 	}
@@ -469,7 +466,7 @@ public class InstituteProcessor {
 	private void saveIntakesInstituteDetails(final Institute institute, final List<String> intakes) {
 		log.debug("Inside saveIntakesInstituteDetails() method");
 		log.info("deleting existing instituteIntakes from DB for institute having instituteId = "+institute.getId());
-		instituteDao.deleteInstituteIntakeById(institute.getId());
+		instituteDao.deleteInstituteIntakeById(institute.getId().toString());
 		for (String intakeId : intakes) {
 			log.info("Start iterating new intakes which are coming in request");
 			InstituteIntake instituteIntake = new InstituteIntake();
@@ -510,10 +507,7 @@ public class InstituteProcessor {
 				}
 				instituteFunding.setFundingNameId(e.getFundingNameId());
 				if (StringUtils.isEmpty(instituteFunding.getId())) {
-					instituteFunding.setAuditFields(loggedInUserId, null);
 					instituteFundings.add(instituteFunding);
-				} else {
-					instituteFunding.setAuditFields(loggedInUserId, instituteFunding);
 				}
 			});
 
@@ -527,10 +521,10 @@ public class InstituteProcessor {
 			List<ProviderCodeDto> providesCodeDtos) throws ValidationException, NotFoundException, InvokeException {
 		List<InstituteProviderCode> instituteProviderCodes = institute.getInstituteProviderCodes();
 		if (!CollectionUtils.isEmpty(providesCodeDtos)) {
-
 			log.info("see if some names are not present then we have to delete them.");
+			/* TODO  can we map updateRequestNames with value field in ProviderCodeDto?? */
 			Set<String> updateRequestNames = providesCodeDtos.stream().filter(e -> !StringUtils.hasText(e.getName()))
-					.map(ProviderCodeDto::getId).collect(Collectors.toSet());
+					.map(ProviderCodeDto::getValue).collect(Collectors.toSet());
 			instituteProviderCodes.removeIf(e -> !updateRequestNames.contains(e.getName()));
 
 			Map<String, InstituteProviderCode> existingProviderCodes = instituteProviderCodes.stream()
@@ -539,16 +533,9 @@ public class InstituteProcessor {
 				InstituteProviderCode providerCode = existingProviderCodes.get(e.getName());
 				if (ObjectUtils.isEmpty(providerCode)) {
 					providerCode = new InstituteProviderCode();
-					providerCode.setCreatedBy(loggedInUserId);
-					providerCode.setCreatedOn(new Date());
 				}
-				providerCode.setUpdatedBy(loggedInUserId);
-				providerCode.setUpdatedOn(new Date());
 				providerCode.setName(e.getName());
 				providerCode.setValue(e.getValue());
-				if (!StringUtils.hasText(providerCode.getId())) {
-					instituteProviderCodes.add(providerCode);
-				}
 			});
 
 		} else {
@@ -560,12 +547,12 @@ public class InstituteProcessor {
 	private void saveAccreditedInstituteDetails(final Institute institute, final List<AccrediatedDetailDto> accreditation) {
 		log.debug("Inside saveAccreditedInstituteDetails() method");
 		log.info("deleting existing accrediatedDetails from DB for institute having instituteId = "+institute.getId());
-		accrediatedDetailDao.deleteAccrediationDetailByEntityId(institute.getId());
+		accrediatedDetailDao.deleteAccrediationDetailByEntityId(institute.getId().toString());
 		if(!CollectionUtils.isEmpty(accreditation)) {
 			log.info("Start iterating new accrediation coming in request, if it is not null");
 			accreditation.stream().forEach(accreditedInstitute -> {
 				AccrediatedDetail accreditedInstituteDetail = new AccrediatedDetail();
-				accreditedInstituteDetail.setEntityId(institute.getId());
+				accreditedInstituteDetail.setEntityId(institute.getId().toString());
 				accreditedInstituteDetail.setEntityType("INSTITUTE");
 				accreditedInstituteDetail.setAccrediatedName(accreditedInstitute.getAccrediatedName());
 				accreditedInstituteDetail.setAccrediatedWebsite(accreditedInstitute.getAccrediatedWebsite());
@@ -640,7 +627,7 @@ public class InstituteProcessor {
 		log.info("fetching institute videos from DB having countryName = "+institute.getCountryName() + " and instituteName = "+institute.getName());
 		dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
 		log.info("Get total course count from DB for instituteId = "+institute.getId());
-		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(institute.getId()));
+		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(institute.getId().toString()));
 		dto.setVerified(institute.isVerified());		
 		return dto;
 	}
@@ -663,10 +650,11 @@ public class InstituteProcessor {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);
 		Institute institute = null;
+		UUID sameUuid = UUID. fromString(id);
 		if (isReadableId) {
 			institute = instituteDao.findByReadableId(id);
 		}else {
-			institute = instituteDao.get(id);
+			institute = instituteDao.get(UUID.fromString(id));
 		}
 		if (institute == null) {
 			log.error(messageTranslator.toLocale("institute-processor.not_found.id", id,Locale.US));
@@ -686,7 +674,7 @@ public class InstituteProcessor {
 			instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
 		}
 		TimingDto instituteTimingResponseDto = instituteTimingProcessor
-				.getTimingResponseDtoByInstituteId(id);
+				.getTimingResponseDtoByInstituteId(sameUuid);
 		if (!ObjectUtils.isEmpty(instituteTimingResponseDto)) {
 			instituteRequestDto.setInstituteTimings(
 					CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
@@ -696,10 +684,9 @@ public class InstituteProcessor {
 		if (!ObjectUtils.isEmpty(followerCountDto)) {
 			instituteRequestDto.setFollowersCount(followerCountDto.getConnection_number());
 		}
-
 		log.info("Calling review service to fetch user average review for instituteId");
 		Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE",
-				Arrays.asList(instituteRequestDto.getId()));
+				Arrays.asList(instituteRequestDto.getId().toString()));
 		
 		ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteRequestDto.getId());
 		if (!ObjectUtils.isEmpty(reviewStarDto)) {
@@ -707,7 +694,7 @@ public class InstituteProcessor {
 			instituteRequestDto.setReviewsCount(reviewStarDto.getReviewsCount());
 		}
 		
-		List<StorageDto> imageStorages = storageHandler.getStorages(Arrays.asList(instituteRequestDto.getId()), EntityTypeEnum.INSTITUTE,
+		List<StorageDto> imageStorages = storageHandler.getStorages(Arrays.asList(instituteRequestDto.getId().toString()), EntityTypeEnum.INSTITUTE,
 				Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
 		
 		if (!CollectionUtils.isEmpty(imageStorages)) {
@@ -725,7 +712,7 @@ public class InstituteProcessor {
 				instituteRequestDto.setCoverPhotoUrl(coverStorage.getFileURL());
 			}
 		}
-		instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, instituteRequestDto.getId()));
+		instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, instituteRequestDto.getId().toString()));
 		instituteRequestDto.setInstituteProviderCodes(new ValidList<>(institute.getInstituteProviderCodes().stream().map(e->modelMapper.map(e, ProviderCodeDto.class)).toList()));
 		instituteRequestDto.setVerified(institute.isVerified());	
 		return instituteRequestDto;
@@ -883,7 +870,7 @@ public class InstituteProcessor {
 	public void deleteInstitute(final String id) throws ValidationException {
 		log.debug("Inside deleteInstitute() method");
 		log.info("Fetching institute from DB for id = "+id);
-		Institute institute = instituteDao.get(id);
+		Institute institute = instituteDao.get(UUID.fromString(id));
 		if (institute != null) {
 			log.info("Institute found making institute inActive");
 			institute.setIsActive(false);
@@ -926,14 +913,14 @@ public class InstituteProcessor {
 		log.debug("Inside getHistoryOfDomesticRanking() method");
 		List<InstituteDomesticRankingHistoryDto> domesticRankingHistoryObj = new ArrayList<>();
 		log.info("Calling DAO layer to fetch Domestic Ranking for instituteId = "+instituteId);
-		List<InstituteDomesticRankingHistory> domesticRankingHistories = instituteDomesticRankingHistoryDAO.getHistoryOfDomesticRanking(instituteId);
+		Institute institute = instituteRepository.getbyId(UUID. fromString(instituteId));
+		List<InstituteDomesticRankingHistory> domesticRankingHistories = instituteRepository.getDomesticHistoryRankingByInstituteId(instituteId);
 		if(!CollectionUtils.isEmpty(domesticRankingHistories)) {
 			log.info("Domestic Ranking history fetched from DB and start iterating to set values in DTO");
 			domesticRankingHistories.stream().forEach(domesticRankingHistory -> {
 				InstituteDomesticRankingHistoryDto domesticRankingHistoryDto = new InstituteDomesticRankingHistoryDto();
 				domesticRankingHistoryDto.setDomesticRanking(domesticRankingHistory.getDomesticRanking());
-				domesticRankingHistoryDto.setId(domesticRankingHistory.getId());
-				domesticRankingHistoryDto.setInstituteName(domesticRankingHistory.getInstitute().getName());
+				domesticRankingHistoryDto.setInstituteName(institute.getName());
 				domesticRankingHistoryObj.add(domesticRankingHistoryDto);
 			});
 		}
@@ -946,14 +933,14 @@ public class InstituteProcessor {
 		log.debug("Inside getHistoryOfWorldRanking() method");
 		List<InstituteWorldRankingHistoryDto> instituteWorldRankingHistoryResponse = new ArrayList<>();
 		log.info("Calling DAO layer to fetch world ranking for instituteId ="+instituteId);
-		List<InstituteWorldRankingHistory> instituteWorldRankingHistories = institudeWorldRankingHistoryDAO.getHistoryOfWorldRanking(instituteId);
+		List<InstituteWorldRankingHistory> instituteWorldRankingHistories = instituteRepository.getHistoryOfWorldRankingByInstituteId(instituteId);
+		Institute institute = instituteRepository.getbyId(UUID. fromString(instituteId));
 		if(!CollectionUtils.isEmpty(instituteWorldRankingHistories)) {
 			log.info("World Ranking history fetched from DB and start iterating to set values in DTO");
 			instituteWorldRankingHistories.stream().forEach(instituteWorldRankingHistory -> {
 				InstituteWorldRankingHistoryDto instituteWorldRankingHistoryDto = new InstituteWorldRankingHistoryDto();
-				instituteWorldRankingHistoryDto.setId(instituteWorldRankingHistory.getId());
 				instituteWorldRankingHistoryDto.setWorldRanking(instituteWorldRankingHistory.getWorldRanking());
-				instituteWorldRankingHistoryDto.setInstituteName(instituteWorldRankingHistory.getInstitute().getName());
+				instituteWorldRankingHistoryDto.setInstituteName(institute.getName());
 				instituteWorldRankingHistoryResponse.add(instituteWorldRankingHistoryDto);
 			});
 		}
@@ -997,7 +984,7 @@ public class InstituteProcessor {
 					BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
 					nearestInstitute.setDistance(Double.valueOf(initialRadius));
 					log.info("going to fetch logo for institute from sotrage service for institutueID "+nearestInstituteDTO.getId());
-					List<StorageDto> storageDTOList = storageHandler.getStorages(nearestInstituteDTO.getId(), 
+					List<StorageDto> storageDTOList = storageHandler.getStorages(nearestInstituteDTO.getId().toString(),
 							EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
 					nearestInstitute.setStorageList(storageDTOList);
 					log.info("fetching instituteTiming from DB for instituteId = " +nearestInstituteDTO.getId());
@@ -1026,10 +1013,10 @@ public class InstituteProcessor {
 		log.debug("Inside getDistinctInstituteList() method");
 		List<InstituteResponseDto> instituteResponse = new ArrayList<>();
 		log.info("Calling DAO layer to getDistinct institutes from DB based on pagination");
+		List<Institute> listOfInstitute = instituteDao.getByInstituteName(instituteName);
 		List<InstituteResponseDto> instituteResponseDtos = instituteDao.getInstitutesByInstituteName(startIndex, pageSize, instituteName);
-		if(!CollectionUtils.isEmpty(instituteResponseDtos)) {
-			
-			List<String> instituteIds = instituteResponseDtos.stream().map(InstituteResponseDto::getId).collect(Collectors.toList());
+		if(!CollectionUtils.isEmpty(listOfInstitute)) {
+			List<String> instituteIds = listOfInstitute.stream().map(institute-> institute.getId().toString()).collect(Collectors.toList());
 			
 			log.info("Calling review service to fetch user average review for instituteId");
 			Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
@@ -1103,7 +1090,7 @@ public class InstituteProcessor {
 				BeanUtils.copyProperties(nearestInstituteDTO, nearestInstitute);
 				try {
 					log.info("calling storage service to fetch logos for institute for instituteID "+nearestInstituteDTO.getId());
-					List<StorageDto> storageDTOList = storageHandler.getStorages(nearestInstituteDTO.getId(), 
+					List<StorageDto> storageDTOList = storageHandler.getStorages(nearestInstituteDTO.getId().toString(),
 							EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
 					nearestInstitute.setStorageList(storageDTOList);
 				} catch (NotFoundException | InvokeException e) {
@@ -1142,7 +1129,7 @@ public class InstituteProcessor {
 				BeanUtils.copyProperties(institute, nearestInstitute);
 				log.info("going to fetch institute logo from storage service having instituteID "+institute.getId());
 				try {
-					List<StorageDto> storageDTOList = storageHandler.getStorages(institute.getId(), 
+					List<StorageDto> storageDTOList = storageHandler.getStorages(institute.getId().toString(),
 							EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
 					nearestInstitute.setStorageList(storageDTOList);
 				} catch (NotFoundException | InvokeException e) {
@@ -1161,7 +1148,7 @@ public class InstituteProcessor {
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {
 		log.debug("inside processor.getInstituteFaculties method.");
-		if (!ObjectUtils.isEmpty(instituteDao.get(instituteId))) {
+		if (!ObjectUtils.isEmpty(instituteDao.get(UUID.fromString(instituteId)))) {
 			Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "facultyName"));
 			return instituteDao.getInstituteFaculties(instituteId, sort);
 		}else {
@@ -1186,8 +1173,6 @@ public class InstituteProcessor {
 		log.info("inside InstituteProcessor.getInstitutesByIdList");
 		List<InstituteResponseDto> instituteResponseDtos = instituteDao.findByIds(instituteIds);
 		if (!CollectionUtils.isEmpty(instituteResponseDtos)) {
-
-			instituteIds = instituteResponseDtos.stream().map(InstituteResponseDto::getId).collect(Collectors.toList());
 			List<StorageDto> instituteLogos = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
 					EntitySubTypeEnum.LOGO);
 
@@ -1210,7 +1195,7 @@ public class InstituteProcessor {
 	
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<StorageDto> getInstituteGallery(String instituteId) throws InternalServerException, NotFoundException {
-		Institute institute = instituteDao.get(instituteId);
+		Institute institute = instituteDao.get(UUID.fromString(instituteId));
 		if (!ObjectUtils.isEmpty(institute)) {
 			try {
 				List<StorageDto> storages = storageHandler.getStorages(Arrays.asList(instituteId),
@@ -1252,7 +1237,7 @@ public class InstituteProcessor {
 	public void changeInstituteStatus(String userId, String instituteId, boolean status) {
 		log.info("Inside InstituteProcessor.changeInstituteStatus method");
 		
-		Institute existingInstitute = instituteDao.get(instituteId);
+		Institute existingInstitute = instituteDao.get(UUID.fromString(instituteId));
 		if(ObjectUtils.isEmpty(existingInstitute)) {
 			log.error(messageTranslator.toLocale("institute-processor.not_exist.institute", instituteId,Locale.US));
 			throw new NotFoundException(String.format(messageTranslator.toLocale("institute-processor.not_exist.institute", instituteId)));
@@ -1324,7 +1309,7 @@ public class InstituteProcessor {
 		
 		List<InstituteVerficationDto> verificationDtos = institutes.stream().map(institute -> {
 			InstituteVerficationDto verificationDto = new InstituteVerficationDto();
-			String instituteId = institute.getId();
+			String instituteId = institute.getId().toString();
 			verificationDto.setInstituteId(instituteId);
 
 			if (!ObjectUtils.isEmpty(institute.getInstituteAdditionalInfo())) {

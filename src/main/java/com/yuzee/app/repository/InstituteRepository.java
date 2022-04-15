@@ -1,8 +1,11 @@
 package com.yuzee.app.repository;
 
 import java.util.List;
+import java.util.UUID;
 
+import com.yuzee.app.bean.InstituteDomesticRankingHistory;
 import com.yuzee.app.bean.InstituteFacility;
+import com.yuzee.app.bean.InstituteWorldRankingHistory;
 import com.yuzee.app.dto.InstituteFacilityDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +21,7 @@ import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 
 @Repository
-public interface InstituteRepository extends MongoRepository<Institute, String> {
+public interface InstituteRepository extends MongoRepository<Institute, UUID> {
 
 	 Page<Institute> findByCountryName(String countryName, @PageableDefault Pageable pageable);
 
@@ -58,4 +61,18 @@ public interface InstituteRepository extends MongoRepository<Institute, String> 
 	 Institute findByReadableId(String readableId);
 
 	 List<Institute> findAllById(List<String> instituteIds);
+
+    Institute getbyId(UUID id);
+
+    @Query(value = " {'id' : ?0}")
+    List<InstituteDomesticRankingHistory> getDomesticHistoryRankingByInstituteId(String instituteId);
+
+	@Query(value = " {'id' : ?0}")
+	List<InstituteWorldRankingHistory> getHistoryOfWorldRankingByInstituteId(String instituteId);
+
+	@Query(value = " {'name' : ?0}")
+	List<Institute> getAllByInstituteName(String instituteName);
+
+	@Query(value = " {'id' : ?0}")
+	List<InstituteFacility> getFacultiesById(String instituteId);
 }

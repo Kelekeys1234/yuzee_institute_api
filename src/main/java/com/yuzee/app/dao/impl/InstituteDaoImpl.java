@@ -1,19 +1,13 @@
 package com.yuzee.app.dao.impl;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.yuzee.app.bean.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -31,11 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.yuzee.app.bean.Course;
-import com.yuzee.app.bean.Institute;
-import com.yuzee.app.bean.InstituteCategoryType;
-import com.yuzee.app.bean.InstituteIntake;
-import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseSearchDto;
@@ -71,7 +60,7 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	@Override
-	public Institute get(final String instituteId) {
+	public Institute get(final UUID instituteId) {
 		Optional<Institute> institute = instituteRepository.findById(instituteId);
 		if (institute.isPresent()) {
 			return institute.get();
@@ -937,7 +926,7 @@ public class InstituteDaoImpl implements InstituteDao {
 		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
 		for (Object[] row : rows) {
 			InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
-			instituteResponseDto.setId((String.valueOf(row[0])));
+			instituteResponseDto.setId(UUID.fromString(String.valueOf(row[0])));
 			instituteResponseDto.setName(String.valueOf(row[1]));
 			instituteResponseDto.setTotalCourses(((BigInteger) row[2]).intValue());
 			instituteResponseDto.setMinPriceRange((Double) row[3]);
@@ -1048,5 +1037,15 @@ public class InstituteDaoImpl implements InstituteDao {
 		log.info("Class InstituteDaoImple method saveAll institutesFromDb : {}", institutesFromDb);
 		return instituteRepository.saveAll(institutesFromDb);
 	}
-	
+
+	@Override
+	public List<Institute> getByInstituteName(String instituteName) {
+		return instituteRepository.getAllByInstituteName(instituteName);
+	}
+
+	@Override
+	public List<InstituteFacility> getInstituteFaculties(String instituteId) {
+		return instituteRepository.getFacultiesById(instituteId);
+	}
+
 }

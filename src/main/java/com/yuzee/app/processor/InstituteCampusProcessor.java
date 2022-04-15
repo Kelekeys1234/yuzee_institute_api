@@ -1,11 +1,6 @@
 package com.yuzee.app.processor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -112,8 +107,9 @@ public class InstituteCampusProcessor {
 			}).collect(Collectors.toList());
 
 			instituteCampuseDtos.stream().forEach(e -> {
+				UUID sameUuid = UUID. fromString(e.getId());
 				TimingDto instituteTimingResponseDto = timingProcessor
-						.getTimingResponseDtoByInstituteId(e.getId());
+						.getTimingResponseDtoByInstituteId(sameUuid);
 				e.setInstituteTimings(CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
 
 			});

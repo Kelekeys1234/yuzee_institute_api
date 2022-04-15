@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class InstituteVerficationDto {
+
 	@JsonProperty("institute_id")
 	private String instituteId;
 	

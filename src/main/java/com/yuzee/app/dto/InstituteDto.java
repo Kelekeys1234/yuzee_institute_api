@@ -2,6 +2,7 @@ package com.yuzee.app.dto;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.GeneratedValue;
 import javax.validation.constraints.NotBlank;
@@ -22,7 +23,7 @@ public class InstituteDto {
 	
 	@Id
 	@JsonProperty("institute_id")
-	private String id;
+	private UUID id;
 	
 	@JsonProperty("name")
 	@NotBlank(message = "{name.is_required}")

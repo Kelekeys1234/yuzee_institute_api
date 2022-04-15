@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -57,17 +58,17 @@ public class ConversionProcessor {
 	private void postConstrut() {
 		
 		modelMapper.getConfiguration().setPropertyCondition(context -> !(context.getSource() instanceof PersistentCollection));
-		
+
 		Converter<List<InstituteEnglishRequirements>, List<InstituteEnglishRequirementsElasticDto>> instituteEnglishRequirementElasticDtoConverter = ctx -> ctx
 				.getSource() == null
 						? null
 						: ctx.getSource().stream()
 								.map(instituteEnglishRequirement -> new InstituteEnglishRequirementsElasticDto(
-										instituteEnglishRequirement.getId(), instituteEnglishRequirement.getExamName(),
+										 instituteEnglishRequirement.getExamName(),
 										instituteEnglishRequirement.getReadingMarks(),
 										instituteEnglishRequirement.getWritingMarks(),
 										instituteEnglishRequirement.getOralMarks(),
-										instituteEnglishRequirement.getListningMarks()))
+										instituteEnglishRequirement.getListeningMarks()))
 								.collect(Collectors.toList());
 
 		Converter<List<InstituteFacility>, List<String>> instituteFacilityConverter = ctx -> ctx.getSource() == null
@@ -108,7 +109,7 @@ public class ConversionProcessor {
 	public CourseSyncDTO convertToCourseSyncDTOSyncDataEntity(Course course) {
 		log.info("inside DTOUtils.convertToCourseSyncDTOSyncDataEntity ");
 		CourseSyncDTO syncCourse = modelMapper.map(course, CourseSyncDTO.class);
-
+		UUID sameUuid = UUID. fromString(course.getId());
 		syncCourse.setLanguages(
 				course.getCourseLanguages().stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 		syncCourse.setCourseType(course.getCourseType().name());
@@ -136,7 +137,7 @@ public class ConversionProcessor {
 				.toList());
 		syncCourse.setProviderCodes(course.getCourseProviderCodes().stream().map(e->new ProviderCode(e.getId(), e.getName(), e.getValue())).toList());
 		syncCourse.setCourseMinRequirements(course.getCourseMinRequirements().stream().map(e->minRequirementProcessor.modelToDto(e)).toList());
-		syncCourse.setCourseTimings(timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, Arrays.asList(course.getId())).stream()
+		syncCourse.setCourseTimings(timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, Arrays.asList(sameUuid)).stream()
 				.map(e -> modelMapper.map(e, TimingDto.class)).collect(Collectors.toList()));
 		return syncCourse;
 	}
@@ -145,7 +146,7 @@ public class ConversionProcessor {
 		log.info("inside DTOUtils.convertToInstituteInstituteSyncDTOSynDataEntity");
 		InstituteSyncDTO dto = modelMapper.map(institute, InstituteSyncDTO.class);
 		dto.setInstituteProviderCodes(institute.getInstituteProviderCodes().stream()
-				.map(instituteProviderCode -> new ProviderCodeDto(instituteProviderCode.getId(),
+				.map(instituteProviderCode -> new ProviderCodeDto(
 						instituteProviderCode.getName(), instituteProviderCode.getValue()))
 				.collect(Collectors.toList()));
 		return dto;

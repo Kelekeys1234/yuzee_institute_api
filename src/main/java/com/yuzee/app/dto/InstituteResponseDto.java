@@ -2,6 +2,7 @@ package com.yuzee.app.dto;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yuzee.common.lib.dto.institute.TimingDto;
@@ -11,10 +12,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Id;
+
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 public class InstituteResponseDto extends InstituteDto {
+
+	@JsonProperty("id")
+	@Id
+	private UUID id;
 
 	@JsonProperty("location")
 	private String location;
@@ -49,11 +56,10 @@ public class InstituteResponseDto extends InstituteDto {
 	@JsonProperty("institute_timing")
 	private TimingDto instituteTiming;
 	
-	public InstituteResponseDto(String id, String name, Integer worldRanking, String cityName, String countryName,
+	public InstituteResponseDto(String name, Integer worldRanking, String cityName, String countryName,
 			String stateName, String website, String aboutUs,
 			Double latitude, Double longitude, String phoneNumber, String whatsNo, Long totalCourses, String email, String address,
 			Integer domesticRanking, String tagLine, Date createdOn) {
-		super.setId(id);
 		super.setName(name);
 		super.setWorldRanking(worldRanking);
 		super.setCityName(cityName);

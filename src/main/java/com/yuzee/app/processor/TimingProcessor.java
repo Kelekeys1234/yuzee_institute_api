@@ -1,12 +1,6 @@
 package com.yuzee.app.processor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -199,7 +193,7 @@ public class TimingProcessor {
 		return timingRequestDto;
 	}
 
-	public TimingDto getTimingResponseDtoByInstituteId(String instituteId) {
+	public TimingDto getTimingResponseDtoByInstituteId(UUID instituteId) {
 		log.debug("Inside getTimingResponseDtoByInstituteId() method");
 		log.info("fetching isntitute timing from DB for instituteId " + instituteId);
 		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.INSTITUTE,
