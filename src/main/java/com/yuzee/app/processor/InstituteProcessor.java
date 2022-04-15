@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,9 +52,7 @@ import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.FaqDao;
 import com.yuzee.app.dao.InstituteDao;
-import com.yuzee.app.dao.InstituteDomesticRankingHistoryDao;
 import com.yuzee.app.dao.InstituteServiceDao;
-import com.yuzee.app.dao.InstituteWorldRankingHistoryDao;
 import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
@@ -306,13 +305,7 @@ public class InstituteProcessor {
 		domesticRanking.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		domesticRanking.setCreatedBy(institute.getCreatedBy());
 		domesticRanking.setDomesticRanking(institute.getDomesticRanking());
-		if (oldInstitute != null) {
-			log.info("Saving domesticRanking for already existing institute having instituteId = "+ oldInstitute.getId());
-			domesticRanking.setInstitute(oldInstitute);
-		} else {
-			log.info("Saving domesticRanking for new institute having instituteId = "+ institute.getId());
-			domesticRanking.setInstitute(institute);
-		}
+
 		log.info("Calling DAO layer to save domestic ranking history in DB");
 		instituteDomesticRankingHistoryDAO.save(domesticRanking);
 	}
@@ -480,7 +473,6 @@ public class InstituteProcessor {
 		for (String intakeId : intakes) {
 			log.info("Start iterating new intakes which are coming in request");
 			InstituteIntake instituteIntake = new InstituteIntake();
-			instituteIntake.setInstitute(institute);
 			instituteIntake.setIntake(intakeId);
 			log.info("Calling DAO layer to save new intakes in DB for institute having instituteId ="+institute.getId());
 			instituteDao.saveInstituteIntake(instituteIntake);
@@ -517,7 +509,6 @@ public class InstituteProcessor {
 					}
 				}
 				instituteFunding.setFundingNameId(e.getFundingNameId());
-				instituteFunding.setInstitute(institute);
 				if (StringUtils.isEmpty(instituteFunding.getId())) {
 					instituteFunding.setAuditFields(loggedInUserId, null);
 					instituteFundings.add(instituteFunding);
@@ -555,7 +546,6 @@ public class InstituteProcessor {
 				providerCode.setUpdatedOn(new Date());
 				providerCode.setName(e.getName());
 				providerCode.setValue(e.getValue());
-				providerCode.setInstitute(institute);
 				if (!StringUtils.hasText(providerCode.getId())) {
 					instituteProviderCodes.add(providerCode);
 				}
@@ -1172,7 +1162,8 @@ public class InstituteProcessor {
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {
 		log.debug("inside processor.getInstituteFaculties method.");
 		if (!ObjectUtils.isEmpty(instituteDao.get(instituteId))) {
-			return instituteDao.getInstituteFaculties(instituteId);
+			Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "facultyName"));
+			return instituteDao.getInstituteFaculties(instituteId, sort);
 		}else {
 			log.error(messageTranslator.toLocale("institute-processor.not_found.aganist_id", instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute-processor.not_found.aganist_id", instituteId));

@@ -27,7 +27,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.bean.InstituteType;
-import com.yuzee.app.dao.InstituteTypeDao;
 import com.yuzee.app.dto.InstituteTypeDto;
 
 import lombok.extern.apachecommons.CommonsLog;

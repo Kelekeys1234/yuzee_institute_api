@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.InstituteType;
-import com.yuzee.app.dao.InstituteTypeDao;
 
 @Component
 public class InstituteTypeUtil implements InitializingBean {

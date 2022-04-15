@@ -26,6 +26,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -66,7 +67,7 @@ public class InstituteDaoImpl implements InstituteDao {
 
 	@Override
 	public Institute addUpdateInstitute(final Institute institute) {
-		return instituteRepository.saveAndFlush(institute);
+		return instituteRepository.save(institute);
 	}
 
 	@Override
@@ -991,9 +992,9 @@ public class InstituteDaoImpl implements InstituteDao {
 		return instituteRepository.findByIdNotAndNameAndIsDeletedFalse(instituteId, instituteName);
 	}
 
-	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {
+	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId, Sort sort) throws NotFoundException {
 		log.debug("inside dao.getInstituteFaculties method.");
-		return instituteRepository.findFacultyWithCourseCountById(instituteId);
+		return instituteRepository.findFacultyWithCourseCountById(instituteId, sort);
 	}
 
 	@Override

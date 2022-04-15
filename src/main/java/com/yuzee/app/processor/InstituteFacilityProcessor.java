@@ -16,7 +16,6 @@ import org.springframework.util.ObjectUtils;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteFacility;
 import com.yuzee.app.dao.InstituteDao;
-import com.yuzee.app.dao.InstituteFacilityDao;
 import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.FacilityDto;
 import com.yuzee.app.dto.InstituteFacilityDto;

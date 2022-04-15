@@ -16,50 +16,22 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Entity
-@ToString(exclude = "institute")
 @EqualsAndHashCode
-@Table(name = "institute_provider_code", uniqueConstraints = @UniqueConstraint(columnNames = { "name",
-		"institute_id" }, name = "UK_IPC_NI"), indexes = {
-				@Index(name = "IDX_INST_ID", columnList = "institute_id", unique = false) })
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteProviderCode implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length = 36)
-	private String id;
-
-	@Column(name = "name", nullable = false)
 	private String name;
-	
-	@Column(name = "value", nullable = false)
+
 	private String value;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "institute_id")
-	private Institute institute;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
-	private Date createdOn;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
-	private Date updatedOn;
-
-	@Column(name = "created_by", length = 50)
-	private String createdBy;
-
-	@Column(name = "updated_by", length = 50)
-	private String updatedBy;
 }

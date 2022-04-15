@@ -16,46 +16,28 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Entity
 @EqualsAndHashCode
-@Table(name = "institute_domestic_ranking_history", uniqueConstraints = @UniqueConstraint(columnNames = { "domestic_ranking", "institute_id" }, name = "UK_INSTITUTE_DOMESTIC_RANKING_DR_IN"),
-indexes = {@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false)})
-public class InstituteDomesticRankingHistory implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class InstituteDomesticRankingHistory {
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
-	private String id;
-
-	@Column(name = "domestic_ranking")
 	private Integer domesticRanking;
 
-	@ToString.Exclude
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "institute_id")
-	private Institute institute;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
 	private Date createdOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
 
-	@Column(name = "created_by")
 	private String createdBy;
 
-	@Column(name = "updated_by")
 	private String updatedBy;
 }

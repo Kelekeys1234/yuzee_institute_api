@@ -15,40 +15,39 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Entity
-@Table(name = "service", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }, name = "UK_SERVICE_NA"))
-public class Service implements Serializable {
-
-	private static final long serialVersionUID = 4519552942642063759L;
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "service")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Service{
 
 	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
-	@Column(name = "name", nullable = false)
+	@Indexed(unique = true)
 	private String name;
 
-	@Column(name = "description")
 	private String description;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
 	private Date createdOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
 
-	@Column(name = "created_by", length = 50)
 	private String createdBy;
 
-	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 }

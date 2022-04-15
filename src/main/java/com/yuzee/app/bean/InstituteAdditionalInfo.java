@@ -16,71 +16,34 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-@Entity
-@Table(name = "institute_additional_info", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"institute_id" }, name = "UK_INSTITUTE_ADDITIONAL_INFO_II"), indexes = {
-				@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = true) })
 @Data
+@EqualsAndHashCode
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "institute")
-public class InstituteAdditionalInfo implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class InstituteAdditionalInfo{
 
-	@Id
-	@GenericGenerator(name = "GUID" , strategy = "org.hibernate.id.GUIDGenerator")
-	@GeneratedValue(generator = "GUID")
-	@Column(name = "id", unique = true, nullable = false, length=36)
-	private String id;
-	
-	@Column(name ="student_number")
 	private Integer numberOfStudent=0;
-	
-	@Column(name ="employee_number", nullable = false)
-	private Integer numberOfEmployee=0;
-	
-	@Column(name ="teacher_number", nullable = false)
-	private Integer numberOfTeacher=0;
-	
-	@Column(name ="class_number", nullable = false)
-	private Integer numberOfClassRoom=0;
-	
-	@Column(name ="campus_size", nullable = false)
-	private Integer sizeOfCampus=0;
-	
-	@Column(name ="lecture_hall_number", nullable = false)
-	private Integer numberOfLectureHall=0;
-	
-	@Column(name ="faculty_number", nullable = false)
-	private Integer numberOfFaculty=0;
-	
-	@Column(name ="employment_rate", nullable = false)
-	private Integer rateOfEmployment=0;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
-	private Date createdOn;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
-	private Date updatedOn;
-	
-	@Column(name = "created_by", length = 50)
-	private String createdBy;
-	
-	@Column(name = "updated_by", length = 50)
-	private String updatedBy;
 
-	@ToString.Exclude
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn( name = "institute_id")
-	private Institute institute;
+	private Integer numberOfEmployee=0;
+
+	private Integer numberOfTeacher=0;
+
+	private Integer numberOfClassRoom=0;
+
+	private Integer sizeOfCampus=0;
+
+	private Integer numberOfLectureHall=0;
+
+	private Integer numberOfFaculty=0;
+
+	private Integer rateOfEmployment=0;
 
 }

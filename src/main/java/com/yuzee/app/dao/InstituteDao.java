@@ -20,6 +20,7 @@ import com.yuzee.app.dto.InstituteFilterDto;
 import com.yuzee.app.dto.InstituteGetRequestDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.common.lib.exception.NotFoundException;
+import org.springframework.data.domain.Sort;
 
 public interface InstituteDao {
 
@@ -96,7 +97,7 @@ public interface InstituteDao {
 
 	public List<Institute> getInstituteCampuses(String instituteId, String instituteName) throws NotFoundException;
 
-	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException;
+	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId, Sort sort) throws NotFoundException;
 
 	public List<InstituteResponseDto> findByIds(List<String> instituteIds);
 

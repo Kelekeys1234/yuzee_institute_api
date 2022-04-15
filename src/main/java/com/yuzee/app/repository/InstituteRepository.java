@@ -2,10 +2,14 @@ package com.yuzee.app.repository;
 
 import java.util.List;
 
+import com.yuzee.app.bean.InstituteFacility;
+import com.yuzee.app.dto.InstituteFacilityDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
@@ -14,33 +18,44 @@ import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 
 @Repository
-public interface InstituteRepository extends JpaRepository<Institute, String> {
+public interface InstituteRepository extends MongoRepository<Institute, String> {
 
-	public Page<Institute> findByCountryName(String countryName, @PageableDefault Pageable pageable);
+	 Page<Institute> findByCountryName(String countryName, @PageableDefault Pageable pageable);
 
-	@Query("SELECT COUNT(*) FROM Institute i where i.countryName = :countryName")
-	public Integer getTotalCountOfInstituteByCountryName(String countryName);
+	@Query(value = "{'countryName' : ?0}" , count = true)
+	 Integer getTotalCountOfInstituteByCountryName(String countryName);
 
-	public List<Institute> findByCityName(String cityName);
+	 List<Institute> findByCityName(String cityName);
 
-	@Query("SELECT i from Institute i where i.id != :id and i.name = :name and (i.isDeleted is null or i.isDeleted = false  )")
-	public List<Institute> findByIdNotAndNameAndIsDeletedFalse(String id, String name);
+	// ******** Example********//
+	//@Query("{'type':?0,'$or':[{ $where: '?1 == null' },{'key':?1},{ $where: '?2 == null' },{'username':?2}]}")
+	//    List<Doc> findByType(String type, String key, String username, Pageable pageable);
+	//@Query("{'$or':[ {'type':?0}, {'name':?1} ]}")
 
-	@Query("SELECT new com.yuzee.app.dto.InstituteFacultyDto(f.id, f.name, count(*) as courseCount) "
-			+ "from Course c "
-			+ "join c.faculty f  "
-			+ "where  c.institute.id = :instituteId "
-			+ "group by c.faculty "
-			+ "order by f.name")
-	public List<InstituteFacultyDto> findFacultyWithCourseCountById(String instituteId);
+	//Previous code//
+//	@Query("SELECT i from Institute i where i.id != :id and i.name = :name and (i.isDeleted is null or i.isDeleted = false  )")
+    @Query(value = " {'id' : ?0 , 'name' : ?1}, '$or' : [ {'isDeleted' : null, 'isDeleted' : false} ] ")
+	 List<Institute> findByIdNotAndNameAndIsDeletedFalse(String id, String name);
+//Sort sort = new Sort(Sort.Direction.DESC, "date")
+//    @Query(value = " {'id' : ?0 }, '$group' : [{'facultyName'}]")
+//	@Query("SELECT new com.yuzee.app.dto.InstituteFacultyDto(f.id, f.name, count(*) as courseCount) "
+//			+ "from Course c "
+//			+ "join c.faculty f  "
+//			+ "where  c.institute.id = :instituteId "
+//			+ "group by c.faculty "
+//			+ "order by f.name")
+    @Query(value = " {'id' : ?0 }, '$group' : [{'facultyName'}]")
+	 List<InstituteFacultyDto> findFacultyWithCourseCountById(String instituteId, Sort sort);
 
 	@Query("SELECT new com.yuzee.app.dto.InstituteResponseDto(i.id,i.name, i.worldRanking, i.cityName, i.countryName,i.state, "
 			+ "i.website, i.aboutInfo, i.latitude, i.longitude, i.phoneNumber,i.whatsNo, "
 			+ "(select count(c.id) from Course c where c.institute.id = i.id ), i.email, i.address, i.domesticRanking, "
 			+ "i.tagLine, i.createdOn) from Institute i  where i.id in :instituteIds")
-	public List<InstituteResponseDto> findByIdIn(List<String> instituteIds);
+	 List<InstituteResponseDto> findByIdIn(List<String> instituteIds);
 
-	public List<Institute> findByReadableIdIn(List<String> readableIds);
+	 List<Institute> findByReadableIdIn(List<String> readableIds);
 
-	public Institute findByReadableId(String readableId);
+	 Institute findByReadableId(String readableId);
+
+	 List<Institute> findAllById(List<String> instituteIds);
 }
