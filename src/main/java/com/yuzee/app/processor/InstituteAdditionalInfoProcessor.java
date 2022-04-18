@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -30,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class InstituteAdditionalInfoProcessor {
 
 	@Autowired
-	private InstituteDao iInstituteDAO;
+	private InstituteDao instituteDAO;
 
 	@Autowired
 	private StorageHandler storageHandler;
@@ -47,7 +48,7 @@ public class InstituteAdditionalInfoProcessor {
 		log.debug("Inside addInstituteAdditionalInfo() method");
 		// TODO validate user ID passed in request have access to modify resource
 		log.info("Getting institute having institute id: {}", instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		Optional<Institute> instituteFromFb = instituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
 		if (!instituteFromFb.isPresent()) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
@@ -62,29 +63,16 @@ public class InstituteAdditionalInfoProcessor {
 		InstituteAdditionalInfo instituteAdditionalInfoFromDB = institute.getInstituteAdditionalInfo();
 		InstituteAdditionalInfo instituteAdditionalInfo = modelMapper.map(instituteAdditionalInfoDto,
 				InstituteAdditionalInfo.class);
-		if (ObjectUtils.isEmpty(instituteAdditionalInfoFromDB)) {
-			log.info("Institute dont have any additional info adding new one");
-			instituteAdditionalInfo.setCreatedBy(userId);
-			instituteAdditionalInfo.setCreatedOn(new Date());
-		} else {
-			log.info("Institute have additional info updating exsisting one");
-			instituteAdditionalInfo.setId(instituteAdditionalInfoFromDB.getId());
-			instituteAdditionalInfo.setCreatedBy(instituteAdditionalInfoFromDB.getCreatedBy());
-			instituteAdditionalInfo.setCreatedOn(instituteAdditionalInfoFromDB.getCreatedOn());
-		}
-		instituteAdditionalInfo.setUpdatedBy(userId);
-		instituteAdditionalInfo.setUpdatedOn(new Date());
-		instituteAdditionalInfo.setInstitute(institute);
 		institute.setInstituteAdditionalInfo(instituteAdditionalInfo);
 		log.info("Persisting institute into Db with updated institute addition info");
-		iInstituteDAO.addUpdateInstitute(institute);
+		instituteDAO.addUpdateInstitute(institute);
 	}
 
 	public InstituteAdditionalInfoDto getInstituteAdditionalInfo(String instituteId) throws NotFoundException {
 		log.debug("Inside getInstituteAdditionalInfo() method");
 
 		log.info("Getting institute having institute id: {}", instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		Optional<Institute> instituteFromFb = instituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
 		if (!instituteFromFb.isPresent()) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));

@@ -82,7 +82,7 @@ public interface InstituteDao {
 
 	public int getDistinctInstituteCountByName(String skillName);
 
-	public Optional<Institute> getInstituteByInstituteId(String instituteId);
+	public Optional<Institute> getInstituteByInstituteId(UUID instituteId);
 
 	public List<InstituteResponseDto> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitutde,
 			Double longitude, Integer initialRadius);
