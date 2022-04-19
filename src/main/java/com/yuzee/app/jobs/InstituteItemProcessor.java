@@ -22,7 +22,6 @@ import org.springframework.util.ObjectUtils;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteAdditionalInfo;
 import com.yuzee.app.bean.InstituteFacility;
-import com.yuzee.app.bean.InstituteIntake;
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.bean.Timing;

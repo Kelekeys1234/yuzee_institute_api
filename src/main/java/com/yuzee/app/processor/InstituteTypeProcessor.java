@@ -64,7 +64,7 @@ public class InstituteTypeProcessor {
 		instituteType.setUpdatedBy("API");
 		instituteType.setIsActive(true);
 		log.info("Calling DAO layer to save instituteType in DB");
-		iInstituteTypeDAO.save(instituteType);
+		iInstituteDao.save(instituteType);
 	}
 
 	public InstituteType getInstituteType(String id) {

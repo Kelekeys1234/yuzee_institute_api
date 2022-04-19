@@ -9,9 +9,6 @@ import lombok.Data;
 @Data
 public class  InstituteTypeDto {
 	
-	@JsonProperty("institute_type_id")
-	private String instituteTypeId;
-	
 	@JsonProperty("institute_type_name")
 	@NotBlank(message = "{institute_type_name.is_required}")
 	private String instituteTypeName;

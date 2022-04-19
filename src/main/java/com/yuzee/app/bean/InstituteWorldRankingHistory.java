@@ -26,9 +26,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class InstituteWorldRankingHistory implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+public class InstituteWorldRankingHistory{
 
 	private Integer worldRanking;
+
+	private Date createdOn;
+
+	private String createdBy;
+
+	private Date updatedOn;
+
+	private String updatedBy;
 }

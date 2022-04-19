@@ -33,7 +33,6 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.Institute;
-import com.yuzee.app.bean.InstituteIntake;
 import com.yuzee.app.dto.uploader.InstituteCsvDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;

@@ -15,51 +15,38 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Entity
-@ToString(exclude = { "sourceInstitute", "destinationInstitute" })
-@EqualsAndHashCode
-@Table(name = "institute_campus", uniqueConstraints = @UniqueConstraint(columnNames = { "source_institute_id", "destination_institute_id" }, name = "UK_IC_SI_DI"))
-public class InstituteCampus implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5639931588147850985L;
+@NoArgsConstructor
+@Document(collection = "institute_campus")
+@CompoundIndexes({ @CompoundIndex(name = "UK_IC_SI_DI", def = "{'sourceInstitute' : 1}, {'destinationInstitute' : 1}", unique = true) })
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class InstituteCampus{
 
 	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "source_institute_id", nullable = false)
 	private Institute sourceInstitute;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "destination_institute_id", nullable = false)
 	private Institute destinationInstitute;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
 	private Date createdOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
 
-	@Column(name = "created_by", length = 50)
 	private String createdBy;
 
-	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
 	public void setAuditFields(String userId) {

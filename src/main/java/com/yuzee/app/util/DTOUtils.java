@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.Institute;
-import com.yuzee.app.bean.InstituteIntake;
 import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.bean.ScholarshipCountry;
 import com.yuzee.app.bean.ScholarshipEligibleNationality;

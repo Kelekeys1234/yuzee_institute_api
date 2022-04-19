@@ -20,7 +20,6 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteEnglishRequirements;
 import com.yuzee.app.bean.InstituteFacility;
-import com.yuzee.app.bean.InstituteIntake;
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.Scholarship;
 import com.yuzee.app.dao.TimingDao;

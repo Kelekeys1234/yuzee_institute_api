@@ -14,6 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.yuzee.app.constant.InstituteJoinStatus;
@@ -24,105 +25,81 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "institute_join_request",  uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "institute_name" } , name = "UK_IJOIN_REQUEST_INSTITUTE_NAME_USER_ID"),
-          indexes = { @Index (name = "IDX_JR_INSTITUTE_NAME_USER_ID", columnList="institute_name,user_id", unique = true),
-        		  @Index (name = "IDX_JR_STATUS", columnList="status", unique = false)})
 @Data
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@Document(collection = "institute_join_request")
+@CompoundIndexes({@CompoundIndex(name = "IDX_JR_INSTITUTE_NAME_USER_ID", def = "{'instituteName' : 1}, {'userId' : 1}", unique = true),
+                                    @CompoundIndex(name = "UK_IJOIN_REQUEST_INSTITUTE_NAME_USER_ID", def = "{'instituteName' : 1}, {'userId' : 1}", unique = true),
+        							@CompoundIndex(name = "IDX_JR_STATUS", def = "{'instituteJoinStatus' : 1}", unique = false)})
 @EqualsAndHashCode
 public class InstituteJoinRequest {
 
-	@Id
-	@GenericGenerator(name = "GUID" , strategy = "org.hibernate.id.GUIDGenerator")
-	@GeneratedValue(generator = "GUID")
-	@Column(name = "id", unique = true, nullable = false, length=36)
-	private String id;
-	
-	@Column(name = "user_id", nullable = false, length=36)
-	private String userId;
-	
-	@Column(name = "institute_name", nullable = false)
-	private String instituteName;
-	
-	@Column(name = "institute_country", nullable = false)
-	private String instituteCountry;
-	
-	@Column(name = "institute_type", nullable = false)
-	private String typeOfInstitute;
-	
-	@Column(name = "type", nullable = false)
-	private String type;
-	
-	@Column(name ="first_name", nullable = false)
-	private String firstName;
-	
-	@Column(name ="last_name", nullable = false)
-	private String lastName;
-	
-	@Column(name ="title", nullable = false)
-	private String title;
-	
-	@Column(name ="work_email", nullable = false)
-	private String workEmail;
-	
-	@Column(name ="work_phone_number", nullable = false)
-	private String workPhoneNumber;
-	
-	@Column(name ="management_name", nullable = false)
-	private String managementName;
-	
-	@Column(name ="management_email", nullable = false)
-	private String managementEmail;
-	
-	@Column(name ="management_phone_number", nullable = false)
-	private String managementPhoneNumber;
-	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status", nullable = false)
-	private InstituteJoinStatus instituteJoinStatus;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
-	private Date createdOn;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
-	private Date updatedOn;
-	
-	@Column(name = "created_by", length = 50)
-	private String createdBy;
-	
-	@Column(name = "updated_by", length = 50)
-	private String updatedBy;
+    @Id
+    private String id;
 
-	public InstituteJoinRequest(String userId, String instituteName, String instituteCountry, String typeOfInstitute,
-			String type, String firstName, String lastName, String title, String workEmail, String workPhoneNumber,
-			String managementName, String managementEmail, String managementPhoneNumber,
-			InstituteJoinStatus instituteJoinStatus, Date createdOn, Date updatedOn, String createdBy,
-			String updatedBy) {
-		super();
-		this.userId = userId;
-		this.instituteName = instituteName;
-		this.instituteCountry = instituteCountry;
-		this.typeOfInstitute = typeOfInstitute;
-		this.type = type;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.title = title;
-		this.workEmail = workEmail;
-		this.workPhoneNumber = workPhoneNumber;
-		this.managementName = managementName;
-		this.managementEmail = managementEmail;
-		this.managementPhoneNumber = managementPhoneNumber;
-		this.instituteJoinStatus = instituteJoinStatus;
-		this.createdOn = createdOn;
-		this.updatedOn = updatedOn;
-		this.createdBy = createdBy;
-		this.updatedBy = updatedBy;
-	}
+    private String userId;
+
+    private String instituteName;
+
+    private String instituteCountry;
+
+    private String typeOfInstitute;
+
+    private String type;
+
+    private String firstName;
+
+    private String lastName;
+
+    private String title;
+
+    private String workEmail;
+
+    private String workPhoneNumber;
+
+    private String managementName;
+
+    private String managementEmail;
+
+    private String managementPhoneNumber;
+
+    private InstituteJoinStatus instituteJoinStatus;
+
+    private Date createdOn;
+
+    private Date updatedOn;
+
+    private String createdBy;
+
+    private String updatedBy;
+
+    public InstituteJoinRequest(String userId, String instituteName, String instituteCountry, String typeOfInstitute,
+                                String type, String firstName, String lastName, String title, String workEmail, String workPhoneNumber,
+                                String managementName, String managementEmail, String managementPhoneNumber,
+                                InstituteJoinStatus instituteJoinStatus, Date createdOn, Date updatedOn, String createdBy,
+                                String updatedBy) {
+        super();
+        this.userId = userId;
+        this.instituteName = instituteName;
+        this.instituteCountry = instituteCountry;
+        this.typeOfInstitute = typeOfInstitute;
+        this.type = type;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.title = title;
+        this.workEmail = workEmail;
+        this.workPhoneNumber = workPhoneNumber;
+        this.managementName = managementName;
+        this.managementEmail = managementEmail;
+        this.managementPhoneNumber = managementPhoneNumber;
+        this.instituteJoinStatus = instituteJoinStatus;
+        this.createdOn = createdOn;
+        this.updatedOn = updatedOn;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+    }
 }

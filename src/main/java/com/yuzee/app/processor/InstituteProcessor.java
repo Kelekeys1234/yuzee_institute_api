@@ -42,8 +42,6 @@ import com.yuzee.app.bean.AccrediatedDetail;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteDomesticRankingHistory;
-import com.yuzee.app.bean.InstituteFunding;
-import com.yuzee.app.bean.InstituteIntake;
 import com.yuzee.app.bean.InstituteProviderCode;
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
@@ -234,9 +232,9 @@ public class InstituteProcessor {
 		instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
 		instituteElasticSearchDto.setInstituteType(
 				institute.getInstituteType() != null ? institute.getInstituteType() : null);
-		List<InstituteIntake> intakes = institute.getInstituteIntakes();
+		List<String> intakes = institute.getInstituteIntakes();
 		if(!CollectionUtils.isEmpty(intakes)) {
-			instituteElasticSearchDto.setIntakes(institute.getInstituteIntakes().stream().map(InstituteIntake::getIntake).collect(Collectors.toList()));			
+			instituteElasticSearchDto.setIntakes(institute.getInstituteIntakes());
 		}
 		instituteElasticSearchDto.setReadableId(institute.getReadableId());
 		return instituteElasticSearchDto;
@@ -466,14 +464,20 @@ public class InstituteProcessor {
 	private void saveIntakesInstituteDetails(final Institute institute, final List<String> intakes) {
 		log.debug("Inside saveIntakesInstituteDetails() method");
 		log.info("deleting existing instituteIntakes from DB for institute having instituteId = "+institute.getId());
-		instituteDao.deleteInstituteIntakeById(institute.getId().toString());
-		for (String intakeId : intakes) {
-			log.info("Start iterating new intakes which are coming in request");
-			InstituteIntake instituteIntake = new InstituteIntake();
-			instituteIntake.setIntake(intakeId);
-			log.info("Calling DAO layer to save new intakes in DB for institute having instituteId ="+institute.getId());
-			instituteDao.saveInstituteIntake(instituteIntake);
+		Institute existingInstitute = instituteDao.getInstitute(institute.getId().toString());
+		if(ObjectUtils.isEmpty(existingInstitute)){
+			log.error("There is no Institute with id {} : ", institute.getId());
+			throw  new NotFoundException("There is no Institute with id");
 		}
+
+//		instituteDao.deleteInstituteIntakeById(institute.getId().toString());
+//		for (String intakeId : intakes) {
+//			log.info("Start iterating new intakes which are coming in request");
+//			InstituteIntake instituteIntake = new InstituteIntake();
+//			instituteIntake.setIntake(intakeId);
+//			log.info("Calling DAO layer to save new intakes in DB for institute having instituteId ="+institute.getId());
+//			instituteDao.saveInstituteIntake(instituteIntake);
+//		}
 	}
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
@@ -1253,7 +1257,6 @@ public class InstituteProcessor {
 
 		log.info("Calling elastic service to save instiutes on index");
 		publishSystemEventHandler.syncInstitutes(Arrays.asList(instituteElasticSearchDto));
-
 	}
 	
 	

@@ -16,24 +16,11 @@ import java.util.Date;
 @AllArgsConstructor
 @Document(collection = "institute_service")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class InstituteService implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
-	@Id
-	private String id;
+public class InstituteService{
 
 	@DBRef(lazy = true)
 	@Indexed(unique = true)
 	private Service service;
 
 	private String description;
-
-	private Date createdOn;
-
-	private Date updatedOn;
-
-	private String createdBy;
-
-	private String updatedBy;
 }

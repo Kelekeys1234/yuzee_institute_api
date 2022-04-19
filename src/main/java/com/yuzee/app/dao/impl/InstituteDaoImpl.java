@@ -124,12 +124,14 @@ public class InstituteDaoImpl implements InstituteDao {
         //Todo find Criteria.between() equivalent in mongo
         if (null != fromWorldRanking && null != toWorldRanking) {
             //	sqlQuery += " and inst.world_ranking between " + fromWorldRanking + " and " + toWorldRanking;
-            mongoQuery.addCriteria(Criteria.where("fromWorldRanking").maxDistance(fromWorldRanking).maxDistance(toWorldRanking));
+            mongoQuery.addCriteria(Criteria.where("fromWorldRanking").maxDistance(fromWorldRanking).minDistance(toWorldRanking));
         }
         //TODO add serachKeyword with OR conditions according to mongoQuery
-        if (searchKeyword != null) {
-            Criteria regex = Criteria.where("name").regex(searchKeyword);
-            mongoQuery.addCriteria(Criteria.where("searchKeyword").elemMatch(regex));
+       if (searchKeyword != null) {
+                mongoQuery.addCriteria(new Criteria().elemMatch(Criteria.where("name").regex(searchKeyword)
+                        .orOperator(Criteria.where("countryName").regex(searchKeyword))
+                        .orOperator(Criteria.where("cityName").regex(searchKeyword))
+                        .orOperator(Criteria.where("instituteType").regex(searchKeyword))));
         }
 
 
@@ -155,7 +157,9 @@ public class InstituteDaoImpl implements InstituteDao {
 //		}
 
 //		return ((Number) query1.uniqueResult()).intValue();
-        return Integer.parseInt(String.valueOf(mongoTemplate.count(mongoQuery, Institute.class)));
+//        return Integer.parseInt(String.valueOf(mongoTemplate.count(mongoQuery, Institute.class)));
+        Long count = mongoTemplate.count(mongoQuery, Institute.class);
+        return count.intValue();
     }
 
     @Override
@@ -165,7 +169,9 @@ public class InstituteDaoImpl implements InstituteDao {
                                                                final Integer fromWorldRanking, final Integer toWorldRanking) {
 //		Session session = sessionFactory.getCurrentSession();
         Query mongoQuery = new Query();
-        mongoQuery.fields().include("id", "name", "cityName", "countryName", "worldRanking", "");
+        mongoQuery.fields().include("id", "name", "cityName", "countryName", "worldRanking", "stars", "updatedOn", "instituteType", "isActive"
+                , "domesticRanking", "latitude", "longitude", "" ,"currency", "");
+        //Todo in below SQL query there is no field called "usd_international_fee" in courseDeliveryModes model, it is in CourseSyncDto;
         String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.city_name as cityName,"
                 + "inst.Country_name as countryName,count(c.id) as courses, inst.world_ranking as world_ranking, MIN(c.stars) as stars "
                 + " ,inst.updated_on as updatedOn, inst.institute_type as instituteType,"
@@ -654,7 +660,8 @@ public class InstituteDaoImpl implements InstituteDao {
     @Override
     public List<String> getRandomInstituteByCountry(final List<String> countryIdList) {
         Session session = sessionFactory.getCurrentSession();
-
+        Query mongoQuery = new Query();
+        mongoQuery.fields().include("coun");
         String countryIds = countryIdList.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(","));
         List<String> idList = session
                 .createNativeQuery("select id from institute where country_name in (?) order by Rand() LIMIT ?")
@@ -664,23 +671,22 @@ public class InstituteDaoImpl implements InstituteDao {
 
     @Override
     public Map<String, Integer> getDomesticRanking(final List<String> courseIdList) {
-        Session session = sessionFactory.getCurrentSession();
+//        Session session = sessionFactory.getCurrentSession();
+//
+//        Criteria criteria = session.createCriteria(Course.class, "course");
+//        criteria.createAlias("institute", "institute");
+//        criteria.add(Restrictions.in("course.id", courseIdList));
+//        ProjectionList projectionList = Projections.projectionList();
+//        projectionList.add(Projections.property("course.id"));
+//        projectionList.add(Projections.property("institute.domesticRanking"));
+//        criteria.setProjection(projectionList);
+//
+////        List<Object[]> resultList = criteria.list();
+        //        for (Object[] result : resultList) {
+//            courseDomesticRanking.put((String) result[0], (Integer) result[1]);
+//        }
 
-        Criteria criteria = session.createCriteria(Course.class, "course");
-        criteria.createAlias("institute", "institute");
-        criteria.add(Restrictions.in("course.id", courseIdList));
-        ProjectionList projectionList = Projections.projectionList();
-        projectionList.add(Projections.property("course.id"));
-        projectionList.add(Projections.property("institute.domesticRanking"));
-        criteria.setProjection(projectionList);
-
-        List<Object[]> resultList = criteria.list();
-        Map<String, Integer> courseDomesticRanking = new HashMap<>();
-        for (Object[] result : resultList) {
-            courseDomesticRanking.put((String) result[0], (Integer) result[1]);
-        }
-
-        return courseDomesticRanking;
+        return new HashMap<>();
     }
 
     @Override

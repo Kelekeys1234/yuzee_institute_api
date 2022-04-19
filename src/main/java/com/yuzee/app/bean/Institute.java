@@ -138,11 +138,11 @@ public class Institute {
 	@DBRef
 	private List<InstituteService> instituteServices = new ArrayList<>();
 
-	private List<InstituteIntake> instituteIntakes = new ArrayList<>();
+	private List<String> instituteIntakes = new ArrayList<>();
 
 	private List<InstituteWorldRankingHistory> instituteWorldRankingHistories = new ArrayList<>();
 
-	private List<InstituteFunding> instituteFundings = new ArrayList<>();
+	private List<String> instituteFundings = new ArrayList<>();
 
 	private List<InstituteProviderCode> instituteProviderCodes = new ArrayList<>();
 
