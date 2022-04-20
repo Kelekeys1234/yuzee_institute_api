@@ -59,7 +59,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			facultyId = existingCourse.getFaculty().getId();
 		}
 		if (existingCourse.getInstitute() != null) {
-			instituteId = existingCourse.getInstitute().getId();
+			instituteId = existingCourse.getInstitute().getId().toString();
 		}
 //		Double price = existingCourse.getUsdInternationFee();
 		List<Course> resultList = new ArrayList<>();
@@ -171,7 +171,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			facultyId = existingCourse.getFaculty().getId();
 		}
 		if (existingCourse.getInstitute() != null) {
-			instituteId = existingCourse.getInstitute().getId();
+			instituteId = existingCourse.getInstitute().getId().toString();
 		}
 		String courseName = existingCourse.getName();
 //		Double price = existingCourse.getUsdInternationFee();
@@ -299,7 +299,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 				CourseResponseDto courseResponseDto = new CourseResponseDto();
 				courseResponseDto.setId(course.getId());
 				courseResponseDto.setName(course.getName());
-				courseResponseDto.setInstituteId(course.getInstitute().getId());
+				courseResponseDto.setInstituteId(course.getInstitute().getId().toString());
 				courseResponseDto.setInstituteName(course.getInstitute().getName());
 				courseResponseDto.setRequirements(course.getRemarks());
 				if (course.getStars() != null) {
@@ -318,7 +318,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 				}
 				try {
 					List<StorageDto> storageDTOList = storageHandler.getStorages(
-							course.getInstitute().getId(), EntityTypeEnum.COURSE,EntitySubTypeEnum.IMAGES);
+							course.getInstitute().getId().toString(), EntityTypeEnum.COURSE,EntitySubTypeEnum.IMAGES);
 					courseResponseDto.setStorageList(storageDTOList);
 				} catch (Exception e) {
 					log.error("Exception while invoking storage service", e);

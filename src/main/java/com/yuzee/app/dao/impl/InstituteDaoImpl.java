@@ -20,6 +20,9 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -135,10 +138,10 @@ public class InstituteDaoImpl implements InstituteDao {
         }
 
 
-        sqlQuery += " and ( :searchKeyword is null or inst.name like %:searchKeyword%";
-        sqlQuery += " or inst.country_name like %:searchKeyword%";
-        sqlQuery += " or inst.city_name like %:searchKeyword%";
-        sqlQuery += " or inst.institute_type like %:searchKeyword%)";
+//        sqlQuery += " and ( :searchKeyword is null or inst.name like %:searchKeyword%";
+//        sqlQuery += " or inst.country_name like %:searchKeyword%";
+//        sqlQuery += " or inst.city_name like %:searchKeyword%";
+//        sqlQuery += " or inst.institute_type like %:searchKeyword%)";
 
 //		Query query1 = mongoTemplate.withSession(session).createSQLQuery(sqlQuery).setParameter("name", courseSearchDto.getSearchKey())
 //				.setParameter("cityId", "cityId").setParameter("isActive", isActive)
@@ -232,121 +235,123 @@ public class InstituteDaoImpl implements InstituteDao {
         if (startIndex != null && courseSearchDto.getMaxSizePerPage() != null) {
             sqlQuery += sortingQuery + " LIMIT " + startIndex + " ," + courseSearchDto.getMaxSizePerPage();
         }
-
-        System.out.println(sqlQuery);
-        Query query = session.createSQLQuery(sqlQuery);
-
-        if (!CollectionUtils.isEmpty(courseSearchDto.getCountryNames())) {
-            query.setParameter("countryNames", courseSearchDto.getCountryNames());
-        }
-
-        if (!CollectionUtils.isEmpty(courseSearchDto.getLevelIds())) {
-            query.setParameter("levelIds", courseSearchDto.getLevelIds());
-        }
-
-        if (!CollectionUtils.isEmpty(courseSearchDto.getFacultyIds())) {
-            query.setParameter("facultyIds", courseSearchDto.getFacultyIds());
-        }
-
-        List<Object[]> rows = query.list();
+//
+//        System.out.println(sqlQuery);
+//        Query query = session.createSQLQuery(sqlQuery);
+//
+//        if (!CollectionUtils.isEmpty(courseSearchDto.getCountryNames())) {
+//            query.setParameter("countryNames", courseSearchDto.getCountryNames());
+//        }
+//
+//        if (!CollectionUtils.isEmpty(courseSearchDto.getLevelIds())) {
+//            query.setParameter("levelIds", courseSearchDto.getLevelIds());
+//        }
+//
+//        if (!CollectionUtils.isEmpty(courseSearchDto.getFacultyIds())) {
+//            query.setParameter("facultyIds", courseSearchDto.getFacultyIds());
+//        }
+//
+//        List<Object[]> rows = query.list();
         List<InstituteResponseDto> list = new ArrayList<>();
-        InstituteResponseDto instituteResponseDto = null;
-        for (Object[] row : rows) {
-            instituteResponseDto = new InstituteResponseDto();
-            instituteResponseDto.setId(UUID.fromString(String.valueOf(row[0])));
-            instituteResponseDto.setName(String.valueOf(row[1]));
-            instituteResponseDto.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
-            instituteResponseDto.setCityName(String.valueOf(row[2]));
-            instituteResponseDto.setCountryName(String.valueOf(row[3]));
-            instituteResponseDto.setTotalCourses(Integer.parseInt(String.valueOf(row[4])));
-            Integer worldRanking = 0;
-            if (null != row[5]) {
-                worldRanking = Integer.parseInt(String.valueOf(row[5]));
-            }
-            instituteResponseDto.setWorldRanking(worldRanking);
-            if (null != row[6]) {
-                instituteResponseDto.setStars(Double.parseDouble(String.valueOf(row[6])));
-            } else {
-                instituteResponseDto.setStars(0.0);
-            }
-
-            instituteResponseDto.setInstituteType(String.valueOf(row[8]));
-            if (row[10] != null) {
-                instituteResponseDto.setDomesticRanking(Integer.valueOf(String.valueOf(row[10])));
-            }
-            if (row[11] != null) {
-                instituteResponseDto.setLatitude(Double.valueOf(row[11].toString()));
-            }
-            if (row[12] != null) {
-                instituteResponseDto.setLongitude(Double.valueOf(row[12].toString()));
-            }
-            if (row[13] != null) {
-                instituteResponseDto.setMinPriceRange(Double.valueOf(row[13].toString()));
-            }
-            if (row[14] != null) {
-                instituteResponseDto.setMaxPriceRange(Double.valueOf(row[14].toString()));
-            }
-            instituteResponseDto.setCurrency(String.valueOf(row[15]));
-            instituteResponseDto.setWebsite(String.valueOf(row[16]));
-            instituteResponseDto.setAboutUs(String.valueOf(row[17]));
-            if (row[18] != null) {
-                instituteResponseDto.setTotalStudent(Integer.valueOf(String.valueOf(row[18])));
-            }
-            instituteResponseDto.setEmail(String.valueOf(row[19]));
-            instituteResponseDto.setAddress(String.valueOf(row[20]));
-            instituteResponseDto.setTagLine(String.valueOf(row[21]));
-            list.add(instituteResponseDto);
-        }
+//        InstituteResponseDto instituteResponseDto = null;
+//        for (Object[] row : rows) {
+//            instituteResponseDto = new InstituteResponseDto();
+//            instituteResponseDto.setId(UUID.fromString(String.valueOf(row[0])));
+//            instituteResponseDto.setName(String.valueOf(row[1]));
+//            instituteResponseDto.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
+//            instituteResponseDto.setCityName(String.valueOf(row[2]));
+//            instituteResponseDto.setCountryName(String.valueOf(row[3]));
+//            instituteResponseDto.setTotalCourses(Integer.parseInt(String.valueOf(row[4])));
+//            Integer worldRanking = 0;
+//            if (null != row[5]) {
+//                worldRanking = Integer.parseInt(String.valueOf(row[5]));
+//            }
+//            instituteResponseDto.setWorldRanking(worldRanking);
+//            if (null != row[6]) {
+//                instituteResponseDto.setStars(Double.parseDouble(String.valueOf(row[6])));
+//            } else {
+//                instituteResponseDto.setStars(0.0);
+//            }
+//
+//            instituteResponseDto.setInstituteType(String.valueOf(row[8]));
+//            if (row[10] != null) {
+//                instituteResponseDto.setDomesticRanking(Integer.valueOf(String.valueOf(row[10])));
+//            }
+//            if (row[11] != null) {
+//                instituteResponseDto.setLatitude(Double.valueOf(row[11].toString()));
+//            }
+//            if (row[12] != null) {
+//                instituteResponseDto.setLongitude(Double.valueOf(row[12].toString()));
+//            }
+//            if (row[13] != null) {
+//                instituteResponseDto.setMinPriceRange(Double.valueOf(row[13].toString()));
+//            }
+//            if (row[14] != null) {
+//                instituteResponseDto.setMaxPriceRange(Double.valueOf(row[14].toString()));
+//            }
+//            instituteResponseDto.setCurrency(String.valueOf(row[15]));
+//            instituteResponseDto.setWebsite(String.valueOf(row[16]));
+//            instituteResponseDto.setAboutUs(String.valueOf(row[17]));
+//            if (row[18] != null) {
+//                instituteResponseDto.setTotalStudent(Integer.valueOf(String.valueOf(row[18])));
+//            }
+//            instituteResponseDto.setEmail(String.valueOf(row[19]));
+//            instituteResponseDto.setAddress(String.valueOf(row[20]));
+//            instituteResponseDto.setTagLine(String.valueOf(row[21]));
+//            list.add(instituteResponseDto);
+//        }
         return list;
     }
 
     @Override
     public InstituteResponseDto getInstituteById(final String instituteId) {
-        Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.city_name as cityName,"
-                + " inst.country_name as countryName,crs.world_ranking,crs.stars,crs.totalCourse from institute inst"
-                + " CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from course c where"
-                + " c.institute_id = inst.id group by c.institute_id ) crs where 1=1 and inst.id =:instituteId";
-        System.out.println(sqlQuery);
-        Query query = session.createSQLQuery(sqlQuery).setParameter("instituteId", instituteId);
-        List<Object[]> rows = query.list();
-        InstituteResponseDto obj = null;
-        for (Object[] row : rows) {
-            obj = new InstituteResponseDto();
-            obj.setId(UUID.fromString(String.valueOf(row[0])));
-            obj.setName(String.valueOf(row[1]));
-            obj.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
-            if (row[4] != null) {
-                obj.setWorldRanking(Integer.valueOf(String.valueOf(row[4])));
-            }
-            obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
-        }
-        return obj;
+//        Session session = sessionFactory.getCurrentSession();
+//        String sqlQuery = "select distinct inst.id as instId,inst.name as instName,inst.city_name as cityName,"
+//                + " inst.country_name as countryName,crs.world_ranking,crs.stars,crs.totalCourse from institute inst"
+//                + " CROSS APPLY ( select count(c.id) as totalCourse, MIN(c.world_ranking) as world_ranking, MIN(c.stars) as stars from course c where"
+//                + " c.institute_id = inst.id group by c.institute_id ) crs where 1=1 and inst.id =:instituteId";
+//        System.out.println(sqlQuery);
+//        Query query = session.createSQLQuery(sqlQuery).setParameter("instituteId", instituteId);
+//        List<Object[]> rows = query.list();
+//        InstituteResponseDto obj = null;
+//        for (Object[] row : rows) {
+//            obj = new InstituteResponseDto();
+//            obj.setId(UUID.fromString(String.valueOf(row[0])));
+//            obj.setName(String.valueOf(row[1]));
+//            obj.setLocation(String.valueOf(row[2]) + ", " + String.valueOf(row[3]));
+//            if (row[4] != null) {
+//                obj.setWorldRanking(Integer.valueOf(String.valueOf(row[4])));
+//            }
+//            obj.setTotalCourses(Integer.parseInt(String.valueOf(row[6])));
+//        }
+//        return obj;
+        return new InstituteResponseDto();
     }
 
     @Override
     public List<Institute> searchInstitute(final String sqlQuery) {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
-        List<Institute> instituteList = new ArrayList<>();
-        Institute obj = null;
-        for (Object[] row : rows) {
-            obj = new Institute();
-            obj.setId(row[0].toString());
-            obj.setName(row[1].toString());
-            if (row[2] != null) {
-                obj.setCountryName(row[2].toString());
-            }
-            if (row[3] != null) {
-                obj.setCityName(row[3].toString());
-            }
-            if (row[4] != null) {
-                obj.setInstituteType(row[4].toString());
-            }
-            instituteList.add(obj);
-        }
-        return instituteList;
+//        Session session = sessionFactory.getCurrentSession();
+//        Query query = session.createSQLQuery(sqlQuery);
+//        List<Object[]> rows = query.list();
+//        List<Institute> instituteList = new ArrayList<>();
+//        Institute obj = null;
+//        for (Object[] row : rows) {
+//            obj = new Institute();
+//            obj.setId(row[0].toString());
+//            obj.setName(row[1].toString());
+//            if (row[2] != null) {
+//                obj.setCountryName(row[2].toString());
+//            }
+//            if (row[3] != null) {
+//                obj.setCityName(row[3].toString());
+//            }
+//            if (row[4] != null) {
+//                obj.setInstituteType(row[4].toString());
+//            }
+//            instituteList.add(obj);
+//        }
+//        return instituteList;
+        return new ArrayList<>();
     }
 
 //	private InstituteType getInstituteType(final String id, final Session session) {
@@ -380,17 +385,18 @@ public class InstituteDaoImpl implements InstituteDao {
                 + "inst.address, inst.avg_cost_of_living, inst.tag_line"
                 + " FROM institute as inst left join institute_additional_info instAdd  on instAdd.institute_id=inst.id  where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
-        List<InstituteGetRequestDto> instituteList = getInstituteData(rows);
-        return instituteList;
+//        Query query = session.createSQLQuery(sqlQuery);
+//        List<Object[]> rows = query.list();
+//        List<InstituteGetRequestDto> instituteList = getInstituteData(rows);
+//        return instituteList;
+        return new ArrayList<>();
     }
 
     private List<InstituteGetRequestDto> getInstituteData(final List<Object[]> rows) {
         List<InstituteGetRequestDto> instituteList = new ArrayList<>();
         for (Object[] row : rows) {
             InstituteGetRequestDto instituteGetRequestDto = new InstituteGetRequestDto();
-            instituteGetRequestDto.setId(row[0].toString());
+            instituteGetRequestDto.setId(UUID.fromString(row[0].toString()));
             if (row[1] != null) {
                 instituteGetRequestDto.setName(row[1].toString());
             }
@@ -468,44 +474,45 @@ public class InstituteDaoImpl implements InstituteDao {
                     + updatedDate + "')";
         }
         sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
-        Query query = session.createSQLQuery(sqlQuery).setParameter("countryName", instituteFilterDto.getCountryName())
-                .setParameter("cityName", instituteFilterDto.getCityName())
-                .setParameter("instituteId", instituteFilterDto.getInstituteId())
-                .setParameter("worldRanking", instituteFilterDto.getWorldRanking())
-                .setParameter("instituteCategoryTypeId", instituteFilterDto.getInstituteTypeId());
-        List<Object[]> rows = query.list();
-        List<Institute> instituteList = new ArrayList<>();
-        Institute obj = null;
-        for (Object[] row : rows) {
-            obj = new Institute();
-            obj.setId(row[0].toString());
-            obj.setName(row[1].toString());
-            if (row[2] != null) {
-                obj.setCountryName(row[2].toString());
-            }
-            if (row[3] != null) {
-                obj.setCityName(row[3].toString());
-            }
-            if (row[4] != null) {
-                obj.setInstituteType(row[4].toString());
-            }
-            if (row[5] != null) {
-                obj.setDescription(row[5].toString());
-            }
-            /*
-             * if (row[6] != null) { System.out.println(row[6].toString()); Date createdDate
-             * = (Date) row[6]; System.out.println(createdDate); SimpleDateFormat formatter
-             * = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ"); String dateResult =
-             * formatter.format(createdDate); obj.setLastUpdated(dateResult);
-             *
-             * }
-             */
-            if (row[7] != null) {
-                obj.setDomesticRanking((Integer) row[7]);
-            }
-            instituteList.add(obj);
-        }
-        return instituteList;
+//        Query query = session.createSQLQuery(sqlQuery).setParameter("countryName", instituteFilterDto.getCountryName())
+//                .setParameter("cityName", instituteFilterDto.getCityName())
+//                .setParameter("instituteId", instituteFilterDto.getInstituteId())
+//                .setParameter("worldRanking", instituteFilterDto.getWorldRanking())
+//                .setParameter("instituteCategoryTypeId", instituteFilterDto.getInstituteTypeId());
+//        List<Object[]> rows = query.list();
+//        List<Institute> instituteList = new ArrayList<>();
+//        Institute obj = null;
+//        for (Object[] row : rows) {
+//            obj = new Institute();
+//            obj.setId(row[0].toString());
+//            obj.setName(row[1].toString());
+//            if (row[2] != null) {
+//                obj.setCountryName(row[2].toString());
+//            }
+//            if (row[3] != null) {
+//                obj.setCityName(row[3].toString());
+//            }
+//            if (row[4] != null) {
+//                obj.setInstituteType(row[4].toString());
+//            }
+//            if (row[5] != null) {
+//                obj.setDescription(row[5].toString());
+//            }
+//            /*
+//             * if (row[6] != null) { System.out.println(row[6].toString()); Date createdDate
+//             * = (Date) row[6]; System.out.println(createdDate); SimpleDateFormat formatter
+//             * = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ"); String dateResult =
+//             * formatter.format(createdDate); obj.setLastUpdated(dateResult);
+//             *
+//             * }
+//             */
+//            if (row[7] != null) {
+//                obj.setDomesticRanking((Integer) row[7]);
+//            }
+//            instituteList.add(obj);
+//        }
+//        return instituteList;
+        return new ArrayList<>();
     }
 
     @Override
@@ -530,40 +537,43 @@ public class InstituteDaoImpl implements InstituteDao {
             sqlQuery += " and (inst.created_on >= '" + instituteFilterDto.getDatePosted() + "' and inst.created_on < '"
                     + updatedDate + "')";
         }
-        Query query = session.createSQLQuery(sqlQuery).setParameter("countryName", instituteFilterDto.getCountryName())
-                .setParameter("cityName", instituteFilterDto.getCityName())
-                .setParameter("instituteId", instituteFilterDto.getInstituteId())
-                .setParameter("worldRanking", instituteFilterDto.getWorldRanking())
-                .setParameter("instituteCategoryTypeId", instituteFilterDto.getInstituteTypeId());
-        List<Object[]> rows = query.list();
-        return rows.size();
+//        Query query = session.createSQLQuery(sqlQuery).setParameter("countryName", instituteFilterDto.getCountryName())
+//                .setParameter("cityName", instituteFilterDto.getCityName())
+//                .setParameter("instituteId", instituteFilterDto.getInstituteId())
+//                .setParameter("worldRanking", instituteFilterDto.getWorldRanking())
+//                .setParameter("instituteCategoryTypeId", instituteFilterDto.getInstituteTypeId());
+//        List<Object[]> rows = query.list();
+//        return rows.size();
+        return 1;
     }
 
     @Override
     public List<InstituteGetRequestDto> autoSearch(final int pageNumber, final Integer pageSize,
                                                    final String searchKey) {
-        Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description,"
-                + " inst.latitude, inst.longitude, instAdd.student_number, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
-                + " inst.address, inst.avg_cost_of_living,inst.tag_line FROM institute as inst left join institute_additional_info instAdd on instAdd.institute_id=inst.id "
-                + " where  inst.deleted_on IS NULL and (inst.name like %:searchKey% or inst.description like %:searchKey% or inst.country_name like %:searchKey%"
-                + " or inst.city_name like %:searchKey% or inst.institute_type like %:searchKey%) "
-                + " ORDER BY inst.created_on DESC";
-        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
-        Query query = session.createSQLQuery(sqlQuery).setParameter("searchKey", searchKey);
-        List<Object[]> rows = query.list();
-        return getInstituteData(rows);
+//        Session session = sessionFactory.getCurrentSession();
+//        String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description,"
+//                + " inst.latitude, inst.longitude, instAdd.student_number, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
+//                + " inst.address, inst.avg_cost_of_living,inst.tag_line FROM institute as inst left join institute_additional_info instAdd on instAdd.institute_id=inst.id "
+//                + " where  inst.deleted_on IS NULL and (inst.name like %:searchKey% or inst.description like %:searchKey% or inst.country_name like %:searchKey%"
+//                + " or inst.city_name like %:searchKey% or inst.institute_type like %:searchKey%) "
+//                + " ORDER BY inst.created_on DESC";
+//        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+//        Query query = session.createSQLQuery(sqlQuery).setParameter("searchKey", searchKey);
+//        List<Object[]> rows = query.list();
+//        return getInstituteData(rows);
+        return new ArrayList<>();
     }
 
     @Override
     public int findTotalCountForInstituteAutosearch(final String searchKey) {
-        Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description, inst.updated_on FROM institute as inst  "
-                + " where inst.deleted_on IS NULL and (inst.name like %:searchKey% or inst.description like %:searchKey% or inst.country_name like %:searchKey% or inst.city_name like %:searchKey% or inst.institute_type like %:searchKey%) "
-                + " ";
-        Query query = session.createSQLQuery(sqlQuery).setParameter("searchKey", searchKey);
-        List<Object[]> rows = query.list();
-        return rows.size();
+//        Session session = sessionFactory.getCurrentSession();
+//        String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description, inst.updated_on FROM institute as inst  "
+//                + " where inst.deleted_on IS NULL and (inst.name like %:searchKey% or inst.description like %:searchKey% or inst.country_name like %:searchKey% or inst.city_name like %:searchKey% or inst.institute_type like %:searchKey%) "
+//                + " ";
+//        Query query = session.createSQLQuery(sqlQuery).setParameter("searchKey", searchKey);
+//        List<Object[]> rows = query.list();
+//        return rows.size();
+        return 1;
     }
 
     @Override
@@ -578,13 +588,14 @@ public class InstituteDaoImpl implements InstituteDao {
 
     @Override
     public List<Institute> getSecondayCampus(final String countryId, final String cityId, final String name) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Institute.class);
-        crit.add(Restrictions.eq("countryName", countryId));
-        crit.add(Restrictions.eq("cityName", cityId));
-        crit.add(Restrictions.eq("name", name));
-//		crit.add(Restrictions.eq("campusType", "SECONDARY"));
-        return crit.list();
+//        Session session = sessionFactory.getCurrentSession();
+//        Criteria crit = session.createCriteria(Institute.class);
+//        crit.add(Restrictions.eq("countryName", countryId));
+//        crit.add(Restrictions.eq("cityName", cityId));
+//        crit.add(Restrictions.eq("name", name));
+////		crit.add(Restrictions.eq("campusType", "SECONDARY"));
+//        return crit.list();
+        return new ArrayList<>();
     }
 
     @Override
@@ -595,15 +606,15 @@ public class InstituteDaoImpl implements InstituteDao {
 
     @Override
     public void deleteInstituteService(final String id) {
-        Session session = sessionFactory.getCurrentSession();
-        Query q = session.createQuery("delete from InstituteService where institute_id =:instituteId")
-                .setParameter("instituteId", id);
-        q.executeUpdate();
+//        Session session = sessionFactory.getCurrentSession();
+//        Query q = session.createQuery("delete from InstituteService where institute_id =:instituteId")
+//                .setParameter("instituteId", id);
+//        q.executeUpdate();
 
     }
 
     @Override
-    public void saveInstituteIntake(final InstituteIntake instituteIntake) {
+    public void saveInstituteIntake(final String instituteIntake) {
         Session session = sessionFactory.getCurrentSession();
         session.save(instituteIntake);
 
@@ -611,64 +622,87 @@ public class InstituteDaoImpl implements InstituteDao {
 
     @Override
     public void deleteInstituteIntakeById(final String id) {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("DELETE FROM institute_intake WHERE institute_id =:instituteId")
-                .setParameter("instituteId", id);
-        query.executeUpdate();
+//        Session session = sessionFactory.getCurrentSession();
+//        Query query = session.createSQLQuery("DELETE FROM institute_intake WHERE institute_id =:instituteId")
+//                .setParameter("instituteId", id);
+//        query.executeUpdate();
+        Query mongoQuery = new Query();
+        mongoQuery.fields().include("instituteIntake");
+        mongoQuery.addCriteria(Criteria.where("instituteIntake").is(id));
+        mongoTemplate.remove(mongoQuery, String.class);
     }
 
     @Override
     public List<String> getIntakesById(@Valid final String id) {
-        List<String> list = new ArrayList<>();
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(InstituteIntake.class);
-        crit.createAlias("institute", "institute");
-        crit.add(Restrictions.eq("institute.id", id));
-        List<InstituteIntake> accreditedInstituteDetails = crit.list();
-        for (InstituteIntake bean : accreditedInstituteDetails) {
-            list.add(bean.getIntake());
-        }
-        return list;
+//        List<String> list = new ArrayList<>();
+//        Session session = sessionFactory.getCurrentSession();
+//        Criteria crit = session.createCriteria(InstituteIntake.class);
+//        crit.createAlias("institute", "institute");
+//        crit.add(Restrictions.eq("institute.id", id));
+//        List<InstituteIntake> accreditedInstituteDetails = crit.list();
+//        for (InstituteIntake bean : accreditedInstituteDetails) {
+//            list.add(bean.getIntake());
+//        }
+        Query mongoQuery = new Query();
+        mongoQuery.fields().include("instituteIntake");
+        mongoQuery.addCriteria(Criteria.where("instituteIntake").is(id));
+        return mongoTemplate.find(mongoQuery, String.class);
     }
 
     @Override
     public List<InstituteCategoryType> getAllCategories() {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(InstituteCategoryType.class);
-        return crit.list();
+//        Session session = sessionFactory.getCurrentSession();
+//        Criteria crit = session.createCriteria(InstituteCategoryType.class);
+//        return crit.list();
+        Query mongoQuery = new Query();
+        return mongoTemplate.findAll(InstituteCategoryType.class, "instituteCategoryType");
     }
 
     @Override
     public List<Institute> ratingWiseInstituteListByCountry(final String countryName) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Institute.class, "institute");
-
-        crit.add(Restrictions.eq("countryName", countryName));
-        crit.addOrder(Order.asc("worldRanking"));
-        return crit.list();
+//        Session session = sessionFactory.getCurrentSession();
+//        Criteria crit = session.createCriteria(Institute.class, "institute");
+//
+//        crit.add(Restrictions.eq("countryName", countryName));
+//        crit.addOrder(Order.asc("worldRanking"));
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("countryName").is(countryName));
+        Sort sort = Sort.by("countryName").ascending();
+        mongoQuery.with(sort);
+        return mongoTemplate.find(mongoQuery, Institute.class);
     }
 
     @Override
     public List<String> getInstituteIdsBasedOnGlobalRanking(final Long startIndex, final Long pageSize) {
-        Session session = sessionFactory.getCurrentSession();
-        List<String> insituteIds = session
-                .createNativeQuery("SELECT ID FROM INSTITUTE ORDER BY WORLD_RANKING LIMIT ?,?")
-                .setParameter(1, startIndex).setParameter(2, pageSize).getResultList();
-        return insituteIds;
+//        Session session = sessionFactory.getCurrentSession();
+//        List<String> insituteIds = session
+//                .createNativeQuery("SELECT ID FROM INSTITUTE ORDER BY WORLD_RANKING LIMIT ?,?")
+//                .setParameter(1, startIndex).setParameter(2, pageSize).getResultList();
+//        return insituteIds;
+        Query mongoQuery = new Query();
+        mongoQuery.fields().include("id");
+        Sort sort = Sort.by("worldRanking").ascending();
+        mongoQuery.with(sort);
+        return mongoTemplate.find(mongoQuery, String.class).stream().skip(startIndex-1).collect(Collectors.toList());
     }
 
     @Override
     public List<String> getRandomInstituteByCountry(final List<String> countryIdList) {
-        Session session = sessionFactory.getCurrentSession();
+//        Session session = sessionFactory.getCurrentSession();
+//        Query mongoQuery = new Query();
+//        mongoQuery.fields().include("coun");
+//        String countryIds = countryIdList.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(","));
+//        List<String> idList = session
+//                .createNativeQuery("select id from institute where country_name in (?) order by Rand() LIMIT ?")
+//                .setParameter(1, countryIds).setParameter(2, IConstant.TOTAL_INSTITUTES_PER_PAGE).getResultList();
+//        return idList;
         Query mongoQuery = new Query();
-        mongoQuery.fields().include("coun");
-        String countryIds = countryIdList.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(","));
-        List<String> idList = session
-                .createNativeQuery("select id from institute where country_name in (?) order by Rand() LIMIT ?")
-                .setParameter(1, countryIds).setParameter(2, IConstant.TOTAL_INSTITUTES_PER_PAGE).getResultList();
-        return idList;
+        mongoQuery.fields().include("id");
+        mongoQuery.addCriteria(Criteria.where("countryName").in(countryIdList));
+        //TODO add secondPerameter in mongoQuery
+        return mongoTemplate.find(mongoQuery, String.class);
     }
-
+//TODO below method is not understandable.
     @Override
     public Map<String, Integer> getDomesticRanking(final List<String> courseIdList) {
 //        Session session = sessionFactory.getCurrentSession();
@@ -688,7 +722,7 @@ public class InstituteDaoImpl implements InstituteDao {
 
         return new HashMap<>();
     }
-
+    //TODO below query can not be converted before migrating Course entity into mongoModel
     @Override
     public List<InstituteResponseDto> getNearestInstituteListForAdvanceSearch(AdvanceSearchDto courseSearchDto) {
         Session session = sessionFactory.getCurrentSession();
@@ -708,6 +742,42 @@ public class InstituteDaoImpl implements InstituteDao {
                 + " where institute.latitude is not null and institute.longitude is not null"
                 + " and institute.latitude!= " + courseSearchDto.getLatitude() + " and institute.longitude!= "
                 + courseSearchDto.getLongitude();
+        MatchOperation matchStage = Aggregation.match(new Criteria("minUsdInsternationFee").is("usdInternationFee"));
+        ProjectionOperation projectStage = Aggregation.project("id", "name", "");
+
+        Aggregation aggregation
+                = Aggregation.newAggregation(matchStage, projectStage);
+
+//        AggregationResults<OutType> output
+//                = mongoTemplate.aggregate(aggregation, "foobar", OutType.class);
+//        Query mongoQuery = new Query("{'id' : }");
+//        mongoQuery.fields().include(, "")
+        //TODO for highlighted text {  cai = courseDeliveryModes
+        // faculty = f
+        // instituteAdditionalInfo = instAdd
+        // instituteService = iis
+        // GroupOperation sumZips = group("state").count().as("zipCount");
+        //SortOperation sortByCount = sort(Direction.ASC, "zipCount");
+        //GroupOperation groupFirstAndLast = group().first("_id").as("minZipState")
+        //  .first("zipCount").as("minZipCount").last("_id").as("maxZipState")
+        //  .last("zipCount").as("maxZipCount");
+        //GroupOperation sumTotalCityPop = group("state", "city")
+        //  .sum("pop").as("cityPop");
+        //GroupOperation averageStatePop = group("_id.state")
+        //  .avg("cityPop").as("avgCityPop");
+        //SortOperation sortByAvgPopAsc = sort(Sort.by(Direction.ASC, "avgCityPop"));
+        //LimitOperation limitToOnlyFirstDoc = limit(1);
+        //ProjectionOperation projectToMatchModel = project()
+        //  .andExpression("_id").as("state")
+        //  .andExpression("avgCityPop").as("statePop");
+        //
+        //Aggregation aggregation = newAggregation(
+        //  sumTotalCityPop, averageStatePop, sortByAvgPopAsc,
+        //  limitToOnlyFirstDoc, projectToMatchModel);
+        //
+        //AggregationResults<StatePopulation> result = mongoTemplate
+        //  .aggregate(aggregation, "zips", StatePopulation.class);
+        //StatePopulation smallestState = result.getUniqueMappedResult();
 
         sqlQuery = addCondition(sqlQuery, courseSearchDto);
 
@@ -727,41 +797,41 @@ public class InstituteDaoImpl implements InstituteDao {
             sqlQuery += sortingQuery;
         }
         System.out.println(sqlQuery);
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
+//        Query query = session.createSQLQuery(sqlQuery);
+  //      List<Object[]> rows = query.list();
         List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
-        for (Object[] row : rows) {
-            InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
-            instituteResponseDto.setId((String.valueOf(row[0])));
-            instituteResponseDto.setName(String.valueOf(row[1]));
-            instituteResponseDto.setTotalCourses(((BigInteger) row[2]).intValue());
-            instituteResponseDto.setMinPriceRange((Double) row[3]);
-            instituteResponseDto.setMaxPriceRange((Double) row[4]);
-            instituteResponseDto.setLatitude((Double) row[5]);
-            instituteResponseDto.setLongitude((Double) row[6]);
-            instituteResponseDto.setWorldRanking((Integer) row[8]);
-            instituteResponseDto.setDomesticRanking((Integer) row[9]);
-            instituteResponseDto.setStars(Double.parseDouble(String.valueOf(row[10])));
-            instituteResponseDto.setCurrency((String) row[11]);
-            instituteResponseDto.setCountryName((String) row[12]);
-            instituteResponseDto.setCityName((String) row[13]);
-            instituteResponseDto.setLocation((String) row[13] + ", " + (String) row[12]);
-            instituteResponseDto.setTotalStudent((Integer) row[15]);
-            instituteResponseDto.setAboutUs((String) row[16]);
-            instituteResponseDto.setWebsite((String) row[17]);
-            instituteResponseDto.setEmail((String) row[18]);
-            instituteResponseDto.setAddress((String) row[19]);
-            instituteResponseDto.setInstituteType((String) row[21]);
-            instituteResponseDto.setTagLine((String) row[22]);
-            instituteResponseDtos.add(instituteResponseDto);
-        }
+//        for (Object[] row : rows) {
+//            InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
+//            instituteResponseDto.setId((String.valueOf(row[0])));
+//            instituteResponseDto.setName(String.valueOf(row[1]));
+//            instituteResponseDto.setTotalCourses(((BigInteger) row[2]).intValue());
+//            instituteResponseDto.setMinPriceRange((Double) row[3]);
+//            instituteResponseDto.setMaxPriceRange((Double) row[4]);
+//            instituteResponseDto.setLatitude((Double) row[5]);
+//            instituteResponseDto.setLongitude((Double) row[6]);
+//            instituteResponseDto.setWorldRanking((Integer) row[8]);
+//            instituteResponseDto.setDomesticRanking((Integer) row[9]);
+//            instituteResponseDto.setStars(Double.parseDouble(String.valueOf(row[10])));
+//            instituteResponseDto.setCurrency((String) row[11]);
+//            instituteResponseDto.setCountryName((String) row[12]);
+//            instituteResponseDto.setCityName((String) row[13]);
+//            instituteResponseDto.setLocation((String) row[13] + ", " + (String) row[12]);
+//            instituteResponseDto.setTotalStudent((Integer) row[15]);
+//            instituteResponseDto.setAboutUs((String) row[16]);
+//            instituteResponseDto.setWebsite((String) row[17]);
+//            instituteResponseDto.setEmail((String) row[18]);
+//            instituteResponseDto.setAddress((String) row[19]);
+//            instituteResponseDto.setInstituteType((String) row[21]);
+//            instituteResponseDto.setTagLine((String) row[22]);
+//            instituteResponseDtos.add(instituteResponseDto);
+//        }
         return instituteResponseDtos;
     }
 
     @Override
     public List<String> getUserSearchInstituteRecommendation(final Integer startIndex, final Integer pageSize,
                                                              final String searchKeyword) {
-        Session session = sessionFactory.getCurrentSession();
+       /* Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Institute.class);
         criteria.setProjection(Projections.property("name"));
         if (searchKeyword != null && !searchKeyword.isEmpty()) {
@@ -770,49 +840,49 @@ public class InstituteDaoImpl implements InstituteDao {
         if (startIndex != null && pageSize != null) {
             criteria.setFirstResult(startIndex);
             criteria.setMaxResults(pageSize);
-        }
-        return criteria.list();
+        }*/
+        return new ArrayList<String>();
     }
 
     @Override
     public List<InstituteResponseDto> getInstitutesByInstituteName(Integer startIndex, Integer pageSize,
                                                                    String instituteName) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(Institute.class).setProjection(Projections.projectionList()
-                        .add(Projections.groupProperty("name").as("name")).add(Projections.property("id").as("id"))
-                        .add(Projections.property("worldRanking").as("worldRanking"))
-                        .add(Projections.property("cityName").as("cityName"))
-                        .add(Projections.property("countryName").as("countryName"))
-                        .add(Projections.property("website").as("website")).add(Projections.property("aboutInfo").as("aboutUs"))
-                        .add(Projections.property("latitude").as("latitude"))
-                        .add(Projections.property("longitude").as("longitude"))
-                        .add(Projections.property("phoneNumber").as("phoneNumber"))
-                        .add(Projections.property("email").as("email")).add(Projections.property("address").as("address"))
-                        .add(Projections.property("domesticRanking").as("domesticRanking"))
-                        .add(Projections.property("readableId").as("readableId"))
-                        .add(Projections.property("tagLine").as("tagLine")))
-                .setResultTransformer(Transformers.aliasToBean(InstituteResponseDto.class));
-        if (StringUtils.isNotEmpty(instituteName)) {
-            criteria.add(Restrictions.like("name", instituteName, MatchMode.ANYWHERE));
-        }
-        criteria.setFirstResult(startIndex);
-        criteria.setMaxResults(pageSize);
-        return criteria.list();
+//        Session session = sessionFactory.getCurrentSession();
+//        Criteria criteria = session.createCriteria(Institute.class).setProjection(Projections.projectionList()
+//                        .add(Projections.groupProperty("name").as("name")).add(Projections.property("id").as("id"))
+//                        .add(Projections.property("worldRanking").as("worldRanking"))
+//                        .add(Projections.property("cityName").as("cityName"))
+//                        .add(Projections.property("countryName").as("countryName"))
+//                        .add(Projections.property("website").as("website")).add(Projections.property("aboutInfo").as("aboutUs"))
+//                        .add(Projections.property("latitude").as("latitude"))
+//                        .add(Projections.property("longitude").as("longitude"))
+//                        .add(Projections.property("phoneNumber").as("phoneNumber"))
+//                        .add(Projections.property("email").as("email")).add(Projections.property("address").as("address"))
+//                        .add(Projections.property("domesticRanking").as("domesticRanking"))
+//                        .add(Projections.property("readableId").as("readableId"))
+//                        .add(Projections.property("tagLine").as("tagLine")))
+//                .setResultTransformer(Transformers.aliasToBean(InstituteResponseDto.class));
+//        if (StringUtils.isNotEmpty(instituteName)) {
+//            criteria.add(Restrictions.like("name", instituteName, MatchMode.ANYWHERE));
+//        }
+//        criteria.setFirstResult(startIndex);
+//        criteria.setMaxResults(pageSize);
+        return new ArrayList<InstituteResponseDto>();
     }
 
     @Override
     public int getDistinctInstituteCountByName(String instituteName) {
-        Session session = sessionFactory.getCurrentSession();
-        StringBuilder sqlQuery = new StringBuilder("select distinct i.name as instituteName from institute i ");
-        if (StringUtils.isNotEmpty(instituteName)) {
-            sqlQuery.append(" where name like :instituteName");
-        }
-        Query query = session.createSQLQuery(sqlQuery.toString());
-        if (StringUtils.isNotEmpty(instituteName)) {
-            query.setParameter("instituteName", "%" + instituteName + "%");
-        }
-        List<Object[]> rows = query.list();
-        return rows.size();
+//        Session session = sessionFactory.getCurrentSession();
+//        StringBuilder sqlQuery = new StringBuilder("select distinct i.name as instituteName from institute i ");
+//        if (StringUtils.isNotEmpty(instituteName)) {
+//            sqlQuery.append(" where name like :instituteName");
+//        }
+//        Query query = session.createSQLQuery(sqlQuery.toString());
+//        if (StringUtils.isNotEmpty(instituteName)) {
+//            query.setParameter("instituteName", "%" + instituteName + "%");
+//        }
+//        List<Object[]> rows = query.list();
+        return 1;
     }
 
     @Override
@@ -966,34 +1036,34 @@ public class InstituteDaoImpl implements InstituteDao {
                 + " and institute.latitude!= " + latitutde + " and institute.longitude!= " + longitude
                 + " group by institute.id" + " HAVING distance_in_km <= " + initialRadius
                 + " ORDER BY distance_in_km ASC LIMIT " + pageNumber + "," + pageSize;
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
+//        Query query = session.createSQLQuery(sqlQuery);
+//        List<Object[]> rows = query.list();
         List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
-        for (Object[] row : rows) {
-            InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
-            instituteResponseDto.setId(UUID.fromString(String.valueOf(row[0])));
-            instituteResponseDto.setName(String.valueOf(row[1]));
-            instituteResponseDto.setTotalCourses(((BigInteger) row[2]).intValue());
-            instituteResponseDto.setMinPriceRange((Double) row[3]);
-            instituteResponseDto.setMaxPriceRange((Double) row[4]);
-            instituteResponseDto.setLatitude((Double) row[5]);
-            instituteResponseDto.setLongitude((Double) row[6]);
-            instituteResponseDto.setWorldRanking((Integer) row[8]);
-            instituteResponseDto.setDomesticRanking((Integer) row[9]);
-            instituteResponseDto.setStars(Double.parseDouble(String.valueOf(row[10])));
-            instituteResponseDto.setCurrency((String) row[11]);
-            instituteResponseDto.setCountryName((String) row[12]);
-            instituteResponseDto.setCityName((String) row[13]);
-            instituteResponseDto.setLocation((String) row[13] + ", " + (String) row[12]);
-            instituteResponseDto.setTotalStudent((Integer) row[14]);
-            instituteResponseDto.setAboutUs((String) row[15]);
-            instituteResponseDto.setWebsite((String) row[16]);
-            instituteResponseDto.setEmail((String) row[17]);
-            instituteResponseDto.setAddress((String) row[18]);
-            instituteResponseDto.setInstituteType((String) row[20]);
-            instituteResponseDto.setTagLine((String) row[21]);
-            instituteResponseDtos.add(instituteResponseDto);
-        }
+//        for (Object[] row : rows) {
+//            InstituteResponseDto instituteResponseDto = new InstituteResponseDto();
+//            instituteResponseDto.setId(UUID.fromString(String.valueOf(row[0])));
+//            instituteResponseDto.setName(String.valueOf(row[1]));
+//            instituteResponseDto.setTotalCourses(((BigInteger) row[2]).intValue());
+//            instituteResponseDto.setMinPriceRange((Double) row[3]);
+//            instituteResponseDto.setMaxPriceRange((Double) row[4]);
+//            instituteResponseDto.setLatitude((Double) row[5]);
+//            instituteResponseDto.setLongitude((Double) row[6]);
+//            instituteResponseDto.setWorldRanking((Integer) row[8]);
+//            instituteResponseDto.setDomesticRanking((Integer) row[9]);
+//            instituteResponseDto.setStars(Double.parseDouble(String.valueOf(row[10])));
+//            instituteResponseDto.setCurrency((String) row[11]);
+//            instituteResponseDto.setCountryName((String) row[12]);
+//            instituteResponseDto.setCityName((String) row[13]);
+//            instituteResponseDto.setLocation((String) row[13] + ", " + (String) row[12]);
+//            instituteResponseDto.setTotalStudent((Integer) row[14]);
+//            instituteResponseDto.setAboutUs((String) row[15]);
+//            instituteResponseDto.setWebsite((String) row[16]);
+//            instituteResponseDto.setEmail((String) row[17]);
+//            instituteResponseDto.setAddress((String) row[18]);
+//            instituteResponseDto.setInstituteType((String) row[20]);
+//            instituteResponseDto.setTagLine((String) row[21]);
+//            instituteResponseDtos.add(instituteResponseDto);
+//        }
         return instituteResponseDtos;
     }
 
@@ -1008,10 +1078,11 @@ public class InstituteDaoImpl implements InstituteDao {
                 + " and institute.longitude is not null and institute.latitude!= " + latitude
                 + " and institute.longitude!= " + longitude + " group by institute.id HAVING distance_in_km <= "
                 + initialRadius;
-        Query query = session.createSQLQuery(sqlQuery);
-        List<Object[]> rows = query.list();
-        Integer totalCount = rows.size();
-        return totalCount;
+//        Query query = session.createSQLQuery(sqlQuery);
+//        List<Object[]> rows = query.list();
+//        Integer totalCount = rows.size();
+//        return totalCount;
+        return 1;
     }
 
     @Override
@@ -1054,27 +1125,28 @@ public class InstituteDaoImpl implements InstituteDao {
 
     @Override
     public Map<String, String> getAllInstituteMap() {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("select id, `name`, city_name , country_name from institute");
-        List instituteList = query.getResultList();
-        Iterator it = instituteList.iterator();
-        Map<String, String> instituteListMap = new HashMap<>();
+//        Session session = sessionFactory.getCurrentSession();
+//        Query query = session.createSQLQuery("select id, `name`, city_name , country_name from institute");
+//        List instituteList = query.getResultList();
+//        Iterator it = instituteList.iterator();
+//        Map<String, String> instituteListMap = new HashMap<>();
+//
+//        while (it.hasNext()) {
+//            Object[] obj = (Object[]) it.next();
+//            instituteListMap.put(String.valueOf(obj[1]) + "~" + String.valueOf(obj[2]) + "~" + String.valueOf(obj[3]),
+//                    obj[0].toString());
+//        }
 
-        while (it.hasNext()) {
-            Object[] obj = (Object[]) it.next();
-            instituteListMap.put(String.valueOf(obj[1]) + "~" + String.valueOf(obj[2]) + "~" + String.valueOf(obj[3]),
-                    obj[0].toString());
-        }
-
-        return instituteListMap;
+        return new HashMap<>();
     }
 
     @Override
     public Institute getInstitute(String instituteId) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(Institute.class, "institute");
-        criteria.add(Restrictions.eq("institute.id", instituteId));
-        return (Institute) criteria.uniqueResult();
+//        Session session = sessionFactory.getCurrentSession();
+//        Criteria criteria = session.createCriteria(Institute.class, "institute");
+//        criteria.add(Restrictions.eq("institute.id", instituteId));
+//        return (Institute) criteria.uniqueResult();
+        return new Institute();
     }
 
     @Override
@@ -1091,6 +1163,21 @@ public class InstituteDaoImpl implements InstituteDao {
     @Override
     public List<InstituteFacility> getInstituteFaculties(String instituteId) {
         return instituteRepository.getFacultiesById(instituteId);
+    }
+
+    @Override
+    public Optional<Institute> getInsituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
+        return instituteRepository.getInsituteEnglishRequirementsById(UUID.fromString(instituteEnglishRequirementsId));
+    }
+
+    @Override
+    public void deleteInstituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
+
+    }
+
+    @Override
+    public List<InstituteEnglishRequirements> getInsituteEnglishRequirementsById(UUID id) {
+        return instituteRepository.findInstituteRequirementsById(id);
     }
 
 }

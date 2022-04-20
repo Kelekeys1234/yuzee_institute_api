@@ -42,8 +42,8 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 	@Autowired
 	InstituteDao instituteDao;
 	
-	@Autowired
-	InstituteTypeDao instituteTypeDao;
+//	@Autowired
+//	InstituteTypeDao instituteTypeDao;
 	
 	Map<String, Service> services = new HashMap<>();
 
@@ -53,103 +53,103 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 	@Override
 	public Institute process(InstituteCsvDto instituteDto) throws Exception {
 		Institute institute = new Institute();
-		try {
-			this.services = serviceDao.getAll().stream().collect(Collectors.toMap(Service::getName, service -> service))
-					.entrySet().parallelStream().collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), Map.Entry::getValue));
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			institute.setCreatedOn(dateFormat.parse(dateFormat.format(new Date())));
-			if (!StringUtils.isEmpty(instituteDto.getType())) {
-				institute.setInstituteCategoryType(instituteDao.getInstituteCategoryType(instituteDto.getType()));
-			}
-			if(!StringUtils.isEmpty(instituteDto.getInstituteType())
-					&& !ObjectUtils.isEmpty(instituteTypeDao.getInstituteTypeByNameAndCountry(instituteDto.getInstituteType(), instituteDto.getCountryName()))) {
-				institute.setInstituteType(instituteDto.getInstituteType());
-			} else {
-				log.error("Institute type {} not found for institute {}",instituteDto.getInstituteType(), instituteDto.getName());
-				throw new NotFoundException(String.format("Institute type %s not found for institute %s",instituteDto.getInstituteType(), instituteDto.getName())); 
-			}
-			institute.setId(UUID.randomUUID().toString());
-			institute.setCityName(instituteDto.getCityName());
-			institute.setCountryName(StringUtils.trim(instituteDto.getCountryName()));
-			institute.setName(instituteDto.getName());
-			setReadableIdForInsitute(institute);
-			institute.setWorldRanking(instituteDto.getWorldRanking());
-			institute.setAccreditation(instituteDto.getAccreditation());
-			institute.setAddress(instituteDto.getAddress());
-			institute.setWebsite(instituteDto.getWebsite());
-			institute.setPhoneNumber(instituteDto.getPhoneNumber());
-			institute.setEmail(instituteDto.getEmail());
-			institute.setAboutInfo(instituteDto.getAboutInfo());
-			institute.setTuitionFeesPaymentPlan(instituteDto.getTuitionFeesPaymentPlan());
-			institute.setEnrolmentLink(instituteDto.getEnrolmentLink());
-			institute.setCourseStart(instituteDto.getCourseStart());
-			institute.setWhatsNo(instituteDto.getWhatsNo());
-			institute.setScholarshipFinancingAssistance(instituteDto.getScholarshipFinancingAssistance());
-			institute.setEnglishPartners(instituteDto.getEnglishPartners());
-			institute.setClimate(instituteDto.getClimate());
-			institute.setImageCount(instituteDto.getImageCount());
-			institute.setYoutubeLink(instituteDto.getYoutubeLink());
-			institute.setDomesticPhoneNumber(instituteDto.getDomesticPhoneNumber());
-			institute.setInternationalPhoneNumber(instituteDto.getInternationalPhoneNumber());
-			if (instituteDto.getLatitude() != null) {
-				if (instituteDto.getLatitude().contains(",")) {
-					institute.setLatitude(Double.parseDouble(instituteDto.getLatitude().replace(",", "")));
-				} else {
-					institute.setLatitude(Double.parseDouble(instituteDto.getLatitude()));
-				}
-			}
-			if (instituteDto.getLongitude() != null) {
-				if (instituteDto.getLongitude().contains(",")) {
-					institute.setLongitude(Double.parseDouble(instituteDto.getLongitude().replace(",", "")));
-				} else {
-					institute.setLongitude(Double.parseDouble(instituteDto.getLongitude()));
-				}
-			}
-			
-			if (!ObjectUtils.isEmpty(instituteDto.getTotalStudent())) {
-				institute.setInstituteAdditionalInfo(getInstituteAdditionalInfo(institute, instituteDto));
-			}
-			institute.setAvgCostOfLiving(instituteDto.getAvgCostOfLiving());
-			institute.setCreatedBy("AUTO");
-			institute.setIsActive(true);
-			institute.setUpdatedBy("AUTO");
-			institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-					
-			if(!ObjectUtils.isEmpty(instituteDto.getWorldRanking())) {
-				institute.setWorldRanking(instituteDto.getWorldRanking());
-			}
-					
-			if(!ObjectUtils.isEmpty(instituteDto.getDomesticRanking())) {
-				institute.setDomesticRanking(instituteDto.getDomesticRanking());
-			}
-					
-			if(!ObjectUtils.isEmpty(instituteDto.getAdmissionEmail())) {
-				institute.setAdmissionEmail(instituteDto.getAdmissionEmail());
-			}
-					
-			if(!ObjectUtils.isEmpty(instituteDto.getBoarding())) {
-				institute.setBoarding(instituteDto.getBoarding());
-			}
-			
-			if(!ObjectUtils.isEmpty(instituteDto.getState())) {
-				institute.setState(instituteDto.getState());
-			}
-				
-			if(!ObjectUtils.isEmpty(instituteDto.getPostalCode())) {
-				institute.setPostalCode(instituteDto.getPostalCode());
-			}
-				
-			if(!ObjectUtils.isEmpty(instituteDto.getBoardingAvailable())) {
-				institute.setBoardingAvailable(instituteDto.getBoardingAvailable());
-			}
-			institute.setInstituteFacilities(getInstituteFacility(institute, instituteDto));
-			institute.setInstituteIntakes(getInstituteIntake(institute, instituteDto));
-			//TODO removing as we have removed this table
-		//	institute.setInstituteTiming(getInstituteTiming(institute, instituteDto));
-			institute.setInstituteServices(getInstituteService(institute, instituteDto));
-		} finally {
-			services.clear();	
-		}
+//		try {
+//			this.services = serviceDao.getAll().stream().collect(Collectors.toMap(Service::getName, service -> service))
+//					.entrySet().parallelStream().collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), Map.Entry::getValue));
+//			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//			institute.setCreatedOn(dateFormat.parse(dateFormat.format(new Date())));
+//			if (!StringUtils.isEmpty(instituteDto.getType())) {
+//				institute.setInstituteCategoryType(instituteDao.getInstituteCategoryType(instituteDto.getType()));
+//			}
+//			if(!StringUtils.isEmpty(instituteDto.getInstituteType())
+//					&& !ObjectUtils.isEmpty(instituteTypeDao.getInstituteTypeByNameAndCountry(instituteDto.getInstituteType(), instituteDto.getCountryName()))) {
+//				institute.setInstituteType(instituteDto.getInstituteType());
+//			} else {
+//				log.error("Institute type {} not found for institute {}",instituteDto.getInstituteType(), instituteDto.getName());
+//				throw new NotFoundException(String.format("Institute type %s not found for institute %s",instituteDto.getInstituteType(), instituteDto.getName()));
+//			}
+//			institute.setId(UUID.randomUUID());
+//			institute.setCityName(instituteDto.getCityName());
+//			institute.setCountryName(StringUtils.trim(instituteDto.getCountryName()));
+//			institute.setName(instituteDto.getName());
+//			setReadableIdForInsitute(institute);
+//			institute.setWorldRanking(instituteDto.getWorldRanking());
+//			institute.setAccreditation(instituteDto.getAccreditation());
+//			institute.setAddress(instituteDto.getAddress());
+//			institute.setWebsite(instituteDto.getWebsite());
+//			institute.setPhoneNumber(instituteDto.getPhoneNumber());
+//			institute.setEmail(instituteDto.getEmail());
+//			institute.setAboutInfo(instituteDto.getAboutInfo());
+//			institute.setTuitionFeesPaymentPlan(instituteDto.getTuitionFeesPaymentPlan());
+//			institute.setEnrolmentLink(instituteDto.getEnrolmentLink());
+//			institute.setCourseStart(instituteDto.getCourseStart());
+//			institute.setWhatsNo(instituteDto.getWhatsNo());
+//			institute.setScholarshipFinancingAssistance(instituteDto.getScholarshipFinancingAssistance());
+//			institute.setEnglishPartners(instituteDto.getEnglishPartners());
+//			institute.setClimate(instituteDto.getClimate());
+//			institute.setImageCount(instituteDto.getImageCount());
+//			institute.setYoutubeLink(instituteDto.getYoutubeLink());
+//			institute.setDomesticPhoneNumber(instituteDto.getDomesticPhoneNumber());
+//			institute.setInternationalPhoneNumber(instituteDto.getInternationalPhoneNumber());
+//			if (instituteDto.getLatitude() != null) {
+//				if (instituteDto.getLatitude().contains(",")) {
+//					institute.setLatitude(Double.parseDouble(instituteDto.getLatitude().replace(",", "")));
+//				} else {
+//					institute.setLatitude(Double.parseDouble(instituteDto.getLatitude()));
+//				}
+//			}
+//			if (instituteDto.getLongitude() != null) {
+//				if (instituteDto.getLongitude().contains(",")) {
+//					institute.setLongitude(Double.parseDouble(instituteDto.getLongitude().replace(",", "")));
+//				} else {
+//					institute.setLongitude(Double.parseDouble(instituteDto.getLongitude()));
+//				}
+//			}
+//
+//			if (!ObjectUtils.isEmpty(instituteDto.getTotalStudent())) {
+//				institute.setInstituteAdditionalInfo(getInstituteAdditionalInfo(institute, instituteDto));
+//			}
+//			institute.setAvgCostOfLiving(instituteDto.getAvgCostOfLiving());
+//			institute.setCreatedBy("AUTO");
+//			institute.setIsActive(true);
+//			institute.setUpdatedBy("AUTO");
+//			institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
+//
+//			if(!ObjectUtils.isEmpty(instituteDto.getWorldRanking())) {
+//				institute.setWorldRanking(instituteDto.getWorldRanking());
+//			}
+//
+//			if(!ObjectUtils.isEmpty(instituteDto.getDomesticRanking())) {
+//				institute.setDomesticRanking(instituteDto.getDomesticRanking());
+//			}
+//
+//			if(!ObjectUtils.isEmpty(instituteDto.getAdmissionEmail())) {
+//				institute.setAdmissionEmail(instituteDto.getAdmissionEmail());
+//			}
+//
+//			if(!ObjectUtils.isEmpty(instituteDto.getBoarding())) {
+//				institute.setBoarding(instituteDto.getBoarding());
+//			}
+//
+//			if(!ObjectUtils.isEmpty(instituteDto.getState())) {
+//				institute.setState(instituteDto.getState());
+//			}
+//
+//			if(!ObjectUtils.isEmpty(instituteDto.getPostalCode())) {
+//				institute.setPostalCode(instituteDto.getPostalCode());
+//			}
+//
+//			if(!ObjectUtils.isEmpty(instituteDto.getBoardingAvailable())) {
+//				institute.setBoardingAvailable(instituteDto.getBoardingAvailable());
+//			}
+//			institute.setInstituteFacilities(getInstituteFacility(institute, instituteDto));
+//			institute.setInstituteIntakes(getInstituteIntake(institute, instituteDto));
+//			//TODO removing as we have removed this table
+//		//	institute.setInstituteTiming(getInstituteTiming(institute, instituteDto));
+//			institute.setInstituteServices(getInstituteService(institute, instituteDto));
+//		} finally {
+//			services.clear();
+//		}
 		return institute;
 	}
 	
@@ -353,9 +353,9 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 		return instituteTiming;
 	}
 	
-	private List<InstituteIntake> getInstituteIntake(final Institute institute, final InstituteCsvDto dto) {
+	private List<String> getInstituteIntake(final Institute institute, final InstituteCsvDto dto) {
 		Set<String> intakes = new HashSet<>();
-		List<InstituteIntake> intakeList = new ArrayList<>();
+		List<String> intakeList = new ArrayList<>();
 		intakes.add(dto.getIntake_1());
 		intakes.add(dto.getIntake_2());
 		intakes.add(dto.getIntake_3());
@@ -369,26 +369,26 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 		intakes.add(dto.getIntake_11());
 		intakes.add(dto.getIntake_12());
 		intakes.stream().forEach(intake -> {
-			if(!StringUtils.equals(intake, "0") && !StringUtils.equals(intake, null)) {
-				InstituteIntake instituteIntake = new InstituteIntake();
-				instituteIntake.setIntake(intake);
-				instituteIntake.setInstitute(institute);
-				instituteIntake.setCreatedBy("API");
-				instituteIntake.setCreatedOn(new Date());
-				intakeList.add(instituteIntake);
-			}
+//			if(!StringUtils.equals(intake, "0") && !StringUtils.equals(intake, null)) {
+//				InstituteIntake instituteIntake = new InstituteIntake();
+//				instituteIntake.setIntake(intake);
+//				instituteIntake.setInstitute(institute);
+//				instituteIntake.setCreatedBy("API");
+//				instituteIntake.setCreatedOn(new Date());
+//				intakeList.add(instituteIntake);
+//			}
 		});
 		return intakeList;
 	}
 
 	private InstituteAdditionalInfo getInstituteAdditionalInfo(Institute institute, InstituteCsvDto dto) {
 		InstituteAdditionalInfo instituteAdditionalInfo = new InstituteAdditionalInfo();
-		instituteAdditionalInfo.setCreatedBy("API");
-		instituteAdditionalInfo.setCreatedOn(new Date());
-		instituteAdditionalInfo.setUpdatedBy("API");
-		instituteAdditionalInfo.setUpdatedOn(new Date());
-		instituteAdditionalInfo.setNumberOfStudent(dto.getTotalStudent());
-		instituteAdditionalInfo.setInstitute(institute);
+//		instituteAdditionalInfo.setCreatedBy("API");
+//		instituteAdditionalInfo.setCreatedOn(new Date());
+//		instituteAdditionalInfo.setUpdatedBy("API");
+//		instituteAdditionalInfo.setUpdatedOn(new Date());
+//		instituteAdditionalInfo.setNumberOfStudent(dto.getTotalStudent());
+//		instituteAdditionalInfo.setInstitute(institute);
 		return instituteAdditionalInfo;
 	}
 

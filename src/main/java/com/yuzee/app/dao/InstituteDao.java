@@ -51,7 +51,7 @@ public interface InstituteDao {
 
 	public void deleteInstituteService(String id);
 
-	public void saveInstituteIntake(InstituteIntake instituteIntake);
+	public void saveInstituteIntake(String instituteIntake);
 
 	public void deleteInstituteIntakeById(String id);
 
@@ -112,4 +112,8 @@ public interface InstituteDao {
 	List<Institute> getByInstituteName(String instituteName);
 
 	List<InstituteFacility> getInstituteFaculties(String instituteId);
+
+	Optional<InstituteEnglishRequirements> getInsituteEnglishRequirementsById(String instituteEnglishRequirementsId);
+
+	void deleteInstituteEnglishRequirementsById(String instituteEnglishRequirementsId);
 }

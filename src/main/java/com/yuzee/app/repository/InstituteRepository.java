@@ -1,11 +1,10 @@
 package com.yuzee.app.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-import com.yuzee.app.bean.InstituteDomesticRankingHistory;
-import com.yuzee.app.bean.InstituteFacility;
-import com.yuzee.app.bean.InstituteWorldRankingHistory;
+import com.yuzee.app.bean.*;
 import com.yuzee.app.dto.InstituteFacilityDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +15,6 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
-import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dto.InstituteFacultyDto;
 import com.yuzee.app.dto.InstituteResponseDto;
 
@@ -75,4 +73,9 @@ public interface InstituteRepository extends MongoRepository<Institute, UUID> {
 
 	@Query(value = " {'id' : ?0}")
 	List<InstituteFacility> getFacultiesById(String instituteId);
+
+	@Query(value = " {'id' : ?0}")
+    List<InstituteEnglishRequirements> findInstituteRequirementsById(UUID id);
+
+	Optional<Institute> getInsituteEnglishRequirementsById(UUID fromString);
 }

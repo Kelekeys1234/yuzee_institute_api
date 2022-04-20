@@ -3,6 +3,7 @@ package com.yuzee.app.jobs;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.yuzee.app.dao.InstituteDao;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import com.yuzee.app.bean.InstituteType;
 public class InstituteTypeUtil implements InitializingBean {
 
 	@Autowired
-	InstituteTypeDao instituteTypeDao;
+	InstituteDao instituteDAO;
 
 	private static List<InstituteType> instituteTypeMap = new ArrayList<>();
 
@@ -31,8 +32,8 @@ public class InstituteTypeUtil implements InitializingBean {
 	}
 
 	public void refreshCache() {
-		List<InstituteType> instituteType = instituteTypeDao.findAll();
-		instituteTypeMap.clear();
-		instituteTypeMap.addAll(instituteType);
+//		List<InstituteType> instituteType = instituteTypeDao.findAll();
+//		instituteTypeMap.clear();
+//		instituteTypeMap.addAll(instituteType);
 	}
 }

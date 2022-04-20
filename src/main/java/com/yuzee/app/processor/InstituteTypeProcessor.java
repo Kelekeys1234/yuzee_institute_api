@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.yuzee.app.dao.InstituteDao;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -37,7 +38,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class InstituteTypeProcessor {
 
 	@Autowired
-	private InstituteTypeDao iInstituteTypeDAO;
+	private InstituteDao instituteDAO;
 
 	@Autowired
 	@Qualifier("importInstituteTypeJob")
@@ -64,36 +65,39 @@ public class InstituteTypeProcessor {
 		instituteType.setUpdatedBy("API");
 		instituteType.setIsActive(true);
 		log.info("Calling DAO layer to save instituteType in DB");
-		iInstituteDao.save(instituteType);
+	//	instituteDAO.addUpdateInstitute(instituteType);
 	}
 
 	public InstituteType getInstituteType(String id) {
-		return iInstituteTypeDAO.get(id);
+	//	return iInstituteTypeDAO.get(id);
+		return null;
 	}
 
 	public List<InstituteTypeDto> getAllInstituteType() {
-		return iInstituteTypeDAO.getAll();
+	//	return iInstituteTypeDAO.getAll();
+		return null;
 	}
 
 	public List<InstituteTypeDto> getInstituteTypeByCountryName(String countryName) {
 		log.debug("Inside getInstituteTypeByCountryName() method");
 		List<InstituteTypeDto> listOfInstituteDto = new ArrayList<>();
-		log.info("Fetching InstituteType from DB having countryName = " + countryName);
-		List<InstituteType> listOfInstituteType = iInstituteTypeDAO.getByCountryName(countryName);
-		if (!CollectionUtils.isEmpty(listOfInstituteType)) {
-			log.info("InstituteType is not null then start iterating instituteType");
-			listOfInstituteType.stream().forEach(instituteType -> {
-				InstituteTypeDto instituteTypeDto = new InstituteTypeDto();
-				instituteTypeDto.setInstituteTypeId(instituteType.getId());
-				instituteTypeDto.setCountryName(instituteType.getCountryName());
-				instituteTypeDto.setDescription(instituteType.getDescription());
-				instituteTypeDto.setInstituteTypeName(instituteType.getName());
-				log.info("Adding instiuteType in list");
-				listOfInstituteDto.add(instituteTypeDto);
-			});
-		}
-		log.info("returning instituteType in final response");
-		return listOfInstituteDto;
+//		log.info("Fetching InstituteType from DB having countryName = " + countryName);
+//		List<InstituteType> listOfInstituteType = iInstituteTypeDAO.getByCountryName(countryName);
+//		if (!CollectionUtils.isEmpty(listOfInstituteType)) {
+//			log.info("InstituteType is not null then start iterating instituteType");
+//			listOfInstituteType.stream().forEach(instituteType -> {
+//				InstituteTypeDto instituteTypeDto = new InstituteTypeDto();
+//				instituteTypeDto.setInstituteTypeId(instituteType.getId());
+//				instituteTypeDto.setCountryName(instituteType.getCountryName());
+//				instituteTypeDto.setDescription(instituteType.getDescription());
+//				instituteTypeDto.setInstituteTypeName(instituteType.getName());
+//				log.info("Adding instiuteType in list");
+//				listOfInstituteDto.add(instituteTypeDto);
+//			});
+//		}
+//		log.info("returning instituteType in final response");
+//		return listOfInstituteDto;
+		return null;
 	}
 
 	public void importInstituteType(final MultipartFile multipartFile) throws IOException, ParseException, JobExecutionAlreadyRunningException, JobRestartException,

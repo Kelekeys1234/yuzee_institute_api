@@ -150,7 +150,7 @@ public class InstituteController {
     @DisplayName("Dynamic InstituteSearch")
     @Test
     public void dynamicInstituteSearch() throws IOException {
-        List<String> countryName = Arrays.asList("USA", "ITALY", "ICELAND", "GERMANY", "BRAZIL").;
+        List<String> countryName = Arrays.asList("USA", "ITALY", "ICELAND", "GERMANY", "BRAZIL");
         List<String> facultyIds = Arrays.asList("5b05d529-ec0a-11ea-a757-02f6d1a05b4e", "5b8fac9f-d00f-3309-bd3a-f13616229bae", "7d25b4c8-0935-11eb-a757-02f6d1a05b4e", "7d293037-ec0a-11ea-a757-02f6d1a05b4e", "7f474257-4680-4ff1-82f8-179bee4ee402");
         List<String> levelIds = Arrays.asList("5b05d529-ec0a-11ea-a757-02f6d1a05b4e", "5b8fac9f-d00f-3309-bd3a-f13616229bae", "7d25b4c8-0935-11eb-a757-02f6d1a05b4e", "7d293037-ec0a-11ea-a757-02f6d1a05b4e", "7f474257-4680-4ff1-82f8-179bee4ee402");
         String cityName = "NEW YORK";
@@ -215,7 +215,7 @@ public class InstituteController {
     @Test
     public void save(){
         ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
-        instituteFundingDto.add(0,new InstituteFundingDto("", UUID.randomUUID().toString()));
+        instituteFundingDto.add(0,new InstituteFundingDto( UUID.randomUUID().toString()));
         InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
         instituteRequestDto.setEditAccess(true);
         instituteRequestDto.setAboutInfo("Test update method AboutInfo");

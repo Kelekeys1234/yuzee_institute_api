@@ -27,7 +27,7 @@ public class InstituteEnglishRequirementsDto {
 
 	@NotNull(message = "{listning_marks.is_required}")
 	@JsonProperty("listning_marks")
-	private Double listningMarks;
+	private Double listeningMarks;
 
 	@NotNull(message = "{writing_marks.is_required}")
 	@JsonProperty("writing_marks")
@@ -51,14 +51,14 @@ public class InstituteEnglishRequirementsDto {
 		this.instituteEnglishRequirementsId = instituteEnglishRequirementsId;
 		this.examName = examName;
 		this.readingMarks = readingMarks;
-		this.listningMarks = listningMarks;
+		this.listeningMarks = listningMarks;
 		this.writingMarks = writingMarks;
 		this.oralMarks = oralMarks;
 		setOverallMarks();
 	}
 
 	private void setOverallMarks() {
-		this.overAllMarks = (this.readingMarks + this.listningMarks + this.writingMarks + this.oralMarks) / 4;
+		this.overAllMarks = (this.readingMarks + this.listeningMarks + this.writingMarks + this.oralMarks) / 4;
 		Double valueAfterPoint = this.overAllMarks - this.overAllMarks.intValue();
 		if (valueAfterPoint >= 0.75) {
 			valueAfterPoint = 1.0;

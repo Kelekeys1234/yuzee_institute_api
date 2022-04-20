@@ -24,4 +24,7 @@ public class InstituteFacility{
 
 	@DBRef(lazy = true)
 	private Service service;
+
+    public InstituteFacility(Institute institute, Service service, Date utCdatetimeAsDate, Date utCdatetimeAsDate1, String auto, String auto1) {
+    }
 }

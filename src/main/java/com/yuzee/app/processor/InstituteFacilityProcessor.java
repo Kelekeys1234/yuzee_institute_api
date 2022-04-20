@@ -1,10 +1,6 @@
 package com.yuzee.app.processor;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
@@ -29,8 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class InstituteFacilityProcessor {
 
-	@Autowired
-	private InstituteFacilityDao instituteFacilityDao;
+//	@Autowired
+//	private InstituteFacilityDao instituteFacilityDao;
 
 	@Autowired
 	private InstituteDao instituteDao;
@@ -50,42 +46,42 @@ public class InstituteFacilityProcessor {
 		log.debug("inside addInstituteFacility() method");
 		//	userAccessUtils.validateUserAccess(userId, instituteId, "facility page", "add");
 
-		Optional<Institute> institute = instituteDao.getInstituteByInstituteId(instituteId);
+		Optional<Institute> institute = instituteDao.getInstituteByInstituteId(UUID.fromString(instituteId));
 		if (!institute.isPresent()) {
 			log.error(messageTranslator.toLocale("institute.id.illegal",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute.id.illegal",instituteId));
 		}
 
 		log.info("checking all exsisting facility to match with facility passed in request ");
-		List<InstituteFacility> listOfExsistingInstituteFacility = instituteFacilityDao
-				.getAllInstituteFacility(instituteId);
+//		List<InstituteFacility> listOfExsistingInstituteFacility = instituteFacilityDao
+//				.getAllInstituteFacility(instituteId);
 
-		for (FacilityDto facilityDto : instituteFacilityDto.getFacilities()) {
-			InstituteFacility instituteFacilityFromDB = listOfExsistingInstituteFacility.stream().filter(
-					facilityFromDB -> facilityFromDB.getService().getId().equalsIgnoreCase(facilityDto.getFacilityId()))
-					.findAny().orElse(null);
-
-			if (ObjectUtils.isEmpty(instituteFacilityFromDB)) {
-				log.info("No facility present for institute facility Id {} adding it to list",
-						facilityDto.getFacilityId());
-
-				Optional<com.yuzee.app.bean.Service> service = serviceDao.getServiceById(facilityDto.getFacilityId());
-				if (!service.isPresent()) {
-					log.error(messageTranslator.toLocale("institute.facility.id.illegal",facilityDto.getFacilityId(),Locale.US));
-					throw new NotFoundException(messageTranslator.toLocale("institute.facility.id.illegal",facilityDto.getFacilityId()));
-				}
-				InstituteFacility instituteFacility = new InstituteFacility(institute.get(), service.get(), new Date(),
-						new Date(), "API", "API");
-
-				listOfFacilityToBeSaved.add(instituteFacility);
-			} else {
-				log.info("Institute facility present for institute facility id {} skipping it",
-						facilityDto.getFacilityId());
-			}
-		}
+//		for (FacilityDto facilityDto : instituteFacilityDto.getFacilities()) {
+//			InstituteFacility instituteFacilityFromDB = listOfExsistingInstituteFacility.stream().filter(
+//					facilityFromDB -> facilityFromDB.getService().getId().equalsIgnoreCase(facilityDto.getFacilityId()))
+//					.findAny().orElse(null);
+//
+//			if (ObjectUtils.isEmpty(instituteFacilityFromDB)) {
+//				log.info("No facility present for institute facility Id {} adding it to list",
+//						facilityDto.getFacilityId());
+//
+//				Optional<com.yuzee.app.bean.Service> service = serviceDao.getServiceById(facilityDto.getFacilityId());
+//				if (!service.isPresent()) {
+//					log.error(messageTranslator.toLocale("institute.facility.id.illegal",facilityDto.getFacilityId(),Locale.US));
+//					throw new NotFoundException(messageTranslator.toLocale("institute.facility.id.illegal",facilityDto.getFacilityId()));
+//				}
+//				InstituteFacility instituteFacility = new InstituteFacility(institute.get(), service.get(), new Date(),
+//						new Date(), "API", "API");
+//
+//				listOfFacilityToBeSaved.add(instituteFacility);
+//			} else {
+//				log.info("Institute facility present for institute facility id {} skipping it",
+//						facilityDto.getFacilityId());
+//			}
+//		}
 
 		log.info("Persisting facility list to DB ");
-		instituteFacilityDao.saveInstituteFacility(listOfFacilityToBeSaved);
+//		instituteFacilityDao.saveInstituteFacility(listOfFacilityToBeSaved);
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
@@ -97,7 +93,7 @@ public class InstituteFacilityProcessor {
 			instituteFacilitiesId.stream().forEach(instituteFacilityId -> {
 				log.info("deleting facility having institute facility Id {} and institute id {}", instituteFacilityId,
 						instituteId);
-				instituteFacilityDao.deleteFacilityByIdAndInstituteId(instituteFacilityId, instituteId);
+		//		instituteFacilityDao.deleteFacilityByIdAndInstituteId(instituteFacilityId, instituteId);
 			});
 		} else {
 			log.warn("no institute facilities id passed in request");
@@ -106,18 +102,18 @@ public class InstituteFacilityProcessor {
 
 	public InstituteFacilityDto getFacilitiesByInstituteId(String instituteId) {
 		InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
-		log.debug("inside getFacilitiesByInstituteId() method");
-		//	userAccessUtils.validateUserAccess(userId, instituteId, "facility page", "get");
-
-		log.info("Getting all facilites for institute id " + instituteId);
-		List<InstituteFacility> listOfExsistingInstituteFacility = instituteFacilityDao
-				.getAllInstituteFacility(instituteId);
-		if (!CollectionUtils.isEmpty(listOfExsistingInstituteFacility)) {
-			log.info("Facility from db not empty for institute id {}", instituteId);
-			//instituteFacilityDto = DTOUtils.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
-
-			instituteFacilityDto = CommonUtil.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
-		}
+//		log.debug("inside getFacilitiesByInstituteId() method");
+//		//	userAccessUtils.validateUserAccess(userId, instituteId, "facility page", "get");
+//
+//		log.info("Getting all facilites for institute id " + instituteId);
+//		List<InstituteFacility> listOfExsistingInstituteFacility = instituteFacilityDao
+//				.getAllInstituteFacility(instituteId);
+//		if (!CollectionUtils.isEmpty(listOfExsistingInstituteFacility)) {
+//			log.info("Facility from db not empty for institute id {}", instituteId);
+//			//instituteFacilityDto = DTOUtils.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
+//
+//			instituteFacilityDto = CommonUtil.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
+//		}
 		return instituteFacilityDto;
 	}
 
@@ -125,14 +121,14 @@ public class InstituteFacilityProcessor {
 		InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
 		log.debug("inside getFacilitiesByInstituteId() method");
 		log.info("Getting all facilites for institute id {}", instituteId);
-		List<InstituteFacility> listOfExsistingInstituteFacility = instituteFacilityDao
-				.getAllInstituteFacility(instituteId);
-		if (!CollectionUtils.isEmpty(listOfExsistingInstituteFacility)) {
-			log.info("Facility from db not empty for institute id {}", instituteId);
-			//instituteFacilityDto = DTOUtils.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
-
-			CommonUtil.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
-		}
+//		List<InstituteFacility> listOfExsistingInstituteFacility = instituteFacilityDao
+//				.getAllInstituteFacility(instituteId);
+//		if (!CollectionUtils.isEmpty(listOfExsistingInstituteFacility)) {
+//			log.info("Facility from db not empty for institute id {}", instituteId);
+//			//instituteFacilityDto = DTOUtils.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
+//
+//			CommonUtil.createInstituteFacilityResponseDto(listOfExsistingInstituteFacility);
+//		}
 		return instituteFacilityDto;
 	}
 }

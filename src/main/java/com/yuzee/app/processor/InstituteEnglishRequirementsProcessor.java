@@ -1,10 +1,6 @@
 package com.yuzee.app.processor;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +14,17 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
+import org.springframework.util.ObjectUtils;
 
 @Service
 @CommonsLog
 public class InstituteEnglishRequirementsProcessor {
 	
 	@Autowired
-	private InstituteDao iInstituteDAO;
-	
-	@Autowired
-	private InstituteEnglishRequirementsDao instituteEnglishRequirementsDao;
+	private InstituteDao instituteDAO;
+
+//	@Autowired
+//	private InstituteEnglishRequirementsDao instituteEnglishRequirementsDao;
 
 	@Autowired
 	private MessageTranslator messageTranslator;
@@ -36,7 +33,7 @@ public class InstituteEnglishRequirementsProcessor {
 		log.debug("Inside InstituteEnglishRequirementsDao method()");
 		// TODO validate userId have access for institute Id
 		log.info("Getting institute having institute id "+instituteId);
-		Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		Optional<Institute> sourceInstituteFromDB = instituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
 		if (!sourceInstituteFromDB.isPresent()) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
@@ -44,47 +41,56 @@ public class InstituteEnglishRequirementsProcessor {
 		
 		log.info("Adding institute english requirements with name "+instituteEnglishRequirementsDto.getExamName());
 		InstituteEnglishRequirements instituteEnglishRequirements = new InstituteEnglishRequirements(instituteId, instituteEnglishRequirementsDto.getExamName(),
-				instituteEnglishRequirementsDto.getReadingMarks(), instituteEnglishRequirementsDto.getListningMarks(), instituteEnglishRequirementsDto.getWritingMarks(), instituteEnglishRequirementsDto.getOralMarks(), 
+				instituteEnglishRequirementsDto.getReadingMarks(), instituteEnglishRequirementsDto.getListeningMarks(), instituteEnglishRequirementsDto.getWritingMarks(), instituteEnglishRequirementsDto.getOralMarks(),
 				  new Date(), new Date(), "API", "API");
 		log.info("Persisting institute english requirements in DB");
-		instituteEnglishRequirementsDao.addUpdateInsituteEnglishRequirements(instituteEnglishRequirements);
+		sourceInstituteFromDB.get().getInstituteEnglishRequirements().add(instituteEnglishRequirements);
+		instituteDAO.addUpdateInstitute(sourceInstituteFromDB.get());
 	}
 	
 	public void updateInstituteEnglishRequirements (String userId, String instituteEnglishRequirementsId, InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception {
 		log.debug("Inside updateInstituteEnglishRequirements method()");
 		// TODO validate userId have access for institute Id
 		log.info("Getting institute english requirements having requirement id  "+instituteEnglishRequirementsId);
-		Optional<InstituteEnglishRequirements> optionalInstituteEnglishRequirement = instituteEnglishRequirementsDao.getInsituteEnglishRequirementsById(instituteEnglishRequirementsId);
-		if (!optionalInstituteEnglishRequirement.isPresent()) {
+		Institute institute = instituteDAO.get(UUID.fromString(instituteEnglishRequirementsId));
+		if (ObjectUtils.isEmpty(institute)) {
 			log.error(messageTranslator.toLocale("english_requirement.id.notfound",instituteEnglishRequirementsId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("english_requirement.id.notfound",instituteEnglishRequirementsId));
 		}
-		InstituteEnglishRequirements instituteEnglishRequirements = optionalInstituteEnglishRequirement.get();
 		log.info("Getting institute id from InstituteEnglishRequirements and validate it with user id");
-		// TODO validate userId have access for institute Id 
-		
+		// TODO validate userId have access for institute Id
+
+		List<InstituteEnglishRequirements> listOfInstituteRequirements =  institute.getInstituteEnglishRequirements();
+
 		log.info("updating institute english requirements with id "+instituteEnglishRequirementsId);
+		InstituteEnglishRequirements instituteEnglishRequirements = new InstituteEnglishRequirements();
 		instituteEnglishRequirements.setExamName(instituteEnglishRequirementsDto.getExamName());
-		instituteEnglishRequirements.setListningMarks(instituteEnglishRequirementsDto.getListningMarks());
+		instituteEnglishRequirements.setListeningMarks(instituteEnglishRequirementsDto.getListeningMarks());
 		instituteEnglishRequirements.setOralMarks(instituteEnglishRequirementsDto.getOralMarks());
 		instituteEnglishRequirements.setReadingMarks(instituteEnglishRequirementsDto.getReadingMarks());
 		instituteEnglishRequirements.setWritingMarks(instituteEnglishRequirementsDto.getWritingMarks());
-		instituteEnglishRequirements.setUpdatedBy("API");
-		instituteEnglishRequirements.setUpdatedOn(new Date());
+		listOfInstituteRequirements.add(instituteEnglishRequirements);
+		institute.setInstituteEnglishRequirements(listOfInstituteRequirements);
 		log.info("Persisting institute english requirements in DB");
-		instituteEnglishRequirementsDao.addUpdateInsituteEnglishRequirements(instituteEnglishRequirements);
+		instituteDAO.addUpdateInstitute(institute);
 	}
 	
 	public List<InstituteEnglishRequirementsDto> getListOfInstituteEnglishRequirements (String userId, String instituteId,String caller) {
+		Institute institute = instituteDAO.get(UUID.fromString(instituteId));
+		if (ObjectUtils.isEmpty(institute)) {
+			log.error(messageTranslator.toLocale("english_requirement.id.notfound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("english_requirement.id.notfound",instituteId));
+		}
+
 		List<InstituteEnglishRequirementsDto> listOfInstituteEnglishRequirementsResponseDto = new ArrayList<InstituteEnglishRequirementsDto>();
 		if (caller.equalsIgnoreCase("PRIVATE")) {
 			//TODO check user id have appropriated access for institute id
 		}
 		log.info("Getting list of institute english requirements for institute id "+instituteId);
-		List<InstituteEnglishRequirements> listOfInstituteEnglishRequirements = instituteEnglishRequirementsDao.getInsituteEnglishRequirementsByInstituteId(instituteId);
+		List<InstituteEnglishRequirements> listOfInstituteEnglishRequirements = institute.getInstituteEnglishRequirements();
 		if (!CollectionUtils.isEmpty(listOfInstituteEnglishRequirements)) {
 			listOfInstituteEnglishRequirements.stream().forEach(instituteEnglishQualification -> {
-				InstituteEnglishRequirementsDto instituteEnglishRequirementsDto = new InstituteEnglishRequirementsDto(instituteEnglishQualification.getId(), instituteEnglishQualification.getExamName(), instituteEnglishQualification.getReadingMarks(), instituteEnglishQualification.getListningMarks(),
+				InstituteEnglishRequirementsDto instituteEnglishRequirementsDto = new InstituteEnglishRequirementsDto(instituteEnglishQualification.toString(), instituteEnglishQualification.getExamName(), instituteEnglishQualification.getReadingMarks(), instituteEnglishQualification.getListeningMarks(),
 						instituteEnglishQualification.getWritingMarks(), instituteEnglishQualification.getOralMarks());
 				listOfInstituteEnglishRequirementsResponseDto.add(instituteEnglishRequirementsDto);
 			});
@@ -96,11 +102,11 @@ public class InstituteEnglishRequirementsProcessor {
 		log.debug("Inside deleteInstituteEnglishRequirements method()");
 		// TODO validate userId have access for institute Id
 		log.info("Getting institute english requirements having requirement id  " + instituteEnglishRequirementsId);
-		Optional<InstituteEnglishRequirements> optionalInstituteEnglishRequirement = instituteEnglishRequirementsDao
+		Optional<InstituteEnglishRequirements> optionalInstituteEnglishRequirement = instituteDAO
 				.getInsituteEnglishRequirementsById(instituteEnglishRequirementsId);
 		if (optionalInstituteEnglishRequirement.isPresent()) {
 			log.info("Deleting institute english requirement by Id " + instituteEnglishRequirementsId);
-			instituteEnglishRequirementsDao.deleteInstituteEnglishRequirementsById(instituteEnglishRequirementsId);
+			instituteDAO.deleteInstituteEnglishRequirementsById(instituteEnglishRequirementsId);
 		}
 	}
 }
