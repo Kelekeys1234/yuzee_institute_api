@@ -79,8 +79,8 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		course.setStars(courseDto.getStars());
 		course.setDescription(courseDto.getDescription());
 		course.setFaculty(facultyDao.getFaculty(facultyMap.get(courseDto.getFacultyName())));
-		course.setInstitute(institueDao.getInstitute(
-				instituteMap.get(courseDto.getInstituteName() + "~" + courseDto.getCityName() + "~" + StringUtils.trim(courseDto.getCountryName()))));
+//		course.setInstitute(institueDao.getInstitute(
+//				instituteMap.get(courseDto.getInstituteName() + "~" + courseDto.getCityName() + "~" + StringUtils.trim(courseDto.getCountryName()))));
 		course.setIsActive(true);
 		course.setRecognition(courseDto.getRecognition());
 		course.setRecognitionType(courseDto.getRecognitionType());
@@ -120,10 +120,10 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 			courseEnglishEligibility.setCourse(course);
 		}
 		
-		if (!org.springframework.util.ObjectUtils.isEmpty(course.getInstitute())) {
-			log.info("Institute not null saving world ranking");
-			saveWorldRanking(course, courseDto.getWorldRanking());
-		} 
+//		if (!org.springframework.util.ObjectUtils.isEmpty(course.getInstitute())) {
+//			log.info("Institute not null saving world ranking");
+//			saveWorldRanking(course, courseDto.getWorldRanking());
+//		}
 		
 		if (!StringUtils.isEmpty(courseDto.getLanguage())) {
 			log.info("Saving course language into DB");
@@ -149,10 +149,10 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 	}
 	
 	private void saveWorldRanking(final Course course, final Integer worldRanking) {
-		if (course.getInstitute().getWorldRanking() == null) {
-			log.info("World Ranking {} for institute id {}: ", worldRanking, course.getInstitute().getId());
-			course.getInstitute().setWorldRanking(worldRanking);
-		}
+//		if (course.getInstitute().getWorldRanking() == null) {
+//			log.info("World Ranking {} for institute id {}: ", worldRanking, course.getInstitute().getId());
+//			course.getInstitute().setWorldRanking(worldRanking);
+//		}
 	}
 
 	private String getContent(final CourseCsvDto courseDto) {

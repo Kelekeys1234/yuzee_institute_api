@@ -1,12 +1,6 @@
 package com.yuzee.app.processor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +56,7 @@ public class CourseFundingProcessor {
 	public void addFundingToAllInstituteCourses(String userId, String instituteId, String fundingNameId)
 			throws ValidationException, NotFoundException, InvokeException {
 		log.info("inside CourseFundingProcessor.addFundingToAllInstituteCourses");
-		Institute institute = instituteDao.get(instituteId);
+		Institute institute = instituteDao.get(UUID.fromString(instituteId));
 		if (institute != null) {
 
 			commonProcessor.getFundingsByFundingNameIds(Arrays.asList(fundingNameId), true);

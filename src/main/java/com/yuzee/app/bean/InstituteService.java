@@ -24,6 +24,8 @@ public class InstituteService{
 
 	private String description;
 
+	private String instituteId;
+
 	public InstituteService(Institute institute, Service service, Object o, Date utCdatetimeAsDate, Date utCdatetimeAsDate1, String auto, String auto1) {
 	}
 }

@@ -36,4 +36,8 @@ public class NearestCoursesDto {
 		this.hasNextPage = hasNextPage;
 		this.totalPages = totalPages;
 	}
+
+    public NearestCoursesDto() {
+
+    }
 }

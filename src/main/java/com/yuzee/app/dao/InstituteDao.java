@@ -113,7 +113,7 @@ public interface InstituteDao {
 
 	List<InstituteFacility> getInstituteFaculties(String instituteId);
 
-	Optional<InstituteEnglishRequirements> getInsituteEnglishRequirementsById(String instituteEnglishRequirementsId);
+	Optional<Institute> getInsituteEnglishRequirementsById(String instituteEnglishRequirementsId);
 
 	void deleteInstituteEnglishRequirementsById(String instituteEnglishRequirementsId);
 }

@@ -19,7 +19,7 @@ public interface ServiceDao {
 
 	public List<Service> getAll();
 
-	public List<Service> getAllByIds(List<String> id);
-	
-	public List<Service> findByNameIgnoreCaseIn(List<String> names);
+//	public List<Service> getAllByIds(List<String> id);
+//
+//	public List<Service> findByNameIgnoreCaseIn(List<String> names);
 }

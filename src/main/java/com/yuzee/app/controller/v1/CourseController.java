@@ -237,7 +237,7 @@ public class CourseController implements CourseInterface {
 		if (null == instituteResponseDto) {
 			throw new NotFoundException(messageTranslator.toLocale("institute.not_found.id",instituteId));
 		}
-		List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
+		List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId().toString(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 		instituteResponseDto.setStorageList(storageDTOList);
 
 		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByInstitute(instituteId, request);

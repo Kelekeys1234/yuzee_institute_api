@@ -19,7 +19,7 @@ import com.yuzee.common.lib.util.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CourseItemWriteListner implements ItemWriteListener<Course>{
+public class CourseItemWriteListener implements ItemWriteListener<Course>{
 	
 	@Autowired
 	private CommonProcessor commonProcessor;
@@ -46,9 +46,9 @@ public class CourseItemWriteListner implements ItemWriteListener<Course>{
 	public void onWriteError(Exception exception, List<? extends Course> items) {
 		List<String> errors = new ArrayList<>();
 		String rootCause = ExceptionUtil.findCauseUsingPlainJava(exception).getMessage();
-		items.stream().forEach(item -> 
-			errors.add(String.format("%s,%s,%s,%s,%s",item.getName(),(ObjectUtils.isEmpty(item.getInstitute()))?"No Institute Found":item.getInstitute().getName()+"~"+item.getInstitute().getCityName()+"~"+item.getInstitute().getCountryName(),(ObjectUtils.isEmpty(item.getLevel()))?"No Level Found":item.getLevel().getName(),(ObjectUtils.isEmpty(item.getFaculty()))?"No Faculty Found":item.getFaculty().getName(), rootCause))
-		);
+//		items.stream().forEach(item ->
+//			errors.add(String.format("%s,%s,%s,%s,%s",item.getName(),(ObjectUtils.isEmpty(item.getInstitute()))?"No Institute Found":item.getInstitute().getName()+"~"+item.getInstitute().getCityName()+"~"+item.getInstitute().getCountryName(),(ObjectUtils.isEmpty(item.getLevel()))?"No Level Found":item.getLevel().getName(),(ObjectUtils.isEmpty(item.getFaculty()))?"No Faculty Found":item.getFaculty().getName(), rootCause))
+//		);
 		try {
 			logFileProcessor.appendToLogFile(executionId, errors);
 		} catch (IOException e) {

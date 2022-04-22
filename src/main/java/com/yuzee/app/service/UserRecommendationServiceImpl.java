@@ -58,9 +58,9 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if (existingCourse.getFaculty() != null) {
 			facultyId = existingCourse.getFaculty().getId();
 		}
-		if (existingCourse.getInstitute() != null) {
-			instituteId = existingCourse.getInstitute().getId().toString();
-		}
+//		if (existingCourse.getInstitute() != null) {
+//			instituteId = existingCourse.getInstitute().getId().toString();
+//		}
 //		Double price = existingCourse.getUsdInternationFee();
 		List<Course> resultList = new ArrayList<>();
 
@@ -170,9 +170,9 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if (existingCourse.getFaculty() != null) {
 			facultyId = existingCourse.getFaculty().getId();
 		}
-		if (existingCourse.getInstitute() != null) {
-			instituteId = existingCourse.getInstitute().getId().toString();
-		}
+//		if (existingCourse.getInstitute() != null) {
+//			instituteId = existingCourse.getInstitute().getId().toString();
+//		}
 		String courseName = existingCourse.getName();
 //		Double price = existingCourse.getUsdInternationFee();
 		List<Course> resultList = new ArrayList<>();
@@ -295,39 +295,40 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			throws ValidationException {
 		List<CourseResponseDto> resultList = new ArrayList<>();
 		courseList.stream().forEach(course -> {
-			if (!ObjectUtils.isEmpty(course.getInstitute())) {
-				CourseResponseDto courseResponseDto = new CourseResponseDto();
-				courseResponseDto.setId(course.getId());
-				courseResponseDto.setName(course.getName());
-				courseResponseDto.setInstituteId(course.getInstitute().getId().toString());
-				courseResponseDto.setInstituteName(course.getInstitute().getName());
-				courseResponseDto.setRequirements(course.getRemarks());
-				if (course.getStars() != null) {
-					courseResponseDto.setStars(Double.valueOf(course.getStars()));
-				}
-				courseResponseDto.setCourseRanking(course.getWorldRanking());
-				courseResponseDto.setCityName(course.getInstitute().getCityName());
-				courseResponseDto.setCountryName(course.getInstitute().getCountryName());
-				courseResponseDto.setLocation(course.getInstitute().getCityName() + "," + course.getInstitute().getCountryName());
-				courseResponseDto.setLatitude(course.getInstitute().getLatitude());
-				courseResponseDto.setLongitude(course.getInstitute().getLongitude());
-				courseResponseDto.setCurrencyCode(course.getCurrency());
-				if (!ObjectUtils.isEmpty(course.getFaculty())) {
-					courseResponseDto.setFacultyId(course.getFaculty().getId());
-					courseResponseDto.setFacultyName(course.getFaculty().getName());
-				}
-				try {
-					List<StorageDto> storageDTOList = storageHandler.getStorages(
-							course.getInstitute().getId().toString(), EntityTypeEnum.COURSE,EntitySubTypeEnum.IMAGES);
-					courseResponseDto.setStorageList(storageDTOList);
-				} catch (Exception e) {
-					log.error("Exception while invoking storage service", e);
-				}
-				courseResponseDto.setCourseDeliveryModes(
-						courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(course.getId()));
-				resultList.add(courseResponseDto);
-			}
+//			if (!ObjectUtils.isEmpty(course.getInstitute())) {
+//				CourseResponseDto courseResponseDto = new CourseResponseDto();
+//				courseResponseDto.setId(course.getId());
+//				courseResponseDto.setName(course.getName());
+//				courseResponseDto.setInstituteId(course.getInstitute().getId().toString());
+//				courseResponseDto.setInstituteName(course.getInstitute().getName());
+//				courseResponseDto.setRequirements(course.getRemarks());
+//				if (course.getStars() != null) {
+//					courseResponseDto.setStars(Double.valueOf(course.getStars()));
+//				}
+//				courseResponseDto.setCourseRanking(course.getWorldRanking());
+////				courseResponseDto.setCityName(course.getInstitute().getCityName());
+////				courseResponseDto.setCountryName(course.getInstitute().getCountryName());
+////				courseResponseDto.setLocation(course.getInstitute().getCityName() + "," + course.getInstitute().getCountryName());
+////				courseResponseDto.setLatitude(course.getInstitute().getLatitude());
+////				courseResponseDto.setLongitude(course.getInstitute().getLongitude());
+//				courseResponseDto.setCurrencyCode(course.getCurrency());
+//				if (!ObjectUtils.isEmpty(course.getFaculty())) {
+//					courseResponseDto.setFacultyId(course.getFaculty().getId());
+//					courseResponseDto.setFacultyName(course.getFaculty().getName());
+//				}
+//				try {
+//					List<StorageDto> storageDTOList = storageHandler.getStorages(
+//							course.getId(), EntityTypeEnum.COURSE,EntitySubTypeEnum.IMAGES);
+//					courseResponseDto.setStorageList(storageDTOList);
+//				} catch (Exception e) {
+//					log.error("Exception while invoking storage service", e);
+//				}
+//				courseResponseDto.setCourseDeliveryModes(
+//						courseDeliveryModesProcessor.getCourseDeliveryModesByCourseId(course.getId()));
+//				resultList.add(courseResponseDto);
+//			}
 		});
+
 		return resultList;
 	}
 

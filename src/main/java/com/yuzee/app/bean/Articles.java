@@ -55,8 +55,8 @@ public class Articles implements Serializable {
 	private Date updatedAt;
 	private String countryName;
 	private String cityName;
-	private Faculty faculty;
-	private Institute institute;
+//	private Faculty faculty;
+//	private Institute institute;
 	private Course course;
 	private String articleType;
 	private String companyName;
@@ -104,8 +104,8 @@ public class Articles implements Serializable {
 		this.likes = likes;
 		this.link = link;
 		this.updatedAt = updatedAt;
-		this.faculty = faculty;
-		this.institute = institute;
+		//this.faculty = faculty;
+		//this.institute = institute;
 		this.course = courses;
 		this.articleType = articleType;
 		this.companyName = companyName;
@@ -282,25 +282,25 @@ public class Articles implements Serializable {
 		this.updatedAt = updatedAt;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "faculty")
-	public Faculty getFaculty() {
-		return this.faculty;
-	}
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "faculty")
+//	public Faculty getFaculty() {
+//		return this.faculty;
+//	}
 
-	public void setFaculty(final Faculty faculty) {
-		this.faculty = faculty;
-	}
+	//public void setFaculty(final Faculty faculty) {
+//		this.faculty = faculty;
+//	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "institute")
-	public Institute getInstitute() {
-		return this.institute;
-	}
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "institute")
+//	public Institute getInstitute() {
+//		return this.institute;
+//	}
 
-	public void setInstitute(final Institute institute) {
-		this.institute = institute;
-	}
+	//public void setInstitute(final Institute institute) {
+//		this.institute = institute;
+//	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "courses")
@@ -386,11 +386,11 @@ public class Articles implements Serializable {
 		result = prime * result + (course == null ? 0 : course.hashCode());
 		result = prime * result + (createdAt == null ? 0 : createdAt.hashCode());
 		result = prime * result + (deletedOn == null ? 0 : deletedOn.hashCode());
-		result = prime * result + (faculty == null ? 0 : faculty.hashCode());
+//		result = prime * result + (faculty == null ? 0 : faculty.hashCode());
 		result = prime * result + (heading == null ? 0 : heading.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (imagepath == null ? 0 : imagepath.hashCode());
-		result = prime * result + (institute == null ? 0 : institute.hashCode());
+	//	result = prime * result + (institute == null ? 0 : institute.hashCode());
 		result = prime * result + (likes == null ? 0 : likes.hashCode());
 		result = prime * result + (link == null ? 0 : link.hashCode());
 		result = prime * result + (reviewed == null ? 0 : reviewed.hashCode());
@@ -507,13 +507,13 @@ public class Articles implements Serializable {
 		} else if (!deletedOn.equals(other.deletedOn)) {
 			return false;
 		}
-		if (faculty == null) {
-			if (other.faculty != null) {
-				return false;
-			}
-		} else if (!faculty.equals(other.faculty)) {
-			return false;
-		}
+//		if (faculty == null) {
+//			if (other.faculty != null) {
+//				return false;
+//			}
+//		} else if (!faculty.equals(other.faculty)) {
+//			return false;
+//		}
 		if (heading == null) {
 			if (other.heading != null) {
 				return false;
@@ -535,13 +535,13 @@ public class Articles implements Serializable {
 		} else if (!imagepath.equals(other.imagepath)) {
 			return false;
 		}
-		if (institute == null) {
-			if (other.institute != null) {
-				return false;
-			}
-		} else if (!institute.equals(other.institute)) {
-			return false;
-		}
+//		if (institute == null) {
+//			if (other.institute != null) {
+//				return false;
+//			}
+//		} else if (!institute.equals(other.institute)) {
+//			return false;
+//		}
 		if (likes == null) {
 			if (other.likes != null) {
 				return false;
@@ -623,7 +623,7 @@ public class Articles implements Serializable {
 				.append(url).append(", imagepath=").append(imagepath).append(", type=").append(type).append(", active=").append(active).append(", deletedOn=")
 				.append(deletedOn).append(", createdAt=").append(createdAt).append(", shared=").append(shared).append(", reviewed=").append(reviewed)
 				.append(", likes=").append(likes).append(", link=").append(link).append(", updatedAt=").append(updatedAt).append(", country=").append(getCountryName())
-				.append(", city=").append(getCityName()).append(", faculty=").append(faculty).append(", institute=").append(institute).append(", courses=")
+				.append(", city=").append(getCityName()).append(", courses=")
 				.append(course).append(", articleType=").append(articleType).append(", companyName=").append(companyName).append(", companyWebsite=")
 				.append(companyWebsite).append(", subCategoryDropDownDto=").append(subCategoryDropDownDto).append(", categoryobj=").append(categoryobj)
 				.append(", author=").append(author).append(", postDate=").append(postDate).append(", expireyDate=").append(expireDate).append(", enabled=")
@@ -632,7 +632,8 @@ public class Articles implements Serializable {
 				.append(", status=").append(status).append("]");
 		return builder.toString();
 	}
-
+//.append(", institute=").append(institute)
+	//.append(", faculty=").append(faculty)
 	/**
 	 * @return the author
 	 */

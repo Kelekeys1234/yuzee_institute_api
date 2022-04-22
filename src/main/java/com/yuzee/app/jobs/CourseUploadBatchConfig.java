@@ -122,7 +122,7 @@ public class CourseUploadBatchConfig {
     @Bean("courseItemWriterListner")
     @StepScope
     public ItemWriteListener<Course> courseItemListner() {
-    	return new CourseItemWriteListner();
+    	return new CourseItemWriteListener();
     }
 
     

@@ -128,11 +128,11 @@ public class InstituteUploadBatchConfig {
 				for (Institute instituteObj : institutesList) {
 					InstituteSyncDTO instituteElasticSearchDto = new InstituteSyncDTO();
 					BeanUtils.copyProperties(instituteObj,instituteElasticSearchDto);
-					instituteElasticSearchDto.setId(instituteObj.getId());
+					instituteElasticSearchDto.setId(instituteObj.getId().toString());
 					instituteElasticSearchDto.setCountryName(instituteObj.getCountryName());
 					instituteElasticSearchDto.setCityName(instituteObj.getCityName());
 					if(!CollectionUtils.isEmpty(instituteObj.getInstituteIntakes())) {
-						instituteElasticSearchDto.setInstituteIntakes(instituteObj.getInstituteIntakes().stream().map(InstituteIntake::getIntake).collect(Collectors.toList()));
+						instituteElasticSearchDto.setInstituteIntakes(instituteObj.getInstituteIntakes());
 					}
 					if(!StringUtils.isEmpty(instituteObj.getInstituteType())) {
 						instituteElasticSearchDto.setInstituteType(instituteObj.getInstituteType());

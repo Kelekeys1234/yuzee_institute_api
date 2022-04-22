@@ -20,13 +20,13 @@ public class InstituteCampusDaoImpl implements InstituteCampusDao {
 		return repository.saveAll(entities);
 	}
 
-	@Override
-	public List<InstituteCampus> findInstituteCampuses(String instituteId) {
-		return repository.findInstituteCampuses(instituteId);
-	}
+//	@Override
+//	public List<InstituteCampus> findInstituteCampuses(String instituteId) {
+//		return repository.findInstituteCampuses(instituteId);
+//	}
 
-	@Override
-	public void deleteAll(List<InstituteCampus> courseInstitutes) {
-		repository.deleteAll(courseInstitutes);
-	}
+//	@Override
+//	public void deleteAll(List<InstituteCampus> courseInstitutes) {
+//		repository.deleteAll(courseInstitutes);
+//	}
 }

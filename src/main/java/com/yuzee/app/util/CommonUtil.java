@@ -125,16 +125,16 @@ public class CommonUtil {
 		courseRequest.setCurrency(course.getCurrency());
 		courseRequest.setWebsite(course.getWebsite());
 		courseRequest.setAvailability(course.getAvailabilty());
-		if (course.getInstitute() != null) {
-			courseRequest.setInstituteId(course.getInstitute().getId());
-			courseRequest.setInstituteName(course.getInstitute().getName());
-			courseRequest.setLatitude(course.getInstitute().getLatitude());
-			courseRequest.setLongitude(course.getInstitute().getLongitude());
-			courseRequest.setInstituteName(course.getInstitute().getName());
-			courseRequest.getInstitute().setStateName(course.getInstitute().getState());
-			courseRequest.getInstitute()
-						.setIntakes(course.getInstitute().getInstituteIntakes().stream().map(e -> e.getIntake()).toList());
-		}
+//		if (course.getInstitute() != null) {
+//			courseRequest.setInstituteId(course.getInstitute().getId().toString());
+//			courseRequest.setInstituteName(course.getInstitute().getName());
+//			courseRequest.setLatitude(course.getInstitute().getLatitude());
+//			courseRequest.setLongitude(course.getInstitute().getLongitude());
+//			courseRequest.setInstituteName(course.getInstitute().getName());
+//			courseRequest.getInstitute().setStateName(course.getInstitute().getState());
+//			courseRequest.getInstitute()
+//						.setIntakes(course.getInstitute().getInstituteIntakes());
+//		}
 		if (course.getLevel() != null) {
 			courseRequest.setLevelId(course.getLevel().getId());
 		}
@@ -507,7 +507,7 @@ public class CommonUtil {
 			List<InstituteFacility> listOfInstituteFacility) {
 		InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
 		listOfInstituteFacility.stream().forEach(instituteFacility -> {
-			FacilityDto facilityDto = new FacilityDto(instituteFacility.getId(),
+			FacilityDto facilityDto = new FacilityDto(instituteFacility.getService().getId(),
 					instituteFacility.getService().getName(), instituteFacility.getService().getId());
 			instituteFacilityDto.getFacilities().add(facilityDto);
 		});

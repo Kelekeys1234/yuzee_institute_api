@@ -35,7 +35,7 @@ import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.bean.InstituteDomesticRankingHistory;
 import com.yuzee.app.bean.InstituteProviderCode;
-import com.yuzee.app.bean.InstituteService;
+//import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
 import com.yuzee.app.constant.FaqEntityType;
 import com.yuzee.app.dao.AccrediatedDetailDao;
@@ -149,9 +149,9 @@ public class InstituteProcessor {
     @Autowired
     private ConversionProcessor conversionProcessor;
 
-    @Autowired
-    @Qualifier("importInstituteJob")
-    private Job job;
+//    @Autowired
+//    @Qualifier("importInstituteJob")
+//    private Job job;
 
     @Autowired
     private JobLauncher jobLauncher;
@@ -268,12 +268,12 @@ public class InstituteProcessor {
         log.debug("Inside saveWorldRankingHistory() method");
         InstituteWorldRankingHistory worldRanking = new InstituteWorldRankingHistory();
         worldRanking.setWorldRanking(institute.getWorldRanking());
-        Institute existingInstitute = instituteRepository.getbyId(oldInstitute.getId());
-        if (existingInstitute != null) {
+        Optional<Institute> existingInstitute = instituteRepository.findById(oldInstitute.getId());
+        if (existingInstitute.get() != null) {
             log.info("Saving worldRanking for already existing institute having instituteId = " + oldInstitute.getId());
 //			worldRanking.setInstitute(oldInstitute);
-            existingInstitute.setWorldRanking(institute.getWorldRanking());
-            instituteRepository.save(existingInstitute);
+            existingInstitute.get().setWorldRanking(institute.getWorldRanking());
+            instituteRepository.save(existingInstitute.get());
         } else {
             log.info("Saving worldRanking for new institute having instituteId = " + institute.getId());
 //			worldRanking.setInstitute(institute);
@@ -286,11 +286,11 @@ public class InstituteProcessor {
         log.debug("Inside saveDomesticRankingHistory() method");
         InstituteDomesticRankingHistory domesticRanking = new InstituteDomesticRankingHistory();
         domesticRanking.setDomesticRanking(institute.getDomesticRanking());
-        Institute existingInstitute = instituteRepository.getbyId(oldInstitute.getId());
-        List<InstituteDomesticRankingHistory> setOfDomesticRankingHistory = existingInstitute.getInstituteDomesticRankingHistories();
+        Optional<Institute> existingInstitute = instituteRepository.findById(oldInstitute.getId());
+        List<InstituteDomesticRankingHistory> setOfDomesticRankingHistory = existingInstitute.get().getInstituteDomesticRankingHistories();
         if (!ObjectUtils.isEmpty(existingInstitute) && CollectionUtils.isEmpty(setOfDomesticRankingHistory)) {
-            existingInstitute.setInstituteDomesticRankingHistories(setOfDomesticRankingHistory);
-            instituteRepository.save(existingInstitute);
+            existingInstitute.get().setInstituteDomesticRankingHistories(setOfDomesticRankingHistory);
+            instituteRepository.save(existingInstitute.get());
         } else {
             instituteRepository.save(institute);
         }
@@ -896,14 +896,14 @@ public class InstituteProcessor {
         log.debug("Inside getHistoryOfDomesticRanking() method");
         List<InstituteDomesticRankingHistoryDto> domesticRankingHistoryObj = new ArrayList<>();
         log.info("Calling DAO layer to fetch Domestic Ranking for instituteId = " + instituteId);
-        Institute institute = instituteRepository.getbyId(UUID.fromString(instituteId));
+        Optional<Institute> institute = instituteRepository.findById(UUID.fromString(instituteId));
         List<InstituteDomesticRankingHistory> domesticRankingHistories = instituteRepository.getDomesticHistoryRankingByInstituteId(instituteId);
         if (!CollectionUtils.isEmpty(domesticRankingHistories)) {
             log.info("Domestic Ranking history fetched from DB and start iterating to set values in DTO");
             domesticRankingHistories.stream().forEach(domesticRankingHistory -> {
                 InstituteDomesticRankingHistoryDto domesticRankingHistoryDto = new InstituteDomesticRankingHistoryDto();
                 domesticRankingHistoryDto.setDomesticRanking(domesticRankingHistory.getDomesticRanking());
-                domesticRankingHistoryDto.setInstituteName(institute.getName());
+                domesticRankingHistoryDto.setInstituteName(institute.get().getName());
                 domesticRankingHistoryObj.add(domesticRankingHistoryDto);
             });
         }
@@ -917,13 +917,13 @@ public class InstituteProcessor {
         List<InstituteWorldRankingHistoryDto> instituteWorldRankingHistoryResponse = new ArrayList<>();
         log.info("Calling DAO layer to fetch world ranking for instituteId =" + instituteId);
         List<InstituteWorldRankingHistory> instituteWorldRankingHistories = instituteRepository.getHistoryOfWorldRankingByInstituteId(instituteId);
-        Institute institute = instituteRepository.getbyId(UUID.fromString(instituteId));
+        Optional<Institute> institute = instituteRepository.findById(UUID.fromString(instituteId));
         if (!CollectionUtils.isEmpty(instituteWorldRankingHistories)) {
             log.info("World Ranking history fetched from DB and start iterating to set values in DTO");
             instituteWorldRankingHistories.stream().forEach(instituteWorldRankingHistory -> {
                 InstituteWorldRankingHistoryDto instituteWorldRankingHistoryDto = new InstituteWorldRankingHistoryDto();
                 instituteWorldRankingHistoryDto.setWorldRanking(instituteWorldRankingHistory.getWorldRanking());
-                instituteWorldRankingHistoryDto.setInstituteName(institute.getName());
+                instituteWorldRankingHistoryDto.setInstituteName(institute.get().getName());
                 instituteWorldRankingHistoryResponse.add(instituteWorldRankingHistoryDto);
             });
         }
@@ -1254,7 +1254,7 @@ public class InstituteProcessor {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
         jobParametersBuilder.addString("csv-file", f.getAbsolutePath());
         jobParametersBuilder.addString("execution-id", "InstituteUploader-" + UUID.randomUUID().toString());
-        jobLauncher.run(job, jobParametersBuilder.toJobParameters());
+        //jobLauncher.run(job, jobParametersBuilder.toJobParameters());
     }
 
     @Async

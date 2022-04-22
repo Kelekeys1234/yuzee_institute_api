@@ -80,8 +80,8 @@ public class ConversionProcessor {
 				: ctx.getSource().stream().map(instituteService -> instituteService.getService().getName())
 						.collect(Collectors.toList());
 
-		Converter<List<InstituteIntake>, List<String>> instituteIntakeConverter = ctx -> ctx.getSource() == null ? null
-				: ctx.getSource().stream().map(instituteIntake -> instituteIntake.getIntake())
+		Converter<List<String>, List<String>> instituteIntakeConverter = ctx -> ctx.getSource() == null ? null
+				: ctx.getSource().stream().map(instituteIntake -> instituteIntake)
 						.collect(Collectors.toList());
 
 		Converter<InstituteCategoryType, String> instituteTypeConverter = ctx -> ctx.getSource() == null ? null

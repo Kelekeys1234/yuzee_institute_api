@@ -1,10 +1,6 @@
 package com.yuzee.app.processor;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,13 +57,13 @@ public class InstituteAssociationProcessor {
 		log.debug("Inside addInstituteAssociation() method ");
 		// TODO check user id have access for institute id (source institute id)
 		log.info("Getting source institute having institute id "+instituteAssociationDto.getSourceInstituteId());
-		Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(instituteAssociationDto.getSourceInstituteId());
+		Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteAssociationDto.getSourceInstituteId()));
 		if (!sourceInstituteFromDB.isPresent()) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getSourceInstituteId(),Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getSourceInstituteId()));
 		}
 		log.info("Getting destination institute having institute id "+instituteAssociationDto.getSourceInstituteId());
-		Optional<Institute> destinationInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(instituteAssociationDto.getDestinationInstituteId());
+		Optional<Institute> destinationInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteAssociationDto.getDestinationInstituteId()));
 		if (!destinationInstituteFromDB.isPresent()) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getDestinationInstituteId(),Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getDestinationInstituteId()));
@@ -178,7 +174,7 @@ public class InstituteAssociationProcessor {
 						log.error("Error occured while fetching logo for institute id "+userAssociation.getSourceInstituteId());
 					}
 					log.info("Getting institute for institute id "+userAssociation.getSourceInstituteId());
-					Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(userAssociation.getSourceInstituteId());
+					Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(userAssociation.getSourceInstituteId()));
 					if (sourceInstituteFromDB.isPresent()) {
 						log.info("Institute from DB found for institute id "+userAssociation.getSourceInstituteId());
 						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), sourceInstituteFromDB.get().getLatitude(), sourceInstituteFromDB.get().getLongitude(), sourceInstituteFromDB.get().getName(), sourceInstituteFromDB.get().getCityName(), sourceInstituteFromDB.get().getCountryName(),
@@ -194,7 +190,7 @@ public class InstituteAssociationProcessor {
 						log.error("Error occured while fetching logo for institute id "+userAssociation.getDestinationInstituteId());
 					}
 					log.info("Getting institute for institute id "+userAssociation.getDestinationInstituteId());
-					Optional<Institute> destinationInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(userAssociation.getDestinationInstituteId());
+					Optional<Institute> destinationInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(userAssociation.getDestinationInstituteId()));
 					if (destinationInstituteFromDB.isPresent()) {
 						log.info("Institute from DB found for institute id "+userAssociation.getDestinationInstituteId());
 						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), destinationInstituteFromDB.get().getLatitude(), destinationInstituteFromDB.get().getLongitude(), destinationInstituteFromDB.get().getName(), destinationInstituteFromDB.get().getCityName(), destinationInstituteFromDB.get().getCountryName(), !CollectionUtils.isEmpty(listOfStorageDto) ?listOfStorageDto.get(0).getFileURL() : null, userAssociation.getInstituteAssociationType().toString());

@@ -19,7 +19,7 @@ public class InstituteServiceDaoImpl implements InstituteServiceDao {
 
 	@Override
 	public InstituteService get(String id) {
-		return instituteServiceRepository.getOne(id);
+		return instituteServiceRepository.findById(id).get();
 	}
 
 	@Override

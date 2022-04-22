@@ -2,6 +2,7 @@ package com.yuzee.app.dao.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class TimingDaoImpl implements TimingDao {
 	}
 
 	@Override
-	public List<Timing> findByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<String> entityIds) {
+	public List<Timing> findByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<UUID> entityIds) {
 		return timingRepository.findByEntityTypeAndEntityIdIn(entityType, entityIds);
 	}
 

@@ -31,29 +31,40 @@ public class Enrollment implements Serializable {
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-	@JoinColumn(name = "institute_id", nullable = false)
-	private Institute institute;
+
+//	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+//	@JoinColumn(name = "institute_id", nullable = false)
+//	private Institute institute;
+
 	@Column(name = "user_id", nullable = false)
 	private String userId;
+
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "course_id", nullable = false)
 	private Course course;
+
 	@Column(name = "is_international_student", nullable = false)
 	private Boolean isInternationalStudent;
+
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "institute_type_id", nullable = false)
 	private InstituteType instituteType;
+
 	@Column(name = "previous_institute")
 	private String previousInstitute;
+
 	@Column(name = "previous_course_name")
 	private String previousCourseName;
+
 	@Column(name = "graduation_date")
 	private Date graduationDate;
+
 	@Column(name = "status")
 	private String status;
+
 	@Column(name = "english_qualificaiton_test")
 	private String englishQualificaitonTest;
+
 	@Column(name = "latest_academic_qualification")
 	private String latestAcademicQualification;
 
@@ -118,13 +129,13 @@ public class Enrollment implements Serializable {
 		this.id = id;
 	}
 
-	public Institute getInstitute() {
-		return institute;
-	}
-
-	public void setInstitute(final Institute institute) {
-		this.institute = institute;
-	}
+//	public Institute getInstitute() {
+//		return institute;
+//	}
+//
+//	public void setInstitute(final Institute institute) {
+//		this.institute = institute;
+//	}
 
 	public String getUserId() {
 		return userId;
@@ -399,7 +410,7 @@ public class Enrollment implements Serializable {
 		result = prime * result + (gender == null ? 0 : gender.hashCode());
 		result = prime * result + (graduationDate == null ? 0 : graduationDate.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
-		result = prime * result + (institute == null ? 0 : institute.hashCode());
+//		result = prime * result + (institute == null ? 0 : institute.hashCode());
 		result = prime * result + (instituteType == null ? 0 : instituteType.hashCode());
 		result = prime * result + (isArchive == null ? 0 : isArchive.hashCode());
 		result = prime * result + (isInternationalStudent == null ? 0 : isInternationalStudent.hashCode());
@@ -527,13 +538,13 @@ public class Enrollment implements Serializable {
 		} else if (!id.equals(other.id)) {
 			return false;
 		}
-		if (institute == null) {
-			if (other.institute != null) {
-				return false;
-			}
-		} else if (!institute.equals(other.institute)) {
-			return false;
-		}
+//		if (institute == null) {
+//			if (other.institute != null) {
+//				return false;
+//			}
+//		} else if (!institute.equals(other.institute)) {
+//			return false;
+//		}
 		if (instituteType == null) {
 			if (other.instituteType != null) {
 				return false;
@@ -687,7 +698,7 @@ public class Enrollment implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Enrollment [id=").append(id).append(", institute=").append(institute).append(", userId=").append(userId).append(", course=")
+		builder.append("Enrollment [id=").append(id).append(", userId=").append(userId).append(", course=")
 				.append(course).append(", isInternationalStudent=").append(isInternationalStudent).append(", instituteType=").append(instituteType)
 				.append(", previousInstitute=").append(previousInstitute).append(", previousCourseName=").append(previousCourseName).append(", graduationDate=")
 				.append(graduationDate).append(", status=").append(status).append(", englishQualificaitonTest=").append(englishQualificaitonTest)
@@ -701,7 +712,7 @@ public class Enrollment implements Serializable {
 				.append(createdBy).append(", updatedBy=").append(updatedBy).append(", isArchive=").append(isArchive).append("]");
 		return builder.toString();
 	}
-
+//.append(", institute=").append(institute)
 	@Column(name = "country_name")
 	public String getCountryName() {
 		return countryName;

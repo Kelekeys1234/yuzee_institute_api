@@ -27,13 +27,13 @@ import lombok.ToString;
 @Entity
 @ToString(exclude = { "sourceCourse", "sourceInstitute", "destinationCourse", "destinationInstitute" })
 @EqualsAndHashCode
-@Table(name = "course_institute", uniqueConstraints = @UniqueConstraint(columnNames = { "source_course_id",
-		"source_institute_id", "destination_course_id",
-		"destination_institute_id" }, name = "UK_COURSE_SC_SI_DC_DI"), indexes = {
-				@Index(name = "IDX_SRC_COURSE_ID", columnList = "source_course_id", unique = false),
-				@Index(name = "IDX_DES_COURSE_ID", columnList = "source_course_id", unique = false) })
+@Table(name = "course_institute")
 public class CourseInstitute implements Serializable {
-
+//, uniqueConstraints = @UniqueConstraint(columnNames = { "source_course_id",
+//			"source_institute_id", "destination_course_id",
+//			"destination_institute_id" }, name = "UK_COURSE_SC_SI_DC_DI"), indexes = {
+//		@Index(name = "IDX_SRC_COURSE_ID", columnList = "source_course_id", unique = false),
+//		@Index(name = "IDX_DES_COURSE_ID", columnList = "source_course_id", unique = false) }
 	/**
 	 * 
 	 */
@@ -49,17 +49,17 @@ public class CourseInstitute implements Serializable {
 	@JoinColumn(name = "source_course_id", nullable = false)
 	private Course sourceCourse;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "source_institute_id", nullable = false)
-	private Institute sourceInstitute;
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "source_institute_id", nullable = false)
+//	private Institute sourceInstitute;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "destination_course_id", nullable = false)
 	private Course destinationCourse;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "destination_institute_id", nullable = false)
-	private Institute destinationInstitute;
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "destination_institute_id", nullable = false)
+//	private Institute destinationInstitute;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", length = 19)

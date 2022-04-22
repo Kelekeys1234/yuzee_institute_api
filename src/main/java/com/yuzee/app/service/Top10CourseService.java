@@ -84,8 +84,8 @@ public class Top10CourseService implements ITop10CourseService {
 					BeanUtils.copyProperties(course, courseResponseDto);
 					courseResponseDto.setFacultyName(course.getFaculty() != null ? course.getFaculty().getName() : null);
 					courseResponseDto.setFacultyId(course.getFaculty() != null ? course.getFaculty().getId() : null);
-					courseResponseDto.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
-					courseResponseDto.setInstituteId(course.getInstitute() != null ? course.getInstitute().getId() : null);
+//					courseResponseDto.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
+//					courseResponseDto.setInstituteId(course.getInstitute() != null ? course.getInstitute().getId().toString() : null);
 					listOfTop10Course.add(courseResponseDto);
 					responseCourseIds.add(course.getId());
 				}

@@ -1174,10 +1174,4 @@ public class InstituteDaoImpl implements InstituteDao {
     public void deleteInstituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
 
     }
-
-    @Override
-    public List<InstituteEnglishRequirements> getInsituteEnglishRequirementsById(UUID id) {
-        return instituteRepository.findInstituteRequirementsById(id);
-    }
-
 }

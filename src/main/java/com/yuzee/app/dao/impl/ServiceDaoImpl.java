@@ -52,14 +52,14 @@ public class ServiceDaoImpl implements ServiceDao {
 		return serviceRepository.findAll();
 	}
 
-	@Override
-	public List<Service> getAllByIds(List<String> ids) {
-		return serviceRepository.findAllById(ids);
-	}
-
-	@Override
-	public List<Service> findByNameIgnoreCaseIn(List<String> names) {
-		return serviceRepository.findByNameIgnoreCaseIn(names);
-	}
+//	@Override
+//	public List<Service> getAllByIds(List<String> ids) {
+//		return serviceRepository.findAllById(ids);
+//	}
+//
+//	@Override
+//	public List<Service> findByNameIgnoreCaseIn(List<String> names) {
+//		return serviceRepository.findByNameIgnoreCaseIn(names);
+//	}
 
 }

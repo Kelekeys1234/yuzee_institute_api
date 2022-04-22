@@ -137,7 +137,7 @@ public class InstituteController implements InstituteInterface {
 			instituteList.stream().forEach(instituteResponseDto -> {
 				try {
 					log.info("Calling Storage service to get imageCategories for Institute");
-					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
+					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId().toString(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 					instituteResponseDto.setStorageList(storageDTOList);
 				} catch (NotFoundException | InvokeException e) {
 					log.error("Error invoking Storage service having exception = {}",e);
@@ -196,7 +196,7 @@ public class InstituteController implements InstituteInterface {
 			instituteResponseDtoList.stream().forEach(instituteResponseDto -> {
 				try {
 					log.info("Invoking storage service to fetch images for institutes");
-					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
+					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId().toString(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
 					instituteResponseDto.setStorageList(storageDTOList);
 				} catch (NotFoundException | InvokeException e) {
 					log.error("Error invoking Storage service having exception {}", e);

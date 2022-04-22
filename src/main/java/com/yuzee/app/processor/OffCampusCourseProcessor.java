@@ -90,8 +90,8 @@ public class OffCampusCourseProcessor {
 		courseResponse.setName(course.getName());
 		courseResponse.setCourseRanking(course.getWorldRanking());
 		courseResponse.setStars(Double.valueOf(course.getStars() == null ? 0 : course.getStars()));
-		courseResponse.setInstituteId(course.getInstitute().getId());
-		courseResponse.setInstituteName(course.getInstitute().getName());
+	//	courseResponse.setInstituteId(course.getInstitute().getId().toString());
+	//	courseResponse.setInstituteName(course.getInstitute().getName());
 		courseResponse.setCurrencyCode(course.getCurrency());
 		courseResponse.setCourseDescription(course.getDescription());
 		courseResponse.setPhoneNumber(course.getPhoneNumber());

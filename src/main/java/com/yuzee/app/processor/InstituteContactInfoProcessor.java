@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -31,7 +32,7 @@ public class InstituteContactInfoProcessor {
 		log.debug("Inside addUpdateInstituteContactInfo() method");
 		//TODO validate user ID passed in request have access to modify resource
 		log.info("Getting institute having institute id "+instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
 		if (!instituteFromFb.isPresent()) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
@@ -57,7 +58,7 @@ public class InstituteContactInfoProcessor {
 			//TODO validate user ID passed in request have access to modify resource
 		}
 		log.info("Getting institute having institute id "+instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
 		if (!instituteFromFb.isPresent()) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));

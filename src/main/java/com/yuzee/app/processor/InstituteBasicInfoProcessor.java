@@ -1,10 +1,6 @@
 package com.yuzee.app.processor;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
@@ -53,7 +49,7 @@ public class InstituteBasicInfoProcessor {
 		log.debug("Inside addUpdateInstituteBasicInfo() method");
 		//TODO validate user ID passed in request have access to modify resource
 		log.info("Getting institute having institute id "+instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
 		if (!instituteFromFb.isPresent()) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
@@ -83,7 +79,7 @@ public class InstituteBasicInfoProcessor {
 			//TODO validate user ID passed in request have access to modify resource
 		}
 		log.info("Getting institute having institute id "+instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(instituteId);
+		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
 		if (!instituteFromFb.isPresent()) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
@@ -116,7 +112,7 @@ public class InstituteBasicInfoProcessor {
 		instituteBasicInfoDto.setWorldRanking(institute.getWorldRanking());
 		instituteBasicInfoDto.setDomesticRanking(institute.getDomesticRanking());
 		if (includeDetail) {
-			instituteBasicInfoDto.setTotalCourses(courseDAO.getTotalCourseCountForInstitute(institute.getId()));
+			instituteBasicInfoDto.setTotalCourses(courseDAO.getTotalCourseCountForInstitute(institute.getId().toString()));
 			log.info("Calling review service to fetch user average review for instituteId");
 			Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview(EntityTypeEnum.INSTITUTE.name(),
 					Arrays.asList(instituteId));

@@ -58,21 +58,21 @@ public class InstituteCampusProcessor {
 		Institute institute = institutes.stream().filter(e->e.getId().equals(instituteId)).findAny().orElse(null);
 		institutes.removeIf(e->e.getId().equals(instituteId));
 		campusInstituteIds.removeIf(e->e.equals(instituteId));
-		Set<String> dbCampusInstituteIds = getInstituteCampuses("", instituteId).stream().map(e->e.getId()).collect(Collectors.toSet());
+		//Set<String> dbCampusInstituteIds = getInstituteCampuses("", instituteId).stream().map(e->e.getId()).collect(Collectors.toSet());
 		if (campusInstituteIds.stream().anyMatch(e -> e.equals(instituteId))) {
 			log.error(messageTranslator.toLocale("institute.id.same",Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("institute.id.same"));
 		}
-		if (!Collections.disjoint(dbCampusInstituteIds, campusInstituteIds)) {
-			log.error(messageTranslator.toLocale("institute.already_campus",Locale.US));
-			throw new ValidationException(messageTranslator.toLocale("institute.already_campus"));
-		}
+//		if (!Collections.disjoint(dbCampusInstituteIds, campusInstituteIds)) {
+//			log.error(messageTranslator.toLocale("institute.already_campus",Locale.US));
+//			throw new ValidationException(messageTranslator.toLocale("institute.already_campus"));
+//		}
 		List<InstituteCampus> campuses = new ArrayList<>();
 		institutes.stream().forEach(e -> {
 			InstituteCampus instituteCampus = new InstituteCampus();
 			instituteCampus.setAuditFields(userId);
-			instituteCampus.setSourceInstitute(institute);
-			instituteCampus.setDestinationInstitute(e);
+//			instituteCampus.setSourceInstitute(institute);
+//			instituteCampus.setDestinationInstitute(e);
 			campuses.add(instituteCampus);
 		});
 		instituteCampusDao.saveAll(campuses);
@@ -80,44 +80,45 @@ public class InstituteCampusProcessor {
 
 	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
 	public List<InstituteCampusDto> getInstituteCampuses(String userId, String instituteId) throws NotFoundException {
-		log.debug("inside InstituteCampusProcessor.getInstitutCampuses method.");
-		Institute institute = instituteDao.get(instituteId);
-		if (!ObjectUtils.isEmpty(institute)) {
-			List<InstituteCampus> instituteCampuses = instituteCampusDao.findInstituteCampuses(instituteId);
-			
-			List<Institute> institutes = new ArrayList<>();
-			instituteCampuses.stream().forEach(e->{
-				if(!institutes.stream().anyMatch(in->in.getId().equals(e.getSourceInstitute().getId()))) {
-					institutes.add(e.getSourceInstitute());
-				}
-				if(!institutes.stream().anyMatch(in->in.getId().equals(e.getDestinationInstitute().getId()))) {
-					institutes.add(e.getDestinationInstitute());
-				}
-			});
-			
-			List<InstituteCampusDto> instituteCampuseDtos = institutes.stream().map(e -> {
-				InstituteCampusDto campusDto = modelMapper.map(e, InstituteCampusDto.class);
-				campusDto.setCampusName(e.getName());
-				if (e.getCreatedBy().equals(userId)) {
-					campusDto.setHasEditAccess(true);
-				} else {
-					campusDto.setHasEditAccess(false);
-				}
-				return campusDto;
-			}).collect(Collectors.toList());
-
-			instituteCampuseDtos.stream().forEach(e -> {
-				UUID sameUuid = UUID. fromString(e.getId());
-				TimingDto instituteTimingResponseDto = timingProcessor
-						.getTimingResponseDtoByInstituteId(sameUuid);
-				e.setInstituteTimings(CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
-
-			});
-			return instituteCampuseDtos;
-		} else {
-			log.error(messageTranslator.toLocale("institute.id.invalid", instituteId, Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute.id.invalid", instituteId));
-		}
+//		log.debug("inside InstituteCampusProcessor.getInstitutCampuses method.");
+//		Institute institute = instituteDao.get(UUID.fromString(instituteId));
+//		if (!ObjectUtils.isEmpty(institute)) {
+//			//List<InstituteCampus> instituteCampuses = instituteCampusDao.findInstituteCampuses(instituteId);
+//
+//			List<Institute> institutes = new ArrayList<>();
+//			instituteCampuses.stream().forEach(e->{
+//				if(!institutes.stream().anyMatch(in->in.getId().equals(e.getSourceInstitute().getId()))) {
+//					institutes.add(e.getSourceInstitute());
+//				}
+//				if(!institutes.stream().anyMatch(in->in.getId().equals(e.getDestinationInstitute().getId()))) {
+//					institutes.add(e.getDestinationInstitute());
+//				}
+//			});
+//
+//			List<InstituteCampusDto> instituteCampuseDtos = institutes.stream().map(e -> {
+//				InstituteCampusDto campusDto = modelMapper.map(e, InstituteCampusDto.class);
+//				campusDto.setCampusName(e.getName());
+//				if (e.getCreatedBy().equals(userId)) {
+//					campusDto.setHasEditAccess(true);
+//				} else {
+//					campusDto.setHasEditAccess(false);
+//				}
+//				return campusDto;
+//			}).collect(Collectors.toList());
+//
+//			instituteCampuseDtos.stream().forEach(e -> {
+//				UUID sameUuid = UUID. fromString(e.getId());
+//				TimingDto instituteTimingResponseDto = timingProcessor
+//						.getTimingResponseDtoByInstituteId(sameUuid);
+//				e.setInstituteTimings(CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
+//
+//			});
+//			return instituteCampuseDtos;
+//		} else {
+//			log.error(messageTranslator.toLocale("institute.id.invalid", instituteId, Locale.US));
+//			throw new NotFoundException(messageTranslator.toLocale("institute.id.invalid", instituteId));
+//		}
+		return new ArrayList<InstituteCampusDto>();
 	}
 
 	@Transactional
@@ -133,26 +134,26 @@ public class InstituteCampusProcessor {
 			throw new ValidationException(messageTranslator.toLocale("institute.id.same"));
 		}
 		List<InstituteCampus> deleteList = new ArrayList<>(); 
-		List<InstituteCampus> instituteCampuses = instituteCampusDao.findInstituteCampuses(instituteId);
-		institutes.stream().forEach(campus -> {
-			log.debug("going to see if institute to be unLinked is linked as primary or secondary");
-			Optional<InstituteCampus> secondaryLink = instituteCampuses.stream()
-					.filter(e -> e.getDestinationInstitute().getId().equals(campus.getId()))
-					.findAny();
-			InstituteCampus toBeDeleted = null;
-			if (secondaryLink.isPresent()) {
-				log.debug("institute is secondary institute");
-				toBeDeleted = secondaryLink.get();
-			} else {
-				log.debug("institute is primary institute");
-				Institute firstSecondayInstitute = instituteCampuses.get(0).getDestinationInstitute();
-				instituteCampuses.stream().forEach(e -> {
-					e.setSourceInstitute(firstSecondayInstitute);
-				});
-				toBeDeleted = instituteCampuses.get(0);
-			}
-			deleteList.add(toBeDeleted);
-		});
-		
+		//List<InstituteCampus> instituteCampuses = instituteCampusDao.findInstituteCampuses(instituteId);
+//		institutes.stream().forEach(campus -> {
+//			log.debug("going to see if institute to be unLinked is linked as primary or secondary");
+//			Optional<InstituteCampus> secondaryLink = instituteCampuses.stream()
+//					.filter(e -> e.getDestinationInstitute().getId().equals(campus.getId()))
+//					.findAny();
+//			InstituteCampus toBeDeleted = null;
+//			if (secondaryLink.isPresent()) {
+//				log.debug("institute is secondary institute");
+//				toBeDeleted = secondaryLink.get();
+//			} else {
+//				log.debug("institute is primary institute");
+//				Institute firstSecondayInstitute = instituteCampuses.get(0).getDestinationInstitute();
+//				instituteCampuses.stream().forEach(e -> {
+//					e.setSourceInstitute(firstSecondayInstitute);
+//				});
+//				toBeDeleted = instituteCampuses.get(0);
+//			}
+//			deleteList.add(toBeDeleted);
+//		});
+//
 	}
 }

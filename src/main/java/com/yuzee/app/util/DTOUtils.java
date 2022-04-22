@@ -28,8 +28,7 @@ public class DTOUtils {
 		log.info("inside DTOUtils.convertToInstituteElasticSearchDTOEntity");
 		ModelMapper modelMapper = new ModelMapper();
 		InstituteSyncDTO instituteElaticDto = modelMapper.map(institute, InstituteSyncDTO.class);
-		instituteElaticDto.setIntakes(
-				institute.getInstituteIntakes().stream().map(InstituteIntake::getIntake).collect(Collectors.toList()));
+		instituteElaticDto.setIntakes(institute.getInstituteIntakes());
 		return instituteElaticDto;
 	}
 
@@ -46,7 +45,7 @@ public class DTOUtils {
 
 		CourseSyncDTO courseElasticDto = modelMapper.map(course, CourseSyncDTO.class);
 
-		courseElasticDto.setInstitute(convertToInstituteElasticSearchDTOEntity(course.getInstitute()));
+//		courseElasticDto.setInstitute(convertToInstituteElasticSearchDTOEntity(course.getInstitute()));
 		return courseElasticDto;
 
 	}
@@ -62,7 +61,7 @@ public class DTOUtils {
 				.map(ScholarshipEligibleNationality::getCountryName).collect(Collectors.toList()));
 		scholarshipElasticDto.setCountryNames(scholarship.getScholarshipCountries().stream()
 				.map(ScholarshipCountry::getCountryName).collect(Collectors.toList()));
-		scholarshipElasticDto.setInstitute(convertToInstituteElasticSearchDTOEntity(scholarship.getInstitute()));
+		//scholarshipElasticDto.setInstitute(convertToInstituteElasticSearchDTOEntity(scholarship.getInstitute()));
 		return scholarshipElasticDto;
 	}
 

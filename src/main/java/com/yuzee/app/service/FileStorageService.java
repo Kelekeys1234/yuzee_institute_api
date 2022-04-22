@@ -23,17 +23,17 @@ public class FileStorageService {
     private final Path fileStorageLocation;
   
     @Autowired
-	private MessageTranslator messageTranslator;
+	private  MessageTranslator messageTranslator;
 	
     @Autowired
-    public FileStorageService(FileStorageProperties fileStorageProperties) {
+    public FileStorageService(FileStorageProperties fileStorageProperties, MessageTranslator messageTranslator, MessageTranslator messageTranslator1) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
-
+        this.messageTranslator = messageTranslator;
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
-            throw new InternalServerException(messageTranslator.toLocale("file-storage.not_created"), ex);
+            throw new InternalServerException(this.messageTranslator.toLocale("file-storage.not_created"), ex);
         }
     }
 

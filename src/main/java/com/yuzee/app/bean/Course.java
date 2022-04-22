@@ -39,15 +39,15 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(CourseUpdateListener.class)
-@Table(name = "course", uniqueConstraints = @UniqueConstraint(name = "UK_COURSE_F_L_I_N_C", columnNames = { "faculty_id",
-		"level_id", "institute_id", "name", "code" }), indexes = {
-				@Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false),
-				@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),
-				@Index(name = "IDX_LEVEL_ID", columnList = "level_id", unique = false),
-				@Index(name = "IDX_COURSE_NAME", columnList = "name", unique = false),
-				@Index(name = "IDX_COURSE_CURRICULUM", columnList = "curriculum_id", unique = false) })
+@Table(name = "course")
 public class Course implements Serializable {
-
+//	, @UniqueConstraint(name = "UK_COURSE_F_L_I_N_C", columnNames = {})	, columnNames = { "faculty_id",
+//		"level_id", "institute_id", "name", "code" }), indexes = {
+//@Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false),
+//@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),
+//@Index(name = "IDX_LEVEL_ID", columnList = "level_id", unique = false),
+//@Index(name = "IDX_COURSE_NAME", columnList = "name", unique = false),
+//@Index(name = "IDX_COURSE_CURRICULUM", columnList = "curriculum_id", unique = false) }
 	private static final long serialVersionUID = 8492390790670110780L;
 
 	@Id
@@ -58,14 +58,16 @@ public class Course implements Serializable {
 
 	@Column(name = "readable_id", nullable = false, updatable = false, unique = true)
 	private String readableId;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "faculty_id", nullable = false)
 	private Faculty faculty;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "institute_id", nullable = false)
-	private Institute institute;
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "institute_id", nullable = false)
+//	private Institute institute;
+
+	private String instituteId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "level_id")
@@ -207,18 +209,18 @@ public class Course implements Serializable {
 	@EqualsAndHashCode.Include
 	@Column(name = "entrance_exam")
 	private String entranceExam;
-	
+
 	@EqualsAndHashCode.Include
 	@Column(name = "audience")
 	private String audience;
 
 	@Column(name = "code")
 	private String code = "NORMAL COURSE";
-	
+
 	@EqualsAndHashCode.Include
 	@Column(name = "international_student_procedure_id")
 	private String internationalStudentProcedureId;
-	
+
 	@EqualsAndHashCode.Include
 	@Column(name = "domestic_student_procedure_id")
 	private String domesticStudentProcedureId;
@@ -243,7 +245,7 @@ public class Course implements Serializable {
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
 	private CourseIntake courseIntake;
-	
+
 	@OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseLanguage> courseLanguages = new ArrayList<>();
 
@@ -264,17 +266,17 @@ public class Course implements Serializable {
 
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseContactPerson> courseContactPersons = new ArrayList<>();
-	
+
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
 	private CourseScholarship courseScholarship;
-	
+
 	@OneToMany(mappedBy = "course" , cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CourseProviderCode> courseProviderCodes = new ArrayList<>();
-	
+
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
 	private CourseVaccineRequirement courseVaccineRequirement;
-	
+
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
 	private CourseWorkExperienceRequirement courseWorkExperienceRequirement;
 
@@ -284,7 +286,7 @@ public class Course implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course", orphanRemoval = true)
 	private CourseResearchProposalRequirement courseResearchProposalRequirement;
 
-	
+
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());

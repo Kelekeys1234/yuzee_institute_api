@@ -30,16 +30,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @Document(collection = "institute_campus")
-@CompoundIndexes({ @CompoundIndex(name = "UK_IC_SI_DI", def = "{'sourceInstitute' : 1}, {'destinationInstitute' : 1}", unique = true) })
+//@CompoundIndexes({ @CompoundIndex(name = "UK_IC_SI_DI", def = "{'sourceInstitute' : 1}, {'destinationInstitute' : 1}", unique = true) })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteCampus{
 
 	@Id
 	private String id;
 
-	private Institute sourceInstitute;
-
-	private Institute destinationInstitute;
+	private String instituteId;
+//	private Institute sourceInstitute;
+//
+//	private Institute destinationInstitute;
 
 	private Date createdOn;
 

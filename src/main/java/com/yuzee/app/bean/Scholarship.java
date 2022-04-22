@@ -33,12 +33,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "scholarship", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "institute_id",
-		"faculty_id" }, name = "UK_SCHOLARSHIP_N_FI_II"), indexes = {
-				@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),
-				@Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false) })
+@Table(name = "scholarship")
 public class Scholarship implements Serializable {
-
+//, uniqueConstraints = @UniqueConstraint(columnNames = { "name", "institute_id",
+//			"faculty_id" }, name = "UK_SCHOLARSHIP_N_FI_II"), indexes = {
+//		@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),
+//		@Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false) }
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -102,9 +102,11 @@ public class Scholarship implements Serializable {
 	@Column(name = "website")
 	private String website;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "institute_id", nullable = false)
-	private Institute institute;
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "institute_id", nullable = false)
+//	private Institute institute;
+
+	private String instituteId;
 
 	@Column(name = "name", nullable = false)
 	private String name;

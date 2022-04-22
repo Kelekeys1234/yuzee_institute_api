@@ -1199,6 +1199,11 @@ public class CourseDaoImpl implements CourseDao {
 		return (long) crit.uniqueResult();
 	}
 
+	@Override
+	public long getCourseCountByInstituteId(String instituted) {
+		return 0;
+	}
+
 	/*@Override
 	public List<Course> getTopRatedCoursesForCountryWorldRankingWise(final String country) {
 		Session session = sessionFactory.getCurrentSession();
@@ -1775,10 +1780,10 @@ public class CourseDaoImpl implements CourseDao {
 		return totalCount;
 	}
 
-	@Override
-	public long getCourseCountByInstituteId(String instituteId) {
-		return courseRepository.getTotalCountOfCourseByInstituteId(instituteId);
-	}
+//	@Override
+//	public long getCourseCountByInstituteId(String instituteId) {
+//		return courseRepository.getTotalCountOfCourseByInstituteId(instituteId);
+//	}
 
 	@Override
 	public List<CourseResponseDto> getRelatedCourseBasedOnCareerTest(List<String> searchKeyword, Integer startIndex, Integer pageSize) {

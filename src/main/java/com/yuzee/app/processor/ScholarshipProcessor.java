@@ -1,11 +1,6 @@
 package com.yuzee.app.processor;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -118,12 +113,12 @@ public class ScholarshipProcessor {
 
 		if (!ObjectUtils.isEmpty(scholarshipDto.getInstituteId())) {
 			log.info("CourseId is not null hence fetching course data from DB");
-			Institute institute = instituteDao.get(scholarshipDto.getInstituteId());
+			Institute institute = instituteDao.get(UUID.fromString(scholarshipDto.getInstituteId()));
 			if (ObjectUtils.isEmpty(institute)) {
 				log.error(messageTranslator.toLocale("scolarship-processor.not_found.institute_id", scholarshipDto.getInstituteId(), Locale.US));
 				throw new ValidationException(messageTranslator.toLocale("scolarship-processor.not_found.institute_id", scholarshipDto.getInstituteId()));
 			}
-			scholarship.setInstitute(institute);
+			//scholarship.setInstitute(institute);
 		}
 
 		final Scholarship finalScholarship = scholarship;

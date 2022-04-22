@@ -60,7 +60,7 @@ public interface InstituteRepository extends MongoRepository<Institute, UUID> {
 
 	 List<Institute> findAllById(List<String> instituteIds);
 
-    Institute getbyId(UUID id);
+   // Institute getbyId(UUID id);
 
     @Query(value = "{'id' : ?0}")
     List<InstituteDomesticRankingHistory> getDomesticHistoryRankingByInstituteId(String instituteId);
