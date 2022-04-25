@@ -5,14 +5,9 @@ import java.util.*;
 import javax.validation.Valid;
 
 import com.yuzee.app.bean.*;
+import com.yuzee.app.dto.*;
 import org.springframework.cache.annotation.Cacheable;
 
-import com.yuzee.app.dto.AdvanceSearchDto;
-import com.yuzee.app.dto.CourseSearchDto;
-import com.yuzee.app.dto.InstituteFacultyDto;
-import com.yuzee.app.dto.InstituteFilterDto;
-import com.yuzee.app.dto.InstituteGetRequestDto;
-import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.common.lib.exception.NotFoundException;
 import org.springframework.data.domain.Sort;
 
@@ -59,7 +54,7 @@ public interface InstituteDao {
 
 	public List<InstituteCategoryType> getAllCategories();
 
-	public List<InstituteCategoryType> addInstituteCategoryTypes(List<InstituteCategoryType> instituteCategoryTypes);
+//	public List<InstituteCategoryType> addInstituteCategoryTypes(List<InstituteCategoryType> instituteCategoryTypes);
 
 	public List<Institute> ratingWiseInstituteListByCountry(String countryName);
 
@@ -116,4 +111,6 @@ public interface InstituteDao {
 	Optional<Institute> getInsituteEnglishRequirementsById(String instituteEnglishRequirementsId);
 
 	void deleteInstituteEnglishRequirementsById(String instituteEnglishRequirementsId);
+
+	List<Institute> getByCountryName(String countryName);
 }

@@ -17,37 +17,22 @@ import org.hibernate.annotations.GenericGenerator;
 import lombok.Data;
 
 @Data
-@Entity
-@Table(name = "institute_category_type", uniqueConstraints = @UniqueConstraint(columnNames = { "name" },name = "UK_ICT_NAME"))
 public class InstituteCategoryType implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    @Id
+    private String id;
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
-	private String id;
-	
-	@Column(name = "name")
-	private String name;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on")
-	private Date createdOn;
+    private String name;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on")
-	private Date updatedOn;
+    private Date createdOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on")
-	private Date deletedOn;
+    private Date updatedOn;
 
-	@Column(name = "created_by")
-	private String createdBy;
+    private Date deletedOn;
 
-	@Column(name = "updated_by")
-	private String updatedBy;
+    private String createdBy;
 
+    private String updatedBy;
 }
+//@Entity
+//@Table(name = "institute_category_type", uniqueConstraints = @UniqueConstraint(columnNames = { "name" },name = "UK_ICT_NAME"))

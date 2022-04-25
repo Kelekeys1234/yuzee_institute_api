@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dao.InstituteDao;
+import com.yuzee.common.lib.exception.NotFoundException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.bean.InstituteType;
@@ -53,19 +56,16 @@ public class InstituteTypeProcessor {
 	@Value("${s3.institute-type.image.location}")
 	private String instituteTypeImageLocation;
 
-	public void addUpdateInstituteType(InstituteTypeDto instituteTypeDto) {
-		log.debug("Inside getInstituteTypeByCountryName() method");
-		InstituteType instituteType = new InstituteType();
-		log.info("Copying bean class to DTO class");
-		BeanUtils.copyProperties(instituteTypeDto, instituteType);
-		Date today = new Date();
-		instituteType.setCreatedOn(today);
-		instituteType.setUpdatedOn(today);
-		instituteType.setCreatedBy("API");
-		instituteType.setUpdatedBy("API");
-		instituteType.setIsActive(true);
+	public void addUpdateInstituteType(String instituteId, String instituteType) {
+		log.debug("Inside addUpdateInstituteType() method");
+		Institute institute = instituteDAO.get(UUID.fromString(instituteId));
+		if(ObjectUtils.isEmpty(institute)){
+			log.error("no Institute Found");
+			throw new NotFoundException("No institute found");
+		}
+		institute.setInstituteType(instituteType);
 		log.info("Calling DAO layer to save instituteType in DB");
-	//	instituteDAO.addUpdateInstitute(instituteType);
+		instituteDAO.addUpdateInstitute(institute);
 	}
 
 	public InstituteType getInstituteType(String id) {
@@ -80,7 +80,12 @@ public class InstituteTypeProcessor {
 
 	public List<InstituteTypeDto> getInstituteTypeByCountryName(String countryName) {
 		log.debug("Inside getInstituteTypeByCountryName() method");
-		List<InstituteTypeDto> listOfInstituteDto = new ArrayList<>();
+		List<Institute> listOfInstitute = instituteDAO.getByCountryName(countryName);
+		if(CollectionUtils.isEmpty(listOfInstitute)){
+			log.error("No InstituteType found");
+			throw new NotFoundException("No instituteType found");
+		}
+		return listOfInstitute.stream().map(e -> new InstituteTypeDto(e.getInstituteType(), e.getId().toString(), e.getDescription(), e.getCountryName())).collect(Collectors.toList());
 //		log.info("Fetching InstituteType from DB having countryName = " + countryName);
 //		List<InstituteType> listOfInstituteType = iInstituteTypeDAO.getByCountryName(countryName);
 //		if (!CollectionUtils.isEmpty(listOfInstituteType)) {
@@ -97,7 +102,6 @@ public class InstituteTypeProcessor {
 //		}
 //		log.info("returning instituteType in final response");
 //		return listOfInstituteDto;
-		return null;
 	}
 
 	public void importInstituteType(final MultipartFile multipartFile) throws IOException, ParseException, JobExecutionAlreadyRunningException, JobRestartException,

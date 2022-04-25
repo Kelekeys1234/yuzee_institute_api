@@ -32,9 +32,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @Document(collection = "institute_join_request")
-@CompoundIndexes({@CompoundIndex(name = "IDX_JR_INSTITUTE_NAME_USER_ID", def = "{'instituteName' : 1}, {'userId' : 1}", unique = true),
-                                    @CompoundIndex(name = "UK_IJOIN_REQUEST_INSTITUTE_NAME_USER_ID", def = "{'instituteName' : 1}, {'userId' : 1}", unique = true),
-        							@CompoundIndex(name = "IDX_JR_STATUS", def = "{'instituteJoinStatus' : 1}", unique = false)})
+//@CompoundIndexes({@CompoundIndex(name = "IDX_JR_INSTITUTE_NAME_USER_ID", def = "{'instituteName' : 1}, {'userId' : 1}", unique = true),
+//                                    @CompoundIndex(name = "UK_IJOIN_REQUEST_INSTITUTE_NAME_USER_ID", def = "{'instituteName' : 1}, {'userId' : 1}", unique = true),
+//        							@CompoundIndex(name = "IDX_JR_STATUS", def = "{'instituteJoinStatus' : 1}", unique = false)})
 @EqualsAndHashCode
 public class InstituteJoinRequest {
 

@@ -216,7 +216,7 @@ public class CourseDaoImpl implements CourseDao {
 		sqlQuery += " ";
 		String sortingQuery = "";
 		String sortTypeValue = "ASC";
-		if (!courseSearchDto.getSortAsscending()) {
+		if (!courseSearchDto.getSortAscending()) {
 			sortTypeValue = "DESC";
 		}
 		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {

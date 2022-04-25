@@ -4,15 +4,19 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class  InstituteTypeDto {
-	
-	@JsonProperty("institute_type_name")
-	@NotBlank(message = "{institute_type_name.is_required}")
-	private String instituteTypeName;
-	
+
+	@JsonProperty("institute_id")
+	@NotBlank(message = "{institute_id}")
+	private String instituteId;
+
 	@JsonProperty("type")
 	private String type;
 	

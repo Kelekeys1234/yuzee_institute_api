@@ -37,7 +37,7 @@ public interface InstituteInterface {
 			@PathVariable("instituteId") final String instituteId, @RequestParam(name = "status", required = true) final boolean status);
 	
 	@PostMapping("/instituteType")
-	public ResponseEntity<?> saveInstituteType(@Valid @RequestBody final InstituteTypeDto instituteTypeDto) throws Exception;
+	public ResponseEntity<?> saveInstituteType(@RequestHeader(value = "instituteId") String instituteId, @RequestParam(value = "instituteType") String instituteType) throws Exception;
 	
 	@GetMapping("/type")
 	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam String countryName) throws Exception;
@@ -57,7 +57,7 @@ public interface InstituteInterface {
 			@RequestParam(required = false) final Integer fromWorldRanking, @RequestParam(required = false) final Integer toWorldRanking,
 			@RequestParam(required = false) final String sortByField, @RequestParam(required = false) final String sortByType,
 			@RequestParam(required = false) final String searchKeyword,
-			@RequestParam(required = false) final Double latitutde, @RequestParam(required = false) final Double longitude) throws ValidationException;
+			@RequestParam(required = false) final Double latitude, @RequestParam(required = false) final Double longitude) throws ValidationException;
 	
 	@PostMapping("/recommended")
 	public ResponseEntity<?> getAllRecommendedInstitutes(@RequestBody final CourseSearchDto request) throws Exception;

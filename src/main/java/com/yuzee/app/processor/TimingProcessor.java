@@ -195,9 +195,9 @@ public class TimingProcessor {
 
 	public TimingDto getTimingResponseDtoByInstituteId(UUID instituteId) {
 		log.debug("Inside getTimingResponseDtoByInstituteId() method");
-		log.info("fetching isntitute timing from DB for instituteId " + instituteId);
+		log.info("fetching institute timing from DB for instituteId " + instituteId);
 		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.INSTITUTE,
-				Arrays.asList(instituteId));
+				List.of(instituteId));
 		Timing timing = CollectionUtils.isEmpty(timings) ? null : timings.get(0);
 		TimingDto instituteTimingResponseDto = new TimingDto();
 		if (!ObjectUtils.isEmpty(timing)) {

@@ -159,7 +159,7 @@ public class CourseController implements CourseInterface {
 		courseSearchDto.setMaxSizePerPage(pageSize);
 		courseSearchDto.setSortBy(sortBy);
 		courseSearchDto.setCurrencyCode(currencyCode);
-		courseSearchDto.setSortAsscending(sortAsscending);
+		courseSearchDto.setSortAscending(sortAsscending);
 		courseSearchDto.setUserId(userId);
 		courseSearchDto.setDate(date);
 		return courseSearch(courseSearchDto, searchKeyword);

@@ -1,4 +1,5 @@
-package com.yuzee.app.service;import java.io.IOException;
+package com.yuzee.app.service;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +34,7 @@ public class FileStorageService {
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new InternalServerException(this.messageTranslator.toLocale("file-storage.not_created"), ex);
         }
     }

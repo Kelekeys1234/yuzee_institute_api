@@ -38,7 +38,7 @@ public class MasterDataImportProcessor {
 			privateType.setCreatedOn(new Date());
 			privateType.setUpdatedBy("API");
 			privateType.setUpdatedOn(new Date());
-			instituteDao.addInstituteCategoryTypes(Arrays.asList(publicType,privateType));
+//			instituteDao.addInstituteCategoryTypes(Arrays.asList(publicType,privateType));
 		}
 	}
 }

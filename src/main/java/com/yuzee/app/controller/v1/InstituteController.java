@@ -77,9 +77,9 @@ public class InstituteController implements InstituteInterface {
 	private MessageTranslator messageTranslator;
 
 	@Override
-	public ResponseEntity<?> saveInstituteType(final InstituteTypeDto instituteTypeDto) throws Exception {
+	public ResponseEntity<?> saveInstituteType(String instituteId, String instituteType) throws Exception {
 		log.info("Start process to save new institute types in DB");
-		instituteTypeProcessor.addUpdateInstituteType(instituteTypeDto);
+		instituteTypeProcessor.addUpdateInstituteType(instituteId, instituteType);
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute.type.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -134,7 +134,7 @@ public class InstituteController implements InstituteInterface {
 				cityId, instituteTypeId, isActive, updatedOn, fromWorldRanking, toWorldRanking);
 		if(!CollectionUtils.isEmpty(instituteList)) {
 			log.info("Institutes fetched from DB, now iterating data to call Storage service");
-			instituteList.stream().forEach(instituteResponseDto -> {
+			instituteList.forEach(instituteResponseDto -> {
 				try {
 					log.info("Calling Storage service to get imageCategories for Institute");
 					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId().toString(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
@@ -193,7 +193,7 @@ public class InstituteController implements InstituteInterface {
 			log.info("Filtered institutes coming from DB, hence start iterating");
 			totalCount = instituteResponseDtoList.get(0).getTotalCount();
 			maxCount = instituteResponseDtoList.size();
-			instituteResponseDtoList.stream().forEach(instituteResponseDto -> {
+			instituteResponseDtoList.forEach(instituteResponseDto -> {
 				try {
 					log.info("Invoking storage service to fetch images for institutes");
 					List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId().toString(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
@@ -228,7 +228,7 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> save(final ValidList<InstituteRequestDto> institutes) throws Exception {
 		log.info("Start process to add new Institues in DB");
-		institutes.stream().forEach(e->validateInstituteRequest(e));
+		institutes.forEach(this::validateInstituteRequest);
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute.created"))
 				.setData(instituteProcessor.saveInstitute(institutes))
 				.setStatus(HttpStatus.OK).create();

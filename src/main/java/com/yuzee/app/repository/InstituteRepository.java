@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.yuzee.app.bean.*;
 import com.yuzee.app.dto.InstituteFacilityDto;
+import com.yuzee.app.dto.InstituteTypeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -78,4 +79,8 @@ public interface InstituteRepository extends MongoRepository<Institute, UUID> {
     List<InstituteEnglishRequirements> findInstituteRequirementsById(UUID id);
 
 	Optional<Institute> getInsituteEnglishRequirementsById(UUID fromString);
+
+	@Query(value = " {'countryName' : ?0}")
+    List<Institute> findAllInstituteByCountryName(String countryName);
 }
+//, fields = "{instituteTypeName : 0}, {instituteId : 1}, {type : 2}, {description : 3}, {countryName : 4}"

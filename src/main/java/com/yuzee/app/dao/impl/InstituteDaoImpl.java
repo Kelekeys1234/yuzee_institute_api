@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.yuzee.app.bean.*;
+import com.yuzee.app.dto.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,12 +30,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.dao.InstituteDao;
-import com.yuzee.app.dto.AdvanceSearchDto;
-import com.yuzee.app.dto.CourseSearchDto;
-import com.yuzee.app.dto.InstituteFacultyDto;
-import com.yuzee.app.dto.InstituteFilterDto;
-import com.yuzee.app.dto.InstituteGetRequestDto;
-import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.enumeration.CourseSortBy;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.app.util.IConstant;
@@ -1085,12 +1080,12 @@ public class InstituteDaoImpl implements InstituteDao {
         return 1;
     }
 
-    @Override
-    public List<InstituteCategoryType> addInstituteCategoryTypes(List<InstituteCategoryType> instituteCategoryTypes) {
-        Session session = sessionFactory.getCurrentSession();
-        instituteCategoryTypes.stream().forEach(type -> session.save(type));
-        return instituteCategoryTypes;
-    }
+//    @Override
+//    public List<InstituteCategoryType> addInstituteCategoryTypes(List<InstituteCategoryType> instituteCategoryTypes) {
+//        Session session = sessionFactory.getCurrentSession();
+//        instituteCategoryTypes.forEach(session::save);
+//        return instituteCategoryTypes;
+//    }
 
     public List<Institute> getInstituteCampuses(String instituteId, String instituteName) throws NotFoundException {
         log.debug("inside dao.getInstitutCampuses method.");
@@ -1173,5 +1168,10 @@ public class InstituteDaoImpl implements InstituteDao {
     @Override
     public void deleteInstituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
 
+    }
+
+    @Override
+    public List<Institute> getByCountryName(String countryName) {
+        return instituteRepository.findAllInstituteByCountryName(countryName);
     }
 }

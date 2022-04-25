@@ -17,12 +17,6 @@ public class InstituteTypeItemProcessor implements ItemProcessor<InstituteTypeDt
 	public InstituteType process(InstituteTypeDto instituteTypeDto) throws Exception {
 		InstituteType instituteType = new InstituteType();
 		instituteType.setCountryName(instituteTypeDto.getCountryName());
-		instituteType.setName(instituteTypeDto.getInstituteTypeName());
-		instituteType.setDescription(instituteTypeDto.getInstituteTypeName());
-		instituteType.setCreatedBy("AUTO");
-		instituteType.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-		instituteType.setUpdatedBy("AUTO");
-		instituteType.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		return instituteType;
 	}
 }

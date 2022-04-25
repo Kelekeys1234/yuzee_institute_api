@@ -255,7 +255,7 @@ public class InstituteProcessor {
                 instituteElasticDtoList.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
             }
             log.info("Calling elasticSearch Service to add new institutes on elastic index");
-            publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
+            //publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
         } catch (Exception exception) {
             log.error("Exception while saving institutes having exception ", exception.getMessage());
             throw exception;
@@ -325,7 +325,7 @@ public class InstituteProcessor {
             instituteElasticDtoList.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 
             log.info("Calling elastic service to save instiutes on index");
-            publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
+//            publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
         } catch (Exception exception) {
             log.error("Exception while updating institute having exception ={}", exception.getMessage());
             throw exception;
@@ -345,6 +345,7 @@ public class InstituteProcessor {
             institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
             institute.setCreatedBy("API");
             institute.setIsActive(true);
+            institute.setId(UUID.randomUUID());
         }
         institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
         institute.setUpdatedBy("API");
@@ -392,12 +393,12 @@ public class InstituteProcessor {
         institute.setWorldRanking(instituteRequest.getWorldRanking());
         institute.setPostalCode(instituteRequest.getPostalCode());
         institute.setWebsite(instituteRequest.getWebsite());
-        if (!StringUtils.isEmpty(instituteRequest.getInstituteCategoryTypeId())) {
-            institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getInstituteCategoryTypeId()));
-        } else {
-            log.error(messageTranslator.toLocale("institute-processor.required.category_type_id", Locale.US));
-            throw new ValidationException(messageTranslator.toLocale("institute-processor.required.category_type_id"));
-        }
+//        if (!StringUtils.isEmpty(instituteRequest.getInstituteCategoryTypeId())) {
+//            institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getInstituteCategoryTypeId()));
+//        } else {
+//            log.error(messageTranslator.toLocale("institute-processor.required.category_type_id", Locale.US));
+//            throw new ValidationException(messageTranslator.toLocale("institute-processor.required.category_type_id"));
+//        }
         institute.setState(instituteRequest.getStateName());
         institute.setAddress(instituteRequest.getAddress());
         institute.setEmail(instituteRequest.getEmail());
@@ -417,13 +418,14 @@ public class InstituteProcessor {
         institute.setDomesticBoardingFee(instituteRequest.getDomesticBoardingFee());
         institute.setInternationalBoardingFee(instituteRequest.getInternationalBoardingFee());
         institute.setTagLine(instituteRequest.getTagLine());
-        saveUpdateInstituteFundings("API", institute,
-                CollectionUtils.isEmpty(instituteRequest.getInstituteFundings()) ? null : instituteRequest.getInstituteFundings()
-                        .stream().map(InstituteFundingDto::getFundingNameId).collect(Collectors.toList()));
-        saveUpdateInstituteProviderCodes("API", institute, instituteRequest.getInstituteProviderCodes());
+//        saveUpdateInstituteFundings("API", institute,
+//                CollectionUtils.isEmpty(instituteRequest.getInstituteFundings()) ? null : instituteRequest.getInstituteFundings()
+//                        .stream().map(InstituteFundingDto::getFundingNameId).collect(Collectors.toList()));
+//        saveUpdateInstituteProviderCodes("API", institute, instituteRequest.getInstituteProviderCodes());
         try {
             institute = instituteDao.addUpdateInstitute(institute);
         } catch (DataIntegrityViolationException exception) {
+            exception.printStackTrace();
             log.error("Institute already exists having \nname: {},\ncity_Name: {},\ncountry_name: {}",
                     instituteRequest.getName(), instituteRequest.getCityName(),
                     instituteRequest.getCountryName());
@@ -445,7 +447,7 @@ public class InstituteProcessor {
             log.info("instituteTimings is not null hence going to save institute timings in DB");
             TimingDto timingResponseDto = instituteTimingProcessor.getTimingResponseDtoByInstituteId(institute.getId());
             TimingRequestDto timingRequestDto = new TimingRequestDto();
-            timingRequestDto.setId(timingResponseDto != null ? timingResponseDto.getId() : null);
+            timingRequestDto.setId(timingResponseDto != null ? timingResponseDto.getId().toString() : null);
             timingRequestDto.setEntityType(EntityTypeEnum.INSTITUTE.name());
             timingRequestDto.setTimingType(TimingType.OPEN_HOURS.name());
             timingRequestDto.setTimings(instituteRequest.getInstituteTimings());
@@ -1238,7 +1240,7 @@ public class InstituteProcessor {
         InstituteSyncDTO instituteElasticSearchDto = populateElasticDto(existingInstitute);
 
         log.info("Calling elastic service to save instiutes on index");
-        publishSystemEventHandler.syncInstitutes(Arrays.asList(instituteElasticSearchDto));
+   //     publishSystemEventHandler.syncInstitutes(Arrays.asList(instituteElasticSearchDto));
     }
 
 

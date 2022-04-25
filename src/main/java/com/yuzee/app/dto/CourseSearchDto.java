@@ -66,8 +66,8 @@ public class CourseSearchDto {
 	@JsonProperty("institute_id")
 	private String instituteId;
 
-	@JsonProperty("sort_asscending")
-	private Boolean sortAsscending;
+	@JsonProperty("sort_ascending")
+	private Boolean sortAscending;
 
 	@JsonProperty("sort_by")
 	private String sortBy;
