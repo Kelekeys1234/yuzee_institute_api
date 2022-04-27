@@ -80,28 +80,12 @@ public class InstituteTypeProcessor {
 
 	public List<InstituteTypeDto> getInstituteTypeByCountryName(String countryName) {
 		log.debug("Inside getInstituteTypeByCountryName() method");
-		List<Institute> listOfInstitute = instituteDAO.getByCountryName(countryName);
-		if(CollectionUtils.isEmpty(listOfInstitute)){
+		List<InstituteType> listOfInstituteType = instituteDAO.getByCountryName(countryName);
+		if(CollectionUtils.isEmpty(listOfInstituteType)){
 			log.error("No InstituteType found");
 			throw new NotFoundException("No instituteType found");
 		}
-		return listOfInstitute.stream().map(e -> new InstituteTypeDto(e.getInstituteType(), e.getId().toString(), e.getDescription(), e.getCountryName())).collect(Collectors.toList());
-//		log.info("Fetching InstituteType from DB having countryName = " + countryName);
-//		List<InstituteType> listOfInstituteType = iInstituteTypeDAO.getByCountryName(countryName);
-//		if (!CollectionUtils.isEmpty(listOfInstituteType)) {
-//			log.info("InstituteType is not null then start iterating instituteType");
-//			listOfInstituteType.stream().forEach(instituteType -> {
-//				InstituteTypeDto instituteTypeDto = new InstituteTypeDto();
-//				instituteTypeDto.setInstituteTypeId(instituteType.getId());
-//				instituteTypeDto.setCountryName(instituteType.getCountryName());
-//				instituteTypeDto.setDescription(instituteType.getDescription());
-//				instituteTypeDto.setInstituteTypeName(instituteType.getName());
-//				log.info("Adding instiuteType in list");
-//				listOfInstituteDto.add(instituteTypeDto);
-//			});
-//		}
-//		log.info("returning instituteType in final response");
-//		return listOfInstituteDto;
+		return listOfInstituteType.stream().map(e -> new InstituteTypeDto(e.getName(), e.getDescription(), e.getCountryName())).collect(Collectors.toList());
 	}
 
 	public void importInstituteType(final MultipartFile multipartFile) throws IOException, ParseException, JobExecutionAlreadyRunningException, JobRestartException,

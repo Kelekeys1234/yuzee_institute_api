@@ -13,10 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class  InstituteTypeDto {
 
-	@JsonProperty("institute_id")
-	@NotBlank(message = "{institute_id}")
-	private String instituteId;
-
 	@JsonProperty("type")
 	private String type;
 	

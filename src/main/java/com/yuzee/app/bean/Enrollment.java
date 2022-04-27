@@ -46,9 +46,9 @@ public class Enrollment implements Serializable {
 	@Column(name = "is_international_student", nullable = false)
 	private Boolean isInternationalStudent;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-	@JoinColumn(name = "institute_type_id", nullable = false)
-	private InstituteType instituteType;
+//	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+//	@JoinColumn(name = "institute_type_id", nullable = false)
+//	private InstituteType instituteType;
 
 	@Column(name = "previous_institute")
 	private String previousInstitute;
@@ -161,13 +161,13 @@ public class Enrollment implements Serializable {
 		this.isInternationalStudent = isInternationalStudent;
 	}
 
-	public InstituteType getInstituteType() {
-		return instituteType;
-	}
-
-	public void setInstituteType(final InstituteType instituteType) {
-		this.instituteType = instituteType;
-	}
+//	public InstituteType getInstituteType() {
+//		return instituteType;
+//	}
+//
+//	public void setInstituteType(final InstituteType instituteType) {
+//		this.instituteType = instituteType;
+//	}
 
 	public String getPreviousInstitute() {
 		return previousInstitute;
@@ -411,7 +411,7 @@ public class Enrollment implements Serializable {
 		result = prime * result + (graduationDate == null ? 0 : graduationDate.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 //		result = prime * result + (institute == null ? 0 : institute.hashCode());
-		result = prime * result + (instituteType == null ? 0 : instituteType.hashCode());
+//		result = prime * result + (instituteType == null ? 0 : instituteType.hashCode());
 		result = prime * result + (isArchive == null ? 0 : isArchive.hashCode());
 		result = prime * result + (isInternationalStudent == null ? 0 : isInternationalStudent.hashCode());
 		result = prime * result + (lastName == null ? 0 : lastName.hashCode());
@@ -545,13 +545,13 @@ public class Enrollment implements Serializable {
 //		} else if (!institute.equals(other.institute)) {
 //			return false;
 //		}
-		if (instituteType == null) {
-			if (other.instituteType != null) {
-				return false;
-			}
-		} else if (!instituteType.equals(other.instituteType)) {
-			return false;
-		}
+//		if (instituteType == null) {
+//			if (other.instituteType != null) {
+//				return false;
+//			}
+//		} else if (!instituteType.equals(other.instituteType)) {
+//			return false;
+//		}
 		if (isArchive == null) {
 			if (other.isArchive != null) {
 				return false;
@@ -699,7 +699,7 @@ public class Enrollment implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Enrollment [id=").append(id).append(", userId=").append(userId).append(", course=")
-				.append(course).append(", isInternationalStudent=").append(isInternationalStudent).append(", instituteType=").append(instituteType)
+				.append(course).append(", isInternationalStudent=").append(isInternationalStudent)
 				.append(", previousInstitute=").append(previousInstitute).append(", previousCourseName=").append(previousCourseName).append(", graduationDate=")
 				.append(graduationDate).append(", status=").append(status).append(", englishQualificaitonTest=").append(englishQualificaitonTest)
 				.append(", latestAcademicQualification=").append(latestAcademicQualification).append(", purposeOfStay=").append(purposeOfStay)
@@ -723,3 +723,4 @@ public class Enrollment implements Serializable {
 	}
 
 }
+//.append(", instituteType=").append(instituteType)

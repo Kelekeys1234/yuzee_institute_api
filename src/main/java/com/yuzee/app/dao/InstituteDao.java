@@ -36,13 +36,13 @@ public interface InstituteDao {
 
 	public List<InstituteGetRequestDto> autoSearch(int startIndex, Integer pageSize, String searchKey);
 
-	public int findTotalCountForInstituteAutosearch(String searchKey);
+	public int findTotalCountForInstituteAutoSearch(String searchKey);
 
 	public InstituteCategoryType getInstituteCategoryType(String instituteCategoryTypeId);
 
-	public List<Institute> getSecondayCampus(String countryId, String cityId, String name);
+	public List<Institute> getSecondaryCampus(String countryId, String cityId, String name);
 
-	public void saveInstituteserviceDetails(InstituteService instituteServiceDetails);
+	public void saveInstituteServiceDetails(InstituteService instituteServiceDetails);
 
 	public void deleteInstituteService(String id);
 
@@ -108,9 +108,11 @@ public interface InstituteDao {
 
 	List<InstituteFacility> getInstituteFaculties(String instituteId);
 
-	Optional<Institute> getInsituteEnglishRequirementsById(String instituteEnglishRequirementsId);
+	Optional<Institute> getInstituteEnglishRequirementsById(String instituteEnglishRequirementsId);
 
 	void deleteInstituteEnglishRequirementsById(String instituteEnglishRequirementsId);
 
-	List<Institute> getByCountryName(String countryName);
+	List<InstituteType> getByCountryName(String countryName);
+
+	List<String> findIntakesById(String id);
 }

@@ -103,7 +103,7 @@ public class InstituteEnglishRequirementsProcessor {
 		// TODO validate userId have access for institute Id
 		log.info("Getting institute english requirements having requirement id  " + instituteEnglishRequirementsId);
 		Optional<Institute> optionalInstitute = instituteDAO
-				.getInsituteEnglishRequirementsById(instituteEnglishRequirementsId);
+				.getInstituteEnglishRequirementsById(instituteEnglishRequirementsId);
 		if (optionalInstitute.isPresent()) {
 			log.info("Deleting institute english requirement by Id " + instituteEnglishRequirementsId);
 			instituteDAO.deleteInstituteEnglishRequirementsById(instituteEnglishRequirementsId);

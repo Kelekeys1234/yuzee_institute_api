@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.ws.rs.HeaderParam;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +33,13 @@ public interface InstituteInterface {
 
 	@PutMapping("/institute/status/{instituteId}")
 	public ResponseEntity<Object> changeStatus(@RequestHeader("userId") final String userId,
-			@PathVariable("instituteId") final String instituteId, @RequestParam(name = "status", required = true) final boolean status);
+			@PathVariable("instituteId") final String instituteId, @RequestParam(name = "status") final boolean status);
 	
 	@PostMapping("/instituteType")
 	public ResponseEntity<?> saveInstituteType(@RequestHeader(value = "instituteId") String instituteId, @RequestParam(value = "instituteType") String instituteType) throws Exception;
 	
 	@GetMapping("/type")
-	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam String countryName) throws Exception;
+	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam(value = "countryName") String countryName) throws Exception;
 	
 	@GetMapping("/institute/type")
 	public ResponseEntity<?> getInstituteType() throws Exception;
@@ -82,7 +81,7 @@ public interface InstituteInterface {
 	@GetMapping("/{instituteId}")
 	public ResponseEntity<?> get(@RequestHeader("userId") final String userId, @PathVariable final String instituteId,
 			@RequestParam(name = "is_readable_id", required = false) boolean isReadableId)
-			throws ValidationException, NotFoundException, InvokeException, Exception;
+			throws Exception;
 
 	@GetMapping("/search/{searchText}")
 	public ResponseEntity<?> searchInstitute(@Valid @PathVariable final String searchText) throws Exception;

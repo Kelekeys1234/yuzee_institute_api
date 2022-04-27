@@ -562,7 +562,7 @@ public class InstituteProcessor {
             Long startIndex;
             log.info("Calculating startIndex based of pageNumber nad pageSize");
             if (pageNumber > 1) {
-                startIndex = (Long.valueOf(pageNumber - 1)) * pageSize + 1;
+                startIndex = ((long) (pageNumber - 1)) * pageSize + 1;
             } else {
                 startIndex = Long.valueOf(pageNumber);
             }
@@ -572,8 +572,8 @@ public class InstituteProcessor {
             List<InstituteGetRequestDto> institutes = instituteDao.getAll(startIndex.intValue(), pageSize);
             List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
             if (!CollectionUtils.isEmpty(institutes)) {
-                log.info("Institues are not null from DB so start iterating data");
-                institutes.stream().forEach(institute -> {
+                log.info("Institutes are not null from DB so start iterating data");
+                institutes.forEach(institute -> {
                     log.info("start getting institute details");
                     InstituteGetRequestDto instituteGetRequestDto = new InstituteGetRequestDto();
                     log.info("copying bean class to DTO and fetching institute videos based on countryName and instituteName");
@@ -587,7 +587,7 @@ public class InstituteProcessor {
             paginationResponseDto.setResponse(instituteGetRequestDtos);
             paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
             paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-            paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
+            paginationResponseDto.setTotalCount((long) totalCount);
             paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
             paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
         } catch (Exception exception) {
@@ -634,11 +634,11 @@ public class InstituteProcessor {
         log.info("Fetching institute from DB for instituteId = {}", id);
         Institute institute = null;
         UUID sameUuid = UUID.fromString(id);
-        if (isReadableId) {
-            institute = instituteDao.findByReadableId(id);
-        } else {
-            institute = instituteDao.get(UUID.fromString(id));
-        }
+//        if (isReadableId) {
+//            institute = instituteDao.findByReadableId(id);
+//        } else {
+//        }
+        institute = instituteDao.get(UUID.fromString(id));
         if (institute == null) {
             log.error(messageTranslator.toLocale("institute-processor.not_found.id", id, Locale.US));
             throw new ValidationException(messageTranslator.toLocale("institute-processor.not_found.id", id));
@@ -648,54 +648,55 @@ public class InstituteProcessor {
         if (userId.equals(institute.getCreatedBy())) {
             instituteRequestDto.setEditAccess(true);
         }
-        log.info("fetching accrediation Details from DB fro instituteID = {}", id);
+        log.info("fetching accreditation Details from DB fro instituteID = {}", id);
         instituteRequestDto.setAccreditationDetails(getAccreditationName(id));
         log.info("fetching institute intakes from DB fro instituteID = {}", id);
-        instituteRequestDto.setIntakes(getIntakes(id));
+        List<String> listOfInstituteIntakes = instituteDao.findIntakesById(id);
+        instituteRequestDto.setIntakes(listOfInstituteIntakes);
         if (institute.getInstituteCategoryType() != null) {
             log.info("Adding institute category type in final Response");
             instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
         }
-        TimingDto instituteTimingResponseDto = instituteTimingProcessor
-                .getTimingResponseDtoByInstituteId(sameUuid);
-        if (!ObjectUtils.isEmpty(instituteTimingResponseDto)) {
-            instituteRequestDto.setInstituteTimings(
-                    CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
-        }
-
-        FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
-        if (!ObjectUtils.isEmpty(followerCountDto)) {
-            instituteRequestDto.setFollowersCount(followerCountDto.getConnection_number());
-        }
-        log.info("Calling review service to fetch user average review for instituteId");
-        Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE",
-                Arrays.asList(instituteRequestDto.getId().toString()));
-
-        ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteRequestDto.getId());
-        if (!ObjectUtils.isEmpty(reviewStarDto)) {
-            instituteRequestDto.setStars(reviewStarDto.getReviewStars());
-            instituteRequestDto.setReviewsCount(reviewStarDto.getReviewsCount());
-        }
-
-        List<StorageDto> imageStorages = storageHandler.getStorages(Arrays.asList(instituteRequestDto.getId().toString()), EntityTypeEnum.INSTITUTE,
-                Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
-
-        if (!CollectionUtils.isEmpty(imageStorages)) {
-            List<StorageDto> instituteImages = imageStorages.stream()
-                    .filter(s -> s.getEntityId().equals(instituteRequestDto.getId()))
-                    .collect(Collectors.toList());
-
-            StorageDto logoStorage = instituteImages.stream().filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.LOGO)).findAny().orElse(null);
-            if (!ObjectUtils.isEmpty(logoStorage)) {
-                instituteRequestDto.setLogoUrl(logoStorage.getFileURL());
-            }
-
-            StorageDto coverStorage = instituteImages.stream().filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.COVER_PHOTO)).findAny().orElse(null);
-            if (!ObjectUtils.isEmpty(coverStorage)) {
-                instituteRequestDto.setCoverPhotoUrl(coverStorage.getFileURL());
-            }
-        }
-        instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, instituteRequestDto.getId().toString()));
+//        TimingDto instituteTimingResponseDto = instituteTimingProcessor
+//                .getTimingResponseDtoByInstituteId(sameUuid);
+//        if (!ObjectUtils.isEmpty(instituteTimingResponseDto)) {
+//            instituteRequestDto.setInstituteTimings(
+//                    CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
+//        }
+//
+//        FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
+//        if (!ObjectUtils.isEmpty(followerCountDto)) {
+//            instituteRequestDto.setFollowersCount(followerCountDto.getConnection_number());
+//        }
+//        log.info("Calling review service to fetch user average review for instituteId");
+//        Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE",
+//                List.of(instituteRequestDto.getId().toString()));
+//
+//        ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteRequestDto.getInstituteId());
+//        if (!ObjectUtils.isEmpty(reviewStarDto)) {
+//            instituteRequestDto.setStars(reviewStarDto.getReviewStars());
+//            instituteRequestDto.setReviewsCount(reviewStarDto.getReviewsCount());
+//        }
+//
+//        List<StorageDto> imageStorages = storageHandler.getStorages(List.of(instituteRequestDto.getId().toString()), EntityTypeEnum.INSTITUTE,
+//                Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
+//
+//        if (!CollectionUtils.isEmpty(imageStorages)) {
+//            List<StorageDto> instituteImages = imageStorages.stream()
+//                    .filter(s -> s.getEntityId().equals(instituteRequestDto.getId()))
+//                    .collect(Collectors.toList());
+//
+//            StorageDto logoStorage = instituteImages.stream().filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.LOGO)).findAny().orElse(null);
+//            if (!ObjectUtils.isEmpty(logoStorage)) {
+//                instituteRequestDto.setLogoUrl(logoStorage.getFileURL());
+//            }
+//
+//            StorageDto coverStorage = instituteImages.stream().filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.COVER_PHOTO)).findAny().orElse(null);
+//            if (!ObjectUtils.isEmpty(coverStorage)) {
+//                instituteRequestDto.setCoverPhotoUrl(coverStorage.getFileURL());
+//            }
+//        }
+//        instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, instituteRequestDto.getId().toString()));
         instituteRequestDto.setInstituteProviderCodes(new ValidList<>(institute.getInstituteProviderCodes().stream().map(e -> modelMapper.map(e, ProviderCodeDto.class)).toList()));
         instituteRequestDto.setVerified(institute.isVerified());
         return instituteRequestDto;
@@ -731,38 +732,43 @@ public class InstituteProcessor {
     public List<InstituteGetRequestDto> searchInstitute(@Valid final String searchText) {
         log.debug("Inside searchInstitute() method");
         List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
-        try {
-            log.info("Making sqlQuery to search institute based on passed searchString =" + searchText);
-            String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type FROM institute inst where inst.is_active = 1  ";
-            String countryName = searchText.split(",")[0];
-            String name = searchText.split(",")[1];
-            String cityName = searchText.split(",")[2];
-            String worldRanking = searchText.split(",")[3];
-            String instituteType = searchText.split(",")[4];
-            String postDate = searchText.split(",")[5];
-            if (countryName != null && !countryName.isEmpty()) {
-                log.info("adding countryName in sql Query");
-                sqlQuery += " and inst.country_name = '" + countryName + "'";
-            } else if (name != null && !name.isEmpty()) {
-                log.info("adding institue name in sql Query");
-                sqlQuery += " and inst.name = '" + name + "'";
-            } else if (cityName != null && !cityName.isEmpty()) {
-                log.info("adding countryName in sql Query");
-                sqlQuery += " and inst.city_name = '" + cityName + "'";
-            } else if (worldRanking != null && !worldRanking.isEmpty()) {
-                log.info("adding worldRanking in sql Query");
-                sqlQuery += " and inst.world_ranking = " + Integer.valueOf(worldRanking);
-            } else if (instituteType != null && !instituteType.isEmpty()) {
-                log.info("adding instituteType in sql Query");
-                sqlQuery += " and inst.institute_type = '" + instituteType + "'";
-            } else if (postDate != null && !postDate.isEmpty()) {
-
-            }
+        try{
+            log.info("Making mongoQuery to search institute based on passed searchString =" + searchText);
+            //{ sku: { $regex: /^ABC/i } }
+            //TODO can also use  BasicQuery to implement regex search if criteria doesn't work
+            String searchQuery = "{ $or : [ {'countryName' : {$regex : ?0, $options : 'i'}, 'cityName' : {$regex : ?0}, 'worldRanking' : {$regex : ?0}, 'instituteType' : {$regex : ?0}, 'name' : {$regex : ?0} } ] }";
+//        try {
+//            log.info("Making sqlQuery to search institute based on passed searchString =" + searchText);
+//            String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type FROM institute inst where inst.is_active = 1  ";
+//            String countryName = searchText.split(",")[0];
+//            String name = searchText.split(",")[1];
+//            String cityName = searchText.split(",")[2];
+//            String worldRanking = searchText.split(",")[3];
+//            String instituteType = searchText.split(",")[4];
+//            String postDate = searchText.split(",")[5];
+//            if (countryName != null && !countryName.isEmpty()) {
+//                log.info("adding countryName in sql Query");
+//                sqlQuery += " and inst.country_name = '" + countryName + "'";
+//            } else if (name != null && !name.isEmpty()) {
+//                log.info("adding institute name in sql Query");
+//                sqlQuery += " and inst.name = '" + name + "'";
+//            } else if (cityName != null && !cityName.isEmpty()) {
+//                log.info("adding countryName in sql Query");
+//                sqlQuery += " and inst.city_name = '" + cityName + "'";
+//            } else if (worldRanking != null && !worldRanking.isEmpty()) {
+//                log.info("adding worldRanking in sql Query");
+//                sqlQuery += " and inst.world_ranking = " + Integer.valueOf(worldRanking);
+//            } else if (instituteType != null && !instituteType.isEmpty()) {
+//                log.info("adding instituteType in sql Query");
+//                sqlQuery += " and inst.institute_type = '" + instituteType + "'";
+//            } else if (postDate != null && !postDate.isEmpty()) {
+//
+//            }
             log.info("Calling DAO layer to search institute based on searchText");
-            List<Institute> institutes = instituteDao.searchInstitute(sqlQuery);
+            List<Institute> institutes = instituteDao.searchInstitute(searchQuery);
             if (!CollectionUtils.isEmpty(institutes)) {
-                log.info("institutes coming in response, hence start iterating institutes ande getting institutes details");
-                institutes.stream().forEach(institute -> {
+                log.info("institutes coming in response, hence start iterating institutes and getting institutes details");
+                institutes.forEach(institute -> {
                     instituteGetRequestDtos.add(convertInstituteToInstituteGetRequestDto(institute));
                 });
             }
@@ -808,7 +814,6 @@ public class InstituteProcessor {
         return paginationInstituteResponseDto;
     }
 
-
     @Transactional(rollbackFor = {ConstraintVoilationException.class, Exception.class})
     public PaginationResponseDto autoSearch(final Integer pageNumber, final Integer pageSize,
                                             final String searchKey) {
@@ -816,14 +821,14 @@ public class InstituteProcessor {
         PaginationResponseDto paginationInstituteResponseDto = new PaginationResponseDto();
         try {
             log.info("fetching total count from DB for searchKey = " + searchKey);
-            int totalCount = instituteDao.findTotalCountForInstituteAutosearch(searchKey);
-            Long startIndex = (Long.valueOf(pageNumber - 1)) * pageSize;
-            log.info("Calculating pagination havinbg startIndex " + startIndex + " and totalCount " + totalCount);
+            int totalCount = instituteDao.findTotalCountForInstituteAutoSearch(searchKey);
+            long startIndex = ((long) (pageNumber - 1)) * pageSize;
+            log.info("Calculating pagination having startIndex " + startIndex + " and totalCount " + totalCount);
             PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
             log.info("Fetching institutes from DB based on pageSize and having searchKey = " + searchKey);
             List<InstituteGetRequestDto> instituteGetRequestDtos = new ArrayList<>();
-            List<InstituteGetRequestDto> institutes = instituteDao.autoSearch(startIndex.intValue(), pageSize, searchKey);
-            institutes.stream().forEach(institute -> {
+            List<InstituteGetRequestDto> institutes = instituteDao.autoSearch((int) startIndex, pageSize, searchKey);
+            institutes.forEach(institute -> {
                 log.info("Start iterating institutes and set values in DTO for instituteId = " + institute.getId());
                 InstituteGetRequestDto instituteGetRequestDto = new InstituteGetRequestDto();
                 log.info("copying bean class to DTO and fetching institute videos based on countryName and instituteName");

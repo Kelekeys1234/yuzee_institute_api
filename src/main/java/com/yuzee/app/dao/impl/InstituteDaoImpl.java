@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.mongodb.client.model.Projections;
 import com.yuzee.app.bean.*;
 import com.yuzee.app.dto.*;
 import org.apache.commons.lang3.StringUtils;
@@ -15,10 +16,11 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -324,7 +326,19 @@ public class InstituteDaoImpl implements InstituteDao {
     }
 
     @Override
-    public List<Institute> searchInstitute(final String sqlQuery) {
+    public List<Institute> searchInstitute(final String searchQuery) {
+        BasicQuery basicQuery = new BasicQuery(searchQuery, "name, countryName, cityName, worldRanking");
+       return  mongoTemplate.find(basicQuery, Institute.class, "institute");
+//        mongoQuery.addCriteria(Criteria.where("deletedOn").is(null));
+//        if (searchKey != null) {
+//            mongoQuery.addCriteria(new Criteria().orOperator(
+//                    Criteria.where("name").regex(searchKey, "i"),
+//                    Criteria.where("countryName").regex(searchKey, "i"),
+//                    Criteria.where("cityName").regex(searchKey, "i"), Criteria.where("instituteType").regex(searchKey, "i"),
+//                    Criteria.where("worldRanking").regex(searchKey, "i")
+//            ));
+//        }
+//        return mongoTemplate.find(mongoQuery, Institute.class, "institute");
 //        Session session = sessionFactory.getCurrentSession();
 //        Query query = session.createSQLQuery(sqlQuery);
 //        List<Object[]> rows = query.list();
@@ -346,7 +360,6 @@ public class InstituteDaoImpl implements InstituteDao {
 //            instituteList.add(obj);
 //        }
 //        return instituteList;
-        return new ArrayList<>();
     }
 
 //	private InstituteType getInstituteType(final String id, final Session session) {
@@ -359,7 +372,7 @@ public class InstituteDaoImpl implements InstituteDao {
 
     @Override
     public int findTotalCount() {
-        int status = 1;
+        boolean status = true;
 //		Session session = sessionFactory.getCurrentSession();
         Query mongoQuery = new Query();
         mongoQuery.addCriteria(Criteria.where("isActive").is(status)).addCriteria(Criteria.where("deletedOn").is(null));
@@ -374,17 +387,20 @@ public class InstituteDaoImpl implements InstituteDao {
 
     @Override
     public List<InstituteGetRequestDto> getAll(final Integer pageNumber, final Integer pageSize) {
-        Session session = sessionFactory.getCurrentSession();
-        String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description,"
-                + " inst.latitude, inst.longitude, instAdd.student_number, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
-                + "inst.address, inst.avg_cost_of_living, inst.tag_line"
-                + " FROM institute as inst left join institute_additional_info instAdd  on instAdd.institute_id=inst.id  where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
-        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
-//        Query query = session.createSQLQuery(sqlQuery);
-//        List<Object[]> rows = query.list();
-//        List<InstituteGetRequestDto> instituteList = getInstituteData(rows);
-//        return instituteList;
-        return new ArrayList<>();
+        boolean status = true;
+//        Session session = sessionFactory.getCurrentSession();
+//        String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description,"
+//                + " inst.latitude, inst.longitude, instAdd.student_number, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
+//                + "inst.address, inst.avg_cost_of_living, inst.tag_line"
+//                + " FROM institute as inst left join institute_additional_info instAdd  on instAdd.institute_id=inst.id  where inst.is_active = 1 and inst.deleted_on IS NULL ORDER BY inst.created_on DESC";
+//        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
+        Query mongoQuery = new Query();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        mongoQuery.with(pageable);
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdOn");
+        mongoQuery.with(sort);
+        mongoQuery.addCriteria(Criteria.where("isActive").is(status)).addCriteria(Criteria.where("deletedOn").is(null));
+        return mongoTemplate.find(mongoQuery, InstituteGetRequestDto.class, "institute");
     }
 
     private List<InstituteGetRequestDto> getInstituteData(final List<Object[]> rows) {
@@ -545,30 +561,34 @@ public class InstituteDaoImpl implements InstituteDao {
     @Override
     public List<InstituteGetRequestDto> autoSearch(final int pageNumber, final Integer pageSize,
                                                    final String searchKey) {
-//        Session session = sessionFactory.getCurrentSession();
-//        String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description,"
-//                + " inst.latitude, inst.longitude, instAdd.student_number, inst.world_ranking, inst.accreditation, inst.email, inst.phone_number, inst.website,"
-//                + " inst.address, inst.avg_cost_of_living,inst.tag_line FROM institute as inst left join institute_additional_info instAdd on instAdd.institute_id=inst.id "
-//                + " where  inst.deleted_on IS NULL and (inst.name like %:searchKey% or inst.description like %:searchKey% or inst.country_name like %:searchKey%"
-//                + " or inst.city_name like %:searchKey% or inst.institute_type like %:searchKey%) "
-//                + " ORDER BY inst.created_on DESC";
-//        sqlQuery = sqlQuery + " LIMIT " + pageNumber + " ," + pageSize;
-//        Query query = session.createSQLQuery(sqlQuery).setParameter("searchKey", searchKey);
-//        List<Object[]> rows = query.list();
-//        return getInstituteData(rows);
-        return new ArrayList<>();
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("deletedOn").is(null));
+        if (searchKey != null) {
+            mongoQuery.addCriteria(new Criteria().orOperator(
+                    Criteria.where("name").regex(searchKey, "i"),
+                    Criteria.where("countryName").regex(searchKey, "i"),
+                    Criteria.where("cityName").regex(searchKey, "i"), Criteria.where("instituteType").regex(searchKey, "i"),
+                    Criteria.where("description").regex(searchKey, "i")
+            ));
+        }
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdOn");
+        mongoQuery.with(sort);
+        return mongoTemplate.find(mongoQuery, InstituteGetRequestDto.class, "institute");
     }
 
     @Override
-    public int findTotalCountForInstituteAutosearch(final String searchKey) {
-//        Session session = sessionFactory.getCurrentSession();
-//        String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type, inst.description, inst.updated_on FROM institute as inst  "
-//                + " where inst.deleted_on IS NULL and (inst.name like %:searchKey% or inst.description like %:searchKey% or inst.country_name like %:searchKey% or inst.city_name like %:searchKey% or inst.institute_type like %:searchKey%) "
-//                + " ";
-//        Query query = session.createSQLQuery(sqlQuery).setParameter("searchKey", searchKey);
-//        List<Object[]> rows = query.list();
-//        return rows.size();
-        return 1;
+    public int findTotalCountForInstituteAutoSearch(final String searchKey) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("deletedOn").is(null));
+        if (searchKey != null) {
+            mongoQuery.addCriteria(new Criteria().orOperator(
+                    Criteria.where("name").regex(searchKey, "i"),
+                    Criteria.where("countryName").regex(searchKey, "i"),
+                    Criteria.where("cityName").regex(searchKey, "i"), Criteria.where("instituteType").regex(searchKey, "i"),
+                    Criteria.where("description").regex(searchKey, "i")
+            ));
+        }
+        return Integer.parseInt(String.valueOf(mongoTemplate.count(mongoQuery, Institute.class)));
     }
 
     @Override
@@ -582,7 +602,7 @@ public class InstituteDaoImpl implements InstituteDao {
     }
 
     @Override
-    public List<Institute> getSecondayCampus(final String countryId, final String cityId, final String name) {
+    public List<Institute> getSecondaryCampus(final String countryId, final String cityId, final String name) {
 //        Session session = sessionFactory.getCurrentSession();
 //        Criteria crit = session.createCriteria(Institute.class);
 //        crit.add(Restrictions.eq("countryName", countryId));
@@ -594,7 +614,7 @@ public class InstituteDaoImpl implements InstituteDao {
     }
 
     @Override
-    public void saveInstituteserviceDetails(final InstituteService instituteServiceDetails) {
+    public void saveInstituteServiceDetails(final InstituteService instituteServiceDetails) {
         Session session = sessionFactory.getCurrentSession();
         session.save(instituteServiceDetails);
     }
@@ -1161,8 +1181,8 @@ public class InstituteDaoImpl implements InstituteDao {
     }
 
     @Override
-    public Optional<Institute> getInsituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
-        return instituteRepository.getInsituteEnglishRequirementsById(UUID.fromString(instituteEnglishRequirementsId));
+    public Optional<Institute> getInstituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
+        return instituteRepository.getInstituteEnglishRequirementsById(UUID.fromString(instituteEnglishRequirementsId));
     }
 
     @Override
@@ -1171,7 +1191,15 @@ public class InstituteDaoImpl implements InstituteDao {
     }
 
     @Override
-    public List<Institute> getByCountryName(String countryName) {
+    public List<InstituteType> getByCountryName(String countryName) {
         return instituteRepository.findAllInstituteByCountryName(countryName);
+    }
+
+    @Override
+    public List<String> findIntakesById(String id) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("id").is(id));
+        mongoQuery.fields().include("instituteIntakes");
+        return mongoTemplate.find(mongoQuery, String.class,"institute");
     }
 }

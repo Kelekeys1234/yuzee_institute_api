@@ -18,7 +18,10 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
 public class InstituteRequestDto extends InstituteDto {
-	
+
+	@JsonProperty("institute_id")
+	private String instituteId;
+
 	@JsonProperty("description")
 	private String description;
 	

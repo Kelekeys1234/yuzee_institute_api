@@ -70,7 +70,7 @@ public class CommonUtil {
 		instituteRequestDto.setStateName(institute.getState());
 		instituteRequestDto.setCountryName(institute.getCountryName());
 		instituteRequestDto.setDescription(institute.getDescription());
-		instituteRequestDto.setId(institute.getId());
+		instituteRequestDto.setInstituteId(institute.getId().toString());
 		instituteRequestDto.setWebsite(institute.getWebsite());
 		instituteRequestDto.setShowSuggestion(institute.getShowSuggestion());
 		if (institute.getInstituteType() != null) {

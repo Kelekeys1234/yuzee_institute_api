@@ -78,9 +78,12 @@ public interface InstituteRepository extends MongoRepository<Institute, UUID> {
 	@Query(value = " {'id' : ?0}")
     List<InstituteEnglishRequirements> findInstituteRequirementsById(UUID id);
 
-	Optional<Institute> getInsituteEnglishRequirementsById(UUID fromString);
+	Optional<Institute> getInstituteEnglishRequirementsById(UUID fromString);
 
 	@Query(value = " {'countryName' : ?0}")
-    List<Institute> findAllInstituteByCountryName(String countryName);
+    List<InstituteType> findAllInstituteByCountryName(String countryName);
+
+	@Query(value = "{'id' : ?0}" , fields = "{'instituteIntakes'}")
+    List<String> findInstituteIntakeById(String id);
 }
 //, fields = "{instituteTypeName : 0}, {instituteId : 1}, {type : 2}, {description : 3}, {countryName : 4}"

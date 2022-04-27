@@ -1,10 +1,6 @@
 package com.yuzee.app.controller.v1;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,7 +82,7 @@ public class InstituteController implements InstituteInterface {
 	
 	@Override
 	public ResponseEntity<?> getInstituteTypeByCountry(String countryName) throws Exception {
-		log.info("Start process to fetch instituteType from DB for countryName = [}",countryName);
+		log.info("Start process to fetch instituteType from DB for countryName = {}",countryName);
 		List<InstituteTypeDto> listOfInstituteTypes = instituteTypeProcessor.getInstituteTypeByCountryName(countryName);
 		return new GenericResponseHandlers.Builder().setData(listOfInstituteTypes).setMessage(messageTranslator.toLocale("institute.type.list.retrieved"))
 				.setStatus(HttpStatus.OK).create();
@@ -181,10 +177,7 @@ public class InstituteController implements InstituteInterface {
 		PaginationUtil.validateMaxResultSize(request.getPageNumber());
 		if (null == request.getUserId()) {
 			log.error(messageTranslator.toLocale("institute.user_id.required",Locale.US));
-			throw new ValidationException(messageTranslator.toLocale("institute.user_id.required")
-
-
-);
+			throw new ValidationException(messageTranslator.toLocale("institute.user_id.required"));
 		}
 		log.info("Calling DAO layer to get all institutes based on filters");
 		List<InstituteResponseDto> instituteResponseDtoList = instituteProcessor.getAllInstitutesByFilter(request, null, null, null,
@@ -207,7 +200,7 @@ public class InstituteController implements InstituteInterface {
 				instituteResponse.add(instituteResponseDto);
 			});
 		}
-		if (request.getMaxSizePerPage() == maxCount) {
+		if (Objects.equals(request.getMaxSizePerPage(), maxCount)) {
 			log.info("if maxSize and max count are equal then showMore is visible");
 			showMore = true;
 		}
