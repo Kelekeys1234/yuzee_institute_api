@@ -55,6 +55,7 @@ public interface InstituteRepository extends MongoRepository<Institute, UUID> {
 			+ "i.tagLine, i.createdOn) from Institute i  where i.id in :instituteIds")
 	 List<InstituteResponseDto> findByIdIn(List<String> instituteIds);
 
+
 	 List<Institute> findByReadableIdIn(List<String> readableIds);
 
 	 Institute findByReadableId(String readableId);
@@ -85,5 +86,14 @@ public interface InstituteRepository extends MongoRepository<Institute, UUID> {
 
 	@Query(value = "{'id' : ?0}" , fields = "{'instituteIntakes'}")
     List<String> findInstituteIntakeById(String id);
+
+	@Query(value = "{ $or : [ {" +
+			"'countryName' : {$regex : /^?0*/ , $options : 'i'}" +
+			", 'cityName' : {$regex : /^?0*/, $options : 'i'}" +
+			", 'worldRanking' : {$regex : /^?0*/, $options : 'i'}" +
+			", 'instituteType' : {$regex : /^?0*/, $options : 'i'}" +
+			", 'name' : {$regex : /^?0*/, $options : 'i'} } " +
+			"] }")
+	List<Institute> getBySearchText(String searchText);
 }
 //, fields = "{instituteTypeName : 0}, {instituteId : 1}, {type : 2}, {description : 3}, {countryName : 4}"

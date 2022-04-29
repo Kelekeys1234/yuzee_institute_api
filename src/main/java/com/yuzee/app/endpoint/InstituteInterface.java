@@ -30,20 +30,20 @@ import com.yuzee.common.lib.exception.ValidationException;
 
 @RequestMapping(path = "/api/v1")
 public interface InstituteInterface {
-
+	//TODO  done
 	@PutMapping("/institute/status/{instituteId}")
 	public ResponseEntity<Object> changeStatus(@RequestHeader("userId") final String userId,
 			@PathVariable("instituteId") final String instituteId, @RequestParam(name = "status") final boolean status);
-	
+	//TODO  done
 	@PostMapping("/instituteType")
 	public ResponseEntity<?> saveInstituteType(@RequestHeader(value = "instituteId") String instituteId, @RequestParam(value = "instituteType") String instituteType) throws Exception;
-	
+	//TODO  done
 	@GetMapping("/type")
 	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam(value = "countryName") String countryName) throws Exception;
-	
+	//TODO  done
 	@GetMapping("/institute/type")
 	public ResponseEntity<?> getInstituteType() throws Exception;
-	
+	//TODO  done
 	@PostMapping("/search")
 	public ResponseEntity<?> instituteSearch(@RequestBody final CourseSearchDto request) throws Exception;
 	
@@ -60,29 +60,29 @@ public interface InstituteInterface {
 	
 	@PostMapping("/recommended")
 	public ResponseEntity<?> getAllRecommendedInstitutes(@RequestBody final CourseSearchDto request) throws Exception;
-	
+	//TODO  done
 	@GetMapping("/city/{cityName}")
 	public ResponseEntity<?> getInstituteByCityName(@Valid @PathVariable final String cityName) throws Exception;
-	
+	//TODO  done
 	@PostMapping()
 	public ResponseEntity<?> save(@Valid @RequestBody final ValidList<InstituteRequestDto> institutes) throws Exception;
-
+	//TODO  done
 	@PutMapping("/{instituteId}")
 	public ResponseEntity<?> update(@RequestHeader("userId") final String userId, @PathVariable final String instituteId,
 			@Valid @RequestBody final InstituteRequestDto institute) throws Exception;
-
+	//TODO  done
 	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllInstitute(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize) throws Exception;
-	
+	//TODO  done
 	@GetMapping("/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getAllInstitute(@PathVariable final String searchKey, @PathVariable final Integer pageNumber, 
 				@PathVariable final Integer pageSize) throws Exception;
-	
+	//TODO  done
 	@GetMapping("/{instituteId}")
 	public ResponseEntity<?> get(@RequestHeader("userId") final String userId, @PathVariable final String instituteId,
 			@RequestParam(name = "is_readable_id", required = false) boolean isReadableId)
 			throws Exception;
-
+	//TODO  done
 	@GetMapping("/search/{searchText}")
 	public ResponseEntity<?> searchInstitute(@Valid @PathVariable final String searchText) throws Exception;
 	
@@ -97,10 +97,10 @@ public interface InstituteInterface {
 	
 	@DeleteMapping("/{instituteId}")
 	public ResponseEntity<?> delete(@PathVariable final String instituteId) throws ValidationException;
-	
+	//TODO  Course entity involved in below API
 	@GetMapping("/images/{instituteId}")
 	public ResponseEntity<?> getInstituteImage(@PathVariable final String instituteId) throws Exception;
-	
+	//TODO  Course entity involved in below API
 	@GetMapping("/totalCourseCount")
 	public ResponseEntity<?> getTotalCourseForInstitute(@RequestParam(value = "instituteId", required = true) final String instituteId)
 			throws ValidationException;
@@ -112,26 +112,26 @@ public interface InstituteInterface {
 	@GetMapping("/history/world/ranking")
 	public ResponseEntity<?> getHistoryOfWorldRanking(@RequestParam(value = "instituteId", required = true) final String instituteId)
 			throws ValidationException;
-	
+	//TODO  Course entity involved in below API
 	@PostMapping("/domesticRankingForCourse")
 	public ResponseEntity<?> getDomesticRanking(@RequestBody final List<String> courseIds) throws ValidationException;
 	
 	@PostMapping("/nearest")
 	public ResponseEntity<?> getNearestInstituteList(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception;
-	
+	//TODO  below method calls 3 different services
 	@GetMapping("/names/distinct/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getDistinctInstututes(@PathVariable final Integer pageNumber,
+	public ResponseEntity<?> getDistinctInstitutes(@PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize, @RequestParam(required = false) final String name)
 			throws Exception;
-	
+	//TODO  Course entity involved in below API
 	@PostMapping("/bounded/area/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> getBoundedInstituteList(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize, 
 			@RequestBody List<LatLongDto> latLongDto) throws ValidationException;
-	
+	//TODO  Course entity involved in below API
 	@GetMapping(value = "/institute/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")
 	public ResponseEntity<?> getInstituteByCountryName(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
 			@PathVariable String countryName) throws NotFoundException;
-
+	//TODO below API returns Faculty, that is associated with Course Entity
 	@GetMapping("/faculty/instituteId/{instituteId}")
 	public ResponseEntity<?> getInstituteFaculties(@PathVariable final String instituteId) throws NotFoundException;
 

@@ -2,6 +2,7 @@ package testController;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yuzee.app.YuzeeApplication;
+import com.yuzee.app.bean.InstituteCategoryType;
 import com.yuzee.app.dto.*;
 import com.yuzee.common.lib.dto.GenericWrapperDto;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
@@ -29,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -612,5 +614,278 @@ public class InstituteController {
         ResponseEntity<InstituteRequestDto> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteID, HttpMethod.GET, entity, InstituteRequestDto.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+    @DisplayName("instituteFilter")
+    public void testInstituteFilter(){
+        ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+        ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+        instituteFundingDto.add(0,new InstituteFundingDto( UUID.randomUUID().toString()));
 
+        List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+        ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+        instituteProviderCode.setName("ProviderName");
+        instituteProviderCode.setValue(("ProviderValue"));
+        listOfInstituteProviderCode.add(instituteProviderCode);
+
+        InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+        instituteRequestDto.setName("GIF");
+        instituteRequestDto.setCityName("HYDERABAD");
+        instituteRequestDto.setCountryName("INDIA");
+        instituteRequestDto.setEditAccess(true);
+        instituteRequestDto.setAboutInfo("INTERNATIONAL Medical College, HYDERABAD, is accredited by the French Council and is a small, friendly, city-centre English language school.Our aim is to give you a warm welcome and an excellent opportunity to learn English in a caring, friendly atmosphere. Our courses, from Beginner to Advanced level, run throughout the year. We also offer exam preparation. We only teach adults (from a minimum age of 18).The School is just 3 minutes' walk from the central bus station and near many restaurants, shops and the colleges of the University of Cambridge. Students from more than 90 different countries have studied with us and there is usually a good mix of nationalities in the school.The School was founded in 1996 by a group of Christians in Cambridge. ");
+        instituteRequestDto.setDescription("Test update method Description");
+        instituteRequestDto.setInstituteFundings(instituteFundingDto);
+        instituteRequestDto.setEnrolmentLink("https://www.centrallanguageschool.com/enrol");
+        instituteRequestDto.setWhatsNo("https://api.whatsapp.com/send?phone=60173010314");
+        instituteRequestDto.setCourseStart("March, April, May");
+        instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+        instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+        instituteRequestDto.setLatitude(88.425375);
+        instituteRequestDto.setLongitude(46.103835);
+        instituteRequestDto.setEmail("GIF@testEmail.com");
+        instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+        instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+        instituteRequestDto.setReadableId("GIF");
+        instituteRequestDto.setId(UUID.randomUUID());
+        HttpHeaders createHeaders = new HttpHeaders();
+        createHeaders.setContentType(MediaType.APPLICATION_JSON);
+        listOfInstituteRequestDto.add(instituteRequestDto);
+        listOfInstituteProviderCode.add(instituteProviderCode);
+        instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+        HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto, createHeaders);
+        ResponseEntity<InstituteRequestDto> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, createEntity,
+                InstituteRequestDto.class);
+        assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseInstitute.getBody()).isEqualTo(instituteRequestDto);
+        InstituteFilterDto instituteFilterDto = new InstituteFilterDto();
+        instituteFilterDto.setCityName("HYDERABAD");
+        instituteFilterDto.setCountryName("INDIA");
+        instituteFilterDto.setInstituteId(instituteRequestDto.getInstituteId());
+        instituteFilterDto.setDatePosted("2021-02-17");
+        instituteFilterDto.setName(instituteRequestDto.getName());
+        HttpHeaders headers = new HttpHeaders();
+        createHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<InstituteFilterDto> entity = new HttpEntity<>(instituteFilterDto, headers);
+        ResponseEntity<InstituteFilterDto> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "filter", HttpMethod.GET, entity, InstituteFilterDto.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(instituteFilterDto);
+    }
+
+    @DisplayName("testGetAllCategoryType")
+    @Test
+    public void testGetAllCategoryType(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "allCategoryType", HttpMethod.GET, entity, String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @DisplayName("testGetAllInstituteType")
+    @Test
+    public void testGetAllInstituteType(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.GET, entity, String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @DisplayName("testDeleteInstitute")
+    @Test
+    public void testDeleteInstitute(){
+        ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+        ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+        instituteFundingDto.add(0,new InstituteFundingDto( UUID.randomUUID().toString()));
+
+        List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+        ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+        instituteProviderCode.setName("ProviderName");
+        instituteProviderCode.setValue(("ProviderValue"));
+        listOfInstituteProviderCode.add(instituteProviderCode);
+
+        InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+        instituteRequestDto.setName("TCS");
+        instituteRequestDto.setCityName("New Delhi");
+        instituteRequestDto.setCountryName("INDIA");
+        instituteRequestDto.setEditAccess(true);
+        instituteRequestDto.setAboutInfo("INTERNATIONAL Engineering College, New Delhi, is accredited by the New Delhi Council and is a small, friendly, city-centre English language school.Our aim is to give you a warm welcome and an excellent opportunity to learn English in a caring, friendly atmosphere. Our courses, from Beginner to Advanced level, run throughout the year. We also offer exam preparation. We only teach adults (from a minimum age of 18).The School is just 3 minutes' walk from the central bus station and near many restaurants, shops and the colleges of the University of Cambridge. Students from more than 90 different countries have studied with us and there is usually a good mix of nationalities in the school.The School was founded in 1996 by a group of Christians in Cambridge. ");
+        instituteRequestDto.setDescription("Test update method Description");
+        instituteRequestDto.setInstituteFundings(instituteFundingDto);
+        instituteRequestDto.setEnrolmentLink("https://www.centrallanguageschool.com/enrol");
+        instituteRequestDto.setWhatsNo("https://api.whatsapp.com/send?phone=60173010314");
+        instituteRequestDto.setCourseStart("March, April, May");
+        instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+        instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+        instituteRequestDto.setLatitude(88.425375);
+        instituteRequestDto.setLongitude(46.103835);
+        instituteRequestDto.setEmail("TCS@testEmail.com");
+        instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+        instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+        instituteRequestDto.setReadableId("TCS");
+        instituteRequestDto.setId(UUID.randomUUID());
+        HttpHeaders createHeaders = new HttpHeaders();
+        createHeaders.setContentType(MediaType.APPLICATION_JSON);
+        listOfInstituteRequestDto.add(instituteRequestDto);
+        listOfInstituteProviderCode.add(instituteProviderCode);
+        instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+        HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto, createHeaders);
+        ResponseEntity<InstituteRequestDto> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, createEntity,
+                InstituteRequestDto.class);
+        assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseInstitute.getBody()).isEqualTo(instituteRequestDto);
+        ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteRequestDto.getId(), HttpMethod.DELETE, null,
+                String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @DisplayName("getHistoryOfDomesticRanking")
+    @Test
+    public void testGetHistoryOfDomesticRanking(){
+        ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+        ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+        instituteFundingDto.add(0,new InstituteFundingDto( UUID.randomUUID().toString()));
+
+        List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+        ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+        instituteProviderCode.setName("ProviderName");
+        instituteProviderCode.setValue(("ProviderValue"));
+        listOfInstituteProviderCode.add(instituteProviderCode);
+
+        InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+        instituteRequestDto.setName("JEE");
+        instituteRequestDto.setCityName("KOTA");
+        instituteRequestDto.setCountryName("INDIA");
+        instituteRequestDto.setEditAccess(true);
+        instituteRequestDto.setAboutInfo("INTERNATIONAL Engineering College, KOTA, is accredited by the KOTA Council and is a small, friendly, city-centre English language school.Our aim is to give you a warm welcome and an excellent opportunity to learn English in a caring, friendly atmosphere. Our courses, from Beginner to Advanced level, run throughout the year. We also offer exam preparation. We only teach adults (from a minimum age of 18).The School is just 3 minutes' walk from the central bus station and near many restaurants, shops and the colleges of the University of Cambridge. Students from more than 90 different countries have studied with us and there is usually a good mix of nationalities in the school.The School was founded in 1996 by a group of Christians in Cambridge. ");
+        instituteRequestDto.setDescription("Test update method Description");
+        instituteRequestDto.setInstituteFundings(instituteFundingDto);
+        instituteRequestDto.setEnrolmentLink("https://www.centrallanguageschool.com/enrol");
+        instituteRequestDto.setWhatsNo("https://api.whatsapp.com/send?phone=60173010314");
+        instituteRequestDto.setCourseStart("March, April, May");
+        instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+        instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+        instituteRequestDto.setLatitude(88.425375);
+        instituteRequestDto.setLongitude(46.103835);
+        instituteRequestDto.setEmail("JEE@testEmail.com");
+        instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+        instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+        instituteRequestDto.setReadableId("JEE");
+        instituteRequestDto.setId(UUID.randomUUID());
+        HttpHeaders createHeaders = new HttpHeaders();
+        createHeaders.setContentType(MediaType.APPLICATION_JSON);
+        listOfInstituteRequestDto.add(instituteRequestDto);
+        listOfInstituteProviderCode.add(instituteProviderCode);
+        instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+        HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto, createHeaders);
+        ResponseEntity<InstituteRequestDto> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, createEntity,
+                InstituteRequestDto.class);
+        assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseInstitute.getBody()).isEqualTo(instituteRequestDto);
+        Map<String, String> params = new HashMap<>();
+        params.put("instituteId", Objects.requireNonNull(responseInstitute.getBody()).getInstituteId());
+        ResponseEntity<InstituteDomesticRankingHistoryDto> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "history" + PATH_SEPARATOR + "domestic" + PATH_SEPARATOR + "ranking", HttpMethod.GET, createEntity,
+                InstituteDomesticRankingHistoryDto.class, params);
+        InstituteDomesticRankingHistoryDto domesticRankingHistoryDto = new InstituteDomesticRankingHistoryDto();
+        domesticRankingHistoryDto.setDomesticRanking(responseInstitute.getBody().getDomesticRanking());
+        domesticRankingHistoryDto.setInstituteName(responseInstitute.getBody().getName());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(domesticRankingHistoryDto);
+    }
+    @DisplayName("testGetHistoryOfWolrdRanking")
+    @Test
+    public void testGetHistoryOfWorldRanking(){
+        ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+        ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+        instituteFundingDto.add(0,new InstituteFundingDto( UUID.randomUUID().toString()));
+
+        List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+        ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+        instituteProviderCode.setName("ProviderName");
+        instituteProviderCode.setValue(("ProviderValue"));
+        listOfInstituteProviderCode.add(instituteProviderCode);
+
+        InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+        instituteRequestDto.setName("AIEEE");
+        instituteRequestDto.setCityName("RAJENDRANAGAR");
+        instituteRequestDto.setCountryName("INDIA");
+        instituteRequestDto.setEditAccess(true);
+        instituteRequestDto.setAboutInfo("INTERNATIONAL Engineering College, RAJENDRANAGAR, is accredited by the RAJENDRANAGAR Council and is a small, friendly, city-centre English language school.Our aim is to give you a warm welcome and an excellent opportunity to learn English in a caring, friendly atmosphere. Our courses, from Beginner to Advanced level, run throughout the year. We also offer exam preparation. We only teach adults (from a minimum age of 18).The School is just 3 minutes' walk from the central bus station and near many restaurants, shops and the colleges of the University of Cambridge. Students from more than 90 different countries have studied with us and there is usually a good mix of nationalities in the school.The School was founded in 1996 by a group of Christians in Cambridge. ");
+        instituteRequestDto.setDescription("Test update method Description");
+        instituteRequestDto.setInstituteFundings(instituteFundingDto);
+        instituteRequestDto.setEnrolmentLink("https://www.centrallanguageschool.com/enrol");
+        instituteRequestDto.setWhatsNo("https://api.whatsapp.com/send?phone=60173010314");
+        instituteRequestDto.setCourseStart("March, April, May");
+        instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+        instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+        instituteRequestDto.setLatitude(88.425375);
+        instituteRequestDto.setLongitude(46.103835);
+        instituteRequestDto.setEmail("AIEEE@testEmail.com");
+        instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+        instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+        instituteRequestDto.setReadableId("AIEEE");
+        instituteRequestDto.setId(UUID.randomUUID());
+        HttpHeaders createHeaders = new HttpHeaders();
+        createHeaders.setContentType(MediaType.APPLICATION_JSON);
+        listOfInstituteRequestDto.add(instituteRequestDto);
+        listOfInstituteProviderCode.add(instituteProviderCode);
+        instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+        HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto, createHeaders);
+        ResponseEntity<InstituteRequestDto> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, createEntity,
+                InstituteRequestDto.class);
+        assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseInstitute.getBody()).isEqualTo(instituteRequestDto);
+        Map<String, String> params = new HashMap<>();
+        params.put("instituteId", Objects.requireNonNull(responseInstitute.getBody()).getInstituteId());
+        ResponseEntity<InstituteWorldRankingHistoryDto> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "history" + PATH_SEPARATOR + "world" + PATH_SEPARATOR + "ranking", HttpMethod.GET, createEntity,
+                InstituteWorldRankingHistoryDto.class, params);
+        InstituteWorldRankingHistoryDto domesticRankingHistoryDto = new InstituteWorldRankingHistoryDto();
+        domesticRankingHistoryDto.setWorldRanking(responseInstitute.getBody().getWorldRanking());
+        domesticRankingHistoryDto.setInstituteName(responseInstitute.getBody().getName());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(domesticRankingHistoryDto);
+    }
+    //TODO can not implement below method. Faculty has no mapping Institute Entity.
+    @DisplayName("testGetInstituteFaculties")
+    @Test
+    public void testGetInstituteFaculties(){
+        ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+        ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+        instituteFundingDto.add(0,new InstituteFundingDto( UUID.randomUUID().toString()));
+
+        List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+        ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+        instituteProviderCode.setName("ProviderName");
+        instituteProviderCode.setValue(("ProviderValue"));
+        listOfInstituteProviderCode.add(instituteProviderCode);
+
+        InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+        instituteRequestDto.setName("AIEEE");
+        instituteRequestDto.setCityName("RAJENDRANAGAR");
+        instituteRequestDto.setCountryName("INDIA");
+        instituteRequestDto.setEditAccess(true);
+        instituteRequestDto.setAboutInfo("INTERNATIONAL Engineering College, RAJENDRANAGAR, is accredited by the RAJENDRANAGAR Council and is a small, friendly, city-centre English language school.Our aim is to give you a warm welcome and an excellent opportunity to learn English in a caring, friendly atmosphere. Our courses, from Beginner to Advanced level, run throughout the year. We also offer exam preparation. We only teach adults (from a minimum age of 18).The School is just 3 minutes' walk from the central bus station and near many restaurants, shops and the colleges of the University of Cambridge. Students from more than 90 different countries have studied with us and there is usually a good mix of nationalities in the school.The School was founded in 1996 by a group of Christians in Cambridge. ");
+        instituteRequestDto.setDescription("Test update method Description");
+        instituteRequestDto.setInstituteFundings(instituteFundingDto);
+        instituteRequestDto.setEnrolmentLink("https://www.centrallanguageschool.com/enrol");
+        instituteRequestDto.setWhatsNo("https://api.whatsapp.com/send?phone=60173010314");
+        instituteRequestDto.setCourseStart("March, April, May");
+        instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+        instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+        instituteRequestDto.setLatitude(88.425375);
+        instituteRequestDto.setLongitude(46.103835);
+        instituteRequestDto.setEmail("AIEEE@testEmail.com");
+        instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+        instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+        instituteRequestDto.setReadableId("AIEEE");
+        instituteRequestDto.setId(UUID.randomUUID());
+        HttpHeaders createHeaders = new HttpHeaders();
+        createHeaders.setContentType(MediaType.APPLICATION_JSON);
+        listOfInstituteRequestDto.add(instituteRequestDto);
+        listOfInstituteProviderCode.add(instituteProviderCode);
+        instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+        HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto, createHeaders);
+        ResponseEntity<InstituteRequestDto> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, createEntity,
+                InstituteRequestDto.class);
+        assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseInstitute.getBody()).isEqualTo(instituteRequestDto);
+    }
 }

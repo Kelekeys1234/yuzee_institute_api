@@ -347,8 +347,8 @@ public class InstituteController implements InstituteInterface {
 	}
 	
 	@Override
-	public ResponseEntity<?> getDistinctInstututes(final Integer pageNumber, final Integer pageSize, final String name) throws Exception {
-		log.debug("Inside getDistinctInstututes() method");
+	public ResponseEntity<?> getDistinctInstitutes(final Integer pageNumber, final Integer pageSize, final String name) throws Exception {
+		log.debug("Inside getDistinctInstitutes() method");
 		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		log.info("Getting total count of institute having instituteName = {}", name);
 		int totalCount = instituteProcessor.getDistinctInstituteCount(name);
@@ -360,7 +360,7 @@ public class InstituteController implements InstituteInterface {
 		paginationResponseDto.setResponse(instituteList);
 		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
-		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
+		paginationResponseDto.setTotalCount((long) totalCount);
 		paginationResponseDto.setPageNumber(paginationUtilDto.getPageNumber());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 		return new GenericResponseHandlers.Builder().setData(paginationResponseDto).setMessage(messageTranslator.toLocale("institute.list.retrieved"))

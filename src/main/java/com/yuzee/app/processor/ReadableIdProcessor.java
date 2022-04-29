@@ -90,7 +90,7 @@ public class ReadableIdProcessor {
 	}
 	
 	public ReadableIdExistsDto checkIfInstituteReadableIdExists(String readableId) {
-		List<Institute> sameCodeInsts = instiuteDao.findByReadableIdIn(Arrays.asList(readableId));
+		List<Institute> sameCodeInsts = instiuteDao.findByReadableIdIn(List.of(readableId));
 		ReadableIdExistsDto dto = new ReadableIdExistsDto();
 		dto.setAlreadyExists(false);
 		if (!CollectionUtils.isEmpty(sameCodeInsts)) {

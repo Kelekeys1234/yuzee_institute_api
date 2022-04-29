@@ -74,8 +74,7 @@ public class InstituteTypeProcessor {
 	}
 
 	public List<InstituteTypeDto> getAllInstituteType() {
-	//	return iInstituteTypeDAO.getAll();
-		return null;
+		return instituteDAO.getAllInstituteType();
 	}
 
 	public List<InstituteTypeDto> getInstituteTypeByCountryName(String countryName) {

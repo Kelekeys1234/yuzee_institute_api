@@ -12,11 +12,19 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
+@EqualsAndHashCode
+@NoArgsConstructor
+@Document(collection = "InstituteCategoryType")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteCategoryType implements Serializable {
 
     @Id

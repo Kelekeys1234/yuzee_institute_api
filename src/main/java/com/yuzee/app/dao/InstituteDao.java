@@ -73,7 +73,7 @@ public interface InstituteDao {
 			String searchKeyword);
 
 	public List<InstituteResponseDto> getInstitutesByInstituteName(Integer startIndex, Integer pageSize,
-			String institueName);
+			String instituteName);
 
 	public int getDistinctInstituteCountByName(String skillName);
 
@@ -115,4 +115,8 @@ public interface InstituteDao {
 	List<InstituteType> getByCountryName(String countryName);
 
 	List<String> findIntakesById(String id);
+
+	List<InstituteTypeDto> getAllInstituteType();
+
+	List<Institute> getBySearchText(String searchText);
 }
