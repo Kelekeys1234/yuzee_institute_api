@@ -1,6 +1,8 @@
 package com.yuzee.app.dao.impl;
 
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -467,6 +469,11 @@ public class InstituteDaoImpl implements InstituteDao {
                                            final InstituteFilterDto instituteFilterDto) {
         Query mongoQuery = new Query();
         Date postedDate = null;
+        try {
+            postedDate = new SimpleDateFormat("MM/dd/yyyy").parse(instituteFilterDto.getDatePosted());
+        } catch (Exception e){
+            log.error(e.getMessage());
+        }
         String updatedDate = null;
         if(instituteFilterDto.getDatePosted() != null) {
              postedDate = DateUtil.convertStringDateToDate(instituteFilterDto.getDatePosted());
@@ -642,13 +649,17 @@ public class InstituteDaoImpl implements InstituteDao {
     }
 
     @Override
-    public InstituteCategoryType getInstituteCategoryType(final String instituteCategoryTypeId) {
-        InstituteCategoryType obj = null;
-        if (instituteCategoryTypeId != null) {
-            Session session = sessionFactory.getCurrentSession();
-            obj = session.get(InstituteCategoryType.class, instituteCategoryTypeId);
-        }
-        return obj;
+    public InstituteCategoryType getInstituteCategoryType(final String id, final String instituteCategoryType) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("instituteCategoryType").is(instituteCategoryType));
+
+        return mongoTemplate.findById(id, InstituteCategoryType.class, "institute");
+//        InstituteCategoryType obj = null;
+//        if (instituteCategoryTypeId != null) {
+//            Session session = sessionFactory.getCurrentSession();
+//            obj = session.get(InstituteCategoryType.class, instituteCategoryTypeName);
+//        }
+//        return obj;
     }
 
     @Override

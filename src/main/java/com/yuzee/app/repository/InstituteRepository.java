@@ -60,6 +60,7 @@ public interface InstituteRepository extends MongoRepository<Institute, UUID> {
 
 	 Institute findByReadableId(String readableId);
 
+	 @Query(value = "{ '_id' : {'$in' : ?0 } }")
 	 List<Institute> findAllById(List<String> instituteIds);
 
    // Institute getbyId(UUID id);

@@ -18,8 +18,10 @@ public class InstituteAdditionalInfoController implements InstituteAdditionalInf
 
 	@Autowired
 	private InstituteAdditionalInfoProcessor instituteAdditionalInfoProcessor;
+
 	@Autowired
 	private MessageTranslator messageTranslator;
+
 	@Override
 	public ResponseEntity<?> addInstituteAdditionalInfo(String userId, String instituteId,
 			@Valid InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception {

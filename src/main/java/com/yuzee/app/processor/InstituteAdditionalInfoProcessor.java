@@ -48,38 +48,35 @@ public class InstituteAdditionalInfoProcessor {
 		log.debug("Inside addInstituteAdditionalInfo() method");
 		// TODO validate user ID passed in request have access to modify resource
 		log.info("Getting institute having institute id: {}", instituteId);
-		Optional<Institute> instituteFromFb = instituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
-		if (!instituteFromFb.isPresent()) {
+		Institute instituteFromFb = instituteDAO.get(UUID.fromString(instituteId));
+		if (ObjectUtils.isEmpty(instituteFromFb)) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
 		}
-		Institute institute = instituteFromFb.get();
 		log.info("Getting institute additional info for institute id: {}", instituteId);
-		if (!StringUtils.equals(institute.getAboutInfo(), instituteAdditionalInfoDto.getAboutInfo())) {
-			institute.setAboutInfo(instituteAdditionalInfoDto.getAboutInfo());
-			institute.setUpdatedBy(userId);
-			institute.setUpdatedOn(new Date());
+		if (!StringUtils.equals(instituteFromFb.getAboutInfo(), instituteAdditionalInfoDto.getAboutInfo())) {
+			instituteFromFb.setAboutInfo(instituteAdditionalInfoDto.getAboutInfo());
+			instituteFromFb.setUpdatedBy(userId);
+			instituteFromFb.setUpdatedOn(new Date());
 		}
-		InstituteAdditionalInfo instituteAdditionalInfoFromDB = institute.getInstituteAdditionalInfo();
+		InstituteAdditionalInfo instituteAdditionalInfoFromDB = instituteFromFb.getInstituteAdditionalInfo();
 		InstituteAdditionalInfo instituteAdditionalInfo = modelMapper.map(instituteAdditionalInfoDto,
 				InstituteAdditionalInfo.class);
-		institute.setInstituteAdditionalInfo(instituteAdditionalInfo);
+		instituteFromFb.setInstituteAdditionalInfo(instituteAdditionalInfo);
 		log.info("Persisting institute into Db with updated institute addition info");
-		instituteDAO.addUpdateInstitute(institute);
+		instituteDAO.addUpdateInstitute(instituteFromFb);
 	}
 
 	public InstituteAdditionalInfoDto getInstituteAdditionalInfo(String instituteId) throws NotFoundException {
 		log.debug("Inside getInstituteAdditionalInfo() method");
 
 		log.info("Getting institute having institute id: {}", instituteId);
-		Optional<Institute> instituteFromFb = instituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
-		if (!instituteFromFb.isPresent()) {
-			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
+		Institute institute = instituteDAO.get(UUID.fromString(instituteId));
+		if (ObjectUtils.isEmpty(institute)) {
+			log.error(messageTranslator.toLocale("institute_info.id.notFound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteId));
 		} else {
-			Institute institute = instituteFromFb.get();
 			log.info("Getting Institute Additional Info for institute id: {}", instituteId);
-
 			InstituteAdditionalInfo instituteAdditionalInfoFromDB = institute.getInstituteAdditionalInfo();
 			if (!ObjectUtils.isEmpty(instituteAdditionalInfoFromDB)) {
 				log.info("Institute Additional Info not null for institute id: {}",

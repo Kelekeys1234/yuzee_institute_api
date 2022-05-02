@@ -30,7 +30,7 @@ import lombok.extern.apachecommons.CommonsLog;
 public class InstituteBasicInfoProcessor {
 
 	@Autowired
-	private InstituteDao iInstituteDAO;
+	private InstituteDao instituteDAO;
 	
 	@Autowired
 	private CourseDao courseDAO;
@@ -43,33 +43,33 @@ public class InstituteBasicInfoProcessor {
 
 	@Autowired
 	private MessageTranslator messageTranslator;
-	
+
 	@Transactional(rollbackOn = Throwable.class)
 	public void addUpdateInstituteBasicInfo(String userId, String instituteId, InstituteBasicInfoDto instituteBasicInfoDto ) throws Exception {
 		log.debug("Inside addUpdateInstituteBasicInfo() method");
 		//TODO validate user ID passed in request have access to modify resource
 		log.info("Getting institute having institute id "+instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
-		if (!instituteFromFb.isPresent()) {
-			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
+		Optional<Institute> instituteFromFb = instituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
+		if (instituteFromFb.isEmpty()) {
+			log.error(messageTranslator.toLocale("institute_info.id.notFound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteId));
 		}
 		Institute institute = instituteFromFb.get();
 		log.info("adding updating institute basic info for institute id "+instituteId+ " by user id "+userId);
 		institute.setName(instituteBasicInfoDto.getNameOfUniversity());
 		institute.setDescription(instituteBasicInfoDto.getDescription());
 		log.info("validating institute type Id passed in request");
-		InstituteCategoryType instituteCategoryType = iInstituteDAO.getInstituteCategoryType(instituteBasicInfoDto.getInstituteCategoryTypeId());
-		
-		if (ObjectUtils.isEmpty(instituteCategoryType)) {
-			log.error(messageTranslator.toLocale("institute_info.category.id.notfound",instituteBasicInfoDto.getInstituteCategoryTypeId(),Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.category.id.notfound",instituteBasicInfoDto.getInstituteCategoryTypeId()));
+		InstituteCategoryType instituteCategoryType = new InstituteCategoryType();
+		if (ObjectUtils.isEmpty(instituteBasicInfoDto.getInstituteCategoryTypeName())) {
+			log.error(messageTranslator.toLocale("institute_info.category.id.notFound",instituteBasicInfoDto.getInstituteCategoryTypeName(), Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.category.id.notFound",instituteBasicInfoDto.getInstituteCategoryTypeName()));
 		}
+		instituteCategoryType.setName(instituteBasicInfoDto.getInstituteCategoryTypeName());
 		institute.setInstituteCategoryType(instituteCategoryType);
 		log.info("persisting institute having id "+instituteId+ " with updated basic info");
-		iInstituteDAO.addUpdateInstitute(institute);
+		instituteDAO.addUpdateInstitute(institute);
 	}
-	
+
 	@Transactional
 	public InstituteBasicInfoDto getInstituteBasicInfo (String userId , String instituteId, String caller, boolean includeInstituteLogo, boolean includeDetail) throws Exception {
 		InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto();
@@ -79,10 +79,10 @@ public class InstituteBasicInfoProcessor {
 			//TODO validate user ID passed in request have access to modify resource
 		}
 		log.info("Getting institute having institute id "+instituteId);
-		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
-		if (!instituteFromFb.isPresent()) {
-			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
+		Optional<Institute> instituteFromFb = instituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
+		if (instituteFromFb.isEmpty()) {
+			log.error(messageTranslator.toLocale("institute_info.id.notFound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteId));
 		}
 		Institute institute = instituteFromFb.get();
 		log.info("Getting institute logo for institute id "+instituteId);
@@ -90,10 +90,10 @@ public class InstituteBasicInfoProcessor {
 			try {
 				listOfStorageDto = storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.LOGO);
 			} catch (Exception e) {
-				log.error("Not able to fetch logo for institue id "+instituteId);
-			}			
+				log.error("Not able to fetch logo for institute id "+instituteId);
+			}
 		}
-		
+
 		if (!CollectionUtils.isEmpty(listOfStorageDto)) {
 			log.info("Setting logo URL for institute id "+instituteId);
 			instituteBasicInfoDto.setInstituteLogoPath(listOfStorageDto.get(0).getFileURL());
@@ -105,7 +105,6 @@ public class InstituteBasicInfoProcessor {
 		instituteBasicInfoDto.setStateName(institute.getState());
 		instituteBasicInfoDto.setAddress(institute.getAddress());
 		if (!ObjectUtils.isEmpty(institute.getInstituteCategoryType())) {
-			instituteBasicInfoDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId() );
 			instituteBasicInfoDto.setInstituteCategoryTypeName(institute.getInstituteCategoryType().getName());
 		}
 		instituteBasicInfoDto.setCreatedBy(institute.getCreatedBy());
@@ -115,8 +114,8 @@ public class InstituteBasicInfoProcessor {
 			instituteBasicInfoDto.setTotalCourses(courseDAO.getTotalCourseCountForInstitute(institute.getId().toString()));
 			log.info("Calling review service to fetch user average review for instituteId");
 			Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview(EntityTypeEnum.INSTITUTE.name(),
-					Arrays.asList(instituteId));
-			
+					List.of(instituteId));
+
 			ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteId);
 			if (!ObjectUtils.isEmpty(reviewStarDto)) {
 				instituteBasicInfoDto.setStars(reviewStarDto.getReviewStars());

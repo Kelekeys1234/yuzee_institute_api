@@ -140,17 +140,17 @@ public interface InstituteInterface {
 
 	@GetMapping("/institute/multiple/id")
 	public ResponseEntity<?> getInstitutesByIdList(@RequestParam(name = "institute_ids", required = true) List<String> instituteIds) throws ValidationException, NotFoundException, InvokeException, Exception;
-
+	//TODO Done
 	@GetMapping("/institute/{readableId}/exists")
 	public ResponseEntity<?> instituteExistsByReadableId(@PathVariable final String readableId) throws ValidationException, NotFoundException, InvokeException, Exception;
-	
+	//TODO below API calls many other micro-services.
 	@GetMapping("/institute/{instituteId}/verify")
 	public ResponseEntity<?> getInstituteVerificationStatus(@PathVariable final String instituteId);
-
+	//TODO below API calls many other micro-services.
 	@GetMapping("/institute/verification-status")
 	public ResponseEntity<?> getMultipleInstituteVerificationStatus(
 			@RequestParam(name = "institute_ids", required = true) List<String> instituteIds);
-	
+	//TODO below API calls many other micro-services.
 	@PutMapping(path = "/admin/institute/verify_institutes/{verified}")
 	public ResponseEntity<Object> verifyInstitutes(@RequestHeader("userId") String userId, 
 			@RequestParam("verified_institute_ids") List<String> verifiedInstituteIds, @PathVariable("verified") final boolean verified);

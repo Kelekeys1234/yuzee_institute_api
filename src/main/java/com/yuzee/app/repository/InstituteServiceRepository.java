@@ -17,7 +17,7 @@ public interface InstituteServiceRepository extends MongoRepository<InstituteSer
 
 	 InstituteService findByInstituteIdAndServiceId(String instituteId, String serviceId);
 
-	@Query("{ id : { $all: ?0 } }")
+	@Query(value = "{ 'id' : { $all: ?0 } }")
 	 List<CountDto> countByInstituteIdsIn(List<String> instituteIds);
 
 	//@Query("SELECT new com.yuzee.common.lib.dto.CountDto(s.institute.id, count(s)) from InstituteService s JOIN s.institute i WHERE i.id IN :instituteIds group by i.id")

@@ -23,12 +23,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
-@Document(collection = "InstituteCategoryType")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteCategoryType implements Serializable {
-
-    @Id
-    private String id;
 
     private String name;
 

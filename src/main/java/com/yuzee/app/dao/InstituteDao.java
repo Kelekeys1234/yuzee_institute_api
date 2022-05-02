@@ -38,7 +38,7 @@ public interface InstituteDao {
 
 	public int findTotalCountForInstituteAutoSearch(String searchKey);
 
-	public InstituteCategoryType getInstituteCategoryType(String instituteCategoryTypeId);
+	public InstituteCategoryType getInstituteCategoryType(String instituteId, String instituteCategoryTypeId);
 
 	public List<Institute> getSecondaryCampus(String countryId, String cityId, String name);
 

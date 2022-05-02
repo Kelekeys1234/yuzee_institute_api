@@ -199,7 +199,7 @@ public class InstituteProcessor {
 
     @Transactional(rollbackFor = {ConstraintVoilationException.class, Exception.class})
     public List<InstituteResponseDto> getInstituteByCityName(final String cityName) {
-        log.debug("Inside getInstitudeByCityId() method");
+        log.debug("Inside getInstituteByCityId() method");
         List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
         log.info("fetching institutes from DB having cityName = " + cityName);
         List<Institute> institutes = instituteRepository.findByCityName(cityName);
@@ -532,7 +532,7 @@ public class InstituteProcessor {
         accrediatedDetailDao.deleteAccrediationDetailByEntityId(institute.getId().toString());
         if (!CollectionUtils.isEmpty(accreditation)) {
             log.info("Start iterating new accrediation coming in request, if it is not null");
-            accreditation.stream().forEach(accreditedInstitute -> {
+            accreditation.forEach(accreditedInstitute -> {
                 AccrediatedDetail accreditedInstituteDetail = new AccrediatedDetail();
                 accreditedInstituteDetail.setEntityId(institute.getId().toString());
                 accreditedInstituteDetail.setEntityType("INSTITUTE");
@@ -547,8 +547,8 @@ public class InstituteProcessor {
     }
 
     @Transactional(rollbackFor = {ConstraintVoilationException.class, Exception.class})
-    private InstituteCategoryType getInstituteCategoryType(final String instituteCategoryTypeId) {
-        return instituteDao.getInstituteCategoryType(instituteCategoryTypeId);
+    private InstituteCategoryType getInstituteCategoryType(final String instituteId, final String instituteCategoryTypeName) {
+        return instituteDao.getInstituteCategoryType(instituteId, instituteCategoryTypeName);
     }
 
 
@@ -655,7 +655,6 @@ public class InstituteProcessor {
         instituteRequestDto.setIntakes(listOfInstituteIntakes);
         if (institute.getInstituteCategoryType() != null) {
             log.info("Adding institute category type in final Response");
-            instituteRequestDto.setInstituteCategoryTypeId(institute.getInstituteCategoryType().getId());
         }
 //        TimingDto instituteTimingResponseDto = instituteTimingProcessor
 //                .getTimingResponseDtoByInstituteId(sameUuid);
@@ -1277,7 +1276,7 @@ public class InstituteProcessor {
     }
 
     public InstituteVerficationDto getInstituteVerificationStatus(String instituteId) {
-        return getMultipleInstituteVerificationStatus(Arrays.asList(instituteId)).get(0);
+        return getMultipleInstituteVerificationStatus(List.of(instituteId)).get(0);
     }
 
     @Transactional

@@ -27,10 +27,9 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
 @Data
 @NoArgsConstructor
-@Document(collection = "institute_campus")
-//@CompoundIndexes({ @CompoundIndex(name = "UK_IC_SI_DI", def = "{'sourceInstitute' : 1}, {'destinationInstitute' : 1}", unique = true) })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteCampus{
 
@@ -38,6 +37,7 @@ public class InstituteCampus{
 	private String id;
 
 	private String instituteId;
+
 //	private Institute sourceInstitute;
 //
 //	private Institute destinationInstitute;
@@ -59,3 +59,7 @@ public class InstituteCampus{
 		}
 	}
 }
+
+//@CompoundIndexes({ @CompoundIndex(name = "UK_IC_SI_DI", def = "{'sourceInstitute' : 1}, {'destinationInstitute' : 1}", unique = true) })
+
+

@@ -110,7 +110,6 @@ public class InstituteController {
         createHeaders.setContentType(MediaType.APPLICATION_JSON);
         listOfInstituteRequestDto.add(instituteRequestDto);
         listOfInstituteProviderCode.add(instituteProviderCode);
-//6f91fa9b-6911-4fd3-beec-894d83545f35
         instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
         HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto, createHeaders);
         ResponseEntity<InstituteRequestDto> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, createEntity,
@@ -297,8 +296,8 @@ public class InstituteController {
         });
         assertThat(genericGetPostByUserIdResponse.getMessage()).isEqualTo("Post retrived successfully");
         assertThat(genericGetPostByUserIdResponse.getData()).isNotNull();
-        assertThat(genericGetPostByUserIdResponse.getData()).isNotEmpty();
     }
+
     @DisplayName("getAllRecommendedInstitutes")
     @Test
     public void testGetAllRecommendedInstitutes(){
@@ -402,13 +401,13 @@ public class InstituteController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         listOfInstituteRequestDto.add(instituteRequestDto);
         listOfInstituteProviderCode.add(instituteProviderCode);
-//6f91fa9b-6911-4fd3-beec-894d83545f35
         instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
         HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
         ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
                 String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
     @DisplayName("update")
     @Test
     public void testUpdate(){
@@ -456,9 +455,8 @@ public class InstituteController {
                 String.class, params);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-    ///autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}
 
-    @DisplayName("")
+    @DisplayName("testGetAllInstitute")
     @Test
     public void testGetAllInstitute(){
         ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
@@ -511,7 +509,7 @@ public class InstituteController {
                 PaginationResponseDto.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-    @DisplayName("")
+    @DisplayName("testGetAllInstituteAutoSearch")
     @Test
     public void testGetAllInstituteAutoSearch(){
         ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
@@ -737,7 +735,7 @@ public class InstituteController {
                 String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-    @DisplayName("getHistoryOfDomesticRanking")
+    @DisplayName("testGetHistoryOfDomesticRanking")
     @Test
     public void testGetHistoryOfDomesticRanking(){
         ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
@@ -790,7 +788,7 @@ public class InstituteController {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(domesticRankingHistoryDto);
     }
-    @DisplayName("testGetHistoryOfWolrdRanking")
+    @DisplayName("testGetHistoryOfWorldRanking")
     @Test
     public void testGetHistoryOfWorldRanking(){
         ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
