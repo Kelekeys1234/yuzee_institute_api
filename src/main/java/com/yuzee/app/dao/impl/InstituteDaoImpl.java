@@ -1253,7 +1253,9 @@ public class InstituteDaoImpl implements InstituteDao {
 
     @Override
     public void deleteInstituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
-
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("instituteEnglishRequirement").is(instituteEnglishRequirementsId));
+        mongoTemplate.remove(mongoQuery, InstituteEnglishRequirements.class);
     }
 
     @Override

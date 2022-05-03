@@ -45,7 +45,7 @@ public class InstituteContactInfoProcessor {
 		institute.setWebsite(instituteContactInfoDto.getWebsite());
 		institute.setPhoneNumber(instituteContactInfoDto.getContactNumber());
 		institute.setEmail(instituteContactInfoDto.getEmail());
-		institute.setAvgCostOfLiving(instituteContactInfoDto.getAveragelivingCost());
+		institute.setAvgCostOfLiving(instituteContactInfoDto.getAverageLivingCost());
 		institute.setLatitude(instituteContactInfoDto.getLatitute());
 		institute.setLongitude(instituteContactInfoDto.getLongitude());
 		log.info("persisting institute having id "+instituteId+ " with updated basic info");

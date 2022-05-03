@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @EqualsAndHashCode
@@ -22,9 +23,9 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteFacility{
 
+    @Id
+    private UUID id;
+
 	@DBRef(lazy = true)
 	private Service service;
-
-    public InstituteFacility(Institute institute, Service service, Date utCdatetimeAsDate, Date utCdatetimeAsDate1, String auto, String auto1) {
-    }
 }

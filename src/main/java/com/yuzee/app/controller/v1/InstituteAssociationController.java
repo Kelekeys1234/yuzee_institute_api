@@ -31,8 +31,10 @@ public class InstituteAssociationController implements InstituteAssociationInter
 
 	@Autowired
 	private InstituteAssociationProcessor instituteAssociationProcessor;
+
 	@Autowired
 	private MessageTranslator messageTranslator;
+
 	@Override
 	public ResponseEntity<?> addInstituteAssociation(String userId,
 		@RequestBody @Valid InstituteAssociationDto instituteAssociationDto) throws Exception {

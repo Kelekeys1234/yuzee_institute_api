@@ -60,7 +60,6 @@ public class InstituteBasicInfoController {
     @DisplayName("addUpdateInstituteBasicInfo test success")
     @Test
     public void addUpdateInstituteBasicInfo() throws IOException {
-        boolean status = true;
         ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
         ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
         instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));

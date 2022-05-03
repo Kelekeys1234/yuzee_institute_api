@@ -31,8 +31,7 @@ public class InstituteEnglishRequirementsController implements InstituteEnglishR
 	@Override
 	public ResponseEntity<?> addInstituteEnglishRequirements(String userId, String instituteId,
 		 @RequestBody @Valid InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception {
-		instituteEnglishRequirementsProcessor.addInstituteEnglishRequirements(userId, instituteId, instituteEnglishRequirementsDto);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(messageTranslator.toLocale("english_requirement.added")).create();
+		return new GenericResponseHandlers.Builder().setData(instituteEnglishRequirementsProcessor.addInstituteEnglishRequirements(userId, instituteId, instituteEnglishRequirementsDto)).setStatus(HttpStatus.OK).setMessage(messageTranslator.toLocale("english_requirement.added")).create();
 	}
 
 	@Override
@@ -43,7 +42,7 @@ public class InstituteEnglishRequirementsController implements InstituteEnglishR
 	}
 
 	@Override
-	public ResponseEntity<?> getInstituteEnglishRequirementsByInstiuteId(String userId, String instituteId)
+	public ResponseEntity<?> getInstituteEnglishRequirementsByInstituteId(String userId, String instituteId)
 			throws Exception {
 		List<InstituteEnglishRequirementsDto> listOfInstituteEnglishRequirementDto = instituteEnglishRequirementsProcessor.getListOfInstituteEnglishRequirements(userId, instituteId, "PRIVATE");
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(listOfInstituteEnglishRequirementDto).setMessage(messageTranslator.toLocale("english_requirement.retrieved")).create();

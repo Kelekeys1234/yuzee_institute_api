@@ -48,6 +48,6 @@ public class InstituteContactInfoDto {
 	
 	@NotEmpty(message = "{average_living_cost.is_required}")
 	@JsonProperty("average_living_cost")
-	private String averagelivingCost;
+	private String averageLivingCost;
 	
 }

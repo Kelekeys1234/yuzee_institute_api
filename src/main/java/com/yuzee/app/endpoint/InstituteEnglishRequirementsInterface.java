@@ -18,19 +18,19 @@ import com.yuzee.app.dto.InstituteEnglishRequirementsDto;
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public interface InstituteEnglishRequirementsInterface {
 
-	@PostMapping("/englishrequirements/{instituteId}")
+	@PostMapping("/englishRequirements/{instituteId}")
 	public ResponseEntity<?> addInstituteEnglishRequirements(@RequestHeader("userId") final String userId,@PathVariable final String instituteId,@Valid @RequestBody InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception;
 
-	@PutMapping("/englishrequirements/{englishRequirementsId}")
-	public ResponseEntity<?> updateInstituteEnglishRequirements(@RequestHeader("userId") final String userId,@PathVariable final String englishRequirementsId,@Valid @RequestBody InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception;
+	@PutMapping("/englishRequirements/{instituteId}")
+	public ResponseEntity<?> updateInstituteEnglishRequirements(@RequestHeader("userId") final String userId,@PathVariable final String instituteId,@Valid @RequestBody InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception;
 	
-	@GetMapping("/englishrequirements/{instituteId}")
-	public ResponseEntity<?> getInstituteEnglishRequirementsByInstiuteId (@RequestHeader("userId") final String userId,@PathVariable final String instituteId) throws Exception;
+	@GetMapping("/englishRequirements/{instituteId}")
+	public ResponseEntity<?> getInstituteEnglishRequirementsByInstituteId (@RequestHeader("userId") final String userId,@PathVariable final String instituteId) throws Exception;
 	
-	@GetMapping("/public/englishrequirements/{instituteId}")
+	@GetMapping("/public/englishRequirements/{instituteId}")
 	public ResponseEntity<?> getInstitutePublicEnglishRequirementsByInstituteId (@PathVariable final String instituteId) throws Exception;
 	
-	@DeleteMapping("/englishrequirements/{englishRequirementsId}")
+	@DeleteMapping("/englishRequirements/{instituteId}")
 	public ResponseEntity<?> deleteInstituteEnglishRequirementsByRequirementsId (@RequestHeader("userId") final String userId,@PathVariable final String englishRequirementsId);
 	
 }

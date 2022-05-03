@@ -58,15 +58,15 @@ public class InstituteAssociationProcessor {
 		// TODO check user id have access for institute id (source institute id)
 		log.info("Getting source institute having institute id "+instituteAssociationDto.getSourceInstituteId());
 		Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteAssociationDto.getSourceInstituteId()));
-		if (!sourceInstituteFromDB.isPresent()) {
+		if (sourceInstituteFromDB.isEmpty()) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getSourceInstituteId(),Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getSourceInstituteId()));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteAssociationDto.getSourceInstituteId()));
 		}
 		log.info("Getting destination institute having institute id "+instituteAssociationDto.getSourceInstituteId());
 		Optional<Institute> destinationInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteAssociationDto.getDestinationInstituteId()));
-		if (!destinationInstituteFromDB.isPresent()) {
-			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getDestinationInstituteId(),Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getDestinationInstituteId()));
+		if (destinationInstituteFromDB.isEmpty()) {
+			log.error(messageTranslator.toLocale("institute_info.id.notFound",instituteAssociationDto.getDestinationInstituteId(),Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteAssociationDto.getDestinationInstituteId()));
 		}
 		log.info("Getting user access for institute id "+instituteAssociationDto.getDestinationInstituteId());
 		List<UserInstituteAccessInternalResponseDto> listOfUserInstituteAccessInternalResponseDto = userInstituteAccessRoleHandler.getUserInstituteAccessInternal(instituteAssociationDto.getDestinationInstituteId(), "ACTIVE");
@@ -82,7 +82,7 @@ public class InstituteAssociationProcessor {
 			log.info("association not found between institute id"+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " for association type "+instituteAssociationDto.getAssociationType()+ " creating new association");
 			InstituteAssociation instituteAssociation = new InstituteAssociation(instituteAssociationDto.getSourceInstituteId(), instituteAssociationDto.getDestinationInstituteId(), InstituteAssociationType.valueOf(instituteAssociationDto.getAssociationType()), InstituteAssociationStatus.PENDING,0, new Date(), new Date(), "API", "API");
 			instituteAssociationDao.addInstituteAssociation(instituteAssociation);
-			listOfUserInstituteAccessInternalResponseDto.stream().forEach(userInstituteAccess -> {
+			listOfUserInstituteAccessInternalResponseDto.forEach(userInstituteAccess -> {
 				if (userInstituteAccess.getRole().equalsIgnoreCase("super admin") || userInstituteAccess.getRole().equalsIgnoreCase("admin")) {
 					log.info("sending push notification for association to user id "+userInstituteAccess.getUserId());
 					/*
@@ -133,7 +133,7 @@ public class InstituteAssociationProcessor {
 				instituteAssociationFromDb.setInstituteAssociationStatus(InstituteAssociationStatus.PENDING);
 				instituteAssociationFromDb.setRejectionCounter(counter);
 				instituteAssociationDao.addInstituteAssociation(instituteAssociationFromDb);
-				listOfUserInstituteAccessInternalResponseDto.stream().forEach(userInstituteAccess -> {
+				listOfUserInstituteAccessInternalResponseDto.forEach(userInstituteAccess -> {
 					if (userInstituteAccess.getRole().equalsIgnoreCase("super admin") || userInstituteAccess.getRole().equalsIgnoreCase("admin")) {
 						log.info("sending push notification for association to user id "+userInstituteAccess.getUserId());
 						/*
@@ -164,7 +164,7 @@ public class InstituteAssociationProcessor {
 		List<InstituteAssociation> listOfInstituteAssociation = instituteAssociationDao
 				.getInstituteAssociation(instituteId, InstituteAssociationType.valueOf(associationType), InstituteAssociationStatus.valueOf(status));
 		if (!CollectionUtils.isEmpty(listOfInstituteAssociation)) {
-			listOfInstituteAssociation.stream().forEach(userAssociation -> {
+			listOfInstituteAssociation.forEach(userAssociation -> {
 				 List<StorageDto> listOfStorageDto = null;
 				if (userAssociation.getDestinationInstituteId().equals(instituteId)) {
 					try {

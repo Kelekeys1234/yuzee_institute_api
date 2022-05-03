@@ -23,6 +23,5 @@ public interface InstituteContactInfoInterface {
 	public ResponseEntity<?> getInstituteContactInfo (@RequestHeader("userId") final String userId,@PathVariable final String instituteId) throws Exception;
 	
 	@GetMapping("/public/contact/info/{instituteId}")
-	public ResponseEntity<?> getInstitutePublicContactInfo (@PathVariable final String instituteId) throws Exception; 
-
+	public ResponseEntity<?> getInstitutePublicContactInfo (@PathVariable final String instituteId) throws Exception;
 }

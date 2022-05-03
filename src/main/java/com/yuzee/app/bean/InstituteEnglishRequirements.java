@@ -12,13 +12,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(collation = "InstituteEnglishRequirement")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteEnglishRequirements {
+
+	@Id
+	private UUID englishRequirementId;
 
 	private String examName;
 
@@ -29,7 +34,4 @@ public class InstituteEnglishRequirements {
 	private Double writingMarks;
 
 	private Double oralMarks;
-
-	public InstituteEnglishRequirements(String instituteId, String examName, Double readingMarks, Double listningMarks, Double writingMarks, Double oralMarks, Date date, Date date1, String api, String api1) {
-	}
 }

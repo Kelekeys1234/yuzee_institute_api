@@ -14,9 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class InstituteEnglishRequirementsDto {
 
-	@JsonProperty("institute_english_requirements_id")
-	public String instituteEnglishRequirementsId;
-
 	@NotBlank(message = "{exam_name.is_required}")
 	@JsonProperty("exam_name")
 	private String examName;
@@ -25,8 +22,8 @@ public class InstituteEnglishRequirementsDto {
 	@JsonProperty("reading_marks")
 	private Double readingMarks;
 
-	@NotNull(message = "{listning_marks.is_required}")
-	@JsonProperty("listning_marks")
+	@NotNull(message = "{listening_marks.is_required}")
+	@JsonProperty("listening_marks")
 	private Double listeningMarks;
 
 	@NotNull(message = "{writing_marks.is_required}")
@@ -41,17 +38,15 @@ public class InstituteEnglishRequirementsDto {
 	@JsonProperty("over_all_marks")
 	private Double overAllMarks;
 
-	public InstituteEnglishRequirementsDto(String instituteEnglishRequirementsId,
-			@NotBlank(message = "{exam_name.is_required}") String examName,
+	public InstituteEnglishRequirementsDto(@NotBlank(message = "{exam_name.is_required}") String examName,
 			@NotNull(message = "{reading_marks.is_required}") Double readingMarks,
-			@NotNull(message = "{listning_marks.is_required}") Double listningMarks,
+			@NotNull(message = "{listening_marks.is_required}") Double listeningMarks,
 			@NotNull(message = "{writing_marks.is_required}") Double writingMarks,
 			@NotNull(message = "{oral_marks.is_required}") Double oralMarks) {
 		super();
-		this.instituteEnglishRequirementsId = instituteEnglishRequirementsId;
 		this.examName = examName;
 		this.readingMarks = readingMarks;
-		this.listeningMarks = listningMarks;
+		this.listeningMarks = listeningMarks;
 		this.writingMarks = writingMarks;
 		this.oralMarks = oralMarks;
 		setOverallMarks();

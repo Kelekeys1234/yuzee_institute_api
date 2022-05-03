@@ -36,15 +36,16 @@ public class InstituteFacilityProcessor {
 
 	@Autowired
 	private MessageTranslator messageTranslator;
-	/*
-	 * @Autowired private UserAccessUtils userAccessUtils;
-	 */
+
+//	 @Autowired
+//	 private UserAccessUtils userAccessUtils;
+
 
 	public void addInstituteFacility(String instituteId, InstituteFacilityDto instituteFacilityDto)
 			throws NotFoundException {
 		List<InstituteFacility> listOfFacilityToBeSaved = new ArrayList<>();
 		log.debug("inside addInstituteFacility() method");
-		//	userAccessUtils.validateUserAccess(userId, instituteId, "facility page", "add");
+			//userAccessUtils.validateUserAccess(userId, instituteId, "facility page", "add");
 
 		Optional<Institute> institute = instituteDao.getInstituteByInstituteId(UUID.fromString(instituteId));
 		if (!institute.isPresent()) {
@@ -90,7 +91,7 @@ public class InstituteFacilityProcessor {
 		//userAccessUtils.validateUserAccess(userId, instituteId, "facility page", "delete");
 
 		if (!CollectionUtils.isEmpty(instituteFacilitiesId)) {
-			instituteFacilitiesId.stream().forEach(instituteFacilityId -> {
+			instituteFacilitiesId.forEach(instituteFacilityId -> {
 				log.info("deleting facility having institute facility Id {} and institute id {}", instituteFacilityId,
 						instituteId);
 		//		instituteFacilityDao.deleteFacilityByIdAndInstituteId(instituteFacilityId, instituteId);

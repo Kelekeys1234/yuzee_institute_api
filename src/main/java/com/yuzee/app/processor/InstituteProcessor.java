@@ -356,16 +356,16 @@ public class InstituteProcessor {
             throw new ValidationException(messageTranslator.toLocale("institute-processor.required.name"));
         }
 
-        Institute insituteWithSameId = instituteDao.findByReadableId(instituteRequest.getReadableId());
-        if (ObjectUtils.isEmpty(insituteWithSameId)
-                || (ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString()))
-                || (!ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString())
-                && institute.getId().equals(insituteWithSameId.getId()))) {
-            institute.setReadableId(instituteRequest.getReadableId());
-        } else {
-            log.info("Institute with same readable_id already exists.");
-            throw new ValidationException("Institute with same readable_id already exists.");
-        }
+//        Institute insituteWithSameId = instituteDao.findByReadableId(instituteRequest.getReadableId());
+//        if (ObjectUtils.isEmpty(insituteWithSameId)
+//                || (ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString()))
+//                || (!ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString())
+//                && institute.getId().equals(insituteWithSameId.getId()))) {
+//            institute.setReadableId(instituteRequest.getReadableId());
+//        } else {
+//            log.info("Institute with same readable_id already exists.");
+//            throw new ValidationException("Institute with same readable_id already exists.");
+//        }
 
         institute.setDescription(instituteRequest.getDescription());
         if (!StringUtils.isEmpty(instituteRequest.getCountryName())) {
@@ -387,7 +387,7 @@ public class InstituteProcessor {
             log.error(messageTranslator.toLocale("institute-processor.required.type", Locale.US));
             throw new ValidationException(messageTranslator.toLocale("institute-processor.required.type"));
         }
-        /* Todo  below Institute fields doesnt have @NotNull annotation. it can throw NullPointerException */
+        /* Todo  below Institute fields doesn't have @NotNull annotation. it can throw NullPointerException */
 
         institute.setDomesticRanking(instituteRequest.getDomesticRanking());
         institute.setWorldRanking(instituteRequest.getWorldRanking());
