@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @EqualsAndHashCode
@@ -18,6 +19,9 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteService{
 
+	@Id
+	private UUID instituteServiceId;
+
 	@DBRef(lazy = true)
 	@Indexed(unique = true)
 	private Service service;
@@ -26,6 +30,9 @@ public class InstituteService{
 
 	private String instituteId;
 
-	public InstituteService(Institute institute, Service service, Object o, Date utCdatetimeAsDate, Date utCdatetimeAsDate1, String auto, String auto1) {
+	public InstituteService(UUID instituteServiceId, Service service, String description) {
+		this.instituteServiceId = instituteServiceId;
+		this.service = service;
+		this.description = description;
 	}
 }

@@ -1,7 +1,5 @@
 package com.yuzee.app.jobs;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -10,8 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.batch.item.ItemProcessor;
@@ -26,12 +22,9 @@ import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.bean.Timing;
 import com.yuzee.app.dao.InstituteDao;
-import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.uploader.InstituteCsvDto;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.ConstraintVoilationException;
-import com.yuzee.common.lib.exception.NotFoundException;
-import com.yuzee.common.lib.util.DateUtil;
 import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,9 +39,6 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 //	InstituteTypeDao instituteTypeDao;
 	
 	Map<String, Service> services = new HashMap<>();
-
-	@Autowired
-	ServiceDao serviceDao;
 	
 	@Override
 	public Institute process(InstituteCsvDto instituteDto) throws Exception {
@@ -161,10 +151,10 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 			String[] instituteService = instituteDto.getServices().split(",");
 			if(!ObjectUtils.isEmpty(instituteService)) {
 				List<String> instituteServiceStrList =  Arrays.asList(instituteService);
-				instituteServiceStrList.stream().forEach(instituteServiceName ->{
+				instituteServiceStrList.forEach(instituteServiceName ->{
 					Service service = services.get(StringUtils.trim(instituteServiceName).toLowerCase());
 					if(!ObjectUtils.isEmpty(service)) {
-						instituteServiceList.add(new InstituteService(institute, service, null, DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), "AUTO", "AUTO"));						
+						instituteServiceList.add(new InstituteService(institute.getId(), service, null));
 					}
 				});
 			}
@@ -195,15 +185,15 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 		List<InstituteFacility> instituteFacilityList = new ArrayList<>();
 		//Import Facilities
 		if (!ObjectUtils.isEmpty(instituteDto.getFacilities())) {
-			log.debug("Institute Facilites");
-			String[] facilites = instituteDto.getFacilities().split(",");
-			if(!ObjectUtils.isEmpty(facilites)) {
-				List<String> facilityList =  Arrays.asList(facilites);
-				facilityList.stream().forEach(facility ->{
+			log.debug("Institute Facilities");
+			String[] facilities = instituteDto.getFacilities().split(",");
+			if(!ObjectUtils.isEmpty(facilities)) {
+				List<String> facilityList =  Arrays.asList(facilities);
+				facilityList.forEach(facility ->{
 					if(!StringUtils.isEmpty(facility) && !facility.equals("0")) {
 						Service service = services.get(StringUtils.trim(facility).toLowerCase());
 						if(!ObjectUtils.isEmpty(service)) {
-							instituteFacilityList.add(new InstituteFacility(institute, service, DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), "AUTO", "AUTO"));						
+							instituteFacilityList.add(new InstituteFacility(institute.getId(), service));
 						}						
 					}
 				});				
@@ -211,15 +201,15 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 		}
 		//Import Sports Facilities
 		if (!ObjectUtils.isEmpty(instituteDto.getFacilities())) {
-			log.debug("Institute Sport Facilites");
-			String[] facilites = instituteDto.getSportFacilities().split(",");
-			if(!ObjectUtils.isEmpty(facilites)) {
-				List<String> facilityList =  Arrays.asList(facilites);
-				facilityList.stream().forEach(facility ->{
+			log.debug("Institute Sport Facilities");
+			String[] facilities = instituteDto.getSportFacilities().split(",");
+			if(!ObjectUtils.isEmpty(facilities)) {
+				List<String> facilityList =  Arrays.asList(facilities);
+				facilityList.forEach(facility ->{
 					if(!StringUtils.isEmpty(facility) && !facility.equals("0")) {
 						Service service = services.get(StringUtils.trim(facility).toLowerCase());
 						if(!ObjectUtils.isEmpty(service)) {
-							instituteFacilityList.add(new InstituteFacility(institute, service, DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), "AUTO", "AUTO"));						
+							instituteFacilityList.add(new InstituteFacility(institute.getId(), service));
 						}
 					}
 				});

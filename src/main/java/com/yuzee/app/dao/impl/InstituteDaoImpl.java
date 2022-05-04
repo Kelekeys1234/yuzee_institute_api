@@ -22,6 +22,7 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,6 +31,7 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.*;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -1231,12 +1233,6 @@ public class InstituteDaoImpl implements InstituteDao {
     }
 
     @Override
-    public List<Institute> saveAll(List<Institute> institutesFromDb) {
-        log.info("Class InstituteDaoImple method saveAll institutesFromDb : {}", institutesFromDb);
-        return instituteRepository.saveAll(institutesFromDb);
-    }
-
-    @Override
     public List<Institute> getByInstituteName(String instituteName) {
         return instituteRepository.getAllByInstituteName(instituteName);
     }
@@ -1290,5 +1286,53 @@ public class InstituteDaoImpl implements InstituteDao {
             ));
         }
         return mongoTemplate.find(mongoQuery, Institute.class, "institute");
+    }
+
+    @Override
+    public List<InstituteFacility> getAllInstituteFacility(String instituteId) {
+        return instituteRepository.findAllFacilityById(instituteId);
+    }
+
+    @Override
+    public void deleteFacilityByIdAndInstituteId(String instituteFacilityId, String instituteId) {
+        instituteRepository.deleteFacilityByIdAndInstituteId(instituteFacilityId, instituteId);
+    }
+
+    @Override
+    public List<InstituteServiceDto> saveAll(Institute institute) {
+        instituteRepository.save(institute);
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("id").is(institute.getId()));
+        return mongoTemplate.find(mongoQuery, InstituteServiceDto.class);
+    }
+
+    @Override
+    public void saveAllInstitutes(List<Institute> institutes) {
+        instituteRepository.save(institutes);
+    }
+
+    @Override
+    public List<com.yuzee.app.bean.Service> getAllServiceByIds(List<String> serviceIds) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("serviceId").in(serviceIds));
+        return mongoTemplate.find(mongoQuery, com.yuzee.app.bean.Service.class);
+    }
+
+    @Override
+    public Page<com.yuzee.app.bean.Service> getAllServices(Pageable pageable) {
+        Query mongoQuery = new Query();
+        mongoQuery.with(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()));
+        List<com.yuzee.app.bean.Service> list = mongoTemplate.find(mongoQuery, com.yuzee.app.bean.Service.class);
+        return PageableExecutionUtils.getPage(
+                list,
+                pageable,
+                () -> mongoTemplate.count(Query.of(mongoQuery).limit(-1).skip(-1), com.yuzee.app.bean.Service.class));
+    }
+
+    @Override
+    public com.yuzee.app.bean.Service getServiceById(String facilityId) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("serviceId").is(facilityId));
+        return mongoTemplate.findById(mongoQuery, com.yuzee.app.bean.Service.class, "service");
     }
 }

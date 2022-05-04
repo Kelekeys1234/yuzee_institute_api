@@ -24,7 +24,7 @@ import java.util.UUID;
 public class InstituteFacility{
 
     @Id
-    private UUID id;
+    private UUID facilityId;
 
 	@DBRef(lazy = true)
 	private Service service;

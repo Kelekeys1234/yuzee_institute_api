@@ -9,6 +9,8 @@ import com.yuzee.app.dto.*;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.yuzee.common.lib.exception.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 public interface InstituteDao {
@@ -102,7 +104,6 @@ public interface InstituteDao {
 	@Cacheable(value = "cacheInstitute", key = "#instituteId", unless = "#result == null", condition="#instituteId!=null")
 	public Institute getInstitute(String instituteId);
 
-	public List<Institute> saveAll(List<Institute> institutesFromDb);
 
 	List<Institute> getByInstituteName(String instituteName);
 
@@ -119,4 +120,18 @@ public interface InstituteDao {
 	List<InstituteTypeDto> getAllInstituteType();
 
 	List<Institute> getBySearchText(String searchText);
+
+    List<InstituteFacility> getAllInstituteFacility(String instituteId);
+
+	void deleteFacilityByIdAndInstituteId(String instituteFacilityId, String instituteId);
+
+	public List<InstituteServiceDto> saveAll(Institute institute);
+
+	void saveAllInstitutes(List<Institute> institutesFromDb);
+
+	List<Service> getAllServiceByIds(List<String> serviceIds);
+
+	Page<Service> getAllServices(Pageable pageable);
+
+	Service getServiceById(String facilityId);
 }

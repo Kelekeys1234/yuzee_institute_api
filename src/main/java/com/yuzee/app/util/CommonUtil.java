@@ -507,8 +507,8 @@ public class CommonUtil {
 			List<InstituteFacility> listOfInstituteFacility) {
 		InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
 		listOfInstituteFacility.stream().forEach(instituteFacility -> {
-			FacilityDto facilityDto = new FacilityDto(instituteFacility.getService().getId(),
-					instituteFacility.getService().getName(), instituteFacility.getService().getId());
+			FacilityDto facilityDto = new FacilityDto(instituteFacility.getService().getId().toString(),
+					instituteFacility.getService().getName(), instituteFacility.getService().getId().toString());
 			instituteFacilityDto.getFacilities().add(facilityDto);
 		});
 		return instituteFacilityDto;

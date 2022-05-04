@@ -16,7 +16,6 @@ import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.InstituteServiceDao;
-import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.InstituteServiceDto;
 import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
@@ -41,9 +40,6 @@ public class InstituteServiceProcessor {
 	private InstituteDao instituteDao;
 
 	@Autowired
-	private ServiceDao serviceDao;
-
-	@Autowired
 	private ServiceProcessor serviceProcessor;
 
 	@Autowired
@@ -55,18 +51,17 @@ public class InstituteServiceProcessor {
 	@Autowired
 	private MessageTranslator messageTranslator;
 
-
 	public List<InstituteServiceDto> addInstituteService(String userId, String instituteId, List<InstituteServiceDto> instituteServiceDtos)
 			throws NotFoundException, ValidationException {
 		log.debug("inside addInstituteService() method");
-		log.info("Getting all exsisting services");
+		log.info("Getting all existing services");
 		Institute institute = instituteDao.get(UUID.fromString(instituteId));
 		if (ObjectUtils.isEmpty(institute)) {
 			log.error(messageTranslator.toLocale("institute-services.invalid.id",instituteId,Locale.US));
 			throw new ValidationException( messageTranslator.toLocale("institute-services.invalid.id",instituteId));
 		}
 
-		List<ServiceDto> serviceDtos = instituteServiceDtos.stream().map(e -> e.getService())
+		List<ServiceDto> serviceDtos = instituteServiceDtos.stream().map(InstituteServiceDto::getService)
 				.collect(Collectors.toList());
 		//////////////////// code for adding the new services //////////////////////////
 
@@ -81,60 +76,57 @@ public class InstituteServiceProcessor {
 		}
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 
-		Set<String> serviceIds = serviceDtos.stream().map(ServiceDto::getServiceId).collect(Collectors.toSet());
+		Set<String> setOfServiceIds = serviceDtos.stream().map(ServiceDto::getServiceId).collect(Collectors.toSet());
+		List<String> listOfServiceIds = new ArrayList<>(setOfServiceIds);
+		List<Service> servicesFromDb = instituteDao.getAllServiceByIds(listOfServiceIds);
+		Map<String, Service> mapServicesById = servicesFromDb.stream()
+				.collect(Collectors.toMap((e -> e.getId().toString()), e -> e));
+		Map<String, Service> mapServicesByName = servicesFromDb.stream()
+				.collect(Collectors.toMap(Service::getName, e -> e));
 
-//		List<Service> servicesFromDb = serviceDao.getAllByIds(serviceIds.stream().collect(Collectors.toList()));
-//		Map<String, Service> mapServicesById = servicesFromDb.stream()
-//				.collect(Collectors.toMap(Service::getId, e -> e));
-//		Map<String, Service> mapServicesByName = servicesFromDb.stream()
-//				.collect(Collectors.toMap(Service::getName, e -> e));
-
-//		if (serviceIds.size() != servicesFromDb.size()) {
-//			log.error(messageTranslator.toLocale("institute-service.invalid",Locale.US));
-//			throw new ValidationException(messageTranslator.toLocale("institute-service.invalid"));
-//		}
+		if (setOfServiceIds.size() != servicesFromDb.size()) {
+			log.error(messageTranslator.toLocale("institute-service.invalid",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-service.invalid"));
+		}
 
 		List<InstituteService> existingInstituteServices = instituteServiceDao.getAllInstituteService(instituteId);
-		Set<String> existingServiceIds = existingInstituteServices.stream().map(e -> e.getService().getId())
+		Set<String> existingServiceIds = existingInstituteServices.stream().map(e -> e.getService().getId().toString())
 				.collect(Collectors.toSet());
 
 		List<InstituteService> listOfServiceToBeSaved = new ArrayList<>();
 		for (InstituteServiceDto instituteServiceDto : instituteServiceDtos) {
 
 			String serviceId = instituteServiceDto.getService().getServiceId();
-//			if (!StringUtils.isEmpty(instituteServiceDto.getService().getServiceName())) {
-//				serviceId = mapServicesByName.get(instituteServiceDto.getService().getServiceName()).getId();
-//			}
+			if (!StringUtils.isEmpty(instituteServiceDto.getService().getServiceName())) {
+				serviceId = mapServicesByName.get(instituteServiceDto.getService().getServiceName()).getId().toString();
+			}
 			if (!existingServiceIds.contains(serviceId)) {
 				log.info("No service present for institute with service Id {} adding it to list", serviceId);
 
-				//	Service service = mapServicesById.get(serviceId);
-//				if (ObjectUtils.isEmpty(service)) {
-//					log.error(messageTranslator.toLocale("institute-service.illegal.id" + serviceId,Locale.US));
-//					throw new NotFoundException(messageTranslator.toLocale("institute-service.illegal.id", serviceId));
-//				}
-//				InstituteService instituteService = new InstituteService(institute, service,
-//						instituteServiceDto.getDescription(), new Date(), new Date(), userId, userId);
-//				listOfServiceToBeSaved.add(instituteService);
-//			} else {
-//				String serviceIdCopy = serviceId;// only to make service id effective final to use in stream
-//				log.info("Institute service already present for institute service id {} skipping it", serviceId);
-//				Optional<InstituteService> optionalInstituteService = existingInstituteServices.stream()
-//						.filter(e -> e.getService().getId().equals(serviceIdCopy)).findFirst();
-//				if (optionalInstituteService.isPresent()) {
-//					InstituteService existingInstituteService = optionalInstituteService.get();
-//					existingInstituteService.setDescription(instituteServiceDto.getDescription());
-//					listOfServiceToBeSaved.add(existingInstituteService);
-//				}
-//			}
-//		}
-//		log.info("Persisting resource list to DB ");
-//		return instituteServiceDao.saveAll(listOfServiceToBeSaved).stream()
-//				.map(e -> modelMapper.map(e, InstituteServiceDto.class)).collect(Collectors.toList());
+					Service service = mapServicesById.get(serviceId);
+				if (ObjectUtils.isEmpty(service)) {
+					log.error(messageTranslator.toLocale("institute-service.illegal.id" + serviceId,Locale.US));
+					throw new NotFoundException(messageTranslator.toLocale("institute-service.illegal.id", serviceId));
+				}
+				InstituteService instituteService = new InstituteService(UUID.randomUUID(), service,
+						instituteServiceDto.getDescription(), instituteId);
+				listOfServiceToBeSaved.add(instituteService);
+			} else {
+				String serviceIdCopy = serviceId;// only to make service id effective final to use in stream
+				log.info("Institute service already present for institute service id {} skipping it", serviceId);
+				Optional<InstituteService> optionalInstituteService = existingInstituteServices.stream()
+						.filter(e -> e.getService().getId().toString().equals(serviceIdCopy)).findFirst();
+				if (optionalInstituteService.isPresent()) {
+					InstituteService existingInstituteService = optionalInstituteService.get();
+					existingInstituteService.setDescription(instituteServiceDto.getDescription());
+					listOfServiceToBeSaved.add(existingInstituteService);
+				}
 			}
-			}
-		return null;
 		}
+		log.info("Persisting resource list to DB ");
+		institute.setInstituteServices(listOfServiceToBeSaved);
+		return instituteDao.saveAll(institute);
+	}
 	@Transactional(rollbackOn = Throwable.class)
 	public void deleteInstituteService(String userId, String instituteServiceId) throws NotFoundException, InvokeException {
 		log.debug("inside deleteInstituteService() method");
@@ -164,13 +156,13 @@ public class InstituteServiceProcessor {
 //////////////// getting media for instiute services /////////////////////////////////////
 				List<StorageDto> mediaStorages = storageHandler
 						.getStorages(
-								instituteServiceResponseDtos.stream().map(InstituteServiceDto::getId)
+								instituteServiceResponseDtos.stream().map(InstituteServiceDto::getInstituteServiceId)
 										.collect(Collectors.toList()),
 								EntityTypeEnum.INSTITUTE_SERVICE, EntitySubTypeEnum.MEDIA);
 ////////////////////////////////////////////////////////////////////////////////////////
-				instituteServiceResponseDtos.stream().forEach(e -> {
+				instituteServiceResponseDtos.forEach(e -> {
 					List<StorageDto> serviceMediaStorages = mediaStorages.stream()
-							.filter(m -> m.getEntityId().equals(e.getId())).collect(Collectors.toList());
+							.filter(m -> m.getEntityId().equals(e.getInstituteServiceId())).collect(Collectors.toList());
 					e.setMedia(serviceMediaStorages);
 					e.getService().setIcon(mapServiceIcons.get(e.getService().getServiceId()));
 				});

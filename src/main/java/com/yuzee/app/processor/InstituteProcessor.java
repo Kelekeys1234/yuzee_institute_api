@@ -1199,7 +1199,7 @@ public class InstituteProcessor {
                                 EntitySubTypeEnum.MEDIA, EntitySubTypeEnum.ABOUT_US));
 
                 List<String> instituteServiceIds = institute.getInstituteServices().stream()
-                        .map(e-> e.getService().getId()).collect(Collectors.toList());
+                        .map(e-> e.getService().getId().toString()).collect(Collectors.toList());
                 if (!CollectionUtils.isEmpty(instituteServiceIds)) {
                     storages.addAll(storageHandler.getStorages(instituteServiceIds, EntityTypeEnum.INSTITUTE_SERVICE,
                             EntitySubTypeEnum.MEDIA));
@@ -1344,7 +1344,7 @@ public class InstituteProcessor {
 
                 List<EnableApplicationDto> enableApplicationDtos = wrapperObject.enableApplicationsMap.get(instituteId);
                 if (!CollectionUtils.isEmpty(enableApplicationDtos)) {
-                    verificationDto.setApplicationProcedure(enableApplicationDtos.stream().anyMatch(e -> e.isEnable()));
+                    verificationDto.setApplicationProcedure(enableApplicationDtos.stream().anyMatch(EnableApplicationDto::isEnable));
                 }
             } catch (Exception ex) {
                 log.debug("appplication service is down");
@@ -1369,7 +1369,7 @@ public class InstituteProcessor {
         List<Institute> institutesFromDb = instituteDao.findAllById(verifiedInstituteIds);
 
         if (!CollectionUtils.isEmpty(institutesFromDb)) {
-            institutesFromDb.stream().forEach(institute -> {
+            institutesFromDb.forEach(institute -> {
 
                 institute.setUpdatedBy(userId);
                 institute.setUpdatedOn(new Date());
@@ -1378,7 +1378,7 @@ public class InstituteProcessor {
                 institutesSync.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
             });
 
-            instituteDao.saveAll(institutesFromDb);
+            instituteDao.saveAllInstitutes(institutesFromDb);
             publishSystemEventHandler.syncInstitutes(institutesSync);
         }
     }

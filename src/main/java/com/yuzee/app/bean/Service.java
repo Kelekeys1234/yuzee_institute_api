@@ -5,6 +5,7 @@ import java.io.Serializable;
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +37,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Service{
 
 	@Id
-	private String id;
+	private UUID id;
 
 	@Indexed(unique = true)
 	private String name;

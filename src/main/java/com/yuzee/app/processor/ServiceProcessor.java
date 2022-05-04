@@ -2,13 +2,12 @@ package com.yuzee.app.processor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.yuzee.app.dao.InstituteDao;
 import org.modelmapper.ModelMapper;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -23,11 +22,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.bean.Service;
-import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
@@ -47,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ServiceProcessor {
 
 	@Autowired
-	private ServiceDao serviceDao;
+	private InstituteDao instituteDao;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -88,7 +85,7 @@ public class ServiceProcessor {
 	public PaginationResponseDto getAllServices(final Integer pageNumber, final Integer pageSize)
 			throws NotFoundException, InvokeException {
 		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-		Page<Service> servicesPage = serviceDao.getAllServices(pageable);
+		Page<Service> servicesPage = instituteDao.getAllServices(pageable);
 		List<ServiceDto> serviceDtos = servicesPage.getContent().stream().map(e -> modelMapper.map(e, ServiceDto.class))
 				.collect(Collectors.toList());
 		if (!serviceDtos.isEmpty()) {

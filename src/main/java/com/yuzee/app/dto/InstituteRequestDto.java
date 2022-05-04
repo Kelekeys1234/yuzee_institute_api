@@ -97,4 +97,8 @@ public class InstituteRequestDto extends InstituteDto {
 	
 	@JsonProperty("verified")
 	private boolean verified;
+
+	@Valid
+	@JsonProperty("institute_service_dto")
+	private ValidList<InstituteServiceDto> instituteServiceDto = new ValidList<>();
 }

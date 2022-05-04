@@ -5,8 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.yuzee.app.bean.*;
-import com.yuzee.app.dto.InstituteFacilityDto;
-import com.yuzee.app.dto.InstituteTypeDto;
+import com.yuzee.app.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,9 +14,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
-
-import com.yuzee.app.dto.InstituteFacultyDto;
-import com.yuzee.app.dto.InstituteResponseDto;
 
 @Repository
 public interface InstituteRepository extends MongoRepository<Institute, UUID> {
@@ -96,5 +92,15 @@ public interface InstituteRepository extends MongoRepository<Institute, UUID> {
 			", 'name' : {$regex : /^?0*/, $options : 'i'} } " +
 			"] }")
 	List<Institute> getBySearchText(String searchText);
+
+	@Query(value = " {'id' : ?0}")
+    List<InstituteFacility> findAllFacilityById(String instituteId);
+
+	@Query(value = "{ 'id' : ?1, 'facilityId' : ?0 }")
+	void deleteFacilityByIdAndInstituteId(String instituteFacilityId, String instituteId);
+
+    void save(List<Institute> institutes);
+
+
 }
 //, fields = "{instituteTypeName : 0}, {instituteId : 1}, {type : 2}, {description : 3}, {countryName : 4}"
