@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 public class InstituteContactInfoDto {
 
 	@NotNull(message = "{latitude.is_required}")
-	@JsonProperty("latitute")
-	private Double latitute;
+	@JsonProperty("latitude")
+	private Double latitude;
 	
 	@NotNull(message = "{longitude.is_required}")
 	@JsonProperty("longitude")

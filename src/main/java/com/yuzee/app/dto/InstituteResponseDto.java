@@ -20,7 +20,6 @@ import javax.persistence.Id;
 public class InstituteResponseDto extends InstituteDto {
 
 	@JsonProperty("id")
-	@Id
 	private UUID id;
 
 	@JsonProperty("location")
@@ -78,5 +77,21 @@ public class InstituteResponseDto extends InstituteDto {
 		super.setTagLine(tagLine);
 		super.setCreatedOn(createdOn);
 	}
-
+	public InstituteResponseDto(String name, Integer worldRanking, String cityName, String countryName
+			   					, String website, String aboutUs,
+								Double latitude, Double longitude, String phoneNumber, String email,
+								Integer domesticRanking, Date createdOn) {
+		super.setName(name);
+		super.setWorldRanking(worldRanking);
+		super.setCityName(cityName);
+		super.setCountryName(countryName);
+		super.setWebsite(website);
+		this.aboutUs = aboutUs;
+		super.setLatitude(latitude);
+		super.setLongitude(longitude);
+		super.setPhoneNumber(phoneNumber);
+		super.setEmail(email);
+		super.setDomesticRanking(domesticRanking);
+		super.setCreatedOn(createdOn);
+	}
 }

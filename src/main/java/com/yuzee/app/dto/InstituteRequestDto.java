@@ -6,6 +6,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.app.bean.InstituteDomesticRankingHistory;
+import com.yuzee.app.bean.InstituteWorldRankingHistory;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 
 import lombok.Data;
@@ -69,7 +71,13 @@ public class InstituteRequestDto extends InstituteDto {
 	
 	@JsonProperty("domestic_boarding_fee")
 	private Double domesticBoardingFee;
-	
+
+	@JsonProperty("domestic_ranking_history")
+	private List<InstituteDomesticRankingHistory> instituteDomesticRankingHistories;
+
+	@JsonProperty("world_ranking_history")
+	private List<InstituteWorldRankingHistory> instituteWorldRankingHistories;
+
 	@JsonProperty("international_boarding_fee")
 	private Double internationalBoardingFee;
 	

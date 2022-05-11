@@ -148,7 +148,7 @@ public class InstituteEnglishRequirementController {
         ResponseEntity<InstituteEnglishRequirements> responseEnglishRequirement = testRestTemplate.exchange(addEnglishRequirementPath, HttpMethod.POST, addEntity,
                 InstituteEnglishRequirements.class);
         assertThat(responseEnglishRequirement.getStatusCode()).isEqualTo(HttpStatus.OK);
-        String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirement" + PATH_SEPARATOR + Objects.requireNonNull(responseEnglishRequirement.getBody()).getEnglishRequirementId();
+        String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirement" + PATH_SEPARATOR + Objects.requireNonNull(responseEnglishRequirement.getBody()).getId();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("userId", userId);

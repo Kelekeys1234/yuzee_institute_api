@@ -25,6 +25,6 @@ public interface InstituteBasicInfoInterface {
 	
 	@GetMapping("/public/basic/info/{instituteId}")
 	public ResponseEntity<?> getInstitutePublicBasicInfo (@PathVariable final String instituteId, @RequestParam(name = "includeInstituteLogo", defaultValue = "true") boolean includeInstituteLogo,
-			@RequestParam(name = "includeDetail", required = false) boolean includeDetal) throws Exception; 
+			@RequestParam(name = "includeDetail", required = false) boolean includeDetail) throws Exception;
 
 }

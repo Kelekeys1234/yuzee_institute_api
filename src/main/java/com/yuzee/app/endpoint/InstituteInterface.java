@@ -88,18 +88,21 @@ public interface InstituteInterface {
 	
 	@PostMapping("/filter")
 	public ResponseEntity<?> instituteFilter(@RequestBody final InstituteFilterDto instituteFilterDto) throws Exception;
-	
+
+	//TODO there is no Enumeration type of InstituteCategoryType in common-lib.
 	@GetMapping("/allCategoryType")
 	public ResponseEntity<?> getAllCategoryType() throws Exception;
-	
+	// TODO below method repeated
 	@GetMapping()
 	public ResponseEntity<?> getAllInstituteType() throws Exception;
 	
 	@DeleteMapping("/{instituteId}")
 	public ResponseEntity<?> delete(@PathVariable final String instituteId) throws ValidationException;
+
 	//TODO  Course entity involved in below API
 	@GetMapping("/images/{instituteId}")
 	public ResponseEntity<?> getInstituteImage(@PathVariable final String instituteId) throws Exception;
+
 	//TODO  Course entity involved in below API
 	@GetMapping("/totalCourseCount")
 	public ResponseEntity<?> getTotalCourseForInstitute(@RequestParam(value = "instituteId", required = true) final String instituteId)
@@ -135,21 +138,27 @@ public interface InstituteInterface {
 	@GetMapping("/faculty/instituteId/{instituteId}")
 	public ResponseEntity<?> getInstituteFaculties(@PathVariable final String instituteId) throws NotFoundException;
 
+	//TODO  Course entity involved in below API
 	@GetMapping("/course-faculty-scholarship/count/instituteId/{instituteId}")
 	public ResponseEntity<?> getInstituteCourseScholarshipAndFacultyCount(@PathVariable final String instituteId) throws NotFoundException;
 
+	//TODO done
 	@GetMapping("/institute/multiple/id")
 	public ResponseEntity<?> getInstitutesByIdList(@RequestParam(name = "institute_ids", required = true) List<String> instituteIds) throws ValidationException, NotFoundException, InvokeException, Exception;
+
 	//TODO Done
 	@GetMapping("/institute/{readableId}/exists")
 	public ResponseEntity<?> instituteExistsByReadableId(@PathVariable final String readableId) throws ValidationException, NotFoundException, InvokeException, Exception;
+
 	//TODO below API calls many other micro-services.
 	@GetMapping("/institute/{instituteId}/verify")
 	public ResponseEntity<?> getInstituteVerificationStatus(@PathVariable final String instituteId);
+
 	//TODO below API calls many other micro-services.
 	@GetMapping("/institute/verification-status")
 	public ResponseEntity<?> getMultipleInstituteVerificationStatus(
 			@RequestParam(name = "institute_ids", required = true) List<String> instituteIds);
+
 	//TODO below API calls many other micro-services.
 	@PutMapping(path = "/admin/institute/verify_institutes/{verified}")
 	public ResponseEntity<Object> verifyInstitutes(@RequestHeader("userId") String userId, 

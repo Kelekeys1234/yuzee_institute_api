@@ -1,46 +1,30 @@
 package com.yuzee.app.bean;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.GenericGenerator;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.persistence.Id;
+import java.util.Date;
+import java.util.UUID;
 
 
 @Data
 @NoArgsConstructor
+@Document(collection = "InstituteCampus")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteCampus{
 
 	@Id
-	private String id;
+	private UUID id;
 
 	private String instituteId;
 
-//	private Institute sourceInstitute;
-//
-//	private Institute destinationInstitute;
+	private Institute sourceInstitute;
+
+	private Institute destinationInstitute;
 
 	private Date createdOn;
 
@@ -53,7 +37,7 @@ public class InstituteCampus{
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (StringUtils.isEmpty(id)) {
+		if (StringUtils.isEmpty(id.toString())) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
 		}

@@ -22,7 +22,7 @@ public interface InstituteEnglishRequirementsInterface {
 	public ResponseEntity<?> addInstituteEnglishRequirements(@RequestHeader("userId") final String userId,@PathVariable final String instituteId,@Valid @RequestBody InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception;
 
 	@PutMapping("/englishRequirements/{instituteId}")
-	public ResponseEntity<?> updateInstituteEnglishRequirements(@RequestHeader("userId") final String userId,@PathVariable final String instituteId,@Valid @RequestBody InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception;
+	public ResponseEntity<?> updateInstituteEnglishRequirements(@RequestHeader("userId") final String userId,@PathVariable("instituteId") final String instituteId,@Valid @RequestBody InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception;
 	
 	@GetMapping("/englishRequirements/{instituteId}")
 	public ResponseEntity<?> getInstituteEnglishRequirementsByInstituteId (@RequestHeader("userId") final String userId,@PathVariable final String instituteId) throws Exception;
@@ -32,5 +32,4 @@ public interface InstituteEnglishRequirementsInterface {
 	
 	@DeleteMapping("/englishRequirements/{instituteId}")
 	public ResponseEntity<?> deleteInstituteEnglishRequirementsByRequirementsId (@RequestHeader("userId") final String userId,@PathVariable final String englishRequirementsId);
-	
 }

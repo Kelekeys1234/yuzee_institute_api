@@ -1,13 +1,14 @@
 package com.yuzee.app.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.common.lib.dto.CountDto;
 
 public interface InstituteServiceDao {
 
-	public InstituteService get(String id);
+	public Optional<InstituteService> get(String id);
 
 	public List<InstituteService> getAllInstituteService(String instituteId);
 

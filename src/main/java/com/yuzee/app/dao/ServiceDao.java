@@ -1,0 +1,25 @@
+package com.yuzee.app.dao;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.yuzee.app.bean.Service;
+import com.yuzee.common.lib.exception.ValidationException;
+
+public interface ServiceDao {
+
+    public List<Service> addUpdateServices(List<Service> service) throws ValidationException;
+
+    public Service getServiceById(String id);
+
+    public Page<Service> getAllServices(Pageable pageable);
+
+    public List<Service> getAll();
+
+    public List<Service> getAllByIds(List<String> id);
+
+    public List<Service> findByNameIgnoreCaseIn(List<String> names);
+}

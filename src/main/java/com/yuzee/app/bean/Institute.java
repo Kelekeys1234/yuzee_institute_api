@@ -1,6 +1,7 @@
 package com.yuzee.app.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,6 +113,10 @@ public class Institute implements Serializable {
 
     private String accreditation;
 
+    private String officeHoursFrom;
+
+    private String officeHoursTo;
+
     private String link;
 
     private String contact;
@@ -125,7 +131,11 @@ public class Institute implements Serializable {
 
     private Boolean showSuggestion;
 
+    @DBRef
     private List<InstituteEnglishRequirements> instituteEnglishRequirements = new ArrayList<>();
+
+    @DBRef
+    private List<InstituteCampus> instituteCampuses = new ArrayList<>();
 
     private InstituteAdditionalInfo instituteAdditionalInfo;
 

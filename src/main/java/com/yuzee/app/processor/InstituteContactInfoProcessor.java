@@ -33,20 +33,20 @@ public class InstituteContactInfoProcessor {
 		//TODO validate user ID passed in request have access to modify resource
 		log.info("Getting institute having institute id "+instituteId);
 		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
-		if (!instituteFromFb.isPresent()) {
-			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
+		if (instituteFromFb.isEmpty()) {
+			log.error(messageTranslator.toLocale("institute_info.id.notFound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteId));
 		}
 		Institute institute = instituteFromFb.get();
 		log.info("adding updating contact info for institute id "+instituteId+ " by user id "+userId);
 		institute.setAddress(instituteContactInfoDto.getAddress());
-//		institute.setOpeningFrom(instituteContactInfoDto.getOfficeHoursFrom());
-//		institute.setOpeningTo(instituteContactInfoDto.getOfficeHoursTo());
+		institute.setOfficeHoursFrom(instituteContactInfoDto.getOfficeHoursFrom());
+		institute.setOfficeHoursTo(instituteContactInfoDto.getOfficeHoursTo());
 		institute.setWebsite(instituteContactInfoDto.getWebsite());
 		institute.setPhoneNumber(instituteContactInfoDto.getContactNumber());
 		institute.setEmail(instituteContactInfoDto.getEmail());
 		institute.setAvgCostOfLiving(instituteContactInfoDto.getAverageLivingCost());
-		institute.setLatitude(instituteContactInfoDto.getLatitute());
+		institute.setLatitude(instituteContactInfoDto.getLatitude());
 		institute.setLongitude(instituteContactInfoDto.getLongitude());
 		log.info("persisting institute having id "+instituteId+ " with updated basic info");
 		iInstituteDAO.addUpdateInstitute(institute);
@@ -59,14 +59,13 @@ public class InstituteContactInfoProcessor {
 		}
 		log.info("Getting institute having institute id "+instituteId);
 		Optional<Institute> instituteFromFb = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteId));
-		if (!instituteFromFb.isPresent()) {
-			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
+		if (instituteFromFb.isEmpty()) {
+			log.error(messageTranslator.toLocale("institute_info.id.notFound",instituteId,Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteId));
 		}
 		Institute institute = instituteFromFb.get();
 		log.info("Setting institute contact info values in response DTO");
-		InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto(institute.getLatitude(), institute.getLongitude(), institute.getAddress(), null, 
-				null, institute.getWebsite(), institute.getPhoneNumber(), institute.getEmail(), institute.getAvgCostOfLiving());
-		return instituteContactInfoDto;
+		return new InstituteContactInfoDto(institute.getLatitude(), institute.getLongitude(), institute.getAddress(), institute.getOfficeHoursFrom(),
+				institute.getOfficeHoursTo(), institute.getWebsite(), institute.getPhoneNumber(), institute.getEmail(), institute.getAvgCostOfLiving());
 	}
 }

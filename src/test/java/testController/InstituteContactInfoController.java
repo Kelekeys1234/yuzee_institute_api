@@ -109,7 +109,7 @@ public class InstituteContactInfoController {
         InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto();
         instituteContactInfoDto.setEmail("testController@email.com");
         instituteContactInfoDto.setContactNumber("5423957");
-        instituteContactInfoDto.setLatitute(89.334);
+        instituteContactInfoDto.setLatitude(89.334);
         instituteContactInfoDto.setLongitude(67.321);
         instituteContactInfoDto.setWebsite("testWebsite.com");
         instituteContactInfoDto.setAddress("test t-8, new test road, testNagar");

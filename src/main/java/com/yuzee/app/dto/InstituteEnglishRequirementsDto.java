@@ -14,6 +14,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class InstituteEnglishRequirementsDto {
 
+	@NotBlank(message = "{institute_id.is_required}")
+	@JsonProperty("institute_id")
+	private String instituteId;
+
 	@NotBlank(message = "{exam_name.is_required}")
 	@JsonProperty("exam_name")
 	private String examName;

@@ -1,6 +1,8 @@
 package com.yuzee.app.dao.impl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +20,8 @@ public class InstituteServiceDaoImpl implements InstituteServiceDao {
 	private InstituteServiceRepository instituteServiceRepository;
 
 	@Override
-	public InstituteService get(String id) {
-		return instituteServiceRepository.findById(id).get();
+	public Optional<InstituteService> get(String id) {
+		return instituteServiceRepository.findById(UUID.fromString(id));
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class InstituteServiceDaoImpl implements InstituteServiceDao {
 	@Transactional
 	@Override
 	public void delete(String instituteServiceId) {
-		instituteServiceRepository.deleteById(instituteServiceId);
+		instituteServiceRepository.deleteById(UUID.fromString(instituteServiceId));
 	}
 
 	@Override

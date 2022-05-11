@@ -28,11 +28,20 @@ public class InstituteService{
 
 	private String description;
 
-	private String instituteId;
+	private Institute institute;
 
-	public InstituteService(UUID instituteServiceId, Service service, String description) {
+	private Date createdOn;
+
+	private Date updatedOn;
+
+	private String createdBy;
+
+	private String updatedBy;
+
+	public InstituteService(UUID instituteServiceId, Service service, String description, Institute institute) {
 		this.instituteServiceId = instituteServiceId;
 		this.service = service;
 		this.description = description;
+		this.institute = institute;
 	}
 }

@@ -90,9 +90,7 @@ public interface InstituteDao {
 
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId, Sort sort) throws NotFoundException;
 
-	public List<InstituteResponseDto> findByIds(List<String> instituteIds);
-
-	public List<Institute> findAllById(List<String> instituteIds);
+	public List<Institute> findByIds(List<UUID> instituteIds);
 
 	public List<Institute> findByReadableIdIn(List<String> readableIds);
 
@@ -134,4 +132,16 @@ public interface InstituteDao {
 	Page<Service> getAllServices(Pageable pageable);
 
 	Service getServiceById(String facilityId);
+
+    List<InstituteDomesticRankingHistory> getInstituteDomesticRankingHistories(String instituteId);
+
+    List<InstituteCampus> findInstituteCampuses(String instituteId);
+
+    List<Service> findServiceByName(List<String> allNames);
+
+	List<ServiceDto> addUpdateServices(List<Service> services);
+
+	InstituteType getInstituteTypeByNameAndCountry(String instituteType, String countryName);
+
+	Institute getInstituteByInstituteEnglishRequirementId(UUID fromString);
 }

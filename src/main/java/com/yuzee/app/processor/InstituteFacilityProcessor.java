@@ -44,7 +44,7 @@ public class InstituteFacilityProcessor {
 		}
 
 		log.info("checking all existing facility to match with facility passed in request ");
-		List<InstituteFacility> listOfExistingInstituteFacility = instituteDao.getAllInstituteFacility(instituteId);
+		List<InstituteFacility> listOfExistingInstituteFacility = institute.get().getInstituteFacilities();
 
 		for (FacilityDto facilityDto : instituteFacilityDto.getFacilities()) {
 			InstituteFacility instituteFacilityFromDB = listOfExistingInstituteFacility.stream().filter(

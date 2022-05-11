@@ -1,26 +1,15 @@
 package com.yuzee.app.dao.impl;
 
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.validation.Valid;
-
-import com.mongodb.client.model.Projections;
 import com.yuzee.app.bean.*;
+import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.*;
-import org.apache.commons.lang3.StringUtils;
+import com.yuzee.app.enumeration.CourseSortBy;
+import com.yuzee.app.repository.InstituteRepository;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.util.PaginationUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,21 +19,19 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
-import org.springframework.data.mongodb.core.query.*;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.yuzee.app.dao.InstituteDao;
-import com.yuzee.app.enumeration.CourseSortBy;
-import com.yuzee.app.repository.InstituteRepository;
-import com.yuzee.app.util.IConstant;
-import com.yuzee.common.lib.exception.NotFoundException;
-import com.yuzee.common.lib.util.DateUtil;
-import com.yuzee.common.lib.util.PaginationUtil;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -470,24 +457,23 @@ public class InstituteDaoImpl implements InstituteDao {
     public List<Institute> instituteFilter(final int pageNumber, final Integer pageSize,
                                            final InstituteFilterDto instituteFilterDto) {
         Query mongoQuery = new Query();
+        Date updatedDate = null;
         Date postedDate = null;
-        try {
-            postedDate = new SimpleDateFormat("MM/dd/yyyy").parse(instituteFilterDto.getDatePosted());
-        } catch (Exception e){
-            log.error(e.getMessage());
-        }
-        String updatedDate = null;
         if(instituteFilterDto.getDatePosted() != null) {
-             postedDate = DateUtil.convertStringDateToDate(instituteFilterDto.getDatePosted());
-            Calendar c = Calendar.getInstance();
-            c.setTime(postedDate);
-            c.add(Calendar.DATE, 1);
-            postedDate = c.getTime();
-            updatedDate = DateUtil.getStringDateFromDate(postedDate);
-            mongoQuery.addCriteria(Criteria.where("createdOn").gte(instituteFilterDto.getDatePosted()).lte(updatedDate));
+            try {
+                postedDate = new SimpleDateFormat("yyyy/MM/dd").parse(instituteFilterDto.getDatePosted());
+                Calendar c = Calendar.getInstance();
+                c.setTime(postedDate);
+                c.add(Calendar.DATE, 1);
+                updatedDate = c.getTime();
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
         }
-        mongoQuery.addCriteria(Criteria.where("isActive").is(1));
-        mongoQuery.addCriteria(Criteria.where("deletedOn").is(null));
+            if (postedDate != null && updatedDate != null) {
+                mongoQuery.addCriteria(Criteria.where("createdOn").gte(postedDate).lte(updatedDate));
+            }
+        mongoQuery.addCriteria(Criteria.where("isActive").is(true));
         if (instituteFilterDto.getCityName() != null) {
             mongoQuery.addCriteria(Criteria.where("cityName").is(instituteFilterDto.getCityName()));
         }
@@ -503,8 +489,10 @@ public class InstituteDaoImpl implements InstituteDao {
         if(instituteFilterDto.getWorldRanking() != null) {
             mongoQuery.addCriteria(Criteria.where("worldRanking").is(instituteFilterDto.getWorldRanking()));
         }
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        mongoQuery.with(pageable);
+        if(pageNumber != 0 && pageSize != 0) {
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            mongoQuery.with(pageable);
+        }
 //        Session session = sessionFactory.getCurrentSession();
 //        String sqlQuery = "select inst.id, inst.name , inst.country_name , inst.city_name, inst.institute_type,"
 //                + " inst.description, inst.updated_on, inst.domestic_ranking FROM institute as inst"
@@ -654,7 +642,6 @@ public class InstituteDaoImpl implements InstituteDao {
     public InstituteCategoryType getInstituteCategoryType(final String id, final String instituteCategoryType) {
         Query mongoQuery = new Query();
         mongoQuery.addCriteria(Criteria.where("instituteCategoryType").is(instituteCategoryType));
-
         return mongoTemplate.findById(id, InstituteCategoryType.class, "institute");
 //        InstituteCategoryType obj = null;
 //        if (instituteCategoryTypeId != null) {
@@ -1182,17 +1169,11 @@ public class InstituteDaoImpl implements InstituteDao {
     }
 
     @Override
-    public List<InstituteResponseDto> findByIds(List<String> instituteIds) {
+    public List<Institute> findByIds(List<UUID> instituteIds) {
         Query mongoQuery = new Query();
         mongoQuery.addCriteria(Criteria.where("id").in(instituteIds));
-        return mongoTemplate.find(mongoQuery, InstituteResponseDto.class);
+        return mongoTemplate.find(mongoQuery, Institute.class, "institute");
     }
-
-    @Override
-    public List<Institute> findAllById(List<String> instituteIds) {
-        return instituteRepository.findAllById(instituteIds);
-    }
-
 
     @Override
     public List<Institute> findByReadableIdIn(List<String> readableIds) {
@@ -1270,6 +1251,7 @@ public class InstituteDaoImpl implements InstituteDao {
     @Override
     public List<InstituteTypeDto> getAllInstituteType() {
         Query mongoQuery = new Query();
+        mongoQuery.fields().include("instituteType");
         return mongoTemplate.find(mongoQuery, InstituteTypeDto.class);
     }
 
@@ -1334,5 +1316,49 @@ public class InstituteDaoImpl implements InstituteDao {
         Query mongoQuery = new Query();
         mongoQuery.addCriteria(Criteria.where("serviceId").is(facilityId));
         return mongoTemplate.findById(mongoQuery, com.yuzee.app.bean.Service.class, "service");
+    }
+
+    @Override
+    public List<InstituteDomesticRankingHistory> getInstituteDomesticRankingHistories(String instituteId) {
+        Query mongoQuery = new Query();
+        mongoQuery.fields().include("instituteDomesticRankingHistories");
+        mongoQuery.addCriteria(Criteria.where("id").is(instituteId));
+        return mongoTemplate.find(mongoQuery, InstituteDomesticRankingHistory.class, "institute");
+    }
+
+    @Override
+    public List<InstituteCampus> findInstituteCampuses(String instituteId) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("id").is(instituteId));
+        return mongoTemplate.find(mongoQuery, InstituteCampus.class, "institute");
+    }
+
+    @Override
+    public List<com.yuzee.app.bean.Service> findServiceByName(List<String> allNames) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("name").is(allNames));
+        return mongoTemplate.find(mongoQuery, com.yuzee.app.bean.Service.class, "service");
+    }
+
+    @Override
+    public List<ServiceDto> addUpdateServices(List<com.yuzee.app.bean.Service> services) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("name").is(services));
+        return mongoTemplate.find(mongoQuery, ServiceDto.class, "service");
+    }
+
+    @Override
+    public InstituteType getInstituteTypeByNameAndCountry(String instituteType, String countryName) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("instituteType").is(instituteType));
+        mongoQuery.addCriteria(Criteria.where("countryName").is(countryName));
+        return mongoTemplate.findOne(mongoQuery, InstituteType.class, "institute");
+    }
+
+    @Override
+    public Institute getInstituteByInstituteEnglishRequirementId(UUID englishRequirementId) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("englishRequirementId").is(englishRequirementId));
+        return mongoTemplate.findOne(mongoQuery, Institute.class, "institute");
     }
 }

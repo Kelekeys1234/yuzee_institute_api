@@ -17,6 +17,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -28,6 +29,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteWorldRankingHistory{
 
+	@JsonProperty(value = "world_ranking")
 	private Integer worldRanking;
 
 	private Date createdOn;

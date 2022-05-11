@@ -241,16 +241,16 @@ public class InstituteProcessor {
             for (InstituteRequestDto instituteRequest : instituteRequests) {
                 log.info("Going to save institute in DB");
                 Institute institute = saveInstitute(instituteRequest, null);
-                if (instituteRequest.getDomesticRanking() != null) {
+                if (instituteRequest.getInstituteDomesticRankingHistories() != null) {
                     log.info("if domesticRanking is not null then going to record domesticRankingHistory");
                     saveDomesticRankingHistory(institute, null);
                 }
-                if (instituteRequest.getWorldRanking() != null) {
+                if (instituteRequest.getInstituteWorldRankingHistories() != null) {
                     log.info("if worldRanking is not null then going to record worldRankingHistory");
                     saveWorldRankingHistory(institute, null);
                 }
                 log.info("Copying institute data from instituteBean to elasticSearchDTO");
-                instituteRequest.setId(institute.getId());
+                instituteRequest.setInstituteId(institute.getId().toString());
                 instituteRequest.setEditAccess(true);
                 instituteElasticDtoList.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
             }
@@ -266,29 +266,33 @@ public class InstituteProcessor {
     @Transactional(rollbackFor = {ConstraintVoilationException.class, Exception.class})
     private void saveWorldRankingHistory(final Institute institute, final Institute oldInstitute) {
         log.debug("Inside saveWorldRankingHistory() method");
-        InstituteWorldRankingHistory worldRanking = new InstituteWorldRankingHistory();
-        worldRanking.setWorldRanking(institute.getWorldRanking());
-        Optional<Institute> existingInstitute = instituteRepository.findById(oldInstitute.getId());
-        if (existingInstitute.get() != null) {
-            log.info("Saving worldRanking for already existing institute having instituteId = " + oldInstitute.getId());
-//			worldRanking.setInstitute(oldInstitute);
-            existingInstitute.get().setWorldRanking(institute.getWorldRanking());
-            instituteRepository.save(existingInstitute.get());
-        } else {
+        if(oldInstitute == null) {
+            List<InstituteWorldRankingHistory> worldRankingHistoryList = new ArrayList<>();
+            InstituteWorldRankingHistory worldRanking = new InstituteWorldRankingHistory();
+            worldRanking.setWorldRanking(institute.getWorldRanking());
+            worldRankingHistoryList.add(worldRanking);
+            institute.setInstituteWorldRankingHistories(worldRankingHistoryList);
             log.info("Saving worldRanking for new institute having instituteId = " + institute.getId());
-//			worldRanking.setInstitute(institute);
             instituteRepository.save(institute);
+        } else{
+            Optional<Institute>  existingInstitute = instituteRepository.findById(oldInstitute.getId());
+            existingInstitute.get().setWorldRanking(institute.getWorldRanking());
+            log.info("Saving worldRanking for already existing institute having instituteId = " + oldInstitute.getId());
+            instituteRepository.save(existingInstitute.get());
         }
     }
 
     @Transactional(rollbackFor = {ConstraintVoilationException.class, Exception.class})
     private void saveDomesticRankingHistory(final Institute institute, final Institute oldInstitute) {
         log.debug("Inside saveDomesticRankingHistory() method");
+        List<InstituteDomesticRankingHistory> domesticRankingHistoryList = new ArrayList<>();
         InstituteDomesticRankingHistory domesticRanking = new InstituteDomesticRankingHistory();
         domesticRanking.setDomesticRanking(institute.getDomesticRanking());
+        domesticRankingHistoryList.add(domesticRanking);
+        institute.setInstituteDomesticRankingHistories(domesticRankingHistoryList);
+        if(oldInstitute != null){
         Optional<Institute> existingInstitute = instituteRepository.findById(oldInstitute.getId());
         List<InstituteDomesticRankingHistory> setOfDomesticRankingHistory = existingInstitute.get().getInstituteDomesticRankingHistories();
-        if (!ObjectUtils.isEmpty(existingInstitute) && CollectionUtils.isEmpty(setOfDomesticRankingHistory)) {
             existingInstitute.get().setInstituteDomesticRankingHistories(setOfDomesticRankingHistory);
             instituteRepository.save(existingInstitute.get());
         } else {
@@ -388,9 +392,10 @@ public class InstituteProcessor {
             throw new ValidationException(messageTranslator.toLocale("institute-processor.required.type"));
         }
         /* Todo  below Institute fields doesn't have @NotNull annotation. it can throw NullPointerException */
-
-        institute.setDomesticRanking(instituteRequest.getDomesticRanking());
         institute.setWorldRanking(instituteRequest.getWorldRanking());
+        institute.setInstituteWorldRankingHistories(instituteRequest.getInstituteWorldRankingHistories());
+        institute.setDomesticRanking(instituteRequest.getDomesticRanking());
+        institute.setInstituteDomesticRankingHistories(instituteRequest.getInstituteDomesticRankingHistories());
         institute.setPostalCode(instituteRequest.getPostalCode());
         institute.setWebsite(instituteRequest.getWebsite());
 //        if (!StringUtils.isEmpty(instituteRequest.getInstituteCategoryTypeId())) {
@@ -436,7 +441,7 @@ public class InstituteProcessor {
         }
 
         if (instituteRequest.getAccreditation() != null && !instituteRequest.getAccreditation().isEmpty()) {
-            log.info("accrediation detail is not null hence going to save institute accrediation details in DB");
+            log.info("accreditation detail is not null hence going to save institute accreditation details in DB");
             saveAccreditedInstituteDetails(institute, instituteRequest.getAccreditationDetails());
         }
         if (instituteRequest.getIntakes() != null && !instituteRequest.getIntakes().isEmpty()) {
@@ -451,7 +456,7 @@ public class InstituteProcessor {
             timingRequestDto.setEntityType(EntityTypeEnum.INSTITUTE.name());
             timingRequestDto.setTimingType(TimingType.OPEN_HOURS.name());
             timingRequestDto.setTimings(instituteRequest.getInstituteTimings());
-            instituteTimingProcessor.saveUpdateDeleteTimings("API", EntityTypeEnum.INSTITUTE, Arrays.asList(timingRequestDto), institute.getId().toString());
+            instituteTimingProcessor.saveUpdateDeleteTimings("API", EntityTypeEnum.INSTITUTE, List.of(timingRequestDto), institute.getId().toString());
         }
         return institute;
     }
@@ -905,20 +910,17 @@ public class InstituteProcessor {
     @Transactional(rollbackFor = {ConstraintVoilationException.class, Exception.class})
     public List<InstituteDomesticRankingHistoryDto> getHistoryOfDomesticRanking(final String instituteId) {
         log.debug("Inside getHistoryOfDomesticRanking() method");
-        List<InstituteDomesticRankingHistoryDto> domesticRankingHistoryObj = new ArrayList<>();
+//        List<InstituteDomesticRankingHistoryDto> domesticRankingHistoryObj = null;
         log.info("Calling DAO layer to fetch Domestic Ranking for instituteId = " + instituteId);
         Optional<Institute> institute = instituteRepository.findById(UUID.fromString(instituteId));
-        List<InstituteDomesticRankingHistory> domesticRankingHistories = instituteRepository.getDomesticHistoryRankingByInstituteId(instituteId);
-        if (!CollectionUtils.isEmpty(domesticRankingHistories) && institute.isPresent()) {
+        List<InstituteDomesticRankingHistoryDto> domesticRankingHistoryDto = new ArrayList<>();
+        //List<InstituteDomesticRankingHistory> domesticRankingHistories = instituteRepository.getDomesticHistoryRankingByInstituteId(instituteId);
+        if (institute.isPresent()) {
+            List<InstituteDomesticRankingHistory> domesticRankingHistoryFromDB = institute.get().getInstituteDomesticRankingHistories();
             log.info("Domestic Ranking history fetched from DB and start iterating to set values in DTO");
-            domesticRankingHistories.forEach(domesticRankingHistory -> {
-                InstituteDomesticRankingHistoryDto domesticRankingHistoryDto = new InstituteDomesticRankingHistoryDto();
-                domesticRankingHistoryDto.setDomesticRanking(domesticRankingHistory.getDomesticRanking());
-                domesticRankingHistoryDto.setInstituteName(institute.get().getName());
-                domesticRankingHistoryObj.add(domesticRankingHistoryDto);
-            });
+            domesticRankingHistoryDto =   domesticRankingHistoryFromDB.stream().map(rankingFromDB ->  new InstituteDomesticRankingHistoryDto(rankingFromDB.getDomesticRanking(), institute.get().getName())).collect(Collectors.toList());
         }
-        return domesticRankingHistoryObj;
+        return domesticRankingHistoryDto;
     }
 
 
@@ -927,16 +929,18 @@ public class InstituteProcessor {
         log.debug("Inside getHistoryOfWorldRanking() method");
         List<InstituteWorldRankingHistoryDto> instituteWorldRankingHistoryResponse = new ArrayList<>();
         log.info("Calling DAO layer to fetch world ranking for instituteId =" + instituteId);
-        List<InstituteWorldRankingHistory> instituteWorldRankingHistories = instituteRepository.getHistoryOfWorldRankingByInstituteId(instituteId);
         Optional<Institute> institute = instituteRepository.findById(UUID.fromString(instituteId));
-        if (!CollectionUtils.isEmpty(instituteWorldRankingHistories) && institute.isPresent()) {
-            log.info("World Ranking history fetched from DB and start iterating to set values in DTO");
-            instituteWorldRankingHistories.forEach(instituteWorldRankingHistory -> {
-                InstituteWorldRankingHistoryDto instituteWorldRankingHistoryDto = new InstituteWorldRankingHistoryDto();
-                instituteWorldRankingHistoryDto.setWorldRanking(instituteWorldRankingHistory.getWorldRanking());
-                instituteWorldRankingHistoryDto.setInstituteName(institute.get().getName());
-                instituteWorldRankingHistoryResponse.add(instituteWorldRankingHistoryDto);
-            });
+        if (institute.isPresent()) {
+            List<InstituteWorldRankingHistory> instituteWorldRankingHistories = institute.get().getInstituteWorldRankingHistories();
+            if (!CollectionUtils.isEmpty(instituteWorldRankingHistories)) {
+                log.info("World Ranking history fetched from DB and start iterating to set values in DTO");
+                instituteWorldRankingHistories.forEach(instituteWorldRankingHistory -> {
+                    InstituteWorldRankingHistoryDto instituteWorldRankingHistoryDto = new InstituteWorldRankingHistoryDto();
+                    instituteWorldRankingHistoryDto.setWorldRanking(instituteWorldRankingHistory.getWorldRanking());
+                    instituteWorldRankingHistoryDto.setInstituteName(institute.get().getName());
+                    instituteWorldRankingHistoryResponse.add(instituteWorldRankingHistoryDto);
+                });
+            }
         }
         return instituteWorldRankingHistoryResponse;
     }
@@ -1162,29 +1166,85 @@ public class InstituteProcessor {
         return dto;
     }
 
-
     @Transactional(rollbackFor = {ConstraintVoilationException.class, Exception.class})
     public List<InstituteResponseDto> getInstitutesByIdList(List<String> instituteIds) throws Exception {
         log.info("inside InstituteProcessor.getInstitutesByIdList");
-        List<InstituteResponseDto> instituteResponseDtos = instituteDao.findByIds(instituteIds);
-        if (!CollectionUtils.isEmpty(instituteResponseDtos)) {
-            List<StorageDto> instituteLogos = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
-                    EntitySubTypeEnum.LOGO);
-
-            log.info("Calling review service to fetch user average review for instituteId");
-            Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
-
-            instituteResponseDtos.stream().forEach(instituteResponseDto -> {
-                ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteResponseDto.getId());
-                if (!ObjectUtils.isEmpty(reviewStarDto)) {
-                    instituteResponseDto.setStars(reviewStarDto.getReviewStars());
-                    instituteResponseDto.setReviewsCount(reviewStarDto.getReviewsCount());
-                }
-                Optional<StorageDto> logoStorage = instituteLogos.stream()
-                        .filter(e -> e.getEntityId().equals(instituteResponseDto.getId())).findFirst();
-                instituteResponseDto.setLogoUrl(logoStorage.isPresent() ? logoStorage.get().getFileURL() : null);
-            });
+        List<InstituteResponseDto> instituteResponseDtos = null;
+        List<UUID> uuidIds = instituteIds.stream().map(UUID::fromString).collect(Collectors.toList());
+        List<Institute> institutes = instituteDao.findByIds(uuidIds);
+        if(!CollectionUtils.isEmpty(institutes)) {
+            instituteResponseDtos = institutes.stream().
+                    map(e -> new InstituteResponseDto(
+                            e.getName(),
+                            e.getWorldRanking(),
+                            e.getCityName(),
+                            e.getCountryName(),
+                            e.getWebsite(),
+                            e.getAboutInfo(),
+                            e.getLatitude(),
+                            e.getLongitude(),
+                            e.getPhoneNumber(),
+                            e.getEmail(),
+                            e.getDomesticRanking(),
+                            e.getCreatedOn())).collect(Collectors.toList());
         }
+//        super.setName(name);
+//        super.setWorldRanking(worldRanking);
+//        super.setCityName(cityName);
+//        super.setCountryName(countryName);
+//        super.setStateName(stateName);
+//        super.setWebsite(website);
+//        this.aboutUs = aboutUs;
+//        super.setLatitude(latitude);
+//        super.setLongitude(longitude);
+//        super.setPhoneNumber(phoneNumber);
+//        super.setEmail(email);
+//        super.setAddress(address);
+//        super.setDomesticRanking(domesticRanking);
+//        super.setCreatedOn(createdOn);
+//        if (!CollectionUtils.isEmpty(institutes)) {
+//            institutes.forEach(e->{
+//                instituteResponseDtos.forEach(m->{
+//                    if(e.getName() != null){
+//                        m.setName(e.getName());
+//                    }
+//                    if(e.getDomesticRanking() != null){
+//                        m.setDomesticRanking(e.getDomesticRanking());
+//                    }
+//                    if(e.getCountryName() != null){
+//                        m.setCountryName(e.getCountryName());
+//                    }
+//                    if(e.getCityName() != null){
+//                        m.setCityName(e.getCityName());
+//                    }
+//                    if(e.getEmail() != null){
+//                        m.setEmail(e.getEmail());
+//                    }
+//                    if(e.getLongitude() != 0){
+//                        m.setLongitude(e.getLongitude());
+//                    }
+//                    if(e.getLatitude() != 0){
+//                        m.setLatitude(e.getLatitude());
+//                    }
+//                    m.setId(e.getId());
+//                });
+//            });
+//            List<StorageDto> instituteLogos = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
+//                    EntitySubTypeEnum.LOGO);
+            log.info("Calling review service to fetch user average review for instituteId");
+//            Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("INSTITUTE", instituteIds);
+//
+//            instituteResponseDtos.forEach(instituteResponseDto -> {
+//                ReviewStarDto reviewStarDto = yuzeeReviewMap.get(instituteResponseDto.getId());
+//                if (!ObjectUtils.isEmpty(reviewStarDto)) {
+//                    instituteResponseDto.setStars(reviewStarDto.getReviewStars());
+//                    instituteResponseDto.setReviewsCount(reviewStarDto.getReviewsCount());
+//                }
+//                Optional<StorageDto> logoStorage = instituteLogos.stream()
+//                        .filter(e -> e.getEntityId().equals(instituteResponseDto.getId())).findFirst();
+//                instituteResponseDto.setLogoUrl(logoStorage.isPresent() ? logoStorage.get().getFileURL() : null);
+//            });
+//        }
         return instituteResponseDtos;
     }
 
@@ -1219,8 +1279,8 @@ public class InstituteProcessor {
     @Transactional(rollbackFor = {ConstraintVoilationException.class, Exception.class})
     public List<Institute> validateAndGetInstituteByIds(List<String> instituteIds) throws NotFoundException {
         log.info("inside validateAndGetInstituteByIds");
-
-        List<Institute> institutes = instituteDao.findAllById(instituteIds);
+        List<UUID> uuidList = instituteIds.stream().map(UUID::fromString).collect(Collectors.toList());
+        List<Institute> institutes = instituteDao.findByIds(uuidList);
         if (institutes.size() != instituteIds.size()) {
             log.error(messageTranslator.toLocale("institute-processor.not_found.id", instituteIds.toArray(), Locale.US));
             throw new NotFoundException(messageTranslator.toLocale("institute-processor.not_found.id", instituteIds.toArray()));
@@ -1281,7 +1341,8 @@ public class InstituteProcessor {
 
     @Transactional
     public List<InstituteVerficationDto> getMultipleInstituteVerificationStatus(List<String> instituteIds) {
-        List<Institute> institutes = instituteDao.findAllById(instituteIds);
+        List<UUID> uuidIds = instituteIds.stream().map(UUID::fromString).collect(Collectors.toList());
+        List<Institute> institutes = instituteDao.findByIds(uuidIds);
         if (CollectionUtils.isEmpty(institutes) || institutes.size() != instituteIds.size()) {
             log.error("one or more institute ids are invalid");
             throw new ValidationException("one or more institute ids are invalid");
@@ -1364,9 +1425,9 @@ public class InstituteProcessor {
             log.error("User with user_id : {} not found", userId);
             throw new RuntimeNotFoundException("Invalid login user_id : " + userId);
         }
-
+        List<UUID> uuidList = verifiedInstituteIds.stream().map(UUID::fromString).collect(Collectors.toList());
         List<InstituteSyncDTO> institutesSync = new ArrayList<InstituteSyncDTO>();
-        List<Institute> institutesFromDb = instituteDao.findAllById(verifiedInstituteIds);
+        List<Institute> institutesFromDb = instituteDao.findByIds(uuidList);
 
         if (!CollectionUtils.isEmpty(institutesFromDb)) {
             institutesFromDb.forEach(institute -> {

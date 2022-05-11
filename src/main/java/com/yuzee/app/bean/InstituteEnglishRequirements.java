@@ -18,12 +18,14 @@ import java.util.UUID;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collation = "InstituteEnglishRequirement")
+@Document(collation = "InstituteEnglishRequirements")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteEnglishRequirements {
 
 	@Id
-	private UUID englishRequirementId;
+	private UUID id;
+
+	private Institute institute;
 
 	private String examName;
 
@@ -34,4 +36,13 @@ public class InstituteEnglishRequirements {
 	private Double writingMarks;
 
 	private Double oralMarks;
+
+	public InstituteEnglishRequirements(UUID englishRequirementId, String examName, Double readingMarks, Double listeningMarks, Double writingMarks, Double oralMarks) {
+		this.id = englishRequirementId;
+		this.examName = examName;
+		this.readingMarks = readingMarks;
+		this.listeningMarks = listeningMarks;
+		this.writingMarks = writingMarks;
+		this.oralMarks = oralMarks;
+	}
 }

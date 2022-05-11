@@ -37,8 +37,7 @@ public class InstituteEnglishRequirementsController implements InstituteEnglishR
 	@Override
 	public ResponseEntity<?> updateInstituteEnglishRequirements(String userId, String englishRequirementsId,
 			@RequestBody @Valid InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception {
-		instituteEnglishRequirementsProcessor.updateInstituteEnglishRequirements(userId, englishRequirementsId, instituteEnglishRequirementsDto);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(messageTranslator.toLocale("english_requirement.updated")).create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(instituteEnglishRequirementsProcessor.updateInstituteEnglishRequirements(userId, englishRequirementsId, instituteEnglishRequirementsDto)).setMessage(messageTranslator.toLocale("english_requirement.updated")).create();
 	}
 
 	@Override
