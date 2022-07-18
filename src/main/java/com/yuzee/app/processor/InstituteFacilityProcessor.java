@@ -1,6 +1,10 @@
 package com.yuzee.app.processor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -27,7 +31,6 @@ public class InstituteFacilityProcessor {
 	@Autowired
 	private InstituteDao instituteDao;
 
-
 	@Autowired
 	private MessageTranslator messageTranslator;
 
@@ -35,49 +38,55 @@ public class InstituteFacilityProcessor {
 			throws NotFoundException {
 		List<InstituteFacility> listOfFacilityToBeSaved = new ArrayList<>();
 		log.debug("inside addInstituteFacility() method");
-			//userAccessUtils.validateUserAccess(userId, instituteId, "facility page", "add");
+		// userAccessUtils.validateUserAccess(userId, instituteId, "facility page",
+		// "add");
 
 		Optional<Institute> institute = instituteDao.getInstituteByInstituteId(UUID.fromString(instituteId));
 		if (institute.isEmpty()) {
-			log.error(messageTranslator.toLocale("institute.id.illegal",instituteId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute.id.illegal",instituteId));
+			log.error(messageTranslator.toLocale("institute.id.illegal", instituteId, Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("inst()itute.id.illegal", instituteId));
 		}
 
 		log.info("checking all existing facility to match with facility passed in request ");
 		List<InstituteFacility> listOfExistingInstituteFacility = institute.get().getInstituteFacilities();
 
 		for (FacilityDto facilityDto : instituteFacilityDto.getFacilities()) {
-			InstituteFacility instituteFacilityFromDB = listOfExistingInstituteFacility.stream().filter(
-					facilityFromDB -> facilityFromDB.getService().getId().toString().equalsIgnoreCase(facilityDto.getFacilityId()))
+			InstituteFacility instituteFacilityFromDB = listOfExistingInstituteFacility.stream()
+					.filter(facilityFromDB -> facilityFromDB.getService().getId().toString()
+							.equalsIgnoreCase(facilityDto.getFacilityId()))
 					.findAny().orElse(null);
 
 			if (ObjectUtils.isEmpty(instituteFacilityFromDB)) {
 				log.info("No facility present for institute facility Id {} adding it to list",
 						facilityDto.getFacilityId());
 
-				com.yuzee.app.bean.Service service = instituteDao.getServiceById(facilityDto.getFacilityId());
+				Optional<com.yuzee.app.bean.Service> service = instituteDao.findById(facilityDto.getFacilityId());
 				if (ObjectUtils.isEmpty(service)) {
-					log.error(messageTranslator.toLocale("institute.facility.id.illegal",facilityDto.getFacilityId(),Locale.US));
-					throw new NotFoundException(messageTranslator.toLocale("institute.facility.id.illegal",facilityDto.getFacilityId()));
+					log.error(messageTranslator.toLocale("institute.facility.id.illegal", facilityDto.getFacilityId(),
+							Locale.US));
+					throw new NotFoundException(
+							messageTranslator.toLocale("institute.facility.id.illegal", facilityDto.getFacilityId()));
 				}
-				InstituteFacility instituteFacility = new InstituteFacility(institute.get().getId(), service);
+
+				InstituteFacility instituteFacility = new InstituteFacility(institute.get().getId(), service.get());
 
 				listOfFacilityToBeSaved.add(instituteFacility);
 			} else {
 				log.info("Institute facility present for institute facility id {} skipping it",
 						facilityDto.getFacilityId());
 			}
-		}
 
-		log.info("Persisting facility list to DB ");
-		institute.get().setInstituteFacilities(listOfFacilityToBeSaved);
-		instituteDao.addUpdateInstitute(institute.get());
+			log.info("Persisting facility list to DB ");
+			institute.get().setInstituteFacilities(listOfFacilityToBeSaved);
+			instituteDao.addUpdateInstitute(institute.get());
+		}
 	}
 
 	@Transactional(rollbackOn = Throwable.class)
 	public void deleteInstituteFacilities(String instituteId, List<String> instituteFacilitiesId) {
 		log.debug("inside deleteInstituteFacilities() method");
-		//userAccessUtils.validateUserAccess(userId, instituteId, "facility page", "delete");
+		// userAccessUtils.validateUserAccess(userId, instituteId, "facility page",
+		// "delete");
 
 		if (!CollectionUtils.isEmpty(instituteFacilitiesId)) {
 			instituteFacilitiesId.forEach(instituteFacilityId -> {
@@ -93,10 +102,11 @@ public class InstituteFacilityProcessor {
 	public InstituteFacilityDto getFacilitiesByInstituteId(String instituteId) {
 		InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
 		log.debug("inside getFacilitiesByInstituteId() method");
-		//	userAccessUtils.validateUserAccess(userId, instituteId, "facility page", "get");
+		// userAccessUtils.validateUserAccess(userId, instituteId, "facility page",
+		// "get");
 		log.info("Getting all facilities for institute id " + instituteId);
-		List<InstituteFacility> listOfExistingInstituteFacility = instituteDao
-				.getAllInstituteFacility(instituteId);
+		// Institute institute = instituteDao.get(UUID.fromString(instituteId));
+		List<InstituteFacility> listOfExistingInstituteFacility = instituteDao.getAllInstituteFacility(instituteId);
 		if (!CollectionUtils.isEmpty(listOfExistingInstituteFacility)) {
 			log.info("Facility from db not empty for institute id {}", instituteId);
 			instituteFacilityDto = CommonUtil.createInstituteFacilityResponseDto(listOfExistingInstituteFacility);
@@ -108,11 +118,11 @@ public class InstituteFacilityProcessor {
 		InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
 		log.debug("inside getFacilitiesByInstituteId() method");
 		log.info("Getting all facilities for institute id {}", instituteId);
-		List<InstituteFacility> listOfExistingInstituteFacility = instituteDao
-				.getAllInstituteFacility(instituteId);
+		List<InstituteFacility> listOfExistingInstituteFacility = instituteDao.getAllInstituteFacility(instituteId);
 		if (!CollectionUtils.isEmpty(listOfExistingInstituteFacility)) {
 			log.info("Facility from db not empty for institute id {}", instituteId);
-			//instituteFacilityDto = DTOUtils.createInstituteFacilityResponseDto(listOfExistingInstituteFacility);
+			// instituteFacilityDto =
+			// DTOUtils.createInstituteFacilityResponseDto(listOfExistingInstituteFacility);
 			CommonUtil.createInstituteFacilityResponseDto(listOfExistingInstituteFacility);
 		}
 		return instituteFacilityDto;

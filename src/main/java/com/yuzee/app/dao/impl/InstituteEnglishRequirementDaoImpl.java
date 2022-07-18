@@ -1,5 +1,6 @@
 package com.yuzee.app.dao.impl;
 
+import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteEnglishRequirements;
 import com.yuzee.app.dao.InstituteEnglishRequirementDao;
 import com.yuzee.app.repository.InstituteEnglishRequirementRepository;
@@ -33,13 +34,25 @@ public class InstituteEnglishRequirementDaoImpl implements InstituteEnglishRequi
 
     @Override
     public InstituteEnglishRequirements getInstituteEnglishRequirementsById(UUID englishRequirementsId) {
-        Query mongoQuery = new Query();
-        mongoQuery.addCriteria(Criteria.where("id").is(englishRequirementsId));
-        return instituteEnglishRequirementRepository.find(englishRequirementsId);
-    }
+		
+		  Query mongoQuery = new Query();
+		  mongoQuery.addCriteria(Criteria.where("id").is(englishRequirementsId));
+		  return
+		  instituteEnglishRequirementRepository.find(englishRequirementsId.toString());
+		 
+		
+			/*
+			 * Optional<InstituteEnglishRequirements> institute
+			 * =instituteEnglishRequirementRepository.findById(englishRequirementsId.
+			 * toString()); if (institute.isPresent()) { return institute.get(); } return
+			 * null; }
+			 */
+		 
+
+}
 
     @Override
     public void deleteInstituteEnglishRequirementsById(UUID englishRequirementsId) {
-        instituteEnglishRequirementRepository.deleteById(englishRequirementsId);
+        instituteEnglishRequirementRepository.deleteById(englishRequirementsId.toString());
     }
 }

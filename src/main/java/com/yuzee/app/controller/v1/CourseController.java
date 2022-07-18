@@ -47,14 +47,14 @@ import com.yuzee.common.lib.handler.ViewTransactionHandler;
 import com.yuzee.common.lib.util.PaginationUtil;
 import com.yuzee.local.config.MessageTranslator;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 
-@CommonsLog
+@Slf4j
 @RestController("courseControllerV1")
 public class CourseController implements CourseInterface {
 	@Autowired
 	private MessageTranslator messageTranslator;
-	
+
 	@Autowired
 	private InstituteProcessor instituteProcessor;
 
@@ -75,7 +75,7 @@ public class CourseController implements CourseInterface {
 
 	@Autowired
 	private UserHandler userHandler;
-	
+
 	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
 
@@ -97,8 +97,8 @@ public class CourseController implements CourseInterface {
 				.setMessage(messageTranslator.toLocale("course.added")).create();
 	}
 
-	public ResponseEntity<?> update(final String userId, String instituteId, final CourseRequest course, final String id)
-			throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
+	public ResponseEntity<?> update(final String userId, String instituteId, final CourseRequest course,
+			final String id) throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
 		log.info("Start process to update existing course in DB");
 		com.yuzee.app.util.ValidationUtil.validateTimingDtoFromCourseRequest(course);
 		String courseId = courseProcessor.saveOrUpdateCourse(userId, instituteId, course, id);
@@ -107,10 +107,10 @@ public class CourseController implements CourseInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> updateBasicCourse(final String userId, String instituteId, final CourseRequest course, final String id)
-			throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
+	public ResponseEntity<?> updateBasicCourse(final String userId, String instituteId, final CourseRequest course,
+			final String id) throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
 		log.info("Start process to update existing basic course in DB");
-		String courseId = courseProcessor.saveOrUpdateBasicCourse(userId,instituteId, course, id);
+		String courseId = courseProcessor.saveOrUpdateBasicCourse(userId, instituteId, course, id);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage(messageTranslator.toLocale("course.updated")).create();
 	}
@@ -122,7 +122,8 @@ public class CourseController implements CourseInterface {
 				.setMessage(messageTranslator.toLocale("course.displayed")).create();
 	}
 
-	public ResponseEntity<?> autoSearch(final String searchKey, final Integer pageNumber, final Integer pageSize) throws Exception {
+	public ResponseEntity<?> autoSearch(final String searchKey, final Integer pageNumber, final Integer pageSize)
+			throws Exception {
 		log.info("Start process to search course based on pagination and searchkeyword");
 		PaginationResponseDto paginationResponseDto = courseProcessor.autoSearch(pageNumber, pageSize, searchKey);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(paginationResponseDto)
@@ -133,14 +134,16 @@ public class CourseController implements CourseInterface {
 			throws ForbiddenException, NotFoundException {
 		log.info("Start process to delete existing course from DB");
 		courseProcessor.deleteCourse(userId, id, linkedCourseIds);
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setMessage(messageTranslator.toLocale("course.deleted"))
-				.create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage(messageTranslator.toLocale("course.deleted")).create();
 	}
 
-	public ResponseEntity<?> searchCourse(final Integer pageNumber, final Integer pageSize, final List<String> countryIds, final String instituteId, 
-			final List<String> facultyIds, final List<String> cityIds, final List<String> levelIds, final List<String> serviceIds, final Double minCost, 
-			final Double maxCost, final Integer minDuration, final Integer maxDuration, final String courseName, final String currencyCode, 
-			final String searchKeyword, final String sortBy, final boolean sortAsscending, final String userId, final String date) 
+	public ResponseEntity<?> searchCourse(final Integer pageNumber, final Integer pageSize,
+			final List<String> countryIds, final String instituteId, final List<String> facultyIds,
+			final List<String> cityIds, final List<String> levelIds, final List<String> serviceIds,
+			final Double minCost, final Double maxCost, final Integer minDuration, final Integer maxDuration,
+			final String courseName, final String currencyCode, final String searchKeyword, final String sortBy,
+			final boolean sortAsscending, final String userId, final String date)
 			throws ValidationException, InvokeException, NotFoundException {
 		log.info("Start process to search course based on different passed filters");
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
@@ -173,19 +176,22 @@ public class CourseController implements CourseInterface {
 
 	private ResponseEntity<?> courseSearch(final CourseSearchDto courseSearchDto, final String searchKeyword)
 			throws ValidationException, InvokeException, NotFoundException {
-		Long startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
-		
+		Long startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),
+				courseSearchDto.getMaxSizePerPage());
+
 		log.info("Calling view transaction service to fetch user my course data");
-		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(courseSearchDto.getUserId(), 
-				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name());
-		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
-		
-		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByFilter(courseSearchDto, startIndex.intValue(), courseSearchDto.getMaxSizePerPage(), 
-					searchKeyword, entityIds);
+		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(
+				courseSearchDto.getUserId(), EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name());
+		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId)
+				.collect(Collectors.toList());
+
+		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByFilter(courseSearchDto,
+				startIndex.intValue(), courseSearchDto.getMaxSizePerPage(), searchKeyword, entityIds);
 		int totalCount = courseProcessor.getCountforNormalCourse(courseSearchDto, searchKeyword, entityIds);
-		
-		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, courseSearchDto.getMaxSizePerPage(), totalCount);
-		
+
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,
+				courseSearchDto.getMaxSizePerPage(), totalCount);
+
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(courseList);
 		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
@@ -193,24 +199,28 @@ public class CourseController implements CourseInterface {
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).
-				setMessage(messageTranslator.toLocale("course.displayed")).setData(paginationResponseDto).create();
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage(messageTranslator.toLocale("course.displayed")).setData(paginationResponseDto).create();
 	}
 
-	public ResponseEntity<?> advanceSearch(final String userId, final String language, final AdvanceSearchDto courseSearchDto) throws Exception {
+	public ResponseEntity<?> advanceSearch(final String userId, final String language,
+			final AdvanceSearchDto courseSearchDto) throws Exception {
 		log.info("Start process to advance search courses from DB");
-		Long startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),courseSearchDto.getMaxSizePerPage());
+		Long startIndex = PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(),
+				courseSearchDto.getMaxSizePerPage());
 		courseSearchDto.setUserId(userId);
-		
+
 		log.info("Calling view transaction service to fetch user my course data");
-		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(courseSearchDto.getUserId(), 
-				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name());
-		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId).collect(Collectors.toList());
-		
+		List<UserMyCourseDto> userMyCourseDtos = viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(
+				courseSearchDto.getUserId(), EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name());
+		List<String> entityIds = userMyCourseDtos.stream().map(UserMyCourseDto::getEntityId)
+				.collect(Collectors.toList());
+
 		List<CourseResponseDto> courseList = courseProcessor.advanceSearch(courseSearchDto, entityIds);
 		int totalCount = courseProcessor.getCountOfAdvanceSearch(courseSearchDto, entityIds);
-		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,courseSearchDto.getMaxSizePerPage(), totalCount);
-		
+		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex,
+				courseSearchDto.getMaxSizePerPage(), totalCount);
+
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(courseList);
 		paginationResponseDto.setTotalCount(Long.valueOf(totalCount));
@@ -218,26 +228,29 @@ public class CourseController implements CourseInterface {
 		paginationResponseDto.setHasPreviousPage(paginationUtilDto.isHasPreviousPage());
 		paginationResponseDto.setTotalPages(paginationUtilDto.getTotalPages());
 		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
-		
-		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).
-				setMessage(messageTranslator.toLocale("course.displayed")).setData(paginationResponseDto).create();
+
+		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
+				.setMessage(messageTranslator.toLocale("course.displayed")).setData(paginationResponseDto).create();
 	}
 
-	public ResponseEntity<Object> get(final String userId, final String id, final boolean isReadableId) throws Exception {
+	public ResponseEntity<Object> get(final String userId, final String id, final boolean isReadableId)
+			throws Exception {
 		log.info("Start process to get course from DB based on courseId");
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
 				.setMessage(messageTranslator.toLocale("course.displayed"))
 				.setData(courseProcessor.getCourseById(userId, id, isReadableId)).create();
 	}
 
-	public ResponseEntity<?> getAllCourseByInstituteID(final String instituteId, final CourseSearchDto request) throws Exception {
+	public ResponseEntity<?> getAllCourseByInstituteID(final String instituteId, final CourseSearchDto request)
+			throws Exception {
 		Map<String, Object> response = new HashMap<>();
 
 		InstituteResponseDto instituteResponseDto = instituteProcessor.getInstituteByID(instituteId);
 		if (null == instituteResponseDto) {
-			throw new NotFoundException(messageTranslator.toLocale("institute.not_found.id",instituteId));
+			throw new NotFoundException(messageTranslator.toLocale("institute.not_found.id", instituteId));
 		}
-		List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId().toString(), EntityTypeEnum.INSTITUTE,EntitySubTypeEnum.IMAGES);
+		List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId().toString(),
+				EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES);
 		instituteResponseDto.setStorageList(storageDTOList);
 
 		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByInstitute(instituteId, request);
@@ -253,7 +266,7 @@ public class CourseController implements CourseInterface {
 		} else {
 			showMore = false;
 		}
-		response.put("paginationObj", new PaginationDto(totalCount, showMore,instituteResponseDto));
+		response.put("paginationObj", new PaginationDto(totalCount, showMore, instituteResponseDto));
 		response.put("instituteObj", instituteResponseDto);
 		response.put("courseList", courseList);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK)
@@ -274,22 +287,24 @@ public class CourseController implements CourseInterface {
 				.setMessage(messageTranslator.toLocale("course.displayed")).setData(courseResponseDtos).create();
 	}
 
-	public ResponseEntity<?> getUserCourses(final List<String> courseIds,final String sortBy, final String sortAsscending) 
-			throws ValidationException {
+	public ResponseEntity<?> getUserCourses(final List<String> courseIds, final String sortBy,
+			final String sortAsscending) throws ValidationException {
 		log.info("Start process to get user course from DB based on pagination and userID");
 		List<CourseDto> courses = courseProcessor.getUserCourse(courseIds, sortBy, sortAsscending);
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courses)
 				.setMessage(messageTranslator.toLocale("course.user.displayed")).create();
 	}
 
-	public ResponseEntity<?> courseFilter(final String userId, String language, final CourseFilterDto courseFilter) throws Exception {
-		//Get userCountry Based on userId
+	public ResponseEntity<?> courseFilter(final String userId, String language, final CourseFilterDto courseFilter)
+			throws Exception {
+		// Get userCountry Based on userId
 		UserInitialInfoDto userDto = userHandler.getUserById(userId);
 		if (userDto == null) {
-			throw new NotFoundException(
-					messageByLocalService.getMessage(messageTranslator.toLocale("user.id.not_found"), new Object[] { userId }, language));
+			throw new NotFoundException(messageByLocalService
+					.getMessage(messageTranslator.toLocale("user.id.not_found"), new Object[] { userId }, language));
 		} else if (userDto.getCitizenship() == null || userDto.getCitizenship().isEmpty()) {
-			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present",new Object[] { userId }, language));
+			throw new ValidationException(messageByLocalService.getMessage("user.citizenship.not.present",
+					new Object[] { userId }, language));
 		}
 
 		courseFilter.setUserCountryName(userDto.getCitizenship());
@@ -304,9 +319,11 @@ public class CourseController implements CourseInterface {
 				.setMessage(messageTranslator.toLocale("course.displayed")).setData(courses).create();
 	}
 
-	// This API is used when in normal or global search if data is not available based on filter.
-	public ResponseEntity<Object> getCourseNoResultRecommendation(final Integer pageNumber, final Integer pageSize, final String facultyId,
-			final String countryId, final String userCountry) throws ValidationException, InvokeException, NotFoundException {
+	// This API is used when in normal or global search if data is not available
+	// based on filter.
+	public ResponseEntity<Object> getCourseNoResultRecommendation(final Integer pageNumber, final Integer pageSize,
+			final String facultyId, final String countryId, final String userCountry)
+			throws ValidationException, InvokeException, NotFoundException {
 		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> courseResponseDtos = courseProcessor.getCourseNoResultRecommendation(userCountry,
 				facultyId, countryId, startIndex.intValue(), pageSize);
@@ -314,9 +331,10 @@ public class CourseController implements CourseInterface {
 				.setMessage(messageTranslator.toLocale("course.list.displayed")).setStatus(HttpStatus.OK).create();
 	}
 
-	// This API is used for course Info page for related course keyword recommendation.
-	public ResponseEntity<Object> getCourseKeywordRecommendation(final Integer pageNumber, final Integer pageSize, final String facultyId,
-			final String countryId, final String levelId) throws ValidationException {
+	// This API is used for course Info page for related course keyword
+	// recommendation.
+	public ResponseEntity<Object> getCourseKeywordRecommendation(final Integer pageNumber, final Integer pageSize,
+			final String facultyId, final String countryId, final String levelId) throws ValidationException {
 		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<String> courseResponseDtos = courseProcessor.getCourseKeywordRecommendation(facultyId, countryId, levelId,
 				startIndex.intValue(), pageSize);
@@ -325,9 +343,11 @@ public class CourseController implements CourseInterface {
 				.create();
 	}
 
-	// This API is used for course Info page for related course keyword recommendation.
-	public ResponseEntity<Object> getCheapestCourse(final Integer pageNumber, final Integer pageSize,final String facultyId,
-			final String countryId, final String levelId, final String cityId) throws ValidationException {
+	// This API is used for course Info page for related course keyword
+	// recommendation.
+	public ResponseEntity<Object> getCheapestCourse(final Integer pageNumber, final Integer pageSize,
+			final String facultyId, final String countryId, final String levelId, final String cityId)
+			throws ValidationException {
 		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		List<CourseResponseDto> courseResponseDtos = userRecommendationService.getCheapestCourse(facultyId, countryId,
 				levelId, cityId, startIndex.intValue(), pageSize);
@@ -341,11 +361,12 @@ public class CourseController implements CourseInterface {
 		return new GenericResponseHandlers.Builder().setData(courseCount)
 				.setMessage(messageTranslator.toLocale("course.count.displayed")).setStatus(HttpStatus.OK).create();
 	}
-	
+
 	public ResponseEntity<?> getDistinctCourses(final Integer pageNumber, final Integer pageSize, final String name) {
 		Long startIndex = PaginationUtil.getStartIndex(pageNumber, pageSize);
 		int totalCount = courseProcessor.getDistinctCourseCount(name);
-		List<CourseResponseDto> courseList = courseProcessor.getDistinctCourseList(startIndex.intValue(), pageSize,name);
+		List<CourseResponseDto> courseList = courseProcessor.getDistinctCourseList(startIndex.intValue(), pageSize,
+				name);
 		PaginationUtilDto paginationUtilDto = PaginationUtil.calculatePagination(startIndex, pageSize, totalCount);
 		PaginationResponseDto paginationResponseDto = new PaginationResponseDto();
 		paginationResponseDto.setResponse(courseList);
@@ -356,106 +377,111 @@ public class CourseController implements CourseInterface {
 		paginationResponseDto.setHasNextPage(paginationUtilDto.isHasNextPage());
 		return new GenericResponseHandlers.Builder().setData(paginationResponseDto)
 				.setMessage(messageTranslator.toLocale("course.displayed")).setStatus(HttpStatus.OK).create();
-		
+
 	}
-	
-	public ResponseEntity<?> addCourseViaMobile(final String userId, final String instituteId, CourseMobileDto courseMobileDto) throws Exception {
+
+	public ResponseEntity<?> addCourseViaMobile(final String userId, final String instituteId,
+			CourseMobileDto courseMobileDto) throws Exception {
 		courseProcessor.addMobileCourse(userId, instituteId, courseMobileDto);
-		return new GenericResponseHandlers.Builder()
-				.setMessage(messageTranslator.toLocale("course.mobile.added")).setStatus(HttpStatus.OK)
-				.create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course.mobile.added"))
+				.setStatus(HttpStatus.OK).create();
 	}
-	
-	public ResponseEntity<?> updateCourseViaMobile(final String userId, final String courseId, CourseMobileDto courseMobileDto) throws Exception {
+
+	public ResponseEntity<?> updateCourseViaMobile(final String userId, final String courseId,
+			CourseMobileDto courseMobileDto) throws Exception {
 		courseProcessor.updateMobileCourse(userId, courseId, courseMobileDto);
-		return new GenericResponseHandlers.Builder()
-				.setMessage(messageTranslator.toLocale("course.mobile.updated")).setStatus(HttpStatus.OK)
-				.create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course.mobile.updated"))
+				.setStatus(HttpStatus.OK).create();
 	}
-	
-	public ResponseEntity<?> getCourseViaMobile(final String userId, final String instituteId, final String facultyId, final boolean status) throws Exception {
-		List<CourseMobileDto> listOfMobileCourseResponseDto = courseProcessor.getAllMobileCourseByInstituteIdAndFacultyIdAndStatus(userId, instituteId, facultyId, status);
+
+	public ResponseEntity<?> getCourseViaMobile(final String userId, final String instituteId, final String facultyId,
+			final boolean status) throws Exception {
+		List<CourseMobileDto> listOfMobileCourseResponseDto = courseProcessor
+				.getAllMobileCourseByInstituteIdAndFacultyIdAndStatus(userId, instituteId, facultyId, status);
 		return new GenericResponseHandlers.Builder().setData(listOfMobileCourseResponseDto)
-				.setMessage(messageTranslator.toLocale("course.mobile.retrieved")).setStatus(HttpStatus.OK)
-				.create();
+				.setMessage(messageTranslator.toLocale("course.mobile.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 
 	public ResponseEntity<?> getCourseViaMobile(final String instituteId, final String facultyId) throws Exception {
-		List<CourseMobileDto> listOfMobileCourseResponseDto = courseProcessor.getPublicMobileCourseByInstituteIdAndFacultyId(instituteId, facultyId);
+		List<CourseMobileDto> listOfMobileCourseResponseDto = courseProcessor
+				.getPublicMobileCourseByInstituteIdAndFacultyId(instituteId, facultyId);
 		return new GenericResponseHandlers.Builder().setData(listOfMobileCourseResponseDto)
-				.setMessage(messageTranslator.toLocale("course.mobile.retrieved")).setStatus(HttpStatus.OK)
-				.create();
+				.setMessage(messageTranslator.toLocale("course.mobile.retrieved")).setStatus(HttpStatus.OK).create();
 	}
-	
-	public ResponseEntity<?> changeStatus(final String userId, final String courseId, final boolean  status) throws Exception {
+
+	public ResponseEntity<?> changeStatus(final String userId, final String courseId, final boolean status)
+			throws Exception {
 		courseProcessor.changeCourseStatus(userId, courseId, status);
-		return new GenericResponseHandlers.Builder()
-				.setMessage(messageTranslator.toLocale("course.status.updated")).setStatus(HttpStatus.OK)
-				.create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course.status.updated"))
+				.setStatus(HttpStatus.OK).create();
 	}
-	
-	public ResponseEntity<?> getCourseByInstituteId(Integer pageNumber, Integer pageSize, final String instituteId) throws NotFoundException {
+
+	public ResponseEntity<?> getCourseByInstituteId(Integer pageNumber, Integer pageSize, final String instituteId)
+			throws NotFoundException {
 		log.info("Start process to get courses from DB based on instituteId");
 		NearestCoursesDto nearestCourseList = courseProcessor.getCourseByInstituteId(pageNumber, pageSize, instituteId);
 		return new GenericResponseHandlers.Builder().setData(nearestCourseList)
-				.setMessage(messageTranslator.toLocale("course.displayed")).setStatus(HttpStatus.OK)
-				.create();
+				.setMessage(messageTranslator.toLocale("course.displayed")).setStatus(HttpStatus.OK).create();
 	}
-	
+
 	public ResponseEntity<?> getNearestCourseList(final AdvanceSearchDto courseSearchDto) throws Exception {
 		log.info("Start process to get nearest course from DB");
 		NearestCoursesDto courseResponseDtoList = courseProcessor.getNearestCourses(courseSearchDto);
-		return new GenericResponseHandlers.Builder().setData(courseResponseDtoList).setMessage(messageTranslator.toLocale("course.displayed"))
-				.setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(courseResponseDtoList)
+				.setMessage(messageTranslator.toLocale("course.displayed")).setStatus(HttpStatus.OK).create();
 	}
-	
-	public ResponseEntity<?> getCourseByCountryName(Integer pageNumber, Integer pageSize,
-			String countryName) throws NotFoundException {
+
+	public ResponseEntity<?> getCourseByCountryName(Integer pageNumber, Integer pageSize, String countryName)
+			throws NotFoundException {
 		NearestCoursesDto courseResponse = courseProcessor.getCourseByCountryName(countryName, pageNumber, pageSize);
 		return new GenericResponseHandlers.Builder().setData(courseResponse)
 				.setMessage(messageTranslator.toLocale("course.displayed")).setStatus(HttpStatus.OK).create();
 	}
-	
+
 	@Override
 	public ResponseEntity<?> getCourseByIds(List<String> courseIds) {
 		List<CourseDto> courseDtos = courseProcessor.getCourseByMultipleId(courseIds);
-		return new GenericResponseHandlers.Builder().setData(courseDtos).setMessage(messageTranslator.toLocale("course.list.displayed"))
-				.setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(courseDtos)
+				.setMessage(messageTranslator.toLocale("course.list.displayed")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getRecommendateCourses(String courseId) throws ValidationException {
 		List<CourseResponseDto> recommendCourse = userRecommendationService.getCourseRecommended(courseId);
-		return new GenericResponseHandlers.Builder().setData(recommendCourse).setMessage(messageTranslator.toLocale("course.recommendate.displayed"))
-				.setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(recommendCourse)
+				.setMessage(messageTranslator.toLocale("course.recommendate.displayed")).setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@Override
 	public ResponseEntity<?> getRelatedCourses(String courseId) throws ValidationException {
 		List<CourseResponseDto> relatedCourse = userRecommendationService.getCourseRelated(courseId);
-		return new GenericResponseHandlers.Builder().setData(relatedCourse).setMessage(messageTranslator.toLocale("course.related.displayed"))
-				.setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder().setData(relatedCourse)
+				.setMessage(messageTranslator.toLocale("course.related.displayed")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
 	public ResponseEntity<?> getCourseCountByInstituteId(String instituteId) throws ValidationException {
-		CourseCountDto courseCountDto  = courseProcessor.getCourseCountByInstitute(instituteId);
-		return new GenericResponseHandlers.Builder().setData(courseCountDto).setMessage(messageTranslator.toLocale("course.count.retrieved"))
-				.setStatus(HttpStatus.OK).create();
+		CourseCountDto courseCountDto = courseProcessor.getCourseCountByInstitute(instituteId);
+		return new GenericResponseHandlers.Builder().setData(courseCountDto)
+				.setMessage(messageTranslator.toLocale("course.count.retrieved")).setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> updateProcedureIdInCourse(List<String> courseIds,String studentType, String procedureId) {
+	public ResponseEntity<?> updateProcedureIdInCourse(List<String> courseIds, String studentType, String procedureId) {
 		courseProcessor.updateProcedureIdInCourse(courseIds, studentType, procedureId);
-		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course.procedure_id.updated"))
-				.setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder()
+				.setMessage(messageTranslator.toLocale("course.procedure_id.updated")).setStatus(HttpStatus.OK)
+				.create();
 	}
-	
+
 	@Override
-	public ResponseEntity<?> updateProcedureIdInCourseByInstituteId(String instituteId,String studentType, String procedureId) {
+	public ResponseEntity<?> updateProcedureIdInCourseByInstituteId(String instituteId, String studentType,
+			String procedureId) {
 		courseProcessor.updateProcedureIdInCourseByInstituteId(instituteId, studentType, procedureId);
-		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course.procedure_id.updated"))
-				.setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder()
+				.setMessage(messageTranslator.toLocale("course.procedure_id.updated")).setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@Override
@@ -466,10 +492,12 @@ public class CourseController implements CourseInterface {
 	}
 
 	@Override
-	public ResponseEntity<?> getDraftCourses(String userId, Integer pageNumber, Integer pageSize, String name, String instituteId) {
-		return new GenericResponseHandlers.Builder().setData(courseProcessor.getDraftCourses(userId, pageNumber, pageSize, name, instituteId))
-				.setMessage(messageTranslator.toLocale("course.publish.list.retrieved"))
-				.setStatus(HttpStatus.OK).create();
+	public ResponseEntity<?> getDraftCourses(String userId, Integer pageNumber, Integer pageSize, String name,
+			String instituteId) {
+		return new GenericResponseHandlers.Builder()
+				.setData(courseProcessor.getDraftCourses(userId, pageNumber, pageSize, name, instituteId))
+				.setMessage(messageTranslator.toLocale("course.publish.list.retrieved")).setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.yuzee.app.controller.v1;
 
 import javax.validation.Valid;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class InstituteBasicInfoController implements InstituteBasicInfoInterface
 	
 	@Override
 	public ResponseEntity<?> addUpdateInstituteBasicInfo(String userId, String instituteId,
-		@RequestBody @Valid InstituteBasicInfoDto instituteBasicInfoDto) throws Exception {
+			 InstituteBasicInfoDto instituteBasicInfoDto) throws Exception {
 		instituteBasicInfoProcessor.addUpdateInstituteBasicInfo(userId, instituteId, instituteBasicInfoDto);
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_basic_info.added"))
 				.setStatus(HttpStatus.OK).create();
@@ -48,4 +49,5 @@ public class InstituteBasicInfoController implements InstituteBasicInfoInterface
 				.setStatus(HttpStatus.OK).create();
 	}
 
+	
 }

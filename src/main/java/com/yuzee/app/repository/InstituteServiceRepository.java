@@ -11,7 +11,7 @@ import com.yuzee.app.bean.InstituteService;
 import com.yuzee.common.lib.dto.CountDto;
 
 @Repository
-public interface InstituteServiceRepository extends MongoRepository<InstituteService, UUID> {
+public interface InstituteServiceRepository extends MongoRepository<InstituteService, String> {
 
 	@Query(value = "{'id' : ?0}")
 	 List<InstituteService> findByInstituteId(String instituteId);

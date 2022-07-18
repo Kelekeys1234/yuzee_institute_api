@@ -1,24 +1,25 @@
 package com.yuzee.app.bean;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.Date;
+
+import javax.persistence.Id;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
-import java.util.Date;
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Document(collection = "InstituteCampus")
+@Document(collection = "instituteCampus")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class InstituteCampus{
+public class InstituteCampus {
 
 	@Id
-	private UUID id;
+	private String id;
 
 	private String instituteId;
 
@@ -45,5 +46,3 @@ public class InstituteCampus{
 }
 
 //@CompoundIndexes({ @CompoundIndex(name = "UK_IC_SI_DI", def = "{'sourceInstitute' : 1}, {'destinationInstitute' : 1}", unique = true) })
-
-

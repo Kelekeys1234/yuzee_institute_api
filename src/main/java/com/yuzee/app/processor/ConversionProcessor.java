@@ -64,7 +64,7 @@ public class ConversionProcessor {
 						: ctx.getSource().stream()
 								.map(instituteEnglishRequirement -> new InstituteEnglishRequirementsElasticDto(
 										 instituteEnglishRequirement.getExamName(),
-										instituteEnglishRequirement.getReadingMarks(),
+										null, instituteEnglishRequirement.getReadingMarks(),
 										instituteEnglishRequirement.getWritingMarks(),
 										instituteEnglishRequirement.getOralMarks(),
 										instituteEnglishRequirement.getListeningMarks()))
@@ -108,7 +108,7 @@ public class ConversionProcessor {
 	public CourseSyncDTO convertToCourseSyncDTOSyncDataEntity(Course course) {
 		log.info("inside DTOUtils.convertToCourseSyncDTOSyncDataEntity ");
 		CourseSyncDTO syncCourse = modelMapper.map(course, CourseSyncDTO.class);
-		UUID sameUuid = UUID. fromString(course.getId());
+		String sameUuid = course.getId();
 		syncCourse.setLanguages(
 				course.getCourseLanguages().stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
 		syncCourse.setCourseType(course.getCourseType().name());
@@ -146,7 +146,7 @@ public class ConversionProcessor {
 		InstituteSyncDTO dto = modelMapper.map(institute, InstituteSyncDTO.class);
 		dto.setInstituteProviderCodes(institute.getInstituteProviderCodes().stream()
 				.map(instituteProviderCode -> new ProviderCodeDto(
-						instituteProviderCode.getName(), instituteProviderCode.getValue()))
+						instituteProviderCode.getName(), instituteProviderCode.getValue(), null))
 				.collect(Collectors.toList()));
 		return dto;
 	}

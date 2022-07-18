@@ -13,7 +13,7 @@ import lombok.Data;
 public class InstituteGetRequestDto {
     
 	@JsonProperty("institute_id")
-	private UUID id;
+	private String id;
 	
 	@JsonProperty("country_name")
 	@NotBlank(message = "{country_name.is_required}")

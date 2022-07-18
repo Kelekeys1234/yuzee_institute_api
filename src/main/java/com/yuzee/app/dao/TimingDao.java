@@ -11,7 +11,7 @@ public interface TimingDao {
 
 	List<Timing> saveAll(List<Timing> timings);
 
-	List<Timing> findByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<UUID> entityId);
+	List<Timing> findByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<String> list);
 
 	void deleteAll(List<Timing> timings);
 

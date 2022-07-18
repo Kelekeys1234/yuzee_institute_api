@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface InstituteEnglishRequirementRepository extends MongoRepository<InstituteEnglishRequirements, UUID> {
+public interface InstituteEnglishRequirementRepository extends MongoRepository<InstituteEnglishRequirements, String> {
     
     @Query(value = "{'id' : ?0}")
-    InstituteEnglishRequirements find(UUID englishRequirementsId);
+    InstituteEnglishRequirements find(String englishRequirementsId);
 }

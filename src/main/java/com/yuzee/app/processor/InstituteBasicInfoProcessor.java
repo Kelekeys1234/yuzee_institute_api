@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.*;
 
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +61,15 @@ public class InstituteBasicInfoProcessor {
 		institute.setDescription(instituteBasicInfoDto.getDescription());
 		log.info("validating institute type Id passed in request");
 		InstituteCategoryType instituteCategoryType = new InstituteCategoryType();
-		if (ObjectUtils.isEmpty(instituteBasicInfoDto.getInstituteCategoryTypeName())) {
-			log.error(messageTranslator.toLocale("institute_info.category.id.notFound",instituteBasicInfoDto.getInstituteCategoryTypeName(), Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.category.id.notFound",instituteBasicInfoDto.getInstituteCategoryTypeName()));
-		}
+		/*
+		 * if
+		 * (ObjectUtils.isEmpty(instituteBasicInfoDto.getInstituteCategoryTypeName())) {
+		 * log.error(messageTranslator.toLocale("institute_info.category.id.notFound",
+		 * instituteBasicInfoDto.getInstituteCategoryTypeName(), Locale.US)); throw new
+		 * NotFoundException(messageTranslator.toLocale(
+		 * "institute_info.category.id.notFound",instituteBasicInfoDto.
+		 * getInstituteCategoryTypeName())); }
+		 */
 		instituteCategoryType.setName(instituteBasicInfoDto.getInstituteCategoryTypeName());
 		institute.setInstituteCategoryType(instituteCategoryType);
 		log.info("persisting institute having id "+instituteId+ " with updated basic info");

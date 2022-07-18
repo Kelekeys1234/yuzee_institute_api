@@ -4,36 +4,44 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.yuzee.app.bean.*;
-import com.yuzee.app.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
+import com.yuzee.app.bean.Institute;
+import com.yuzee.app.bean.InstituteEnglishRequirements;
+import com.yuzee.app.bean.InstituteFacility;
+import com.yuzee.app.bean.InstituteType;
+import com.yuzee.app.bean.InstituteWorldRankingHistory;
+import com.yuzee.app.dto.InstituteFacultyDto;
+import com.yuzee.app.dto.InstituteResponseDto;
+
 @Repository
-public interface InstituteRepository extends MongoRepository<Institute, UUID> {
+public interface InstituteRepository extends MongoRepository<Institute, String> {
 
-	 Page<Institute> findByCountryName(String countryName, @PageableDefault Pageable pageable);
+	Page<Institute> findByCountryName(String countryName, @PageableDefault Pageable pageable);
 
-	@Query(value = "{'countryName' : ?0}" , count = true)
-	 Integer getTotalCountOfInstituteByCountryName(String countryName);
+	@Query(value = "{'countryName' : ?0}", count = true)
+	Integer getTotalCountOfInstituteByCountryName(String countryName);
 
-	 List<Institute> findByCityName(String cityName);
+	List<Institute> findByCityName(String cityName);
 
 	// ******** Example********//
-	//@Query("{'type':?0,'$or':[{ $where: '?1 == null' },{'key':?1},{ $where: '?2 == null' },{'username':?2}]}")
-	//    List<Doc> findByType(String type, String key, String username, Pageable pageable);
-	//@Query("{'$or':[ {'type':?0}, {'name':?1} ]}")
+	// @Query("{'type':?0,'$or':[{ $where: '?1 == null' },{'key':?1},{ $where: '?2
+	// == null' },{'username':?2}]}")
+	// List<Doc> findByType(String type, String key, String username, Pageable
+	// pageable);
+	// @Query("{'$or':[ {'type':?0}, {'name':?1} ]}")
 
-	//Previous code//
+	// Previous code//
 //	@Query("SELECT i from Institute i where i.id != :id and i.name = :name and (i.isDeleted is null or i.isDeleted = false  )")
-    @Query(value = " {'id' : ?0 , 'name' : ?1}, '$or' : [ {'isDeleted' : null, 'isDeleted' : false} ] ")
-	 List<Institute> findByIdNotAndNameAndIsDeletedFalse(String id, String name);
+	@Query(value = " {'id' : ?0 , 'name' : ?1}, '$or' : [ {'isDeleted' : null, 'isDeleted' : false} ] ")
+	List<Institute> findByIdNotAndNameAndIsDeletedFalse(String id, String name);
+
 //Sort sort = new Sort(Sort.Direction.DESC, "date")
 //    @Query(value = " {'id' : ?0 }, '$group' : [{'facultyName'}]")
 //	@Query("SELECT new com.yuzee.app.dto.InstituteFacultyDto(f.id, f.name, count(*) as courseCount) "
@@ -42,19 +50,18 @@ public interface InstituteRepository extends MongoRepository<Institute, UUID> {
 //			+ "where  c.institute.id = :instituteId "
 //			+ "group by c.faculty "
 //			+ "order by f.name")
-    @Query(value = " {'id' : ?0 }, '$group' : [{'facultyName'}]")
-	 List<InstituteFacultyDto> findFacultyWithCourseCountById(String instituteId, Sort sort);
+	@Query(value = " {'id' : ?0 }, '$group' : [{'facultyName'}]")
+	List<InstituteFacultyDto> findFacultyWithCourseCountById(String instituteId, Sort sort);
 
 	@Query("SELECT new com.yuzee.app.dto.InstituteResponseDto(i.id,i.name, i.worldRanking, i.cityName, i.countryName,i.state, "
 			+ "i.website, i.aboutInfo, i.latitude, i.longitude, i.phoneNumber,i.whatsNo, "
 			+ "(select count(c.id) from Course c where c.institute.id = i.id ), i.email, i.address, i.domesticRanking, "
 			+ "i.tagLine, i.createdOn) from Institute i  where i.id in :instituteIds")
-	 List<InstituteResponseDto> findByIdIn(List<String> instituteIds);
+	List<InstituteResponseDto> findByIdIn(List<String> instituteIds);
 
+	List<Institute> findByReadableIdIn(List<String> readableIds);
 
-	 List<Institute> findByReadableIdIn(List<String> readableIds);
-
-	 Institute findByReadableId(String readableId);
+	Institute findByReadableId(String readableId);
 
 	@Query(value = " {'id' : ?0}")
 	List<InstituteWorldRankingHistory> getHistoryOfWorldRankingByInstituteId(String instituteId);
@@ -66,33 +73,30 @@ public interface InstituteRepository extends MongoRepository<Institute, UUID> {
 	List<InstituteFacility> getFacultiesById(String instituteId);
 
 	@Query(value = " {'id' : ?0}")
-    List<InstituteEnglishRequirements> findInstituteRequirementsById(UUID id);
+	List<InstituteEnglishRequirements> findInstituteRequirementsById(UUID id);
 
 	Optional<Institute> getInstituteEnglishRequirementsById(UUID fromString);
 
 	@Query(value = " {'countryName' : ?0}")
-    List<InstituteType> findAllInstituteByCountryName(String countryName);
+	List<InstituteType> findAllInstituteByCountryName(String countryName);
 
-	@Query(value = "{'id' : ?0}" , fields = "{'instituteIntakes'}")
-    List<String> findInstituteIntakeById(String id);
+	@Query(value = "{'id' : ?0}", fields = "{'instituteIntakes'}")
+	List<String> findInstituteIntakeById(String id);
 
-	@Query(value = "{ $or : [ {" +
-			"'countryName' : {$regex : /^?0*/ , $options : 'i'}" +
-			", 'cityName' : {$regex : /^?0*/, $options : 'i'}" +
-			", 'worldRanking' : {$regex : /^?0*/, $options : 'i'}" +
-			", 'instituteType' : {$regex : /^?0*/, $options : 'i'}" +
-			", 'name' : {$regex : /^?0*/, $options : 'i'} } " +
-			"] }")
+	@Query(value = "{ $or : [ {" + "'countryName' : {$regex : /^?0*/ , $options : 'i'}"
+			+ ", 'cityName' : {$regex : /^?0*/, $options : 'i'}"
+			+ ", 'worldRanking' : {$regex : /^?0*/, $options : 'i'}"
+			+ ", 'instituteType' : {$regex : /^?0*/, $options : 'i'}"
+			+ ", 'name' : {$regex : /^?0*/, $options : 'i'} } " + "] }")
 	List<Institute> getBySearchText(String searchText);
 
-	@Query(value = " {'id' : ?0}")
-    List<InstituteFacility> findAllFacilityById(String instituteId);
+	@Query(value = " {'facilityId' : ?0}")
+	List<InstituteFacility> findAllFacilityById(String instituteId);
 
 	@Query(value = "{ 'id' : ?1, 'facilityId' : ?0 }")
 	void deleteFacilityByIdAndInstituteId(String instituteFacilityId, String instituteId);
 
-    void save(List<Institute> institutes);
-
+	void save(List<Institute> institutes);
 
 }
 //, fields = "{instituteTypeName : 0}, {instituteId : 1}, {type : 2}, {description : 3}, {countryName : 4}"

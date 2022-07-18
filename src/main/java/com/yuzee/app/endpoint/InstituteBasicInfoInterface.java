@@ -1,6 +1,8 @@
 package com.yuzee.app.endpoint;
 
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yuzee.common.lib.dto.institute.InstituteBasicInfoDto;
 
-@RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/v1")
+//@Consumes({ "application/json", "application/xml" })
+//@Produces({ "application/json", "application/xml" })
 public interface InstituteBasicInfoInterface {
 
 	@PostMapping("/basic/info/{instituteId}")
-	public ResponseEntity<?> addUpdateInstituteBasicInfo (@RequestHeader("userId") final String userId,@PathVariable final String instituteId, @RequestBody @Valid InstituteBasicInfoDto instituteBasicInfoDto) throws Exception;
+	public ResponseEntity<?> addUpdateInstituteBasicInfo (@RequestHeader("userId" ) final String userId,@PathVariable final String instituteId, @RequestBody InstituteBasicInfoDto instituteBasicInfoDto) throws Exception;
 
 	@GetMapping("/basic/info/{instituteId}")
 	public ResponseEntity<?> getInstituteBasicInfo (@RequestHeader("userId") final String userId,@PathVariable final String instituteId) throws Exception;

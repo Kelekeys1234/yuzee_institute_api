@@ -24,7 +24,7 @@ public class TimingDaoImpl implements TimingDao {
 	}
 
 	@Override
-	public List<Timing> findByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<UUID> entityIds) {
+	public List<Timing> findByEntityTypeAndEntityIdIn(EntityTypeEnum entityType, List<String> entityIds) {
 		return timingRepository.findByEntityTypeAndEntityIdIn(entityType, entityIds);
 	}
 

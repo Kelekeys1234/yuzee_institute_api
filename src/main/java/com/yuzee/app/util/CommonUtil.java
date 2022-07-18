@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -38,10 +37,6 @@ import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.LatLongDto;
 import com.yuzee.app.dto.TodoDto;
-import com.yuzee.app.dto.ValidList;
-import com.yuzee.common.lib.dto.institute.CourseDeliveryModeFundingDto;
-import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
-import com.yuzee.common.lib.dto.institute.CourseFeesDto;
 import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.enumeration.InstituteType;
 import com.yuzee.common.lib.exception.ForbiddenException;
@@ -62,7 +57,7 @@ public class CommonUtil {
 	private void init() {
 		staticMessageTranslator = messageTranslator;
 	}
-	
+
 	public static InstituteRequestDto convertInstituteBeanToInstituteRequestDto(final Institute institute) {
 		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
 		instituteRequestDto.setAvgCostOfLiving(institute.getAvgCostOfLiving());
@@ -101,7 +96,8 @@ public class CommonUtil {
 		instituteRequestDto.setTagLine(institute.getTagLine());
 		instituteRequestDto.setPostalCode(institute.getPostalCode());
 		instituteRequestDto.setReadableId(institute.getReadableId());
-		if (StringUtils.hasText(institute.getInstituteType()) && EnumUtils.isValidEnum(InstituteType.class, institute.getInstituteType())) {
+		if (StringUtils.hasText(institute.getInstituteType())
+				&& EnumUtils.isValidEnum(InstituteType.class, institute.getInstituteType())) {
 			instituteRequestDto.setInstituteTypeObj(InstituteType.valueOf(institute.getInstituteType()));
 		}
 		return instituteRequestDto;
@@ -109,7 +105,7 @@ public class CommonUtil {
 
 	public static void copyCourseToCourseRequest(final Course course, CourseRequest courseRequest) {
 		courseRequest.setId(course.getId());
-		
+
 		if (course.getWorldRanking() != null) {
 			courseRequest.setWorldRanking(String.valueOf(course.getWorldRanking()));
 		}
@@ -141,8 +137,7 @@ public class CommonUtil {
 		if (course.getCourseIntake() != null) {
 			courseRequest.getIntake().setDates(course.getCourseIntake().getDates());
 		}
-		
-		
+
 		courseRequest.setRemarks(course.getRemarks());
 		courseRequest.setWebsite(course.getWebsite());
 		courseRequest.setPhoneNumber(course.getPhoneNumber());
@@ -153,12 +148,12 @@ public class CommonUtil {
 		courseRequest.setCurrency(course.getCurrency());
 		courseRequest.setRecognitionType(course.getRecognitionType());
 		courseRequest.setExaminationBoard(course.getExaminationBoard());
-		
+
 		courseRequest.setDomesticApplicationFee(course.getDomesticApplicationFee());
 		courseRequest.setInternationalApplicationFee(course.getInternationalApplicationFee());
 		courseRequest.setDomesticEnrollmentFee(course.getDomesticEnrollmentFee());
 		courseRequest.setInternationalEnrollmentFee(course.getInternationalEnrollmentFee());
-		
+
 		courseRequest.setRecDate(course.getRecDate());
 		courseRequest.setContent(course.getContent());
 		courseRequest.setGlobalGpa(course.getGlobalGpa());
@@ -427,7 +422,7 @@ public class CommonUtil {
 		centerLatLong.setLongitude(centralLongitude * xpi);
 		return centerLatLong;
 	}
-	
+
 	public static double getDistanceFromLatLonInKm(Double userlatitude, Double userLongitude, Double courseLatitude,
 			Double coursLongitude) {
 		double latitude = (courseLatitude - userlatitude) * (Math.PI / 180);
@@ -438,11 +433,12 @@ public class CommonUtil {
 		double distance = 6371 * cordinate; // Distance in km
 		return distance;
 	}
-	
+
 	public static List<DayTimingDto> convertTimingResponseDtoToDayTimingDto(TimingDto instituteTimingResponseDto) {
 		List<DayTimingDto> dayTimingDtos = new ArrayList<>();
 		DayTimingDto instituteTimingDto = null;
-		if(!StringUtils.isEmpty(instituteTimingResponseDto.getMonday()) && !instituteTimingResponseDto.getMonday().equalsIgnoreCase("CLOSED")) {
+		if (!StringUtils.isEmpty(instituteTimingResponseDto.getMonday())
+				&& !instituteTimingResponseDto.getMonday().equalsIgnoreCase("CLOSED")) {
 			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Monday");
 			String time[] = instituteTimingResponseDto.getMonday().split("-");
@@ -450,7 +446,8 @@ public class CommonUtil {
 			instituteTimingDto.setOpeningTo(time[1]);
 			dayTimingDtos.add(instituteTimingDto);
 		}
-		if(!StringUtils.isEmpty(instituteTimingResponseDto.getTuesday()) && !instituteTimingResponseDto.getTuesday().equalsIgnoreCase("CLOSED")) {
+		if (!StringUtils.isEmpty(instituteTimingResponseDto.getTuesday())
+				&& !instituteTimingResponseDto.getTuesday().equalsIgnoreCase("CLOSED")) {
 			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Tuesday");
 			String time[] = instituteTimingResponseDto.getTuesday().split("-");
@@ -458,7 +455,8 @@ public class CommonUtil {
 			instituteTimingDto.setOpeningTo(time[1]);
 			dayTimingDtos.add(instituteTimingDto);
 		}
-		if(!StringUtils.isEmpty(instituteTimingResponseDto.getWednesday()) && !instituteTimingResponseDto.getWednesday().equalsIgnoreCase("CLOSED")) {
+		if (!StringUtils.isEmpty(instituteTimingResponseDto.getWednesday())
+				&& !instituteTimingResponseDto.getWednesday().equalsIgnoreCase("CLOSED")) {
 			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Wednesday");
 			String time[] = instituteTimingResponseDto.getWednesday().split("-");
@@ -466,7 +464,8 @@ public class CommonUtil {
 			instituteTimingDto.setOpeningTo(time[1]);
 			dayTimingDtos.add(instituteTimingDto);
 		}
-		if(!StringUtils.isEmpty(instituteTimingResponseDto.getThursday()) && !instituteTimingResponseDto.getThursday().equalsIgnoreCase("CLOSED")) {
+		if (!StringUtils.isEmpty(instituteTimingResponseDto.getThursday())
+				&& !instituteTimingResponseDto.getThursday().equalsIgnoreCase("CLOSED")) {
 			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Thursday");
 			String time[] = instituteTimingResponseDto.getThursday().split("-");
@@ -474,7 +473,8 @@ public class CommonUtil {
 			instituteTimingDto.setOpeningTo(time[1]);
 			dayTimingDtos.add(instituteTimingDto);
 		}
-		if(!StringUtils.isEmpty(instituteTimingResponseDto.getFriday()) && !instituteTimingResponseDto.getFriday().equalsIgnoreCase("CLOSED")) {
+		if (!StringUtils.isEmpty(instituteTimingResponseDto.getFriday())
+				&& !instituteTimingResponseDto.getFriday().equalsIgnoreCase("CLOSED")) {
 			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Friday");
 			String time[] = instituteTimingResponseDto.getFriday().split("-");
@@ -482,7 +482,8 @@ public class CommonUtil {
 			instituteTimingDto.setOpeningTo(time[1]);
 			dayTimingDtos.add(instituteTimingDto);
 		}
-		if(!StringUtils.isEmpty(instituteTimingResponseDto.getSaturday()) && !instituteTimingResponseDto.getSaturday().equalsIgnoreCase("CLOSED")) {
+		if (!StringUtils.isEmpty(instituteTimingResponseDto.getSaturday())
+				&& !instituteTimingResponseDto.getSaturday().equalsIgnoreCase("CLOSED")) {
 			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Saturday");
 			String time[] = instituteTimingResponseDto.getSaturday().split("-");
@@ -490,7 +491,8 @@ public class CommonUtil {
 			instituteTimingDto.setOpeningTo(time[1]);
 			dayTimingDtos.add(instituteTimingDto);
 		}
-		if(!StringUtils.isEmpty(instituteTimingResponseDto.getSunday()) && !instituteTimingResponseDto.getSunday().equalsIgnoreCase("CLOSED")) {
+		if (!StringUtils.isEmpty(instituteTimingResponseDto.getSunday())
+				&& !instituteTimingResponseDto.getSunday().equalsIgnoreCase("CLOSED")) {
 			instituteTimingDto = new DayTimingDto();
 			instituteTimingDto.setDay("Sunday");
 			String time[] = instituteTimingResponseDto.getSunday().split("-");
@@ -500,24 +502,32 @@ public class CommonUtil {
 		}
 		return dayTimingDtos;
 	}
-	
-	
-	
+
 	public static InstituteFacilityDto createInstituteFacilityResponseDto(
 			List<InstituteFacility> listOfInstituteFacility) {
 		InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
-		listOfInstituteFacility.stream().forEach(instituteFacility -> {
+		/*
+		 * listOfInstituteFacility.stream().forEach(instituteFacility -> { FacilityDto
+		 * facilityDto = new
+		 * FacilityDto(instituteFacility.getService().getId().toString(),
+		 * instituteFacility.getService().getName(),
+		 * instituteFacility.getService().getId().toString());
+		 * instituteFacilityDto.getFacilities().add(facilityDto);
+		 */
+		// });
+		for (InstituteFacility instituteFacility : listOfInstituteFacility) {
 			FacilityDto facilityDto = new FacilityDto(instituteFacility.getService().getId().toString(),
 					instituteFacility.getService().getName(), instituteFacility.getService().getId().toString());
 			instituteFacilityDto.getFacilities().add(facilityDto);
-		});
+
+		}
 		return instituteFacilityDto;
 	}
-	
+
 	public static void validateEditAccess(String userId, Course course) throws ForbiddenException {
 		log.info("Inside CommonUtil.validateEditAccess");
 		if (!course.getCreatedBy().equals(userId)) {
-			log.info(staticMessageTranslator.toLocale("common.no_acces.edit",Locale.US));
+			log.info(staticMessageTranslator.toLocale("common.no_acces.edit", Locale.US));
 			throw new ForbiddenException(staticMessageTranslator.toLocale("common.no_acces.edit"));
 		}
 	}

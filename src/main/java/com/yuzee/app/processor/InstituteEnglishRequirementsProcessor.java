@@ -41,7 +41,7 @@ public class InstituteEnglishRequirementsProcessor {
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteId));
 		}
 		log.info("Adding institute english requirements with name "+instituteEnglishRequirementsDto.getExamName());
-		InstituteEnglishRequirements instituteEnglishRequirements = new InstituteEnglishRequirements(UUID.randomUUID(), instituteEnglishRequirementsDto.getExamName(),
+		InstituteEnglishRequirements instituteEnglishRequirements = new InstituteEnglishRequirements(UUID.randomUUID().toString(), instituteEnglishRequirementsDto.getExamName(),
 				instituteEnglishRequirementsDto.getReadingMarks(), instituteEnglishRequirementsDto.getListeningMarks(), instituteEnglishRequirementsDto.getWritingMarks(), instituteEnglishRequirementsDto.getOralMarks());
 		log.info("Persisting institute english requirements in DB");
 		return instituteEnglishRequirementsDao.addUpdateInstituteEnglishRequirements(instituteEnglishRequirements);
@@ -50,15 +50,21 @@ public class InstituteEnglishRequirementsProcessor {
 	public InstituteEnglishRequirements updateInstituteEnglishRequirements (String userId, String englishRequirementId, InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception {
 		log.debug("Inside updateInstituteEnglishRequirements method()");
 		// TODO validate userId have access for institute Id
-		log.info("Getting institute english requirements having requirement id  "+englishRequirementId);
-		Institute institute = instituteDAO.get(UUID.fromString(instituteEnglishRequirementsDto.getInstituteId()));
-		Optional<InstituteEnglishRequirements> optionalInstituteEnglishRequirements;
-		InstituteEnglishRequirements instituteEnglishRequirements = null;
-		if (ObjectUtils.isEmpty(institute)) {
-			log.error(messageTranslator.toLocale("english_requirement.id.notFound",englishRequirementId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("english_requirement.id.notFound",englishRequirementId));
-		}
-		log.info("Getting institute id from InstituteEnglishRequirements and validate it with user id");
+		
+		 // log.info("Getting institute english requirements having requirement id  "
+		  //+englishRequirementId); Institute institute =
+		  //instituteDAO.get(UUID.fromString(englishRequirementId));
+		  Optional<InstituteEnglishRequirements> optionalInstituteEnglishRequirements;
+		  InstituteEnglishRequirements instituteEnglishRequirements = new
+		  InstituteEnglishRequirements(); 
+		 // if (ObjectUtils.isEmpty(institute)) {
+		 // log.error(messageTranslator.toLocale("english_requirement.id.notFound",
+		  //englishRequirementId,Locale.US)); throw new
+		  //NotFoundException(messageTranslator.toLocale(
+		  //"english_requirement.id.notFound",englishRequirementId)); } log.
+		  //info("Getting institute id from InstituteEnglishRequirements and validate it with user id"
+		//  );
+		 
 		// TODO validate userId have access for institute Id
 
 		instituteEnglishRequirements =  instituteEnglishRequirementsDao.getInstituteEnglishRequirementsById(UUID.fromString(englishRequirementId));
@@ -68,7 +74,7 @@ public class InstituteEnglishRequirementsProcessor {
 		}
 
 		log.info("updating institute english requirements with id " + englishRequirementId);
-		if(ObjectUtils.isEmpty(instituteEnglishRequirements)) {
+		if(!ObjectUtils.isEmpty(instituteEnglishRequirements)) {
 			instituteEnglishRequirements.setExamName(instituteEnglishRequirementsDto.getExamName());
 			instituteEnglishRequirements.setListeningMarks(instituteEnglishRequirementsDto.getListeningMarks());
 			instituteEnglishRequirements.setOralMarks(instituteEnglishRequirementsDto.getOralMarks());

@@ -27,6 +27,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(collection = "InstituteAdditionalInfo")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteAdditionalInfo{
 

@@ -55,7 +55,7 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 				log.error("Institute type {} not found for institute {}",instituteDto.getInstituteType(), instituteDto.getName());
 				throw new NotFoundException(String.format("Institute type %s not found for institute %s",instituteDto.getInstituteType(), instituteDto.getName()));
 			}
-			institute.setId(UUID.randomUUID());
+			institute.setId(UUID.randomUUID().toString());
 			institute.setCityName(instituteDto.getCityName());
 			institute.setCountryName(StringUtils.trim(instituteDto.getCountryName()));
 			institute.setName(instituteDto.getName());

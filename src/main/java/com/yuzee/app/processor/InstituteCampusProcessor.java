@@ -1,6 +1,12 @@
 package com.yuzee.app.processor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -54,38 +60,44 @@ public class InstituteCampusProcessor {
 	public void addCampus(String userId, String instituteId, List<String> campusInstituteIds)
 			throws NotFoundException, ValidationException {
 		log.info("Inside InstituteCampusProcessor.createCampus");
+
 		campusInstituteIds.add(instituteId);
-		List<Institute> institutes = instituteProcessor.validateAndGetInstituteByIds(campusInstituteIds);
-		Institute institute = institutes.stream().filter(e->e.getId().toString().equals(instituteId)).findAny().orElse(null);
-		institutes.removeIf(e->e.getId().toString().equals(instituteId));
-		campusInstituteIds.removeIf(e->e.equals(instituteId));
-		Set<String> dbCampusInstituteIds = getInstituteCampuses(userId, institutes, instituteId).stream().map(InstituteCampusDto::getId).collect(Collectors.toSet());
+
+		Institute institutes = instituteDao.get(UUID.fromString(instituteId));
+
+		campusInstituteIds.removeIf(e -> e.equals(instituteId));
+		Set<String> dbCampusInstituteIds = getInstituteCampuses(userId, instituteId).stream()
+				.map(InstituteCampusDto::getId).collect(Collectors.toSet());
+		// String dbCampusInstituteId= getInstituteCampuses(userId, instituteId);
 		if (campusInstituteIds.stream().anyMatch(e -> e.equals(instituteId))) {
-			log.error(messageTranslator.toLocale("institute.id.same",Locale.US));
+			log.error(messageTranslator.toLocale("institute.id.same", Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("institute.id.same"));
 		}
 		if (!Collections.disjoint(dbCampusInstituteIds, campusInstituteIds)) {
-			log.error(messageTranslator.toLocale("institute.already_campus",Locale.US));
+			log.error(messageTranslator.toLocale("institute.already_campus", Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("institute.already_campus"));
 		}
 		List<InstituteCampus> campuses = new ArrayList<>();
-		institutes.forEach(e -> {
+		List<Institute> campuse = new ArrayList<>();
+		campuse.add(institutes);
+		campuse.forEach(e -> {
 			InstituteCampus instituteCampus = new InstituteCampus();
-			instituteCampus.setId(UUID.randomUUID());
+			instituteCampus.setId(UUID.randomUUID().toString());
 			instituteCampus.setAuditFields(userId);
-			instituteCampus.setSourceInstitute(institute);
+			instituteCampus.setSourceInstitute(institutes);
 			instituteCampus.setDestinationInstitute(e);
 			campuses.add(instituteCampus);
 		});
-		if(!ObjectUtils.isEmpty(institute)){
-			institute.setInstituteCampuses(campuses);
-			instituteDao.addUpdateInstitute(institute);
+		if (!ObjectUtils.isEmpty(institutes)) {
+			institutes.setInstituteCampuses(campuses);
+			instituteDao.addUpdateInstitute(institutes);
 		}
 		instituteCampusDao.saveAll(campuses);
 	}
 
-	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
-	public List<InstituteCampusDto> getInstituteCampuses(String userId, List<Institute> institutes, String instituteId) throws NotFoundException {
+	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
+	public List<InstituteCampusDto> getInstituteCampuses(String userId, List<Institute> institutes, String instituteId)
+			throws NotFoundException {
 		log.debug("inside InstituteCampusProcessor.getInstituteCampuses method.");
 		List<InstituteCampus> instituteCampuses = null;
 		List<InstituteCampusDto> instituteCampusDtos = null;
@@ -94,14 +106,15 @@ public class InstituteCampusProcessor {
 			instituteCampuses = instituteCampusDao.findInstituteCampuses(UUID.fromString(instituteId));
 			if (!CollectionUtils.isEmpty(instituteCampuses)) {
 				instituteCampuses.forEach(e -> {
-					if(!ObjectUtils.isEmpty(e.getDestinationInstitute())) {
+					if (!ObjectUtils.isEmpty(e.getDestinationInstitute())) {
 						if (institutes.stream().noneMatch(in -> in.getId().equals(e.getSourceInstitute().getId()))) {
 							institutes.add(e.getSourceInstitute());
 						}
 					}
-					if(!ObjectUtils.isEmpty(e.getSourceInstitute())) {
+					if (!ObjectUtils.isEmpty(e.getSourceInstitute())) {
 						if (!ObjectUtils.isEmpty(e.getSourceInstitute())) {
-							if (institutes.stream().noneMatch(in -> in.getId().equals(e.getDestinationInstitute().getId()))) {
+							if (institutes.stream()
+									.noneMatch(in -> in.getId().equals(e.getDestinationInstitute().getId()))) {
 								institutes.add(e.getDestinationInstitute());
 							}
 						}
@@ -114,30 +127,32 @@ public class InstituteCampusProcessor {
 					return campusDto;
 				}).collect(Collectors.toList());
 				instituteCampusDtos.forEach(e -> {
-					TimingDto instituteTimingResponseDto = timingProcessor
-							.getTimingResponseDtoByInstituteId(UUID.fromString(e.getId()));
-					e.setInstituteTimings(CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
+					TimingDto instituteTimingResponseDto = timingProcessor.getTimingResponseDtoByInstituteId(e.getId());
+					e.setInstituteTimings(
+							CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
 				});
 			}
 			return instituteCampusDtos;
-		}else {
+		} else {
 			log.error(messageTranslator.toLocale("institute.id.invalid", instituteId, Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute.id.invalid", instituteId));
 		}
 	}
-	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
+
+	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
 	public List<InstituteCampusDto> getInstituteCampuses(String userId, String instituteId) throws NotFoundException {
 		log.debug("inside InstituteCampusProcessor.getInstituteCampuses method.");
 		Institute institute = instituteDao.get(UUID.fromString(instituteId));
 		if (!ObjectUtils.isEmpty(institute)) {
-			List<InstituteCampus> instituteCampuses = instituteCampusDao.findInstituteCampuses(UUID.fromString(instituteId));
+			List<InstituteCampus> instituteCampuses = instituteCampusDao
+					.findInstituteCampuses(UUID.fromString(instituteId));
 
 			List<Institute> institutes = new ArrayList<>();
-			instituteCampuses.forEach(e->{
-				if(institutes.stream().noneMatch(in->in.getId().equals(e.getSourceInstitute().getId()))) {
+			instituteCampuses.forEach(e -> {
+				if (institutes.stream().noneMatch(in -> in.getId().equals(e.getSourceInstitute().getId()))) {
 					institutes.add(e.getSourceInstitute());
 				}
-				if(institutes.stream().noneMatch(in->in.getId().equals(e.getDestinationInstitute().getId()))) {
+				if (institutes.stream().noneMatch(in -> in.getId().equals(e.getDestinationInstitute().getId()))) {
 					institutes.add(e.getDestinationInstitute());
 				}
 			});
@@ -154,8 +169,7 @@ public class InstituteCampusProcessor {
 			}).collect(Collectors.toList());
 
 			instituteCampusDtos.forEach(e -> {
-				TimingDto instituteTimingResponseDto = timingProcessor
-						.getTimingResponseDtoByInstituteId(UUID.fromString(e.getId()));
+				TimingDto instituteTimingResponseDto = timingProcessor.getTimingResponseDtoByInstituteId(e.getId());
 				e.setInstituteTimings(CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
 
 			});
@@ -166,26 +180,25 @@ public class InstituteCampusProcessor {
 		}
 	}
 
-
 	@Transactional
 	public void removeCampuses(String userId, String instituteId, @Valid List<String> instituteIds)
 			throws NotFoundException {
 		log.info("inside InstituteCampusProcessor.getLinkedInstituteIds");
 		instituteIds.add(instituteId);
 		List<Institute> institutes = instituteProcessor.validateAndGetInstituteByIds(instituteIds);
-		institutes.removeIf(e->e.getId().toString().equals(instituteId));
-		instituteIds.removeIf(e->e.equals(instituteId));
+		institutes.removeIf(e -> e.getId().toString().equals(instituteId));
+		instituteIds.removeIf(e -> e.equals(instituteId));
 		if (instituteIds.stream().anyMatch(e -> e.equals(instituteId))) {
-			log.error(messageTranslator.toLocale("institute.id.same",Locale.US));
+			log.error(messageTranslator.toLocale("institute.id.same", Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("institute.id.same"));
 		}
 		List<InstituteCampus> deleteList = new ArrayList<>();
-		List<InstituteCampus> instituteCampuses = instituteCampusDao.findInstituteCampuses(UUID.fromString(instituteId));
+		List<InstituteCampus> instituteCampuses = instituteCampusDao
+				.findInstituteCampuses(UUID.fromString(instituteId));
 		institutes.forEach(campus -> {
 			log.debug("going to see if institute to be unLinked is linked as primary or secondary");
 			Optional<InstituteCampus> secondaryLink = instituteCampuses.stream()
-					.filter(e -> e.getDestinationInstitute().getId().equals(campus.getId()))
-					.findAny();
+					.filter(e -> e.getDestinationInstitute().getId().equals(campus.getId())).findAny();
 			InstituteCampus toBeDeleted = null;
 			if (secondaryLink.isPresent()) {
 				log.debug("institute is secondary institute");

@@ -13,4 +13,8 @@ public class InstituteFacilityDto {
 	@JsonProperty("facilities")
 	private List<FacilityDto> facilities = new ArrayList<FacilityDto>();
 
+	
+	
+	
+
 }

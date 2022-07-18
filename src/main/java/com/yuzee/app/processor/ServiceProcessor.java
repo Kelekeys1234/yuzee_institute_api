@@ -77,8 +77,12 @@ public class ServiceProcessor {
 				e.setCreatedBy(userId);
 				e.setCreatedOn(new Date());
 			}
-			e.setUpdatedBy(userId);
-			e.setUpdatedOn(new Date());
+			for (ServiceDto z : serviceDtos) {
+				e.setId(UUID.randomUUID().toString());
+				e.setUpdatedBy(userId);
+				e.setUpdatedOn(new Date());
+			}
+
 		});
 		return serviceDao.addUpdateServices(services).stream().map(e -> modelMapper.map(e, ServiceDto.class))
 				.collect(Collectors.toList());
@@ -102,7 +106,9 @@ public class ServiceProcessor {
 				pageSize, ((Long) servicesPage.getTotalElements()).intValue(), serviceDtos);
 	}
 
-	public void importServices(final MultipartFile multipartFile) throws IOException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+	public void importServices(final MultipartFile multipartFile)
+			throws IOException, JobExecutionAlreadyRunningException, JobRestartException,
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		log.debug("Inside importServices() method");
 		log.info("Calling methiod to save service data");
 
@@ -111,7 +117,7 @@ public class ServiceProcessor {
 
 		JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 		jobParametersBuilder.addString("csv-file", f.getAbsolutePath());
-		jobParametersBuilder.addString("execution-id", "ServiceUploader-"+UUID.randomUUID().toString());
+		jobParametersBuilder.addString("execution-id", "ServiceUploader-" + UUID.randomUUID().toString());
 		jobLauncher.run(job, jobParametersBuilder.toJobParameters());
 	}
 }

@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.client.RestTemplate;
 
 import com.yuzee.app.processor.MasterDataImportProcessor;
 import com.yuzee.app.util.FileStorageProperties;
@@ -27,7 +28,7 @@ import com.yuzee.app.util.FileStorageProperties;
 @EnableScheduling
 @EnableEurekaClient
 @ComponentScan(basePackages = "com.yuzee")
-@SpringBootApplication(exclude = {ContextRegionProviderAutoConfiguration.class, ContextStackAutoConfiguration.class})
+@SpringBootApplication(exclude = { ContextRegionProviderAutoConfiguration.class, ContextStackAutoConfiguration.class })
 @EnableConfigurationProperties({ FileStorageProperties.class })
 @EnableAsync
 @EnableCaching
@@ -35,26 +36,33 @@ public class YuzeeApplication {
 
 	@Autowired
 	private MasterDataImportProcessor masterDataImportProcessor;
-	
+
 	public static void main(final String[] args) {
 		SpringApplication.run(YuzeeApplication.class, args);
 	}
 
 	@Bean("fixedThreadPool")
-    public ExecutorService fixedThreadPool() {
-        return Executors.newFixedThreadPool(10);
-    }
-	
+	public ExecutorService fixedThreadPool() {
+		return Executors.newFixedThreadPool(10);
+	}
+
 	@EventListener(ApplicationStartedEvent.class)
 	public void appInit() {
 		masterDataImportProcessor.importInstituteCategoryType();
 	}
-	
+
 	@Bean
 	public ModelMapper modelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		modelMapper.getConfiguration().setDeepCopyEnabled(true);
 		return modelMapper;
+	}
+
+	@Bean
+	RestTemplate restTemplate() {
+
+		return new RestTemplate();
+
 	}
 }

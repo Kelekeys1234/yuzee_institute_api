@@ -23,7 +23,7 @@ public interface InstituteAdditionalInfoInterface {
 	@PostMapping("/additional/info/{instituteId}")
 	public ResponseEntity<?> addInstituteAdditionalInfo(@RequestHeader("userId") final String userId,
 			@PathVariable final String instituteId,
-			@Valid @RequestBody final InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception;
+			 @RequestBody final InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception;
 
 	@GetMapping("/additional/info/{instituteId}")
 	public ResponseEntity<?> getInstituteAdditionalInfo(@PathVariable final String instituteId) throws Exception;

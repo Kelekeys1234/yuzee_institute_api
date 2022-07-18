@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.InstituteAdditionalInfoDto;
@@ -24,7 +25,7 @@ public class InstituteAdditionalInfoController implements InstituteAdditionalInf
 
 	@Override
 	public ResponseEntity<?> addInstituteAdditionalInfo(String userId, String instituteId,
-			@Valid InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception {
+		 InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception {
 		instituteAdditionalInfoProcessor.addUpdateInstituteAdditionalInfo(userId, instituteId,
 				instituteAdditionalInfoDto);
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_info.added"))

@@ -21,7 +21,7 @@ public class InstituteServiceDaoImpl implements InstituteServiceDao {
 
 	@Override
 	public Optional<InstituteService> get(String id) {
-		return instituteServiceRepository.findById(UUID.fromString(id));
+		return instituteServiceRepository.findById(id);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class InstituteServiceDaoImpl implements InstituteServiceDao {
 	@Transactional
 	@Override
 	public void delete(String instituteServiceId) {
-		instituteServiceRepository.deleteById(UUID.fromString(instituteServiceId));
+		instituteServiceRepository.deleteById(instituteServiceId);
 	}
 
 	@Override

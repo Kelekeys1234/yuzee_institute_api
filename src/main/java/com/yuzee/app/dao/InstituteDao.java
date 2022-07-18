@@ -1,17 +1,36 @@
 package com.yuzee.app.dao;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
-import com.yuzee.app.bean.*;
-import com.yuzee.app.dto.*;
 import org.springframework.cache.annotation.Cacheable;
-
-import com.yuzee.common.lib.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import com.yuzee.app.bean.Institute;
+import com.yuzee.app.bean.InstituteCampus;
+import com.yuzee.app.bean.InstituteCategoryType;
+import com.yuzee.app.bean.InstituteDomesticRankingHistory;
+import com.yuzee.app.bean.InstituteFacility;
+import com.yuzee.app.bean.InstituteService;
+import com.yuzee.app.bean.InstituteType;
+import com.yuzee.app.bean.Service;
+import com.yuzee.app.dto.AdvanceSearchDto;
+import com.yuzee.app.dto.CourseSearchDto;
+import com.yuzee.app.dto.InstituteFacultyDto;
+import com.yuzee.app.dto.InstituteFilterDto;
+import com.yuzee.app.dto.InstituteGetRequestDto;
+import com.yuzee.app.dto.InstituteResponseDto;
+import com.yuzee.app.dto.InstituteServiceDto;
+import com.yuzee.app.dto.InstituteTypeDto;
+import com.yuzee.app.dto.ServiceDto;
+import com.yuzee.common.lib.exception.NotFoundException;
 
 public interface InstituteDao {
 
@@ -95,13 +114,12 @@ public interface InstituteDao {
 	public List<Institute> findByReadableIdIn(List<String> readableIds);
 
 	public Institute findByReadableId(String readableId);
-	
+
 	@Cacheable(value = "cacheInstituteMap", unless = "#result == null")
 	public Map<String, String> getAllInstituteMap();
 
-	@Cacheable(value = "cacheInstitute", key = "#instituteId", unless = "#result == null", condition="#instituteId!=null")
+	@Cacheable(value = "cacheInstitute", key = "#instituteId", unless = "#result == null", condition = "#instituteId!=null")
 	public Institute getInstitute(String instituteId);
-
 
 	List<Institute> getByInstituteName(String instituteName);
 
@@ -119,7 +137,7 @@ public interface InstituteDao {
 
 	List<Institute> getBySearchText(String searchText);
 
-    List<InstituteFacility> getAllInstituteFacility(String instituteId);
+	List<InstituteFacility> getAllInstituteFacility(String instituteId);
 
 	void deleteFacilityByIdAndInstituteId(String instituteFacilityId, String instituteId);
 
@@ -133,11 +151,13 @@ public interface InstituteDao {
 
 	Service getServiceById(String facilityId);
 
-    List<InstituteDomesticRankingHistory> getInstituteDomesticRankingHistories(String instituteId);
+	Optional<Service> findById(String facilityId);
 
-    List<InstituteCampus> findInstituteCampuses(String instituteId);
+	List<InstituteDomesticRankingHistory> getInstituteDomesticRankingHistories(String instituteId);
 
-    List<Service> findServiceByName(List<String> allNames);
+	List<InstituteCampus> findInstituteCampuses(String instituteId);
+
+	List<Service> findServiceByName(List<String> allNames);
 
 	List<ServiceDto> addUpdateServices(List<Service> services);
 

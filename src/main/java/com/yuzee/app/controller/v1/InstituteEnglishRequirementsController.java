@@ -30,13 +30,13 @@ public class InstituteEnglishRequirementsController implements InstituteEnglishR
 	
 	@Override
 	public ResponseEntity<?> addInstituteEnglishRequirements(String userId, String instituteId,
-		 @RequestBody @Valid InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception {
+		InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception {
 		return new GenericResponseHandlers.Builder().setData(instituteEnglishRequirementsProcessor.addInstituteEnglishRequirements(userId, instituteId, instituteEnglishRequirementsDto)).setStatus(HttpStatus.OK).setMessage(messageTranslator.toLocale("english_requirement.added")).create();
 	}
 
 	@Override
 	public ResponseEntity<?> updateInstituteEnglishRequirements(String userId, String englishRequirementsId,
-			@RequestBody @Valid InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception {
+			 InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception {
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(instituteEnglishRequirementsProcessor.updateInstituteEnglishRequirements(userId, englishRequirementsId, instituteEnglishRequirementsDto)).setMessage(messageTranslator.toLocale("english_requirement.updated")).create();
 	}
 

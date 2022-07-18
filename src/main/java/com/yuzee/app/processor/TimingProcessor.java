@@ -52,7 +52,7 @@ public class TimingProcessor {
 	public List<TimingRequestDto> saveUpdateDeleteTimings(String loggedInUserId, EntityTypeEnum entityType,
 			List<TimingRequestDto> timingRequestDtos, String entityId) throws NotFoundException {
 		log.info("inside TimingProcessor.saveUpdateTimings");
-		List<Timing> dbTimings = timingDao.findByEntityTypeAndEntityIdIn(entityType, Collections.singletonList(UUID.fromString(entityId)));
+		List<Timing> dbTimings = timingDao.findByEntityTypeAndEntityIdIn(entityType, Collections.singletonList((entityId)));
 		Map<String, Timing> dbTimingsMap = dbTimings.stream().collect(Collectors.toMap(Timing::getId, e -> e));
 		if (!CollectionUtils.isEmpty(timingRequestDtos)) {
 			Set<String> idsToBeUpdated = timingRequestDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
@@ -181,7 +181,7 @@ public class TimingProcessor {
 	public List<TimingRequestDto> getTimingRequestDtoByEntityTypeAndEntityIdIn(EntityTypeEnum entityType,
 			List<String> entityIds) {
 		log.info("inside TimingProcessor.getTimingRequestDtoByEntityTypeAndEntityIdIn");
-		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(entityType, entityIds.stream().map(UUID::fromString).collect(Collectors.toList()));
+		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(entityType, entityIds.stream().map(String::toString).collect(Collectors.toList()));
 		return timings.stream().map(this::convertTimingToTimingRequestDto).collect(Collectors.toList());
 	}
 
@@ -193,11 +193,11 @@ public class TimingProcessor {
 		return timingRequestDto;
 	}
 
-	public TimingDto getTimingResponseDtoByInstituteId(UUID instituteId) {
+	public TimingDto getTimingResponseDtoByInstituteId(String string) {
 		log.debug("Inside getTimingResponseDtoByInstituteId() method");
-		log.info("fetching institute timing from DB for instituteId " + instituteId);
+		log.info("fetching institute timing from DB for instituteId " + string);
 		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.INSTITUTE,
-				List.of(instituteId));
+				List.of(string));
 		Timing timing = CollectionUtils.isEmpty(timings) ? null : timings.get(0);
 		TimingDto instituteTimingResponseDto = new TimingDto();
 		if (!ObjectUtils.isEmpty(timing)) {
